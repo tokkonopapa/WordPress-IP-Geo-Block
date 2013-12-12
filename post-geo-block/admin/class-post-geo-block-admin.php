@@ -1,6 +1,6 @@
 <?php
 /**
- * Post Geo Lock Admin
+ * Admin class of Post Geo Block
  *
  * @package   Post_Geo_Block_Admin
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
@@ -9,36 +9,23 @@
  * @copyright 2013 tokkonopapa
  */
 
-/**
- * Plugin class. This class should ideally be used to work with the
- * administrative side of the WordPress site.
- *
- * If you're interested in introducing public-facing
- * functionality, then refer to `class-post-geo-block.php`
- *
- * @package Post_Geo_Block_Admin
- * @author  tokkonopapa <tokkonopapa@yahoo.com>
- */
 class Post_Geo_Block_Admin {
 
 	/**
 	 * Instance of this class.
 	 *
-	 * @var      object
 	 */
 	protected static $instance = null;
 
 	/**
 	 * Slug of the plugin screen.
 	 *
-	 * @var      string
 	 */
 	protected $plugin_screen_hook_suffix = null;
 
 	/**
 	 * Slug of the plugin menu.
 	 *
-	 * @var      string
 	 */
 	protected $text_domain;
 	protected $plugin_base;
@@ -85,7 +72,6 @@ class Post_Geo_Block_Admin {
 	/**
 	 * Return an instance of this class.
 	 *
-	 * @return    object    A single instance of this class.
 	 */
 	public static function get_instance() {
 
@@ -118,7 +104,6 @@ class Post_Geo_Block_Admin {
 	/**
 	 * Register and enqueue admin-specific style sheet and JavaScript.
 	 *
-	 * @return    null    Return early if no settings page is registered.
 	 */
 	public function enqueue_admin_cssjs() {
 
@@ -185,7 +170,7 @@ class Post_Geo_Block_Admin {
 			$title = __( 'Contribute on GitHub', $this->text_domain );
 			array_push(
 				$links,
-				"<a href=\"https://github.com/tokkonopapa/Wordpress-Post-Geo-Block\" title=\"$title\" target=_blank>$title</a>"
+				"<a href=\"https://github.com/tokkonopapa/WordPress-Post-Geo-Block\" title=\"$title\" target=_blank>$title</a>"
 			);
 		}
 		return $links;
@@ -317,6 +302,7 @@ class Post_Geo_Block_Admin {
 			$key = ! empty( $options['provider'] ) &&
 				isset( $options['api_key'][ $options['provider'] ] ) ?
 				$options['api_key'][ $options['provider'] ] : NULL;
+
 			/**
 			 * Register a settings field to the settings page and section.
 			 * @link http://codex.wordpress.org/Function_Reference/add_settings_field
@@ -751,7 +737,7 @@ class Post_Geo_Block_Admin {
 
 	/**
 	 * Function that fills the section with the desired content.
-	 * The function should echo its output.
+	 *
 	 */
 	public function callback_provider() {
 		// echo "<p>" . __( 'Select geolocation service provider and put API key.', $this->text_domain ) . "</p>";
@@ -779,6 +765,7 @@ class Post_Geo_Block_Admin {
 		$name = "${args['option']}[${args['field']}]";
 
 		switch ( $args['type'] ) {
+
 			case 'select-provider':
 				// 1st segment
 				$current = esc_attr( $args['value'] );
@@ -855,11 +842,11 @@ class Post_Geo_Block_Admin {
 		/**
 		 * Sanitize a string from user input or from the db
 		 *
-		 * check for invalid UTF-8,
-		 * Convert single < characters to entity,
-		 * strip all tags,
-		 * remove line breaks, tabs and extra white space,
-		 * strip octets.
+		 * - check for invalid UTF-8,
+		 * - convert single `<` characters to entity,
+		 * - strip all tags,
+		 * - remove line breaks, tabs and extra white space,
+		 * - strip octets.
 		 *
 		 * @since 2.9.0
 		 * @example sanitize_text_field( $str );
@@ -966,7 +953,7 @@ class Post_Geo_Block_Admin {
 					$options = get_option( $this->option_name['settings'] );
 					$key = isset( $options['api_key'][ $provider ] );
 					$ip_geoloc = new $name( $key ? $options['api_key'][ $provider ] : NULL );
-					$result = $ip_geoloc->get_location( $ip );
+					$result = $ip_geoloc->get_location( $ip, $options['timeout'] );
 				}
 
 				else {
