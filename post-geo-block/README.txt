@@ -49,8 +49,14 @@ Check `statistics` tab on this plugin's option page.
 
 == Changelog ==
 
+= 0.9.2 =
+* Add a check of the supported type of IP address not to waste a request.
+
+= 0.9.1 =
+* Delete functions for MU, test, debug and ugly comments.
+
 = 0.9.0 =
-Pre-release version.
+* Pre-release version.
 
 == Upgrade Notice ==
 

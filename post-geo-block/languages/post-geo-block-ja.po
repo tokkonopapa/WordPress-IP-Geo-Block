@@ -2,11 +2,11 @@
 # This file is distributed under the same license as the Post Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Geo Block 0.9.1\n"
+"Project-Id-Version: Post Geo Block 0.9.2\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-Post-Geo-"
 "Block\n"
-"POT-Creation-Date: 2013-12-12 23:19+0900\n"
-"PO-Revision-Date: 2013-12-12 23:20+0900\n"
+"POT-Creation-Date: 2013-12-14 00:16+0900\n"
+"PO-Revision-Date: 2013-12-14 00:18+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -108,89 +108,88 @@ msgid "Plugin options"
 msgstr "プラグインのオプション"
 
 #: admin/class-post-geo-block-admin.php:477
-msgid "Check IP in case of IPV6"
-msgstr "IPv6をチェックする"
-
-#: admin/class-post-geo-block-admin.php:492
 msgid "Remove settings at uninstallation"
 msgstr "アンインストール時に設定を削除"
 
-#: admin/class-post-geo-block-admin.php:522
+#: admin/class-post-geo-block-admin.php:507
 msgid "Statistics of posts"
 msgstr "投稿の統計"
 
-#: admin/class-post-geo-block-admin.php:530
+#: admin/class-post-geo-block-admin.php:515
 msgid "Passed"
 msgstr "通過"
 
-#: admin/class-post-geo-block-admin.php:545
+#: admin/class-post-geo-block-admin.php:530
 msgid "Blocked"
 msgstr "遮断"
 
-#: admin/class-post-geo-block-admin.php:560
+#: admin/class-post-geo-block-admin.php:545
 msgid "Unknown (passed)"
 msgstr "国コード不明（通過）"
 
-#: admin/class-post-geo-block-admin.php:581
+#: admin/class-post-geo-block-admin.php:566
 msgid "Blocked by countries"
-msgstr "国別ブロック回数"
+msgstr "国別遮断回数"
 
-#: admin/class-post-geo-block-admin.php:596
-msgid "Type of IP address"
-msgstr "IPアドレスのタイプ"
+#: admin/class-post-geo-block-admin.php:581
+msgid "Blocked by type of IP address"
+msgstr "遮断したIPアドレスのタイプ"
 
-#: admin/class-post-geo-block-admin.php:613
+#: admin/class-post-geo-block-admin.php:598
 msgid "Provider"
 msgstr "プロバイダー"
 
-#: admin/class-post-geo-block-admin.php:614
+#: admin/class-post-geo-block-admin.php:599
 msgid "Calls"
 msgstr "リクエスト回数"
 
-#: admin/class-post-geo-block-admin.php:615
+#: admin/class-post-geo-block-admin.php:600
 msgid "Response [msec]"
 msgstr "応答時間 [msec]"
 
-#: admin/class-post-geo-block-admin.php:628
+#: admin/class-post-geo-block-admin.php:613
 msgid "Response time by providers"
 msgstr "プロバイダー毎の応答時間"
 
-#: admin/class-post-geo-block-admin.php:643
+#: admin/class-post-geo-block-admin.php:628
 msgid "Clear statistics"
 msgstr "統計のクリア"
 
-#: admin/class-post-geo-block-admin.php:651
+#: admin/class-post-geo-block-admin.php:636
 msgid "Clear now"
 msgstr "今すぐクリア"
 
-#: admin/class-post-geo-block-admin.php:675
+#: admin/class-post-geo-block-admin.php:660
 msgid "Search geolocation of IP address"
 msgstr "IPアドレスの位置情報を検索する"
 
-#: admin/class-post-geo-block-admin.php:693
+#: admin/class-post-geo-block-admin.php:678
 msgid "Service provider"
 msgstr "サービスプロバイダー"
 
-#: admin/class-post-geo-block-admin.php:709
+#: admin/class-post-geo-block-admin.php:694
 msgid "IP address"
 msgstr "IPアドレス"
 
-#: admin/class-post-geo-block-admin.php:724
+#: admin/class-post-geo-block-admin.php:709
 msgid "Find geolocation"
 msgstr "位置情報の検索"
 
-#: admin/class-post-geo-block-admin.php:732
+#: admin/class-post-geo-block-admin.php:717
 msgid "Search now"
 msgstr "今すぐ検索"
 
-#: admin/class-post-geo-block-admin.php:805
+#: admin/class-post-geo-block-admin.php:790
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-post-geo-block-admin.php:836
+#: admin/class-post-geo-block-admin.php:821
 msgid "successfully updated: "
 msgstr "更新に成功しました："
 
-#: classes/class-post-geo-block.php:346
+#: classes/class-post-geo-block.php:337
 msgid "Sorry, your comment cannot be accepted."
 msgstr "申し訳ありませんが、投稿できません。"
+
+#~ msgid "Check IP in case of IPV6"
+#~ msgstr "IPv6をチェックする"

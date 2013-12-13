@@ -14,8 +14,9 @@
  * @link http://codex.wordpress.org/Function_Reference/wp_remote_get
  */
 define( 'POST_GEO_BLOCK_IP_TIMEOUT', 5 );
-define( 'POST_GEO_BLOCK_IP_IPV4', 1 ); // can handle IPv4
-define( 'POST_GEO_BLOCK_IP_IPV6', 3 ); // can handle both IPv4 & IPv6
+define( 'POST_GEO_BLOCK_IP_TYPE_IPV4', 1 ); // can handle IPv4
+define( 'POST_GEO_BLOCK_IP_TYPE_IPV6', 2 ); // can handle IPv6
+define( 'POST_GEO_BLOCK_IP_TYPE_BOTH', 3 ); // can handle both IPv4 and IPv6
 
 /**
  * Abstract class
@@ -26,15 +27,14 @@ abstract class Post_Geo_Block_IP {
 	/**
 	 * These values must be instantiated in child class
 	 *
+	protected $api_type = POST_GEO_BLOCK_IP_TYPE_[IPV4 | IPV6 | BOTH];
 	protected $api_template = array(
 		'api_key' => '', // %API_KEY%
 		'format'  => '', // %API_FORMAT%
 		'option'  => '', // %API_OPTION%
 		'ip'      => '', // %API_IP%
 	);
-
 	protected $url_template = 'http://example.com/%API_KEY%/%API_FORMAT%/%API_OPTION%/%API_IP%';
-
 	protected $transform_table = array(
 		'countryCode' => '',
 		'countryName' => '',
@@ -80,10 +80,12 @@ abstract class Post_Geo_Block_IP {
 	 *
 	 */
 	public function get_location( $ip, $timeout = POST_GEO_BLOCK_IP_TIMEOUT ) {
-		// test ip
-//		$ip = '124.83.187.140'; // yahoo.co.jp
-//		$ip = '164.100.129.97'; // india.gov.in
-//		$ip = '2a00:1450:400c:c00::6a'; // Ireland
+
+		// check supported type of IP address
+		if ( ! ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && ( $this->api_type & POST_GEO_BLOCK_IP_TYPE_IPV4 ) ) &&
+		     ! ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) && ( $this->api_type & POST_GEO_BLOCK_IP_TYPE_IPV6 ) ) ) {
+			return FALSE;
+		}
 
 		$tmp = $this->build_url( $ip );
 
@@ -191,8 +193,8 @@ abstract class Post_Geo_Block_IP {
 	 *
 	 */
 	public static function get_class_name( $provider ) {
-		$class_name = 'Post_Geo_Block_IP_' . preg_replace( '/[\W]/', '', $provider );
-		return class_exists( $class_name ) ? $class_name : NULL;
+		$provider = 'Post_Geo_Block_IP_' . preg_replace( '/[\W]/', '', $provider );
+		return class_exists( $provider ) ? $provider : NULL;
 	}
 }
 
@@ -209,16 +211,14 @@ abstract class Post_Geo_Block_IP {
  * Output type : json, xml
  */
 class Post_Geo_Block_IP_freegeoipnet extends Post_Geo_Block_IP {
-
+	protected $api_type = POST_GEO_BLOCK_IP_TYPE_IPV4;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
 		'option'  => '',
 		'ip'      => '',
 	);
-
 	protected $url_template = 'http://freegeoip.net/%API_FORMAT%/%API_IP%';
-
 	// xml
 	/* protected $transform_table = array(
 		'countryCode' => 'CountryCode',
@@ -228,7 +228,6 @@ class Post_Geo_Block_IP_freegeoipnet extends Post_Geo_Block_IP {
 		'latitude'    => 'Latitude',
 		'longitude'   => 'Longitude',
 	); */
-
 	// json
 	protected $transform_table = array(
 		'countryCode' => 'country_code',
@@ -252,16 +251,14 @@ class Post_Geo_Block_IP_freegeoipnet extends Post_Geo_Block_IP {
  * Output type : json
  */
 class Post_Geo_Block_IP_ipinfoio extends Post_Geo_Block_IP {
-
+	protected $api_type = POST_GEO_BLOCK_IP_TYPE_IPV4;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
 		'option'  => '',
 		'ip'      => '',
 	);
-
 	protected $url_template = 'http://ipinfo.io/%API_IP%/%API_FORMAT%%API_OPTION%';
-
 	protected $transform_table = array(
 		'countryCode' => 'country',
 		'countryName' => 'country',
@@ -301,16 +298,14 @@ class Post_Geo_Block_IP_ipinfoio extends Post_Geo_Block_IP {
  * Output type : json
  */
 class Post_Geo_Block_IP_Telize extends Post_Geo_Block_IP {
-
+	protected $api_type = POST_GEO_BLOCK_IP_TYPE_BOTH;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => '',
 		'option'  => '',
 		'ip'      => '',
 	);
-
 	protected $url_template = 'http://www.telize.com/geoip/%API_IP%';
-
 	protected $transform_table = array(
 		'countryCode' => 'country_code',
 		'countryName' => 'country',
@@ -333,16 +328,14 @@ class Post_Geo_Block_IP_Telize extends Post_Geo_Block_IP {
  * Output type : json, xml
  */
 class Post_Geo_Block_IP_geoPlugin extends Post_Geo_Block_IP {
-
+	protected $api_type = POST_GEO_BLOCK_IP_TYPE_BOTH;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
 		'option'  => '',
 		'ip'      => '',
 	);
-
 	protected $url_template = 'http://www.geoplugin.net/%API_FORMAT%.gp?ip=%API_IP%';
-
 	protected $transform_table = array(
 		'countryCode' => 'geoplugin_countryCode',
 		'countryName' => 'geoplugin_countryName',
@@ -365,16 +358,14 @@ class Post_Geo_Block_IP_geoPlugin extends Post_Geo_Block_IP {
  * Output type : json
  */
 class Post_Geo_Block_IP_IPtoLatLng extends Post_Geo_Block_IP {
-
+	protected $api_type = POST_GEO_BLOCK_IP_TYPE_BOTH;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
 		'option'  => '',
 		'ip'      => '',
 	);
-
 	protected $url_template = 'http://www.iptolatlng.com/?type=%API_FORMAT%&ip=%API_IP%';
-
 	protected $transform_table = array(
 		'countryCode' => 'country',
 		'countryName' => 'countryFullName',
@@ -398,16 +389,14 @@ class Post_Geo_Block_IP_IPtoLatLng extends Post_Geo_Block_IP {
  * Output type : json, xml
  */
 class Post_Geo_Block_IP_ipapicom extends Post_Geo_Block_IP {
-
+	protected $api_type = POST_GEO_BLOCK_IP_TYPE_BOTH;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
 		'option'  => '',
 		'ip'      => '',
 	);
-
 	protected $url_template = 'http://ip-api.com/%API_FORMAT%/%API_IP%';
-
 	protected $transform_table = array(
 		'countryCode' => 'countryCode',
 		'countryName' => 'country',
@@ -431,16 +420,14 @@ class Post_Geo_Block_IP_ipapicom extends Post_Geo_Block_IP {
  * Output type : json, xml, csv
  */
 class Post_Geo_Block_IP_IPJson extends Post_Geo_Block_IP {
-
+	protected $api_type = POST_GEO_BLOCK_IP_TYPE_BOTH;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
 		'option'  => '',
 		'ip'      => '',
 	);
-
 	protected $url_template = 'http://ip-json.rhcloud.com/%API_FORMAT%/%API_IP%';
-
 	protected $transform_table = array(
 		'countryCode' => 'country_code',
 		'countryName' => 'country_name',
@@ -471,16 +458,14 @@ class Post_Geo_Block_IP_IPJson extends Post_Geo_Block_IP {
  * Output type : json, xml
  */
 class Post_Geo_Block_IP_IPInfoDB extends Post_Geo_Block_IP {
-
+	protected $api_type = POST_GEO_BLOCK_IP_TYPE_IPV4;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'xml',
 		'option'  => 'ip-city',
 		'ip'      => '',
 	);
-
 	protected $url_template = 'http://api.ipinfodb.com/v3/%API_OPTION%/?key=%API_KEY%&format=%API_FORMAT%&ip=%API_IP%';
-
 	protected $transform_table = array(
 		'countryCode' => 'countryCode',
 		'countryName' => 'countryName',
@@ -505,53 +490,50 @@ class Post_Geo_Block_IP_IPInfoDB extends Post_Geo_Block_IP {
 }
 
 /**
- * Setup Provider table
+ * Infomation class about supported providers
  *
  */
-class Post_Geo_Block_IP_Setup {
+class Post_Geo_Block_IP_Info {
+
 	protected static $providers = array(
 		'freegeoip.net' => array(
 			'url'  => 'http://freegeoip.net/',
 			'key'  => NULL, // need no key (free)
-			'type' => POST_GEO_BLOCK_IP_IPV4,
 		),
-		'ipinfo.io' => array(
+		/*'ipinfo.io' => array(
 			'url'  => 'http://ipinfo.io/',
 			'key'  => NULL, // need no key (free)
-			'type' => POST_GEO_BLOCK_IP_IPV4,
-		),
+		),*/
 		'Telize' => array(
 			'url'  => 'http://www.telize.com/',
 			'key'  => NULL, // need no key (free)
-			'type' => POST_GEO_BLOCK_IP_IPV6,
 		),
 		'geoPlugin' => array(
 			'url'  => 'http://www.geoplugin.com/',
 			'key'  => NULL, // need no key but link (free)
-			'type' => POST_GEO_BLOCK_IP_IPV6,
 		),
 		'IPtoLatLng' => array(
 			'url'  => 'http://www.iptolatlng.com/',
 			'key'  => NULL, // need no key (free)
-			'type' => POST_GEO_BLOCK_IP_IPV6,
 		),
 		'ip-api.com' => array(
 			'url'  => 'http://ip-api.com/',
 			'key'  => NULL, // need no key (free for non-commercial use)
-			'type' => POST_GEO_BLOCK_IP_IPV6,
 		),
 		'IP-Json' => array(
 			'url'  => 'http://ip-json.rhcloud.com/',
 			'key'  => NULL, // need no key (free)
-			'type' => POST_GEO_BLOCK_IP_IPV6,
 		),
 		'IPInfoDB' => array(
 			'url'  => 'http://ipinfodb.com/',
 			'key'  => '', // need key (free for registered user)
-			'type' => POST_GEO_BLOCK_IP_IPV4,
 		),
 	);
 
+	/**
+	 * Returns the pairs of provider name and API key
+	 *
+	 */
 	public static function get_provider_keys() {
 		$list = array();
 		foreach ( self::$providers as $name => $val ) {

@@ -13,7 +13,7 @@
  * Plugin Name:       Post Geo Block
  * Plugin URI:        https://github.com/tokkonopapa/WordPress-Post-Geo-Block
  * Description:       It will block any spam comments posted from outside the specified countries.
- * Version:           0.9.1
+ * Version:           0.9.2
  * Author:            tokkonopapa
  * Author URI:        http://tokkono.cute.coocan.jp/blog/slow/
  * Text Domain:       post-geo-block

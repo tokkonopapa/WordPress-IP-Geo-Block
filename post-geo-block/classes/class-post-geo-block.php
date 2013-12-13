@@ -15,7 +15,7 @@ class Post_Geo_Block {
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
 	 */
-	const VERSION = '0.9.1';
+	const VERSION = '0.9.2';
 
 	/**
 	 * Instance of this class.
@@ -39,17 +39,16 @@ class Post_Geo_Block {
 
 		// settings (should be read on every page that has comment form)
 		'post_geo_block_settings' => array(
-			'method'          => 2,       // 0: primary only, 1: in order, 2: at random
+			'method'          => 2,       // 0:primary only, 1:in order, 2:at random
 			'provider'        => '',      // Name of primary provider
 			'api_key'         => array(), // API keys
-			'comment_pos'     => 0,       // Message place (0: none, 1: top, 2: bottom)
+			'comment_pos'     => 0,       // Position of Message (0:none, 1:top, 2:bottom)
 			'comment_msg'     => '',      // Message text on comment form
-			'matching_rule'   => 0,       // 0: white list, 1: black list
+			'matching_rule'   => 0,       // 0:white list, 1:black list
 			'white_list'      => 'JP',    // Comma separeted country code
 			'black_list'      => '',      // Comma separeted country code
 			'timeout'         => 5,       // Timeout in second
 			'response_code'   => 403,     // Response code
-			'check_ipv6'      => FALSE,   // IPV6
 			'clean_uninstall' => FALSE,   // Remove all savings from DB
 		),
 
@@ -184,28 +183,15 @@ class Post_Geo_Block {
 	 *
 	 */
 	private function check_geolocation( $ip ) {
-
-		// get statistics
-		$option_name = $this->option_name['statistics'];
-		$statistics = get_option( $option_name );
-		$settings   = get_option( $this->option_name['settings'] );
-
-		$ipv4 = filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 );
-		$ipv6 = filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 );
-
-		// if IPv6 is disable then pass through
-		if ( ! $settings['check_ipv6'] && $ipv6 ) {
-			$statistics['passed'] = intval( $statistics['passed'] ) + 1;
-			update_option( $option_name, $statistics );
-			return TRUE;
-		}
-
 		// include utility class
 		require_once( POST_GEO_BLOCK_PATH . '/classes/class-post-geo-block-ip.php' );
 
+		// get statistics
+		$statistics = get_option( $this->option_name['statistics'] );
+		$settings   = get_option( $this->option_name['settings'] );
+
 		// make providers list
 		$list = array();
-		$providers = Post_Geo_Block_IP_Setup::get_provider_keys();
 		$provider = $settings['provider']; // Primary provider
 
 		// set a primary provider if it has an appropriate API key
@@ -215,7 +201,8 @@ class Post_Geo_Block {
 
 		// otherwise make a list of all the appropriate providers
 		else {
-			foreach ( $providers as $provider => $key ) {
+			$geo = Post_Geo_Block_IP_Info::get_provider_keys();
+			foreach ( $geo as $provider => $key ) {
 				if ( NULL === $key || ! empty( $settings['api_key'][ $provider ] ) ) {
 					$list[] = $provider;
 				}
@@ -233,21 +220,18 @@ class Post_Geo_Block {
 		$black = $settings['black_list'];
 
 		foreach ( $list as $provider ) {
-			$key = ! empty( $settings['api_key'][ $provider ] ) ?
-				$settings['api_key'][ $provider ] : $providers[ $provider ];
-
 			$name = Post_Geo_Block_IP::get_class_name( $provider );
 			if ( $name ) {
 				// start time
 				$time = microtime( TRUE );
 
 				// get country code
-				$geolocation = new $name( $key );
-				$code = strtoupper( $geolocation->get_country( $ip, $settings['timeout'] ) );
+				$key = ! empty( $settings['api_key'][ $provider ] );
+				$geo = new $name( $key ? $settings['api_key'][ $provider ] : NULL );
+				$code = strtoupper( $geo->get_country( $ip, $settings['timeout'] ) );
 
 				// process time
 				$time = microtime( TRUE ) - $time;
-				// unset( $geolocation );
 			}
 
 			else {
@@ -260,13 +244,16 @@ class Post_Geo_Block {
 				if ( 0 == $rule && FALSE !== strpos( $white, $code ) ||
 				     1 == $rule && FALSE === strpos( $black, $code ) ) {
 					$statistics['passed'] = intval( $statistics['passed'] ) + 1;
-					update_option( $option_name, $statistics );
+					update_option( $this->option_name['statistics'], $statistics );
 					return TRUE;
 				}
 
 				// It must be a spam !!
-				if ( $ipv4 ) $statistics['IPv4'] = intval( $statistics['IPv4'] ) + 1;
-				if ( $ipv6 ) $statistics['IPv6'] = intval( $statistics['IPv6'] ) + 1;
+				if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
+					$statistics['IPv4'] = intval( $statistics['IPv4'] ) + 1;
+
+				else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
+					$statistics['IPv6'] = intval( $statistics['IPv6'] ) + 1;
 
 				if ( isset( $statistics['providers'][ $provider ] ) ) {
 					$name = $statistics['providers'][ $provider ];
@@ -293,7 +280,7 @@ class Post_Geo_Block {
 				$statistics['countries'][ $code ] = intval( $name[ $code ] ) + 1;
 				$statistics['blocked'] = intval( $statistics['blocked'] ) + 1;
 
-				update_option( $option_name, $statistics );
+				update_option( $this->option_name['statistics'], $statistics );
 
 				// return response code
 				return min( 511, max( 200, intval( $settings['response_code'] ) ) );
@@ -302,7 +289,7 @@ class Post_Geo_Block {
 
 		// if ip address is unknown then pass through
 		$statistics['unknown'] = intval( $statistics['unknown'] ) + 1;
-		update_option( $option_name, $statistics ); // @since 1.0.0
+		update_option( $this->option_name['statistics'], $statistics );
 		return TRUE;
 	}
 
@@ -311,13 +298,9 @@ class Post_Geo_Block {
 	 *
 	 */
 	public function validate_comment( $id ) {
-		global $user_ID;
-
-		require_once( POST_GEO_BLOCK_PATH . 'debug.php' );
-		debug( "user ID: $user_ID, post ID: $id" );
 
 		// pass login user
-		if( $user_ID ) {
+		if( is_user_logged_in() ) {
 			return $id;
 		}
 
@@ -329,8 +312,11 @@ class Post_Geo_Block {
 			return $id;
 		}
 
+		// some other stuff
+		;
+
 		// 2xx Success
-		else if ( 200 <= $code && $code < 300 ) {
+		if ( 200 <= $code && $code < 300 ) {
 			header('Refresh: 0; url=' . get_site_url(), TRUE, $code ); // @since 2.0.4
 			die();
 		}

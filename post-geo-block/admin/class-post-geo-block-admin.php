@@ -289,7 +289,7 @@ class Post_Geo_Block_Admin {
 
 			// make providers list
 			$list = array();
-			$providers = Post_Geo_Block_IP_Setup::get_provider_keys();
+			$providers = Post_Geo_Block_IP_Info::get_provider_keys();
 
 			foreach ( $providers as $provider => $key ) {
 				if ( isset( $options['api_key'][ $provider ] ) ) {
@@ -471,21 +471,6 @@ class Post_Geo_Block_Admin {
 				$option_slug
 			);
 
-			$field = 'check_ipv6';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Check IP in case of IPV6', $this->text_domain ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'checkbox',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ],
-				)
-			);
-
 			$field = 'clean_uninstall';
 			add_settings_field(
 				$option_name . "_$field",
@@ -593,7 +578,7 @@ class Post_Geo_Block_Admin {
 			$field = 'type';
 			add_settings_field(
 				$option_name . "_$field",
-				__( 'Type of IP address', $this->text_domain ),
+				__( 'Blocked by type of IP address', $this->text_domain ),
 				array( $this, 'callback_field' ),
 				$option_slug,
 				$section,
@@ -679,7 +664,7 @@ class Post_Geo_Block_Admin {
 
 			// make providers list
 			$list = array();
-			$providers = Post_Geo_Block_IP_Setup::get_provider_keys();
+			$providers = Post_Geo_Block_IP_Info::get_provider_keys();
 
 			foreach ( $providers as $provider => $key ) {
 				if ( NULL === $key || ! empty( $options['api_key'][ $provider ] ) ) {
@@ -767,7 +752,7 @@ class Post_Geo_Block_Admin {
 		switch ( $args['type'] ) {
 
 			case 'select-provider':
-				// 1st segment
+				// 1st column
 				$current = esc_attr( $args['value'] );
 				echo "\n<select id=\"$id\" name=\"$name\">\n";
 				foreach ( $args['api_key'] as $key => $val ) {
@@ -777,10 +762,10 @@ class Post_Geo_Block_Admin {
 				}
 				echo "</select>\n";
 
-				// 2nd segment
+				// 2nd column
 				$id   = "${args['text_name']}_${args['text_field']}";
 				$name = "${args['text_name']}[${args['text_field']}]"; ?>
-<span>&nbsp;=&gt;&nbsp;</span>
+<span>&nbsp;&rarr;&nbsp;</span>
 <input type="text" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo esc_attr( $args['text_value'] ); ?>"<?php if ( NULL === $args['text_value'] ) disabled( TRUE, TRUE ); ?> />
 <?php
 				break;
@@ -879,7 +864,6 @@ class Post_Geo_Block_Admin {
 						) : '';
 					break;
 
-				case 'check_ipv6':
 				case 'clean_uninstall':
 					// pass through to default in case of checkbox
 					if ( ! isset( $input[ $key ] ) )
@@ -951,9 +935,9 @@ class Post_Geo_Block_Admin {
 
 				if ( $name ) {
 					$options = get_option( $this->option_name['settings'] );
-					$key = isset( $options['api_key'][ $provider ] );
-					$ip_geoloc = new $name( $key ? $options['api_key'][ $provider ] : NULL );
-					$result = $ip_geoloc->get_location( $ip, $options['timeout'] );
+					$key = ! empty( $options['api_key'][ $provider ] );
+					$geo = new $name( $key ? $options['api_key'][ $provider ] : NULL );
+					$result = $geo->get_location( $ip, $options['timeout'] );
 				}
 
 				else {
