@@ -46,7 +46,7 @@ class Post_Geo_Block_Admin {
 		$this->plugin_slug = $plugin->get_plugin_slug(); // post-geo-block
 
 		foreach ( $plugin->get_option_keys() as $key => $val) {
-			$this->option_slug[ $key ] = $val;
+			$this->option_slug[ $key ] = str_replace( '_', '-', $val );
 			$this->option_name[ $key ] = $val;
 		}
 
@@ -883,10 +883,10 @@ class Post_Geo_Block_Admin {
 		// @param string $type: The type of message it is. 'error' or 'updated'.
 		// @link: http://codex.wordpress.org/Function_Reference/add_settings_error
 		add_settings_error(
-			$this->option_slug,
-			'sanitize_' . $option_name,
-			$message . print_r( $output, true ),
-			$status
+			$this->option_slug
+			, 'sanitize_' . $option_name
+			, $message //. print_r( $output, true )
+			, $status
 		);
 
 		return $output;
