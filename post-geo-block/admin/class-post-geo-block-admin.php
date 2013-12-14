@@ -200,7 +200,7 @@ class Post_Geo_Block_Admin {
 	 */
 	public function display_plugin_admin_page( $tab = 0 ) {
 		$tab = isset( $_GET['tab'] ) ? intval( $_GET['tab'] ) : 0;
-		$tab = min( 2, max( 0, $tab ) );
+		$tab = min( 3, max( 0, $tab ) );
 		$option_slug = $this->option_slug[ 1 === $tab ? 'statistics': 'settings' ];
 ?>
 <div class="wrap">
@@ -211,6 +211,7 @@ class Post_Geo_Block_Admin {
 		<a href="?page=<?php echo $this->plugin_slug; ?>&amp;tab=0" class="nav-tab <?php echo $tab == 0 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', $this->text_domain ); ?></a>
 		<a href="?page=<?php echo $this->plugin_slug; ?>&amp;tab=1" class="nav-tab <?php echo $tab == 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics', $this->text_domain ); ?></a>
 		<a href="?page=<?php echo $this->plugin_slug; ?>&amp;tab=2" class="nav-tab <?php echo $tab == 2 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Geolocation', $this->text_domain ); ?></a>
+		<a href="?page=<?php echo $this->plugin_slug; ?>&amp;tab=3" class="nav-tab <?php echo $tab == 3 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Attribution', $this->text_domain ); ?></a>
 	</h2>
 
 	<form method="post" action="options.php">
@@ -239,7 +240,7 @@ class Post_Geo_Block_Admin {
 		require_once( POST_GEO_BLOCK_PATH . '/classes/class-post-geo-block-ip.php' );
 
 		$tab = isset( $_GET['tab'] ) ? intval( $_GET['tab'] ) : 0;
-		$tab = min( 2, max( 0, $tab ) );
+		$tab = min( 3, max( 0, $tab ) );
 
 		/*========================================*
 		 * Settings
@@ -283,7 +284,7 @@ class Post_Geo_Block_Admin {
 			add_settings_section(
 				$section,
 				__( 'IP address geolocation provider', $this->text_domain ),
-				array( $this, 'callback_provider' ),
+				NULL, //array( $this, 'callback_provider' ),
 				$option_slug
 			);
 
@@ -341,7 +342,7 @@ class Post_Geo_Block_Admin {
 			add_settings_section(
 				$section,
 				__( 'Post options', $this->text_domain ),
-				array( $this, 'callback_comment' ),
+				NULL, //array( $this, 'callback_matching' ),
 				$option_slug
 			);
 
@@ -641,7 +642,7 @@ class Post_Geo_Block_Admin {
 		/*========================================*
 		 * Geolocation
 		 *========================================*/
-		else {
+		else if ( 2 === $tab ) {
 			$option_slug = $this->option_slug['settings'];
 			$option_name = $this->option_name['settings'];
 			$options = get_option( $option_name );
@@ -658,7 +659,7 @@ class Post_Geo_Block_Admin {
 			add_settings_section(
 				$section,
 				__( 'Search geolocation of IP address', $this->text_domain ),
-				array( $this, 'callback_location' ),
+				NULL, //array( $this, 'callback_geolocation' ),
 				$option_slug
 			);
 
@@ -718,22 +719,66 @@ class Post_Geo_Block_Admin {
 				)
 			);
 		}
+
+		/*========================================*
+		 * Attribution
+		 *========================================*/
+		else if ( 3 === $tab ) {
+			$option_slug = $this->option_slug['settings'];
+			$option_name = $this->option_name['settings'];
+
+			register_setting(
+				$option_slug,
+				$option_name
+			);
+
+			$section = $this->plugin_slug . '-attribution';
+			add_settings_section(
+				$section,
+				__( 'Attribution links', $this->text_domain ),
+				array( $this, 'callback_attribution' ),
+				$option_slug
+			);
+
+			$field = 'attribution';
+			$providers = Post_Geo_Block_IP_Info::get_provider_links();
+
+			foreach ( $providers as $provider => $key ) {
+				add_settings_field(
+					$option_name . "_${field}_${provider}",
+					$provider,
+					array( $this, 'callback_field' ),
+					$option_slug,
+					$section,
+					array(
+						'type' => 'html',
+						'option' => $option_name,
+						'field' => $field,
+						'value' => $key,
+					)
+				);
+			}
+		}
 	}
 
 	/**
 	 * Function that fills the section with the desired content.
 	 *
 	 */
-	public function callback_provider() {
-		// echo "<p>" . __( 'Select geolocation service provider and put API key.', $this->text_domain ) . "</p>";
+/*	public function callback_provider() {
+		echo "<p>" . __( 'Select geolocation service provider and put API key.', $this->text_domain ) . "</p>";
 	}
 
-	public function callback_comment() {
-		// echo "<p>" . sprintf( __( 'Select matching rule and put comma separated county code %s.', $this->text_domain ), '<a href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>(ISO 3166-1 alpha-2)</a>' ) . "</p>";
+	public function callback_matching() {
+		echo "<p>" . sprintf( __( 'Select matching rule and put comma separated county code %s.', $this->text_domain ), '<a href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>(ISO 3166-1 alpha-2)</a>' ) . "</p>";
 	}
 
-	public function callback_location() {
-		// echo "<p>" . __( 'Put IP address and find location.', $this->text_domain ) . "</p>";
+	public function callback_geolocation() {
+		echo "<p>" . __( 'Put IP address and find location.', $this->text_domain ) . "</p>";
+	}
+*/
+	public function callback_attribution() {
+		echo "<p>" . __( 'Thanks for providing these great services for free.', $this->text_domain ) . "</p>";
 	}
 
 	/**

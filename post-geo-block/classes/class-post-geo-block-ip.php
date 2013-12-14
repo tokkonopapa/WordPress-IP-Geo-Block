@@ -497,36 +497,36 @@ class Post_Geo_Block_IP_Info {
 
 	protected static $providers = array(
 		'freegeoip.net' => array(
-			'url'  => 'http://freegeoip.net/',
 			'key'  => NULL, // need no key (free)
+			'link' => '<a href="http://freegeoip.net/" title="freegeoip.net: FREE IP Geolocation Web Service" target=_blank>http://freegeoip.net/</a>&nbsp;(free)',
 		),
 		'ipinfo.io' => array(
-			'url'  => 'http://ipinfo.io/',
 			'key'  => NULL, // need no key (free)
+			'link' => '<a href="http://ipinfo.io/" title="ip address information including geolocation, hostname and network details" target=_blank>http://ipinfo.io/</a>&nbsp;(free)',
 		),
 		'Telize' => array(
-			'url'  => 'http://www.telize.com/',
 			'key'  => NULL, // need no key (free)
+			'link' => '<a href="http://www.telize.com/" title="Telize - JSON IP and GeoIP REST API" target=_blank>http://www.telize.com/</a>&nbsp;(free)',
 		),
 		'geoPlugin' => array(
-			'url'  => 'http://www.geoplugin.com/',
 			'key'  => NULL, // need no key but link (free)
+			'link' => '<a href="http://www.geoplugin.com/geolocation/" title="geoPlugin to geolocate your visitors" target="_new">IP Geolocation</a> by <a href="http://www.geoplugin.com/" title="plugin to geo-targeting and unleash your site\' potential." target="_new">geoPlugin</a>&nbsp;(free, need an attribution link)',
 		),
 		'IPtoLatLng' => array(
-			'url'  => 'http://www.iptolatlng.com/',
 			'key'  => NULL, // need no key (free)
+			'link' => '<a href="http://www.iptolatlng.com/" title="IP to Latitude, Longitude" target=_blank>http://www.iptolatlng.com/</a>&nbsp;(free)',
 		),
 		'ip-api.com' => array(
-			'url'  => 'http://ip-api.com/',
 			'key'  => NULL, // need no key (free for non-commercial use)
+			'link' => '<a href="http://ip-api.com/" title="IP-API.com - Free Geolocation API" target=_blank>http://ip-api.com/</a>&nbsp;(free for non-commercial use)',
 		),
 		'IP-Json' => array(
-			'url'  => 'http://ip-json.rhcloud.com/',
 			'key'  => NULL, // need no key (free)
+			'link' => '<a href="http://ip-json.rhcloud.com/" title="Free IP Geolocation Web Service" target=_blank>http://ip-json.rhcloud.com/</a>&nbsp;(free)',
 		),
 		'IPInfoDB' => array(
-			'url'  => 'http://ipinfodb.com/',
 			'key'  => '', // need key (free for registered user)
+			'link' => '<a href="http://ipinfodb.com/" title="IPInfoDB | Free IP Address Geolocation Tools" target=_blank>http://ipinfodb.com/</a>&nbsp;(free for registered user)',
 		),
 	);
 
@@ -538,6 +538,18 @@ class Post_Geo_Block_IP_Info {
 		$list = array();
 		foreach ( self::$providers as $name => $val ) {
 			$list += array( $name => $val['key'] );
+		}
+		return $list;
+	}
+
+	/**
+	 * Returns the pairs of provider name and link
+	 *
+	 */
+	public static function get_provider_links() {
+		$list = array();
+		foreach ( self::$providers as $name => $val ) {
+			$list += array( $name => $val['link'] );
 		}
 		return $list;
 	}

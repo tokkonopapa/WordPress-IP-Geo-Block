@@ -1,8 +1,9 @@
-# Post Geo Block
+Post Geo Block
+==============
 
 A WordPress plugin that blocks any comments posted from outside your nation.
 
-### Features
+### Features:
 
 1. This plugin uses free IP Geolocation REST APIs to get the country code 
 from the posting author's IP address.
@@ -10,7 +11,7 @@ from the posting author's IP address.
 2. There are two types of API which support only IPv4 or both IPv4 and IPv6. 
 This plugin will automatically select an appropriate API.
 
-### Installation
+### Installation:
 
 1. Upload `post-geo-block` directory to your plugins directory.
 2. Activate the plugin on the Plugin dashboard.
@@ -50,18 +51,20 @@ This plugin will automatically select an appropriate API.
 
 #### Attribution of IP Geolocation REST APIs used in this plugin
 
-- [http://freegeoip.net/]      [API-1] (IPv4)
-- [http://ipinfo.io/]          [API-2] (IPv4)
-- [http://www.telize.com/]     [API-3] (IPv4, IPv6)
-- [http://www.geoplugin.com/]  [API-4] (IPv4, IPv6)
-- [http://www.iptolatlng.com/] [API-5] (IPv4, IPv6)
-- [http://ip-api.com/]         [API-6] (IPv4, IPv6)
-- [http://ip-json.rhcloud.com/][API-7] (IPv4, IPv6)
-- [http://ipinfodb.com/]       [API-8] (IPv4)
+    Provider                             | Supported type | Licence
+    -------------------------------------|----------------|-------------------------------
+    [http://freegeoip.net/]      [API-1] | IPv4           | free
+    [http://ipinfo.io/]          [API-2] | IPv4           | free
+    [http://www.telize.com/]     [API-3] | IPv4, IPv6     | free
+    [http://www.geoplugin.com/]  [API-4] | IPv4, IPv6     | free, need an attribution link
+    [http://www.iptolatlng.com/] [API-5] | IPv4, IPv6     | free
+    [http://ip-api.com/]         [API-6] | IPv4, IPv6     | free for non-commercial use
+    [http://ip-json.rhcloud.com/][API-7] | IPv4, IPv6     | free
+    [http://ipinfodb.com/]       [API-8] | IPv4           | free for registered user
 
 Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind].
 
-### Notes
+### Notes:
 
 #### Milestones
 
@@ -80,11 +83,12 @@ Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind].
 
 #### Change log
 
+- 0.9.3  Add attribution links to appreciate providing the services.
 - 0.9.2  Add a check of the supported type of IP address not to waste a request.
 - 0.9.1  Delete functions for MU, test, debug and ugly comments.
 - 0.9.0  Pre-release version.
 
-### License
+### License:
 
 This plugin is licensed under the GPL v2 or later.
 
