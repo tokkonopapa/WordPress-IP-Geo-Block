@@ -500,10 +500,10 @@ class Post_Geo_Block_IP_Info {
 			'url'  => 'http://freegeoip.net/',
 			'key'  => NULL, // need no key (free)
 		),
-		/*'ipinfo.io' => array(
+		'ipinfo.io' => array(
 			'url'  => 'http://ipinfo.io/',
 			'key'  => NULL, // need no key (free)
-		),*/
+		),
 		'Telize' => array(
 			'url'  => 'http://www.telize.com/',
 			'key'  => NULL, // need no key (free)
