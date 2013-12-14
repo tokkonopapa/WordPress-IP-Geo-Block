@@ -13,7 +13,7 @@ This plugin will automatically select an appropriate API.
 ### Installation
 
 1. Upload `post-geo-block` directory to your plugins directory.
-2. Activate the plugin on the Plugin dashboard
+2. Activate the plugin on the Plugin dashboard.
 
 #### Settings
 
@@ -34,13 +34,13 @@ This plugin will automatically select an appropriate API.
     Specify the country code with two letters (see [ISO 3166-1 alpha-2][ISO])
     which is comma separated.
 
-- ** Response code**  
+- **Response code**  
     Select one of the response code to decide behavior of this plugin when it 
     block a comment. The 2xx code will refresh to your top page, the 3xx code 
     will redirect to another domain, the 4xx code will lead to the WordPress 
-    error page, the 5xx will cause just an error.
+    error page, and the 5xx will cause just an error.
 
-- ** Remove settings at uninstallation**  
+- **Remove settings at uninstallation**  
     If you checked this option, all settings will be removed when this plugin
     is uninstalled for clean uninstalling.
 
