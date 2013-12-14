@@ -15,7 +15,7 @@ class Post_Geo_Block {
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
 	 */
-	const VERSION = '0.9.2';
+	const VERSION = '0.9.3';
 
 	/**
 	 * Instance of this class.
@@ -96,7 +96,9 @@ class Post_Geo_Block {
 		}
 
 		// Validate when comment is posted
-		add_action( 'pre_comment_on_post', array( $this, "validate_comment" ), 1 );
+		// The priority is same as Akismet but will be called earlier than it
+		// becase Akismet will be initialize at `init`
+		add_action( 'preprocess_comment', array( $this, "validate_comment" ), 1 );
 	}
 
 	/**
@@ -297,11 +299,11 @@ class Post_Geo_Block {
 	 * Validate comment.
 	 *
 	 */
-	public function validate_comment( $id ) {
+	public function validate_comment( $commentdata ) {
 
 		// pass login user
 		if( is_user_logged_in() ) {
-			return $id;
+			return $commentdata;
 		}
 
 		// check ip address
@@ -309,7 +311,7 @@ class Post_Geo_Block {
 
 		// not spam
 		if ( TRUE === $code ) {
-			return $id;
+			return $commentdata;
 		}
 
 		// some other stuff
