@@ -10,6 +10,44 @@ from the posting author's IP address.
 2. There are two types of API which support only IPv4 or both IPv4 and IPv6. 
 This plugin will automatically select an appropriate API.
 
+### Installation
+
+1. Upload `post-geo-block` directory to your plugins directory.
+2. Activate the plugin on the Plugin dashboard
+
+#### Settings
+
+- **Service provider and API key**  
+    If you wish to use `IPInfoDB`, you should register from [here][IPInfoDB]
+    to get a free API key and set it into the textfield.
+
+- **Text position on comment form**  
+    If you wish to put some text message on your comment form, please select
+    `Top` or `Bottom` and put text into the **Text message on comment form**
+    textfield.
+
+- **Matching rule**  
+    Select `White list` (recommended) or `Black list` to specify the countries
+    from which you want to pass or block.
+
+- **White list**, **Black list**  
+    Specify the country code with two letters (see [ISO 3166-1 alpha-2][ISO])
+    which is comma separated.
+
+- ** Response code**  
+    Select one of the response code to decide behavior of this plugin when it 
+    block a comment. The 2xx code will refresh to your top page, the 3xx code 
+    will redirect to another domain, the 4xx code will lead to the WordPress 
+    error page, the 5xx will cause just an error.
+
+- ** Remove settings at uninstallation**  
+    If you checked this option, all settings will be removed when this plugin
+    is uninstalled for clean uninstalling.
+
+#### Requirement
+
+- WordPress 3.1+
+
 #### Attribution of IP Geolocation REST APIs used in this plugin
 
 - [http://freegeoip.net/]      [API-1] (IPv4)
@@ -36,8 +74,9 @@ Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind].
 - 0.7    Refine data format into DB and form on the dashboard.
 - 0.8    Localization.
 - 0.9    Remove unneeded functions and comments.
-- 1.0    Cooperation with W3C Geolocation.
-- 1.1    Send post to Akismet.
+- 1.0    Simplify Google Map jQuery plugin.
+- 1.1    Cooperation with W3C Geolocation to let a foreigner post a comment.
+- 1.2    Send post to Akismet.
 
 #### Change log
 
@@ -58,3 +97,6 @@ This plugin is licensed under the GPL v2 or later.
 [API-7]: http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service"
 [API-8]: http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
 [MaxMind]: http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
+[IPInfoDB]: http://ipinfodb.com/register.php
+[ISO]: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
+[RFC]: http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
