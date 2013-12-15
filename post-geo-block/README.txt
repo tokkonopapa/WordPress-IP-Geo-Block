@@ -3,7 +3,7 @@ Contributors: tokkonopapa
 Tags: comment, spam, geolocation
 Requires at least: 3.1
 Tested up to: 3.7.1
-Stable tag: 0.9.1
+Stable tag: 0.9.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,6 +48,14 @@ Check `statistics` tab on this plugin's option page.
 1. Post Geo Plugin settings/statistics/search
 
 == Changelog ==
+
+= 0.9.4 =
+* Add `post-geo-block-validate` hook and `apply_filters()` in order to add
+  another validation function.
+
+= 0.9.3 =
+* Add attribution links to appreciate providing the services. Change action
+  hook `pre_comment_on_post` to `preprocess_comment`.
 
 = 0.9.2 =
 * Add a check of the supported type of IP address not to waste a request.

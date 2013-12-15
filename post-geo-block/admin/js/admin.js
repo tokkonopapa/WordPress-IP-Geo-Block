@@ -44,7 +44,7 @@
 				lng: data.longitude,
 				info_window: 1,
 				info_content: data.cityName + ", " + data.countryName,
-				zoom: 10
+				zoom: 7
 			});
 		})
 

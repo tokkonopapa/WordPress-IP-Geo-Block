@@ -15,7 +15,7 @@ class Post_Geo_Block {
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
 	 */
-	const VERSION = '0.9.3';
+	const VERSION = '0.9.4';
 
 	/**
 	 * Instance of this class.
@@ -97,7 +97,7 @@ class Post_Geo_Block {
 
 		// Validate when comment is posted
 		// The priority is same as Akismet but will be called earlier than it
-		// becase Akismet will be initialize at `init`
+		// becase Akismet will be initialize at `init`.
 		add_action( 'preprocess_comment', array( $this, "validate_comment" ), 1 );
 	}
 
@@ -184,13 +184,14 @@ class Post_Geo_Block {
 	 * Check user's geolocation.
 	 *
 	 */
-	private function check_geolocation( $ip ) {
+	public function check_location( $commentdata, $settings ) {
+		if ( isset( $commentdata['post-geo-block'] ) &&
+			'blocked' === $commentdata['post-geo-block']['result'] ) {
+			return $commentdata;
+		}
+
 		// include utility class
 		require_once( POST_GEO_BLOCK_PATH . '/classes/class-post-geo-block-ip.php' );
-
-		// get statistics
-		$statistics = get_option( $this->option_name['statistics'] );
-		$settings   = get_option( $this->option_name['settings'] );
 
 		// make providers list
 		$list = array();
@@ -221,6 +222,7 @@ class Post_Geo_Block {
 		$white = $settings['white_list'];
 		$black = $settings['black_list'];
 
+		$ip = $_SERVER['REMOTE_ADDR'];
 		foreach ( $list as $provider ) {
 			$name = Post_Geo_Block_IP::get_class_name( $provider );
 			if ( $name ) {
@@ -234,65 +236,87 @@ class Post_Geo_Block {
 
 				// process time
 				$time = microtime( TRUE ) - $time;
-			}
-
-			else {
+			} else {
 				$code = NULL;
 			}
 
 			if ( $code ) {
+				// for update_statistics()
+				$commentdata['post-geo-block'] = array(
+					'time' => $time,
+					'country' => $code,
+					'provider' => $provider,
+				);
 
 				// It may not be a spam
 				if ( 0 == $rule && FALSE !== strpos( $white, $code ) ||
 				     1 == $rule && FALSE === strpos( $black, $code ) ) {
-					$statistics['passed'] = intval( $statistics['passed'] ) + 1;
-					update_option( $this->option_name['statistics'], $statistics );
-					return TRUE;
+					$commentdata['post-geo-block'] += array( 'result' => 'passed' );
+					return $commentdata;
 				}
 
-				// It must be a spam !!
-				if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
-					$statistics['IPv4'] = intval( $statistics['IPv4'] ) + 1;
-
-				else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-					$statistics['IPv6'] = intval( $statistics['IPv6'] ) + 1;
-
-				if ( isset( $statistics['providers'][ $provider ] ) ) {
-					$name = $statistics['providers'][ $provider ];
-				} else {
-					$name = array(
-						'total_count' => 0,
-						'total_time'  => 0,
-					);
+				// It could be a spam
+				else {
+					$commentdata['post-geo-block'] += array( 'result' => 'blocked');
+					return $commentdata;
 				}
-
-				$statistics['providers'][ $provider ] = array(
-					'total_count' => intval( $name['total_count'] ) + 1,
-					'total_time'  => intval( $name['total_time' ] ) + $time,
-				);
-
-				if ( isset( $statistics['countries'][ $code ] ) ) {
-					$name = $statistics['countries'];
-				} else {
-					$name = array(
-						$code => 0,
-					);
-				}
-
-				$statistics['countries'][ $code ] = intval( $name[ $code ] ) + 1;
-				$statistics['blocked'] = intval( $statistics['blocked'] ) + 1;
-
-				update_option( $this->option_name['statistics'], $statistics );
-
-				// return response code
-				return min( 511, max( 200, intval( $settings['response_code'] ) ) );
 			}
 		}
 
 		// if ip address is unknown then pass through
-		$statistics['unknown'] = intval( $statistics['unknown'] ) + 1;
+		$commentdata['post-geo-block'] = array( 'result' => 'unknown' );
+		return $commentdata;
+	}
+
+	/**
+	 * Update statistics
+	 *
+	 */
+	public function update_statistics( $commentdata ) {
+		$validate = $commentdata['post-geo-block'];
+		$statistics = get_option( $this->option_name['statistics'] );
+
+		$result = $validate['result'];
+		$statistics[ $result ] = intval( $statistics[ $result ] ) + 1;
+
+		if ( 'blocked' === $result ) {
+			$time     = isset( $validate['time'    ] ) ? $validate['time'    ] : 0;
+			$country  = isset( $validate['country' ] ) ? $validate['country' ] : 'ZZ';
+			$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'ZZ';
+
+			$ip = $_SERVER['REMOTE_ADDR'];
+			if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
+				$statistics['IPv4'] = intval( $statistics['IPv4'] ) + 1;
+
+			else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
+				$statistics['IPv6'] = intval( $statistics['IPv6'] ) + 1;
+
+			if ( isset( $statistics['providers'][ $provider ] ) ) {
+				$stat = $statistics['providers'][ $provider ];
+			} else {
+				$stat = array(
+					'count' => 0,
+					'time'  => 0,
+				);
+			}
+
+			$statistics['providers'][ $provider ] = array(
+				'count' => intval( $stat['count'] ) + 1,
+				'time'  => floatval( $stat['time' ] ) + $time,
+			);
+
+			if ( isset( $statistics['countries'][ $country ] ) ) {
+				$stat = $statistics['countries'];
+			} else {
+				$stat = array(
+					$country => 0,
+				);
+			}
+
+			$statistics['countries'][ $country ] = intval( $stat[ $country ] ) + 1;
+		}
+
 		update_option( $this->option_name['statistics'], $statistics );
-		return TRUE;
 	}
 
 	/**
@@ -300,26 +324,29 @@ class Post_Geo_Block {
 	 *
 	 */
 	public function validate_comment( $commentdata ) {
-
 		// pass login user
 		if( is_user_logged_in() ) {
 			return $commentdata;
 		}
 
-		// check ip address
-		$code = $this->check_geolocation( $_SERVER['REMOTE_ADDR'] );
+		// validate and update statistics
+		$settings = get_option( $this->option_name['settings'] );
+		add_action( 'post-geo-block-validate', array( $this, 'check_location' ), 10, 2 );
+		$result = apply_filters( 'post-geo-block-validate', $commentdata, $settings );
+		$this->update_statistics( $result );
 
-		// not spam
-		if ( TRUE === $code ) {
+		// after all filters applied, check whether the result is end in 'blocked'.
+		if ( ! isset( $result['post-geo-block'] ) ||
+			'blocked' !== $result['post-geo-block']['result'] ) {
 			return $commentdata;
 		}
 
-		// some other stuff
-		;
+		// response code
+		$code = min( 511, max( 200, intval( $settings['response_code'] ) ) );
 
 		// 2xx Success
 		if ( 200 <= $code && $code < 300 ) {
-			header('Refresh: 0; url=' . get_site_url(), TRUE, $code ); // @since 2.0.4
+			header('Refresh: 0; url=' . get_site_url(), TRUE, $code ); // @since 3.0
 			die();
 		}
 

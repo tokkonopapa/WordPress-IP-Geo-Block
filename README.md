@@ -45,11 +45,11 @@ This plugin will automatically select an appropriate API.
     If you checked this option, all settings will be removed when this plugin
     is uninstalled for clean uninstalling.
 
-#### Requirement
+### Requirement:
 
 - WordPress 3.1+
 
-#### Attribution of IP Geolocation REST APIs used in this plugin
+### Attribution of IP Geolocation REST APIs:
 
     Provider                             | Supported type | Licence
     -------------------------------------|----------------|-------------------------------
@@ -77,12 +77,14 @@ Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind].
 - 0.7    Refine data format into DB and form on the dashboard.
 - 0.8    Localization.
 - 0.9    Remove unneeded functions and comments.
-- 1.0    Simplify Google Map jQuery plugin.
+- 1.0    Simplify jQuery Google Map plugin.
 - 1.1    Cooperation with W3C Geolocation to let a foreigner post a comment.
 - 1.2    Send post to Akismet.
 
 #### Change log
 
+- 0.9.4  Add `post-geo-block-validate` hook and `apply_filters()` in order to 
+         add another validation function.
 - 0.9.3  Add attribution links to appreciate providing the services.
          Change action hook `pre_comment_on_post` to `preprocess_comment`.
 - 0.9.2  Add a check of the supported type of IP address not to waste a request.

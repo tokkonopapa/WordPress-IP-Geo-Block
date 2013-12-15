@@ -435,7 +435,7 @@ class Post_Geo_Block_Admin {
 			$field = 'response_code';
 			add_settings_field(
 				$option_name . "_$field",
-				sprintf( __( 'Response code %s', $this->text_domain ), '(<a href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1" target_blank>RFC 2616</a>)' ),
+				sprintf( __( 'Response code %s', $this->text_domain ), '(<a href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1" target=_blank>RFC 2616</a>)' ),
 				array( $this, 'callback_field' ),
 				$option_slug,
 				$section,
@@ -603,8 +603,8 @@ class Post_Geo_Block_Admin {
 
 			foreach ( $options['providers'] as $key => $val ) {
 				$html .= "<tr><td>$key</td>";
-				$html .= "<td>" . sprintf( "%5d", $val['total_count'] ) . "</td><td>";
-				$html .= sprintf( "%5d", 1000.0 * $val['total_time'] / $val['total_count'] );
+				$html .= "<td>" . sprintf( "%5d", $val['count'] ) . "</td><td>";
+				$html .= sprintf( "%5d", 1000.0 * $val['time'] / $val['count'] );
 				$html .= "</td></tr>";
 			}
 			$html .= "</tbody></table>";
