@@ -15,7 +15,7 @@ class Post_Geo_Block {
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
 	 */
-	const VERSION = '0.9.4';
+	const VERSION = '0.9.5';
 
 	/**
 	 * Instance of this class.

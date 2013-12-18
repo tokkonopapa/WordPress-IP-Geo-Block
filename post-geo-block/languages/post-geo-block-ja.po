@@ -2,11 +2,11 @@
 # This file is distributed under the same license as the Post Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Geo Block 0.9.4\n"
+"Project-Id-Version: Post Geo Block 0.9.5\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-Post-Geo-"
 "Block\n"
-"POT-Creation-Date: 2013-12-15 15:58+0900\n"
-"PO-Revision-Date: 2013-12-15 15:58+0900\n"
+"POT-Creation-Date: 2013-12-18 21:42+0900\n"
+"PO-Revision-Date: 2013-12-18 21:42+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -201,7 +201,7 @@ msgstr "有効"
 msgid "successfully updated: "
 msgstr "更新に成功しました："
 
-#: classes/class-post-geo-block.php:366
+#: classes/class-post-geo-block.php:361
 msgid "Sorry, your comment cannot be accepted."
 msgstr "申し訳ありませんが、投稿できません。"
 

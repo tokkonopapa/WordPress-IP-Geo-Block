@@ -83,6 +83,7 @@ Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind].
 
 #### Change log
 
+- 0.9.5  Fix garbage characters of `get_country()` for ipinfo.io.
 - 0.9.4  Add `post-geo-block-validate` hook and `apply_filters()` in order to 
          add another validation function.
 - 0.9.3  Change action hook `pre_comment_on_post` to `preprocess_comment`.
