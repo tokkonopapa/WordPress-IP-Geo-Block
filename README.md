@@ -85,8 +85,8 @@ Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind].
 
 - 0.9.4  Add `post-geo-block-validate` hook and `apply_filters()` in order to 
          add another validation function.
-- 0.9.3  Add attribution links to appreciate providing the services.
-         Change action hook `pre_comment_on_post` to `preprocess_comment`.
+- 0.9.3  Change action hook `pre_comment_on_post` to `preprocess_comment`.
+         Add attribution links to appreciate providing the services.
 - 0.9.2  Add a check of the supported type of IP address not to waste a request.
 - 0.9.1  Delete functions for MU, test, debug and ugly comments.
 - 0.9.0  Pre-release version.

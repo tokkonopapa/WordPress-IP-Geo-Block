@@ -54,8 +54,8 @@ Check `statistics` tab on this plugin's option page.
   another validation function.
 
 = 0.9.3 =
-* Add attribution links to appreciate providing the services. Change action
-  hook `pre_comment_on_post` to `preprocess_comment`.
+* Change action hook `pre_comment_on_post` to `preprocess_comment`.
+  Add attribution links to appreciate providing the services. 
 
 = 0.9.2 =
 * Add a check of the supported type of IP address not to waste a request.
