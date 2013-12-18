@@ -80,6 +80,10 @@ abstract class Post_Geo_Block_IP {
 	 *
 	 */
 	public function get_location( $ip, $timeout = POST_GEO_BLOCK_IP_TIMEOUT ) {
+		// test ip
+//		$ip = '124.83.187.140'; // yahoo.co.jp
+//		$ip = '164.100.129.97'; // india.gov.in
+//		$ip = '2a00:1450:400c:c00::6a'; // Ireland
 
 		// check supported type of IP address
 		if ( ! ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && ( $this->api_type & POST_GEO_BLOCK_IP_TYPE_IPV4 ) ) &&
@@ -89,16 +93,11 @@ abstract class Post_Geo_Block_IP {
 
 		$tmp = $this->build_url( $ip );
 
-		// for Wordpress
+		// for Wordpress ($res->get_error_message())
 		if ( function_exists( "wp_remote_get" ) ) { // @since 2.7
 			$res = @wp_remote_get( $tmp, array( 'timeout' => $timeout ) );
-
-			if ( ! is_wp_error( $res ) && 200 == $res['response']['code'] ) {
-				$tmp = $res['headers']['content-type'];
-				$res = wp_remote_retrieve_body( $res ); // @since 2.7
-			} else {
-				return FALSE; // $res->get_error_message();
-			}
+			$tmp = wp_remote_retrieve_header( $res, 'content-type' );
+			$res = wp_remote_retrieve_body( $res );
 		}
 
 		// for standalone
@@ -153,8 +152,9 @@ abstract class Post_Geo_Block_IP {
 			break;
 
 		  // just text
-		  case 'html':
-			return $res;
+		  case 'html': // ipinfo.io (get_country)
+			$data[ $this->transform_table['countryCode'] ] = trim( $res );
+			break;
 
 		  // unknown format
 		  default:
@@ -247,6 +247,7 @@ class Post_Geo_Block_IP_freegeoipnet extends Post_Geo_Block_IP {
  * Licence fee : free
  * Rate limit  :
  * Sample URL  : http://ipinfo.io/124.83.187.140/json
+ * Sample URL  : http://ipinfo.io/124.83.187.140/country
  * Input type  : IP address (IPv4)
  * Output type : json
  */
@@ -281,8 +282,7 @@ class Post_Geo_Block_IP_ipinfoio extends Post_Geo_Block_IP {
 	public function get_country( $ip, $timeout = POST_GEO_BLOCK_IP_TIMEOUT ) {
 		$this->api_template['format'] = '';
 		$this->api_template['option'] = 'country';
-		$res = trim( $this->get_location( $ip, $timeout ) );
-		return ! empty( $res ) && strlen( $res ) === 2 ? $res : NULL;
+		return parent::get_country( $ip, $timeout );
 	}
 }
 
@@ -476,16 +476,8 @@ class Post_Geo_Block_IP_IPInfoDB extends Post_Geo_Block_IP {
 	);
 
 	public function get_country( $ip, $timeout = POST_GEO_BLOCK_IP_TIMEOUT ) {
-
 		$this->api_template['option'] = 'ip-country';
-		$res = $this->get_location( $ip, $timeout );
-
-		if ( ! empty( $res ) && isset( $res['countryCode'] ) ) {
-			// if country code is '-' or 'UNDEFINED' then error.
-			return strlen( $res['countryCode'] ) === 2 ? $res['countryCode'] : NULL;
-		} else {
-			return NULL;
-		}
+		return parent::get_country( $ip, $timeout );
 	}
 }
 
