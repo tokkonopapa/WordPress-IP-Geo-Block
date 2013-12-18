@@ -28,7 +28,6 @@ class Post_Geo_Block_Admin {
 	 *
 	 */
 	protected $text_domain;
-	protected $plugin_base;
 	protected $plugin_slug;
 	protected $option_slug = array();
 	protected $option_name = array();
@@ -42,7 +41,6 @@ class Post_Geo_Block_Admin {
 		// Get unique values from public plugin class.
 		$plugin = Post_Geo_Block::get_instance();
 		$this->text_domain = $plugin->get_text_domain(); // post-geo-block
-		$this->plugin_base = $plugin->get_plugin_base(); // post-geo-block/post-geo-block.php
 		$this->plugin_slug = $plugin->get_plugin_slug(); // post-geo-block
 
 		foreach ( $plugin->get_option_keys() as $key => $val) {
@@ -59,7 +57,7 @@ class Post_Geo_Block_Admin {
 		add_action( 'admin_init', array( $this, 'register_admin_settings' ) );
 
 		// Add an action link pointing to the options page. @since 2.7
-		add_filter( 'plugin_action_links_' . $this->plugin_base, array( $this, 'add_action_links' ), 10, 1 );
+		add_filter( 'plugin_action_links_' . POST_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
 		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
 
 		// Check version and compatibility
@@ -166,7 +164,7 @@ class Post_Geo_Block_Admin {
 	 */
 	public function add_plugin_meta_links( $links, $file ) {
 
-		if ( $file === $this->plugin_base ) {
+		if ( $file === POST_GEO_BLOCK_BASE ) {
 			$title = __( 'Contribute on GitHub', $this->text_domain );
 			array_push(
 				$links,

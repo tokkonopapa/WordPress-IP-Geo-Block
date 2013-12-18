@@ -95,9 +95,8 @@ class Post_Geo_Block {
 			add_action( $val, array( $this, "comment_form_message" ), 10 );
 		}
 
-		// Validate when comment is posted
-		// The priority is same as Akismet but will be called earlier than it
-		// becase Akismet will be initialize at `init`.
+		// The validation function has the same priority as Akismet but will be
+		// called earlier becase the initialization timing of Akismet is at `init`.
 		add_action( 'preprocess_comment', array( $this, "validate_comment" ), 1 );
 	}
 
@@ -105,9 +104,8 @@ class Post_Geo_Block {
 	 * Return the plugin unique value.
 	 *
 	 */
-	public function get_plugin_base() { return POST_GEO_BLOCK_BASE; }
-	public function get_plugin_slug() { return $this->plugin_slug;  }
 	public function get_text_domain() { return $this->text_domain;  }
+	public function get_plugin_slug() { return $this->plugin_slug;  }
 	public function get_option_keys() { return self::$option_keys;  }
 
 	/**
@@ -125,11 +123,10 @@ class Post_Geo_Block {
 	}
 
 	/**
-	 * Fired when the plugin is activated.
+	 * Register options into database table when the plugin is activated.
 	 *
 	 */
 	public static function activate( $network_wide ) {
-		// Register options into database table @since 1.0.0
 		$name = array_keys( self::$option_table );
 		add_option( $name[0], self::$option_table[ $name[0] ], '', 'yes' );
 		add_option( $name[1], self::$option_table[ $name[1] ], '', 'no' );
@@ -140,16 +137,14 @@ class Post_Geo_Block {
 	 *
 	 */
 	public static function deactivate( $network_wide ) {
-		// Delete options from database table
-		self::uninstall();
+		self::uninstall();  // same as uninstall()
 	}
 
 	/**
-	 * Fired when the plugin is uninstalled.
+	 * Delete options from database when the plugin is uninstalled.
 	 *
 	 */
 	public static function uninstall() {
-		// Delete options from database table
 		$name = array_keys( self::$option_table );
 		$options = get_option( $name[0] );
 		if ( $options['clean_uninstall'] ) {
@@ -185,8 +180,9 @@ class Post_Geo_Block {
 	 *
 	 */
 	public function check_location( $commentdata, $settings ) {
-		if ( isset( $commentdata['post-geo-block'] ) &&
-			'blocked' === $commentdata['post-geo-block']['result'] ) {
+		// if the post has been already marked as 'blocked' then return
+		if ( isset( $commentdata[ $this->plugin_slug ] ) &&
+			'blocked' === $commentdata[ $this->plugin_slug ]['result'] ) {
 			return $commentdata;
 		}
 
@@ -242,29 +238,29 @@ class Post_Geo_Block {
 
 			if ( $code ) {
 				// for update_statistics()
-				$commentdata['post-geo-block'] = array(
+				$commentdata[ $this->plugin_slug ] = array(
 					'time' => $time,
-					'country' => $code,
+					'code' => $code,
 					'provider' => $provider,
 				);
 
 				// It may not be a spam
 				if ( 0 == $rule && FALSE !== strpos( $white, $code ) ||
 				     1 == $rule && FALSE === strpos( $black, $code ) ) {
-					$commentdata['post-geo-block'] += array( 'result' => 'passed' );
+					$commentdata[ $this->plugin_slug ] += array( 'result' => 'passed' );
 					return $commentdata;
 				}
 
 				// It could be a spam
 				else {
-					$commentdata['post-geo-block'] += array( 'result' => 'blocked');
+					$commentdata[ $this->plugin_slug ] += array( 'result' => 'blocked');
 					return $commentdata;
 				}
 			}
 		}
 
 		// if ip address is unknown then pass through
-		$commentdata['post-geo-block'] = array( 'result' => 'unknown' );
+		$commentdata[ $this->plugin_slug ] = array( 'result' => 'unknown' );
 		return $commentdata;
 	}
 
@@ -273,15 +269,15 @@ class Post_Geo_Block {
 	 *
 	 */
 	public function update_statistics( $commentdata ) {
-		$validate = $commentdata['post-geo-block'];
+		$validate = $commentdata[ $this->plugin_slug ];
 		$statistics = get_option( $this->option_name['statistics'] );
 
-		$result = $validate['result'];
+		$result = isset( $validate['result'] ) ? $validate['result'] : 'passed';
 		$statistics[ $result ] = intval( $statistics[ $result ] ) + 1;
 
 		if ( 'blocked' === $result ) {
 			$time     = isset( $validate['time'    ] ) ? $validate['time'    ] : 0;
-			$country  = isset( $validate['country' ] ) ? $validate['country' ] : 'ZZ';
+			$country  = isset( $validate['code'    ] ) ? $validate['code'    ] : 'ZZ';
 			$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'ZZ';
 
 			$ip = $_SERVER['REMOTE_ADDR'];
@@ -316,6 +312,7 @@ class Post_Geo_Block {
 			$statistics['countries'][ $country ] = intval( $stat[ $country ] ) + 1;
 		}
 
+		unset( $commentdata[ $this->plugin_slug ] );
 		update_option( $this->option_name['statistics'], $statistics );
 	}
 
@@ -329,15 +326,19 @@ class Post_Geo_Block {
 			return $commentdata;
 		}
 
+		// register the validation function
+		$code = $this->plugin_slug;
+		add_filter( "${code}-validate", array( $this, 'check_location' ), 10, 2 );
+
 		// validate and update statistics
 		$settings = get_option( $this->option_name['settings'] );
-		add_action( 'post-geo-block-validate', array( $this, 'check_location' ), 10, 2 );
-		$result = apply_filters( 'post-geo-block-validate', $commentdata, $settings );
+		$result = apply_filters( "${code}-validate", $commentdata, $settings );
+
+		// update statistics
 		$this->update_statistics( $result );
 
 		// after all filters applied, check whether the result is end in 'blocked'.
-		if ( ! isset( $result['post-geo-block'] ) ||
-			'blocked' !== $result['post-geo-block']['result'] ) {
+		if ( ! isset( $result[ $code ] ) || 'blocked' !== $result[ $code ]['result'] ) {
 			return $commentdata;
 		}
 
