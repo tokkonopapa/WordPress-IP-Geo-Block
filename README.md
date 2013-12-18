@@ -5,11 +5,16 @@ A WordPress plugin that blocks any comments posted from outside your nation.
 
 ### Features:
 
-1. This plugin uses free IP Geolocation REST APIs to get the country code 
-from the posting author's IP address.
+1. This plugin will get a country code from the posting author's IP address.
+If the comment comes from undesired country, it will be blocked before Akismet 
+validate it.
 
-2. There are two types of API which support only IPv4 or both IPv4 and IPv6. 
-This plugin will automatically select an appropriate API.
+2. Free IP Geolocation REST APIs are installed in this plugin to get a country 
+code from an IP address. There are two types of API which support only IPv4 or 
+both IPv4 and IPv6. This plugin will automatically select an appropriate API.
+
+3. Original validation function can be added using `post-geo-block-validate` 
+filter hook with `add_filter()`.
 
 ### Installation:
 
@@ -49,7 +54,9 @@ This plugin will automatically select an appropriate API.
 
 - WordPress 3.1+
 
-### Attribution of IP Geolocation REST APIs:
+### Attribution:
+
+Thanks for providing these great services and REST APIs for free.
 
     Provider                             | Supported type | Licence
     -------------------------------------|----------------|-------------------------------
@@ -64,6 +71,48 @@ This plugin will automatically select an appropriate API.
 
 Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind].
 
+### FAQ:
+
+#### What is this plugin for ? ####
+
+It's for blocking spam comments. If you can not specify countries with white 
+list or black list to protect your site against spam comments, you should 
+choose other awesome plugins.
+
+#### How can I check this plugin works ? ####
+
+Check `statistics` tab on this plugin's option page.
+
+#### How can I test on the local site ? ####
+
+Well, most of all the IP Geolocation services return empty (with some status) 
+if a local IP address (e.g. 127.0.0.0) is sent, but freegeoip.net returns `RD` 
+for country code. So you can add `RD` into `White list` or `Black list` on the 
+plugin settings page for test purpose.
+
+#### Can I add an additional spam validation function into this plugin ? ####
+
+Yes, you can use `add_filter()` with filter hook `post-geo-block-validate` in 
+somewhere (typically `functions.php`) as follows:
+
+```php
+function your_validation( $commentdata ) {
+    // your validation code here
+    ...;
+
+    if ( ... /* if your validation fails */ ) {
+        // tell the plugin this comment should be blocked!!
+        $commentdata['post-geo-block']['result'] = 'blocked';
+    }
+
+    return $commentdata;
+}
+add_filter( 'post-geo-block-validate', 'your_validation' );
+```
+
+Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
+on the `statistics` tab of this plugin's option page.
+
 ### Notes:
 
 #### Milestones
@@ -71,7 +120,7 @@ Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind].
 - 0.1    Define Geolocation abstract class and child class.
 - 0.2    Implement ajax.
 - 0.3    Insert text message into comment form.
-- 0.4    Make a selection of response header or redirection to black hole server.
+- 0.4    Make a response header or a redirection to the [black hole server][BHS].
 - 0.5    Handle IPv6, timeout, and correspondence of service down.
 - 0.6    Recording statistics and show them on the dashboard.
 - 0.7    Refine data format into DB and form on the dashboard.
@@ -106,5 +155,6 @@ This plugin is licensed under the GPL v2 or later.
 [API-8]: http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
 [MaxMind]: http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
 [IPInfoDB]: http://ipinfodb.com/register.php
+[BHS]: http://blackhole.webpagetest.org/
 [ISO]: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
 [RFC]: http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"

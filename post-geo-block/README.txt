@@ -11,20 +11,19 @@ A WordPress plugin that blocks any comments posted from outside your nation.
 
 == Description ==
 
-This plugin will block any comments posted from outside the specified 
-countries.
+This plugin will block any comments posted from outside the specified countries.
 
 In order to check the county of the posting author by IP address, this plugin 
 uses the following IP address Geolocation REST APIs.
 
-* [http://freegeoip.net/][freegeoip]    : free, need no API key.
-* [http://ipinfo.io/][ipinfo]           : free, need no API key.
-* [http://www.telize.com/][Telize]      : free, need no API key.
-* [http://www.geoplugin.com/][geo]      : free, need no API key, need link back.
-* [http://www.iptolatlng.com/][IP2LL]   : free, need no API key.
-* [http://ip-json.rhcloud.com/][IPJson] : free, need no API key.
-* [http://ip-api.com/][ipapi]           : free for non-commercial use, need no API key.
-* [http://ipinfodb.com/][IPInfoDB]      : free for registered user, need API key.
+* [http://freegeoip.net/][freegeoip]    : free
+* [http://ipinfo.io/][ipinfo]           : free
+* [http://www.telize.com/][Telize]      : free
+* [http://www.geoplugin.com/][geo]      : free, need an attribution link
+* [http://www.iptolatlng.com/][IP2LL]   : free
+* [http://ip-json.rhcloud.com/][IPJson] : free
+* [http://ip-api.com/][ipapi]           : free for non-commercial use
+* [http://ipinfodb.com/][IPInfoDB]      : free for registered user, need API key
 
 Some of these services and APIs include GeoLite data created by [MaxMind][MaxMind].
 
@@ -39,9 +38,43 @@ Some of these services and APIs include GeoLite data created by [MaxMind][MaxMin
 
 == Frequently Asked Questions ==
 
+= What is this plugin for? =
+
+It's for blocking spam comments. If you can not specify countries with white 
+list or black list to protect your site against spam comments, you should 
+choose other awesome plugins.
+
 = How can I check this plugin works? =
 
 Check `statistics` tab on this plugin's option page.
+
+= How can I test on the local site? =
+
+Well, most of all the IP Geolocation services return empty (with some status) 
+if a local IP address (e.g. 127.0.0.0) is sent, but freegeoip.net returns `RD` 
+for country code. So you can add `RD` into `White list` or `Black list` on the 
+plugin settings page for test purpose.
+
+= Can I add an additional spam validation function into this plugin? =
+
+Yes, you can use `add_filter()` with filter hook `post-geo-block-validate` in 
+somewhere (typically `functions.php`) as follows:
+
+    function your_validation( $commentdata ) {
+        // your validation code here
+        ...;
+
+        if ( ... /* if your validation fails */ ) {
+            // tell the plugin this comment should be blocked!!
+            $commentdata['post-geo-block']['result'] = 'blocked';
+        }
+
+        return $commentdata;
+    }
+    add_filter( 'post-geo-block-validate', 'your_validation' );
+
+Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
+on the `statistics` tab of this plugin's option page.
 
 == Screenshots ==
 
