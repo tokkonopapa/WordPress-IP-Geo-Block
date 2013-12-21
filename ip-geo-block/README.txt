@@ -22,7 +22,7 @@ uses the following IP address Geolocation REST APIs.
 * [http://www.iptolatlng.com/][IP2LL]   : free
 * [http://ip-json.rhcloud.com/][IPJson] : free
 * [http://xhanch.com/][Xhanch]          : free
-* [http://mshd.net/][mshd]              : free
+* [http://mshd.net/][mshdnet]           : free
 * [http://www.geoplugin.com/][geoplugin]: free, need an attribution link
 * [http://ip-api.com/][ipapi]           : free for non-commercial use
 * [http://smart-ip.net/][smartip]       : free for personal and non-commercial use
@@ -63,25 +63,61 @@ plugin settings page for test purpose.
 Yes, you can use `add_filter()` with filter hook `ip-geo-block-validate` in 
 somewhere (typically `functions.php`) as follows:
 
-    function your_validation( $commentdata ) {
-        // your validation code here
-        ...;
+`function your_validation( $commentdata ) {
+    // your validation code here
+    ...;
 
-        if ( ... /* if your validation fails */ ) {
-            // tell the plugin this comment should be blocked!!
-            $commentdata['ip-geo-block']['result'] = 'blocked';
-        }
-
-        return $commentdata;
+    if ( ... /* if your validation fails */ ) {
+        // tell the plugin this comment should be blocked!!
+        $commentdata['ip-geo-block']['result'] = 'blocked';
     }
-    add_filter( 'ip-geo-block-validate', 'your_validation' );
+
+    return $commentdata;
+}
+add_filter( 'ip-geo-block-validate', 'your_validation' );`
 
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
 
+== Other Notes ==
+
+= Settings on Dashboard =
+
+* **Service provider and API key**  
+    If you wish to use `IPInfoDB`, you should register from [here][IPInfoDB]
+    to get a free API key and set it into the textfield.  
+    And `ip-api.com` and `Smart-IP.net` require non-commercial use. If you wish
+    to use those, you should put a word (anything you like) into the textfield.
+
+* **Text position on comment form**  
+    If you wish to put some text message on your comment form, please select
+    `Top` or `Bottom` and put text into the **Text message on comment form**
+    textfield.
+
+* **Matching rule**  
+    Select `White list` (recommended) or `Black list` to specify the countries
+    from which you want to pass or block.
+
+* **White list**, **Black list**  
+    Specify the country code with two letters (see [ISO 3166-1 alpha-2][ISO]).
+    Each of them should be separated by comma.
+
+* **Response code**  
+    Select one of the [response code][RFC] to to be sent when it blocks a 
+    comment. The 2xx code will refresh to your top page, the 3xx code will 
+    redirect to [Black Hole Server][BHS], the 4xx code will lead to WordPress 
+    error page, and the 5xx will pretend an error.
+
+* **Remove settings at uninstallation**  
+    If you checked this option, all settings will be removed when this plugin
+    is uninstalled for clean uninstalling.
+
 == Screenshots ==
 
-1. IP Geo Plugin settings/statistics/search
+1. **IP Geo Plugin** - Settings.
+2. **IP Geo Plugin** - Statistics.
+3. **IP Geo Plugin** - Search.
+4. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
 
@@ -122,9 +158,12 @@ on the `statistics` tab of this plugin's option page.
 [IP2LL]:     http://www.iptolatlng.com/ "IP to Latitude, Longitude"
 [IPJson]:    http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service"
 [Xhanch]:    http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API &#8211; IP Get Detail | Xhanch Studio"
-[mshd]:      http://mshd.net/documentation/geoip "www.mshd.net - Geoip Documentation"
+[mshdnet]:   http://mshd.net/documentation/geoip "www.mshd.net - Geoip Documentation"
 [geoplugin]: http://www.geoplugin.com/ "geoPlugin to geolocate your visitors"
 [ipapi]:     http://ip-api.com/ "IP-API.com - Free Geolocation API"
 [smartip]:   http://smart-ip.net/geoip-api "Geo-IP API Documentation"
 [IPInfoDB]:  http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
 [MaxMind]:   http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
+[BHS]: http://blackhole.webpagetest.org/
+[ISO]: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
+[RFC]: http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"

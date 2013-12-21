@@ -1,31 +1,33 @@
-Post Geo Block
+IP Geo Block
 ==============
 
 A WordPress plugin that blocks any comments posted from outside your nation.
 
 ### Features:
 
-1. This plugin will get a country code from the posting author's IP address.
-If the comment comes from undesired country, it will be blocked before Akismet 
-validate it.
+1. This plugin will examine a country code based on the posting author's IP 
+address. If the comment comes from undesired country, it will be blocked 
+before Akismet validate it.
 
 2. Free IP Geolocation REST APIs are installed in this plugin to get a country 
 code from an IP address. There are two types of API which support only IPv4 or 
 both IPv4 and IPv6. This plugin will automatically select an appropriate API.
 
-3. Original validation function can be added using `post-geo-block-validate` 
+3. Custom validation function can be added using `ip-geo-block-validate` 
 filter hook with `add_filter()`.
 
 ### Installation:
 
-1. Upload `post-geo-block` directory to your plugins directory.
+1. Upload `ip-geo-block` directory to your plugins directory.
 2. Activate the plugin on the Plugin dashboard.
 
 #### Settings
 
 - **Service provider and API key**  
-    If you wish to use `IPInfoDB`, you should register from [here][IPInfoDB]
-    to get a free API key and set it into the textfield.
+    If you wish to use `IPInfoDB`, you should register from [here][register]
+    to get a free API key and set it into the textfield.  
+    And `ip-api.com` and `Smart-IP.net` require non-commercial use. If you wish
+    to use those, you should put a word (anything you like) into the textfield.
 
 - **Text position on comment form**  
     If you wish to put some text message on your comment form, please select
@@ -37,14 +39,14 @@ filter hook with `add_filter()`.
     from which you want to pass or block.
 
 - **White list**, **Black list**  
-    Specify the country code with two letters (see [ISO 3166-1 alpha-2][ISO])
-    which is comma separated.
+    Specify the country code with two letters (see [ISO 3166-1 alpha-2][ISO]).
+    Each of them should be separated by comma.
 
 - **Response code**  
-    Select one of the response code to decide behavior of this plugin when it 
-    block a comment. The 2xx code will refresh to your top page, the 3xx code 
-    will redirect to another domain, the 4xx code will lead to the WordPress 
-    error page, and the 5xx will cause just an error.
+    Select one of the [response code][RFC] to to be sent when it blocks a 
+    comment. The 2xx code will refresh to your top page, the 3xx code will 
+    redirect to [Black Hole Server][BHS], the 4xx code will lead to WordPress 
+    error page, and the 5xx will pretend an error.
 
 - **Remove settings at uninstallation**  
     If you checked this option, all settings will be removed when this plugin
@@ -58,16 +60,19 @@ filter hook with `add_filter()`.
 
 Thanks for providing these great services and REST APIs for free.
 
-    Provider                             | Supported type | Licence
-    -------------------------------------|----------------|-------------------------------
-    [http://freegeoip.net/]      [API-1] | IPv4           | free
-    [http://ipinfo.io/]          [API-2] | IPv4           | free
-    [http://www.telize.com/]     [API-3] | IPv4, IPv6     | free
-    [http://www.geoplugin.com/]  [API-4] | IPv4, IPv6     | free, need an attribution link
-    [http://www.iptolatlng.com/] [API-5] | IPv4, IPv6     | free
-    [http://ip-api.com/]         [API-6] | IPv4, IPv6     | free for non-commercial use
-    [http://ip-json.rhcloud.com/][API-7] | IPv4, IPv6     | free
-    [http://ipinfodb.com/]       [API-8] | IPv4           | free for registered user
+    Provider                               | Supported type | Licence
+    ---------------------------------------|----------------|--------
+    [http://freegeoip.net/]    [freegeoip] | IPv4           | free
+    [http://ipinfo.io/]           [ipinfo] | IPv4           | free
+    [http://www.telize.com/]      [Telize] | IPv4, IPv6     | free
+    [http://www.iptolatlng.com/]   [IP2LL] | IPv4, IPv6     | free
+    [http://ip-json.rhcloud.com/] [IPJson] | IPv4, IPv6     | free
+    [http://xhanch.com/]          [Xhanch] | IPv4           | free
+    [http://mshd.net/]           [mshdnet] | IPv4, IPv6     | free
+    [http://www.geoplugin.com/][geoplugin] | IPv4, IPv6     | free, need an attribution link
+    [http://ip-api.com/]           [ipapi] | IPv4, IPv6     | free for non-commercial use
+    [http://smart-ip.net/]       [smartip] | IPv4, IPv6     | free for personal and non-commercial use
+    [http://ipinfodb.com/]      [IPInfoDB] | IPv4           | free for registered user
 
 Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind].
 
@@ -92,7 +97,7 @@ plugin settings page for test purpose.
 
 #### Can I add an additional spam validation function into this plugin ? ####
 
-Yes, you can use `add_filter()` with filter hook `post-geo-block-validate` in 
+Yes, you can use `add_filter()` with filter hook `ip-geo-block-validate` in 
 somewhere (typically `functions.php`) as follows:
 
 ```php
@@ -102,12 +107,12 @@ function your_validation( $commentdata ) {
 
     if ( ... /* if your validation fails */ ) {
         // tell the plugin this comment should be blocked!!
-        $commentdata['post-geo-block']['result'] = 'blocked';
+        $commentdata['ip-geo-block']['result'] = 'blocked';
     }
 
     return $commentdata;
 }
-add_filter( 'post-geo-block-validate', 'your_validation' );
+add_filter( 'ip-geo-block-validate', 'your_validation' );
 ```
 
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
@@ -132,8 +137,13 @@ on the `statistics` tab of this plugin's option page.
 
 #### Change log
 
+- 1.0.0  Change all class names and file names.
+         Simplify jQuery Google Map plugin.
+         Add some providers.
+         Add `ip-geo-block-addr` for testing.
+         Add `enables` to option table for the future usage.
 - 0.9.5  Fix garbage characters of `get_country()` for ipinfo.io.
-- 0.9.4  Add `post-geo-block-validate` hook and `apply_filters()` in order to 
+- 0.9.4  Add `ip-geo-block-validate` hook and `apply_filters()` in order to 
          add another validation function.
 - 0.9.3  Change action hook `pre_comment_on_post` to `preprocess_comment`.
          Add attribution links to appreciate providing the services.
@@ -145,16 +155,19 @@ on the `statistics` tab of this plugin's option page.
 
 This plugin is licensed under the GPL v2 or later.
 
-[API-1]: http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service"
-[API-2]: http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details"
-[API-3]: http://www.telize.com/ "Telize - JSON IP and GeoIP REST API"
-[API-4]: http://www.geoplugin.com/ "geoPlugin to geolocate your visitors"
-[API-5]: http://www.iptolatlng.com/ "IP to Latitude, Longitude"
-[API-6]: http://ip-api.com/ "IP-API.com - Free Geolocation API"
-[API-7]: http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service"
-[API-8]: http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
-[MaxMind]: http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
-[IPInfoDB]: http://ipinfodb.com/register.php
+[freegeoip]:http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service"
+[ipinfo]:   http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details"
+[Telize]:   http://www.telize.com/ "Telize - JSON IP and GeoIP REST API"
+[IP2LL]:    http://www.iptolatlng.com/ "IP to Latitude, Longitude"
+[IPJson]:   http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service"
+[Xhanch]:   http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API &#8211; IP Get Detail | Xhanch Studio"
+[mshdnet]:  http://mshd.net/documentation/geoip "www.mshd.net - Geoip Documentation"
+[geoplugin]:http://www.geoplugin.com/ "geoPlugin to geolocate your visitors"
+[ipapi]:    http://ip-api.com/ "IP-API.com - Free Geolocation API"
+[smartip]:  http://smart-ip.net/geoip-api "Geo-IP API Documentation"
+[IPInfoDB]: http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
+[MaxMind]:  http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
+[register]: http://ipinfodb.com/register.php
 [BHS]: http://blackhole.webpagetest.org/
 [ISO]: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
 [RFC]: http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
