@@ -607,7 +607,7 @@ class IP_Geo_Block_Provider {
 
 		'mshd.net' => array(
 			'key'  => NULL, // need no key
-			'link' => '<a href="http://mshd.net/documentation/geoip" title="www.mshd.net - Geoip Documentation" target=_blank>http://mshd.net/</a>',
+			'link' => '<a href="http://mshd.net/documentation/geoip" title="www.mshd.net - Geoip Documentation" target=_blank>http://mshd.net/</a>&nbsp;(free)',
 		),
 
 		'geoPlugin' => array(

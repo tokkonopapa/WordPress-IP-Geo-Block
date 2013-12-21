@@ -85,9 +85,9 @@ on the `statistics` tab of this plugin's option page.
 
 * **Service provider and API key**  
     If you wish to use `IPInfoDB`, you should register from [here][IPInfoDB]
-    to get a free API key and set it into the textfield.  
-    And `ip-api.com` and `Smart-IP.net` require non-commercial use. If you wish
-    to use those, you should put a word (anything you like) into the textfield.
+    to get a free API key and set it into the textfield. And `ip-api.com` and 
+    `Smart-IP.net` require non-commercial use. If you wish to use those, you 
+    should put a word (anything you like) into the textfield.
 
 * **Text position on comment form**  
     If you wish to put some text message on your comment form, please select
@@ -125,7 +125,7 @@ on the `statistics` tab of this plugin's option page.
 * Change all class names and file names.
 * Simplify jQuery Google Map plugin.
 * Add some providers.
-* Add `ip-geo-block-addr` for testing.
+* Add `ip-geo-block-addr` filter hook for local testing.
 * Add `enables` to option table for the future usage.
 
 = 0.9.5 =
