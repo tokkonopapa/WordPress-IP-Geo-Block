@@ -1,28 +1,21 @@
 /*
-* jQuery GoogleMaps Plugin
-*
-* Copyright (c) 2011 TORU KOKUBUN (http://d-s-b.jp/)
-* Licensed under MIT Lisence:
-* http://www.opensource.org/licenses/mit-license.php
-* http://sourceforge.jp/projects/opensource/wiki/licenses%2FMIT_license
-*
-* Last Modified: 2011-03-02
-* version: 1.01
-*
-* This program checked the oparation on jQuery 1.4.2.
-*
-*/
-(function(c){c.fn.GoogleMaps=function(d){var a=c.extend({},c.fn.GoogleMaps.defaults,d);return this.each(function(){function m(){f=new google.maps.LatLng(a.lat,a.lng);n={center:f,zoom:a.zoom,mapTypeControl:a.map_type_control,mapTypeId:a.map_type_id};g=new google.maps.Map(r,n);e&&o(g,f,s,t)}function o(a,f,b,g,e,i,h){var b=u[b?b:"redDot"],i=i?i:"#",j=new google.maps.MarkerImage(b.markerImg,b.markerSize,b.markerOrigin,b.markerAnchor,b.markerScaleSize),b=new google.maps.MarkerImage(b.shadowImg,b.shadowSize,b.shadowOrigin,b.shadowAnchor,b.shadowScaleSize),d=new google.maps.Marker({position:f,map:a,icon:j,shadow:b});k.push(d);v&&google.maps.event.addListener(d,"click",function(){a.setCenter(f);l.close();l.setContent(g);l.open(a,d)});w&&c(p+":eq("+h+"),"+p+":eq("+h+").children()").click(function(){google.maps.event.trigger(k[h],"click");return false});x&&(c(q).append('<li><a href="'+i+'">'+e+"</a></li>"),c(q+" li:eq("+h+")").click(function(){google.maps.event.trigger(k[h],"click");return false}))}function d(){c.ajax({url:y,dataType:"xml",cache:false,success:function(d){m();var e=new google.maps.LatLngBounds;c("Placemark",d).each(function(b){f=new google.maps.LatLng(parseFloat(c(this).find("latitude").text()),parseFloat(c(this).find("longitude").text()));var d=c(this).find("name").text(),k=c(this).find("description").text(),i=c(this).find("url").text(),h=c(this).find("icon").text(),j='<div class="'+a.info_window_class+'">';j+="<h"+a.info_window_heading_level+">"+d+"</h"+a.info_window_heading_level+">";j+=k;j+="</div>";o(g,f,h,j,d,i,b);e.extend(f);g.fitBounds(e);g.setCenter(e.getCenter())})}})}var r=this,f,n,g,k=[],e=!a.file?true:false,y=a.file,v=a.info_window==1||!e?true:false,t=e?a.info_content:"",w=a.link_target?true:false,p=a.link_target,x=a.list_target?true:false,q=a.list_target,s=a.icon_type?a.icon_type:"",u=a.icons;e?m():d()})};var l=new google.maps.InfoWindow;c.fn.GoogleMaps.defaults={lat:0,lng:0,zoom:1,map_type_control:false,map_type_id:google.maps.MapTypeId.ROADMAP,file:null,info_window:0,info_content:null,info_window_class:"info-data",info_window_heading_level:1,link_target:null,list_target:null,icon_type:null,icons:{redDot:{markerImg:"http://maps.google.co.jp/mapfiles/ms/icons/red-dot.png",markerSize:new google.maps.Size(32,32),markerOrigin:new google.maps.Point(0,0),markerAnchor:new google.maps.Point(16,32),markerScaleSize:new google.maps.Size(32,32),shadowImg:"http://maps.google.co.jp/mapfiles/ms/icons/msmarker.shadow.png",shadowSize:new google.maps.Size(59,32),shadowOrigin:new google.maps.Point(-14,0),shadowAnchor:new google.maps.Point(29,32),shadowScaleSize:new google.maps.Size(59,32)},blueDot:{markerImg:"http://maps.google.co.jp/mapfiles/ms/icons/blue-dot.png",markerSize:new google.maps.Size(32,32),markerOrigin:new google.maps.Point(0,0),markerAnchor:new google.maps.Point(16,32),markerScaleSize:new google.maps.Size(32,32),shadowImg:"http://maps.google.co.jp/mapfiles/ms/icons/msmarker.shadow.png",shadowSize:new google.maps.Size(59,32),shadowOrigin:new google.maps.Point(-14,0),shadowAnchor:new google.maps.Point(29,32),shadowScaleSize:new google.maps.Size(59,32)},greenDot:{markerImg:"http://maps.google.co.jp/mapfiles/ms/icons/green-dot.png",markerSize:new google.maps.Size(32,32),markerOrigin:new google.maps.Point(0,0),markerAnchor:new google.maps.Point(16,32),markerScaleSize:new google.maps.Size(32,32),shadowImg:"http://maps.google.co.jp/mapfiles/ms/icons/msmarker.shadow.png",shadowSize:new google.maps.Size(59,32),shadowOrigin:new google.maps.Point(-14,0),shadowAnchor:new google.maps.Point(29,32),shadowScaleSize:new google.maps.Size(59,32)},ltblueDot:{markerImg:"http://maps.google.co.jp/mapfiles/ms/icons/ltblue-dot.png",markerSize:new google.maps.Size(32,32),markerOrigin:new google.maps.Point(0,0),markerAnchor:new google.maps.Point(16,32),markerScaleSize:new google.maps.Size(32,32),shadowImg:"http://maps.google.co.jp/mapfiles/ms/icons/msmarker.shadow.png",shadowSize:new google.maps.Size(59,32),shadowOrigin:new google.maps.Point(-14,0),shadowAnchor:new google.maps.Point(29,32),shadowScaleSize:new google.maps.Size(59,32)},yellowDot:{markerImg:"http://maps.google.co.jp/mapfiles/ms/icons/yellow-dot.png",markerSize:new google.maps.Size(32,32),markerOrigin:new google.maps.Point(0,0),markerAnchor:new google.maps.Point(16,32),markerScaleSize:new google.maps.Size(32,32),shadowImg:"http://maps.google.co.jp/mapfiles/ms/icons/msmarker.shadow.png",shadowSize:new google.maps.Size(59,32),shadowOrigin:new google.maps.Point(-14,0),shadowAnchor:new google.maps.Point(29,32),shadowScaleSize:new google.maps.Size(59,32)},purpleDot:{markerImg:"http://maps.google.co.jp/mapfiles/ms/icons/purple-dot.png",markerSize:new google.maps.Size(32,32),markerOrigin:new google.maps.Point(0,0),markerAnchor:new google.maps.Point(16,32),markerScaleSize:new google.maps.Size(32,32),shadowImg:"http://maps.google.co.jp/mapfiles/ms/icons/msmarker.shadow.png",shadowSize:new google.maps.Size(59,32),shadowOrigin:new google.maps.Point(-14,0),shadowAnchor:new google.maps.Point(29,32),shadowScaleSize:new google.maps.Size(59,32)},pinkDot:{markerImg:"http://maps.google.co.jp/mapfiles/ms/icons/pink-dot.png",markerSize:new google.maps.Size(32,32),markerOrigin:new google.maps.Point(0,0),markerAnchor:new google.maps.Point(16,32),markerScaleSize:new google.maps.Size(32,32),shadowImg:"http://maps.google.co.jp/mapfiles/ms/icons/msmarker.shadow.png",shadowSize:new google.maps.Size(59,32),shadowOrigin:new google.maps.Point(-14,0),shadowAnchor:new google.maps.Point(29,32),shadowScaleSize:new google.maps.Size(59,32)},orangeDot:{markerImg:"http://maps.google.co.jp/mapfiles/ms/icons/orange-dot.png",markerSize:new google.maps.Size(32,32),markerOrigin:new google.maps.Point(0,0),markerAnchor:new google.maps.Point(16,32),markerScaleSize:new google.maps.Size(32,32),shadowImg:"http://maps.google.co.jp/mapfiles/ms/icons/msmarker.shadow.png",shadowSize:new google.maps.Size(59,32),shadowOrigin:new google.maps.Point(-14,0),shadowAnchor:new google.maps.Point(29,32),shadowScaleSize:new google.maps.Size(59,32)}}}})(jQuery);
+ * Project: GmapRS - google map for WordPress IP Geo Block
+ * Description: A really simple google map plugin based on jQuery-boilerplate.
+ * Version: 0.2.1
+ * Author: tokkonopapa (tokkonopapa@yahoo.com)
+ * License: Under MIT License
+ */
+;(function(c,f,g,a){var e="GmapRS",d="plugin_"+e,b={zoom:1,latitude:0,longitude:0},i=google.maps,h=function(j){this.o=c.extend({},b);this.q=[]};h.prototype={init:function(j){c.extend(this.o,j);this.c=new i.LatLng(this.o.latitude,this.o.longitude);this.m=new i.Map(this.e.get(0),{zoom:this.o.zoom,center:this.c,mapTypeId:i.MapTypeId.ROADMAP})},destroy:function(){this.deleteMarkers();this.e.data(d,null)},setCenter:function(){if(arguments.length>=2){var j=new i.LatLng((this.o.latitude=arguments[0]),(this.o.longitude=arguments[1]));delete this.c;this.c=j}this.m.setCenter(this.c);return this.e},setZoom:function(j){this.m.setZoom(j||this.o.zoom);return this.e},addMarker:function(l){var m,j,k;m=new i.LatLng(l.latitude||this.o.latitude,l.longitude||this.o.longitude);j=new i.Marker({position:m,map:this.m,title:l.title||""});if(l.content){k=new i.InfoWindow({content:l.content});i.event.addListener(j,"click",function(){k.open(j.getMap(),j)})}this.q.push({p:m,w:k,m:j});this.m.setCenter(m);this.m.setZoom(l.zoom);return this.e},deleteMarkers:function(){var j,k;for(j in this.q){k=this.q[j];k.m.setMap(null)}this.q.length=0;return this.e}};c.fn[e]=function(k){var l,j;if(!(this.data(d) instanceof h)){this.data(d,new h(this))}j=this.data(d);j.e=this;if(typeof k==="undefined"||typeof k==="object"){if(typeof j.init==="function"){j.init(k)}}else{if(typeof k==="string"&&typeof j[k]==="function"){l=Array.prototype.slice.call(arguments,1);return j[k].apply(j,l)}else{c.error("Method "+k+" does not exist on jQuery."+e)}}}}(jQuery,window,document));
 
 (function ($) {
 
 	function ajax_get_location(service, ip) {
-		$('#post-geo-block-info').empty().addClass('post-geo-block-loading');
+		$('#ip-geo-block-info').empty().addClass('ip-geo-block-loading');
 
-		// `POST_GEO_BLOCK` is enqueued by wp_localize_script()
-		$.post(POST_GEO_BLOCK.url, {
-			action: POST_GEO_BLOCK.action,
-			nonce: POST_GEO_BLOCK.nonce,
+		// `IP_GEO_BLOCK` is enqueued by wp_localize_script()
+		$.post(IP_GEO_BLOCK.url, {
+			action: IP_GEO_BLOCK.action,
+			nonce: IP_GEO_BLOCK.nonce,
 			provider: service,
 			ip: ip
 		})
@@ -32,19 +25,19 @@
 			for (var key in data) {
 				info +=
 					'<li>' +
-						'<span class="post-geo-block-title">' + key + ' : </span>' +
-						'<span class="post-geo-block-result">' + data[key] + '</span>' +
+						'<span class="ip-geo-block-title">' + key + ' : </span>' +
+						'<span class="ip-geo-block-result">' + data[key] + '</span>' +
 					'</li>';
 			}
 			info += '</ul>';
 
-			$('#post-geo-block-info').append(info);
-			$("#post-geo-block-map").GoogleMaps({
-				lat: data.latitude,
-				lng: data.longitude,
-				info_window: 1,
-				info_content: data.cityName + ", " + data.countryName,
-				zoom: 7
+			$('#ip-geo-block-info').append(info);
+			$("#ip-geo-block-map").GmapRS('addMarker', {
+				latitude: data.latitude,
+				longitude: data.longitude,
+				title: ip,
+				content: info,
+				zoom: 8
 			});
 		})
 
@@ -53,16 +46,16 @@
 		})
 
 		.complete(function () {
-			$('#post-geo-block-info').removeClass('post-geo-block-loading');
+			$('#ip-geo-block-info').removeClass('ip-geo-block-loading');
 		});
 	}
 
 	function ajax_clear_statistics() {
-		$('#wpbody-content').addClass('post-geo-block-loading');
+		$('#wpbody-content').addClass('ip-geo-block-loading');
 
-		$.post(POST_GEO_BLOCK.url, {
-			action: POST_GEO_BLOCK.action,
-			nonce: POST_GEO_BLOCK.nonce,
+		$.post(IP_GEO_BLOCK.url, {
+			action: IP_GEO_BLOCK.action,
+			nonce: IP_GEO_BLOCK.nonce,
 			clear: 'statistics'
 		})
 
@@ -75,16 +68,16 @@
 		})
 
 		.complete(function () {
-			$('#wpbody-content').removeClass('post-geo-block-loading');
+			$('#wpbody-content').removeClass('ip-geo-block-loading');
 		});
 	}
 
 	$(function () {
 		// Settings
-		$('#post_geo_block_settings_provider').bind('change', function () {
+		$('#ip_geo_block_settings_provider').bind('change', function () {
 			var key = $(this).find('option:selected').attr('data-api-key');
 			var set = 'undefined' === typeof key;
-			$('#post_geo_block_settings_api_key').prop('disabled', set).val(key);
+			$('#ip_geo_block_settings_api_key').prop('disabled', set).val(key);
 		});
 
 		// Statistics
@@ -95,10 +88,10 @@
 		});
 
 		// Search Geolocation
-		$("#post-geo-block-map").GoogleMaps();
+		$("#ip-geo-block-map").GmapRS();
 		$('#get_location').click(function () {
-			var ip = $('#post_geo_block_settings_ip_address').val();
-			var service = $('#post_geo_block_settings_service').val();
+			var ip = $('#ip_geo_block_settings_ip_address').val();
+			var service = $('#ip_geo_block_settings_service').val();
 			if (ip) {
 				ajax_get_location(service, ip);
 			}
