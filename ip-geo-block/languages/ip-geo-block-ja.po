@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2013-12-21 09:25+0900\n"
-"PO-Revision-Date: 2013-12-21 09:25+0900\n"
+"POT-Creation-Date: 2013-12-21 11:48+0900\n"
+"PO-Revision-Date: 2013-12-21 11:49+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -42,7 +42,7 @@ msgid "Statistics"
 msgstr "統計"
 
 #: admin/class-ip-geo-block-admin.php:211
-msgid "Geolocation"
+msgid "Search"
 msgstr "検索"
 
 #: admin/class-ip-geo-block-admin.php:212
@@ -203,6 +203,9 @@ msgstr "更新に成功しました："
 #: classes/class-ip-geo-block.php:354
 msgid "Sorry, your comment cannot be accepted."
 msgstr "申し訳ありませんが、投稿できません。"
+
+#~ msgid "Geolocation"
+#~ msgstr "検索"
 
 #~ msgid "Check IP in case of IPV6"
 #~ msgstr "IPv6をチェックする"
