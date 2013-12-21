@@ -2,7 +2,7 @@
 Contributors: tokkonopapa
 Tags: comment, spam, geolocation
 Requires at least: 3.1
-Tested up to: 3.7.1
+Tested up to: 3.8
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -53,10 +53,19 @@ Check `statistics` tab on this plugin's option page.
 
 = How can I test on the local site? =
 
-Well, most of all the IP Geolocation services return empty (with some status) 
-if a local IP address (e.g. 127.0.0.0) is sent, but freegeoip.net returns `RD` 
-for country code. So you can add `RD` into `White list` or `Black list` on the 
-plugin settings page for test purpose.
+There are two ways. One is to add some code somewhere in your php (typically 
+`functions.php` in your theme) to substitute local IP address through filter
+fook `ip-geo-block-addr` as follows:
+
+`function substitute_my_ip( $ip ) {
+    return '98.139.183.24'; // yahoo.com
+}
+add_filter( 'ip-geo-block-addr', 'substitute_my_ip' );`
+
+And another is adding `RD` as a country code into `White list` or `Black list` 
+on the plugin settings page. Most of the IP Geolocation services return empty 
+(with some status) if a local IP address (e.g. 127.0.0.0) is sent, but only 
+`freegeoip.net` returns `RD`.
 
 = Can I add an additional spam validation function into this plugin? =
 
