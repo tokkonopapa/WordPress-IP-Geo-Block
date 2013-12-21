@@ -2,7 +2,7 @@
 /**
  * IP Address Geolocation Class
  *
- * @package   Post_Geo_Block
+ * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
@@ -13,21 +13,21 @@
  * Default timeout in second (same as wordpress default)
  * @link http://codex.wordpress.org/Function_Reference/wp_remote_get
  */
-define( 'POST_GEO_BLOCK_IP_TIMEOUT', 5 );
-define( 'POST_GEO_BLOCK_IP_TYPE_IPV4', 1 ); // can handle IPv4
-define( 'POST_GEO_BLOCK_IP_TYPE_IPV6', 2 ); // can handle IPv6
-define( 'POST_GEO_BLOCK_IP_TYPE_BOTH', 3 ); // can handle both IPv4 and IPv6
+define( 'IP_GEO_BLOCK_API_TIMEOUT', 5 );
+define( 'IP_GEO_BLOCK_API_TYPE_IPV4', 1 ); // can handle IPv4
+define( 'IP_GEO_BLOCK_API_TYPE_IPV6', 2 ); // can handle IPv6
+define( 'IP_GEO_BLOCK_API_TYPE_BOTH', 3 ); // can handle both IPv4 and IPv6
 
 /**
  * Abstract class
  *
  */
-abstract class Post_Geo_Block_IP {
+abstract class IP_Geo_Block_API {
 
 	/**
 	 * These values must be instantiated in child class
 	 *
-	protected $api_type = POST_GEO_BLOCK_IP_TYPE_[IPV4 | IPV6 | BOTH];
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_[IPV4 | IPV6 | BOTH];
 	protected $api_template = array(
 		'api_key' => '', // %API_KEY%
 		'format'  => '', // %API_FORMAT%
@@ -54,8 +54,6 @@ abstract class Post_Geo_Block_IP {
 			$this->api_template['api_key'] = $api_key;
 	}
 
-	public function __destruct() {}
-
 	/**
 	 * Build URL from template
 	 *
@@ -79,18 +77,15 @@ abstract class Post_Geo_Block_IP {
 	 * Get geolocation information from service provider
 	 *
 	 */
-	public function get_location( $ip, $timeout = POST_GEO_BLOCK_IP_TIMEOUT ) {
-		// test ip
-//		$ip = '124.83.187.140'; // yahoo.co.jp
-//		$ip = '164.100.129.97'; // india.gov.in
-//		$ip = '2a00:1450:400c:c00::6a'; // Ireland
+	public function get_location( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
 
 		// check supported type of IP address
-		if ( ! ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && ( $this->api_type & POST_GEO_BLOCK_IP_TYPE_IPV4 ) ) &&
-		     ! ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) && ( $this->api_type & POST_GEO_BLOCK_IP_TYPE_IPV6 ) ) ) {
+		if ( ! ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && ( $this->api_type & IP_GEO_BLOCK_API_TYPE_IPV4 ) ) &&
+		     ! ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) && ( $this->api_type & IP_GEO_BLOCK_API_TYPE_IPV6 ) ) ) {
 			return FALSE;
 		}
 
+		// build query
 		$tmp = $this->build_url( $ip );
 
 		// for Wordpress ($res->get_error_message())
@@ -100,7 +95,7 @@ abstract class Post_Geo_Block_IP {
 			$res = wp_remote_retrieve_body( $res );
 		}
 
-		// for standalone
+		/*// for standalone
 		else {
 			// save default timeout and set new timeout
 			$ini_timeout = @ini_get( 'default_socket_timeout' );
@@ -120,23 +115,27 @@ abstract class Post_Geo_Block_IP {
 			// restore default timeout
 			if ( $ini_timeout )
 				@ini_set( 'default_socket_timeout', $ini_timeout );
-		}
+		}//*/
 
 		// clear decoded data
 		$data = array();
 
 		// extract content type
 		// ex: "Content-type: text/plain; charset=utf-8"
-		$tmp = explode( "/", $tmp );
-		$tmp = explode( ";", $tmp[1] );
+		$tmp = explode( "/", $tmp, 2 );
+		$tmp = explode( ";", $tmp[1], 2 );
 		$tmp = trim( $tmp[0] );
 
 		switch ( $tmp ) {
 
 		  // decode json
 		  case 'json':
+		  case 'html':  // ipinfo.io, Xhanch
 		  case 'plain': // geoPlugin
-			$data = json_decode( $res, TRUE );
+			$data = json_decode( $res, TRUE ); // PHP 5 >= 5.2.0, PECL json >= 1.2.0
+			if ( NULL === $data ) { // ipinfo.io (get_country)
+				$data[ $this->transform_table['countryCode'] ] = trim( $res );
+			}
 			break;
 
 		  // decode xml
@@ -149,11 +148,6 @@ abstract class Post_Geo_Block_IP {
 					}
 				}
 			}
-			break;
-
-		  // just text
-		  case 'html': // ipinfo.io (get_country)
-			$data[ $this->transform_table['countryCode'] ] = trim( $res );
 			break;
 
 		  // unknown format
@@ -176,7 +170,7 @@ abstract class Post_Geo_Block_IP {
 	 *
 	 * Override this method if a provider supports this feature for quick response.
 	 */
-	public function get_country( $ip, $timeout = POST_GEO_BLOCK_IP_TIMEOUT ) {
+	public function get_country( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
 
 		$res = $this->get_location( $ip, $timeout );
 
@@ -193,7 +187,7 @@ abstract class Post_Geo_Block_IP {
 	 *
 	 */
 	public static function get_class_name( $provider ) {
-		$provider = 'Post_Geo_Block_IP_' . preg_replace( '/[\W]/', '', $provider );
+		$provider = 'IP_Geo_Block_API_' . preg_replace( '/[\W]/', '', $provider );
 		return class_exists( $provider ) ? $provider : NULL;
 	}
 }
@@ -207,11 +201,11 @@ abstract class Post_Geo_Block_IP {
  * Rate limit  : 10,000 queries per hour
  * Sample URL  : http://freegeoip.net/json/124.83.187.140
  * Sample URL  : http://freegeoip.net/xml/yahoo.co.jp
- * Input type  : IP address (IPv4, IPv6) / domain name
- * Output type : json, xml
+ * Input type  : IP address (IPv4) / domain name
+ * Output type : json, jsonp, xml, csv
  */
-class Post_Geo_Block_IP_freegeoipnet extends Post_Geo_Block_IP {
-	protected $api_type = POST_GEO_BLOCK_IP_TYPE_IPV4;
+class IP_Geo_Block_API_freegeoipnet extends IP_Geo_Block_API {
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
@@ -251,8 +245,8 @@ class Post_Geo_Block_IP_freegeoipnet extends Post_Geo_Block_IP {
  * Input type  : IP address (IPv4)
  * Output type : json
  */
-class Post_Geo_Block_IP_ipinfoio extends Post_Geo_Block_IP {
-	protected $api_type = POST_GEO_BLOCK_IP_TYPE_IPV4;
+class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
@@ -269,7 +263,7 @@ class Post_Geo_Block_IP_ipinfoio extends Post_Geo_Block_IP {
 		'longitude'   => 'loc',
 	);
 
-	public function get_location( $ip, $timeout = POST_GEO_BLOCK_IP_TIMEOUT ) {
+	public function get_location( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
 		$res = parent::get_location( $ip, $timeout );
 		if ( ! empty( $res ) && isset( $res['latitude'] ) ) {
 			$loc = explode( ',', $res['latitude'] );
@@ -279,7 +273,7 @@ class Post_Geo_Block_IP_ipinfoio extends Post_Geo_Block_IP {
 		return $res;
 	}
 
-	public function get_country( $ip, $timeout = POST_GEO_BLOCK_IP_TIMEOUT ) {
+	public function get_country( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
 		$this->api_template['format'] = '';
 		$this->api_template['option'] = 'country';
 		return parent::get_country( $ip, $timeout );
@@ -293,12 +287,12 @@ class Post_Geo_Block_IP_ipinfoio extends Post_Geo_Block_IP {
  * Term of use : http://www.telize.com/disclaimer/
  * Licence fee : free for everyone to use
  * Rate limit  : none
- * Sample URL  : http://www.telize.com/geoip/124.83.187.140
+ * Sample URL  : http://www.telize.com/geoip/2a00:1450:400c:c00::6a
  * Input type  : IP address (IPv4, IPv6)
- * Output type : json
+ * Output type : json, jsonp
  */
-class Post_Geo_Block_IP_Telize extends Post_Geo_Block_IP {
-	protected $api_type = POST_GEO_BLOCK_IP_TYPE_BOTH;
+class IP_Geo_Block_API_Telize extends IP_Geo_Block_API {
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => '',
@@ -317,48 +311,18 @@ class Post_Geo_Block_IP_Telize extends Post_Geo_Block_IP {
 }
 
 /**
- * Class for geoPlugin
- *
- * URL         : http://www.geoplugin.com/
- * Term of use : http://www.geoplugin.com/whyregister
- * Licence fee : free (need to link)
- * Rate limit  : 120 lookups per minute
- * Sample URL  : http://www.geoplugin.net/json.gp?ip=124.83.187.140
- * Input type  : IP address (IPv4, IPv6)
- * Output type : json, xml
- */
-class Post_Geo_Block_IP_geoPlugin extends Post_Geo_Block_IP {
-	protected $api_type = POST_GEO_BLOCK_IP_TYPE_BOTH;
-	protected $api_template = array(
-		'api_key' => '',
-		'format'  => 'json',
-		'option'  => '',
-		'ip'      => '',
-	);
-	protected $url_template = 'http://www.geoplugin.net/%API_FORMAT%.gp?ip=%API_IP%';
-	protected $transform_table = array(
-		'countryCode' => 'geoplugin_countryCode',
-		'countryName' => 'geoplugin_countryName',
-		'regionName'  => 'geoplugin_region',
-		'cityName'    => 'geoplugin_city',
-		'latitude'    => 'geoplugin_latitude',
-		'longitude'   => 'geoplugin_longitude',
-	);
-}
-
-/**
  * Class for IPtoLatLng
  *
  * URL         : http://www.iptolatlng.com/
  * Term of use : 
  * Licence fee : free
  * Rate limit  : none
- * Sample URL  : http://www.iptolatlng.com?ip=124.83.187.140
+ * Sample URL  : http://www.iptolatlng.com?ip=2a00:1450:400c:c00::6a
  * Input type  : IP address (IPv4, IPv6) / domain name
  * Output type : json
  */
-class Post_Geo_Block_IP_IPtoLatLng extends Post_Geo_Block_IP {
-	protected $api_type = POST_GEO_BLOCK_IP_TYPE_BOTH;
+class IP_Geo_Block_API_IPtoLatLng extends IP_Geo_Block_API {
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
@@ -377,19 +341,148 @@ class Post_Geo_Block_IP_IPtoLatLng extends Post_Geo_Block_IP {
 }
 
 /**
+ * Class for IP-Json
+ *
+ * URL         : http://ip-json.rhcloud.com/
+ * Term of use : 
+ * Licence fee : free
+ * Rate limit  : 
+ * Sample URL  : http://ip-json.rhcloud.com/xml/124.83.187.140
+ * Sample URL  : http://ip-json.rhcloud.com/v6/2a00:1450:400c:c00::6a
+ * Input type  : IP address (IPv4, IPv6) / domain name
+ * Output type : json, xml, csv
+ */
+class IP_Geo_Block_API_IPJson extends IP_Geo_Block_API {
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
+	protected $api_template = array(
+		'api_key' => '',
+		'format'  => 'json',
+		'option'  => '',
+		'ip'      => '',
+	);
+	protected $url_template = 'http://ip-json.rhcloud.com/%API_FORMAT%/%API_IP%';
+	protected $transform_table = array(
+		'countryCode' => 'country_code',
+		'countryName' => 'country_name',
+		'regionName'  => 'region_name',
+		'cityName'    => 'city',
+		'latitude'    => 'latitude',
+		'longitude'   => 'longitude',
+	);
+
+	public function get_location( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
+		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+			$this->api_template['format'] = 'v6';
+		}
+		return parent::get_location( $ip, $timeout );
+	}
+}
+
+/**
+ * Class for Xhanch
+ *
+ * URL         : http://xhanch.com/xhanch-api-ip-get-detail/
+ * Term of use : 
+ * Licence fee : free (donationware)
+ * Rate limit  : 
+ * Sample URL  : http://api.xhanch.com/ip-get-detail.php?ip=124.83.187.140
+ * Sample URL  : http://api.xhanch.com/ip-get-detail.php?ip=124.83.187.140&m=json
+ * Input type  : IP address (IPv4)
+ * Output type : xml, json
+ */
+class IP_Geo_Block_API_Xhanch extends IP_Geo_Block_API {
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
+	protected $api_template = array(
+		'api_key' => '',
+		'format'  => 'json',
+		'option'  => '',
+		'ip'      => '',
+	);
+	protected $url_template = 'http://api.xhanch.com/ip-get-detail.php?ip=%API_IP%&m=%API_FORMAT%';
+	protected $transform_table = array(
+		'countryCode' => 'country_code',
+		'countryName' => 'country_name',
+		'regionName'  => 'region',
+		'cityName'    => 'city',
+		'latitude'    => 'latitude',
+		'longitude'   => 'longitude',
+	);
+}
+
+/**
+ * Class for mshd.net
+ *
+ * URL         : http://mshd.net/documentation/geoip
+ * Term of use : http://mshd.net/disclaimer
+ * Licence fee : 
+ * Rate limit  : 
+ * Sample URL  : http://mshd.net/api/geoip?ip=2a00:1450:400c:c00::6a&output=json
+ * Input type  : IP address (IPv4, IPv6)
+ * Output type : json, php
+ */
+class IP_Geo_Block_API_mshdnet extends IP_Geo_Block_API {
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
+	protected $api_template = array(
+		'api_key' => '',
+		'format'  => 'json',
+		'option'  => '',
+		'ip'      => '',
+	);
+	protected $url_template = 'http://mshd.net/api/geoip?ip=%API_IP%&output=%API_FORMAT%';
+	protected $transform_table = array(
+		'countryCode' => 'country_code',
+		'countryName' => 'country_name',
+		'regionName'  => 'region_name',
+		'cityName'    => 'city_name',
+		'latitude'    => 'latitude',
+		'longitude'   => 'longitude',
+	);
+}
+
+/**
+ * Class for geoPlugin
+ *
+ * URL         : http://www.geoplugin.com/
+ * Term of use : http://www.geoplugin.com/whyregister
+ * Licence fee : free (need an attribution link)
+ * Rate limit  : 120 lookups per minute
+ * Sample URL  : http://www.geoplugin.net/json.gp?ip=2a00:1450:400c:c00::6a
+ * Input type  : IP address (IPv4, IPv6)
+ * Output type : json, xml, php, etc
+ */
+class IP_Geo_Block_API_geoPlugin extends IP_Geo_Block_API {
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
+	protected $api_template = array(
+		'api_key' => '',
+		'format'  => 'json',
+		'option'  => '',
+		'ip'      => '',
+	);
+	protected $url_template = 'http://www.geoplugin.net/%API_FORMAT%.gp?ip=%API_IP%';
+	protected $transform_table = array(
+		'countryCode' => 'geoplugin_countryCode',
+		'countryName' => 'geoplugin_countryName',
+		'regionName'  => 'geoplugin_region',
+		'cityName'    => 'geoplugin_city',
+		'latitude'    => 'geoplugin_latitude',
+		'longitude'   => 'geoplugin_longitude',
+	);
+}
+
+/**
  * Class for ip-api.com
  *
  * URL         : http://ip-api.com/
  * Term of use : http://ip-api.com/docs/#usage_limits
  * Licence fee : free for non-commercial use
  * Rate limit  : 240 requests per minute
- * Sample URL  : http://ip-api.com/json/124.83.187.140
+ * Sample URL  : http://ip-api.com/json/2a00:1450:400c:c00::6a
  * Sample URL  : http://ip-api.com/xml/yahoo.co.jp
  * Input type  : IP address (IPv4, IPv6 with limited coverage) / domain name
  * Output type : json, xml
  */
-class Post_Geo_Block_IP_ipapicom extends Post_Geo_Block_IP {
-	protected $api_type = POST_GEO_BLOCK_IP_TYPE_BOTH;
+class IP_Geo_Block_API_ipapicom extends IP_Geo_Block_API {
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
@@ -408,41 +501,34 @@ class Post_Geo_Block_IP_ipapicom extends Post_Geo_Block_IP {
 }
 
 /**
- * Class for IP-Json
+ * Class for Smart-IP.net
  *
- * URL         : http://ip-json.rhcloud.com/
+ * URL         : http://smart-ip.net/geoip-api
  * Term of use : 
- * Licence fee : free
- * Rate limit  : 
- * Sample URL  : http://ip-json.rhcloud.com/json/124.83.187.140
- * Sample URL  : http://ip-json.rhcloud.com/xml/124.83.187.140
- * Input type  : IP address (IPv4, IPv6) / domain name
- * Output type : json, xml, csv
+ * Licence fee : free for personal and non-commercial use
+ * Rate limit  : 5,000 queries per day
+ * Sample URL  : http://smart-ip.net/geoip-xml/124.83.187.140
+ * Sample URL  : http://smart-ip.net/geoip-json/2a00:1450:400c:c00::6a
+ * Input type  : IP address (IPv4, IPv6 / domain name)
+ * Output type : xml, json
  */
-class Post_Geo_Block_IP_IPJson extends Post_Geo_Block_IP {
-	protected $api_type = POST_GEO_BLOCK_IP_TYPE_BOTH;
+class IP_Geo_Block_API_SmartIPnet extends IP_Geo_Block_API {
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
 		'option'  => '',
 		'ip'      => '',
 	);
-	protected $url_template = 'http://ip-json.rhcloud.com/%API_FORMAT%/%API_IP%';
+	protected $url_template = 'http://smart-ip.net/geoip-%API_FORMAT%/%API_IP%';
 	protected $transform_table = array(
-		'countryCode' => 'country_code',
-		'countryName' => 'country_name',
-		'regionName'  => 'region_name',
+		'countryCode' => 'countryCode',
+		'countryName' => 'countryName',
+		'regionName'  => 'region',
 		'cityName'    => 'city',
 		'latitude'    => 'latitude',
 		'longitude'   => 'longitude',
 	);
-
-	public function get_location( $ip, $timeout = POST_GEO_BLOCK_IP_TIMEOUT ) {
-		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
-			$this->api_template['format'] = 'v6';
-		}
-		return parent::get_location( $ip, $timeout );
-	}
 }
 
 /**
@@ -457,8 +543,8 @@ class Post_Geo_Block_IP_IPJson extends Post_Geo_Block_IP {
  * Input type  : IP address (IPv4, IPv6) / domain name
  * Output type : json, xml
  */
-class Post_Geo_Block_IP_IPInfoDB extends Post_Geo_Block_IP {
-	protected $api_type = POST_GEO_BLOCK_IP_TYPE_IPV4;
+class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'xml',
@@ -475,47 +561,70 @@ class Post_Geo_Block_IP_IPInfoDB extends Post_Geo_Block_IP {
 		'longitude'   => 'longitude',
 	);
 
-	public function get_country( $ip, $timeout = POST_GEO_BLOCK_IP_TIMEOUT ) {
+	public function get_country( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
 		$this->api_template['option'] = 'ip-country';
 		return parent::get_country( $ip, $timeout );
 	}
 }
 
 /**
- * Infomation class about supported providers
+ * Provider support class
  *
  */
-class Post_Geo_Block_IP_Info {
+class IP_Geo_Block_Provider {
 
 	protected static $providers = array(
+
 		'freegeoip.net' => array(
 			'key'  => NULL, // need no key (free)
 			'link' => '<a href="http://freegeoip.net/" title="freegeoip.net: FREE IP Geolocation Web Service" target=_blank>http://freegeoip.net/</a>&nbsp;(free)',
 		),
+
 		'ipinfo.io' => array(
 			'key'  => NULL, // need no key (free)
 			'link' => '<a href="http://ipinfo.io/" title="ip address information including geolocation, hostname and network details" target=_blank>http://ipinfo.io/</a>&nbsp;(free)',
 		),
+
 		'Telize' => array(
 			'key'  => NULL, // need no key (free)
 			'link' => '<a href="http://www.telize.com/" title="Telize - JSON IP and GeoIP REST API" target=_blank>http://www.telize.com/</a>&nbsp;(free)',
 		),
-		'geoPlugin' => array(
-			'key'  => NULL, // need no key but link (free)
-			'link' => '<a href="http://www.geoplugin.com/geolocation/" title="geoPlugin to geolocate your visitors" target="_new">IP Geolocation</a> by <a href="http://www.geoplugin.com/" title="plugin to geo-targeting and unleash your site\' potential." target="_new">geoPlugin</a>&nbsp;(free, need an attribution link)',
-		),
+
 		'IPtoLatLng' => array(
 			'key'  => NULL, // need no key (free)
 			'link' => '<a href="http://www.iptolatlng.com/" title="IP to Latitude, Longitude" target=_blank>http://www.iptolatlng.com/</a>&nbsp;(free)',
 		),
-		'ip-api.com' => array(
-			'key'  => NULL, // need no key (free for non-commercial use)
-			'link' => '<a href="http://ip-api.com/" title="IP-API.com - Free Geolocation API" target=_blank>http://ip-api.com/</a>&nbsp;(free for non-commercial use)',
-		),
+
 		'IP-Json' => array(
 			'key'  => NULL, // need no key (free)
 			'link' => '<a href="http://ip-json.rhcloud.com/" title="Free IP Geolocation Web Service" target=_blank>http://ip-json.rhcloud.com/</a>&nbsp;(free)',
 		),
+
+		'Xhanch' => array(
+			'key'  => NULL, // need no key (free)
+			'link' => '<a href="http://xhanch.com/xhanch-api-ip-get-detail/" title="Xhanch API &#8211; IP Get Detail | Xhanch Studio" target=_blank>http://xhanch.com/</a>&nbsp;(free)',
+		),
+
+		'mshd.net' => array(
+			'key'  => NULL, // need no key
+			'link' => '<a href="http://mshd.net/documentation/geoip" title="www.mshd.net - Geoip Documentation" target=_blank>http://mshd.net/</a>',
+		),
+
+		'geoPlugin' => array(
+			'key'  => NULL, // need no key but link (free)
+			'link' => '<a href="http://www.geoplugin.com/geolocation/" title="geoPlugin to geolocate your visitors" target="_new">IP Geolocation</a> by <a href="http://www.geoplugin.com/" title="plugin to geo-targeting and unleash your site\' potential." target="_new">geoPlugin</a>&nbsp;(free, need an attribution link)',
+		),
+
+		'ip-api.com' => array(
+			'key'  => '', // need no key (free for non-commercial use)
+			'link' => '<a href="http://ip-api.com/" title="IP-API.com - Free Geolocation API" target=_blank>http://ip-api.com/</a>&nbsp;(free for non-commercial use)',
+		),
+
+		'Smart-IP.net' => array(
+			'key'  => '', // need no key (free for personal and non-commercial use)
+			'link' => '<a href="http://smart-ip.net/geoip-api" title="Geo-IP API Documentation" target=_blank>http://smart-ip.net/</a>&nbsp;(free for personal and non-commercial use)',
+		),
+
 		'IPInfoDB' => array(
 			'key'  => '', // need key (free for registered user)
 			'link' => '<a href="http://ipinfodb.com/" title="IPInfoDB | Free IP Address Geolocation Tools" target=_blank>http://ipinfodb.com/</a>&nbsp;(free for registered user)',

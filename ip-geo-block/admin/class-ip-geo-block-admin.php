@@ -1,15 +1,15 @@
 <?php
 /**
- * Admin class of Post Geo Block
+ * Admin class of IP Geo Block
  *
- * @package   Post_Geo_Block_Admin
+ * @package   IP_Geo_Block_Admin
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
  * @copyright 2013 tokkonopapa
  */
 
-class Post_Geo_Block_Admin {
+class IP_Geo_Block_Admin {
 
 	/**
 	 * Instance of this class.
@@ -39,9 +39,9 @@ class Post_Geo_Block_Admin {
 	private function __construct() {
 
 		// Get unique values from public plugin class.
-		$plugin = Post_Geo_Block::get_instance();
-		$this->text_domain = $plugin->get_text_domain(); // post-geo-block
-		$this->plugin_slug = $plugin->get_plugin_slug(); // post-geo-block
+		$plugin = IP_Geo_Block::get_instance();
+		$this->text_domain = $plugin->get_text_domain();
+		$this->plugin_slug = $plugin->get_plugin_slug();
 
 		foreach ( $plugin->get_option_keys() as $key => $val) {
 			$this->option_slug[ $key ] = str_replace( '_', '-', $val );
@@ -50,14 +50,14 @@ class Post_Geo_Block_Admin {
 
 		// Load admin style sheet and JavaScript.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_cssjs' ) );
-		add_action( 'wp_ajax_post_geo_block', array( $this, 'post_geo_block_ajax' ) );
+		add_action( 'wp_ajax_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
 
 		// Add the options page and menu item.
 		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'register_admin_settings' ) );
 
 		// Add an action link pointing to the options page. @since 2.7
-		add_filter( 'plugin_action_links_' . POST_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
+		add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
 		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
 
 		// Check version and compatibility
@@ -114,27 +114,27 @@ class Post_Geo_Block_Admin {
 			// css for option page
 			wp_enqueue_style( $this->plugin_slug . '-admin-styles',
 				plugins_url( 'css/admin.css', __FILE__ ),
-				array(), Post_Geo_Block::VERSION
+				array(), IP_Geo_Block::VERSION
 			);
 
 			// js for google map
 			wp_enqueue_script( $this->plugin_slug . '-google-map',
 				'http://maps.google.com/maps/api/js?sensor=false',
-				array( 'jquery' ), Post_Geo_Block::VERSION, TRUE
+				array( 'jquery' ), IP_Geo_Block::VERSION, TRUE
 			);
 
 			// js for option page
 			$handle = $this->plugin_slug . '-admin-script';
 			wp_enqueue_script( $handle,
 				plugins_url( 'js/admin.js', __FILE__ ),
-				array( 'jquery' ), Post_Geo_Block::VERSION, TRUE
+				array( 'jquery' ), IP_Geo_Block::VERSION, TRUE
 			);
 
 			// global value for ajax @since r16
 			wp_localize_script( $handle,
-				'POST_GEO_BLOCK',
+				'IP_GEO_BLOCK',
 				array(
-					'action' => 'post_geo_block',
+					'action' => 'ip_geo_block',
 					'url' => admin_url( 'admin-ajax.php' ),
 					'nonce' => wp_create_nonce( $this->get_ajax_action() ),
 				)
@@ -164,11 +164,11 @@ class Post_Geo_Block_Admin {
 	 */
 	public function add_plugin_meta_links( $links, $file ) {
 
-		if ( $file === POST_GEO_BLOCK_BASE ) {
+		if ( $file === IP_GEO_BLOCK_BASE ) {
 			$title = __( 'Contribute on GitHub', $this->text_domain );
 			array_push(
 				$links,
-				"<a href=\"https://github.com/tokkonopapa/WordPress-Post-Geo-Block\" title=\"$title\" target=_blank>$title</a>"
+				"<a href=\"https://github.com/tokkonopapa/WordPress-IP-Geo-Block\" title=\"$title\" target=_blank>$title</a>"
 			);
 		}
 		return $links;
@@ -183,8 +183,8 @@ class Post_Geo_Block_Admin {
 
 		// Add a settings page for this plugin to the Settings menu.
 		$this->plugin_screen_hook_suffix = add_options_page(
-			__( 'Post Geo Block', $this->text_domain ),
-			__( 'Post Geo Block', $this->text_domain ),
+			__( 'IP Geo Block', $this->text_domain ),
+			__( 'IP Geo Block', $this->text_domain ),
 			'manage_options',
 			$this->plugin_slug,
 			array( $this, 'display_plugin_admin_page' )
@@ -203,7 +203,7 @@ class Post_Geo_Block_Admin {
 ?>
 <div class="wrap">
 
-	<?php screen_icon(); ?>
+	<!--<?php screen_icon(); ?> deprecated in 3.8-->
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 	<h2 class="nav-tab-wrapper">
 		<a href="?page=<?php echo $this->plugin_slug; ?>&amp;tab=0" class="nav-tab <?php echo $tab == 0 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', $this->text_domain ); ?></a>
@@ -221,8 +221,8 @@ class Post_Geo_Block_Admin {
 ?>
 	</form>
 <?php if ( 2 === $tab ) { ?>
-	<div id="post-geo-block-info"></div>
-	<div id="post-geo-block-map"></div>
+	<div id="ip-geo-block-info"></div>
+	<div id="ip-geo-block-map"></div>
 <?php } ?>
 	<p><?php echo get_num_queries(); ?> queries. <?php timer_stop(1); ?> seconds. <?php echo memory_get_usage(); ?> bytes.</p>
 
@@ -235,7 +235,7 @@ class Post_Geo_Block_Admin {
 	 *
 	 */
 	public function register_admin_settings() {
-		require_once( POST_GEO_BLOCK_PATH . '/classes/class-post-geo-block-ip.php' );
+		require_once( IP_GEO_BLOCK_PATH . '/classes/class-ip-geo-block-api.php' );
 
 		$tab = isset( $_GET['tab'] ) ? intval( $_GET['tab'] ) : 0;
 		$tab = min( 3, max( 0, $tab ) );
@@ -288,7 +288,7 @@ class Post_Geo_Block_Admin {
 
 			// make providers list
 			$list = array();
-			$providers = Post_Geo_Block_IP_Info::get_provider_keys();
+			$providers = IP_Geo_Block_Provider::get_provider_keys();
 
 			foreach ( $providers as $provider => $key ) {
 				if ( isset( $options['api_key'][ $provider ] ) ) {
@@ -609,7 +609,7 @@ class Post_Geo_Block_Admin {
 
 			add_settings_field(
 				$option_name . "_$field",
-				__( 'Response time by providers', $this->text_domain ),
+				__( 'Average response time of each provider', $this->text_domain ),
 				array( $this, 'callback_field' ),
 				$option_slug,
 				$section,
@@ -663,7 +663,7 @@ class Post_Geo_Block_Admin {
 
 			// make providers list
 			$list = array();
-			$providers = Post_Geo_Block_IP_Info::get_provider_keys();
+			$providers = IP_Geo_Block_Provider::get_provider_keys();
 
 			foreach ( $providers as $provider => $key ) {
 				if ( NULL === $key || ! empty( $options['api_key'][ $provider ] ) ) {
@@ -739,7 +739,7 @@ class Post_Geo_Block_Admin {
 			);
 
 			$field = 'attribution';
-			$providers = Post_Geo_Block_IP_Info::get_provider_links();
+			$providers = IP_Geo_Block_Provider::get_provider_links();
 
 			foreach ( $providers as $provider => $key ) {
 				add_settings_field(
@@ -954,7 +954,7 @@ class Post_Geo_Block_Admin {
 	 * @link http://core.trac.wordpress.org/browser/trunk/wp-admin/admin-ajax.php
 	 * @link http://codex.wordpress.org/Function_Reference/check_ajax_referer
 	 */
-	public function post_geo_block_ajax() {
+	public function admin_ajax_callback() {
 
 		// Check request origin, nonce, capability.
 		if ( ! check_admin_referer( $this->get_ajax_action(), 'nonce' ) || // @since 2.5
@@ -970,11 +970,11 @@ class Post_Geo_Block_Admin {
 			     filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 
 				// include utility class
-				require_once( POST_GEO_BLOCK_PATH . '/classes/class-post-geo-block-ip.php' );
+				require_once( IP_GEO_BLOCK_PATH . '/classes/class-ip-geo-block-api.php' );
 
 				// get location
 				$provider = $_POST['provider'];
-				$name = Post_Geo_Block_IP::get_class_name( $provider );
+				$name = IP_Geo_Block_API::get_class_name( $provider );
 
 				if ( $name ) {
 					$options = get_option( $this->option_name['settings'] );
@@ -1007,10 +1007,10 @@ class Post_Geo_Block_Admin {
 		// Clear statistics
 		else if ( isset( $_POST['clear'] ) ) {
 			update_option( $this->option_name['statistics'],
-				Post_Geo_Block::get_defaults( 'statistics' ) );
+				IP_Geo_Block::get_defaults( 'statistics' ) );
 
 			$result = array(
-				'refresh' => 'options-general.php?page=post-geo-block&tab=1',
+				'refresh' => 'options-general.php?page=ip-geo-block&tab=1',
 			);
 
 			@header( 'Content-Type: application/json;' .

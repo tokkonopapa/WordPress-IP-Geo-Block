@@ -1,21 +1,21 @@
 <?php
 /**
- * Post Geo Block
+ * IP Geo Block
  *
- * @package   Post_Geo_Block
+ * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
  * @copyright 2013 tokkonopapa
  */
 
-class Post_Geo_Block {
+class IP_Geo_Block {
 
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
 	 */
-	const VERSION = '0.9.5';
+	const VERSION = '1.0.0';
 
 	/**
 	 * Instance of this class.
@@ -27,8 +27,8 @@ class Post_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	protected $text_domain = 'post-geo-block';
-	protected $plugin_slug = 'post-geo-block';
+	protected $text_domain = 'ip-geo-block';
+	protected $plugin_slug = 'ip-geo-block';
 	protected $option_name = array();
 
 	/**
@@ -38,8 +38,9 @@ class Post_Geo_Block {
 	protected static $option_table = array(
 
 		// settings (should be read on every page that has comment form)
-		'post_geo_block_settings' => array(
-			'method'          => 2,       // 0:primary only, 1:in order, 2:at random
+		'ip_geo_block_settings' => array(
+			'enables'         => 0,       // Enable switch for various features
+			'order'           => 0,       // Next order of provider (spare for future)
 			'provider'        => '',      // Name of primary provider
 			'api_key'         => array(), // API keys
 			'comment_pos'     => 0,       // Position of Message (0:none, 1:top, 2:bottom)
@@ -53,7 +54,7 @@ class Post_Geo_Block {
 		),
 
 		// statistics (should be read when comment has posted)
-		'post_geo_block_statistics' => array(
+		'ip_geo_block_statistics' => array(
 			'passed'    => 0,
 			'blocked'   => 0,
 			'unknown'   => 0,
@@ -66,8 +67,8 @@ class Post_Geo_Block {
 
 	// option table accessor by name
 	protected static $option_keys = array(
-		'settings'   => 'post_geo_block_settings',
-		'statistics' => 'post_geo_block_statistics',
+		'settings'   => 'ip_geo_block_settings',
+		'statistics' => 'ip_geo_block_statistics',
 	);
 
 	public static function get_defaults( $name = 'settings' ) {
@@ -160,7 +161,7 @@ class Post_Geo_Block {
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain( $this->text_domain, FALSE,
-			plugin_basename( POST_GEO_BLOCK_PATH ) . '/languages/' ); // @since 1.5.0
+			plugin_basename( IP_GEO_BLOCK_PATH ) . '/languages/' ); // @since 1.5.0
 	}
 
 	/**
@@ -187,40 +188,30 @@ class Post_Geo_Block {
 		}
 
 		// include utility class
-		require_once( POST_GEO_BLOCK_PATH . '/classes/class-post-geo-block-ip.php' );
+		require_once( IP_GEO_BLOCK_PATH . '/classes/class-ip-geo-block-api.php' );
 
 		// make providers list
 		$list = array();
-		$provider = $settings['provider']; // Primary provider
-
-		// set a primary provider if it has an appropriate API key
-		if ( 0 == $settings['method'] && ! empty( $settings['api_key'][ $provider ] ) ) {
-			$list[] = $provider;
-		}
-
-		// otherwise make a list of all the appropriate providers
-		else {
-			$geo = Post_Geo_Block_IP_Info::get_provider_keys();
-			foreach ( $geo as $provider => $key ) {
-				if ( NULL === $key || ! empty( $settings['api_key'][ $provider ] ) ) {
-					$list[] = $provider;
-				}
-			}
-
-			// randomize
-			if ( 2 == $settings['method'] ) {
-				shuffle( $list );
+		$geo = IP_Geo_Block_Provider::get_provider_keys();
+		foreach ( $geo as $provider => $key ) {
+			if ( NULL === $key || ! empty( $settings['api_key'][ $provider ] ) ) {
+				$list[] = $provider;
 			}
 		}
+
+		// randomize
+		shuffle( $list );
 
 		// matching rule
 		$rule  = $settings['matching_rule'];
 		$white = $settings['white_list'];
 		$black = $settings['black_list'];
 
-		$ip = $_SERVER['REMOTE_ADDR'];
+		// get ip address
+		$ip = apply_filters( $this->plugin_slug . '-addr', $_SERVER['REMOTE_ADDR'] );
+
 		foreach ( $list as $provider ) {
-			$name = Post_Geo_Block_IP::get_class_name( $provider );
+			$name = IP_Geo_Block_API::get_class_name( $provider );
 			if ( $name ) {
 				// start time
 				$time = microtime( TRUE );
@@ -239,6 +230,7 @@ class Post_Geo_Block {
 			if ( $code ) {
 				// for update_statistics()
 				$commentdata[ $this->plugin_slug ] = array(
+					'ip' => $ip,
 					'time' => $time,
 					'code' => $code,
 					'provider' => $provider,
@@ -276,11 +268,11 @@ class Post_Geo_Block {
 		$statistics[ $result ] = intval( $statistics[ $result ] ) + 1;
 
 		if ( 'blocked' === $result ) {
-			$time     = isset( $validate['time'    ] ) ? $validate['time'    ] : 0;
-			$country  = isset( $validate['code'    ] ) ? $validate['code'    ] : 'ZZ';
+			$ip = isset( $validate['ip'] ) ? $validate['ip'] : $_SERVER['REMOTE_ADDR'];
+			$time = isset( $validate['time'] ) ? $validate['time'] : 0;
+			$country = isset( $validate['code'] ) ? $validate['code'] : 'ZZ';
 			$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'ZZ';
 
-			$ip = $_SERVER['REMOTE_ADDR'];
 			if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
 				$statistics['IPv4'] = intval( $statistics['IPv4'] ) + 1;
 
