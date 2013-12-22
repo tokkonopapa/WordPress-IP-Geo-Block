@@ -109,7 +109,7 @@ on the plugin settings page. Most of the IP Geolocation services return empty
 #### Can I add an additional spam validation function into this plugin ? ####
 
 Yes, you can use `add_filter()` with filter hook `ip-geo-block-validate` in 
-somewhere (typically `functions.php`) as follows:
+somewhere (typically `functions.php` in your theme) as follows:
 
 ```php
 function your_validation( $commentdata ) {
