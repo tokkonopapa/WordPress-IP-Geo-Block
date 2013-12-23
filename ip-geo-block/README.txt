@@ -130,7 +130,7 @@ on the `statistics` tab of this plugin's option page.
 
 == Changelog ==
 
-= 1.0.0 =
+= 0.9.6 =
 * Change all class names and file names.
 * Simplify jQuery Google Map plugin.
 * Add some providers.

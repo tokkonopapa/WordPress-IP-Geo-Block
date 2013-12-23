@@ -148,7 +148,7 @@ on the `statistics` tab of this plugin's option page.
 
 #### Change log
 
-- 1.0.0  Change all class names and file names.
+- 0.9.6  Change all class names and file names.
          Simplify jQuery Google Map plugin.
          Add some providers.
          Add `ip-geo-block-addr` filter hook for local testing.

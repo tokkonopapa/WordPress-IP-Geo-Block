@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
 	 */
-	const VERSION = '1.0.0';
+	const VERSION = '0.9.6';
 
 	/**
 	 * Instance of this class.
@@ -160,8 +160,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( $this->text_domain, FALSE,
-			plugin_basename( IP_GEO_BLOCK_PATH ) . '/languages/' ); // @since 1.5.0
+		load_plugin_textdomain( $this->text_domain, FALSE, basename( plugin_dir_path( dirname( __FILE__ ) ) ) . '/languages/' );
 	}
 
 	/**
@@ -335,11 +334,12 @@ class IP_Geo_Block {
 		}
 
 		// response code
-		$code = min( 511, max( 200, intval( $settings['response_code'] ) ) );
+		$code = max( 200, intval( $settings['response_code'] ) ) & 0x1FF; // 200 - 511
 
 		// 2xx Success
 		if ( 200 <= $code && $code < 300 ) {
-			header('Refresh: 0; url=' . get_site_url(), TRUE, $code ); // @since 3.0
+//			header( 'Refresh: 0; url=' . get_site_url(), TRUE, $code ); // @since 3.0
+			header( 'Refresh: 0; url=http://blackhole.webpagetest.org/', TRUE, $code );
 			die();
 		}
 
