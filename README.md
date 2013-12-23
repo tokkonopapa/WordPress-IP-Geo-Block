@@ -26,8 +26,8 @@ filter hook with `add_filter()`.
 - **Service provider and API key**  
     If you wish to use `IPInfoDB`, you should register from [here][register]
     to get a free API key and set it into the textfield. And `ip-api.com` and 
-    `Smart-IP.net` require non-commercial use. If you wish to use those, you 
-    should put a word (anything you like) into the textfield.
+    `Smart-IP.net` require non-commercial use. If you wish to use these APIs, 
+    you should put a word (anything you like) into the textfield.
 
 - **Text position on comment form**  
     If you wish to put some text message on your comment form, please select

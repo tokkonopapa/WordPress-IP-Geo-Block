@@ -70,7 +70,7 @@ on the plugin settings page. Most of the IP Geolocation services return empty
 = Can I add an additional spam validation function into this plugin? =
 
 Yes, you can use `add_filter()` with filter hook `ip-geo-block-validate` in 
-somewhere (typically `functions.php`) as follows:
+somewhere (typically `functions.php` in your theme) as follows:
 
 `function your_validation( $commentdata ) {
     // your validation code here
@@ -95,8 +95,8 @@ on the `statistics` tab of this plugin's option page.
 * **Service provider and API key**  
     If you wish to use `IPInfoDB`, you should register from [here][IPInfoDB]
     to get a free API key and set it into the textfield. And `ip-api.com` and 
-    `Smart-IP.net` require non-commercial use. If you wish to use those, you 
-    should put a word (anything you like) into the textfield.
+    `Smart-IP.net` require non-commercial use. If you wish to use these APIs, 
+    you should put a word (anything you like) into the textfield.
 
 * **Text position on comment form**  
     If you wish to put some text message on your comment form, please select
