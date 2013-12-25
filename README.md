@@ -74,7 +74,8 @@ Thanks for providing these great services and REST APIs for free.
     [http://smart-ip.net/]       [smartip] | IPv4, IPv6     | free for personal and non-commercial use
     [http://ipinfodb.com/]      [IPInfoDB] | IPv4           | free for registered user
 
-Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind].
+Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind],
+and some include IP2Location LITE data available from [IP2Location][IP2LOC].
 
 ### FAQ:
 
@@ -178,6 +179,7 @@ This plugin is licensed under the GPL v2 or later.
 [smartip]:  http://smart-ip.net/geoip-api "Geo-IP API Documentation"
 [IPInfoDB]: http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
 [MaxMind]:  http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
+[IP2LOC]:   http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location"
 [register]: http://ipinfodb.com/register.php
 [BHS]: http://blackhole.webpagetest.org/
 [ISO]: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
