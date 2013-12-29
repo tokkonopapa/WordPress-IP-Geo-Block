@@ -220,7 +220,6 @@ class IP_Geo_Block_Admin {
 ?>
 	</form>
 <?php if ( 2 === $tab ) { ?>
-	<div id="ip-geo-block-info"></div>
 	<div id="ip-geo-block-map"></div>
 <?php } ?>
 	<p><?php echo get_num_queries(); ?> queries. <?php timer_stop(1); ?> seconds. <?php echo memory_get_usage(); ?> bytes.</p>
@@ -632,6 +631,7 @@ class IP_Geo_Block_Admin {
 					'option' => $option_name,
 					'field' => $field,
 					'value' => __( 'Clear now', $this->text_domain ),
+					'after' => '<div id="ip-geo-block-loading"></div>',
 				)
 			);
 		}
@@ -713,6 +713,7 @@ class IP_Geo_Block_Admin {
 					'option' => $option_name,
 					'field' => $field,
 					'value' => __( 'Search now', $this->text_domain ),
+					'after' => '<div id="ip-geo-block-loading"></div>',
 				)
 			);
 		}

@@ -10,7 +10,7 @@
 (function ($) {
 
 	function ajax_get_location(service, ip) {
-		$('#ip-geo-block-info').empty().addClass('ip-geo-block-loading');
+		$('#ip-geo-block-loading').addClass('ip-geo-block-loading');
 
 		// `IP_GEO_BLOCK` is enqueued by wp_localize_script()
 		$.post(IP_GEO_BLOCK.url, {
@@ -31,12 +31,12 @@
 			}
 			info += '</ul>';
 
-			$('#ip-geo-block-info').append(info);
 			$("#ip-geo-block-map").GmapRS('addMarker', {
 				latitude: data.latitude,
 				longitude: data.longitude,
 				title: ip,
 				content: info,
+				show: true,
 				zoom: 8
 			});
 		})
@@ -46,12 +46,12 @@
 		})
 
 		.complete(function () {
-			$('#ip-geo-block-info').removeClass('ip-geo-block-loading');
+			$('#ip-geo-block-loading').removeClass('ip-geo-block-loading');
 		});
 	}
 
 	function ajax_clear_statistics() {
-		$('#wpbody-content').addClass('ip-geo-block-loading');
+		$('#ip-geo-block-loading').addClass('ip-geo-block-loading');
 
 		$.post(IP_GEO_BLOCK.url, {
 			action: IP_GEO_BLOCK.action,
@@ -68,7 +68,7 @@
 		})
 
 		.complete(function () {
-			$('#wpbody-content').removeClass('ip-geo-block-loading');
+			$('#ip-geo-block-loading').removeClass('ip-geo-block-loading');
 		});
 	}
 
