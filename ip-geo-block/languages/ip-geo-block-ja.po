@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2013-12-21 11:48+0900\n"
-"PO-Revision-Date: 2013-12-21 11:49+0900\n"
+"POT-Creation-Date: 2013-12-30 17:39+0900\n"
+"PO-Revision-Date: 2013-12-30 17:40+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,21 +19,21 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: admin/class-ip-geo-block-admin.php:90
+#: admin/class-ip-geo-block-admin.php:91
 msgid "You need WordPress 3.1+"
 msgstr "WordPress 3.1以上が必要です"
 
-#: admin/class-ip-geo-block-admin.php:154
+#: admin/class-ip-geo-block-admin.php:155
 #: admin/class-ip-geo-block-admin.php:209
 msgid "Settings"
 msgstr "設定"
 
-#: admin/class-ip-geo-block-admin.php:168
+#: admin/class-ip-geo-block-admin.php:169
 msgid "Contribute on GitHub"
 msgstr "GitHubでの開発に参加"
 
-#: admin/class-ip-geo-block-admin.php:186
 #: admin/class-ip-geo-block-admin.php:187
+#: admin/class-ip-geo-block-admin.php:188
 msgid "IP Geo Block"
 msgstr ""
 
@@ -49,116 +49,116 @@ msgstr "検索"
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:284
+#: admin/class-ip-geo-block-admin.php:283
 msgid "IP address geolocation provider"
 msgstr "IPアドレスの位置情報を提供するプロバイダー"
 
-#: admin/class-ip-geo-block-admin.php:320
+#: admin/class-ip-geo-block-admin.php:319
 msgid "Service provider and API key"
 msgstr "プロバイダーとAPIキー"
 
-#: admin/class-ip-geo-block-admin.php:342
+#: admin/class-ip-geo-block-admin.php:341
 msgid "Post options"
 msgstr "投稿のオプション"
 
-#: admin/class-ip-geo-block-admin.php:350
+#: admin/class-ip-geo-block-admin.php:349
 msgid "Text position on comment form"
 msgstr "投稿フォーム上のメッセージ位置"
 
-#: admin/class-ip-geo-block-admin.php:360
+#: admin/class-ip-geo-block-admin.php:359
 msgid "None"
 msgstr "なし"
 
-#: admin/class-ip-geo-block-admin.php:361
+#: admin/class-ip-geo-block-admin.php:360
 msgid "Top"
 msgstr "上部"
 
-#: admin/class-ip-geo-block-admin.php:362
+#: admin/class-ip-geo-block-admin.php:361
 msgid "Bottom"
 msgstr "下部"
 
-#: admin/class-ip-geo-block-admin.php:370
+#: admin/class-ip-geo-block-admin.php:369
 msgid "Text message on comment form"
 msgstr "投稿フォーム上のメッセージ"
 
-#: admin/class-ip-geo-block-admin.php:385
+#: admin/class-ip-geo-block-admin.php:384
 msgid "Matching rule"
 msgstr "マッチング規則"
 
-#: admin/class-ip-geo-block-admin.php:395
-#: admin/class-ip-geo-block-admin.php:404
+#: admin/class-ip-geo-block-admin.php:394
+#: admin/class-ip-geo-block-admin.php:403
 msgid "White list"
 msgstr "ホワイトリスト"
 
-#: admin/class-ip-geo-block-admin.php:396
-#: admin/class-ip-geo-block-admin.php:420
+#: admin/class-ip-geo-block-admin.php:395
+#: admin/class-ip-geo-block-admin.php:419
 msgid "Black list"
 msgstr "ブラックリスト"
 
-#: admin/class-ip-geo-block-admin.php:413
-#: admin/class-ip-geo-block-admin.php:429
+#: admin/class-ip-geo-block-admin.php:412
+#: admin/class-ip-geo-block-admin.php:428
 #, php-format
 msgid "comma separated county code %s"
 msgstr "カンマで区切られた国コード %s"
 
-#: admin/class-ip-geo-block-admin.php:436
+#: admin/class-ip-geo-block-admin.php:435
 #, php-format
 msgid "Response code %s"
 msgstr "レスポンスコード %s"
 
-#: admin/class-ip-geo-block-admin.php:468
+#: admin/class-ip-geo-block-admin.php:467
 msgid "Plugin options"
 msgstr "プラグインのオプション"
 
-#: admin/class-ip-geo-block-admin.php:476
+#: admin/class-ip-geo-block-admin.php:475
 msgid "Remove settings at uninstallation"
 msgstr "アンインストール時に設定を削除"
 
-#: admin/class-ip-geo-block-admin.php:506
+#: admin/class-ip-geo-block-admin.php:505
 msgid "Statistics of posts"
 msgstr "投稿の統計"
 
-#: admin/class-ip-geo-block-admin.php:514
+#: admin/class-ip-geo-block-admin.php:513
 msgid "Passed"
 msgstr "通過"
 
-#: admin/class-ip-geo-block-admin.php:529
+#: admin/class-ip-geo-block-admin.php:528
 msgid "Blocked"
 msgstr "遮断"
 
-#: admin/class-ip-geo-block-admin.php:544
+#: admin/class-ip-geo-block-admin.php:543
 msgid "Unknown (passed)"
 msgstr "国コード不明（通過）"
 
-#: admin/class-ip-geo-block-admin.php:565
+#: admin/class-ip-geo-block-admin.php:564
 msgid "Blocked by countries"
 msgstr "国別遮断回数"
 
-#: admin/class-ip-geo-block-admin.php:580
+#: admin/class-ip-geo-block-admin.php:579
 msgid "Blocked by type of IP address"
 msgstr "遮断したIPアドレスのタイプ"
 
-#: admin/class-ip-geo-block-admin.php:597
+#: admin/class-ip-geo-block-admin.php:596
 msgid "Provider"
 msgstr "プロバイダー"
 
-#: admin/class-ip-geo-block-admin.php:598
+#: admin/class-ip-geo-block-admin.php:597
 msgid "Calls"
 msgstr "リクエスト回数"
 
-#: admin/class-ip-geo-block-admin.php:599
+#: admin/class-ip-geo-block-admin.php:598
 msgid "Response [msec]"
 msgstr "応答時間 [msec]"
 
-#: admin/class-ip-geo-block-admin.php:612
+#: admin/class-ip-geo-block-admin.php:611
 msgid "Average response time of each provider"
 msgstr "プロバイダー毎の平均応答時間"
 
-#: admin/class-ip-geo-block-admin.php:627
+#: admin/class-ip-geo-block-admin.php:626
 msgid "Clear statistics"
 msgstr "統計のクリア"
 
-#: admin/class-ip-geo-block-admin.php:635
+#: admin/class-ip-geo-block-admin.php:634
 msgid "Clear now"
 msgstr "今すぐクリア"
 
@@ -182,23 +182,23 @@ msgstr "位置情報の検索"
 msgid "Search now"
 msgstr "今すぐ検索"
 
-#: admin/class-ip-geo-block-admin.php:736
+#: admin/class-ip-geo-block-admin.php:737
 msgid "Attribution links"
 msgstr "サービスの提供元"
 
-#: admin/class-ip-geo-block-admin.php:779
+#: admin/class-ip-geo-block-admin.php:780
 msgid "Thanks for providing these great services for free."
 msgstr ""
 "すばらしいサービスを提供してくれている以下のサイトに、敬意と感謝の意を表しま"
 "す！"
 
-#: admin/class-ip-geo-block-admin.php:833
+#: admin/class-ip-geo-block-admin.php:843
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:864
-msgid "successfully updated: "
-msgstr "更新に成功しました："
+#: admin/class-ip-geo-block-admin.php:874
+msgid "successfully updated"
+msgstr "更新に成功しました"
 
 #: classes/class-ip-geo-block.php:354
 msgid "Sorry, your comment cannot be accepted."
