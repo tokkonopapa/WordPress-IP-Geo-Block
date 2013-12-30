@@ -806,11 +806,19 @@ class IP_Geo_Block_Admin {
 				echo "</select>\n";
 
 				// 2nd column
-				$id   = "${args['text_name']}_${args['text_field']}";
-				$name = "${args['text_name']}[${args['text_field']}]"; ?>
+				$id = "${args['text_name']}_${args['text_field']}"; ?>
 <span>&nbsp;&rarr;&nbsp;</span>
-<input type="text" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo esc_attr( $args['text_value'] ); ?>"<?php if ( NULL === $args['text_value'] ) disabled( TRUE, TRUE ); ?> />
+<input type="text" class="code" id="<?php echo $id; ?>" value="<?php echo esc_attr( $args['text_value'] ); ?>"<?php if ( NULL === $args['text_value'] ) disabled( TRUE, TRUE ); ?> />
 <?php
+				// hidden column
+				foreach ( $args['api_key'] as $key => $val ) {
+					if ( is_string( $val ) ) {
+						$id   = "${args['text_name']}_${args['text_field']}_$key";
+						$name = "${args['text_name']}[${args['text_field']}][$key]"; ?>
+<input type="hidden" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo esc_attr( $val ); ?>" />
+<?php
+					}
+				}
 				break;
 
 			case 'select':
@@ -861,7 +869,7 @@ class IP_Geo_Block_Admin {
 	 * @link http://core.trac.wordpress.org/browser/tags/3.5/wp-includes/formatting.php
 	 */
 	private function sanitize_options( $option_name, $input ) {
-		$message = __( 'successfully updated: ', $this->text_domain );
+		$message = __( 'successfully updated', $this->text_domain );
 		$status = 'updated';
 
 		$output = get_option( $option_name );
@@ -884,19 +892,23 @@ class IP_Geo_Block_Admin {
 		foreach ( $output as $key => $value ) {
 			switch( $key ) {
 				case 'provider':
-					$provider = $output[ $key ] = isset( $input[ $key ] ) ?
+					$output[ $key ] = isset( $input[ $key ] ) ?
 						sanitize_text_field( $input[ $key ] ) : $value;
 					break;
 
 				case 'api_key':
-					if ( isset( $input[ $key ] ) )
-						$output[ $key ][ $provider ] =
-							sanitize_text_field( $input[ $key ] );
+					foreach ( $input[ $key ] as $provider => $value ) {
+						if ( isset( $value ) ) {
+							$output[ $key ][ $provider ] = sanitize_text_field( $value );
+						} else {
+							unset( $output[ $key ][ $provider ] );
+						}
+					}
 					break;
 
 				case 'matching_rule':
 					$output[ $key ] = isset( $input[ $key ] ) ?
-						intval( $input[ $key ] ) : 0;
+						intval( $input[ $key ] ) : 0; // white list
 					break;
 
 				case 'white_list':
@@ -928,7 +940,7 @@ class IP_Geo_Block_Admin {
 		add_settings_error(
 			$this->option_slug
 			, 'sanitize_' . $option_name
-			, $message //. print_r( $output, true )
+			, $message //.' : ' . print_r( $output, true )
 			, $status
 		);
 
@@ -943,9 +955,9 @@ class IP_Geo_Block_Admin {
 		return $this->sanitize_options( $this->option_name['settings'], $input );
 	}
 
-	public function sanitize_statistics( $input = array() ) {
+	/* public function sanitize_statistics( $input = array() ) {
 		return $this->sanitize_options( $this->option_name['statistics'], $input );
-	}
+	}*/
 
 	/**
 	 * Ajax callback function
