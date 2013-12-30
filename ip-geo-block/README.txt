@@ -130,6 +130,10 @@ on the `statistics` tab of this plugin's option page.
 
 == Changelog ==
 
+= 0.9.7 =
+* Refine UI of provider selection and API key setting.
+* Fix js error on setting page.
+
 = 0.9.6 =
 * Change all class names and file names.
 * Simplify jQuery Google Map plugin.

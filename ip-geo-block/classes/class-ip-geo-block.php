@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
 	 */
-	const VERSION = '0.9.6';
+	const VERSION = '0.9.7';
 
 	/**
 	 * Instance of this class.
