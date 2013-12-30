@@ -73,28 +73,63 @@
 	}
 
 	$(function () {
-		// Settings
-		$('#ip_geo_block_settings_provider').bind('change', function () {
+		var selected = $('#ip_geo_block_settings_provider').val();
+		var get_provider_key = function ( name ) {
+			return document.getElementById(
+				'ip_geo_block_settings_api_key_' + name
+			);
+		};
+
+		// Provider and API key
+		$('#ip_geo_block_settings_provider').on('change', function (event) {
+			// save current value into hidden input
+			var id = get_provider_key( selected );
+			if (id) {
+				id.value = $('#ip_geo_block_settings_api_key').val();
+			}
+
+			// enable if data api exists
 			var key = $(this).find('option:selected').attr('data-api-key');
-			var set = 'undefined' === typeof key;
-			$('#ip_geo_block_settings_api_key').prop('disabled', set).val(key);
+
+			// restore value from hidden input
+			var id = get_provider_key( selected = this.value );
+			$('#ip_geo_block_settings_api_key')
+				.prop('disabled', 'undefined' === typeof key)
+				.val(id ? id.value : '');
+
+			return false;
+		});
+
+		// Save value on submit
+		$('#submit').on('click', function (event) {
+			var id = get_provider_key( selected );
+			if (id) {
+				id.value = $('#ip_geo_block_settings_api_key').val();
+			}
+			return true;
 		});
 
 		// Statistics
-		$('#clear_statistics').click(function () {
+		$('#clear_statistics').on('click', function (event) {
 			if (window.confirm('Clear statistics ?')) {
 				ajax_clear_statistics();
 			}
+			return false;
+		});
+
+		// Initialize map if exists
+		$("#ip-geo-block-map").each(function () {
+			$(this).GmapRS();
 		});
 
 		// Search Geolocation
-		$("#ip-geo-block-map").GmapRS();
-		$('#get_location').click(function () {
+		$('#get_location').on('click', function (event) {
 			var ip = $('#ip_geo_block_settings_ip_address').val();
 			var service = $('#ip_geo_block_settings_service').val();
 			if (ip) {
 				ajax_get_location(service, ip);
 			}
+			return false;
 		});
 
 	});
