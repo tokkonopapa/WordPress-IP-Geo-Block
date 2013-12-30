@@ -92,7 +92,7 @@
 			var key = $(this).find('option:selected').attr('data-api-key');
 
 			// restore value from hidden input
-			var id = get_provider_key( selected = this.value );
+			id = get_provider_key( selected = this.value );
 			$('#ip_geo_block_settings_api_key')
 				.prop('disabled', 'undefined' === typeof key)
 				.val(id ? id.value : '');
