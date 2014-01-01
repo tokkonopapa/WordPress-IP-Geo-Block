@@ -582,20 +582,12 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
  * Output type : php
  */
 // Check if IP2Location is available
-define( 'IP_GEO_BLOCK_IP2LOCATION_DB', WP_CONTENT_DIR . '/ip2location/' );
-if ( file_exists( IP_GEO_BLOCK_IP2LOCATION_DB . 'database.bin' ) ) {
-	$plugin_dir = dirname( IP_GEO_BLOCK_PATH );
-	$plugins = array(
-		'ip2location-tags',
-		'ip2location-variables',
-		'ip2location-country-blocker',
-	);
-	foreach ( $plugins as $file ) {
-		$class_file = "$plugin_dir/$file/ip2location.class.php";
-		if ( file_exists( $class_file ) ) {
-			require_once( $class_file );
-			break;
-		}
+if ( function_exists( 'get_option' ) ) {
+	$options = get_option( 'ip_geo_block_settings' );
+	if ( file_exists( $options['ip2location']['path_db'] ) &&
+	     file_exists( $options['ip2location']['path_class'] ) ) {
+		require_once( $options['ip2location']['path_class'] );
+		define( 'IP_GEO_BLOCK_IP2LOCATION_DB', $options['ip2location']['path_db'] );
 	}
 }
 
@@ -614,7 +606,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	public function get_location( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			try {
-				$geo = new IP2Location( IP_GEO_BLOCK_IP2LOCATION_DB . 'database.bin' );
+				$geo = new IP2Location( IP_GEO_BLOCK_IP2LOCATION_DB );
 			} catch (Exception $e) {
 				return FALSE;
 			}

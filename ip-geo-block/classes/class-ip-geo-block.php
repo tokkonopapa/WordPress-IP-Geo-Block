@@ -43,13 +43,19 @@ class IP_Geo_Block {
 			'order'           => 0,       // Next order of provider (spare for future)
 			'provider'        => '',      // Name of primary provider
 			'api_key'         => array(), // API keys
-			'comment_pos'     => 0,       // Position of Message (0:none, 1:top, 2:bottom)
-			'comment_msg'     => '',      // Message text on comment form
+			'comment'         => array(   // Message on the comment form
+				'pos'         => 0,       // Position (0:none, 1:top, 2:bottom)
+				'msg'         => '',      // Message text on comment form
+			),
 			'matching_rule'   => 0,       // 0:white list, 1:black list
 			'white_list'      => 'JP',    // Comma separeted country code
 			'black_list'      => '',      // Comma separeted country code
 			'timeout'         => 5,       // Timeout in second
 			'response_code'   => 403,     // Response code
+			'ip2location'     => array(   // IP2Location
+				'path_db'     => '',      // Path to IP2Location DB
+				'path_class'  => '',      // Path to IP2Location class file
+			),
 			'clean_uninstall' => FALSE,   // Remove all savings from DB
 		),
 
@@ -91,8 +97,8 @@ class IP_Geo_Block {
 
 		// Message text on comment form
 		$key = get_option( $this->option_name['settings'] );
-		if ( $key['comment_pos'] ) {
-			$val = 'comment_form' . ( $key['comment_pos'] == 1 ? '_top' : '' );
+		if ( $key['comment']['pos'] ) {
+			$val = 'comment_form' . ( $key['comment']['pos'] == 1 ? '_top' : '' );
 			add_action( $val, array( $this, "comment_form_message" ), 10 );
 		}
 
@@ -128,9 +134,44 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function activate( $network_wide ) {
+		// find IP2Location
+		$dir = WP_CONTENT_DIR . '/ip2location'; // wp_content
+		$ip2 = array();
+		if ( file_exists( "$dir/database.bin" ) ) {
+			$ip2['path_db'] = "$dir/database.bin";
+		}
+		if ( file_exists( "$dir/ip2location.class.php" ) ) {
+			$ip2['path_class'] = "$dir/ip2location.class.php";
+		} else {
+			$dir = dirname( IP_GEO_BLOCK_PATH ); // plugins
+			$plugins = array(
+				'ip2location-tags',
+				'ip2location-variables',
+				'ip2location-country-blocker',
+			);
+			foreach ( $plugins as $name ) {
+				$class_file = "$dir/$name/ip2location.class.php";
+				if ( file_exists( $class_file ) ) {
+					$ip2['path_class'] = $class_file;
+					break;
+				}
+			}
+		}
+
 		$name = array_keys( self::$option_table );
-		add_option( $name[0], self::$option_table[ $name[0] ], '', 'yes' );
-		add_option( $name[1], self::$option_table[ $name[1] ], '', 'no' );
+		$opts = array();
+		$opts[0] = get_option( $name[0] );
+		$opts[1] = get_option( $name[1] );
+
+		if ( FALSE === $opts[0] || FALSE === $opts[1] ) {
+			self::$option_table[ $name[0] ]['ip2location'] = $ip2;
+			add_option( $name[0], self::$option_table[ $name[0] ], '', 'yes' );
+			add_option( $name[1], self::$option_table[ $name[1] ], '', 'no' );
+		} else {
+			$opts[0]['ip2location'] = $ip2;
+			update_option( $name[0], $opts[0] );
+			update_option( $name[1], $opts[1] );
+		}
 	}
 
 	/**
@@ -169,7 +210,7 @@ class IP_Geo_Block {
 	 */
 	public function comment_form_message( $id ) {
 		$msg = get_option( $this->option_name['settings'] );
-		$msg = htmlspecialchars( $msg['comment_msg'] );
+		$msg = htmlspecialchars( $msg['comment']['msg'] );
 		if ( $msg ) {
 			echo '<p id="', $this->plugin_slug, '-msg">', $msg, '</p>';
 		}

@@ -344,27 +344,7 @@ class IP_Geo_Block_Admin {
 				$option_slug
 			);
 
-			$field = 'comment_pos';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Text position on comment form', $this->text_domain ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'select',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ],
-					'list' => array(
-						__( 'None',   $this->text_domain ) => 0,
-						__( 'Top',    $this->text_domain ) => 1,
-						__( 'Bottom', $this->text_domain ) => 2,
-					),
-				)
-			);
-
-			$field = 'comment_msg';
+			$field = 'comment';
 			add_settings_field(
 				$option_name . "_$field",
 				__( 'Text message on comment form', $this->text_domain ),
@@ -372,10 +352,16 @@ class IP_Geo_Block_Admin {
 				$option_slug,
 				$section,
 				array(
-					'type' => 'text',
+					'type' => 'comment-msg',
 					'option' => $option_name,
 					'field' => $field,
-					'value' => $options[ $field ],
+					'value' => $options[ $field ]['pos'],
+					'list' => array(
+						__( 'None',   $this->text_domain ) => 0,
+						__( 'Top',    $this->text_domain ) => 1,
+						__( 'Bottom', $this->text_domain ) => 2,
+					),
+					'text' => $options[ $field ]['msg'],
 				)
 			);
 
@@ -401,7 +387,7 @@ class IP_Geo_Block_Admin {
 			$field = 'white_list';
 			add_settings_field(
 				$option_name . "_$field",
-				__( 'White list', $this->text_domain ),
+				sprintf( __( 'White list %s', $this->text_domain ), '(<a href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
 				array( $this, 'callback_field' ),
 				$option_slug,
 				$section,
@@ -410,14 +396,14 @@ class IP_Geo_Block_Admin {
 					'option' => $option_name,
 					'field' => $field,
 					'value' => $options[ $field ],
-					'after' => '<span>&nbsp;' . sprintf( __( 'comma separated county code %s', $this->text_domain ), '(<a href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ) . '</span>',
+					'after' => '<span>&nbsp;' . __( '(comma separated)', $this->text_domain ) . '</span>',
 				)
 			);
 
 			$field = 'black_list';
 			add_settings_field(
 				$option_name . "_$field",
-				__( 'Black list', $this->text_domain ),
+				sprintf( __( 'Black list %s', $this->text_domain ), '(<a href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
 				array( $this, 'callback_field' ),
 				$option_slug,
 				$section,
@@ -426,7 +412,7 @@ class IP_Geo_Block_Admin {
 					'option' => $option_name,
 					'field' => $field,
 					'value' => $options[ $field ],
-					'after' => '<span>&nbsp;' . sprintf( __( 'comma separated county code %s', $this->text_domain ), '(<a href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ) . '</span>',
+					'after' => '<span>&nbsp;' . __( '(comma separated)', $this->text_domain ) . '</span>',
 				)
 			);
 
@@ -823,6 +809,18 @@ class IP_Geo_Block_Admin {
 				}
 				break;
 
+			case 'comment-msg':
+				echo "\n<select name=\"${name}[pos]\" id=\"${id}_pos\">\n";
+				foreach ( $args['list'] as $key => $val ) {
+					echo "\t<option value=\"$val\"",
+						selected( $args['value'], $val, FALSE ),
+						">$key</option>\n";
+				}
+				echo "</select><br />\n"; ?>
+<input type="text" class="regular-text" id="<?php echo $id, '_msg'; ?>" name="<?php echo $name, '[msg]'; ?>" value="<?php echo esc_attr( $args['text'] ); ?>"<?php if ( NULL === $args['text'] ) disabled( TRUE, TRUE ); ?> />
+<?php
+				break;
+
 			case 'select':
 				echo "\n<select name=\"$name\" id=\"$id\">\n";
 				foreach ( $args['list'] as $key => $val ) {
@@ -908,6 +906,11 @@ class IP_Geo_Block_Admin {
 					}
 					break;
 
+				case 'comment':
+					$output[ $key ]['pos'] = intval( $input[ $key ]['pos'] );
+					$output[ $key ]['msg'] = sanitize_text_field( $input[ $key ]['msg'] );
+					break;
+
 				case 'matching_rule':
 					$output[ $key ] = isset( $input[ $key ] ) ?
 						intval( $input[ $key ] ) : 0; // white list
@@ -973,8 +976,7 @@ class IP_Geo_Block_Admin {
 		// Check request origin, nonce, capability.
 		if ( ! check_admin_referer( $this->get_ajax_action(), 'nonce' ) || // @since 2.5
 		     ! current_user_can( 'manage_options' ) || empty( $_POST ) ) { // @since 2.0
-			// Forbidden
-			status_header( 403 ); // @since 2.0.0
+			status_header( 403 ); // Forbidden @since 2.0.0
 		}
 
 		// Check ip address
