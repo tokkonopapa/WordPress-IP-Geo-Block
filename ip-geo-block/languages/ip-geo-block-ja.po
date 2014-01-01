@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-01-01 18:07+0900\n"
-"PO-Revision-Date: 2014-01-01 18:10+0900\n"
+"POT-Creation-Date: 2014-01-01 21:29+0900\n"
+"PO-Revision-Date: 2014-01-01 21:29+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -203,7 +203,7 @@ msgstr "有効"
 msgid "successfully updated"
 msgstr "更新に成功しました"
 
-#: classes/class-ip-geo-block.php:401
+#: classes/class-ip-geo-block.php:389
 msgid "Sorry, your comment cannot be accepted."
 msgstr "申し訳ありませんが、投稿できません。"
 

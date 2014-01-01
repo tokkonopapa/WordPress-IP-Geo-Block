@@ -39,6 +39,7 @@ class IP_Geo_Block {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
+			'version'         => '1.0',   // Version of option data
 			'enables'         => 0,       // Enable switch for various features
 			'order'           => 0,       // Next order of provider (spare for future)
 			'provider'        => '',      // Name of primary provider
@@ -159,18 +160,17 @@ class IP_Geo_Block {
 		}
 
 		$name = array_keys( self::$option_table );
-		$opts = array();
-		$opts[0] = get_option( $name[0] );
-		$opts[1] = get_option( $name[1] );
+		$opts = get_option( $name[0] );
 
-		if ( FALSE === $opts[0] || FALSE === $opts[1] ) {
+		if ( FALSE !== $opts ) {
+			if ( version_compare( $opts['version'], '1.0' ) < 0 ) {
+			}
+			$opts['ip2location'] = $ip2;
+			update_option( $name[0], $opts );
+		} else {
 			self::$option_table[ $name[0] ]['ip2location'] = $ip2;
 			add_option( $name[0], self::$option_table[ $name[0] ], '', 'yes' );
 			add_option( $name[1], self::$option_table[ $name[1] ], '', 'no' );
-		} else {
-			$opts[0]['ip2location'] = $ip2;
-			update_option( $name[0], $opts[0] );
-			update_option( $name[1], $opts[1] );
 		}
 	}
 
@@ -211,9 +211,7 @@ class IP_Geo_Block {
 	public function comment_form_message( $id ) {
 		$msg = get_option( $this->option_name['settings'] );
 		$msg = htmlspecialchars( $msg['comment']['msg'] );
-		if ( $msg ) {
-			echo '<p id="', $this->plugin_slug, '-msg">', $msg, '</p>';
-		}
+		if ( $msg ) echo '<p id="', $this->plugin_slug, '-msg">', $msg, '</p>';
 	}
 
 	/**
@@ -243,9 +241,8 @@ class IP_Geo_Block {
 		shuffle( $list );
 
 		// Add IP2Location if available
-		if ( class_exists( 'IP2Location' ) ) {
+		if ( class_exists( 'IP2Location' ) )
 			array_unshift( $list, 'IP2Location' );
-		}
 
 		// matching rule
 		$rule  = $settings['matching_rule'];
@@ -324,27 +321,20 @@ class IP_Geo_Block {
 			else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
 				$statistics['IPv6'] = intval( $statistics['IPv6'] ) + 1;
 
-			if ( isset( $statistics['providers'][ $provider ] ) ) {
+			if ( isset( $statistics['providers'][ $provider ] ) )
 				$stat = $statistics['providers'][ $provider ];
-			} else {
-				$stat = array(
-					'count' => 0,
-					'time'  => 0,
-				);
-			}
+			else
+				$stat = array( 'count' => 0, 'time' => 0 );
 
 			$statistics['providers'][ $provider ] = array(
 				'count' => intval( $stat['count'] ) + 1,
 				'time'  => floatval( $stat['time' ] ) + $time,
 			);
 
-			if ( isset( $statistics['countries'][ $country ] ) ) {
+			if ( isset( $statistics['countries'][ $country ] ) )
 				$stat = $statistics['countries'];
-			} else {
-				$stat = array(
-					$country => 0,
-				);
-			}
+			else
+				$stat = array( $country => 0 );
 
 			$statistics['countries'][ $country ] = intval( $stat[ $country ] ) + 1;
 		}
@@ -359,9 +349,8 @@ class IP_Geo_Block {
 	 */
 	public function validate_comment( $commentdata ) {
 		// pass login user
-		if( is_user_logged_in() ) {
+		if( is_user_logged_in() )
 			return $commentdata;
-		}
 
 		// register the validation function
 		$code = $this->plugin_slug;
