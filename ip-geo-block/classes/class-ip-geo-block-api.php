@@ -122,9 +122,11 @@ abstract class IP_Geo_Block_API {
 
 		// extract content type
 		// ex: "Content-type: text/plain; charset=utf-8"
-		$tmp = explode( "/", $tmp, 2 );
-		$tmp = explode( ";", $tmp[1], 2 );
-		$tmp = trim( $tmp[0] );
+		if ( $tmp ) {
+			$tmp = explode( "/", $tmp, 2 );
+			$tmp = explode( ";", $tmp[1], 2 );
+			$tmp = trim( $tmp[0] );
+		}
 
 		switch ( $tmp ) {
 
@@ -568,6 +570,81 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
 }
 
 /**
+ * Class for IP2Location
+ *
+ * URL         : http://www.ip2location.com/
+ * Term of use : http://www.ip2location.com/terms
+ * Licence fee : free (need no API key)
+ * Rate limit  : 
+ * Sample URL  : 
+ * Sample URL  : 
+ * Input type  : IP address (IPv4)
+ * Output type : php
+ */
+// Check if IP2Location is available
+define( 'IP_GEO_BLOCK_IP2LOCATION_DB', WP_CONTENT_DIR . '/ip2location/' );
+if ( file_exists( IP_GEO_BLOCK_IP2LOCATION_DB . 'database.bin' ) ) {
+	$plugin_dir = dirname( IP_GEO_BLOCK_PATH );
+	$plugins = array(
+		'ip2location-tags',
+		'ip2location-variables',
+		'ip2location-country-blocker',
+	);
+	foreach ( $plugins as $file ) {
+		$class_file = "$plugin_dir/$file/ip2location.class.php";
+		if ( file_exists( $class_file ) ) {
+			require_once( $class_file );
+			break;
+		}
+	}
+}
+
+if ( class_exists( 'IP2Location' ) ) :
+
+class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
+	protected $transform_table = array(
+		'countryCode' => 'countryCode',
+		'countryName' => 'countryName',
+		'regionName'  => 'regionName',
+		'cityName'    => 'cityName',
+		'latitude'    => 'latitude',
+		'longitude'   => 'longitude',
+	);
+
+	public function get_location( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
+		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+			try {
+				$geo = new IP2Location( IP_GEO_BLOCK_IP2LOCATION_DB . 'database.bin' );
+			} catch (Exception $e) {
+				return FALSE;
+			}
+			$data = $geo->lookup( $ip );
+
+			$res = array();
+			foreach ( $this->transform_table as $key => $val ) {
+				if ( isset( $data->$val ) )
+					$res[ $key ] = $data->$val;
+			}
+
+			if ( strlen( $res['countryCode'] ) === 2 ) {
+				if ( is_string( $res['latitude' ] ) ) unset( $res['latitude' ] );
+				if ( is_string( $res['longitude'] ) ) unset( $res['longitude'] );
+				return $res;
+			}
+		}
+
+		return FALSE;
+	}
+
+	public function get_country( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
+		$res = $this->get_location( $ip );
+		return $res ? $res['countryCode'] : FALSE;
+	}
+}
+
+endif;
+
+/**
  * Provider support class
  *
  */
@@ -631,15 +708,30 @@ class IP_Geo_Block_Provider {
 		),
 	);
 
+	// Internal DB
+	protected static $internals = array(
+		'IP2Location' => array(
+			'key'  => NULL, // need key (free)
+			'link' => '<a href="http://www.ip2location.com/free/plugins" title="Free Plugins | IP2Location.com" target=_blank>http://www.ip2location.com/</a>&nbsp;(free)',
+		),
+	);
+
 	/**
 	 * Returns the pairs of provider name and API key
 	 *
 	 */
-	public static function get_provider_keys() {
+	public static function get_provider_keys( $addon = TRUE ) {
 		$list = array();
 		foreach ( self::$providers as $name => $val ) {
 			$list += array( $name => $val['key'] );
 		}
+
+		// add IP2Location
+		if ( $addon && class_exists( 'IP2Location' ) )
+			$list = array(
+				'IP2Location' => self::$internals['IP2Location']['key']
+			) + $list;
+
 		return $list;
 	}
 
@@ -652,6 +744,13 @@ class IP_Geo_Block_Provider {
 		foreach ( self::$providers as $name => $val ) {
 			$list += array( $name => $val['link'] );
 		}
+
+		// add IP2Location
+		if ( class_exists( 'IP2Location' ) )
+			$list = array(
+				'IP2Location' => self::$internals['IP2Location']['link']
+			) + $list;
+
 		return $list;
 	}
 }

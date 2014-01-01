@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
 	 */
-	const VERSION = '0.9.7';
+	const VERSION = '0.9.8';
 
 	/**
 	 * Instance of this class.
@@ -191,7 +191,7 @@ class IP_Geo_Block {
 
 		// make providers list
 		$list = array();
-		$geo = IP_Geo_Block_Provider::get_provider_keys();
+		$geo = IP_Geo_Block_Provider::get_provider_keys( FALSE );
 		foreach ( $geo as $provider => $key ) {
 			if ( NULL === $key || ! empty( $settings['api_key'][ $provider ] ) ) {
 				$list[] = $provider;
@@ -200,6 +200,11 @@ class IP_Geo_Block {
 
 		// randomize
 		shuffle( $list );
+
+		// Add IP2Location if available
+		if ( class_exists( 'IP2Location' ) ) {
+			array_unshift( $list, 'IP2Location' );
+		}
 
 		// matching rule
 		$rule  = $settings['matching_rule'];
