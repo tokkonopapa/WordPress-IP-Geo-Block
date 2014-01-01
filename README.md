@@ -13,7 +13,13 @@ before Akismet validate it.
 code from an IP address. There are two types of API which support only IPv4 or 
 both IPv4 and IPv6. This plugin will automatically select an appropriate API.
 
-3. Custom validation function can be added using `ip-geo-block-validate` 
+3. If you have installed one of the IP2Location plugin (
+   [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"),
+   [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"),
+   [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins")
+), this plugin uses it instead of REST APIs.
+
+4. Custom validation function can be added using `ip-geo-block-validate` 
 filter hook with `add_filter()`.
 
 ### Installation:
@@ -75,7 +81,7 @@ Thanks for providing these great services and REST APIs for free.
     [http://ipinfodb.com/]      [IPInfoDB] | IPv4           | free for registered user
 
 Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind],
-and some include IP2Location LITE data available from [IP2Location][IP2LOC].
+and some include IP2Location LITE data available from [IP2Location][IP2Loc].
 
 ### FAQ:
 
@@ -149,6 +155,7 @@ on the `statistics` tab of this plugin's option page.
 
 #### Change log
 
+- 0.9.8  Add support for IP2Location WordPress plugins.
 - 0.9.7  Refine UI of provider selection and API key setting.
          Fix js error on setting page.
 - 0.9.6  Change all class names and file names.
@@ -174,14 +181,14 @@ This plugin is licensed under the GPL v2 or later.
 [Telize]:   http://www.telize.com/ "Telize - JSON IP and GeoIP REST API"
 [IP2LL]:    http://www.iptolatlng.com/ "IP to Latitude, Longitude"
 [IPJson]:   http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service"
-[Xhanch]:   http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API &#8211; IP Get Detail | Xhanch Studio"
+[Xhanch]:   http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API - IP Get Detail | Xhanch Studio"
 [mshdnet]:  http://mshd.net/documentation/geoip "www.mshd.net - Geoip Documentation"
 [geoplugin]:http://www.geoplugin.com/ "geoPlugin to geolocate your visitors"
 [ipapi]:    http://ip-api.com/ "IP-API.com - Free Geolocation API"
 [smartip]:  http://smart-ip.net/geoip-api "Geo-IP API Documentation"
 [IPInfoDB]: http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
 [MaxMind]:  http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
-[IP2LOC]:   http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location"
+[IP2Loc]:   http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location"
 [register]: http://ipinfodb.com/register.php
 [BHS]: http://blackhole.webpagetest.org/
 [ISO]: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
