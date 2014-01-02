@@ -13,11 +13,11 @@ before Akismet validate it.
 code from an IP address. There are two types of API which support only IPv4 or 
 both IPv4 and IPv6. This plugin will automatically select an appropriate API.
 
-3. If you have installed one of the IP2Location plugin (
-   [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"),
-   [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"),
-   [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins")
-), this plugin uses it instead of REST APIs.
+3. If you have installed one of the IP2Location plugin
+([IP2Location Tags][IP2Tag],
+ [IP2Location Variables][IP2Var],
+ [IP2Location Country Blocker][IP2Blk])
+correctly, this plugin uses it instead of REST APIs.
 
 4. Custom validation function can be added using `ip-geo-block-validate` 
 filter hook with `add_filter()`.
@@ -58,6 +58,11 @@ filter hook with `add_filter()`.
     If you checked this option, all settings will be removed when this plugin
     is uninstalled for clean uninstalling.
 
+#### Using with IP2Location WordPress Plugins
+
+After installing IP2Location WordPress Plugins, this plugin should be once 
+deactivated and then activated.
+
 ### Requirement:
 
 - WordPress 3.1+
@@ -78,7 +83,7 @@ Thanks for providing these great services and REST APIs for free.
     [http://www.geoplugin.com/][geoplugin] | IPv4, IPv6     | free, need an attribution link
     [http://ip-api.com/]           [ipapi] | IPv4, IPv6     | free for non-commercial use
     [http://smart-ip.net/]       [smartip] | IPv4, IPv6     | free for personal and non-commercial use
-    [http://ipinfodb.com/]      [IPInfoDB] | IPv4           | free for registered user
+    [http://ipinfodb.com/]      [IPInfoDB] | IPv4, IPv6     | free for registered user
 
 Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind],
 and some include IP2Location LITE data available from [IP2Location][IP2Loc].
@@ -189,6 +194,9 @@ This plugin is licensed under the GPL v2 or later.
 [IPInfoDB]: http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
 [MaxMind]:  http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
 [IP2Loc]:   http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location"
+[IP2Tag]:   http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"
+[IP2Var]:   http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"
+[IP2Blk]:   http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins"
 [register]: http://ipinfodb.com/register.php
 [BHS]: http://blackhole.webpagetest.org/
 [ISO]: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
