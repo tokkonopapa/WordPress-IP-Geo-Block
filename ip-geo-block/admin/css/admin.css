@@ -1,1 +1,65 @@
-/* This stylesheet is used to style the admin option form of the plugin. */#ip-geo-block-loading {    padding: 0;    margin: 0.25em 0 0 2em;    height: 16px;    width: 16px;    display: inline-block;}.ip-geo-block-loading {    background-size: 16px 16px;    background-position: center center;    background-repeat: no-repeat;    background-image: url(data:image/gif;base64,R0lGODlhEAAQAPIGAAAAAMLCwkJCQpKSkmJiYoKCgv///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAGACwAAAAAEAAQAAADM2i63P4wyklrC0IEKgAQnAdOmGYFBLExwboQWcG2rlHEwTDQLUsUOd2mBxkUCgNKa+dIAAAh+QQJCgAGACwAAAIACgAOAAADLWgWIqHQCABEVLPe1R4MBOFFRFNsRUNsYDFewTC8iixvQ1EMyxjEvyBLODQkAAAh+QQJCgAGACwAAAAACgAOAAADLWi6IRJrCQCECoU0ag1xxeBARuEQ0UUU5DUM7fK+qTEUYR0EcM3Ev51uB7wAEwAh+QQJCgAGACwAAAAADgAKAAADLWi6URQrLiJEkSaM0eqrkLFtAVEEAgAIylAUQ5SuSqCFNZjhWG3zmB8wOJQkAAAh+QQJCgAGACwCAAAADgAKAAADK2hqMRMrLuekCnCU8gqBDCZ2glBcYkSUxIJJgQdaUVDOtAAAAr3oPN/llgAAIfkECQoABgAsBgAAAAoADgAAAytoEdauiz0Yx5BQFTvN2EMXWNgUFETZFIJQdERLiGgZtKohAIDQ7T0RrpEAACH5BAkKAAYALAYAAgAKAA4AAAMqaKoR+609Fie1K4zhZiibNRSg1XAQUXQPIQgE835voQgAIARqh+ummSUBACH5BAUKAAYALAIABgAOAAoAAAMsaLpsES2+F9mEddEgBFbBMGACAAiMOCrlGRBFWBQD2L0dYYjfUuQZEKynSAAAOw==);}.ip-geo-block-title {    width: 100px;    display: inline-block;}.ip-geo-block-result {    color:#2786C2;    display: inline-block;}#ip-geo-block-map {    margin-top: 1em;    height:360px;}/* google map infomation window */.gm-style-iw {    width: 18em;    height: auto !important;    height: 100%;    min-height: 100%:}ul.ip-geo-block-statistics-countries li {    width: 12em;    float: left;}table.ip-geo-block-statistics-type th,table.ip-geo-block-statistics-providers th {    width: 12em;    text-align: right;}table.ip-geo-block-statistics-type td,table.ip-geo-block-statistics-providers td {    text-align: right;}
+/* This stylesheet is used to style the admin option form of the plugin. */
+#check-provider label {
+    width: 8em;
+    display: inline-block;
+}
+
+@media screen and (min-width:782px) {
+    #check-provider .code {
+        width: 15em;
+    }
+}
+
+#ip-geo-block-loading {
+    padding: 0;
+    margin: 0.25em 0 0 2em;
+    height: 16px;
+    width: 16px;
+    display: inline-block;
+}
+
+.ip-geo-block-loading {
+    background-size: 16px 16px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-image: url(data:image/gif;base64,R0lGODlhEAAQAPIGAAAAAMLCwkJCQpKSkmJiYoKCgv///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAGACwAAAAAEAAQAAADM2i63P4wyklrC0IEKgAQnAdOmGYFBLExwboQWcG2rlHEwTDQLUsUOd2mBxkUCgNKa+dIAAAh+QQJCgAGACwAAAIACgAOAAADLWgWIqHQCABEVLPe1R4MBOFFRFNsRUNsYDFewTC8iixvQ1EMyxjEvyBLODQkAAAh+QQJCgAGACwAAAAACgAOAAADLWi6IRJrCQCECoU0ag1xxeBARuEQ0UUU5DUM7fK+qTEUYR0EcM3Ev51uB7wAEwAh+QQJCgAGACwAAAAADgAKAAADLWi6URQrLiJEkSaM0eqrkLFtAVEEAgAIylAUQ5SuSqCFNZjhWG3zmB8wOJQkAAAh+QQJCgAGACwCAAAADgAKAAADK2hqMRMrLuekCnCU8gqBDCZ2glBcYkSUxIJJgQdaUVDOtAAAAr3oPN/llgAAIfkECQoABgAsBgAAAAoADgAAAytoEdauiz0Yx5BQFTvN2EMXWNgUFETZFIJQdERLiGgZtKohAIDQ7T0RrpEAACH5BAkKAAYALAYAAgAKAA4AAAMqaKoR+609Fie1K4zhZiibNRSg1XAQUXQPIQgE835voQgAIARqh+ummSUBACH5BAUKAAYALAIABgAOAAoAAAMsaLpsES2+F9mEddEgBFbBMGACAAiMOCrlGRBFWBQD2L0dYYjfUuQZEKynSAAAOw==);
+}
+
+.ip-geo-block-title {
+    width: 100px;
+    display: inline-block;
+}
+
+.ip-geo-block-result {
+    color:#2786C2;
+    display: inline-block;
+}
+
+#ip-geo-block-map {
+    margin-top: 1em;
+    height:360px;
+}
+
+/* google map infomation window */
+.gm-style-iw {
+    width: 18em;
+    height: auto !important;
+    height: 100%;
+    min-height: 100%:
+}
+
+ul.ip-geo-block-statistics-countries li {
+    width: 12em;
+    float: left;
+}
+
+table.ip-geo-block-statistics-type th,
+table.ip-geo-block-statistics-providers th {
+    width: 12em;
+    text-align: right;
+}
+
+table.ip-geo-block-statistics-type td,
+table.ip-geo-block-statistics-providers td {
+    text-align: right;
+}

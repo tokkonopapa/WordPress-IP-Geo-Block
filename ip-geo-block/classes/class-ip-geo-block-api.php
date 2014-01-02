@@ -647,57 +647,68 @@ class IP_Geo_Block_Provider {
 	protected static $providers = array(
 
 		'freegeoip.net' => array(
-			'key'  => NULL, // need no key (IPv4 / free)
+			'key'  => NULL,
+			'type' => 'IPv4 / free',
 			'link' => '<a href="http://freegeoip.net/" title="freegeoip.net: FREE IP Geolocation Web Service" target=_blank>http://freegeoip.net/</a>&nbsp;(IPv4 / free)',
 		),
 
 		'ipinfo.io' => array(
-			'key'  => NULL, // need no key (IPv4 / free)
+			'key'  => NULL,
+			'type' => 'IPv4 / free',
 			'link' => '<a href="http://ipinfo.io/" title="ip address information including geolocation, hostname and network details" target=_blank>http://ipinfo.io/</a>&nbsp;(IPv4 / free)',
 		),
 
 		'Telize' => array(
-			'key'  => NULL, // need no key (IPv4, IPv6 / free)
+			'key'  => NULL,
+			'type' => 'IPv4, IPv6 / free',
 			'link' => '<a href="http://www.telize.com/" title="Telize - JSON IP and GeoIP REST API" target=_blank>http://www.telize.com/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'IPtoLatLng' => array(
-			'key'  => NULL, // need no key (IPv4, IPv6 / free)
+			'key'  => NULL,
+			'type' => 'IPv4, IPv6 / free',
 			'link' => '<a href="http://www.iptolatlng.com/" title="IP to Latitude, Longitude" target=_blank>http://www.iptolatlng.com/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'IP-Json' => array(
-			'key'  => NULL, // need no key (IPv4, IPv6 / free)
+			'key'  => NULL,
+			'type' => 'IPv4, IPv6 / free',
 			'link' => '<a href="http://ip-json.rhcloud.com/" title="Free IP Geolocation Web Service" target=_blank>http://ip-json.rhcloud.com/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'Xhanch' => array(
-			'key'  => NULL, // need no key (IPv4 / free)
+			'key'  => NULL,
+			'type' => 'IPv4 / free',
 			'link' => '<a href="http://xhanch.com/xhanch-api-ip-get-detail/" title="Xhanch API &#8211; IP Get Detail | Xhanch Studio" target=_blank>http://xhanch.com/</a>&nbsp;(IPv4 / free)',
 		),
 
 		'mshd.net' => array(
-			'key'  => NULL, // need no key (IPv4, IPv6 / free)
+			'key'  => NULL,
+			'type' => 'IPv4, IPv6 / free',
 			'link' => '<a href="http://mshd.net/documentation/geoip" title="www.mshd.net - Geoip Documentation" target=_blank>http://mshd.net/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'geoPlugin' => array(
-			'key'  => NULL, // need no key but link (IPv4, IPv6 / free)
+			'key'  => NULL,
+			'type' => 'IPv4, IPv6 / free, need an attribution link',
 			'link' => '<a href="http://www.geoplugin.com/geolocation/" title="geoPlugin to geolocate your visitors" target="_new">IP Geolocation</a> by <a href="http://www.geoplugin.com/" title="plugin to geo-targeting and unleash your site\' potential." target="_new">geoPlugin</a>&nbsp;(IPv4, IPv6 / free, need an attribution link)',
 		),
 
 		'ip-api.com' => array(
-			'key'  => '', // need no key (IPv4, IPv6 / free for non-commercial use)
+			'key'  => FALSE,
+			'type' => 'IPv4, IPv6 / free for non-commercial use',
 			'link' => '<a href="http://ip-api.com/" title="IP-API.com - Free Geolocation API" target=_blank>http://ip-api.com/</a>&nbsp;(IPv4, IPv6 / free for non-commercial use)',
 		),
 
 		'Smart-IP.net' => array(
-			'key'  => '', // need no key (IPv4, IPv6 / free for personal and non-commercial use)
+			'key'  => FALSE,
+			'type' => 'IPv4, IPv6 / free for personal and non-commercial use',
 			'link' => '<a href="http://smart-ip.net/geoip-api" title="Geo-IP API Documentation" target=_blank>http://smart-ip.net/</a>&nbsp;(IPv4, IPv6 / free for personal and non-commercial use)',
 		),
 
 		'IPInfoDB' => array(
-			'key'  => '', // need key (IPv4, IPv6 / free for registered user)
+			'key'  => '',
+			'type' => 'IPv4, IPv6 / free for registered user',
 			'link' => '<a href="http://ipinfodb.com/" title="IPInfoDB | Free IP Address Geolocation Tools" target=_blank>http://ipinfodb.com/</a>&nbsp;(IPv4, IPv6 / free for registered user)',
 		),
 	);
@@ -705,8 +716,9 @@ class IP_Geo_Block_Provider {
 	// Internal DB
 	protected static $internals = array(
 		'IP2Location' => array(
-			'key'  => NULL, // need key (IPv4 / free)
-			'link' => '<a href="http://www.ip2location.com/free/plugins" title="Free Plugins | IP2Location.com" target=_blank>http://www.ip2location.com/</a>&nbsp;(IPv4 / free)',
+			'key'  => NULL,
+			'type' => 'IPv4 / free, need an attribution link',
+			'link' => '<a href="http://www.ip2location.com/free/plugins" title="Free Plugins | IP2Location.com" target=_blank>http://www.ip2location.com/</a>&nbsp;(IPv4 / free, need an attribution link)',
 		),
 	);
 
@@ -714,37 +726,19 @@ class IP_Geo_Block_Provider {
 	 * Returns the pairs of provider name and API key
 	 *
 	 */
-	public static function get_provider_keys( $addon = TRUE ) {
+	public static function get_providers( $key, $addon = TRUE ) {
 		$list = array();
 		foreach ( self::$providers as $name => $val ) {
-			$list += array( $name => $val['key'] );
+			$list += array( $name => $val[ $key ] );
 		}
 
 		// add IP2Location
 		if ( $addon && class_exists( 'IP2Location' ) )
 			$list = array(
-				'IP2Location' => self::$internals['IP2Location']['key']
+				'IP2Location' => self::$internals['IP2Location'][ $key ]
 			) + $list;
 
 		return $list;
 	}
 
-	/**
-	 * Returns the pairs of provider name and link
-	 *
-	 */
-	public static function get_provider_links() {
-		$list = array();
-		foreach ( self::$providers as $name => $val ) {
-			$list += array( $name => $val['link'] );
-		}
-
-		// add IP2Location
-		if ( class_exists( 'IP2Location' ) )
-			$list = array(
-				'IP2Location' => self::$internals['IP2Location']['link']
-			) + $list;
-
-		return $list;
-	}
 }

@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
 	 */
-	const VERSION = '0.9.8';
+	const VERSION = '0.9.9';
 
 	/**
 	 * Instance of this class.
@@ -40,10 +40,9 @@ class IP_Geo_Block {
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
 			'version'         => '1.0',   // Version of option data
-			'enables'         => 0,       // Enable switch for various features
+			'enables'         => array(), // Enable switch for various features
 			'order'           => 0,       // Next order of provider (spare for future)
-			'provider'        => '',      // Name of primary provider
-			'api_key'         => array(), // API keys
+			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
 				'pos'         => 0,       // Position (0:none, 1:top, 2:bottom)
 				'msg'         => '',      // Message text on comment form
@@ -188,8 +187,8 @@ class IP_Geo_Block {
 	 */
 	public static function uninstall() {
 		$name = array_keys( self::$option_table );
-		$options = get_option( $name[0] );
-		if ( $options['clean_uninstall'] ) {
+		$settings = get_option( $name[0] );
+		if ( $settings['clean_uninstall'] ) {
 			foreach ( $name as $key ) {
 				delete_option( $key ); // @since 1.2.0
 			}
@@ -230,9 +229,10 @@ class IP_Geo_Block {
 
 		// make providers list
 		$list = array();
-		$geo = IP_Geo_Block_Provider::get_provider_keys( FALSE );
+		$geo = IP_Geo_Block_Provider::get_providers( 'key', FALSE );
 		foreach ( $geo as $provider => $key ) {
-			if ( NULL === $key || ! empty( $settings['api_key'][ $provider ] ) ) {
+			if ( ! empty( $settings['providers'][ $provider ] ) || (
+			     ! isset( $settings['providers'][ $provider ] ) && NULL === $key ) ) {
 				$list[] = $provider;
 			}
 		}
@@ -259,8 +259,8 @@ class IP_Geo_Block {
 				$time = microtime( TRUE );
 
 				// get country code
-				$key = ! empty( $settings['api_key'][ $provider ] );
-				$geo = new $name( $key ? $settings['api_key'][ $provider ] : NULL );
+				$key = ! empty( $settings['providers'][ $provider ] );
+				$geo = new $name( $key ? $settings['providers'][ $provider ] : NULL );
 				$code = strtoupper( $geo->get_country( $ip, $settings['timeout'] ) );
 
 				// process time
