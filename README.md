@@ -65,7 +65,7 @@ deactivated and then activated.
 
 ### Requirement:
 
-- WordPress 3.1+
+- WordPress 3.5+
 
 ### Attribution:
 
@@ -160,6 +160,7 @@ on the `statistics` tab of this plugin's option page.
 
 #### Change log
 
+- 0.9.9  Refine UI and modify settings data format.
 - 0.9.8  Add support for IP2Location WordPress plugins.
 - 0.9.7  Refine UI of provider selection and API key setting.
          Fix js error on setting page.

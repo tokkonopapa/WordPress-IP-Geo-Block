@@ -1,7 +1,7 @@
 === IP Geo Block ===
 Contributors: tokkonopapa
 Tags: comment, spam, geolocation
-Requires at least: 3.1
+Requires at least: 3.5
 Tested up to: 3.8
 Stable tag: 1.0.0
 License: GPLv2 or later
@@ -141,6 +141,9 @@ deactivated and then activated.
 4. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 0.9.9 =
+* Refine UI and modify settings data format.
 
 = 0.9.8 =
 * Add support for IP2Location WordPress plugins.
