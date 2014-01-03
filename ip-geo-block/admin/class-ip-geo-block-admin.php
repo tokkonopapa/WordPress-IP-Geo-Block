@@ -202,7 +202,6 @@ class IP_Geo_Block_Admin {
 		$option_slug = $this->option_slug[ 1 === $tab ? 'statistics': 'settings' ];
 ?>
 <div class="wrap">
-
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 	<h2 class="nav-tab-wrapper">
 		<a href="?page=<?php echo $this->plugin_slug; ?>&amp;tab=0" class="nav-tab <?php echo $tab == 0 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', $this->text_domain ); ?></a>
@@ -210,7 +209,6 @@ class IP_Geo_Block_Admin {
 		<a href="?page=<?php echo $this->plugin_slug; ?>&amp;tab=2" class="nav-tab <?php echo $tab == 2 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Search', $this->text_domain ); ?></a>
 		<a href="?page=<?php echo $this->plugin_slug; ?>&amp;tab=3" class="nav-tab <?php echo $tab == 3 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Attribution', $this->text_domain ); ?></a>
 	</h2>
-
 	<form method="post" action="options.php">
 <?php
 		settings_fields( $option_slug );
@@ -225,7 +223,6 @@ class IP_Geo_Block_Admin {
 	<p>Some of these services and APIs use GeoLite data created by <a href="http://www.maxmind.com" title="MaxMind - IP Geolocation and Online Fraud Prevention">MaxMind</a>,<br />and some include IP2Location LITE data available from <a href="http://www.ip2location.com" title="IP Address Geolocation to Identify Website Visitor's Geographical Location">IP2Location</a>.</p>
 <?php } ?>
 	<p><?php echo get_num_queries(); ?> queries. <?php timer_stop(1); ?> seconds. <?php echo memory_get_usage(); ?> bytes.</p>
-
 </div>
 <?php
 	}
@@ -282,7 +279,7 @@ class IP_Geo_Block_Admin {
 			add_settings_section(
 				$section,
 				__( 'Geolocation service settings', $this->text_domain ),
-				NULL, //array( $this, 'callback_provider' ),
+				NULL,
 				$option_slug
 			);
 
@@ -316,13 +313,13 @@ class IP_Geo_Block_Admin {
 			);
 
 			/*----------------------------------------*
-			 * Validation settings
+			 * Submission settings
 			 *----------------------------------------*/
-			$section = $this->plugin_slug . '-matching';
+			$section = $this->plugin_slug . '-submission';
 			add_settings_section(
 				$section,
-				__( 'Validation settings', $this->text_domain ),
-				NULL, //array( $this, 'callback_matching' ),
+				__( 'Submission settings', $this->text_domain ),
+				NULL,
 				$option_slug
 			);
 
@@ -464,8 +461,7 @@ class IP_Geo_Block_Admin {
 
 			register_setting(
 				$option_slug,
-				$option_name/*,
-				array( $this, 'sanitize_statistics' )*/
+				$option_name
 			);
 
 			$section = $this->plugin_slug . '-statistics';
@@ -521,13 +517,13 @@ class IP_Geo_Block_Admin {
 				)
 			);
 
-			$field = 'countries';
 			$html = "<ul class=\"${option_slug}-${field}\">";
 			foreach ( $options['countries'] as $key => $val ) {
 				$html .= sprintf( "<li>%2s:%5d</li>", $key, $val );
 			}
 			$html .= "</ul>";
 
+			$field = 'countries';
 			add_settings_field(
 				$option_name . "_$field",
 				__( 'Blocked by countries', $this->text_domain ),
@@ -560,7 +556,6 @@ class IP_Geo_Block_Admin {
 				)
 			);
 
-			$field = 'providers';
 			$html = "<table class=\"${option_slug}-${field}\"><thead><tr>";
 			$html .= "<th>" . __( 'Provider', $this->text_domain ) . "</th>";
 			$html .= "<th>" . __( 'Calls', $this->text_domain ) . "</th>";
@@ -575,6 +570,7 @@ class IP_Geo_Block_Admin {
 			}
 			$html .= "</tbody></table>";
 
+			$field = 'providers';
 			add_settings_field(
 				$option_name . "_$field",
 				__( 'Average response time of each provider', $this->text_domain ),
@@ -626,7 +622,7 @@ class IP_Geo_Block_Admin {
 			add_settings_section(
 				$section,
 				__( 'Search IP address geolocation', $this->text_domain ),
-				NULL, //array( $this, 'callback_geolocation' ),
+				NULL,
 				$option_slug
 			);
 
@@ -734,17 +730,6 @@ class IP_Geo_Block_Admin {
 	/**
 	 * Function that fills the section with the desired content.
 	 *
-	public function callback_provider() {
-		echo "<p>" . __( 'Select geolocation service provider and put API key.', $this->text_domain ) . "</p>";
-	}
-
-	public function callback_matching() {
-		echo "<p>" . sprintf( __( 'Select matching rule and put comma separated county code %s.', $this->text_domain ), '<a href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>(ISO 3166-1 alpha-2)</a>' ) . "</p>";
-	}
-
-	public function callback_geolocation() {
-		echo "<p>" . __( 'Put IP address and find location.', $this->text_domain ) . "</p>";
-	}
 	 */
 	public function callback_attribution() {
 		echo "<p>" . __( 'Thanks for providing these great services for free.', $this->text_domain ) . "</p>";
@@ -875,17 +860,24 @@ class IP_Geo_Block_Admin {
 			switch( $key ) {
 				case 'providers':
 					foreach ( $providers as $provider => $api ) {
-						if ( NULL === $api ) { // need no key
+						// need no key
+						if ( NULL === $api ) {
 							if ( isset( $input[ $key ][ $provider ] ) )
 								unset( $output[ $key ][ $provider ] );
 							else
 								$output['providers'][ $provider ] = '';
-						} else if ( FALSE === $api ) { // non-commercial
+						}
+
+						// non-commercial
+						else if ( FALSE === $api ) {
 							if ( isset( $input[ $key ][ $provider ] ) )
 								$output['providers'][ $provider ] = '@';
 							else
 								unset( $output[ $key ][ $provider ] );
-						} else { // need key
+						}
+
+						// need key
+						else {
 							$output[ $key ][ $provider ] =
 								isset( $input[ $key ][ $provider ] ) ?
 								sanitize_text_field( $input[ $key ][ $provider ] ) : '';
@@ -946,10 +938,6 @@ class IP_Geo_Block_Admin {
 	public function sanitize_settings( $input = array() ) {
 		return $this->sanitize_options( $this->option_name['settings'], $input );
 	}
-
-	/* public function sanitize_statistics( $input = array() ) {
-		return $this->sanitize_options( $this->option_name['statistics'], $input );
-	}*/
 
 	/**
 	 * Ajax callback function

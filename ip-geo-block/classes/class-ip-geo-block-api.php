@@ -217,16 +217,6 @@ class IP_Geo_Block_API_freegeoipnet extends IP_Geo_Block_API {
 		'ip'      => '',
 	);
 	protected $url_template = 'http://freegeoip.net/%API_FORMAT%/%API_IP%';
-	// xml
-	/* protected $transform_table = array(
-		'countryCode' => 'CountryCode',
-		'countryName' => 'CountryName',
-		'regionName'  => 'RegionName',
-		'cityName'    => 'City',
-		'latitude'    => 'Latitude',
-		'longitude'   => 'Longitude',
-	); */
-	// json
 	protected $transform_table = array(
 		'countryCode' => 'country_code',
 		'countryName' => 'country_name',
@@ -576,7 +566,7 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
  *
  * URL         : http://www.ip2location.com/
  * Term of use : http://www.ip2location.com/terms
- * Licence fee : free (need no API key)
+ * Licence fee : free in case of WordPress plugin version
  * Rate limit  : 
  * Sample URL  : 
  * Sample URL  : 
