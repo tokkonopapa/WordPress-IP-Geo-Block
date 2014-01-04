@@ -40,8 +40,8 @@ class IP_Geo_Block {
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
 			'version'         => '1.0',   // Version of option data
-			'enables'         => array(), // Enable switch for various features
 			'order'           => 0,       // Next order of provider (spare for future)
+			'enables'         => array(), // Enable switch for various features
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
 				'pos'         => 0,       // Position (0:none, 1:top, 2:bottom)

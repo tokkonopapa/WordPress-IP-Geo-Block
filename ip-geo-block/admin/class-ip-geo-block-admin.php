@@ -517,13 +517,13 @@ class IP_Geo_Block_Admin {
 				)
 			);
 
+			$field = 'countries';
 			$html = "<ul class=\"${option_slug}-${field}\">";
 			foreach ( $options['countries'] as $key => $val ) {
 				$html .= sprintf( "<li>%2s:%5d</li>", $key, $val );
 			}
 			$html .= "</ul>";
 
-			$field = 'countries';
 			add_settings_field(
 				$option_name . "_$field",
 				__( 'Blocked by countries', $this->text_domain ),
@@ -556,6 +556,7 @@ class IP_Geo_Block_Admin {
 				)
 			);
 
+			$field = 'providers';
 			$html = "<table class=\"${option_slug}-${field}\"><thead><tr>";
 			$html .= "<th>" . __( 'Provider', $this->text_domain ) . "</th>";
 			$html .= "<th>" . __( 'Calls', $this->text_domain ) . "</th>";
@@ -570,7 +571,6 @@ class IP_Geo_Block_Admin {
 			}
 			$html .= "</tbody></table>";
 
-			$field = 'providers';
 			add_settings_field(
 				$option_name . "_$field",
 				__( 'Average response time of each provider', $this->text_domain ),
