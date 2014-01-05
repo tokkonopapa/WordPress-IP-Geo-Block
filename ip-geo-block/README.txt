@@ -15,7 +15,7 @@ A WordPress plugin that blocks any comments posted from outside your nation.
 This plugin will block any comments posted from outside the specified countries.
 
 In order to check the county of the posting author by IP address, this plugin 
-uses the following IP address Geolocation REST APIs.
+uses the IP address Geolocation REST APIs.
 
 Some of these services and APIs include GeoLite data created by 
 [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"),
