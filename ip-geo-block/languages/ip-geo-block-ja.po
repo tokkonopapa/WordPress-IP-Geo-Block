@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-01-03 10:04+0900\n"
-"PO-Revision-Date: 2014-01-03 10:05+0900\n"
+"POT-Creation-Date: 2014-01-05 08:59+0900\n"
+"PO-Revision-Date: 2014-01-05 08:59+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -141,15 +141,15 @@ msgstr "国別遮断回数"
 msgid "Blocked by type of IP address"
 msgstr "遮断したIPアドレスのタイプ"
 
-#: admin/class-ip-geo-block-admin.php:560
+#: admin/class-ip-geo-block-admin.php:561
 msgid "Provider"
 msgstr "プロバイダー"
 
-#: admin/class-ip-geo-block-admin.php:561
+#: admin/class-ip-geo-block-admin.php:562
 msgid "Calls"
 msgstr "リクエスト回数"
 
-#: admin/class-ip-geo-block-admin.php:562
+#: admin/class-ip-geo-block-admin.php:563
 msgid "Response [msec]"
 msgstr "応答時間 [msec]"
 
