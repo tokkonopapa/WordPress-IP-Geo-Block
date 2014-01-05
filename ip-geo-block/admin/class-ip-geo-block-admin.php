@@ -765,7 +765,7 @@ class IP_Geo_Block_Admin {
 		<label for="<?php echo $id; ?>" title="<?php echo $args['titles'][ $key ]; ?>"><?php echo $key; ?></label>
 <?php
 					if ( is_string( $val ) ) { ?>
-		<input type="text" class="regular-text code" name="<?php echo $name; ?>" value="<?php echo esc_attr( $args['value'][ $key ] ); ?>"<?php
+		<input type="text" class="regular-text code" name="<?php echo $name; ?>" value="<?php echo esc_attr( isset( $args['value'][ $key ] ) ? $args['value'][ $key ] : '' ); ?>"<?php
 			if ( ! isset( $val ) ) disabled( TRUE, TRUE );
 		?> />
 	</li>
