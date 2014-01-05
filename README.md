@@ -160,6 +160,7 @@ on the `statistics` tab of this plugin's option page.
 
 #### Change log
 
+- 1.0.0  Ready to release.
 - 0.9.9  Refine UI and modify settings data format.
 - 0.9.8  Add support for IP2Location WordPress plugins.
 - 0.9.7  Refine UI of provider selection and API key setting.
