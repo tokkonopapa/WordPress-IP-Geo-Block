@@ -1,6 +1,7 @@
 === IP Geo Block ===
 Contributors: tokkonopapa
-Tags: comment, spam, geolocation
+Donate link:
+Tags: comment, spam, IP address, geolocation
 Requires at least: 3.5
 Tested up to: 3.8
 Stable tag: 1.0.0
@@ -16,26 +17,16 @@ This plugin will block any comments posted from outside the specified countries.
 In order to check the county of the posting author by IP address, this plugin 
 uses the following IP address Geolocation REST APIs.
 
-* [http://freegeoip.net/][freegeoip]    : free
-* [http://ipinfo.io/][ipinfo]           : free
-* [http://www.telize.com/][Telize]      : free
-* [http://www.iptolatlng.com/][IP2LL]   : free
-* [http://ip-json.rhcloud.com/][IPJson] : free
-* [http://xhanch.com/][Xhanch]          : free
-* [http://mshd.net/][mshdnet]           : free
-* [http://www.geoplugin.com/][geoplugin]: free, need an attribution link
-* [http://ip-api.com/][ipapi]           : free for non-commercial use
-* [http://smart-ip.net/][smartip]       : free for personal and non-commercial use
-* [http://ipinfodb.com/][IPInfoDB]      : free for registered user, need API key
+Some of these services and APIs include GeoLite data created by 
+[MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"),
+and some include IP2Location LITE data available from 
+[IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
 
-Some of these services and APIs include GeoLite data created by [MaxMind][MaxMind].
-and some include IP2Location LITE data available from [IP2Location][IP2Loc].
-
-If you have installed one of the IP2Location plugin
-([IP2Location Tags][IP2Tag],
- [IP2Location Variables][IP2Var],
- [IP2Location Country Blocker][IP2Blk])
-correctly, this plugin uses it instead of REST APIs.
+If you have installed one of the IP2Location plugin (
+[IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"),
+[IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"),
+[IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins")
+) correctly, this plugin uses it instead of REST APIs.
 
 == Installation ==
 
@@ -69,10 +60,9 @@ fook `ip-geo-block-addr` as follows:
 }
 add_filter( 'ip-geo-block-addr', 'substitute_my_ip' );`
 
-And another is adding `RD` as a country code into `White list` or `Black list` 
-on the plugin settings page. Most of the IP Geolocation services return empty 
-(with some status) if a local IP address (e.g. 127.0.0.0) is sent, but only 
-`freegeoip.net` returns `RD`.
+And another is adding `RD` as a country code into `White list` or `Black list`.
+Most of the IP Geolocation services return empty (with some status) if a local 
+IP address (e.g. 127.0.0.0) is sent, but only `freegeoip.net` returns `RD`.
 
 = Can I add an additional spam validation function into this plugin? =
 
@@ -100,13 +90,14 @@ on the `statistics` tab of this plugin's option page.
 = Settings on Dashboard =
 
 * **Service provider and API key**  
-    If you wish to use `IPInfoDB`, you should register from [here][IPInfoDB]
+    If you want to use `IPInfoDB`, you should register from 
+    [their site](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools")
     to get a free API key and set it into the textfield. And `ip-api.com` and 
-    `Smart-IP.net` require non-commercial use. If you wish to use these APIs, 
-    you should put a word (anything you like) into the textfield.
+    `Smart-IP.net` require non-commercial use. To use these APIs, you should 
+    put a word (anything you like) into the textfield.
 
 * **Text position on comment form**  
-    If you wish to put some text message on your comment form, please select
+    If you want to put some text message on your comment form, please select
     `Top` or `Bottom` and put text into the **Text message on comment form**
     textfield.
 
@@ -115,14 +106,18 @@ on the `statistics` tab of this plugin's option page.
     from which you want to pass or block.
 
 * **White list**, **Black list**  
-    Specify the country code with two letters (see [ISO 3166-1 alpha-2][ISO]).
-    Each of them should be separated by comma.
+    Specify the country code with two letters (see 
+    [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")
+    ). Each of them should be separated by comma.
 
 * **Response code**  
-    Select one of the [response code][RFC] to to be sent when it blocks a 
-    comment. The 2xx code will refresh to your top page, the 3xx code will 
-    redirect to [Black Hole Server][BHS], the 4xx code will lead to WordPress 
-    error page, and the 5xx will pretend an error.
+    Select one of the 
+    [response code](http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1")
+    to to be sent when it blocks a comment. The 2xx code will refresh to your 
+    top page, the 3xx code will redirect to 
+    [Black Hole Server](http://blackhole.webpagetest.org/),
+    the 4xx code will lead to WordPress error page, and the 5xx will pretend 
+    an error.
 
 * **Remove settings at uninstallation**  
     If you checked this option, all settings will be removed when this plugin
@@ -141,6 +136,9 @@ deactivated and then activated.
 4. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 1.0.0 =
+* Ready to release.
 
 = 0.9.9 =
 * Refine UI and modify settings data format.
@@ -182,6 +180,20 @@ deactivated and then activated.
 == Upgrade Notice ==
 
 == Arbitrary section ==
+
+Thanks for providing these great services for free.
+
+* [http://freegeoip.net/][freegeoip]    (free)
+* [http://ipinfo.io/][ipinfo]           (free)
+* [http://www.telize.com/][Telize]      (free)
+* [http://www.iptolatlng.com/][IP2LL]   (free)
+* [http://ip-json.rhcloud.com/][IPJson] (free)
+* [http://xhanch.com/][Xhanch]          (free)
+* [http://mshd.net/][mshdnet]           (free)
+* [http://www.geoplugin.com/][geoplugin](free, need an attribution link)
+* [http://ip-api.com/][ipapi]           (free for non-commercial use)
+* [http://smart-ip.net/][smartip]       (free for personal and non-commercial use)
+* [http://ipinfodb.com/][IPInfoDB]      (free for registered user, need API key)
 
 [freegeoip]:http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service"
 [ipinfo]:   http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details"
