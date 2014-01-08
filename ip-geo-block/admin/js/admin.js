@@ -9,6 +9,18 @@
 
 (function ($) {
 
+	function sanitize(str) {
+		return (str + '').replace(/[&<>"']/g, function (match) {
+			return {
+				'&' : '&amp;',
+				'<' : '&lt;',
+				'>' : '&gt;',
+				'"' : '&quot;',
+				"'" : '&#39;'
+			}[match];
+		});
+	}
+
 	function ajax_get_location(service, ip) {
 		$('#ip-geo-block-loading').addClass('ip-geo-block-loading');
 
@@ -25,8 +37,8 @@
 			for (var key in data) {
 				info +=
 					'<li>' +
-						'<span class="ip-geo-block-title">' + key + ' : </span>' +
-						'<span class="ip-geo-block-result">' + data[key] + '</span>' +
+						'<span class="ip-geo-block-title">' + sanitize(key) + ' : </span>' +
+						'<span class="ip-geo-block-result">' + sanitize(data[key]) + '</span>' +
 					'</li>';
 			}
 			info += '</ul>';
@@ -94,6 +106,18 @@
 			if (ip) {
 				ajax_get_location(service, ip);
 			}
+			return false;
+		});
+
+		// Attribution link (redirect without referer)
+		$('a.ip-geo-block-api').on('click', function (event) {
+			var url = this.href;
+			var w = window.open();
+			w.document.write(
+				'<meta http-equiv="refresh" content="2; url=' + url +'">' +
+				'<body>Redirecting to ' + url + ' ...</body>'
+			);
+			w.document.close();
 			return false;
 		});
 
