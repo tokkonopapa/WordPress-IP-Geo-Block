@@ -114,7 +114,7 @@
 			var url = this.href;
 			var w = window.open();
 			w.document.write(
-				'<meta http-equiv="refresh" content="2; url=' + url +'">' +
+				'<meta http-equiv="refresh" content="1; url=' + url +'">' +
 				'<body>Redirecting to ' + sanitize(url) + ' ...</body>'
 			);
 			w.document.close();

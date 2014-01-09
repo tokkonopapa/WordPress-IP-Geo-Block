@@ -732,7 +732,8 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function callback_attribution() {
-		echo "<p>" . __( 'Thanks for providing these great services for free.', $this->text_domain ) . "</p>";
+		echo "<p>" . __( 'Thanks for providing these great services for free.', $this->text_domain ) . "</p>\n";
+		echo "<p>" . __( '(Most browsers will redirect you to each site without referrer when you click the link.)', $this->text_domain ) . "</p>\n";
 	}
 
 	/**
