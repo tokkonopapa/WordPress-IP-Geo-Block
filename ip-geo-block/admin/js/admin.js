@@ -115,7 +115,7 @@
 			var w = window.open();
 			w.document.write(
 				'<meta http-equiv="refresh" content="2; url=' + url +'">' +
-				'<body>Redirecting to ' + url + ' ...</body>'
+				'<body>Redirecting to ' + sanitize(url) + ' ...</body>'
 			);
 			w.document.close();
 			return false;
