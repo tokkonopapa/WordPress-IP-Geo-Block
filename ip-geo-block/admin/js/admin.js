@@ -110,7 +110,7 @@
 		});
 
 		// Attribution link (redirect without referer)
-		$('a.ip-geo-block-api').on('click', function (event) {
+		$('a.ip-geo-block-link').on('click', function (event) {
 			var url = this.href;
 			var w = window.open();
 			w.document.write(

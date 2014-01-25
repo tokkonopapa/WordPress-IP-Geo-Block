@@ -366,7 +366,7 @@ class IP_Geo_Block_Admin {
 			$field = 'white_list';
 			add_settings_field(
 				$option_name . "_$field",
-				sprintf( __( 'White list %s', $this->text_domain ), '(<a href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
+				sprintf( __( 'White list %s', $this->text_domain ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
 				array( $this, 'callback_field' ),
 				$option_slug,
 				$section,
@@ -382,7 +382,7 @@ class IP_Geo_Block_Admin {
 			$field = 'black_list';
 			add_settings_field(
 				$option_name . "_$field",
-				sprintf( __( 'Black list %s', $this->text_domain ), '(<a href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
+				sprintf( __( 'Black list %s', $this->text_domain ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
 				array( $this, 'callback_field' ),
 				$option_slug,
 				$section,
@@ -398,7 +398,7 @@ class IP_Geo_Block_Admin {
 			$field = 'response_code';
 			add_settings_field(
 				$option_name . "_$field",
-				sprintf( __( 'Response code %s', $this->text_domain ), '(<a href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1" target=_blank>RFC 2616</a>)' ),
+				sprintf( __( 'Response code %s', $this->text_domain ), '(<a class="ip-geo-block-link" href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1" target=_blank>RFC 2616</a>)' ),
 				array( $this, 'callback_field' ),
 				$option_slug,
 				$section,
