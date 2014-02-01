@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-01-10 01:57+0900\n"
-"PO-Revision-Date: 2014-01-10 02:02+0900\n"
+"POT-Creation-Date: 2014-01-31 23:46+0900\n"
+"PO-Revision-Date: 2014-01-31 23:59+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,182 +19,225 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:90
 #: admin/class-ip-geo-block-admin.php:90
 msgid "You need WordPress 3.5+"
 msgstr "WordPress 3.5以上が必要です"
 
-#: admin/class-ip-geo-block-admin.php:154
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:154
+#: ã®ã³ãã¼.php:207 admin/class-ip-geo-block-admin.php:154
 #: admin/class-ip-geo-block-admin.php:207
 msgid "Settings"
 msgstr "設定"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:168
 #: admin/class-ip-geo-block-admin.php:168
 msgid "Contribute on GitHub"
 msgstr "GitHubでの開発に参加"
 
-#: admin/class-ip-geo-block-admin.php:186
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:186
+#: ã®ã³ãã¼.php:187 admin/class-ip-geo-block-admin.php:186
 #: admin/class-ip-geo-block-admin.php:187
 msgid "IP Geo Block"
 msgstr ""
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:208
 #: admin/class-ip-geo-block-admin.php:208
 msgid "Statistics"
 msgstr "統計"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:209
 #: admin/class-ip-geo-block-admin.php:209
 msgid "Search"
 msgstr "検索"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:210
 #: admin/class-ip-geo-block-admin.php:210
 msgid "Attribution"
 msgstr "リンク"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:281
 #: admin/class-ip-geo-block-admin.php:281
 msgid "Geolocation service settings"
 msgstr "位置情報サービスの設定"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:301
 #: admin/class-ip-geo-block-admin.php:301
 msgid "Selection and API key settings"
 msgstr "サービスの選択とAPIキーの設定"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:321
 #: admin/class-ip-geo-block-admin.php:321
 msgid "Submission settings"
 msgstr "投稿時の設定"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:329
 #: admin/class-ip-geo-block-admin.php:329
 msgid "Text message on comment form"
 msgstr "投稿フォーム上のメッセージ"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:339
 #: admin/class-ip-geo-block-admin.php:339
 msgid "None"
 msgstr "なし"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:340
 #: admin/class-ip-geo-block-admin.php:340
 msgid "Top"
 msgstr "上部"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:341
 #: admin/class-ip-geo-block-admin.php:341
 msgid "Bottom"
 msgstr "下部"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:350
 #: admin/class-ip-geo-block-admin.php:350
 msgid "Matching rule"
 msgstr "マッチング規則"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:360
 #: admin/class-ip-geo-block-admin.php:360
 msgid "White list"
 msgstr "ホワイトリスト"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:361
 #: admin/class-ip-geo-block-admin.php:361
 msgid "Black list"
 msgstr "ブラックリスト"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:369
 #: admin/class-ip-geo-block-admin.php:369
 #, php-format
 msgid "White list %s"
 msgstr "ホワイトリスト %s"
 
-#: admin/class-ip-geo-block-admin.php:378
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:378
+#: ã®ã³ãã¼.php:394 admin/class-ip-geo-block-admin.php:378
 #: admin/class-ip-geo-block-admin.php:394
 msgid "(comma separated)"
 msgstr "（カンマ区切り）"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:385
 #: admin/class-ip-geo-block-admin.php:385
 #, php-format
 msgid "Black list %s"
 msgstr "ブラックリスト %s"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:401
 #: admin/class-ip-geo-block-admin.php:401
 #, php-format
 msgid "Response code %s"
 msgstr "レスポンスコード %s"
 
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:433
 #: admin/class-ip-geo-block-admin.php:433
 msgid "Plugin settings"
 msgstr "プラグインの設定"
 
-#: admin/class-ip-geo-block-admin.php:441
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:441
+#: admin/class-ip-geo-block-admin.php:456
 msgid "Remove settings at uninstallation"
 msgstr "アンインストール時に設定を削除"
 
-#: admin/class-ip-geo-block-admin.php:470
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:470
+#: admin/class-ip-geo-block-admin.php:485
 msgid "Statistics of posts"
 msgstr "投稿の統計"
 
-#: admin/class-ip-geo-block-admin.php:478
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:478
+#: admin/class-ip-geo-block-admin.php:493
 msgid "Passed"
 msgstr "通過"
 
-#: admin/class-ip-geo-block-admin.php:493
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:493
+#: admin/class-ip-geo-block-admin.php:508
 msgid "Blocked"
 msgstr "遮断"
 
-#: admin/class-ip-geo-block-admin.php:508
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:508
+#: admin/class-ip-geo-block-admin.php:523
 msgid "Unknown (passed)"
 msgstr "国コード不明（通過）"
 
-#: admin/class-ip-geo-block-admin.php:529
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:529
+#: admin/class-ip-geo-block-admin.php:544
 msgid "Blocked by countries"
 msgstr "国別遮断回数"
 
-#: admin/class-ip-geo-block-admin.php:544
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:544
+#: admin/class-ip-geo-block-admin.php:559
 msgid "Blocked by type of IP address"
 msgstr "遮断したIPアドレスのタイプ"
 
-#: admin/class-ip-geo-block-admin.php:561
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:561
+#: admin/class-ip-geo-block-admin.php:576
 msgid "Provider"
 msgstr "プロバイダー"
 
-#: admin/class-ip-geo-block-admin.php:562
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:562
+#: admin/class-ip-geo-block-admin.php:577
 msgid "Calls"
 msgstr "リクエスト回数"
 
-#: admin/class-ip-geo-block-admin.php:563
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:563
+#: admin/class-ip-geo-block-admin.php:578
 msgid "Response [msec]"
 msgstr "応答時間 [msec]"
 
-#: admin/class-ip-geo-block-admin.php:576
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:576
+#: admin/class-ip-geo-block-admin.php:591
 msgid "Average response time of each provider"
 msgstr "プロバイダー毎の平均応答時間"
 
-#: admin/class-ip-geo-block-admin.php:591
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:591
+#: admin/class-ip-geo-block-admin.php:606
 msgid "Clear statistics"
 msgstr "統計のクリア"
 
-#: admin/class-ip-geo-block-admin.php:599
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:599
+#: admin/class-ip-geo-block-admin.php:614
 msgid "Clear now"
 msgstr "今すぐクリア"
 
-#: admin/class-ip-geo-block-admin.php:624
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:624
+#: admin/class-ip-geo-block-admin.php:639
 msgid "Search IP address geolocation"
 msgstr "IPアドレスの位置情報を検索"
 
-#: admin/class-ip-geo-block-admin.php:644
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:644
+#: admin/class-ip-geo-block-admin.php:659
 msgid "Geolocation service"
 msgstr "位置情報サービス"
 
-#: admin/class-ip-geo-block-admin.php:660
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:660
+#: admin/class-ip-geo-block-admin.php:675
 msgid "IP address"
 msgstr "IPアドレス"
 
-#: admin/class-ip-geo-block-admin.php:675
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:675
+#: admin/class-ip-geo-block-admin.php:690
 msgid "Find geolocation"
 msgstr "位置情報の検索"
 
-#: admin/class-ip-geo-block-admin.php:683
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:683
+#: admin/class-ip-geo-block-admin.php:698
 msgid "Search now"
 msgstr "今すぐ検索"
 
-#: admin/class-ip-geo-block-admin.php:704
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:704
+#: admin/class-ip-geo-block-admin.php:719
 msgid "Attribution links"
 msgstr "サービスの提供元"
 
-#: admin/class-ip-geo-block-admin.php:735
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:735
+#: admin/class-ip-geo-block-admin.php:750
 msgid "Thanks for providing these great services for free."
 msgstr ""
 "すばらしいサービスの提供元である以下のサイトに、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:736
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:736
+#: admin/class-ip-geo-block-admin.php:751
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
@@ -202,15 +245,21 @@ msgstr ""
 "（ほとんどのブラウザでは、リンクをクリックしても参照元を残さずに各サイトにリ"
 "ダイレクトできます。）"
 
-#: admin/class-ip-geo-block-admin.php:808
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:808
+#: admin/class-ip-geo-block-admin.php:823
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:839
+#: admin/class-ip-geo-block-admin ã®ã³ãã¼.php:839
+#: admin/class-ip-geo-block-admin.php:854
 msgid "successfully updated"
 msgstr "更新に成功しました"
 
-#: classes/class-ip-geo-block.php:389
+#: admin/class-ip-geo-block-admin.php:441
+msgid "Save statistics"
+msgstr "統計情報の記録"
+
+#: classes/class-ip-geo-block.php:390
 msgid "Sorry, your comment cannot be accepted."
 msgstr "申し訳ありませんが、投稿できません。"
 
