@@ -41,7 +41,6 @@ class IP_Geo_Block {
 		'ip_geo_block_settings' => array(
 			'version'         => '1.0',   // Version of option data
 			'order'           => 0,       // Next order of provider (spare for future)
-			'enables'         => array(), // Enable switch for various features
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
 				'pos'         => 0,       // Position (0:none, 1:top, 2:bottom)
@@ -52,11 +51,12 @@ class IP_Geo_Block {
 			'black_list'      => '',      // Comma separeted country code
 			'timeout'         => 5,       // Timeout in second
 			'response_code'   => 403,     // Response code
+			'save_statistics' => FALSE,   // Save statistics
+			'clean_uninstall' => FALSE,   // Remove all savings from DB
 			'ip2location'     => array(   // IP2Location
 				'path_db'     => '',      // Path to IP2Location DB
 				'path_class'  => '',      // Path to IP2Location class file
 			),
-			'clean_uninstall' => FALSE,   // Remove all savings from DB
 		),
 
 		// statistics (should be read when comment has posted)
@@ -178,7 +178,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function deactivate( $network_wide ) {
-		self::uninstall();  // same as uninstall()
+		// self::uninstall();  // for debug
 	}
 
 	/**
@@ -361,7 +361,8 @@ class IP_Geo_Block {
 		$result = apply_filters( "${code}-validate", $commentdata, $settings );
 
 		// update statistics
-		$this->update_statistics( $result );
+		if ( $settings['save_statistics'] )
+			$this->update_statistics( $result );
 
 		// after all filters applied, check whether the result is end in 'blocked'.
 		if ( ! isset( $result[ $code ] ) || 'blocked' !== $result[ $code ]['result'] ) {

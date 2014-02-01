@@ -220,7 +220,7 @@ class IP_Geo_Block_Admin {
 <?php if ( 2 === $tab ) { ?>
 	<div id="ip-geo-block-map"></div>
 <?php } else if ( 3 === $tab ) { ?>
-	<p>Some of these services and APIs use GeoLite data created by <a href="http://www.maxmind.com" title="MaxMind - IP Geolocation and Online Fraud Prevention">MaxMind</a>,<br />and some include IP2Location LITE data available from <a href="http://www.ip2location.com" title="IP Address Geolocation to Identify Website Visitor's Geographical Location">IP2Location</a>.</p>
+	<p>Some of these services and APIs use GeoLite data created by <a class="ip-geo-block-link" href="http://www.maxmind.com" title="MaxMind - IP Geolocation and Online Fraud Prevention">MaxMind</a>,<br />and some include IP2Location LITE data available from <a class="ip-geo-block-link" href="http://www.ip2location.com" title="IP Address Geolocation to Identify Website Visitor's Geographical Location">IP2Location</a>.</p>
 <?php } ?>
 	<p><?php echo get_num_queries(); ?> queries. <?php timer_stop(1); ?> seconds. <?php echo memory_get_usage(); ?> bytes.</p>
 </div>
@@ -433,6 +433,21 @@ class IP_Geo_Block_Admin {
 				__( 'Plugin settings', $this->text_domain ),
 				NULL,
 				$option_slug
+			);
+
+			$field = 'save_statistics';
+			add_settings_field(
+				$option_name . "_$field",
+				__( 'Save statistics', $this->text_domain ),
+				array( $this, 'callback_field' ),
+				$option_slug,
+				$section,
+				array(
+					'type' => 'checkbox',
+					'option' => $option_name,
+					'field' => $field,
+					'value' => $options[ $field ],
+				)
 			);
 
 			$field = 'clean_uninstall';
@@ -904,6 +919,7 @@ class IP_Geo_Block_Admin {
 						) : '';
 					break;
 
+				case 'save_statistics':
 				case 'clean_uninstall':
 					// pass through to default in case of checkbox
 					if ( ! isset( $input[ $key ] ) )
