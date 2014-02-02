@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: comment, spam, IP address, geolocation
 Requires at least: 3.5
-Tested up to: 3.8
-Stable tag: 1.0.0
+Tested up to: 3.8.1
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -136,6 +136,10 @@ deactivated and then activated.
 4. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 1.0.1 =
+* Modify Plugin URL.
+* Add `apply_filters()` to be able to change headers.
 
 = 1.0.0 =
 * Ready to release.
