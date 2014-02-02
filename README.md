@@ -160,6 +160,8 @@ on the `statistics` tab of this plugin's option page.
 
 #### Change log
 
+- 1.0.1  Modify Plugin URL.
+         Add `apply_filters()` to be able to change headers.
 - 1.0.0  Ready to release.
 - 0.9.9  Refine UI and modify settings data format.
 - 0.9.8  Add support for IP2Location WordPress plugins.
