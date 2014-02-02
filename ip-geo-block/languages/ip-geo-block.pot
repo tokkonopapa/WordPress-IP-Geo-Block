@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 1.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
 "POT-Creation-Date: 2014-02-02 13:39+0900\n"
-"PO-Revision-Date: 2014-02-02 13:39+0900\n"
+"PO-Revision-Date: 2014-02-02 22:09+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,6 +18,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
+
+# description
+msgid ""
+"It will block any spam comments posted from outside the specified countries."
+msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:90
 msgid "You need WordPress 3.5+"
