@@ -64,13 +64,15 @@ cd $SVNPATH/trunk/
 
 # remove PLUGINSLUG dir
 echo "Setting trunc"
-mv -f $PLUGINSLUG/* ./
-rmdir $PLUGINSLUG
+cd $PLUGINSLUG
+mv * ../
+cd ../
+rm -rf $PLUGINSLUG
 
 # for assets
 echo "Move assets to top"
 mv -f assets/* ../assets/
-rmdir assets
+rm -rf assets
 
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2}' | xargs svn add
