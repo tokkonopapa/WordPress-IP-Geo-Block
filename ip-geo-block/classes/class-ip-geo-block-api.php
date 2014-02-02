@@ -90,7 +90,10 @@ abstract class IP_Geo_Block_API {
 
 		// for Wordpress ($res->get_error_message())
 		if ( function_exists( "wp_remote_get" ) ) { // @since 2.7
-			$res = @wp_remote_get( $tmp, array( 'timeout' => $timeout ) );
+			$res = @wp_remote_get( $tmp,
+				array( 'timeout' => $timeout ) +
+				apply_filters( 'ip-geo-block-headers', array() )
+			);
 			$tmp = wp_remote_retrieve_header( $res, 'content-type' );
 			$res = wp_remote_retrieve_body( $res );
 		}
