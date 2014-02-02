@@ -61,7 +61,7 @@ README.md
 
 echo "Changing directory to SVN and committing to trunk"
 cd $SVNPATH/trunk/
-
+exit 1
 # remove PLUGINSLUG dir
 echo "Setting trunc"
 cp -Rp $PLUGINSLUG/* ./
