@@ -66,7 +66,7 @@ cd $SVNPATH/trunk/
 echo "Setting trunc"
 cp -Rp $PLUGINSLUG/* ./
 rm -rf $PLUGINSLUG
-exit 1
+
 # for assets
 echo "Move assets to top"
 mv -f assets/* ../assets/
@@ -85,7 +85,7 @@ svn commit --username=$SVNUSER -m "Tagging version $NEWVERSION1"
 # for assets
 echo "Commit assets"
 cd $SVNPATH/assets/
-svn add *.png
+svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2}' | xargs svn add
 svn commit --username=$SVNUSER -m "$NEWVERSION1"
 
 echo "Removing temporary directory $SVNPATH"
