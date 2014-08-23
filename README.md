@@ -160,6 +160,8 @@ on the `statistics` tab of this plugin's option page.
 
 #### Change log
 
+- 1.0.2  Update provider settings (`class-ip-geo-block-api.php`).
+         Set user agent strings for `WP_Http` (`class-ip-geo-block.php`).
 - 1.0.1  Modify Plugin URL.
          Add `apply_filters()` to be able to change headers.
 - 1.0.0  Ready to release.

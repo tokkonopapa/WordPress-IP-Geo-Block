@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: comment, spam, IP address, geolocation
 Requires at least: 3.5
-Tested up to: 3.8.1
-Stable tag: 1.0.1
+Tested up to: 3.9.2
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -136,6 +136,13 @@ deactivated and then activated.
 4. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 1.0.2 =
+* Update provider settings. Smart-IP.net was terminated, ipinfo.io is now
+  available for IPv6.
+* Set original user agent strings for `WP_Http`.
+  Now suppressed `bloginfo('url')` and added plugin name and version.
+  Use `ip-geo-block-headers-useragent` with filter hook to change strings.
 
 = 1.0.1 =
 * Modify Plugin URL.
