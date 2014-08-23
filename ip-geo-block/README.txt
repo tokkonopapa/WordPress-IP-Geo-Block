@@ -137,6 +137,9 @@ deactivated and then activated.
 
 == Changelog ==
 
+= 1.0.3 =
+* Temporarily stop setting user agent strings to avaoid bug at commenting.
+
 = 1.0.2 =
 * Update provider settings. Smart-IP.net was terminated, ipinfo.io is now
   available for IPv6.

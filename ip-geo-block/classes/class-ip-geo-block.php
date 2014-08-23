@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
 	 */
-	const VERSION = '1.0.2';
+	const VERSION = '1.0.3';
 
 	/**
 	 * Instance of this class.
@@ -217,11 +217,12 @@ class IP_Geo_Block {
 	 * Set User Agent strings for WP_Http
 	 * @see https://developer.wordpress.org/reference/classes/wp_http/request/
 	 */
-	private function set_user_agent( $headers ) {
+	public function set_user_agent( $headers ) {
 		global $wp_version;
 		$headers['user-agent'] = apply_filters(
 			'ip-geo-block-headers-useragent',
-			'WordPress/' . $wp_version . '; ' . $this->plugin_slug . VERSION );
+			'WordPress/' . $wp_version . '; ' . $this->plugin_slug . VERSION
+		);
 	}
 
 	/**
@@ -262,9 +263,6 @@ class IP_Geo_Block {
 
 		// get ip address
 		$ip = apply_filters( $this->plugin_slug . '-addr', $_SERVER['REMOTE_ADDR'] );
-
-		// set user agent strings
-		add_filter( 'ip-geo-block-headers', 'set_user_agent', 10, 1 );
 
 		foreach ( $list as $provider ) {
 			$name = IP_Geo_Block_API::get_class_name( $provider );
@@ -368,6 +366,7 @@ class IP_Geo_Block {
 
 		// register the validation function
 		$code = $this->plugin_slug;
+//		add_filter( "${code}-headers",  array( $this, 'set_user_agent' ), 10, 1 );
 		add_filter( "${code}-validate", array( $this, 'check_location' ), 10, 2 );
 
 		// validate and update statistics

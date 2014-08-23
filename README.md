@@ -160,6 +160,8 @@ on the `statistics` tab of this plugin's option page.
 
 #### Change log
 
+- 1.0.3  Temporarily stop setting user agent strings to avaoid bug
+         at commenting.
 - 1.0.2  Update provider settings (`class-ip-geo-block-api.php`).
          Set user agent strings for `WP_Http` (`class-ip-geo-block.php`).
 - 1.0.1  Modify Plugin URL.
