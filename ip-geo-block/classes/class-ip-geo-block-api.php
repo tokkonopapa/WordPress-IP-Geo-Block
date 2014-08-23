@@ -243,7 +243,7 @@ class IP_Geo_Block_API_freegeoipnet extends IP_Geo_Block_API {
  * Output type : json
  */
 class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
-	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
@@ -508,7 +508,7 @@ class IP_Geo_Block_API_ipapicom extends IP_Geo_Block_API {
  * Sample URL  : http://smart-ip.net/geoip-json/2a00:1450:400c:c00::6a
  * Input type  : IP address (IPv4, IPv6 / domain name)
  * Output type : xml, json
- */
+ *//* Service terminated
 class IP_Geo_Block_API_SmartIPnet extends IP_Geo_Block_API {
 	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
@@ -526,7 +526,7 @@ class IP_Geo_Block_API_SmartIPnet extends IP_Geo_Block_API {
 		'latitude'    => 'latitude',
 		'longitude'   => 'longitude',
 	);
-}
+}*/
 
 /**
  * Class for IPInfoDB
@@ -647,8 +647,8 @@ class IP_Geo_Block_Provider {
 
 		'ipinfo.io' => array(
 			'key'  => NULL,
-			'type' => 'IPv4 / free',
-			'link' => '<a class="ip-geo-block-link" href="http://ipinfo.io/" title="ip address information including geolocation, hostname and network details" target=_blank>http://ipinfo.io/</a>&nbsp;(IPv4 / free)',
+			'type' => 'IPv4, IPv6 / free',
+			'link' => '<a class="ip-geo-block-link" href="http://ipinfo.io/" title="ip address information including geolocation, hostname and network details" target=_blank>http://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'Telize' => array(
@@ -693,11 +693,11 @@ class IP_Geo_Block_Provider {
 			'link' => '<a class="ip-geo-block-link" href="http://ip-api.com/" title="IP-API.com - Free Geolocation API" target=_blank>http://ip-api.com/</a>&nbsp;(IPv4, IPv6 / free for non-commercial use)',
 		),
 
-		'Smart-IP.net' => array(
+/*		'Smart-IP.net' => array(
 			'key'  => FALSE,
 			'type' => 'IPv4, IPv6 / free for personal and non-commercial use',
 			'link' => '<a class="ip-geo-block-link" href="http://smart-ip.net/geoip-api" title="Geo-IP API Documentation" target=_blank>http://smart-ip.net/</a>&nbsp;(IPv4, IPv6 / free for personal and non-commercial use)',
-		),
+		),*/
 
 		'IPInfoDB' => array(
 			'key'  => '',
