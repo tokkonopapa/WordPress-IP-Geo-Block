@@ -1,5 +1,5 @@
 #! /bin/bash
-# A modification of Dean Clatworthy's deploy script as found here: https://github.com/deanc/wordpress-plugin-git-svn
+# A modification of Dean Clatworthy's deploy script at: https://github.com/deanc/wordpress-plugin-git-svn
 # The difference is that this script lives in the plugin's git repo & doesn't require an existing SVN repo.
 
 # main config
@@ -56,24 +56,26 @@ git checkout-index -a -f --prefix=$SVNPATH/trunk/
 echo "Ignoring github specific files and deployment script"
 svn propset svn:ignore "deploy.sh
 README.md
+Thumbs.db
 .git
 .gitignore" "$SVNPATH/trunk/"
 
 echo "Changing directory to SVN and committing to trunk"
 cd $SVNPATH/trunk/
 
-# remove PLUGINSLUG dir
+# re-construct PLUGINSLUG dir
 echo "Setting trunc"
 cp -Rp $PLUGINSLUG/* ./
 rm -rf $PLUGINSLUG
 
-# for assets
-echo "Move assets to top"
-mv -f assets/* ../assets/
+# Support for the /assets folder on the .org repo.
+echo "Moving assets"
+mv -f assets/* $SVNPATH/assets/
 rmdir assets
 
-# Add all new files that are not set to be ignored
-svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2}' | xargs svn add
+# Update all the files that are not set to be ignored
+svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2}' | xargs svn del
+svn status | grep -v "^.[ \t]*\..*" | grep "^?"  | awk '{print $2}' | xargs svn add
 svn commit --username=$SVNUSER -m "$COMMITMSG"
 
 echo "Creating new SVN tag & committing it"
@@ -85,7 +87,8 @@ svn commit --username=$SVNUSER -m "Tagging version $NEWVERSION1"
 # for assets
 echo "Commit assets"
 cd $SVNPATH/assets/
-svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2}' | xargs svn add
+svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2}' | xargs svn del
+svn status | grep -v "^.[ \t]*\..*" | grep "^?"  | awk '{print $2}' | xargs svn add
 svn commit --username=$SVNUSER -m "$NEWVERSION1"
 
 echo "Removing temporary directory $SVNPATH"
