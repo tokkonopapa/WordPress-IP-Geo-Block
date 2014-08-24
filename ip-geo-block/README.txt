@@ -4,7 +4,7 @@ Donate link:
 Tags: comment, spam, IP address, geolocation
 Requires at least: 3.5
 Tested up to: 3.9.2
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,7 +26,7 @@ If you have installed one of the IP2Location plugin (
 [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"),
 [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"),
 [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins")
-) correctly, this plugin uses it instead of REST APIs.
+) correctly, or rename it to `ip2location` and upload it to `wp-content`, this plugin uses it instead of REST APIs.
 
 == Installation ==
 
@@ -60,7 +60,7 @@ fook `ip-geo-block-addr` as follows:
 }
 add_filter( 'ip-geo-block-addr', 'substitute_my_ip' );`
 
-And another is adding `RD` as a country code into `White list` or `Black list`.
+Another method is adding a country code into `White list` or `Black list`.
 Most of the IP Geolocation services return empty (with some status) if a local 
 IP address (e.g. 127.0.0.0) is sent, but only `freegeoip.net` returns `RD`.
 
@@ -84,6 +84,15 @@ add_filter( 'ip-geo-block-validate', 'your_validation' );`
 
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
+
+= Can I change user agent strings when fetching services? =
+Yes. The default is something like `Wordpress/3.9.2; ip-geo-block 1.0.4`.
+You can change it as follows:
+
+`function your_user_agent( $user_agent ) {
+    return 'your original user agent strings';
+}
+add_filter( 'ip-geo-block-user-agent', 'your_user_agent' );`
 
 == Other Notes ==
 
@@ -136,6 +145,10 @@ deactivated and then activated.
 4. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 1.0.4 =
+* Fixed bug of setting user agent strings.
+  Use `ip-geo-block-user-agent` for filter hook to change strings.
 
 = 1.0.3 =
 * Temporarily stop setting user agent strings to avaoid bug at commenting.

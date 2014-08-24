@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 1.0.1\n"
+"Project-Id-Version: IP Geo Block 1.0.4\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
 "POT-Creation-Date: 2014-02-02 13:39+0900\n"
-"PO-Revision-Date: 2014-02-02 22:09+0900\n"
+"PO-Revision-Date: 2014-08-24 13:06+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -216,6 +216,6 @@ msgstr ""
 msgid "successfully updated"
 msgstr ""
 
-#: classes/class-ip-geo-block.php:390
+#: classes/class-ip-geo-block.php:403
 msgid "Sorry, your comment cannot be accepted."
 msgstr ""

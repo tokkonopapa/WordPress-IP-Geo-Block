@@ -160,6 +160,7 @@ on the `statistics` tab of this plugin's option page.
 
 #### Change log
 
+- 1.0.4  Fixed bug of setting user agent strings.
 - 1.0.3  Temporarily stop setting user agent strings to avaoid bug
          at commenting.
 - 1.0.2  Update provider settings (`class-ip-geo-block-api.php`).

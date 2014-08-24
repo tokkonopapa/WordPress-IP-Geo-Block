@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 1.0.1\n"
+"Project-Id-Version: IP Geo Block 1.0.4\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-02-02 13:40+0900\n"
-"PO-Revision-Date: 2014-02-02 22:11+0900\n"
+"POT-Creation-Date: 2014-02-02 13:39+0900\n"
+"PO-Revision-Date: 2014-08-24 13:27+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -219,33 +219,6 @@ msgstr "有効"
 msgid "successfully updated"
 msgstr "更新に成功しました"
 
-#: classes/class-ip-geo-block.php:390
+#: classes/class-ip-geo-block.php:403
 msgid "Sorry, your comment cannot be accepted."
 msgstr "申し訳ありませんが、投稿できません。"
-
-#~ msgid "Validation settings"
-#~ msgstr "検証の設定"
-
-#~ msgid "Search geolocation of IP address"
-#~ msgstr "IPアドレスの位置情報を検索する"
-
-#~ msgid "Service provider"
-#~ msgstr "サービスプロバイダー"
-
-#~ msgid "Provider settings"
-#~ msgstr "プロバイダーの設定"
-
-#~ msgid "Service provider and API key"
-#~ msgstr "プロバイダーとAPIキー"
-
-#~ msgid "Post options"
-#~ msgstr "投稿のオプション"
-
-#~ msgid "Text position on comment form"
-#~ msgstr "投稿フォーム上のメッセージ位置"
-
-#~ msgid "Geolocation"
-#~ msgstr "検索"
-
-#~ msgid "Check IP in case of IPV6"
-#~ msgstr "IPv6をチェックする"
