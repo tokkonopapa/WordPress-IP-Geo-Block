@@ -61,9 +61,9 @@ filter hook with `add_filter()`.
 #### Using with IP2Location WordPress Plugins
 
 If you have installed one of the IP2Location plugin (
+    [IP2Location Country Blocker][IP2L_CBlk],
     [IP2Location Tags][IP2L_Tags],
-    [IP2Location Variables][IP2L_Vars],
-    [IP2Location Country Blocker][IP2L_CBlk]
+    [IP2Location Variables][IP2L_Vars]
 ) correctly, or rename it to `ip2location` and upload it to `wp-content`, 
 this plugin uses it instead of REST APIs.
 
