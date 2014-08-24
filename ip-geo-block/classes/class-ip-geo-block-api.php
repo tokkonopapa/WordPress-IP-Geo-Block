@@ -10,10 +10,9 @@
  */
 
 /**
- * Default timeout in second (same as wordpress default)
- * @link http://codex.wordpress.org/Function_Reference/wp_remote_get
+ * Service type
+ *
  */
-define( 'IP_GEO_BLOCK_API_TIMEOUT', 5 );
 define( 'IP_GEO_BLOCK_API_TYPE_IPV4', 1 ); // can handle IPv4
 define( 'IP_GEO_BLOCK_API_TYPE_IPV6', 2 ); // can handle IPv6
 define( 'IP_GEO_BLOCK_API_TYPE_BOTH', 3 ); // can handle both IPv4 and IPv6
@@ -77,7 +76,7 @@ abstract class IP_Geo_Block_API {
 	 * Get geolocation information from service provider
 	 *
 	 */
-	public function get_location( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
+	public function get_location( $ip, $args = array() ) {
 
 		// check supported type of IP address
 		if ( ! ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && ( $this->api_type & IP_GEO_BLOCK_API_TYPE_IPV4 ) ) &&
@@ -89,11 +88,9 @@ abstract class IP_Geo_Block_API {
 		$tmp = $this->build_url( $ip );
 
 		// for Wordpress ($res->get_error_message())
+		// http://codex.wordpress.org/Function_Reference/wp_remote_get
 		if ( function_exists( "wp_remote_get" ) ) { // @since 2.7
-			$res = @wp_remote_get( $tmp,
-				array( 'timeout' => $timeout ) +
-				apply_filters( 'ip-geo-block-headers', array() )
-			);
+			$res = @wp_remote_get( $tmp, $args );
 			$tmp = wp_remote_retrieve_header( $res, 'content-type' );
 			$res = wp_remote_retrieve_body( $res );
 		}
@@ -103,7 +100,7 @@ abstract class IP_Geo_Block_API {
 			// save default timeout and set new timeout
 			$ini_timeout = @ini_get( 'default_socket_timeout' );
 			if ( $ini_timeout )
-				@ini_set( 'default_socket_timeout', $timeout );
+				@ini_set( 'default_socket_timeout', $args['timeout'] );
 
 			$res = @file_get_contents( $tmp );
 
@@ -177,9 +174,9 @@ abstract class IP_Geo_Block_API {
 	 *
 	 * Override this method if a provider supports this feature for quick response.
 	 */
-	public function get_country( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
+	public function get_country( $ip, $args = array() ) {
 
-		$res = $this->get_location( $ip, $timeout );
+		$res = $this->get_location( $ip, $args );
 
 		if ( ! empty( $res ) && isset( $res['countryCode'] ) ) {
 			// if country code is '-' or 'UNDEFINED' then error.
@@ -260,8 +257,8 @@ class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
 		'longitude'   => 'loc',
 	);
 
-	public function get_location( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
-		$res = parent::get_location( $ip, $timeout );
+	public function get_location( $ip, $args = array() ) {
+		$res = parent::get_location( $ip, $args );
 		if ( ! empty( $res ) && isset( $res['latitude'] ) ) {
 			$loc = explode( ',', $res['latitude'] );
 			$res['latitude' ] = $loc[0];
@@ -270,10 +267,10 @@ class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
 		return $res;
 	}
 
-	public function get_country( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
+	public function get_country( $ip, $args = array() ) {
 		$this->api_template['format'] = '';
 		$this->api_template['option'] = 'country';
-		return parent::get_country( $ip, $timeout );
+		return parent::get_country( $ip, $args );
 	}
 }
 
@@ -367,11 +364,11 @@ class IP_Geo_Block_API_IPJson extends IP_Geo_Block_API {
 		'longitude'   => 'longitude',
 	);
 
-	public function get_location( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
+	public function get_location( $ip, $args = array() ) {
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			$this->api_template['format'] = 'v6';
 		}
-		return parent::get_location( $ip, $timeout );
+		return parent::get_location( $ip, $args );
 	}
 }
 
@@ -558,9 +555,9 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
 		'longitude'   => 'longitude',
 	);
 
-	public function get_country( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
+	public function get_country( $ip, $args = array() ) {
 		$this->api_template['option'] = 'ip-country';
-		return parent::get_country( $ip, $timeout );
+		return parent::get_country( $ip, $args );
 	}
 }
 
@@ -598,7 +595,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 		'longitude'   => 'longitude',
 	);
 
-	public function get_location( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
+	public function get_location( $ip, $args = array() ) {
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			try {
 				$geo = new IP2Location( IP_GEO_BLOCK_IP2LOCATION_DB );
@@ -623,8 +620,8 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 		return FALSE;
 	}
 
-	public function get_country( $ip, $timeout = IP_GEO_BLOCK_API_TIMEOUT ) {
-		$res = $this->get_location( $ip );
+	public function get_country( $ip, $args = array() ) {
+		$res = $this->get_location( $ip, $args );
 		return $res ? $res['countryCode'] : FALSE;
 	}
 }
