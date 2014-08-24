@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
 	 */
-	const VERSION = '1.0.3';
+	const VERSION = '1.0.4';
 
 	/**
 	 * Instance of this class.
@@ -214,22 +214,12 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Set User Agent strings for WP_Http
-	 * @see https://developer.wordpress.org/reference/classes/wp_http/request/
-	 */
-	public function set_user_agent( $headers ) {
-		global $wp_version;
-		$headers['user-agent'] = apply_filters(
-			'ip-geo-block-headers-useragent',
-			'WordPress/' . $wp_version . '; ' . $this->plugin_slug . VERSION
-		);
-	}
-
-	/**
 	 * Check user's geolocation.
 	 *
 	 */
 	public function check_location( $commentdata, $settings ) {
+		global $wp_version;
+
 		// if the post has been already marked as 'blocked' then return
 		if ( isset( $commentdata[ $this->plugin_slug ] ) &&
 			'blocked' === $commentdata[ $this->plugin_slug ]['result'] ) {
@@ -264,6 +254,17 @@ class IP_Geo_Block {
 		// get ip address
 		$ip = apply_filters( $this->plugin_slug . '-addr', $_SERVER['REMOTE_ADDR'] );
 
+		// set arguments for wp_remote_get()
+		// http://codex.wordpress.org/Function_Reference/wp_remote_get
+		$name = $this->plugin_slug;
+		$args = array(
+			'timeout' => $settings['timeout'],
+			'user-agent' => apply_filters(
+				$name . '-user-agent',
+				'WordPress/' . $wp_version . '; ' . $name . ' ' . VERSION
+			)
+		);
+
 		foreach ( $list as $provider ) {
 			$name = IP_Geo_Block_API::get_class_name( $provider );
 			if ( $name ) {
@@ -273,7 +274,7 @@ class IP_Geo_Block {
 				// get country code
 				$key = ! empty( $settings['providers'][ $provider ] );
 				$geo = new $name( $key ? $settings['providers'][ $provider ] : NULL );
-				$code = strtoupper( $geo->get_country( $ip, $settings['timeout'] ) );
+				$code = strtoupper( $geo->get_country( $ip, $args ) );
 
 				// process time
 				$time = microtime( TRUE ) - $time;
@@ -366,7 +367,6 @@ class IP_Geo_Block {
 
 		// register the validation function
 		$code = $this->plugin_slug;
-//		add_filter( "${code}-headers",  array( $this, 'set_user_agent' ), 10, 1 );
 		add_filter( "${code}-validate", array( $this, 'check_location' ), 10, 2 );
 
 		// validate and update statistics
