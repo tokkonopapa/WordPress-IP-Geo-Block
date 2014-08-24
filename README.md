@@ -131,18 +131,18 @@ Yes, you can use `add_filter()` with filter hook `ip-geo-block-validate` in
 somewhere (typically `functions.php` in your theme) as follows:
 
 ```php
-function your_validation( $commentdata ) {
-    // your validation code here
+function my_validation( $commentdata ) {
+    // validation code here
     ...;
 
-    if ( ... /* if your validation fails */ ) {
+    if ( ... /* if validation fails */ ) {
         // tell the plugin this comment should be blocked!!
         $commentdata['ip-geo-block']['result'] = 'blocked';
     }
 
     return $commentdata;
 }
-add_filter( 'ip-geo-block-validate', 'your_validation' );
+add_filter( 'ip-geo-block-validate', 'my_validation' );
 ```
 
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
@@ -154,10 +154,11 @@ Yes. The default is something like `Wordpress/3.9.2; ip-geo-block 1.0.4`.
 You can change it as follows:
 
 ```php
-function your_user_agent( $user_agent ) {
-    return 'your original user agent strings';
+function my_user_agent( $args ) {
+    $args['user-agent'] = 'original user agent strings';
+    return $args;
 }
-add_filter( 'ip-geo-block-user-agent', 'your_user_agent' );
+add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 ```
 
 ### Notes:

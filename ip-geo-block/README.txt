@@ -69,18 +69,18 @@ IP address (e.g. 127.0.0.0) is sent, but only `freegeoip.net` returns `RD`.
 Yes, you can use `add_filter()` with filter hook `ip-geo-block-validate` in 
 somewhere (typically `functions.php` in your theme) as follows:
 
-`function your_validation( $commentdata ) {
-    // your validation code here
+`function my_validation( $commentdata ) {
+    // validation code here
     ...;
 
-    if ( ... /* if your validation fails */ ) {
+    if ( ... /* if validation fails */ ) {
         // tell the plugin this comment should be blocked!!
         $commentdata['ip-geo-block']['result'] = 'blocked';
     }
 
     return $commentdata;
 }
-add_filter( 'ip-geo-block-validate', 'your_validation' );`
+add_filter( 'ip-geo-block-validate', 'my_validation' );`
 
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
@@ -90,10 +90,11 @@ on the `statistics` tab of this plugin's option page.
 Yes. The default is something like `Wordpress/3.9.2; ip-geo-block 1.0.4`.
 You can change it as follows:
 
-`function your_user_agent( $user_agent ) {
-    return 'your original user agent strings';
+`function my_user_agent( $args ) {
+    $args['user-agent'] = 'original user agent strings';
+    return $args;
 }
-add_filter( 'ip-geo-block-user-agent', 'your_user_agent' );`
+add_filter( 'ip-geo-block-headers', 'my_user_agent' );`
 
 == Other Notes ==
 
@@ -149,7 +150,7 @@ deactivated and then activated.
 
 = 1.0.4 =
 * Fixed bug of setting user agent strings.
-  Use `ip-geo-block-user-agent` for filter hook to change strings.
+  Use `ip-geo-block-headers` for filter hook to change strings.
 
 = 1.0.3 =
 * Temporarily stop setting user agent strings to avaoid bug at commenting.

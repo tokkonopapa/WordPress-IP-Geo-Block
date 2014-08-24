@@ -257,11 +257,11 @@ class IP_Geo_Block {
 		// set arguments for wp_remote_get()
 		// http://codex.wordpress.org/Function_Reference/wp_remote_get
 		$name = $this->plugin_slug;
-		$args = array(
-			'timeout' => $settings['timeout'],
-			'user-agent' => apply_filters(
-				$name . '-user-agent',
-				'WordPress/' . $wp_version . '; ' . $name . ' ' . VERSION
+		$args = apply_filters(
+			$name . '-headers',
+			array(
+				'timeout' => $settings['timeout'],
+				'user-agent' => "WordPress/$wp_version; $name " . self::VERSION
 			)
 		);
 
