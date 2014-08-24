@@ -86,6 +86,7 @@ Then you can find `ZZ` as a country code in the list of `Blocked by countries`
 on the `statistics` tab of this plugin's option page.
 
 = Can I change user agent strings when fetching services? =
+
 Yes. The default is something like `Wordpress/3.9.2; ip-geo-block 1.0.4`.
 You can change it as follows:
 

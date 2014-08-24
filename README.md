@@ -74,7 +74,7 @@ Thanks for providing these great services and REST APIs for free.
     Provider                               | Supported type | Licence
     ---------------------------------------|----------------|--------
     [http://freegeoip.net/]    [freegeoip] | IPv4           | free
-    [http://ipinfo.io/]           [ipinfo] | IPv4           | free
+    [http://ipinfo.io/]           [ipinfo] | IPv4, IPv6     | free
     [http://www.telize.com/]      [Telize] | IPv4, IPv6     | free
     [http://www.iptolatlng.com/]   [IP2LL] | IPv4, IPv6     | free
     [http://ip-json.rhcloud.com/] [IPJson] | IPv4, IPv6     | free
@@ -113,8 +113,8 @@ function substitute_my_ip( $ip ) {
 add_filter( 'ip-geo-block-addr', 'substitute_my_ip' );
 ```
 
-And another is adding `RD` as a country code into `White list` or `Black list` 
-on the plugin settings page. Most of the IP Geolocation services return empty 
+Another method is adding a country code into `White list` or `Black list` on 
+the plugin settings page. Most of the IP Geolocation services return empty 
 (with some status) if a local IP address (e.g. 127.0.0.0) is sent, but only 
 `freegeoip.net` returns `RD`.
 
@@ -140,6 +140,18 @@ add_filter( 'ip-geo-block-validate', 'your_validation' );
 
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
+
+#### Can I change user agent strings when fetching services ? ####
+
+Yes. The default is something like `Wordpress/3.9.2; ip-geo-block 1.0.4`.
+You can change it as follows:
+
+```php
+function your_user_agent( $user_agent ) {
+    return 'your original user agent strings';
+}
+add_filter( 'ip-geo-block-user-agent', 'your_user_agent' );
+```
 
 ### Notes:
 
