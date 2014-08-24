@@ -60,6 +60,13 @@ filter hook with `add_filter()`.
 
 #### Using with IP2Location WordPress Plugins
 
+If you have installed one of the IP2Location plugin (
+    [IP2Location Tags][IP2L_Tags],
+    [IP2Location Variables][IP2L_Vars],
+    [IP2Location Country Blocker][IP2L_CBlk]
+) correctly, or rename it to `ip2location` and upload it to `wp-content`, 
+this plugin uses it instead of REST APIs.
+
 After installing IP2Location WordPress Plugins, this plugin should be once 
 deactivated and then activated.
 
@@ -222,3 +229,6 @@ This plugin is licensed under the GPL v2 or later.
 [BHS]: http://blackhole.webpagetest.org/
 [ISO]: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
 [RFC]: http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
+[IP2L_Tags]: http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"
+[IP2L_Vars]: http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"
+[IP2L_CBlk]: http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins"
