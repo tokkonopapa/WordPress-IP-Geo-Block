@@ -13,11 +13,11 @@ before Akismet validate it.
 code from an IP address. There are two types of API which support only IPv4 or 
 both IPv4 and IPv6. This plugin will automatically select an appropriate API.
 
-3. If you have installed one of the IP2Location plugin
-([IP2Location Tags][IP2Tag],
- [IP2Location Variables][IP2Var],
- [IP2Location Country Blocker][IP2Blk])
-correctly, this plugin uses it instead of REST APIs.
+3. If you have installed one of the IP2Location plugin (
+    [IP2Location Tags][IP2Tag],
+    [IP2Location Variables][IP2Var],
+    [IP2Location Country Blocker][IP2Blk]
+) correctly, this plugin uses its local database prior to REST APIs.
 
 4. Custom validation function can be added using `ip-geo-block-validate` 
 filter hook with `add_filter()`.
@@ -32,8 +32,7 @@ filter hook with `add_filter()`.
 - **Service provider and API key**  
     If you wish to use `IPInfoDB`, you should register from [here][register]
     to get a free API key and set it into the textfield. And `ip-api.com` and 
-    `Smart-IP.net` require non-commercial use. If you wish to use these APIs, 
-    you should put a word (anything you like) into the textfield.
+    `Smart-IP.net` require non-commercial use.
 
 - **Text position on comment form**  
     If you wish to put some text message on your comment form, please select
@@ -61,11 +60,11 @@ filter hook with `add_filter()`.
 #### Using with IP2Location WordPress Plugins
 
 If you have installed one of the IP2Location plugin (
-    [IP2Location Country Blocker][IP2L_CBlk],
-    [IP2Location Tags][IP2L_Tags],
-    [IP2Location Variables][IP2L_Vars]
+    [IP2Location Tags][IP2Tag],
+    [IP2Location Variables][IP2Var],
+    [IP2Location Country Blocker][IP2Blk]
 ) correctly, or rename it to `ip2location` and upload it to `wp-content`, 
-this plugin uses it instead of REST APIs.
+this plugin uses its local database prior to REST APIs.
 
 After installing IP2Location WordPress Plugins, this plugin should be once 
 deactivated and then activated.
@@ -180,9 +179,8 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 
 #### Change log
 
-- 1.0.4  Fixed bug of setting user agent strings.
-- 1.0.3  Temporarily stop setting user agent strings to avaoid bug
-         at commenting.
+- 1.0.4  Fixed a bug of setting user agent strings in 1.0.2.
+- 1.0.3  Temporarily stop setting user agent strings to supress a bug in 1.0.2.
 - 1.0.2  Update provider settings (`class-ip-geo-block-api.php`).
          Set user agent strings for `WP_Http` (`class-ip-geo-block.php`).
 - 1.0.1  Modify Plugin URL.
@@ -230,6 +228,3 @@ This plugin is licensed under the GPL v2 or later.
 [BHS]: http://blackhole.webpagetest.org/
 [ISO]: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
 [RFC]: http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
-[IP2L_Tags]: http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"
-[IP2L_Vars]: http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"
-[IP2L_CBlk]: http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins"

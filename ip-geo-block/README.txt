@@ -26,7 +26,8 @@ If you have installed one of the IP2Location plugin (
 [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"),
 [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"),
 [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins")
-) correctly, or rename it to `ip2location` and upload it to `wp-content`, this plugin uses it instead of REST APIs.
+) correctly, or rename it to `ip2location` and upload it to `wp-content`, 
+this plugin uses its local database prior to REST APIs.
 
 == Installation ==
 
@@ -104,8 +105,7 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );`
     If you want to use `IPInfoDB`, you should register from 
     [their site](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools")
     to get a free API key and set it into the textfield. And `ip-api.com` and 
-    `Smart-IP.net` require non-commercial use. To use these APIs, you should 
-    put a word (anything you like) into the textfield.
+    `Smart-IP.net` require non-commercial use.
 
 * **Text position on comment form**  
     If you want to put some text message on your comment form, please select
@@ -149,18 +149,17 @@ deactivated and then activated.
 == Changelog ==
 
 = 1.0.4 =
-* Fixed bug of setting user agent strings.
-  Use `ip-geo-block-headers` for filter hook to change strings.
+* Alter the default user agent strings (for example, 
+ `WordPress/3.9.2; http://example.com/`) to its own (
+ `WordPress/3.9.2; ip-geo-block 1.0.4`).
 
 = 1.0.3 =
-* Temporarily stop setting user agent strings to avaoid bug at commenting.
+* Temporarily stop setting user agent strings to supress a bug in 1.0.2.
 
 = 1.0.2 =
 * Update provider settings. Smart-IP.net was terminated, ipinfo.io is now
   available for IPv6.
-* Set original user agent strings for `WP_Http`.
-  Now suppressed `bloginfo('url')` and added plugin name and version.
-  Use `ip-geo-block-headers-useragent` with filter hook to change strings.
+* Set the own user agent strings for `WP_Http`.
 
 = 1.0.1 =
 * Modify Plugin URL.
