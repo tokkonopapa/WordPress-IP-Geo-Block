@@ -174,8 +174,9 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 - 0.8    Localization.
 - 0.9    Remove unneeded functions and comments.
 - 1.0    Simplify jQuery Google Map plugin.
-- 1.1    Cooperation with W3C Geolocation to let a foreigner post a comment.
-- 1.2    Send post to Akismet.
+- 1.1    Make cache (Object Cache) to reduce load on the server.
+- 1.2    Cooperation with W3C Geolocation to let a foreigner post a comment.
+- 1.3    Send post to Akismet.
 
 #### Change log
 
