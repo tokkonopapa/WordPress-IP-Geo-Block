@@ -13,11 +13,11 @@ before Akismet validate it.
 code from an IP address. There are two types of API which support only IPv4 or 
 both IPv4 and IPv6. This plugin will automatically select an appropriate API.
 
-3. If you have installed one of the IP2Location plugin (
+3. If you have correctly installed one of the IP2Location plugins (
     [IP2Location Tags][IP2Tag],
     [IP2Location Variables][IP2Var],
     [IP2Location Country Blocker][IP2Blk]
-) correctly, this plugin uses its local database prior to REST APIs.
+), this plugin uses its local database prior to the REST APIs.
 
 4. Custom validation function can be added using `ip-geo-block-validate` 
 filter hook with `add_filter()`.
@@ -48,10 +48,10 @@ filter hook with `add_filter()`.
     Each of them should be separated by comma.
 
 - **Response code**  
-    Select one of the [response code][RFC] to to be sent when it blocks a 
-    comment. The 2xx code will refresh to your top page, the 3xx code will 
-    redirect to [Black Hole Server][BHS], the 4xx code will lead to WordPress 
-    error page, and the 5xx will pretend an error.
+    Select one of the [response code][RFC] to be sent when it blocks a comment.
+    The 2xx code will refresh to your top page, the 3xx code will redirect to
+    [Black Hole Server][BHS], the 4xx code will lead to WordPress error page, 
+    and the 5xx will pretend an error.
 
 - **Remove settings at uninstallation**  
     If you checked this option, all settings will be removed when this plugin
@@ -59,15 +59,16 @@ filter hook with `add_filter()`.
 
 #### Using with IP2Location WordPress Plugins
 
-If you have installed one of the IP2Location plugin (
+If you do not want to keep the IP2Location plugins (
     [IP2Location Tags][IP2Tag],
     [IP2Location Variables][IP2Var],
     [IP2Location Country Blocker][IP2Blk]
-) correctly, or rename it to `ip2location` and upload it to `wp-content`, 
-this plugin uses its local database prior to REST APIs.
+) in `wp-content/plugins/` directory but just want to use its database, 
+you can rename it to `ip2location` and upload it to `wp-content/`.
 
-After installing IP2Location WordPress Plugins, this plugin should be once 
-deactivated and then activated.
+After installing these IP2Location plugins, this plugin should be once 
+deactivated and then activated in order to set the path to `database.bin` 
+and `ip2location.class.php`.
 
 ### Requirement:
 
@@ -109,7 +110,7 @@ Check `statistics` tab on this plugin's option page.
 #### How can I test on the local site ? ####
 
 There are two ways. One is to add some code somewhere in your php (typically 
-`functions.php` in your theme) to substitute local IP address through filter
+`functions.php` in your theme) to substitute local IP address through filter 
 fook `ip-geo-block-addr` as follows:
 
 ```php
@@ -147,6 +148,8 @@ add_filter( 'ip-geo-block-validate', 'my_validation' );
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
 
+See [preprocess comment][codex] for more detail about `$commentdata`.
+
 #### Can I change user agent strings when fetching services ? ####
 
 Yes. The default is something like `Wordpress/3.9.2; ip-geo-block 1.0.4`.
@@ -174,9 +177,9 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 - 0.8    Localization.
 - 0.9    Remove unneeded functions and comments.
 - 1.0    Simplify jQuery Google Map plugin.
-- 1.1    Make cache (Object Cache) to reduce load on the server.
-- 1.2    Cooperation with W3C Geolocation to let a foreigner post a comment.
-- 1.3    Send post to Akismet.
+- 1.1    Make some cache (Object Cache) to reduce load on the server.
+- 1.2    Make use of W3C Geolocation to let a foreigner post a comment.
+- 1.3    Send spam comments to Akismet.
 
 #### Change log
 
@@ -226,6 +229,7 @@ This plugin is licensed under the GPL v2 or later.
 [IP2Var]:   http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"
 [IP2Blk]:   http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins"
 [register]: http://ipinfodb.com/register.php
-[BHS]: http://blackhole.webpagetest.org/
-[ISO]: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
-[RFC]: http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
+[codex]:    http://codex.wordpress.org/Plugin_API/Filter_Reference/preprocess_comment "Plugin API/Filter Reference/preprocess comment &laquo; WordPress Codex"
+[BHS]:      http://blackhole.webpagetest.org/
+[ISO]:      http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
+[RFC]:      http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"

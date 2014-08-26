@@ -12,22 +12,49 @@ A WordPress plugin that blocks any comments posted from outside your nation.
 
 == Description ==
 
-This plugin will block any comments posted from outside the specified countries.
+This plugin will examine a country code based on the posting author's IP 
+address. If the comment comes from undesired country, it will be blocked 
+before Akismet validate it.
 
-In order to check the county of the posting author by IP address, this plugin 
-uses the IP address Geolocation REST APIs.
+Free IP Geolocation REST APIs are installed in this plugin to get a country 
+code from an IP address. There are two types of API which support only IPv4 or 
+both IPv4 and IPv6. This plugin will automatically select an appropriate API.
 
-Some of these services and APIs include GeoLite data created by 
-[MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"),
-and some include IP2Location LITE data available from 
-[IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
+= Using with IP2Location WordPress Plugins =
 
-If you have installed one of the IP2Location plugin (
-[IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"),
-[IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"),
-[IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins")
-) correctly, or rename it to `ip2location` and upload it to `wp-content`, 
-this plugin uses its local database prior to REST APIs.
+If you have correctly installed one of the IP2Location plugins (
+    [IP2Location Tags][IP2Tag],
+    [IP2Location Variables][IP2Var],
+    [IP2Location Country Blocker][IP2Blk]
+), this plugin uses its local database prior to the REST APIs.
+
+After installing these IP2Location plugins, this plugin should be once 
+deactivated and then activated in order to set the path to `database.bin` 
+and `ip2location.class.php`.
+
+= Development =
+
+Development of this plugin is promoted on [GitHub][github]. All contributions 
+will be welcome.
+
+= Attribution =
+
+Thanks for providing these great services for free.
+
+* [http://freegeoip.net/][freegeoip]     (IPv4 / free)
+* [http://ipinfo.io/][ipinfo]            (IPv4, IPv6 / free)
+* [http://www.telize.com/][Telize]       (IPv4, IPv6 / free)
+* [http://www.iptolatlng.com/][IP2LL]    (IPv4, IPv6 / free)
+* [http://ip-json.rhcloud.com/][IPJson]  (IPv4, IPv6 / free)
+* [http://xhanch.com/][Xhanch]           (IPv4 / free)
+* [http://mshd.net/][mshdnet]            (IPv4, IPv6 / free)
+* [http://www.geoplugin.com/][geoplugin] (IPv4, IPv6 / free, need an attribution link)
+* [http://ip-api.com/][ipapi]            (IPv4, IPv6 / free for non-commercial use)
+* [http://smart-ip.net/][smartip]        (IPv4, IPv6 / free for personal and non-commercial use)
+* [http://ipinfodb.com/][IPInfoDB]       (IPv4, IPv6 / free for registered user, need API key)
+
+Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind],
+and some include IP2Location LITE data available from [IP2Location][IP2Loc].
 
 == Installation ==
 
@@ -37,6 +64,36 @@ this plugin uses its local database prior to REST APIs.
 2. Search for 'IP Geo Block'
 3. Click 'Install Now'
 4. Activate the plugin on the Plugin dashboard
+
+= Settings =
+
+* **Service provider and API key**  
+    If you want to use `IPInfoDB`, you should register from 
+	[their site][IPInfoDB] to get a free API key and set it into the textfield.
+	And `ip-api.com` and `Smart-IP.net` require non-commercial use.
+
+* **Text position on comment form**  
+    If you want to put some text message on your comment form, please select
+    `Top` or `Bottom` and put text into the **Text message on comment form**
+    textfield.
+
+* **Matching rule**  
+    Select `White list` (recommended) or `Black list` to specify the countries
+    from which you want to pass or block.
+
+* **White list**, **Black list**  
+    Specify the country code with two letters (see [ISO 3166-1 alpha-2][ISO]).
+	Each of them should be separated by comma.
+
+* **Response code**  
+    Select one of the [response code][RFC] to be sent when it blocks a comment.
+	The 2xx code will refresh to your top page, the 3xx code will redirect to 
+    [Black Hole Server][BHS], the 4xx code will lead to WordPress error page, 
+	and the 5xx will pretend an error.
+
+* **Remove settings at uninstallation**  
+    If you checked this option, all settings will be removed when this plugin
+    is uninstalled for clean uninstalling.
 
 == Frequently Asked Questions ==
 
@@ -52,9 +109,9 @@ Check `statistics` tab on this plugin's option page.
 
 = How can I test on the local site? =
 
-There are two ways. One is to add some code somewhere in your php (typically 
-`functions.php` in your theme) to substitute local IP address through filter
-fook `ip-geo-block-addr` as follows:
+There are two ways. One is to add some code somewhere in your php 
+(typically `functions.php` in your theme) to substitute local IP address 
+through filter fook `ip-geo-block-addr` as follows:
 
 `function substitute_my_ip( $ip ) {
     return '98.139.183.24'; // yahoo.com
@@ -86,6 +143,8 @@ add_filter( 'ip-geo-block-validate', 'my_validation' );`
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
 
+See [preprocess comment][codex] for more detail about `$commentdata`.
+
 = Can I change user agent strings when fetching services? =
 
 Yes. The default is something like `Wordpress/3.9.2; ip-geo-block 1.0.4`.
@@ -99,45 +158,12 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );`
 
 == Other Notes ==
 
-= Settings on Dashboard =
-
-* **Service provider and API key**  
-    If you want to use `IPInfoDB`, you should register from 
-    [their site](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools")
-    to get a free API key and set it into the textfield. And `ip-api.com` and 
-    `Smart-IP.net` require non-commercial use.
-
-* **Text position on comment form**  
-    If you want to put some text message on your comment form, please select
-    `Top` or `Bottom` and put text into the **Text message on comment form**
-    textfield.
-
-* **Matching rule**  
-    Select `White list` (recommended) or `Black list` to specify the countries
-    from which you want to pass or block.
-
-* **White list**, **Black list**  
-    Specify the country code with two letters (see 
-    [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")
-    ). Each of them should be separated by comma.
-
-* **Response code**  
-    Select one of the 
-    [response code](http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1")
-    to to be sent when it blocks a comment. The 2xx code will refresh to your 
-    top page, the 3xx code will redirect to 
-    [Black Hole Server](http://blackhole.webpagetest.org/),
-    the 4xx code will lead to WordPress error page, and the 5xx will pretend 
-    an error.
-
-* **Remove settings at uninstallation**  
-    If you checked this option, all settings will be removed when this plugin
-    is uninstalled for clean uninstalling.
-
-= Using with IP2Location WordPress Plugins =
-
-After installing IP2Location WordPress Plugins, this plugin should be once 
-deactivated and then activated.
+If you do not want to keep the IP2Location plugins (
+    [IP2Location Tags][IP2Tag],
+    [IP2Location Variables][IP2Var],
+    [IP2Location Country Blocker][IP2Blk]
+) in `wp-content/plugins/` directory but just want to use its database, 
+you can rename it to `ip2location` and upload it to `wp-content/`.
 
 == Screenshots ==
 
@@ -207,22 +233,6 @@ deactivated and then activated.
 
 == Upgrade Notice ==
 
-== Arbitrary section ==
-
-Thanks for providing these great services for free.
-
-* [http://freegeoip.net/][freegeoip]    (free)
-* [http://ipinfo.io/][ipinfo]           (free)
-* [http://www.telize.com/][Telize]      (free)
-* [http://www.iptolatlng.com/][IP2LL]   (free)
-* [http://ip-json.rhcloud.com/][IPJson] (free)
-* [http://xhanch.com/][Xhanch]          (free)
-* [http://mshd.net/][mshdnet]           (free)
-* [http://www.geoplugin.com/][geoplugin](free, need an attribution link)
-* [http://ip-api.com/][ipapi]           (free for non-commercial use)
-* [http://smart-ip.net/][smartip]       (free for personal and non-commercial use)
-* [http://ipinfodb.com/][IPInfoDB]      (free for registered user, need API key)
-
 [freegeoip]:http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service"
 [ipinfo]:   http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details"
 [Telize]:   http://www.telize.com/ "Telize - JSON IP and GeoIP REST API"
@@ -239,6 +249,8 @@ Thanks for providing these great services for free.
 [IP2Tag]:   http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"
 [IP2Var]:   http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"
 [IP2Blk]:   http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins"
-[BHS]: http://blackhole.webpagetest.org/
-[ISO]: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
-[RFC]: http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
+[github]:   https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block · GitHub"
+[codex]:    http://codex.wordpress.org/Plugin_API/Filter_Reference/preprocess_comment "Plugin API/Filter Reference/preprocess comment &laquo; WordPress Codex"
+[BHS]:      http://blackhole.webpagetest.org/
+[ISO]:      http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
+[RFC]:      http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
