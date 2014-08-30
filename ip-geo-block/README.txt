@@ -162,6 +162,9 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );`
 
 == Other Notes ==
 
+Before updating to 1.1.x from version 1.0.x, please deactivate then activate 
+this plugin on the plugin dashboard.
+
 If you do not want to keep the IP2Location plugins (
     [IP2Location Tags][IP2Tag],
     [IP2Location Variables][IP2Var],

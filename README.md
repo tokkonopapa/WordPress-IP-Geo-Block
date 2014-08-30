@@ -165,6 +165,9 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 
 ### Notes:
 
+Before updating to 1.1.x from version 1.0.x, please deactivate then activate 
+this plugin on the plugin dashboard.
+
 #### Milestones
 
 - 0.1    Define Geolocation abstract class and child class.
@@ -177,7 +180,7 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 - 0.8    Localization.
 - 0.9    Remove unneeded functions and comments.
 - 1.0    Simplify jQuery Google Map plugin.
-- 1.1    Make some cache (Object Cache) to reduce load on the server.
+- 1.1    Implement cache mechanism to reduce load on the server.
 - 1.2    Make use of W3C Geolocation to let a foreigner post a comment.
 - 1.3    Send spam comments to Akismet.
 
