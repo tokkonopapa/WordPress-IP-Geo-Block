@@ -20,6 +20,10 @@ Free IP Geolocation REST APIs are installed in this plugin to get a country
 code from an IP address. There are two types of API which support only IPv4 or 
 both IPv4 and IPv6. This plugin will automatically select an appropriate API.
 
+Starting with version 1.1.0, the cache mechanism with transient API for the 
+fetched IP addresses has been equipped to reduce load on the server against 
+spam comment.
+
 = Using with IP2Location WordPress Plugins =
 
 If you have correctly installed one of the IP2Location plugins (
