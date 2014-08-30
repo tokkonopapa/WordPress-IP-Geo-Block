@@ -38,7 +38,7 @@ class IP_Geo_Block_Admin {
 
 		// Set unique slug for admin page.
 		$plugin = IP_Geo_Block::get_instance();
-		foreach ( $plugin->get_option_keys() as $key => $val) {
+		foreach ( $plugin->get_option_keys() as $key => $val ) {
 			$this->option_slug[ $key ] = str_replace( '_', '-', $val );
 			$this->option_name[ $key ] = $val;
 		}
@@ -420,6 +420,47 @@ class IP_Geo_Block_Admin {
 			);
 
 			/*----------------------------------------*
+			 * Cache settings
+			 *----------------------------------------*/
+			$section = IP_GEO_BLOCK::PLUGIN_SLUG . '-cache';
+			add_settings_section(
+				$section,
+				__( 'Cache settings', IP_GEO_BLOCK::TEXT_DOMAIN ),
+				NULL,
+				$option_slug
+			);
+
+			$field = 'cache_hold';
+			add_settings_field(
+				$option_name . "_$field",
+				__( 'Number of entries', IP_GEO_BLOCK::TEXT_DOMAIN ),
+				array( $this, 'callback_field' ),
+				$option_slug,
+				$section,
+				array(
+					'type' => 'text',
+					'option' => $option_name,
+					'field' => $field,
+					'value' => $options[ $field ],
+				)
+			);
+
+			$field = 'cache_time';
+			add_settings_field(
+				$option_name . "_$field",
+				__( 'Expiration time [sec]', IP_GEO_BLOCK::TEXT_DOMAIN ),
+				array( $this, 'callback_field' ),
+				$option_slug,
+				$section,
+				array(
+					'type' => 'text',
+					'option' => $option_name,
+					'field' => $field,
+					'value' => $options[ $field ],
+				)
+			);
+
+			/*----------------------------------------*
 			 * Plugin settings
 			 *----------------------------------------*/
 			$section = IP_GEO_BLOCK::PLUGIN_SLUG . '-others';
@@ -566,9 +607,9 @@ class IP_Geo_Block_Admin {
 				)
 			);
 
-			$field = 'providers';
+			$field = 'services';
 			$html = "<table class=\"${option_slug}-${field}\"><thead><tr>";
-			$html .= "<th>" . __( 'Provider', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
+			$html .= "<th>" . __( 'Service', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
 			$html .= "<th>" . __( 'Calls', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
 			$html .= "<th>" . __( 'Response [msec]', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
 			$html .= "</tr></thead><tbody>";
@@ -583,7 +624,40 @@ class IP_Geo_Block_Admin {
 
 			add_settings_field(
 				$option_name . "_$field",
-				__( 'Average response time of each provider', IP_GEO_BLOCK::TEXT_DOMAIN ),
+				__( 'Average response time of each service', IP_GEO_BLOCK::TEXT_DOMAIN ),
+				array( $this, 'callback_field' ),
+				$option_slug,
+				$section,
+				array(
+					'type' => 'html',
+					'option' => $option_name,
+					'field' => $field,
+					'value' => $html,
+				)
+			);
+
+			$field = 'caches';
+			$html = "<table class=\"${option_slug}-${field}\"><thead><tr>";
+			$html .= "<th>" . __( 'IP Address', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
+			$html .= "<th>" . __( 'Country code', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
+			$html .= "<th>" . __( 'Elapsed time [sec]', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
+			$html .= "</tr></thead><tbody>";
+
+			$transient = get_transient( IP_Geo_Block::CACHE_KEY );
+			if ( $transient ) {
+				$time = time();
+				foreach ( $transient as $key => $val ) {
+					$html .= "<tr><td>$key</td>";
+					$html .= "<td>" . $val['code'] . "</td>";
+					$html .= "<td>" . ($time - $val['time']) . "</td>";
+					$html .= "</tr>";
+				}
+			}
+			$html .= "</tbody></table>";
+
+			add_settings_field(
+				$option_name . "_$field",
+				__( 'IP address in cache', IP_GEO_BLOCK::TEXT_DOMAIN ),
 				array( $this, 'callback_field' ),
 				$option_slug,
 				$section,
@@ -638,7 +712,7 @@ class IP_Geo_Block_Admin {
 
 			// make providers list
 			$list = array();
-			$providers = IP_Geo_Block_Provider::get_providers( 'key' );
+			$providers = IP_Geo_Block_Provider::get_providers( 'key', TRUE, TRUE );
 
 			foreach ( $providers as $provider => $key ) {
 				if ( ! is_string( $key ) ||
@@ -959,6 +1033,7 @@ class IP_Geo_Block_Admin {
 	 * @link http://codex.wordpress.org/Function_Reference/check_ajax_referer
 	 */
 	public function admin_ajax_callback() {
+		require_once( IP_GEO_BLOCK_PATH . '/classes/class-ip-geo-block-api.php' );
 
 		// Check request origin, nonce, capability.
 		if ( ! check_admin_referer( $this->get_ajax_action(), 'nonce' ) || // @since 2.5
@@ -971,9 +1046,6 @@ class IP_Geo_Block_Admin {
 			$ip = $_POST['ip'];
 			if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
 			     filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
-
-				// include utility class
-				require_once( IP_GEO_BLOCK_PATH . '/classes/class-ip-geo-block-api.php' );
 
 				// get location
 				$provider = $_POST['provider'];
@@ -996,16 +1068,16 @@ class IP_Geo_Block_Admin {
 
 				else {
 					$res = array(
-						'statusCode' => 'ERROR',
-						'statusMessage' => 'Invalid provider.',
+						'errorCode' => 'ERROR',
+						'errorMessage' => 'Invalid service.',
 					);
 				}
 			}
 
 			else {
 				$res = array(
-					'statusCode' => 'ERROR',
-					'statusMessage' => 'Invalid IP address.',
+					'errorCode' => 'ERROR',
+					'errorMessage' => 'Invalid IP address.',
 				);
 			}
 
@@ -1019,6 +1091,8 @@ class IP_Geo_Block_Admin {
 				$this->option_name['statistics'],
 				IP_Geo_Block::get_defaults( 'statistics' )
 			);
+			IP_Geo_Block_API_Cache::delete_cache();
+
 			wp_send_json( array(
 				'refresh' => 'options-general.php?page=ip-geo-block&tab=1',
 			) );
@@ -1026,8 +1100,8 @@ class IP_Geo_Block_Admin {
 
 		else {
 			wp_send_json( array(
-				'statusCode' => 'ERROR',
-				'statusMessage' => 'Invalid command.',
+				'errorCode' => 'ERROR',
+				'errorMessage' => 'Invalid command.',
 			) );
 		}
 

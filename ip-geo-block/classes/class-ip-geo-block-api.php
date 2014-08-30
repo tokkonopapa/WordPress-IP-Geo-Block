@@ -35,12 +35,13 @@ abstract class IP_Geo_Block_API {
 	);
 	protected $url_template = 'http://example.com/%API_KEY%/%API_FORMAT%/%API_OPTION%/%API_IP%';
 	protected $transform_table = array(
-		'countryCode' => '',
-		'countryName' => '',
-		'regionName'  => '',
-		'cityName'    => '',
-		'latitude'    => '',
-		'longitude'   => '',
+		'errorMessage' => '',
+		'countryCode'  => '',
+		'countryName'  => '',
+		'regionName'   => '',
+		'cityName'     => '',
+		'latitude'     => '',
+		'longitude'    => '',
 	);
 	*/
 
@@ -59,7 +60,6 @@ abstract class IP_Geo_Block_API {
 	 */
 	private function build_url( $ip ) {
 		$this->api_template['ip'] = $ip;
-
 		return preg_replace(
 			array(
 				'/%API_KEY%/',
@@ -87,10 +87,11 @@ abstract class IP_Geo_Block_API {
 		// build query
 		$tmp = $this->build_url( $ip );
 
-		// for Wordpress ($res->get_error_message())
 		// http://codex.wordpress.org/Function_Reference/wp_remote_get
 		if ( function_exists( "wp_remote_get" ) ) { // @since 2.7
 			$res = @wp_remote_get( $tmp, $args );
+			if ( is_wp_error( $res ) )
+				return array( 'errorMessage' => $res->get_error_message() );
 			$tmp = wp_remote_retrieve_header( $res, 'content-type' );
 			$res = wp_remote_retrieve_body( $res );
 		}
@@ -106,6 +107,11 @@ abstract class IP_Geo_Block_API {
 
 			// find content-type in response header
 			if ( isset( $http_response_header ) ) {
+				if ( strpos( $http_response_header[0], '200' ) === FALSE ) {
+					$tmp = explode( ' ', $http_response_header[0] );
+					return array( 'errorMessage' => $tmp[2] );
+				}
+
 				foreach ( $http_response_header as $tmp ) {
 					$tmp = strtolower( $tmp ); // Content-Type, Content-type, ...
 					if ( strncmp( $tmp, 'content-type:', 13 ) === 0 ) {
@@ -156,13 +162,13 @@ abstract class IP_Geo_Block_API {
 
 		  // unknown format
 		  default:
-			return FALSE;
+			return array( 'errorMessage' => "unsupported content type: $tmp" );
 		}
 
 		// transformation
 		$res = array();
 		foreach ( $this->transform_table as $key => $val ) {
-			if ( isset( $data[ $val ] ) )
+			if ( ! empty( $val ) && ! empty( $data[ $val ] ) )
 				$res[ $key ] = esc_html( $data[ $val ] );
 		}
 
@@ -178,12 +184,11 @@ abstract class IP_Geo_Block_API {
 
 		$res = $this->get_location( $ip, $args );
 
-		if ( ! empty( $res ) && isset( $res['countryCode'] ) ) {
-			// if country code is '-' or 'UNDEFINED' then error.
+		// if country code is '-' or 'UNDEFINED' then error.
+		if ( ! empty( $res ) && ! empty( $res['countryCode'] ) )
 			return strlen( $res['countryCode'] ) === 2 ? $res['countryCode'] : NULL;
-		} else {
+		else
 			return NULL;
-		}
 	}
 
 	/**
@@ -259,7 +264,7 @@ class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
 
 	public function get_location( $ip, $args = array() ) {
 		$res = parent::get_location( $ip, $args );
-		if ( ! empty( $res ) && isset( $res['latitude'] ) ) {
+		if ( ! empty( $res ) && ! empty( $res['latitude'] ) ) {
 			$loc = explode( ',', $res['latitude'] );
 			$res['latitude' ] = $loc[0];
 			$res['longitude'] = $loc[1];
@@ -356,18 +361,18 @@ class IP_Geo_Block_API_IPJson extends IP_Geo_Block_API {
 	);
 	protected $url_template = 'http://ip-json.rhcloud.com/%API_FORMAT%/%API_IP%';
 	protected $transform_table = array(
-		'countryCode' => 'country_code',
-		'countryName' => 'country_name',
-		'regionName'  => 'region_name',
-		'cityName'    => 'city',
-		'latitude'    => 'latitude',
-		'longitude'   => 'longitude',
+		'errorMessage' => 'error',
+		'countryCode'  => 'country_code',
+		'countryName'  => 'country_name',
+		'regionName'   => 'region_name',
+		'cityName'     => 'city',
+		'latitude'     => 'latitude',
+		'longitude'    => 'longitude',
 	);
 
 	public function get_location( $ip, $args = array() ) {
-		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
 			$this->api_template['format'] = 'v6';
-		}
 		return parent::get_location( $ip, $args );
 	}
 }
@@ -424,12 +429,13 @@ class IP_Geo_Block_API_mshdnet extends IP_Geo_Block_API {
 	);
 	protected $url_template = 'http://mshd.net/api/geoip?ip=%API_IP%&output=%API_FORMAT%';
 	protected $transform_table = array(
-		'countryCode' => 'country_code',
-		'countryName' => 'country_name',
-		'regionName'  => 'region_name',
-		'cityName'    => 'city_name',
-		'latitude'    => 'latitude',
-		'longitude'   => 'longitude',
+		'errorMessage' => 'error',
+		'countryCode'  => 'country_code',
+		'countryName'  => 'country_name',
+		'regionName'   => 'region_name',
+		'cityName'     => 'city_name',
+		'latitude'     => 'latitude',
+		'longitude'    => 'longitude',
 	);
 }
 
@@ -485,45 +491,15 @@ class IP_Geo_Block_API_ipapicom extends IP_Geo_Block_API {
 	);
 	protected $url_template = 'http://ip-api.com/%API_FORMAT%/%API_IP%';
 	protected $transform_table = array(
-		'countryCode' => 'countryCode',
-		'countryName' => 'country',
-		'regionName'  => 'regionName',
-		'cityName'    => 'city',
-		'latitude'    => 'lat',
-		'longitude'   => 'lon',
+		'errorMessage' => 'error',
+		'countryCode'  => 'countryCode',
+		'countryName'  => 'country',
+		'regionName'   => 'regionName',
+		'cityName'     => 'city',
+		'latitude'     => 'lat',
+		'longitude'    => 'lon',
 	);
 }
-
-/**
- * Class for Smart-IP.net
- *
- * URL         : http://smart-ip.net/geoip-api
- * Term of use : 
- * Licence fee : free for personal and non-commercial use
- * Rate limit  : 5,000 queries per day
- * Sample URL  : http://smart-ip.net/geoip-xml/124.83.187.140
- * Sample URL  : http://smart-ip.net/geoip-json/2a00:1450:400c:c00::6a
- * Input type  : IP address (IPv4, IPv6 / domain name)
- * Output type : xml, json
- *//* Service terminated
-class IP_Geo_Block_API_SmartIPnet extends IP_Geo_Block_API {
-	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
-	protected $api_template = array(
-		'api_key' => '',
-		'format'  => 'json',
-		'option'  => '',
-		'ip'      => '',
-	);
-	protected $url_template = 'http://smart-ip.net/geoip-%API_FORMAT%/%API_IP%';
-	protected $transform_table = array(
-		'countryCode' => 'countryCode',
-		'countryName' => 'countryName',
-		'regionName'  => 'region',
-		'cityName'    => 'city',
-		'latitude'    => 'latitude',
-		'longitude'   => 'longitude',
-	);
-}*/
 
 /**
  * Class for IPInfoDB
@@ -567,11 +543,8 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
  * URL         : http://www.ip2location.com/
  * Term of use : http://www.ip2location.com/terms
  * Licence fee : free in case of WordPress plugin version
- * Rate limit  : 
- * Sample URL  : 
- * Sample URL  : 
  * Input type  : IP address (IPv4)
- * Output type : php
+ * Output type : array
  */
 // Check if IP2Location is available
 if ( function_exists( 'get_option' ) ) {
@@ -599,14 +572,14 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			try {
 				$geo = new IP2Location( IP_GEO_BLOCK_IP2LOCATION_DB );
+				$data = $geo->lookup( $ip );
 			} catch (Exception $e) {
-				return FALSE;
+				return array( 'errorMessage' => $e->getMessage() );
 			}
-			$data = $geo->lookup( $ip );
 
 			$res = array();
 			foreach ( $this->transform_table as $key => $val ) {
-				if ( isset( $data->$val ) )
+				if ( ! empty( $val ) && ! empty( $data->$val ) )
 					$res[ $key ] = $data->$val;
 			}
 
@@ -622,7 +595,58 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 
 	public function get_country( $ip, $args = array() ) {
 		$res = $this->get_location( $ip, $args );
-		return $res ? $res['countryCode'] : FALSE;
+		return $res && ! empty( $res['countryCode'] ) ? $res['countryCode'] : FALSE;
+	}
+}
+
+endif;
+
+/**
+ * Class for Cache
+ *
+ * URL         : http://codex.wordpress.org/Transients_API
+ * Input type  : IP address (IPv4, IPv6)
+ * Output type : array
+ */
+if ( class_exists( 'IP_Geo_Block' ) ) :
+
+class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
+	protected $transform_table = array(
+		'countryCode'   => 'code',
+	);
+
+	public function get_location( $ip, $args = array() ) {
+		if ( false === ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) ||
+		     false === array_key_exists( $ip, $cache ) )
+			return array( 'errorMessage' => 'not in the cache' );
+		else
+			return array( 'countryCode' => $cache[ $ip ][ $this->transform_table['countryCode'] ] );
+	}
+
+	public function get_country( $ip, $args = array() ) {
+		$val = $this->get_location( $ip, $args );
+		return $val ? $val['countryCode'] : FALSE;
+	}
+
+	public static function update_cache( $ip, $code, $settings ) {
+		$time = time();
+		$num = ! empty( $settings['cache_hold'] ) ? $settings['cache_hold'] : 10;
+		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;
+
+		if ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) {
+			$n = 0;
+			foreach ( $cache as $key => $val ) {
+				if ( $time - $val['time'] > $exp || ++$n > $num )
+					unset( $cache[ $key ] );
+			}
+		}
+
+		$cache[ $ip ] = array( 'time' => $time, 'code' => $code );
+		set_transient( IP_Geo_Block::CACHE_KEY, $cache, $exp ); // @since 2.8
+	}
+
+	public static function delete_cache() {
+		delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
 	}
 }
 
@@ -690,12 +714,6 @@ class IP_Geo_Block_Provider {
 			'link' => '<a class="ip-geo-block-link" href="http://ip-api.com/" title="IP-API.com - Free Geolocation API" target=_blank>http://ip-api.com/</a>&nbsp;(IPv4, IPv6 / free for non-commercial use)',
 		),
 
-/*		'Smart-IP.net' => array(
-			'key'  => FALSE,
-			'type' => 'IPv4, IPv6 / free for personal and non-commercial use',
-			'link' => '<a class="ip-geo-block-link" href="http://smart-ip.net/geoip-api" title="Geo-IP API Documentation" target=_blank>http://smart-ip.net/</a>&nbsp;(IPv4, IPv6 / free for personal and non-commercial use)',
-		),*/
-
 		'IPInfoDB' => array(
 			'key'  => '',
 			'type' => 'IPv4, IPv6 / free for registered user',
@@ -710,23 +728,34 @@ class IP_Geo_Block_Provider {
 			'type' => 'IPv4 / free, need an attribution link',
 			'link' => '<a class="ip-geo-block-link" href="http://www.ip2location.com/free/plugins" title="Free Plugins | IP2Location.com" target=_blank>http://www.ip2location.com/</a>&nbsp;(IPv4 / free, need an attribution link)',
 		),
+
+		'Cache' => array(
+			'key' => NULL,
+			'type' => 'IPv4, IPv6',
+			'link' => NULL,
+		),
 	);
 
 	/**
 	 * Returns the pairs of provider name and API key
 	 *
 	 */
-	public static function get_providers( $key, $addon = TRUE ) {
+	public static function get_providers( $key, $ip2loc = TRUE, $cache = FALSE ) {
 		$list = array();
 		foreach ( self::$providers as $name => $val ) {
 			$list += array( $name => $val[ $key ] );
 		}
 
-		// add IP2Location
-		if ( $addon && class_exists( 'IP2Location' ) )
+		// add Internal DB
+		if ( $ip2loc && class_exists( 'IP2Location' ) )
 			$list = array(
 				'IP2Location' => self::$internals['IP2Location'][ $key ]
 			) + $list;
+
+		if ( $cache )
+			$list += array(
+				'Cache' => self::$internals['Cache'][ $key ]
+			);
 
 		return $list;
 	}

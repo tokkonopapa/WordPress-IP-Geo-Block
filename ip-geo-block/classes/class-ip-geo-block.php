@@ -15,9 +15,10 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '1.0.4';
+	const VERSION = '1.1.0';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
+	const CACHE_KEY   = 'ip-geo-block-cache';
 
 	/**
 	 * Instance of this class.
@@ -39,7 +40,8 @@ class IP_Geo_Block {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
-			'version'         => '1.0',   // Version of option data
+			'version'         => '1.1',   // Version of option data
+			// from version 1.0
 			'order'           => 0,       // Next order of provider (spare for future)
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
@@ -57,6 +59,9 @@ class IP_Geo_Block {
 				'path_db'     => '',      // Path to IP2Location DB
 				'path_class'  => '',      // Path to IP2Location class file
 			),
+			// from version 1.1
+			'cache_hold'      => 10,      // Max entries in cache
+			'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
 		),
 
 		// statistics (should be read when comment has posted)
@@ -160,14 +165,17 @@ class IP_Geo_Block {
 		$opts = get_option( $name[0] );
 
 		if ( FALSE !== $opts ) {
-			if ( version_compare( $opts['version'], '1.0' ) < 0 ) {
+			if ( version_compare( $opts['version'], '1.1' ) < 0 ) {
+				$opts['version'   ] = self::$option_table[ $name[0] ]['version'   ];
+				$opts['cache_hold'] = self::$option_table[ $name[0] ]['cache_hold'];
+				$opts['cache_time'] = self::$option_table[ $name[0] ]['cache_time'];
 			}
 			$opts['ip2location'] = $ip2;
 			update_option( $name[0], $opts );
 		} else {
 			self::$option_table[ $name[0] ]['ip2location'] = $ip2;
 			add_option( $name[0], self::$option_table[ $name[0] ], '', 'yes' );
-			add_option( $name[1], self::$option_table[ $name[1] ], '', 'no' );
+			add_option( $name[1], self::$option_table[ $name[1] ], '', 'no'  );
 		}
 	}
 
@@ -190,6 +198,7 @@ class IP_Geo_Block {
 			foreach ( $name as $key ) {
 				delete_option( $key ); // @since 1.2.0
 			}
+			delete_transient( self::CACHE_KEY ); // @since 2.8
 		}
 	}
 
@@ -244,6 +253,9 @@ class IP_Geo_Block {
 		if ( class_exists( 'IP2Location' ) )
 			array_unshift( $list, 'IP2Location' );
 
+		// Add Cache
+		array_unshift( $list, 'Cache' );
+
 		// matching rule
 		$rule  = $settings['matching_rule'];
 		$white = $settings['white_list'];
@@ -273,14 +285,17 @@ class IP_Geo_Block {
 				$key = ! empty( $settings['providers'][ $provider ] );
 				$geo = new $name( $key ? $settings['providers'][ $provider ] : NULL );
 				$code = strtoupper( $geo->get_country( $ip, $args ) );
-
-				// process time
-				$time = microtime( TRUE ) - $time;
 			} else {
 				$code = NULL;
 			}
 
 			if ( $code ) {
+				// update cache
+				IP_Geo_Block_API_Cache::update_cache( $ip, $code, $settings );
+
+				// process time
+				$time = microtime( TRUE ) - $time;
+
 				// for update_statistics()
 				$commentdata[ self::PLUGIN_SLUG ] = array(
 					'ip' => $ip,

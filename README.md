@@ -183,7 +183,12 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 
 #### Change log
 
-- 1.0.4  Fixed a bug of setting user agent strings in 1.0.2.
+- 1.1.0  Implement the cache mechanism to reduce load on the server.
+         Better handling of errors on the search tab so as to facilitate 
+         the analysis of the service problems.
+         Fixed a bug of setting user agent strings in 1.0.2. 
+         Now the user agent strings (`WordPress/3.9.2; http://example.com/`) 
+         becomes to its own (`WordPress/3.9.2; ip-geo-block 1.1.0`).
 - 1.0.3  Temporarily stop setting user agent strings to supress a bug in 1.0.2.
 - 1.0.2  Update provider settings (`class-ip-geo-block-api.php`).
          Set user agent strings for `WP_Http` (`class-ip-geo-block.php`).

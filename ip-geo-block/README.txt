@@ -4,7 +4,7 @@ Donate link:
 Tags: comment, spam, IP address, geolocation
 Requires at least: 3.5
 Tested up to: 3.9.2
-Stable tag: 1.0.4
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -174,10 +174,13 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 == Changelog ==
 
-= 1.0.4 =
-* Alter the default user agent strings (for example, 
- `WordPress/3.9.2; http://example.com/`) to its own (
- `WordPress/3.9.2; ip-geo-block 1.0.4`).
+= 1.1.0 =
+* Implement the cache mechanism to reduce load on the server.
+* Better handling of errors on the search tab so as to facilitate the 
+  analysis of the service problems.
+* Fixed a bug of setting user agent strings in 1.0.2.
+  Now the user agent strings (`WordPress/3.9.2; http://example.com/`) 
+  becomes to its own (`WordPress/3.9.2; ip-geo-block 1.1.0`).
 
 = 1.0.3 =
 * Temporarily stop setting user agent strings to supress a bug in 1.0.2.
