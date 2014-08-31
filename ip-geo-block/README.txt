@@ -27,9 +27,9 @@ spam comment.
 = Using with IP2Location WordPress Plugins =
 
 If you have correctly installed one of the IP2Location plugins (
-    [IP2Location Tags][IP2Tag],
-    [IP2Location Variables][IP2Var],
-    [IP2Location Country Blocker][IP2Blk]
+    [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"),
+    [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Variables « WordPress Plugins"),
+    [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins")
 ), this plugin uses its local database prior to the REST APIs.
 
 After installing these IP2Location plugins, this plugin should be once 
@@ -38,27 +38,29 @@ and `ip2location.class.php`.
 
 = Development =
 
-Development of this plugin is promoted on [GitHub][github]. All contributions 
-will be welcome.
+Development of this plugin is promoted on 
+[GitHub](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block · GitHub").
+All contributions will be welcome.
 
 = Attribution =
 
 Thanks for providing these great services for free.
 
-* [http://freegeoip.net/][freegeoip]     (IPv4 / free)
-* [http://ipinfo.io/][ipinfo]            (IPv4, IPv6 / free)
-* [http://www.telize.com/][Telize]       (IPv4, IPv6 / free)
-* [http://www.iptolatlng.com/][IP2LL]    (IPv4, IPv6 / free)
-* [http://ip-json.rhcloud.com/][IPJson]  (IPv4, IPv6 / free)
-* [http://xhanch.com/][Xhanch]           (IPv4 / free)
-* [http://mshd.net/][mshdnet]            (IPv4, IPv6 / free)
-* [http://www.geoplugin.com/][geoplugin] (IPv4, IPv6 / free, need an attribution link)
-* [http://ip-api.com/][ipapi]            (IPv4, IPv6 / free for non-commercial use)
-* [http://smart-ip.net/][smartip]        (IPv4, IPv6 / free for personal and non-commercial use)
-* [http://ipinfodb.com/][IPInfoDB]       (IPv4, IPv6 / free for registered user, need API key)
+* [http://freegeoip.net/](http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service") (IPv4 / free)
+* [http://ipinfo.io/](http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details") (IPv4, IPv6 / free)
+* [http://www.telize.com/](http://www.telize.com/ "Telize - JSON IP and GeoIP REST API") (IPv4, IPv6 / free)
+* [http://www.iptolatlng.com/](http://www.iptolatlng.com/ "IP to Latitude, Longitude") (IPv4, IPv6 / free)
+* [http://ip-json.rhcloud.com/](http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service") (IPv4, IPv6 / free)
+* [http://xhanch.com/](http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API &#8211; IP Get Detail | Xhanch Studio") (IPv4 / free)
+* [http://mshd.net/](http://mshd.net/documentation/geoip "www.mshd.net - Geoip Documentation") (IPv4, IPv6 / free)
+* [http://www.geoplugin.com/](http://www.geoplugin.com/ "geoPlugin to geolocate your visitors") (IPv4, IPv6 / free, need an attribution link)
+* [http://ip-api.com/](http://ip-api.com/ "IP-API.com - Free Geolocation API") (IPv4, IPv6 / free for non-commercial use)
+* [http://smart-ip.net/](http://smart-ip.net/geoip-api "Geo-IP API Documentation") (IPv4, IPv6 / free for personal and non-commercial use)
+* [http://ipinfodb.com/](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") (IPv4, IPv6 / free for registered user, need API key)
 
-Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind],
-and some include IP2Location LITE data available from [IP2Location][IP2Loc].
+Some of these services and APIs use GeoLite data created by (http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention")(http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"),
+and some include IP2Location LITE data available from 
+[IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
 
 == Installation ==
 
@@ -73,8 +75,9 @@ and some include IP2Location LITE data available from [IP2Location][IP2Loc].
 
 * **Service provider and API key**  
     If you want to use `IPInfoDB`, you should register from 
-	[their site][IPInfoDB] to get a free API key and set it into the textfield.
-	And `ip-api.com` and `Smart-IP.net` require non-commercial use.
+    [their site](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") 
+    to get a free API key and set it into the textfield.
+    And `ip-api.com` and `Smart-IP.net` require non-commercial use.
 
 * **Text position on comment form**  
     If you want to put some text message on your comment form, please select
@@ -86,14 +89,18 @@ and some include IP2Location LITE data available from [IP2Location][IP2Loc].
     from which you want to pass or block.
 
 * **White list**, **Black list**  
-    Specify the country code with two letters (see [ISO 3166-1 alpha-2][ISO]).
-	Each of them should be separated by comma.
+    Specify the country code with two letters (see 
+    [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")).
+    Each of them should be separated by comma.
 
 * **Response code**  
-    Select one of the [response code][RFC] to be sent when it blocks a comment.
-	The 2xx code will refresh to your top page, the 3xx code will redirect to 
-    [Black Hole Server][BHS], the 4xx code will lead to WordPress error page, 
-	and the 5xx will pretend an error.
+    Select one of the 
+    [response code](http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1")
+    to be sent when it blocks a comment.
+    The 2xx code will refresh to your top page, the 3xx code will redirect to 
+    [Black Hole Server](http://blackhole.webpagetest.org/),
+    the 4xx code will lead to WordPress error page, and the 5xx will pretend 
+    an error.
 
 * **Remove settings at uninstallation**  
     If you checked this option, all settings will be removed when this plugin
@@ -147,7 +154,8 @@ add_filter( 'ip-geo-block-validate', 'my_validation' );`
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
 
-See [preprocess comment][codex] for more detail about `$commentdata`.
+See [preprocess comment](http://codex.wordpress.org/Plugin_API/Filter_Reference/preprocess_comment "Plugin API/Filter Reference/preprocess comment &laquo; WordPress Codex") 
+for more detail about `$commentdata`.
 
 = Can I change user agent strings when fetching services? =
 
@@ -166,9 +174,9 @@ Before updating to 1.1.x from version 1.0.x, please deactivate then activate
 this plugin on the plugin dashboard.
 
 If you do not want to keep the IP2Location plugins (
-    [IP2Location Tags][IP2Tag],
-    [IP2Location Variables][IP2Var],
-    [IP2Location Country Blocker][IP2Blk]
+    [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"),
+    [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Variables « WordPress Plugins"),
+    [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins")
 ) in `wp-content/plugins/` directory but just want to use its database, 
 you can rename it to `ip2location` and upload it to `wp-content/`.
 
@@ -242,25 +250,3 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 * Pre-release version.
 
 == Upgrade Notice ==
-
-[freegeoip]:http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service"
-[ipinfo]:   http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details"
-[Telize]:   http://www.telize.com/ "Telize - JSON IP and GeoIP REST API"
-[IP2LL]:    http://www.iptolatlng.com/ "IP to Latitude, Longitude"
-[IPJson]:   http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service"
-[Xhanch]:   http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API &#8211; IP Get Detail | Xhanch Studio"
-[mshdnet]:  http://mshd.net/documentation/geoip "www.mshd.net - Geoip Documentation"
-[geoplugin]:http://www.geoplugin.com/ "geoPlugin to geolocate your visitors"
-[ipapi]:    http://ip-api.com/ "IP-API.com - Free Geolocation API"
-[smartip]:  http://smart-ip.net/geoip-api "Geo-IP API Documentation"
-[IPInfoDB]: http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
-[MaxMind]:  http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
-[IP2Loc]:   http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location"
-[IP2Tag]:   http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"
-[IP2Var]:   http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"
-[IP2Blk]:   http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins"
-[github]:   https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block · GitHub"
-[codex]:    http://codex.wordpress.org/Plugin_API/Filter_Reference/preprocess_comment "Plugin API/Filter Reference/preprocess comment &laquo; WordPress Codex"
-[BHS]:      http://blackhole.webpagetest.org/
-[ISO]:      http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
-[RFC]:      http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
