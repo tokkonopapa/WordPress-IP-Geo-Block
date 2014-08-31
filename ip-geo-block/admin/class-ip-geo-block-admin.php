@@ -227,7 +227,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function register_admin_settings() {
-		require_once( IP_GEO_BLOCK_PATH . '/classes/class-ip-geo-block-api.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
 		$tab = isset( $_GET['tab'] ) ? intval( $_GET['tab'] ) : 0;
 		$tab = min( 3, max( 0, $tab ) );
@@ -923,7 +923,7 @@ class IP_Geo_Block_Admin {
 		$message = __( 'successfully updated', IP_GEO_BLOCK::TEXT_DOMAIN );
 		$status = 'updated';
 
-		require_once( IP_GEO_BLOCK_PATH . '/classes/class-ip-geo-block-api.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 		$providers = IP_Geo_Block_Provider::get_providers( 'key' );
 
 		/**
@@ -1033,7 +1033,7 @@ class IP_Geo_Block_Admin {
 	 * @link http://codex.wordpress.org/Function_Reference/check_ajax_referer
 	 */
 	public function admin_ajax_callback() {
-		require_once( IP_GEO_BLOCK_PATH . '/classes/class-ip-geo-block-api.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
 		// Check request origin, nonce, capability.
 		if ( ! check_admin_referer( $this->get_ajax_action(), 'nonce' ) || // @since 2.5

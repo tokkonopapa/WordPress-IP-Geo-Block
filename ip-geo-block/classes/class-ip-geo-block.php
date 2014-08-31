@@ -234,7 +234,7 @@ class IP_Geo_Block {
 		}
 
 		// include utility class
-		require_once( IP_GEO_BLOCK_PATH . '/classes/class-ip-geo-block-api.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
 		// make providers list
 		$list = array();
