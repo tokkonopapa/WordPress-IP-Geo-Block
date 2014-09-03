@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '1.1.0';
+	const VERSION = '1.1.1';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip-geo-block-cache';
@@ -49,7 +49,7 @@ class IP_Geo_Block {
 				'msg'         => '',      // Message text on comment form
 			),
 			'matching_rule'   => 0,       // 0:white list, 1:black list
-			'white_list'      => 'JP',    // Comma separeted country code
+			'white_list'      => '',      // Comma separeted country code
 			'black_list'      => '',      // Comma separeted country code
 			'timeout'         => 5,       // Timeout in second
 			'response_code'   => 403,     // Response code
@@ -138,22 +138,17 @@ class IP_Geo_Block {
 	 */
 	public static function activate( $network_wide ) {
 		// find IP2Location
-		$dir = WP_CONTENT_DIR . '/ip2location'; // wp_content
+		$tmp = WP_CONTENT_DIR . '/ip2location'; // wp_content
 		$ip2 = array();
-		if ( file_exists( "$dir/database.bin" ) ) {
-			$ip2['path_db'] = "$dir/database.bin";
+		if ( file_exists( "$tmp/database.bin" ) ) {
+			$ip2['path_db'] = "$tmp/database.bin";
 		}
-		if ( file_exists( "$dir/ip2location.class.php" ) ) {
-			$ip2['path_class'] = "$dir/ip2location.class.php";
+		if ( file_exists( "$tmp/ip2location.class.php" ) ) {
+			$ip2['path_class'] = "$tmp/ip2location.class.php";
 		} else {
-			$dir = dirname( IP_GEO_BLOCK_PATH ); // plugins
-			$plugins = array(
-				'ip2location-tags',
-				'ip2location-variables',
-				'ip2location-country-blocker',
-			);
-			foreach ( $plugins as $name ) {
-				$class_file = "$dir/$name/ip2location.class.php";
+			$tmp = dirname( IP_GEO_BLOCK_PATH ); // plugins
+			foreach ( array( 'tags', 'variables', 'country-blocker' ) as $name ) {
+				$class_file = "$tmp/ip2location-$name/ip2location.class.php";
 				if ( file_exists( $class_file ) ) {
 					$ip2['path_class'] = $class_file;
 					break;
@@ -164,18 +159,38 @@ class IP_Geo_Block {
 		$name = array_keys( self::$option_table );
 		$opts = get_option( $name[0] );
 
-		if ( FALSE !== $opts ) {
+		if ( FALSE === $opts ) {
+			// get country code from admin's IP address and set it into white list
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+			$opts = apply_filters(
+				self::PLUGIN_SLUG . '-headers',
+				array( 'user-agent' =>
+					"WordPress/$wp_version; " . self::PLUGIN_SLUG . ' ' . self::VERSION
+				)
+			);
+			foreach ( array( 'ipinfo.io', 'Telize', 'IP-Json' ) as $provider ) {
+				if ( $provider = IP_Geo_Block_API::get_class_name( $provider ) ) {
+					$provider = new $provider( NULL );
+					self::$option_table[ $name[0] ]['white_list'] =
+						$provider->get_country( $_SERVER['REMOTE_ADDR'], $opts );
+					break;
+				}
+			}
+
+			// set IP2Location
+			self::$option_table[ $name[0] ]['ip2location'] = $ip2;
+
+			add_option( $name[0], self::$option_table[ $name[0] ], '', 'yes' );
+			add_option( $name[1], self::$option_table[ $name[1] ], '', 'no'  );
+		} else {
 			if ( version_compare( $opts['version'], '1.1' ) < 0 ) {
 				$opts['version'   ] = self::$option_table[ $name[0] ]['version'   ];
 				$opts['cache_hold'] = self::$option_table[ $name[0] ]['cache_hold'];
 				$opts['cache_time'] = self::$option_table[ $name[0] ]['cache_time'];
 			}
+
 			$opts['ip2location'] = $ip2;
 			update_option( $name[0], $opts );
-		} else {
-			self::$option_table[ $name[0] ]['ip2location'] = $ip2;
-			add_option( $name[0], self::$option_table[ $name[0] ], '', 'yes' );
-			add_option( $name[1], self::$option_table[ $name[1] ], '', 'no'  );
 		}
 	}
 
@@ -399,8 +414,7 @@ class IP_Geo_Block {
 
 		// 2xx Success
 		if ( 200 <= $code && $code < 300 ) {
-//			header( 'Refresh: 0; url=' . get_site_url(), TRUE, $code ); // @since 3.0
-			header( 'Refresh: 0; url=http://blackhole.webpagetest.org/', TRUE, $code );
+			header( 'Refresh: 0; url=' . get_site_url(), TRUE, $code ); // @since 3.0
 			die();
 		}
 

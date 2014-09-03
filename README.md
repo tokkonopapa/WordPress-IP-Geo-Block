@@ -186,6 +186,9 @@ this plugin on the plugin dashboard.
 
 #### Change log
 
+- 1.1.1  Empty the default country code in white list of settings.
+         When activating this plugin for the first time, get the country code 
+         from admin's IP address and set it into white list.
 - 1.1.0  Implement the cache mechanism to reduce load on the server.
          Better handling of errors on the search tab so as to facilitate 
          the analysis of the service problems.
@@ -233,9 +236,9 @@ This plugin is licensed under the GPL v2 or later.
 [IPInfoDB]: http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
 [MaxMind]:  http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
 [IP2Loc]:   http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location"
-[IP2Tag]:   http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"
-[IP2Var]:   http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Tags « WordPress Plugins"
-[IP2Blk]:   http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins"
+[IP2Tag]:   http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"
+[IP2Var]:   http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Tags - WordPress Plugins"
+[IP2Blk]:   http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins"
 [register]: http://ipinfodb.com/register.php
 [codex]:    http://codex.wordpress.org/Plugin_API/Filter_Reference/preprocess_comment "Plugin API/Filter Reference/preprocess comment &laquo; WordPress Codex"
 [BHS]:      http://blackhole.webpagetest.org/

@@ -4,7 +4,7 @@ Donate link:
 Tags: comment, spam, IP address, geolocation
 Requires at least: 3.5
 Tested up to: 3.9.2
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,9 +27,9 @@ spam comment.
 = Using with IP2Location WordPress Plugins =
 
 If you have correctly installed one of the IP2Location plugins (
-    [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"),
-    [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Variables « WordPress Plugins"),
-    [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins")
+    [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
+    [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
+    [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
 ), this plugin uses its local database prior to the REST APIs.
 
 After installing these IP2Location plugins, this plugin should be once 
@@ -39,7 +39,7 @@ and `ip2location.class.php`.
 = Development =
 
 Development of this plugin is promoted on 
-[GitHub](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block · GitHub").
+[GitHub](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub").
 All contributions will be welcome.
 
 = Attribution =
@@ -174,9 +174,9 @@ Before updating to 1.1.x from version 1.0.x, please deactivate then activate
 this plugin on the plugin dashboard.
 
 If you do not want to keep the IP2Location plugins (
-    [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"),
-    [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress › IP2Location Variables « WordPress Plugins"),
-    [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress › IP2Location Country Blocker « WordPress Plugins")
+    [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
+    [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
+    [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
 ) in `wp-content/plugins/` directory but just want to use its database, 
 you can rename it to `ip2location` and upload it to `wp-content/`.
 
@@ -188,6 +188,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 4. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 1.1.1 =
+* Empty the default country code in white list of settings.
+  When activating this plugin for the first time, get the country code 
+  from admin's IP address and set it into white list.
 
 = 1.1.0 =
 * Implement the cache mechanism to reduce load on the server.
