@@ -170,10 +170,11 @@ class IP_Geo_Block {
 			);
 			foreach ( array( 'ipinfo.io', 'Telize', 'IP-Json' ) as $provider ) {
 				if ( $provider = IP_Geo_Block_API::get_class_name( $provider ) ) {
-					$provider = new $provider( NULL );
-					self::$option_table[ $name[0] ]['white_list'] =
-						$provider->get_country( $_SERVER['REMOTE_ADDR'], $opts );
-					break;
+					$tmp = new $provider( NULL );
+					if ( $tmp = $tmp->get_country( $_SERVER['REMOTE_ADDR'], $opts ) ) {
+						self::$option_table[ $name[0] ]['white_list'] = $tmp;
+						break;
+					}
 				}
 			}
 
@@ -188,7 +189,6 @@ class IP_Geo_Block {
 				$opts['cache_hold'] = self::$option_table[ $name[0] ]['cache_hold'];
 				$opts['cache_time'] = self::$option_table[ $name[0] ]['cache_time'];
 			}
-
 			$opts['ip2location'] = $ip2;
 			update_option( $name[0], $opts );
 		}
