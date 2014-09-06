@@ -190,7 +190,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 1.1.1 =
-* Empty the default country code in white list of settings.
+* Fixed issue of default country code.
   When activating this plugin for the first time, get the country code 
   from admin's IP address and set it into white list.
 * Add number of calls in cache of IP address.

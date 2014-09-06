@@ -186,9 +186,10 @@ this plugin on the plugin dashboard.
 
 #### Change log
 
-- 1.1.1  Empty the default country code in white list of settings.
+- 1.1.1  Fixed issue of default country code.
          When activating this plugin for the first time, get the country code 
          from admin's IP address and set it into white list.
+         Add number of calls in cache of IP address.
 - 1.1.0  Implement the cache mechanism to reduce load on the server.
          Better handling of errors on the search tab so as to facilitate 
          the analysis of the service problems.
