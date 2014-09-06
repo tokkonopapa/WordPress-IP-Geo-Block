@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 1.1.0\n"
+"Project-Id-Version: IP Geo Block 1.1.1\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-08-30 14:04+0900\n"
-"PO-Revision-Date: 2014-08-31 23:17+0900\n"
+"POT-Creation-Date: 2014-09-06 21:28+0900\n"
+"PO-Revision-Date: 2014-09-06 21:36+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,9 +20,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 # description
-msgid ""
-"It will block any spam comments posted from outside the specified countries."
-msgstr "指定した国以外からの投稿をブロックするプラグインです。"
+msgid "It will block any spam comments posted from undesired countries."
+msgstr "望まない国からの投稿をブロックするプラグインです。"
 
 #: admin/class-ip-geo-block-admin.php:85
 msgid "You need WordPress 3.5+"
@@ -187,51 +186,51 @@ msgid "Country code"
 msgstr "国コード"
 
 #: admin/class-ip-geo-block-admin.php:643
-msgid "Elapsed time [sec]"
-msgstr "経過時間 [sec]"
+msgid "Elapsed [sec] / Calls"
+msgstr "経過時間 [sec] / 回数"
 
-#: admin/class-ip-geo-block-admin.php:660
+#: admin/class-ip-geo-block-admin.php:661
 msgid "IP address in cache"
 msgstr "キャッシュ中のIPアドレス"
 
-#: admin/class-ip-geo-block-admin.php:675
+#: admin/class-ip-geo-block-admin.php:676
 msgid "Clear statistics"
 msgstr "統計のクリア"
 
-#: admin/class-ip-geo-block-admin.php:683
+#: admin/class-ip-geo-block-admin.php:684
 msgid "Clear now"
 msgstr "今すぐクリア"
 
-#: admin/class-ip-geo-block-admin.php:708
+#: admin/class-ip-geo-block-admin.php:709
 msgid "Search IP address geolocation"
 msgstr "IPアドレスの位置情報を検索"
 
-#: admin/class-ip-geo-block-admin.php:728
+#: admin/class-ip-geo-block-admin.php:729
 msgid "Geolocation service"
 msgstr "位置情報サービス"
 
-#: admin/class-ip-geo-block-admin.php:744
+#: admin/class-ip-geo-block-admin.php:745
 msgid "IP address"
 msgstr "IPアドレス"
 
-#: admin/class-ip-geo-block-admin.php:759
+#: admin/class-ip-geo-block-admin.php:760
 msgid "Find geolocation"
 msgstr "位置情報の検索"
 
-#: admin/class-ip-geo-block-admin.php:767
+#: admin/class-ip-geo-block-admin.php:768
 msgid "Search now"
 msgstr "今すぐ検索"
 
-#: admin/class-ip-geo-block-admin.php:788
+#: admin/class-ip-geo-block-admin.php:789
 msgid "Attribution links"
 msgstr "サービスの提供元"
 
-#: admin/class-ip-geo-block-admin.php:819
+#: admin/class-ip-geo-block-admin.php:820
 msgid "Thanks for providing these great services for free."
 msgstr ""
 "すばらしいサービスの提供元である以下のサイトに、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:820
+#: admin/class-ip-geo-block-admin.php:821
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
@@ -239,14 +238,14 @@ msgstr ""
 "（ほとんどのブラウザでは、リンクをクリックしても参照元を残さずに各サイトにリ"
 "ダイレクトできます。）"
 
-#: admin/class-ip-geo-block-admin.php:892
+#: admin/class-ip-geo-block-admin.php:893
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:923
+#: admin/class-ip-geo-block-admin.php:924
 msgid "successfully updated"
 msgstr "更新に成功しました"
 
-#: classes/class-ip-geo-block.php:415
+#: classes/class-ip-geo-block.php:429
 msgid "Sorry, your comment cannot be accepted."
 msgstr "申し訳ありませんが、投稿できません。"

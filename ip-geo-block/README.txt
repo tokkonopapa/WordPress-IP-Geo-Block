@@ -90,8 +90,8 @@ and some include IP2Location LITE data available from
 
 * **White list**, **Black list**  
     Specify the country code with two letters (see 
-    [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")).
-    Each of them should be separated by comma.
+    [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")
+    ). Each of them should be separated by comma.
 
 * **Response code**  
     Select one of the 
@@ -193,6 +193,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 * Empty the default country code in white list of settings.
   When activating this plugin for the first time, get the country code 
   from admin's IP address and set it into white list.
+* Add number of calls in cache of IP address.
 
 = 1.1.0 =
 * Implement the cache mechanism to reduce load on the server.

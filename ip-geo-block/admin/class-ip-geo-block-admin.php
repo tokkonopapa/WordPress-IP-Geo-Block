@@ -640,7 +640,7 @@ class IP_Geo_Block_Admin {
 			$html = "<table class=\"${option_slug}-${field}\"><thead><tr>";
 			$html .= "<th>" . __( 'IP Address', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
 			$html .= "<th>" . __( 'Country code', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
-			$html .= "<th>" . __( 'Elapsed time [sec]', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
+			$html .= "<th>" . __( 'Elapsed [sec] / Calls', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
 			$html .= "</tr></thead><tbody>";
 
 			$transient = get_transient( IP_Geo_Block::CACHE_KEY );
@@ -649,7 +649,8 @@ class IP_Geo_Block_Admin {
 				foreach ( $transient as $key => $val ) {
 					$html .= "<tr><td>$key</td>";
 					$html .= "<td>" . $val['code'] . "</td>";
-					$html .= "<td>" . ($time - $val['time']) . "</td>";
+					$html .= "<td>" . ($time - $val['time']) . " / ";
+					$html .= (! empty( $val['call'] ) ? $val['call'] : '?') . "</td>";
 					$html .= "</tr>";
 				}
 			}

@@ -641,7 +641,8 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			}
 		}
 
-		$cache[ $ip ] = array( 'time' => $time, 'code' => $code );
+		$count = ! empty( $cache[ $ip ]['call'] ) ? $cache[ $ip ]['call'] + 1 : 1;
+		$cache[ $ip ] = array( 'time' => $time, 'code' => $code, 'call' => $count );
 		set_transient( IP_Geo_Block::CACHE_KEY, $cache, $exp ); // @since 2.8
 	}
 
