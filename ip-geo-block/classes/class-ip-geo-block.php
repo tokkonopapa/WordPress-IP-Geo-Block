@@ -233,6 +233,8 @@ class IP_Geo_Block {
 		$msg = get_option( $this->option_name['settings'] );
 		$msg = htmlspecialchars( $msg['comment']['msg'] );
 		if ( $msg ) echo '<p id="', self::PLUGIN_SLUG, '-msg">', $msg, '</p>';
+//		global $allowedtags;
+//		if ( $msg = wp_kses( $msg['comment']['msg'], $allowedtags ) ) echo $msg;
 	}
 
 	/**

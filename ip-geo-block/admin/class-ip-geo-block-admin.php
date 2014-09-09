@@ -335,7 +335,8 @@ class IP_Geo_Block_Admin {
 						__( 'Top',    IP_GEO_BLOCK::TEXT_DOMAIN ) => 1,
 						__( 'Bottom', IP_GEO_BLOCK::TEXT_DOMAIN ) => 2,
 					),
-					'text' => $options[ $field ]['msg'],
+					'text' => esc_html( $options[ $field ]['msg'] ), // @since 2.8
+//					'text' => esc_textarea( $options[ $field ]['msg'] ), // @since 3.1
 				)
 			);
 
@@ -638,7 +639,7 @@ class IP_Geo_Block_Admin {
 
 			$field = 'caches';
 			$html = "<table class=\"${option_slug}-${field}\"><thead><tr>";
-			$html .= "<th>" . __( 'IP Address', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
+			$html .= "<th>" . __( 'IP address', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
 			$html .= "<th>" . __( 'Country code', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
 			$html .= "<th>" . __( 'Elapsed [sec] / Calls', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
 			$html .= "</tr></thead><tbody>";
@@ -974,6 +975,8 @@ class IP_Geo_Block_Admin {
 				case 'comment':
 					$output[ $key ]['pos'] = intval( $input[ $key ]['pos'] );
 					$output[ $key ]['msg'] = sanitize_text_field( $input[ $key ]['msg'] );
+//					global $allowedtags;
+//					$output[ $key ]['msg'] = wp_kses( $input[ $key ]['msg'], $allowedtags );
 					break;
 
 				case 'matching_rule':
