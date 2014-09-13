@@ -51,7 +51,7 @@ class IP_Geo_Block {
 			'matching_rule'   => 0,       // 0:white list, 1:black list
 			'white_list'      => '',      // Comma separeted country code
 			'black_list'      => '',      // Comma separeted country code
-			'timeout'         => 10,      // Timeout in second
+			'timeout'         => 5,       // Timeout in second
 			'response_code'   => 403,     // Response code
 			'save_statistics' => FALSE,   // Save statistics
 			'clean_uninstall' => FALSE,   // Remove all savings from DB
