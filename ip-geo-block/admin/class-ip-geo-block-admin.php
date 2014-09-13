@@ -651,7 +651,7 @@ class IP_Geo_Block_Admin {
 					$html .= "<tr><td>$key</td>";
 					$html .= "<td>" . $val['code'] . "</td>";
 					$html .= "<td>" . ($time - $val['time']) . " / ";
-					$html .= (! empty( $val['call'] ) ? $val['call'] : '?') . "</td>";
+					$html .= (! empty( $val['call'] ) ? $val['call'] : '-') . "</td>";
 					$html .= "</tr>";
 				}
 			}
@@ -714,7 +714,7 @@ class IP_Geo_Block_Admin {
 
 			// make providers list
 			$list = array();
-			$providers = IP_Geo_Block_Provider::get_providers( 'key', TRUE, TRUE );
+			$providers = IP_Geo_Block_Provider::get_providers( 'key' );
 
 			foreach ( $providers as $provider => $key ) {
 				if ( ! is_string( $key ) ||

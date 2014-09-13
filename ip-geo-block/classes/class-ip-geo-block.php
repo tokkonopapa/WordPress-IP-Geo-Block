@@ -51,7 +51,7 @@ class IP_Geo_Block {
 			'matching_rule'   => 0,       // 0:white list, 1:black list
 			'white_list'      => '',      // Comma separeted country code
 			'black_list'      => '',      // Comma separeted country code
-			'timeout'         => 5,       // Timeout in second
+			'timeout'         => 10,      // Timeout in second
 			'response_code'   => 403,     // Response code
 			'save_statistics' => FALSE,   // Save statistics
 			'clean_uninstall' => FALSE,   // Remove all savings from DB
@@ -255,23 +255,13 @@ class IP_Geo_Block {
 
 		// make providers list
 		$list = array();
-		$geo = IP_Geo_Block_Provider::get_providers( 'key', FALSE );
+		$geo = IP_Geo_Block_Provider::get_providers( 'key', TRUE, TRUE );
 		foreach ( $geo as $provider => $key ) {
 			if ( ! empty( $settings['providers'][ $provider ] ) || (
 			     ! isset( $settings['providers'][ $provider ] ) && NULL === $key ) ) {
 				$list[] = $provider;
 			}
 		}
-
-		// randomize
-		shuffle( $list );
-
-		// Add IP2Location if available
-		if ( class_exists( 'IP2Location' ) )
-			array_unshift( $list, 'IP2Location' );
-
-		// Add Cache
-		array_unshift( $list, 'Cache' );
 
 		// matching rule
 		$rule  = $settings['matching_rule'];

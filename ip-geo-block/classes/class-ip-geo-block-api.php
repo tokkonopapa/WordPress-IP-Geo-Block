@@ -96,35 +96,6 @@ abstract class IP_Geo_Block_API {
 			$res = wp_remote_retrieve_body( $res );
 		}
 
-		/*// for standalone
-		else {
-			// save default timeout and set new timeout
-			$ini_timeout = @ini_get( 'default_socket_timeout' );
-			if ( $ini_timeout )
-				@ini_set( 'default_socket_timeout', $args['timeout'] );
-
-			$res = @file_get_contents( $tmp );
-
-			// find content-type in response header
-			if ( isset( $http_response_header ) ) {
-				if ( strpos( $http_response_header[0], '200' ) === FALSE ) {
-					$tmp = explode( ' ', $http_response_header[0] );
-					return array( 'errorMessage' => $tmp[2] );
-				}
-
-				foreach ( $http_response_header as $tmp ) {
-					$tmp = strtolower( $tmp ); // Content-Type, Content-type, ...
-					if ( strncmp( $tmp, 'content-type:', 13 ) === 0 ) {
-						break;
-					}
-				}
-			}
-
-			// restore default timeout
-			if ( $ini_timeout )
-				@ini_set( 'default_socket_timeout', $ini_timeout );
-		}//*/
-
 		// clear decoded data
 		$data = array();
 
@@ -551,12 +522,12 @@ if ( function_exists( 'get_option' ) ) {
 	$options = get_option( 'ip_geo_block_settings' );
 	if ( file_exists( $options['ip2location']['path_db'] ) &&
 	     file_exists( $options['ip2location']['path_class'] ) ) {
-		require_once( $options['ip2location']['path_class'] );
 		define( 'IP_GEO_BLOCK_IP2LOCATION_DB', $options['ip2location']['path_db'] );
+		define( 'IP_GEO_BLOCK_IP2LOCATION_CL', $options['ip2location']['path_class'] );
 	}
 }
 
-if ( class_exists( 'IP2Location' ) ) :
+if ( defined( 'IP_GEO_BLOCK_IP2LOCATION_CL' ) ) :
 
 class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	protected $transform_table = array(
@@ -567,6 +538,11 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 		'latitude'    => 'latitude',
 		'longitude'   => 'longitude',
 	);
+
+	public function __construct( $api_key = NULL ) {
+		parent::__construct( $api_key );
+		require_once( IP_GEO_BLOCK_IP2LOCATION_CL );
+	}
 
 	public function get_location( $ip, $args = array() ) {
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
@@ -641,8 +617,13 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			}
 		}
 
-		$count = ! empty( $cache[ $ip ]['call'] ) ? $cache[ $ip ]['call'] + 1 : 1;
-		$cache[ $ip ] = array( 'time' => $time, 'code' => $code, 'call' => $count );
+		if ( $settings['save_statistics'] ) {
+			$count = ! empty( $cache[ $ip ]['call'] ) ? $cache[ $ip ]['call'] + 1 : 1;
+			$cache[ $ip ] = array( 'time' => $time, 'code' => $code, 'call' => $count );
+		} else {
+			$cache[ $ip ] = array( 'time' => $time, 'code' => $code );
+		}
+
 		set_transient( IP_Geo_Block::CACHE_KEY, $cache, $exp ); // @since 2.8
 	}
 
@@ -741,22 +722,28 @@ class IP_Geo_Block_Provider {
 	 * Returns the pairs of provider name and API key
 	 *
 	 */
-	public static function get_providers( $key, $ip2loc = TRUE, $cache = FALSE ) {
+	public static function get_providers( $key, $rand = FALSE, $cache = FALSE ) {
+		$tmp = array_keys( self::$providers );
+
+		// randomize
+		if ( $rand )
+			shuffle( $tmp );
+
 		$list = array();
-		foreach ( self::$providers as $name => $val ) {
-			$list += array( $name => $val[ $key ] );
+		foreach ( $tmp as $name ) {
+			$list += array( $name => self::$providers[ $name ][ $key ] );
 		}
 
 		// add Internal DB
-		if ( $ip2loc && class_exists( 'IP2Location' ) )
+		if ( class_exists( 'IP_Geo_Block_API_IP2Location' ) )
 			$list = array(
 				'IP2Location' => self::$internals['IP2Location'][ $key ]
 			) + $list;
 
 		if ( $cache )
-			$list += array(
+			$list = array(
 				'Cache' => self::$internals['Cache'][ $key ]
-			);
+			) + $list;
 
 		return $list;
 	}
