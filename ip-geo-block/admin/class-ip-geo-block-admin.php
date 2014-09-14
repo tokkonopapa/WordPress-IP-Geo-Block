@@ -335,8 +335,7 @@ class IP_Geo_Block_Admin {
 						__( 'Top',    IP_GEO_BLOCK::TEXT_DOMAIN ) => 1,
 						__( 'Bottom', IP_GEO_BLOCK::TEXT_DOMAIN ) => 2,
 					),
-					'text' => esc_html( $options[ $field ]['msg'] ), // @since 2.8
-//					'text' => esc_textarea( $options[ $field ]['msg'] ), // @since 3.1
+					'text' => $options[ $field ]['msg'], // sanitized at 'comment-msg'
 				)
 			);
 
@@ -535,7 +534,7 @@ class IP_Geo_Block_Admin {
 					'type' => 'html',
 					'option' => $option_name,
 					'field' => $field,
-					'value' => $options[ $field ],
+					'value' => esc_html( $options[ $field ] ),
 				)
 			);
 
@@ -550,7 +549,7 @@ class IP_Geo_Block_Admin {
 					'type' => 'html',
 					'option' => $option_name,
 					'field' => $field,
-					'value' => $options[ $field ],
+					'value' => esc_html( $options[ $field ] ),
 				)
 			);
 
@@ -565,14 +564,14 @@ class IP_Geo_Block_Admin {
 					'type' => 'html',
 					'option' => $option_name,
 					'field' => $field,
-					'value' => $options[ $field ],
+					'value' => esc_html( $options[ $field ] ),
 				)
 			);
 
 			$field = 'countries';
 			$html = "<ul class=\"${option_slug}-${field}\">";
 			foreach ( $options['countries'] as $key => $val ) {
-				$html .= sprintf( "<li>%2s:%5d</li>", $key, $val );
+				$html .= sprintf( "<li>%2s:%5d</li>", esc_html( $key ), $val );
 			}
 			$html .= "</ul>";
 
@@ -603,8 +602,8 @@ class IP_Geo_Block_Admin {
 					'field' => $field,
 					'value' => "<table class=\"${option_slug}-${field}\">" .
 						"<thead><tr><th>IPv4</th><th>IPv6</th></tr></thead><tbody>" .
-						"<td>" . $options['IPv4'] . "</td>" .
-						"<td>" . $options['IPv6'] . "</td></tbody></table>",
+						"<td>" . esc_html( $options['IPv4'] ) . "</td>" .
+						"<td>" . esc_html( $options['IPv6'] ) . "</td></tbody></table>",
 				)
 			);
 
@@ -616,7 +615,7 @@ class IP_Geo_Block_Admin {
 			$html .= "</tr></thead><tbody>";
 
 			foreach ( $options['providers'] as $key => $val ) {
-				$html .= "<tr><td>$key</td>";
+				$html .= "<tr><td>" . esc_html( $key ) . "</td>";
 				$html .= "<td>" . sprintf( "%5d", $val['count'] ) . "</td><td>";
 				$html .= sprintf( "%5d", 1000.0 * $val['time'] / $val['count'] );
 				$html .= "</td></tr>";
@@ -648,11 +647,11 @@ class IP_Geo_Block_Admin {
 			if ( $transient ) {
 				$time = time();
 				foreach ( $transient as $key => $val ) {
-					$html .= "<tr><td>$key</td>";
-					$html .= "<td>" . $val['code'] . "</td>";
-					$html .= "<td>" . ($time - $val['time']) . " / ";
-					$html .= (! empty( $val['call'] ) ? $val['call'] : '-') . "</td>";
-					$html .= "</tr>";
+					$html .= "<tr><td>" . esc_html( $key ) . "</td>";
+					$html .= "<td>" . esc_html( $val['code'] ) . "</td>";
+					$html .= "<td>" . intval( $time - $val['time'] ) . " / ";
+					$html .= ! empty( $val['call'] ) ? intval( $val['call'] ) : '-';
+					$html .= "</td></tr>";
 				}
 			}
 			$html .= "</tbody></table>";
