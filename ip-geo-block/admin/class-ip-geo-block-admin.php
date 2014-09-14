@@ -1056,12 +1056,11 @@ class IP_Geo_Block_Admin {
 
 				if ( $name ) {
 					$options = get_option( $this->option_name['settings'] );
-					global $wp_version;
 					$args = apply_filters(
 						IP_GEO_BLOCK::PLUGIN_SLUG . '-headers',
 						array(
 							'timeout' => $options['timeout'],
-							'user-agent' => "WordPress/$wp_version; " . IP_GEO_BLOCK::PLUGIN_SLUG . ' ' . IP_Geo_Block::VERSION
+							'user-agent' => IP_Geo_Block::get_user_agent(),
 						)
 					);
 					$key = ! empty( $options['providers'][ $provider ] );

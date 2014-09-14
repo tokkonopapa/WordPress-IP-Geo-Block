@@ -86,6 +86,11 @@ class IP_Geo_Block {
 		return self::$option_table[ self::$option_keys[ $name ] ];
 	}
 
+	public static function get_user_agent() {
+		global $wp_version;
+		return "WordPress/$wp_version; " . self::PLUGIN_SLUG . ' ' . self::VERSION;
+	}
+
 	/**
 	 * Initialize the plugin
 	 * 
@@ -164,9 +169,7 @@ class IP_Geo_Block {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 			$opts = apply_filters(
 				self::PLUGIN_SLUG . '-headers',
-				array( 'user-agent' =>
-					"WordPress/$wp_version; " . self::PLUGIN_SLUG . ' ' . self::VERSION
-				)
+				array( 'user-agent' => self::get_user_agent() )
 			);
 			foreach ( array( 'ipinfo.io', 'Telize', 'IP-Json' ) as $provider ) {
 				if ( $provider = IP_Geo_Block_API::get_class_name( $provider ) ) {
@@ -242,8 +245,6 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_location( $commentdata, $settings ) {
-		global $wp_version;
-
 		// if the post has been already marked as 'blocked' then return
 		if ( isset( $commentdata[ self::PLUGIN_SLUG ] ) &&
 			'blocked' === $commentdata[ self::PLUGIN_SLUG ]['result'] ) {
@@ -278,7 +279,7 @@ class IP_Geo_Block {
 			$name . '-headers',
 			array(
 				'timeout' => $settings['timeout'],
-				'user-agent' => "WordPress/$wp_version; $name " . self::VERSION
+				'user-agent' => self::get_user_agent(),
 			)
 		);
 
