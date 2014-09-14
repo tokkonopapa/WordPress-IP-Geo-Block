@@ -58,9 +58,10 @@ Thanks for providing these great services for free.
 * [http://smart-ip.net/](http://smart-ip.net/geoip-api "Geo-IP API Documentation") (IPv4, IPv6 / free for personal and non-commercial use)
 * [http://ipinfodb.com/](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") (IPv4, IPv6 / free for registered user, need API key)
 
-Some of these services and APIs use GeoLite data created by (http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention")(http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"),
+Some of these services and APIs use GeoLite data created by
+    [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"),
 and some include IP2Location LITE data available from 
-[IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
+    [IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
 
 == Installation ==
 
