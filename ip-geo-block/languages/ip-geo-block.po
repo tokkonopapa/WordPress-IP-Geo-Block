@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.1.1\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-09-13 20:39+0900\n"
-"PO-Revision-Date: 2014-09-13 20:42+0900\n"
+"POT-Creation-Date: 2014-09-14 14:20+0900\n"
+"PO-Revision-Date: 2014-09-14 14:22+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -81,165 +81,165 @@ msgstr ""
 msgid "Bottom"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:346
+#: admin/class-ip-geo-block-admin.php:345
 msgid "Matching rule"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:356
+#: admin/class-ip-geo-block-admin.php:355
 msgid "White list"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:357
+#: admin/class-ip-geo-block-admin.php:356
 msgid "Black list"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:365
+#: admin/class-ip-geo-block-admin.php:364
 #, php-format
 msgid "White list %s"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:374
-#: admin/class-ip-geo-block-admin.php:390
+#: admin/class-ip-geo-block-admin.php:373
+#: admin/class-ip-geo-block-admin.php:389
 msgid "(comma separated)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:381
+#: admin/class-ip-geo-block-admin.php:380
 #, php-format
 msgid "Black list %s"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:397
+#: admin/class-ip-geo-block-admin.php:396
 #, php-format
 msgid "Response code %s"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:429
+#: admin/class-ip-geo-block-admin.php:428
 msgid "Cache settings"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:437
+#: admin/class-ip-geo-block-admin.php:436
 msgid "Number of entries"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:452
+#: admin/class-ip-geo-block-admin.php:451
 msgid "Expiration time [sec]"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:470
+#: admin/class-ip-geo-block-admin.php:469
 msgid "Plugin settings"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:478
+#: admin/class-ip-geo-block-admin.php:477
 msgid "Save statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:493
+#: admin/class-ip-geo-block-admin.php:492
 msgid "Remove settings at uninstallation"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:522
+#: admin/class-ip-geo-block-admin.php:521
 msgid "Statistics of posts"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:530
+#: admin/class-ip-geo-block-admin.php:529
 msgid "Passed"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:545
+#: admin/class-ip-geo-block-admin.php:544
 msgid "Blocked"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:560
+#: admin/class-ip-geo-block-admin.php:559
 msgid "Unknown (passed)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:581
+#: admin/class-ip-geo-block-admin.php:580
 msgid "Blocked by countries"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:596
+#: admin/class-ip-geo-block-admin.php:595
 msgid "Blocked by type of IP address"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:613
+#: admin/class-ip-geo-block-admin.php:612
 msgid "Service"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:614
+#: admin/class-ip-geo-block-admin.php:613
 msgid "Calls"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:615
+#: admin/class-ip-geo-block-admin.php:614
 msgid "Response [msec]"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:628
+#: admin/class-ip-geo-block-admin.php:627
 msgid "Average response time of each service"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:642
-#: admin/class-ip-geo-block-admin.php:746
+#: admin/class-ip-geo-block-admin.php:641
+#: admin/class-ip-geo-block-admin.php:745
 msgid "IP address"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:643
+#: admin/class-ip-geo-block-admin.php:642
 msgid "Country code"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:644
+#: admin/class-ip-geo-block-admin.php:643
 msgid "Elapsed [sec] / Calls"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:662
+#: admin/class-ip-geo-block-admin.php:661
 msgid "IP address in cache"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:677
+#: admin/class-ip-geo-block-admin.php:676
 msgid "Clear statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:685
+#: admin/class-ip-geo-block-admin.php:684
 msgid "Clear now"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:710
+#: admin/class-ip-geo-block-admin.php:709
 msgid "Search IP address geolocation"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:730
+#: admin/class-ip-geo-block-admin.php:729
 msgid "Geolocation service"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:761
+#: admin/class-ip-geo-block-admin.php:760
 msgid "Find geolocation"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:769
+#: admin/class-ip-geo-block-admin.php:768
 msgid "Search now"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:790
+#: admin/class-ip-geo-block-admin.php:789
 msgid "Attribution links"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:821
+#: admin/class-ip-geo-block-admin.php:820
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:822
+#: admin/class-ip-geo-block-admin.php:821
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:894
+#: admin/class-ip-geo-block-admin.php:893
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:925
+#: admin/class-ip-geo-block-admin.php:924
 msgid "successfully updated"
 msgstr ""
 
-#: classes/class-ip-geo-block.php:421
+#: classes/class-ip-geo-block.php:422
 msgid "Sorry, your comment cannot be accepted."
 msgstr ""
