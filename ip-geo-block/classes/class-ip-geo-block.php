@@ -210,6 +210,7 @@ class IP_Geo_Block {
 
 			if ( version_compare( $opts['version'], '1.2' ) < 0 ) {
 				unset( $opts['ip2location'] );
+				$opts['validation' ] = self::$option_table[ $name[0] ]['validation' ];
 				$opts['update'     ] = self::$option_table[ $name[0] ]['update'     ];
 				$opts['maxmind'    ] = self::$option_table[ $name[0] ]['maxmind'    ];
 				$opts['ip2location'] = self::$option_table[ $name[0] ]['ip2location'];
@@ -481,7 +482,7 @@ class IP_Geo_Block {
 					$cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 2 ) / 2;
 			} else {
 				$update['retry']++;
-				$next = $now + ( $immediate ? 1 : DAY_IN_SECONDS / 2 );
+				$next = $now + ( $immediate ? 1 : DAY_IN_SECONDS );
 			}
 
 			wp_schedule_single_event( $next, 'ip_geo_block_cron' );
