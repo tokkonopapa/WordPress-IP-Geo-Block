@@ -10,7 +10,8 @@
     }
 }
 
-#ip-geo-block-loading {
+#ip-geo-block-loading,
+#ip-geo-block-download {
     padding: 0;
     margin: 0.25em 0 0 2em;
     height: 16px;
@@ -31,13 +32,13 @@
 }
 
 .ip-geo-block-result {
-    color:#2786C2;
+    color: #2786C2;
     display: inline-block;
 }
 
 #ip-geo-block-map {
     margin-top: 1em;
-    height:360px;
+    height: 360px;
 }
 
 /* google map infomation window */
@@ -46,6 +47,12 @@
     height: auto !important;
     height: 100%;
     min-height: 100%:
+}
+.gm-style-iw ul {
+    margin: 0.1em;
+}
+.gm-style-iw li {
+    margin: 0.2em;
 }
 
 ul.ip-geo-block-statistics-countries li {

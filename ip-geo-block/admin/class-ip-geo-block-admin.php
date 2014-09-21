@@ -27,8 +27,8 @@ class IP_Geo_Block_Admin {
 	 * Slug of the admin page.
 	 *
 	 */
-	protected $option_slug = array();
-	protected $option_name = array();
+	public $option_slug = array();
+	public $option_name = array();
 
 	/**
 	 * Initialize the plugin by loading admin scripts & styles
@@ -37,8 +37,7 @@ class IP_Geo_Block_Admin {
 	private function __construct() {
 
 		// Set unique slug for admin page.
-		$plugin = IP_Geo_Block::get_instance();
-		foreach ( $plugin->get_option_keys() as $key => $val ) {
+		foreach ( IP_Geo_Block::$option_keys as $key => $val ) {
 			$this->option_slug[ $key ] = str_replace( '_', '-', $val );
 			$this->option_name[ $key ] = $val;
 		}
@@ -82,7 +81,7 @@ class IP_Geo_Block_Admin {
 	 */
 	public function admin_notice() {
 		$info = $this->get_plugin_info();
-		$msg = __( 'You need WordPress 3.5+', IP_GEO_BLOCK::TEXT_DOMAIN );
+		$msg = __( 'You need WordPress 3.5+', IP_Geo_Block::TEXT_DOMAIN );
 		echo "\n<div class=\"error\"><p>", $info['Name'], ": $msg</p></div>\n";
 	}
 
@@ -91,7 +90,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	private function get_ajax_action() {
-		return IP_GEO_BLOCK::PLUGIN_SLUG . '-ajax-action';
+		return IP_Geo_Block::PLUGIN_SLUG . '-ajax-action';
 	}
 
 	/**
@@ -107,19 +106,19 @@ class IP_Geo_Block_Admin {
 		$screen = get_current_screen();
 		if ( $this->plugin_screen_hook_suffix == $screen->id ) {
 			// css for option page
-			wp_enqueue_style( IP_GEO_BLOCK::PLUGIN_SLUG . '-admin-styles',
+			wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-admin-styles',
 				plugins_url( 'css/admin.css', __FILE__ ),
 				array(), IP_Geo_Block::VERSION
 			);
 
 			// js for google map
-			wp_enqueue_script( IP_GEO_BLOCK::PLUGIN_SLUG . '-google-map',
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
 				'http://maps.google.com/maps/api/js?sensor=false',
 				array( 'jquery' ), IP_Geo_Block::VERSION, TRUE
 			);
 
 			// js for option page
-			$handle = IP_GEO_BLOCK::PLUGIN_SLUG . '-admin-script';
+			$handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script';
 			wp_enqueue_script( $handle,
 				plugins_url( 'js/admin.js', __FILE__ ),
 				array( 'jquery' ), IP_Geo_Block::VERSION, TRUE
@@ -146,7 +145,7 @@ class IP_Geo_Block_Admin {
 
 		return array_merge(
 			array(
-				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . IP_GEO_BLOCK::PLUGIN_SLUG ) . '">' . __( 'Settings' ) . '</a>'
+				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG ) . '">' . __( 'Settings' ) . '</a>'
 			),
 			$links
 		);
@@ -160,7 +159,7 @@ class IP_Geo_Block_Admin {
 	public function add_plugin_meta_links( $links, $file ) {
 
 		if ( $file === IP_GEO_BLOCK_BASE ) {
-			$title = __( 'Contribute on GitHub', IP_GEO_BLOCK::TEXT_DOMAIN );
+			$title = __( 'Contribute on GitHub', IP_Geo_Block::TEXT_DOMAIN );
 			array_push(
 				$links,
 				"<a href=\"https://github.com/tokkonopapa/WordPress-IP-Geo-Block\" title=\"$title\" target=_blank>$title</a>"
@@ -178,10 +177,10 @@ class IP_Geo_Block_Admin {
 
 		// Add a settings page for this plugin to the Settings menu.
 		$this->plugin_screen_hook_suffix = add_options_page(
-			__( 'IP Geo Block', IP_GEO_BLOCK::TEXT_DOMAIN ),
-			__( 'IP Geo Block', IP_GEO_BLOCK::TEXT_DOMAIN ),
+			__( 'IP Geo Block', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'IP Geo Block', IP_Geo_Block::TEXT_DOMAIN ),
 			'manage_options',
-			IP_GEO_BLOCK::PLUGIN_SLUG,
+			IP_Geo_Block::PLUGIN_SLUG,
 			array( $this, 'display_plugin_admin_page' )
 		);
 
@@ -199,10 +198,10 @@ class IP_Geo_Block_Admin {
 <div class="wrap">
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 	<h2 class="nav-tab-wrapper">
-		<a href="?page=<?php echo IP_GEO_BLOCK::PLUGIN_SLUG; ?>&amp;tab=0" class="nav-tab <?php echo $tab == 0 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', IP_GEO_BLOCK::TEXT_DOMAIN ); ?></a>
-		<a href="?page=<?php echo IP_GEO_BLOCK::PLUGIN_SLUG; ?>&amp;tab=1" class="nav-tab <?php echo $tab == 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics', IP_GEO_BLOCK::TEXT_DOMAIN ); ?></a>
-		<a href="?page=<?php echo IP_GEO_BLOCK::PLUGIN_SLUG; ?>&amp;tab=2" class="nav-tab <?php echo $tab == 2 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Search', IP_GEO_BLOCK::TEXT_DOMAIN ); ?></a>
-		<a href="?page=<?php echo IP_GEO_BLOCK::PLUGIN_SLUG; ?>&amp;tab=3" class="nav-tab <?php echo $tab == 3 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Attribution', IP_GEO_BLOCK::TEXT_DOMAIN ); ?></a>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=0" class="nav-tab <?php echo $tab == 0 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=1" class="nav-tab <?php echo $tab == 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=2" class="nav-tab <?php echo $tab == 2 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Search', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=3" class="nav-tab <?php echo $tab == 3 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 	</h2>
 	<form method="post" action="options.php">
 <?php
@@ -236,579 +235,32 @@ class IP_Geo_Block_Admin {
 		 * Settings
 		 *========================================*/
 		if ( 0 === $tab ) {
-			$option_slug = $this->option_slug['settings'];
-			$option_name = $this->option_name['settings'];
-			$options = get_option( $option_name );
-
-			/**
-			 * Register a setting and its sanitization callback.
-			 * @link http://codex.wordpress.org/Function_Reference/register_setting
-			 *
-			 * register_setting( $option_group, $option_name, $sanitize_callback );
-			 * @param string $option_group A settings group name.
-			 * @param string $option_name The name of an option to sanitize and save.
-			 * @param string $sanitize_callback A callback function that sanitizes the option's value.
-			 * @since 2.7.0
-			 */
-			register_setting(
-				$option_slug,
-				$option_name,
-				array( $this, 'sanitize_settings' )
-			);
-
-			/**
-			 * Add new section to a new page inside the existing page.
-			 * @link http://codex.wordpress.org/Function_Reference/add_settings_section
-			 *
-			 * add_settings_section( $id, $title, $callback, $page );
-			 * @param string $id String for use in the 'id' attribute of tags.
-			 * @param string $title Title of the section.
-			 * @param string $callback Function that fills the section with the desired content.
-			 * @param string $page The menu page on which to display this section.
-			 * @since 2.7.0
-			 */
-			/*----------------------------------------*
-			 * Geolocation service settings
-			 *----------------------------------------*/
-			$section = IP_GEO_BLOCK::PLUGIN_SLUG . '-provider';
-			add_settings_section(
-				$section,
-				__( 'Geolocation service settings', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				NULL,
-				$option_slug
-			);
-
-			/**
-			 * Register a settings field to the settings page and section.
-			 * @link http://codex.wordpress.org/Function_Reference/add_settings_field
-			 *
-			 * add_settings_field( $id, $title, $callback, $page, $section, $args );
-			 * @param string $id String for use in the 'id' attribute of tags.
-			 * @param string $title Title of the field.
-			 * @param string $callback Function that fills the field with the desired inputs.
-			 * @param string $page The menu page on which to display this field.
-			 * @param string $section The section of the settings page in which to show the box.
-			 * @param array $args Additional arguments that are passed to the $callback function.
-			 */
-			$field = 'providers';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Selection and API key settings', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'check-provider',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ],
-					'providers' => IP_Geo_Block_Provider::get_providers( 'key' ),
-					'titles' => IP_Geo_Block_Provider::get_providers( 'type' ),
-				)
-			);
-
-			/*----------------------------------------*
-			 * Submission settings
-			 *----------------------------------------*/
-			$section = IP_GEO_BLOCK::PLUGIN_SLUG . '-submission';
-			add_settings_section(
-				$section,
-				__( 'Submission settings', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				NULL,
-				$option_slug
-			);
-
-			$field = 'comment';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Text message on comment form', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'comment-msg',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ]['pos'],
-					'list' => array(
-						__( 'None',   IP_GEO_BLOCK::TEXT_DOMAIN ) => 0,
-						__( 'Top',    IP_GEO_BLOCK::TEXT_DOMAIN ) => 1,
-						__( 'Bottom', IP_GEO_BLOCK::TEXT_DOMAIN ) => 2,
-					),
-					'text' => $options[ $field ]['msg'], // sanitized at 'comment-msg'
-				)
-			);
-
-			$field = 'matching_rule';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Matching rule', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'select',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ],
-					'list' => array(
-						__( 'White list', IP_GEO_BLOCK::TEXT_DOMAIN ) => 0,
-						__( 'Black list', IP_GEO_BLOCK::TEXT_DOMAIN ) => 1,
-					),
-				)
-			);
-
-			$field = 'white_list';
-			add_settings_field(
-				$option_name . "_$field",
-				sprintf( __( 'White list %s', IP_GEO_BLOCK::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'text',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ],
-					'after' => '<span>&nbsp;' . __( '(comma separated)', IP_GEO_BLOCK::TEXT_DOMAIN ) . '</span>',
-				)
-			);
-
-			$field = 'black_list';
-			add_settings_field(
-				$option_name . "_$field",
-				sprintf( __( 'Black list %s', IP_GEO_BLOCK::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'text',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ],
-					'after' => '<span>&nbsp;' . __( '(comma separated)', IP_GEO_BLOCK::TEXT_DOMAIN ) . '</span>',
-				)
-			);
-
-			$field = 'response_code';
-			add_settings_field(
-				$option_name . "_$field",
-				sprintf( __( 'Response code %s', IP_GEO_BLOCK::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1" target=_blank>RFC 2616</a>)' ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'select',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ],
-					'list' => array(
-						'200 OK' => 200,
-						'205 Reset Content' => 205,
-						'301 Moved Permanently' => 301,
-						'302 Found' => 302,
-						'307 Temporary Redirect' => 307,
-						'400 Bad Request' => 400,
-						'403 Forbidden' => 403,
-						'404 Not Found' => 404,
-						'406 Not Acceptable' => 406,
-						'410 Gone' => 410,
-						'500 Internal Server Error' => 500,
-						'503 Service Unavailable' => 503,
-					),
-				)
-			);
-
-			/*----------------------------------------*
-			 * Cache settings
-			 *----------------------------------------*/
-			$section = IP_GEO_BLOCK::PLUGIN_SLUG . '-cache';
-			add_settings_section(
-				$section,
-				__( 'Cache settings', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				NULL,
-				$option_slug
-			);
-
-			$field = 'cache_hold';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Number of entries', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'text',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ],
-				)
-			);
-
-			$field = 'cache_time';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Expiration time [sec]', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'text',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ],
-				)
-			);
-
-			/*----------------------------------------*
-			 * Plugin settings
-			 *----------------------------------------*/
-			$section = IP_GEO_BLOCK::PLUGIN_SLUG . '-others';
-			add_settings_section(
-				$section,
-				__( 'Plugin settings', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				NULL,
-				$option_slug
-			);
-
-			$field = 'save_statistics';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Save statistics', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'checkbox',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ],
-				)
-			);
-
-			$field = 'clean_uninstall';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Remove settings at uninstallation', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'checkbox',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ],
-				)
-			);
+			include_once( IP_GEO_BLOCK_PATH . 'classes/includes/tab-settings.php' );
+			tab_settings( $this );
 		}
 
 		/*========================================*
 		 * Statistics
 		 *========================================*/
 		else if ( 1 === $tab ) {
-			$option_slug = $this->option_slug['statistics'];
-			$option_name = $this->option_name['statistics'];
-			$options = get_option( $option_name );
-
-			register_setting(
-				$option_slug,
-				$option_name
-			);
-
-			$section = IP_GEO_BLOCK::PLUGIN_SLUG . '-statistics';
-			add_settings_section(
-				$section,
-				__( 'Statistics of posts', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				NULL,
-				$option_slug
-			);
-
-			$field = 'passed';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Passed', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'html',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => esc_html( $options[ $field ] ),
-				)
-			);
-
-			$field = 'blocked';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Blocked', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'html',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => esc_html( $options[ $field ] ),
-				)
-			);
-
-			$field = 'unknown';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Unknown (passed)', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'html',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => esc_html( $options[ $field ] ),
-				)
-			);
-
-			$field = 'countries';
-			$html = "<ul class=\"${option_slug}-${field}\">";
-			foreach ( $options['countries'] as $key => $val ) {
-				$html .= sprintf( "<li>%2s:%5d</li>", esc_html( $key ), $val );
-			}
-			$html .= "</ul>";
-
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Blocked by countries', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'html',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $html,
-				)
-			);
-
-			$field = 'type';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Blocked by type of IP address', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'html',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => "<table class=\"${option_slug}-${field}\">" .
-						"<thead><tr><th>IPv4</th><th>IPv6</th></tr></thead><tbody>" .
-						"<td>" . esc_html( $options['IPv4'] ) . "</td>" .
-						"<td>" . esc_html( $options['IPv6'] ) . "</td></tbody></table>",
-				)
-			);
-
-			$field = 'services';
-			$html = "<table class=\"${option_slug}-${field}\"><thead><tr>";
-			$html .= "<th>" . __( 'Service', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
-			$html .= "<th>" . __( 'Calls', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
-			$html .= "<th>" . __( 'Response [msec]', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
-			$html .= "</tr></thead><tbody>";
-
-			foreach ( $options['providers'] as $key => $val ) {
-				$html .= "<tr><td>" . esc_html( $key ) . "</td>";
-				$html .= "<td>" . sprintf( "%5d", $val['count'] ) . "</td><td>";
-				$html .= sprintf( "%5d", 1000.0 * $val['time'] / $val['count'] );
-				$html .= "</td></tr>";
-			}
-			$html .= "</tbody></table>";
-
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Average response time of each service', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'html',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $html,
-				)
-			);
-
-			$field = 'caches';
-			$html = "<table class=\"${option_slug}-${field}\"><thead><tr>";
-			$html .= "<th>" . __( 'IP address', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
-			$html .= "<th>" . __( 'Country code', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
-			$html .= "<th>" . __( 'Elapsed [sec] / Calls', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</th>";
-			$html .= "</tr></thead><tbody>";
-
-			$transient = get_transient( IP_Geo_Block::CACHE_KEY );
-			if ( $transient ) {
-				$time = time();
-				foreach ( $transient as $key => $val ) {
-					$html .= "<tr><td>" . esc_html( $key ) . "</td>";
-					$html .= "<td>" . esc_html( $val['code'] ) . "</td>";
-					$html .= "<td>" . intval( $time - $val['time'] ) . " / ";
-					$html .= ! empty( $val['call'] ) ? intval( $val['call'] ) : '-';
-					$html .= "</td></tr>";
-				}
-			}
-			$html .= "</tbody></table>";
-
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'IP address in cache', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'html',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $html,
-				)
-			);
-
-			$field = 'clear_statistics';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Clear statistics', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'button',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => __( 'Clear now', IP_GEO_BLOCK::TEXT_DOMAIN ),
-					'after' => '<div id="ip-geo-block-loading"></div>',
-				)
-			);
+			include_once( IP_GEO_BLOCK_PATH . 'classes/includes/tab-statistics.php' );
+			tab_statistics( $this );
 		}
 
 		/*========================================*
 		 * Geolocation
 		 *========================================*/
 		else if ( 2 === $tab ) {
-			$option_slug = $this->option_slug['settings'];
-			$option_name = $this->option_name['settings'];
-			$options = get_option( $option_name );
-
-			register_setting(
-				$option_slug,
-				$option_name
-			);
-
-			/*----------------------------------------*
-			 * Geolocation
-			 *----------------------------------------*/
-			$section = IP_GEO_BLOCK::PLUGIN_SLUG . '-search';
-			add_settings_section(
-				$section,
-				__( 'Search IP address geolocation', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				NULL,
-				$option_slug
-			);
-
-			// make providers list
-			$list = array();
-			$providers = IP_Geo_Block_Provider::get_providers( 'key' );
-
-			foreach ( $providers as $provider => $key ) {
-				if ( ! is_string( $key ) ||
-				     ! empty( $options['providers'][ $provider ] ) ) {
-					$list += array( $provider => $provider );
-				}
-			}
-
-			$field = 'service';
-			$provider = array_keys( $providers );
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Geolocation service', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'select',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => $provider[0],
-					'list' => $list,
-				)
-			);
-
-			$field = 'ip_address';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'IP address', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'text',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => '',
-				)
-			);
-
-			$field = 'get_location';
-			add_settings_field(
-				$option_name . "_$field",
-				__( 'Find geolocation', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'button',
-					'option' => $option_name,
-					'field' => $field,
-					'value' => __( 'Search now', IP_GEO_BLOCK::TEXT_DOMAIN ),
-					'after' => '<div id="ip-geo-block-loading"></div>',
-				)
-			);
+			include_once( IP_GEO_BLOCK_PATH . 'classes/includes/tab-geolocation.php' );
+			tab_geolocation( $this );
 		}
 
 		/*========================================*
 		 * Attribution
 		 *========================================*/
 		else if ( 3 === $tab ) {
-			$option_slug = $this->option_slug['settings'];
-			$option_name = $this->option_name['settings'];
-
-			register_setting(
-				$option_slug,
-				$option_name
-			);
-
-			$section = IP_GEO_BLOCK::PLUGIN_SLUG . '-attribution';
-			add_settings_section(
-				$section,
-				__( 'Attribution links', IP_GEO_BLOCK::TEXT_DOMAIN ),
-				array( $this, 'callback_attribution' ),
-				$option_slug
-			);
-
-			$field = 'attribution';
-			$providers = IP_Geo_Block_Provider::get_providers( 'link' );
-
-			foreach ( $providers as $provider => $key ) {
-				add_settings_field(
-					$option_name . "_${field}_${provider}",
-					$provider,
-					array( $this, 'callback_field' ),
-					$option_slug,
-					$section,
-					array(
-						'type' => 'html',
-						'option' => $option_name,
-						'field' => $field,
-						'value' => $key,
-					)
-				);
-			}
+			include_once( IP_GEO_BLOCK_PATH . 'classes/includes/tab-attribution.php' );
+			tab_attribution( $this );
 		}
 	}
 
@@ -817,8 +269,8 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function callback_attribution() {
-		echo "<p>" . __( 'Thanks for providing these great services for free.', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</p>\n";
-		echo "<p>" . __( '(Most browsers will redirect you to each site without referrer when you click the link.)', IP_GEO_BLOCK::TEXT_DOMAIN ) . "</p>\n";
+		echo "<p>" . __( 'Thanks for providing these great services for free.', IP_Geo_Block::TEXT_DOMAIN ) . "</p>\n";
+		echo "<p>" . __( '(Most browsers will redirect you to each site without referrer when you click the link.)', IP_Geo_Block::TEXT_DOMAIN ) . "</p>\n";
 	}
 
 	/**
@@ -834,74 +286,74 @@ class IP_Geo_Block_Admin {
 		$id   = "${args['option']}_${args['field']}";
 		$name = "${args['option']}[${args['field']}]";
 
+		// sub field
+		$sub_id = $sub_name = '';
+		if ( ! empty( $args['sub-field'] ) ) {
+			$sub_id   = "_${args['sub-field']}";
+			$sub_name = "[${args['sub-field']}]";
+		}
+
 		switch ( $args['type'] ) {
 
-			case 'check-provider':
-				echo "\n<ul id=\"check-provider\">\n";
-				foreach ( $args['providers'] as $key => $val ) {
-					$id   = "${args['option']}_providers_$key";
-					$name = "${args['option']}[providers][$key]"; ?>
+		  case 'check-provider':
+			echo "\n<ul id=\"check-provider\">\n";
+			foreach ( $args['providers'] as $key => $val ) {
+				$id   = "${args['option']}_providers_$key";
+				$name = "${args['option']}[providers][$key]"; ?>
 	<li>
 		<input type="checkbox" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo $val; ?>"<?php
 			checked(
-				( NULL === $val && ! isset( $args['value'][ $key ] ) ) ||
-				( FALSE === $val && ! empty( $args['value'][ $key ] ) ) ||
+				( NULL   === $val   && ! isset( $args['value'][ $key ] ) ) ||
+				( FALSE  === $val   && ! empty( $args['value'][ $key ] ) ) ||
 				( is_string( $val ) && ! empty( $args['value'][ $key ] ) )
 			); ?> />
 		<label for="<?php echo $id; ?>" title="<?php echo $args['titles'][ $key ]; ?>"><?php echo $key; ?></label>
 <?php
-					if ( is_string( $val ) ) { ?>
-		<input type="text" class="regular-text code" name="<?php echo $name; ?>" value="<?php echo esc_attr( isset( $args['value'][ $key ] ) ? $args['value'][ $key ] : '' ); ?>"<?php
-			if ( ! isset( $val ) ) disabled( TRUE, TRUE );
-		?> />
+				if ( is_string( $val ) ) { ?>
+		<input type="text" class="regular-text code" name="<?php echo $name; ?>" value="<?php echo esc_attr( isset( $args['value'][ $key ] ) ? $args['value'][ $key ] : '' ); ?>"<?php if ( ! isset( $val ) ) disabled( TRUE, TRUE ); ?> />
 	</li>
 <?php
-					}
 				}
-				echo "</ul>\n";
+			}
+			echo "</ul>\n";
+			break;
+
+		  case 'select':
+		  case 'comment-msg':
+			echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\">\n";
+			foreach ( $args['list'] as $key => $val ) {
+				echo "\t<option value=\"$val\"", 
+					selected( $args['value'], $val, FALSE ), ">$key</option>\n";
+			}
+			echo "</select>\n";
+			if ( 'comment-msg' === $args['type'] ) {
+				echo "<br />\n";
+				$sub_id   = '_msg';
+				$sub_name = '[msg]';
+				$args['value'] = $args['text'];
+			} else
 				break;
 
-			case 'comment-msg':
-				echo "\n<select name=\"${name}[pos]\" id=\"${id}_pos\">\n";
-				foreach ( $args['list'] as $key => $val ) {
-					echo "\t<option value=\"$val\"", selected( $args['value'], $val, FALSE ), ">$key</option>\n";
-				}
-				echo "</select><br />\n"; ?>
-<input type="text" class="regular-text" id="<?php echo $id, '_msg'; ?>" name="<?php echo $name, '[msg]'; ?>" value="<?php echo esc_attr( $args['text'] ); ?>"<?php
-	if ( NULL === $args['text'] ) disabled( TRUE, TRUE );
+		  case 'text': ?>
+<input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php disabled( $args['disabled'], TRUE );
 ?> />
 <?php
-				break;
+			break; // disabled @since 3.0
 
-			case 'select':
-				echo "\n<select name=\"$name\" id=\"$id\">\n";
-				foreach ( $args['list'] as $key => $val ) {
-					echo "\t<option value=\"$val\"", selected( $args['value'], $val, FALSE ), ">$key</option>\n";
-				}
-				echo "</select>\n";
-				break;
-
-			case 'text': ?>
-<input type="text" class="regular-text code" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php
-	if ( NULL === $args['value'] ) disabled( TRUE, TRUE );
-?> />
+		  case 'checkbox': ?>
+<input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="1"<?php checked( esc_attr( $args['value'] ) ); ?> />
+<label for="<?php echo $id, $sub_id; ?>"><?php _e( 'Enable', IP_Geo_Block::TEXT_DOMAIN ); ?></label>
 <?php
-				break; // disabled @since 3.0
+			break;
 
-			case 'checkbox': ?>
-<input type="checkbox" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="1"<?php checked( esc_attr( $args['value'] ) ); ?> />
-<label for="<?php echo $id; ?>"><?php _e( 'Enable', IP_GEO_BLOCK::TEXT_DOMAIN ); ?></label>
-<?php
-				break;
-
-			case 'button': ?>
+		  case 'button': ?>
 <input type="button" class="button-secondary" id="<?php echo $args['field']; ?>" value="<?php echo $args['value']; ?>" />
 <?php
-				break;
+			break;
 
-			case 'html':
-				echo "\n", $args['value'], "\n";
-				break;
+		  case 'html':
+			echo "\n", $args['value'], "\n";
+			break;
 		}
 
 		if ( ! empty( $args['after'] ) )
@@ -918,14 +370,21 @@ class IP_Geo_Block_Admin {
 	 * @link http://codex.wordpress.org/Function_Reference/sanitize_option
 	 * @link http://codex.wordpress.org/Function_Reference/sanitize_text_field
 	 * @link http://codex.wordpress.org/Plugin_API/Filter_Reference/sanitize_option_$option
-	 * @link http://core.trac.wordpress.org/browser/tags/3.5/wp-includes/formatting.php
+	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
 	private function sanitize_options( $option_name, $input ) {
-		$message = __( 'successfully updated', IP_GEO_BLOCK::TEXT_DOMAIN );
+		$message = __( 'successfully updated', IP_Geo_Block::TEXT_DOMAIN );
 		$status = 'updated';
 
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 		$providers = IP_Geo_Block_Provider::get_providers( 'key' );
+
+		// setup base options
+		$output = get_option( $option_name );
+
+		// extract key with 'only-' on its top
+		$only = array_shift( array_keys( array_diff_key( $input, $output ) ) );
+		$only = strpos( $only, 'only-' ) === 0 ? substr( $only, 5 ) : FALSE;
 
 		/**
 		 * Sanitize a string from user input or from the db
@@ -941,68 +400,92 @@ class IP_Geo_Block_Admin {
 		 * @param string $str
 		 * @return string
 		 */
-		$output = get_option( $option_name );
 		foreach ( $output as $key => $value ) {
+			// skip except specified key
+			if ( $only && $only !== $key )
+				continue;
+
 			switch( $key ) {
-				case 'providers':
-					foreach ( $providers as $provider => $api ) {
-						// need no key
-						if ( NULL === $api ) {
-							if ( isset( $input[ $key ][ $provider ] ) )
-								unset( $output[ $key ][ $provider ] );
-							else
-								$output['providers'][ $provider ] = '';
-						}
-
-						// non-commercial
-						else if ( FALSE === $api ) {
-							if ( isset( $input[ $key ][ $provider ] ) )
-								$output['providers'][ $provider ] = '@';
-							else
-								unset( $output[ $key ][ $provider ] );
-						}
-
-						// need key
-						else {
-							$output[ $key ][ $provider ] =
-								isset( $input[ $key ][ $provider ] ) ?
-								sanitize_text_field( $input[ $key ][ $provider ] ) : '';
-						}
+			  case 'providers':
+				foreach ( $providers as $provider => $api ) {
+					// need no key
+					if ( NULL === $api ) {
+						if ( isset( $input[ $key ][ $provider ] ) )
+							unset( $output[ $key ][ $provider ] );
+						else
+							$output['providers'][ $provider ] = '';
 					}
-					break;
 
-				case 'comment':
-					$output[ $key ]['pos'] = intval( $input[ $key ]['pos'] );
-					$output[ $key ]['msg'] = sanitize_text_field( $input[ $key ]['msg'] );
-//					global $allowedtags;
-//					$output[ $key ]['msg'] = wp_kses( $input[ $key ]['msg'], $allowedtags );
-					break;
+					// non-commercial
+					else if ( FALSE === $api ) {
+						if ( isset( $input[ $key ][ $provider ] ) )
+							$output['providers'][ $provider ] = '@';
+						else
+							unset( $output[ $key ][ $provider ] );
+					}
 
-				case 'matching_rule':
-					$output[ $key ] = isset( $input[ $key ] ) ?
-						intval( $input[ $key ] ) : 0; // white list
-					break;
+					// need key
+					else {
+						$output[ $key ][ $provider ] =
+							isset( $input[ $key ][ $provider ] ) ?
+							sanitize_text_field( $input[ $key ][ $provider ] ) : '';
+					}
+				}
+				break;
+/*
+			  case 'comment':
+				global $allowedtags;
+				$output[ $key ]['pos'] = intval( $input[ $key ]['pos'] );
+				$output[ $key ]['msg'] = wp_kses( $input[ $key ]['msg'], $allowedtags );
+				break;
+*/
+			  case 'white_list':
+			  case 'black_list':
+				$output[ $key ] = isset( $input[ $key ] ) ?
+					sanitize_text_field(
+						preg_replace( '/[^A-Z,]/', '', strtoupper( $input[ $key ] ) )
+					) : '';
+				break;
 
-				case 'white_list':
-				case 'black_list':
-					$output[ $key ] = isset( $input[ $key ] ) ?
-						sanitize_text_field(
-							preg_replace( '/[^A-Z,]/', '', strtoupper( $input[ $key ] ) )
-						) : '';
-					break;
+			  case 'ip2location':
+				break;
 
-				case 'save_statistics':
-				case 'clean_uninstall':
-					// pass through to default in case of checkbox
-					if ( ! isset( $input[ $key ] ) )
-						$value = false;
+			  default: // checkbox, select, text
+				// single field
+				if ( ! is_array( $value ) ) {
+					// for checkbox
+					if ( is_bool( $value ) ) {
+						$output[ $key ] = ! empty( $input[ $key ] );
+					}
 
-				default: // text, select
-					$output[ $key ] = isset( $input[ $key ] ) ?
-						sanitize_text_field( trim( $input[ $key ] ) ) : $value;
-					break;
+					// otherwise if implicit
+					else if ( isset( $input[ $key ] ) ) {
+						$output[ $key ] = is_int( $value ) ?
+							intval( $input[ $key ] ) :
+							sanitize_text_field( trim( $input[ $key ] ) );
+					}
+				}
+
+				// sub field
+				else foreach ( array_keys( $value ) as $sub ) {
+					// for checkbox
+					if ( is_bool( $value[ $sub ] ) ) {
+						$output[ $key ][ $sub ] = ! empty( $input[ $key ][ $sub ] );
+					}
+
+					// otherwise if implicit
+					else if ( isset( $input[ $key ][ $sub ] ) ) {
+						$output[ $key ][ $sub ] = is_int( $value[ $sub ] ) ?
+							intval( $input[ $key ][ $sub ] ) :
+							sanitize_text_field( trim( $input[ $key ][ $sub ] ) );
+					}
+				}
+				break;
 			}
 		}
+
+		// schedule auto updating
+		IP_Geo_Block::schedule_cron_job( $output['update'], $output['maxmind'], TRUE );
 
 		// This call is just for debug.
 		// @param string $setting: Slug title of the setting to which this error applies.
@@ -1036,16 +519,25 @@ class IP_Geo_Block_Admin {
 	 * @link http://codex.wordpress.org/Function_Reference/check_ajax_referer
 	 */
 	public function admin_ajax_callback() {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
-
 		// Check request origin, nonce, capability.
 		if ( ! check_admin_referer( $this->get_ajax_action(), 'nonce' ) || // @since 2.5
 		     ! current_user_can( 'manage_options' ) || empty( $_POST ) ) { // @since 2.0
 			status_header( 403 ); // Forbidden @since 2.0.0
 		}
 
+		// download database
+		else if ( isset( $_POST['download'] ) ) {
+			// download now
+			$res = IP_Geo_Block::download_database( 'only-maxmind' );
+
+			// respond
+			wp_send_json( $res ); // @since 3.5.0
+		}
+
 		// Check ip address
 		else if ( isset( $_POST['provider'] ) ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+
 			$ip = $_POST['ip'];
 			if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
 			     filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
@@ -1055,32 +547,25 @@ class IP_Geo_Block_Admin {
 				$name = IP_Geo_Block_API::get_class_name( $provider );
 
 				if ( $name ) {
+					// get option settings
 					$options = get_option( $this->option_name['settings'] );
-					$args = apply_filters(
-						IP_GEO_BLOCK::PLUGIN_SLUG . '-headers',
-						array(
-							'timeout' => $options['timeout'],
-							'user-agent' => IP_Geo_Block::get_user_agent(),
-						)
-					);
+
+					// compose request headers
+					$args = IP_Geo_Block::get_request_headers( $options );
+
+					// create object for provider and get location
 					$key = ! empty( $options['providers'][ $provider ] );
 					$geo = new $name( $key ? $options['providers'][ $provider ] : NULL );
 					$res = $geo->get_location( $ip, $args );
 				}
 
 				else {
-					$res = array(
-						'errorCode' => 'ERROR',
-						'errorMessage' => 'Invalid service.',
-					);
+					$res = array( 'errorMessage' => 'Invalid service.' );
 				}
 			}
 
 			else {
-				$res = array(
-					'errorCode' => 'ERROR',
-					'errorMessage' => 'Invalid IP address.',
-				);
+				$res = array( 'errorMessage' => 'Invalid IP address.' );
 			}
 
 			// respond
@@ -1089,22 +574,25 @@ class IP_Geo_Block_Admin {
 
 		// Clear statistics
 		else if ( isset( $_POST['clear'] ) ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+
+			// set default values
 			update_option(
 				$this->option_name['statistics'],
 				IP_Geo_Block::get_defaults( 'statistics' )
 			);
+
+			// delete cache of IP address
 			IP_Geo_Block_API_Cache::delete_cache();
 
+			// refresh page
 			wp_send_json( array(
 				'refresh' => 'options-general.php?page=ip-geo-block&tab=1',
 			) );
 		}
 
 		else {
-			wp_send_json( array(
-				'errorCode' => 'ERROR',
-				'errorMessage' => 'Invalid command.',
-			) );
+			wp_send_json( array( 'errorMessage' => 'Invalid command.' ) );
 		}
 
 		// End of ajax

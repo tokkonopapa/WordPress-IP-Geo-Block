@@ -4,7 +4,7 @@ Donate link:
 Tags: comment, spam, IP address, geolocation
 Requires at least: 3.5
 Tested up to: 4.0
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,7 +55,6 @@ Thanks for providing these great services for free.
 * [http://mshd.net/](http://mshd.net/documentation/geoip "www.mshd.net - Geoip Documentation") (IPv4, IPv6 / free)
 * [http://www.geoplugin.com/](http://www.geoplugin.com/ "geoPlugin to geolocate your visitors") (IPv4, IPv6 / free, need an attribution link)
 * [http://ip-api.com/](http://ip-api.com/ "IP-API.com - Free Geolocation API") (IPv4, IPv6 / free for non-commercial use)
-* [http://smart-ip.net/](http://smart-ip.net/geoip-api "Geo-IP API Documentation") (IPv4, IPv6 / free for personal and non-commercial use)
 * [http://ipinfodb.com/](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") (IPv4, IPv6 / free for registered user, need API key)
 
 Some of these services and APIs use GeoLite data created by

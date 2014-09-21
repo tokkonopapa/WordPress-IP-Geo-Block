@@ -257,7 +257,7 @@ class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
  * Term of use : http://www.telize.com/disclaimer/
  * Licence fee : free for everyone to use
  * Rate limit  : none
- * Sample URL  : http://www.telize.com/geoip/2a00:1450:400c:c00::6a
+ * Sample URL  : http://www.telize.com/geoip/2a00:1210:fffe:200::1
  * Input type  : IP address (IPv4, IPv6)
  * Output type : json, jsonp
  */
@@ -287,7 +287,7 @@ class IP_Geo_Block_API_Telize extends IP_Geo_Block_API {
  * Term of use : 
  * Licence fee : free
  * Rate limit  : none
- * Sample URL  : http://www.iptolatlng.com?ip=2a00:1450:400c:c00::6a
+ * Sample URL  : http://www.iptolatlng.com?ip=2a00:1210:fffe:200::1
  * Input type  : IP address (IPv4, IPv6) / domain name
  * Output type : json
  */
@@ -318,7 +318,7 @@ class IP_Geo_Block_API_IPtoLatLng extends IP_Geo_Block_API {
  * Licence fee : free
  * Rate limit  : 
  * Sample URL  : http://ip-json.rhcloud.com/xml/124.83.187.140
- * Sample URL  : http://ip-json.rhcloud.com/v6/2a00:1450:400c:c00::6a
+ * Sample URL  : http://ip-json.rhcloud.com/v6/2a00:1210:fffe:200::1
  * Input type  : IP address (IPv4, IPv6) / domain name
  * Output type : json, xml, csv
  */
@@ -386,7 +386,7 @@ class IP_Geo_Block_API_Xhanch extends IP_Geo_Block_API {
  * Term of use : http://mshd.net/disclaimer
  * Licence fee : 
  * Rate limit  : 
- * Sample URL  : http://mshd.net/api/geoip?ip=2a00:1450:400c:c00::6a&output=json
+ * Sample URL  : http://mshd.net/api/geoip?ip=2a00:1210:fffe:200::1&output=json
  * Input type  : IP address (IPv4, IPv6)
  * Output type : json, php
  */
@@ -417,7 +417,7 @@ class IP_Geo_Block_API_mshdnet extends IP_Geo_Block_API {
  * Term of use : http://www.geoplugin.com/whyregister
  * Licence fee : free (need an attribution link)
  * Rate limit  : 120 lookups per minute
- * Sample URL  : http://www.geoplugin.net/json.gp?ip=2a00:1450:400c:c00::6a
+ * Sample URL  : http://www.geoplugin.net/json.gp?ip=2a00:1210:fffe:200::1
  * Input type  : IP address (IPv4, IPv6)
  * Output type : json, xml, php, etc
  */
@@ -447,7 +447,7 @@ class IP_Geo_Block_API_geoPlugin extends IP_Geo_Block_API {
  * Term of use : http://ip-api.com/docs/#usage_limits
  * Licence fee : free for non-commercial use
  * Rate limit  : 240 requests per minute
- * Sample URL  : http://ip-api.com/json/2a00:1450:400c:c00::6a
+ * Sample URL  : http://ip-api.com/json/2a00:1210:fffe:200::1
  * Sample URL  : http://ip-api.com/xml/yahoo.co.jp
  * Input type  : IP address (IPv4, IPv6 with limited coverage) / domain name
  * Output type : json, xml
@@ -509,6 +509,25 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
 }
 
 /**
+ * Check if internal databases are available
+ */
+if ( function_exists( 'get_option' ) ) {
+	$options = get_option( 'ip_geo_block_settings' );
+
+	// IP2Location
+	if ( file_exists( $options['ip2location']['ipv4_path'] ) ) {
+		define( 'IP_GEO_BLOCK_IP2LOC_IPV4', $options['ip2location']['ipv4_path'] );
+	}
+
+	// Maxmind
+	if ( file_exists( $options['maxmind']['ipv4_path'] ) &&
+	     file_exists( $options['maxmind']['ipv6_path'] ) ) {
+		define( 'IP_GEO_BLOCK_MAXMIND_IPV4', $options['maxmind']['ipv4_path'] );
+		define( 'IP_GEO_BLOCK_MAXMIND_IPV6', $options['maxmind']['ipv6_path'] );
+	}
+}
+
+/**
  * Class for IP2Location
  *
  * URL         : http://www.ip2location.com/
@@ -517,17 +536,7 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
  * Input type  : IP address (IPv4)
  * Output type : array
  */
-// Check if IP2Location is available
-if ( function_exists( 'get_option' ) ) {
-	$options = get_option( 'ip_geo_block_settings' );
-	if ( file_exists( $options['ip2location']['path_db'] ) &&
-	     file_exists( $options['ip2location']['path_class'] ) ) {
-		define( 'IP_GEO_BLOCK_IP2LOCATION_DB', $options['ip2location']['path_db'] );
-		define( 'IP_GEO_BLOCK_IP2LOCATION_CL', $options['ip2location']['path_class'] );
-	}
-}
-
-if ( defined( 'IP_GEO_BLOCK_IP2LOCATION_CL' ) ) :
+if ( defined( 'IP_GEO_BLOCK_IP2LOC_IPV4' ) ) :
 
 class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	protected $transform_table = array(
@@ -541,13 +550,14 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 
 	public function __construct( $api_key = NULL ) {
 		parent::__construct( $api_key );
-		require_once( IP_GEO_BLOCK_IP2LOCATION_CL );
+		require_once( IP_GEO_BLOCK_PATH . 'includes/IP2Location.php' );
 	}
 
 	public function get_location( $ip, $args = array() ) {
+		// http://stackoverflow.com/questions/18276757/php-convert-ipv6-to-number
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			try {
-				$geo = new IP2Location( IP_GEO_BLOCK_IP2LOCATION_DB );
+				$geo = new IP2Location( IP_GEO_BLOCK_IP2LOC_IPV4 );
 				$data = $geo->lookup( $ip );
 			} catch (Exception $e) {
 				return array( 'errorMessage' => $e->getMessage() );
@@ -566,7 +576,55 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 			}
 		}
 
-		return FALSE;
+		return array( 'errorMessage' => 'Not supported' );
+	}
+
+	public function get_country( $ip, $args = array() ) {
+		$res = $this->get_location( $ip, $args );
+		return $res && ! empty( $res['countryCode'] ) ? $res['countryCode'] : FALSE;
+	}
+}
+
+endif;
+
+/**
+ * Class for Maxmind
+ *
+ * URL         : http://dev.maxmind.com/geoip/legacy/geolite/
+ * Term of use : http://dev.maxmind.com/geoip/legacy/geolite/#License
+ * Licence fee : Creative Commons Attribution-ShareAlike 3.0 Unported License
+ * Input type  : IP address (IPv4, IPv6)
+ * Output type : array
+ */
+if ( defined( 'IP_GEO_BLOCK_MAXMIND_IPV4' ) ) :
+
+class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
+
+	public function __construct( $api_key = NULL ) {
+		parent::__construct( $api_key );
+		require_once( IP_GEO_BLOCK_PATH . 'includes/geoip.inc' );
+	}
+
+	public function get_location( $ip, $args = array() ) {
+		// setup database file and function
+		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+			$file = IP_GEO_BLOCK_MAXMIND_IPV4;
+			$func = geoip_country_code_by_addr;
+		}
+		else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+			$file = IP_GEO_BLOCK_MAXMIND_IPV6;
+			$func = geoip_country_code_by_addr_v6;
+		}
+		else
+			return FALSE;
+
+		// open database and fetch data
+		if ( null == ( $geo = geoip_open( $file, GEOIP_STANDARD ) ) )
+			return FALSE;
+		$res = $func( $geo, $ip );
+		geoip_close( $geo );
+
+		return array( 'countryCode' => $res );
 	}
 
 	public function get_country( $ip, $args = array() ) {
@@ -612,7 +670,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		if ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) {
 			$n = 0;
 			foreach ( $cache as $key => $val ) {
-				if ( $time - $val['time'] > $exp || ++$n > $num )
+				if ( $time - $val['time'] > $exp || ++$n >= $num )
 					unset( $cache[ $key ] );
 			}
 		}
@@ -711,6 +769,12 @@ class IP_Geo_Block_Provider {
 			'link' => '<a class="ip-geo-block-link" href="http://www.ip2location.com/free/plugins" title="Free Plugins | IP2Location.com" target=_blank>http://www.ip2location.com/</a>&nbsp;(IPv4 / free, need an attribution link)',
 		),
 
+		'Maxmind' => array(
+			'key'  => NULL,
+			'type' => 'IPv4, IPv6 / free, need an attribution link',
+			'link' => '<a class="ip-geo-block-link" href="http://dev.maxmind.com/geoip/legacy/geolite/" title="GeoLite Free Downloadable Databases &laquo; Maxmind Developer Site" target=_blank>http://www.maxmind.com</a>&nbsp;(IPv4, IPv6 / free, need an attribution link)',
+		),
+
 		'Cache' => array(
 			'key' => NULL,
 			'type' => 'IPv4, IPv6',
@@ -738,6 +802,11 @@ class IP_Geo_Block_Provider {
 		if ( class_exists( 'IP_Geo_Block_API_IP2Location' ) )
 			$list = array(
 				'IP2Location' => self::$internals['IP2Location'][ $key ]
+			) + $list;
+
+		if ( class_exists( 'IP_Geo_Block_API_Maxmind' ) )
+			$list = array(
+				'Maxmind' => self::$internals['Maxmind'][ $key ]
 			) + $list;
 
 		if ( $cache )
