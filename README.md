@@ -89,7 +89,6 @@ Thanks for providing these great services and REST APIs for free.
     [http://mshd.net/]           [mshdnet] | IPv4, IPv6     | free
     [http://www.geoplugin.com/][geoplugin] | IPv4, IPv6     | free, need an attribution link
     [http://ip-api.com/]           [ipapi] | IPv4, IPv6     | free for non-commercial use
-    [http://smart-ip.net/]       [smartip] | IPv4, IPv6     | free for personal and non-commercial use
     [http://ipinfodb.com/]      [IPInfoDB] | IPv4, IPv6     | free for registered user
 
 Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind],
@@ -233,7 +232,6 @@ This plugin is licensed under the GPL v2 or later.
 [mshdnet]:  http://mshd.net/documentation/geoip "www.mshd.net - Geoip Documentation"
 [geoplugin]:http://www.geoplugin.com/ "geoPlugin to geolocate your visitors"
 [ipapi]:    http://ip-api.com/ "IP-API.com - Free Geolocation API"
-[smartip]:  http://smart-ip.net/geoip-api "Geo-IP API Documentation"
 [IPInfoDB]: http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
 [MaxMind]:  http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
 [IP2Loc]:   http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location"
