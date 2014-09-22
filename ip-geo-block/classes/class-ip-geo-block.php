@@ -133,6 +133,9 @@ class IP_Geo_Block {
 			add_action( 'preprocess_comment', array( $this, 'validate_comment' ), 1 );
 		}
 
+		if ( $opts['validation']['login'] )
+			add_action( 'login_head', array( $this, 'validate_login' ), 1 );
+
 		// hook for cron job
 		if ( $opts['update']['auto'] )
 			add_action( 'ip_geo_block_cron', 'IP_Geo_Block::download_database' );
@@ -145,9 +148,8 @@ class IP_Geo_Block {
 	public static function get_instance() {
 
 		// If the single instance hasn't been set, set it now.
-		if ( null == self::$instance ) {
+		if ( null == self::$instance )
 			self::$instance = new self;
-		}
 
 		return self::$instance;
 	}
@@ -219,8 +221,7 @@ class IP_Geo_Block {
 			$opts['version'] = self::$option_table[ $name[0] ]['version'];
 
 			// update IP2Location
-			if ( ! is_readable( $opts['ip2location']['ipv4_path'] ) )
-				$opts['ip2location']['ipv4_path'] = $ip2;
+			$opts['ip2location']['ipv4_path'] = $ip2;
 
 			// update option table
 			update_option( $name[0], $opts );
@@ -283,17 +284,10 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Check user's geolocation.
+	 * Validate user's geolocation.
 	 *
 	 */
-	public function check_location( $commentdata, $settings ) {
-		// if the post has been already marked as 'blocked' then return
-		if ( isset( $commentdata[ self::PLUGIN_SLUG ] ) &&
-			'blocked' === $commentdata[ self::PLUGIN_SLUG ]['result'] ) {
-			return $commentdata;
-		}
-
-		// include utility class
+	private function validate_country( $validate, $settings ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
 		// make providers list
@@ -311,65 +305,48 @@ class IP_Geo_Block {
 		$white = $settings['white_list'];
 		$black = $settings['black_list'];
 
-		// get ip address
-		$ip = apply_filters( self::PLUGIN_SLUG . '-addr', $_SERVER['REMOTE_ADDR'] );
-
 		// set arguments for wp_remote_get()
 		// http://codex.wordpress.org/Function_Reference/wp_remote_get
 		$args = self::get_request_headers( $settings );
 
 		foreach ( $list as $provider ) {
+			$time = microtime( TRUE );
 			$name = IP_Geo_Block_API::get_class_name( $provider );
-			if ( $name ) {
-				// start time
-				$time = microtime( TRUE );
 
-				// get country code
+			if ( $name ) {
 				$key = ! empty( $settings['providers'][ $provider ] );
 				$geo = new $name( $key ? $settings['providers'][ $provider ] : NULL );
-				$code = strtoupper( $geo->get_country( $ip, $args ) );
-			} else {
-				$code = NULL;
-			}
 
-			if ( $code ) {
-				// update cache
-				IP_Geo_Block_API_Cache::update_cache( $ip, $code, $settings );
+				// get country code
+				$code = strtoupper( $geo->get_country( $validate['ip'], $args ) );
 
-				// for update_statistics()
-				$commentdata[ self::PLUGIN_SLUG ] = array(
-					'ip' => $ip,
-					'time' => microtime( TRUE ) - $time,
-					'code' => $code,
-					'provider' => $provider,
-				);
+				if ( $code ) {
+					$validate += array(
+						'time' => microtime( TRUE ) - $time,
+						'code' => $code,
+						'provider' => $provider,
+					);
 
-				// It may not be a spam
-				if ( 0 == $rule && FALSE !== strpos( $white, $code ) ||
-				     1 == $rule && FALSE === strpos( $black, $code ) ) {
-					$commentdata[ self::PLUGIN_SLUG ] += array( 'result' => 'passed' );
-					return $commentdata;
-				}
-
-				// It could be a spam
-				else {
-					$commentdata[ self::PLUGIN_SLUG ] += array( 'result' => 'blocked');
-					return $commentdata;
+					if ( 0 == $rule && FALSE !== strpos( $white, $code ) ||
+						 1 == $rule && FALSE === strpos( $black, $code ) )
+						// It may not be a spam
+						return $validate + array( 'result' => 'passed' );
+					else
+						// It could be a spam
+						return $validate + array( 'result' => 'blocked');
 				}
 			}
 		}
 
-		// if ip address is unknown then pass through
-		$commentdata[ self::PLUGIN_SLUG ] = array( 'result' => 'unknown' );
-		return $commentdata;
+		// It can not be decided
+		return $validate + array( 'result' => 'unknown' );
 	}
 
 	/**
 	 * Update statistics
 	 *
 	 */
-	public function update_statistics( $commentdata ) {
-		$validate = $commentdata[ self::PLUGIN_SLUG ];
+	private function update_statistics( $validate ) {
 		$statistics = get_option( self::$option_keys['statistics'] );
 
 		$result = isset( $validate['result'] ) ? $validate['result'] : 'passed';
@@ -405,37 +382,16 @@ class IP_Geo_Block {
 			$statistics['countries'][ $country ] = intval( $stat[ $country ] ) + 1;
 		}
 
-		unset( $commentdata[ self::PLUGIN_SLUG ] );
 		update_option( self::$option_keys['statistics'], $statistics );
 	}
 
 	/**
-	 * Validate comment.
+	 * Send response header with http code.
 	 *
 	 */
-	public function validate_comment( $commentdata ) {
-		// pass login user
-		if( is_user_logged_in() )
-			return $commentdata;
-
-		// register the validation function
-		add_filter( self::PLUGIN_SLUG . '-validate', array( $this, 'check_location' ), 10, 2 );
-
-		// validate and update statistics
-		$settings = get_option( self::$option_keys['settings'] );
-		$result = apply_filters( self::PLUGIN_SLUG . '-validate', $commentdata, $settings );
-
-		// update statistics
-		if ( $settings['save_statistics'] )
-			$this->update_statistics( $result );
-
-		// after all filters applied, check whether the result is end in 'blocked'.
-		if ( ! isset( $result[ self::PLUGIN_SLUG ] ) ||
-			'blocked' !== $result[ self::PLUGIN_SLUG ]['result'] )
-			return $commentdata;
-
+	private function send_response( $code, $msg ) {
 		// response code
-		$code = max( 200, intval( $settings['response_code'] ) ) & 0x1FF; // 200 - 511
+		$code = max( 200, intval( $code ) ) & 0x1FF; // 200 - 511
 
 		// 2xx Success
 		if ( 200 <= $code && $code < 300 ) {
@@ -451,13 +407,93 @@ class IP_Geo_Block {
 
 		// 4xx Client Error
 		else if ( 400 <= $code && $code < 500 ) {
-			wp_die( __( 'Sorry, your comment cannot be accepted.', self::TEXT_DOMAIN ),
-				'Error', array( 'response' => $code, 'back_link' => TRUE ) );
+			wp_die( $msg, 'Error', array( 'response' => $code, 'back_link' => TRUE ) );
 		}
 
 		// 5xx Server Error
 		status_header( $code ); // @since 2.0.0
 		die();
+	}
+
+	/**
+	 * Validate comment.
+	 *
+	 */
+	public function validate_comment( $commentdata ) {
+		if( is_user_logged_in() )
+			return $commentdata;
+
+		$settings = get_option( self::$option_keys['settings'] );
+
+		// apply user validation
+		// @usage add_filter( 'ip-geo-block-comment', 'my_validation', 10, 2 );
+		// @return array $validate = array(
+		//     'ip'       => $ip,       /* ip address                          */
+		//     'time'     => $time,     /* processing time                     */
+		//     'code'     => $code,     /* country code or reason of rejection */
+		//     'provider' => $provider, /* the name of validator               */
+		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
+		// );
+		$ip = apply_filters( self::PLUGIN_SLUG . '-addr', $_SERVER['REMOTE_ADDR'] );
+		$validate = array( 'ip' => $ip );
+		$validate = apply_filters( self::PLUGIN_SLUG . '-comment', $validate, $commentdata );
+
+		// if the post has not been marked then validate ip address
+		if ( empty( $validate['result'] ) )
+			$validate = $this->validate_country( $validate, $settings );
+
+		// update statistics
+		if ( $settings['save_statistics'] )
+			$this->update_statistics( $validate );
+
+		// validation function should return at least the 'result'
+		if ( empty( $validate['result'] ) || 'blocked' !== $validate['result'] )
+			return $commentdata;
+
+		// update cache
+		IP_Geo_Block_API_Cache::update_cache( $validate['ip'], $validate['code'], $settings );
+
+		// Refuse to post comment
+		$this->send_response(
+			$settings['response_code'],
+			__( 'Sorry, your comment cannot be accepted.', self::TEXT_DOMAIN )
+		);
+	}
+
+	/**
+	 * Validate login ip address
+	 *
+	 */
+	public function validate_login() {
+		if ( is_user_logged_in() )
+			return;
+
+		$settings = get_option( self::$option_keys['settings'] );
+
+		// validate ip address
+		$ip = apply_filters( self::PLUGIN_SLUG . '-addr', $_SERVER['REMOTE_ADDR'] );
+		$validate = array( 'ip' => $ip );
+		$validate = apply_filters( self::PLUGIN_SLUG . '-login', $validate );
+
+		if ( empty( $validate['result'] ) )
+			$validate = $this->validate_country( $validate, $settings );
+
+		// update statistics
+		if ( $settings['save_statistics'] )
+			$this->update_statistics( $validate );
+
+		// validation function should return at least the 'result'
+		if ( empty( $validate['result'] ) || 'blocked' !== $validate['result'] )
+			return;
+
+		// update cache
+		IP_Geo_Block_API_Cache::update_cache( $validate['ip'], $validate['code'].'*', $settings );
+
+		// Refuse to login
+		$this->send_response(
+			$settings['response_code'],
+			__( 'Sorry, you cannot be permitted to login.', self::TEXT_DOMAIN )
+		);
 	}
 
 	/**
