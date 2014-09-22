@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 1.1.1\n"
+"Project-Id-Version: IP Geo Block 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-09-14 14:20+0900\n"
-"PO-Revision-Date: 2014-09-14 14:29+0900\n"
+"POT-Creation-Date: 2014-09-22 21:47+0900\n"
+"PO-Revision-Date: 2014-09-22 21:58+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,211 +23,42 @@ msgstr ""
 msgid "It will block any spam comments posted from undesired countries."
 msgstr "望まない国からの投稿をブロックするプラグインです。"
 
-#: admin/class-ip-geo-block-admin.php:85
+#: admin/class-ip-geo-block-admin.php:84
 msgid "You need WordPress 3.5+"
 msgstr "WordPress 3.5以上が必要です"
 
-#: admin/class-ip-geo-block-admin.php:149
-#: admin/class-ip-geo-block-admin.php:202
+#: admin/class-ip-geo-block-admin.php:148
+#: admin/class-ip-geo-block-admin.php:201
 msgid "Settings"
 msgstr "設定"
 
-#: admin/class-ip-geo-block-admin.php:163
+#: admin/class-ip-geo-block-admin.php:162
 msgid "Contribute on GitHub"
 msgstr "GitHubで開発に参加"
 
+#: admin/class-ip-geo-block-admin.php:180
 #: admin/class-ip-geo-block-admin.php:181
-#: admin/class-ip-geo-block-admin.php:182
 msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
-#: admin/class-ip-geo-block-admin.php:203
+#: admin/class-ip-geo-block-admin.php:202
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:204
+#: admin/class-ip-geo-block-admin.php:203
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:205
+#: admin/class-ip-geo-block-admin.php:204
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:276
-msgid "Geolocation service settings"
-msgstr "位置情報サービスの設定"
-
-#: admin/class-ip-geo-block-admin.php:296
-msgid "Selection and API key settings"
-msgstr "サービスの選択とAPIキーの設定"
-
-#: admin/class-ip-geo-block-admin.php:316
-msgid "Submission settings"
-msgstr "投稿時の設定"
-
-#: admin/class-ip-geo-block-admin.php:324
-msgid "Text message on comment form"
-msgstr "投稿フォーム上のテキスト・メッセージ"
-
-#: admin/class-ip-geo-block-admin.php:334
-msgid "None"
-msgstr "なし"
-
-#: admin/class-ip-geo-block-admin.php:335
-msgid "Top"
-msgstr "上部"
-
-#: admin/class-ip-geo-block-admin.php:336
-msgid "Bottom"
-msgstr "下部"
-
-#: admin/class-ip-geo-block-admin.php:345
-msgid "Matching rule"
-msgstr "マッチング規則"
-
-#: admin/class-ip-geo-block-admin.php:355
-msgid "White list"
-msgstr "ホワイトリスト"
-
-#: admin/class-ip-geo-block-admin.php:356
-msgid "Black list"
-msgstr "ブラックリスト"
-
-#: admin/class-ip-geo-block-admin.php:364
-#, php-format
-msgid "White list %s"
-msgstr "ホワイトリスト %s"
-
-#: admin/class-ip-geo-block-admin.php:373
-#: admin/class-ip-geo-block-admin.php:389
-msgid "(comma separated)"
-msgstr "（カンマ区切り）"
-
-#: admin/class-ip-geo-block-admin.php:380
-#, php-format
-msgid "Black list %s"
-msgstr "ブラックリスト %s"
-
-#: admin/class-ip-geo-block-admin.php:396
-#, php-format
-msgid "Response code %s"
-msgstr "レスポンスコード %s"
-
-#: admin/class-ip-geo-block-admin.php:428
-msgid "Cache settings"
-msgstr "キャッシュの設定"
-
-#: admin/class-ip-geo-block-admin.php:436
-msgid "Number of entries"
-msgstr "最大保持数"
-
-#: admin/class-ip-geo-block-admin.php:451
-msgid "Expiration time [sec]"
-msgstr "有効時間 [sec]"
-
-#: admin/class-ip-geo-block-admin.php:469
-msgid "Plugin settings"
-msgstr "プラグインの設定"
-
-#: admin/class-ip-geo-block-admin.php:477
-msgid "Save statistics"
-msgstr "統計情報を記録"
-
-#: admin/class-ip-geo-block-admin.php:492
-msgid "Remove settings at uninstallation"
-msgstr "アンインストール時に設定を削除"
-
-#: admin/class-ip-geo-block-admin.php:521
-msgid "Statistics of posts"
-msgstr "投稿の統計"
-
-#: admin/class-ip-geo-block-admin.php:529
-msgid "Passed"
-msgstr "通過"
-
-#: admin/class-ip-geo-block-admin.php:544
-msgid "Blocked"
-msgstr "遮断"
-
-#: admin/class-ip-geo-block-admin.php:559
-msgid "Unknown (passed)"
-msgstr "国コード不明（通過）"
-
-#: admin/class-ip-geo-block-admin.php:580
-msgid "Blocked by countries"
-msgstr "国別遮断回数"
-
-#: admin/class-ip-geo-block-admin.php:595
-msgid "Blocked by type of IP address"
-msgstr "遮断したIPアドレスのタイプ"
-
-#: admin/class-ip-geo-block-admin.php:612
-msgid "Service"
-msgstr "サービス"
-
-#: admin/class-ip-geo-block-admin.php:613
-msgid "Calls"
-msgstr "リクエスト回数"
-
-#: admin/class-ip-geo-block-admin.php:614
-msgid "Response [msec]"
-msgstr "応答時間 [msec]"
-
-#: admin/class-ip-geo-block-admin.php:627
-msgid "Average response time of each service"
-msgstr "サービス毎の平均応答時間"
-
-#: admin/class-ip-geo-block-admin.php:641
-#: admin/class-ip-geo-block-admin.php:745
-msgid "IP address"
-msgstr "IPアドレス"
-
-#: admin/class-ip-geo-block-admin.php:642
-msgid "Country code"
-msgstr "国コード"
-
-#: admin/class-ip-geo-block-admin.php:643
-msgid "Elapsed [sec] / Calls"
-msgstr "経過時間 [sec] / 回数"
-
-#: admin/class-ip-geo-block-admin.php:661
-msgid "IP address in cache"
-msgstr "キャッシュ中のIPアドレス"
-
-#: admin/class-ip-geo-block-admin.php:676
-msgid "Clear statistics"
-msgstr "統計のクリア"
-
-#: admin/class-ip-geo-block-admin.php:684
-msgid "Clear now"
-msgstr "今すぐクリア"
-
-#: admin/class-ip-geo-block-admin.php:709
-msgid "Search IP address geolocation"
-msgstr "IPアドレスの位置情報を検索"
-
-#: admin/class-ip-geo-block-admin.php:729
-msgid "Geolocation service"
-msgstr "位置情報サービス"
-
-#: admin/class-ip-geo-block-admin.php:760
-msgid "Find geolocation"
-msgstr "位置情報の検索"
-
-#: admin/class-ip-geo-block-admin.php:768
-msgid "Search now"
-msgstr "今すぐ検索"
-
-#: admin/class-ip-geo-block-admin.php:789
-msgid "Attribution links"
-msgstr "サービスの提供元"
-
-#: admin/class-ip-geo-block-admin.php:820
+#: admin/class-ip-geo-block-admin.php:272
 msgid "Thanks for providing these great services for free."
 msgstr ""
 "すばらしいサービスの提供元である以下のサイトに、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:821
+#: admin/class-ip-geo-block-admin.php:273
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
@@ -235,14 +66,228 @@ msgstr ""
 "（ほとんどのブラウザでは、リンクをクリックしても参照元を残さずに各サイトにリ"
 "ダイレクトできます。）"
 
-#: admin/class-ip-geo-block-admin.php:893
+#: admin/class-ip-geo-block-admin.php:345
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:924
+#: admin/class-ip-geo-block-admin.php:376
 msgid "successfully updated"
 msgstr "更新に成功しました"
 
-#: classes/class-ip-geo-block.php:422
+#: classes/class-ip-geo-block.php:459
 msgid "Sorry, your comment cannot be accepted."
 msgstr "申し訳ありませんが、投稿できません。"
+
+#: classes/class-ip-geo-block.php:495
+msgid "Sorry, you cannot be permitted to login."
+msgstr "申し訳ありませんが、許可されていません。"
+
+#: classes/includes/tab-attribution.php:14
+msgid "Attribution links"
+msgstr "サービスの提供元"
+
+#: classes/includes/tab-geolocation.php:18
+msgid "Search IP address geolocation"
+msgstr "IPアドレスの位置情報を検索"
+
+#: classes/includes/tab-geolocation.php:38
+msgid "Geolocation service"
+msgstr "位置情報サービス"
+
+#: classes/includes/tab-geolocation.php:54
+#: classes/includes/tab-statistics.php:135
+msgid "IP address"
+msgstr "IPアドレス"
+
+#: classes/includes/tab-geolocation.php:69
+msgid "Find geolocation"
+msgstr "位置情報の検索"
+
+#: classes/includes/tab-geolocation.php:77
+msgid "Search now"
+msgstr "今すぐ検索"
+
+#: classes/includes/tab-settings.php:42
+msgid "Geolocation service settings"
+msgstr "位置情報サービスの設定"
+
+#: classes/includes/tab-settings.php:62
+msgid "Selection and API key settings"
+msgstr "サービスの選択とAPIキーの設定"
+
+#: classes/includes/tab-settings.php:82
+msgid "Maxmind settings"
+msgstr "Maxmindの設定"
+
+#: classes/includes/tab-settings.php:90
+msgid "Path to database (IPv4)"
+msgstr "データベースへのパス（IPv4）"
+
+#: classes/includes/tab-settings.php:103 classes/includes/tab-settings.php:124
+#: includes/download.php:131
+#, php-format
+msgid "Last update: %s"
+msgstr "最終更新：%s"
+
+#: classes/includes/tab-settings.php:111
+msgid "Path to database (IPv6)"
+msgstr "データベースへのパス（IPv6）"
+
+#: classes/includes/tab-settings.php:133
+msgid "Download database"
+msgstr "データベースのダウンロード"
+
+#: classes/includes/tab-settings.php:141
+msgid "Download from Maxmind"
+msgstr "Maxmindからダウンロード"
+
+#: classes/includes/tab-settings.php:148
+msgid "Auto updating (once a month)"
+msgstr "自動更新（月1回）"
+
+#: classes/includes/tab-settings.php:167
+msgid "Submission settings"
+msgstr "投稿時の設定"
+
+#: classes/includes/tab-settings.php:175
+msgid "Text message on comment form"
+msgstr "投稿フォーム上のテキスト・メッセージ"
+
+#: classes/includes/tab-settings.php:186
+msgid "None"
+msgstr "なし"
+
+#: classes/includes/tab-settings.php:187
+msgid "Top"
+msgstr "上部"
+
+#: classes/includes/tab-settings.php:188
+msgid "Bottom"
+msgstr "下部"
+
+#: classes/includes/tab-settings.php:197
+msgid "Matching rule"
+msgstr "マッチング規則"
+
+#: classes/includes/tab-settings.php:207
+msgid "White list"
+msgstr "ホワイトリスト"
+
+#: classes/includes/tab-settings.php:208
+msgid "Black list"
+msgstr "ブラックリスト"
+
+#: classes/includes/tab-settings.php:216
+#, php-format
+msgid "White list %s"
+msgstr "ホワイトリスト %s"
+
+#: classes/includes/tab-settings.php:225 classes/includes/tab-settings.php:241
+msgid "(comma separated)"
+msgstr "（カンマ区切り）"
+
+#: classes/includes/tab-settings.php:232
+#, php-format
+msgid "Black list %s"
+msgstr "ブラックリスト %s"
+
+#: classes/includes/tab-settings.php:248
+#, php-format
+msgid "Response code %s"
+msgstr "レスポンスコード %s"
+
+#: classes/includes/tab-settings.php:280
+msgid "Cache settings"
+msgstr "キャッシュの設定"
+
+#: classes/includes/tab-settings.php:288
+msgid "Number of entries"
+msgstr "最大保持数"
+
+#: classes/includes/tab-settings.php:303
+msgid "Expiration time [sec]"
+msgstr "有効時間 [sec]"
+
+#: classes/includes/tab-settings.php:321
+msgid "Plugin settings"
+msgstr "プラグインの設定"
+
+#: classes/includes/tab-settings.php:329
+msgid "Save statistics"
+msgstr "統計情報を記録"
+
+#: classes/includes/tab-settings.php:344
+msgid "Remove settings at uninstallation"
+msgstr "アンインストール時に設定を削除"
+
+#: classes/includes/tab-statistics.php:15
+msgid "Statistics of posts"
+msgstr "投稿の統計"
+
+#: classes/includes/tab-statistics.php:23
+msgid "Passed"
+msgstr "通過"
+
+#: classes/includes/tab-statistics.php:38
+msgid "Blocked"
+msgstr "遮断"
+
+#: classes/includes/tab-statistics.php:53
+msgid "Unknown (passed)"
+msgstr "国コード不明（通過）"
+
+#: classes/includes/tab-statistics.php:74
+msgid "Blocked by countries"
+msgstr "国別遮断回数"
+
+#: classes/includes/tab-statistics.php:89
+msgid "Blocked by type of IP address"
+msgstr "遮断したIPアドレスのタイプ"
+
+#: classes/includes/tab-statistics.php:106
+msgid "Service"
+msgstr "サービス"
+
+#: classes/includes/tab-statistics.php:107
+msgid "Calls"
+msgstr "リクエスト回数"
+
+#: classes/includes/tab-statistics.php:108
+msgid "Response [msec]"
+msgstr "応答時間 [msec]"
+
+#: classes/includes/tab-statistics.php:121
+msgid "Average response time of each service"
+msgstr "サービス毎の平均応答時間"
+
+#: classes/includes/tab-statistics.php:136
+msgid "Country code"
+msgstr "国コード"
+
+#: classes/includes/tab-statistics.php:137
+msgid "Elapsed [sec] / Calls"
+msgstr "経過時間 [sec] / 回数"
+
+#: classes/includes/tab-statistics.php:155
+msgid "IP address in cache"
+msgstr "キャッシュ中のIPアドレス"
+
+#: classes/includes/tab-statistics.php:170
+msgid "Clear statistics"
+msgstr "統計のクリア"
+
+#: classes/includes/tab-statistics.php:178
+msgid "Clear now"
+msgstr "今すぐクリア"
+
+#: includes/download.php:108
+msgid "Cannot decode zip."
+msgstr "zipの解凍に失敗しました"
+
+#: includes/download.php:116
+msgid "Cannot open file."
+msgstr "ファイルを開けませんでした"
+
+#: includes/download.php:125
+msgid "Cannot write to file."
+msgstr "ファイルに書き込めませんでした"

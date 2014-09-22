@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 1.1.1\n"
+"Project-Id-Version: IP Geo Block 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-09-14 14:20+0900\n"
-"PO-Revision-Date: 2014-09-14 14:21+0900\n"
+"POT-Creation-Date: 2014-09-22 21:47+0900\n"
+"PO-Revision-Date: 2014-09-22 21:47+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,227 +20,271 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 # description
-msgid ""
-"It will block any spam comments posted from undesired countries."
+msgid "It will block any spam comments posted from undesired countries."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:85
+#: admin/class-ip-geo-block-admin.php:84
 msgid "You need WordPress 3.5+"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:149
-#: admin/class-ip-geo-block-admin.php:202
+#: admin/class-ip-geo-block-admin.php:148
+#: admin/class-ip-geo-block-admin.php:201
 msgid "Settings"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:163
+#: admin/class-ip-geo-block-admin.php:162
 msgid "Contribute on GitHub"
 msgstr ""
 
+#: admin/class-ip-geo-block-admin.php:180
 #: admin/class-ip-geo-block-admin.php:181
-#: admin/class-ip-geo-block-admin.php:182
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:203
+#: admin/class-ip-geo-block-admin.php:202
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:204
+#: admin/class-ip-geo-block-admin.php:203
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:205
+#: admin/class-ip-geo-block-admin.php:204
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:276
-msgid "Geolocation service settings"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:296
-msgid "Selection and API key settings"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:316
-msgid "Submission settings"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:324
-msgid "Text message on comment form"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:334
-msgid "None"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:335
-msgid "Top"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:336
-msgid "Bottom"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:345
-msgid "Matching rule"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:355
-msgid "White list"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:356
-msgid "Black list"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:364
-#, php-format
-msgid "White list %s"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:373
-#: admin/class-ip-geo-block-admin.php:389
-msgid "(comma separated)"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:380
-#, php-format
-msgid "Black list %s"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:396
-#, php-format
-msgid "Response code %s"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:428
-msgid "Cache settings"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:436
-msgid "Number of entries"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:451
-msgid "Expiration time [sec]"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:469
-msgid "Plugin settings"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:477
-msgid "Save statistics"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:492
-msgid "Remove settings at uninstallation"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:521
-msgid "Statistics of posts"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:529
-msgid "Passed"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:544
-msgid "Blocked"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:559
-msgid "Unknown (passed)"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:580
-msgid "Blocked by countries"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:595
-msgid "Blocked by type of IP address"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:612
-msgid "Service"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:613
-msgid "Calls"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:614
-msgid "Response [msec]"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:627
-msgid "Average response time of each service"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:641
-#: admin/class-ip-geo-block-admin.php:745
-msgid "IP address"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:642
-msgid "Country code"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:643
-msgid "Elapsed [sec] / Calls"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:661
-msgid "IP address in cache"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:676
-msgid "Clear statistics"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:684
-msgid "Clear now"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:709
-msgid "Search IP address geolocation"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:729
-msgid "Geolocation service"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:760
-msgid "Find geolocation"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:768
-msgid "Search now"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:789
-msgid "Attribution links"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:820
+#: admin/class-ip-geo-block-admin.php:272
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:821
+#: admin/class-ip-geo-block-admin.php:273
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:893
+#: admin/class-ip-geo-block-admin.php:345
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:924
+#: admin/class-ip-geo-block-admin.php:376
 msgid "successfully updated"
 msgstr ""
 
-#: classes/class-ip-geo-block.php:422
+#: classes/class-ip-geo-block.php:459
 msgid "Sorry, your comment cannot be accepted."
+msgstr ""
+
+#: classes/class-ip-geo-block.php:495
+msgid "Sorry, you cannot be permitted to login."
+msgstr ""
+
+#: classes/includes/tab-attribution.php:14
+msgid "Attribution links"
+msgstr ""
+
+#: classes/includes/tab-geolocation.php:18
+msgid "Search IP address geolocation"
+msgstr ""
+
+#: classes/includes/tab-geolocation.php:38
+msgid "Geolocation service"
+msgstr ""
+
+#: classes/includes/tab-geolocation.php:54
+#: classes/includes/tab-statistics.php:135
+msgid "IP address"
+msgstr ""
+
+#: classes/includes/tab-geolocation.php:69
+msgid "Find geolocation"
+msgstr ""
+
+#: classes/includes/tab-geolocation.php:77
+msgid "Search now"
+msgstr ""
+
+#: classes/includes/tab-settings.php:42
+msgid "Geolocation service settings"
+msgstr ""
+
+#: classes/includes/tab-settings.php:62
+msgid "Selection and API key settings"
+msgstr ""
+
+#: classes/includes/tab-settings.php:82
+msgid "Maxmind settings"
+msgstr ""
+
+#: classes/includes/tab-settings.php:90
+msgid "Path to database (IPv4)"
+msgstr ""
+
+#: classes/includes/tab-settings.php:103 classes/includes/tab-settings.php:124
+#: includes/download.php:131
+#, php-format
+msgid "Last update: %s"
+msgstr ""
+
+#: classes/includes/tab-settings.php:111
+msgid "Path to database (IPv6)"
+msgstr ""
+
+#: classes/includes/tab-settings.php:133
+msgid "Download database"
+msgstr ""
+
+#: classes/includes/tab-settings.php:141
+msgid "Download from Maxmind"
+msgstr ""
+
+#: classes/includes/tab-settings.php:148
+msgid "Auto updating (once a month)"
+msgstr ""
+
+#: classes/includes/tab-settings.php:167
+msgid "Submission settings"
+msgstr ""
+
+#: classes/includes/tab-settings.php:175
+msgid "Text message on comment form"
+msgstr ""
+
+#: classes/includes/tab-settings.php:186
+msgid "None"
+msgstr ""
+
+#: classes/includes/tab-settings.php:187
+msgid "Top"
+msgstr ""
+
+#: classes/includes/tab-settings.php:188
+msgid "Bottom"
+msgstr ""
+
+#: classes/includes/tab-settings.php:197
+msgid "Matching rule"
+msgstr ""
+
+#: classes/includes/tab-settings.php:207
+msgid "White list"
+msgstr ""
+
+#: classes/includes/tab-settings.php:208
+msgid "Black list"
+msgstr ""
+
+#: classes/includes/tab-settings.php:216
+#, php-format
+msgid "White list %s"
+msgstr ""
+
+#: classes/includes/tab-settings.php:225 classes/includes/tab-settings.php:241
+msgid "(comma separated)"
+msgstr ""
+
+#: classes/includes/tab-settings.php:232
+#, php-format
+msgid "Black list %s"
+msgstr ""
+
+#: classes/includes/tab-settings.php:248
+#, php-format
+msgid "Response code %s"
+msgstr ""
+
+#: classes/includes/tab-settings.php:280
+msgid "Cache settings"
+msgstr ""
+
+#: classes/includes/tab-settings.php:288
+msgid "Number of entries"
+msgstr ""
+
+#: classes/includes/tab-settings.php:303
+msgid "Expiration time [sec]"
+msgstr ""
+
+#: classes/includes/tab-settings.php:321
+msgid "Plugin settings"
+msgstr ""
+
+#: classes/includes/tab-settings.php:329
+msgid "Save statistics"
+msgstr ""
+
+#: classes/includes/tab-settings.php:344
+msgid "Remove settings at uninstallation"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:15
+msgid "Statistics of posts"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:23
+msgid "Passed"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:38
+msgid "Blocked"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:53
+msgid "Unknown (passed)"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:74
+msgid "Blocked by countries"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:89
+msgid "Blocked by type of IP address"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:106
+msgid "Service"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:107
+msgid "Calls"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:108
+msgid "Response [msec]"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:121
+msgid "Average response time of each service"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:136
+msgid "Country code"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:137
+msgid "Elapsed [sec] / Calls"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:155
+msgid "IP address in cache"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:170
+msgid "Clear statistics"
+msgstr ""
+
+#: classes/includes/tab-statistics.php:178
+msgid "Clear now"
+msgstr ""
+
+#: includes/download.php:108
+msgid "Cannot decode zip."
+msgstr ""
+
+#: includes/download.php:116
+msgid "Cannot open file."
+msgstr ""
+
+#: includes/download.php:125
+msgid "Cannot write to file."
 msgstr ""
