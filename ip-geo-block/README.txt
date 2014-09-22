@@ -16,25 +16,34 @@ This plugin will examine a country code based on the posting author's IP
 address. If the comment comes from undesired country, it will be blocked 
 before Akismet validate it.
 
-Free IP Geolocation database and REST APIs are installed in this plugin to 
-get a country code from an IP address. There are two types of API which 
+= Features =
+
+1. This plugin will examine a country code based on the posting author's IP 
+address. If the comment comes from undesired country, it will be blocked 
+before Akismet validate it.
+
+2. Free IP Geolocation database and REST APIs are installed in this plugin 
+to get a country code from an IP address. There are two types of API which 
 support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
 select an appropriate API.
 
-Starting with version 1.1.0, the cache mechanism with transient API for the 
-fetched IP addresses has been equipped to reduce load on the server against 
-undesired access.
+3. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
+(once a month) automatically.
 
-= Using with IP2Location WordPress Plugins =
-
-If you have correctly installed one of the IP2Location plugins (
+4. If you have correctly installed one of the IP2Location plugins (
     [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
     [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
-), this plugin uses its local database prior to the REST APIs.
+), this plugin uses its local database prior to the REST APIs. After installing 
+these IP2Location plugins, you should be once deactivated and then activated 
+in order to set the path to `database.bin`.
 
-After installing these IP2Location plugins, this plugin should be once 
-deactivated and then activated in order to set the path to `database.bin`.
+5. Cache mechanism with transient API for the fetched IP addresses has been 
+equipped to reduce load on the server against undesired access.
+
+6. Custom validation function can be added using `ip-geo-block-comment` 
+filter hook with `add_filter()`.
 
 = Development =
 

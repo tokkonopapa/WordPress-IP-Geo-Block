@@ -1,7 +1,7 @@
 IP Geo Block
 ==============
 
-A WordPress plugin that blocks any comments posted from outside your nation.
+A WordPress plugin that blocks any comments posted from undesired contries.
 
 ### Features:
 
@@ -9,17 +9,26 @@ A WordPress plugin that blocks any comments posted from outside your nation.
 address. If the comment comes from undesired country, it will be blocked 
 before Akismet validate it.
 
-2. Free IP Geolocation REST APIs are installed in this plugin to get a country 
-code from an IP address. There are two types of API which support only IPv4 or 
-both IPv4 and IPv6. This plugin will automatically select an appropriate API.
+2. Free IP Geolocation database and REST APIs are installed in this plugin 
+to get a country code from an IP address. There are two types of API which 
+support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
+select an appropriate API.
 
-3. If you have correctly installed one of the IP2Location plugins (
+3. [MaxMind][MaxMind] GeoLite free database for IPv4 and IPv6 will be 
+downloaded and updated (once a month) automatically.
+
+4. If you have correctly installed one of the IP2Location plugins (
     [IP2Location Tags][IP2Tag],
     [IP2Location Variables][IP2Var],
     [IP2Location Country Blocker][IP2Blk]
-), this plugin uses its local database prior to the REST APIs.
+), this plugin uses its local database prior to the REST APIs.After installing 
+these IP2Location plugins, you should be once deactivated and then activated 
+in order to set the path to `database.bin`.
 
-4. Custom validation function can be added using `ip-geo-block-validate` 
+5. Cache mechanism with transient API for the fetched IP addresses has been 
+equipped to reduce load on the server against undesired access.
+
+6. Custom validation function can be added using `ip-geo-block-comment` 
 filter hook with `add_filter()`.
 
 ### Installation:
@@ -57,19 +66,6 @@ filter hook with `add_filter()`.
     If you checked this option, all settings will be removed when this plugin
     is uninstalled for clean uninstalling.
 
-#### Using with IP2Location WordPress Plugins
-
-If you do not want to keep the IP2Location plugins (
-    [IP2Location Tags][IP2Tag],
-    [IP2Location Variables][IP2Var],
-    [IP2Location Country Blocker][IP2Blk]
-) in `wp-content/plugins/` directory but just want to use its database, 
-you can rename it to `ip2location` and upload it to `wp-content/`.
-
-After installing these IP2Location plugins, this plugin should be once 
-deactivated and then activated in order to set the path to `database.bin` 
-and `ip2location.class.php`.
-
 ### Requirement:
 
 - WordPress 3.5+
@@ -99,7 +95,7 @@ and some include IP2Location LITE data available from [IP2Location][IP2Loc].
 #### What is this plugin for ? ####
 
 It's for blocking spam comments. If you can not specify countries with white 
-list or black list to protect your site against spam comments, you should 
+list or black list to protect your site against undesired access, you should 
 choose other awesome plugins.
 
 #### How can I check this plugin works ? ####
@@ -126,32 +122,28 @@ the plugin settings page. Most of the IP Geolocation services return empty
 
 #### Can I add an additional spam validation function into this plugin ? ####
 
-Yes, you can use `add_filter()` with filter hook `ip-geo-block-validate` in 
+Yes, you can use `add_filter()` with filter hook `ip-geo-block-comment` in 
 somewhere (typically `functions.php` in your theme) as follows:
 
 ```php
-function my_validation( $commentdata ) {
-    // validation code here
-    ...;
+function my_validate_comment( $validate, $commentdata ) {
+    if ( strpos( $commentdata['comment_content'], 'NG WORD' ) !== FALSE )
+        $validate['result'] = 'blocked';
 
-    if ( ... /* if validation fails */ ) {
-        // tell the plugin this comment should be blocked!!
-        $commentdata['ip-geo-block']['result'] = 'blocked';
-    }
-
-    return $commentdata;
+    return $validate;
 }
-add_filter( 'ip-geo-block-validate', 'my_validation' );
+add_action( 'ip-geo-block-comment', 'my_validate_comment', 10, 2 );
 ```
 
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
 
-See [preprocess comment][codex] for more detail about `$commentdata`.
+For more details, see `samples.php` combined together within this package, 
+and See [preprocess comment][codex] for more detail about `$commentdata`.
 
 #### Can I change user agent strings when fetching services ? ####
 
-Yes. The default is something like `Wordpress/3.9.2; ip-geo-block 1.0.4`.
+Yes. The default is something like `Wordpress/4.0; ip-geo-block 1.2.0`.
 You can change it as follows:
 
 ```php
@@ -185,6 +177,10 @@ this plugin on the plugin dashboard.
 
 #### Change log
 
+- 1.2.0  **NEW FEATURE:** Added Maxmind database auto downloader.
+         The filter hook `ip-geo-block-validate` was discontinued.
+         Instead of it, the new filter hook `ip-geo-block-comment` is 
+         introduced.
 - 1.1.1  Fixed issue of default country code.
          When activating this plugin for the first time, get the country code 
          from admin's IP address and set it into white list.
