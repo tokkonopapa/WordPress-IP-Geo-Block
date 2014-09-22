@@ -8,7 +8,7 @@ Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress plugin that blocks any comments posted from outside your nation.
+A WordPress plugin that blocks any comments posted from undesired countries.
 
 == Description ==
 
@@ -16,13 +16,14 @@ This plugin will examine a country code based on the posting author's IP
 address. If the comment comes from undesired country, it will be blocked 
 before Akismet validate it.
 
-Free IP Geolocation REST APIs are installed in this plugin to get a country 
-code from an IP address. There are two types of API which support only IPv4 or 
-both IPv4 and IPv6. This plugin will automatically select an appropriate API.
+Free IP Geolocation database and REST APIs are installed in this plugin to 
+get a country code from an IP address. There are two types of API which 
+support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
+select an appropriate API.
 
 Starting with version 1.1.0, the cache mechanism with transient API for the 
 fetched IP addresses has been equipped to reduce load on the server against 
-spam comment.
+undesired access.
 
 = Using with IP2Location WordPress Plugins =
 
@@ -33,14 +34,13 @@ If you have correctly installed one of the IP2Location plugins (
 ), this plugin uses its local database prior to the REST APIs.
 
 After installing these IP2Location plugins, this plugin should be once 
-deactivated and then activated in order to set the path to `database.bin` 
-and `ip2location.class.php`.
+deactivated and then activated in order to set the path to `database.bin`.
 
 = Development =
 
 Development of this plugin is promoted on 
-[GitHub](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub").
-All contributions will be welcome.
+    [GitHub](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub").
+All contributions will always be welcome.
 
 = Attribution =
 
@@ -135,31 +135,25 @@ IP address (e.g. 127.0.0.0) is sent, but only `freegeoip.net` returns `RD`.
 
 = Can I add an additional spam validation function into this plugin? =
 
-Yes, you can use `add_filter()` with filter hook `ip-geo-block-validate` in 
+Yes, you can use `add_filter()` with filter hook `ip-geo-block-comment` in 
 somewhere (typically `functions.php` in your theme) as follows:
 
-`function my_validation( $commentdata ) {
-    // validation code here
-    ...;
+`function my_validate_comment( $validate, $commentdata ) {
+    if ( strpos( $commentdata['comment_content'], 'NG WORD' ) !== FALSE )
+        $validate['result'] = 'blocked';
 
-    if ( ... /* if validation fails */ ) {
-        // tell the plugin this comment should be blocked!!
-        $commentdata['ip-geo-block']['result'] = 'blocked';
-    }
-
-    return $commentdata;
+    return $validate;
 }
-add_filter( 'ip-geo-block-validate', 'my_validation' );`
+add_action( 'ip-geo-block-comment', 'my_validate_comment', 10, 2 );`
 
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
 
-See [preprocess comment](http://codex.wordpress.org/Plugin_API/Filter_Reference/preprocess_comment "Plugin API/Filter Reference/preprocess comment &laquo; WordPress Codex") 
-for more detail about `$commentdata`.
+For more details, see `samples.php` combined together within this package.
 
 = Can I change user agent strings when fetching services? =
 
-Yes. The default is something like `Wordpress/3.9.2; ip-geo-block 1.0.4`.
+Yes. The default is something like `Wordpress/4.0; ip-geo-block 1.2.0`.
 You can change it as follows:
 
 `function my_user_agent( $args ) {
@@ -188,6 +182,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 4. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 1.2.0 =
+* **NEW FEATURE:** Added Maxmind database auto downloader.
+* The filter hook `ip-geo-block-validate` was discontinued.
+  Instead of it, the new filter hook `ip-geo-block-comment` is introduced.
 
 = 1.1.1 =
 * Fixed issue of default country code.

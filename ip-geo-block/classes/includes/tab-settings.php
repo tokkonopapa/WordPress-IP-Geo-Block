@@ -145,7 +145,7 @@ function tab_settings( $context ) {
 
 	add_settings_field(
 		$option_name . "_${field}_auto",
-		__( 'Auto updating', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Auto updating (once a month)', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
