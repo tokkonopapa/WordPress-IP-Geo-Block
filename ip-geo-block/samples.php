@@ -54,13 +54,21 @@ add_action( 'ip-geo-block-addr', 'my_ip_proxy' );
  * @return array $validate
  * @see http://codex.wordpress.org/Plugin_API/Filter_Reference/preprocess_comment
  */
-function my_validate_comment( $validate, $commentdata ) {
-	if ( strpos( $commentdata['comment_content'], 'NG WORD' ) !== FALSE )
-		$validate['result'] = 'blocked';
+function my_validate_comment( $validate ) {
+	$blacklist = array(
+		'123.456.789.',
+	);
+
+	foreach ( $blacklist as $ip ) {
+		if ( strpos( $ip, $validate['ip'] ) === 0 ) {
+			$validate['result'] = 'blocked';
+			break;
+		}
+	}
 
 	return $validate;
 }
-add_action( 'ip-geo-block-comment', 'my_validate_comment', 10, 2 );
+add_action( 'ip-geo-block-comment', 'my_validate_comment' );
 
 /**
  * validate login ip address
@@ -70,11 +78,11 @@ add_action( 'ip-geo-block-comment', 'my_validate_comment', 10, 2 );
  * @return array $validate
  */
 function my_validate_login( $validate ) {
-	$permited = array(
+	$whitelist = array(
 		'123.456.789.',
 	);
 
-	foreach ( $permited as $ip ) {
+	foreach ( $whitelist as $ip ) {
 		if ( strpos( $ip, $validate['ip'] ) === 0 ) {
 			$validate['result'] = 'passed';
 			break;

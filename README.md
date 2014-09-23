@@ -126,20 +126,27 @@ Yes, you can use `add_filter()` with filter hook `ip-geo-block-comment` in
 somewhere (typically `functions.php` in your theme) as follows:
 
 ```php
-function my_validate_comment( $validate, $commentdata ) {
-    if ( strpos( $commentdata['comment_content'], 'NG WORD' ) !== FALSE )
-        $validate['result'] = 'blocked';
+function my_validate_comment( $validate ) {
+    $blacklist = array(
+        '123.456.789.',
+    );
+
+    foreach ( $blacklist as $ip ) {
+        if ( strpos( $ip, $validate['ip'] ) === 0 ) {
+            $validate['result'] = 'blocked';
+            break;
+        }
+    }
 
     return $validate;
 }
-add_action( 'ip-geo-block-comment', 'my_validate_comment', 10, 2 );
+add_action( 'ip-geo-block-comment', 'my_validate_comment' );
 ```
 
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
 
-For more details, see `samples.php` combined together within this package, 
-and See [preprocess comment][codex] for more detail about `$commentdata`.
+For more details, see `samples.php` combined together within this package.
 
 #### Can I change user agent strings when fetching services ? ####
 
