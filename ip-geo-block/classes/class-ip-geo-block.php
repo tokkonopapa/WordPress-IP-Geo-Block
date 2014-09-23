@@ -480,13 +480,13 @@ class IP_Geo_Block {
 		if ( empty( $validate['result'] ) )
 			$validate = $this->validate_country( $validate, $settings );
 
-		// update statistics
-		if ( $settings['save_statistics'] )
-			$this->update_statistics( $validate );
-
 		// validation function should return at least the 'result'
 		if ( empty( $validate['result'] ) || 'blocked' !== $validate['result'] )
 			return;
+
+		// update statistics
+		if ( $settings['save_statistics'] )
+			$this->update_statistics( $validate );
 
 		// update cache
 		IP_Geo_Block_API_Cache::update_cache( $validate['ip'], $validate['code'].'*', $settings );
