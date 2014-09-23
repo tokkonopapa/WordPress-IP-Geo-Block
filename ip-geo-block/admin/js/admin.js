@@ -33,10 +33,10 @@
 		.done(function (data, textStatus, jqXHR) {
 			for (var key in data) { // key: ipv4, ipv6
 				if (data[key].filename) {
-					$('#ip_geo_block_settings_maxmind_' + key + '_path').val(data[key].filename);
+					$('#ip_geo_block_settings_maxmind_' + key + '_path').val(sanitize(data[key].filename));
 				}
 				if (data[key].message) {
-					$('#ip_geo_block_' + key).text(data[key].message);
+					$('#ip_geo_block_' + key).text(sanitize(data[key].message));
 				}
 			}
 		})
