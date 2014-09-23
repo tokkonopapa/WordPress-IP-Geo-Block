@@ -128,13 +128,15 @@ class IP_Geo_Block {
 				add_action( $pos, array( $this, 'comment_form_message' ), 10 );
 			}
 
-			// The validation function has the same priority as Akismet but will be
-			// called earlier becase the initialization timing of Akismet is at `init`.
-			add_action( 'preprocess_comment', array( $this, 'validate_comment' ), 1 );
+			// hook from wp-comments-post.php @since 2.8.0
+			// https://developer.wordpress.org/reference/hooks/pre_comment_on_post/
+			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), 1 );
 		}
 
+		// hook from wp-login.php @since 2.1.0
+		// https://developer.wordpress.org/reference/hooks/login_init/
 		if ( $opts['validation']['login'] )
-			add_action( 'login_head', array( $this, 'validate_login' ), 1 );
+			add_action( 'login_init', array( $this, 'validate_login' ), 1 );
 
 		// hook for cron job
 		if ( $opts['update']['auto'] )
@@ -419,9 +421,9 @@ class IP_Geo_Block {
 	 * Validate comment.
 	 *
 	 */
-	public function validate_comment( $commentdata ) {
+	public function validate_comment() {
 		if( is_user_logged_in() )
-			return $commentdata;
+			return;
 
 		$settings = get_option( self::$option_keys['settings'] );
 
@@ -436,7 +438,7 @@ class IP_Geo_Block {
 		// );
 		$ip = apply_filters( self::PLUGIN_SLUG . '-addr', $_SERVER['REMOTE_ADDR'] );
 		$validate = array( 'ip' => $ip );
-		$validate = apply_filters( self::PLUGIN_SLUG . '-comment', $validate, $commentdata );
+		$validate = apply_filters( self::PLUGIN_SLUG . '-comment', $validate );
 
 		// if the post has not been marked then validate ip address
 		if ( empty( $validate['result'] ) )
@@ -448,7 +450,7 @@ class IP_Geo_Block {
 
 		// validation function should return at least the 'result'
 		if ( empty( $validate['result'] ) || 'blocked' !== $validate['result'] )
-			return $commentdata;
+			return;
 
 		// update cache
 		IP_Geo_Block_API_Cache::update_cache( $validate['ip'], $validate['code'], $settings );

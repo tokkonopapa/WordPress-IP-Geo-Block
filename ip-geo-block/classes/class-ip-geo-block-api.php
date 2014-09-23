@@ -659,7 +659,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 	public function get_country( $ip, $args = array() ) {
 		$val = $this->get_location( $ip, $args );
-		return $val ? $val['countryCode'] : FALSE;
+		return ! empty( $val['countryCode'] ) ? substr( $val['countryCode'], 0, 2 ) : FALSE;
 	}
 
 	public static function update_cache( $ip, $code, $settings ) {
