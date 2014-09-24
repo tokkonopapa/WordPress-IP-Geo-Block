@@ -93,4 +93,17 @@ function my_validate_login( $validate ) {
 }
 add_action( 'ip-geo-block-login', 'my_validate_login' );
 
+/**
+ * validate login ip address
+ *
+ * @param array $validate
+ * @param array $commentdata
+ * @return array $validate
+ */
+function my_maxmind_path( $path ) {
+	$upload = wp_upload_dir();
+	return $upload['basedir'] . '/';
+}
+add_action( 'ip-geo-block-maxmind', 'my_maxmind_path' );
+
 endif;
