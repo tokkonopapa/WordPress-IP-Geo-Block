@@ -128,17 +128,17 @@ class IP_Geo_Block {
 				add_action( $pos, array( $this, 'comment_form_message' ), 10 );
 			}
 
-			// hook from wp-comments-post.php @since 2.8.0
+			// action hook from wp-comments-post.php @since 2.8.0
 			// https://developer.wordpress.org/reference/hooks/pre_comment_on_post/
 			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), 1 );
 		}
 
-		// hook from wp-login.php @since 2.1.0
+		// action hook from wp-login.php @since 2.1.0
 		// https://developer.wordpress.org/reference/hooks/login_init/
 		if ( $opts['validation']['login'] )
 			add_action( 'login_init', array( $this, 'validate_login' ), 1 );
 
-		// hook for cron job
+		// action hook from download cron job
 		if ( $opts['update']['auto'] )
 			add_action( 'ip_geo_block_cron', 'IP_Geo_Block::download_database' );
 	}
@@ -170,7 +170,9 @@ class IP_Geo_Block {
 		);
 
 		// get path to IP2Location DB
-		$ip2 = $tmp[0];
+		$ip2 = trailingslashit(
+			apply_filters( self::PLUGIN_SLUG . '-ip2location', $tmp[0] )
+		);
 		foreach ( $tmp as $name ) {
 			if ( is_readable( "${name}database.bin" ) ) {
 				$ip2 = "${name}database.bin";
@@ -182,11 +184,10 @@ class IP_Geo_Block {
 		$opts = get_option( $name[0] );
 
 		if ( FALSE === $opts ) {
-			// get country code from admin's IP address and set it into white list
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
+			// get country code from admin's IP address and set it into white list
 			$opts = self::get_request_headers( self::$option_table[ $name[0] ] );
-
 			foreach ( array( 'ipinfo.io', 'Telize', 'IP-Json' ) as $provider ) {
 				if ( $provider = IP_Geo_Block_API::get_class_name( $provider ) ) {
 					$tmp = new $provider( NULL );
@@ -201,6 +202,7 @@ class IP_Geo_Block {
 			self::$option_table[ $name[0] ]['ip2location']['ipv4_path'] = $ip2;
 
 			// create new option table
+			$opts = self::$option_table[ $name[0] ];
 			add_option( $name[0], self::$option_table[ $name[0] ], '', 'yes' );
 			add_option( $name[1], self::$option_table[ $name[1] ], '', 'no'  );
 		}
@@ -230,8 +232,8 @@ class IP_Geo_Block {
 		}
 
 		// schedule auto updating
-		if ( $output['update']['auto'] )
-			self::schedule_cron_job( $output['update'], $output['maxmind'], TRUE );
+		if ( $opts['update']['auto'] )
+			self::schedule_cron_job( $opts['update'], $opts['maxmind'], TRUE );
 	}
 
 	/**
@@ -437,8 +439,7 @@ class IP_Geo_Block {
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
 		$ip = apply_filters( self::PLUGIN_SLUG . '-addr', $_SERVER['REMOTE_ADDR'] );
-		$validate = array( 'ip' => $ip );
-		$validate = apply_filters( self::PLUGIN_SLUG . '-comment', $validate );
+		$validate = apply_filters( self::PLUGIN_SLUG . '-comment', array( 'ip' => $ip ) );
 
 		// if the post has not been marked then validate ip address
 		if ( empty( $validate['result'] ) )
@@ -472,10 +473,9 @@ class IP_Geo_Block {
 
 		$settings = get_option( self::$option_keys['settings'] );
 
-		// validate ip address
+		// apply user validation
 		$ip = apply_filters( self::PLUGIN_SLUG . '-addr', $_SERVER['REMOTE_ADDR'] );
-		$validate = array( 'ip' => $ip );
-		$validate = apply_filters( self::PLUGIN_SLUG . '-login', $validate );
+		$validate = apply_filters( self::PLUGIN_SLUG . '-login', array( 'ip' => $ip ) );
 
 		if ( empty( $validate['result'] ) )
 			$validate = $this->validate_country( $validate, $settings );
@@ -494,7 +494,7 @@ class IP_Geo_Block {
 		// Refuse to login
 		$this->send_response(
 			$settings['response_code'],
-			__( 'Sorry, you cannot be permitted to login.', self::TEXT_DOMAIN )
+			__( 'Sorry, you cannot be permitted.', self::TEXT_DOMAIN )
 		);
 	}
 
@@ -533,14 +533,14 @@ class IP_Geo_Block {
 	 */
 	public static function download_database( $only = NULL ) {
 		require_once( IP_GEO_BLOCK_PATH . 'includes/download.php' );
-
-		// get option settings
 		$options = get_option( self::$option_keys['settings'] );
 
 		// download database
 		$res = ip_geo_block_download(
 			$options['maxmind'],
-			IP_GEO_BLOCK_DB_PATH,
+			trailingslashit(
+				apply_filters( self::PLUGIN_SLUG . '-maxmind', IP_GEO_BLOCK_DB_PATH )
+			), 
 			self::get_request_headers( $options )
 		);
 
