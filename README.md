@@ -120,7 +120,7 @@ the plugin settings page. Most of the IP Geolocation services return empty
 (with some status) if a local IP address (e.g. 127.0.0.0) is sent, but only 
 `freegeoip.net` returns `RD`.
 
-#### Can I add an additional spam validation function into this plugin ? ####
+#### Can I add an additional validation function into this plugin ? ####
 
 Yes, you can use `add_filter()` with filter hook `ip-geo-block-comment` in 
 somewhere (typically `functions.php` in your theme) as follows:
@@ -146,8 +146,6 @@ add_action( 'ip-geo-block-comment', 'my_validate_comment' );
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
 
-For more details, see `samples.php` combined together within this package.
-
 #### Can I change user agent strings when fetching services ? ####
 
 Yes. The default is something like `Wordpress/4.0; ip-geo-block 1.2.0`.
@@ -155,15 +153,28 @@ You can change it as follows:
 
 ```php
 function my_user_agent( $args ) {
-    $args['user-agent'] = 'original user agent strings';
+    $args['user-agent'] = 'my user agent strings';
     return $args;
 }
 add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 ```
 
+#### Are there any other filter hooks? ####
+
+Yes, here is the list of all hooks.
+
+- `ip-geo-block-addr` : IP address of accessor.
+- `ip-geo-block-headers` : compose http request headers.
+- `ip-geo-block-comment` : validate comment post.
+- `ip-geo-block-login` : validate access of login.
+- `ip-geo-block-maxmind` : absolute path where Maxmind DB files should be saved.
+- `ip-geo-block-ip2location` : absolute path where IP2Location DB file is saved.
+
+For more details, see `samples.php` combined together within this package.
+
 ### Notes:
 
-Before updating to 1.1.x from version 1.0.x, please deactivate then activate 
+Before updating from older version to newer, please deactivate then activate 
 this plugin on the plugin dashboard.
 
 #### Milestones
