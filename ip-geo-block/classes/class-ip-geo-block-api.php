@@ -453,7 +453,7 @@ class IP_Geo_Block_API_geoPlugin extends IP_Geo_Block_API {
  * Output type : json, xml
  */
 class IP_Geo_Block_API_ipapicom extends IP_Geo_Block_API {
-	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
 	protected $api_template = array(
 		'api_key' => '',
 		'format'  => 'json',
@@ -550,7 +550,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 
 	public function __construct( $api_key = NULL ) {
 		parent::__construct( $api_key );
-		require_once( IP_GEO_BLOCK_PATH . 'includes/IP2Location.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'includes/venders/ip2location/IP2Location.php' );
 	}
 
 	public function get_location( $ip, $args = array() ) {
@@ -602,7 +602,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 
 	public function __construct( $api_key = NULL ) {
 		parent::__construct( $api_key );
-		require_once( IP_GEO_BLOCK_PATH . 'includes/geoip.inc' );
+		require_once( IP_GEO_BLOCK_PATH . 'includes/venders/maxmind/geoip.inc' );
 	}
 
 	public function get_location( $ip, $args = array() ) {
@@ -667,20 +667,30 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		$num = ! empty( $settings['cache_hold'] ) ? $settings['cache_hold'] : 10;
 		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;
 
+		// unset expired item
 		if ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) {
-			$n = 0;
 			foreach ( $cache as $key => $val ) {
-				if ( $time - $val['time'] > $exp || ++$n >= $num )
+				if ( $time - $val['time'] > $exp )
 					unset( $cache[ $key ] );
 			}
 		}
 
+		// add new item
 		if ( $settings['save_statistics'] ) {
 			$count = ! empty( $cache[ $ip ]['call'] ) ? $cache[ $ip ]['call'] + 1 : 1;
 			$cache[ $ip ] = array( 'time' => $time, 'code' => $code, 'call' => $count );
 		} else {
 			$cache[ $ip ] = array( 'time' => $time, 'code' => $code );
 		}
+
+		// sort by 'time'
+		foreach ( $cache as $key => $val )
+			$hash[ $key ] = $val['time'];
+		array_multisort( $hash, SORT_DESC, $cache );
+
+		// keep max number
+		while ( count( $cache ) > $num )
+			array_pop( $cache );
 
 		set_transient( IP_Geo_Block::CACHE_KEY, $cache, $exp ); // @since 2.8
 	}
@@ -750,7 +760,7 @@ class IP_Geo_Block_Provider {
 
 		'ip-api.com' => array(
 			'key'  => FALSE,
-			'type' => 'IPv4, IPv6 / free for non-commercial use',
+			'type' => 'IPv4 / free for non-commercial use',
 			'link' => '<a class="ip-geo-block-link" href="http://ip-api.com/" title="IP-API.com - Free Geolocation API" target=_blank>http://ip-api.com/</a>&nbsp;(IPv4, IPv6 / free for non-commercial use)',
 		),
 
