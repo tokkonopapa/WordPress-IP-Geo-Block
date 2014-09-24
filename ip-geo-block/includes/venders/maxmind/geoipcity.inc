@@ -22,8 +22,8 @@
 
 define("FULL_RECORD_LENGTH", 50);
 
-//require_once 'geoip.inc';
-//require_once 'geoipregionvars.php';
+require_once dirname(__FILE__) . '/geoip.inc';
+require_once dirname(__FILE__) . '/geoipregionvars.php';
 
 class geoiprecord
 {
