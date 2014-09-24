@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-09-22 21:47+0900\n"
-"PO-Revision-Date: 2014-09-22 21:58+0900\n"
+"POT-Creation-Date: 2014-09-25 01:04+0900\n"
+"PO-Revision-Date: 2014-09-25 01:13+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -74,13 +74,13 @@ msgstr "有効"
 msgid "successfully updated"
 msgstr "更新に成功しました"
 
-#: classes/class-ip-geo-block.php:459
+#: classes/class-ip-geo-block.php:462
 msgid "Sorry, your comment cannot be accepted."
 msgstr "申し訳ありませんが、投稿できません。"
 
-#: classes/class-ip-geo-block.php:495
-msgid "Sorry, you cannot be permitted to login."
-msgstr "申し訳ありませんが、許可されていません。"
+#: classes/class-ip-geo-block.php:497
+msgid "Sorry, you cannot be permitted."
+msgstr "申し訳ありませんが、許可できません。"
 
 #: classes/includes/tab-attribution.php:14
 msgid "Attribution links"
@@ -124,7 +124,7 @@ msgid "Path to database (IPv4)"
 msgstr "データベースへのパス（IPv4）"
 
 #: classes/includes/tab-settings.php:103 classes/includes/tab-settings.php:124
-#: includes/download.php:131
+#: includes/download.php:125
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
@@ -280,14 +280,6 @@ msgstr "統計のクリア"
 msgid "Clear now"
 msgstr "今すぐクリア"
 
-#: includes/download.php:108
-msgid "Cannot decode zip."
-msgstr "zipの解凍に失敗しました"
-
-#: includes/download.php:116
+#: includes/download.php:101
 msgid "Cannot open file."
 msgstr "ファイルを開けませんでした"
-
-#: includes/download.php:125
-msgid "Cannot write to file."
-msgstr "ファイルに書き込めませんでした"
