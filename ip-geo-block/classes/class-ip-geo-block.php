@@ -171,7 +171,7 @@ class IP_Geo_Block {
 
 		// get path to IP2Location DB
 		$ip2 = trailingslashit(
-			apply_filters( self::PLUGIN_SLUG . '-ip2location', $tmp[0] )
+			apply_filters( self::PLUGIN_SLUG . '-ip2location-path', $tmp[0] )
 		);
 		foreach ( $tmp as $name ) {
 			if ( is_readable( "${name}database.bin" ) ) {
@@ -539,7 +539,7 @@ class IP_Geo_Block {
 		$res = ip_geo_block_download(
 			$options['maxmind'],
 			trailingslashit(
-				apply_filters( self::PLUGIN_SLUG . '-maxmind', IP_GEO_BLOCK_DB_PATH )
+				apply_filters( self::PLUGIN_SLUG . '-maxmind-path', IP_GEO_BLOCK_DB_PATH )
 			), 
 			self::get_request_headers( $options )
 		);
