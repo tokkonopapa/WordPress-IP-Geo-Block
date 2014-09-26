@@ -3,21 +3,21 @@ IP Geo Block
 
 A WordPress plugin that blocks any comments posted from undesired contries.
 
-### Features:
-
-1. This plugin will examine a country code based on the posting author's IP 
+This plugin will examine a country code based on the posting author's IP 
 address. If the comment comes from undesired country, it will be blocked 
 before Akismet validate it.
 
-2. Free IP Geolocation database and REST APIs are installed in this plugin 
+### Features:
+
+1. Free IP Geolocation database and REST APIs are installed in this plugin 
 to get a country code from an IP address. There are two types of API which 
 support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
 select an appropriate API.
 
-3. [MaxMind][MaxMind] GeoLite free database for IPv4 and IPv6 will be 
+2. [MaxMind][MaxMind] GeoLite free database for IPv4 and IPv6 will be 
 downloaded and updated (once a month) automatically.
 
-4. If you have correctly installed one of the IP2Location plugins (
+3. If you have correctly installed one of the IP2Location plugins (
     [IP2Location Tags][IP2Tag],
     [IP2Location Variables][IP2Var],
     [IP2Location Country Blocker][IP2Blk]
@@ -25,10 +25,10 @@ downloaded and updated (once a month) automatically.
 these IP2Location plugins, you should be once deactivated and then activated 
 in order to set the path to `database.bin`.
 
-5. Cache mechanism with transient API for the fetched IP addresses has been 
+4. Cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against undesired access.
 
-6. Custom validation function can be added using `ip-geo-block-comment` 
+5. Custom validation function can be added using `ip-geo-block-comment` 
 filter hook with `add_filter()`.
 
 ### Installation:
@@ -165,8 +165,8 @@ Yes, here is the list of all hooks.
 
 - `ip-geo-block-addr` : IP address of accessor.
 - `ip-geo-block-headers` : compose http request headers.
-- `ip-geo-block-comment` : validate comment post.
-- `ip-geo-block-login` : validate access of login.
+- `ip-geo-block-comment` : validate IP address at `wp-comments-post.php`.
+- `ip-geo-block-login` : validate IP adress at `wp-login.php`.
 - `ip-geo-block-maxmind-path` : absolute path where Maxmind DB files should be saved.
 - `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind DB zip file for IPv4.
 - `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind DB zip file for IPv6.
@@ -197,10 +197,12 @@ this plugin on the plugin dashboard.
 
 #### Change log
 
-- 1.2.0  **NEW FEATURE:** Added Maxmind database auto downloader.
-         The filter hook `ip-geo-block-validate` was discontinued.
-         Instead of it, the new filter hook `ip-geo-block-comment` is 
-         introduced.
+- 1.2.0
+    - **NEW FEATURE:** Added Maxmind database auto downloader and updater.
+    - The filter hook `ip-geo-block-validate` was discontinued.
+      Instead of it, the new filter hook `ip-geo-block-comment` is introduced.
+    - **PERFORMANCE IMPROVEMENT:** IP address is verified at an earlier stage.
+    - **OTHERS:** Fix a bug of handling cache, update status of some REST APIs.
 - 1.1.1  Fixed issue of default country code.
          When activating this plugin for the first time, get the country code 
          from admin's IP address and set it into white list.

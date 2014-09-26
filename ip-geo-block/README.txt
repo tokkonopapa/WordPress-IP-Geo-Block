@@ -18,20 +18,16 @@ before Akismet validate it.
 
 = Features =
 
-1. This plugin will examine a country code based on the posting author's IP 
-address. If the comment comes from undesired country, it will be blocked 
-before Akismet validate it.
-
-2. Free IP Geolocation database and REST APIs are installed in this plugin 
+1. Free IP Geolocation database and REST APIs are installed in this plugin 
 to get a country code from an IP address. There are two types of API which 
 support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
 select an appropriate API.
 
-3. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+2. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
 (once a month) automatically.
 
-4. If you have correctly installed one of the IP2Location plugins (
+3. If you have correctly installed one of the IP2Location plugins (
     [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
     [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
@@ -39,10 +35,10 @@ GeoLite free database for IPv4 and IPv6 will be downloaded and updated
 these IP2Location plugins, you should be once deactivated and then activated 
 in order to set the path to `database.bin`.
 
-5. Cache mechanism with transient API for the fetched IP addresses has been 
+4. Cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against undesired access.
 
-6. Custom validation function can be added using `ip-geo-block-comment` 
+5. Custom validation function can be added using `ip-geo-block-comment` 
 filter hook with `add_filter()`.
 
 = Development =
@@ -61,7 +57,6 @@ Thanks for providing these great services for free.
 * [http://www.iptolatlng.com/](http://www.iptolatlng.com/ "IP to Latitude, Longitude") (IPv4, IPv6 / free)
 * [http://ip-json.rhcloud.com/](http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service") (IPv4, IPv6 / free)
 * [http://xhanch.com/](http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API &#8211; IP Get Detail | Xhanch Studio") (IPv4 / free)
-* [http://mshd.net/](http://mshd.net/documentation/geoip "www.mshd.net - Geoip Documentation") (IPv4, IPv6 / free)
 * [http://www.geoplugin.com/](http://www.geoplugin.com/ "geoPlugin to geolocate your visitors") (IPv4, IPv6 / free, need an attribution link)
 * [http://ip-api.com/](http://ip-api.com/ "IP-API.com - Free Geolocation API") (IPv4, IPv6 / free for non-commercial use)
 * [http://ipinfodb.com/](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") (IPv4, IPv6 / free for registered user, need API key)
@@ -183,8 +178,8 @@ Yes, here is the list of all hooks.
 
 - `ip-geo-block-addr` : IP address of accessor.
 - `ip-geo-block-headers` : compose http request headers.
-- `ip-geo-block-comment` : validate comment post.
-- `ip-geo-block-login` : validate access of login.
+- `ip-geo-block-comment` : validate IP address at `wp-comments-post.php`.
+- `ip-geo-block-login` : validate IP adress at `wp-login.php`.
 - `ip-geo-block-maxmind-path` : absolute path where Maxmind DB files should be saved.
 - `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind DB zip file for IPv4.
 - `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind DB zip file for IPv6.
@@ -214,9 +209,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 1.2.0 =
-* **NEW FEATURE:** Added Maxmind database auto downloader.
-* The filter hook `ip-geo-block-validate` was discontinued.
+- **NEW FEATURE:** Added Maxmind database auto downloader and updater.
+- The filter hook `ip-geo-block-validate` was discontinued.
   Instead of it, the new filter hook `ip-geo-block-comment` is introduced.
+- **PERFORMANCE IMPROVEMENT:** IP address is verified at an earlier stage.
+- **OTHERS:** Fix a bug of handling cache, update status of some REST APIs.
 
 = 1.1.1 =
 * Fixed issue of default country code.
