@@ -483,7 +483,7 @@ class IP_Geo_Block {
 	 * Validate login ip address
 	 *
 	 */
-	public function validate_comment() {
+	public function validate_login() {
 		validate_ip( $_SERVER['REMOTE_ADDR'], 'login' );
 	}
 
