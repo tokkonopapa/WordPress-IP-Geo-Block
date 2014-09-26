@@ -1,5 +1,5 @@
 <?php
-/* based on pre 1.15 (15 Feb, 2014) */
+/* This file is modified for IP Geo Block based on pre 1.15 (15 Feb, 2014) */
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 2; tab-width: 2 -*- */
 /* geoip.inc
  *

@@ -1,5 +1,4 @@
 <?php
-/* based on pre 1.15 (3 May, 2014) */
 // Copyright 2014 MaxMind, Inc. All Rights Reserved
 global $GEOIP_REGION_NAME;
 $GEOIP_REGION_NAME = array (

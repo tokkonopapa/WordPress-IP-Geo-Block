@@ -1,5 +1,5 @@
 <?php
-/* based on pre 1.15 (15 Feb, 2014) */
+/* This file is modified for IP Geo Block based on pre 1.15 (15 Feb, 2014) */
 /* geoipcity.inc
  *
  * Copyright (C) 2013 MaxMind, Inc.
@@ -22,8 +22,8 @@
 
 define("FULL_RECORD_LENGTH", 50);
 
-require_once dirname(__FILE__) . '/geoip.inc';
-require_once dirname(__FILE__) . '/geoipregionvars.php';
+//require_once 'geoip.inc';
+//require_once 'geoipregionvars.php';
 
 class geoiprecord
 {

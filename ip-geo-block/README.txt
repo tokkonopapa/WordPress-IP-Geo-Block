@@ -161,7 +161,7 @@ somewhere (typically `functions.php` in your theme) as follows:
 
     return $validate;
 }
-add_action( 'ip-geo-block-comment', 'my_validate_comment' );`
+add_filter( 'ip-geo-block-comment', 'my_validate_comment' );`
 
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
@@ -185,8 +185,10 @@ Yes, here is the list of all hooks.
 - `ip-geo-block-headers` : compose http request headers.
 - `ip-geo-block-comment` : validate comment post.
 - `ip-geo-block-login` : validate access of login.
-- `ip-geo-block-maxmind` : absolute path where Maxmind DB files should be saved.
-- `ip-geo-block-ip2location` : absolute path where IP2Location DB file is saved.
+- `ip-geo-block-maxmind-path` : absolute path where Maxmind DB files should be saved.
+- `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind DB zip file for IPv4.
+- `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind DB zip file for IPv6.
+- `ip-geo-block-ip2location-path` : absolute path where IP2Location DB file is saved.
 
 For more details, see `samples.php` combined together within this package.
 
