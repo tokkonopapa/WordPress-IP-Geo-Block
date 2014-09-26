@@ -5,14 +5,13 @@ if ( class_exists( 'IP_Geo_Block' ) ):
 /**
  * substitute ip address
  *
- * @param array $validate
- * @param array $commentdata
- * @return array $validate
+ * @param string $ip
+ * @return string $ip
  */
 function my_ip_address( $ip ) {
 	return '98.139.183.24'; // yahoo.com
 }
-add_action( 'ip-geo-block-addr', 'my_ip_address' );
+add_filter( 'ip-geo-block-addr', 'my_ip_address' );
 
 /**
  * REMOTE_ADDR              : global IP or local IP
@@ -44,15 +43,13 @@ function my_ip_proxy( $ip ) {
 		return $_SERVER['REMOTE_ADDR'];
 	}
 }
-add_action( 'ip-geo-block-addr', 'my_ip_proxy' );
+add_filter( 'ip-geo-block-addr', 'my_ip_proxy' );
 
 /**
  * validate comment data
  *
  * @param array $validate
- * @param array $commentdata
  * @return array $validate
- * @see http://codex.wordpress.org/Plugin_API/Filter_Reference/preprocess_comment
  */
 function my_validate_comment( $validate ) {
 	$blacklist = array(
@@ -68,13 +65,12 @@ function my_validate_comment( $validate ) {
 
 	return $validate;
 }
-add_action( 'ip-geo-block-comment', 'my_validate_comment' );
+add_filter( 'ip-geo-block-comment', 'my_validate_comment' );
 
 /**
  * validate login ip address
  *
  * @param array $validate
- * @param array $commentdata
  * @return array $validate
  */
 function my_validate_login( $validate ) {
@@ -91,19 +87,33 @@ function my_validate_login( $validate ) {
 
 	return $validate;
 }
-add_action( 'ip-geo-block-login', 'my_validate_login' );
+add_filter( 'ip-geo-block-login', 'my_validate_login' );
 
 /**
- * validate login ip address
+ * set path to Maxmind database files
  *
- * @param array $validate
- * @param array $commentdata
- * @return array $validate
+ * @param string $path
+ * @return string $path
  */
 function my_maxmind_path( $path ) {
 	$upload = wp_upload_dir();
-	return $upload['basedir'] . '/';
+	return $upload['basedir'];
 }
-add_action( 'ip-geo-block-maxmind', 'my_maxmind_path' );
+add_filter( 'ip-geo-block-maxmind-path', 'my_maxmind_path' );
+
+/**
+ * set url to Maxmind database zip file
+ *
+ * @param string $url
+ * @return string $url
+ */
+function my_maxmind_ipv4( $url ) {
+	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
+}
+function my_maxmind_ipv6( $url ) {
+	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCityv6-beta/GeoLiteCityv6.dat.gz';
+}
+add_filter( 'ip-geo-block-maxmind-zip-ipv4', 'my_maxmind_ipv4' );
+add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
 
 endif;

@@ -156,10 +156,12 @@ abstract class IP_Geo_Block_API {
 		$res = $this->get_location( $ip, $args );
 
 		// if country code is '-' or 'UNDEFINED' then error.
-		if ( ! empty( $res ) && ! empty( $res['countryCode'] ) )
-			return strlen( $res['countryCode'] ) === 2 ? $res['countryCode'] : NULL;
-		else
+		if ( $res && ! empty( $res['countryCode'] ) ) {
+			$len = strlen( $res['countryCode'] );
+			return 2 <= $len && $len <= 3 ? substr( $res['countryCode'], 0, 2 ) : NULL;
+		} else {
 			return NULL;
+		}
 	}
 
 	/**
@@ -548,12 +550,9 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 		'longitude'   => 'longitude',
 	);
 
-	public function __construct( $api_key = NULL ) {
-		parent::__construct( $api_key );
-		require_once( IP_GEO_BLOCK_PATH . 'includes/venders/ip2location/IP2Location.php' );
-	}
-
 	public function get_location( $ip, $args = array() ) {
+		require_once( IP_GEO_BLOCK_PATH . 'includes/venders/ip2location/IP2Location.php' );
+
 		// http://stackoverflow.com/questions/18276757/php-convert-ipv6-to-number
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			try {
@@ -578,11 +577,6 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 
 		return array( 'errorMessage' => 'Not supported' );
 	}
-
-	public function get_country( $ip, $args = array() ) {
-		$res = $this->get_location( $ip, $args );
-		return $res && ! empty( $res['countryCode'] ) ? $res['countryCode'] : FALSE;
-	}
 }
 
 endif;
@@ -600,36 +594,56 @@ if ( defined( 'IP_GEO_BLOCK_MAXMIND_IPV4' ) ) :
 
 class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 
-	public function __construct( $api_key = NULL ) {
-		parent::__construct( $api_key );
-		require_once( IP_GEO_BLOCK_PATH . 'includes/venders/maxmind/geoip.inc' );
+	private function location_country( $record ) {
+		return array( 'countryCode' => $record );
+	}
+
+	private function location_city( $record ) {
+		return array(
+			'countryCode' => $record->country_code,
+			'latitude'    => $record->latitude,
+			'longitude'   => $record->longitude,
+		);
 	}
 
 	public function get_location( $ip, $args = array() ) {
+		require_once( IP_GEO_BLOCK_PATH . 'includes/venders/maxmind/geoip.inc' );
+
 		// setup database file and function
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			$file = IP_GEO_BLOCK_MAXMIND_IPV4;
-			$func = geoip_country_code_by_addr;
 		}
 		else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			$file = IP_GEO_BLOCK_MAXMIND_IPV6;
-			$func = geoip_country_code_by_addr_v6;
 		}
 		else
-			return FALSE;
+			return array( 'errorMessage' => 'illegal format' );
 
 		// open database and fetch data
 		if ( null == ( $geo = geoip_open( $file, GEOIP_STANDARD ) ) )
 			return FALSE;
-		$res = $func( $geo, $ip );
+
+		switch ( $geo->databaseType) {
+		  case GEOIP_COUNTRY_EDITION:
+			$res = $this->location_country( geoip_country_code_by_addr( $geo, $ip ) );
+			break;
+		  case GEOIP_COUNTRY_EDITION_V6:
+			$res = $this->location_country( geoip_country_code_by_addr_v6( $geo, $ip ) );
+			break;
+		  case GEOIP_CITY_EDITION_REV1:
+			require_once( IP_GEO_BLOCK_PATH . 'includes/venders/maxmind/geoipcity.inc' );
+			$res = $this->location_city( geoip_record_by_addr( $geo, $ip ) );
+			break;
+		  case GEOIP_CITY_EDITION_REV1_V6:
+			require_once( IP_GEO_BLOCK_PATH . 'includes/venders/maxmind/geoipcity.inc' );
+			$res = $this->location_city( geoip_record_by_addr_v6( $geo, $ip ) );
+			break;
+		  default:
+			$res = array( 'errorMessage' => 'unknown database type' );
+		}
+
 		geoip_close( $geo );
-
-		return array( 'countryCode' => $res );
-	}
-
-	public function get_country( $ip, $args = array() ) {
-		$res = $this->get_location( $ip, $args );
-		return $res && ! empty( $res['countryCode'] ) ? $res['countryCode'] : FALSE;
+		return $res;
 	}
 }
 
@@ -645,21 +659,13 @@ endif;
 if ( class_exists( 'IP_Geo_Block' ) ) :
 
 class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
-	protected $transform_table = array(
-		'countryCode'   => 'code',
-	);
 
 	public function get_location( $ip, $args = array() ) {
 		if ( false === ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) ||
 		     false === array_key_exists( $ip, $cache ) )
 			return array( 'errorMessage' => 'not in the cache' );
 		else
-			return array( 'countryCode' => $cache[ $ip ][ $this->transform_table['countryCode'] ] );
-	}
-
-	public function get_country( $ip, $args = array() ) {
-		$val = $this->get_location( $ip, $args );
-		return ! empty( $val['countryCode'] ) ? substr( $val['countryCode'], 0, 2 ) : FALSE;
+			return array( 'countryCode' => $cache[ $ip ]['code'] );
 	}
 
 	public static function update_cache( $ip, $code, $settings ) {
