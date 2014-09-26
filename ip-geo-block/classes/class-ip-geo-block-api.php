@@ -391,7 +391,7 @@ class IP_Geo_Block_API_Xhanch extends IP_Geo_Block_API {
  * Sample URL  : http://mshd.net/api/geoip?ip=2a00:1210:fffe:200::1&output=json
  * Input type  : IP address (IPv4, IPv6)
  * Output type : json, php
- */
+ *//*
 class IP_Geo_Block_API_mshdnet extends IP_Geo_Block_API {
 	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
@@ -410,7 +410,7 @@ class IP_Geo_Block_API_mshdnet extends IP_Geo_Block_API {
 		'latitude'     => 'latitude',
 		'longitude'    => 'longitude',
 	);
-}
+}*/
 
 /**
  * Class for geoPlugin
@@ -752,11 +752,11 @@ class IP_Geo_Block_Provider {
 			'link' => '<a class="ip-geo-block-link" href="http://xhanch.com/xhanch-api-ip-get-detail/" title="Xhanch API &#8211; IP Get Detail | Xhanch Studio" target=_blank>http://xhanch.com/</a>&nbsp;(IPv4 / free)',
 		),
 
-		'mshd.net' => array(
+/*		'mshd.net' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
 			'link' => '<a class="ip-geo-block-link" href="http://mshd.net/documentation/geoip" title="www.mshd.net - Geoip Documentation" target=_blank>http://mshd.net/</a>&nbsp;(IPv4, IPv6 / free)',
-		),
+		),*/
 
 		'geoPlugin' => array(
 			'key'  => NULL,
