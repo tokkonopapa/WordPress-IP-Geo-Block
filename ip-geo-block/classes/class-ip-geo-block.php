@@ -420,11 +420,11 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Validate comment.
+	 * Validate ip address
 	 *
 	 */
-	public function validate_comment() {
-		if( is_user_logged_in() )
+	public function validate_ip( $ip, $type ) {
+		if ( is_user_logged_in() )
 			return;
 
 		$settings = get_option( self::$option_keys['settings'] );
@@ -438,64 +438,53 @@ class IP_Geo_Block {
 		//     'provider' => $provider, /* the name of validator               */
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
-		$ip = apply_filters( self::PLUGIN_SLUG . '-addr', $_SERVER['REMOTE_ADDR'] );
-		$validate = apply_filters( self::PLUGIN_SLUG . '-comment', array( 'ip' => $ip ) );
+		$ip = apply_filters( self::PLUGIN_SLUG . '-addr', $ip );
+		$validate = apply_filters( self::PLUGIN_SLUG . "-$type", array( 'ip' => $ip ) );
 
 		// if the post has not been marked then validate ip address
 		if ( empty( $validate['result'] ) )
 			$validate = $this->validate_country( $validate, $settings );
 
 		// update statistics
-		if ( $settings['save_statistics'] )
+		if ( $settings['save_statistics'] && 'comment' === $type )
 			$this->update_statistics( $validate );
-
-		// validation function should return at least the 'result'
-		if ( empty( $validate['result'] ) || 'blocked' !== $validate['result'] )
-			return;
-
-		// update cache
-		IP_Geo_Block_API_Cache::update_cache( $validate['ip'], $validate['code'], $settings );
-
-		// Refuse to post comment
-		$this->send_response(
-			$settings['response_code'],
-			__( 'Sorry, your comment cannot be accepted.', self::TEXT_DOMAIN )
-		);
-	}
-
-	/**
-	 * Validate login ip address
-	 *
-	 */
-	public function validate_login() {
-		if ( is_user_logged_in() )
-			return;
-
-		$settings = get_option( self::$option_keys['settings'] );
-
-		// apply user validation
-		$ip = apply_filters( self::PLUGIN_SLUG . '-addr', $_SERVER['REMOTE_ADDR'] );
-		$validate = apply_filters( self::PLUGIN_SLUG . '-login', array( 'ip' => $ip ) );
-
-		if ( empty( $validate['result'] ) )
-			$validate = $this->validate_country( $validate, $settings );
 
 		// validation function should return at least the 'result'
 		if ( empty( $validate['result'] ) || 'blocked' !== $validate['result'] )
 			return;
 
 		// update statistics
-		if ( $settings['save_statistics'] )
+		if ( $settings['save_statistics'] && 'login' === $type )
 			$this->update_statistics( $validate );
 
 		// update cache
-		IP_Geo_Block_API_Cache::update_cache( $validate['ip'], $validate['code'].'*', $settings );
+		IP_Geo_Block_API_Cache::update_cache(
+			$validate['ip'],
+			$validate['code'] . 'login' === $type ? '*' : '',
+			$settings
+		);
 
-		// Refuse to login
+		// send response code to refuse
 		$this->send_response(
 			$settings['response_code'],
-			__( 'Sorry, you cannot be permitted.', self::TEXT_DOMAIN )
+			__( 'Sorry, but you cannot be accepted.', self::TEXT_DOMAIN )
 		);
+	}
+
+	/**
+	 * Validate comment.
+	 *
+	 */
+	public function validate_comment() {
+		validate_ip( $_SERVER['REMOTE_ADDR'], 'comment' );
+	}
+
+	/**
+	 * Validate login ip address
+	 *
+	 */
+	public function validate_comment() {
+		validate_ip( $_SERVER['REMOTE_ADDR'], 'login' );
 	}
 
 	/**

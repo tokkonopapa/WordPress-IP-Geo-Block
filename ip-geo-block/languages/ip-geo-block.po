@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-09-25 01:04+0900\n"
-"PO-Revision-Date: 2014-09-25 01:05+0900\n"
+"POT-Creation-Date: 2014-09-26 22:57+0900\n"
+"PO-Revision-Date: 2014-09-26 22:59+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -71,12 +71,8 @@ msgstr ""
 msgid "successfully updated"
 msgstr ""
 
-#: classes/class-ip-geo-block.php:462
-msgid "Sorry, your comment cannot be accepted."
-msgstr ""
-
-#: classes/class-ip-geo-block.php:497
-msgid "Sorry, you cannot be permitted."
+#: classes/class-ip-geo-block.php:470
+msgid "Sorry, but you cannot be accepted."
 msgstr ""
 
 #: classes/includes/tab-attribution.php:14
@@ -121,7 +117,7 @@ msgid "Path to database (IPv4)"
 msgstr ""
 
 #: classes/includes/tab-settings.php:103 classes/includes/tab-settings.php:124
-#: includes/download.php:125
+#: includes/download.php:139
 #, php-format
 msgid "Last update: %s"
 msgstr ""
@@ -277,6 +273,12 @@ msgstr ""
 msgid "Clear now"
 msgstr ""
 
-#: includes/download.php:101
-msgid "Cannot open file."
+#: includes/download.php:102
+#, php-format
+msgid "Cannot open %s to read."
+msgstr ""
+
+#: includes/download.php:111
+#, php-format
+msgid "Cannot open %s to write."
 msgstr ""
