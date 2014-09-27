@@ -56,6 +56,7 @@ class IP_Geo_Block {
 			'validation'      => array(   // Action hook for validation
 				'comment'     => TRUE,    // For comment spam
 				'login'       => FALSE,   // For login intrusion
+				'admin'       => FALSE,   // For admin intrusion
 			),
 			'update'          => array(   // Updating IP address DB
 				'auto'        => TRUE,    // Auto updating of DB file
@@ -137,6 +138,10 @@ class IP_Geo_Block {
 		// https://developer.wordpress.org/reference/hooks/login_init/
 		if ( $opts['validation']['login'] )
 			add_action( 'login_init', array( $this, 'validate_login' ), 1 );
+
+		// action hook from wp-admin/admin.php @since 2.5.0
+		if ( $opts['validation']['admin'] )
+			add_action( 'admin_init', array( $this, 'validate_admin' ), 1 );
 
 		// action hook from download cron job
 		if ( $opts['update']['auto'] )
@@ -473,7 +478,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Validate comment.
+	 * Validate post author ip address
 	 *
 	 */
 	public function validate_comment() {
@@ -485,7 +490,22 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_login() {
-		$this->validate_ip( 'login', FALSE, '*' );
+		$this->validate_ip( 'login', FALSE, '+' );
+	}
+
+	/**
+	 * Validate admin ip address
+	 *
+	 */
+	public function validate_admin() {
+		// only from wp-admin/admin.php @since 3.1.0
+		if ( ! defined( 'DOING_AJAX' ) && (
+			defined( 'WP_NETWORK_ADMIN' ) ||
+			defined( 'WP_USER_ADMIN' ) ||
+			defined( 'WP_BLOG_ADMIN' )
+		) ) {
+			$this->validate_ip( 'admin', FALSE, '*' );
+		}
 	}
 
 	/**
