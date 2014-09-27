@@ -423,7 +423,7 @@ class IP_Geo_Block {
 	 * Validate ip address
 	 *
 	 */
-	public function validate_ip( $ip, $type ) {
+	public function validate_ip( $hook, $save, $mark ) {
 		if ( is_user_logged_in() )
 			return;
 
@@ -438,15 +438,15 @@ class IP_Geo_Block {
 		//     'provider' => $provider, /* the name of validator               */
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
-		$ip = apply_filters( self::PLUGIN_SLUG . '-addr', $ip );
-		$validate = apply_filters( self::PLUGIN_SLUG . "-$type", array( 'ip' => $ip ) );
+		$ip = apply_filters( self::PLUGIN_SLUG . '-addr', $_SERVER['REMOTE_ADDR'] );
+		$validate = apply_filters( self::PLUGIN_SLUG . "-$hook", array( 'ip' => $ip ) );
 
 		// if the post has not been marked then validate ip address
 		if ( empty( $validate['result'] ) )
 			$validate = $this->validate_country( $validate, $settings );
 
 		// update statistics
-		if ( $settings['save_statistics'] && 'comment' === $type )
+		if ( $settings['save_statistics'] && $save )
 			$this->update_statistics( $validate );
 
 		// validation function should return at least the 'result'
@@ -454,13 +454,13 @@ class IP_Geo_Block {
 			return;
 
 		// update statistics
-		if ( $settings['save_statistics'] && 'login' === $type )
+		if ( $settings['save_statistics'] && ! $save )
 			$this->update_statistics( $validate );
 
 		// update cache
 		IP_Geo_Block_API_Cache::update_cache(
 			$validate['ip'],
-			$validate['code'] . 'login' === $type ? '*' : '',
+			$validate['code'] . $mark,
 			$settings
 		);
 
@@ -476,7 +476,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_comment() {
-		validate_ip( $_SERVER['REMOTE_ADDR'], 'comment' );
+		$this->validate_ip( 'comment', TRUE, '' );
 	}
 
 	/**
@@ -484,7 +484,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_login() {
-		validate_ip( $_SERVER['REMOTE_ADDR'], 'login' );
+		$this->validate_ip( 'login', FALSE, '*' );
 	}
 
 	/**
