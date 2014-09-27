@@ -40,11 +40,11 @@ filter hook with `add_filter()`.
 
 - **Service provider and API key**  
     If you wish to use `IPInfoDB`, you should register from [here][register]
-    to get a free API key and set it into the textfield. And `ip-api.com` and 
-    `Smart-IP.net` require non-commercial use.
+    to get a free API key and set it into the textfield.
+    And `ip-api.com` and `Smart-IP.net` require non-commercial use.
 
 - **Text position on comment form**  
-    If you wish to put some text message on your comment form, please select
+    If you want to put some text message on your comment form, please select
     `Top` or `Bottom` and put text into the **Text message on comment form**
     textfield.
 
@@ -82,7 +82,6 @@ Thanks for providing these great services and REST APIs for free.
     [http://www.iptolatlng.com/]   [IP2LL] | IPv4, IPv6     | free
     [http://ip-json.rhcloud.com/] [IPJson] | IPv4, IPv6     | free
     [http://xhanch.com/]          [Xhanch] | IPv4           | free
-    [http://mshd.net/]           [mshdnet] | IPv4, IPv6     | free
     [http://www.geoplugin.com/][geoplugin] | IPv4, IPv6     | free, need an attribution link
     [http://ip-api.com/]           [ipapi] | IPv4, IPv6     | free for non-commercial use
     [http://ipinfodb.com/]      [IPInfoDB] | IPv4, IPv6     | free for registered user
@@ -163,18 +162,19 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 
 Yes, here is the list of all hooks.
 
-- `ip-geo-block-addr` : IP address of accessor.
-- `ip-geo-block-headers` : compose http request headers.
-- `ip-geo-block-comment` : validate IP address at `wp-comments-post.php`.
-- `ip-geo-block-login` : validate IP adress at `wp-login.php`.
-- `ip-geo-block-maxmind-path` : absolute path where Maxmind DB files should be saved.
-- `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind DB zip file for IPv4.
-- `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind DB zip file for IPv6.
-- `ip-geo-block-ip2location-path` : absolute path where IP2Location DB file is saved.
+* `ip-geo-block-addr` : IP address of accessor.
+* `ip-geo-block-headers` : compose http request headers.
+* `ip-geo-block-comment` : validate IP address on `wp-comments-post.php`.
+* `ip-geo-block-login` : validate IP adress on `wp-login.php`.
+* `ip-geo-block-admin` : validate IP adress on `wp-admin/admin.php` except DOING_AJAX.
+* `ip-geo-block-maxmind-path` : absolute path where Maxmind DB files should be saved.
+* `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind DB zip file for IPv4.
+* `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind DB zip file for IPv6.
+* `ip-geo-block-ip2location-path` : absolute path where IP2Location DB file is saved.
 
 For more details, see `samples.php` combined together within this package.
 
-### Notes:
+### Other Notes:
 
 Before updating from older version to newer, please deactivate then activate 
 this plugin on the plugin dashboard.
@@ -247,7 +247,6 @@ This plugin is licensed under the GPL v2 or later.
 [IP2LL]:    http://www.iptolatlng.com/ "IP to Latitude, Longitude"
 [IPJson]:   http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service"
 [Xhanch]:   http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API - IP Get Detail | Xhanch Studio"
-[mshdnet]:  http://mshd.net/documentation/geoip "www.mshd.net - Geoip Documentation"
 [geoplugin]:http://www.geoplugin.com/ "geoPlugin to geolocate your visitors"
 [ipapi]:    http://ip-api.com/ "IP-API.com - Free Geolocation API"
 [IPInfoDB]: http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"

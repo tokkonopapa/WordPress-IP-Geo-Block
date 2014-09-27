@@ -78,7 +78,7 @@ and some include IP2Location LITE data available from
 = Settings =
 
 * **Service provider and API key**  
-    If you want to use `IPInfoDB`, you should register from 
+    If you wish to use `IPInfoDB`, you should register from 
     [their site](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") 
     to get a free API key and set it into the textfield.
     And `ip-api.com` and `Smart-IP.net` require non-commercial use.
@@ -115,7 +115,7 @@ and some include IP2Location LITE data available from
 = What is this plugin for? =
 
 It's for blocking spam comments. If you can not specify countries with white 
-list or black list to protect your site against spam comments, you should 
+list or black list to protect your site against undesired access, you should 
 choose other awesome plugins.
 
 = How can I check this plugin works? =
@@ -124,18 +124,19 @@ Check `statistics` tab on this plugin's option page.
 
 = How can I test on the local site? =
 
-There are two ways. One is to add some code somewhere in your php 
-(typically `functions.php` in your theme) to substitute local IP address 
-through filter fook `ip-geo-block-addr` as follows:
+There are two ways. One is to add some code somewhere in your php (typically 
+`functions.php` in your theme) to substitute local IP address through filter 
+fook `ip-geo-block-addr` as follows:
 
 `function substitute_my_ip( $ip ) {
     return '98.139.183.24'; // yahoo.com
 }
 add_filter( 'ip-geo-block-addr', 'substitute_my_ip' );`
 
-Another method is adding a country code into `White list` or `Black list`.
-Most of the IP Geolocation services return empty (with some status) if a local 
-IP address (e.g. 127.0.0.0) is sent, but only `freegeoip.net` returns `RD`.
+Another method is adding a country code into `White list` or `Black list` on 
+the plugin settings page. Most of the IP Geolocation services return empty 
+(with some status) if a local IP address (e.g. 127.0.0.0) is sent, but only 
+`freegeoip.net` returns `RD`.
 
 = Can I add an additional validation function into this plugin? =
 
@@ -176,14 +177,15 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );`
 
 Yes, here is the list of all hooks.
 
-- `ip-geo-block-addr` : IP address of accessor.
-- `ip-geo-block-headers` : compose http request headers.
-- `ip-geo-block-comment` : validate IP address at `wp-comments-post.php`.
-- `ip-geo-block-login` : validate IP adress at `wp-login.php`.
-- `ip-geo-block-maxmind-path` : absolute path where Maxmind DB files should be saved.
-- `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind DB zip file for IPv4.
-- `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind DB zip file for IPv6.
-- `ip-geo-block-ip2location-path` : absolute path where IP2Location DB file is saved.
+* `ip-geo-block-addr` : IP address of accessor.
+* `ip-geo-block-headers` : compose http request headers.
+* `ip-geo-block-comment` : validate IP address on `wp-comments-post.php`.
+* `ip-geo-block-login` : validate IP adress on `wp-login.php`.
+* `ip-geo-block-admin` : validate IP adress on `wp-admin/admin.php` except DOING_AJAX.
+* `ip-geo-block-maxmind-path` : absolute path where Maxmind DB files should be saved.
+* `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind DB zip file for IPv4.
+* `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind DB zip file for IPv6.
+* `ip-geo-block-ip2location-path` : absolute path where IP2Location DB file is saved.
 
 For more details, see `samples.php` combined together within this package.
 
@@ -209,11 +211,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 1.2.0 =
-- **NEW FEATURE:** Added Maxmind database auto downloader and updater.
-- The filter hook `ip-geo-block-validate` was discontinued.
+* **NEW FEATURE:** Added Maxmind database auto downloader and updater.
+* The filter hook `ip-geo-block-validate` was discontinued.
   Instead of it, the new filter hook `ip-geo-block-comment` is introduced.
-- **PERFORMANCE IMPROVEMENT:** IP address is verified at an earlier stage.
-- **OTHERS:** Fix a bug of handling cache, update status of some REST APIs.
+* **PERFORMANCE IMPROVEMENT:** IP address is verified at an earlier stage.
+* **OTHERS:** Fix a bug of handling cache, update status of some REST APIs.
 
 = 1.1.1 =
 * Fixed issue of default country code.
