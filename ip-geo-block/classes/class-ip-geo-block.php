@@ -394,7 +394,8 @@ class IP_Geo_Block {
 	 *
 	 */
 	private function send_response( $code, $msg ) {
-		// response code
+		// nocache and response code
+		nocache_headers();
 		$code = max( 200, intval( $code ) ) & 0x1FF; // 200 - 511
 
 		// 2xx Success
