@@ -72,7 +72,7 @@
 			}
 			info += '</ul>';
 
-			$("#ip-geo-block-map").GmapRS('addMarker', {
+			$('#ip-geo-block-map').GmapRS('addMarker', {
 				latitude: data.latitude || 0,
 				longitude: data.longitude || 0,
 				title: ip,
@@ -129,7 +129,7 @@
 		});
 
 		// Initialize map if exists
-		$("#ip-geo-block-map").each(function () {
+		$('#ip-geo-block-map').each(function () {
 			$(this).GmapRS();
 		});
 
