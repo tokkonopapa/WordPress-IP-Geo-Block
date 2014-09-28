@@ -683,7 +683,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 		// add new item
 		if ( $settings['save_statistics'] ) {
-			$count = ! empty( $cache[ $ip ]['call'] ) ? $cache[ $ip ]['call'] + 1 : 1;
+			$count = intval( $cache[ $ip ]['call'] ) + 1;
 			$cache[ $ip ] = array( 'time' => $time, 'code' => $code, 'call' => $count );
 		} else {
 			$cache[ $ip ] = array( 'time' => $time, 'code' => $code );

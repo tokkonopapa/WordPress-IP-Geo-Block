@@ -79,11 +79,11 @@ class IP_Geo_Block {
 
 		// statistics (should be read when comment has posted)
 		'ip_geo_block_statistics' => array(
-			'passed'    => 0,
-			'blocked'   => 0,
-			'unknown'   => 0,
-			'IPv4'      => 0,
-			'IPv6'      => 0,
+			'passed'    => '',
+			'blocked'   => '',
+			'unknown'   => '',
+			'IPv4'      => '',
+			'IPv6'      => '',
 			'countries' => array(),
 			'providers' => array(),
 		),
@@ -380,7 +380,7 @@ class IP_Geo_Block {
 
 			$statistics['providers'][ $provider ] = array(
 				'count' => intval( $stat['count'] ) + 1,
-				'time'  => floatval( $stat['time' ] ) + $time,
+				'time'  => floatval( $stat['time' ] ) + floatval( $time ),
 			);
 
 			if ( isset( $statistics['countries'][ $country ] ) )
@@ -429,7 +429,7 @@ class IP_Geo_Block {
 	 * Validate ip address
 	 *
 	 */
-	public function validate_ip( $hook, $save, $mark ) {
+	private function validate_ip( $hook, $save, $mark ) {
 		if ( is_user_logged_in() )
 			return;
 
