@@ -21,7 +21,7 @@ downloaded and updated (once a month) automatically.
     [IP2Location Tags][IP2Tag],
     [IP2Location Variables][IP2Var],
     [IP2Location Country Blocker][IP2Blk]
-), this plugin uses its local database prior to the REST APIs.After installing 
+), this plugin uses its local database prior to the REST APIs. After installing 
 these IP2Location plugins, you should be once deactivated and then activated 
 in order to set the path to `database.bin`.
 
@@ -192,8 +192,10 @@ this plugin on the plugin dashboard.
 - 0.9    Remove unneeded functions and comments.
 - 1.0    Simplify jQuery Google Map plugin.
 - 1.1    Implement cache mechanism to reduce load on the server.
-- 1.2    Make use of W3C Geolocation to let a foreigner post a comment.
-- 1.3    Send spam comments to Akismet.
+- 1.2    Install local database manager for auto downloader and updater.
+- 1.3    Validate IP address when login form and wp-admin are accessed.
+- 1.4    Make use of W3C Geolocation to let a foreigner post a comment.
+- 1.5    Send spam comments to Akismet.
 
 #### Change log
 
