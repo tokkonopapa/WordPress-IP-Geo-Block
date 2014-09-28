@@ -477,32 +477,22 @@ class IP_Geo_Block {
 		);
 	}
 
-	/**
-	 * Validate post author ip address
-	 *
-	 */
+	/* wp-comments-post.php */
 	public function validate_comment() {
 		$this->validate_ip( 'comment', TRUE, '' );
 	}
 
-	/**
-	 * Validate login ip address
-	 *
-	 */
+	/* wp-login.php */
 	public function validate_login() {
 		$this->validate_ip( 'login', FALSE, '+' );
 	}
 
-	/**
-	 * Validate admin ip address
-	 *
-	 */
+	/* wp-admin/admin.php */
 	public function validate_admin() {
-		// only from wp-admin/admin.php @since 3.1.0
 		if ( ! defined( 'DOING_AJAX' ) && (
 			defined( 'WP_NETWORK_ADMIN' ) ||
 			defined( 'WP_USER_ADMIN' ) ||
-			defined( 'WP_BLOG_ADMIN' )
+			defined( 'WP_BLOG_ADMIN' ) // only from wp-admin/admin.php @since 3.1.0
 		) ) {
 			$this->validate_ip( 'admin', FALSE, '*' );
 		}
