@@ -49,7 +49,7 @@ function ip_geo_block_download_zip( $url, $args, $filename, $modified ) {
 //		'stream'   => TRUE, // this does not retrieve '304 Not Modified'.
 //		'filename' => "${filename}.gz",
 		'headers'  => array(
-			'If-Modified-Since' => date( DATE_RFC1123, $modified ),
+			'If-Modified-Since' => gmdate( DATE_RFC1123, $modified ),
 		),
 	);
 

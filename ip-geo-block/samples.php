@@ -106,6 +106,8 @@ add_filter( 'ip-geo-block-maxmind-path', 'my_maxmind_path' );
  *
  * @param string $url
  * @return string $url
+ * @see http://dev.maxmind.com/geoip/legacy/geolite/
+ * @note only support country edition and city edition
  */
 function my_maxmind_ipv4( $url ) {
 	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
