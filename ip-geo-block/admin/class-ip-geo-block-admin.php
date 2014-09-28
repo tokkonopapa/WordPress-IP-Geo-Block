@@ -68,9 +68,8 @@ class IP_Geo_Block_Admin {
 	public static function get_instance() {
 
 		// If the single instance hasn't been set, set it now.
-		if ( null == self::$instance ) {
+		if ( null == self::$instance )
 			self::$instance = new self;
-		}
 
 		return self::$instance;
 	}
@@ -99,9 +98,8 @@ class IP_Geo_Block_Admin {
 	 */
 	public function enqueue_admin_cssjs() {
 
-		if ( ! isset( $this->plugin_screen_hook_suffix ) ) {
+		if ( ! isset( $this->plugin_screen_hook_suffix ) )
 			return;
-		}
 
 		$screen = get_current_screen();
 		if ( $this->plugin_screen_hook_suffix == $screen->id ) {
@@ -235,7 +233,7 @@ class IP_Geo_Block_Admin {
 		 * Settings
 		 *========================================*/
 		if ( 0 === $tab ) {
-			include_once( IP_GEO_BLOCK_PATH . 'classes/includes/tab-settings.php' );
+			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-settings.php' );
 			tab_settings( $this );
 		}
 
@@ -243,7 +241,7 @@ class IP_Geo_Block_Admin {
 		 * Statistics
 		 *========================================*/
 		else if ( 1 === $tab ) {
-			include_once( IP_GEO_BLOCK_PATH . 'classes/includes/tab-statistics.php' );
+			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-statistics.php' );
 			tab_statistics( $this );
 		}
 
@@ -251,7 +249,7 @@ class IP_Geo_Block_Admin {
 		 * Geolocation
 		 *========================================*/
 		else if ( 2 === $tab ) {
-			include_once( IP_GEO_BLOCK_PATH . 'classes/includes/tab-geolocation.php' );
+			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-geolocation.php' );
 			tab_geolocation( $this );
 		}
 
@@ -259,7 +257,7 @@ class IP_Geo_Block_Admin {
 		 * Attribution
 		 *========================================*/
 		else if ( 3 === $tab ) {
-			include_once( IP_GEO_BLOCK_PATH . 'classes/includes/tab-attribution.php' );
+			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-attribution.php' );
 			tab_attribution( $this );
 		}
 	}
@@ -520,6 +518,7 @@ class IP_Geo_Block_Admin {
 	 * @link http://codex.wordpress.org/Function_Reference/check_ajax_referer
 	 */
 	public function admin_ajax_callback() {
+
 		// Check request origin, nonce, capability.
 		if ( ! check_admin_referer( $this->get_ajax_action(), 'nonce' ) || // @since 2.5
 		     ! current_user_can( 'manage_options' ) || empty( $_POST ) ) { // @since 2.0
@@ -548,10 +547,8 @@ class IP_Geo_Block_Admin {
 				$name = IP_Geo_Block_API::get_class_name( $provider );
 
 				if ( $name ) {
-					// get option settings
+					// get option settings and compose request headers
 					$options = get_option( $this->option_name['settings'] );
-
-					// compose request headers
 					$args = IP_Geo_Block::get_request_headers( $options );
 
 					// create object for provider and get location

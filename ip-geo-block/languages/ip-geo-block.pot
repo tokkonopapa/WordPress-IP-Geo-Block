@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-09-27 13:53+0900\n"
-"PO-Revision-Date: 2014-09-27 13:54+0900\n"
+"POT-Creation-Date: 2014-09-28 09:51+0900\n"
+"PO-Revision-Date: 2014-09-28 09:51+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,254 +23,269 @@ msgstr ""
 msgid "It will block any spam comments posted from undesired countries."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:84
+#: admin/class-ip-geo-block-admin.php:83
 msgid "You need WordPress 3.5+"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:148
-#: admin/class-ip-geo-block-admin.php:201
+#: admin/class-ip-geo-block-admin.php:146
+#: admin/class-ip-geo-block-admin.php:199
 msgid "Settings"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:162
+#: admin/class-ip-geo-block-admin.php:160
 msgid "Contribute on GitHub"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:180
-#: admin/class-ip-geo-block-admin.php:181
+#: admin/class-ip-geo-block-admin.php:178
+#: admin/class-ip-geo-block-admin.php:179
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:202
+#: admin/class-ip-geo-block-admin.php:200
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:203
+#: admin/class-ip-geo-block-admin.php:201
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:204
+#: admin/class-ip-geo-block-admin.php:202
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:272
+#: admin/class-ip-geo-block-admin.php:270
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:273
+#: admin/class-ip-geo-block-admin.php:271
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:345
+#: admin/class-ip-geo-block-admin.php:343
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:376
+#: admin/class-ip-geo-block-admin.php:374
 msgid "successfully updated"
 msgstr ""
 
-#: classes/class-ip-geo-block.php:470
-msgid "Sorry, but you cannot be accepted."
-msgstr ""
-
-#: classes/includes/tab-attribution.php:14
+#: admin/includes/tab-attribution.php:14
 msgid "Attribution links"
 msgstr ""
 
-#: classes/includes/tab-geolocation.php:18
+#: admin/includes/tab-geolocation.php:18
 msgid "Search IP address geolocation"
 msgstr ""
 
-#: classes/includes/tab-geolocation.php:38
+#: admin/includes/tab-geolocation.php:38
 msgid "Geolocation service"
 msgstr ""
 
-#: classes/includes/tab-geolocation.php:54
-#: classes/includes/tab-statistics.php:135
+#: admin/includes/tab-geolocation.php:54 admin/includes/tab-statistics.php:135
 msgid "IP address"
 msgstr ""
 
-#: classes/includes/tab-geolocation.php:69
+#: admin/includes/tab-geolocation.php:69
 msgid "Find geolocation"
 msgstr ""
 
-#: classes/includes/tab-geolocation.php:77
+#: admin/includes/tab-geolocation.php:77
 msgid "Search now"
 msgstr ""
 
-#: classes/includes/tab-settings.php:42
+#: admin/includes/tab-settings.php:42
 msgid "Geolocation service settings"
 msgstr ""
 
-#: classes/includes/tab-settings.php:62
+#: admin/includes/tab-settings.php:62
 msgid "Selection and API key settings"
 msgstr ""
 
-#: classes/includes/tab-settings.php:82
+#: admin/includes/tab-settings.php:82
+msgid "Validation timings"
+msgstr ""
+
+#: admin/includes/tab-settings.php:90
+msgid "After a comment is posted"
+msgstr ""
+
+#: admin/includes/tab-settings.php:106
+msgid "Before showing login form"
+msgstr ""
+
+#: admin/includes/tab-settings.php:122
+msgid "When wp-admin is accessed (except ajax)"
+msgstr ""
+
+#: admin/includes/tab-settings.php:142
 msgid "Maxmind settings"
 msgstr ""
 
-#: classes/includes/tab-settings.php:90
+#: admin/includes/tab-settings.php:150
 msgid "Path to database (IPv4)"
 msgstr ""
 
-#: classes/includes/tab-settings.php:103 classes/includes/tab-settings.php:124
+#: admin/includes/tab-settings.php:163 admin/includes/tab-settings.php:184
 #: includes/download.php:139
 #, php-format
 msgid "Last update: %s"
 msgstr ""
 
-#: classes/includes/tab-settings.php:111
+#: admin/includes/tab-settings.php:171
 msgid "Path to database (IPv6)"
 msgstr ""
 
-#: classes/includes/tab-settings.php:133
+#: admin/includes/tab-settings.php:193
 msgid "Download database"
 msgstr ""
 
-#: classes/includes/tab-settings.php:141
+#: admin/includes/tab-settings.php:201
 msgid "Download from Maxmind"
 msgstr ""
 
-#: classes/includes/tab-settings.php:148
+#: admin/includes/tab-settings.php:208
 msgid "Auto updating (once a month)"
 msgstr ""
 
-#: classes/includes/tab-settings.php:167
+#: admin/includes/tab-settings.php:227
 msgid "Submission settings"
 msgstr ""
 
-#: classes/includes/tab-settings.php:175
+#: admin/includes/tab-settings.php:235
 msgid "Text message on comment form"
 msgstr ""
 
-#: classes/includes/tab-settings.php:186
+#: admin/includes/tab-settings.php:246
 msgid "None"
 msgstr ""
 
-#: classes/includes/tab-settings.php:187
+#: admin/includes/tab-settings.php:247
 msgid "Top"
 msgstr ""
 
-#: classes/includes/tab-settings.php:188
+#: admin/includes/tab-settings.php:248
 msgid "Bottom"
 msgstr ""
 
-#: classes/includes/tab-settings.php:197
+#: admin/includes/tab-settings.php:257
 msgid "Matching rule"
 msgstr ""
 
-#: classes/includes/tab-settings.php:207
+#: admin/includes/tab-settings.php:267
 msgid "White list"
 msgstr ""
 
-#: classes/includes/tab-settings.php:208
+#: admin/includes/tab-settings.php:268
 msgid "Black list"
 msgstr ""
 
-#: classes/includes/tab-settings.php:216
+#: admin/includes/tab-settings.php:276
 #, php-format
 msgid "White list %s"
 msgstr ""
 
-#: classes/includes/tab-settings.php:225 classes/includes/tab-settings.php:241
+#: admin/includes/tab-settings.php:285 admin/includes/tab-settings.php:301
 msgid "(comma separated)"
 msgstr ""
 
-#: classes/includes/tab-settings.php:232
+#: admin/includes/tab-settings.php:292
 #, php-format
 msgid "Black list %s"
 msgstr ""
 
-#: classes/includes/tab-settings.php:248
+#: admin/includes/tab-settings.php:308
 #, php-format
 msgid "Response code %s"
 msgstr ""
 
-#: classes/includes/tab-settings.php:280
+#: admin/includes/tab-settings.php:340
 msgid "Cache settings"
 msgstr ""
 
-#: classes/includes/tab-settings.php:288
+#: admin/includes/tab-settings.php:348
 msgid "Number of entries"
 msgstr ""
 
-#: classes/includes/tab-settings.php:303
+#: admin/includes/tab-settings.php:363
 msgid "Expiration time [sec]"
 msgstr ""
 
-#: classes/includes/tab-settings.php:321
+#: admin/includes/tab-settings.php:381
 msgid "Plugin settings"
 msgstr ""
 
-#: classes/includes/tab-settings.php:329
+#: admin/includes/tab-settings.php:389
 msgid "Save statistics"
 msgstr ""
 
-#: classes/includes/tab-settings.php:344
+#: admin/includes/tab-settings.php:404
 msgid "Remove settings at uninstallation"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:15
+#: admin/includes/tab-statistics.php:15
 msgid "Statistics of posts"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:23
+#: admin/includes/tab-statistics.php:23
 msgid "Passed"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:38
+#: admin/includes/tab-statistics.php:38
 msgid "Blocked"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:53
+#: admin/includes/tab-statistics.php:53
 msgid "Unknown (passed)"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:74
+#: admin/includes/tab-statistics.php:74
 msgid "Blocked by countries"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:89
+#: admin/includes/tab-statistics.php:89
 msgid "Blocked by type of IP address"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:106
+#: admin/includes/tab-statistics.php:106
 msgid "Service"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:107
+#: admin/includes/tab-statistics.php:107
 msgid "Calls"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:108
+#: admin/includes/tab-statistics.php:108
 msgid "Response [msec]"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:121
+#: admin/includes/tab-statistics.php:121
 msgid "Average response time of each service"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:136
+#: admin/includes/tab-statistics.php:136
 msgid "Country code"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:137
+#: admin/includes/tab-statistics.php:137
 msgid "Elapsed [sec] / Calls"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:155
+#: admin/includes/tab-statistics.php:155
 msgid "IP address in cache"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:170
+#: admin/includes/tab-statistics.php:170
 msgid "Clear statistics"
 msgstr ""
 
-#: classes/includes/tab-statistics.php:178
+#: admin/includes/tab-statistics.php:178
 msgid "Clear now"
+msgstr ""
+
+#: classes/class-ip-geo-block.php:476
+msgid "Sorry, but you cannot be accepted."
 msgstr ""
 
 #: includes/download.php:102
