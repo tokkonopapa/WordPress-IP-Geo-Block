@@ -3,55 +3,70 @@
 if ( class_exists( 'IP_Geo_Block' ) ):
 
 /**
- * substitute ip address
+ * replace ip address for test purpose
  *
- * @param string $ip
- * @return string $ip
+ * @param  string $ip original ip address
+ * @return string $ip replaced ip address
  */
-function my_ip_address( $ip ) {
+function my_replace_ip( $ip ) {
 	return '98.139.183.24'; // yahoo.com
 }
-add_filter( 'ip-geo-block-addr', 'my_ip_address' );
+add_filter( 'ip-geo-block-remote-ip', 'my_replace_ip' );
+
 
 /**
- * REMOTE_ADDR              : global IP or local IP
- * HTTP_X_FORWARDED_FOR     : global IP
- * HTTP_X_REAL_IP           : global IP
- * HTTP_CLIENT_IP           : possible forgery
- * HTTP_X_REAL_FORWARDED_FOR: Possible forgery
- * @link http://d.hatena.ne.jp/Kenji_s/20111227/1324977925
- * @link http://www.nurs.or.jp/~sug/homep/proxy/proxy7.htm
- */
-function my_ip_proxy( $ip ) {
-	if ( empty( $_SERVER['HTTP_CLIENT_IP'] ) &&
-		! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-		$proxy = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
-		$proxy = trim( $proxy[0] );
-	}
-	else if ( ! empty( $_SERVER['HTTP_X_REAL_IP'] ) ) {
-		$proxy = $_SERVER['HTTP_X_REAL_IP'];
-	}
-	else if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-		$proxy = $_SERVER['HTTP_CLIENT_IP'];
-	}
-
-	if ( isset( $proxy ) && (
-		filter_var( $proxy, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
-		filter_var( $proxy, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) ) {
-		return $proxy;
-	} else {
-		return $_SERVER['REMOTE_ADDR'];
-	}
-}
-add_filter( 'ip-geo-block-addr', 'my_ip_proxy' );
-
-/**
- * validate comment data
+ * retrieve ip address behind the proxy
  *
- * @param array $validate
- * @return array $validate
+ * @param  string $ip original ip address
+ * @return string $ip replaced ip address
  */
-function my_validate_comment( $validate ) {
+function my_retrieve_ip( $ip ) {
+	if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+		$ip = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
+		$ip = trim( $ip[0] );
+	}
+
+	return $ip;
+}
+add_filter( 'ip-geo-block-remote-ip', 'my_retrieve_ip' );
+
+
+/**
+ * set path to Maxmind database files (IPv4, IPv6)
+ *
+ * @param  string $path original path to database files
+ * @return string $path replaced path to database files
+ */
+function my_maxmind_path( $path ) {
+	$upload = wp_upload_dir();
+	return $upload['basedir'];
+}
+add_filter( 'ip-geo-block-maxmind-path', 'my_maxmind_path' );
+
+
+/**
+ * set url to Maxmind database zip file
+ *
+ * @param  string $url original url to zip file
+ * @return string $url replaced url to zip file
+ */
+function my_maxmind_ipv4( $url ) {
+	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
+}
+function my_maxmind_ipv6( $url ) {
+	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCityv6-beta/GeoLiteCityv6.dat.gz';
+}
+add_filter( 'ip-geo-block-maxmind-zip-ipv4', 'my_maxmind_ipv4' );
+add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
+
+
+/**
+ * additional ip address validation on comment post
+ *
+ * @param  array $validate ip address in 'ip'
+ * @return array $validate add 'result' as 'passed' or 'blocked' if possible
+ */
+function my_ip_blacklist( $validate ) {
 	$blacklist = array(
 		'123.456.789.',
 	);
@@ -65,15 +80,16 @@ function my_validate_comment( $validate ) {
 
 	return $validate;
 }
-add_filter( 'ip-geo-block-comment', 'my_validate_comment' );
+add_filter( 'ip-geo-block-comment', 'my_ip_blacklist' );
+
 
 /**
- * validate login ip address
+ * validate ip address on login form
  *
- * @param array $validate
- * @return array $validate
+ * @param  array $validate ip address in 'ip'
+ * @return array $validate add 'result' as 'passed' or 'blocked' if possible
  */
-function my_validate_login( $validate ) {
+function my_ip_whitelist( $validate ) {
 	$whitelist = array(
 		'123.456.789.',
 	);
@@ -87,35 +103,23 @@ function my_validate_login( $validate ) {
 
 	return $validate;
 }
-add_filter( 'ip-geo-block-login', 'my_validate_login' );
+add_filter( 'ip-geo-block-login', 'my_ip_whitelist' );
+
+function my_validate_login() {
+	if ( ! is_admin() && ! is_user_logged_in() )
+		IP_Geo_Block::validate_ip( 'login' ); // apply filter named 'ip-geo-block-login'
+}
+add_action( 'login_init', 'my_validate_login' );
+
 
 /**
- * set path to Maxmind database files
+ * validate ip address on admin screen
  *
- * @param string $path
- * @return string $path
  */
-function my_maxmind_path( $path ) {
-	$upload = wp_upload_dir();
-	return $upload['basedir'];
+function my_validate_admin() {
+	if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
+		IP_Geo_Block::validate_ip(); // no validation filter is applied
 }
-add_filter( 'ip-geo-block-maxmind-path', 'my_maxmind_path' );
-
-/**
- * set url to Maxmind database zip file
- *
- * @param string $url
- * @return string $url
- * @see http://dev.maxmind.com/geoip/legacy/geolite/
- * @note only support country edition and city edition
- */
-function my_maxmind_ipv4( $url ) {
-	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
-}
-function my_maxmind_ipv6( $url ) {
-	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCityv6-beta/GeoLiteCityv6.dat.gz';
-}
-add_filter( 'ip-geo-block-maxmind-zip-ipv4', 'my_maxmind_ipv4' );
-add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
+add_action( 'admin_init', 'my_validate_admin' );
 
 endif;

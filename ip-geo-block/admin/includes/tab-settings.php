@@ -74,66 +74,6 @@ function tab_settings( $context ) {
 	);
 
 	/*----------------------------------------*
-	 * Validation timings
-	 *----------------------------------------*//*
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-validation';
-	add_settings_section(
-		$section,
-		__( 'Validation timings', IP_Geo_Block::TEXT_DOMAIN ),
-		NULL,
-		$option_slug
-	);
-
-	$field = 'validation';
-	add_settings_field(
-		$option_name . "_${field}_comment",
-		__( 'After a comment is posted', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'checkbox',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'comment',
-			'value' => $options[ $field ]['comment'],
-			'class' => 'alignleft',
-		)
-	);
-
-	add_settings_field(
-		$option_name . "_${field}_login",
-		__( 'Before showing login form', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'checkbox',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'login',
-			'value' => $options[ $field ]['login'],
-			'class' => 'alignleft',
-		)
-	);
-
-	add_settings_field(
-		$option_name . "_${field}_admin",
-		__( 'When wp-admin is accessed (except ajax)', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'checkbox',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'admin',
-			'value' => $options[ $field ]['admin'],
-			'class' => 'alignleft',
-		)
-	);//*/
-
-	/*----------------------------------------*
 	 * Maxmind settings
 	 *----------------------------------------*/
 	$section = IP_Geo_Block::PLUGIN_SLUG . '-maxmind';

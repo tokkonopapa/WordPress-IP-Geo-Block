@@ -445,7 +445,6 @@ class IP_Geo_Block_Admin {
 					) : '';
 				break;
 
-			  case 'validation': // should be removed when it is implemented.
 			  case 'ip2location':
 				break;
 
