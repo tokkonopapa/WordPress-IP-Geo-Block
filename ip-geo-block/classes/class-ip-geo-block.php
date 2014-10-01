@@ -129,7 +129,7 @@ class IP_Geo_Block {
 
 		// action hook from download cron job
 		if ( $opts['update']['auto'] )
-			add_action( 'ip_geo_block_cron', 'IP_Geo_Block::download_database' );
+			add_action( 'ip_geo_block_cron', array( $this, 'download_database' ) );
 	}
 
 	/**
@@ -220,7 +220,7 @@ class IP_Geo_Block {
 
 		// schedule auto updating
 		if ( $opts['update']['auto'] )
-			self::schedule_cron_job( $opts['update'], $opts['maxmind'], TRUE );
+			$this->schedule_cron_job( $opts['update'], $opts['maxmind'], TRUE );
 	}
 
 	/**
@@ -506,7 +506,7 @@ class IP_Geo_Block {
 	 * Schedule controller.
 	 *
 	 */
-	public static function schedule_cron_job( &$update, $db, $immediate = FALSE ) {
+	public function schedule_cron_job( &$update, $db, $immediate = FALSE ) {
 		$schedule = wp_next_scheduled( 'ip_geo_block_cron' ); // @since 2.1.0
 
 		if ( $schedule && ! $update['auto'] )
@@ -535,7 +535,7 @@ class IP_Geo_Block {
 	 * Database auto downloader.
 	 *
 	 */
-	public static function download_database( $only = NULL ) {
+	public function download_database( $only = NULL ) {
 		require_once( IP_GEO_BLOCK_PATH . 'includes/download.php' );
 		$options = get_option( self::$option_keys['settings'] );
 
@@ -549,7 +549,7 @@ class IP_Geo_Block {
 		);
 
 		// re-schedule cron job
-		self::schedule_cron_job( $options['update'], $options['maxmind'] );
+		$this->schedule_cron_job( $options['update'], $options['maxmind'] );
 
 		// limit options to be updated
 		if ( $only )
