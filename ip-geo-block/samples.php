@@ -1,9 +1,20 @@
 <?php
+/**
+ * Code samples/snippets for functions.php
+ * to extend functionality of IP Geo Block
+ *
+ * @package   IP_Geo_Block
+ * @author    tokkonopapa <tokkonopapa@yahoo.com>
+ * @license   GPL-2.0+
+ * @link      http://tokkono.cute.coocan.jp/blog/slow/
+ * @copyright 2014 tokkonopapa
+ */
 
 if ( class_exists( 'IP_Geo_Block' ) ):
 
 /**
- * replace ip address for test purpose
+ * Example1: usage of 'ip-geo-block-remote-ip'
+ * Use case: replace ip address for test purpose
  *
  * @param  string $ip original ip address
  * @return string $ip replaced ip address
@@ -15,7 +26,8 @@ add_filter( 'ip-geo-block-remote-ip', 'my_replace_ip' );
 
 
 /**
- * retrieve ip address behind the proxy
+ * Example2: usage of 'ip-geo-block-remote-ip'
+ * Use case: retrieve ip address behind the proxy
  *
  * @param  string $ip original ip address
  * @return string $ip replaced ip address
@@ -32,7 +44,8 @@ add_filter( 'ip-geo-block-remote-ip', 'my_retrieve_ip' );
 
 
 /**
- * set path to Maxmind database files (IPv4, IPv6)
+ * Example3: usage of 'ip-geo-block-maxmind-path'
+ * Use case: change the path to Maxmind database files to writable directory
  *
  * @param  string $path original path to database files
  * @return string $path replaced path to database files
@@ -45,7 +58,8 @@ add_filter( 'ip-geo-block-maxmind-path', 'my_maxmind_path' );
 
 
 /**
- * set url to Maxmind database zip file
+ * Example4: usage of 'ip-geo-block-maxmind-zip-ipv[46]'
+ * Use case: replace Maxmind database files to city edition
  *
  * @param  string $url original url to zip file
  * @return string $url replaced url to zip file
@@ -61,7 +75,8 @@ add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
 
 
 /**
- * additional ip address validation on comment post
+ * Example5: usage of 'ip-geo-block-comment'
+ * Use case: exclude specific ip addresses in the blacklist on comment post
  *
  * @param  array $validate ip address in 'ip'
  * @return array $validate add 'result' as 'passed' or 'blocked' if possible
@@ -84,7 +99,8 @@ add_filter( 'ip-geo-block-comment', 'my_ip_blacklist' );
 
 
 /**
- * validate ip address on login form
+ * Example6: validate ip address at login process to exclude Brute-force attack
+ * Use case: allow login only from specific ip addresses in the whitelist
  *
  * @param  array $validate ip address in 'ip'
  * @return array $validate add 'result' as 'passed' or 'blocked' if possible
@@ -93,6 +109,8 @@ function my_ip_whitelist( $validate ) {
 	$whitelist = array(
 		'123.456.789.',
 	);
+
+	$validate['result'] = 'blocked';
 
 	foreach ( $whitelist as $ip ) {
 		if ( strpos( $ip, $validate['ip'] ) === 0 ) {
@@ -103,23 +121,24 @@ function my_ip_whitelist( $validate ) {
 
 	return $validate;
 }
-add_filter( 'ip-geo-block-login', 'my_ip_whitelist' );
+add_filter( 'ip-geo-block-my-login', 'my_ip_whitelist' ); // custom filter hook
 
 function my_validate_login() {
 	if ( ! is_admin() && ! is_user_logged_in() )
-		IP_Geo_Block::validate_ip( 'login' ); // apply filter named 'ip-geo-block-login'
+		IP_Geo_Block::validate_ip( 'my-login' ); // apply custom filter
 }
-add_action( 'login_init', 'my_validate_login' );
+add_action( 'login_init', 'my_validate_login', 1 );
 
 
 /**
- * validate ip address on admin screen
+ * Example7: validate ip address at admin process to exclude intruders
+ * Use case: limit the ip addresses that can access the admin screen
  *
  */
 function my_validate_admin() {
 	if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-		IP_Geo_Block::validate_ip(); // no validation filter is applied
+		IP_Geo_Block::validate_ip(); // validate country if no custom filter
 }
-add_action( 'admin_init', 'my_validate_admin' );
+add_action( 'admin_init', 'my_validate_admin', 1 );
 
 endif;
