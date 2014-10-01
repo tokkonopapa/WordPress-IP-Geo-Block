@@ -482,8 +482,7 @@ class IP_Geo_Block_Admin {
 		}
 
 		// schedule auto updating
-		$instance = IP_Geo_Block::get_instance();
-		$instance->schedule_cron_job( $output['update'], $output['maxmind'], TRUE );
+		IP_Geo_Block::schedule_cron_job( $output['update'], $output['maxmind'], TRUE );
 
 		// This call is just for debug.
 		// @param string $setting: Slug title of the setting to which this error applies.

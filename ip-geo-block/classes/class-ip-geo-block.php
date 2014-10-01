@@ -220,7 +220,7 @@ class IP_Geo_Block {
 
 		// schedule auto updating
 		if ( $opts['update']['auto'] )
-			$this->schedule_cron_job( $opts['update'], $opts['maxmind'], TRUE );
+			self::schedule_cron_job( $opts['update'], $opts['maxmind'], TRUE );
 	}
 
 	/**
@@ -506,7 +506,7 @@ class IP_Geo_Block {
 	 * Schedule controller.
 	 *
 	 */
-	public function schedule_cron_job( &$update, $db, $immediate = FALSE ) {
+	public static function schedule_cron_job( &$update, $db, $immediate = FALSE ) {
 		$schedule = wp_next_scheduled( 'ip_geo_block_cron' ); // @since 2.1.0
 
 		if ( $schedule && ! $update['auto'] )
@@ -549,7 +549,7 @@ class IP_Geo_Block {
 		);
 
 		// re-schedule cron job
-		$this->schedule_cron_job( $options['update'], $options['maxmind'] );
+		self::schedule_cron_job( $options['update'], $options['maxmind'] );
 
 		// limit options to be updated
 		if ( $only )
