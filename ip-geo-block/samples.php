@@ -44,7 +44,21 @@ add_filter( 'ip-geo-block-remote-ip', 'my_retrieve_ip' );
 
 
 /**
- * Example3: usage of 'ip-geo-block-maxmind-path'
+ * Example3: usage of 'ip-geo-block-headers'
+ * Use case: change the user agent strings when accessing remote contents
+ *
+ * @param  string $args http request headers for `wp_remote_get()`
+ * @return string $args http request headers for `wp_remote_get()`
+ */
+function my_user_agent( $args ) {
+    $args['user-agent'] = 'my user agent strings';
+    return $args;
+}
+add_filter( 'ip-geo-block-headers', 'my_user_agent' );
+
+
+/**
+ * Example4: usage of 'ip-geo-block-maxmind-path'
  * Use case: change the path to Maxmind database files to writable directory
  *
  * @param  string $path original path to database files
@@ -58,7 +72,7 @@ add_filter( 'ip-geo-block-maxmind-path', 'my_maxmind_path' );
 
 
 /**
- * Example4: usage of 'ip-geo-block-maxmind-zip-ipv[46]'
+ * Example5: usage of 'ip-geo-block-maxmind-zip-ipv[46]'
  * Use case: replace Maxmind database files to city edition
  *
  * @param  string $url original url to zip file
@@ -75,7 +89,7 @@ add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
 
 
 /**
- * Example5: usage of 'ip-geo-block-comment'
+ * Example6: usage of 'ip-geo-block-comment'
  * Use case: exclude specific ip addresses in the blacklist on comment post
  *
  * @param  array $validate ip address in 'ip'
@@ -99,7 +113,7 @@ add_filter( 'ip-geo-block-comment', 'my_ip_blacklist' );
 
 
 /**
- * Example6: validate ip address at login process to exclude Brute-force attack
+ * Example7: validate ip address to exclude Brute-force attack on login process
  * Use case: allow login only from specific ip addresses in the whitelist
  *
  * @param  array $validate ip address in 'ip'
@@ -131,13 +145,18 @@ add_action( 'login_init', 'my_validate_login', 1 );
 
 
 /**
- * Example7: validate ip address at admin process to exclude intruders
- * Use case: limit the ip addresses that can access the admin screen
+ * Example8: validate ip address to exclude intruders on admin process
+ * Use case: limit the ip addresses that can access the admin area except ajax
  *
  */
 function my_validate_admin() {
 	if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-		IP_Geo_Block::validate_ip(); // validate country if no custom filter
+		IP_Geo_Block::validate_ip(
+			NULL,	// no custom filter ('passed' or 'blocked' by country)
+			'*',	// put a symbol beside county code in cache list
+			TRUE,	// save 'passed' and 'blocked' ip address in cache
+			FALSE	// save no statistics when 'passed'
+		);
 }
 add_action( 'admin_init', 'my_validate_admin', 1 );
 
