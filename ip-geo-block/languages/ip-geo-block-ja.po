@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-09-28 09:51+0900\n"
-"PO-Revision-Date: 2014-09-28 10:08+0900\n"
+"POT-Creation-Date: 2014-10-03 23:59+0900\n"
+"PO-Revision-Date: 2014-10-04 00:09+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -28,37 +28,37 @@ msgid "You need WordPress 3.5+"
 msgstr "WordPress 3.5以上が必要です"
 
 #: admin/class-ip-geo-block-admin.php:146
-#: admin/class-ip-geo-block-admin.php:199
+#: admin/class-ip-geo-block-admin.php:198
 msgid "Settings"
 msgstr "設定"
 
 #: admin/class-ip-geo-block-admin.php:160
 msgid "Contribute on GitHub"
-msgstr "GitHubで開発に参加"
+msgstr "GitHubでの開発に参加"
 
 #: admin/class-ip-geo-block-admin.php:178
 #: admin/class-ip-geo-block-admin.php:179
 msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
-#: admin/class-ip-geo-block-admin.php:200
+#: admin/class-ip-geo-block-admin.php:199
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:201
+#: admin/class-ip-geo-block-admin.php:200
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:202
+#: admin/class-ip-geo-block-admin.php:201
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:270
+#: admin/class-ip-geo-block-admin.php:269
 msgid "Thanks for providing these great services for free."
 msgstr ""
 "すばらしいサービスの提供元である以下のサイトに、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:271
+#: admin/class-ip-geo-block-admin.php:270
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
@@ -66,11 +66,11 @@ msgstr ""
 "（ほとんどのブラウザでは、リンクをクリックしても参照元を残さずに各サイトにリ"
 "ダイレクトできます。）"
 
-#: admin/class-ip-geo-block-admin.php:343
+#: admin/class-ip-geo-block-admin.php:341
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:374
+#: admin/class-ip-geo-block-admin.php:372
 msgid "successfully updated"
 msgstr "更新に成功しました"
 
@@ -106,124 +106,108 @@ msgstr "位置情報サービスの設定"
 msgid "Selection and API key settings"
 msgstr "サービスの選択とAPIキーの設定"
 
-#: admin/includes/tab-settings.php:82
-msgid "Validation timings"
-msgstr "検証のタイミング"
-
-#: admin/includes/tab-settings.php:90
-msgid "After a comment is posted"
-msgstr "コメントの投稿後"
-
-#: admin/includes/tab-settings.php:106
-msgid "Before showing login form"
-msgstr "ログインフォームの表示前"
-
-#: admin/includes/tab-settings.php:122
-msgid "When wp-admin is accessed (except ajax)"
-msgstr "wp-adminへのアクセス時（ajaxを除く）"
-
-#: admin/includes/tab-settings.php:142
+#: admin/includes/tab-settings.php:139
 msgid "Maxmind settings"
 msgstr "Maxmindの設定"
 
-#: admin/includes/tab-settings.php:150
+#: admin/includes/tab-settings.php:147
 msgid "Path to database (IPv4)"
 msgstr "データベースへのパス（IPv4）"
 
-#: admin/includes/tab-settings.php:163 admin/includes/tab-settings.php:184
-#: includes/download.php:139
+#: admin/includes/tab-settings.php:160 admin/includes/tab-settings.php:181
+#: includes/download.php:129
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
 
-#: admin/includes/tab-settings.php:171
+#: admin/includes/tab-settings.php:168
 msgid "Path to database (IPv6)"
 msgstr "データベースへのパス（IPv6）"
 
-#: admin/includes/tab-settings.php:193
+#: admin/includes/tab-settings.php:190
 msgid "Download database"
 msgstr "データベースのダウンロード"
 
-#: admin/includes/tab-settings.php:201
+#: admin/includes/tab-settings.php:198
 msgid "Download from Maxmind"
 msgstr "Maxmindからダウンロード"
 
-#: admin/includes/tab-settings.php:208
+#: admin/includes/tab-settings.php:205
 msgid "Auto updating (once a month)"
 msgstr "自動更新（月1回）"
 
-#: admin/includes/tab-settings.php:227
+#: admin/includes/tab-settings.php:224
 msgid "Submission settings"
 msgstr "投稿時の設定"
 
-#: admin/includes/tab-settings.php:235
+#: admin/includes/tab-settings.php:232
 msgid "Text message on comment form"
 msgstr "投稿フォーム上のテキスト・メッセージ"
 
-#: admin/includes/tab-settings.php:246
+#: admin/includes/tab-settings.php:243
 msgid "None"
 msgstr "なし"
 
-#: admin/includes/tab-settings.php:247
+#: admin/includes/tab-settings.php:244
 msgid "Top"
 msgstr "上部"
 
-#: admin/includes/tab-settings.php:248
+#: admin/includes/tab-settings.php:245
 msgid "Bottom"
 msgstr "下部"
 
-#: admin/includes/tab-settings.php:257
+#: admin/includes/tab-settings.php:254
 msgid "Matching rule"
 msgstr "マッチング規則"
 
-#: admin/includes/tab-settings.php:267
+#: admin/includes/tab-settings.php:264
 msgid "White list"
 msgstr "ホワイトリスト"
 
-#: admin/includes/tab-settings.php:268
+#: admin/includes/tab-settings.php:265
 msgid "Black list"
 msgstr "ブラックリスト"
 
-#: admin/includes/tab-settings.php:276
+#: admin/includes/tab-settings.php:273
 #, php-format
 msgid "White list %s"
 msgstr "ホワイトリスト %s"
 
-#: admin/includes/tab-settings.php:285 admin/includes/tab-settings.php:301
+#: admin/includes/tab-settings.php:282 admin/includes/tab-settings.php:298
 msgid "(comma separated)"
 msgstr "（カンマ区切り）"
 
-#: admin/includes/tab-settings.php:292
+#: admin/includes/tab-settings.php:289
 #, php-format
 msgid "Black list %s"
 msgstr "ブラックリスト %s"
 
-#: admin/includes/tab-settings.php:308
+#: admin/includes/tab-settings.php:305
 #, php-format
 msgid "Response code %s"
 msgstr "レスポンスコード %s"
 
-#: admin/includes/tab-settings.php:340
+#: admin/includes/tab-settings.php:337
 msgid "Cache settings"
 msgstr "キャッシュの設定"
 
-#: admin/includes/tab-settings.php:348
+#: admin/includes/tab-settings.php:345
 msgid "Number of entries"
 msgstr "最大保持数"
 
-#: admin/includes/tab-settings.php:363
+#: admin/includes/tab-settings.php:360
 msgid "Expiration time [sec]"
 msgstr "有効時間 [sec]"
 
-#: admin/includes/tab-settings.php:381
+#: admin/includes/tab-settings.php:378
 msgid "Plugin settings"
 msgstr "プラグインの設定"
 
-#: admin/includes/tab-settings.php:389
+#: admin/includes/tab-settings.php:386
 msgid "Save statistics"
 msgstr "統計情報を記録"
 
-#: admin/includes/tab-settings.php:404
+#: admin/includes/tab-settings.php:401
 msgid "Remove settings at uninstallation"
 msgstr "アンインストール時に設定を削除"
 
@@ -287,16 +271,16 @@ msgstr "統計のクリア"
 msgid "Clear now"
 msgstr "今すぐクリア"
 
-#: classes/class-ip-geo-block.php:476
+#: classes/class-ip-geo-block.php:496
 msgid "Sorry, but you cannot be accepted."
 msgstr "申し訳ありませんが、受け付けられません。"
 
-#: includes/download.php:102
+#: includes/download.php:92
 #, php-format
 msgid "Cannot open %s to read."
 msgstr "%s を読み込めません。"
 
-#: includes/download.php:111
+#: includes/download.php:101
 #, php-format
 msgid "Cannot open %s to write."
 msgstr "%s に書き込めません。"

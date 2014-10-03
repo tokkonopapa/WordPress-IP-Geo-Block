@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-09-28 09:51+0900\n"
-"PO-Revision-Date: 2014-09-28 09:51+0900\n"
+"POT-Creation-Date: 2014-10-03 23:59+0900\n"
+"PO-Revision-Date: 2014-10-03 23:59+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgid "You need WordPress 3.5+"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:146
-#: admin/class-ip-geo-block-admin.php:199
+#: admin/class-ip-geo-block-admin.php:198
 msgid "Settings"
 msgstr ""
 
@@ -41,33 +41,33 @@ msgstr ""
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:200
+#: admin/class-ip-geo-block-admin.php:199
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:201
+#: admin/class-ip-geo-block-admin.php:200
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:202
+#: admin/class-ip-geo-block-admin.php:201
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:270
+#: admin/class-ip-geo-block-admin.php:269
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:271
+#: admin/class-ip-geo-block-admin.php:270
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:343
+#: admin/class-ip-geo-block-admin.php:341
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:374
+#: admin/class-ip-geo-block-admin.php:372
 msgid "successfully updated"
 msgstr ""
 
@@ -103,124 +103,108 @@ msgstr ""
 msgid "Selection and API key settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:82
-msgid "Validation timings"
-msgstr ""
-
-#: admin/includes/tab-settings.php:90
-msgid "After a comment is posted"
-msgstr ""
-
-#: admin/includes/tab-settings.php:106
-msgid "Before showing login form"
-msgstr ""
-
-#: admin/includes/tab-settings.php:122
-msgid "When wp-admin is accessed (except ajax)"
-msgstr ""
-
-#: admin/includes/tab-settings.php:142
+#: admin/includes/tab-settings.php:139
 msgid "Maxmind settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:150
+#: admin/includes/tab-settings.php:147
 msgid "Path to database (IPv4)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:163 admin/includes/tab-settings.php:184
-#: includes/download.php:139
+#: admin/includes/tab-settings.php:160 admin/includes/tab-settings.php:181
+#: includes/download.php:129
 #, php-format
 msgid "Last update: %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:171
+#: admin/includes/tab-settings.php:168
 msgid "Path to database (IPv6)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:193
+#: admin/includes/tab-settings.php:190
 msgid "Download database"
 msgstr ""
 
-#: admin/includes/tab-settings.php:201
+#: admin/includes/tab-settings.php:198
 msgid "Download from Maxmind"
 msgstr ""
 
-#: admin/includes/tab-settings.php:208
+#: admin/includes/tab-settings.php:205
 msgid "Auto updating (once a month)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:227
+#: admin/includes/tab-settings.php:224
 msgid "Submission settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:235
+#: admin/includes/tab-settings.php:232
 msgid "Text message on comment form"
 msgstr ""
 
-#: admin/includes/tab-settings.php:246
+#: admin/includes/tab-settings.php:243
 msgid "None"
 msgstr ""
 
-#: admin/includes/tab-settings.php:247
+#: admin/includes/tab-settings.php:244
 msgid "Top"
 msgstr ""
 
-#: admin/includes/tab-settings.php:248
+#: admin/includes/tab-settings.php:245
 msgid "Bottom"
 msgstr ""
 
-#: admin/includes/tab-settings.php:257
+#: admin/includes/tab-settings.php:254
 msgid "Matching rule"
 msgstr ""
 
-#: admin/includes/tab-settings.php:267
+#: admin/includes/tab-settings.php:264
 msgid "White list"
 msgstr ""
 
-#: admin/includes/tab-settings.php:268
+#: admin/includes/tab-settings.php:265
 msgid "Black list"
 msgstr ""
 
-#: admin/includes/tab-settings.php:276
+#: admin/includes/tab-settings.php:273
 #, php-format
 msgid "White list %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:285 admin/includes/tab-settings.php:301
+#: admin/includes/tab-settings.php:282 admin/includes/tab-settings.php:298
 msgid "(comma separated)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:292
+#: admin/includes/tab-settings.php:289
 #, php-format
 msgid "Black list %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:308
+#: admin/includes/tab-settings.php:305
 #, php-format
 msgid "Response code %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:340
+#: admin/includes/tab-settings.php:337
 msgid "Cache settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:348
+#: admin/includes/tab-settings.php:345
 msgid "Number of entries"
 msgstr ""
 
-#: admin/includes/tab-settings.php:363
+#: admin/includes/tab-settings.php:360
 msgid "Expiration time [sec]"
 msgstr ""
 
-#: admin/includes/tab-settings.php:381
+#: admin/includes/tab-settings.php:378
 msgid "Plugin settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:389
+#: admin/includes/tab-settings.php:386
 msgid "Save statistics"
 msgstr ""
 
-#: admin/includes/tab-settings.php:404
+#: admin/includes/tab-settings.php:401
 msgid "Remove settings at uninstallation"
 msgstr ""
 
@@ -284,16 +268,16 @@ msgstr ""
 msgid "Clear now"
 msgstr ""
 
-#: classes/class-ip-geo-block.php:476
+#: classes/class-ip-geo-block.php:496
 msgid "Sorry, but you cannot be accepted."
 msgstr ""
 
-#: includes/download.php:102
+#: includes/download.php:92
 #, php-format
 msgid "Cannot open %s to read."
 msgstr ""
 
-#: includes/download.php:111
+#: includes/download.php:101
 #, php-format
 msgid "Cannot open %s to write."
 msgstr ""
