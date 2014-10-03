@@ -36,15 +36,14 @@ class IP_Geo_Block {
 		'ip_geo_block_settings' => array(
 			'version'         => '1.2',   // Version of option data
 			// from version 1.0
-			'order'           => 0,       // Next order of provider (spare for future)
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
 				'pos'         => 0,       // Position (0:none, 1:top, 2:bottom)
-				'msg'         => '',      // Message text on comment form
+				'msg'         => NULL,    // Message text on comment form
 			),
 			'matching_rule'   => 0,       // 0:white list, 1:black list
-			'white_list'      => '',      // Comma separeted country code
-			'black_list'      => '',      // Comma separeted country code
+			'white_list'      => NULL,    // Comma separeted country code
+			'black_list'      => NULL,    // Comma separeted country code
 			'timeout'         => 5,       // Timeout in second
 			'response_code'   => 403,     // Response code
 			'save_statistics' => FALSE,   // Save statistics
@@ -53,32 +52,39 @@ class IP_Geo_Block {
 			'cache_hold'      => 10,      // Max entries in cache
 			'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
 			// from version 1.2
+			'flags'           => array(), // Multi purpose flags
+			'login_fails'     => 5,       // Max counts of login fail
+			'validation'      => array(   // Action hook for validation
+				'comment'     => TRUE,    // For comment spam
+				'login'       => FALSE,   // For login intrusion
+				'admin'       => FALSE,   // For admin intrusion
+			),
 			'update'          => array(   // Updating IP address DB
 				'auto'        => TRUE,    // Auto updating of DB file
 				'retry'       => 0,       // Number of retry to download
 				'cycle'       => 30,      // Updating cycle (days)
 			),
 			'maxmind'         => array(   // Maxmind
-				'ipv4_path'   => '',      // Path to IPv4 DB file
-				'ipv6_path'   => '',      // Path to IPv6 DB file
-				'ipv4_last'   => '',      // Last-Modified of DB file
-				'ipv6_last'   => '',      // Last-Modified of DB file
+				'ipv4_path'   => NULL,    // Path to IPv4 DB file
+				'ipv6_path'   => NULL,    // Path to IPv6 DB file
+				'ipv4_last'   => NULL,    // Last-Modified of DB file
+				'ipv6_last'   => NULL,    // Last-Modified of DB file
 			),
 			'ip2location'     => array(   // IP2Location
-				'ipv4_path'   => '',      // Path to IPv4 DB file
-				'ipv6_path'   => '',      // Path to IPv6 DB file
-				'ipv4_last'   => '',      // Last-Modified of DB file
-				'ipv6_last'   => '',      // Last-Modified of DB file
+				'ipv4_path'   => NULL,    // Path to IPv4 DB file
+				'ipv6_path'   => NULL,    // Path to IPv6 DB file
+				'ipv4_last'   => NULL,    // Last-Modified of DB file
+				'ipv6_last'   => NULL,    // Last-Modified of DB file
 			),
 		),
 
 		// statistics (should be read when comment has posted)
 		'ip_geo_block_statistics' => array(
-			'passed'    => '',
-			'blocked'   => '',
-			'unknown'   => '',
-			'IPv4'      => '',
-			'IPv6'      => '',
+			'passed'    => NULL,
+			'blocked'   => NULL,
+			'unknown'   => NULL,
+			'IPv4'      => NULL,
+			'IPv6'      => NULL,
 			'countries' => array(),
 			'providers' => array(),
 		),
@@ -101,8 +107,7 @@ class IP_Geo_Block {
 			IP_Geo_Block::PLUGIN_SLUG . '-headers',
 			array(
 				'timeout' => $options['timeout'],
-				'user-agent' =>
-					"WordPress/$wp_version; " . self::PLUGIN_SLUG . ' ' . self::VERSION,
+				'user-agent' => "WordPress/$wp_version; " . self::PLUGIN_SLUG . ' ' . self::VERSION,
 			)
 		);
 	}
@@ -117,15 +122,27 @@ class IP_Geo_Block {
 
 		$opts = get_option( self::$option_keys['settings'] );
 
-		// Message text on comment form
-		if ( $opts['comment']['pos'] ) {
-			$pos = 'comment_form' . ( $opts['comment']['pos'] == 1 ? '_top' : '' );
-			add_action( $pos, array( $this, 'comment_form_message' ), 10 );
+		if ( $opts['validation']['comment'] ) {
+			// Message text on comment form
+			if ( $opts['comment']['pos'] ) {
+				$pos = 'comment_form' . ( $opts['comment']['pos'] == 1 ? '_top' : '' );
+				add_action( $pos, array( $this, 'comment_form_message' ), 10 );
+			}
+
+			// action hook from wp-comments-post.php @since 2.8.0
+			// https://developer.wordpress.org/reference/hooks/pre_comment_on_post/
+			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), 1 );
 		}
 
-		// action hook from wp-comments-post.php @since 2.8.0
-		// https://developer.wordpress.org/reference/hooks/pre_comment_on_post/
-		add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), 1 );
+		// action hook from wp-login.php @since 2.1.0
+		// https://developer.wordpress.org/reference/hooks/login_init/
+		if ( $opts['validation']['login'] )
+			add_action( 'login_init', array( $this, 'validate_login' ), 1 );
+
+		// action hook from wp-admin/admin.php @since 2.5.0
+		// http://codex.wordpress.org/Plugin_API/Action_Reference/admin_init
+		if ( $opts['validation']['admin'] )
+			add_action( 'admin_init', array( $this, 'validate_admin' ), 1 );
 
 		// action hook from download cron job
 		if ( $opts['update']['auto'] )
@@ -198,21 +215,23 @@ class IP_Geo_Block {
 		else {
 			// update format of option settings
 			if ( version_compare( $opts['version'], '1.1' ) < 0 ) {
-				$opts['cache_hold'] = self::$option_table[ $name[0] ]['cache_hold'];
-				$opts['cache_time'] = self::$option_table[ $name[0] ]['cache_time'];
+				foreach ( array( 'cache_hold', 'cache_time' ) as $tmp )
+					$opts[ $tmp ] = self::$option_table[ $name[0] ][ $tmp ];
 			}
 
 			if ( version_compare( $opts['version'], '1.2' ) < 0 ) {
-				unset( $opts['ip2location'] );
-				$opts['update'     ] = self::$option_table[ $name[0] ]['update'     ];
-				$opts['maxmind'    ] = self::$option_table[ $name[0] ]['maxmind'    ];
-				$opts['ip2location'] = self::$option_table[ $name[0] ]['ip2location'];
-			}
+				foreach ( array( 'order', 'ip2location' ) as $tmp )
+					unset( $opts[ $tmp ] );
 
-			$opts['version'] = self::$option_table[ $name[0] ]['version'];
+				foreach ( explode( ' ', 'flags login_fails validation update maxmind ip2location' ) as $tmp )
+					$opts[ $tmp ] = self::$option_table[ $name[0] ][ $tmp ];
+			}
 
 			// update IP2Location
 			$opts['ip2location']['ipv4_path'] = $ip2;
+
+			// finally update version number
+			$opts['version'] = self::$option_table[ $name[0] ]['version'];
 
 			// update option table
 			update_option( $name[0], $opts );
@@ -318,10 +337,9 @@ class IP_Geo_Block {
 	 */
 	public static function get_country( $ip ) {
 		$instance = self::get_instance();
-		$result = $instance->_get_country(
+		return ( $result = $instance->_get_country(
 			$ip, get_option( self::$option_keys['settings'] )
-		);
-		return $result ? $result['code'] : NULL;
+		) ) ? $result['code'] : NULL;
 	}
 
 	/**
@@ -454,7 +472,7 @@ class IP_Geo_Block {
 		// update cache
 		if ( $save_cache ||
 			( isset( $validate['result'] ) && 'blocked' === $validate['result'] ) )
-			IP_Geo_Block_API_Cache::update_cache(
+			IP_Geo_Block_API_Cache::put_cache(
 				$validate['ip'],
 				$validate['code'] . $mark_cache,
 				$settings
@@ -488,7 +506,7 @@ class IP_Geo_Block {
 	 * @param boolean $save_stat  update statistics regardless of validation result.
 	 */
 	public static function validate_ip(
-		$hook = NULL, $mark_cache = '*', $save_cache = FALSE, $save_stat = FALSE ) {
+		$hook = NULL, $mark_cache = '@', $save_cache = FALSE, $save_stat = FALSE ) {
 		$instance = self::get_instance();
 		$instance->_validate_ip( $hook, $mark_cache, $save_cache, $save_stat );
 	}
@@ -500,6 +518,24 @@ class IP_Geo_Block {
 	public function validate_comment() {
 		if ( ! is_admin() && ! is_user_logged_in() )
 			$this->_validate_ip( 'comment', NULL, TRUE, TRUE );
+	}
+
+	/**
+	 * Validate ip address on login form
+	 *
+	 */
+	public function validate_login() {
+		if ( ! is_admin() && ! is_user_logged_in() )
+			$this->_validate_ip( 'login', '+', FALSE, FALSE );
+	}
+
+	/**
+	 * Validate ip address on admin screen
+	 *
+	 */
+	public function validate_admin() {
+		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
+			$this->_validate_ip( 'admin', '*', FALSE, FALSE );
 	}
 
 	/**

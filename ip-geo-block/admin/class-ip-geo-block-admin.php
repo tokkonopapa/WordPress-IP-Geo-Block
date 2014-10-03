@@ -191,8 +191,7 @@ class IP_Geo_Block_Admin {
 	public function display_plugin_admin_page( $tab = 0 ) {
 		$tab = isset( $_GET['tab'] ) ? intval( $_GET['tab'] ) : 0;
 		$tab = min( 3, max( 0, $tab ) );
-		$option_slug = $this->option_slug[ 1 === $tab ? 'statistics': 'settings' ];
-?>
+		$option_slug = $this->option_slug[ 1 === $tab ? 'statistics': 'settings' ]; ?>
 <div class="wrap">
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 	<h2 class="nav-tab-wrapper">
@@ -444,6 +443,9 @@ class IP_Geo_Block_Admin {
 					) : '';
 				break;
 
+			  // for arrays not on the form
+			  case 'flags':
+			  case 'validation': // should be removed when it is implemented.
 			  case 'ip2location':
 				break;
 
@@ -557,7 +559,7 @@ class IP_Geo_Block_Admin {
 				}
 
 				else {
-					$res = array( 'errorMessage' => 'Invalid service.' );
+					$res = array( 'errorMessage' => 'Unknown service.' );
 				}
 			}
 

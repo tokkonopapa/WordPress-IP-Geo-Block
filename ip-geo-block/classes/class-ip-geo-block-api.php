@@ -26,6 +26,7 @@ abstract class IP_Geo_Block_API {
 	/**
 	 * These values must be instantiated in child class
 	 *
+	 *//*
 	protected $api_type = IP_GEO_BLOCK_API_TYPE_[IPV4 | IPV6 | BOTH];
 	protected $api_template = array(
 		'api_key' => '', // %API_KEY%
@@ -42,8 +43,7 @@ abstract class IP_Geo_Block_API {
 		'cityName'     => '',
 		'latitude'     => '',
 		'longitude'    => '',
-	);
-	*/
+	);*/
 
 	/**
 	 * Constructer & Destructer
@@ -382,37 +382,6 @@ class IP_Geo_Block_API_Xhanch extends IP_Geo_Block_API {
 }
 
 /**
- * Class for mshd.net
- *
- * URL         : http://mshd.net/documentation/geoip
- * Term of use : http://mshd.net/disclaimer
- * Licence fee : 
- * Rate limit  : 
- * Sample URL  : http://mshd.net/api/geoip?ip=2a00:1210:fffe:200::1&output=json
- * Input type  : IP address (IPv4, IPv6)
- * Output type : json, php
- *//*
-class IP_Geo_Block_API_mshdnet extends IP_Geo_Block_API {
-	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
-	protected $api_template = array(
-		'api_key' => '',
-		'format'  => 'json',
-		'option'  => '',
-		'ip'      => '',
-	);
-	protected $url_template = 'http://mshd.net/api/geoip?ip=%API_IP%&output=%API_FORMAT%';
-	protected $transform_table = array(
-		'errorMessage' => 'error',
-		'countryCode'  => 'country_code',
-		'countryName'  => 'country_name',
-		'regionName'   => 'region_name',
-		'cityName'     => 'city_name',
-		'latitude'     => 'latitude',
-		'longitude'    => 'longitude',
-	);
-}*/
-
-/**
  * Class for geoPlugin
  *
  * URL         : http://www.geoplugin.com/
@@ -660,21 +629,21 @@ if ( class_exists( 'IP_Geo_Block' ) ) :
 
 class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
-	public function get_location( $ip, $args = array() ) {
-		if ( false === ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) ||
-		     false === array_key_exists( $ip, $cache ) )
-			return array( 'errorMessage' => 'not in the cache' );
+	public static function get_cache( $ip ) {
+		$cache = get_transient( IP_Geo_Block::CACHE_KEY );
+		if ( $cache && isset( $cache[ $ip ] ) )
+			return $cache[ $ip ];
 		else
-			return array( 'countryCode' => $cache[ $ip ]['code'] );
+			return NULL;
 	}
 
-	public static function update_cache( $ip, $code, $settings ) {
+	public static function put_cache( $ip, $code, $settings ) {
 		$time = time();
 		$num = ! empty( $settings['cache_hold'] ) ? $settings['cache_hold'] : 10;
 		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;
 
 		// unset expired item
-		if ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) {
+		if ( false !== ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) ) {
 			foreach ( $cache as $key => $val ) {
 				if ( $time - $val['time'] > $exp )
 					unset( $cache[ $key ] );
@@ -682,13 +651,10 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		}
 
 		// add new item
-		if ( empty( $code ) ) $code = 'ZZ';
-		if ( $settings['save_statistics'] ) {
-			$count = intval( $cache[ $ip ]['call'] ) + 1;
-			$cache[ $ip ] = array( 'time' => $time, 'code' => $code, 'call' => $count );
-		} else {
-			$cache[ $ip ] = array( 'time' => $time, 'code' => $code );
-		}
+		$cache[ $ip ]['time'] = $time;
+		$cache[ $ip ]['code'] = strlen( $code ) < 2 ? 'ZZ' . $code : $code;
+		if ( $settings['save_statistics'] )
+			$cache[ $ip ]['call'] = intval( $cache[ $ip ]['call'] ) + 1;
 
 		// sort by 'time'
 		foreach ( $cache as $key => $val )
@@ -704,6 +670,13 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 	public static function delete_cache() {
 		delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
+	}
+
+	public function get_location( $ip, $args = array() ) {
+		if ( $cache = self::get_cache( $ip ) )
+			return array( 'countryCode' => $cache['code'] );
+		else
+			return array( 'errorMessage' => 'not in the cache' );
 	}
 }
 
@@ -752,12 +725,6 @@ class IP_Geo_Block_Provider {
 			'type' => 'IPv4 / free',
 			'link' => '<a class="ip-geo-block-link" href="http://xhanch.com/xhanch-api-ip-get-detail/" title="Xhanch API &#8211; IP Get Detail | Xhanch Studio" target=_blank>http://xhanch.com/</a>&nbsp;(IPv4 / free)',
 		),
-
-/*		'mshd.net' => array(
-			'key'  => NULL,
-			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a class="ip-geo-block-link" href="http://mshd.net/documentation/geoip" title="www.mshd.net - Geoip Documentation" target=_blank>http://mshd.net/</a>&nbsp;(IPv4, IPv6 / free)',
-		),*/
 
 		'geoPlugin' => array(
 			'key'  => NULL,
