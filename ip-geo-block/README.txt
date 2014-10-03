@@ -126,12 +126,12 @@ Check `statistics` tab on this plugin's option page.
 
 There are two ways. One is to add some code somewhere in your php (typically 
 `functions.php` in your theme) to substitute local IP address through filter 
-fook `ip-geo-block-addr` as follows:
+fook `ip-geo-block-remote-ip` as follows:
 
-`function substitute_my_ip( $ip ) {
+`function my_replace_ip( $ip ) {
     return '98.139.183.24'; // yahoo.com
 }
-add_filter( 'ip-geo-block-addr', 'substitute_my_ip' );`
+add_filter( 'ip-geo-block-remote-ip', 'my_replace_ip' );`
 
 Another method is adding a country code into `White list` or `Black list` on 
 the plugin settings page. Most of the IP Geolocation services return empty 
@@ -143,7 +143,7 @@ the plugin settings page. Most of the IP Geolocation services return empty
 Yes, you can use `add_filter()` with filter hook `ip-geo-block-comment` in 
 somewhere (typically `functions.php` in your theme) as follows:
 
-`function my_validate_comment( $validate ) {
+`function my_ip_blacklist( $validate ) {
     $blacklist = array(
         '123.456.789.',
     );
@@ -157,7 +157,7 @@ somewhere (typically `functions.php` in your theme) as follows:
 
     return $validate;
 }
-add_filter( 'ip-geo-block-comment', 'my_validate_comment' );`
+add_filter( 'ip-geo-block-comment', 'my_ip_blacklist' );`
 
 Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
 on the `statistics` tab of this plugin's option page.
@@ -177,12 +177,12 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );`
 
 Yes, here is the list of all hooks.
 
-* `ip-geo-block-addr` : IP address of accessor.
-* `ip-geo-block-headers` : compose http request headers.
-* `ip-geo-block-comment` : validate IP address on `wp-comments-post.php`.
-* `ip-geo-block-login` : validate IP adress on `wp-login.php`.
-* `ip-geo-block-admin` : validate IP adress on `wp-admin/admin.php` except DOING_AJAX.
-* `ip-geo-block-maxmind-path` : absolute path where Maxmind DB files should be saved.
+* `ip-geo-block-remote-ip`        : IP address of accessor.
+* `ip-geo-block-headers`          : compose http request headers.
+* `ip-geo-block-comment`          : validate IP address on `wp-comments-post.php`.
+* `ip-geo-block-login`            : validate IP adress on `wp-login.php`.
+* `ip-geo-block-admin`            : validate IP adress on `wp-admin/admin.php` except ajax.
+* `ip-geo-block-maxmind-path`     : absolute path where Maxmind DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind DB zip file for IPv4.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind DB zip file for IPv6.
 * `ip-geo-block-ip2location-path` : absolute path where IP2Location DB file is saved.
@@ -211,11 +211,12 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 1.2.0 =
-* **NEW FEATURE:** Added Maxmind database auto downloader and updater.
+* **New feature:** Added Maxmind database auto downloader and updater.
 * The filter hook `ip-geo-block-validate` was discontinued.
   Instead of it, the new filter hook `ip-geo-block-comment` is introduced.
-* **PERFORMANCE IMPROVEMENT:** IP address is verified at an earlier stage.
-* **OTHERS:** Fix a bug of handling cache, update status of some REST APIs.
+* **Performance improvement:** IP address is verified at an earlier stage 
+  than before.
+* **Others:** Fix a bug of handling cache, update status of some REST APIs.
 
 = 1.1.1 =
 * Fixed issue of default country code.
