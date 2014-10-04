@@ -1,5 +1,9 @@
 <?php
 /**
+ * This is modified version base on IP2Location PHP Module 7.0.0
+ * from http://www.ip2location.com/developers/php
+ */
+/**
  * Copyright (C) 2005-2014 IP2Location.com
  * All Rights Reserved
  *
@@ -380,6 +384,7 @@ class IP2Location {
    * Convert IPv6 into long integer.
    */
   private function ipv6Numeric($ipv6) {
+if (function_exists('gmp_strval')):
     $ip_n = inet_pton($ipv6);
     $bits = 15;
 
@@ -398,6 +403,33 @@ class IP2Location {
       $bits--;
     }
     return gmp_strval(gmp_init($ipv6long, 2), 10);
+else:
+	/**
+	 * This is from ip2location.class.php
+	 */
+	$n = substr_count($ipv6, ':');
+
+	if($n < 7){
+		$expanded = '::';
+
+		while($n < 7){
+			$expanded .= ':';
+			$n++;
+		}
+		$ipv6 = preg_replace('/::/', $expanded, $ipv6);
+	}
+
+	$subLoc = 8;
+	$ipv6No = '0';
+
+	foreach(preg_split('/:/', $ipv6) as $ipSub){
+		$subLoc--;
+
+		if($ipSub == '') continue;
+		$ipv6No = bcadd( $ipv6No, bcmul(hexdec($ipSub), bcpow(hexdec('0x10000'), $subLoc)));
+	}
+	return $ipv6No;
+endif;
   }
 
   /**
