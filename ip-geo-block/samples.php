@@ -89,19 +89,19 @@ add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
 
 
 /**
- * Example6: usage of 'ip-geo-block-comment'
- * Use case: exclude specific ip addresses in the blacklist on comment post
+ * Example6: usage of 'ip-geo-block-comment' and IP_Geo_Block::get_country()
+ * Use case: exclude specific countries in the blacklist on comment post
  *
  * @param  array $validate ip address in 'ip'
  * @return array $validate add 'result' as 'passed' or 'blocked' if possible
  */
 function my_ip_blacklist( $validate ) {
 	$blacklist = array(
-		'123.456.789.',
+		'JP',
 	);
 
-	foreach ( $blacklist as $ip ) {
-		if ( strpos( $ip, $validate['ip'] ) === 0 ) {
+	foreach ( $blacklist as $country ) {
+		if ( IP_Geo_Block::get_country( $validate['ip'] ) === $country ) {
 			$validate['result'] = 'blocked';
 			break;
 		}
@@ -113,8 +113,9 @@ add_filter( 'ip-geo-block-comment', 'my_ip_blacklist' );
 
 
 /**
- * Example7: validate ip address to exclude Brute-force attack on login process
+ * Example7: usage of IP_Geo_Block::validate_ip() and custom filter
  * Use case: allow login only from specific ip addresses in the whitelist
+ * (validate ip address to exclude Brute-force attack on login process)
  *
  * @param  array $validate ip address in 'ip'
  * @return array $validate add 'result' as 'passed' or 'blocked' if possible
@@ -135,7 +136,7 @@ function my_ip_whitelist( $validate ) {
 
 	return $validate;
 }
-add_filter( 'ip-geo-block-my-login', 'my_ip_whitelist' ); // custom filter hook
+add_filter( 'ip-geo-block-my-login', 'my_ip_whitelist' ); // hook custom filter
 
 function my_validate_login() {
 	if ( ! is_admin() && ! is_user_logged_in() )
