@@ -154,7 +154,7 @@ function my_validate_admin() {
 	if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
 		IP_Geo_Block::validate_ip(
 			NULL,	// no custom filter ('passed' or 'blocked' by country)
-			'*',	// put a symbol beside county code in cache list
+			'!',	// put a symbol beside county code in cache list
 			TRUE,	// save 'passed' and 'blocked' ip address in cache
 			FALSE	// save no statistics when 'passed'
 		);
