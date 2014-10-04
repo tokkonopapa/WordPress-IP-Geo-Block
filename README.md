@@ -79,7 +79,6 @@ Thanks for providing these great services and REST APIs for free.
     [http://freegeoip.net/]    [freegeoip] | IPv4           | free
     [http://ipinfo.io/]           [ipinfo] | IPv4, IPv6     | free
     [http://www.telize.com/]      [Telize] | IPv4, IPv6     | free
-    [http://www.iptolatlng.com/]   [IP2LL] | IPv4, IPv6     | free
     [http://ip-json.rhcloud.com/] [IPJson] | IPv4, IPv6     | free
     [http://xhanch.com/]          [Xhanch] | IPv4           | free
     [http://www.geoplugin.com/][geoplugin] | IPv4, IPv6     | free, need an attribution link
@@ -247,7 +246,6 @@ This plugin is licensed under the GPL v2 or later.
 [freegeoip]:http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service"
 [ipinfo]:   http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details"
 [Telize]:   http://www.telize.com/ "Telize - JSON IP and GeoIP REST API"
-[IP2LL]:    http://www.iptolatlng.com/ "IP to Latitude, Longitude"
 [IPJson]:   http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service"
 [Xhanch]:   http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API - IP Get Detail | Xhanch Studio"
 [geoplugin]:http://www.geoplugin.com/ "geoPlugin to geolocate your visitors"
