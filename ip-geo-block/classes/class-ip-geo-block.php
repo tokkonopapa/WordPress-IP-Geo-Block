@@ -390,20 +390,17 @@ class IP_Geo_Block {
 			else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
 				$statistics['IPv6'] = intval( $statistics['IPv6'] ) + 1;
 
-			if ( isset( $statistics['providers'][ $provider ] ) )
-				$stat = $statistics['providers'][ $provider ];
-			else
-				$stat = array( 'count' => 0, 'time' => 0 );
+			$stat = isset( $statistics['providers'][ $provider ] ) ?
+				$statistics['providers'][ $provider ] :
+				array( 'count' => 0, 'time' => 0 );
 
 			$statistics['providers'][ $provider ] = array(
 				'count' => intval( $stat['count'] ) + 1,
 				'time'  => floatval( $stat['time' ] ) + floatval( $time ),
 			);
 
-			if ( isset( $statistics['countries'][ $country ] ) )
-				$stat = $statistics['countries'];
-			else
-				$stat = array( $country => 0 );
+			$stat = isset( $statistics['countries'][ $country ] ) ?
+				$statistics['countries'] : array( $country => 0 );
 
 			$statistics['countries'][ $country ] = intval( $stat[ $country ] ) + 1;
 		}
