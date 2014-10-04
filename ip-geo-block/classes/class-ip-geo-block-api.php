@@ -283,36 +283,6 @@ class IP_Geo_Block_API_Telize extends IP_Geo_Block_API {
 }
 
 /**
- * Class for IPtoLatLng
- *
- * URL         : http://www.iptolatlng.com/
- * Term of use : 
- * Licence fee : free
- * Rate limit  : none
- * Sample URL  : http://www.iptolatlng.com?ip=2a00:1210:fffe:200::1
- * Input type  : IP address (IPv4, IPv6) / domain name
- * Output type : json
- */
-class IP_Geo_Block_API_IPtoLatLng extends IP_Geo_Block_API {
-	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
-	protected $api_template = array(
-		'api_key' => '',
-		'format'  => 'json',
-		'option'  => '',
-		'ip'      => '',
-	);
-	protected $url_template = 'http://www.iptolatlng.com/?type=%API_FORMAT%&ip=%API_IP%';
-	protected $transform_table = array(
-		'countryCode' => 'country',
-		'countryName' => 'countryFullName',
-		'regionName'  => 'stateFullName',
-		'cityName'    => 'city',
-		'latitude'    => 'lat',
-		'longitude'   => 'lng',
-	);
-}
-
-/**
  * Class for IP-Json
  *
  * URL         : http://ip-json.rhcloud.com/
@@ -706,12 +676,6 @@ class IP_Geo_Block_Provider {
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
 			'link' => '<a class="ip-geo-block-link" href="http://www.telize.com/" title="Telize - JSON IP and GeoIP REST API" target=_blank>http://www.telize.com/</a>&nbsp;(IPv4, IPv6 / free)',
-		),
-
-		'IPtoLatLng' => array(
-			'key'  => NULL,
-			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a class="ip-geo-block-link" href="http://www.iptolatlng.com/" title="IP to Latitude, Longitude" target=_blank>http://www.iptolatlng.com/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'IP-Json' => array(
