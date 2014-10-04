@@ -532,7 +532,7 @@ class IP_Geo_Block {
 	 */
 	public function validate_admin() {
 		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-			$this->_validate_ip( 'admin', '*', FALSE, FALSE );
+			$this->_validate_ip( 'admin', '*', TRUE, FALSE );
 	}
 
 	/**
@@ -554,7 +554,7 @@ class IP_Geo_Block {
 				$now - $db['ipv6_last'] < $cycle ) {
 				$update['retry'] = 0;
 				$next = max( $db['ipv4_last'], $db['ipv6_last'] ) +
-					$cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 2 ) / 2;
+					$cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 6 );
 			} else {
 				$update['retry']++;
 				$next = $now + ( $immediate ? 0 : DAY_IN_SECONDS );
