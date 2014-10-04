@@ -471,7 +471,7 @@ class IP_Geo_Block {
 
 		// update cache
 		if ( $save_cache ||
-			( isset( $validate['result'] ) && 'blocked' === $validate['result'] ) )
+			( isset( $validate['result'] ) && 'passed' !== $validate['result'] ) )
 			IP_Geo_Block_API_Cache::put_cache(
 				$validate['ip'],
 				$validate['code'] . $mark_cache,
@@ -483,7 +483,7 @@ class IP_Geo_Block {
 			$this->update_statistics( $validate );
 
 		// validation function should return at least the 'result'
-		if ( empty( $validate['result'] ) || 'blocked' !== $validate['result'] )
+		if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
 			return;
 
 		// update statistics
