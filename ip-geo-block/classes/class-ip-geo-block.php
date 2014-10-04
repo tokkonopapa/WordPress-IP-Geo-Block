@@ -413,30 +413,23 @@ class IP_Geo_Block {
 	 *
 	 */
 	private function send_response( $code, $msg ) {
-		// nocache and response code
-		nocache_headers();
-		$code = max( 200, intval( $code ) ) & 0x1FF; // 200 - 511
-
-		// 2xx Success
-		if ( 200 <= $code && $code < 300 ) {
+		nocache_headers(); // nocache and response code
+		switch ( (int)substr( "$code", 0, 1 ) ) {
+		  case 2: // 2xx Success
 			header( 'Refresh: 0; url=' . get_site_url(), TRUE, $code ); // @since 3.0
 			die();
-		}
 
-		// 3xx Redirection
-		else if ( 300 <= $code && $code < 400 ) {
+		  case 3: // 3xx Redirection
 			header( 'Location: http://blackhole.webpagetest.org/', TRUE, $code );
 			die();
-		}
 
-		// 4xx Client Error
-		else if ( 400 <= $code && $code < 500 ) {
+		  case 4: // 4xx Client Error
 			wp_die( $msg, 'Error', array( 'response' => $code, 'back_link' => TRUE ) );
-		}
 
-		// 5xx Server Error
-		status_header( $code ); // @since 2.0.0
-		die();
+		  default: // 5xx Server Error
+			status_header( $code ); // @since 2.0.0
+			die();
+		}
 	}
 
 	/**
