@@ -496,7 +496,7 @@ class IP_Geo_Block {
 	 * @param boolean $save_stat  update statistics regardless of validation result.
 	 */
 	public static function validate_ip(
-		$hook = NULL, $mark_cache = '@', $save_cache = FALSE, $save_stat = FALSE ) {
+		$hook = NULL, $mark_cache = '*', $save_cache = FALSE, $save_stat = FALSE ) {
 		$instance = self::get_instance();
 		$instance->_validate_ip( $hook, $mark_cache, $save_cache, $save_stat );
 	}
@@ -525,7 +525,7 @@ class IP_Geo_Block {
 	 */
 	public function validate_admin() {
 		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-			$this->_validate_ip( 'admin', '*', TRUE, FALSE );
+			$this->_validate_ip( 'admin', '!', TRUE, FALSE );
 	}
 
 	/**
