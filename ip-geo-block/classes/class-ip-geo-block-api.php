@@ -458,6 +458,7 @@ if ( function_exists( 'get_option' ) ) {
 	// IP2Location
 	if ( file_exists( $options['ip2location']['ipv4_path'] ) ) {
 		define( 'IP_GEO_BLOCK_IP2LOC_IPV4', $options['ip2location']['ipv4_path'] );
+		define( 'IP_GEO_BLOCK_IP2LOC_IPV6', $options['ip2location']['ipv6_path'] );
 	}
 
 	// Maxmind
@@ -492,26 +493,38 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	public function get_location( $ip, $args = array() ) {
 		require_once( IP_GEO_BLOCK_PATH . 'includes/venders/ip2location/IP2Location.php' );
 
-		// http://stackoverflow.com/questions/18276757/php-convert-ipv6-to-number
+		// setup database file and function
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
-			try {
-				$geo = new IP2Location( IP_GEO_BLOCK_IP2LOC_IPV4 );
+			$file = IP_GEO_BLOCK_IP2LOC_IPV4;
+			$type = IP_GEO_BLOCK_API_TYPE_IPV4;
+		}
+		else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+			$file = IP_GEO_BLOCK_IP2LOC_IPV4; // currently, no support of IPv6
+			$type = IP_GEO_BLOCK_API_TYPE_IPV6;
+		}
+		else
+			return array( 'errorMessage' => 'illegal format' );
+
+		try {
+			$geo = new IP2Location( $file );
+			if ( $geo && ( $geo->get_database_type() & $type ) ) {
+				$res = array();
 				$data = $geo->lookup( $ip );
-			} catch (Exception $e) {
-				return array( 'errorMessage' => $e->getMessage() );
-			}
+				foreach ( $this->transform_table as $key => $val ) {
+					if ( ! empty( $val ) && ! empty( $data->$val ) )
+						$res[ $key ] = $data->$val;
+				}
 
-			$res = array();
-			foreach ( $this->transform_table as $key => $val ) {
-				if ( ! empty( $val ) && ! empty( $data->$val ) )
-					$res[ $key ] = $data->$val;
+				if ( strlen( $res['countryCode'] ) === 2 ) {
+					if ( is_string( $res['latitude' ] ) ) unset( $res['latitude' ] );
+					if ( is_string( $res['longitude'] ) ) unset( $res['longitude'] );
+					return $res;
+				}
 			}
+		}
 
-			if ( strlen( $res['countryCode'] ) === 2 ) {
-				if ( is_string( $res['latitude' ] ) ) unset( $res['latitude' ] );
-				if ( is_string( $res['longitude'] ) ) unset( $res['longitude'] );
-				return $res;
-			}
+		catch (Exception $e) {
+			return array( 'errorMessage' => $e->getMessage() );
 		}
 
 		return array( 'errorMessage' => 'Not supported' );
@@ -549,12 +562,10 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 		require_once( IP_GEO_BLOCK_PATH . 'includes/venders/maxmind/geoip.inc' );
 
 		// setup database file and function
-		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
 			$file = IP_GEO_BLOCK_MAXMIND_IPV4;
-		}
-		else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+		else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
 			$file = IP_GEO_BLOCK_MAXMIND_IPV6;
-		}
 		else
 			return array( 'errorMessage' => 'illegal format' );
 
@@ -562,7 +573,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 		if ( null == ( $geo = geoip_open( $file, GEOIP_STANDARD ) ) )
 			return FALSE;
 
-		switch ( $geo->databaseType) {
+		switch ( $geo->databaseType ) {
 		  case GEOIP_COUNTRY_EDITION:
 			$res = $this->location_country( geoip_country_code_by_addr( $geo, $ip ) );
 			break;

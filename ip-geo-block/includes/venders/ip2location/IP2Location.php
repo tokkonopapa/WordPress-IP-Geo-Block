@@ -1,6 +1,7 @@
 <?php
 /**
- * This is modified version base on IP2Location PHP Module 7.0.0
+ * This is the modified version for IP Geo Block
+ * base on IP2Location PHP Module Version: 7.0.0
  * from http://www.ip2location.com/developers/php
  */
 /**
@@ -163,6 +164,14 @@ class IP2Location {
   private $mode;
   private $resource;
   private $result;
+
+  /**
+   * Added by tokkonopapa
+   */
+  public function get_database_type() {
+    return ($this->database['ipv4_count'] ? 1 : 0) |
+           ($this->database['ipv6_count'] ? 2 : 0);
+  }
 
   /**
    * Constructor.
@@ -404,31 +413,31 @@ if (function_exists('gmp_strval')):
     }
     return gmp_strval(gmp_init($ipv6long, 2), 10);
 else:
-	/**
-	 * This is from ip2location.class.php
-	 */
-	$n = substr_count($ipv6, ':');
+    /**
+     * Added by tokkonopapa (code from ip2location.class.php)
+     */
+    $n = substr_count($ipv6, ':');
 
-	if($n < 7){
-		$expanded = '::';
+    if($n < 7){
+        $expanded = '::';
 
-		while($n < 7){
-			$expanded .= ':';
-			$n++;
-		}
-		$ipv6 = preg_replace('/::/', $expanded, $ipv6);
-	}
+        while($n < 7){
+            $expanded .= ':';
+            $n++;
+        }
+        $ipv6 = preg_replace('/::/', $expanded, $ipv6);
+    }
 
-	$subLoc = 8;
-	$ipv6No = '0';
+    $subLoc = 8;
+    $ipv6No = '0';
 
-	foreach(preg_split('/:/', $ipv6) as $ipSub){
-		$subLoc--;
+    foreach(preg_split('/:/', $ipv6) as $ipSub){
+        $subLoc--;
 
-		if($ipSub == '') continue;
-		$ipv6No = bcadd( $ipv6No, bcmul(hexdec($ipSub), bcpow(hexdec('0x10000'), $subLoc)));
-	}
-	return $ipv6No;
+        if($ipSub == '') continue;
+        $ipv6No = bcadd( $ipv6No, bcmul(hexdec($ipSub), bcpow(hexdec('0x10000'), $subLoc)));
+    }
+    return $ipv6No;
 endif;
   }
 
