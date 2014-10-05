@@ -60,15 +60,17 @@ ul.ip-geo-block-statistics-countries li {
     float: left;
 }
 
+table.ip-geo-block-statistics-post th,
 table.ip-geo-block-statistics-type th,
-table.ip-geo-block-statistics-services th,
-table.ip-geo-block-statistics-caches th {
+table.ip-geo-block-statistics-service th,
+table.ip-geo-block-statistics-cache th {
     width: 12em;
     text-align: right;
 }
 
+table.ip-geo-block-statistics-post td,
 table.ip-geo-block-statistics-type td,
-table.ip-geo-block-statistics-services td,
-table.ip-geo-block-statistics-caches td {
+table.ip-geo-block-statistics-service td,
+table.ip-geo-block-statistics-cache td {
     text-align: right;
 }

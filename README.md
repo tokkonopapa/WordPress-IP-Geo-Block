@@ -1,7 +1,7 @@
 IP Geo Block
 ==============
 
-A WordPress plugin that blocks any comments posted from undesired contries.
+A WordPress plugin that blocks any comments posted from outside your nation.
 
 This plugin will examine a country code based on the posting author's IP 
 address. If the comment comes from undesired country, it will be blocked 
@@ -171,7 +171,7 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind DB zip file for IPv6.
 * `ip-geo-block-ip2location-path` : absolute path where IP2Location DB file is saved.
 
-For more details, see `samples.php` combined together within this package.
+For more details, see `samples.php` bundled within this package.
 
 ### Other Notes:
 

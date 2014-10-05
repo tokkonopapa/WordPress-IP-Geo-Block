@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-10-03 23:59+0900\n"
-"PO-Revision-Date: 2014-10-03 23:59+0900\n"
+"POT-Creation-Date: 2014-10-05 12:34+0900\n"
+"PO-Revision-Date: 2014-10-05 12:34+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -83,7 +83,7 @@ msgstr ""
 msgid "Geolocation service"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:54 admin/includes/tab-statistics.php:135
+#: admin/includes/tab-geolocation.php:54 admin/includes/tab-statistics.php:150
 msgid "IP address"
 msgstr ""
 
@@ -96,11 +96,27 @@ msgid "Search now"
 msgstr ""
 
 #: admin/includes/tab-settings.php:42
-msgid "Geolocation service settings"
+msgid "Geolocation API settings"
 msgstr ""
 
 #: admin/includes/tab-settings.php:62
-msgid "Selection and API key settings"
+msgid "API selection and key settings"
+msgstr ""
+
+#: admin/includes/tab-settings.php:82
+msgid "Validation settings"
+msgstr ""
+
+#: admin/includes/tab-settings.php:90
+msgid "Comments post"
+msgstr ""
+
+#: admin/includes/tab-settings.php:105
+msgid "Access to login"
+msgstr ""
+
+#: admin/includes/tab-settings.php:120
+msgid "Access to admin (except ajax)"
 msgstr ""
 
 #: admin/includes/tab-settings.php:139
@@ -208,67 +224,71 @@ msgstr ""
 msgid "Remove settings at uninstallation"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:15
+#: admin/includes/tab-statistics.php:18
 msgid "Statistics of posts"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:23
+#: admin/includes/tab-statistics.php:26
 msgid "Passed"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:38
+#: admin/includes/tab-statistics.php:41
 msgid "Blocked"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:53
+#: admin/includes/tab-statistics.php:56
 msgid "Unknown (passed)"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:74
+#: admin/includes/tab-statistics.php:77
 msgid "Blocked by countries"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:89
+#: admin/includes/tab-statistics.php:92
 msgid "Blocked by type of IP address"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:106
-msgid "Service"
+#: admin/includes/tab-statistics.php:110
+msgid "Name of API"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:107
+#: admin/includes/tab-statistics.php:111
 msgid "Calls"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:108
+#: admin/includes/tab-statistics.php:112
 msgid "Response [msec]"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:121
-msgid "Average response time of each service"
+#: admin/includes/tab-statistics.php:125
+msgid "Average response time of each API"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:136
+#: admin/includes/tab-statistics.php:143
+msgid "Statistics of cache"
+msgstr ""
+
+#: admin/includes/tab-statistics.php:151
 msgid "Country code"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:137
+#: admin/includes/tab-statistics.php:152
 msgid "Elapsed [sec] / Calls"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:155
+#: admin/includes/tab-statistics.php:170
 msgid "IP address in cache"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:170
+#: admin/includes/tab-statistics.php:185
 msgid "Clear statistics"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:178
+#: admin/includes/tab-statistics.php:193
 msgid "Clear now"
 msgstr ""
 
-#: classes/class-ip-geo-block.php:496
+#: classes/class-ip-geo-block.php:486
 msgid "Sorry, but you cannot be accepted."
 msgstr ""
 

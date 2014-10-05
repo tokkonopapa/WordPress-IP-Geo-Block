@@ -9,6 +9,9 @@ function tab_statistics( $context ) {
 		$option_name
 	);
 
+	/*----------------------------------------*
+	 * Statistics of comment post
+	 *----------------------------------------*/
 	$section = IP_Geo_Block::PLUGIN_SLUG . '-statistics';
 	add_settings_section(
 		$section,
@@ -95,15 +98,16 @@ function tab_statistics( $context ) {
 			'option' => $option_name,
 			'field' => $field,
 			'value' => "<table class=\"${option_slug}-${field}\">" .
-				"<thead><tr><th>IPv4</th><th>IPv6</th></tr></thead><tbody>" .
+				"<thead><tr><th>IPv4</th><th>IPv6</th></tr></thead><tbody><tr>" .
 				"<td>" . esc_html( $options['IPv4'] ) . "</td>" .
-				"<td>" . esc_html( $options['IPv6'] ) . "</td></tbody></table>",
+				"<td>" . esc_html( $options['IPv6'] ) . "</td>" .
+				"</tr></tbody></table>",
 		)
 	);
 
-	$field = 'services';
+	$field = 'service';
 	$html = "<table class=\"${option_slug}-${field}\"><thead><tr>";
-	$html .= "<th>" . __( 'Service', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
+	$html .= "<th>" . __( 'Name of API', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
 	$html .= "<th>" . __( 'Calls', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
 	$html .= "<th>" . __( 'Response [msec]', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
 	$html .= "</tr></thead><tbody>";
@@ -118,7 +122,7 @@ function tab_statistics( $context ) {
 
 	add_settings_field(
 		$option_name . "_$field",
-		__( 'Average response time of each service', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Average response time of each API', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -130,7 +134,18 @@ function tab_statistics( $context ) {
 		)
 	);
 
-	$field = 'caches';
+	/*----------------------------------------*
+	 * Statistics of cache
+	 *----------------------------------------*/
+	$section = IP_Geo_Block::PLUGIN_SLUG . '-cache';
+	add_settings_section(
+		$section,
+		__( 'Statistics of cache', IP_Geo_Block::TEXT_DOMAIN ),
+		NULL, // array( $context, 'callback_cache_stat' ),
+		$option_slug
+	);
+
+	$field = 'cache';
 	$html = "<table class=\"${option_slug}-${field}\"><thead><tr>";
 	$html .= "<th>" . __( 'IP address', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
 	$html .= "<th>" . __( 'Country code', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";

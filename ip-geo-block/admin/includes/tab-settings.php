@@ -39,7 +39,7 @@ function tab_settings( $context ) {
 	$section = IP_Geo_Block::PLUGIN_SLUG . '-provider';
 	add_settings_section(
 		$section,
-		__( 'Geolocation service settings', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Geolocation API settings', IP_Geo_Block::TEXT_DOMAIN ),
 		NULL,
 		$option_slug
 	);
@@ -59,7 +59,7 @@ function tab_settings( $context ) {
 	$field = 'providers';
 	add_settings_field(
 		$option_name . "_$field",
-		__( 'Selection and API key settings', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'API selection and key settings', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -79,7 +79,7 @@ function tab_settings( $context ) {
 	$section = IP_Geo_Block::PLUGIN_SLUG . '-validation';
 	add_settings_section(
 		$section,
-		__( 'Validation timings', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Validation settings', IP_Geo_Block::TEXT_DOMAIN ),
 		NULL,
 		$option_slug
 	);
@@ -87,7 +87,7 @@ function tab_settings( $context ) {
 	$field = 'validation';
 	add_settings_field(
 		$option_name . "_${field}_comment",
-		__( 'Just after a comment is posted', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Comments post', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -102,7 +102,7 @@ function tab_settings( $context ) {
 
 	add_settings_field(
 		$option_name . "_${field}_login",
-		__( 'Before login form is submitted', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Access to login', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -117,7 +117,7 @@ function tab_settings( $context ) {
 
 	add_settings_field(
 		$option_name . "_${field}_admin",
-		__( 'When wp-admin is accessed (except ajax)', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Access to admin (except ajax)', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,

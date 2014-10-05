@@ -8,7 +8,7 @@ Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress plugin that blocks any comments posted from undesired countries.
+A WordPress plugin that blocks any comments posted from outside your nation.
 
 == Description ==
 
