@@ -126,23 +126,23 @@ class IP_Geo_Block {
 			// Message text on comment form
 			if ( $opts['comment']['pos'] ) {
 				$pos = 'comment_form' . ( $opts['comment']['pos'] == 1 ? '_top' : '' );
-				add_action( $pos, array( $this, 'comment_form_message' ), 10 );
+				add_action( $pos, array( $this, 'comment_form_message' ) );
 			}
 
 			// action hook from wp-comments-post.php @since 2.8.0
 			// https://developer.wordpress.org/reference/hooks/pre_comment_on_post/
-			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), 1 );
+			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ) );
 		}
 
 		// action hook from wp-login.php @since 2.1.0
 		// https://developer.wordpress.org/reference/hooks/login_init/
 		if ( $opts['validation']['login'] )
-			add_action( 'login_init', array( $this, 'validate_login' ), 1 );
+			add_action( 'login_init', array( $this, 'validate_login' ) );
 
-		// action hook from wp-admin/admin.php @since 2.5.0
-		// http://codex.wordpress.org/Plugin_API/Action_Reference/admin_init
+		// action hook from wp-admin/admin.php @since 3.1.0
+		// https://core.trac.wordpress.org/browser/tags/4.0/src/wp-includes/pluggable.php
 		if ( $opts['validation']['admin'] )
-			add_action( 'admin_init', array( $this, 'validate_admin' ), 1 );
+			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
 
 		// action hook from download cron job
 		if ( $opts['update']['auto'] )
@@ -440,8 +440,8 @@ class IP_Geo_Block {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 		$settings = get_option( self::$option_keys['settings'] );
 
-		// apply user validation
-		// @usage  add_filter( 'ip-geo-block-comment', 'my_validation' );
+		// apply custom filter of validation
+		// @usage  add_filter( "ip-geo-block-$hook", 'my_validation' );
 		// @param  array $validate = array( 'ip' => $ip );
 		// @return array $validate = array(
 		//     'ip'       => $ip,       /* ip address                          */
@@ -455,16 +455,19 @@ class IP_Geo_Block {
 		if ( $hook )
 			$validate = apply_filters( self::PLUGIN_SLUG . "-$hook", $validate );
 
-		// if the post has not been marked then validate ip address
+		// if no 'result' then validate ip address by country
 		if ( empty( $validate['result'] ) )
 			$validate = $this->validate_country( $validate, $settings );
 
 		// update cache
-		if ( $save_cache ||
-			( isset( $validate['result'] ) && 'passed' !== $validate['result'] ) )
+		$passed = ( 'passed' === $validate['result'] );
+		if ( $save_cache || ! $passed )
 			IP_Geo_Block_API_Cache::put_cache(
 				$validate['ip'],
-				$validate['code'] . $mark_cache,
+				array(
+					'code' => $validate['code'] . $mark_cache,
+					'auth' => $passed ? ( is_admin() | is_user_logged_in() ) : FALSE,
+				),
 				$settings
 			);
 
@@ -472,9 +475,8 @@ class IP_Geo_Block {
 		if ( $settings['save_statistics'] && $save_stat )
 			$this->update_statistics( $validate );
 
-		// validation function should return at least the 'result'
-		if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
-			return;
+		// validation succeeded
+		if ( $passed ) return;
 
 		// update statistics
 		if ( $settings['save_statistics'] && ! $save_stat )
@@ -496,7 +498,7 @@ class IP_Geo_Block {
 	 * @param boolean $save_stat  update statistics regardless of validation result.
 	 */
 	public static function validate_ip(
-		$hook = NULL, $mark_cache = '*', $save_cache = FALSE, $save_stat = FALSE ) {
+		$hook = NULL, $mark_cache = '*', $save_cache = TRUE, $save_stat = FALSE ) {
 		$instance = self::get_instance();
 		$instance->_validate_ip( $hook, $mark_cache, $save_cache, $save_stat );
 	}
@@ -516,16 +518,19 @@ class IP_Geo_Block {
 	 */
 	public function validate_login() {
 		if ( ! is_admin() && ! is_user_logged_in() )
-			$this->_validate_ip( 'login', '+', FALSE, FALSE );
+			$this->_validate_ip( 'login', '+', TRUE, FALSE );
 	}
 
 	/**
 	 * Validate ip address on admin screen
 	 *
 	 */
-	public function validate_admin() {
+	public function validate_admin( $secure ) {
 		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-			$this->_validate_ip( 'admin', '!', TRUE, FALSE );
+			$this->_validate_ip( 'admin', '*', TRUE, FALSE );
+
+		// pass through
+		return $secure;
 	}
 
 	/**

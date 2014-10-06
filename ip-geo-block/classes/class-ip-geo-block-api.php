@@ -618,7 +618,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			return NULL;
 	}
 
-	public static function put_cache( $ip, $code, $settings ) {
+	public static function put_cache( $ip, $args, $settings ) {
 		$time = time();
 		$num = ! empty( $settings['cache_hold'] ) ? $settings['cache_hold'] : 10;
 		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;
@@ -632,8 +632,10 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		}
 
 		// add new item
+		$code = $args['code'];
 		$cache[ $ip ]['time'] = $time;
 		$cache[ $ip ]['code'] = strlen( $code ) < 2 ? 'ZZ' . $code : $code;
+		$cache[ $ip ]['auth'] = $args['auth'];
 		if ( $settings['save_statistics'] )
 			$cache[ $ip ]['call'] = intval( $cache[ $ip ]['call'] ) + 1;
 
@@ -643,8 +645,11 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		array_multisort( $hash, SORT_DESC, $cache );
 
 		// keep max number
-		while ( count( $cache ) > $num )
-			array_pop( $cache );
+		$time = 0;
+		foreach ( $cache as $key => $val ) {
+			if ( ! $val['auth'] && ++$time > $num )
+				unset( $cache[ $key ] );
+		}
 
 		set_transient( IP_Geo_Block::CACHE_KEY, $cache, $exp ); // @since 2.8
 	}
