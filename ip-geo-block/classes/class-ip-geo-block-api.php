@@ -647,8 +647,10 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		// keep max number
 		$time = 0;
 		foreach ( $cache as $key => $val ) {
-			if ( ! $val['auth'] && ++$time > $num )
+			if ( ! $val['auth'] && ++$time > $num ) {
+				--$time;
 				unset( $cache[ $key ] );
+			}
 		}
 
 		set_transient( IP_Geo_Block::CACHE_KEY, $cache, $exp ); // @since 2.8
