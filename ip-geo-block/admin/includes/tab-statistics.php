@@ -159,8 +159,8 @@ function tab_statistics( $context ) {
 			if ( empty( $val['auth'] ) ) { // hide if authorized user
 				$html .= "<tr><td>" . esc_html( $key ) . "</td>";
 				$html .= "<td>" . esc_html( $val['code'] ) . "</td>";
-				$html .= "<td>" . intval( $time - $val['time'] ) . " / ";
-				$html .= ! empty( $val['call'] ) ? intval( $val['call'] ) : '-';
+				$html .= "<td>" . ( $time - (int)$val['time'] ) . " / ";
+				$html .= ! empty( $val['call'] ) ? (int)$val['call'] : '-';
 				$html .= "</td></tr>";
 			}
 		}

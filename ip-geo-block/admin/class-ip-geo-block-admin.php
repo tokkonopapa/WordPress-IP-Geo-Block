@@ -189,7 +189,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function display_plugin_admin_page( $tab = 0 ) {
-		$tab = isset( $_GET['tab'] ) ? intval( $_GET['tab'] ) : 0;
+		$tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
 		$tab = min( 3, max( 0, $tab ) );
 		$option_slug = $this->option_slug[ 1 === $tab ? 'statistics': 'settings' ]; ?>
 <div class="wrap">
@@ -225,7 +225,7 @@ class IP_Geo_Block_Admin {
 	public function register_admin_settings() {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
-		$tab = isset( $_GET['tab'] ) ? intval( $_GET['tab'] ) : 0;
+		$tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
 		$tab = min( 3, max( 0, $tab ) );
 
 		/*========================================*
@@ -431,7 +431,7 @@ class IP_Geo_Block_Admin {
 /*
 			  case 'comment':
 				global $allowedtags;
-				$output[ $key ]['pos'] = intval( $input[ $key ]['pos'] );
+				$output[ $key ]['pos'] = (int)$input[ $key ]['pos'];
 				$output[ $key ]['msg'] = wp_kses( $input[ $key ]['msg'], $allowedtags );
 				break;
 */
@@ -460,7 +460,7 @@ class IP_Geo_Block_Admin {
 					// otherwise if implicit
 					else if ( isset( $input[ $key ] ) ) {
 						$output[ $key ] = is_int( $value ) ?
-							intval( $input[ $key ] ) :
+							(int)$input[ $key ] :
 							sanitize_text_field( trim( $input[ $key ] ) );
 					}
 				}
@@ -475,7 +475,7 @@ class IP_Geo_Block_Admin {
 					// otherwise if implicit
 					else if ( isset( $input[ $key ][ $sub ] ) ) {
 						$output[ $key ][ $sub ] = is_int( $value[ $sub ] ) ?
-							intval( $input[ $key ][ $sub ] ) :
+							(int)$input[ $key ][ $sub ] :
 							sanitize_text_field( trim( $input[ $key ][ $sub ] ) );
 					}
 				}

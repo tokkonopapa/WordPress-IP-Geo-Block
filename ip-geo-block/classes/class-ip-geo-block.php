@@ -144,6 +144,9 @@ class IP_Geo_Block {
 		if ( $opts['validation']['admin'] )
 			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
 
+		if ( $opts['validation']['login'] || $opts['validation']['admin'] )
+			add_action( 'wp_login_failed', array( $this, 'count_auth_fail' ) );
+
 		// action hook from download cron job
 		if ( $opts['update']['auto'] )
 			add_action( 'ip_geo_block_cron', array( $this, 'download_database' ) );
@@ -376,7 +379,7 @@ class IP_Geo_Block {
 		$statistics = get_option( self::$option_keys['statistics'] );
 
 		$result = isset( $validate['result'] ) ? $validate['result'] : 'passed';
-		$statistics[ $result ] = intval( $statistics[ $result ] ) + 1;
+		$statistics[ $result ] = (int)$statistics[ $result ] + 1;
 
 		if ( 'blocked' === $result ) {
 			$ip = isset( $validate['ip'] ) ? $validate['ip'] : $_SERVER['REMOTE_ADDR'];
@@ -385,24 +388,24 @@ class IP_Geo_Block {
 			$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'ZZ';
 
 			if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
-				$statistics['IPv4'] = intval( $statistics['IPv4'] ) + 1;
+				$statistics['IPv4'] = (int)$statistics['IPv4'] + 1;
 
 			else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-				$statistics['IPv6'] = intval( $statistics['IPv6'] ) + 1;
+				$statistics['IPv6'] = (int)$statistics['IPv6'] + 1;
 
 			$stat = isset( $statistics['providers'][ $provider ] ) ?
 				$statistics['providers'][ $provider ] :
 				array( 'count' => 0, 'time' => 0 );
 
 			$statistics['providers'][ $provider ] = array(
-				'count' => intval( $stat['count'] ) + 1,
-				'time'  => floatval( $stat['time' ] ) + floatval( $time ),
+				'count' => (int)$stat['count'] + 1,
+				'time'  => (float)$stat['time' ] + (float)$time,
 			);
 
 			$stat = isset( $statistics['countries'][ $country ] ) ?
 				$statistics['countries'] : array( $country => 0 );
 
-			$statistics['countries'][ $country ] = intval( $stat[ $country ] ) + 1;
+			$statistics['countries'][ $country ] = (int)$stat[ $country ] + 1;
 		}
 
 		update_option( self::$option_keys['statistics'], $statistics );
@@ -453,7 +456,7 @@ class IP_Geo_Block {
 		$ip = apply_filters( self::PLUGIN_SLUG . '-remote-ip', $_SERVER['REMOTE_ADDR'] );
 		$validate = array( 'ip' => $ip );
 		if ( $hook )
-			$validate = apply_filters( self::PLUGIN_SLUG . "-$hook", $validate );
+			$validate = apply_filters( self::PLUGIN_SLUG . "-$hook", $validate, $settings );
 
 		// if no 'result' then validate ip address by country
 		if ( empty( $validate['result'] ) )
@@ -498,9 +501,39 @@ class IP_Geo_Block {
 	 * @param boolean $save_stat  update statistics regardless of validation result.
 	 */
 	public static function validate_ip(
-		$hook = NULL, $mark_cache = '*', $save_cache = TRUE, $save_stat = FALSE ) {
+		$hook = NULL, $mark_cache = '@', $save_cache = TRUE, $save_stat = FALSE ) {
 		$instance = self::get_instance();
 		$instance->_validate_ip( $hook, $mark_cache, $save_cache, $save_stat );
+	}
+
+	/**
+	 * Count up a number of fails when authorization is failed
+	 *
+	 */
+	public function count_auth_fail( $username ) {
+		$ip = apply_filters( self::PLUGIN_SLUG . '-remote-ip', $_SERVER['REMOTE_ADDR'] );
+		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $ip ) ) {
+			$fail = (int)$cache['fail'] + 1;
+			IP_Geo_Block_API_Cache::put_cache(
+				$ip,
+				array( 'code' => $cache['code'], 'fail' => $fail ),
+				get_option( self::$option_keys['settings'] )
+			);
+		}
+	}
+
+	/**
+	 * Check a number of authorization fails
+	 *
+	 */
+	public function check_auth_fail( $validate, $settings ) {
+		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
+		if ( $cache && (int)$cache['fail'] > $settings['login_fails'] ) {
+			$validate['code'] = $cache['code'];
+			$validate['result'] = 'blocked';
+		}
+
+		return $validate;
 	}
 
 	/**
@@ -517,8 +550,10 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_login() {
-		if ( ! is_admin() && ! is_user_logged_in() )
+		if ( ! is_admin() && ! is_user_logged_in() ) {
+			add_filter( self::PLUGIN_SLUG . '-login', array( $this, 'check_auth_fail' ), 10, 2 );
 			$this->_validate_ip( 'login', '+', TRUE, FALSE );
+		}
 	}
 
 	/**

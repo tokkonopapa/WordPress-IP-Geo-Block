@@ -125,12 +125,12 @@ function my_ip_whitelist( $validate ) {
 		'JP',
 	);
 
-	$validate['result'] = 'blocked';
 	$code = IP_Geo_Block::get_country( $validate['ip'] );
+	$validate['code'] = $code;
+	$validate['result'] = 'blocked';
 
 	foreach ( $whitelist as $country ) {
 		if ( strtoupper( $country ) === $code ) {
-			$validate['code'] = $code; // country that you have permission
 			$validate['result'] = 'passed';
 			break;
 		}

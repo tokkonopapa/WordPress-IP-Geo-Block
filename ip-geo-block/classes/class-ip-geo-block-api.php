@@ -635,16 +635,17 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		$code = $args['code'];
 		$cache[ $ip ]['time'] = $time;
 		$cache[ $ip ]['code'] = strlen( $code ) < 2 ? 'ZZ' . $code : $code;
-		$cache[ $ip ]['auth'] = $args['auth'];
+		if ( ! empty( $args['auth'] ) ) $cache[ $ip ]['auth'] = $args['auth'];
+		if ( ! empty( $args['fail'] ) ) $cache[ $ip ]['fail'] = $args['fail'];
 		if ( $settings['save_statistics'] )
-			$cache[ $ip ]['call'] = intval( $cache[ $ip ]['call'] ) + 1;
+			$cache[ $ip ]['call'] = (int)$cache[ $ip ]['call'] + 1;
 
 		// sort by 'time'
 		foreach ( $cache as $key => $val )
 			$hash[ $key ] = $val['time'];
 		array_multisort( $hash, SORT_DESC, $cache );
 
-		// keep max number
+		// keep max number of entries except hiddens
 		$time = 0;
 		foreach ( $cache as $key => $val ) {
 			if ( ! $val['auth'] && ++$time > $num ) {
