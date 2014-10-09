@@ -472,35 +472,6 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Count up a number of fails when authorization is failed
-	 *
-	 */
-	public function count_auth_fail( $username ) {
-		$ip = apply_filters( self::PLUGIN_SLUG . '-remote-ip', $_SERVER['REMOTE_ADDR'] );
-		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $ip ) ) {
-			IP_Geo_Block_API_Cache::put_cache(
-				$ip,
-				array( 'code' => $cache['code'], 'fail' => ++$cache['fail'] ),
-				get_option( self::$option_keys['settings'] )
-			);
-		}
-	}
-
-	/**
-	 * Check a number of authorization fails
-	 *
-	 */
-	public function check_auth_fail( $validate, $settings ) {
-		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
-		if ( $cache && (int)$cache['fail'] > $settings['login_fails'] ) {
-			$validate['code'] = $cache['code'];
-			$validate['result'] = 'blocked';
-		}
-
-		return $validate;
-	}
-
-	/**
 	 * Validate ip address on comment post
 	 *
 	 */
@@ -544,6 +515,35 @@ class IP_Geo_Block {
 			array( 'code' => $country['code'], 'auth' => TRUE ),
 			$settings
 		);
+	}
+
+	/**
+	 * Count up a number of fails when authorization is failed
+	 *
+	 */
+	public function count_auth_fail( $username ) {
+		$ip = apply_filters( self::PLUGIN_SLUG . '-remote-ip', $_SERVER['REMOTE_ADDR'] );
+		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $ip ) ) {
+			IP_Geo_Block_API_Cache::put_cache(
+				$ip,
+				array( 'code' => $cache['code'], 'fail' => ++$cache['fail'] ),
+				get_option( self::$option_keys['settings'] )
+			);
+		}
+	}
+
+	/**
+	 * Check a number of authorization fails
+	 *
+	 */
+	public function check_auth_fail( $validate, $settings ) {
+		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
+		if ( $cache && (int)$cache['fail'] > $settings['login_fails'] ) {
+			$validate['code'] = $cache['code'];
+			$validate['result'] = 'blocked';
+		}
+
+		return $validate;
 	}
 
 	/**
