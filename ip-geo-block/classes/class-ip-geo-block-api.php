@@ -631,14 +631,17 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			}
 		}
 
+		// initialize
+		if ( empty( $cache[ $ip ] ) )
+			$cache[ $ip ] = array();
+
 		// add new item
 		$code = $args['code'];
+		$cache[ $ip ] = array_merge( $cache[ $ip ], $args );
 		$cache[ $ip ]['time'] = $time;
 		$cache[ $ip ]['code'] = strlen( $code ) < 2 ? 'ZZ' . $code : $code;
-		if ( ! empty( $args['auth'] ) ) $cache[ $ip ]['auth'] = $args['auth'];
-		if ( ! empty( $args['fail'] ) ) $cache[ $ip ]['fail'] = $args['fail'];
 		if ( $settings['save_statistics'] )
-			$cache[ $ip ]['call'] = (int)$cache[ $ip ]['call'] + 1;
+			++$cache[ $ip ]['call'];
 
 		// sort by 'time'
 		foreach ( $cache as $key => $val )

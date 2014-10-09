@@ -92,7 +92,8 @@ add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
  * Example6: usage of 'ip-geo-block-comment'
  * Use case: exclude specific countries in the blacklist on comment post
  *
- * @param  array $validate ip address in 'ip'
+ * @param  string $validate['ip'] ip address
+ * @param  string $validate['code'] country code
  * @return array $validate add 'result' as 'passed' or 'blocked' if possible
  */
 function my_ip_blacklist( $validate ) {
@@ -113,24 +114,23 @@ add_filter( 'ip-geo-block-comment', 'my_ip_blacklist' );
 
 
 /**
- * Example7: usage of get_country(), validate_ip() and custom filter
+ * Example7: usage of 'ip-geo-block-login'
  * Use case: allow login only from specific ip addresses in the whitelist
  * (validate ip address to exclude Brute-force attack on login process)
  *
- * @param  array $validate ip address in 'ip'
+ * @param  string $validate['ip'] ip address
+ * @param  string $validate['code'] country code
  * @return array $validate add 'result' as 'passed' or 'blocked' if possible
  */
-function my_ip_whitelist( $validate ) {
+function my_whitelist( $validate ) {
 	$whitelist = array(
 		'JP',
 	);
 
-	$code = IP_Geo_Block::get_country( $validate['ip'] );
-	$validate['code'] = $code;
 	$validate['result'] = 'blocked';
 
 	foreach ( $whitelist as $country ) {
-		if ( strtoupper( $country ) === $code ) {
+		if ( strtoupper( $country ) === $validate['code'] ) {
 			$validate['result'] = 'passed';
 			break;
 		}
@@ -138,12 +138,7 @@ function my_ip_whitelist( $validate ) {
 
 	return $validate;
 }
-function my_validate_login() {
-	if ( ! is_admin() && ! is_user_logged_in() )
-		IP_Geo_Block::validate_ip( 'my-login' ); // apply custom filter
-}
-add_action( 'login_init', 'my_validate_login', 1 ); // need high priority
-add_filter( 'ip-geo-block-my-login', 'my_ip_whitelist' ); // hook custom filter
+add_filter( 'ip-geo-block-login', 'my_whitelist' ); // hook custom filter
 
 
 /**
@@ -151,14 +146,6 @@ add_filter( 'ip-geo-block-my-login', 'my_ip_whitelist' ); // hook custom filter
  * Use case: limit the ip addresses that can access the admin area except ajax
  *
  */
-function my_validate_admin( $secure ) {
-	if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-		IP_Geo_Block::validate_ip( 'my-admin' ); // apply custom filter
-
-	// pass through
-	return $secure;
-}
-add_filter( 'secure_auth_redirect', 'my_validate_admin', 1 ); // need high priority
-add_filter( 'ip-geo-block-my-admin', 'my_ip_whitelist' ); // hook custom filter
+add_filter( 'ip-geo-block-admin', 'my_whitelist' ); // hook custom filter
 
 endif;
