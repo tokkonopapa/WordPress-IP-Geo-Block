@@ -425,7 +425,7 @@ class IP_Geo_Block {
 	 * @param boolean $save_cache cache the IP addresse regardless of validation result.
 	 * @param boolean $save_stat  update statistics regardless of validation result.
 	 */
-	private function validate_ip( $hook = 'comment', $mark_cache = '@', $save_cache = TRUE, $save_stat = FALSE ) {
+	private function validate_ip( $hook, $mark_cache, $save_cache, $save_stat ) {
 		// apply custom filter of validation
 		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
 		// @param $validate = array(

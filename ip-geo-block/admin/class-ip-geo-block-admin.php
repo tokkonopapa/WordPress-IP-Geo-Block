@@ -226,8 +226,6 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function register_admin_settings() {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
-
 		$tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
 		$tab = min( 3, max( 0, $tab ) );
 
@@ -375,7 +373,6 @@ class IP_Geo_Block_Admin {
 		$message = __( 'successfully updated', IP_Geo_Block::TEXT_DOMAIN );
 		$status = 'updated';
 
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 		$providers = IP_Geo_Block_Provider::get_providers( 'key' );
 
 		// setup base options
@@ -540,8 +537,7 @@ class IP_Geo_Block_Admin {
 
 		// Check ip address
 		else if ( isset( $_POST['provider'] ) ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
-
+			// check format
 			$ip = $_POST['ip'];
 			if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
 			     filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
@@ -576,8 +572,6 @@ class IP_Geo_Block_Admin {
 
 		// Clear statistics
 		else if ( isset( $_POST['clear'] ) ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
-
 			// set default values
 			update_option(
 				$this->option_name['statistics'],
