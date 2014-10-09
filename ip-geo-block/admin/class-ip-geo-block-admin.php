@@ -35,9 +35,11 @@ class IP_Geo_Block_Admin {
 	 * and adding a settings page and menu.
 	 */
 	private function __construct() {
-		// hide ip address in cache
-		$instance = IP_Geo_Block::get_instance();
-		$instance->validate_auth();
+		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
+			// hide ip address in cache except ajax
+			$instance = IP_Geo_Block::get_instance();
+			$instance->validate_auth();
+		}
 
 		// Set unique slug for admin page.
 		foreach ( IP_Geo_Block::$option_keys as $key => $val ) {

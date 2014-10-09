@@ -435,8 +435,8 @@ class IP_Geo_Block {
 		//     'provider' => $provider, /* the name of validator               */
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
-		$settings = get_option( self::$option_keys['settings'] );
 		$ip = apply_filters( self::PLUGIN_SLUG . '-remote-ip', $_SERVER['REMOTE_ADDR'] );
+		$settings = get_option( self::$option_keys['settings'] );
 		$validate = $this->get_country( $ip, $settings );
 		$validate = apply_filters( self::PLUGIN_SLUG . "-$hook", $validate, $settings );
 
