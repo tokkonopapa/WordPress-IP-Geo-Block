@@ -492,7 +492,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Validate ip address on admin area
+	 * Validate ip address in admin area
 	 *
 	 */
 	public function validate_admin( $secure ) {
