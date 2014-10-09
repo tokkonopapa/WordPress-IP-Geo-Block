@@ -8,6 +8,7 @@
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
  * @copyright 2013 tokkonopapa
  */
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
 class IP_Geo_Block {
 
@@ -130,22 +131,18 @@ class IP_Geo_Block {
 			}
 
 			// action hook from wp-comments-post.php @since 2.8.0
-			// https://developer.wordpress.org/reference/hooks/pre_comment_on_post/
 			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ) );
 		}
 
 		// action hook from wp-login.php @since 2.1.0
-		// https://developer.wordpress.org/reference/hooks/login_init/
 		if ( $opts['validation']['login'] )
 			add_action( 'login_init', array( $this, 'validate_login' ) );
 
 		// action hook from wp-admin/admin.php @since 3.1.0
-		// https://core.trac.wordpress.org/browser/tags/4.0/src/wp-includes/pluggable.php
 		if ( $opts['validation']['admin'] )
 			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
 
 		// action hook from wp_signon() and wp_authenticate()
-		// http://codex.wordpress.org/Function_Reference/wp_signon
 		if ( $opts['validation']['login'] || $opts['validation']['admin'] ) {
 			add_action( 'wp_login',        array( $this, 'validate_auth'   ) );
 			add_action( 'wp_login_failed', array( $this, 'count_auth_fail' ) );
@@ -196,8 +193,6 @@ class IP_Geo_Block {
 		$opts = get_option( $name[0] );
 
 		if ( FALSE === $opts ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
-
 			// get country code from admin's IP address and set it into white list
 			$opts = self::get_request_headers( self::$option_table[ $name[0] ] );
 			foreach ( array( 'ipinfo.io', 'Telize', 'IP-Json' ) as $provider ) {
@@ -430,14 +425,7 @@ class IP_Geo_Block {
 	 * @param boolean $save_cache cache the IP addresse regardless of validation result.
 	 * @param boolean $save_stat  update statistics regardless of validation result.
 	 */
-	private function validate_ip(
-		$hook = 'comment', $mark_cache = '@', $save_cache = TRUE, $save_stat = FALSE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
-
-		$settings = get_option( self::$option_keys['settings'] );
-		$ip = apply_filters( self::PLUGIN_SLUG . '-remote-ip', $_SERVER['REMOTE_ADDR'] );
-		$validate = $this->get_country( $ip, $settings );
-
+	private function validate_ip( $hook = 'comment', $mark_cache = '@', $save_cache = TRUE, $save_stat = FALSE ) {
 		// apply custom filter of validation
 		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
 		// @param $validate = array(
@@ -447,6 +435,9 @@ class IP_Geo_Block {
 		//     'provider' => $provider, /* the name of validator               */
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
+		$settings = get_option( self::$option_keys['settings'] );
+		$ip = apply_filters( self::PLUGIN_SLUG . '-remote-ip', $_SERVER['REMOTE_ADDR'] );
+		$validate = $this->get_country( $ip, $settings );
 		$validate = apply_filters( self::PLUGIN_SLUG . "-$hook", $validate, $settings );
 
 		// if no 'result' then validate ip address by country
@@ -537,8 +528,7 @@ class IP_Geo_Block {
 		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
 			$this->validate_ip( 'admin', '*', TRUE, FALSE );
 
-		// pass through
-		return $secure;
+		return $secure; // pass through
 	}
 
 	/**
@@ -547,10 +537,12 @@ class IP_Geo_Block {
 	 */
 	public function validate_auth() {
 		$ip = apply_filters( self::PLUGIN_SLUG . '-remote-ip', $_SERVER['REMOTE_ADDR'] );
+		$settings = get_option( self::$option_keys['settings'] );
+		$country = $this->get_country( $ip, $settings );
 		IP_Geo_Block_API_Cache::put_cache(
 			$ip,
-			array( 'auth' => TRUE ),
-			get_option( self::$option_keys['settings'] )
+			array( 'code' => $country['code'], 'auth' => TRUE ),
+			$settings
 		);
 	}
 
