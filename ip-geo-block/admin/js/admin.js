@@ -117,6 +117,10 @@
 	}
 
 	$(function () {
+		// Inhibit to submit by return key
+		$('#ip-geo-block-inhibit').on('submit', function () {
+			return false;
+		});
 
 		// Update database
 		$('#update').on('click', function (event) {
@@ -144,9 +148,6 @@
 				ajax_get_location(service, ip);
 			}
 			return false;
-		});
-		$('#ip-geo-block-search').on('submit', function () {
-			return false; // inhibit to submit by return key
 		});
 
 		// Attribution link (redirect without referer)
