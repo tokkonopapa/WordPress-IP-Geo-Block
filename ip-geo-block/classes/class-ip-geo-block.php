@@ -315,7 +315,7 @@ class IP_Geo_Block {
 				$statistics['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
 
 			$statistics['providers'][ $provider ]['count']++;
-			$statistics['providers'][ $provider ]['time'] += (float)time;
+			$statistics['providers'][ $provider ]['time'] += (float)$time;
 		}
 
 		update_option( self::$option_keys['statistics'], $statistics );
