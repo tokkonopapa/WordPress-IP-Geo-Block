@@ -8,7 +8,6 @@
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
  * @copyright 2013 tokkonopapa
  */
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
 class IP_Geo_Block {
 
@@ -20,6 +19,7 @@ class IP_Geo_Block {
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip-geo-block-cache';
+	const CRON_NAME   = 'ip_geo_block_cron';
 
 	/**
 	 * Instance of this class.
@@ -97,6 +97,7 @@ class IP_Geo_Block {
 		'statistics' => 'ip_geo_block_statistics',
 	);
 
+	// get default settings values
 	public static function get_defaults( $name = 'settings' ) {
 		return self::$option_table[ self::$option_keys[ $name ] ];
 	}
@@ -122,7 +123,6 @@ class IP_Geo_Block {
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
 		$opts = get_option( self::$option_keys['settings'] );
-
 		if ( $opts['validation']['comment'] ) {
 			// Message text on comment form
 			if ( $opts['comment']['pos'] ) {
@@ -134,23 +134,22 @@ class IP_Geo_Block {
 			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ) );
 		}
 
-		// action hook from wp-login.php @since 2.1.0
-		if ( $opts['validation']['login'] )
+		// action hook from wp-login.php @since 2.1.0, wp_signon() and wp_authenticate()
+		if ( $opts['validation']['login'] ) {
 			add_action( 'login_init', array( $this, 'validate_login' ) );
+			add_action( 'wp_login',   array( $this, 'validate_login' ) );
+			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
+		}
 
 		// action hook from wp-admin/admin.php @since 3.1.0
-		if ( $opts['validation']['admin'] )
+		if ( $opts['validation']['admin'] ) {
 			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
-
-		// action hook from wp_signon() and wp_authenticate()
-		if ( $opts['validation']['login'] || $opts['validation']['admin'] ) {
-			add_action( 'wp_login',        array( $this, 'validate_auth'   ) );
-			add_action( 'wp_login_failed', array( $this, 'count_auth_fail' ) );
+			add_filter( 'admin_init',           array( $this, 'validate_admin' ) );
 		}
 
 		// action hook from download cron job
 		if ( $opts['update']['auto'] )
-			add_action( 'ip_geo_block_cron', array( $this, 'download_database' ) );
+			add_action( self::CRON_NAME, array( $this, 'download_database' ) );
 	}
 
 	/**
@@ -170,78 +169,12 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function activate( $network_wide ) {
-		// find IP2Location DB
-		$tmp = array(
-			WP_CONTENT_DIR . '/ip2location/',
-			WP_CONTENT_DIR . '/plugins/ip2location-tags/',
-			WP_CONTENT_DIR . '/plugins/ip2location-variables/',
-			WP_CONTENT_DIR . '/plugins/ip2location-blocker/',
-		);
-
-		// get path to IP2Location DB
-		$ip2 = trailingslashit(
-			apply_filters( self::PLUGIN_SLUG . '-ip2location-path', $tmp[0] )
-		);
-		foreach ( $tmp as $name ) {
-			if ( is_readable( "${name}database.bin" ) ) {
-				$ip2 = "${name}database.bin";
-				break;
-			}
-		}
-
-		$name = array_keys( self::$option_table );
-		$opts = get_option( $name[0] );
-
-		if ( FALSE === $opts ) {
-			// get country code from admin's IP address and set it into white list
-			$opts = self::get_request_headers( self::$option_table[ $name[0] ] );
-			foreach ( array( 'ipinfo.io', 'Telize', 'IP-Json' ) as $provider ) {
-				if ( $provider = IP_Geo_Block_API::get_class_name( $provider ) ) {
-					$tmp = new $provider( NULL );
-					if ( $tmp = $tmp->get_country( $_SERVER['REMOTE_ADDR'], $opts ) ) {
-						self::$option_table[ $name[0] ]['white_list'] = $tmp;
-						break;
-					}
-				}
-			}
-
-			// set IP2Location
-			self::$option_table[ $name[0] ]['ip2location']['ipv4_path'] = $ip2;
-
-			// create new option table
-			$opts = self::$option_table[ $name[0] ];
-			add_option( $name[0], self::$option_table[ $name[0] ], '', 'yes' );
-			add_option( $name[1], self::$option_table[ $name[1] ], '', 'no'  );
-		}
-
-		else {
-			// update format of option settings
-			if ( version_compare( $opts['version'], '1.1' ) < 0 ) {
-				foreach ( array( 'cache_hold', 'cache_time' ) as $tmp )
-					$opts[ $tmp ] = self::$option_table[ $name[0] ][ $tmp ];
-			}
-
-			if ( version_compare( $opts['version'], '1.2' ) < 0 ) {
-				foreach ( array( 'order', 'ip2location' ) as $tmp )
-					unset( $opts[ $tmp ] );
-
-				foreach ( explode( ' ', 'flags login_fails validation update maxmind ip2location' ) as $tmp )
-					$opts[ $tmp ] = self::$option_table[ $name[0] ][ $tmp ];
-			}
-
-			// update IP2Location
-			$opts['ip2location']['ipv4_path'] = $ip2;
-
-			// finally update version number
-			$opts['version'] = self::$option_table[ $name[0] ]['version'];
-
-			// update option table
-			update_option( $name[0], $opts );
-		}
+		require_once( IP_GEO_BLOCK_PATH . 'includes/upgrade.php' );
+		$settings = ip_geo_block_upgrade();
 
 		// schedule auto updating
-		if ( $opts['update']['auto'] )
-			self::schedule_cron_job( $opts['update'], $opts['maxmind'], TRUE );
+		if ( $settings['update']['auto'] )
+			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
 	}
 
 	/**
@@ -250,8 +183,8 @@ class IP_Geo_Block {
 	 */
 	public static function deactivate( $network_wide ) {
 		// cancel schedule
-		if ( wp_next_scheduled( 'ip_geo_block_cron' ) ) // @since 2.1.0
-			wp_clear_scheduled_hook( 'ip_geo_block_cron' );
+		if ( wp_next_scheduled( self::CRON_NAME ) ) // @since 2.1.0
+			wp_clear_scheduled_hook( self::CRON_NAME );
 	}
 
 	/**
@@ -259,13 +192,12 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function uninstall() {
-		$name = array_keys( self::$option_table );
-		$settings = get_option( $name[0] );
+		$settings = get_option( self::$option_keys['settings'] );
 
 		if ( $settings['clean_uninstall'] ) {
 			// delete settings options
-			foreach ( $name as $key )
-				delete_option( $key ); // @since 1.2.0
+			delete_option( self::$option_keys['settings'  ] ); // @since 1.2.0
+			delete_option( self::$option_keys['statistics'] ); // @since 1.2.0
 
 			// delete IP address cache
 			delete_transient( self::CACHE_KEY ); // @since 2.8
@@ -277,7 +209,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( self::TEXT_DOMAIN, FALSE, basename( plugin_dir_path( dirname( __FILE__ ) ) ) . '/languages/' );
+		load_plugin_textdomain( self::TEXT_DOMAIN, FALSE, dirname( IP_GEO_BLOCK_BASE ) . '/languages/' );
 	}
 
 	/**
@@ -297,6 +229,8 @@ class IP_Geo_Block {
 	 *
 	 */
 	private function get_country( $ip, $settings ) {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+
 		// make providers list
 		$list = array();
 		$geo = IP_Geo_Block_Provider::get_providers( 'key', TRUE, TRUE );
@@ -375,19 +309,13 @@ class IP_Geo_Block {
 			else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
 				++$statistics['IPv6'];
 
-			$stat = isset( $statistics['providers'][ $provider ] ) ?
-				$statistics['providers'][ $provider ] :
-				array( 'count' => 0, 'time' => 0 );
+			++$statistics['countries'][ $country ];
 
-			$statistics['providers'][ $provider ] = array(
-				'count' => (int)$stat['count'] + 1,
-				'time'  => (float)$stat['time'] + (float)$time,
-			);
+			if ( empty( $statistics['providers'][ $provider ] ) )
+				$statistics['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
 
-			$stat = isset( $statistics['countries'][ $country ] ) ?
-				$statistics['countries'] : array( $country => 0 );
-
-			$statistics['countries'][ $country ] = (int)$stat[ $country ] + 1;
+			$statistics['providers'][ $provider ]['count']++;
+			$statistics['providers'][ $provider ]['time'] += (float)time;
 		}
 
 		update_option( self::$option_keys['statistics'], $statistics );
@@ -435,7 +363,7 @@ class IP_Geo_Block {
 		//     'provider' => $provider, /* the name of validator               */
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
-		$ip = apply_filters( self::PLUGIN_SLUG . '-remote-ip', $_SERVER['REMOTE_ADDR'] );
+		$ip = apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] );
 		$settings = get_option( self::$option_keys['settings'] );
 		$validate = $this->get_country( $ip, $settings );
 		$validate = apply_filters( self::PLUGIN_SLUG . "-$hook", $validate, $settings );
@@ -447,9 +375,12 @@ class IP_Geo_Block {
 		// update cache
 		$passed = ( 'passed' === $validate['result'] );
 		if ( $save_cache || ! $passed )
-			IP_Geo_Block_API_Cache::put_cache(
+			IP_Geo_Block_API_Cache::update_cache(
 				$validate['ip'],
-				array( 'code' => $validate['code'] . $mark_cache, ),
+				array(
+					'code' => $validate['code'] . $mark_cache,
+					'auth' => is_user_logged_in(),
+				),
 				$settings
 			);
 
@@ -472,30 +403,21 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Validate ip address on comment post
-	 *
+	 * Validate ip address on comment, login, admin
+	 *                  ip address       statistics
+	 * non-login users  cached           saved
+	 * login users      cached / hidden  not saved
 	 */
-	public function validate_comment() {
-		if ( ! is_admin() && ! is_user_logged_in() )
-			$this->validate_ip( 'comment', NULL, TRUE, TRUE );
+	public function validate_comment() {// debug_log('validate_comment');
+		$this->validate_ip( 'comment', NULL, TRUE, TRUE );
 	}
 
-	/**
-	 * Validate ip address on login form
-	 *
-	 */
-	public function validate_login() {
-		if ( ! is_admin() && ! is_user_logged_in() ) {
-			add_filter( self::PLUGIN_SLUG . '-login', array( $this, 'check_auth_fail' ), 10, 2 );
-			$this->validate_ip( 'login', '+', TRUE, FALSE );
-		}
+	public function validate_login() {// debug_trace('validate_login');
+		add_filter( self::PLUGIN_SLUG . '-login', array( $this, 'auth_check' ), 10, 2 );
+		$this->validate_ip( 'login', '+', TRUE, FALSE );
 	}
 
-	/**
-	 * Validate ip address in admin area
-	 *
-	 */
-	public function validate_admin( $secure ) {
+	public function validate_admin( $secure ) {// debug_log('validate_admin');
 		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
 			$this->validate_ip( 'admin', '*', TRUE, FALSE );
 
@@ -503,28 +425,16 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Put 'auth' in cache when authorization succeeded
+	 * Authentication handling
 	 *
 	 */
-	public function validate_auth() {
-		$ip = apply_filters( self::PLUGIN_SLUG . '-remote-ip', $_SERVER['REMOTE_ADDR'] );
-		$settings = get_option( self::$option_keys['settings'] );
-		$country = $this->get_country( $ip, $settings );
-		IP_Geo_Block_API_Cache::put_cache(
-			$ip,
-			array( 'code' => $country['code'], 'auth' => TRUE ),
-			$settings
-		);
-	}
+	public function auth_fail( $username ) {// debug_trace('auth_fail');
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
-	/**
-	 * Count up a number of fails when authorization is failed
-	 *
-	 */
-	public function count_auth_fail( $username ) {
-		$ip = apply_filters( self::PLUGIN_SLUG . '-remote-ip', $_SERVER['REMOTE_ADDR'] );
+		// Count up a number of fails when authentication is failed
+		$ip = apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] );
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $ip ) ) {
-			IP_Geo_Block_API_Cache::put_cache(
+			IP_Geo_Block_API_Cache::update_cache(
 				$ip,
 				array( 'code' => $cache['code'], 'fail' => ++$cache['fail'] ),
 				get_option( self::$option_keys['settings'] )
@@ -532,16 +442,13 @@ class IP_Geo_Block {
 		}
 	}
 
-	/**
-	 * Check a number of authorization fails
-	 *
-	 */
-	public function check_auth_fail( $validate, $settings ) {
+	public function auth_check( $validate, $settings ) {// debug_log('auth_check');
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+
+		// Check a number of authentication fails
 		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
-		if ( $cache && (int)$cache['fail'] > $settings['login_fails'] ) {
-			$validate['code'] = $cache['code'];
-			$validate['result'] = 'blocked';
-		}
+		if ( $cache && (int)$cache['fail'] > $settings['login_fails'] )
+			$validate += array( 'result' => 'blocked' );
 
 		return $validate;
 	}
@@ -551,10 +458,10 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function schedule_cron_job( &$update, $db, $immediate = FALSE ) {
-		$schedule = wp_next_scheduled( 'ip_geo_block_cron' ); // @since 2.1.0
+		$schedule = wp_next_scheduled( self::CRON_NAME ); // @since 2.1.0
 
 		if ( $schedule && ! $update['auto'] )
-			wp_clear_scheduled_hook( 'ip_geo_block_cron' );
+			wp_clear_scheduled_hook( self::CRON_NAME );
 
 		else if ( ! $schedule && $update['auto'] ) {
 			$now = time();
@@ -571,7 +478,7 @@ class IP_Geo_Block {
 				$next = $now + ( $immediate ? 0 : DAY_IN_SECONDS );
 			}
 
-			wp_schedule_single_event( $next, 'ip_geo_block_cron' );
+			wp_schedule_single_event( $next, self::CRON_NAME );
 		}
 	}
 
@@ -581,26 +488,26 @@ class IP_Geo_Block {
 	 */
 	public function download_database( $only = NULL ) {
 		require_once( IP_GEO_BLOCK_PATH . 'includes/download.php' );
-		$options = get_option( self::$option_keys['settings'] );
 
 		// download database
+		$settings = get_option( self::$option_keys['settings'] );
 		$res = ip_geo_block_download(
-			$options['maxmind'],
+			$settings['maxmind'],
 			trailingslashit(
-				apply_filters( self::PLUGIN_SLUG . '-maxmind-path', IP_GEO_BLOCK_DB_PATH )
+				apply_filters( self::PLUGIN_SLUG . '-maxmind-dir', IP_GEO_BLOCK_DB_DIR )
 			), 
-			self::get_request_headers( $options )
+			self::get_request_headers( $settings )
 		);
 
 		// re-schedule cron job
-		self::schedule_cron_job( $options['update'], $options['maxmind'] );
+		self::schedule_cron_job( $settings['update'], $settings['maxmind'] );
 
 		// limit options to be updated
 		if ( $only )
-			$options[ $only ] = TRUE;
+			$settings[ $only ] = TRUE;
 
 		// update option settings
-		update_option( self::$option_keys['settings'], $options );
+		update_option( self::$option_keys['settings'], $settings );
 
 		return $res;
 	}

@@ -53,7 +53,7 @@ function tab_statistics( $context ) {
 	$field = 'unknown';
 	add_settings_field(
 		$option_name . "_$field",
-		__( 'Unknown (passed)', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Unknown (blocked)', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -161,6 +161,8 @@ function tab_statistics( $context ) {
 				$html .= "<td>" . esc_html( $val['code'] ) . "</td>";
 				$html .= "<td>" . ( $time - (int)$val['time'] ) . " / ";
 				$html .= ! empty( $val['call'] ) ? (int)$val['call'] : '-';
+//				$html .= '(' . (! empty( $val['fail'] ) ? $val['fail'] : 0) . ')';
+//				$html .= ! empty( $val['auth'] ) ? '+' : '-';
 				$html .= "</td></tr>";
 			}
 		}

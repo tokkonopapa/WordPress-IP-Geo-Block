@@ -13,7 +13,7 @@
 if ( class_exists( 'IP_Geo_Block' ) ):
 
 /**
- * Example1: usage of 'ip-geo-block-remote-ip'
+ * Example1: usage of 'ip-geo-block-ip-addr'
  * Use case: replace ip address for test purpose
  *
  * @param  string $ip original ip address
@@ -22,11 +22,11 @@ if ( class_exists( 'IP_Geo_Block' ) ):
 function my_replace_ip( $ip ) {
 	return '98.139.183.24'; // yahoo.com
 }
-add_filter( 'ip-geo-block-remote-ip', 'my_replace_ip' );
+add_filter( 'ip-geo-block-ip-addr', 'my_replace_ip' );
 
 
 /**
- * Example2: usage of 'ip-geo-block-remote-ip'
+ * Example2: usage of 'ip-geo-block-ip-addr'
  * Use case: retrieve ip address behind the proxy
  *
  * @param  string $ip original ip address
@@ -40,7 +40,7 @@ function my_retrieve_ip( $ip ) {
 
 	return $ip;
 }
-add_filter( 'ip-geo-block-remote-ip', 'my_retrieve_ip' );
+add_filter( 'ip-geo-block-ip-addr', 'my_retrieve_ip' );
 
 
 /**
@@ -58,17 +58,17 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 
 
 /**
- * Example4: usage of 'ip-geo-block-maxmind-path'
+ * Example4: usage of 'ip-geo-block-maxmind-dir'
  * Use case: change the path to Maxmind database files to writable directory
  *
- * @param  string $path original path to database files
- * @return string $path replaced path to database files
+ * @param  string $dir original directory of database files
+ * @return string $dir replaced directory of database files
  */
-function my_maxmind_path( $path ) {
+function my_maxmind_dir( $dir ) {
 	$upload = wp_upload_dir();
 	return $upload['basedir'];
 }
-add_filter( 'ip-geo-block-maxmind-path', 'my_maxmind_path' );
+add_filter( 'ip-geo-block-maxmind-dir', 'my_maxmind_dir' );
 
 
 /**
@@ -89,7 +89,20 @@ add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
 
 
 /**
- * Example6: usage of 'ip-geo-block-comment'
+ * Example6: usage of 'ip-geo-block-ip2location-path'
+ * Use case: change the path to IP2Location database files
+ *
+ * @param  string $path original path to database files
+ * @return string $path replaced path to database files
+ */
+function my_ip2location_path( $path ) {
+	return WP_CONTENT_DIR . '/ip2location/IP2LOCATION-LITE-DB1.IPV6.BIN';
+}
+add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
+
+
+/**
+ * Example7: usage of 'ip-geo-block-comment'
  * Use case: exclude specific countries in the blacklist on comment post
  *
  * @param  string $validate['ip'] ip address
@@ -114,7 +127,7 @@ add_filter( 'ip-geo-block-comment', 'my_ip_blacklist' );
 
 
 /**
- * Example7: usage of 'ip-geo-block-login'
+ * Example8: usage of 'ip-geo-block-login'
  * Use case: allow login only from specific ip addresses in the whitelist
  * (validate ip address to exclude Brute-force attack on login process)
  *
@@ -142,7 +155,7 @@ add_filter( 'ip-geo-block-login', 'my_whitelist' ); // hook custom filter
 
 
 /**
- * Example8: validate ip address before authrization of admin
+ * Example9: validate ip address before authrization in admin area
  * Use case: limit the ip addresses that can access the admin area except ajax
  *
  */

@@ -456,10 +456,10 @@ if ( function_exists( 'get_option' ) ) {
 	$options = get_option( 'ip_geo_block_settings' );
 
 	// IP2Location
-	if ( file_exists( $options['ip2location']['ipv4_path'] ) ) {
-		define( 'IP_GEO_BLOCK_IP2LOC_IPV4', $options['ip2location']['ipv4_path'] );
-		define( 'IP_GEO_BLOCK_IP2LOC_IPV6', $options['ip2location']['ipv6_path'] );
-	}
+	$path = $options['ip2location']['ipv4_path'];
+	$path = apply_filters( IP_Geo_Block::PLUGIN_SLUG . '-ip2location-path', $path );
+	if ( file_exists( $path ) )
+		define( 'IP_GEO_BLOCK_IP2LOC_IPV4', $path );
 
 	// Maxmind
 	if ( file_exists( $options['maxmind']['ipv4_path'] ) &&
@@ -499,7 +499,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 			$type = IP_GEO_BLOCK_API_TYPE_IPV4;
 		}
 		else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
-			$file = IP_GEO_BLOCK_IP2LOC_IPV4; // currently, no support of IPv6
+			$file = IP_GEO_BLOCK_IP2LOC_IPV4; // currently, support only one file
 			$type = IP_GEO_BLOCK_API_TYPE_IPV6;
 		}
 		else
@@ -618,7 +618,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			return NULL;
 	}
 
-	public static function put_cache( $ip, $args, $settings ) {
+	public static function update_cache( $ip, $args, $settings ) {
 		$time = time();
 		$num = ! empty( $settings['cache_hold'] ) ? $settings['cache_hold'] : 10;
 		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;

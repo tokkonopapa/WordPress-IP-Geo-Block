@@ -35,12 +35,6 @@ class IP_Geo_Block_Admin {
 	 * and adding a settings page and menu.
 	 */
 	private function __construct() {
-		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
-			// hide ip address in cache except ajax
-			$instance = IP_Geo_Block::get_instance();
-			$instance->validate_auth();
-		}
-
 		// Set unique slug for admin page.
 		foreach ( IP_Geo_Block::$option_keys as $key => $val ) {
 			$this->option_slug[ $key ] = str_replace( '_', '-', $val );
@@ -375,8 +369,6 @@ class IP_Geo_Block_Admin {
 		$message = __( 'successfully updated', IP_Geo_Block::TEXT_DOMAIN );
 		$status = 'updated';
 
-		$providers = IP_Geo_Block_Provider::get_providers( 'key' );
-
 		// setup base options
 		$output = get_option( $option_name );
 
@@ -405,6 +397,8 @@ class IP_Geo_Block_Admin {
 
 			switch( $key ) {
 			  case 'providers':
+				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+				$providers = IP_Geo_Block_Provider::get_providers( 'key' );
 				foreach ( $providers as $provider => $api ) {
 					// need no key
 					if ( NULL === $api ) {
@@ -539,6 +533,8 @@ class IP_Geo_Block_Admin {
 
 		// Check ip address
 		else if ( isset( $_POST['provider'] ) ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+
 			// check format
 			$ip = $_POST['ip'];
 			if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
@@ -581,7 +577,7 @@ class IP_Geo_Block_Admin {
 			);
 
 			// delete cache of IP address
-			IP_Geo_Block_API_Cache::delete_cache();
+			delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
 
 			// refresh page
 			wp_send_json( array(

@@ -1,5 +1,6 @@
 <?php
-include_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
+require_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
 function tab_settings( $context ) {
 	$option_slug = $context->option_slug['settings'];

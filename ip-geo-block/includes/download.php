@@ -5,7 +5,7 @@ include_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
  * Default path to database file
  */
 define( 'IP_GEO_BLOCK_MAX_BUF_SIZE', 512 * 1024 ); // 512KB
-define( 'IP_GEO_BLOCK_DB_PATH', IP_GEO_BLOCK_PATH . 'database/' );
+define( 'IP_GEO_BLOCK_DB_DIR', IP_GEO_BLOCK_PATH . 'database/' );
 
 /**
  * URL of Maxmind GeoLite database

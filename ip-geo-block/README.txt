@@ -125,12 +125,12 @@ Check `statistics` tab on this plugin's option page.
 
 There are two ways. One is to add some code somewhere in your php (typically 
 `functions.php` in your theme) to substitute local IP address through filter 
-fook `ip-geo-block-remote-ip` as follows:
+fook `ip-geo-block-ip-addr` as follows:
 
 `function my_replace_ip( $ip ) {
     return '98.139.183.24'; // yahoo.com
 }
-add_filter( 'ip-geo-block-remote-ip', 'my_replace_ip' );`
+add_filter( 'ip-geo-block-ip-addr', 'my_replace_ip' );`
 
 Another method is adding a country code into `White list` or `Black list` on 
 the plugin settings page. Most of the IP Geolocation services return empty 
@@ -176,17 +176,17 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );`
 
 Yes, here is the list of all hooks.
 
-* `ip-geo-block-remote-ip`        : IP address of accessor.
+* `ip-geo-block-ip-addr`          : IP address of accessor.
 * `ip-geo-block-headers`          : compose http request headers.
 * `ip-geo-block-comment`          : validate IP address on `wp-comments-post.php`.
 * `ip-geo-block-login`            : validate IP adress on `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP adress on `wp-admin/admin.php` except ajax.
-* `ip-geo-block-maxmind-path`     : absolute path where Maxmind DB files should be saved.
-* `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind DB zip file for IPv4.
-* `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind DB zip file for IPv6.
-* `ip-geo-block-ip2location-path` : absolute path where IP2Location DB file is saved.
+* `ip-geo-block-maxmind-dir`      : absolute path where Maxmind GeoLite DB files should be saved.
+* `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
+* `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
+* `ip-geo-block-ip2location-path` : absolute path to IP2Location LITE DB file.
 
-For more details, see `samples.php` combined together within this package.
+For more details, see `samples.php` bundled within this package.
 
 == Other Notes ==
 
@@ -210,7 +210,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 1.2.0 =
-* **New feature:** Added Maxmind database auto downloader and updater.
+* **New feature:** Added Maxmind GeoLite database auto downloader and updater.
 * The filter hook `ip-geo-block-validate` was discontinued.
   Instead of it, the new filter hook `ip-geo-block-comment` is introduced.
 * **Performance improvement:** IP address is verified at an earlier stage 
