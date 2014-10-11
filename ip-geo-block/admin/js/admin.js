@@ -21,6 +21,7 @@
 		});
 	}
 
+	// Download from Maxmind server
 	function ajax_update_database() {
 		$('#ip-geo-block-download').addClass('ip-geo-block-loading');
 
@@ -50,6 +51,7 @@
 		});
 	}
 
+	// Search Geolocation
 	function ajax_get_location(service, ip) {
 		$('#ip-geo-block-loading').addClass('ip-geo-block-loading');
 
@@ -91,6 +93,7 @@
 		});
 	}
 
+	// Clear statistics
 	function ajax_clear_statistics() {
 		$('#ip-geo-block-loading').addClass('ip-geo-block-loading');
 
@@ -141,6 +144,9 @@
 				ajax_get_location(service, ip);
 			}
 			return false;
+		});
+		$('#ip-geo-block-search').on('submit', function () {
+			return false; // inhibit to submit by return key
 		});
 
 		// Attribution link (redirect without referer)
