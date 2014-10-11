@@ -413,6 +413,9 @@ class IP_Geo_Block {
 	}
 
 	public function validate_login() {// debug_trace('validate_login');
+		if ( isset( $_REQUEST['loggedout'] ) )
+			return;
+
 		add_filter( self::PLUGIN_SLUG . '-login', array( $this, 'auth_check' ), 10, 2 );
 		$this->validate_ip( 'login', '+', TRUE, FALSE );
 	}
