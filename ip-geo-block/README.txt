@@ -179,8 +179,6 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-ip-addr`          : IP address of accessor.
 * `ip-geo-block-headers`          : compose http request headers.
 * `ip-geo-block-comment`          : validate IP address on `wp-comments-post.php`.
-* `ip-geo-block-login`            : validate IP adress on `wp-login.php`.
-* `ip-geo-block-admin`            : validate IP adress on `wp-admin/admin.php` except ajax.
 * `ip-geo-block-maxmind-dir`      : absolute path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
