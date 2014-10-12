@@ -408,19 +408,19 @@ class IP_Geo_Block {
 	 * non-login users  cached           saved
 	 * login users      cached / hidden  not saved
 	 */
-	public function validate_comment() {// debug_log('validate_comment');
+	public function validate_comment() {
 		$this->validate_ip( 'comment', NULL, TRUE, TRUE );
 	}
 
-	public function validate_login() {// debug_trace('validate_login');
-		if ( isset( $_REQUEST['loggedout'] ) )
+	public function validate_login() {
+		if ( empty( $_REQUEST['action'] ) && isset( $_REQUEST['loggedout'] ) )
 			return;
 
 		add_filter( self::PLUGIN_SLUG . '-login', array( $this, 'auth_check' ), 10, 2 );
 		$this->validate_ip( 'login', '+', TRUE, FALSE );
 	}
 
-	public function validate_admin( $secure ) {// debug_log('validate_admin');
+	public function validate_admin( $secure ) {
 		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
 			$this->validate_ip( 'admin', '*', TRUE, FALSE );
 
@@ -431,7 +431,7 @@ class IP_Geo_Block {
 	 * Authentication handling
 	 *
 	 */
-	public function auth_fail( $username ) {// debug_trace('auth_fail');
+	public function auth_fail( $username ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
 		// Count up a number of fails when authentication is failed
@@ -445,12 +445,12 @@ class IP_Geo_Block {
 		}
 	}
 
-	public function auth_check( $validate, $settings ) {// debug_log('auth_check');
+	public function auth_check( $validate, $settings ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
 		// Check a number of authentication fails
 		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
-		if ( $cache && (int)$cache['fail'] > $settings['login_fails'] )
+		if ( $cache && (int)$cache['fail'] >= $settings['login_fails'] )
 			$validate += array( 'result' => 'blocked' );
 
 		return $validate;

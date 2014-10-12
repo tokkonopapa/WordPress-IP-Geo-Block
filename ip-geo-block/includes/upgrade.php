@@ -4,16 +4,16 @@ require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 function ip_geo_block_upgrade() {
 	// find IP2Location DB
 	$tmp = array(
-		WP_CONTENT_DIR . '/ip2location/',
-		WP_CONTENT_DIR . '/plugins/ip2location-tags/',
-		WP_CONTENT_DIR . '/plugins/ip2location-variables/',
-		WP_CONTENT_DIR . '/plugins/ip2location-blocker/',
+		WP_CONTENT_DIR . '/ip2location/database.bin',
+		WP_CONTENT_DIR . '/plugins/ip2location-tags/database.bin',
+		WP_CONTENT_DIR . '/plugins/ip2location-variables/database.bin',
+		WP_CONTENT_DIR . '/plugins/ip2location-blocker/database.bin',
 	);
 
 	// get path to IP2Location DB
 	foreach ( $tmp as $name ) {
-		if ( is_readable( "${name}database.bin" ) ) {
-			$ip2 = "${name}database.bin";
+		if ( is_readable( $name ) ) {
+			$ip2 = $name;
 			break;
 		}
 	}

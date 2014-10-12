@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-10-11 17:44+0900\n"
-"PO-Revision-Date: 2014-10-11 17:44+0900\n"
+"POT-Creation-Date: 2014-10-12 13:23+0900\n"
+"PO-Revision-Date: 2014-10-12 13:23+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -108,19 +108,21 @@ msgid "Validation settings"
 msgstr ""
 
 #: admin/includes/tab-settings.php:91
-msgid "Comments post"
+msgid "<dfn title=\"Validate at wp-comments-post.php\">Comments post</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:106
-msgid "Access to login"
+msgid "<dfn title=\"Validate at wp-login.php\">Access to login</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:121
-msgid "Access to admin (except ajax)"
+msgid ""
+"<dfn title=\"Validate at wp-admin/admin.php\">Access to admin (except ajax)</"
+"dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:140
-msgid "Maxmind settings"
+msgid "Maxmind GeoLite settings"
 msgstr ""
 
 #: admin/includes/tab-settings.php:148

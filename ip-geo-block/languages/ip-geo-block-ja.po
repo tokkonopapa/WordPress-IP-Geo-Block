@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-10-11 17:44+0900\n"
-"PO-Revision-Date: 2014-10-11 17:54+0900\n"
+"POT-Creation-Date: 2014-10-12 13:23+0900\n"
+"PO-Revision-Date: 2014-10-12 13:33+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -111,20 +111,28 @@ msgid "Validation settings"
 msgstr "検証の設定"
 
 #: admin/includes/tab-settings.php:91
-msgid "Comments post"
-msgstr "コメント投稿"
+msgid "<dfn title=\"Validate at wp-comments-post.php\">Comments post</dfn>"
+msgstr ""
+"<dfn title=\"wp-comments-post.phpがアクセスされた時に検証する\">コメント投稿"
+"</dfn>"
 
 #: admin/includes/tab-settings.php:106
-msgid "Access to login"
-msgstr "ログインへのアクセス"
+msgid "<dfn title=\"Validate at wp-login.php\">Access to login</dfn>"
+msgstr ""
+"<dfn title=\"wp-login.phpがアクセスされた時に検証する\">ログインへのアクセス"
+"</dfn>"
 
 #: admin/includes/tab-settings.php:121
-msgid "Access to admin (except ajax)"
-msgstr "管理領域へのアクセス（ajaxを除く）"
+msgid ""
+"<dfn title=\"Validate at wp-admin/admin.php\">Access to admin (except ajax)</"
+"dfn>"
+msgstr ""
+"<dfn title=\"wp-admin/admin.phpがアクセスされた時に検証する\">管理領域へのア"
+"クセス（ajaxを除く）</dfn>"
 
 #: admin/includes/tab-settings.php:140
-msgid "Maxmind settings"
-msgstr "Maxmindの設定"
+msgid "Maxmind GeoLite settings"
+msgstr "Maxmind GeoLiteの設定"
 
 #: admin/includes/tab-settings.php:148
 msgid "Path to database (IPv4)"

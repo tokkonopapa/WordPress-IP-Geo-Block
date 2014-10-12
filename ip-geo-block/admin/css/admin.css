@@ -1,4 +1,8 @@
 /* This stylesheet is used to style the admin option form of the plugin. */
+dfn {
+    cursor: help;
+}
+
 #check-provider label {
     width: 8em;
     display: inline-block;
@@ -37,8 +41,11 @@
 }
 
 #ip-geo-block-map {
-    margin-top: 1em;
+    width: 95%;
     height: 360px;
+    margin-top: 1em;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* google map infomation window */

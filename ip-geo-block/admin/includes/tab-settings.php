@@ -75,7 +75,7 @@ function tab_settings( $context ) {
 	);
 
 	/*----------------------------------------*
-	 * Validation timings
+	 * Validation settings
 	 *----------------------------------------*//*
 	$section = IP_Geo_Block::PLUGIN_SLUG . '-validation';
 	add_settings_section(
@@ -88,7 +88,7 @@ function tab_settings( $context ) {
 	$field = 'validation';
 	add_settings_field(
 		$option_name . "_${field}_comment",
-		__( 'Comments post', IP_Geo_Block::TEXT_DOMAIN ),
+		__( '<dfn title="Validate at wp-comments-post.php">Comments post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -103,7 +103,7 @@ function tab_settings( $context ) {
 
 	add_settings_field(
 		$option_name . "_${field}_login",
-		__( 'Access to login', IP_Geo_Block::TEXT_DOMAIN ),
+		__( '<dfn title="Validate at wp-login.php">Access to login</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -118,7 +118,7 @@ function tab_settings( $context ) {
 
 	add_settings_field(
 		$option_name . "_${field}_admin",
-		__( 'Access to admin (except ajax)', IP_Geo_Block::TEXT_DOMAIN ),
+		__( '<dfn title="Validate at wp-admin/admin.php">Access to admin (except ajax)</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -137,7 +137,7 @@ function tab_settings( $context ) {
 	$section = IP_Geo_Block::PLUGIN_SLUG . '-maxmind';
 	add_settings_section(
 		$section,
-		__( 'Maxmind settings', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Maxmind GeoLite settings', IP_Geo_Block::TEXT_DOMAIN ),
 		NULL,
 		$option_slug
 	);
