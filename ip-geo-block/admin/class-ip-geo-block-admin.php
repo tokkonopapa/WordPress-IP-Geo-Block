@@ -370,9 +370,8 @@ class IP_Geo_Block_Admin {
 		$status = 'updated';
 
 		// setup base options
-		$output = get_option( $option_name );
-		$key = explode( '_', $option_name );
-		$default = IP_Geo_Block::get_defaults( $key[3] );
+		$output = get_option( $this->option_name[ $option_name ] );
+		$default = IP_Geo_Block::get_defaults( $option_name );
 
 		// extract key with 'only-' on its top
 		$only = array_shift( array_keys( array_diff_key( $input, $output ) ) );
@@ -492,7 +491,7 @@ class IP_Geo_Block_Admin {
 		// @link: http://codex.wordpress.org/Function_Reference/add_settings_error
 		add_settings_error(
 			$this->option_slug
-			, 'sanitize_' . $option_name
+			, $this->option_name[ $option_name ]
 			, $message //.' : ' . print_r( $output, true )
 			, $status
 		);
@@ -505,7 +504,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function sanitize_settings( $input = array() ) {
-		return $this->sanitize_options( $this->option_name['settings'], $input );
+		return $this->sanitize_options( 'settings', $input );
 	}
 
 	/**
