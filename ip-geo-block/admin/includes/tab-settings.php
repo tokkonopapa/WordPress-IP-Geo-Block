@@ -75,63 +75,6 @@ function tab_settings( $context ) {
 	);
 
 	/*----------------------------------------*
-	 * Validation settings
-	 *----------------------------------------*//*
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-validation';
-	add_settings_section(
-		$section,
-		__( 'Validation settings', IP_Geo_Block::TEXT_DOMAIN ),
-		NULL,
-		$option_slug
-	);
-
-	$field = 'validation';
-	add_settings_field(
-		$option_name . "_${field}_comment",
-		__( '<dfn title="Validate at wp-comments-post.php">Comments post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'checkbox',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'comment',
-			'value' => $options[ $field ]['comment'],
-		)
-	);
-
-	add_settings_field(
-		$option_name . "_${field}_login",
-		__( '<dfn title="Validate at wp-login.php">Access to login</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'checkbox',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'login',
-			'value' => $options[ $field ]['login'],
-		)
-	);
-
-	add_settings_field(
-		$option_name . "_${field}_admin",
-		__( '<dfn title="Validate at wp-admin/admin.php">Access to admin (except ajax)</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'checkbox',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'admin',
-			'value' => $options[ $field ]['admin'],
-		)
-	);//*/
-
-	/*----------------------------------------*
 	 * Maxmind settings
 	 *----------------------------------------*/
 	$section = IP_Geo_Block::PLUGIN_SLUG . '-maxmind';

@@ -161,8 +161,6 @@ function tab_statistics( $context ) {
 				$html .= "<td>" . esc_html( $val['code'] ) . "</td>";
 				$html .= "<td>" . ( $time - (int)$val['time'] ) . " / ";
 				$html .= ! empty( $val['call'] ) ? (int)$val['call'] : '-';
-//				$html .= '(' . (! empty( $val['fail'] ) ? $val['fail'] : 0) . ')';
-//				$html .= ! empty( $val['auth'] ) ? '+' : '-';
 				$html .= "</td></tr>";
 			}
 		}
