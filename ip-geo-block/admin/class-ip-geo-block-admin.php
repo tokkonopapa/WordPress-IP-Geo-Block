@@ -371,6 +371,8 @@ class IP_Geo_Block_Admin {
 
 		// setup base options
 		$output = get_option( $option_name );
+		$key = explode( '_', $option_name );
+		$default = IP_Geo_Block::get_defaults( $key[3] );
 
 		// extract key with 'only-' on its top
 		$only = array_shift( array_keys( array_diff_key( $input, $output ) ) );
@@ -447,15 +449,15 @@ class IP_Geo_Block_Admin {
 
 			  default: // checkbox, select, text
 				// single field
-				if ( ! is_array( $value ) ) {
+				if ( ! is_array( $default[ $key ] ) ) {
 					// for checkbox
-					if ( is_bool( $value ) ) {
+					if ( is_bool( $default[ $key ] ) ) {
 						$output[ $key ] = ! empty( $input[ $key ] );
 					}
 
 					// otherwise if implicit
 					else if ( isset( $input[ $key ] ) ) {
-						$output[ $key ] = is_int( $value ) ?
+						$output[ $key ] = is_int( $default[ $key ] ) ?
 							(int)$input[ $key ] :
 							sanitize_text_field( trim( $input[ $key ] ) );
 					}
@@ -464,13 +466,13 @@ class IP_Geo_Block_Admin {
 				// sub field
 				else foreach ( array_keys( $value ) as $sub ) {
 					// for checkbox
-					if ( is_bool( $value[ $sub ] ) ) {
+					if ( is_bool( $default[ $key ][ $sub ] ) ) {
 						$output[ $key ][ $sub ] = ! empty( $input[ $key ][ $sub ] );
 					}
 
 					// otherwise if implicit
 					else if ( isset( $input[ $key ][ $sub ] ) ) {
-						$output[ $key ][ $sub ] = is_int( $value[ $sub ] ) ?
+						$output[ $key ][ $sub ] = is_int( $default[ $key ][ $sub ] ) ?
 							(int)$input[ $key ][ $sub ] :
 							sanitize_text_field( trim( $input[ $key ][ $sub ] ) );
 					}
