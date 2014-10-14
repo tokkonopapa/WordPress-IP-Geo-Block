@@ -4,7 +4,7 @@ Donate link:
 Tags: comment, spam, IP address, geolocation
 Requires at least: 3.5
 Tested up to: 4.0
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,7 +36,8 @@ these IP2Location plugins, you should be once deactivated and then activated
 in order to set the path to `database.bin`.
 
 4. Cache mechanism with transient API for the fetched IP addresses has been 
-equipped to reduce load on the server against undesired access.
+equipped to reduce load on the server against continuous access within a 
+short time.
 
 5. Custom validation function can be added using `ip-geo-block-comment` 
 filter hook with `add_filter()`.
@@ -142,7 +143,7 @@ the plugin settings page. Most of the IP Geolocation services return empty
 Yes, you can use `add_filter()` with filter hook `ip-geo-block-comment` in 
 somewhere (typically `functions.php` in your theme) as follows:
 
-`function my_ip_blacklist( $validate ) {
+`function my_blacklist( $validate ) {
     $blacklist = array(
         '123.456.789.',
     );
@@ -156,10 +157,7 @@ somewhere (typically `functions.php` in your theme) as follows:
 
     return $validate;
 }
-add_filter( 'ip-geo-block-comment', 'my_ip_blacklist' );`
-
-Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
-on the `statistics` tab of this plugin's option page.
+add_filter( 'ip-geo-block-comment', 'my_blacklist' );`
 
 = Can I change user agent strings when fetching services? =
 

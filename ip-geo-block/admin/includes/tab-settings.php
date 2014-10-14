@@ -5,7 +5,7 @@ require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 function tab_settings( $context ) {
 	$option_slug = $context->option_slug['settings'];
 	$option_name = $context->option_name['settings'];
-	$options = get_option( $option_name );
+	$options = IP_Geo_Block::get_option( 'settings' );
 
 	/**
 	 * Register a setting and its sanitization callback.

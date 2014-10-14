@@ -370,8 +370,8 @@ class IP_Geo_Block_Admin {
 		$status = 'updated';
 
 		// setup base options
-		$output = get_option( $this->option_name[ $option_name ] );
-		$default = IP_Geo_Block::get_defaults( $option_name );
+		$output = IP_Geo_Block::get_option( $option_name );
+		$default = IP_Geo_Block::get_default( $option_name );
 
 		// extract key with 'only-' on its top
 		$only = array_shift( array_keys( array_diff_key( $input, $output ) ) );
@@ -547,7 +547,7 @@ class IP_Geo_Block_Admin {
 
 				if ( $name ) {
 					// get option settings and compose request headers
-					$options = get_option( $this->option_name['settings'] );
+					$options = IP_Geo_Block::get_option( 'settings' );
 					$args = IP_Geo_Block::get_request_headers( $options );
 
 					// create object for provider and get location
@@ -574,7 +574,7 @@ class IP_Geo_Block_Admin {
 			// set default values
 			update_option(
 				$this->option_name['statistics'],
-				IP_Geo_Block::get_defaults( 'statistics' )
+				IP_Geo_Block::get_default( 'statistics' )
 			);
 
 			// delete cache of IP address

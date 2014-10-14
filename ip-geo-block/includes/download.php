@@ -1,10 +1,11 @@
 <?php
-include_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
+require_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
+if ( ! function_exists( 'download_url' ) )
+	require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
 /**
  * Default path to database file
  */
-define( 'IP_GEO_BLOCK_MAX_BUF_SIZE', 512 * 1024 ); // 512KB
 define( 'IP_GEO_BLOCK_DB_DIR', IP_GEO_BLOCK_PATH . 'database/' );
 
 /**
@@ -50,11 +51,7 @@ function ip_geo_block_download_zip( $url, $args, $filename, $modified ) {
 	);
 
 	// fetch file and get response code & message
-	$res  = wp_remote_get( esc_url_raw( $url ), $args );
-	$code = wp_remote_retrieve_response_code   ( $res );
-	$msg  = wp_remote_retrieve_response_message( $res );
-	$data = wp_remote_retrieve_header( $res, 'last-modified' );
-	$modified = $data ? strtotime( $data ) : $modified;
+	$res = wp_remote_head( ( $url = esc_url_raw( $url ) ), $args );
 
 	if ( is_wp_error( $res ) )
 		return array(
@@ -62,7 +59,12 @@ function ip_geo_block_download_zip( $url, $args, $filename, $modified ) {
 			'message' => $res->get_error_message(),
 		);
 
-	else if ( 304 == $code )
+	$code = wp_remote_retrieve_response_code   ( $res );
+	$msg  = wp_remote_retrieve_response_message( $res );
+	$data = wp_remote_retrieve_header( $res, 'last-modified' );
+	$modified = $data ? strtotime( $data ) : $modified;
+
+	if ( 304 == $code )
 		return array(
 			'code' => $code,
 			'message' => "$code $msg",
@@ -76,46 +78,44 @@ function ip_geo_block_download_zip( $url, $args, $filename, $modified ) {
 			'message' => "$code $msg",
 		);
 
-	// unzip downloaded file
+	// downloaded and unzip
 	try {
-		// in case of 'stream' being false
-		if ( $data = wp_remote_retrieve_body( $res ) ) {
-			if ( $gz = fopen( "${filename}.gz", 'wb' ) ) {
-				fwrite( $gz, $data );
-				fclose( $gz );
-			}
-		}
+		// download file
+		$res = download_url( $url );
+		if ( is_wp_error( $res ) )
+			throw new Exception(
+				$res->get_error_code() . ' ' . $res->get_error_message()
+			);
 
-		if ( FALSE === ( $gz = gzopen( "${filename}.gz", 'r' ) ) ) {
+		if ( FALSE === ( $gz = gzopen( $res, 'r' ) ) )
 			throw new Exception(
 				sprintf(
 					__( 'Cannot open %s to read.', IP_Geo_Block::TEXT_DOMAIN ),
-					"${filename}.gz"
+					$res
 				)
 			);
-		}
 
-		if ( FALSE === ( $fp = fopen( "${filename}", 'wb' ) ) ) {
+		if ( FALSE === ( $fp = fopen( $filename, 'wb' ) ) )
 			throw new Exception(
 				sprintf(
 					__( 'Cannot open %s to write.', IP_Geo_Block::TEXT_DOMAIN ),
-					"${filename}"
+					$filename
 				)
 			);
-		}
 
-		while ( $data = gzread( $gz, IP_GEO_BLOCK_MAX_BUF_SIZE ) )
+		// same block size in wp-includes/class-http.php
+		while ( $data = gzread( $gz, 4096 ) )
 			fwrite( $fp, $data, strlen( $data ) );
 
 		gzclose( $gz );
 		fclose ( $fp );
-		@unlink( "${filename}.gz" );
+		@unlink( $res );
 	}
 
 	catch ( Exception $e ) {
 		if ( $gz ) gzclose( $gz );
 		if ( $fp ) fclose ( $fp );
-		@unlink( "${filename}.gz" );
+		if ( ! is_wp_error( $res ) ) @unlink( $res );
 
 		return array(
 			'code' => $e->getCode(),
@@ -137,20 +137,28 @@ function ip_geo_block_download_zip( $url, $args, $filename, $modified ) {
 /**
  * Download Maxmind database files for IPv4 and IPv6
  *
- * @param string $url URL of remote file to be downloaded.
+ * @param array &$db path information for database files.
+ * @param string $dir directory where database files are saved.
  * @param array $args request headers.
- * @param string $filename path to downloaded file.
- * @param int $modified time of last modified on the remote server.
  * @return array status messages.
  */
 function ip_geo_block_download( &$db, $dir, $args ) {
-	// url to the zip file
+	// directory where database files are saved
+	$dir = trailingslashit(
+		apply_filters( IP_Geo_Block::PLUGIN_SLUG . '-maxmind-dir', $dir )
+	); 
+
+	/**
+	 * Download database file for IPv4
+	 */
 	$url = apply_filters(
-		'ip-geo-block-maxmind-zip-ipv4', IP_GEO_BLOCK_MAXMIND_IPV4_ZIP
+		IP_Geo_Block::PLUGIN_SLUG . '-maxmind-zip-ipv4', IP_GEO_BLOCK_MAXMIND_IPV4_ZIP
 	);
 
-	// download IPv4
+	// check the path
 	ip_geo_block_download_path( $url, $dir, $db['ipv4_path'], $db['ipv4_last'] );
+
+	// download and unzip file
 	$ipv4 = ip_geo_block_download_zip( $url, $args, $db['ipv4_path'], $db['ipv4_last'] );
 
 	if ( ! empty( $ipv4['filename'] ) )
@@ -159,13 +167,17 @@ function ip_geo_block_download( &$db, $dir, $args ) {
 	if ( ! empty( $ipv4['modified'] ) )
 		$db['ipv4_last'] = $ipv4['modified'];
 
-	// url to the zip file
+	/**
+	 * Download database file for IPv4
+	 */
 	$url = apply_filters(
-		'ip-geo-block-maxmind-zip-ipv6', IP_GEO_BLOCK_MAXMIND_IPV6_ZIP
+		IP_Geo_Block::PLUGIN_SLUG . '-maxmind-zip-ipv6', IP_GEO_BLOCK_MAXMIND_IPV6_ZIP
 	);
 
-	// download IPv6
+	// check the path
 	ip_geo_block_download_path( $url, $dir, $db['ipv6_path'], $db['ipv6_last'] );
+
+	// download and unzip file
 	$ipv6 = ip_geo_block_download_zip( $url, $args, $db['ipv6_path'], $db['ipv6_last'] );
 
 	if ( ! empty( $ipv6['filename'] ) )

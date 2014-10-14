@@ -109,7 +109,7 @@ add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
  * @param  string $validate['code'] country code
  * @return array $validate add 'result' as 'passed' or 'blocked' if possible
  */
-function my_ip_blacklist( $validate ) {
+function my_blacklist( $validate ) {
 	$blacklist = array(
 		'123.456.789.',
 	);
@@ -123,6 +123,6 @@ function my_ip_blacklist( $validate ) {
 
 	return $validate;
 }
-add_filter( 'ip-geo-block-comment', 'my_ip_blacklist' );
+add_filter( 'ip-geo-block-comment', 'my_blacklist' );
 
 endif;

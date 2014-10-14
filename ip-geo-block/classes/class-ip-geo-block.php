@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '1.2.0';
+	const VERSION = '1.2.1';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip-geo-block-cache';
@@ -27,88 +27,40 @@ class IP_Geo_Block {
 	 */
 	protected static $instance = null;
 
-	/**
-	 * Default values of option table to be cached into options database table.
-	 *
-	 */
-	protected static $option_table = array(
-
-		// settings (should be read on every page that has comment form)
-		'ip_geo_block_settings' => array(
-			'version'         => '1.2',   // Version of option data
-			// from version 1.0
-			'providers'       => array(), // List of providers and API keys
-			'comment'         => array(   // Message on the comment form
-				'pos'         => 0,       // Position (0:none, 1:top, 2:bottom)
-				'msg'         => NULL,    // Message text on comment form
-			),
-			'matching_rule'   => 0,       // 0:white list, 1:black list
-			'white_list'      => NULL,    // Comma separeted country code
-			'black_list'      => NULL,    // Comma separeted country code
-			'timeout'         => 5,       // Timeout in second
-			'response_code'   => 403,     // Response code
-			'save_statistics' => FALSE,   // Save statistics
-			'clean_uninstall' => FALSE,   // Remove all savings from DB
-			// from version 1.1
-			'cache_hold'      => 10,      // Max entries in cache
-			'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
-			// from version 1.2
-			'flags'           => array(), // Multi purpose flags
-			'login_fails'     => 5,       // Max counts of login fail
-			'validation'      => array(   // Action hook for validation
-				'comment'     => TRUE,    // For comment spam
-				'login'       => FALSE,   // For login intrusion
-				'admin'       => FALSE,   // For admin intrusion
-			),
-			'update'          => array(   // Updating IP address DB
-				'auto'        => TRUE,    // Auto updating of DB file
-				'retry'       => 0,       // Number of retry to download
-				'cycle'       => 30,      // Updating cycle (days)
-			),
-			'maxmind'         => array(   // Maxmind
-				'ipv4_path'   => NULL,    // Path to IPv4 DB file
-				'ipv6_path'   => NULL,    // Path to IPv6 DB file
-				'ipv4_last'   => NULL,    // Last-Modified of DB file
-				'ipv6_last'   => NULL,    // Last-Modified of DB file
-			),
-			'ip2location'     => array(   // IP2Location
-				'ipv4_path'   => NULL,    // Path to IPv4 DB file
-				'ipv6_path'   => NULL,    // Path to IPv6 DB file
-				'ipv4_last'   => NULL,    // Last-Modified of DB file
-				'ipv6_last'   => NULL,    // Last-Modified of DB file
-			),
-		),
-
-		// statistics (should be read when comment has posted)
-		'ip_geo_block_statistics' => array(
-			'passed'    => NULL,
-			'blocked'   => NULL,
-			'unknown'   => NULL,
-			'IPv4'      => NULL,
-			'IPv6'      => NULL,
-			'countries' => array(),
-			'providers' => array(),
-		),
-	);
-
 	// option table accessor by name
 	public static $option_keys = array(
 		'settings'   => 'ip_geo_block_settings',
 		'statistics' => 'ip_geo_block_statistics',
 	);
 
-	// get default settings values
-	public static function get_defaults( $name = 'settings' ) {
-		return self::$option_table[ self::$option_keys[ $name ] ];
+	// get default optional values
+	public static function get_default( $name = 'settings' ) {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		return IP_Geo_Block_Options::get_table( self::$option_keys[ $name ] );
+	}
+
+	// get optional values from wp_options
+	public static function get_option( $name = 'settings' ) {
+		$option = get_option( self::$option_keys[ $name ] );
+		if ( FALSE === $option ) {
+			// Regist error
+			$option = self::get_default( 'settings' );
+			$option['flags']['error'] =
+				sprintf( __( 'Option table %s was gone.', self::TEXT_DOMAIN ), $name );
+			update_option( self::$option_keys['settings'], $option );
+			$option = self::get_default( $name );
+		}
+
+		return $option;
 	}
 
 	// http://codex.wordpress.org/Function_Reference/wp_remote_get
-	public static function get_request_headers( $options ) {
+	public static function get_request_headers( $settings ) {
 		global $wp_version;
 		return apply_filters(
 			IP_Geo_Block::PLUGIN_SLUG . '-headers',
 			array(
-				'timeout' => $options['timeout'],
+				'timeout' => $settings['timeout'],
 				'user-agent' => "WordPress/$wp_version; " . self::PLUGIN_SLUG . ' ' . self::VERSION,
 			)
 		);
@@ -122,11 +74,12 @@ class IP_Geo_Block {
 		// Load plugin text domain
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
-		$opts = get_option( self::$option_keys['settings'] );
-		if ( $opts['validation']['comment'] ) {
+		$settings = self::get_option( 'settings' );
+
+		if ( $settings['validation']['comment'] ) {
 			// Message text on comment form
-			if ( $opts['comment']['pos'] ) {
-				$pos = 'comment_form' . ( $opts['comment']['pos'] == 1 ? '_top' : '' );
+			if ( $settings['comment']['pos'] ) {
+				$pos = 'comment_form' . ( $settings['comment']['pos'] == 1 ? '_top' : '' );
 				add_action( $pos, array( $this, 'comment_form_message' ) );
 			}
 
@@ -135,7 +88,7 @@ class IP_Geo_Block {
 		}
 
 		// action hook from download cron job
-		if ( $opts['update']['auto'] )
+		if ( $settings['update']['auto'] )
 			add_action( self::CRON_NAME, array( $this, 'download_database' ) );
 	}
 
@@ -156,8 +109,10 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function activate( $network_wide ) {
-		require_once( IP_GEO_BLOCK_PATH . 'includes/upgrade.php' );
-		$settings = ip_geo_block_upgrade();
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+
+		// upgrade options
+		$settings = IP_Geo_Block_Options::upgrade();
 
 		// schedule auto updating
 		if ( $settings['update']['auto'] )
@@ -179,7 +134,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function uninstall() {
-		$settings = get_option( self::$option_keys['settings'] );
+		$settings = self::get_option( 'settings' );
 
 		if ( $settings['clean_uninstall'] ) {
 			// delete settings options
@@ -204,7 +159,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function comment_form_message( $id ) {
-		$msg = get_option( self::$option_keys['settings'] );
+		$msg = self::get_option( 'settings' );
 		$msg = htmlspecialchars( $msg['comment']['msg'] );
 		if ( $msg ) echo '<p id="', self::PLUGIN_SLUG, '-msg">', $msg, '</p>';
 //		global $allowedtags;
@@ -212,7 +167,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Get country code
+	 * Get country code from ip address
 	 *
 	 */
 	private function get_country( $ip, $settings ) {
@@ -280,7 +235,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	private function update_statistics( $validate ) {
-		$statistics = get_option( self::$option_keys['statistics'] );
+		$statistics = self::get_option( 'statistics' );
 
 		$result = isset( $validate['result'] ) ? $validate['result'] : 'passed';
 		++$statistics[ $result ];
@@ -341,6 +296,12 @@ class IP_Geo_Block {
 	 * @param boolean $save_stat  update statistics regardless of validation result.
 	 */
 	private function validate_ip( $hook, $mark_cache, $save_cache, $save_stat ) {
+		// This function may be called multiple times for each request.
+		static $num_of_calls = 0;
+		static $settings = NULL;
+		if ( NULL === $settings )
+			$settings = self::get_option( 'settings' );
+
 		// apply custom filter of validation
 		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
 		// @param $validate = array(
@@ -351,7 +312,6 @@ class IP_Geo_Block {
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
 		$ip = apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] );
-		$settings = get_option( self::$option_keys['settings'] );
 		$validate = $this->get_country( $ip, $settings );
 		$validate = apply_filters( self::PLUGIN_SLUG . "-$hook", $validate, $settings );
 
@@ -366,6 +326,7 @@ class IP_Geo_Block {
 				$validate['ip'],
 				array(
 					'code' => $validate['code'] . $mark_cache,
+					'call' => $num_of_calls++,
 					'auth' => is_user_logged_in(),
 				),
 				$settings
@@ -435,13 +396,11 @@ class IP_Geo_Block {
 	public function download_database( $only = NULL ) {
 		require_once( IP_GEO_BLOCK_PATH . 'includes/download.php' );
 
-		// download database
-		$settings = get_option( self::$option_keys['settings'] );
+		// download database files
+		$settings = self::get_option( 'settings' );
 		$res = ip_geo_block_download(
 			$settings['maxmind'],
-			trailingslashit(
-				apply_filters( self::PLUGIN_SLUG . '-maxmind-dir', IP_GEO_BLOCK_DB_DIR )
-			), 
+			IP_GEO_BLOCK_DB_DIR,
 			self::get_request_headers( $settings )
 		);
 

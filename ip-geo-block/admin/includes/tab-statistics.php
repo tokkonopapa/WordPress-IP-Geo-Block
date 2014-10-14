@@ -2,7 +2,7 @@
 function tab_statistics( $context ) {
 	$option_slug = $context->option_slug['statistics'];
 	$option_name = $context->option_name['statistics'];
-	$options = get_option( $option_name );
+	$options = IP_Geo_Block::get_option( 'statistics' );
 
 	register_setting(
 		$option_slug,

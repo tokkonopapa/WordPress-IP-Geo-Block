@@ -13,14 +13,13 @@
  * Plugin Name:       IP Geo Block
  * Plugin URI:        http://wordpress.org/plugins/ip-geo-block/
  * Description:       It will block any spam comments posted from undesired countries.
- * Version:           1.2.0
+ * Version:           1.2.1
  * Author:            tokkonopapa
- * Author URI:        http://tokkono.cute.coocan.jp/blog/slow/
+ * Author URI:        https://github.com/tokkonopapa/WordPress-IP-Geo-Block
  * Text Domain:       ip-geo-block
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path:       /languages
- * GitHub Plugin URI: https://github.com/tokkonopapa/WordPress-IP-Geo-Block
  */
 
 // If this file is called directly, abort.
