@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
- * @copyright 2013 tokkonopapa
+ * @copyright 2013, 2014 tokkonopapa
  */
 
 class IP_Geo_Block_Options {
@@ -19,7 +19,7 @@ class IP_Geo_Block_Options {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
-			'version'         => '1.2',   // Version of option data
+			'version'         => '1.2.1', // Version of option data
 			// from version 1.0
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
@@ -132,8 +132,8 @@ class IP_Geo_Block_Options {
 
 			// create new option table
 			$settings = $default[ $key[0] ];
-			add_option( $key[0], $default[ $key[0] ], '', 'yes' );
-			add_option( $key[1], $default[ $key[1] ], '', 'no'  );
+			add_option( $key[0], $default[ $key[0] ] );
+			add_option( $key[1], $default[ $key[1] ] );
 		}
 
 		else {
@@ -151,6 +151,12 @@ class IP_Geo_Block_Options {
 					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
 			}
 
+			if ( version_compare( $settings['version'], '1.2.1' ) < 0 ) {
+				$tmp = get_option( $key[1] );
+				delete_option( $key[1] );
+				add_option( $key[1], $tmp ); // re-create as autoload
+			}
+
 			// update IP2Location
 			$settings['ip2location']['ipv4_path'] = $ip2;
 
@@ -164,4 +170,5 @@ class IP_Geo_Block_Options {
 		// return upgraded settings
 		return $settings;
 	}
+
 }

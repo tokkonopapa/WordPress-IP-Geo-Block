@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
- * @copyright 2013 tokkonopapa
+ * @copyright 2013, 2014 tokkonopapa
  */
 
 /**
@@ -450,10 +450,10 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
 }
 
 /**
- * Check if internal databases are available
+ * Check if local database files are available
  */
-if ( function_exists( 'get_option' ) ) {
-	$options = get_option( 'ip_geo_block_settings' );
+if ( class_exists( 'IP_Geo_Block' ) ) :
+	$options = IP_Geo_Block::get_option( 'settings' );
 
 	// IP2Location
 	$path = $options['ip2location']['ipv4_path'];
@@ -467,7 +467,7 @@ if ( function_exists( 'get_option' ) ) {
 		define( 'IP_GEO_BLOCK_MAXMIND_IPV4', $options['maxmind']['ipv4_path'] );
 		define( 'IP_GEO_BLOCK_MAXMIND_IPV6', $options['maxmind']['ipv6_path'] );
 	}
-}
+endif;
 
 /**
  * Class for IP2Location

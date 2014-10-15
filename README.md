@@ -26,7 +26,8 @@ these IP2Location plugins, you should be once deactivated and then activated
 in order to set the path to `database.bin`.
 
 4. Cache mechanism with transient API for the fetched IP addresses has been 
-equipped to reduce load on the server against undesired access.
+equipped to reduce load on the server against continuous access within a 
+short time.
 
 5. Custom validation function can be added using `ip-geo-block-comment` 
 filter hook with `add_filter()`.
@@ -124,7 +125,7 @@ Yes, you can use `add_filter()` with filter hook `ip-geo-block-comment` in
 somewhere (typically `functions.php` in your theme) as follows:
 
 ```php
-function my_ip_blacklist( $validate ) {
+function my_blacklist( $validate ) {
     $blacklist = array(
         '123.456.789.',
     );
@@ -138,11 +139,8 @@ function my_ip_blacklist( $validate ) {
 
     return $validate;
 }
-add_filter( 'ip-geo-block-comment', 'my_ip_blacklist' );
+add_filter( 'ip-geo-block-comment', 'my_blacklist' );
 ```
-
-Then you can find `ZZ` as a country code in the list of `Blocked by countries` 
-on the `statistics` tab of this plugin's option page.
 
 #### Can I change user agent strings when fetching services ? ####
 
@@ -198,6 +196,12 @@ this plugin on the plugin dashboard.
 
 #### Change log
 
+- 1.2.1
+    - **Fixed an issue:** Option table will be updated automatically without
+      deactivate/re-activate when this plugin is upgraded.
+    - **A little bit performance improvement:**
+      Less memory footprint at downloading Maxmind database.
+      Less sql queries when `Save statistics` is enable.
 - 1.2.0
     - **New feature:** Added Maxmind GeoLite database auto downloader and updater.
     - The filter hook `ip-geo-block-validate` was discontinued.

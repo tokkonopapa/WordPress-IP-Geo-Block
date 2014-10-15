@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
- * @copyright 2013 tokkonopapa
+ * @copyright 2013, 2014 tokkonopapa
  */
 
 class IP_Geo_Block {
@@ -42,15 +42,8 @@ class IP_Geo_Block {
 	// get optional values from wp_options
 	public static function get_option( $name = 'settings' ) {
 		$option = get_option( self::$option_keys[ $name ] );
-		if ( FALSE === $option ) {
-			// Regist error
-			$option = self::get_default( 'settings' );
-			$option['flags']['error'] =
-				sprintf( __( 'Option table %s was gone.', self::TEXT_DOMAIN ), $name );
-			update_option( self::$option_keys['settings'], $option );
+		if ( FALSE === $option )
 			$option = self::get_default( $name );
-		}
-
 		return $option;
 	}
 
@@ -75,6 +68,9 @@ class IP_Geo_Block {
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
 		$settings = self::get_option( 'settings' );
+
+		if ( version_compare( $settings['version'], '1.2.1' ) < 0 )
+			self::activate();
 
 		if ( $settings['validation']['comment'] ) {
 			// Message text on comment form
@@ -108,7 +104,7 @@ class IP_Geo_Block {
 	 * Register options into database table when the plugin is activated.
 	 *
 	 */
-	public static function activate( $network_wide ) {
+	public static function activate( $network_wide = NULL ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 
 		// upgrade options
@@ -123,7 +119,7 @@ class IP_Geo_Block {
 	 * Fired when the plugin is deactivated.
 	 *
 	 */
-	public static function deactivate( $network_wide ) {
+	public static function deactivate( $network_wide = NULL ) {
 		// cancel schedule
 		if ( wp_next_scheduled( self::CRON_NAME ) ) // @since 2.1.0
 			wp_clear_scheduled_hook( self::CRON_NAME );
@@ -298,9 +294,6 @@ class IP_Geo_Block {
 	private function validate_ip( $hook, $mark_cache, $save_cache, $save_stat ) {
 		// This function may be called multiple times for each request.
 		static $num_of_calls = 0;
-		static $settings = NULL;
-		if ( NULL === $settings )
-			$settings = self::get_option( 'settings' );
 
 		// apply custom filter of validation
 		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
@@ -311,6 +304,7 @@ class IP_Geo_Block {
 		//     'provider' => $provider, /* the name of validator               */
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
+		$settings = self::get_option( 'settings' );
 		$ip = apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] );
 		$validate = $this->get_country( $ip, $settings );
 		$validate = apply_filters( self::PLUGIN_SLUG . "-$hook", $validate, $settings );

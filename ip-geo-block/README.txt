@@ -205,6 +205,13 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 == Changelog ==
 
+= 1.2.1 =
+* **Fixed an issue:** Option table will be updated automatically without
+  deactivate/re-activate when this plugin is upgraded.
+* **A little bit performance improvement:**
+  Less memory footprint at downloading Maxmind database.
+  Less sql queries when `Save statistics` is enable.
+
 = 1.2.0 =
 * **New feature:** Added Maxmind GeoLite database auto downloader and updater.
 * The filter hook `ip-geo-block-validate` was discontinued.
