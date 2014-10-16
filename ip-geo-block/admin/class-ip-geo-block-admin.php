@@ -442,7 +442,6 @@ class IP_Geo_Block_Admin {
 
 			  // for arrays not on the form
 			  case 'flags':
-			  case 'validation': // should be removed when it is implemented.
 			  case 'ip2location':
 				break;
 
