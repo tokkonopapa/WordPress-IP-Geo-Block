@@ -125,4 +125,32 @@ function my_blacklist( $validate ) {
 }
 add_filter( 'ip-geo-block-comment', 'my_blacklist' );
 
+
+/**
+ * Example8: usage of 'ip-geo-block-login'
+ * Use case: allow login only from specific ip addresses in the whitelist
+ * (validate ip address to exclude Brute-force attack on login process)
+ *
+ * @param  string $validate['ip'] ip address
+ * @param  string $validate['code'] country code
+ * @return array $validate add 'result' as 'passed' or 'blocked' if possible
+ */
+function my_whitelist( $validate ) {
+	$whitelist = array(
+		'jp',
+	);
+
+	$validate['result'] = 'blocked';
+
+	foreach ( $whitelist as $country ) {
+		if ( strtoupper( $country ) === $validate['code'] ) {
+			$validate['result'] = 'passed';
+			break;
+		}
+	}
+
+	return $validate;
+}
+add_filter( 'ip-geo-block-login', 'my_whitelist' ); // hook custom filter
+
 endif;

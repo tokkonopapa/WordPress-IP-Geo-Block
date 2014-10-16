@@ -13,7 +13,7 @@
  * Plugin Name:       IP Geo Block
  * Plugin URI:        http://wordpress.org/plugins/ip-geo-block/
  * Description:       It will block any spam comments posted from undesired countries.
- * Version:           1.2.1
+ * Version:           1.3.0
  * Author:            tokkonopapa
  * Author URI:        https://github.com/tokkonopapa/WordPress-IP-Geo-Block
  * Text Domain:       ip-geo-block
@@ -21,6 +21,28 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path:       /languages
  */
+define( 'DEBUG_LEN', 500 ); // Ring buffer length
+
+date_default_timezone_set( 'Asia/Tokyo' );
+
+function debug_log( $msg, $file = null, $line = null, $trace = false ) {
+	$file = basename( $file );
+	$msg = date( "Y/m/d,D,H:i:s" )
+		. ( $file ? " $file"  : '' )
+		. ( $line ? "($line)" : '' )
+		. ' ' . trim( $msg );
+	if ( $trace ) $msg .= ' ' . print_r( debug_backtrace(), true );
+	$dir = __DIR__ . '/';
+	$fp = @fopen( $dir . basename( __FILE__, '.php' ) . '.log', 'c+' ); // PHP 5 >= 5.2.6
+	$stat = @fstat( $fp );
+	$buff = explode( "\n", @fread( $fp, $stat['size'] ) . $msg );
+	$buff = array_slice( $buff, -DEBUG_LEN );
+	@rewind( $fp );
+	@fwrite( $fp, implode( "\n", $buff ) . "\n" );
+	@fflush( $fp );
+	@ftruncate( $fp, ftell( $fp ) );
+	@fclose( $fp );
+}
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {

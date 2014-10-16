@@ -59,9 +59,9 @@ filter hook with `add_filter()`.
 
 - **Response code**  
     Select one of the [response code][RFC] to be sent when it blocks a comment.
-    The 2xx code will refresh to your top page, the 3xx code will redirect to
+    The 2xx code will lead to your top page, the 3xx code will redirect to
     [Black Hole Server][BHS], the 4xx code will lead to WordPress error page, 
-    and the 5xx will pretend an error.
+    and the 5xx will pretend an server error.
 
 - **Remove settings at uninstallation**  
     If you checked this option, all settings will be removed when this plugin
@@ -196,12 +196,20 @@ this plugin on the plugin dashboard.
 
 #### Change log
 
+- 1.3.0
+    - **New feature:** Protection against brute-force and reverse-brute-force
+      attack to `wp-login.php`. This is an experimental function and can be
+      enabled on `Settings` tab. An IP address from countries in whitelist
+      can try to login only 5 times. `Clear statistics` can reset this retry
+      counter to zero.
+    - **Fixed an issue:** Maxmind database file may be downloaded automatically
+      without deactivate/re-activate when upgrade is finished.
 - 1.2.1
     - **Fixed an issue:** Option table will be updated automatically without
       deactivate/re-activate when this plugin is upgraded.
     - **A little bit performance improvement:**
-      Less memory footprint at downloading Maxmind database.
-      Less sql queries when `Save statistics` is enable.
+      Less memory footprint at the time of downloading Maxmind database file.
+      Less sql queries when `Save statistics` is enabled.
 - 1.2.0
     - **New feature:** Added Maxmind GeoLite database auto downloader and updater.
     - The filter hook `ip-geo-block-validate` was discontinued.

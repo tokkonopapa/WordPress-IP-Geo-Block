@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '1.2.1';
+	const VERSION = '1.3.0';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip-geo-block-cache';
@@ -69,8 +69,13 @@ class IP_Geo_Block {
 
 		$settings = self::get_option( 'settings' );
 
-		if ( version_compare( $settings['version'], '1.2.1' ) < 0 )
+		// check the package version and upgrade if needed
+		if ( version_compare( $settings['version'], self::VERSION ) < 0 )
 			self::activate();
+
+		// the action hook which will be fired by cron job
+		if ( $settings['update']['auto'] && ! has_action( self::CRON_NAME ) )
+			add_action( self::CRON_NAME, array( 'IP_Geo_Block', 'download_database' ) );
 
 		if ( $settings['validation']['comment'] ) {
 			// Message text on comment form
@@ -82,10 +87,6 @@ class IP_Geo_Block {
 			// action hook from wp-comments-post.php @since 2.8.0
 			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ) );
 		}
-
-		// action hook from download cron job
-		if ( $settings['update']['auto'] )
-			add_action( self::CRON_NAME, array( $this, 'download_database' ) );
 	}
 
 	/**
@@ -110,9 +111,11 @@ class IP_Geo_Block {
 		// upgrade options
 		$settings = IP_Geo_Block_Options::upgrade();
 
-		// schedule auto updating
-		if ( $settings['update']['auto'] )
+		// execute to download
+		if ( $settings['update']['auto'] ) {
+			add_action( self::CRON_NAME, array( 'IP_Geo_Block', 'download_database' ) );
 			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
+		}
 	}
 
 	/**
@@ -359,18 +362,16 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function schedule_cron_job( &$update, $db, $immediate = FALSE ) {
-		$schedule = wp_next_scheduled( self::CRON_NAME ); // @since 2.1.0
+		if ( $schedule = wp_next_scheduled( self::CRON_NAME ) )
+			wp_clear_scheduled_hook( self::CRON_NAME ); // @since 2.1.0
 
-		if ( $schedule && ! $update['auto'] )
-			wp_clear_scheduled_hook( self::CRON_NAME );
-
-		else if ( ! $schedule && $update['auto'] ) {
+		if ( $update['auto'] ) {
 			$now = time();
 			$cycle = DAY_IN_SECONDS * $update['cycle'];
 
 			if ( FALSE === $immediate &&
-				$now - $db['ipv4_last'] < $cycle &&
-				$now - $db['ipv6_last'] < $cycle ) {
+				$now - (int)$db['ipv4_last'] < $cycle &&
+				$now - (int)$db['ipv6_last'] < $cycle ) {
 				$update['retry'] = 0;
 				$next = max( $db['ipv4_last'], $db['ipv6_last'] ) +
 					$cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 6 );
@@ -387,7 +388,7 @@ class IP_Geo_Block {
 	 * Database auto downloader.
 	 *
 	 */
-	public function download_database( $only = NULL ) {
+	public static function download_database( $only = NULL ) {
 		require_once( IP_GEO_BLOCK_PATH . 'includes/download.php' );
 
 		// download database files
@@ -401,11 +402,10 @@ class IP_Geo_Block {
 		// re-schedule cron job
 		self::schedule_cron_job( $settings['update'], $settings['maxmind'] );
 
-		// limit options to be updated
+		// update only the portion related to Maxmind
 		if ( $only )
 			$settings[ $only ] = TRUE;
 
-		// update option settings
 		update_option( self::$option_keys['settings'], $settings );
 
 		return $res;

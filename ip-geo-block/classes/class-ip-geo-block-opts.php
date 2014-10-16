@@ -19,8 +19,8 @@ class IP_Geo_Block_Options {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
-			'version'         => '1.2.1', // Version of option data
-			// from version 1.0
+			'version'         => '1.2.1', // Version of settings (not package)
+			// since version 1.0
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
 				'pos'         => 0,       // Position (0:none, 1:top, 2:bottom)
@@ -33,10 +33,10 @@ class IP_Geo_Block_Options {
 			'response_code'   => 403,     // Response code
 			'save_statistics' => FALSE,   // Save statistics
 			'clean_uninstall' => FALSE,   // Remove all savings from DB
-			// from version 1.1
+			// since version 1.1
 			'cache_hold'      => 10,      // Max entries in cache
 			'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
-			// from version 1.2
+			// since version 1.2
 			'flags'           => array(), // Multi purpose flags
 			'login_fails'     => 5,       // Max counts of login fail
 			'validation'      => array(   // Action hook for validation
@@ -63,7 +63,7 @@ class IP_Geo_Block_Options {
 			),
 		),
 
-		// statistics (should be read when comment has posted)
+		// statistics (autoloaded since version 1.2.1)
 		'ip_geo_block_statistics' => array(
 			'passed'    => NULL,
 			'blocked'   => NULL,
@@ -127,8 +127,11 @@ class IP_Geo_Block_Options {
 				}
 			}
 
-			// set IP2Location
+			// update local goelocation database files
 			$default[ $key[0] ]['ip2location']['ipv4_path'] = $ip2;
+
+			// save package version number
+			$default[ $key[0] ]['version'] = IP_Geo_Block::VERSION;
 
 			// create new option table
 			$settings = $default[ $key[0] ];
@@ -157,11 +160,11 @@ class IP_Geo_Block_Options {
 				add_option( $key[1], $tmp ); // re-create as autoload
 			}
 
-			// update IP2Location
+			// update local goelocation database files
 			$settings['ip2location']['ipv4_path'] = $ip2;
 
-			// finally update version number
-			$settings['version'] = $default[ $key[0] ]['version'];
+			// save package version number
+			$settings['version'] = IP_Geo_Block::VERSION;
 
 			// update option table
 			update_option( $key[0], $settings );

@@ -480,9 +480,6 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
-		// schedule auto updating
-		IP_Geo_Block::schedule_cron_job( $output['update'], $output['maxmind'], TRUE );
-
 		// This call is just for debug.
 		// @param string $setting: Slug title of the setting to which this error applies.
 		// @param string $code: Slug-name to identify the error.
@@ -525,8 +522,7 @@ class IP_Geo_Block_Admin {
 		// download database
 		else if ( isset( $_POST['download'] ) ) {
 			// download now
-			$res = IP_Geo_Block::get_instance();
-			$res = $res->download_database( 'only-maxmind' );
+			$res = IP_Geo_Block::download_database( 'only-maxmind' );
 
 			// respond
 			wp_send_json( $res ); // @since 3.5.0

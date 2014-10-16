@@ -4,7 +4,7 @@ Donate link:
 Tags: comment, spam, IP address, geolocation
 Requires at least: 3.5
 Tested up to: 4.0
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,10 +101,10 @@ and some include IP2Location LITE data available from
     Select one of the 
     [response code](http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1")
     to be sent when it blocks a comment.
-    The 2xx code will refresh to your top page, the 3xx code will redirect to 
+    The 2xx code will lead to your top page, the 3xx code will redirect to 
     [Black Hole Server](http://blackhole.webpagetest.org/),
     the 4xx code will lead to WordPress error page, and the 5xx will pretend 
-    an error.
+    an server error.
 
 * **Remove settings at uninstallation**  
     If you checked this option, all settings will be removed when this plugin
@@ -205,12 +205,21 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 == Changelog ==
 
+= 1.3.0 =
+* **New feature:** Protection against brute-force and reverse-brute-force
+  attack to `wp-login.php`. This is an experimental function and can be
+  enabled on `Settings` tab. An IP address from countries in whitelist
+  can try to login only 5 times. `Clear statistics` can reset this retry
+  counter to zero.
+* **Fixed an issue:** Maxmind database file may be downloaded automatically
+  without deactivate/re-activate when upgrade is finished.
+
 = 1.2.1 =
 * **Fixed an issue:** Option table will be updated automatically without
   deactivate/re-activate when this plugin is upgraded.
 * **A little bit performance improvement:**
-  Less memory footprint at downloading Maxmind database.
-  Less sql queries when `Save statistics` is enable.
+  Less memory footprint at the time of downloading Maxmind database file.
+  Less sql queries when `Save statistics` is enabled.
 
 = 1.2.0 =
 * **New feature:** Added Maxmind GeoLite database auto downloader and updater.
