@@ -87,6 +87,13 @@ class IP_Geo_Block {
 			// action hook from wp-comments-post.php @since 2.8.0
 			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ) );
 		}
+
+		// action hook from wp-login.php @since 2.1.0, wp_signon() and wp_authenticate()
+		if ( $opts['validation']['login'] ) {
+			add_action( 'login_init', array( $this, 'validate_login' ) );
+			add_action( 'wp_login',   array( $this, 'validate_login' ) );
+			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
+		}
 	}
 
 	/**
@@ -355,6 +362,43 @@ class IP_Geo_Block {
 	 */
 	public function validate_comment() {
 		$this->validate_ip( 'comment', NULL, TRUE, TRUE );
+	}
+
+	public function validate_login() {
+		if ( empty( $_REQUEST['action'] ) && isset( $_REQUEST['loggedout'] ) )
+			return;
+
+		add_filter( self::PLUGIN_SLUG . '-login', array( $this, 'auth_check' ), 10, 2 );
+		$this->validate_ip( 'login', '+', TRUE, FALSE );
+	}
+
+	/**
+	 * Authentication handling
+	 *
+	 */
+	public function auth_fail( $username ) {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+
+		// Count up a number of fails when authentication is failed
+		$ip = apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] );
+		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $ip ) ) {
+			IP_Geo_Block_API_Cache::update_cache(
+				$ip,
+				array( 'code' => $cache['code'], 'fail' => ++$cache['fail'] ),
+				get_option( self::$option_keys['settings'] )
+			);
+		}
+	}
+
+	public function auth_check( $validate, $settings ) {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+
+		// Check a number of authentication fails
+		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
+		if ( $cache && (int)$cache['fail'] >= $settings['login_fails'] )
+			$validate += array( 'result' => 'blocked' );
+
+		return $validate;
 	}
 
 	/**
