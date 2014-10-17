@@ -115,7 +115,7 @@ function tab_settings( $context ) {
 			'value' => $options[ $field ]['login'],
 		)
 	);
-
+///*
 	add_settings_field(
 		$option_name . "_${field}_admin",
 		__( '<dfn title="Validate at wp-admin/admin.php">Access to admin (except ajax)</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
@@ -130,7 +130,7 @@ function tab_settings( $context ) {
 			'value' => $options[ $field ]['admin'],
 		)
 	);
-
+//*/
 	/*----------------------------------------*
 	 * Maxmind settings
 	 *----------------------------------------*/

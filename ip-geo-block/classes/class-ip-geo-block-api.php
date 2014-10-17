@@ -114,9 +114,8 @@ abstract class IP_Geo_Block_API {
 		  case 'html':  // ipinfo.io, Xhanch
 		  case 'plain': // geoPlugin
 			$data = json_decode( $res, TRUE ); // PHP 5 >= 5.2.0, PECL json >= 1.2.0
-			if ( NULL === $data ) { // ipinfo.io (get_country)
+			if ( NULL === $data ) // ipinfo.io (get_country)
 				$data[ $this->transform_table['countryCode'] ] = trim( $res );
-			}
 			break;
 
 		  // decode xml
@@ -623,17 +622,16 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			}
 		}
 
-		// initialize
-		if ( empty( $cache[ $ip ] ) )
-			$cache[ $ip ] = array();
-
-		$code = $args['code'];
-		$call = empty( $args['call'] );
+		// if the 'call' does not exist or false, then no count up
+		$call = ! empty( $args['call'] );
 		if ( isset( $args['call'] ) )
 			unset( $args['call'] );
 
 		// add new item
-		$cache[ $ip ] = array_merge( $cache[ $ip ], $args );
+		$code = $args['code'];
+		$cache[ $ip ] = array_merge(
+			empty( $cache[ $ip ] ) ? array() : $cache[ $ip ], $args
+		);
 		$cache[ $ip ]['time'] = $time;
 		$cache[ $ip ]['code'] = strlen( $code ) < 2 ? 'ZZ' . $code : $code;
 

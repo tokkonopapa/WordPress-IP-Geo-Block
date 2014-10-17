@@ -8,13 +8,18 @@ Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress plugin that blocks any comments posted from outside your nation.
+A WordPress plugin that will protect against malicious access to the login 
+form and admin area, and also block any spam comments posted from outside 
+of your nation.
 
 == Description ==
 
-This plugin will examine a country code based on the posting author's IP 
-address. If the comment comes from undesired country, it will be blocked 
-before Akismet validate it.
+This plugin will examine a country code based on the IP address. If the 
+comment comes from undesired country, it will be blocked before Akismet 
+validate it.
+
+With the same mechanism, it will fight against burst access of brute-force 
+and reverse-brute-force attack to `wp-login.php`.
 
 = Features =
 
@@ -36,11 +41,10 @@ these IP2Location plugins, you should be once deactivated and then activated
 in order to set the path to `database.bin`.
 
 4. Cache mechanism with transient API for the fetched IP addresses has been 
-equipped to reduce load on the server against continuous access within a 
-short time.
+equipped to reduce load on the server against burst access within a short time.
 
-5. Custom validation function can be added using `ip-geo-block-comment` 
-filter hook with `add_filter()`.
+5. Custom validation function can be added using predefined filter hook with 
+`add_filter()`.
 
 = Development =
 
@@ -50,7 +54,12 @@ All contributions will always be welcome.
 
 = Attribution =
 
-Thanks for providing these great services for free.
+This package includes GeoLite data created by MaxMind, available from 
+    [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"),
+and also includes IP2Location open source libraries available from 
+    [IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
+
+And also thanks for providing these great services and REST APIs for free.
 
 * [http://freegeoip.net/](http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service") (IPv4 / free)
 * [http://ipinfo.io/](http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details") (IPv4, IPv6 / free)
@@ -60,11 +69,6 @@ Thanks for providing these great services for free.
 * [http://www.geoplugin.com/](http://www.geoplugin.com/ "geoPlugin to geolocate your visitors") (IPv4, IPv6 / free, need an attribution link)
 * [http://ip-api.com/](http://ip-api.com/ "IP-API.com - Free Geolocation API") (IPv4, IPv6 / free for non-commercial use)
 * [http://ipinfodb.com/](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") (IPv4, IPv6 / free for registered user, need API key)
-
-Some of these services and APIs use GeoLite data created by
-    [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"),
-and some include IP2Location LITE data available from 
-    [IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
 
 == Installation ==
 
@@ -177,6 +181,8 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-ip-addr`          : IP address of accessor.
 * `ip-geo-block-headers`          : compose http request headers.
 * `ip-geo-block-comment`          : validate IP address on `wp-comments-post.php`.
+* `ip-geo-block-login`            : validate IP adress on `wp-login.php`.
+* `ip-geo-block-admin`            : validate IP adress on `wp-admin/admin.php` except ajax.
 * `ip-geo-block-maxmind-dir`      : absolute path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
@@ -208,8 +214,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 = 1.3.0 =
 * **New feature:** Protection against brute-force and reverse-brute-force
   attack to `wp-login.php`. This is an experimental function and can be
-  enabled on `Settings` tab. An IP address from countries in whitelist
-  can try to login only 5 times. `Clear statistics` can reset this retry
+  enabled on `Settings` tab. An IP address from country in whitelist can 
+  try to login only 5 times. `Clear statistics` can reset this retry
   counter to zero.
 * **Fixed an issue:** Maxmind database file may be downloaded automatically
   without deactivate/re-activate when upgrade is finished.

@@ -1,11 +1,16 @@
 IP Geo Block
 ==============
 
-A WordPress plugin that blocks any comments posted from outside your nation.
+A WordPress plugin that will protect against malicious access to the login 
+form and admin area, and also block any spam comments posted from outside 
+of your nation.
 
-This plugin will examine a country code based on the posting author's IP 
-address. If the comment comes from undesired country, it will be blocked 
-before Akismet validate it.
+This plugin will examine a country code based on the IP address. If the 
+comment comes from undesired country, it will be blocked before Akismet 
+validate it.
+
+With the same mechanism, it will fight against burst access of brute-force 
+and reverse-brute-force attack to `wp-login.php` and `wp-admin/` area.
 
 ### Features:
 
@@ -21,16 +26,15 @@ downloaded and updated (once a month) automatically.
     [IP2Location Tags][IP2Tag],
     [IP2Location Variables][IP2Var],
     [IP2Location Country Blocker][IP2Blk]
-), this plugin uses its local database prior to the REST APIs. After installing 
+), this plugin uses its local database prior to the REST APIs. After installing
 these IP2Location plugins, you should be once deactivated and then activated 
 in order to set the path to `database.bin`.
 
 4. Cache mechanism with transient API for the fetched IP addresses has been 
-equipped to reduce load on the server against continuous access within a 
-short time.
+equipped to reduce load on the server against burst access within a short time.
 
-5. Custom validation function can be added using `ip-geo-block-comment` 
-filter hook with `add_filter()`.
+5. Custom validation function can be added using predefined filter hook with 
+`add_filter()`.
 
 ### Installation:
 
@@ -73,7 +77,12 @@ filter hook with `add_filter()`.
 
 ### Attribution:
 
-Thanks for providing these great services and REST APIs for free.
+This package includes GeoLite data created by MaxMind, available from 
+    [MaxMind][MaxMind],
+and also includes IP2Location open source libraries available from 
+    [IP2Location][IP2Loc].
+
+And also thanks for providing these great services and REST APIs for free.
 
     Provider                               | Supported type | Licence
     ---------------------------------------|----------------|--------
@@ -85,9 +94,6 @@ Thanks for providing these great services and REST APIs for free.
     [http://www.geoplugin.com/][geoplugin] | IPv4, IPv6     | free, need an attribution link
     [http://ip-api.com/]           [ipapi] | IPv4, IPv6     | free for non-commercial use
     [http://ipinfodb.com/]      [IPInfoDB] | IPv4, IPv6     | free for registered user
-
-Some of these services and APIs use GeoLite data created by [MaxMind][MaxMind],
-and some include IP2Location LITE data available from [IP2Location][IP2Loc].
 
 ### FAQ:
 
@@ -199,8 +205,8 @@ this plugin on the plugin dashboard.
 - 1.3.0
     - **New feature:** Protection against brute-force and reverse-brute-force
       attack to `wp-login.php`. This is an experimental function and can be
-      enabled on `Settings` tab. An IP address from countries in whitelist
-      can try to login only 5 times. `Clear statistics` can reset this retry
+      enabled on `Settings` tab. An IP address from countries in whitelist can 
+      try to login only 5 times. `Clear statistics` can reset this retry
       counter to zero.
     - **Fixed an issue:** Maxmind database file may be downloaded automatically
       without deactivate/re-activate when upgrade is finished.

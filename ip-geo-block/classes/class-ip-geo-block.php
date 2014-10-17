@@ -18,7 +18,7 @@ class IP_Geo_Block {
 	const VERSION = '1.3.0';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
-	const CACHE_KEY   = 'ip-geo-block-cache';
+	const CACHE_KEY   = 'ip_geo_block_cache';
 	const CRON_NAME   = 'ip_geo_block_cron';
 
 	/**
@@ -89,14 +89,14 @@ class IP_Geo_Block {
 		}
 
 		// action hook from wp-login.php @since 2.1.0, wp_signon() and wp_authenticate()
-		if ( $opts['validation']['login'] ) {
+		if ( $settings['validation']['login'] ) {
 			add_action( 'login_init', array( $this, 'validate_login' ) );
 			add_action( 'wp_login',   array( $this, 'validate_login' ) );
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
 		}
 
 		// action hook from wp-admin/admin.php @since 3.1.0
-		if ( $opts['validation']['admin'] ) {
+		if ( $settings['validation']['admin'] ) {
 			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
 			add_filter( 'admin_init',           array( $this, 'validate_admin' ) );
 		}
@@ -168,7 +168,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Render a message to the comment form.
+	 * Render a text message to the comment form.
 	 *
 	 */
 	public function comment_form_message( $id ) {
@@ -180,7 +180,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Get country code from ip address
+	 * Get country code from an ip address
 	 *
 	 */
 	private function get_country( $ip, $settings ) {
@@ -309,9 +309,6 @@ class IP_Geo_Block {
 	 * @param boolean $save_stat  update statistics regardless of validation result.
 	 */
 	private function validate_ip( $hook, $mark_cache, $save_cache, $save_stat ) {
-		// This function may be called multiple times for each request.
-		static $num_of_calls = 0;
-
 		// apply custom filter of validation
 		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
 		// @param $validate = array(
@@ -332,16 +329,19 @@ class IP_Geo_Block {
 
 		// update cache
 		$passed = ( 'passed' === $validate['result'] );
-		if ( $save_cache || ! $passed )
+		if ( $save_cache || ! $passed ) {
+			static $count_call = TRUE;
 			IP_Geo_Block_API_Cache::update_cache(
 				$validate['ip'],
 				array(
 					'code' => $validate['code'] . $mark_cache,
-					'call' => $num_of_calls++,
+					'call' => $count_call,
 					'auth' => is_user_logged_in(),
 				),
 				$settings
 			);
+			$count_call = FALSE;
+		}
 
 		// update statistics
 		if ( $settings['save_statistics'] && $save_stat )
@@ -377,6 +377,13 @@ class IP_Geo_Block {
 
 		add_filter( self::PLUGIN_SLUG . '-login', array( $this, 'auth_check' ), 10, 2 );
 		$this->validate_ip( 'login', '+', TRUE, FALSE );
+	}
+
+	public function validate_admin( $secure ) {
+		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
+			$this->validate_ip( 'admin', '*', TRUE, FALSE );
+
+		return $secure; // pass through
 	}
 
 	/**
@@ -456,6 +463,7 @@ class IP_Geo_Block {
 		if ( $only )
 			$settings[ $only ] = TRUE;
 
+		// update option settings
 		update_option( self::$option_keys['settings'], $settings );
 
 		return $res;
