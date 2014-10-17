@@ -116,6 +116,21 @@ function tab_settings( $context ) {
 		)
 	);
 
+	add_settings_field(
+		$option_name . "_${field}_admin",
+		__( '<dfn title="Validate at wp-admin/admin.php">Access to admin (except ajax)</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'checkbox',
+			'option' => $option_name,
+			'field' => $field,
+			'sub-field' => 'admin',
+			'value' => $options[ $field ]['admin'],
+		)
+	);
+
 	/*----------------------------------------*
 	 * Maxmind settings
 	 *----------------------------------------*/

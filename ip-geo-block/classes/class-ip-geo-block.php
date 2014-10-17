@@ -71,7 +71,7 @@ class IP_Geo_Block {
 
 		// check the package version and upgrade if needed
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 )
-			self::activate();
+			$settings = self::activate();
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] && ! has_action( self::CRON_NAME ) )
@@ -93,6 +93,12 @@ class IP_Geo_Block {
 			add_action( 'login_init', array( $this, 'validate_login' ) );
 			add_action( 'wp_login',   array( $this, 'validate_login' ) );
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
+		}
+
+		// action hook from wp-admin/admin.php @since 3.1.0
+		if ( $opts['validation']['admin'] ) {
+			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
+			add_filter( 'admin_init',           array( $this, 'validate_admin' ) );
 		}
 	}
 
@@ -118,11 +124,13 @@ class IP_Geo_Block {
 		// upgrade options
 		$settings = IP_Geo_Block_Options::upgrade();
 
-		// execute to download
+		// execute to download immediately
 		if ( $settings['update']['auto'] ) {
 			add_action( self::CRON_NAME, array( 'IP_Geo_Block', 'download_database' ) );
 			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
 		}
+
+		return $settings;
 	}
 
 	/**
@@ -131,8 +139,7 @@ class IP_Geo_Block {
 	 */
 	public static function deactivate( $network_wide = NULL ) {
 		// cancel schedule
-		if ( wp_next_scheduled( self::CRON_NAME ) ) // @since 2.1.0
-			wp_clear_scheduled_hook( self::CRON_NAME );
+		wp_clear_scheduled_hook( self::CRON_NAME ); // @since 2.1.0
 	}
 
 	/**
@@ -227,7 +234,7 @@ class IP_Geo_Block {
 
 		if ( ! empty( $validate['code'] ) ) {
 			if ( 0 == $rule && FALSE !== strpos( $white, $validate['code'] ) ||
-				 1 == $rule && FALSE === strpos( $black, $validate['code'] ) )
+			     1 == $rule && FALSE === strpos( $black, $validate['code'] ) )
 				return $validate + array( 'result' => 'passed' ); // It may not be a spam
 			else
 				return $validate + array( 'result' => 'blocked'); // It could be a spam
@@ -406,14 +413,13 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function schedule_cron_job( &$update, $db, $immediate = FALSE ) {
-		if ( $schedule = wp_next_scheduled( self::CRON_NAME ) )
-			wp_clear_scheduled_hook( self::CRON_NAME ); // @since 2.1.0
+		wp_clear_scheduled_hook( self::CRON_NAME ); // @since 2.1.0
 
 		if ( $update['auto'] ) {
 			$now = time();
 			$cycle = DAY_IN_SECONDS * $update['cycle'];
 
-			if ( FALSE === $immediate &&
+			if ( ! $immediate &&
 				$now - (int)$db['ipv4_last'] < $cycle &&
 				$now - (int)$db['ipv6_last'] < $cycle ) {
 				$update['retry'] = 0;

@@ -156,11 +156,13 @@ function tab_statistics( $context ) {
 	if ( $transient ) {
 		$time = time();
 		foreach ( $transient as $key => $val ) {
-			if ( empty( $val['auth'] ) ) { // hide if authorized user
+			if ( true || empty( $val['auth'] ) ) { // hide if authorized user
 				$html .= "<tr><td>" . esc_html( $key ) . "</td>";
 				$html .= "<td>" . esc_html( $val['code'] ) . "</td>";
 				$html .= "<td>" . ( $time - (int)$val['time'] ) . " / ";
 				$html .= ! empty( $val['call'] ) ? (int)$val['call'] : '-';
+				$html .= '(' . (! empty( $val['fail'] ) ? $val['fail'] : 0) . ')';
+				$html .= ! empty( $val['auth'] ) ? '+' : '-';
 				$html .= "</td></tr>";
 			}
 		}
