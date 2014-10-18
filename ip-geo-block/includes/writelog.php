@@ -10,7 +10,7 @@ function ip_geo_block_log( $ip, $hook, $validate ) {
 	$size = @filesize( $file );
 
 	if ( $fp = @fopen( $file, "c+" ) ) {
-		if ( flock( $fp, LOCK_EX | LOCK_NB ) ) {
+		if ( @flock( $fp, LOCK_EX | LOCK_NB ) ) {
 			$lines = $size ? explode( "\n", fread( $fp, $size ) ) : array();
 			array_shift( $lines );
 			array_pop  ( $lines );
@@ -32,9 +32,9 @@ function ip_geo_block_log( $ip, $hook, $validate ) {
 			fwrite( $fp, "<?php/*\n" );
 			fwrite( $fp, implode( "\n", $lines ) );
 			fwrite( $fp, "*/?>" );
-			flock( $fp, LOCK_UN | LOCK_NB );
+			@flock( $fp, LOCK_UN | LOCK_NB );
 		}
 
-		fclose( $fp );
+		@fclose( $fp );
 	}
 }
