@@ -6,7 +6,7 @@
 define( 'IP_GEO_BLOCK_LOG_LEN', 100 );
 
 function ip_geo_block_log( $ip, $hook, $validate ) {
-	$file = IP_GEO_BLOCK_PATH . "log-${hook}.php";
+	$file = IP_GEO_BLOCK_PATH . "logs/log-${hook}.php";
 	$size = @filesize( $file );
 
 	$fp = @fopen( $file, "c+" );
