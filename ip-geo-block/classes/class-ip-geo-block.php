@@ -340,15 +340,7 @@ class IP_Geo_Block {
 				),
 				$settings
 			);
-
-			// write logs
-			if ( $count_call && defined( 'IP_GEO_BLOCK_LOG' ) && IP_GEO_BLOCK_LOG ) {
-				require_once( IP_GEO_BLOCK_PATH . 'includes/writelog.php' );
-				ip_geo_block_log( $ip, $hook, $validate );
-			}
-
-			// avoid multiple calls
-			$count_call = FALSE;
+			$count_call = FALSE; // avoid multiple calls
 		}
 
 		// update statistics
@@ -361,6 +353,12 @@ class IP_Geo_Block {
 		// update statistics
 		if ( $settings['save_statistics'] && ! $save_stat )
 			$this->update_statistics( $validate );
+
+		// write logs
+		if ( defined( 'IP_GEO_BLOCK_LOG' ) && IP_GEO_BLOCK_LOG ) {
+			require_once( IP_GEO_BLOCK_PATH . 'includes/writelog.php' );
+			ip_geo_block_log( $ip, $hook, $validate );
+		}
 
 		// send response code to refuse
 		$this->send_response(
