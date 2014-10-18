@@ -340,6 +340,10 @@ class IP_Geo_Block {
 				),
 				$settings
 			);
+			if ( $count_call && defined( 'IP_GEO_BLOCK_LOG' ) && IP_GEO_BLOCK_LOG ) {
+				require_once( IP_GEO_BLOCK_PATH . 'includes/writelog.php' );
+				ip_geo_block_log( $ip, $hook, $validate );
+			}
 			$count_call = FALSE;
 		}
 
