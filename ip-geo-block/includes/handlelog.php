@@ -1,12 +1,12 @@
 <?php
 /**
- * Write a log file per hook
- *
+ * Handling of log
+ * @todo implement sql
  */
 define( 'IP_GEO_BLOCK_LOG_LEN', 100 );
 
-function ip_geo_block_log( $ip, $hook, $validate ) {
-	$file = IP_GEO_BLOCK_PATH . "logs/log-${hook}.php";
+function ip_geo_block_save_log( $ip, $hook, $validate ) {
+	$file = IP_GEO_BLOCK_PATH . "etc/log-${hook}.php";
 	$size = @filesize( $file );
 
 	if ( $fp = @fopen( $file, "c+" ) ) {
@@ -37,4 +37,29 @@ function ip_geo_block_log( $ip, $hook, $validate ) {
 
 		@fclose( $fp );
 	}
+}
+
+function ip_geo_block_read_log( $hook = NULL ) {
+	$list = $hook ? array( $hook ) : array( 'comment', 'login', 'admin' );
+	$result = array();
+
+	foreach ( $list as $hook ) {
+		$lines = array();
+		$file = IP_GEO_BLOCK_PATH . "etc/log-${hook}.php";
+		$size = @filesize( $file );
+
+		if ( $fp = @fopen( $file, 'r' ) ) {
+			if ( @flock( $fp, LOCK_EX | LOCK_NB ) ) {
+				$lines = $size ? explode( "\n", fread( $fp, $size ) ) : array();
+				@flock( $fp, LOCK_UN | LOCK_NB );
+			}
+			@fclose( $fp );
+		}
+
+		array_shift( $lines );
+		array_pop  ( $lines );
+		$result[ $hook ] = $lines;
+	}
+
+	return $result;
 }

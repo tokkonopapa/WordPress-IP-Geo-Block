@@ -189,7 +189,7 @@ class IP_Geo_Block_Admin {
 	 */
 	public function display_plugin_admin_page( $tab = 0 ) {
 		$tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
-		$tab = min( 3, max( 0, $tab ) );
+		$tab = min( 4, max( 0, $tab ) );
 		$option_slug = $this->option_slug[ 1 === $tab ? 'statistics': 'settings' ]; ?>
 <div class="wrap">
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
@@ -198,6 +198,10 @@ class IP_Geo_Block_Admin {
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=1" class="nav-tab <?php echo $tab == 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=2" class="nav-tab <?php echo $tab == 2 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Search', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=3" class="nav-tab <?php echo $tab == 3 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+<?php
+		if ( defined( 'IP_GEO_BLOCK_LOG' ) && IP_GEO_BLOCK_LOG ) { ?>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab == 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Access log', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+<?php } ?>
 	</h2>
 	<form method="post" action="options.php"<?php if ( 0 !== $tab ) echo " id=\"", IP_Geo_Block::PLUGIN_SLUG, "-inhibit\""; ?>>
 <?php
@@ -223,14 +227,14 @@ class IP_Geo_Block_Admin {
 	 */
 	public function register_admin_settings() {
 		$tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
-		$tab = min( 3, max( 0, $tab ) );
+		$tab = min( 4, max( 0, $tab ) );
 
 		/*========================================*
 		 * Settings
 		 *========================================*/
 		if ( 0 === $tab ) {
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-settings.php' );
-			tab_settings( $this );
+			ip_geo_block_tab_settings( $this );
 		}
 
 		/*========================================*
@@ -238,7 +242,7 @@ class IP_Geo_Block_Admin {
 		 *========================================*/
 		else if ( 1 === $tab ) {
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-statistics.php' );
-			tab_statistics( $this );
+			ip_geo_block_tab_statistics( $this );
 		}
 
 		/*========================================*
@@ -246,7 +250,7 @@ class IP_Geo_Block_Admin {
 		 *========================================*/
 		else if ( 2 === $tab ) {
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-geolocation.php' );
-			tab_geolocation( $this );
+			ip_geo_block_tab_geolocation( $this );
 		}
 
 		/*========================================*
@@ -254,7 +258,15 @@ class IP_Geo_Block_Admin {
 		 *========================================*/
 		else if ( 3 === $tab ) {
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-attribution.php' );
-			tab_attribution( $this );
+			ip_geo_block_tab_attribution( $this );
+		}
+
+		/*========================================*
+		 * Access log
+		 *========================================*/
+		else if ( 4 === $tab ) {
+			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-accesslog.php' );
+			ip_geo_block_tab_accesslog( $this );
 		}
 	}
 

@@ -1,5 +1,5 @@
 <?php
-function tab_statistics( $context ) {
+function ip_geo_block_tab_statistics( $context ) {
 	$option_slug = $context->option_slug['statistics'];
 	$option_name = $context->option_name['statistics'];
 	$options = IP_Geo_Block::get_option( 'statistics' );

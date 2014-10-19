@@ -1,7 +1,7 @@
 <?php
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
-function tab_attribution( $context ) {
+function ip_geo_block_tab_attribution( $context ) {
 	$option_slug = $context->option_slug['settings'];
 	$option_name = $context->option_name['settings'];
 
