@@ -1,6 +1,6 @@
 <?php
 /**
- * Handling of log
+ * Handling of access log
  * @todo implement sql
  */
 define( 'IP_GEO_BLOCK_LOG_LEN', 100 );

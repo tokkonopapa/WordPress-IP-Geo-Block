@@ -356,7 +356,7 @@ class IP_Geo_Block {
 
 		// save log
 		if ( defined( 'IP_GEO_BLOCK_LOG' ) && IP_GEO_BLOCK_LOG ) {
-			require_once( IP_GEO_BLOCK_PATH . 'includes/handlelog.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'includes/accesslog.php' );
 			ip_geo_block_save_log( $ip, $hook, $validate );
 		}
 

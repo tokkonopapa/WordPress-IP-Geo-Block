@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
- * @copyright 2013 tokkonopapa
+ * @copyright 2013, 2014 tokkonopapa
  */
 
 class IP_Geo_Block_Admin {
@@ -167,7 +167,7 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Register the administration menu for this plugin into the WordPress Dashboard menu.
+	 * Register the administration menu into the WordPress Dashboard menu.
 	 *
 	 */
 	public function add_plugin_admin_menu() {
@@ -227,44 +227,33 @@ class IP_Geo_Block_Admin {
 	 */
 	public function register_admin_settings() {
 		$tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
-		$tab = min( 4, max( 0, $tab ) );
-
-		/*========================================*
-		 * Settings
-		 *========================================*/
-		if ( 0 === $tab ) {
+		switch( min( 4, max( 0, $tab ) ) ) {
+		  case 0:
+			// Settings
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-settings.php' );
 			ip_geo_block_tab_settings( $this );
-		}
+			break;
 
-		/*========================================*
-		 * Statistics
-		 *========================================*/
-		else if ( 1 === $tab ) {
+		  case 1:
+			// Statistics
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-statistics.php' );
 			ip_geo_block_tab_statistics( $this );
-		}
+			break;
 
-		/*========================================*
-		 * Geolocation
-		 *========================================*/
-		else if ( 2 === $tab ) {
+		  case 2:
+			// Geolocation
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-geolocation.php' );
 			ip_geo_block_tab_geolocation( $this );
-		}
+			break;
 
-		/*========================================*
-		 * Attribution
-		 *========================================*/
-		else if ( 3 === $tab ) {
+		  case 3:
+			// Attribution
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-attribution.php' );
 			ip_geo_block_tab_attribution( $this );
-		}
+			break;
 
-		/*========================================*
-		 * Access log
-		 *========================================*/
-		else if ( 4 === $tab ) {
+		  case 4:
+			// Access log
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-accesslog.php' );
 			ip_geo_block_tab_accesslog( $this );
 		}
@@ -283,7 +272,6 @@ class IP_Geo_Block_Admin {
 	 * Function that fills the field with the desired inputs as part of the larger form.
 	 * The 'id' and 'name' should match the $id given in the add_settings_field().
 	 * @param array $args A value to be given into the field.
-	 * @link http://codex.wordpress.org/Function_Reference/checked
 	 */
 	public function callback_field( $args ) {
 		if ( ! empty( $args['before'] ) )
@@ -390,18 +378,7 @@ class IP_Geo_Block_Admin {
 		$only = strpos( $only, 'only-' ) === 0 ? substr( $only, 5 ) : FALSE;
 
 		/**
-		 * Sanitize a string from user input or from the db
-		 *
-		 * - check for invalid UTF-8,
-		 * - convert single `<` characters to entity,
-		 * - strip all tags,
-		 * - remove line breaks, tabs and extra white space,
-		 * - strip octets.
-		 *
-		 * @since 2.9.0
-		 * @example sanitize_text_field( $str );
-		 * @param string $str
-		 * @return string
+		 * Sanitize a string from user input
 		 */
 		foreach ( $output as $key => $value ) {
 			// skip except specified key
@@ -491,12 +468,7 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
-		// This call is just for debug.
-		// @param string $setting: Slug title of the setting to which this error applies.
-		// @param string $code: Slug-name to identify the error.
-		// @param string $message: The formatted message text to display to the user.
-		// @param string $type: The type of message it is. 'error' or 'updated'.
-		// @link: http://codex.wordpress.org/Function_Reference/add_settings_error
+		// Register a settings error to be displayed to the user
 		add_settings_error(
 			$this->option_slug
 			, $this->option_name[ $option_name ]
@@ -519,8 +491,8 @@ class IP_Geo_Block_Admin {
 	 * Ajax callback function
 	 *
 	 * @link http://codex.wordpress.org/AJAX_in_Plugins
-	 * @link http://core.trac.wordpress.org/browser/trunk/wp-admin/admin-ajax.php
 	 * @link http://codex.wordpress.org/Function_Reference/check_ajax_referer
+	 * @link http://core.trac.wordpress.org/browser/trunk/wp-admin/admin-ajax.php
 	 */
 	public function admin_ajax_callback() {
 

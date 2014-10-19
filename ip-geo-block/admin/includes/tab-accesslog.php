@@ -1,5 +1,5 @@
 <?php
-require_once( IP_GEO_BLOCK_PATH . 'includes/handlelog.php' );
+require_once( IP_GEO_BLOCK_PATH . 'includes/accesslog.php' );
 
 function ip_geo_block_tab_accesslog( $context ) {
 	$option_slug = $context->option_slug['settings'];
