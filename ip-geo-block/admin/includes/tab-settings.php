@@ -77,6 +77,13 @@ function ip_geo_block_tab_settings( $context ) {
 	/*----------------------------------------*
 	 * Validation settings
 	 *----------------------------------------*/
+	// same as in tab-accesslog.php
+	$title = array(
+		'comment' => __( '<dfn title="Validate at wp-comments-post.php">Comments post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'login'   => __( '<dfn title="Validate at wp-login.php">Access to login</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'admin'   => __( '<dfn title="Validate at wp-admin/admin.php">Access to admin (except ajax)</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+	);
+
 	$section = IP_Geo_Block::PLUGIN_SLUG . '-validation';
 	add_settings_section(
 		$section,
@@ -88,7 +95,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'validation';
 	add_settings_field(
 		$option_name . "_${field}_comment",
-		__( '<dfn title="Validate at wp-comments-post.php">Comments post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		$title['comment'],
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -103,7 +110,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	add_settings_field(
 		$option_name . "_${field}_login",
-		__( '<dfn title="Validate at wp-login.php">Access to login</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		$title['login'],
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -118,7 +125,7 @@ function ip_geo_block_tab_settings( $context ) {
 ///*
 	add_settings_field(
 		$option_name . "_${field}_admin",
-		__( '<dfn title="Validate at wp-admin/admin.php">Access to admin (except ajax)</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		$title['admin'],
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,

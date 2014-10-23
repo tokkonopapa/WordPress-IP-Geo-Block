@@ -108,6 +108,18 @@ class IP_Geo_Block_Admin {
 				array(), IP_Geo_Block::VERSION
 			);
 
+			// for footable https://github.com/bradvin/FooTable
+			if ( defined( 'IP_GEO_BLOCK_LOG' ) && IP_GEO_BLOCK_LOG ) {
+				wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-footable-css',
+					plugins_url( 'css/footable.core.min.css', __FILE__ ),
+					array(), IP_Geo_Block::VERSION
+				);
+				wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-footable-js',
+					plugins_url( 'js/footable.all.min.js', __FILE__ ),
+					array( 'jquery' ), IP_Geo_Block::VERSION, TRUE
+				);
+			}
+
 			// js for google map
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
 				'http://maps.google.com/maps/api/js?sensor=false',
@@ -200,8 +212,8 @@ class IP_Geo_Block_Admin {
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=3" class="nav-tab <?php echo $tab == 3 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 <?php
 		if ( defined( 'IP_GEO_BLOCK_LOG' ) && IP_GEO_BLOCK_LOG ) { ?>
-		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab == 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Access log', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-<?php } ?>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab == 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+<?php	} ?>
 	</h2>
 	<form method="post" action="options.php"<?php if ( 0 !== $tab ) echo " id=\"", IP_Geo_Block::PLUGIN_SLUG, "-inhibit\""; ?>>
 <?php

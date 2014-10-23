@@ -23,8 +23,8 @@ function ip_geo_block_save_log( $ip, $hook, $validate ) {
 					time(),
 					$ip,
 					$validate['code'],
-					$_SERVER['REQUEST_URI'],
-					$_SERVER['HTTP_USER_AGENT'], // should be sanitized
+					basename( $_SERVER['REQUEST_URI'] ),
+					str_replace( ',', '‚', $_SERVER['HTTP_USER_AGENT'] ), // &#044; --> &#130;
 					json_encode( $_COOKIE ) // should be sanitized
 				)
 			);
