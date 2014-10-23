@@ -378,7 +378,7 @@ class IP_Geo_Block_Admin {
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
 	private function sanitize_options( $option_name, $input ) {
-		$message = __( 'successfully updated', IP_Geo_Block::TEXT_DOMAIN );
+		$message = __( 'Successfully updated', IP_Geo_Block::TEXT_DOMAIN );
 		$status = 'updated';
 
 		// setup base options
