@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.3.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-10-23 22:31+0900\n"
-"PO-Revision-Date: 2014-10-23 22:52+0900\n"
+"POT-Creation-Date: 2014-10-24 23:57+0900\n"
+"PO-Revision-Date: 2014-10-25 00:12+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,10 +23,11 @@ msgstr ""
 msgid ""
 "A WordPress plugin that will protect against malicious access to the login "
 "form and admin area, and also block any spam comments posted from undesired "
-"countries."
+"countries based on geolocation of IP address."
 msgstr ""
-"ログインフォームや管理領域への悪意あるアクセスからサイトを守り、望まぬ国から"
-"のスパム投稿をブロックするプラグインです。"
+"IPアドレスの知事的位置情報に基づき、ログインフォームや管理領域への悪意あるア"
+"クセスからサイトを守り、望まない国からのスパム投稿をブロックするプラグインで"
+"す。"
 
 #: admin/class-ip-geo-block-admin.php:82
 msgid "You need WordPress 3.5+"
@@ -50,24 +51,24 @@ msgstr "IP Geo Block"
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:211
-msgid "Search"
-msgstr "検索"
-
-#: admin/class-ip-geo-block-admin.php:212
-msgid "Attribution"
-msgstr "リンク"
-
-#: admin/class-ip-geo-block-admin.php:215
+#: admin/class-ip-geo-block-admin.php:216
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:279
+#: admin/class-ip-geo-block-admin.php:219
+msgid "Search"
+msgstr "検索"
+
+#: admin/class-ip-geo-block-admin.php:220
+msgid "Attribution"
+msgstr "リンク"
+
+#: admin/class-ip-geo-block-admin.php:283
 msgid "Thanks for providing these great services for free."
 msgstr ""
 "すばらしいサービスの提供元である以下のサイトに、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:280
+#: admin/class-ip-geo-block-admin.php:284
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
@@ -75,12 +76,13 @@ msgstr ""
 "（ほとんどのブラウザでは、リンクをクリックしても参照元を残さずに各サイトにリ"
 "ダイレクトできます。）"
 
-#: admin/class-ip-geo-block-admin.php:350
+#: admin/class-ip-geo-block-admin.php:354 admin/includes/tab-settings.php:110
+#: admin/includes/tab-settings.php:130 admin/includes/tab-settings.php:150
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:381
-msgid "successfully updated"
+#: admin/class-ip-geo-block-admin.php:385
+msgid "Successfully updated"
 msgstr "更新に成功しました"
 
 #: admin/includes/tab-accesslog.php:20
@@ -89,44 +91,42 @@ msgstr "検証のログ"
 
 #: admin/includes/tab-accesslog.php:29 admin/includes/tab-settings.php:82
 msgid "<dfn title=\"Validate at wp-comments-post.php\">Comments post</dfn>"
-msgstr ""
-"<dfn title=\"wp-comments-post.phpへのアクセスを検証する\">コメント投稿</dfn>"
+msgstr "<dfn title=\"wp-comments-post.phpへのアクセス検証\">コメント投稿</dfn>"
 
 #: admin/includes/tab-accesslog.php:30 admin/includes/tab-settings.php:83
 msgid "<dfn title=\"Validate at wp-login.php\">Access to login</dfn>"
-msgstr ""
-"<dfn title=\"wp-login.phpへのアクセスを検証する\">ログイン・フォーム</dfn>"
+msgstr "<dfn title=\"wp-login.phpへのアクセス検証\">ログイン・フォーム</dfn>"
 
 #: admin/includes/tab-accesslog.php:31 admin/includes/tab-settings.php:84
 msgid ""
 "<dfn title=\"Validate at wp-admin/admin.php\">Access to admin (except ajax)</"
 "dfn>"
 msgstr ""
-"<dfn title=\"wp-admin/admin.phpへのアクセスを検証する\">管理領域 （Ajaxを除"
-"く）</dfn>"
+"<dfn title=\"wp-admin/admin.phpへのアクセス検証\">管理領域 （Ajaxを除く）</"
+"dfn>"
 
-#: admin/includes/tab-accesslog.php:38
+#: admin/includes/tab-accesslog.php:39
 msgid "Time of date"
 msgstr "日時"
 
-#: admin/includes/tab-accesslog.php:39 admin/includes/tab-geolocation.php:56
+#: admin/includes/tab-accesslog.php:40 admin/includes/tab-geolocation.php:56
 #: admin/includes/tab-statistics.php:150
 msgid "IP address"
 msgstr "IPアドレス"
 
-#: admin/includes/tab-accesslog.php:40 admin/includes/tab-statistics.php:151
+#: admin/includes/tab-accesslog.php:41 admin/includes/tab-statistics.php:151
 msgid "Country code"
 msgstr "国コード"
 
-#: admin/includes/tab-accesslog.php:41
+#: admin/includes/tab-accesslog.php:42
 msgid "Request URI"
 msgstr "リクエストURI"
 
-#: admin/includes/tab-accesslog.php:42
-msgid "User agent"
-msgstr "ユーザー・エージェント"
-
 #: admin/includes/tab-accesslog.php:43
+msgid "User agent"
+msgstr "ユーザーエージェント"
+
+#: admin/includes/tab-accesslog.php:44
 msgid "Cookies"
 msgstr "クッキー"
 
@@ -162,108 +162,118 @@ msgstr "APIの選択とキーの設定"
 msgid "Validation settings"
 msgstr "検証の設定"
 
-#: admin/includes/tab-settings.php:147
+#: admin/includes/tab-settings.php:109 admin/includes/tab-settings.php:129
+#: admin/includes/tab-settings.php:149
+msgid "Disable"
+msgstr "無効"
+
+#: admin/includes/tab-settings.php:111 admin/includes/tab-settings.php:131
+#: admin/includes/tab-settings.php:151
+msgid "Enable + Logging"
+msgstr "有効＋ログの保存"
+
+#: admin/includes/tab-settings.php:162
 msgid "Maxmind GeoLite settings"
 msgstr "Maxmind GeoLiteの設定"
 
-#: admin/includes/tab-settings.php:155
+#: admin/includes/tab-settings.php:170
 msgid "Path to database (IPv4)"
 msgstr "データベースへのパス（IPv4）"
 
-#: admin/includes/tab-settings.php:168 admin/includes/tab-settings.php:189
+#: admin/includes/tab-settings.php:183 admin/includes/tab-settings.php:204
 #: includes/download.php:131
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
 
-#: admin/includes/tab-settings.php:176
+#: admin/includes/tab-settings.php:191
 msgid "Path to database (IPv6)"
 msgstr "データベースへのパス（IPv6）"
 
-#: admin/includes/tab-settings.php:198
+#: admin/includes/tab-settings.php:213
 msgid "Download database"
 msgstr "データベースのダウンロード"
 
-#: admin/includes/tab-settings.php:206
+#: admin/includes/tab-settings.php:221
 msgid "Download from Maxmind"
 msgstr "Maxmindからダウンロード"
 
-#: admin/includes/tab-settings.php:213
+#: admin/includes/tab-settings.php:228
 msgid "Auto updating (once a month)"
 msgstr "自動更新（月1回）"
 
-#: admin/includes/tab-settings.php:232
+#: admin/includes/tab-settings.php:247
 msgid "Submission settings"
 msgstr "投稿時の設定"
 
-#: admin/includes/tab-settings.php:240
+#: admin/includes/tab-settings.php:255
 msgid "Text message on comment form"
 msgstr "投稿フォーム上のテキスト・メッセージ"
 
-#: admin/includes/tab-settings.php:251
+#: admin/includes/tab-settings.php:266
 msgid "None"
 msgstr "なし"
 
-#: admin/includes/tab-settings.php:252
+#: admin/includes/tab-settings.php:267
 msgid "Top"
 msgstr "上部"
 
-#: admin/includes/tab-settings.php:253
+#: admin/includes/tab-settings.php:268
 msgid "Bottom"
 msgstr "下部"
 
-#: admin/includes/tab-settings.php:262
+#: admin/includes/tab-settings.php:277
 msgid "Matching rule"
 msgstr "マッチング規則"
 
-#: admin/includes/tab-settings.php:272
+#: admin/includes/tab-settings.php:287
 msgid "White list"
 msgstr "ホワイトリスト"
 
-#: admin/includes/tab-settings.php:273
+#: admin/includes/tab-settings.php:288
 msgid "Black list"
 msgstr "ブラックリスト"
 
-#: admin/includes/tab-settings.php:281
+#: admin/includes/tab-settings.php:296
 #, php-format
 msgid "White list %s"
 msgstr "ホワイトリスト %s"
 
-#: admin/includes/tab-settings.php:290 admin/includes/tab-settings.php:306
+#: admin/includes/tab-settings.php:305 admin/includes/tab-settings.php:321
 msgid "(comma separated)"
 msgstr "（カンマ区切り）"
 
-#: admin/includes/tab-settings.php:297
+#: admin/includes/tab-settings.php:312
 #, php-format
 msgid "Black list %s"
 msgstr "ブラックリスト %s"
 
-#: admin/includes/tab-settings.php:313
+#: admin/includes/tab-settings.php:328
 #, php-format
 msgid "Response code %s"
 msgstr "レスポンスコード %s"
 
-#: admin/includes/tab-settings.php:345
+#: admin/includes/tab-settings.php:360
 msgid "Cache settings"
 msgstr "キャッシュの設定"
 
-#: admin/includes/tab-settings.php:353
+#: admin/includes/tab-settings.php:368
 msgid "Number of entries"
 msgstr "最大保持数"
 
-#: admin/includes/tab-settings.php:368
+#: admin/includes/tab-settings.php:383
 msgid "Expiration time [sec]"
 msgstr "有効時間 [sec]"
 
-#: admin/includes/tab-settings.php:386
+#: admin/includes/tab-settings.php:401
 msgid "Plugin settings"
 msgstr "プラグインの設定"
 
-#: admin/includes/tab-settings.php:394
+#: admin/includes/tab-settings.php:409
 msgid "Save statistics"
 msgstr "統計情報を記録"
 
-#: admin/includes/tab-settings.php:409
+#: admin/includes/tab-settings.php:424
 msgid "Remove settings at uninstallation"
 msgstr "アンインストール時に設定を削除"
 

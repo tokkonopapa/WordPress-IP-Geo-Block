@@ -15,7 +15,7 @@ function ip_geo_block_save_log( $ip, $hook, $validate ) {
 
 			array_shift( $lines );
 			array_pop  ( $lines );
-			$lines = array_slice( $lines, -IP_GEO_BLOCK_LOG_LEN );
+			$lines = array_slice( $lines, -(IP_GEO_BLOCK_LOG_LEN-1) );
 
 			array_push(
 				$lines, 

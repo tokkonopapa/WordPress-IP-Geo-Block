@@ -109,20 +109,20 @@ class IP_Geo_Block_Admin {
 			);
 
 			// for footable https://github.com/bradvin/FooTable
-			if ( defined( 'IP_GEO_BLOCK_LOG' ) && IP_GEO_BLOCK_LOG ) {
-				wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-footable-css',
-					plugins_url( 'css/footable.core.min.css', __FILE__ ),
-					array(), IP_Geo_Block::VERSION
-				);
-				wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-footable-js',
-					plugins_url( 'js/footable.all.min.js', __FILE__ ),
-					array( 'jquery' ), IP_Geo_Block::VERSION, TRUE
-				);
-			}
+			wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-footable-css',
+				plugins_url( 'css/footable.core.min.css', __FILE__ ),
+				array(), IP_Geo_Block::VERSION
+			);
 
 			// js for google map
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
 				'http://maps.google.com/maps/api/js?sensor=false',
+				array( 'jquery' ), IP_Geo_Block::VERSION, TRUE
+			);
+
+			// for footable https://github.com/bradvin/FooTable
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-footable-js',
+				plugins_url( 'js/footable.all.min.js', __FILE__ ),
 				array( 'jquery' ), IP_Geo_Block::VERSION, TRUE
 			);
 
@@ -208,12 +208,16 @@ class IP_Geo_Block_Admin {
 	<h2 class="nav-tab-wrapper">
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=0" class="nav-tab <?php echo $tab == 0 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=1" class="nav-tab <?php echo $tab == 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+<?php
+		$settings = IP_Geo_Block::get_option( 'settings' );
+		if ( ( $settings['validation']['comment'] & 2 ) ||
+		     ( $settings['validation']['login'  ] & 2 ) ||
+		     ( $settings['validation']['admin'  ] & 2 ) ) { ?>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab == 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+<?php
+		} ?>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=2" class="nav-tab <?php echo $tab == 2 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Search', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=3" class="nav-tab <?php echo $tab == 3 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-<?php
-		if ( defined( 'IP_GEO_BLOCK_LOG' ) && IP_GEO_BLOCK_LOG ) { ?>
-		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab == 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-<?php	} ?>
 	</h2>
 	<form method="post" action="options.php"<?php if ( 0 !== $tab ) echo " id=\"", IP_Geo_Block::PLUGIN_SLUG, "-inhibit\""; ?>>
 <?php

@@ -355,7 +355,7 @@ class IP_Geo_Block {
 			$this->update_statistics( $validate );
 
 		// save log
-		if ( defined( 'IP_GEO_BLOCK_LOG' ) && IP_GEO_BLOCK_LOG ) {
+		if ( $settings['validation'][ $hook ] & 2 ) {
 			require_once( IP_GEO_BLOCK_PATH . 'includes/accesslog.php' );
 			ip_geo_block_save_log( $ip, $hook, $validate );
 		}

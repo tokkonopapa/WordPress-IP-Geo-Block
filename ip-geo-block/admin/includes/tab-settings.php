@@ -92,6 +92,12 @@ function ip_geo_block_tab_settings( $context ) {
 		$option_slug
 	);
 
+	$list = array(
+		__( 'Disable',          IP_Geo_Block::TEXT_DOMAIN ) => 0,
+		__( 'Enable',           IP_Geo_Block::TEXT_DOMAIN ) => 1,
+		__( 'Enable + Logging', IP_Geo_Block::TEXT_DOMAIN ) => 2,
+	);
+
 	$field = 'validation';
 	add_settings_field(
 		$option_name . "_${field}_comment",
@@ -100,11 +106,12 @@ function ip_geo_block_tab_settings( $context ) {
 		$option_slug,
 		$section,
 		array(
-			'type' => 'checkbox',
+			'type' => 'select',
 			'option' => $option_name,
 			'field' => $field,
 			'sub-field' => 'comment',
 			'value' => $options[ $field ]['comment'],
+			'list' => $list,
 		)
 	);
 
@@ -115,11 +122,12 @@ function ip_geo_block_tab_settings( $context ) {
 		$option_slug,
 		$section,
 		array(
-			'type' => 'checkbox',
+			'type' => 'select',
 			'option' => $option_name,
 			'field' => $field,
 			'sub-field' => 'login',
 			'value' => $options[ $field ]['login'],
+			'list' => $list,
 		)
 	);
 ///*
@@ -130,11 +138,12 @@ function ip_geo_block_tab_settings( $context ) {
 		$option_slug,
 		$section,
 		array(
-			'type' => 'checkbox',
+			'type' => 'select',
 			'option' => $option_name,
 			'field' => $field,
 			'sub-field' => 'admin',
 			'value' => $options[ $field ]['admin'],
+			'list' => $list,
 		)
 	);
 //*/
