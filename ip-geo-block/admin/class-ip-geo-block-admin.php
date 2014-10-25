@@ -564,20 +564,32 @@ class IP_Geo_Block_Admin {
 			wp_send_json( $res ); // @since 3.5.0
 		}
 
-		// Clear statistics
+		// Clear
 		else if ( isset( $_POST['clear'] ) ) {
-			// set default values
-			update_option(
-				$this->option_name['statistics'],
-				IP_Geo_Block::get_default( 'statistics' )
-			);
+			switch ( $_POST['clear'] ) {
+			  case 'statistics':
+				// set default values
+				update_option(
+					$this->option_name['statistics'],
+					IP_Geo_Block::get_default( 'statistics' )
+				);
 
-			// delete cache of IP address
-			delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
+				// delete cache of IP address
+				delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
+				$tab = 1;
+				break;
+
+			  case 'logs':
+				foreach ( array( 'comment', 'login', 'admin' ) as $hook ) {
+					@unlink( IP_GEO_BLOCK_PATH . "database/log-${hook}.php" );
+				}
+				$tab = 4;
+				break;
+			}
 
 			// refresh page
 			wp_send_json( array(
-				'refresh' => 'options-general.php?page=ip-geo-block&tab=1',
+				'refresh' => "options-general.php?page=ip-geo-block&tab=$tab",
 			) );
 		}
 

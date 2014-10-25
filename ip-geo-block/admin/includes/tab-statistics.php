@@ -152,8 +152,7 @@ function ip_geo_block_tab_statistics( $context ) {
 	$html .= "<th>" . __( 'Elapsed [sec] / Calls', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
 	$html .= "</tr></thead><tbody>";
 
-	$transient = get_transient( IP_Geo_Block::CACHE_KEY );
-	if ( $transient ) {
+	if ( $transient = get_transient( IP_Geo_Block::CACHE_KEY ) ) {
 		$time = time();
 		foreach ( $transient as $key => $val ) {
 			if ( true || empty( $val['auth'] ) ) { // hide if authorized user

@@ -21,6 +21,22 @@ function ip_geo_block_tab_accesslog( $context ) {
 		'ip_geo_block_list_accesslog',
 		$option_slug
 	);
+
+	$field = 'clear_logs';
+	add_settings_field(
+		$option_name . "_$field",
+		__( 'Clear logs', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'button',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => __( 'Clear now', IP_Geo_Block::TEXT_DOMAIN ),
+			'after' => '<div id="ip-geo-block-loading"></div>',
+		)
+	);
 }
 
 function ip_geo_block_list_accesslog() {

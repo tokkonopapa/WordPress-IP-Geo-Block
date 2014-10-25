@@ -123,6 +123,17 @@ table.ip-geo-block-statistics-cache td {
     padding: 4px 12px;
     text-decoration: none;
 }
+.ip-geo-block-log .pagination ul > .active > a,
+.ip-geo-block-log .pagination ul > .active > span {
+    color: #999;
+    cursor: default;
+}
+.ip-geo-block-log .pagination ul > li > a:hover,
+.ip-geo-block-log .pagination ul > li > a:focus,
+.ip-geo-block-log .pagination ul > .active > a,
+.ip-geo-block-log .pagination ul > .active > span {
+    background-color: #f7f7f7;
+}
 .ip-geo-block-log .pagination-centered {
     text-align: center;
 }

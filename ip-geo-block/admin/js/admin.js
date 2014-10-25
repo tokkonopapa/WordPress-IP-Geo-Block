@@ -119,6 +119,29 @@
 		});
 	}
 
+	// Clear logs
+	function ajax_clear_logs() {
+		$('#ip-geo-block-loading').addClass('ip-geo-block-loading');
+
+		$.post(IP_GEO_BLOCK.url, {
+			action: IP_GEO_BLOCK.action,
+			nonce: IP_GEO_BLOCK.nonce,
+			clear: 'logs'
+		})
+
+		.done(function (data, textStatus, jqXHR) {
+			window.location = data.refresh;
+		})
+
+		.fail(function (jqXHR, textStatus, errorThrown) {
+			alert(jqXHR.responseText);
+		})
+
+		.complete(function () {
+			$('#ip-geo-block-loading').removeClass('ip-geo-block-loading');
+		});
+	}
+
 	$(function () {
 		// Inhibit to submit by return key
 		$('#ip-geo-block-inhibit').on('submit', function () {
@@ -134,6 +157,14 @@
 		$('#clear_statistics').on('click', function (event) {
 			if (window.confirm('Clear statistics ?')) {
 				ajax_clear_statistics();
+			}
+			return false;
+		});
+
+		// Validation Logs
+		$('#clear_logs').on('click', function (event) {
+			if (window.confirm('Clear logs ?')) {
+				ajax_clear_logs();
 			}
 			return false;
 		});
