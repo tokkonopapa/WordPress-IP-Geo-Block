@@ -2,7 +2,7 @@ IP Geo Block
 ==============
 
 A WordPress plugin that will protect against malicious access to the login 
-form and admin area, and also block any spam comments posted from outside 
+form and admin area, and will also block any spam comments posted from outside 
 of your nation.
 
 This plugin will examine a country code based on the IP address. If the 

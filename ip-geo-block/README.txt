@@ -9,7 +9,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 A WordPress plugin that will protect against malicious access to the login 
-form and admin area, and also block any spam comments posted from outside 
+form and admin area, and will also block any spam comments posted from outside 
 of your nation.
 
 == Description ==
