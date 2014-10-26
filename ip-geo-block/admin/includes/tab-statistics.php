@@ -155,13 +155,13 @@ function ip_geo_block_tab_statistics( $context ) {
 	if ( $transient = get_transient( IP_Geo_Block::CACHE_KEY ) ) {
 		$time = time();
 		foreach ( $transient as $key => $val ) {
-			if ( true || empty( $val['auth'] ) ) { // hide if authorized user
+			if ( empty( $val['auth'] ) /*|| true*/ ) { // hide if authorized user
 				$html .= "<tr><td>" . esc_html( $key ) . "</td>";
 				$html .= "<td>" . esc_html( $val['code'] ) . "</td>";
 				$html .= "<td>" . ( $time - (int)$val['time'] ) . " / ";
 				$html .= ! empty( $val['call'] ) ? (int)$val['call'] : '-';
-				$html .= '(' . (! empty( $val['fail'] ) ? $val['fail'] : 0) . ')';
-				$html .= ! empty( $val['auth'] ) ? '+' : '-';
+//				$html .= '[' . (! empty( $val['fail'] ) ? $val['fail'] : 0) . ']';
+//				$html .= ! empty( $val['auth'] ) ? '+' : '-';
 				$html .= "</td></tr>";
 			}
 		}

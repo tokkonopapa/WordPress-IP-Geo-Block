@@ -106,7 +106,7 @@ function ip_geo_block_tab_settings( $context ) {
 		$option_slug,
 		$section,
 		array(
-			'type' => 'select',
+			'type' => 'checkbox',//'select',
 			'option' => $option_name,
 			'field' => $field,
 			'sub-field' => 'comment',
@@ -122,7 +122,7 @@ function ip_geo_block_tab_settings( $context ) {
 		$option_slug,
 		$section,
 		array(
-			'type' => 'select',
+			'type' => 'checkbox',//'select',
 			'option' => $option_name,
 			'field' => $field,
 			'sub-field' => 'login',
@@ -130,7 +130,7 @@ function ip_geo_block_tab_settings( $context ) {
 			'list' => $list,
 		)
 	);
-///*
+/*
 	add_settings_field(
 		$option_name . "_${field}_admin",
 		$title['admin'],
@@ -138,7 +138,7 @@ function ip_geo_block_tab_settings( $context ) {
 		$option_slug,
 		$section,
 		array(
-			'type' => 'select',
+			'type' => 'checkbox',//'select',
 			'option' => $option_name,
 			'field' => $field,
 			'sub-field' => 'admin',

@@ -40,9 +40,9 @@ class IP_Geo_Block_Options {
 			'flags'           => array(), // Multi purpose flags
 			'login_fails'     => 5,       // Max counts of login fail
 			'validation'      => array(   // Action hook for validation
-				'comment'     => 1,       // For comment spam
-				'login'       => 0,       // For login intrusion
-				'admin'       => 0,       // For admin intrusion
+				'comment'     => TRUE,    // For comment spam
+				'login'       => FALSE,   // For login intrusion
+				'admin'       => FALSE,   // For admin intrusion
 			),
 			'update'          => array(   // Updating IP address DB
 				'auto'        => TRUE,    // Auto updating of DB file

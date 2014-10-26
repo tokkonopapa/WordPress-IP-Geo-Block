@@ -2,7 +2,7 @@
 /**
  * IP Geo Block
  *
- * A WordPress plugin that blocks undesired access base on geolocation of IP address.
+ * A WordPress plugin that blocks undesired access based on geolocation of IP address.
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
@@ -21,28 +21,6 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path:       /languages
  */
-define( 'DEBUG_LEN', 500 ); // Ring buffer length
-
-date_default_timezone_set( 'Asia/Tokyo' );
-
-function debug_log( $msg, $file = null, $line = null, $trace = false ) {
-	$file = basename( $file );
-	$msg = date( "Y/m/d,D,H:i:s" )
-		. ( $file ? " $file"  : '' )
-		. ( $line ? "($line)" : '' )
-		. ' ' . trim( $msg );
-	if ( $trace ) $msg .= ' ' . print_r( debug_backtrace(), true );
-	$dir = __DIR__ . '/';
-	$fp = @fopen( $dir . basename( __FILE__, '.php' ) . '.log', 'c+' ); // PHP 5 >= 5.2.6
-	$stat = @fstat( $fp );
-	$buff = explode( "\n", @fread( $fp, $stat['size'] ) . $msg );
-	$buff = array_slice( $buff, -DEBUG_LEN );
-	@rewind( $fp );
-	@fwrite( $fp, implode( "\n", $buff ) . "\n" );
-	@fflush( $fp );
-	@ftruncate( $fp, ftell( $fp ) );
-	@fclose( $fp );
-}
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {

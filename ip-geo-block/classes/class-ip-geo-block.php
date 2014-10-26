@@ -336,7 +336,7 @@ class IP_Geo_Block {
 				array(
 					'code' => $validate['code'] . $mark_cache,
 					'call' => $count_call,
-					'auth' => is_user_logged_in(),
+					'auth' => current_user_can('edit_post'),
 				),
 				$settings
 			);

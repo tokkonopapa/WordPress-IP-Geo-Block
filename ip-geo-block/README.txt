@@ -1,7 +1,7 @@
 === IP Geo Block ===
 Contributors: tokkonopapa
 Donate link:
-Tags: comment, spam, IP address, geolocation
+Tags: comment, spam, IP address, geolocation, login, security, brute force
 Requires at least: 3.5
 Tested up to: 4.0
 Stable tag: 1.3.0
@@ -9,8 +9,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 A WordPress plugin that will protect against malicious access to the login 
-form and admin area, and will also block any spam comments posted from outside 
-of your nation.
+form, and will also block any spam comments posted from outside of your nation.
 
 == Description ==
 
@@ -32,13 +31,16 @@ select an appropriate API.
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
 (once a month) automatically.
 
-3. If you have correctly installed one of the IP2Location plugins (
+And if you have correctly installed one of the IP2Location plugins (
     [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
     [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
 ), this plugin uses its local database prior to the REST APIs. After installing 
 these IP2Location plugins, you should be once deactivated and then activated 
 in order to set the path to `database.bin`.
+
+3. Login security to lock out brute force and reverse brute force attack by 
+limiting geolocation and the number of login attempts by IP address.
 
 4. Cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against burst access within a short time.
@@ -182,7 +184,6 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-headers`          : compose http request headers.
 * `ip-geo-block-comment`          : validate IP address on `wp-comments-post.php`.
 * `ip-geo-block-login`            : validate IP adress on `wp-login.php`.
-* `ip-geo-block-admin`            : validate IP adress on `wp-admin/admin.php` except ajax.
 * `ip-geo-block-maxmind-dir`      : absolute path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.

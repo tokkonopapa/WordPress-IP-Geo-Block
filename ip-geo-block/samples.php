@@ -153,12 +153,4 @@ function my_whitelist( $validate ) {
 }
 add_filter( 'ip-geo-block-login', 'my_whitelist' ); // hook custom filter
 
-
-/**
- * Example9: validate ip address before authrization in admin area
- * Use case: limit the ip addresses that can access the admin area except ajax
- *
- */
-add_filter( 'ip-geo-block-admin', 'my_whitelist' ); // hook custom filter
-
 endif;

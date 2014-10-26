@@ -2,8 +2,7 @@ IP Geo Block
 ==============
 
 A WordPress plugin that will protect against malicious access to the login 
-form and admin area, and will also block any spam comments posted from outside 
-of your nation.
+form, and will also block any spam comments posted from outside of your nation.
 
 This plugin will examine a country code based on the IP address. If the 
 comment comes from undesired country, it will be blocked before Akismet 
@@ -22,13 +21,16 @@ select an appropriate API.
 2. [MaxMind][MaxMind] GeoLite free database for IPv4 and IPv6 will be 
 downloaded and updated (once a month) automatically.
 
-3. If you have correctly installed one of the IP2Location plugins (
+And if you have correctly installed one of the IP2Location plugins (
     [IP2Location Tags][IP2Tag],
     [IP2Location Variables][IP2Var],
     [IP2Location Country Blocker][IP2Blk]
 ), this plugin uses its local database prior to the REST APIs. After installing
 these IP2Location plugins, you should be once deactivated and then activated 
 in order to set the path to `database.bin`.
+
+3. Login security to lock out brute force and reverse brute force attack by 
+limiting geolocation and the number of login attempts by IP address.
 
 4. Cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against burst access within a short time.
