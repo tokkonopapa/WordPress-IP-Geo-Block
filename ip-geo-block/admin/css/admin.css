@@ -132,6 +132,8 @@ table.ip-geo-block-statistics-cache td {
 .ip-geo-block-log .pagination ul > li > a:focus,
 .ip-geo-block-log .pagination ul > .active > a,
 .ip-geo-block-log .pagination ul > .active > span {
+    /*background none repeat scroll 0 0 #2ea2cc;
+    color: #fff;*/
     background-color: #f7f7f7;
 }
 .ip-geo-block-log .pagination-centered {

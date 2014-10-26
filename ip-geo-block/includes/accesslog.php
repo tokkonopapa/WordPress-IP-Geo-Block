@@ -9,29 +9,34 @@ function ip_geo_block_save_log( $ip, $hook, $validate ) {
 	$file = IP_GEO_BLOCK_PATH . "database/log-${hook}.php";
 	if ( $fp = @fopen( $file, "c+" ) ) {
 		if ( @flock( $fp, LOCK_EX | LOCK_NB ) ) {
-			$size = @filesize( $file );
-			$lines = $size ? explode( "\n", fread( $fp, $size ) ) : array();
+			$fstat = fstat( $fp );
+			$lines = $fstat['size'] ?
+				explode( "\n", fread( $fp, $fstat['size'] ) ) : array();
+
+			// remove separator (&#044; --> &#130;)
+			$uagent = str_replace( "\n", " ", $_SERVER['HTTP_USER_AGENT'] );
+			$uagent = str_replace( ",",  "‚", trim( $uagent ) ); 
+			$cookie = str_replace( "\n", " ", json_encode( $_COOKIE ) );
+			$cookie = str_replace( ",",  "‚", trim( $cookie ) );
 
 			array_shift( $lines );
 			array_pop  ( $lines );
-			array_pop  ( $lines );
-			$lines = array_slice( $lines, -(IP_GEO_BLOCK_LOG_LEN-1) );
-
-			array_push(
+			array_unshift(
 				$lines,
 				sprintf( "%d,%s,%s,%s,%s,%s\n",
 					time(),
 					$ip,
 					$validate['code'],
 					basename( $_SERVER['REQUEST_URI'] ),
-					str_replace( ',', '‚', $_SERVER['HTTP_USER_AGENT'] ), // &#044; --> &#130;
-					json_encode( $_COOKIE ) // should be sanitized
+					$uagent, // should be sanitized
+					$cookie  // should be sanitized
 				)
 			);
+			$lines = array_slice( $lines, 0, IP_GEO_BLOCK_LOG_LEN );
 
 			rewind( $fp );
-			ftruncate( $fp, 0 );
-			fwrite( $fp, "<?php \$logs = <<<EOT\n" . implode( "\n", $lines ) . "EOT;\n?>" );
+			fwrite( $fp, "<?php/*\n" . implode( "\n", $lines ) . "*/?>" );
+			ftruncate( $fp, ftell( $fp ) );
 			@flock( $fp, LOCK_UN | LOCK_NB );
 		}
 
@@ -46,10 +51,17 @@ function ip_geo_block_read_log( $hook = NULL ) {
 	foreach ( $list as $hook ) {
 		$lines = array();
 		$file = IP_GEO_BLOCK_PATH . "database/log-${hook}.php";
-		@include( $file );
-		if ( isset( $logs ) ) {
-			$result[ $hook ] = array_reverse( explode( "\n", $logs ) );
-			unset( $logs );
+		if ( $fp = @fopen( $file, 'r' ) ) {
+			$fstat = fstat( $fp );
+			$lines = $fstat['size'] ?
+				explode( "\n", fread( $fp, $fstat['size'] ) ) : array();
+			@fclose( $fp );
+		}
+
+		if ( ! empty( $lines ) ) {
+			array_shift( $lines );
+			array_pop  ( $lines );
+			$result[ $hook ] = $lines;
 		}
 	}
 
