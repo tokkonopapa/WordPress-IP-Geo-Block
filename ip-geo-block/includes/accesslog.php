@@ -23,7 +23,7 @@ function ip_geo_block_save_log( $ip, $hook, $validate ) {
 			array_pop  ( $lines );
 			array_unshift(
 				$lines,
-				sprintf( "%d,%s,%s,%s,%s,%s\n",
+				sprintf( "%d,%s,%s,%s,%s,%s",
 					time(),
 					$ip,
 					$validate['code'],
@@ -35,7 +35,7 @@ function ip_geo_block_save_log( $ip, $hook, $validate ) {
 			$lines = array_slice( $lines, 0, IP_GEO_BLOCK_LOG_LEN );
 
 			rewind( $fp );
-			fwrite( $fp, "<?php/*\n" . implode( "\n", $lines ) . "*/?>" );
+			fwrite( $fp, "<?php/*\n" . implode( "\n", $lines ) . "\n*/?>" );
 			ftruncate( $fp, ftell( $fp ) );
 			@flock( $fp, LOCK_UN | LOCK_NB );
 		}

@@ -67,22 +67,26 @@ ul.ip-geo-block-statistics-countries li {
     float: left;
 }
 
-table.ip-geo-block-statistics-post th,
-table.ip-geo-block-statistics-type th,
-table.ip-geo-block-statistics-service th,
-table.ip-geo-block-statistics-cache th {
+/* table */
+.ip-geo-block-statistics-post th,
+.ip-geo-block-statistics-type th,
+.ip-geo-block-statistics-service th,
+.ip-geo-block-statistics-cache th {
     width: 12em;
     text-align: right;
 }
 
-table.ip-geo-block-statistics-post td,
-table.ip-geo-block-statistics-type td,
-table.ip-geo-block-statistics-service td,
-table.ip-geo-block-statistics-cache td {
+.ip-geo-block-statistics-post td,
+.ip-geo-block-statistics-type td,
+.ip-geo-block-statistics-service td,
+.ip-geo-block-statistics-cache td {
     text-align: right;
 }
 
 /* for footable */
+.ip-geo-block-log {
+    width: 100% !important;
+}
 .ip-geo-block-log .pagination ul {
     border-radius: 4px;
     display: inline-block;
