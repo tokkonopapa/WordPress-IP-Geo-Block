@@ -15,11 +15,11 @@ function ip_geo_block_tab_statistics( $context ) {
 	$section = IP_Geo_Block::PLUGIN_SLUG . '-statistics';
 	add_settings_section(
 		$section,
-		__( 'Statistics of posts', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Statistics of validation', IP_Geo_Block::TEXT_DOMAIN ),
 		NULL,
 		$option_slug
 	);
-
+/*
 	$field = 'passed';
 	add_settings_field(
 		$option_name . "_$field",
@@ -34,7 +34,7 @@ function ip_geo_block_tab_statistics( $context ) {
 			'value' => esc_html( $options[ $field ] ),
 		)
 	);
-
+*/
 	$field = 'blocked';
 	add_settings_field(
 		$option_name . "_$field",
@@ -150,7 +150,11 @@ function ip_geo_block_tab_statistics( $context ) {
 	$html .= "<th>" . __( 'IP address', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
 	$html .= "<th>" . __( 'Country code', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
 	$html .= "<th>" . __( 'Elapsed [sec] / Calls', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
-	$html .= "</tr></thead><tbody>";
+	$html .= "</tr></thead><tfoot><tr><td colspan='3'><small>";
+	$html .= __( '+ : access to login form', IP_Geo_Block::TEXT_DOMAIN );
+	$html .= ", ";
+	$html .= __( '* : access to admin area', IP_Geo_Block::TEXT_DOMAIN );
+	$html .= "</small></td></tr></tfoot><tbody>";
 
 	if ( $transient = get_transient( IP_Geo_Block::CACHE_KEY ) ) {
 		$time = time();

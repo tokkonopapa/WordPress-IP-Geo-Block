@@ -29,8 +29,9 @@ And if you have correctly installed one of the IP2Location plugins (
 these IP2Location plugins, you should be once deactivated and then activated 
 in order to set the path to `database.bin`.
 
-3. Login security to lock out brute force and reverse brute force attack by 
-limiting geolocation and the number of login attempts by IP address.
+3. For security, brute-force and reverse-brute-force attacks to login form 
+will be blocked by limiting geolocation and the number of login attempts by 
+IP address.
 
 4. Cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against burst access within a short time.
