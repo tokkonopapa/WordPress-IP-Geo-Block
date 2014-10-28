@@ -182,12 +182,12 @@ class IP_Geo_Block {
 	/**
 	 * Get geolocation and country code from an ip address
 	 *
-	 */
+	 *//*
 	public static function get_geolocation( $ip, $list ) {
 		return self::_get_geolocation(
 			$ip, self::get_option( 'settings' ), $list, 'get_location'
 		);
-	}
+	}*/
 
 	public static function _get_geolocation( $ip, $settings, $list = array(), $callback = 'get_country' ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
@@ -346,7 +346,7 @@ class IP_Geo_Block {
 				array(
 					'code' => $validate['code'] . $mark_cache,
 					'call' => $count_call,
-					'auth' => current_user_can('edit_post'),
+					'auth' => is_user_logged_in(), //current_user_can('edit_post'),
 				),
 				$settings
 			);
