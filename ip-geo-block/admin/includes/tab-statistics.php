@@ -34,7 +34,7 @@ function ip_geo_block_tab_statistics( $context ) {
 			'value' => esc_html( $options[ $field ] ),
 		)
 	);
-*/
+//*/
 	$field = 'blocked';
 	add_settings_field(
 		$option_name . "_$field",
@@ -150,11 +150,7 @@ function ip_geo_block_tab_statistics( $context ) {
 	$html .= "<th>" . __( 'IP address', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
 	$html .= "<th>" . __( 'Country code', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
 	$html .= "<th>" . __( 'Elapsed [sec] / Calls', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
-	$html .= "</tr></thead><tfoot><tr><td colspan='3'><small>";
-	$html .= __( '+ : access to login form', IP_Geo_Block::TEXT_DOMAIN );
-	$html .= ", ";
-	$html .= __( '* : access to admin area', IP_Geo_Block::TEXT_DOMAIN );
-	$html .= "</small></td></tr></tfoot><tbody>";
+	$html .= "</tr></thead><tbody>";
 
 	if ( $transient = get_transient( IP_Geo_Block::CACHE_KEY ) ) {
 		$time = time();
@@ -174,7 +170,11 @@ function ip_geo_block_tab_statistics( $context ) {
 
 	add_settings_field(
 		$option_name . "_$field",
-		__( 'IP address in cache', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'IP address in cache', IP_Geo_Block::TEXT_DOMAIN ) .
+		"<p style='font-weight: normal'><small>" .
+		"+ : " . __( 'access to login form', IP_Geo_Block::TEXT_DOMAIN ) . "<br />" .
+		"* : " . __( 'access to admin area', IP_Geo_Block::TEXT_DOMAIN ) .
+		"</small></p>",
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,

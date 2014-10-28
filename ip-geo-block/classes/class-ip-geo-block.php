@@ -180,24 +180,32 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Get country code from an ip address
+	 * Get geolocation and country code from an ip address
 	 *
 	 */
-	private function get_country( $ip, $settings ) {
+	public static function get_geolocation( $ip, $list ) {
+		return self::_get_geolocation(
+			$ip, self::get_option( 'settings' ), $list, 'get_location'
+		);
+	}
+
+	public static function _get_geolocation( $ip, $settings, $list = array(), $callback = 'get_country' ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
 
 		// make providers list
-		$list = array();
-		$geo = IP_Geo_Block_Provider::get_providers( 'key', TRUE, TRUE );
-		foreach ( $geo as $provider => $key ) {
-			if ( ! empty( $settings['providers'][ $provider ] ) || (
-			     ! isset( $settings['providers'][ $provider ] ) && NULL === $key ) ) {
-				$list[] = $provider;
+		if ( empty( $list ) || ! is_array( $list ) ) {
+			$list = array();
+			$geo = IP_Geo_Block_Provider::get_providers( 'key', TRUE, TRUE );
+			foreach ( $geo as $provider => $key ) {
+				if ( ! empty( $settings['providers'][ $provider ] ) || (
+					 ! isset( $settings['providers'][ $provider ] ) && NULL === $key ) ) {
+					$list[] = $provider;
+				}
 			}
 		}
 
 		// set arguments for wp_remote_get()
-		$ret = array( 'ip' => $ip );
+		$ip = apply_filters( self::PLUGIN_SLUG . '-ip-addr', $ip );
 		$args = self::get_request_headers( $settings );
 
 		foreach ( $list as $provider ) {
@@ -209,17 +217,20 @@ class IP_Geo_Block {
 				$geo = new $name( $key ? $settings['providers'][ $provider ] : NULL );
 
 				// get country code
-				if ( $code = $geo->get_country( $ip, $args ) ) {
-					return $ret + array(
+				if ( $code = $geo->$callback( $ip, $args ) ) {
+					$ret = array(
+						'ip' => $ip,
 						'time' => microtime( TRUE ) - $time,
-						'code' => strtoupper( $code ),
 						'provider' => $provider,
 					);
+					return is_array( $code ) ?
+						$ret + $code : 
+						$ret + array( 'code' => strtoupper( $code ) );
 				}
 			}
 		}
 
-		return $ret;
+		return array( 'ip' => $ip, 'errorMessage' => 'unknown' );
 	}
 
 	/**
@@ -319,8 +330,7 @@ class IP_Geo_Block {
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
 		$settings = self::get_option( 'settings' );
-		$ip = apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] );
-		$validate = $this->get_country( $ip, $settings );
+		$validate = self::_get_geolocation( $_SERVER['REMOTE_ADDR'], $settings );
 		$validate = apply_filters( self::PLUGIN_SLUG . "-$hook", $validate, $settings );
 
 		// if no 'result' then validate ip address by country

@@ -88,8 +88,6 @@ class IP_Geo_Block_Options {
 	 *
 	 */
 	public static function upgrade() {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
-
 		// find IP2Location DB
 		$tmp = array(
 			WP_CONTENT_DIR . '/ip2location/database.bin',
@@ -111,21 +109,10 @@ class IP_Geo_Block_Options {
 		$key = array_keys( $default );
 
 		if ( FALSE === ( $settings = get_option( $key[0] ) ) ) {
-			$ip = apply_filters(
-				IP_Geo_Block::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR']
-			);
-			$args = IP_Geo_Block::get_request_headers( $default[ $key[0] ] );
-
 			// get country code from admin's IP address and set it into white list
-			foreach ( array( 'ipinfo.io', 'Telize', 'IP-Json' ) as $provider ) {
-				if ( $provider = IP_Geo_Block_API::get_class_name( $provider ) ) {
-					$name = new $provider( NULL );
-					if ( $tmp = $name->get_country( $ip, $args ) ) {
-						$default[ $key[0] ]['white_list'] = $tmp;
-						break;
-					}
-				}
-			}
+			shuffle( $name = array( 'ipinfo.io', 'Telize', 'IP-Json' ) );
+			$tmp = IP_Geo_Block::_get_geolocation( $_SERVER['REMOTE_ADDR'], $default, $name );
+			$default[ $key[0] ]['white_list'] = isset( $tmp['code'] ) ? $tmp['code'] : NULL;
 
 			// update local goelocation database files
 			$default[ $key[0] ]['ip2location']['ipv4_path'] = $ip2;

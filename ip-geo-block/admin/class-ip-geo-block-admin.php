@@ -230,8 +230,8 @@ class IP_Geo_Block_Admin {
 <?php if ( 2 === $tab ) { ?>
 	<div id="ip-geo-block-map"></div>
 <?php } else if ( 3 === $tab ) { ?>
-	<p>This product includes GeoLite data created by MaxMind, available from <a class="ip-geo-block-link" href="http://www.maxmind.com" target=_blank>http://www.maxmind.com</a>.</p>
-	<p>This product includes IP2Location open source libraries available from <a class="ip-geo-block-link" href="http://www.ip2location.com" target=_blank>http://www.ip2location.com</a>.</p>
+	<p>This product includes GeoLite data created by MaxMind, available from <a class="ip-geo-block-link" href="http://www.maxmind.com" target=_blank>http://www.maxmind.com</a>.<br />
+	This product includes IP2Location open source libraries available from <a class="ip-geo-block-link" href="http://www.ip2location.com" target=_blank>http://www.ip2location.com</a>.</p>
 <?php } ?>
 	<p><?php echo get_num_queries(); ?> queries. <?php timer_stop(1); ?> seconds. <?php echo memory_get_usage(); ?> bytes.</p>
 </div>
@@ -521,11 +521,7 @@ class IP_Geo_Block_Admin {
 
 		// download database
 		else if ( isset( $_POST['download'] ) ) {
-			// download now
-			$res = IP_Geo_Block::download_database( 'only-maxmind' );
-
-			// respond
-			wp_send_json( $res ); // @since 3.5.0
+			$res = IP_Geo_Block::download_database( 'only-maxmind' ); // download now
 		}
 
 		// Check ip address
@@ -560,9 +556,6 @@ class IP_Geo_Block_Admin {
 			else {
 				$res = array( 'errorMessage' => 'Invalid IP address.' );
 			}
-
-			// respond
-			wp_send_json( $res ); // @since 3.5.0
 		}
 
 		// Clear
@@ -577,26 +570,20 @@ class IP_Geo_Block_Admin {
 
 				// delete cache of IP address
 				delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
-				$tab = 1;
+				$res = array( 'refresh' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=1" );
 				break;
 
 			  case 'logs':
 				foreach ( array( 'comment', 'login', 'admin' ) as $hook ) {
 					@unlink( IP_GEO_BLOCK_PATH . "database/log-${hook}.php" );
 				}
-				$tab = 4;
+				$res = array( 'refresh' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=4" );
 				break;
 			}
-
-			// refresh page
-			wp_send_json( array(
-				'refresh' => "options-general.php?page=ip-geo-block&tab=$tab",
-			) );
 		}
 
-		else {
-			wp_send_json( array( 'errorMessage' => 'Invalid command.' ) );
-		}
+		if ( isset( $res ) )
+			wp_send_json( $res ); // @since 3.5.0
 
 		// End of ajax
 		die();
