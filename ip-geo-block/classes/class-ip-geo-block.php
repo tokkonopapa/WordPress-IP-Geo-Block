@@ -85,20 +85,20 @@ class IP_Geo_Block {
 			}
 
 			// action hook from wp-comments-post.php @since 2.8.0
-			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ) );
+			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ) ); // 1
 		}
 
 		// action hook from wp-login.php @since 2.1.0, wp_signon() and wp_authenticate()
 		if ( $settings['validation']['login'] ) {
-			add_action( 'login_init', array( $this, 'validate_login' ) );
-			add_action( 'wp_login',   array( $this, 'validate_login' ) );
-			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
+			add_action( 'login_init', array( $this, 'validate_login' ), 10, 0 ); // 0
+			add_action( 'wp_login',   array( $this, 'validate_login' ), 10, 2 ); // 2
+			add_action( 'wp_login_failed', array( $this, 'auth_fail' ), 10, 1 ); // 1
 		}
 
 		// action hook from wp-admin/admin.php @since 3.1.0
 		if ( $settings['validation']['admin'] ) {
-			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
-			add_filter( 'admin_init',           array( $this, 'validate_admin' ) );
+			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) ); // 1
+			add_filter( 'admin_init',           array( $this, 'validate_admin' ) ); // 0
 		}
 	}
 
@@ -318,8 +318,9 @@ class IP_Geo_Block {
 	 * @param string  $mark_cache a symbolic charactor to mark on 'IP address in cache'.
 	 * @param boolean $save_cache cache the IP addresse regardless of validation result.
 	 * @param boolean $save_stat  update statistics regardless of validation result.
+	 * @param boolean $auth       already authenticated or not.
 	 */
-	private function validate_ip( $hook, $mark_cache, $save_cache, $save_stat ) {
+	private function validate_ip( $hook, $mark_cache, $save_cache, $save_stat, $auth ) {
 		// apply custom filter of validation
 		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
 		// @param $validate = array(
@@ -346,7 +347,7 @@ class IP_Geo_Block {
 				array(
 					'code' => $validate['code'] . $mark_cache,
 					'call' => $count_call,
-					'auth' => is_user_logged_in(), //current_user_can('edit_post'),
+					'auth' => $auth,
 				),
 				$settings
 			);
@@ -384,7 +385,7 @@ class IP_Geo_Block {
 	 * login users      cached / hidden  not saved
 	 */
 	public function validate_comment() {
-		$this->validate_ip( 'comment', NULL, TRUE, TRUE );
+		$this->validate_ip( 'comment', NULL, TRUE, TRUE, is_user_logged_in() );
 	}
 
 	public function validate_login() {
@@ -392,12 +393,12 @@ class IP_Geo_Block {
 			return;
 
 		add_filter( self::PLUGIN_SLUG . '-login', array( $this, 'auth_check' ), 10, 2 );
-		$this->validate_ip( 'login', '+', TRUE, FALSE );
+		$this->validate_ip( 'login', '+', TRUE, FALSE, (2 === func_num_args()) );
 	}
 
 	public function validate_admin( $secure ) {
 		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-			$this->validate_ip( 'admin', '*', TRUE, FALSE );
+			$this->validate_ip( 'admin', '*', TRUE, FALSE, is_user_logged_in() );
 
 		return $secure; // pass through
 	}
