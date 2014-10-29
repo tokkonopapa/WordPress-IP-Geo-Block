@@ -8,8 +8,9 @@ Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress plugin that will protect against malicious access to the login 
-form, and will also block any spam comments posted from outside of your nation.
+A WordPress plugin that will block any spam comments posted from outside of 
+your nation, and will also protect against malicious access to the login form 
+from undesired countries.
 
 == Description ==
 
@@ -29,15 +30,14 @@ select an appropriate API.
 
 2. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
-(once a month) automatically.
-
-And if you have correctly installed one of the IP2Location plugins (
+(once a month) automatically.<br><br>And if you have correctly installed 
+one of the IP2Location plugins (
     [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
     [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
-), this plugin uses its local database prior to the REST APIs. After installing 
-these IP2Location plugins, you should be once deactivated and then activated 
-in order to set the path to `database.bin`.
+), this plugin uses its local database prior to the REST APIs.
+After installing these IP2Location plugins, you should be once deactivated 
+and then activated in order to set the path to `database.bin`.
 
 3. For security, brute-force and reverse-brute-force attacks to login form 
 will be blocked by limiting geolocation and the number of login attempts by 

@@ -29,10 +29,10 @@ abstract class IP_Geo_Block_API {
 	 *//*
 	protected $api_type = IP_GEO_BLOCK_API_TYPE_[IPV4 | IPV6 | BOTH];
 	protected $api_template = array(
-		'api_key' => '', // %API_KEY%
-		'format'  => '', // %API_FORMAT%
-		'option'  => '', // %API_OPTION%
-		'ip'      => '', // %API_IP%
+		'%API_IP%'     => '', // should be set in build_url()
+		'%API_KEY%'    => '', // should be set in __construct()
+		'%API_FORMAT%' => '', // may be set in child class
+		'%API_OPTION%' => '', // may be set in child class
 	);
 	protected $url_template = 'http://example.com/%API_KEY%/%API_FORMAT%/%API_OPTION%/%API_IP%';
 	protected $transform_table = array(
@@ -51,7 +51,7 @@ abstract class IP_Geo_Block_API {
 	 */
 	public function __construct( $api_key = NULL ) {
 		if ( is_string( $api_key ) )
-			$this->api_template['api_key'] = $api_key;
+			$this->api_template['%API_KEY%'] = $api_key;
 	}
 
 	/**
@@ -59,15 +59,10 @@ abstract class IP_Geo_Block_API {
 	 *
 	 */
 	private function build_url( $ip ) {
-		$this->api_template['ip'] = $ip;
-		return preg_replace(
-			array(
-				'/%API_KEY%/',
-				'/%API_FORMAT%/',
-				'/%API_OPTION%/',
-				'/%API_IP%/',
-			),
-			$this->api_template,
+		$this->api_template['%API_IP%'] = $ip;
+		return str_replace(
+			array_keys( $this->api_template ),
+			array_values( $this->api_template ),
 			$this->url_template
 		);
 	}
@@ -88,13 +83,11 @@ abstract class IP_Geo_Block_API {
 		$tmp = $this->build_url( $ip );
 
 		// http://codex.wordpress.org/Function_Reference/wp_remote_get
-		if ( function_exists( "wp_remote_get" ) ) { // @since 2.7
-			$res = @wp_remote_get( $tmp, $args );
-			if ( is_wp_error( $res ) )
-				return array( 'errorMessage' => $res->get_error_message() );
-			$tmp = wp_remote_retrieve_header( $res, 'content-type' );
-			$res = wp_remote_retrieve_body( $res );
-		}
+		$res = @wp_remote_get( $tmp, $args ); // @since 2.7
+		if ( is_wp_error( $res ) )
+			return array( 'errorMessage' => $res->get_error_message() );
+		$tmp = wp_remote_retrieve_header( $res, 'content-type' );
+		$res = wp_remote_retrieve_body( $res );
 
 		// clear decoded data
 		$data = array();
@@ -155,12 +148,10 @@ abstract class IP_Geo_Block_API {
 		$res = $this->get_location( $ip, $args );
 
 		// if country code is '-' or 'UNDEFINED' then error.
-		if ( $res && ! empty( $res['countryCode'] ) ) {
-			$len = strlen( $res['countryCode'] );
-			return 2 <= $len && $len <= 3 ? substr( $res['countryCode'], 0, 2 ) : NULL;
-		} else {
+		if ( $res && ! empty( $res['countryCode'] ) )
+			return preg_match( '/^[A-Z]{2}/', $res['countryCode'], $matches ) ? $matches[0] : NULL;
+		else
 			return NULL;
-		}
 	}
 
 	/**
@@ -188,10 +179,7 @@ abstract class IP_Geo_Block_API {
 class IP_Geo_Block_API_freegeoipnet extends IP_Geo_Block_API {
 	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
 	protected $api_template = array(
-		'api_key' => '',
-		'format'  => 'json',
-		'option'  => '',
-		'ip'      => '',
+		'%API_FORMAT%' => 'json',
 	);
 	protected $url_template = 'http://freegeoip.net/%API_FORMAT%/%API_IP%';
 	protected $transform_table = array(
@@ -219,10 +207,8 @@ class IP_Geo_Block_API_freegeoipnet extends IP_Geo_Block_API {
 class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
 	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
-		'api_key' => '',
-		'format'  => 'json',
-		'option'  => '',
-		'ip'      => '',
+		'%API_FORMAT%' => 'json',
+		'%API_OPTION%' => '',
 	);
 	protected $url_template = 'http://ipinfo.io/%API_IP%/%API_FORMAT%%API_OPTION%';
 	protected $transform_table = array(
@@ -245,8 +231,8 @@ class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
 	}
 
 	public function get_country( $ip, $args = array() ) {
-		$this->api_template['format'] = '';
-		$this->api_template['option'] = 'country';
+		$this->api_template['%API_FORMAT%'] = '';
+		$this->api_template['%API_OPTION%'] = 'country';
 		return parent::get_country( $ip, $args );
 	}
 }
@@ -264,12 +250,7 @@ class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
  */
 class IP_Geo_Block_API_Telize extends IP_Geo_Block_API {
 	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
-	protected $api_template = array(
-		'api_key' => '',
-		'format'  => '',
-		'option'  => '',
-		'ip'      => '',
-	);
+	protected $api_template = array();
 	protected $url_template = 'http://www.telize.com/geoip/%API_IP%';
 	protected $transform_table = array(
 		'countryCode' => 'country_code',
@@ -296,10 +277,7 @@ class IP_Geo_Block_API_Telize extends IP_Geo_Block_API {
 class IP_Geo_Block_API_IPJson extends IP_Geo_Block_API {
 	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
-		'api_key' => '',
-		'format'  => 'json',
-		'option'  => '',
-		'ip'      => '',
+		'%API_FORMAT%' => 'json',
 	);
 	protected $url_template = 'http://ip-json.rhcloud.com/%API_FORMAT%/%API_IP%';
 	protected $transform_table = array(
@@ -314,7 +292,7 @@ class IP_Geo_Block_API_IPJson extends IP_Geo_Block_API {
 
 	public function get_location( $ip, $args = array() ) {
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-			$this->api_template['format'] = 'v6';
+			$this->api_template['%API_FORMAT%'] = 'v6';
 		return parent::get_location( $ip, $args );
 	}
 }
@@ -334,10 +312,7 @@ class IP_Geo_Block_API_IPJson extends IP_Geo_Block_API {
 class IP_Geo_Block_API_Xhanch extends IP_Geo_Block_API {
 	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
 	protected $api_template = array(
-		'api_key' => '',
-		'format'  => 'json',
-		'option'  => '',
-		'ip'      => '',
+		'%API_FORMAT%' => 'json',
 	);
 	protected $url_template = 'http://api.xhanch.com/ip-get-detail.php?ip=%API_IP%&m=%API_FORMAT%';
 	protected $transform_table = array(
@@ -364,10 +339,7 @@ class IP_Geo_Block_API_Xhanch extends IP_Geo_Block_API {
 class IP_Geo_Block_API_geoPlugin extends IP_Geo_Block_API {
 	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
-		'api_key' => '',
-		'format'  => 'json',
-		'option'  => '',
-		'ip'      => '',
+		'%API_FORMAT%' => 'json',
 	);
 	protected $url_template = 'http://www.geoplugin.net/%API_FORMAT%.gp?ip=%API_IP%';
 	protected $transform_table = array(
@@ -395,10 +367,7 @@ class IP_Geo_Block_API_geoPlugin extends IP_Geo_Block_API {
 class IP_Geo_Block_API_ipapicom extends IP_Geo_Block_API {
 	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
 	protected $api_template = array(
-		'api_key' => '',
-		'format'  => 'json',
-		'option'  => '',
-		'ip'      => '',
+		'%API_FORMAT%' => 'json',
 	);
 	protected $url_template = 'http://ip-api.com/%API_FORMAT%/%API_IP%';
 	protected $transform_table = array(
@@ -427,10 +396,8 @@ class IP_Geo_Block_API_ipapicom extends IP_Geo_Block_API {
 class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
 	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
 	protected $api_template = array(
-		'api_key' => '',
-		'format'  => 'xml',
-		'option'  => 'ip-city',
-		'ip'      => '',
+		'%API_FORMAT%' => 'xml',
+		'%API_OPTION%' => 'ip-city',
 	);
 	protected $url_template = 'http://api.ipinfodb.com/v3/%API_OPTION%/?key=%API_KEY%&format=%API_FORMAT%&ip=%API_IP%';
 	protected $transform_table = array(
@@ -443,7 +410,7 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
 	);
 
 	public function get_country( $ip, $args = array() ) {
-		$this->api_template['option'] = 'ip-country';
+		$this->api_template['%API_OPTION%'] = 'ip-country';
 		return parent::get_country( $ip, $args );
 	}
 }
@@ -501,8 +468,9 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 			$file = IP_GEO_BLOCK_IP2LOC_IPV4; // currently, support only one file
 			$type = IP_GEO_BLOCK_API_TYPE_IPV6;
 		}
-		else
+		else {
 			return array( 'errorMessage' => 'illegal format' );
+		}
 
 		try {
 			$geo = new IP2Location( $file );
