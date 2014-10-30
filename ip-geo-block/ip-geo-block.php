@@ -12,7 +12,7 @@
  *
  * Plugin Name:       IP Geo Block
  * Plugin URI:        http://wordpress.org/plugins/ip-geo-block/
- * Description:       A WordPress plugin that will protect against malicious access to the login form and admin area, and will also block any spam comments posted from undesired countries based on geolocation of IP address.
+ * Description:       A WordPress plugin that will block any spam comments posted from outside of your nation, and will also protect against malicious access to the login form from undesired countries.
  * Version:           1.3.0
  * Author:            tokkonopapa
  * Author URI:        https://github.com/tokkonopapa/WordPress-IP-Geo-Block

@@ -38,7 +38,7 @@ class IP_Geo_Block_Options {
 			'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
 			// since version 1.2
 			'flags'           => array(), // Multi purpose flags
-			'login_fails'     => 5,       // Max counts of login fail
+			'login_fails'     => 5,       // Limited number of login attempts
 			'validation'      => array(   // Action hook for validation
 				'comment'     => TRUE,    // For comment spam
 				'login'       => FALSE,   // For login intrusion

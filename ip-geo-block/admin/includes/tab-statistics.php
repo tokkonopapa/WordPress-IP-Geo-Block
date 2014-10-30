@@ -148,20 +148,24 @@ function ip_geo_block_tab_statistics( $context ) {
 	$field = 'cache';
 	$html = "<table class=\"${option_slug}-${field}\"><thead><tr>";
 	$html .= "<th>" . __( 'IP address', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
-	$html .= "<th>" . __( 'Country code', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
+	$html .= "<th>" . __( 'Country code / Access', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
 	$html .= "<th>" . __( 'Elapsed [sec] / Calls', IP_Geo_Block::TEXT_DOMAIN ) . "</th>";
 	$html .= "</tr></thead><tbody>";
 
 	if ( $transient = get_transient( IP_Geo_Block::CACHE_KEY ) ) {
 		$time = time();
+		$debug = defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG;
 		foreach ( $transient as $key => $val ) {
-			if ( empty( $val['auth'] ) /*|| true*/ ) { // hide if authorized user
+			if ( empty( $val['auth'] ) || $debug ) { // hide authenticated user
 				$html .= "<tr><td>" . esc_html( $key ) . "</td>";
 				$html .= "<td>" . esc_html( $val['code'] ) . "</td>";
 				$html .= "<td>" . ( $time - (int)$val['time'] ) . " / ";
-				$html .= ! empty( $val['call'] ) ? (int)$val['call'] : '-';
-//				$html .= '[' . (! empty( $val['fail'] ) ? $val['fail'] : 0) . ']';
-//				$html .= ! empty( $val['auth'] ) ? '+' : '-';
+				$html .= ! empty( $val['call'] ) ? (int)$val['call'] : "-";
+				if ( $debug ) {
+					$html .= " [" . intval( $val['fail'] ) . "]";
+					$user = get_user_by( 'id', intval( $val['auth'] ) );
+					$html .= " " . ($user ? $user->get( 'user_login' ) : "");
+				}
 				$html .= "</td></tr>";
 			}
 		}
@@ -170,11 +174,7 @@ function ip_geo_block_tab_statistics( $context ) {
 
 	add_settings_field(
 		$option_name . "_$field",
-		__( 'IP address in cache', IP_Geo_Block::TEXT_DOMAIN ) .
-		"<p style='font-weight: normal'><small>" .
-		"+ : " . __( 'access to login form', IP_Geo_Block::TEXT_DOMAIN ) . "<br />" .
-		"* : " . __( 'access to admin area', IP_Geo_Block::TEXT_DOMAIN ) .
-		"</small></p>",
+		__( 'IP address in cache', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,

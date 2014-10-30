@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.3.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-10-28 23:02+0900\n"
-"PO-Revision-Date: 2014-10-28 23:03+0900\n"
+"POT-Creation-Date: 2014-10-30 23:16+0900\n"
+"PO-Revision-Date: 2014-10-30 23:22+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,9 +21,9 @@ msgstr ""
 
 # description
 msgid ""
-"A WordPress plugin that will protect against malicious access to the login "
-"form and admin area, and will also block any spam comments posted from "
-"undesired countries based on geolocation of IP address."
+"A WordPress plugin that will block any spam comments posted from outside of "
+"your nation, and will also protect against malicious access to the login "
+"form from undesired countries."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:82
@@ -113,7 +113,7 @@ msgstr ""
 msgid "IP address"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:57 admin/includes/tab-statistics.php:151
+#: admin/includes/tab-accesslog.php:57
 msgid "Country code"
 msgstr ""
 
@@ -318,16 +318,12 @@ msgstr ""
 msgid "Statistics of cache"
 msgstr ""
 
+#: admin/includes/tab-statistics.php:151
+msgid "Country code / Access"
+msgstr ""
+
 #: admin/includes/tab-statistics.php:152
 msgid "Elapsed [sec] / Calls"
-msgstr ""
-
-#: admin/includes/tab-statistics.php:171
-msgid "access to login form"
-msgstr ""
-
-#: admin/includes/tab-statistics.php:172
-msgid "access to admin area"
 msgstr ""
 
 #: admin/includes/tab-statistics.php:177

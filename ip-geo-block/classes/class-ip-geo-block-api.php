@@ -468,9 +468,8 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 			$file = IP_GEO_BLOCK_IP2LOC_IPV4; // currently, support only one file
 			$type = IP_GEO_BLOCK_API_TYPE_IPV6;
 		}
-		else {
+		else
 			return array( 'errorMessage' => 'illegal format' );
-		}
 
 		try {
 			$geo = new IP2Location( $file );
@@ -590,29 +589,23 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			}
 		}
 
-		// if the 'call' does not exist or false, then no count up
-		$call = ! empty( $args['call'] );
-		if ( isset( $args['call'] ) )
-			unset( $args['call'] );
+		// avoid duplicated count if 'call' is empty or false
+		if ( $settings['save_statistics'] && ! empty( $args['call'] ) )
+			++$cache[ $ip ]['call']; // no need to initialize
+		unset( $args['call'] ); // no error or warning even if empty
 
-		// add new item
-		$code = $args['code'];
-		$cache[ $ip ] = array_merge(
-			empty( $cache[ $ip ] ) ? array() : $cache[ $ip ], $args
-		);
+		// add new elements
 		$cache[ $ip ]['time'] = $time;
-		$cache[ $ip ]['code'] = strlen( $code ) < 2 ? 'ZZ' . $code : $code;
-
-		// avoid duplicated count by $call
-		if ( $settings['save_statistics'] && $call )
-			++$cache[ $ip ]['call'];
+		$cache[ $ip ] = array_merge( $cache[ $ip ], $args );
+		if (   empty( $cache[ $ip ]['code'] ) ) $cache[ $ip ]['code'] = 'ZZ';
+		if ( ! empty( $cache[ $ip ]['auth'] ) ) $cache[ $ip ]['fail'] = 0;
 
 		// sort by 'time'
 		foreach ( $cache as $key => $val )
 			$hash[ $key ] = $val['time'];
 		array_multisort( $hash, SORT_DESC, $cache );
 
-		// keep max number of entries except hiddens
+		// keep the maximum number of entries, except for hidden elements
 		$time = 0;
 		foreach ( $cache as $key => $val ) {
 			if ( ! $val['auth'] && ++$time > $num ) {

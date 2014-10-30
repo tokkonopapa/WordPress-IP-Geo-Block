@@ -84,22 +84,23 @@ class IP_Geo_Block {
 				add_action( $pos, array( $this, 'comment_form_message' ) );
 			}
 
-			// action hook from wp-comments-post.php @since 2.8.0
-			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ) ); // 1
+			// action hook from wp-comments-post.php @since 2.8.0, 'preprocess_comment'
+			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ) );
 		}
 
-		// action hook from wp-login.php @since 2.1.0, wp_signon() and wp_authenticate()
+		// action hook from wp-login.php @since 2.1.0
 		if ( $settings['validation']['login'] ) {
-			add_action( 'login_init', array( $this, 'validate_login' ), 10, 0 ); // 0
-			add_action( 'wp_login',   array( $this, 'validate_login' ), 10, 2 ); // 2
-			add_action( 'wp_login_failed', array( $this, 'auth_fail' ), 10, 1 ); // 1
+			add_action( 'login_init', array( $this, 'validate_login' ) );
+			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
 		}
 
-		// action hook from wp-admin/admin.php @since 3.1.0
-		if ( $settings['validation']['admin'] ) {
-			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) ); // 1
-			add_filter( 'admin_init',           array( $this, 'validate_admin' ) ); // 0
-		}
+		// action hook from admin.php @since 2.5.0
+		if ( $settings['validation']['login'] || $settings['validation']['admin'] )
+			add_action( 'admin_init', array( $this, 'validate_admin' ) );
+
+		// filter hook from wp-includes/pluggable.php @since 3.1.0
+		if ( $settings['validation']['admin'] )
+			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
 	}
 
 	/**
@@ -183,7 +184,7 @@ class IP_Geo_Block {
 	 * Get geolocation and country code from an ip address
 	 *
 	 *//*
-	public static function get_geolocation( $ip, $list ) {
+	public static function get_geolocation( $ip, $list = array() ) {
 		return self::_get_geolocation(
 			$ip, self::get_option( 'settings' ), $list, 'get_location'
 		);
@@ -315,12 +316,10 @@ class IP_Geo_Block {
 	 * Validate ip address
 	 *
 	 * @param string  $hook       a name to identify action hook applied in this call.
-	 * @param string  $mark_cache a symbolic charactor to mark on 'IP address in cache'.
 	 * @param boolean $save_cache cache the IP addresse regardless of validation result.
 	 * @param boolean $save_stat  update statistics regardless of validation result.
-	 * @param boolean $auth       already authenticated or not.
 	 */
-	private function validate_ip( $hook, $mark_cache, $save_cache, $save_stat, $auth ) {
+	private function validate_ip( $hook, $save_cache, $save_stat ) {
 		// apply custom filter of validation
 		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
 		// @param $validate = array(
@@ -345,13 +344,13 @@ class IP_Geo_Block {
 			IP_Geo_Block_API_Cache::update_cache(
 				$validate['ip'],
 				array(
-					'code' => $validate['code'] . $mark_cache,
+					'code' => $validate['code'] . " / $hook",
 					'call' => $count_call,
-					'auth' => $auth,
+					'auth' => get_current_user_id(),
 				),
 				$settings
 			);
-			$count_call = FALSE; // avoid multiple calls
+			$count_call = FALSE; // avoid multiple count
 		}
 
 		// update statistics
@@ -385,7 +384,7 @@ class IP_Geo_Block {
 	 * login users      cached / hidden  not saved
 	 */
 	public function validate_comment() {
-		$this->validate_ip( 'comment', NULL, TRUE, TRUE, is_user_logged_in() );
+		$this->validate_ip( 'comment', TRUE, TRUE );
 	}
 
 	public function validate_login() {
@@ -393,12 +392,12 @@ class IP_Geo_Block {
 			return;
 
 		add_filter( self::PLUGIN_SLUG . '-login', array( $this, 'auth_check' ), 10, 2 );
-		$this->validate_ip( 'login', '+', TRUE, FALSE, (2 === func_num_args()) );
+		$this->validate_ip( 'login', TRUE, FALSE );
 	}
 
 	public function validate_admin( $secure ) {
 		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-			$this->validate_ip( 'admin', '*', TRUE, FALSE, is_user_logged_in() );
+			$this->validate_ip( 'admin', TRUE, FALSE );
 
 		return $secure; // pass through
 	}
@@ -433,7 +432,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Schedule controller.
+	 * Cron scheduler.
 	 *
 	 */
 	public static function schedule_cron_job( &$update, $db, $immediate = FALSE ) {
