@@ -58,7 +58,7 @@ function ip_geo_block_list_accesslog() {
 		echo "<th>", __( 'Result',       IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='phone,tablet'>", __( 'Request URI', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='phone,tablet'>", __( 'User agent',  IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "<th data-hide='phone,tablet'>", __( 'Cookie',      IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th data-hide='all'>", __( 'Cookie', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "</tr></thead><tbody>\n";
 
 		foreach ( $val as $logs ) {
