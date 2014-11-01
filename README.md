@@ -3,10 +3,10 @@ IP Geo Block
 
 A WordPress plugin that will block any spam comments posted from outside of 
 your nation, and will also protect against malicious access to the login form 
-from undesired countries.
+and admin area from undesired countries.
 
 This plugin will examine a country code based on the IP address. If the 
-comment comes from undesired country, it will be blocked before Akismet 
+comment comes from specific country, it will be blocked before Akismet 
 validate it.
 
 With the same mechanism, it will fight against burst access of brute-force 

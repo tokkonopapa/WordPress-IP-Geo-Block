@@ -5,7 +5,7 @@
  */
 define( 'IP_GEO_BLOCK_LOG_LEN', 100 );
 
-function ip_geo_block_save_log( $ip, $hook, $validate ) {
+function ip_geo_block_save_log( $hook, $validate ) {
 	$file = IP_GEO_BLOCK_PATH . "database/log-${hook}.php";
 	if ( $fp = @fopen( $file, "c+" ) ) {
 		if ( @flock( $fp, LOCK_EX | LOCK_NB ) ) {
@@ -13,11 +13,11 @@ function ip_geo_block_save_log( $ip, $hook, $validate ) {
 			$lines = $fstat['size'] ?
 				explode( "\n", fread( $fp, $fstat['size'] ) ) : array();
 
-			// remove separator (&#044; --> &#130;)
+			// replace separator
 			$uagent = str_replace( "\n", " ", $_SERVER['HTTP_USER_AGENT'] );
-			$uagent = str_replace( ",",  "‚", trim( $uagent ) ); 
+			$uagent = str_replace( ",",  "‚", trim( $uagent ) ); // &#044; --> &#130;
 			$cookie = str_replace( "\n", " ", json_encode( $_COOKIE ) );
-			$cookie = str_replace( ",",  "‚", trim( $cookie ) );
+			$cookie = str_replace( ",",  "‚", trim( $cookie ) ); // &#044; --> &#130;
 
 			array_shift( $lines );
 			array_pop  ( $lines );
@@ -25,7 +25,7 @@ function ip_geo_block_save_log( $ip, $hook, $validate ) {
 				$lines,
 				sprintf( "%d,%s,%s,%s,%s,%s",
 					time(),
-					$ip,
+					$validate['ip'],
 					$validate['code'],
 					basename( $_SERVER['REQUEST_URI'] ),
 					$uagent, // should be sanitized

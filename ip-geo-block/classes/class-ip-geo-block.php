@@ -94,10 +94,6 @@ class IP_Geo_Block {
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
 		}
 
-		// action hook from admin.php @since 2.5.0
-		if ( $settings['validation']['login'] || $settings['validation']['admin'] )
-			add_action( 'admin_init', array( $this, 'validate_admin' ) );
-
 		// filter hook from wp-includes/pluggable.php @since 3.1.0
 		if ( $settings['validation']['admin'] )
 			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
@@ -357,18 +353,18 @@ class IP_Geo_Block {
 		if ( $settings['save_statistics'] && $save_stat )
 			$this->update_statistics( $validate );
 
+		// save log
+		if ( $settings['validation'][ $hook ] & 2 ) {
+			require_once( IP_GEO_BLOCK_PATH . 'includes/accesslog.php' );
+			ip_geo_block_save_log( $hook, $validate );
+		}
+
 		// validation succeeded
 		if ( $passed ) return;
 
 		// update statistics
 		if ( $settings['save_statistics'] && ! $save_stat )
 			$this->update_statistics( $validate );
-
-		// save log
-		if ( $settings['validation'][ $hook ] & 2 ) {
-			require_once( IP_GEO_BLOCK_PATH . 'includes/accesslog.php' );
-			ip_geo_block_save_log( $ip, $hook, $validate );
-		}
 
 		// send response code to refuse
 		$this->send_response(
@@ -379,12 +375,12 @@ class IP_Geo_Block {
 
 	/**
 	 * Validate ip address on comment, login, admin
-	 *                  ip address       statistics
-	 * non-login users  cached           saved
-	 * login users      cached / hidden  not saved
+	 *         ip address       statistics
+	 * blocked cached           saved
+	 * passed  cached / hidden  not saved
 	 */
 	public function validate_comment() {
-		$this->validate_ip( 'comment', TRUE, TRUE );
+		$this->validate_ip( 'comment', TRUE, FALSE );
 	}
 
 	public function validate_login() {

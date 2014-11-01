@@ -581,7 +581,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		$num = ! empty( $settings['cache_hold'] ) ? $settings['cache_hold'] : 10;
 		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;
 
-		// unset expired item
+		// unset expired elements
 		if ( false !== ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) ) {
 			foreach ( $cache as $key => $val ) {
 				if ( $time - $val['time'] > $exp )

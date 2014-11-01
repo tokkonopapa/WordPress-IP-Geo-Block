@@ -157,8 +157,10 @@ function ip_geo_block_tab_statistics( $context ) {
 		$debug = defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG;
 		foreach ( $transient as $key => $val ) {
 			if ( empty( $val['auth'] ) || $debug ) { // hide authenticated user
+				$code = explode( ' / ', $val['code'] );
 				$html .= "<tr><td>" . esc_html( $key ) . "</td>";
-				$html .= "<td>" . esc_html( $val['code'] ) . "</td>";
+				$html .= "<td>" . esc_html( $code[0] ) . " / ";
+				$html .= "<small>" . esc_html( $code[1] ) . "</small></td>";
 				$html .= "<td>" . ( $time - (int)$val['time'] ) . " / ";
 				$html .= ! empty( $val['call'] ) ? (int)$val['call'] : "-";
 				if ( $debug ) {
