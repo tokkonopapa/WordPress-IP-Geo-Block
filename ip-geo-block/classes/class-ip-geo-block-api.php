@@ -589,10 +589,9 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			}
 		}
 
-		// avoid duplicated count if 'call' is empty or false
-		if ( $settings['save_statistics'] && ! empty( $args['call'] ) )
-			++$cache[ $ip ]['call']; // no need to initialize
-		unset( $args['call'] ); // no error or warning even if empty
+		// number of requests
+		if ( $settings['save_statistics'] )
+			++$cache[ $ip ]['call'];
 
 		// add new elements
 		$cache[ $ip ]['time'] = $time;

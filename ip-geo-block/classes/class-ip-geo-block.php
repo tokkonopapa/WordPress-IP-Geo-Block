@@ -41,8 +41,7 @@ class IP_Geo_Block {
 
 	// get optional values from wp_options
 	public static function get_option( $name = 'settings' ) {
-		$option = get_option( self::$option_keys[ $name ] );
-		if ( FALSE === $option )
+		if ( FALSE === ( $option = get_option( self::$option_keys[ $name ] ) ) )
 			$option = self::get_default( $name );
 		return $option;
 	}
@@ -94,7 +93,7 @@ class IP_Geo_Block {
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
 		}
 
-		// filter hook from wp-includes/pluggable.php @since 3.1.0
+		// filter hook from auth_redirect() in wp-includes/pluggable.php @since 3.1.0
 		if ( $settings['validation']['admin'] )
 			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
 	}
@@ -336,17 +335,14 @@ class IP_Geo_Block {
 		// update cache
 		$passed = ( 'passed' === $validate['result'] );
 		if ( $save_cache || ! $passed ) {
-			static $count_call = TRUE;
 			IP_Geo_Block_API_Cache::update_cache(
 				$validate['ip'],
 				array(
 					'code' => $validate['code'] . " / $hook",
-					'call' => $count_call,
 					'auth' => get_current_user_id(),
 				),
 				$settings
 			);
-			$count_call = FALSE; // avoid multiple count
 		}
 
 		// update statistics
@@ -375,9 +371,9 @@ class IP_Geo_Block {
 
 	/**
 	 * Validate ip address on comment, login, admin
-	 *         ip address       statistics
-	 * blocked cached           saved
-	 * passed  cached / hidden  not saved
+	 *          ip address       statistics
+	 * blocked  cached           saved
+	 * passed   cached / hidden  not saved
 	 */
 	public function validate_comment() {
 		$this->validate_ip( 'comment', TRUE, FALSE );

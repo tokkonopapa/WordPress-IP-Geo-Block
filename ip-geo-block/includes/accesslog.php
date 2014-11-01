@@ -14,9 +14,9 @@ function ip_geo_block_save_log( $hook, $validate ) {
 				explode( "\n", fread( $fp, $fstat['size'] ) ) : array();
 
 			// replace separator
-			$uagent = str_replace( "\n", " ", $_SERVER['HTTP_USER_AGENT'] );
+			$uagent = preg_replace( "/\s+/", " ", $_SERVER['HTTP_USER_AGENT'] );
+			$cookie = preg_replace( "/\s+/", " ", json_encode( $_COOKIE ) );
 			$uagent = str_replace( ",",  "‚", trim( $uagent ) ); // &#044; --> &#130;
-			$cookie = str_replace( "\n", " ", json_encode( $_COOKIE ) );
 			$cookie = str_replace( ",",  "‚", trim( $cookie ) ); // &#044; --> &#130;
 
 			array_shift( $lines );
