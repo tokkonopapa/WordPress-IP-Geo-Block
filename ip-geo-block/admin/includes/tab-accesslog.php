@@ -51,7 +51,7 @@ function ip_geo_block_list_accesslog() {
 	foreach ( $list as $key => $val ) {
 		echo "<h4>", $title[ $key ], "</h4>\n";
 		if ( empty( $val ) ) continue;
-		echo "<table class='", IP_Geo_Block::PLUGIN_SLUG, "-log' data-page-size='10' data-limit-navigation='2'><thead><tr>\n";
+		echo "<table class='fixed ", IP_Geo_Block::PLUGIN_SLUG, "-log' data-page-size='10' data-limit-navigation='2'><thead><tr>\n";
 		echo "<th data-type='numeric'>", __( 'Time of date', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'IP address',   IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'Country code', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";

@@ -148,6 +148,11 @@ ul.ip-geo-block-statistics-countries li {
     position: relative;
     top: -1px
 }
+.ip-geo-block-log > thead > tr > th,
+.ip-geo-block-log > tbody > tr > td {
+    width: 33%;
+    word-wrap: break-word;
+}
 .ip-geo-block-log > thead > tr > th > span.footable-sort-indicator {
     color: #888;
 }
@@ -156,4 +161,12 @@ ul.ip-geo-block-statistics-countries li {
 }
 .ip-geo-block-log > tbody > tr > td:first-child {
     text-align: left;
+}
+.ip-geo-block-log .footable-row-detail-row,
+.ip-geo-block-log .footable-row-detail-name {
+    display: block;
+}
+.ip-geo-block-log .footable-row-detail-value {
+    display: inline-block;
+    margin-left: 1em;
 }
