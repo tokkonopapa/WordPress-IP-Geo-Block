@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.3.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-10-30 23:16+0900\n"
-"PO-Revision-Date: 2014-10-30 23:22+0900\n"
+"POT-Creation-Date: 2014-11-01 12:40+0900\n"
+"PO-Revision-Date: 2014-11-01 12:41+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -86,7 +86,7 @@ msgstr ""
 msgid "Clear logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:36 admin/includes/tab-statistics.php:200
+#: admin/includes/tab-accesslog.php:36 admin/includes/tab-statistics.php:202
 msgid "Clear now"
 msgstr ""
 
@@ -118,14 +118,18 @@ msgid "Country code"
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:58
-msgid "Request URI"
+msgid "Result"
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:59
-msgid "User agent"
+msgid "Request URI"
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:60
+msgid "User agent"
+msgstr ""
+
+#: admin/includes/tab-accesslog.php:61
 msgid "Cookie"
 msgstr ""
 
@@ -326,15 +330,15 @@ msgstr ""
 msgid "Elapsed [sec] / Calls"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:177
+#: admin/includes/tab-statistics.php:179
 msgid "IP address in cache"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:192
+#: admin/includes/tab-statistics.php:194
 msgid "Clear statistics"
 msgstr ""
 
-#: classes/class-ip-geo-block.php:376
+#: classes/class-ip-geo-block.php:372
 msgid "Sorry, but you cannot be accepted."
 msgstr ""
 

@@ -55,20 +55,18 @@ function ip_geo_block_list_accesslog() {
 		echo "<th data-type='numeric'>", __( 'Time of date', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'IP address',   IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'Country code', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th>", __( 'Result',       IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='phone,tablet'>", __( 'Request URI', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='phone,tablet'>", __( 'User agent',  IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='phone,tablet'>", __( 'Cookie',      IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "</tr></thead><tbody>\n";
 
-		foreach ( $val as $log ) {
-			$log = explode( ",", htmlspecialchars( $log ) );
-			echo "<tr>\n";
-			echo "<td data-value='", $log[0], "'>", ip_geo_block_localdate( $log[0], 'Y-m-d H:i:s' ), "</td>\n";
-			echo "<td>", $log[1], "</td>\n";
-			echo "<td>", $log[2], "</td>\n";
-			echo "<td>", $log[3], "</td>\n";
-			echo "<td>", $log[4], "</td>\n";
-			echo "<td>", $log[5], "</td>\n";
+		foreach ( $val as $logs ) {
+			$logs = explode( ",", htmlspecialchars( $logs ) );
+			$log = array_shift( $logs );
+			echo "<tr>\n<td data-value='", $log, "'>", ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ), "</td>\n";
+			foreach ( $logs as $log )
+				echo "<td>$log</td>\n";
 			echo "</tr>\n";
 		}
 

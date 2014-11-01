@@ -150,7 +150,7 @@ ul.ip-geo-block-statistics-countries li {
 }
 .ip-geo-block-log > thead > tr > th,
 .ip-geo-block-log > tbody > tr > td {
-    width: 33%;
+    width: 25%;
     word-wrap: break-word;
 }
 .ip-geo-block-log > thead > tr > th > span.footable-sort-indicator {
@@ -169,4 +169,5 @@ ul.ip-geo-block-statistics-countries li {
 .ip-geo-block-log .footable-row-detail-value {
     display: inline-block;
     margin-left: 1em;
+    overflow: scroll;
 }

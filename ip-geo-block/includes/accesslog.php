@@ -23,10 +23,11 @@ function ip_geo_block_save_log( $hook, $validate ) {
 			array_pop  ( $lines );
 			array_unshift(
 				$lines,
-				sprintf( "%d,%s,%s,%s,%s,%s",
+				sprintf( "%d,%s,%s,%s,%s,%s,%s",
 					time(),
 					$validate['ip'],
 					$validate['code'],
+					$validate['result'],
 					basename( $_SERVER['REQUEST_URI'] ),
 					$uagent, // should be sanitized on screen
 					$cookie  // should be sanitized on screen
