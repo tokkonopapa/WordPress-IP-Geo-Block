@@ -28,8 +28,8 @@ function ip_geo_block_save_log( $hook, $validate ) {
 					$validate['ip'],
 					$validate['code'],
 					basename( $_SERVER['REQUEST_URI'] ),
-					$uagent, // should be sanitized
-					$cookie  // should be sanitized
+					$uagent, // should be sanitized on screen
+					$cookie  // should be sanitized on screen
 				)
 			);
 			$lines = array_slice( $lines, 0, IP_GEO_BLOCK_LOG_LEN );

@@ -166,7 +166,7 @@ function ip_geo_block_tab_statistics( $context ) {
 				if ( $debug ) {
 					$html .= " [" . intval( $val['fail'] ) . "]";
 					$user = get_user_by( 'id', intval( $val['auth'] ) );
-					$html .= " " . ($user ? $user->get( 'user_login' ) : "");
+					$html .= " " . esc_html( $user ? $user->get( 'user_login' ) : "" );
 				}
 				$html .= "</td></tr>";
 			}
