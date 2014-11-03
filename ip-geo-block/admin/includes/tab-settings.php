@@ -1,6 +1,6 @@
 <?php
 require_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 function ip_geo_block_tab_settings( $context ) {
 	$option_slug = $context->option_slug['settings'];
@@ -77,13 +77,6 @@ function ip_geo_block_tab_settings( $context ) {
 	/*----------------------------------------*
 	 * Validation settings
 	 *----------------------------------------*/
-	// same as in tab-accesslog.php
-	$title = array(
-		'comment' => __( '<dfn title="Validate at wp-comments-post.php">Comments post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'login'   => __( '<dfn title="Validate at wp-login.php">Access to login</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'admin'   => __( '<dfn title="Validate at wp-admin/admin.php">Access to admin (except ajax)</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-	);
-
 	$section = IP_Geo_Block::PLUGIN_SLUG . '-validation';
 	add_settings_section(
 		$section,
@@ -92,61 +85,33 @@ function ip_geo_block_tab_settings( $context ) {
 		$option_slug
 	);
 
-	$list = array(
-		__( 'Disable',          IP_Geo_Block::TEXT_DOMAIN ) => 0,
-		__( 'Enable',           IP_Geo_Block::TEXT_DOMAIN ) => 1,
-		__( 'Enable + Logging', IP_Geo_Block::TEXT_DOMAIN ) => 2,
+	// same as in tab-accesslog.php
+	$title = array(
+		'comment'     => __( '<dfn title="wp-comments-post.php">Validate comment post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'login_admin' => __( '<dfn title="wp-login.php &amp wp-admin/admin.php">Validate login &amp admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'admin_ajax'  => __( 'Validate admin ajax',   IP_Geo_Block::TEXT_DOMAIN ),
+//		'admin_xrpc'  => __( 'Validate admin xmlrpc', IP_Geo_Block::TEXT_DOMAIN ),
+		'save_logs'   => __( 'Save validation logs',  IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
 	$field = 'validation';
-	add_settings_field(
-		$option_name . "_${field}_comment",
-		$title['comment'],
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'checkbox',//'select',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'comment',
-			'value' => $options[ $field ]['comment'],
-			'list' => $list,
-		)
-	);
+	foreach ( $title as $key => $val ) {
+		add_settings_field(
+			$option_name . "_${field}_${key}",
+			$title[ $key ],
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+			)
+		);
+	}
 
-	add_settings_field(
-		$option_name . "_${field}_login",
-		$title['login'],
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'checkbox',//'select',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'login',
-			'value' => $options[ $field ]['login'],
-			'list' => $list,
-		)
-	);
-/*
-	add_settings_field(
-		$option_name . "_${field}_admin",
-		$title['admin'],
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'checkbox',//'select',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'admin',
-			'value' => $options[ $field ]['admin'],
-			'list' => $list,
-		)
-	);
-//*/
 	/*----------------------------------------*
 	 * Maxmind settings
 	 *----------------------------------------*/

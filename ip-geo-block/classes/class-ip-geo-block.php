@@ -88,14 +88,12 @@ class IP_Geo_Block {
 		}
 
 		// action hook from wp-login.php @since 2.1.0
-		if ( $settings['validation']['login'] ) {
+		// action hook from auth_redirect() in wp-includes/pluggable.php @since 3.1.0
+		if ( $settings['validation']['login_admin'] ) {
 			add_action( 'login_init', array( $this, 'validate_login' ) );
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
-		}
-
-		// filter hook from auth_redirect() in wp-includes/pluggable.php @since 3.1.0
-		if ( $settings['validation']['admin'] )
 			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
+		}
 	}
 
 	/**
@@ -186,7 +184,7 @@ class IP_Geo_Block {
 	}*/
 
 	public static function _get_geolocation( $ip, $settings, $list = array(), $callback = 'get_country' ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		// make providers list
 		if ( empty( $list ) || ! is_array( $list ) ) {
@@ -194,7 +192,7 @@ class IP_Geo_Block {
 			$geo = IP_Geo_Block_Provider::get_providers( 'key', TRUE, TRUE );
 			foreach ( $geo as $provider => $key ) {
 				if ( ! empty( $settings['providers'][ $provider ] ) || (
-					 ! isset( $settings['providers'][ $provider ] ) && NULL === $key ) ) {
+				     ! isset( $settings['providers'][ $provider ] ) && NULL === $key ) ) {
 					$list[] = $provider;
 				}
 			}
@@ -310,11 +308,10 @@ class IP_Geo_Block {
 	/**
 	 * Validate ip address
 	 *
-	 * @param string  $hook       a name to identify action hook applied in this call.
-	 * @param boolean $save_cache cache the IP addresse regardless of validation result.
-	 * @param boolean $save_stat  update statistics regardless of validation result.
+	 * @param string $hook a name to identify action hook applied in this call.
+	 * @param array $settings option settings
 	 */
-	private function validate_ip( $hook, $save_cache, $save_stat ) {
+	private function validate_ip( $hook, $settings ) {
 		// apply custom filter of validation
 		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
 		// @param $validate = array(
@@ -324,7 +321,6 @@ class IP_Geo_Block {
 		//     'provider' => $provider, /* the name of validator               */
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
-		$settings = self::get_option( 'settings' );
 		$validate = self::_get_geolocation( $_SERVER['REMOTE_ADDR'], $settings );
 		$validate = apply_filters( self::PLUGIN_SLUG . "-$hook", $validate, $settings );
 
@@ -333,50 +329,40 @@ class IP_Geo_Block {
 			$validate = $this->validate_country( $validate, $settings );
 
 		// update cache
-		$passed = ( 'passed' === $validate['result'] );
-		if ( $save_cache || ! $passed ) {
-			IP_Geo_Block_API_Cache::update_cache(
-				$validate['ip'],
-				array(
-					'code' => $validate['code'] . " / $hook",
-					'auth' => get_current_user_id(),
-				),
-				$settings
-			);
-		}
-
-		// update statistics
-		if ( $settings['save_statistics'] && $save_stat )
-			$this->update_statistics( $validate );
+		IP_Geo_Block_API_Cache::update_cache(
+			$validate['ip'],
+			array(
+				'code' => $validate['code'] . " / $hook",
+				'auth' => get_current_user_id(),
+			),
+			$settings
+		);
 
 		// save log
-		if ( $settings['validation'][ $hook ] & 2 ) {
-			require_once( IP_GEO_BLOCK_PATH . 'includes/accesslog.php' );
-			ip_geo_block_save_log( $hook, $validate );
+		if ( $settings['validation']['save_logs'] ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			IP_Geo_Block_Logs::save_log( $hook, $validate );
 		}
 
-		// validation succeeded
-		if ( $passed ) return;
+		if ( 'passed' !== $validate['result'] ) {
+			// update statistics
+			if ( $settings['save_statistics'] )
+				$this->update_statistics( $validate );
 
-		// update statistics
-		if ( $settings['save_statistics'] && ! $save_stat )
-			$this->update_statistics( $validate );
-
-		// send response code to refuse
-		$this->send_response(
-			$settings['response_code'],
-			__( 'Sorry, but you cannot be accepted.', self::TEXT_DOMAIN )
-		);
+			// send response code to refuse
+			$this->send_response(
+				$settings['response_code'],
+				__( 'Sorry, but you cannot be accepted.', self::TEXT_DOMAIN )
+			);
+		}
 	}
 
 	/**
 	 * Validate ip address on comment, login, admin
-	 *          ip address       statistics
-	 * blocked  cached           saved
-	 * passed   cached / hidden  not saved
+	 *
 	 */
 	public function validate_comment() {
-		$this->validate_ip( 'comment', TRUE, FALSE );
+		$this->validate_ip( 'comment', self::get_option( 'settings' ) );
 	}
 
 	public function validate_login() {
@@ -384,12 +370,14 @@ class IP_Geo_Block {
 			return;
 
 		add_filter( self::PLUGIN_SLUG . '-login', array( $this, 'auth_check' ), 10, 2 );
-		$this->validate_ip( 'login', TRUE, FALSE );
+		$this->validate_ip( 'login', self::get_option( 'settings' ) );
 	}
 
 	public function validate_admin( $secure ) {
-		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-			$this->validate_ip( 'admin', TRUE, FALSE );
+		$settings = self::get_option( 'settings' );
+		if ( $settings['validation']['admin_ajax'] ||
+		     ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
+			$this->validate_ip( 'admin', $settings );
 
 		return $secure; // pass through
 	}
@@ -399,7 +387,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function auth_fail( $username ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		// Count up a number of fails when authentication is failed
 		$ip = apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] );
@@ -413,7 +401,7 @@ class IP_Geo_Block {
 	}
 
 	public function auth_check( $validate, $settings ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		// Check a number of authentication fails
 		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );

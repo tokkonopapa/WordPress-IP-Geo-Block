@@ -210,9 +210,7 @@ class IP_Geo_Block_Admin {
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=1" class="nav-tab <?php echo $tab == 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 <?php
 		$settings = IP_Geo_Block::get_option( 'settings' );
-		if ( ( $settings['validation']['comment'] & 2 ) ||
-		     ( $settings['validation']['login'  ] & 2 ) ||
-		     ( $settings['validation']['admin'  ] & 2 ) ) { ?>
+		if ( $settings['validation']['save_logs'] ) { ?>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab == 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 <?php
 		} ?>
@@ -398,13 +396,12 @@ class IP_Geo_Block_Admin {
 		 * Sanitize a string from user input
 		 */
 		foreach ( $output as $key => $value ) {
-			// skip except specified key
-			if ( $only && $only !== $key )
+			if ( $only && $only !== $key ) // skip except specified key
 				continue;
 
 			switch( $key ) {
 			  case 'providers':
-				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 				$providers = IP_Geo_Block_Provider::get_providers( 'key' );
 				foreach ( $providers as $provider => $api ) {
 					// need no key
@@ -447,7 +444,6 @@ class IP_Geo_Block_Admin {
 				break;
 
 			  // for arrays not on the form
-			  case 'flags':
 			  case 'ip2location':
 				break;
 
@@ -526,7 +522,7 @@ class IP_Geo_Block_Admin {
 
 		// Check ip address
 		else if ( isset( $_POST['provider'] ) ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 			// check format
 			$ip = $_POST['ip'];

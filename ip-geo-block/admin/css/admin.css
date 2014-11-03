@@ -150,8 +150,14 @@ ul.ip-geo-block-statistics-countries li {
 }
 .ip-geo-block-log > thead > tr > th,
 .ip-geo-block-log > tbody > tr > td {
-    width: 25%;
+    width: 20%;
     word-wrap: break-word;
+}
+.ip-geo-block-log > thead > tr > th:first-child,
+.ip-geo-block-log > tbody > tr > td:first-child,
+.ip-geo-block-log > thead > tr > th:first-child + th,
+.ip-geo-block-log > tbody > tr > td:first-child + td {
+    width: 30%;
 }
 .ip-geo-block-log > thead > tr > th > span.footable-sort-indicator {
     color: #888;

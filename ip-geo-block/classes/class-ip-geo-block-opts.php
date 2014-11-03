@@ -36,13 +36,14 @@ class IP_Geo_Block_Options {
 			// since version 1.1
 			'cache_hold'      => 10,      // Max entries in cache
 			'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
-			// since version 1.2
-			'flags'           => array(), // Multi purpose flags
+			// since version 1.2, 1.3
 			'login_fails'     => 5,       // Limited number of login attempts
 			'validation'      => array(   // Action hook for validation
-				'comment'     => TRUE,    // For comment spam
-				'login'       => FALSE,   // For login intrusion
-				'admin'       => FALSE,   // For admin intrusion
+				'comment'     => TRUE,    // Validate comment spam
+				'login_admin' => FALSE,   // Validate login and admin
+				'admin_ajax'  => FALSE,   // Validate admin ajax
+				'admin_xrpc'  => FALSE,   // Validate admin xmlrpc
+				'save_logs'   => FALSE,   // Save all activities
 			),
 			'update'          => array(   // Updating IP address DB
 				'auto'        => TRUE,    // Auto updating of DB file
@@ -137,7 +138,7 @@ class IP_Geo_Block_Options {
 				foreach ( array( 'order', 'ip2location' ) as $tmp )
 					unset( $settings[ $tmp ] );
 
-				foreach ( explode( ' ', 'flags login_fails validation update maxmind ip2location' ) as $tmp )
+				foreach ( explode( ' ', 'login_fails validation update maxmind ip2location' ) as $tmp )
 					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
 			}
 
@@ -145,6 +146,11 @@ class IP_Geo_Block_Options {
 				$tmp = get_option( $key[1] );
 				delete_option( $key[1] );
 				add_option( $key[1], $tmp ); // re-create as autoload
+			}
+
+			if ( version_compare( $settings['version'], '1.3' ) < 0 ) {
+				unset( $settings['validation'] );
+				$settings['validation'] = $default[ $key[0] ]['validation'];
 			}
 
 			// update local goelocation database files

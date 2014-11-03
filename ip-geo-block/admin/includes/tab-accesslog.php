@@ -1,6 +1,6 @@
 <?php
 require_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
-require_once( IP_GEO_BLOCK_PATH . 'includes/accesslog.php' );
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 function ip_geo_block_tab_accesslog( $context ) {
 	$option_slug = $context->option_slug['settings'];
@@ -42,12 +42,12 @@ function ip_geo_block_tab_accesslog( $context ) {
 function ip_geo_block_list_accesslog() {
 	// same as in tab-settings.php
 	$title = array(
-		'comment' => __( '<dfn title="Validate at wp-comments-post.php">Comments post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'login'   => __( '<dfn title="Validate at wp-login.php">Access to login</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'admin'   => __( '<dfn title="Validate at wp-admin/admin.php">Access to admin (except ajax)</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'comment' => __( '<dfn title="wp-comments-post.php">Comment post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'login'   => __( '<dfn title="wp-login.php">Access to login form</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'admin'   => __( '<dfn title="wp-admin/admin.php">Access to admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
-	$list = ip_geo_block_read_log();
+	$list = IP_Geo_Block_Logs::read_log();
 	foreach ( $list as $key => $val ) {
 		echo "<h4>", $title[ $key ], "</h4>\n";
 		if ( empty( $val ) ) continue;
@@ -56,9 +56,9 @@ function ip_geo_block_list_accesslog() {
 		echo "<th>", __( 'IP address',   IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'Country code', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'Result',       IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "<th data-hide='phone,tablet'>", __( 'Request URI', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='phone,tablet'>", __( 'User agent',  IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "<th data-hide='all'>", __( 'Cookie', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th data-hide='all'>", __( 'Request URI', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th data-hide='all'>", __( '$_POST data', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "</tr></thead><tbody>\n";
 
 		foreach ( $val as $logs ) {
