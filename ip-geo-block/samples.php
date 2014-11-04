@@ -153,4 +153,31 @@ function my_whitelist( $validate ) {
 }
 add_filter( 'ip-geo-block-login', 'my_whitelist' ); // hook custom filter
 
+
+/**
+ * Example9: validate ip address before authrization in admin area
+ * Use case: limit the ip addresses that can access the admin area except ajax
+ *
+ */
+add_filter( 'ip-geo-block-admin', 'my_whitelist' ); // hook custom filter
+
+
+/**
+ * Example10: usage of 'IP_Geo_Block::get_geolocation()'
+ * Use case: get geolocation of ip address with latitude and longitude
+ *
+ * @param  string $ip ip address
+ * @param  array $providers list of providers
+ * @return array $geolocation array of 'countryCode', 'latitude', 'longitude'
+ */
+function my_geolocation( $ip ) {
+	$providers = array( 'ipinfo.io', 'Telize', 'IP-Json' );
+	$geolocation = IP_Geo_Block::get_geolocation( $ip, $providers );
+
+	if ( isset( $geolocation['countryCode'] ) )
+		echo va_dump( $geolocation );
+	else
+		echo $geolocation['errorMessage'];
+}
+
 endif;

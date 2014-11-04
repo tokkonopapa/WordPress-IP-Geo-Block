@@ -42,9 +42,9 @@ function ip_geo_block_tab_accesslog( $context ) {
 function ip_geo_block_list_accesslog() {
 	// same as in tab-settings.php
 	$title = array(
-		'comment' => __( '<dfn title="wp-comments-post.php">Comment post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'login'   => __( '<dfn title="wp-login.php">Access to login form</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'admin'   => __( '<dfn title="wp-admin/admin.php">Access to admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'comment' => __( '<dfn title="Validation at wp-comments-post.php">Comment post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'login'   => __( '<dfn title="Validation at wp-login.php">Login form</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'admin'   => __( '<dfn title="Validation at wp-admin/admin.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
 	$list = IP_Geo_Block_Logs::read_log();

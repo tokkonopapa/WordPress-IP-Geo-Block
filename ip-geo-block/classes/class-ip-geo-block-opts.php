@@ -1,6 +1,6 @@
 <?php
 /**
- * IP Geo Block Options
+ * IP Geo Block - Options
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
@@ -39,11 +39,13 @@ class IP_Geo_Block_Options {
 			// since version 1.2, 1.3
 			'login_fails'     => 5,       // Limited number of login attempts
 			'validation'      => array(   // Action hook for validation
-				'comment'     => TRUE,    // Validate comment spam
-				'login_admin' => FALSE,   // Validate login and admin
-				'admin_ajax'  => FALSE,   // Validate admin ajax
-				'admin_xrpc'  => FALSE,   // Validate admin xmlrpc
-				'save_logs'   => FALSE,   // Save all activities
+				'comment'     => TRUE,    // Validate on comment post
+				'login'       => FALSE,   // Validate on login
+				'admin'       => FALSE,   // Validate on admin
+				'ajax'        => FALSE,   // Validate on admin ajax
+				'xmlrpc'      => FALSE,   // Validate on xmlrpc
+				'savelog'     => FALSE,   // Save activities
+				'postkey'     => '',      // Keys in $_POST
 			),
 			'update'          => array(   // Updating IP address DB
 				'auto'        => TRUE,    // Auto updating of DB file
@@ -90,6 +92,7 @@ class IP_Geo_Block_Options {
 	 */
 	public static function upgrade() {
 		// find IP2Location DB
+		$ip2 = NULL;
 		$tmp = array(
 			WP_CONTENT_DIR . '/ip2location/database.bin',
 			WP_CONTENT_DIR . '/plugins/ip2location-tags/database.bin',
@@ -97,8 +100,6 @@ class IP_Geo_Block_Options {
 			WP_CONTENT_DIR . '/plugins/ip2location-blocker/database.bin',
 		);
 
-		// get path to IP2Location DB
-		$ip2 = NULL;
 		foreach ( $tmp as $name ) {
 			if ( is_readable( $name ) ) {
 				$ip2 = $name;
@@ -128,7 +129,6 @@ class IP_Geo_Block_Options {
 		}
 
 		else {
-			// update format of option settings
 			if ( version_compare( $settings['version'], '1.1' ) < 0 ) {
 				foreach ( array( 'cache_hold', 'cache_time' ) as $tmp )
 					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
@@ -138,7 +138,7 @@ class IP_Geo_Block_Options {
 				foreach ( array( 'order', 'ip2location' ) as $tmp )
 					unset( $settings[ $tmp ] );
 
-				foreach ( explode( ' ', 'login_fails validation update maxmind ip2location' ) as $tmp )
+				foreach ( explode( ' ', 'login_fails update maxmind ip2location' ) as $tmp )
 					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
 			}
 

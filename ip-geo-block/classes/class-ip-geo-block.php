@@ -88,12 +88,21 @@ class IP_Geo_Block {
 		}
 
 		// action hook from wp-login.php @since 2.1.0
-		// action hook from auth_redirect() in wp-includes/pluggable.php @since 3.1.0
-		if ( $settings['validation']['login_admin'] ) {
+		if ( $settings['validation']['login'] ) {
 			add_action( 'login_init', array( $this, 'validate_login' ) );
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
+		}
+
+		// action hook from auth_redirect() in wp-includes/pluggable.php @since 3.1.0
+		if ( $settings['validation']['admin'] ) {
 			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
 		}
+
+		// action hook from xmlrpc.php @since 3.1.0
+		if ( $settings['validation']['xmlrpc'] ) {
+			add_filter( 'wp_xmlrpc_server_class', array( $this, 'validate_admin' ) );
+		}
+
 	}
 
 	/**
@@ -339,9 +348,9 @@ class IP_Geo_Block {
 		);
 
 		// save log
-		if ( $settings['validation']['save_logs'] ) {
+		if ( $settings['validation']['savelog'] ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-			IP_Geo_Block_Logs::save_log( $hook, $validate );
+			IP_Geo_Block_Logs::save_log( $hook, $validate, $settings );
 		}
 
 		if ( 'passed' !== $validate['result'] ) {
@@ -375,8 +384,7 @@ class IP_Geo_Block {
 
 	public function validate_admin( $secure ) {
 		$settings = self::get_option( 'settings' );
-		if ( $settings['validation']['admin_ajax'] ||
-		     ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
+		if ( $settings['validation']['ajax'] || ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
 			$this->validate_ip( 'admin', $settings );
 
 		return $secure; // pass through

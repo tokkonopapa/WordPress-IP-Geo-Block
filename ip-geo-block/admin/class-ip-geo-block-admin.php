@@ -1,8 +1,8 @@
 <?php
 /**
- * Admin class of IP Geo Block
+ * IP Geo Block - Admin class
  *
- * @package   IP_Geo_Block_Admin
+ * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
@@ -210,7 +210,7 @@ class IP_Geo_Block_Admin {
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=1" class="nav-tab <?php echo $tab == 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 <?php
 		$settings = IP_Geo_Block::get_option( 'settings' );
-		if ( $settings['validation']['save_logs'] ) { ?>
+		if ( $settings['validation']['savelog'] ) { ?>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab == 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 <?php
 		} ?>
@@ -396,14 +396,14 @@ class IP_Geo_Block_Admin {
 		 * Sanitize a string from user input
 		 */
 		foreach ( $output as $key => $value ) {
-			if ( $only && $only !== $key ) // skip except specified key
+			// skip except specified key
+			if ( $only && $only !== $key ) 
 				continue;
 
 			switch( $key ) {
 			  case 'providers':
 				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-				$providers = IP_Geo_Block_Provider::get_providers( 'key' );
-				foreach ( $providers as $provider => $api ) {
+				foreach ( IP_Geo_Block_Provider::get_providers() as $provider => $api ) {
 					// need no key
 					if ( NULL === $api ) {
 						if ( isset( $input[ $key ][ $provider ] ) )
@@ -474,7 +474,9 @@ class IP_Geo_Block_Admin {
 					else if ( isset( $input[ $key ][ $sub ] ) ) {
 						$output[ $key ][ $sub ] = is_int( $default[ $key ][ $sub ] ) ?
 							(int)$input[ $key ][ $sub ] :
-							sanitize_text_field( trim( $input[ $key ][ $sub ] ) );
+							sanitize_text_field(
+								preg_replace( '/\s/', '', $input[ $key ][ $sub ] )
+							);
 					}
 				}
 				break;

@@ -1,6 +1,6 @@
 <?php
 /**
- * IP Address Geolocation Class
+ * IP Geo Block - IP Address Geolocation API Class
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
@@ -720,7 +720,7 @@ class IP_Geo_Block_Provider {
 	 * Returns the pairs of provider name and API key
 	 *
 	 */
-	public static function get_providers( $key, $rand = FALSE, $cache = FALSE ) {
+	public static function get_providers( $key = 'key', $rand = FALSE, $cache = FALSE ) {
 		$tmp = array_keys( self::$providers );
 
 		// randomize

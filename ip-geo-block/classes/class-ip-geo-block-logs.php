@@ -14,12 +14,13 @@ class IP_Geo_Block_Logs {
 
 	/**
 	 * Save validation log
-	 * @todo implement sql
+	 * @todo save into mySQL DB
 	 *
 	 * @param string $hook type of log name
 	 * @param array $validate validation results
+	 * @param array $settings option settings
 	 */
-	public static function save_log( $hook, $validate ) {
+	public static function save_log( $hook, $validate, $settings ) {
 		$file = IP_GEO_BLOCK_PATH . "database/log-${hook}.php";
 		if ( $fp = @fopen( $file, "c+" ) ) {
 			if ( @flock( $fp, LOCK_EX | LOCK_NB ) ) {
@@ -27,11 +28,18 @@ class IP_Geo_Block_Logs {
 				$lines = $fstat['size'] ?
 					explode( "\n", fread( $fp, $fstat['size'] ) ) : array();
 
-				// replace separator
+				// replace separator (should be sanitized)
 				$agent = preg_replace( "/\s+/", " ", $_SERVER['HTTP_USER_AGENT'] );
-				$posts = implode( " ", array_keys( $_POST ) );
-				$agent = str_replace( ",",  "‚", trim( $agent ) ); // &#044; --> &#130;
-				$posts = str_replace( ",",  "‚", trim( $posts ) ); // &#044; --> &#130;
+
+				// items to be saved into a log (should be sanitized)
+				if ( empty( $settings['validation']['postkey'] ) ) {
+					$items = array_keys( $_POST );
+				} else {
+					foreach ( explode( ",", $settings['validation']['postkey'] ) as $item ) {
+						if ( isset( $_POST[ $item ] ) )
+							$items[ $item ] = $_POST[ $item ];
+					}
+				}
 
 				array_shift( $lines );
 				array_pop  ( $lines );
@@ -42,9 +50,9 @@ class IP_Geo_Block_Logs {
 						$validate['ip'],
 						$validate['code'],
 						$validate['result'],
-						$agent, // should be sanitized on screen
+						str_replace( ",", "‚", trim( $agent ) ), // &#044; --> &#130;
 						basename( $_SERVER['REQUEST_URI'] ),
-						$posts  // should be sanitized on screen
+						str_replace( ",", "‚", json_encode( $items ) )
 					)
 				);
 				$lines = array_slice( $lines, 0, IP_GEO_BLOCK_LOG_LEN );

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.3.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-11-01 12:40+0900\n"
-"PO-Revision-Date: 2014-11-01 12:50+0900\n"
+"POT-Creation-Date: 2014-11-04 23:51+0900\n"
+"PO-Revision-Date: 2014-11-05 00:04+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -51,24 +51,24 @@ msgstr "IP Geo Block"
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:216
+#: admin/class-ip-geo-block-admin.php:214
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:219
+#: admin/class-ip-geo-block-admin.php:217
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:220
+#: admin/class-ip-geo-block-admin.php:218
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:284
+#: admin/class-ip-geo-block-admin.php:282
 msgid "Thanks for providing these great services for free."
 msgstr ""
 "すばらしいサービスの提供元である以下のサイトに、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:285
+#: admin/class-ip-geo-block-admin.php:283
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
@@ -76,11 +76,11 @@ msgstr ""
 "（ほとんどのブラウザでは、リンクをクリックしても参照元を残さずに各サイトにリ"
 "ダイレクトできます。）"
 
-#: admin/class-ip-geo-block-admin.php:355 admin/includes/tab-settings.php:97
+#: admin/class-ip-geo-block-admin.php:353
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:386
+#: admin/class-ip-geo-block-admin.php:384
 msgid "Successfully updated"
 msgstr "更新に成功しました"
 
@@ -96,21 +96,17 @@ msgstr "ログの消去"
 msgid "Clear now"
 msgstr "今すぐクリア"
 
-#: admin/includes/tab-accesslog.php:45 admin/includes/tab-settings.php:82
-msgid "<dfn title=\"Validate at wp-comments-post.php\">Comments post</dfn>"
+#: admin/includes/tab-accesslog.php:45 admin/includes/tab-settings.php:90
+msgid "<dfn title=\"Validation at wp-comments-post.php\">Comment post</dfn>"
 msgstr "<dfn title=\"wp-comments-post.phpへのアクセス検証\">コメント投稿</dfn>"
 
-#: admin/includes/tab-accesslog.php:46 admin/includes/tab-settings.php:83
-msgid "<dfn title=\"Validate at wp-login.php\">Access to login</dfn>"
+#: admin/includes/tab-accesslog.php:46 admin/includes/tab-settings.php:91
+msgid "<dfn title=\"Validation at wp-login.php\">Login form</dfn>"
 msgstr "<dfn title=\"wp-login.phpへのアクセス検証\">ログイン・フォーム</dfn>"
 
-#: admin/includes/tab-accesslog.php:47 admin/includes/tab-settings.php:84
-msgid ""
-"<dfn title=\"Validate at wp-admin/admin.php\">Access to admin (except ajax)</"
-"dfn>"
-msgstr ""
-"<dfn title=\"wp-admin/admin.phpへのアクセス検証\">管理領域 （Ajaxを除く）</"
-"dfn>"
+#: admin/includes/tab-accesslog.php:47 admin/includes/tab-settings.php:92
+msgid "<dfn title=\"Validation at wp-admin/admin.php\">Admin area</dfn>"
+msgstr "<dfn title=\"wp-admin/admin.phpへのアクセス検証\">管理領域</dfn>"
 
 #: admin/includes/tab-accesslog.php:55
 msgid "Time of date"
@@ -130,16 +126,16 @@ msgid "Result"
 msgstr "結果"
 
 #: admin/includes/tab-accesslog.php:59
-msgid "Request URI"
-msgstr "リクエストURI"
-
-#: admin/includes/tab-accesslog.php:60
 msgid "User agent"
 msgstr "ユーザーエージェント"
 
+#: admin/includes/tab-accesslog.php:60
+msgid "Request URI"
+msgstr "リクエストURI"
+
 #: admin/includes/tab-accesslog.php:61
-msgid "Cookie"
-msgstr "クッキー"
+msgid "$_POST data"
+msgstr "$_POST データ"
 
 #: admin/includes/tab-attribution.php:16
 msgid "Attribution links"
@@ -169,120 +165,130 @@ msgstr "位置情報APIの設定"
 msgid "API selection and key settings"
 msgstr "APIの選択とキーの設定"
 
-#: admin/includes/tab-settings.php:90
+#: admin/includes/tab-settings.php:83
 msgid "Validation settings"
 msgstr "検証の設定"
 
+#: admin/includes/tab-settings.php:93
+msgid "<dfn title=\"Validation at wp-admin/admin-ajax.php\">Admin ajax</dfn>"
+msgstr ""
+"<dfn title=\"wp-admin/admin-ajax.phpへのアクセスを検証\">管理領域の Ajax</"
+"dfn>"
+
+#: admin/includes/tab-settings.php:94
+msgid "<dfn title=\"Validation at xmlrpc.php\">XML RPC</dfn>"
+msgstr "<dfn title=\"xmlrpc.phpへのアクセスを検証\">XML RPC</dfn>"
+
+#: admin/includes/tab-settings.php:95
+msgid "Save validation logs"
+msgstr "検証ログを保存"
+
 #: admin/includes/tab-settings.php:96
-msgid "Disable"
-msgstr "無効"
+msgid "$_POST keys in logs"
+msgstr "保存する $_POST データのキー"
 
-#: admin/includes/tab-settings.php:98
-msgid "Enable + Logging"
-msgstr "有効＋ログを保存"
-
-#: admin/includes/tab-settings.php:156
+#: admin/includes/tab-settings.php:123
 msgid "Maxmind GeoLite settings"
-msgstr "Maxmind GeoLiteの設定"
+msgstr "Maxmind GeoLite の設定"
 
-#: admin/includes/tab-settings.php:164
+#: admin/includes/tab-settings.php:131
 msgid "Path to database (IPv4)"
 msgstr "データベースへのパス（IPv4）"
 
-#: admin/includes/tab-settings.php:177 admin/includes/tab-settings.php:198
+#: admin/includes/tab-settings.php:144 admin/includes/tab-settings.php:165
 #: includes/download.php:131
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
 
-#: admin/includes/tab-settings.php:185
+#: admin/includes/tab-settings.php:152
 msgid "Path to database (IPv6)"
-msgstr "データベースへのパス（IPv6）"
-
-#: admin/includes/tab-settings.php:207
-msgid "Download database"
 msgstr "データベースのダウンロード"
 
-#: admin/includes/tab-settings.php:215
-msgid "Download from Maxmind"
-msgstr "Maxmindからダウンロード"
+#: admin/includes/tab-settings.php:174
+msgid "Download database"
+msgstr "Maxmind からダウンロード"
 
-#: admin/includes/tab-settings.php:222
+#: admin/includes/tab-settings.php:182
+msgid "Download from Maxmind"
+msgstr "自動更新（月1回）"
+
+#: admin/includes/tab-settings.php:189
 msgid "Auto updating (once a month)"
 msgstr "自動更新（月1回）"
 
-#: admin/includes/tab-settings.php:241
+#: admin/includes/tab-settings.php:208
 msgid "Submission settings"
 msgstr "投稿時の設定"
 
-#: admin/includes/tab-settings.php:249
+#: admin/includes/tab-settings.php:216
 msgid "Text message on comment form"
 msgstr "投稿フォーム上のテキスト・メッセージ"
 
-#: admin/includes/tab-settings.php:260
+#: admin/includes/tab-settings.php:227
 msgid "None"
 msgstr "なし"
 
-#: admin/includes/tab-settings.php:261
+#: admin/includes/tab-settings.php:228
 msgid "Top"
 msgstr "上部"
 
-#: admin/includes/tab-settings.php:262
+#: admin/includes/tab-settings.php:229
 msgid "Bottom"
 msgstr "下部"
 
-#: admin/includes/tab-settings.php:271
+#: admin/includes/tab-settings.php:238
 msgid "Matching rule"
 msgstr "マッチング規則"
 
-#: admin/includes/tab-settings.php:281
+#: admin/includes/tab-settings.php:248
 msgid "White list"
 msgstr "ホワイトリスト"
 
-#: admin/includes/tab-settings.php:282
+#: admin/includes/tab-settings.php:249
 msgid "Black list"
 msgstr "ブラックリスト"
 
-#: admin/includes/tab-settings.php:290
+#: admin/includes/tab-settings.php:257
 #, php-format
 msgid "White list %s"
 msgstr "ホワイトリスト %s"
 
-#: admin/includes/tab-settings.php:299 admin/includes/tab-settings.php:315
+#: admin/includes/tab-settings.php:266 admin/includes/tab-settings.php:282
 msgid "(comma separated)"
 msgstr "（カンマ区切り）"
 
-#: admin/includes/tab-settings.php:306
+#: admin/includes/tab-settings.php:273
 #, php-format
 msgid "Black list %s"
 msgstr "ブラックリスト %s"
 
-#: admin/includes/tab-settings.php:322
+#: admin/includes/tab-settings.php:289
 #, php-format
 msgid "Response code %s"
 msgstr "レスポンスコード %s"
 
-#: admin/includes/tab-settings.php:354
+#: admin/includes/tab-settings.php:321
 msgid "Cache settings"
 msgstr "キャッシュの設定"
 
-#: admin/includes/tab-settings.php:362
+#: admin/includes/tab-settings.php:329
 msgid "Number of entries"
 msgstr "最大保持数"
 
-#: admin/includes/tab-settings.php:377
+#: admin/includes/tab-settings.php:344
 msgid "Expiration time [sec]"
 msgstr "有効時間 [sec]"
 
-#: admin/includes/tab-settings.php:395
+#: admin/includes/tab-settings.php:362
 msgid "Plugin settings"
 msgstr "プラグインの設定"
 
-#: admin/includes/tab-settings.php:403
+#: admin/includes/tab-settings.php:370
 msgid "Save statistics"
 msgstr "統計情報を記録"
 
-#: admin/includes/tab-settings.php:418
+#: admin/includes/tab-settings.php:385
 msgid "Remove settings at uninstallation"
 msgstr "アンインストール時に設定を削除"
 
@@ -346,7 +352,7 @@ msgstr "キャッシュ中のIPアドレス"
 msgid "Clear statistics"
 msgstr "統計のクリア"
 
-#: classes/class-ip-geo-block.php:372
+#: classes/class-ip-geo-block.php:364
 msgid "Sorry, but you cannot be accepted."
 msgstr "申し訳ありませんが、受け付けられません。"
 

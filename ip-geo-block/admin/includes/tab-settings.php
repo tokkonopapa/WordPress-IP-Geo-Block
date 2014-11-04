@@ -87,11 +87,13 @@ function ip_geo_block_tab_settings( $context ) {
 
 	// same as in tab-accesslog.php
 	$title = array(
-		'comment'     => __( '<dfn title="wp-comments-post.php">Validate comment post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'login_admin' => __( '<dfn title="wp-login.php &amp wp-admin/admin.php">Validate login &amp admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'admin_ajax'  => __( 'Validate admin ajax',   IP_Geo_Block::TEXT_DOMAIN ),
-//		'admin_xrpc'  => __( 'Validate admin xmlrpc', IP_Geo_Block::TEXT_DOMAIN ),
-		'save_logs'   => __( 'Save validation logs',  IP_Geo_Block::TEXT_DOMAIN ),
+		'comment' => __( '<dfn title="Validation at wp-comments-post.php">Comment post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'login'   => __( '<dfn title="Validation at wp-login.php">Login form</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'admin'   => __( '<dfn title="Validation at wp-admin/admin.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'ajax'    => __( '<dfn title="Validation at wp-admin/admin-ajax.php">Admin ajax</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'xmlrpc'  => __( '<dfn title="Validation at xmlrpc.php">XML RPC</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'savelog' => __( 'Save validation logs', IP_Geo_Block::TEXT_DOMAIN ),
+		'postkey' => __( '$_POST keys in logs', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
 	$field = 'validation';
@@ -103,7 +105,7 @@ function ip_geo_block_tab_settings( $context ) {
 			$option_slug,
 			$section,
 			array(
-				'type' => 'checkbox',
+				'type' => is_bool( $options[ $field ][ $key ] ) ? 'checkbox' : 'text',
 				'option' => $option_name,
 				'field' => $field,
 				'sub-field' => $key,
