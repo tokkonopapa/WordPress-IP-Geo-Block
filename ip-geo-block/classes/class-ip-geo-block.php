@@ -224,6 +224,7 @@ class IP_Geo_Block {
 					$ret = array(
 						'ip' => $ip,
 						'time' => microtime( TRUE ) - $time,
+						'auth' => get_current_user_id(),
 						'provider' => $provider,
 					);
 					return is_array( $code ) ?
@@ -342,7 +343,7 @@ class IP_Geo_Block {
 			$validate['ip'],
 			array(
 				'code' => $validate['code'] . " / $hook",
-				'auth' => get_current_user_id(),
+				'auth' => $validate['auth'],
 			),
 			$settings
 		);
@@ -384,7 +385,8 @@ class IP_Geo_Block {
 
 	public function validate_admin( $secure ) {
 		$settings = self::get_option( 'settings' );
-		if ( $settings['validation']['ajax'] || ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
+		if ( $settings['validation']['ajax'] ||
+		     ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
 			$this->validate_ip( 'admin', $settings );
 
 		return $secure; // pass through

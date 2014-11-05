@@ -1,5 +1,5 @@
 <?php
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-api.php' );
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 function ip_geo_block_tab_geolocation( $context ) {
 	$option_slug = $context->option_slug['settings'];

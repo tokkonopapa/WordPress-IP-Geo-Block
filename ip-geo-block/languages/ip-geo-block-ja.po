@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 1.3.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
 "POT-Creation-Date: 2014-11-04 23:51+0900\n"
-"PO-Revision-Date: 2014-11-05 00:04+0900\n"
+"PO-Revision-Date: 2014-11-05 22:43+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -135,7 +135,7 @@ msgstr "リクエストURI"
 
 #: admin/includes/tab-accesslog.php:61
 msgid "$_POST data"
-msgstr "$_POST データ"
+msgstr "$_POSTデータ"
 
 #: admin/includes/tab-attribution.php:16
 msgid "Attribution links"
@@ -172,24 +172,23 @@ msgstr "検証の設定"
 #: admin/includes/tab-settings.php:93
 msgid "<dfn title=\"Validation at wp-admin/admin-ajax.php\">Admin ajax</dfn>"
 msgstr ""
-"<dfn title=\"wp-admin/admin-ajax.phpへのアクセスを検証\">管理領域の Ajax</"
-"dfn>"
+"<dfn title=\"wp-admin/admin-ajax.phpへのアクセスを検証\">管理領域のAjax</dfn>"
 
 #: admin/includes/tab-settings.php:94
 msgid "<dfn title=\"Validation at xmlrpc.php\">XML RPC</dfn>"
 msgstr "<dfn title=\"xmlrpc.phpへのアクセスを検証\">XML RPC</dfn>"
 
 #: admin/includes/tab-settings.php:95
-msgid "Save validation logs"
-msgstr "検証ログを保存"
+msgid "Save the validation logs"
+msgstr "検証のログを記録"
 
 #: admin/includes/tab-settings.php:96
 msgid "$_POST keys in logs"
-msgstr "保存する $_POST データのキー"
+msgstr "記録する$_POSTデータのキー"
 
 #: admin/includes/tab-settings.php:123
 msgid "Maxmind GeoLite settings"
-msgstr "Maxmind GeoLite の設定"
+msgstr "Maxmind GeoLite&thinsp;の設定"
 
 #: admin/includes/tab-settings.php:131
 msgid "Path to database (IPv4)"
@@ -203,15 +202,15 @@ msgstr "最終更新：%s"
 
 #: admin/includes/tab-settings.php:152
 msgid "Path to database (IPv6)"
-msgstr "データベースのダウンロード"
+msgstr "データベースへのパス（IPv6）"
 
 #: admin/includes/tab-settings.php:174
 msgid "Download database"
-msgstr "Maxmind からダウンロード"
+msgstr "データベースのダウンロード"
 
 #: admin/includes/tab-settings.php:182
-msgid "Download from Maxmind"
-msgstr "自動更新（月1回）"
+msgid "Download now"
+msgstr "今すぐダウンロード"
 
 #: admin/includes/tab-settings.php:189
 msgid "Auto updating (once a month)"

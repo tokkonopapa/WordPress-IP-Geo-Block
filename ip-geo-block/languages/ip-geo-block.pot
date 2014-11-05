@@ -172,7 +172,7 @@ msgid "<dfn title=\"Validation at xmlrpc.php\">XML RPC</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:95
-msgid "Save validation logs"
+msgid "Save the validation logs"
 msgstr ""
 
 #: admin/includes/tab-settings.php:96
@@ -202,7 +202,7 @@ msgid "Download database"
 msgstr ""
 
 #: admin/includes/tab-settings.php:182
-msgid "Download from Maxmind"
+msgid "Download now"
 msgstr ""
 
 #: admin/includes/tab-settings.php:189

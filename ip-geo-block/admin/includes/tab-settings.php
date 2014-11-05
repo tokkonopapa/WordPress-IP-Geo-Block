@@ -92,12 +92,19 @@ function ip_geo_block_tab_settings( $context ) {
 		'admin'   => __( '<dfn title="Validation at wp-admin/admin.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'ajax'    => __( '<dfn title="Validation at wp-admin/admin-ajax.php">Admin ajax</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'xmlrpc'  => __( '<dfn title="Validation at xmlrpc.php">XML RPC</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'savelog' => __( 'Save validation logs', IP_Geo_Block::TEXT_DOMAIN ),
+		'savelog' => __( 'Save the validation logs', IP_Geo_Block::TEXT_DOMAIN ),
 		'postkey' => __( '$_POST keys in logs', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
 	$field = 'validation';
 	foreach ( $title as $key => $val ) {
+		if ( is_string( $options[ $field ][ $key ] ) ) {
+			$type = 'text';
+			$after = '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>';
+		} else {
+			$type = 'checkbox';
+			$after = NULL;
+		}
 		add_settings_field(
 			$option_name . "_${field}_${key}",
 			$title[ $key ],
@@ -105,11 +112,12 @@ function ip_geo_block_tab_settings( $context ) {
 			$option_slug,
 			$section,
 			array(
-				'type' => is_bool( $options[ $field ][ $key ] ) ? 'checkbox' : 'text',
+				'type' => $type,
 				'option' => $option_name,
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
+				'after' => $after,
 			)
 		);
 	}
@@ -170,21 +178,6 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'update';
 	add_settings_field(
-		$option_name . "_${field}_download",
-		__( 'Download database', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'button',
-			'option' => $option_name,
-			'field' => $field,
-			'value' => __( 'Download from Maxmind', IP_Geo_Block::TEXT_DOMAIN ),
-			'after' => '<div id="ip-geo-block-download"></div>',
-		)
-	);
-
-	add_settings_field(
 		$option_name . "_${field}_auto",
 		__( 'Auto updating (once a month)', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
@@ -196,6 +189,21 @@ function ip_geo_block_tab_settings( $context ) {
 			'field' => $field,
 			'sub-field' => 'auto',
 			'value' => $options[ $field ]['auto'],
+		)
+	);
+
+	add_settings_field(
+		$option_name . "_${field}_download",
+		__( 'Download database', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'button',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => __( 'Download now', IP_Geo_Block::TEXT_DOMAIN ),
+			'after' => '<div id="ip-geo-block-download"></div>',
 		)
 	);
 

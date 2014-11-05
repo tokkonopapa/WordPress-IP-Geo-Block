@@ -28,18 +28,22 @@ class IP_Geo_Block_Logs {
 				$lines = $fstat['size'] ?
 					explode( "\n", fread( $fp, $fstat['size'] ) ) : array();
 
-				// replace separator (should be sanitized)
-				$agent = preg_replace( "/\s+/", " ", $_SERVER['HTTP_USER_AGENT'] );
+				// user agent string (should be sanitized)
+				$meta = "\f\n\r\t\v\0";
+				$agent = str_replace( $meta, "", $_SERVER['HTTP_USER_AGENT'] );
+//				$agent = preg_replace( "/\s+/", " ", $_SERVER['HTTP_USER_AGENT'] );
 
 				// items to be saved into a log (should be sanitized)
-				if ( empty( $settings['validation']['postkey'] ) ) {
-					$items = array_keys( $_POST );
-				} else {
-					foreach ( explode( ",", $settings['validation']['postkey'] ) as $item ) {
-						if ( isset( $_POST[ $item ] ) )
-							$items[ $item ] = $_POST[ $item ];
+				foreach ( explode( ",", $settings['validation']['postkey'] ) as $item ) {
+					if ( isset( $_POST[ $item ] ) ) {
+						$items .= " $item:" . $_POST[ $item ];
 					}
 				}
+
+				$items = empty( $items ) ?
+					implode( " ", array_keys( $_POST ) ) :
+					str_replace( $meta, "", $items );
+//					preg_replace( "/\s+/", " ", $items );
 
 				array_shift( $lines );
 				array_pop  ( $lines );
@@ -52,7 +56,7 @@ class IP_Geo_Block_Logs {
 						$validate['result'],
 						str_replace( ",", "‚", trim( $agent ) ), // &#044; --> &#130;
 						basename( $_SERVER['REQUEST_URI'] ),
-						str_replace( ",", "‚", json_encode( $items ) )
+						str_replace( ",", "‚", trim( $items ) )  // &#044; --> &#130;
 					)
 				);
 				$lines = array_slice( $lines, 0, IP_GEO_BLOCK_LOG_LEN );
