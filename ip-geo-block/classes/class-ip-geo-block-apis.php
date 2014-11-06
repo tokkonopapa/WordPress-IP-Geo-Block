@@ -468,8 +468,9 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 			$file = IP_GEO_BLOCK_IP2LOC_IPV4; // currently, support only one file
 			$type = IP_GEO_BLOCK_API_TYPE_IPV6;
 		}
-		else
+		else {
 			return array( 'errorMessage' => 'illegal format' );
+		}
 
 		try {
 			$geo = new IP2Location( $file );
@@ -576,7 +577,7 @@ if ( class_exists( 'IP_Geo_Block' ) ) :
 
 class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
-	public static function update_cache( $ip, $args, $settings ) {
+	public static function update_cache( $hook, $validate, $settings ) {
 		$time = time();
 		$num = ! empty( $settings['cache_hold'] ) ? $settings['cache_hold'] : 10;
 		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;
@@ -590,14 +591,19 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		}
 
 		// number of requests
+		$ip = $validate['ip'];
 		if ( $settings['save_statistics'] )
 			++$cache[ $ip ]['call'];
 
 		// add new elements
 		$cache[ $ip ]['time'] = $time;
-		$cache[ $ip ] = array_merge( $cache[ $ip ], $args );
-		if (   empty( $cache[ $ip ]['code'] ) ) $cache[ $ip ]['code'] = 'ZZ';
-		if ( ! empty( $cache[ $ip ]['auth'] ) ) $cache[ $ip ]['fail'] = 0;
+		$cache[ $ip ]['code'] = ! empty( $validate['code'] ) ? $validate['code'] : 'ZZ';
+		$cache[ $ip ]['code'] .= " / $hook";
+		$cache[ $ip ]['auth'] = $validate['auth'];
+
+		// reset fail counter if authentication is succeed
+		if ( $validate['auth'] ) // get_current_user_id() > 0
+			$cache[ $ip ]['fail'] = 0;
 
 		// sort by 'time'
 		foreach ( $cache as $key => $val )

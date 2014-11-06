@@ -339,17 +339,11 @@ class IP_Geo_Block {
 			$validate = $this->validate_country( $validate, $settings );
 
 		// update cache
-		IP_Geo_Block_API_Cache::update_cache(
-			$validate['ip'],
-			array(
-				'code' => $validate['code'] . " / $hook",
-				'auth' => $validate['auth'],
-			),
-			$settings
-		);
+		IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
 		// save log
-		if ( $settings['validation']['savelog'] ) {
+		if ( ( $settings['validation']['savelog'] === 2 ) ||
+		     ( $settings['validation']['savelog'] && ! $validate['auth'] ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			IP_Geo_Block_Logs::save_log( $hook, $validate, $settings );
 		}

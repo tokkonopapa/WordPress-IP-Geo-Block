@@ -44,7 +44,7 @@ class IP_Geo_Block_Options {
 				'admin'       => FALSE,   // Validate on admin
 				'ajax'        => FALSE,   // Validate on admin ajax
 				'xmlrpc'      => FALSE,   // Validate on xmlrpc
-				'savelog'     => FALSE,   // Save activities
+				'savelog'     => 0,       // 0:no, 1:authenticated, 2:all
 				'postkey'     => '',      // Keys in $_POST
 			),
 			'update'          => array(   // Updating IP address DB
