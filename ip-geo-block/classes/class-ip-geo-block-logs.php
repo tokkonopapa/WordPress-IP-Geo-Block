@@ -23,33 +23,35 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function save_log( $hook, $validate, $settings ) {
 		// user agent string (should be sanitized)
-		$sep = "\f\n\r\t\v\0"; // separator
-		$agent = str_replace( $sep, "", $_SERVER['HTTP_USER_AGENT'] );
+		$agent = preg_replace( '/[\f\n\r\t\v\0]/', '', $_SERVER['HTTP_USER_AGENT'] );
 		$agent = substr( $agent, 0, IP_GEO_BLOCK_MAX_POST_LEN );
 
 		// post data (should be sanitized)
 		// https://core.trac.wordpress.org/browser/trunk/src/xmlrpc.php
-		if ( defined( 'XMLRPC_REQUEST' ) && isset( $HTTP_RAW_POST_DATA ) ) {
+		if ( defined( 'XMLRPC_REQUEST' ) ) {
+			global $HTTP_RAW_POST_DATA;
 			$posts = substr( $HTTP_RAW_POST_DATA, 0, IP_GEO_BLOCK_MAX_POST_LEN );
 		} else {
 			$postkey = "," . $settings['validation']['postkey'] . ",";
 			foreach ( $_POST as $key => $val ) {
 				if ( strpos( $postkey, ",$key," ) !== FALSE ) {
-					// Mask password
-					if ( 'pwd' === $key )
-						$val = str_repeat( "*", min( IP_GEO_BLOCK_MAX_POST_LEN, strlen( $val ) ) );
-
-					// Get truncated string with specified width
-					// and set empty if it encounters invalid UTF8
+					// truncate string with specified width
 					$val = substr( $val, 0, IP_GEO_BLOCK_MAX_POST_LEN );
-					$val = ":" . wp_check_invalid_utf8( $val );
+
+					// mask password
+					if ( 'pwd' === $key ) {
+						$val = str_repeat( "*", strlen( $val ) );
+					}
+
+					// convert all strings into printable characters
+					$val = convert_uuencode( $val );
 				} else {
 					$val = "";
 				}
 				$posts .= " ${key}${val}";
 			}
 		}
-		$posts = str_replace( $sep, "", $posts );
+		$posts = preg_replace( '/[\s\0]/', '', $posts );
 
 		$log = sprintf(
 			"%d,%s,%d,%s,%s,%s,%s,%s",
@@ -67,7 +69,8 @@ class IP_Geo_Block_Logs {
 		if ( $fp = @fopen( $file, "c+" ) ) {
 			if ( @flock( $fp, LOCK_EX | LOCK_NB ) ) {
 				$fstat = fstat( $fp );
-				$lines = explode( "\n", fread( $fp, $fstat['size'] ) );
+				$lines = $fstat['size'] ?
+					explode( "\n", fread( $fp, $fstat['size'] ) ) : array();
 
 				array_shift( $lines );
 				array_pop( $lines );
@@ -99,7 +102,8 @@ class IP_Geo_Block_Logs {
 			$file = IP_GEO_BLOCK_PATH . "database/log-${hook}.php";
 			if ( $fp = @fopen( $file, 'r' ) ) {
 				$fstat = fstat( $fp );
-				$lines = explode( "\n", esc_textarea( fread( $fp, $fstat['size'] ) ) );
+				$lines = $fstat['size'] ?
+					explode( "\n", esc_textarea( fread( $fp, $fstat['size'] ) ) ) : array();
 				@fclose( $fp );
 			}
 
