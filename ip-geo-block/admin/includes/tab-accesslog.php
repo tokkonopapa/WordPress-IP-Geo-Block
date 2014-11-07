@@ -47,7 +47,9 @@ function ip_geo_block_list_accesslog() {
 		'admin'   => __( '<dfn title="Access to wp-admin/admin.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
+	// filterd by htmlspecialchars()
 	$list = IP_Geo_Block_Logs::read_log();
+
 	foreach ( $list as $key => $val ) {
 		echo "<h4>", $title[ $key ], "</h4>\n";
 		if ( empty( $val ) ) continue;
@@ -57,14 +59,18 @@ function ip_geo_block_list_accesslog() {
 		echo "<th>", __( 'Country code', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'Result',       IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='phone,tablet'>", __( 'User agent',  IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "<th data-hide='all'>", __( 'Request URI', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th data-hide='all'>", __( 'Port No:Request URI', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='all'>", __( '$_POST data', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "</tr></thead><tbody>\n";
 
 		foreach ( $val as $logs ) {
-			$logs = explode( ",", htmlspecialchars( $logs ) );
+			$logs = explode( ",", $logs );
+			$auth = array_splice( $logs, 2, 1 ); // skip authentication
+
+			// time of date
 			$log = array_shift( $logs );
 			echo "<tr>\n<td data-value='", $log, "'>", ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ), "</td>\n";
+
 			foreach ( $logs as $log )
 				echo "<td>$log</td>\n";
 			echo "</tr>\n";

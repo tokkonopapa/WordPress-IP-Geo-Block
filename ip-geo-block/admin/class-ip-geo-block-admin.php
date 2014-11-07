@@ -374,7 +374,7 @@ class IP_Geo_Block_Admin {
 	 * @param string $option_name The name of option table.
 	 * @param array $input The values to be validated.
 	 *
-	 * @link http://codex.wordpress.org/Data_Validation
+	 * @link http://codex.wordpress.org/Validating_Sanitizing_and_Escaping_User_Data
 	 * @link http://codex.wordpress.org/Function_Reference/sanitize_option
 	 * @link http://codex.wordpress.org/Function_Reference/sanitize_text_field
 	 * @link http://codex.wordpress.org/Plugin_API/Filter_Reference/sanitize_option_$option

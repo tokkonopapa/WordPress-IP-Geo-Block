@@ -8,7 +8,8 @@
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
  * @copyright 2013, 2014 tokkonopapa
  */
-define( 'IP_GEO_BLOCK_LOG_LEN', 100 );
+define( 'IP_GEO_BLOCK_MAX_LOG_LEN', 100 );
+define( 'IP_GEO_BLOCK_MAX_POST_LEN', 256 );
 
 class IP_Geo_Block_Logs {
 
@@ -21,45 +22,57 @@ class IP_Geo_Block_Logs {
 	 * @param array $settings option settings
 	 */
 	public static function save_log( $hook, $validate, $settings ) {
+		// user agent string (should be sanitized)
+		$sep = "\f\n\r\t\v\0"; // separator
+		$agent = str_replace( $sep, "", $_SERVER['HTTP_USER_AGENT'] );
+		$agent = substr( $agent, 0, IP_GEO_BLOCK_MAX_POST_LEN );
+
+		// post data (should be sanitized)
+		// https://core.trac.wordpress.org/browser/trunk/src/xmlrpc.php
+		if ( defined( 'XMLRPC_REQUEST' ) && isset( $HTTP_RAW_POST_DATA ) ) {
+			$posts = substr( $HTTP_RAW_POST_DATA, 0, IP_GEO_BLOCK_MAX_POST_LEN );
+		} else {
+			$postkey = "," . $settings['validation']['postkey'] . ",";
+			foreach ( $_POST as $key => $val ) {
+				if ( strpos( $postkey, ",$key," ) !== FALSE ) {
+					// Mask password
+					if ( 'pwd' === $key )
+						$val = str_repeat( "*", min( IP_GEO_BLOCK_MAX_POST_LEN, strlen( $val ) ) );
+
+					// Get truncated string with specified width
+					// and set empty if it encounters invalid UTF8
+					$val = substr( $val, 0, IP_GEO_BLOCK_MAX_POST_LEN );
+					$val = ":" . wp_check_invalid_utf8( $val );
+				} else {
+					$val = "";
+				}
+				$posts .= " ${key}${val}";
+			}
+		}
+		$posts = str_replace( $sep, "", $posts );
+
+		$log = sprintf(
+			"%d,%s,%d,%s,%s,%s,%s,%s",
+			time(),
+			$validate['ip'],
+			$validate['auth'],
+			$validate['code'],
+			$validate['result'],
+			str_replace( ",", "‚", trim( $agent ) ), // &#044; --> &#130;
+			$_SERVER['SERVER_PORT'] . ":" . basename( $_SERVER['REQUEST_URI'] ),
+			str_replace( ",", "‚", trim( $posts ) )  // &#044; --> &#130;
+		);
+
 		$file = IP_GEO_BLOCK_PATH . "database/log-${hook}.php";
 		if ( $fp = @fopen( $file, "c+" ) ) {
 			if ( @flock( $fp, LOCK_EX | LOCK_NB ) ) {
 				$fstat = fstat( $fp );
-				$lines = $fstat['size'] ?
-					explode( "\n", fread( $fp, $fstat['size'] ) ) : array();
-
-				// user agent string (should be sanitized)
-				$meta = "\f\n\r\t\v\0";
-				$agent = str_replace( $meta, "", $_SERVER['HTTP_USER_AGENT'] );
-//				$agent = preg_replace( "/\s+/", " ", $_SERVER['HTTP_USER_AGENT'] );
-
-				// items to be saved into a log (should be sanitized)
-				foreach ( explode( ",", $settings['validation']['postkey'] ) as $item ) {
-					if ( isset( $_POST[ $item ] ) ) {
-						$items .= " $item:" . $_POST[ $item ];
-					}
-				}
-
-				$items = empty( $items ) ?
-					implode( " ", array_keys( $_POST ) ) :
-					str_replace( $meta, "", $items );
-//					preg_replace( "/\s+/", " ", $items );
+				$lines = explode( "\n", fread( $fp, $fstat['size'] ) );
 
 				array_shift( $lines );
-				array_pop  ( $lines );
-				array_unshift(
-					$lines,
-					sprintf( "%d,%s,%s,%s,%s,%s,%s",
-						time(),
-						$validate['ip'],
-						$validate['code'],
-						$validate['result'],
-						str_replace( ",", "‚", trim( $agent ) ), // &#044; --> &#130;
-						basename( $_SERVER['REQUEST_URI'] ),
-						str_replace( ",", "‚", trim( $items ) )  // &#044; --> &#130;
-					)
-				);
-				$lines = array_slice( $lines, 0, IP_GEO_BLOCK_LOG_LEN );
+				array_pop( $lines );
+				array_unshift( $lines, $log );
+				$lines = array_slice( $lines, 0, IP_GEO_BLOCK_MAX_LOG_LEN );
 
 				rewind( $fp );
 				fwrite( $fp, "<?php/*\n" . implode( "\n", $lines ) . "\n*/?>" );
@@ -86,8 +99,7 @@ class IP_Geo_Block_Logs {
 			$file = IP_GEO_BLOCK_PATH . "database/log-${hook}.php";
 			if ( $fp = @fopen( $file, 'r' ) ) {
 				$fstat = fstat( $fp );
-				$lines = $fstat['size'] ?
-					explode( "\n", fread( $fp, $fstat['size'] ) ) : array();
+				$lines = explode( "\n", esc_textarea( fread( $fp, $fstat['size'] ) ) );
 				@fclose( $fp );
 			}
 

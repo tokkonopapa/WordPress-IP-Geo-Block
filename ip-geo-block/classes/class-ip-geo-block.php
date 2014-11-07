@@ -176,7 +176,7 @@ class IP_Geo_Block {
 	 */
 	public function comment_form_message( $id ) {
 		$msg = self::get_option( 'settings' );
-		$msg = htmlspecialchars( $msg['comment']['msg'] );
+		$msg = esc_html( $msg['comment']['msg'] ); // Escaping for HTML blocks
 		if ( $msg ) echo '<p id="', self::PLUGIN_SLUG, '-msg">', $msg, '</p>';
 //		global $allowedtags;
 //		if ( $msg = wp_kses( $msg['comment']['msg'], $allowedtags ) ) echo $msg;
