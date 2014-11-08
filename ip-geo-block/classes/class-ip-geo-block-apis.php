@@ -114,7 +114,7 @@ abstract class IP_Geo_Block_API {
 		  // decode xml
 		  case 'xml':
 			$tmp = "/\<(.+?)\>(?:\<\!\[CDATA\[)?(.*?)(?:\]\]\>)?\<\/\\1\>/i";
-			if ( preg_match_all( $tmp, $res, $matches ) !== FALSE ) {
+			if ( @preg_match_all( $tmp, $res, $matches ) !== FALSE ) {
 				if ( is_array( $matches[1] ) && ! empty( $matches[1] ) ) {
 					foreach ( $matches[1] as $key => $val ) {
 						$data[ $val ] = $matches[2][ $key ];
@@ -149,7 +149,7 @@ abstract class IP_Geo_Block_API {
 
 		// if country code is '-' or 'UNDEFINED' then error.
 		if ( $res && ! empty( $res['countryCode'] ) )
-			return preg_match( '/^[A-Z]{2}/', $res['countryCode'], $matches ) ? $matches[0] : NULL;
+			return @preg_match( '/^[A-Z]{2}/', $res['countryCode'], $matches ) ? $matches[0] : NULL;
 		else
 			return NULL;
 	}
@@ -159,7 +159,7 @@ abstract class IP_Geo_Block_API {
 	 *
 	 */
 	public static function get_class_name( $provider ) {
-		$provider = 'IP_Geo_Block_API_' . preg_replace( '/[\W]/', '', $provider );
+		$provider = 'IP_Geo_Block_API_' . @preg_replace( '/[\W]/', '', $provider );
 		return class_exists( $provider ) ? $provider : NULL;
 	}
 }

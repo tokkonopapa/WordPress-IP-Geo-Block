@@ -54,7 +54,7 @@ class IP_Geo_Block_Admin {
 		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
 
 		// Check version and compatibility
-		if ( version_compare( get_bloginfo( 'version' ), '3.5' ) < 0 ) {
+		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 ) {
 			add_action( 'admin_notices', array( $this, 'admin_notice' ) );
 		}
 
@@ -79,7 +79,7 @@ class IP_Geo_Block_Admin {
 	 */
 	public function admin_notice() {
 		$info = $this->get_plugin_info();
-		$msg = __( 'You need WordPress 3.5+', IP_Geo_Block::TEXT_DOMAIN );
+		$msg = __( 'You need WordPress 3.7+', IP_Geo_Block::TEXT_DOMAIN );
 		echo "\n<div class=\"error\"><p>", $info['Name'], ": $msg</p></div>\n";
 	}
 
@@ -439,7 +439,7 @@ class IP_Geo_Block_Admin {
 			  case 'black_list':
 				$output[ $key ] = isset( $input[ $key ] ) ?
 					sanitize_text_field(
-						preg_replace( '/[^A-Z,]/', '', strtoupper( $input[ $key ] ) )
+						@preg_replace( '/[^A-Z,]/', '', strtoupper( $input[ $key ] ) )
 					) : '';
 				break;
 
@@ -475,7 +475,7 @@ class IP_Geo_Block_Admin {
 						$output[ $key ][ $sub ] = is_int( $default[ $key ][ $sub ] ) ?
 							(int)$input[ $key ][ $sub ] :
 							sanitize_text_field(
-								preg_replace( '/\s/', '', $input[ $key ][ $sub ] )
+								@preg_replace( '/\s/', '', $input[ $key ][ $sub ] )
 							);
 					}
 				}

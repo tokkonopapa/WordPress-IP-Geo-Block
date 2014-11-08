@@ -2,7 +2,7 @@
 Contributors: tokkonopapa
 Donate link:
 Tags: comment, spam, IP address, geolocation, login, security, brute force
-Requires at least: 3.5
+Requires at least: 3.7
 Tested up to: 4.0
 Stable tag: 1.3.0
 License: GPLv2 or later

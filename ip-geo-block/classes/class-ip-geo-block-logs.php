@@ -14,8 +14,100 @@ define( 'IP_GEO_BLOCK_MAX_POST_LEN', 256 );
 class IP_Geo_Block_Logs {
 
 	/**
+	 * Check utf8 strings
+	 * (code from wp_check_invalid_utf8() in wp-includes/formatting.php)
+	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
+	 */
+	private static function check_utf8( $str ) {
+		$str = (string) $str;
+		if ( 0 === strlen( $str ) )
+			return '';
+
+		// Store the site charset as a static to avoid multiple calls to get_option()
+		static $is_utf8;
+		if ( ! isset( $is_utf8 ) )
+			$is_utf8 = in_array(
+				strtolower( get_option( 'blog_charset' ) ),
+				array( 'utf8', 'utf-8' )
+			);
+
+		// handle utf8 only
+		if ( ! $is_utf8 )
+			return '…';
+
+		// Check support for utf8 in the installed PCRE library
+		static $utf8_pcre;
+		if ( ! isset( $utf8_pcre ) )
+			$utf8_pcre = @preg_match( '/^./u', 'a' );
+
+		// if no support then reject $str for safety
+		if ( ! $utf8_pcre )
+			return '…';
+
+		// preg_match fails when it encounters invalid UTF8 in $str
+		if ( 1 === @preg_match( '/^./us', $str ) )
+			return $str;
+
+		return '…';
+	}
+
+	/**
+	 * Truncate utf8 strings
+	 *
+	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
+	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/functions.php
+	 */
+	private static function truncate_utf8( $str, $regexp, $len = IP_GEO_BLOCK_MAX_POST_LEN ) {
+		// remove unnecessary characters
+		$str = @preg_replace( $regexp, '', $str );
+
+		// binary safe strlen()
+		mbstring_binary_safe_encoding(); // @since 3.7.0
+		$original = strlen( $str );
+		$str = substr( $str, 0, $len );
+		$length = strlen( $str );
+		reset_mbstring_encoding(); // @since 3.7.0
+
+		if ( $length !== $original ) {
+			// bit pattern from seems_utf8() in wp-includes/formatting.php
+			static $code = array(
+				array( 0x80, 0x00 ), // 1byte  0bbbbbbb
+				array( 0xE0, 0xC0 ), // 2bytes 110bbbbb
+				array( 0xF0, 0xE0 ), // 3bytes 1110bbbb
+				array( 0xF8, 0xF0 ), // 4bytes 11110bbb
+				array( 0xFC, 0xF8 ), // 5bytes 111110bb
+				array( 0xFE, 0xFC ), // 6bytes 1111110b
+			);
+
+			// truncate extra characters
+			for ( $i = 0; $i < 6; $i++ ) {
+				$c = ord( $str[$length-1 - $i] );
+				for ( $j = $i; $j < 6; $j++ ) {
+					if ( ( $c & $code[$j][0] ) == $code[$j][1] ) {
+						$str = substr( $str, 0, $length - ($j > 0) - $i );
+						// check whole characters
+						$str = self::check_utf8( $str );
+						return '…' !== $str ? "${str}…" : '…';
+					}
+				}
+			}
+
+			// $str may not fit utf8
+			return '…';
+		}
+
+		// check whole characters
+		return self::check_utf8( $str );
+	}
+
+	/**
 	 * Save validation log
-	 * @todo save into mySQL DB
+	 *
+	 * This function record the user agent string and post data.
+	 * The security policy of this function is as follows.
+	 *
+	 *   1. Record under the condition that the site charset is utf8
+	 *   2. Limit the length of strings to be recorded
 	 *
 	 * @param string $hook type of log name
 	 * @param array $validate validation results
@@ -23,27 +115,23 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function save_log( $hook, $validate, $settings ) {
 		// user agent string (should be sanitized before rendering)
-		$agent = wp_check_invalid_utf8( $_SERVER['HTTP_USER_AGENT'] );
-		$agent = preg_replace( '/[\f\n\r\t\v\0]/', '', $agent );
-		$agent = substr( $agent, 0, IP_GEO_BLOCK_MAX_POST_LEN );
+		$agent = self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'], '/[\f\n\r\t\v]/' );
 
 		// post data (should be sanitized before rendering)
 		// @link https://core.trac.wordpress.org/browser/trunk/src/xmlrpc.php
 		if ( defined( 'XMLRPC_REQUEST' ) ) {
 			global $HTTP_RAW_POST_DATA;
-			$posts = wp_check_invalid_utf8( $HTTP_RAW_POST_DATA );
-			$posts = substr( $posts, 0, IP_GEO_BLOCK_MAX_POST_LEN );
+			$posts = self::truncate_utf8( $HTTP_RAW_POST_DATA, '/\s/' );
 		} else {
 			$posts = implode( ',', array_keys( $_POST ) );
 			foreach ( explode( ',', $settings['validation']['postkey'] ) as $key ) {
-				$val = wp_check_invalid_utf8( $_POST[ $key ] ); // @since 2.8.0
-				$val = substr( $val, 0, IP_GEO_BLOCK_MAX_POST_LEN );
-				if ( 'pwd' === $key ) // mask password
+				$val = self::truncate_utf8( $_POST[ $key ], '/\s/' );
+				// mask password
+				if ( 'pwd' === $key )
 					$val = str_repeat( '*', strlen( $val ) );
 				$posts = str_replace( $key, "$key:$val", $posts );
 			}
 		}
-		$posts = preg_replace( '/[\s\0]/', '', $posts );
 
 		$log = sprintf(
 			'%d,%s,%d,%s,%s,%s,%s,%s',

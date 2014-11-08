@@ -76,7 +76,7 @@ equipped to reduce load on the server against burst access within a short time.
 
 ### Requirement:
 
-- WordPress 3.5+
+- WordPress 3.7+
 
 ### Attribution:
 

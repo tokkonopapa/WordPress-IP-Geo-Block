@@ -27,7 +27,7 @@ msgid ""
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:82
-msgid "You need WordPress 3.5+"
+msgid "You need WordPress 3.7+"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:157
