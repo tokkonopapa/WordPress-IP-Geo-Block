@@ -22,47 +22,39 @@ class IP_Geo_Block_Logs {
 	 * @param array $settings option settings
 	 */
 	public static function save_log( $hook, $validate, $settings ) {
-		// user agent string (should be sanitized)
-		$agent = preg_replace( '/[\f\n\r\t\v\0]/', '', $_SERVER['HTTP_USER_AGENT'] );
+		// user agent string (should be sanitized before rendering)
+		$agent = wp_check_invalid_utf8( $_SERVER['HTTP_USER_AGENT'] );
+		$agent = preg_replace( '/[\f\n\r\t\v\0]/', '', $agent );
 		$agent = substr( $agent, 0, IP_GEO_BLOCK_MAX_POST_LEN );
 
-		// post data (should be sanitized)
-		// https://core.trac.wordpress.org/browser/trunk/src/xmlrpc.php
+		// post data (should be sanitized before rendering)
+		// @link https://core.trac.wordpress.org/browser/trunk/src/xmlrpc.php
 		if ( defined( 'XMLRPC_REQUEST' ) ) {
 			global $HTTP_RAW_POST_DATA;
-			$posts = substr( $HTTP_RAW_POST_DATA, 0, IP_GEO_BLOCK_MAX_POST_LEN );
+			$posts = wp_check_invalid_utf8( $HTTP_RAW_POST_DATA );
+			$posts = substr( $posts, 0, IP_GEO_BLOCK_MAX_POST_LEN );
 		} else {
-			$postkey = "," . $settings['validation']['postkey'] . ",";
-			foreach ( $_POST as $key => $val ) {
-				if ( strpos( $postkey, ",$key," ) !== FALSE ) {
-					// truncate string with specified width
-					$val = substr( $val, 0, IP_GEO_BLOCK_MAX_POST_LEN );
-
-					// mask password
-					if ( 'pwd' === $key ) {
-						$val = str_repeat( "*", strlen( $val ) );
-					}
-
-					// convert all strings into printable characters
-					$val = convert_uuencode( $val );
-				} else {
-					$val = "";
-				}
-				$posts .= " ${key}${val}";
+			$posts = implode( ',', array_keys( $_POST ) );
+			foreach ( explode( ',', $settings['validation']['postkey'] ) as $key ) {
+				$val = wp_check_invalid_utf8( $_POST[ $key ] ); // @since 2.8.0
+				$val = substr( $val, 0, IP_GEO_BLOCK_MAX_POST_LEN );
+				if ( 'pwd' === $key ) // mask password
+					$val = str_repeat( '*', strlen( $val ) );
+				$posts = str_replace( $key, "$key:$val", $posts );
 			}
 		}
 		$posts = preg_replace( '/[\s\0]/', '', $posts );
 
 		$log = sprintf(
-			"%d,%s,%d,%s,%s,%s,%s,%s",
+			'%d,%s,%d,%s,%s,%s,%s,%s',
 			time(),
 			$validate['ip'],
 			$validate['auth'],
 			$validate['code'],
 			$validate['result'],
-			str_replace( ",", "‚", trim( $agent ) ), // &#044; --> &#130;
-			$_SERVER['SERVER_PORT'] . ":" . basename( $_SERVER['REQUEST_URI'] ),
-			str_replace( ",", "‚", trim( $posts ) )  // &#044; --> &#130;
+			str_replace( ',', '‚', $agent ), // &#044; --> &#130;
+			$_SERVER['SERVER_PORT'] . ':' . basename( $_SERVER['REQUEST_URI'] ),
+			str_replace( ',', '‚', $posts )  // &#044; --> &#130;
 		);
 
 		$file = IP_GEO_BLOCK_PATH . "database/log-${hook}.php";

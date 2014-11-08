@@ -124,7 +124,7 @@ msgid "User agent"
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:60
-msgid "Port No:Request URI"
+msgid "Port:Request URI"
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:61

@@ -59,7 +59,7 @@ function ip_geo_block_list_accesslog() {
 		echo "<th>", __( 'Country code', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'Result',       IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='phone,tablet'>", __( 'User agent',  IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "<th data-hide='all'>", __( 'Port No:Request URI', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th data-hide='all'>", __( 'Port:Request URI', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='all'>", __( '$_POST data', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "</tr></thead><tbody>\n";
 
