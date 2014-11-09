@@ -145,8 +145,11 @@ class IP_Geo_Block_Logs {
 			str_replace( ',', '‚', $posts )  // &#044; --> &#130;
 		);
 
-		$file = IP_GEO_BLOCK_PATH . "database/log-${hook}.php";
-		if ( $fp = @fopen( $file, "c+" ) ) {
+		$dir = trailingslashit(
+			apply_filters( IP_Geo_Block::PLUGIN_SLUG . '-maxmind-dir', IP_GEO_BLOCK_DB_DIR )
+		);
+
+		if ( $fp = @fopen( "${dir}log-${hook}.php", "c+" ) ) {
 			if ( @flock( $fp, LOCK_EX | LOCK_NB ) ) {
 				$fstat = fstat( $fp );
 				$lines = $fstat['size'] ?
@@ -177,15 +180,18 @@ class IP_Geo_Block_Logs {
 		$list = $hook ? array( $hook ) : array( 'comment', 'login', 'admin' );
 		$result = array();
 
+		$dir = trailingslashit(
+			apply_filters( IP_Geo_Block::PLUGIN_SLUG . '-maxmind-dir', IP_GEO_BLOCK_DB_DIR )
+		);
+
 		foreach ( $list as $hook ) {
-			$file = IP_GEO_BLOCK_PATH . "database/log-${hook}.php";
-			if ( $fp = @fopen( $file, 'r' ) ) {
+			if ( $fp = @fopen( "${dir}log-${hook}.php", 'r' ) ) {
 				$fstat = fstat( $fp );
 				$data = $fstat['size'] ? fread( $fp, $fstat['size'] ) : NULL;
 				@fclose( $fp );
 
 				// execute htmlspecialchars()
-				$data = esc_textarea( $data );
+				$data = esc_textarea( $data ); // @since 3.1.0
 
 				// consider to check the $data being empty or not
 				$lines = explode( "\n", $data );

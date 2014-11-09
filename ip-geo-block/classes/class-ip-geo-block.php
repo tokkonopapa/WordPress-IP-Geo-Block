@@ -9,6 +9,11 @@
  * @copyright 2013, 2014 tokkonopapa
  */
 
+/**
+ * Default path to the database file
+ */
+define( 'IP_GEO_BLOCK_DB_DIR', IP_GEO_BLOCK_PATH . 'database/' );
+
 class IP_Geo_Block {
 
 	/**
@@ -341,7 +346,7 @@ class IP_Geo_Block {
 		// update cache
 		IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
-		// save log
+		// record log
 		if ( ( $settings['validation']['reclogs'] === 2 ) ||
 		     ( $settings['validation']['reclogs'] && ! $validate['auth'] ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
@@ -377,13 +382,13 @@ class IP_Geo_Block {
 		$this->validate_ip( 'login', self::get_option( 'settings' ) );
 	}
 
-	public function validate_admin( $secure ) {
+	public function validate_admin( $something ) {
 		$settings = self::get_option( 'settings' );
 		if ( $settings['validation']['ajax'] ||
 		     ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
 			$this->validate_ip( 'admin', $settings );
 
-		return $secure; // pass through
+		return $something; // pass through
 	}
 
 	/**

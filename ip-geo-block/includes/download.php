@@ -4,11 +4,6 @@ if ( ! function_exists( 'download_url' ) )
 	require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
 /**
- * Default path to database file
- */
-define( 'IP_GEO_BLOCK_DB_DIR', IP_GEO_BLOCK_PATH . 'database/' );
-
-/**
  * URL of Maxmind GeoLite database
  */
 define( 'IP_GEO_BLOCK_MAXMIND_IPV4_ZIP', 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz' );
