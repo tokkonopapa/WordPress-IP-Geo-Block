@@ -48,7 +48,7 @@ function ip_geo_block_list_accesslog() {
 	);
 
 	// filterd by htmlspecialchars()
-	$list = IP_Geo_Block_Logs::read_log();
+	$list = IP_Geo_Block_Logs::restore_log();
 
 	foreach ( $list as $key => $val ) {
 		echo "<h4>", $title[ $key ], "</h4>\n";

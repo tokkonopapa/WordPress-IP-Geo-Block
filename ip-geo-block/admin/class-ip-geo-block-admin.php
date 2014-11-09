@@ -210,7 +210,7 @@ class IP_Geo_Block_Admin {
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=1" class="nav-tab <?php echo $tab == 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 <?php
 		$settings = IP_Geo_Block::get_option( 'settings' );
-		if ( $settings['validation']['savelog'] ) { ?>
+		if ( $settings['validation']['reclogs'] ) { ?>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab == 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 <?php
 		} ?>

@@ -18,7 +18,7 @@ class IP_Geo_Block_Logs {
 	 * (code from wp_check_invalid_utf8() in wp-includes/formatting.php)
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
-	private static function check_utf8( $str ) {
+	private static function validate_utf8( $str ) {
 		$str = (string) $str;
 		if ( 0 === strlen( $str ) )
 			return '';
@@ -84,9 +84,9 @@ class IP_Geo_Block_Logs {
 				$c = ord( $str[$length-1 - $i] );
 				for ( $j = $i; $j < 6; $j++ ) {
 					if ( ( $c & $code[$j][0] ) == $code[$j][1] ) {
-						$str = substr( $str, 0, $length - ($j > 0) - $i );
-						// check whole characters
-						$str = self::check_utf8( $str );
+						$str = substr( $str, 0, $length - (int)($j > 0) - $i );
+						// validate whole characters
+						$str = self::validate_utf8( $str );
 						return '…' !== $str ? "${str}…" : '…';
 					}
 				}
@@ -96,12 +96,12 @@ class IP_Geo_Block_Logs {
 			return '…';
 		}
 
-		// check whole characters
-		return self::check_utf8( $str );
+		// validate whole characters
+		return self::validate_utf8( $str );
 	}
 
 	/**
-	 * Save validation log
+	 * Record validation log
 	 *
 	 * This function record the user agent string and post data.
 	 * The security policy of this function is as follows.
@@ -113,7 +113,7 @@ class IP_Geo_Block_Logs {
 	 * @param array $validate validation results
 	 * @param array $settings option settings
 	 */
-	public static function save_log( $hook, $validate, $settings ) {
+	public static function record_log( $hook, $validate, $settings ) {
 		// user agent string (should be sanitized before rendering)
 		$agent = self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'], '/[\f\n\r\t\v]/' );
 
@@ -134,14 +134,14 @@ class IP_Geo_Block_Logs {
 		}
 
 		$log = sprintf(
-			'%d,%s,%d,%s,%s,%s,%s,%s',
-			time(),
+			'%s,%s,%d,%s,%s,%s,%s,%s',
+			$_SERVER['REQUEST_TIME'],
 			$validate['ip'],
 			$validate['auth'],
 			$validate['code'],
 			$validate['result'],
 			str_replace( ',', '‚', $agent ), // &#044; --> &#130;
-			$_SERVER['SERVER_PORT'] . ':' . basename( $_SERVER['REQUEST_URI'] ),
+			$_SERVER['SERVER_PORT'] . '[' . $_SERVER['REQUEST_METHOD'] . ']:' . basename( $_SERVER['REQUEST_URI'] ),
 			str_replace( ',', '‚', $posts )  // &#044; --> &#130;
 		);
 
@@ -168,23 +168,27 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Read validation log
+	 * Restore validation log
 	 *
 	 * @param string $hook type of log name
 	 * return array log data
 	 */
-	public static function read_log( $hook = NULL ) {
+	public static function restore_log( $hook = NULL ) {
 		$list = $hook ? array( $hook ) : array( 'comment', 'login', 'admin' );
 		$result = array();
 
 		foreach ( $list as $hook ) {
-			$lines = array();
 			$file = IP_GEO_BLOCK_PATH . "database/log-${hook}.php";
 			if ( $fp = @fopen( $file, 'r' ) ) {
 				$fstat = fstat( $fp );
-				$lines = $fstat['size'] ?
-					explode( "\n", esc_textarea( fread( $fp, $fstat['size'] ) ) ) : array();
+				$data = $fstat['size'] ? fread( $fp, $fstat['size'] ) : NULL;
 				@fclose( $fp );
+
+				// execute htmlspecialchars()
+				$data = esc_textarea( $data );
+
+				// consider to check the $data being empty or not
+				$lines = explode( "\n", $data );
 			}
 
 			if ( ! empty( $lines ) ) {

@@ -33,31 +33,6 @@ class IP_Geo_Block {
 		'statistics' => 'ip_geo_block_statistics',
 	);
 
-	// get default optional values
-	public static function get_default( $name = 'settings' ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-		return IP_Geo_Block_Options::get_table( self::$option_keys[ $name ] );
-	}
-
-	// get optional values from wp_options
-	public static function get_option( $name = 'settings' ) {
-		if ( FALSE === ( $option = get_option( self::$option_keys[ $name ] ) ) )
-			$option = self::get_default( $name );
-		return $option;
-	}
-
-	// http://codex.wordpress.org/Function_Reference/wp_remote_get
-	public static function get_request_headers( $settings ) {
-		global $wp_version;
-		return apply_filters(
-			IP_Geo_Block::PLUGIN_SLUG . '-headers',
-			array(
-				'timeout' => $settings['timeout'],
-				'user-agent' => "WordPress/$wp_version; " . self::PLUGIN_SLUG . ' ' . self::VERSION,
-			)
-		);
-	}
-
 	/**
 	 * Initialize the plugin
 	 * 
@@ -103,6 +78,31 @@ class IP_Geo_Block {
 			add_filter( 'wp_xmlrpc_server_class', array( $this, 'validate_admin' ) );
 		}
 
+	}
+
+	// get default optional values
+	public static function get_default( $name = 'settings' ) {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		return IP_Geo_Block_Options::get_table( self::$option_keys[ $name ] );
+	}
+
+	// get optional values from wp_options
+	public static function get_option( $name = 'settings' ) {
+		if ( FALSE === ( $option = get_option( self::$option_keys[ $name ] ) ) )
+			$option = self::get_default( $name );
+		return $option;
+	}
+
+	// http://codex.wordpress.org/Function_Reference/wp_remote_get
+	public static function get_request_headers( $settings ) {
+		global $wp_version;
+		return apply_filters(
+			IP_Geo_Block::PLUGIN_SLUG . '-headers',
+			array(
+				'timeout' => $settings['timeout'],
+				'user-agent' => "WordPress/$wp_version; " . self::PLUGIN_SLUG . ' ' . self::VERSION,
+			)
+		);
 	}
 
 	/**
@@ -342,10 +342,10 @@ class IP_Geo_Block {
 		IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
 		// save log
-		if ( ( $settings['validation']['savelog'] === 2 ) ||
-		     ( $settings['validation']['savelog'] && ! $validate['auth'] ) ) {
+		if ( ( $settings['validation']['reclogs'] === 2 ) ||
+		     ( $settings['validation']['reclogs'] && ! $validate['auth'] ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-			IP_Geo_Block_Logs::save_log( $hook, $validate, $settings );
+			IP_Geo_Block_Logs::record_log( $hook, $validate, $settings );
 		}
 
 		if ( 'passed' !== $validate['result'] ) {

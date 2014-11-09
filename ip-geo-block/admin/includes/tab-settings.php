@@ -113,7 +113,7 @@ function ip_geo_block_tab_settings( $context ) {
 	}
 
 	add_settings_field(
-		$option_name . "_${field}_savelog",
+		$option_name . "_${field}_reclogs",
 		__( 'Record of validation logs', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -122,8 +122,8 @@ function ip_geo_block_tab_settings( $context ) {
 			'type' => 'select',
 			'option' => $option_name,
 			'field' => $field,
-			'sub-field' => 'savelog',
-			'value' => $options[ $field ]['savelog'],
+			'sub-field' => 'reclogs',
+			'value' => $options[ $field ]['reclogs'],
 			'list' => array(
 				__( 'Disable', IP_Geo_Block::TEXT_DOMAIN ) => 0,
 				__( 'Unauthenticated only', IP_Geo_Block::TEXT_DOMAIN ) => 1,
