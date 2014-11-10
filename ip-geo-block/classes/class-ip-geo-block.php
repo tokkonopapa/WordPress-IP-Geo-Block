@@ -78,9 +78,10 @@ class IP_Geo_Block {
 			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
 		}
 
-		// action hook from xmlrpc.php @since 3.1.0
+		// action hook from xmlrpc.php @since 3.1.0, XML-RPC login error @since 3.5.0
 		if ( $settings['validation']['xmlrpc'] ) {
 			add_filter( 'wp_xmlrpc_server_class', array( $this, 'validate_admin' ) );
+			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ) );
 		}
 
 	}
@@ -128,9 +129,13 @@ class IP_Geo_Block {
 	 */
 	public static function activate( $network_wide = NULL ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// upgrade options
 		$settings = IP_Geo_Block_Options::upgrade();
+
+		// create log
+		IP_Geo_Block_Logs::create_log();
 
 		// execute to download immediately
 		if ( $settings['update']['auto'] ) {
@@ -395,7 +400,7 @@ class IP_Geo_Block {
 	 * Authentication handling
 	 *
 	 */
-	public function auth_fail( $username ) {
+	public function auth_fail( $something ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		// Count up a number of fails when authentication is failed
@@ -407,6 +412,8 @@ class IP_Geo_Block {
 				get_option( self::$option_keys['settings'] )
 			);
 		}
+
+		return $something; // pass through
 	}
 
 	public function auth_check( $validate, $settings ) {

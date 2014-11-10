@@ -572,9 +572,8 @@ class IP_Geo_Block_Admin {
 				break;
 
 			  case 'logs':
-				foreach ( array( 'comment', 'login', 'admin' ) as $hook ) {
-					@unlink( IP_GEO_BLOCK_PATH . "database/log-${hook}.php" );
-				}
+				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+				IP_Geo_Block_Logs::delete_log();
 				$res = array( 'refresh' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=4" );
 				break;
 			}

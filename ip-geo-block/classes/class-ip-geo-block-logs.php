@@ -14,7 +14,26 @@ define( 'IP_GEO_BLOCK_MAX_POST_LEN', 256 );
 class IP_Geo_Block_Logs {
 
 	/**
-	 * Check utf8 strings
+	 * Create and Delete logs
+	 *
+	 */
+	public static function create_log() {
+	}
+
+	public static function delete_log( $hook = NULL ) {
+		$list = $hook ? array( $hook ) : array( 'comment', 'login', 'admin' );
+
+		$dir = trailingslashit(
+			apply_filters( IP_Geo_Block::PLUGIN_SLUG . '-maxmind-dir', IP_GEO_BLOCK_DB_DIR )
+		);
+
+		foreach ( $list as $hook ) {
+			@unlink( "${dir}log-${hook}.php" );
+		}
+	}
+
+	/**
+	 * Validate string whether utf8
 	 * (code from wp_check_invalid_utf8() in wp-includes/formatting.php)
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
@@ -52,16 +71,16 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Truncate utf8 strings
+	 * Truncate string as utf8 
 	 *
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/functions.php
 	 */
-	private static function truncate_utf8( $str, $regexp, $len = IP_GEO_BLOCK_MAX_POST_LEN ) {
+	private static function truncate_utf8( $str, $regexp, $replace = '', $len = IP_GEO_BLOCK_MAX_POST_LEN ) {
 		// remove unnecessary characters
-		$str = @preg_replace( $regexp, '', $str );
+		$str = @preg_replace( $regexp, $replace, $str );
 
-		// binary safe strlen()
+		// limit the length of the string
 		mbstring_binary_safe_encoding(); // @since 3.7.0
 		$original = strlen( $str );
 		$str = substr( $str, 0, $len );
@@ -101,13 +120,13 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Record validation log
+	 * Record the validation log
 	 *
 	 * This function record the user agent string and post data.
-	 * The security policy of this function is as follows.
+	 * The security policy for these data is as follows.
 	 *
-	 *   1. Record under the condition that the site charset is utf8
-	 *   2. Limit the length of strings to be recorded
+	 *   1. Record only utf8 under the condition that the site charset is utf8
+	 *   2. Record by limiting the length of the string
 	 *
 	 * @param string $hook type of log name
 	 * @param array $validate validation results
@@ -117,12 +136,15 @@ class IP_Geo_Block_Logs {
 		// user agent string (should be sanitized before rendering)
 		$agent = self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'], '/[\f\n\r\t\v]/' );
 
-		// post data (should be sanitized before rendering)
+		// XML-RPC
 		// @link https://core.trac.wordpress.org/browser/trunk/src/xmlrpc.php
 		if ( defined( 'XMLRPC_REQUEST' ) ) {
 			global $HTTP_RAW_POST_DATA;
-			$posts = self::truncate_utf8( $HTTP_RAW_POST_DATA, '/\s/' );
-		} else {
+			$posts = self::truncate_utf8( $HTTP_RAW_POST_DATA, '/\s+</', '<' );
+		}
+
+		// post data (should be sanitized before rendering)
+		else {
 			$posts = implode( ',', array_keys( $_POST ) );
 			foreach ( explode( ',', $settings['validation']['postkey'] ) as $key ) {
 				$val = self::truncate_utf8( $_POST[ $key ], '/\s/' );
@@ -171,7 +193,7 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Restore validation log
+	 * Restore the validation log
 	 *
 	 * @param string $hook type of log name
 	 * return array log data
