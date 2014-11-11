@@ -163,12 +163,17 @@ class IP_Geo_Block {
 		$settings = self::get_option( 'settings' );
 
 		if ( $settings['clean_uninstall'] ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+
 			// delete settings options
 			delete_option( self::$option_keys['settings'  ] ); // @since 1.2.0
 			delete_option( self::$option_keys['statistics'] ); // @since 1.2.0
 
 			// delete IP address cache
 			delete_transient( self::CACHE_KEY ); // @since 2.8
+
+			// delete log
+			IP_Geo_Block_Logs::delete_log();
 		}
 	}
 
@@ -352,13 +357,14 @@ class IP_Geo_Block {
 		IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
 		// record log
+		$blocked = ( 'passed' !== $validate['result'] );
 		if ( ( $settings['validation']['reclogs'] === 2 ) ||
-		     ( $settings['validation']['reclogs'] && ! $validate['auth'] ) ) {
+		     ( $settings['validation']['reclogs'] && $blocked ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			IP_Geo_Block_Logs::record_log( $hook, $validate, $settings );
 		}
 
-		if ( 'passed' !== $validate['result'] ) {
+		if ( $blocked ) {
 			// update statistics
 			if ( $settings['save_statistics'] )
 				$this->update_statistics( $validate );
@@ -388,11 +394,7 @@ class IP_Geo_Block {
 	}
 
 	public function validate_admin( $something ) {
-		$settings = self::get_option( 'settings' );
-		if ( $settings['validation']['ajax'] ||
-		     ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-			$this->validate_ip( 'admin', $settings );
-
+		$this->validate_ip( 'admin', self::get_option( 'settings' ) );
 		return $something; // pass through
 	}
 

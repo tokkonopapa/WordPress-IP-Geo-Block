@@ -14,13 +14,16 @@ define( 'IP_GEO_BLOCK_MAX_POST_LEN', 256 );
 class IP_Geo_Block_Logs {
 
 	/**
-	 * Create and Delete logs
+	 * Create, Delete, Clean logs
 	 *
 	 */
 	public static function create_log() {
 	}
 
-	public static function delete_log( $hook = NULL ) {
+	public static function delete_log() {
+	}
+
+	public static function clean_log( $hook = NULL ) {
 		$list = $hook ? array( $hook ) : array( 'comment', 'login', 'admin' );
 
 		$dir = trailingslashit(
@@ -99,7 +102,8 @@ class IP_Geo_Block_Logs {
 			);
 
 			// truncate extra characters
-			for ( $i = 0; $i < 6; $i++ ) {
+			$len = min( $length, 6 );
+			for ( $i = 0; $i < $len; $i++ ) {
 				$c = ord( $str[$length-1 - $i] );
 				for ( $j = $i; $j < 6; $j++ ) {
 					if ( ( $c & $code[$j][0] ) == $code[$j][1] ) {
@@ -127,6 +131,7 @@ class IP_Geo_Block_Logs {
 	 *
 	 *   1. Record only utf8 under the condition that the site charset is utf8
 	 *   2. Record by limiting the length of the string
+	 *   3. Mask the password regardless of a state of the authentication
 	 *
 	 * @param string $hook type of log name
 	 * @param array $validate validation results
@@ -141,6 +146,12 @@ class IP_Geo_Block_Logs {
 		if ( defined( 'XMLRPC_REQUEST' ) ) {
 			global $HTTP_RAW_POST_DATA;
 			$posts = self::truncate_utf8( $HTTP_RAW_POST_DATA, '/\s+</', '<' );
+			// mask the password
+			if ( preg_match_all( '/<string>(\S*?)<\/string>/', $posts, $matches ) >= 2 &&
+			     strpos( $matches[1][1], home_url() ) !== 0 ) { // except pingback
+				$val = str_repeat( '*', strlen( $matches[1][1] ) );
+				$posts = str_replace( $matches[1][1], $val, $posts );
+			}
 		}
 
 		// post data (should be sanitized before rendering)
@@ -148,7 +159,7 @@ class IP_Geo_Block_Logs {
 			$posts = implode( ',', array_keys( $_POST ) );
 			foreach ( explode( ',', $settings['validation']['postkey'] ) as $key ) {
 				$val = self::truncate_utf8( $_POST[ $key ], '/\s/' );
-				// mask password
+				// mask the password
 				if ( 'pwd' === $key )
 					$val = str_repeat( '*', strlen( $val ) );
 				$posts = str_replace( $key, "$key:$val", $posts );

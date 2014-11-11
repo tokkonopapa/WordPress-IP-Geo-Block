@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.3.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-11-07 00:22+0900\n"
-"PO-Revision-Date: 2014-11-08 23:43+0900\n"
+"POT-Creation-Date: 2014-11-12 00:44+0900\n"
+"PO-Revision-Date: 2014-11-12 00:55+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -107,32 +107,32 @@ msgstr "<dfn title=\"wp-login.phpへのアクセス\">ログイン・フォー�
 msgid "<dfn title=\"Access to wp-admin/admin.php\">Admin area</dfn>"
 msgstr "<dfn title=\"wp-admin/admin.phpへのアクセス\">管理領域</dfn>"
 
-#: admin/includes/tab-accesslog.php:55
+#: admin/includes/tab-accesslog.php:57
 msgid "Time of date"
 msgstr "日時"
 
-#: admin/includes/tab-accesslog.php:56 admin/includes/tab-geolocation.php:56
+#: admin/includes/tab-accesslog.php:58 admin/includes/tab-geolocation.php:56
 #: admin/includes/tab-statistics.php:150
 msgid "IP address"
 msgstr "IPアドレス"
 
-#: admin/includes/tab-accesslog.php:57
+#: admin/includes/tab-accesslog.php:59
 msgid "Country code"
 msgstr "国コード"
 
-#: admin/includes/tab-accesslog.php:58
+#: admin/includes/tab-accesslog.php:60
 msgid "Result"
 msgstr "結果"
 
-#: admin/includes/tab-accesslog.php:59
+#: admin/includes/tab-accesslog.php:61
 msgid "User agent"
 msgstr "ユーザーエージェント"
 
-#: admin/includes/tab-accesslog.php:60
+#: admin/includes/tab-accesslog.php:62
 msgid "Port:Request URI"
 msgstr "ポート:リクエストURI"
 
-#: admin/includes/tab-accesslog.php:61
+#: admin/includes/tab-accesslog.php:63
 msgid "$_POST data"
 msgstr "$_POSTデータ"
 
@@ -186,8 +186,8 @@ msgid "Disable"
 msgstr "無効"
 
 #: admin/includes/tab-settings.php:140
-msgid "Unauthenticated only"
-msgstr "未認証のアクセスのみ"
+msgid "Only when blocked"
+msgstr "遮断時のみ記録"
 
 #: admin/includes/tab-settings.php:141
 msgid "All of validation"
@@ -211,7 +211,7 @@ msgid "Path to database (IPv4)"
 msgstr "データベースへのパス（IPv4）"
 
 #: admin/includes/tab-settings.php:189 admin/includes/tab-settings.php:210
-#: includes/download.php:131
+#: includes/download.php:126
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
@@ -363,16 +363,16 @@ msgstr "キャッシュ中のIPアドレス"
 msgid "Clear statistics"
 msgstr "統計のクリア"
 
-#: classes/class-ip-geo-block.php:359
+#: classes/class-ip-geo-block.php:375
 msgid "Sorry, but you cannot be accepted."
 msgstr "申し訳ありませんが、受け付けられません。"
 
-#: includes/download.php:95
+#: includes/download.php:90
 #, php-format
 msgid "Cannot open %s to read."
 msgstr "%s を読み込めません。"
 
-#: includes/download.php:103
+#: includes/download.php:98
 #, php-format
 msgid "Cannot open %s to write."
 msgstr "%s に書き込めません。"

@@ -90,8 +90,8 @@ function ip_geo_block_tab_settings( $context ) {
 		'comment' => __( '<dfn title="Access to wp-comments-post.php">Comment post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'login'   => __( '<dfn title="Access to wp-login.php">Login form</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'admin'   => __( '<dfn title="Access to wp-admin/admin.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'ajax'    => __( '<dfn title="Access to wp-admin/admin-ajax.php">Admin ajax</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'xmlrpc'  => __( '<dfn title="Access to xmlrpc.php">XML RPC</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+//		'ajax'    => __( '<dfn title="Access to wp-admin/admin-ajax.php">Admin ajax</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'xmlrpc'  => __( '<dfn title="Access to xmlrpc.php">XML-RPC</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
 	$field = 'validation';
@@ -126,7 +126,7 @@ function ip_geo_block_tab_settings( $context ) {
 			'value' => $options[ $field ]['reclogs'],
 			'list' => array(
 				__( 'Disable', IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Unauthenticated only', IP_Geo_Block::TEXT_DOMAIN ) => 1,
+				__( 'Only when blocked', IP_Geo_Block::TEXT_DOMAIN ) => 1,
 				__( 'All of validation', IP_Geo_Block::TEXT_DOMAIN ) => 2,
 			),
 		)
