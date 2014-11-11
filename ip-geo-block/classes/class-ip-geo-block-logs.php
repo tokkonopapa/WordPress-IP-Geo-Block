@@ -228,12 +228,11 @@ class IP_Geo_Block_Logs {
 
 				// consider to check the $data being empty or not
 				$lines = explode( "\n", $data );
-			}
-
-			if ( ! empty( $lines ) ) {
-				array_shift( $lines );
-				array_pop  ( $lines );
-				$result[ $hook ] = $lines;
+				if ( ! empty( $lines ) ) {
+					array_shift( $lines );
+					array_pop  ( $lines );
+					$result[ $hook ] = $lines;
+				}
 			}
 		}
 
