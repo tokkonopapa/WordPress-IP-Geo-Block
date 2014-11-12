@@ -47,7 +47,7 @@ function ip_geo_block_list_accesslog() {
 		'admin'   => __( '<dfn title="Access to wp-admin/admin.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
-	// filterd by htmlspecialchars()
+	// $list has been already sanitized by htmlspecialchars()
 	$list = IP_Geo_Block_Logs::restore_log();
 
 	foreach ( $list as $key => $val ) {
@@ -68,11 +68,11 @@ function ip_geo_block_list_accesslog() {
 			$auth = array_splice( $logs, 2, 1 ); // skip authentication
 
 			// time of date
-			$log = esc_html( array_shift( $logs ) );
+			$log = array_shift( $logs );
 			echo "<tr>\n<td data-value='", $log, "'>", ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ), "</td>\n";
 
 			foreach ( $logs as $log )
-				echo "<td>", esc_html( $log ), "</td>\n";
+				echo "<td>$log</td>\n";
 			echo "</tr>\n";
 		}
 
