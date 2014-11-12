@@ -438,13 +438,13 @@ class IP_Geo_Block {
 
 		if ( $update['auto'] ) {
 			$now = time();
-			$cycle = DAY_IN_SECONDS * $update['cycle'];
+			$cycle = DAY_IN_SECONDS * (int)$update['cycle'];
 
 			if ( ! $immediate &&
 				$now - (int)$db['ipv4_last'] < $cycle &&
 				$now - (int)$db['ipv6_last'] < $cycle ) {
 				$update['retry'] = 0;
-				$next = max( $db['ipv4_last'], $db['ipv6_last'] ) +
+				$next = max( (int)$db['ipv4_last'], (int)$db['ipv6_last'] ) +
 					$cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 6 );
 			} else {
 				++$update['retry'];

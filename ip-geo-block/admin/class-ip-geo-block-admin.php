@@ -380,7 +380,7 @@ class IP_Geo_Block_Admin {
 	 * @link http://codex.wordpress.org/Plugin_API/Filter_Reference/sanitize_option_$option
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
-	private function sanitize_options( $option_name, $input ) {
+	private function validate_options( $option_name, $input ) {
 		$message = __( 'Successfully updated', IP_Geo_Block::TEXT_DOMAIN );
 		$status = 'updated';
 
@@ -498,8 +498,8 @@ class IP_Geo_Block_Admin {
 	 * Sanitize options.
 	 *
 	 */
-	public function sanitize_settings( $input = array() ) {
-		return $this->sanitize_options( 'settings', $input );
+	public function validate_settings( $input = array() ) {
+		return $this->validate_options( 'settings', $input );
 	}
 
 	/**

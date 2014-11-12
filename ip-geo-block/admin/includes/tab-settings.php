@@ -20,7 +20,7 @@ function ip_geo_block_tab_settings( $context ) {
 	register_setting(
 		$option_slug,
 		$option_name,
-		array( $context, 'sanitize_settings' )
+		array( $context, 'validate_settings' )
 	);
 
 	/**
