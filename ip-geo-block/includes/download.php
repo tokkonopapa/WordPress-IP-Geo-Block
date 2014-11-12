@@ -43,7 +43,7 @@ function ip_geo_block_download_zip( $url, $args, $filename, $modified ) {
 	// set 'If-Modified-Since' request header
 	$args += array(
 		'headers'  => array(
-			'If-Modified-Since' => gmdate( DATE_RFC1123, $modified ),
+			'If-Modified-Since' => gmdate( DATE_RFC1123, (int)$modified ),
 		),
 	);
 

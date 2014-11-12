@@ -105,7 +105,7 @@ class IP_Geo_Block {
 		return apply_filters(
 			IP_Geo_Block::PLUGIN_SLUG . '-headers',
 			array(
-				'timeout' => $settings['timeout'],
+				'timeout' => (int)$settings['timeout'],
 				'user-agent' => "WordPress/$wp_version; " . self::PLUGIN_SLUG . ' ' . self::VERSION,
 			)
 		);
@@ -314,7 +314,7 @@ class IP_Geo_Block {
 		nocache_headers(); // nocache and response code
 		switch ( (int)substr( "$code", 0, 1 ) ) {
 		  case 2: // 2xx Success
-			header( 'Refresh: 0; url=' . get_site_url(), TRUE, $code ); // @since 3.0
+			header( 'Refresh: 0; url=' . home_url(), TRUE, $code ); // @since 3.0
 			die();
 
 		  case 3: // 3xx Redirection

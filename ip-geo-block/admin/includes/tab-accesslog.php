@@ -68,11 +68,11 @@ function ip_geo_block_list_accesslog() {
 			$auth = array_splice( $logs, 2, 1 ); // skip authentication
 
 			// time of date
-			$log = array_shift( $logs );
+			$log = esc_html( array_shift( $logs ) );
 			echo "<tr>\n<td data-value='", $log, "'>", ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ), "</td>\n";
 
 			foreach ( $logs as $log )
-				echo "<td>$log</td>\n";
+				echo "<td>", esc_html( $log ), "</td>\n";
 			echo "</tr>\n";
 		}
 

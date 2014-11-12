@@ -409,6 +409,11 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
 		'longitude'   => 'longitude',
 	);
 
+	public function __construct( $api_key = NULL ) {
+		// sanitization
+		parent::__construct( preg_replace( '/\W/', '', $api_key ) );
+	}
+
 	public function get_country( $ip, $args = array() ) {
 		$this->api_template['%API_OPTION%'] = 'ip-country';
 		return parent::get_country( $ip, $args );

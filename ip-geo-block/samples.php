@@ -34,8 +34,12 @@ add_filter( 'ip-geo-block-ip-addr', 'my_replace_ip' );
  */
 function my_retrieve_ip( $ip ) {
 	if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-		$ip = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
-		$ip = trim( $ip[0] );
+		$tmp = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
+		$tmp = trim( $ip[0] );
+		if ( filter_var( $tmp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
+		     filter_var( $tmp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+			$ip = $tmp;
+		}
 	}
 
 	return $ip;
@@ -47,6 +51,7 @@ add_filter( 'ip-geo-block-ip-addr', 'my_retrieve_ip' );
  * Example3: usage of 'ip-geo-block-headers'
  * Use case: change the user agent strings when accessing remote contents
  *
+ * Notice: Be careful about HTTP header injection.
  * @param  string $args http request headers for `wp_remote_get()`
  * @return string $args http request headers for `wp_remote_get()`
  */
