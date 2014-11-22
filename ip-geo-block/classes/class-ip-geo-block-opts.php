@@ -23,8 +23,8 @@ class IP_Geo_Block_Options {
 			// since version 1.0
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
-				'pos'         => 0,       // Position (0:none, 1:top, 2:bottom)
-				'msg'         => NULL,    // Message text on comment form
+			    'pos'         => 0,       // Position (0:none, 1:top, 2:bottom)
+			    'msg'         => NULL,    // Message text on comment form
 			),
 			'matching_rule'   => 0,       // 0:white list, 1:black list
 			'white_list'      => NULL,    // Comma separeted country code
@@ -39,40 +39,40 @@ class IP_Geo_Block_Options {
 			// since version 1.2, 1.3
 			'login_fails'     => 5,       // Limited number of login attempts
 			'validation'      => array(   // Action hook for validation
-				'comment'     => TRUE,    // Validate on comment post
-				'login'       => FALSE,   // Validate on login
-				'admin'       => FALSE,   // Validate on admin
-				'ajax'        => FALSE,   // Validate on admin ajax
-				'xmlrpc'      => FALSE,   // Validate on xmlrpc
-				'reclogs'     => 0,       // 0:no, 1:authenticated, 2:all
-				'postkey'     => '',      // Keys in $_POST
+			    'comment'     => TRUE,    // Validate on comment post
+			    'login'       => FALSE,   // Validate on login
+			    'admin'       => FALSE,   // Validate on admin
+			    'ajax'        => FALSE,   // Validate on admin ajax
+			    'xmlrpc'      => TRUE,    // Validate on xmlrpc
+			    'proxy'       => FALSE,   // Validate proxy ip address
+			    'reclogs'     => 0,       // 0:no, 1:authenticated, 2:all
+			    'postkey'     => '',      // Keys in $_POST
 			),
 			'update'          => array(   // Updating IP address DB
-				'auto'        => TRUE,    // Auto updating of DB file
-				'retry'       => 0,       // Number of retry to download
-				'cycle'       => 30,      // Updating cycle (days)
+			    'auto'        => TRUE,    // Auto updating of DB file
+			    'retry'       => 0,       // Number of retry to download
+			    'cycle'       => 30,      // Updating cycle (days)
 			),
 			'maxmind'         => array(   // Maxmind
-				'ipv4_path'   => NULL,    // Path to IPv4 DB file
-				'ipv6_path'   => NULL,    // Path to IPv6 DB file
-				'ipv4_last'   => NULL,    // Last-Modified of DB file
-				'ipv6_last'   => NULL,    // Last-Modified of DB file
+			    'ipv4_path'   => NULL,    // Path to IPv4 DB file
+			    'ipv6_path'   => NULL,    // Path to IPv6 DB file
+			    'ipv4_last'   => NULL,    // Last-Modified of DB file
+			    'ipv6_last'   => NULL,    // Last-Modified of DB file
 			),
 			'ip2location'     => array(   // IP2Location
-				'ipv4_path'   => NULL,    // Path to IPv4 DB file
-				'ipv6_path'   => NULL,    // Path to IPv6 DB file
-				'ipv4_last'   => NULL,    // Last-Modified of DB file
-				'ipv6_last'   => NULL,    // Last-Modified of DB file
+			    'ipv4_path'   => NULL,    // Path to IPv4 DB file
+			    'ipv6_path'   => NULL,    // Path to IPv6 DB file
+			    'ipv4_last'   => NULL,    // Last-Modified of DB file
+			    'ipv6_last'   => NULL,    // Last-Modified of DB file
 			),
 		),
 
 		// statistics (autoloaded since version 1.2.1)
 		'ip_geo_block_statistics' => array(
-			'passed'    => NULL,
-			'blocked'   => NULL,
-			'unknown'   => NULL,
-			'IPv4'      => NULL,
-			'IPv6'      => NULL,
+			'blocked'   => 0,
+			'unknown'   => 0,
+			'IPv4'      => 0,
+			'IPv6'      => 0,
 			'countries' => array(),
 			'providers' => array(),
 		),

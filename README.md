@@ -1,16 +1,17 @@
 IP Geo Block
 ==============
 
-A WordPress plugin that will block any spam comments posted from outside of 
-your nation, and will also protect against malicious access to the login form 
-and admin area from undesired countries.
+A WordPress plugin that will block any comment and pingback spams posted from 
+outside of your nation, and will also protect against malicious access to the 
+login form and admin area from undesired countries.
 
 This plugin will examine a country code based on the IP address. If the 
-comment comes from specific country, it will be blocked before Akismet 
-validate it.
+comment or pingback comes from specific country, it will be blocked before 
+Akismet validate it.
 
 With the same mechanism, it will fight against burst access of brute-force 
-and reverse-brute-force attack to `wp-login.php` and `wp-admin/` area.
+and reverse-brute-force attack to `wp-login.php`, `wp-admin/` area and aslo 
+`xmlrpc.php`.
 
 ### Features:
 
@@ -50,6 +51,11 @@ equipped to reduce load on the server against burst access within a short time.
     If you wish to use `IPInfoDB`, you should register from [here][register]
     to get a free API key and set it into the textfield.
     And `ip-api.com` and `Smart-IP.net` require non-commercial use.
+
+- **Validation settings**  
+    `XML-RPC` is for validation of pingback spam. If `HTTP_X_FORWARDED_FOR` is 
+    checked, all the IP addresses in `$_SERVER['HTTP_X_FORWARDED_FOR']` will be
+    validated.
 
 - **Text position on comment form**  
     If you want to put some text message on your comment form, please select
@@ -170,9 +176,9 @@ Yes, here is the list of all hooks.
 
 * `ip-geo-block-ip-addr`          : IP address of accessor.
 * `ip-geo-block-headers`          : compose http request headers.
-* `ip-geo-block-comment`          : validate IP address on `wp-comments-post.php`.
-* `ip-geo-block-login`            : validate IP adress on `wp-login.php`.
-* `ip-geo-block-admin`            : validate IP adress on `wp-admin/admin.php` except ajax.
+* `ip-geo-block-comment`          : validate IP address at `wp-comments-post.php`.
+* `ip-geo-block-login`            : validate IP adress at `wp-login.php`.
+* `ip-geo-block-admin`            : validate IP adress at `wp-admin/admin.php` and `xmlrpc.php` except ajax.
 * `ip-geo-block-maxmind-dir`      : absolute path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
@@ -205,14 +211,19 @@ this plugin on the plugin dashboard.
 
 #### Change log
 
-- 1.3.0
+- 2.0.0
     - **New feature:** Protection against brute-force and reverse-brute-force
       attack to `wp-login.php`. This is an experimental function and can be
       enabled on `Settings` tab. An IP address from countries in whitelist can 
       try to login only 5 times. `Clear statistics` can reset this retry
       counter to zero.
+- 1.3.0
+    - **New feature:** Added validation of pingback.ping through `xmlrpc.php` 
+      and new option to validate all the IP addresses in HTTP_X_FORWARDED_FOR.
     - **Fixed an issue:** Maxmind database file may be downloaded automatically
       without deactivate/re-activate when upgrade is finished.
+    - This is the final version on 1.x. On next release, accesses to `login.php`
+      and admin area will be also validated for security purpose.
 - 1.2.1
     - **Fixed an issue:** Option table will be updated automatically without
       deactivate/re-activate when this plugin is upgraded.
@@ -242,23 +253,6 @@ this plugin on the plugin dashboard.
 - 1.0.1  Modify Plugin URL.
          Add `apply_filters()` to be able to change headers.
 - 1.0.0  Ready to release.
-- 0.9.9  Refine UI and modify settings data format.
-- 0.9.8  Add support for IP2Location WordPress plugins.
-- 0.9.7  Refine UI of provider selection and API key setting.
-         Fix js error on setting page.
-- 0.9.6  Change all class names and file names.
-         Simplify jQuery Google Map plugin.
-         Add some providers.
-         Add `ip-geo-block-addr` filter hook for local testing.
-         Add `enables` to option table for the future usage.
-- 0.9.5  Fix garbage characters of `get_country()` for ipinfo.io.
-- 0.9.4  Add `ip-geo-block-validate` hook and `apply_filters()` in order to 
-         add another validation function.
-- 0.9.3  Change action hook `pre_comment_on_post` to `preprocess_comment`.
-         Add attribution links to appreciate providing the services.
-- 0.9.2  Add a check of the supported type of IP address not to waste a request.
-- 0.9.1  Delete functions for MU, test, debug and ugly comments.
-- 0.9.0  Pre-release version.
 
 ### License:
 

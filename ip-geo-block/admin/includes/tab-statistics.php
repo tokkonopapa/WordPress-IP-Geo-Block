@@ -3,11 +3,14 @@ function ip_geo_block_tab_statistics( $context ) {
 	$option_slug = $context->option_slug['statistics'];
 	$option_name = $context->option_name['statistics'];
 	$options = IP_Geo_Block::get_option( 'statistics' );
+	$setting = IP_Geo_Block::get_option( 'settings' );
 
 	register_setting(
 		$option_slug,
 		$option_name
 	);
+
+if ( $setting['save_statistics'] ) :
 
 	/*----------------------------------------*
 	 * Statistics of comment post
@@ -19,22 +22,7 @@ function ip_geo_block_tab_statistics( $context ) {
 		NULL,
 		$option_slug
 	);
-/*
-	$field = 'passed';
-	add_settings_field(
-		$option_name . "_$field",
-		__( 'Passed', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'html',
-			'option' => $option_name,
-			'field' => $field,
-			'value' => esc_html( $options[ $field ] ),
-		)
-	);
-//*/
+
 	$field = 'blocked';
 	add_settings_field(
 		$option_name . "_$field",
@@ -134,6 +122,8 @@ function ip_geo_block_tab_statistics( $context ) {
 		)
 	);
 
+endif;
+
 	/*----------------------------------------*
 	 * Statistics of cache
 	 *----------------------------------------*/
@@ -159,14 +149,14 @@ function ip_geo_block_tab_statistics( $context ) {
 			if ( empty( $val['auth'] ) || $debug ) { // hide authenticated user
 				$code = explode( ' / ', $val['code'] );
 				$html .= "<tr><td>" . esc_html( $key ) . "</td>";
-				$html .= "<td>" . esc_html( $code[0] ) . " / ";
-				$html .= "<small>" . esc_html( $code[1] ) . "</small></td>";
+				$html .= "<td>"     . esc_html( $code[0] ) . " / ";
+				$html .= "<small>"  . esc_html( $code[1] ) . "</small></td>";
 				$html .= "<td>" . ( $time - (int)$val['time'] ) . " / ";
 				$html .= ! empty( $val['call'] ) ? (int)$val['call'] : "-";
 				if ( $debug ) {
-					$html .= " [" . intval( $val['fail'] ) . "]";
 					$user = get_user_by( 'id', intval( $val['auth'] ) );
 					$html .= " " . esc_html( $user ? $user->get( 'user_login' ) : "" );
+					$html .= " / fail:" . intval( $val['fail'] );
 				}
 				$html .= "</td></tr>";
 			}

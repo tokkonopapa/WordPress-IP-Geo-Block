@@ -35,7 +35,7 @@ add_filter( 'ip-geo-block-ip-addr', 'my_replace_ip' );
 function my_retrieve_ip( $ip ) {
 	if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
 		$tmp = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
-		$tmp = trim( $ip[0] );
+		$tmp = trim( $tmp[0] );
 		if ( filter_var( $tmp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
 		     filter_var( $tmp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			$ip = $tmp;
@@ -129,60 +129,5 @@ function my_blacklist( $validate ) {
 	return $validate;
 }
 add_filter( 'ip-geo-block-comment', 'my_blacklist' );
-
-
-/**
- * Example8: usage of 'ip-geo-block-login'
- * Use case: allow login only from specific ip addresses in the whitelist
- * (validate ip address to exclude Brute-force attack on login process)
- *
- * @param  string $validate['ip'] ip address
- * @param  string $validate['code'] country code
- * @return array $validate add 'result' as 'passed' or 'blocked' if possible
- */
-function my_whitelist( $validate ) {
-	$whitelist = array(
-		'jp',
-	);
-
-	$validate['result'] = 'blocked';
-
-	foreach ( $whitelist as $country ) {
-		if ( strtoupper( $country ) === $validate['code'] ) {
-			$validate['result'] = 'passed';
-			break;
-		}
-	}
-
-	return $validate;
-}
-add_filter( 'ip-geo-block-login', 'my_whitelist' ); // hook custom filter
-
-
-/**
- * Example9: validate ip address before authrization in admin area
- * Use case: limit the ip addresses that can access the admin area except ajax
- *
- */
-add_filter( 'ip-geo-block-admin', 'my_whitelist' ); // hook custom filter
-
-
-/**
- * Example10: usage of 'IP_Geo_Block::get_geolocation()'
- * Use case: get geolocation of ip address with latitude and longitude
- *
- * @param  string $ip ip address
- * @param  array $providers list of providers
- * @return array $geolocation array of 'countryCode', 'latitude', 'longitude'
- */
-function my_geolocation( $ip ) {
-	$providers = array( 'ipinfo.io', 'Telize', 'IP-Json' );
-	$geolocation = IP_Geo_Block::get_geolocation( $ip, $providers );
-
-	if ( isset( $geolocation['countryCode'] ) )
-		echo va_dump( $geolocation );
-	else
-		echo $geolocation['errorMessage'];
-}
 
 endif;
