@@ -36,8 +36,7 @@ function my_retrieve_ip( $ip ) {
 	if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
 		$tmp = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
 		$tmp = trim( $tmp[0] );
-		if ( filter_var( $tmp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
-		     filter_var( $tmp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+		if ( filter_var( $tmp, FILTER_VALIDATE_IP ) ) {
 			$ip = $tmp;
 		}
 	}

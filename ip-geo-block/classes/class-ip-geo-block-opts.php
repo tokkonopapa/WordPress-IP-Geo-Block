@@ -19,7 +19,7 @@ class IP_Geo_Block_Options {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
-			'version'         => '1.3.0', // This table version (not package)
+			'version'         => '1.4.0', // This table version (not package)
 			// since version 1.0
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
@@ -44,7 +44,7 @@ class IP_Geo_Block_Options {
 			    'admin'       => FALSE,   // Validate on admin
 			    'ajax'        => FALSE,   // Validate on admin ajax
 			    'xmlrpc'      => TRUE,    // Validate on xmlrpc
-			    'proxy'       => FALSE,   // Validate proxy ip address
+			    'proxy'       => NULL,    // $_SERVER variables for IPs
 			    'reclogs'     => 0,       // 0:no, 1:authenticated, 2:all
 			    'postkey'     => '',      // Keys in $_POST
 			),
@@ -113,8 +113,8 @@ class IP_Geo_Block_Options {
 		if ( FALSE === ( $settings = get_option( $key[0] ) ) ) {
 			// get country code from admin's IP address and set it into white list
 			shuffle( $name = array( 'ipinfo.io', 'Telize', 'IP-Json' ) );
-			$tmp = IP_Geo_Block::_get_geolocation( $_SERVER['REMOTE_ADDR'], $default, $name );
-			$default[ $key[0] ]['white_list'] = isset( $tmp['code'] ) ? $tmp['code'] : NULL;
+			$tmp = IP_Geo_Block::get_geolocation( $_SERVER['REMOTE_ADDR'], $name );
+			$default[ $key[0] ]['white_list'] = @$tmp['countryCode'];
 
 			// update local goelocation database files
 			$default[ $key[0] ]['ip2location']['ipv4_path'] = $ip2;
@@ -151,6 +151,11 @@ class IP_Geo_Block_Options {
 			if ( version_compare( $settings['version'], '1.3' ) < 0 ) {
 				unset( $settings['validation'] );
 				$settings['validation'] = $default[ $key[0] ]['validation'];
+			}
+
+			if ( version_compare( $settings['version'], '1.4.0' ) < 0 ) {
+				$settings['validation']['proxy'] =
+				$settings['validation']['proxy'] ? 'HTTP_X_FORWARDED_FOR' : NULL;
 			}
 
 			// update local goelocation database files

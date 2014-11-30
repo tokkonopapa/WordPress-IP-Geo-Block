@@ -10,8 +10,8 @@ comment or pingback comes from specific country, it will be blocked before
 Akismet validate it.
 
 With the same mechanism, it will fight against burst access of brute-force 
-and reverse-brute-force attack to `wp-login.php`, `wp-admin/` area and aslo 
-`xmlrpc.php`.
+and reverse-brute-force attack to `wp-login.php`, `wp-admin/` area and 
+aslo `xmlrpc.php`.
 
 ### Features:
 
@@ -37,8 +37,8 @@ IP address.
 4. Cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against burst access within a short time.
 
-5. Custom validation function can be added using predefined filter hook with 
-`add_filter()`.
+5. Custom validation function can be added by `add_filter()` with predefined 
+filter hook.
 
 ### Installation:
 
@@ -217,6 +217,9 @@ this plugin on the plugin dashboard.
       enabled on `Settings` tab. An IP address from countries in whitelist can 
       try to login only 5 times. `Clear statistics` can reset this retry
       counter to zero.
+- 1.3.1
+    - Added `$_SERVER keys for extra IPs` to validate additional IP addresses.
+      Removed some redundant codes.
 - 1.3.0
     - **New feature:** Added validation of pingback.ping through `xmlrpc.php` 
       and new option to validate all the IP addresses in HTTP_X_FORWARDED_FOR.

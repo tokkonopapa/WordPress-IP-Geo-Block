@@ -54,7 +54,7 @@ class IP_Geo_Block_Admin {
 		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
 
 		// Check version and compatibility
-		if ( version_compare( get_bloginfo( 'version' ), '3.5' ) < 0 ) {
+		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 ) {
 			add_action( 'admin_notices', array( $this, 'admin_notice' ) );
 		}
 
@@ -79,7 +79,7 @@ class IP_Geo_Block_Admin {
 	 */
 	public function admin_notice() {
 		$info = $this->get_plugin_info();
-		$msg = __( 'You need WordPress 3.5+', IP_Geo_Block::TEXT_DOMAIN );
+		$msg = __( 'You need WordPress 3.7+', IP_Geo_Block::TEXT_DOMAIN );
 		echo "\n<div class=\"error\"><p>", $info['Name'], ": $msg</p></div>\n";
 	}
 
@@ -117,6 +117,12 @@ class IP_Geo_Block_Admin {
 			// js for google map
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
 				'http://maps.google.com/maps/api/js?sensor=false',
+				array( 'jquery' ), IP_Geo_Block::VERSION
+			);
+
+			// js for footable https://github.com/bradvin/FooTable
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-footable-js',
+				plugins_url( 'js/footable.all.min.js', __FILE__ ),
 				array( 'jquery' ), IP_Geo_Block::VERSION
 			);
 
@@ -195,13 +201,19 @@ class IP_Geo_Block_Admin {
 	 */
 	public function display_plugin_admin_page( $tab = 0 ) {
 		$tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
-		$tab = min( 3, max( 0, $tab ) );
+		$tab = min( 4, max( 0, $tab ) );
 		$option_slug = $this->option_slug[ 1 === $tab ? 'statistics': 'settings' ]; ?>
 <div class="wrap">
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 	<h2 class="nav-tab-wrapper">
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=0" class="nav-tab <?php echo $tab == 0 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=1" class="nav-tab <?php echo $tab == 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+<?php
+		$settings = IP_Geo_Block::get_option( 'settings' );
+		if ( $settings['validation']['reclogs'] ) { ?>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab == 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+<?php
+		} ?>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=2" class="nav-tab <?php echo $tab == 2 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Search', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=3" class="nav-tab <?php echo $tab == 3 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 	</h2>
@@ -230,7 +242,7 @@ class IP_Geo_Block_Admin {
 	 */
 	public function register_admin_settings() {
 		$tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
-		switch( min( 3, max( 0, $tab ) ) ) {
+		switch( min( 4, max( 0, $tab ) ) ) {
 		  case 0:
 			// Settings
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-settings.php' );
@@ -254,6 +266,11 @@ class IP_Geo_Block_Admin {
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-attribution.php' );
 			ip_geo_block_tab_attribution( $this );
 			break;
+
+		  case 4:
+			// Access log
+			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-accesslog.php' );
+			ip_geo_block_tab_accesslog( $this );
 		}
 	}
 
@@ -457,6 +474,10 @@ class IP_Geo_Block_Admin {
 							sanitize_text_field(
 								@preg_replace( '/\s/', '', $input[ $key ][ $sub ] )
 							);
+						if ( 'proxy' === $sub ) {
+							$output[ $key ][ $sub ] = @preg_replace( '/[^\w,]/', '',
+								strtoupper( $output[ $key ][ $sub ] ) );
+						}
 					}
 				}
 				break;
@@ -549,6 +570,12 @@ class IP_Geo_Block_Admin {
 				// delete cache of IP address
 				delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
 				$res = array( 'refresh' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=1" );
+				break;
+
+			  case 'logs':
+				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+				IP_Geo_Block_Logs::clean_log();
+				$res = array( 'refresh' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=4" );
 				break;
 			}
 		}

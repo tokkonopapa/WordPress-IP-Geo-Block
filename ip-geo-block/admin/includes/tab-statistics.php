@@ -147,12 +147,11 @@ endif;
 		$debug = defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG;
 		foreach ( $transient as $key => $val ) {
 			if ( empty( $val['auth'] ) || $debug ) { // hide authenticated user
-				$code = explode( ' / ', $val['code'] );
 				$html .= "<tr><td>" . esc_html( $key ) . "</td>";
-				$html .= "<td>"     . esc_html( $code[0] ) . " / ";
-				$html .= "<small>"  . esc_html( $code[1] ) . "</small></td>";
+				$html .= "<td>"     . esc_html( $val['code'] ) . " / ";
+				$html .= "<small>"  . esc_html( $val['hook'] ) . "</small></td>";
 				$html .= "<td>" . ( $time - (int)$val['time'] ) . " / ";
-				$html .= ! empty( $val['call'] ) ? (int)$val['call'] : "-";
+				$html .= $setting['save_statistics'] ? (int)$val['call'] : "-";
 				if ( $debug ) {
 					$user = get_user_by( 'id', intval( $val['auth'] ) );
 					$html .= " " . esc_html( $user ? $user->get( 'user_login' ) : "" );

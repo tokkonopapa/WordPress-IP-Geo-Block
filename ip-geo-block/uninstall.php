@@ -15,5 +15,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 // Define uninstall functionality here
-include plugin_dir_path( __FILE__ ) . 'classes/class-ip-geo-block.php';
+if ( ! defined( 'IP_GEO_BLOCK_PATH' ) )
+	define( 'IP_GEO_BLOCK_PATH', plugin_dir_path( __FILE__ ) ); // @since 2.8
+include IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php';
 IP_Geo_Block::uninstall();

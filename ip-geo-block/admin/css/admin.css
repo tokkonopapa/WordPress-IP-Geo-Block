@@ -1,6 +1,7 @@
 /* This stylesheet is used to style the admin option form of the plugin. */
 dfn {
     cursor: help;
+    border-bottom: 1px dotted;
 }
 
 #check-provider label {

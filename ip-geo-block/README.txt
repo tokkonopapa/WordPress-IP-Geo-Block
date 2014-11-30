@@ -2,9 +2,9 @@
 Contributors: tokkonopapa
 Donate link:
 Tags: comment, pingback, spam, IP address, geolocation, xmlrpc
-Requires at least: 3.5
+Requires at least: 3.7
 Tested up to: 4.0.1
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,8 +38,8 @@ and then activated in order to set the path to `database.bin`.
 3. Cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against burst access within a short time.
 
-4. Custom validation function can be added using predefined filter hook with 
-`add_filter()`.
+4. Custom validation function can be added by `add_filter()` with predefined 
+filter hook.
 
 = Development =
 
@@ -83,9 +83,9 @@ And also thanks for providing these great services and REST APIs for free.
     And `ip-api.com` and `Smart-IP.net` require non-commercial use.
 
 * **Validation settings**  
-    `XML-RPC` is for validation of pingback spam. If `HTTP_X_FORWARDED_FOR` is 
-    checked, all the IP addresses in `$_SERVER['HTTP_X_FORWARDED_FOR']` will be
-    validated.
+    `XML-RPC` is for validation of pingback spam. Additional IP addresses will 
+    be validated if some of keys for `$_SERVER` variable are specified in 
+    `$_SERVER keys for extra IPs`.
 
 * **Text position on comment form**  
     If you want to put some text message on your comment form, please select
@@ -180,7 +180,8 @@ Yes, here is the list of all hooks.
 
 * `ip-geo-block-ip-addr`          : IP address of accessor.
 * `ip-geo-block-headers`          : compose http request headers.
-* `ip-geo-block-comment`          : validate post to `wp-comments-post.php` and `pingback.ping` to `xmlrpc.php`.
+* `ip-geo-block-comment`          : validate IP adress at `wp-comments-post.php`.
+* `ip-geo-block-xmlrpc`           : validate IP adress at `xmlrpc.php`.
 * `ip-geo-block-maxmind-dir`      : absolute path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
@@ -205,6 +206,10 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 4. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 1.3.1 =
+* Added `$_SERVER keys for extra IPs` to validate additional IP addresses.
+  Removed some redundant codes.
 
 = 1.3.0 =
 * **New feature:** Added validation of pingback.ping through `xmlrpc.php` and

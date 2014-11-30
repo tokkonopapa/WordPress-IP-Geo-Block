@@ -588,27 +588,22 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;
 
 		// unset expired elements
-		if ( false !== ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) ) {
+		if ( FALSE !== ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) ) {
 			foreach ( $cache as $key => $val ) {
 				if ( $time - $val['time'] > $exp )
 					unset( $cache[ $key ] );
 			}
 		}
 
-		// number of requests
-		$ip = $validate['ip'];
-		if ( $settings['save_statistics'] )
-			++$cache[ $ip ]['call'];
-
-		// add new elements
-		$cache[ $ip ]['time'] = $time;
-		$cache[ $ip ]['code'] = ! empty( $validate['code'] ) ? $validate['code'] : 'ZZ';
-		$cache[ $ip ]['code'] .= " / $hook";
-		$cache[ $ip ]['auth'] = $validate['auth'];
-
-		// reset fail counter if authentication is succeed
-		if ( $validate['auth'] ) // get_current_user_id() > 0
-			$cache[ $ip ]['fail'] = 0;
+		// update elements
+		$cache[ $ip = $validate['ip'] ] = array(
+			'time' => $time,
+			'hook' => $hook,
+			'code' => $validate['code'],
+			'auth' => $validate['auth'], // get_current_user_id() > 0
+			'fail' => $validate['auth'] ? 0 : (int)$validate['fail'] + (int)$cache[ $ip ]['fail'],
+			'call' => $cache[ $ip ]['call'] + (int)$settings['save_statistics'],
+		);
 
 		// sort by 'time'
 		foreach ( $cache as $key => $val )
