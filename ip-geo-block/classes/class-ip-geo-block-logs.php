@@ -54,7 +54,8 @@ class IP_Geo_Block_Logs {
 
 	/**
 	 * Validate string whether utf8
-	 * (code from wp_check_invalid_utf8() in wp-includes/formatting.php)
+	 *
+	 * @note code from wp_check_invalid_utf8() in wp-includes/formatting.php
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
 	private static function validate_utf8( $str ) {
@@ -91,49 +92,63 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Truncate string as utf8 
+	 * Truncate string as utf8
 	 *
+	 * @see http://jetpack.wp-a2z.org/oik_api/mbstring_binary_safe_encoding/
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/functions.php
 	 */
 	private static function truncate_utf8( $str, $regexp, $replace = '', $len = IP_GEO_BLOCK_MAX_POST_LEN ) {
-		// remove unnecessary characters
+		// remove unnecessary characters ('/[^\t\n\f\r]/')
+		$str = @preg_replace( '/[\x00-\x08\x0b\x0e-\x1f\x7f]/', '', $str );
 		$str = @preg_replace( $regexp, $replace, $str );
 
 		// limit the length of the string
-		mbstring_binary_safe_encoding(); // @since 3.7.0
-		$original = strlen( $str );
-		$str = substr( $str, 0, $len );
-		$length = strlen( $str );
-		reset_mbstring_encoding(); // @since 3.7.0
+		if ( function_exists( 'mb_strcut' ) ) {
+			mbstring_binary_safe_encoding(); // @since 3.7.0
+			if ( strlen( $str ) > $len )
+				$str = mb_strcut( $str, 0, $len ) . '…';
+			reset_mbstring_encoding(); // @since 3.7.0
+		}
 
-		if ( $length !== $original ) {
-			// bit pattern from seems_utf8() in wp-includes/formatting.php
-			static $code = array(
-				array( 0x80, 0x00 ), // 1byte  0bbbbbbb
-				array( 0xE0, 0xC0 ), // 2bytes 110bbbbb
-				array( 0xF0, 0xE0 ), // 3bytes 1110bbbb
-				array( 0xF8, 0xF0 ), // 4bytes 11110bbb
-				array( 0xFC, 0xF8 ), // 5bytes 111110bb
-				array( 0xFE, 0xFC ), // 6bytes 1111110b
-			);
+		else { // https://core.trac.wordpress.org/ticket/25259
+			mbstring_binary_safe_encoding(); // @since 3.7.0
+			$original = strlen( $str );
+			$str = substr( $str, 0, $len );
+			$length = strlen( $str );
+			reset_mbstring_encoding(); // @since 3.7.0
 
-			// truncate extra characters
-			$len = min( $length, 6 );
-			for ( $i = 0; $i < $len; $i++ ) {
-				$c = ord( $str[$length-1 - $i] );
-				for ( $j = $i; $j < 6; $j++ ) {
-					if ( ( $c & $code[$j][0] ) == $code[$j][1] ) {
-						$str = substr( $str, 0, $length - (int)($j > 0) - $i );
-						// validate whole characters
-						$str = self::validate_utf8( $str );
-						return '…' !== $str ? "${str}…" : '…';
+			if ( $length !== $original ) {
+				// bit pattern from seems_utf8() in wp-includes/formatting.php
+				static $code = array(
+					array( 0x80, 0x00 ), // 1byte  0bbbbbbb
+					array( 0xE0, 0xC0 ), // 2bytes 110bbbbb
+					array( 0xF0, 0xE0 ), // 3bytes 1110bbbb
+					array( 0xF8, 0xF0 ), // 4bytes 11110bbb
+					array( 0xFC, 0xF8 ), // 5bytes 111110bb
+					array( 0xFE, 0xFC ), // 6bytes 1111110b
+				);
+
+				// truncate extra characters
+				$len = min( $length, 6 );
+				for ( $i = 0; $i < $len; $i++ ) {
+					$c = ord( $str[$length-1 - $i] );
+					for ( $j = $i; $j < 6; $j++ ) {
+						if ( ( $c & $code[$j][0] ) == $code[$j][1] ) {
+							mbstring_binary_safe_encoding(); // @since 3.7.0
+							$str = substr( $str, 0, $length - (int)($j > 0) - $i );
+							reset_mbstring_encoding(); // @since 3.7.0
+
+							// validate whole characters
+							$str = self::validate_utf8( $str );
+							return '…' !== $str ? "${str}…" : '…';
+						}
 					}
 				}
-			}
 
-			// $str may not fit utf8
-			return '…';
+				// $str may not fit utf8
+				return '…';
+			}
 		}
 
 		// validate whole characters
@@ -156,11 +171,10 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function record_log( $hook, $validate, $settings ) {
 		// user agent string (should be sanitized before rendering)
-		$agent = self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'], '/[\f\n\r\t\v]/' );
+		$agent = self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'], '/[\t\n\f\r]/' );
 
 		// XML-RPC
-		// @link https://core.trac.wordpress.org/browser/trunk/src/xmlrpc.php
-		if ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) {
+		if ( 'xmlrpc' === $hook ) {
 			global $HTTP_RAW_POST_DATA;
 			$posts = self::truncate_utf8( $HTTP_RAW_POST_DATA, '/\s+</', '<' );
 
@@ -172,15 +186,15 @@ class IP_Geo_Block_Logs {
 				$posts = str_replace( $matches[1][1], $val, $posts );
 			}
 			/*if ( FALSE !== ( $xml = @simplexml_load_string( $HTTP_RAW_POST_DATA ) ) ) {
-				$posts = self::truncate_utf8( json_encode( $xml ), '/["\\\\]/' );
-
 				// mask the password
 				if ( 'passed' === $validate['result'] &&
-				     strpos( $posts, 'methodName:pingback.ping' ) !== 1 &&
-				     preg_match_all( '/{string:(\S*?)}/', $posts, $matches ) >= 2 ) {
-					$val = str_repeat( '*', strlen( $matches[1][1] ) );
-					$posts = str_replace( $matches[1][1], $val, $posts );
+				     'wp.' === substr( $xml->methodName, 0, 3 ) ) {
+					$xml->params->param[1]->value->string =
+						str_repeat(
+							'*', strlen( $xml->params->param[1]->value->string )
+						);
 				}
+				$posts = self::truncate_utf8( json_encode( $xml ), '/["\\\\]/' );
 			} else {
 				$posts = 'xml parse error: malformed xml';
 			}*/
@@ -237,8 +251,8 @@ class IP_Geo_Block_Logs {
 				ftruncate( $fp, 0 );
 				rewind( $fp );
 				fwrite( $fp, "<?php/*\n" . implode( "\n", $lines ) . "\n*/?>" );
-				fflush( $fp ); // @
-				@flock( $fp, LOCK_UN | LOCK_NB ); // @
+				fflush( $fp );
+				@flock( $fp, LOCK_UN | LOCK_NB ); // @PHP 5.3.2
 			}
 
 			@fclose( $fp );
