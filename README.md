@@ -217,9 +217,10 @@ this plugin on the plugin dashboard.
       enabled on `Settings` tab. An IP address from countries in whitelist can 
       try to login only 5 times. `Clear statistics` can reset this retry
       counter to zero.
-- 1.3.1
-    - Added `$_SERVER keys for extra IPs` to validate additional IP addresses.
-      Removed some redundant codes.
+- 1.4.0
+    - **New feature:** Added a new class to record the logs of validation.
+    - Added `$_SERVER keys for extra IPs` into options to validate additional 
+      IP addresses. Removed some redundant codes.
 - 1.3.0
     - **New feature:** Added validation of pingback.ping through `xmlrpc.php` 
       and new option to validate all the IP addresses in HTTP_X_FORWARDED_FOR.

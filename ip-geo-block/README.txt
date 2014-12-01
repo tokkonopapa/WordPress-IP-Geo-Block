@@ -207,9 +207,10 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 == Changelog ==
 
-= 1.3.1 =
-* Added `$_SERVER keys for extra IPs` to validate additional IP addresses.
-  Removed some redundant codes.
+= 1.4.0 =
+* **New feature:** Added a new class to record the logs of validation.
+* Added `$_SERVER keys for extra IPs` into options to validate additional 
+  IP addresses. Removed some redundant codes.
 
 = 1.3.0 =
 * **New feature:** Added validation of pingback.ping through `xmlrpc.php` and
