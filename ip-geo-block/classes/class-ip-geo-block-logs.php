@@ -274,19 +274,24 @@ class IP_Geo_Block_Logs {
 	 * return array log data
 	 */
 	public static function restore_log( $hook = NULL ) {
-		$list = $hook ? array( $hook ) : array( 'comment', 'login', 'admin', 'xmlrpc' );
-		$result = array();
-
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_NAME;
 
-		foreach ( $list as $hook ) {
-			$sql = $wpdb->prepare( "SELECT
-				`time`, `ip`, `code`, `result`, `method`, `user_agent`, `data`
-				FROM `$table` WHERE `hook` = '%s' ORDER BY `time` DESC",
-				$hook
-			);
-			$result[ $hook ] = $wpdb->get_results( $sql, ARRAY_N, 0 );
+		$sql = ( "SELECT
+			`hook`, `time`, `ip`, `code`, `result`, `method`, `user_agent`, `data`
+			FROM `$table`"
+		);
+
+		if ( ! $hook )
+			$sql .= " ORDER BY `hook`, `time` DESC";
+		else
+			$sql .= $wpdb->prepare( " WHERE `hook` = '%s' ORDER BY `time` DESC", $hook );
+
+		$list = $wpdb->get_results( $sql, ARRAY_N, 0 );
+
+		foreach ( $list as $row ) {
+			$hook = array_shift( $row );
+			$result[ $hook ][] = $row;
 		}
 
 		return $result;
