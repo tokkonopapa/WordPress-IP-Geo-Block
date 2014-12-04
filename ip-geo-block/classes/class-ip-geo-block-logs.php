@@ -8,47 +8,59 @@
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
  * @copyright 2013, 2014 tokkonopapa
  */
-define( 'IP_GEO_BLOCK_MAX_LOG_LEN', 100 );
 define( 'IP_GEO_BLOCK_MAX_POST_LEN', 256 );
 
 class IP_Geo_Block_Logs {
+
+	const TABLE_NAME = 'ip_geo_block';
 
 	/**
 	 * Create, Delete, Clean logs
 	 *
 	 */
 	public static function create_log() {
-/*		global $wpdb;
-		$table = $wpdb->prefix . 'ip_geo_block';
-		if ( ! $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) != $table ) {
-        $sql = "CREATE TABLE " . $table . " (
- `time` bigint(20) unsigned NOT NULL DEFAULT 0,
- `hook` varchar(12) DEFAULT NULL,
- `ip` varchar(100) DEFAULT NULL,
- `auth` mediumint(9) DEFAULT 0,
- `code` varchar(16) DEFAULT NULL,
- `result` varchar(16) DEFAULT NULL,
- `user_agent` varchar(255) DEFAULT NULL,
- `request` varchar(511) DEFAULT NULL,
- `posts` text DEFAULT NULL
-)";
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_NAME;
+
+		if ( $wpdb->get_var( "show tables like '$table'" ) != $table ) {
+			$sql = "CREATE TABLE `$table` (
+ `No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+ `time` int(10) unsigned NOT NULL DEFAULT 0,
+ `ip` varchar(40) NOT NULL,
+ `hook` varchar(8) NOT NULL,
+ `auth` int(10) unsigned NOT NULL DEFAULT 0,
+ `code` varchar(2) NOT NULL DEFAULT 'ZZ',
+ `result` varchar(8) NULL,
+ `method` varchar(255) NOT NULL,
+ `user_agent` varchar(255) NULL,
+ `data` text NULL,
+ PRIMARY KEY (`No`),
+ KEY `time` (`time`),
+ KEY `hook` (`hook`)
+) CHARACTER SET 'utf8'";
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 			dbDelta( $sql );
 		}
-*/	}
+	}
 
 	public static function delete_log() {
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_NAME;
+		$wpdb->query( "DROP TABLE `$table`" );
 	}
 
 	public static function clean_log( $hook = NULL ) {
-		$list = $hook ? array( $hook ) : array( 'comment', 'login', 'admin', 'xmlrpc' );
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_NAME;
 
-		$dir = trailingslashit(
-			apply_filters( IP_Geo_Block::PLUGIN_SLUG . '-maxmind-dir', IP_GEO_BLOCK_DB_DIR )
-		);
-
-		foreach ( $list as $hook ) {
-			@unlink( "${dir}log-${hook}.php" );
+		if ( ! $hook ) {
+			$wpdb->query( "TRUNCATE TABLE `$table`" );
+		} else {
+			$sql = $wpdb->prepare(
+				"DELETE FROM `$table` WHERE `hook` = '%s'",
+				$hook
+			);
+			$wpdb->query( $sql );
 		}
 	}
 
@@ -213,50 +225,46 @@ class IP_Geo_Block_Logs {
 				}
 			}
 
-			// Join array elements (@todo: consider to use `mb_substr()`)
+			// Join array elements
 			$posts = array();
 			foreach ( $keys as $key => $val )
 				$posts[] = $val ? "$key:$val" : "$key";
 			$posts = self::truncate_utf8( implode( ',', $posts ), '/\s+/', ' ' );
 		}
 
-		$log = sprintf(
-			'%s,%s,%d,%s,%s,%s,%s,%s',
+		// limit the maximum number of rows
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_NAME;
+		$rows = $settings['validation']['max_logs'];
+
+		$sql = $wpdb->prepare(
+			"SELECT count(*) FROM `$table` WHERE `hook` = '%s'",
+			$hook
+		);
+		if ( ( $count = (int)$wpdb->get_var( $sql ) ) >= $rows ) {
+			$sql = $wpdb->prepare(
+				"DELETE FROM `$table` WHERE `hook` = '%s' LIMIT %d",
+				$hook, $count - $rows + 1
+			);
+			$wpdb->query( $sql );
+		}
+
+		// insert into DB
+		$sql = $wpdb->prepare(
+			"INSERT INTO `$table`
+			(`time`, `ip`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `data`)
+			values (%d, %s, %s, %d, %s, %s, %s, %s, %s)",
 			$_SERVER['REQUEST_TIME'],
 			$validate['ip'],
+			$hook,
 			$validate['auth'],
 			$validate['code'],
 			$validate['result'],
-			str_replace( ',', '‚', $agent ), // &#044; --> &#130;
+			$agent,
 			$_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . basename( $_SERVER['REQUEST_URI'] ),
-			str_replace( ',', '‚', $posts )  // &#044; --> &#130;
+			$posts
 		);
-
-		$dir = trailingslashit(
-			apply_filters( IP_Geo_Block::PLUGIN_SLUG . '-maxmind-dir', IP_GEO_BLOCK_DB_DIR )
-		);
-
-		if ( $fp = @fopen( "${dir}log-${hook}.php", "c+" ) ) {
-			if ( @flock( $fp, LOCK_EX | LOCK_NB ) ) {
-				$fstat = fstat( $fp );
-				$lines = $fstat['size'] ?
-					explode( "\n", fread( $fp, $fstat['size'] ) ) : array();
-
-				array_shift( $lines );
-				array_pop( $lines );
-				array_unshift( $lines, $log );
-				$lines = array_slice( $lines, 0, IP_GEO_BLOCK_MAX_LOG_LEN );
-
-				set_file_buffer( $fp, 0 ); // @
-				ftruncate( $fp, 0 );
-				rewind( $fp );
-				fwrite( $fp, "<?php/*\n" . implode( "\n", $lines ) . "\n*/?>" );
-				fflush( $fp );
-				@flock( $fp, LOCK_UN | LOCK_NB ); // @PHP 5.3.2
-			}
-
-			@fclose( $fp );
-		}
+		$wpdb->query( $sql );
 	}
 
 	/**
@@ -269,27 +277,16 @@ class IP_Geo_Block_Logs {
 		$list = $hook ? array( $hook ) : array( 'comment', 'login', 'admin', 'xmlrpc' );
 		$result = array();
 
-		$dir = trailingslashit(
-			apply_filters( IP_Geo_Block::PLUGIN_SLUG . '-maxmind-dir', IP_GEO_BLOCK_DB_DIR )
-		);
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_NAME;
 
 		foreach ( $list as $hook ) {
-			if ( $fp = @fopen( "${dir}log-${hook}.php", 'r' ) ) {
-				$fstat = fstat( $fp );
-				$data = $fstat['size'] ? fread( $fp, $fstat['size'] ) : NULL;
-				@fclose( $fp );
-
-				// execute htmlspecialchars()
-				$data = esc_textarea( $data ); // @since 3.1.0
-
-				// consider to check the $data being empty or not
-				$lines = explode( "\n", $data );
-				if ( ! empty( $lines ) ) {
-					array_shift( $lines );
-					array_pop  ( $lines );
-					$result[ $hook ] = $lines;
-				}
-			}
+			$sql = $wpdb->prepare( "SELECT
+				`time`, `ip`, `code`, `result`, `method`, `user_agent`, `data`
+				FROM `$table` WHERE `hook` = '%s' ORDER BY `time` DESC",
+				$hook
+			);
+			$result[ $hook ] = $wpdb->get_results( $sql, ARRAY_N, 0 );
 		}
 
 		return $result;
