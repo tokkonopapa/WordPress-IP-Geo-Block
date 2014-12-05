@@ -569,14 +569,38 @@ class IP_Geo_Block_Admin {
 
 				// delete cache of IP address
 				delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
-				$res = array( 'refresh' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=1" );
+				$res = array(
+					'refresh' =>
+					"options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=1"
+				);
 				break;
 
 			  case 'logs':
 				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 				IP_Geo_Block_Logs::clean_log();
-				$res = array( 'refresh' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=4" );
+				$res = array(
+					'refresh' =>
+					"options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=4"
+				);
 				break;
+			}
+		}
+
+		// Load logs
+		else if ( isset( $_POST['load'] ) && 'logs' === $_POST['load'] ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			$list = IP_Geo_Block_Logs::restore_log();
+
+			// compose html
+			foreach ( $list as $hook => $rows ) {
+				foreach ( $rows as $logs ) {
+					$log = (int)array_shift( $logs );
+					$html = "<tr>\n<td data-value='" . $log . "'>";
+					$html .= ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ) . "</td>\n";
+					foreach ( $logs as $log )
+						$html .= "<td>" . esc_html( $log ) . "</td>\n";
+					$res[ $hook ] .= $html . "</tr>\n";
+				}
 			}
 		}
 

@@ -139,10 +139,38 @@
 		});
 	}
 
+	// Load logs
+	function ajax_load_logs() {
+		$('#ip-geo-block-loading').addClass('ip-geo-block-loading');
+
+		$.post(IP_GEO_BLOCK.url, {
+			action: IP_GEO_BLOCK.action,
+			nonce: IP_GEO_BLOCK.nonce,
+			load: 'logs'
+		})
+
+		.done(function (data, textStatus, jqXHR) {
+			for (var key in data) {
+				$('#ip-geo-block-log-' + key).html(data[key]);
+			}
+		})
+
+		.fail(function (jqXHR, textStatus, errorThrown) {
+			alert(jqXHR.responseText);
+		})
+
+		.complete(function () {
+			if (typeof $.fn.footable === 'function') {
+				$('.ip-geo-block-log').fadeIn('slow').footable();
+			}
+			$('#ip-geo-block-loading').removeClass('ip-geo-block-loading');
+		});
+	}
+
 	$(function () {
 		// Kick-off footable
-		if (typeof $.fn.footable === 'function') {
-			$('.ip-geo-block-log').footable();
+		if ($('.ip-geo-block-log').hide().length) {
+			ajax_load_logs();
 		}
 
 		// Inhibit to submit by return key

@@ -31,8 +31,9 @@ class IP_Geo_Block_Logs {
  `auth` int(10) unsigned NOT NULL DEFAULT 0,
  `code` varchar(2) NOT NULL DEFAULT 'ZZ',
  `result` varchar(8) NULL,
- `method` varchar(255) NOT NULL,
+ `method` varchar(100) NOT NULL,
  `user_agent` varchar(255) NULL,
+ `headers` varchar(100) NULL,
  `data` text NULL,
  PRIMARY KEY (`No`),
  KEY `time` (`time`),
@@ -46,7 +47,7 @@ class IP_Geo_Block_Logs {
 	public static function delete_log() {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_NAME;
-		$wpdb->query( "DROP TABLE `$table`" );
+		$wpdb->query( "DROP TABLE IF EXISTS `$table`" );
 	}
 
 	public static function clean_log( $hook = NULL ) {
@@ -57,8 +58,7 @@ class IP_Geo_Block_Logs {
 			$wpdb->query( "TRUNCATE TABLE `$table`" );
 		} else {
 			$sql = $wpdb->prepare(
-				"DELETE FROM `$table` WHERE `hook` = '%s'",
-				$hook
+				"DELETE FROM `$table` WHERE `hook` = '%s'", $hook
 			);
 			$wpdb->query( $sql );
 		}
@@ -168,23 +168,39 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Record the validation log
+	 * Get data
 	 *
-	 * This function record the user agent string and post data.
-	 * The security policy for these data is as follows.
-	 *
-	 *   1. Record only utf8 under the condition that the site charset is utf8
-	 *   2. Record by limiting the length of the string
-	 *   3. Mask the password regardless of a state of the authentication
-	 *
-	 * @param string $hook type of log name
-	 * @param array $validate validation results
-	 * @param array $settings option settings
+	 * These data should be sanitized before rendering
 	 */
-	public static function record_log( $hook, $validate, $settings ) {
-		// user agent string (should be sanitized before rendering)
-		$agent = self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'], '/[\t\n\f\r]/' );
+	private static function get_user_agent() {
+		return self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'], '/[\t\n\f\r]/' );
+	}
 
+	private static function get_http_headers() {
+		static $exception = array(
+			'HTTP_ACCEPT',
+			'HTTP_ACCEPT_CHARSET',
+			'HTTP_ACCEPT_ENCODING',
+			'HTTP_ACCEPT_LANGUAGE',
+			'HTTP_CONNECTION',
+			'HTTP_HOST',
+			'HTTP_REFERER',
+			'HTTP_USER_AGENT',
+		);
+
+		$headers = array();
+
+		foreach ( array_keys( $_SERVER ) as $key ) {
+			if ( 'HTTP_' === substr( $key, 0, 5 ) && 
+			     ! in_array( $key, $exception ) ) {
+				$headers[] = "$key:" . $_SERVER[ $key ];
+			}
+		}
+
+		return self::truncate_utf8( implode( ',', $headers ), '/\s/' );
+	}
+
+	private static function get_post_data( $hook, $validate, $settings ) {
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {
 			global $HTTP_RAW_POST_DATA;
@@ -212,7 +228,7 @@ class IP_Geo_Block_Logs {
 			}*/
 		}
 
-		// post data (should be sanitized before rendering)
+		// post data
 		else {
 			$keys = array_fill_keys( array_keys( $_POST ), NULL );
 			foreach ( explode( ',', $settings['validation']['postkey'] ) as $key ) {
@@ -231,6 +247,29 @@ class IP_Geo_Block_Logs {
 				$posts[] = $val ? "$key:$val" : "$key";
 			$posts = self::truncate_utf8( implode( ',', $posts ), '/\s+/', ' ' );
 		}
+
+		return $posts;
+	}
+
+	/**
+	 * Record the validation log
+	 *
+	 * This function record the user agent string and post data.
+	 * The security policy for these data is as follows.
+	 *
+	 *   1. Record only utf8 under the condition that the site charset is utf8
+	 *   2. Record by limiting the length of the string
+	 *   3. Mask the password regardless of a state of the authentication
+	 *
+	 * @param string $hook type of log name
+	 * @param array $validate validation results
+	 * @param array $settings option settings
+	 */
+	public static function record_log( $hook, $validate, $settings ) {
+		// get data
+		$agent = self::get_user_agent();
+		$heads = self::get_http_headers();
+		$posts = self::get_post_data( $hook, $validate, $settings );
 
 		// limit the maximum number of rows
 		global $wpdb;
@@ -252,16 +291,17 @@ class IP_Geo_Block_Logs {
 		// insert into DB
 		$sql = $wpdb->prepare(
 			"INSERT INTO `$table`
-			(`time`, `ip`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `data`)
-			values (%d, %s, %s, %d, %s, %s, %s, %s, %s)",
+			(`time`, `ip`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, `data`)
+			values (%d, %s, %s, %d, %s, %s, %s, %s, %s, %s)",
 			$_SERVER['REQUEST_TIME'],
 			$validate['ip'],
 			$hook,
 			$validate['auth'],
 			$validate['code'],
 			$validate['result'],
-			$agent,
 			$_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . basename( $_SERVER['REQUEST_URI'] ),
+			$agent,
+			$heads,
 			$posts
 		);
 		$wpdb->query( $sql );
@@ -278,7 +318,7 @@ class IP_Geo_Block_Logs {
 		$table = $wpdb->prefix . self::TABLE_NAME;
 
 		$sql = ( "SELECT
-			`hook`, `time`, `ip`, `code`, `result`, `method`, `user_agent`, `data`
+			`hook`, `time`, `ip`, `code`, `result`, `method`, `user_agent`, `headers`, `data`
 			FROM `$table`"
 		);
 
@@ -294,7 +334,7 @@ class IP_Geo_Block_Logs {
 			$result[ $hook ][] = $row;
 		}
 
-		return $result;
+		return isset( $result ) ? $result : array();
 	}
 
 }

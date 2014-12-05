@@ -43,37 +43,21 @@ function ip_geo_block_list_accesslog() {
 	// same as in tab-settings.php
 	$title = array(
 		'comment' => __( '<dfn title="Validate post to wp-comments-post.php">Comment post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'login'   => __( '<dfn title="Validate access to wp-login.php">Login form</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'admin'   => __( '<dfn title="Validate access to wp-admin/admin.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'xmlrpc'  => __( '<dfn title="Validate pingback.ping to xmlrpc.php">XML-RPC</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
-	// $list has been already sanitized by htmlspecialchars()
-	$list = IP_Geo_Block_Logs::restore_log();
-
-	foreach ( $list as $key => $val ) {
+	foreach ( array_keys( $title ) as $key ) {
 		echo "<h4>", $title[ $key ], "</h4>\n";
-		if ( empty( $val ) ) continue;
 		echo "<table class='fixed ", IP_Geo_Block::PLUGIN_SLUG, "-log' data-page-size='10' data-limit-navigation='2'><thead><tr>\n";
 		echo "<th data-type='numeric'>", __( 'Time of date', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'IP address',   IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'Country code', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'Result',       IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "<th data-hide='phone,tablet'>", __( 'User agent',  IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "<th data-hide='all'>", __( 'Request', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th data-hide='phone,tablet'>", __( 'Request', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th data-hide='all'>", __( 'User agent', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th data-hide='all'>", __( 'HTTP headers', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='all'>", __( '$_POST data', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "</tr></thead><tbody>\n";
-
-		foreach ( $val as $logs ) {
-			// time of date
-			$log = (int)array_shift( $logs );
-			echo "<tr>\n<td data-value='", $log, "'>", ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ), "</td>\n";
-
-			foreach ( $logs as $log )
-				echo "<td>" . esc_html( $log ) . "</td>\n";
-			echo "</tr>\n";
-		}
-
+		echo "</tr></thead><tbody id='", IP_Geo_Block::PLUGIN_SLUG, "-log-", $key, "'>\n";
 		echo <<<EOT
 </tbody>
 <tfoot class="hide-if-no-paging">
