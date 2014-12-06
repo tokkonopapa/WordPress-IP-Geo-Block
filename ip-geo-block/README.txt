@@ -19,12 +19,20 @@ Akismet validate it.
 
 = Features =
 
-1. Free IP Geolocation database and REST APIs are installed in this plugin 
-to get a country code from an IP address. There are two types of API which 
-support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
-select an appropriate API.
+1. Access to the `wp-comments-post.php` and `xmlrpc.php` will be validated by 
+means of IP address. Free IP Geolocation database and REST APIs are installed 
+in this plugin to get a country code from an IP address. There are two types 
+of API which support only IPv4 or both IPv4 and IPv6. This plugin will 
+automatically select an appropriate API.
 
-2. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+2. Cache mechanism with transient API for the fetched IP addresses has been 
+equipped to reduce load on the server against the burst accesses with a short 
+period of time.
+
+3. Custom validation function can be added by `add_filter()` with predefined 
+filter hook.
+
+4. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
 (once a month) automatically.<br><br>And if you have correctly installed 
 one of the IP2Location plugins (
@@ -34,12 +42,6 @@ one of the IP2Location plugins (
 ), this plugin uses its local database prior to the REST APIs.
 After installing these IP2Location plugins, you should be once deactivated 
 and then activated in order to set the path to `database.bin`.
-
-3. Cache mechanism with transient API for the fetched IP addresses has been 
-equipped to reduce load on the server against burst access within a short time.
-
-4. Custom validation function can be added by `add_filter()` with predefined 
-filter hook.
 
 = Development =
 
@@ -202,8 +204,9 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 1. **IP Geo Plugin** - Settings.
 2. **IP Geo Plugin** - Statistics.
-3. **IP Geo Plugin** - Search.
-4. **IP Geo Plugin** - Attribution.
+3. **IP Geo Plugin** - Logs.
+4. **IP Geo Plugin** - Search.
+5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
 
