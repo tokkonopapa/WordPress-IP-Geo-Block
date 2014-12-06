@@ -45,7 +45,7 @@ class IP_Geo_Block_Options {
 			    'ajax'        => FALSE,   // Validate on admin ajax
 			    'xmlrpc'      => TRUE,    // Validate on xmlrpc
 			    'proxy'       => NULL,    // $_SERVER variables for IPs
-			    'reclogs'     => 0,       // 0:no, 1:authenticated, 2:all
+			    'reclogs'     => 0,       // 0:no, 1:blocked, 2:passed, 3:auth, 4:all
 			    'postkey'     => '',      // Keys in $_POST
 			    // since version 1.4
 			    'max_logs'    => 100,     // Max number of rows of log

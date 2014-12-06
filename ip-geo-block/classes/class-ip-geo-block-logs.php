@@ -79,8 +79,8 @@ class IP_Geo_Block_Logs {
 		static $is_utf8;
 		if ( ! isset( $is_utf8 ) )
 			$is_utf8 = in_array(
-				strtolower( get_option( 'blog_charset' ) ),
-				array( 'utf8', 'utf-8' )
+				get_option( 'blog_charset' ),
+				array( 'utf8', 'utf-8', 'UTF8', 'UTF-8' )
 			);
 
 		// handle utf8 only
@@ -197,7 +197,7 @@ class IP_Geo_Block_Logs {
 			}
 		}
 
-		return self::truncate_utf8( implode( ',', $headers ), '/\s/' );
+		return self::truncate_utf8( implode( ',', $headers ), '/[\t\n\f\r]/' );
 	}
 
 	private static function get_post_data( $hook, $validate, $settings ) {

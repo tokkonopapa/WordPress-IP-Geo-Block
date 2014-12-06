@@ -112,7 +112,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'save_statistics';
 	add_settings_field(
 		$option_name . "_$field",
-		__( 'Save statistics of validation', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Record validation statistics', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -139,8 +139,10 @@ function ip_geo_block_tab_settings( $context ) {
 			'value' => $options[ $field ]['reclogs'],
 			'list' => array(
 				__( 'Disable', IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Only when blocked', IP_Geo_Block::TEXT_DOMAIN ) => 1,
-				__( 'All of validation', IP_Geo_Block::TEXT_DOMAIN ) => 2,
+				__( 'Only when blocked',  IP_Geo_Block::TEXT_DOMAIN ) => 1,
+				__( 'Only when passed',   IP_Geo_Block::TEXT_DOMAIN ) => 2,
+				__( 'Authenticated user', IP_Geo_Block::TEXT_DOMAIN ) => 3,
+				__( 'All of validation',  IP_Geo_Block::TEXT_DOMAIN ) => 4,
 			),
 		)
 	);

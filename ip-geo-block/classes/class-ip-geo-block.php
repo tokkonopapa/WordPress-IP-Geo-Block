@@ -358,9 +358,11 @@ class IP_Geo_Block {
 		// update cache
 		IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
-		// record log
-		if ( ( $settings['validation']['reclogs'] === 2 ) ||
-		     ( $settings['validation']['reclogs'] && $blocked ) ) {
+		// record log (0:no, 1:blocked, 2:passed, 3:auth, 4:all)
+		$var = (int)$settings['validation']['reclogs'];
+		if ( ( 1 === $var &&   $blocked ) ||
+		     ( 2 === $var && ! $blocked ) ||
+		     ( 3 === $var && $validate['auth'] ) || ( 4 === $var ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			IP_Geo_Block_Logs::record_log( $hook, $validate, $settings );
 		}

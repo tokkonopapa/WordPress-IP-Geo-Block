@@ -178,3 +178,7 @@ ul.ip-geo-block-statistics-countries li {
     margin-left: 1em;
     overflow: scroll;
 }
+
+td.footable-row-detail-cell * {
+    font-size: 13px !important;
+}
