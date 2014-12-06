@@ -10,35 +10,38 @@ comment or pingback comes from specific country, it will be blocked before
 Akismet validate it.
 
 With the same mechanism, it will fight against burst access of brute-force 
-and reverse-brute-force attack to `wp-login.php`, `wp-admin/` area and 
-aslo `xmlrpc.php`.
+and reverse-brute-force attacks to the login form, admin area and XML-RPC.
 
 ### Features:
 
-1. Free IP Geolocation database and REST APIs are installed in this plugin 
-to get a country code from an IP address. There are two types of API which 
-support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
-select an appropriate API.
+1. Access to the `wp-comments-post.php`, `wp-login.php`, `wp-admin/admin.php` 
+and `xmlrpc.php` will be validated by means of IP address. Free IP Geolocation 
+database and REST APIs are installed in this plugin to get a country code from 
+an IP address. There are two types of API which support only IPv4 or both IPv4 
+and IPv6. This plugin will automatically select an appropriate API.
 
-2. [MaxMind][MaxMind] GeoLite free database for IPv4 and IPv6 will be 
-downloaded and updated (once a month) automatically.<br><br>And if you have 
+2. In order to prevent the authentication through the login form and XML-RPC 
+against the brute-force and the reverse-brute-force attacks, malicious 
+IP addresses will be blocked not only by limiting geolocation but also 
+limiting the number of login attempts.
+
+3. Cache mechanism with transient API for the fetched IP addresses has been 
+equipped to reduce load on the server against the burst accesses with a short 
+period of time.
+
+4. Validation logs will be recorded into MySQL data table to analyze posting 
+pattern under the specified condition.
+
+5. Custom validation function can be added by `add_filter()` with predefined 
+filter hook.
+
+6. [MaxMind][MaxMind] GeoLite free database for IPv4 and IPv6 will be 
+downloaded and updated (once a month) automatically. And if you have 
 correctly installed one of the IP2Location plugins (
     [IP2Location Tags][IP2Tag],
     [IP2Location Variables][IP2Var],
     [IP2Location Country Blocker][IP2Blk]
 ), this plugin uses its local database prior to the REST APIs.
-After installing these IP2Location plugins, you should be once deactivated 
-and then activated in order to set the path to `database.bin`.
-
-3. For security, brute-force and reverse-brute-force attacks to login form 
-will be blocked by limiting geolocation and the number of login attempts by 
-IP address.
-
-4. Cache mechanism with transient API for the fetched IP addresses has been 
-equipped to reduce load on the server against burst access within a short time.
-
-5. Custom validation function can be added by `add_filter()` with predefined 
-filter hook.
 
 ### Installation:
 
@@ -53,9 +56,9 @@ filter hook.
     And `ip-api.com` and `Smart-IP.net` require non-commercial use.
 
 - **Validation settings**  
-    `XML-RPC` is for validation of pingback spam. If `HTTP_X_FORWARDED_FOR` is 
-    checked, all the IP addresses in `$_SERVER['HTTP_X_FORWARDED_FOR']` will be
-    validated.
+    `XML-RPC` is for validation of pingback spam. Additional IP addresses will 
+    be validated if some of keys for `$_SERVER` variable are specified in 
+    `$_SERVER keys for extra IPs`.
 
 - **Text position on comment form**  
     If you want to put some text message on your comment form, please select
@@ -188,8 +191,15 @@ For more details, see `samples.php` bundled within this package.
 
 ### Other Notes:
 
-Before updating from older version to newer, please deactivate then activate 
-this plugin on the plugin dashboard.
+After installing these IP2Location plugins, you should be once deactivated 
+and then activated in order to set the path to `database.bin`.
+
+If you do not want to keep the IP2Location plugins (
+    [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
+    [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
+    [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
+) in `wp-content/plugins/` directory but just want to use its database, 
+you can rename it to `ip2location` and upload it to `wp-content/`.
 
 #### Milestones
 
@@ -218,9 +228,11 @@ this plugin on the plugin dashboard.
       try to login only 5 times. `Clear statistics` can reset this retry
       counter to zero.
 - 1.4.0
-    - **New feature:** Added a new class to record the logs of validation.
+    - **New feature:** Added a new class for recording the validation logs to 
+      analyze posting pattern.
     - Added `$_SERVER keys for extra IPs` into options to validate additional 
-      IP addresses. Removed some redundant codes.
+      IP addresses.
+    - Removed some redundant codes.
 - 1.3.0
     - **New feature:** Added validation of pingback.ping through `xmlrpc.php` 
       and new option to validate all the IP addresses in HTTP_X_FORWARDED_FOR.

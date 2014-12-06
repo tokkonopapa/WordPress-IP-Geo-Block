@@ -271,6 +271,7 @@ class IP_Geo_Block_Admin {
 			// Access log
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-accesslog.php' );
 			ip_geo_block_tab_accesslog( $this );
+			break;
 		}
 	}
 
@@ -343,7 +344,7 @@ class IP_Geo_Block_Admin {
 			$args['value'] = $args['text'];
 
 		  case 'text': ?>
-<input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php disabled( $args['disabled'], TRUE );
+<input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php disabled( ! empty( $args['disabled'] ), TRUE );
 ?> />
 <?php
 			break; // disabled @since 3.0
@@ -386,7 +387,8 @@ class IP_Geo_Block_Admin {
 		$default = IP_Geo_Block::get_default( $option_name );
 
 		// extract key with 'only-' on its top
-		$only = array_shift( array_keys( array_diff_key( $input, $output ) ) );
+		$only = array_keys( array_diff_key( $input, $output ) );
+		$only = array_shift( $only );
 		$only = strpos( $only, 'only-' ) === 0 ? substr( $only, 5 ) : FALSE;
 
 		/**
@@ -589,18 +591,22 @@ class IP_Geo_Block_Admin {
 		// Load logs
 		else if ( isset( $_POST['load'] ) && 'logs' === $_POST['load'] ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+
+			// 'comment', 'login', 'admin', 'xmlrpc'
 			$list = IP_Geo_Block_Logs::restore_log();
 
 			// compose html
 			foreach ( $list as $hook => $rows ) {
+				$html = '';
 				foreach ( $rows as $logs ) {
 					$log = (int)array_shift( $logs );
-					$html = "<tr>\n<td data-value='" . $log . "'>";
+					$html .= "<tr>\n<td data-value='" . $log . "'>";
 					$html .= ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ) . "</td>\n";
 					foreach ( $logs as $log )
 						$html .= "<td>" . esc_html( $log ) . "</td>\n";
-					$res[ $hook ] .= $html . "</tr>\n";
+					$html .= "</tr>\n";
 				}
+				$res[ $hook ] = $html;
 			}
 		}
 

@@ -157,10 +157,12 @@ class IP_Geo_Block_Options {
 			}
 
 			if ( version_compare( $settings['version'], '1.4.0' ) < 0 ) {
+				unset( $settings['flags'] );
 				$settings['validation']['proxy'] =
 				$settings['validation']['proxy'] ? 'HTTP_X_FORWARDED_FOR' : NULL;
-				foreach ( array( 'max_logs', 'backup' ) as $tmp )
+				foreach ( array( 'max_logs', 'backup' ) as $tmp ) {
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
+				}
 			}
 
 			// update local goelocation database files

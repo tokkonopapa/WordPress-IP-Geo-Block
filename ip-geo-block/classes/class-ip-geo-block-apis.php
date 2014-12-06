@@ -595,14 +595,18 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			}
 		}
 
+		// ['auth'] = get_current_user_id() > 0
+		$auth = isset( $validate['auth'] ) ? (int)$validate['auth'] : 0;
+		$fail = isset( $validate['fail'] ) ? (int)$validate['fail'] : 0;
+
 		// update elements
 		$cache[ $ip = $validate['ip'] ] = array(
 			'time' => $time,
 			'hook' => $hook,
 			'code' => $validate['code'],
-			'auth' => $validate['auth'], // get_current_user_id() > 0
-			'fail' => $validate['auth'] ? 0 : (int)$validate['fail'] + (int)$cache[ $ip ]['fail'],
-			'call' => $cache[ $ip ]['call'] + (int)$settings['save_statistics'],
+			'auth' => $auth,
+			'fail' => $auth ? 0 : $fail + $cache[ $ip ]['fail'],
+			'call' => $cache[ $ip ]['call'] + ( $settings['save_statistics'] ? 1 : 0 ),
 		);
 
 		// sort by 'time'
@@ -626,7 +630,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
 	}
 
-	public function get_cache( $ip ) {
+	public static function get_cache( $ip ) {
 		$cache = get_transient( IP_Geo_Block::CACHE_KEY );
 		if ( $cache && isset( $cache[ $ip ] ) )
 			return $cache[ $ip ];

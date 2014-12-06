@@ -29,19 +29,20 @@ automatically select an appropriate API.
 equipped to reduce load on the server against the burst accesses with a short 
 period of time.
 
-3. Custom validation function can be added by `add_filter()` with predefined 
+3. Validation logs will be recorded into MySQL data table to analyze posting 
+pattern under the specified condition.
+
+4. Custom validation function can be added by `add_filter()` with predefined 
 filter hook.
 
-4. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+5. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
-(once a month) automatically.<br><br>And if you have correctly installed 
+(once a month) automatically. And if you have correctly installed 
 one of the IP2Location plugins (
     [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
     [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
 ), this plugin uses its local database prior to the REST APIs.
-After installing these IP2Location plugins, you should be once deactivated 
-and then activated in order to set the path to `database.bin`.
 
 = Development =
 
@@ -193,6 +194,9 @@ For more details, see `samples.php` bundled within this package.
 
 == Other Notes ==
 
+After installing these IP2Location plugins, you should be once deactivated 
+and then activated in order to set the path to `database.bin`.
+
 If you do not want to keep the IP2Location plugins (
     [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
     [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
@@ -211,9 +215,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 1.4.0 =
-* **New feature:** Added a new class to record the logs of validation.
+* **New feature:** Added a new class for recording the validation logs to 
+  analyze posting pattern.
 * Added `$_SERVER keys for extra IPs` into options to validate additional 
-  IP addresses. Removed some redundant codes.
+  IP addresses.
+* Removed some redundant codes.
 
 = 1.3.0 =
 * **New feature:** Added validation of pingback.ping through `xmlrpc.php` and
