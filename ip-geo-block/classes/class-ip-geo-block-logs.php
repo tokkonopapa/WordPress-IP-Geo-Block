@@ -274,7 +274,7 @@ class IP_Geo_Block_Logs {
 		// limit the maximum number of rows
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_NAME;
-		$rows = $settings['validation']['max_logs'];
+		$rows = $settings['validation']['maxlogs'];
 
 		$sql = $wpdb->prepare(
 			"SELECT count(*) FROM `$table` WHERE `hook` = '%s'",

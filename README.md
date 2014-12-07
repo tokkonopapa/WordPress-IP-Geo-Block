@@ -232,7 +232,9 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
       analyze posting pattern.
     - Added `$_SERVER keys for extra IPs` into options to validate additional 
       IP addresses.
-    - Removed some redundant codes and corrected some PHP errors and warnings.
+    - Updated FooTable to 2.0.3.
+    - Removed some redundant codes and corrected some PHP errors and warnings 
+      which had been suppressed by WordPress.
 - 1.3.0
     - **New feature:** Added validation of pingback.ping through `xmlrpc.php` 
       and new option to validate all the IP addresses in HTTP_X_FORWARDED_FOR.

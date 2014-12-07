@@ -48,7 +48,7 @@ class IP_Geo_Block_Options {
 			    'reclogs'     => 0,       // 0:no, 1:blocked, 2:passed, 3:auth, 4:all
 			    'postkey'     => '',      // Keys in $_POST
 			    // since version 1.4
-			    'max_logs'    => 100,     // Max number of rows of log
+			    'maxlogs'     => 100,     // Max number of rows of log
 			    'backup'      => FALSE,   // 0:no, 1:yes
 			),
 			'update'          => array(   // Updating IP address DB
@@ -157,12 +157,10 @@ class IP_Geo_Block_Options {
 			}
 
 			if ( version_compare( $settings['version'], '1.4.0' ) < 0 ) {
-				unset( $settings['flags'] );
 				$settings['validation']['proxy'] =
 				$settings['validation']['proxy'] ? 'HTTP_X_FORWARDED_FOR' : NULL;
-				foreach ( array( 'max_logs', 'backup' ) as $tmp ) {
+				foreach ( array( 'maxlogs', 'backup' ) as $tmp )
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
-				}
 			}
 
 			// update local goelocation database files

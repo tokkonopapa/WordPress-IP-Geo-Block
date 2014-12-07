@@ -399,6 +399,12 @@ class IP_Geo_Block_Admin {
 			if ( $only && $only !== $key ) 
 				continue;
 
+			// delete old key
+			if ( ! array_key_exists( $key, $default ) ) {
+				unset( $output[ $key ] );
+				continue;
+			}
+
 			switch( $key ) {
 			  case 'providers':
 				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
@@ -464,8 +470,14 @@ class IP_Geo_Block_Admin {
 
 				// sub field
 				else foreach ( array_keys( $value ) as $sub ) {
+					// delete old key
+					if ( ! array_key_exists( $sub, $default[ $key ] ) ) {
+						unset( $output[ $key ][ $sub ] );
+						continue;
+					}
+
 					// for checkbox
-					if ( is_bool( $default[ $key ][ $sub ] ) ) {
+					else if ( is_bool( $default[ $key ][ $sub ] ) ) {
 						$output[ $key ][ $sub ] = ! empty( $input[ $key ][ $sub ] );
 					}
 

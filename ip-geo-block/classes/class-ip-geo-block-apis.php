@@ -562,6 +562,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 			break;
 		  default:
 			$res = array( 'errorMessage' => 'unknown database type' );
+			break;
 		}
 
 		geoip_close( $geo );
@@ -595,18 +596,23 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			}
 		}
 
-		// ['auth'] = get_current_user_id() > 0
-		$auth = isset( $validate['auth'] ) ? (int)$validate['auth'] : 0;
-		$fail = isset( $validate['fail'] ) ? (int)$validate['fail'] : 0;
+		// it is called by auth_fail() when $validate['fail'] is on.
+		if ( isset( $cache[ $ip = $validate['ip'] ] ) ) {
+			$fail = $cache[ $ip ]['fail'] + (int)isset( $validate['fail'] );
+			$call = $cache[ $ip ]['call'] + (int)empty( $validate['fail'] );
+		} else {
+			$call = 1;
+			$fail = 0;
+		}
 
 		// update elements
-		$cache[ $ip = $validate['ip'] ] = array(
+		$cache[ $ip ] = array(
 			'time' => $time,
 			'hook' => $hook,
 			'code' => $validate['code'],
-			'auth' => $auth,
-			'fail' => $auth ? 0 : $fail + $cache[ $ip ]['fail'],
-			'call' => $cache[ $ip ]['call'] + ( $settings['save_statistics'] ? 1 : 0 ),
+			'auth' => $validate['auth'], // get_current_user_id() > 0
+			'fail' => $validate['auth'] ? 0 : $fail,
+			'call' => $settings['save_statistics'] ? $call : 0,
 		);
 
 		// sort by 'time'

@@ -221,13 +221,14 @@ class IP_Geo_Block {
 				if ( $code = $geo->$callback( $ip, $args ) ) {
 					$ret = array(
 						'ip' => $ip,
-						'time' => microtime( TRUE ) - $time,
 						'auth' => get_current_user_id(),
+						'time' => microtime( TRUE ) - $time,
 						'provider' => $provider,
 					);
-					return is_array( $code ) ?
-						$ret + $code : 
-						$ret + array( 'code' => strtoupper( $code ) );
+
+					return is_string( $code ) ?
+						$ret + array( 'code' => strtoupper( $code ) ) :
+						$ret + array( 'code' => strtoupper( $code['countryCode'] ) );
 				}
 			}
 		}
@@ -267,12 +268,12 @@ class IP_Geo_Block {
 		$statistics = self::get_option( 'statistics' );
 
 		if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
-			++$statistics['IPv4'];
+			$statistics['IPv4']++;
 		else if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-			++$statistics['IPv6'];
+			$statistics['IPv6']++;
 
-		++$statistics[ $validate['result'] ];
-		++$statistics['countries'][ $validate['code'] ];
+		@$statistics[ $validate['result'] ]++;
+		@$statistics['countries'][ $validate['code'] ]++;
 
 		$provider = $validate['provider'] ? $validate['provider'] : 'ZZ';
 		if ( empty( $statistics['providers'][ $provider ] ) )
