@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.4.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-12-06 14:58+0900\n"
-"PO-Revision-Date: 2014-12-06 15:10+0900\n"
+"POT-Creation-Date: 2014-12-07 14:14+0900\n"
+"PO-Revision-Date: 2014-12-07 14:25+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -61,12 +61,12 @@ msgstr "検索"
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:282
+#: admin/class-ip-geo-block-admin.php:283
 msgid "Thanks for providing these great services for free."
 msgstr ""
 "すばらしいサービスの提供元である以下のサイトに、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:283
+#: admin/class-ip-geo-block-admin.php:284
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
@@ -74,11 +74,11 @@ msgstr ""
 "（ほとんどのブラウザでは、リンクをクリックしても参照元を残さずに各サイトにリ"
 "ダイレクトできます。）"
 
-#: admin/class-ip-geo-block-admin.php:353
+#: admin/class-ip-geo-block-admin.php:354
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:491
+#: admin/class-ip-geo-block-admin.php:505
 msgid "Successfully updated"
 msgstr "更新に成功しました"
 
@@ -118,7 +118,7 @@ msgstr "国コード"
 
 #: admin/includes/tab-accesslog.php:55
 msgid "Result"
-msgstr "結果"
+msgstr "判定"
 
 #: admin/includes/tab-accesslog.php:56
 msgid "Request"
@@ -182,11 +182,11 @@ msgstr "無効"
 
 #: admin/includes/tab-settings.php:142
 msgid "Only when blocked"
-msgstr "遮断時のみ記録"
+msgstr "遮断時に記録"
 
 #: admin/includes/tab-settings.php:143
 msgid "Only when passed"
-msgstr "通過時のみ記録"
+msgstr "通過時に記録"
 
 #: admin/includes/tab-settings.php:144
 msgid "Authenticated user"
@@ -364,7 +364,7 @@ msgstr "キャッシュ中のIPアドレス"
 msgid "Clear statistics"
 msgstr "統計のクリア"
 
-#: classes/class-ip-geo-block.php:378
+#: classes/class-ip-geo-block.php:379
 msgid "Sorry, but you cannot be accepted."
 msgstr "申し訳ありませんが、受け付けられません。"
 

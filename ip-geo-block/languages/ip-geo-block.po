@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 1.4.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-12-06 14:58+0900\n"
-"PO-Revision-Date: 2014-12-06 14:59+0900\n"
+"POT-Creation-Date: 2014-12-07 14:14+0900\n"
+"PO-Revision-Date: 2014-12-07 14:15+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -59,21 +59,21 @@ msgstr ""
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:282
+#: admin/class-ip-geo-block-admin.php:283
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:283
+#: admin/class-ip-geo-block-admin.php:284
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:353
+#: admin/class-ip-geo-block-admin.php:354
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:491
+#: admin/class-ip-geo-block-admin.php:505
 msgid "Successfully updated"
 msgstr ""
 
@@ -357,7 +357,7 @@ msgstr ""
 msgid "Clear statistics"
 msgstr ""
 
-#: classes/class-ip-geo-block.php:378
+#: classes/class-ip-geo-block.php:379
 msgid "Sorry, but you cannot be accepted."
 msgstr ""
 
