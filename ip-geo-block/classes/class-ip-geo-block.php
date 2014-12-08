@@ -306,6 +306,7 @@ class IP_Geo_Block {
 		  default: // 5xx Server Error
 			status_header( $code ); // @since 2.0.0
 			die();
+			break;
 		}
 	}
 

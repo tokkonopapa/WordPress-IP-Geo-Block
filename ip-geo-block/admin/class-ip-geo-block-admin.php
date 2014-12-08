@@ -271,7 +271,6 @@ class IP_Geo_Block_Admin {
 			// Access log
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-accesslog.php' );
 			ip_geo_block_tab_accesslog( $this );
-			break;
 		}
 	}
 
@@ -533,7 +532,7 @@ class IP_Geo_Block_Admin {
 		}
 
 		// download database
-		else if ( isset( $_POST['download'] ) ) {
+		else if ( isset( $_POST['download'] ) && 'maxmind' === $_POST['download'] ) {
 			$res = IP_Geo_Block::download_database( 'only-maxmind' ); // download now
 		}
 
@@ -571,54 +570,57 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
-		// Clear
-		else if ( isset( $_POST['clear'] ) ) {
-			switch ( $_POST['clear'] ) {
-			  case 'statistics':
-				// set default values
-				update_option(
-					$this->option_name['statistics'],
-					IP_Geo_Block::get_default( 'statistics' )
-				);
+		// Clear statistics
+		else if ( isset( $_POST['statistics'] ) && 'clear' === $_POST['statistics'] ) {
+			// set default values
+			update_option(
+				$this->option_name['statistics'],
+				IP_Geo_Block::get_default( 'statistics' )
+			);
 
-				// delete cache of IP address
-				delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
-				$res = array(
-					'refresh' =>
-					"options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=1"
-				);
-				break;
+			// delete cache of IP address
+			delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
+			$res = array(
+				'refresh' =>
+				"options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=1"
+			);
+		}
 
-			  case 'logs':
-				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-				IP_Geo_Block_Logs::clean_log();
+		// Validation logs
+		else if ( isset( $_POST['validation'] ) ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+
+			$hook = array( NULL, 'comment', 'login', 'admin', 'xmlrpc' );
+			$which = isset( $_POST['which'] ) ? (int)$_POST['which'] : 0;
+			$which = (0 <= $which && $which <= 4) ? $hook[ $which ] : NULL;
+
+			switch ( $_POST['validation'] ) {
+			  case 'clear':
+				IP_Geo_Block_Logs::clean_log( $which );
+
 				$res = array(
 					'refresh' =>
 					"options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=4"
 				);
 				break;
-			}
-		}
 
-		// Load logs
-		else if ( isset( $_POST['load'] ) && 'logs' === $_POST['load'] ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			  case 'restore':
+				$which = IP_Geo_Block_Logs::restore_log( $which );
 
-			// 'comment', 'login', 'admin', 'xmlrpc'
-			$list = IP_Geo_Block_Logs::restore_log();
-
-			// compose html
-			foreach ( $list as $hook => $rows ) {
-				$html = '';
-				foreach ( $rows as $logs ) {
-					$log = (int)array_shift( $logs );
-					$html .= "<tr>\n<td data-value='" . $log . "'>";
-					$html .= ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ) . "</td>\n";
-					foreach ( $logs as $log )
-						$html .= "<td>" . esc_html( $log ) . "</td>\n";
-					$html .= "</tr>\n";
+				// compose html
+				foreach ( $which as $hook => $rows ) {
+					$html = '';
+					foreach ( $rows as $logs ) {
+						$log = (int)array_shift( $logs );
+						$html .= "<tr>\n<td data-value='" . $log . "'>";
+						$html .= ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ) . "</td>\n";
+						foreach ( $logs as $log )
+							$html .= "<td>" . esc_html( $log ) . "</td>\n";
+						$html .= "</tr>\n";
+					}
+					$res[ $hook ] = $html;
 				}
-				$res[ $hook ] = $html;
+				break;
 			}
 		}
 
