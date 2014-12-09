@@ -29,6 +29,22 @@
 		}
 	}
 
+	function confirm(msg, callback) {
+		if (window.confirm(msg)) {
+			callback();
+		}
+	}
+
+	function warning(status, msg) {
+		alert(status + ' ' + msg);
+	}
+
+	function redirect(url) {
+		if (-1 === url.indexOf('http')) {
+			window.location.href = url;
+		}
+	}
+
 	// Download from Maxmind server
 	function ajax_update_database() {
 		loding('download', true);
@@ -51,7 +67,7 @@
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
-			alert('fail: ' + jqXHR.responseText);
+			warning(textStatus, jqXHR.responseText);
 		})
 
 		.complete(function () {
@@ -93,7 +109,7 @@
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
-			alert('fail: ' + jqXHR.responseText);
+			warning(textStatus, jqXHR.responseText);
 		})
 
 		.complete(function () {
@@ -112,11 +128,11 @@
 		})
 
 		.done(function (data, textStatus, jqXHR) {
-			window.location = data.refresh;
+			redirect(data.refresh);
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
-			alert('fail: ' + jqXHR.responseText);
+			warning(textStatus, jqXHR.responseText);
 		})
 
 		.complete(function () {
@@ -125,7 +141,7 @@
 	}
 
 	// Clear logs
-	function ajax_clear_logs( type ) {
+	function ajax_clear_logs(type) {
 		loding('loading', true);
 
 		$.post(IP_GEO_BLOCK.url, {
@@ -136,11 +152,11 @@
 		})
 
 		.done(function (data, textStatus, jqXHR) {
-			window.location = data.refresh;
+			redirect(data.refresh);
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
-			alert('fail: ' + jqXHR.responseText);
+			warning(textStatus, jqXHR.responseText);
 		})
 
 		.complete(function () {
@@ -149,7 +165,7 @@
 	}
 
 	// Load logs
-	function ajax_load_logs( type ) {
+	function ajax_load_logs(type) {
 		loding('loading', true);
 
 		$.post(IP_GEO_BLOCK.url, {
@@ -166,7 +182,7 @@
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
-			alert('fail: ' + jqXHR.responseText);
+			warning(textStatus, jqXHR.responseText);
 		})
 
 		.complete(function () {
@@ -180,7 +196,7 @@
 	$(function () {
 		// Kick-off footable
 		if ($('.ip-geo-block-log').hide().length) {
-			ajax_load_logs( null );
+			ajax_load_logs(null);
 		}
 
 		// Inhibit to submit by return key
@@ -195,17 +211,17 @@
 
 		// Statistics
 		$('#clear_statistics').on('click', function (event) {
-			if (window.confirm('Clear statistics ?')) {
+			confirm('Clear statistics ?', function () {
 				ajax_clear_statistics();
-			}
+			});
 			return false;
 		});
 
 		// Validation Logs
 		$('#clear_logs').on('click', function (event) {
-			if (window.confirm('Clear logs ?')) {
-				ajax_clear_logs( null );
-			}
+			confirm('Clear logs ?', function () {
+				ajax_clear_logs(null);
+			});
 			return false;
 		});
 

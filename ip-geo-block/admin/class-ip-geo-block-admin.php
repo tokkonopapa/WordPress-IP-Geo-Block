@@ -65,7 +65,6 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public static function get_instance() {
-
 		// If the single instance hasn't been set, set it now.
 		if ( null == self::$instance )
 			self::$instance = new self;
@@ -202,18 +201,17 @@ class IP_Geo_Block_Admin {
 	public function display_plugin_admin_page( $tab = 0 ) {
 		$tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
 		$tab = min( 4, max( 0, $tab ) );
-		$option_slug = $this->option_slug[ 1 === $tab ? 'statistics': 'settings' ]; ?>
+		$option_slug = $this->option_slug[ 1 === $tab ? 'statistics': 'settings' ];
+		$settings = IP_Geo_Block::get_option( 'settings' );
+?>
 <div class="wrap">
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 	<h2 class="nav-tab-wrapper">
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=0" class="nav-tab <?php echo $tab == 0 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=1" class="nav-tab <?php echo $tab == 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-<?php
-		$settings = IP_Geo_Block::get_option( 'settings' );
-		if ( $settings['validation']['reclogs'] ) { ?>
+<?php if ( $settings['validation']['reclogs'] ) { ?>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab == 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-<?php
-		} ?>
+<?php } ?>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=2" class="nav-tab <?php echo $tab == 2 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Search', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=3" class="nav-tab <?php echo $tab == 3 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 	</h2>
