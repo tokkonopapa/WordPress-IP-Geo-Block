@@ -57,8 +57,10 @@
 
 		.done(function (data, textStatus, jqXHR) {
 			for (var key in data) { // key: ipv4, ipv6
+				key = sanitize(key);
 				if (data[key].filename) {
-					$('#ip_geo_block_settings_maxmind_' + key + '_path').val(sanitize(data[key].filename));
+					$('#ip_geo_block_settings_maxmind_'
+					+ key + '_path').val(sanitize(data[key].filename));
 				}
 				if (data[key].message) {
 					$('#ip_geo_block_' + key).text(sanitize(data[key].message));
@@ -90,9 +92,10 @@
 		.done(function (data, textStatus, jqXHR) {
 			var info = '<ul>';
 			for (var key in data) {
+				key = sanitize(key);
 				info +=
 					'<li>' +
-						'<span class="ip-geo-block-title">' + sanitize(key) + ' : </span>' +
+						'<span class="ip-geo-block-title">' + key + ' : </span>' +
 						'<span class="ip-geo-block-result">' + sanitize(data[key]) + '</span>' +
 					'</li>';
 			}
@@ -128,7 +131,7 @@
 		})
 
 		.done(function (data, textStatus, jqXHR) {
-			redirect(data.refresh);
+			redirect(sanitize(data.page) + '&' + sanitize(data.tab));
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
@@ -152,7 +155,7 @@
 		})
 
 		.done(function (data, textStatus, jqXHR) {
-			redirect(data.refresh);
+			redirect(sanitize(data.page) + '&' + sanitize(data.tab));
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
@@ -176,8 +179,11 @@
 		})
 
 		.done(function (data, textStatus, jqXHR) {
+			// data has been sanitized at the server
 			for (var key in data) {
-				$('#ip-geo-block-log-' + key).html(data[key]);
+				key = sanitize(key);
+				html = $.parseHTML(data[key]); // @since 1.8
+				$('#ip-geo-block-log-' + key).html('').append(html);
 			}
 		})
 

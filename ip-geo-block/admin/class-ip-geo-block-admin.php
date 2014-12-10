@@ -579,8 +579,8 @@ class IP_Geo_Block_Admin {
 			// delete cache of IP address
 			delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
 			$res = array(
-				'refresh' =>
-				"options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=1"
+				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
+				'tab' => "tab=1"
 			);
 		}
 
@@ -597,8 +597,8 @@ class IP_Geo_Block_Admin {
 				IP_Geo_Block_Logs::clean_log( $which );
 
 				$res = array(
-					'refresh' =>
-					"options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG . "&tab=4"
+					'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
+					'tab' => "tab=4"
 				);
 				break;
 
