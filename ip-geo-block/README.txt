@@ -1,21 +1,21 @@
 === IP Geo Block ===
 Contributors: tokkonopapa
 Donate link:
-Tags: comment, pingback, spam, IP address, geolocation, xmlrpc
+Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc
 Requires at least: 3.7
 Tested up to: 4.0.1
 Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress plugin that will block any comment and pingback spams posted from 
+A WordPress plugin that will block any comment, pingback and trackback spams posted from 
 outside of your nation.
 
 == Description ==
 
 This plugin will examine a country code based on the IP address. If the 
-comment or pingback comes from specific country, it will be blocked before 
-Akismet validate it.
+comment, pingback or trackback comes from specific country, it will be blocked 
+before Akismet validate it.
 
 = Features =
 
@@ -215,8 +215,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 1.4.0 =
-* **New feature:** Added a new class for recording the validation logs to 
-  analyze posting pattern.
+* **New features:** 1. Added validation of trackback. 2. Added a new class 
+  for recording the validation logs to analyze posting pattern.
 * Added `$_SERVER keys for extra IPs` into options to validate additional 
   IP addresses.
 * Updated FooTable to 2.0.3.

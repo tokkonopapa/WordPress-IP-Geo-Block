@@ -62,8 +62,9 @@ class IP_Geo_Block {
 				add_action( $pos, array( $this, 'comment_form_message' ) );
 			}
 
-			// action hook from wp-comments-post.php @since 2.8.0, 'preprocess_comment'
+			// wp-comments-post.php @since 2.8.0, wp-includes/comment.php @since 1.5.0
 			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ) );
+			add_filter( 'preprocess_comment', array( $this, 'validate_trackback' ) );
 		}
 
 		// action hook from xmlrpc.php @since 3.1.0
@@ -388,6 +389,13 @@ class IP_Geo_Block {
 	 */
 	public function validate_comment() {
 		$this->validate_ip( 'comment', self::get_option( 'settings' ) );
+	}
+
+	public function validate_trackback( $commentdata ) {
+		if ( 'trackback' === $commentdata['comment_type'] )
+			$this->validate_ip( 'comment', self::get_option( 'settings' ) );
+
+		return $commentdata;
 	}
 
 	public function validate_admin( $something ) {

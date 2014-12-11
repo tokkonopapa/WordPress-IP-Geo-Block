@@ -1,13 +1,13 @@
 IP Geo Block
 ==============
 
-A WordPress plugin that will block any comment and pingback spams posted from 
-outside of your nation, and will also protect against malicious access to the 
-login form and admin area from undesired countries.
+A WordPress plugin that will block any comment, pingback and trackback spams 
+posted from outside of your nation, and will also protect against malicious 
+access to the login form from undesired countries.
 
 This plugin will examine a country code based on the IP address. If the 
-comment or pingback comes from specific country, it will be blocked before 
-Akismet validate it.
+comment, pingback or trackback comes from specific country, it will be blocked 
+before Akismet validate it.
 
 With the same mechanism, it will fight against burst access of brute-force 
 and reverse-brute-force attacks to the login form, admin area and XML-RPC.
@@ -228,8 +228,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
       try to login only 5 times. `Clear statistics` can reset this retry
       counter to zero.
 - 1.4.0
-    - **New feature:** Added a new class for recording the validation logs to 
-      analyze posting pattern.
+    - **New features:** 1. Added validation of trackback. 2. Added a new class 
+      for recording the validation logs to analyze posting pattern.
     - Added `$_SERVER keys for extra IPs` into options to validate additional 
       IP addresses.
     - Updated FooTable to 2.0.3.
