@@ -19,7 +19,7 @@ class IP_Geo_Block_Options {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
-			'version'         => '1.4.0', // This table version (not package)
+			'version'         => '1.3.1', // This table version (not package)
 			// since version 1.0
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
@@ -47,7 +47,7 @@ class IP_Geo_Block_Options {
 			    'proxy'       => NULL,    // $_SERVER variables for IPs
 			    'reclogs'     => 0,       // 0:no, 1:blocked, 2:passed, 3:auth, 4:all
 			    'postkey'     => '',      // Keys in $_POST
-			    // since version 1.4
+			    // since version 1.3.1
 			    'maxlogs'     => 100,     // Max number of rows of log
 			    'backup'      => FALSE,   // 0:no, 1:yes
 			),
@@ -115,7 +115,8 @@ class IP_Geo_Block_Options {
 
 		if ( FALSE === ( $settings = get_option( $key[0] ) ) ) {
 			// get country code from admin's IP address and set it into white list
-			shuffle( $name = array( 'ipinfo.io', 'Telize', 'IP-Json' ) );
+			$name = array( 'ipinfo.io', 'Telize', 'IP-Json' );
+			shuffle( $name );
 			$tmp = IP_Geo_Block::get_geolocation( $_SERVER['REMOTE_ADDR'], $name );
 			$default[ $key[0] ]['white_list'] = @$tmp['countryCode'];
 
@@ -132,10 +133,9 @@ class IP_Geo_Block_Options {
 		}
 
 		else {
-			if ( version_compare( $settings['version'], '1.1' ) < 0 ) {
+			if ( version_compare( $settings['version'], '1.1' ) < 0 )
 				foreach ( array( 'cache_hold', 'cache_time' ) as $tmp )
 					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
-			}
 
 			if ( version_compare( $settings['version'], '1.2' ) < 0 ) {
 				foreach ( array( 'order', 'ip2location' ) as $tmp )
@@ -151,12 +151,12 @@ class IP_Geo_Block_Options {
 				add_option( $key[1], $tmp ); // re-create as autoload
 			}
 
-			if ( version_compare( $settings['version'], '1.3' ) < 0 ) {
+			if ( version_compare( $settings['version'], '1.3.0' ) < 0 ) {
 				unset( $settings['validation'] );
 				$settings['validation'] = $default[ $key[0] ]['validation'];
 			}
 
-			if ( version_compare( $settings['version'], '1.4.0' ) < 0 ) {
+			if ( version_compare( $settings['version'], '1.3.1' ) < 0 ) {
 				$settings['validation']['proxy'] =
 				$settings['validation']['proxy'] ? 'HTTP_X_FORWARDED_FOR' : NULL;
 				foreach ( array( 'maxlogs', 'backup' ) as $tmp )

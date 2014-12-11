@@ -20,7 +20,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '1.4.0';
+	const VERSION = '1.3.1';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -117,13 +117,9 @@ class IP_Geo_Block {
 	 */
 	public static function activate( $network_wide = NULL ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// upgrade options
 		$settings = IP_Geo_Block_Options::upgrade();
-
-		// create log
-		IP_Geo_Block_Logs::create_log();
 
 		// execute to download immediately
 		if ( $settings['update']['auto'] ) {
@@ -157,10 +153,6 @@ class IP_Geo_Block {
 
 			// delete IP address cache
 			delete_transient( self::CACHE_KEY ); // @since 2.8
-
-			// delete log
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-			IP_Geo_Block_Logs::delete_log();
 		}
 	}
 
@@ -227,9 +219,9 @@ class IP_Geo_Block {
 						'provider' => $provider,
 					);
 
-					return is_string( $code ) ?
-						$ret + array( 'code' => strtoupper( $code ) ) :
-						$ret + array( 'code' => strtoupper( $code['countryCode'] ) );
+					return is_array( $code ) ?
+						$ret + $code : 
+						$ret + array( 'code' => strtoupper( $code ) );
 				}
 			}
 		}
@@ -360,15 +352,6 @@ class IP_Geo_Block {
 
 		// update cache
 		IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
-
-		// record log (0:no, 1:blocked, 2:passed, 3:auth, 4:all)
-		$var = (int)$settings['validation']['reclogs'];
-		if ( ( 1 === $var &&   $blocked ) ||
-		     ( 2 === $var && ! $blocked ) ||
-		     ( 3 === $var && $validate['auth'] ) || ( 4 === $var ) ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-			IP_Geo_Block_Logs::record_log( $hook, $validate, $settings );
-		}
 
 		if ( $blocked ) {
 			// update statistics

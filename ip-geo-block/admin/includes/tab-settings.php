@@ -124,45 +124,6 @@ function ip_geo_block_tab_settings( $context ) {
 		)
 	);
 
-	$field = 'validation';
-	add_settings_field(
-		$option_name . "_${field}_reclogs",
-		__( 'Record validation logs', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'select',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'reclogs',
-			'value' => $options[ $field ]['reclogs'],
-			'list' => array(
-				__( 'Disable', IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Only when blocked',  IP_Geo_Block::TEXT_DOMAIN ) => 1,
-				__( 'Only when passed',   IP_Geo_Block::TEXT_DOMAIN ) => 2,
-				__( 'Authenticated user', IP_Geo_Block::TEXT_DOMAIN ) => 3,
-				__( 'All of validation',  IP_Geo_Block::TEXT_DOMAIN ) => 4,
-			),
-		)
-	);
-
-	add_settings_field(
-		$option_name . "_${field}_postkey",
-		__( '<dfn title="ex) log, pwd, comment">$_POST keys in logs</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'text',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'postkey',
-			'value' => $options[ $field ]['postkey'],
-			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
-		)
-	);
-
 	$key = 'proxy';
 	$field = 'validation';
 	add_settings_field(
