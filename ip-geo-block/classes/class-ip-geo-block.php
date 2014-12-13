@@ -235,7 +235,13 @@ class IP_Geo_Block {
 		}
 
 		return array(
-			'ip' => $ip, 'code' => 'ZZ', 'countryCode' => 'ZZ', 'errorMessage' => 'unknown'
+			'ip' => $ip,
+			'auth' => get_current_user_id(),
+			'time' => 0,
+			'provider'     => 'ZZ',
+			'code'         => 'ZZ',
+			'countryCode'  => 'ZZ',
+			'errorMessage' => 'unknown',
 		);
 	}
 
