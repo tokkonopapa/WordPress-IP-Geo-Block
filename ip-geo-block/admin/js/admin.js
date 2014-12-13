@@ -182,7 +182,7 @@
 			for (var key in data) {
 				key = sanitize(key); // already sanitized at the server
 //				html = $.parseHTML(data[key]); // @since 1.8
-//				$('#ip-geo-block-log-' + key).html('').append(html);
+//				$('#ip-geo-block-log-' + key).empty().append(html);
 				$('#ip-geo-block-log-' + key).html(data[key]);
 			}
 		})

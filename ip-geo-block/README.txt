@@ -2,14 +2,14 @@
 Contributors: tokkonopapa
 Donate link:
 Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc
-Requires at least: 3.5
+Requires at least: 3.7
 Tested up to: 4.0.1
-Stable tag: 1.3.1
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress plugin that will block any comment, pingback and trackback spams posted from 
-outside of your nation.
+A WordPress plugin that will block any comment, pingback and trackback spams 
+posted from outside of your nation.
 
 == Description ==
 
@@ -29,10 +29,13 @@ automatically select an appropriate API.
 equipped to reduce load on the server against the burst accesses with a short 
 period of time.
 
-3. Custom validation function can be added by `add_filter()` with predefined 
+3. Validation logs will be recorded into MySQL data table to analyze posting 
+pattern under the specified condition.
+
+4. Custom validation function can be added by `add_filter()` with predefined 
 filter hook.
 
-4. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+5. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
 (once a month) automatically. And if you have correctly installed 
 one of the IP2Location plugins (
@@ -205,16 +208,20 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 1. **IP Geo Plugin** - Settings.
 2. **IP Geo Plugin** - Statistics.
-3. **IP Geo Plugin** - Search.
-4. **IP Geo Plugin** - Attribution.
+3. **IP Geo Plugin** - Logs.
+4. **IP Geo Plugin** - Search.
+5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 1.4.0 =
+* **New feature:** Added a new class for recording the validation logs to 
+  analyze posting pattern.
 
 = 1.3.1 =
 * **New feature:** Added validation of trackback spam.
 * Added `$_SERVER keys for extra IPs` into options to validate additional 
   IP addresses.
-* Updated FooTable to 2.0.3.
 * Removed some redundant codes and corrected all PHP notices and warnings 
   which had been suppressed by WordPress.
 

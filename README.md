@@ -201,24 +201,6 @@ If you do not want to keep the IP2Location plugins (
 ) in `wp-content/plugins/` directory but just want to use its database, 
 you can rename it to `ip2location` and upload it to `wp-content/`.
 
-#### Milestones
-
-- 0.1    Define Geolocation abstract class and child class.
-- 0.2    Implement ajax.
-- 0.3    Insert text message into comment form.
-- 0.4    Make a response header or a redirection to the [black hole server][BHS].
-- 0.5    Handle IPv6, timeout, and correspondence of service down.
-- 0.6    Recording statistics and show them on the dashboard.
-- 0.7    Refine data format into DB and form on the dashboard.
-- 0.8    Localization.
-- 0.9    Remove unneeded functions and comments.
-- 1.0    Simplify jQuery Google Map plugin.
-- 1.1    Implement cache mechanism to reduce load on the server.
-- 1.2    Install local database manager for auto downloader and updater.
-- 1.3    Validate IP address when login form and wp-admin are accessed.
-- 1.4    Make use of W3C Geolocation to let a foreigner post a comment.
-- 1.5    Send spam comments to Akismet.
-
 #### Change log
 
 - 2.0.0
@@ -228,12 +210,13 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
       try to login only 5 times. `Clear statistics` can reset this retry
       counter to zero.
 - 1.4.0
-    - **New features:** 1. Added validation of trackback. 2. Added a new class 
-      for recording the validation logs to analyze posting pattern.
+    - **New feature:** Added a new class for recording the validation logs to 
+      analyze posting pattern.
+- 1.3.1
+    - **New feature:** Added validation of trackback spam.
     - Added `$_SERVER keys for extra IPs` into options to validate additional 
       IP addresses.
-    - Updated FooTable to 2.0.3.
-    - Removed some redundant codes and corrected some PHP errors and warnings 
+    - Removed some redundant codes and corrected all PHP notices and warnings 
       which had been suppressed by WordPress.
 - 1.3.0
     - **New feature:** Added validation of pingback.ping through `xmlrpc.php` 

@@ -45,7 +45,7 @@ class IP_Geo_Block_Options {
 			    'ajax'        => FALSE,   // Validate on admin ajax
 			    'xmlrpc'      => TRUE,    // Validate on xmlrpc
 			    'proxy'       => NULL,    // $_SERVER variables for IPs
-			    'reclogs'     => 0,       // 0:no, 1:blocked, 2:passed, 3:auth, 4:all
+			    'reclogs'     => 0,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
 			    'postkey'     => '',      // Keys in $_POST
 			    // since version 1.3.1
 			    'maxlogs'     => 100,     // Max number of rows of log
@@ -115,10 +115,9 @@ class IP_Geo_Block_Options {
 
 		if ( FALSE === ( $settings = get_option( $key[0] ) ) ) {
 			// get country code from admin's IP address and set it into white list
-			$name = array( 'ipinfo.io', 'Telize', 'IP-Json' );
-			shuffle( $name );
+			$name = array( 'ipinfo.io', 'Telize', 'IP-Json' ); shuffle( $name );
 			$tmp = IP_Geo_Block::get_geolocation( $_SERVER['REMOTE_ADDR'], $name );
-			$default[ $key[0] ]['white_list'] = @$tmp['countryCode'];
+			$default[ $key[0] ]['white_list'] = $tmp['countryCode'];
 
 			// update local goelocation database files
 			$default[ $key[0] ]['ip2location']['ipv4_path'] = $ip2;
@@ -133,9 +132,10 @@ class IP_Geo_Block_Options {
 		}
 
 		else {
-			if ( version_compare( $settings['version'], '1.1' ) < 0 )
+			if ( version_compare( $settings['version'], '1.1' ) < 0 ) {
 				foreach ( array( 'cache_hold', 'cache_time' ) as $tmp )
 					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
+			}
 
 			if ( version_compare( $settings['version'], '1.2' ) < 0 ) {
 				foreach ( array( 'order', 'ip2location' ) as $tmp )
