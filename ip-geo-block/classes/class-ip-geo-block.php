@@ -328,7 +328,9 @@ class IP_Geo_Block {
 	private function validate_ip( $hook, $settings ) {
 		// set IP address to be validated
 		$ips = array(
-			apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] )
+			apply_filters(
+				self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR']
+			)
 		);
 
 		// pick up all the IPs in HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP and etc.
@@ -373,7 +375,7 @@ class IP_Geo_Block {
 		$var = (int)$settings['validation']['reclogs'];
 		if ( ( 1 === $var &&   $blocked ) || // blocked
 		     ( 2 === $var && ! $blocked ) || // passed
-		     ( 3 === $var && ! $validate['auth'] ) || // unauthenticated 
+		     ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
 		     ( 4 === $var &&   $validate['auth'] ) || // authenticated
 		     ( 5 === $var ) ) { // all
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );

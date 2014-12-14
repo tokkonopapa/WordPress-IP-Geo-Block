@@ -22,8 +22,8 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_NAME;
 
-		if ( $wpdb->get_var( "show tables like '$table'" ) != $table ) {
-			$sql = "CREATE TABLE `$table` (
+		// creating mixed db engine will cause some troubles.
+		$wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
  `No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
  `time` int(10) unsigned NOT NULL DEFAULT 0,
  `ip` varchar(40) NOT NULL,
@@ -33,15 +33,12 @@ class IP_Geo_Block_Logs {
  `result` varchar(8) NULL,
  `method` varchar(100) NOT NULL,
  `user_agent` varchar(255) NULL,
- `headers` varchar(100) NULL,
+ `headers` varchar(255) NULL,
  `data` text NULL,
  PRIMARY KEY (`No`),
  KEY `time` (`time`),
  KEY `hook` (`hook`)
-) CHARACTER SET 'utf8'";
-			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-			dbDelta( $sql );
-		}
+) CHARACTER SET 'utf8'" );
 	}
 
 	public static function delete_log() {
@@ -181,10 +178,10 @@ class IP_Geo_Block_Logs {
 			'HTTP_ACCEPT_CHARSET',
 			'HTTP_ACCEPT_ENCODING',
 			'HTTP_ACCEPT_LANGUAGE',
+			'HTTP_CACHE_CONTROL',
 			'HTTP_CONNECTION',
 			'HTTP_COOKIE',
 			'HTTP_HOST',
-			'HTTP_REFERER',
 			'HTTP_USER_AGENT',
 		);
 
@@ -279,7 +276,7 @@ class IP_Geo_Block_Logs {
 
 //		$auto = $wpdb->get_var( 'SELECT @@autocommit' ); // may be 1
 //		$wpdb->query( 'SET autocommit = 0' );
-//		$wpdb->query( 'START TRANSACTION' );
+//		$wpdb->query( 'START TRANSACTION' ); // can not assume innoDB
 
 		$sql = $wpdb->prepare(
 			"SELECT count(*) FROM `$table` WHERE `hook` = '%s'",
