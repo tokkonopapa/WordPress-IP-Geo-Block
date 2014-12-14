@@ -203,15 +203,16 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 #### Change log
 
-- 2.0.0
-    - **New feature:** Protection against brute-force and reverse-brute-force
-      attack to `wp-login.php`. This is an experimental function and can be
-      enabled on `Settings` tab. An IP address from countries in whitelist can 
-      try to login only 5 times. `Clear statistics` can reset this retry
-      counter to zero.
+= 2.0.0 =
+    - **New feature:** Protection against brute-force and reverse-brute-force 
+      attacks to the admin area, `wp-login.php` and `xmlrpc.php`. This is an 
+      experimental function and can be enabled on `Settings` tab. Malicious 
+      access can try to login only 5 times per IP address. This retry counter 
+      can be reset to zero by `Clear statistics` on `Statistics` tab.
 - 1.4.0
     - **New feature:** Added a new class for recording the validation logs to 
       analyze posting pattern.
+    - Fixed an error which occurs when ip address is unknown.
 - 1.3.1
     - **New feature:** Added validation of trackback spam.
     - Added `$_SERVER keys for extra IPs` into options to validate additional 
