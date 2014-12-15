@@ -282,7 +282,7 @@ class IP_Geo_Block_Logs {
 		) and $count = (int)$wpdb->get_var( $sql );
 
 		if ( isset( $count ) && $count >= $rows ) {
-			if ( $settings['validate']['backup'] ) {
+			if ( $settings['validation']['backup'] ) {
 				// Can't start transaction on the assumption that the db is innoDB.
 				// So we should select the rows which are exceeded the ring buffer.
 				$sql = $wpdb->prepare(
@@ -293,7 +293,7 @@ class IP_Geo_Block_Logs {
 				// Now we can delete the selected rows safely.
 				if ( isset( $logs ) ) {
 					$list = array();
-					foreach ( $logs as $log ) $list[] = $log->No;
+					foreach ( $logs as $log ) $list[] = (int)$log->No;
 					$wpdb->query(
 						"DELETE IGNORE FROM `$table`
 						WHERE `No` IN (" . implode( ',', $list ) . ")"
