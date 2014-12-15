@@ -228,8 +228,8 @@ class IP_Geo_Block {
 					);
 
 					return is_array( $code ) ?
-						$ret + $code : 
-						$ret + array( 'code' => strtoupper( $code ) );
+						$ret + $code :
+						$ret + array( 'code' => $code );
 				}
 			}
 		}

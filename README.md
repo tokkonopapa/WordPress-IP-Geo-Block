@@ -203,7 +203,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 #### Change log
 
-= 2.0.0 =
+- 2.0.0
     - **New feature:** Protection against brute-force and reverse-brute-force 
       attacks to the admin area, `wp-login.php` and `xmlrpc.php`. This is an 
       experimental function and can be enabled on `Settings` tab. Malicious 

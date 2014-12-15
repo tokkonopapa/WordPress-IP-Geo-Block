@@ -23,6 +23,7 @@ class IP_Geo_Block_Logs {
 		$table = $wpdb->prefix . self::TABLE_NAME;
 
 		// creating mixed db engine will cause some troubles.
+		// some of the system can not exceed over 255 for varchar.
 		$wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
  `No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
  `time` int(10) unsigned NOT NULL DEFAULT 0,
@@ -31,9 +32,9 @@ class IP_Geo_Block_Logs {
  `auth` int(10) unsigned NOT NULL DEFAULT 0,
  `code` varchar(2) NOT NULL DEFAULT 'ZZ',
  `result` varchar(8) NULL,
- `method` varchar(100) NOT NULL,
+ `method` varchar(255) NOT NULL,
  `user_agent` varchar(255) NULL,
- `headers` varchar(255) NULL,
+ `headers` varchar(511) NULL,
  `data` text NULL,
  PRIMARY KEY (`No`),
  KEY `time` (`time`),
@@ -51,13 +52,12 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_NAME;
 
-		if ( ! $hook ) {
+		if ( ! $hook )
 			$wpdb->query( "TRUNCATE TABLE `$table`" );
-		} else {
+		else
 			$sql = $wpdb->prepare(
 				"DELETE FROM `$table` WHERE `hook` = '%s'", $hook
 			) and $wpdb->query( $sql );
-		}
 	}
 
 	/**
@@ -182,6 +182,7 @@ class IP_Geo_Block_Logs {
 			'HTTP_CONNECTION',
 			'HTTP_COOKIE',
 			'HTTP_HOST',
+			'HTTP_PRAGMA',
 			'HTTP_USER_AGENT',
 		);
 
@@ -274,30 +275,43 @@ class IP_Geo_Block_Logs {
 		$table = $wpdb->prefix . self::TABLE_NAME;
 		$rows = $settings['validation']['maxlogs'];
 
-//		$auto = $wpdb->get_var( 'SELECT @@autocommit' ); // may be 1
-//		$wpdb->query( 'SET autocommit = 0' );
-//		$wpdb->query( 'START TRANSACTION' ); // can not assume innoDB
-
+		// count the number of rows for each hook
 		$sql = $wpdb->prepare(
 			"SELECT count(*) FROM `$table` WHERE `hook` = '%s'",
 			$hook
-		);
-		if ( $sql && ( $count = (int)$wpdb->get_var( $sql ) ) >= $rows ) {
-			// extract old logs
-//			$sql = $wpdb->prepare(
-//				"SELECT FROM `$table` WHERE `hook` = '%s' LIMIT %d",
-//				$hook, $count - $rows + 1
-//			) and $logs = $wpdb->query( $sql );
+		) and $count = (int)$wpdb->get_var( $sql );
 
-			// delete old logs
-			$sql = $wpdb->prepare(
-				"DELETE FROM `$table` WHERE `hook` = '%s' LIMIT %d",
-				$hook, $count - $rows + 1
-			) and $wpdb->query( $sql );
+		if ( isset( $count ) && $count >= $rows ) {
+			if ( $settings['validate']['backup'] ) {
+				// Can't start transaction on the assumption that the db is innoDB.
+				// So we should select the rows which are exceeded the ring buffer.
+				$sql = $wpdb->prepare(
+					"SELECT * FROM `$table` WHERE `hook` = '%s' LIMIT %d",
+					$hook, $count - $rows + 1
+				) and $logs = $wpdb->get_results( $sql, OBJECT );
+
+				// Now we can delete the selected rows safely.
+				if ( isset( $logs ) ) {
+					$list = array();
+					foreach ( $logs as $log ) $list[] = $log->No;
+					$wpdb->query(
+						"DELETE IGNORE FROM `$table`
+						WHERE `No` IN (" . implode( ',', $list ) . ")"
+					);
+				}
+
+				// Then backup the deleted logs
+				;
+			}
+
+			else {
+				// OR just delete the exceeded logs
+				$sql = $wpdb->prepare(
+					"DELETE FROM `$table` WHERE `hook` = '%s' LIMIT %d",
+					$hook, $count - $rows + 1
+				) and $wpdb->query( $sql );
+			}
 		}
-
-//		$wpdb->query( 'COMMIT' );
-//		$wpdb->query( $wpdb->prepare( 'SET autocommit = %d', $auto ) );
 
 		// insert into DB
 		$sql = $wpdb->prepare(
@@ -337,7 +351,7 @@ class IP_Geo_Block_Logs {
 		else
 			$sql .= $wpdb->prepare( " WHERE `hook` = '%s' ORDER BY `time` DESC", $hook );
 
-		$list = $sql ? $wpdb->get_results( $sql, ARRAY_N, 0 ) : array();
+		$list = $sql ? $wpdb->get_results( $sql, ARRAY_N ) : array();
 
 		foreach ( $list as $row ) {
 			$hook = array_shift( $row );
