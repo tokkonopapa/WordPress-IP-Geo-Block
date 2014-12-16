@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 2.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
 "POT-Creation-Date: 2014-12-13 12:32+0900\n"
-"PO-Revision-Date: 2014-12-13 12:56+0900\n"
+"PO-Revision-Date: 2014-12-16 23:56+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -280,12 +280,12 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:338
 #, php-format
-msgid "White list %s"
+msgid "<dfn title=\"If empth then pass through\">White list</dfn> %s"
 msgstr ""
 
 #: admin/includes/tab-settings.php:354
 #, php-format
-msgid "Black list %s"
+msgid "<dfn title=\"If empth then pass through\">Black list</dfn> %s"
 msgstr ""
 
 #: admin/includes/tab-settings.php:370

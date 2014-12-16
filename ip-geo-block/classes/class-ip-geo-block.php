@@ -250,12 +250,12 @@ class IP_Geo_Block {
 	 *
 	 */
 	private function validate_country( $validate, $settings ) {
-		// matching rule
 		$rule  = $settings['matching_rule'];
-		$white = $settings['white_list'];
-		$black = $settings['black_list'];
+		$white = $settings['white_list']; // 0 == $rule
+		$black = $settings['black_list']; // 1 == $rule
 
-		if ( empty( $white ) && empty( $black ) )
+		// if empty then pass through
+		if ( ( 0 == $rule && ! $white ) || ( 1 == $rule && ! $black ) )
 			return $validate + array( 'result' => 'passed' );
 
 		if ( 'ZZ' !== $validate['code'] ) {

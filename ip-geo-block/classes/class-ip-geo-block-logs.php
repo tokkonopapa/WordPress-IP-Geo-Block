@@ -52,12 +52,12 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_NAME;
 
-		if ( ! $hook )
-			$wpdb->query( "TRUNCATE TABLE `$table`" );
-		else
+		if ( $hook )
 			$sql = $wpdb->prepare(
 				"DELETE FROM `$table` WHERE `hook` = '%s'", $hook
 			) and $wpdb->query( $sql );
+		else
+			$wpdb->query( "TRUNCATE TABLE `$table`" );
 	}
 
 	/**
@@ -243,11 +243,17 @@ class IP_Geo_Block_Logs {
 			$posts = array();
 			foreach ( $keys as $key => $val )
 				$posts[] = $val ? "$key:$val" : "$key";
-
 			$posts = self::truncate_utf8( implode( ',', $posts ), '/\s+/', ' ' );
 		}
 
 		return $posts;
+	}
+
+	/**
+	 * Backup the validation log
+	 *
+	 */
+	private static function backup_log( $logs, $settings ) {
 	}
 
 	/**
@@ -290,7 +296,7 @@ class IP_Geo_Block_Logs {
 					$hook, $count - $rows + 1
 				) and $logs = $wpdb->get_results( $sql, OBJECT );
 
-				// Now we can delete the selected rows safely.
+				// Now we can delete the selected rows relatively safely.
 				if ( isset( $logs ) ) {
 					$list = array();
 					foreach ( $logs as $log ) $list[] = (int)$log->No;
@@ -300,8 +306,8 @@ class IP_Geo_Block_Logs {
 					);
 				}
 
-				// Then backup the deleted logs
-				;
+				// There is a possibility that the logs are duplicated.
+				self::backup_log( $logs, $settings );
 			}
 
 			else {

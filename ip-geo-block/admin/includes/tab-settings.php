@@ -322,7 +322,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'white_list';
 	add_settings_field(
 		$option_name . "_$field",
-		sprintf( __( 'White list %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
+		sprintf( __( '<dfn title="If empth then pass through">White list</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -338,7 +338,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'black_list';
 	add_settings_field(
 		$option_name . "_$field",
-		sprintf( __( 'Black list %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
+		sprintf( __( '<dfn title="If empth then pass through">Black list</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,

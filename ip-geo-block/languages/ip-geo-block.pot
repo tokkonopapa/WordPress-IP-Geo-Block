@@ -280,12 +280,12 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:338
 #, php-format
-msgid "White list %s"
+msgid "<dfn title=\"If empth then pass through\">White list</dfn> %s"
 msgstr ""
 
 #: admin/includes/tab-settings.php:354
 #, php-format
-msgid "Black list %s"
+msgid "<dfn title=\"If empth then pass through\">Black list</dfn> %s"
 msgstr ""
 
 #: admin/includes/tab-settings.php:370
