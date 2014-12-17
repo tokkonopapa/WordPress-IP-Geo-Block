@@ -250,17 +250,15 @@ class IP_Geo_Block {
 	 *
 	 */
 	private function validate_country( $validate, $settings ) {
+		// matching rule and list of country code
 		$rule  = $settings['matching_rule'];
 		$white = $settings['white_list']; // 0 == $rule
 		$black = $settings['black_list']; // 1 == $rule
 
-		// if empty then pass through
-		if ( ( 0 == $rule && ! $white ) || ( 1 == $rule && ! $black ) )
-			return $validate + array( 'result' => 'passed' );
-
 		if ( 'ZZ' !== $validate['code'] ) {
-			if ( 0 == $rule && FALSE !== strpos( $white, $validate['code'] ) ||
-			     1 == $rule && FALSE === strpos( $black, $validate['code'] ) )
+			// if the list of country code is empty then pass through
+			if ( 0 == $rule && ( ! $white || FALSE !== strpos( $white, $validate['code'] ) ) ||
+			     1 == $rule && ( ! $black || FALSE === strpos( $black, $validate['code'] ) ) )
 				return $validate + array( 'result' => 'passed' ); // It may not be a spam
 			else
 				return $validate + array( 'result' => 'blocked'); // It could be a spam
@@ -315,7 +313,6 @@ class IP_Geo_Block {
 		  default: // 5xx Server Error
 			status_header( $code ); // @since 2.0.0
 			die();
-			break;
 		}
 	}
 
@@ -328,7 +325,7 @@ class IP_Geo_Block {
 	private function validate_ip( $hook, $settings ) {
 		// set IP address to be validated
 		$ips = array(
-			apply_filters(
+			(string) apply_filters(
 				self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR']
 			)
 		);
@@ -337,7 +334,8 @@ class IP_Geo_Block {
 		foreach ( explode( ',', $settings['validation']['proxy'] ) as $var ) {
 			if ( isset( $_SERVER[ $var ] ) ) {
 				foreach ( explode( ',', $_SERVER[ $var ] ) as $ip ) {
-					if ( filter_var( $ip = trim( $ip ), FILTER_VALIDATE_IP ) ) {
+					if ( ! in_array( $ip = trim( $ip ), $ips ) &&
+					     filter_var( $ip, FILTER_VALIDATE_IP ) ) {
 						$ips[] = $ip;
 					}
 				}
@@ -354,7 +352,7 @@ class IP_Geo_Block {
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
 		$var = self::PLUGIN_SLUG . "-$hook";
-		foreach ( array_unique( $ips ) as $ip ) {
+		foreach ( $ips as $ip ) {
 			$validate = self::_get_geolocation( $ip, $settings );
 			$validate = apply_filters( $var, $validate, $settings );
 
@@ -373,7 +371,7 @@ class IP_Geo_Block {
 
 		// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
 		$var = (int)$settings['validation']['reclogs'];
-		if ( ( 1 === $var &&   $blocked ) || // blocked
+		if ( ( 1 === $var &&   $blocked ) || // blocked, unknown
 		     ( 2 === $var && ! $blocked ) || // passed
 		     ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
 		     ( 4 === $var &&   $validate['auth'] ) || // authenticated

@@ -74,9 +74,9 @@ class IP_Geo_Block_Logs {
 		// Store the site charset as a static to avoid multiple calls to get_option()
 		static $is_utf8;
 		if ( ! isset( $is_utf8 ) )
-			$is_utf8 = in_array(
+			$is_utf8 = array_key_exists(
 				get_option( 'blog_charset' ),
-				array( 'utf8', 'utf-8', 'UTF8', 'UTF-8' )
+				array( 'utf8' => NULL, 'utf-8' => NULL, 'UTF8' => NULL, 'UTF-8' => NULL )
 			);
 
 		// handle utf8 only
@@ -173,24 +173,24 @@ class IP_Geo_Block_Logs {
 	}
 
 	private static function get_http_headers() {
-		static $exclusion = array(
-			'HTTP_ACCEPT',
-			'HTTP_ACCEPT_CHARSET',
-			'HTTP_ACCEPT_ENCODING',
-			'HTTP_ACCEPT_LANGUAGE',
-			'HTTP_CACHE_CONTROL',
-			'HTTP_CONNECTION',
-			'HTTP_COOKIE',
-			'HTTP_HOST',
-			'HTTP_PRAGMA',
-			'HTTP_USER_AGENT',
+		static $exclusions = array(
+			'HTTP_ACCEPT' => TRUE,
+			'HTTP_ACCEPT_CHARSET' => TRUE,
+			'HTTP_ACCEPT_ENCODING' => TRUE,
+			'HTTP_ACCEPT_LANGUAGE' => TRUE,
+			'HTTP_CACHE_CONTROL' => TRUE,
+			'HTTP_CONNECTION' => TRUE,
+			'HTTP_COOKIE' => TRUE,
+			'HTTP_HOST' => TRUE,
+			'HTTP_PRAGMA' => TRUE,
+			'HTTP_USER_AGENT' => TRUE,
 		);
 
 		$headers = array();
 
 		foreach ( array_keys( $_SERVER ) as $key ) {
 			if ( 'HTTP_' === substr( $key, 0, 5 ) && 
-			     ! in_array( $key, $exclusion ) ) {
+			     empty( $exclusions[ $key ] ) ) {
 				$headers[] = "$key:" . $_SERVER[ $key ];
 			}
 		}
@@ -199,13 +199,16 @@ class IP_Geo_Block_Logs {
 	}
 
 	private static function get_post_data( $hook, $validate, $settings ) {
+		// condition of masking password
+		$mask_pwd = ( 'passed' === $validate['result'] );
+
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {
 			global $HTTP_RAW_POST_DATA;
 			$posts = self::truncate_utf8( $HTTP_RAW_POST_DATA, '/\s+</', '<' );
 
 			// mask the password
-			if ( 'passed' === $validate['result'] &&
+			if ( $mask_pwd &&
 			     preg_match_all( '/<string>(\S*?)<\/string>/', $posts, $matches ) >= 2 &&
 			     strpos( $matches[1][1], home_url() ) !== 0 ) { // except pingback
 				$val = str_repeat( '*', strlen( $matches[1][1] ) );
@@ -213,8 +216,7 @@ class IP_Geo_Block_Logs {
 			}
 			/*if ( FALSE !== ( $xml = @simplexml_load_string( $HTTP_RAW_POST_DATA ) ) ) {
 				// mask the password
-				if ( 'passed' === $validate['result'] &&
-				     'wp.' === substr( $xml->methodName, 0, 3 ) ) {
+				if ( $mask_pwd && 'wp.' === substr( $xml->methodName, 0, 3 ) ) {
 					$xml->params->param[1]->value->string =
 						str_repeat(
 							'*', strlen( $xml->params->param[1]->value->string )
@@ -231,11 +233,9 @@ class IP_Geo_Block_Logs {
 			$keys = array_fill_keys( array_keys( $_POST ), NULL );
 			foreach ( explode( ',', $settings['validation']['postkey'] ) as $key ) {
 				if ( array_key_exists( $key, $_POST ) ) {
-					$keys[ $key ] = $_POST[ $key ];
-
 					// mask the password
-					if ( 'passed' === $validate['result'] && 'pwd' === $key )
-						$keys[ $key ] = str_repeat( '*', strlen( $keys[ $key ] ) );
+					$keys[ $key ] = ( 'pwd' === $key && $mask_pwd ) ?
+						str_repeat( '*', strlen( $_POST[ $key ] ) ) : $_POST[ $key ];
 				}
 			}
 
@@ -296,7 +296,7 @@ class IP_Geo_Block_Logs {
 					$hook, $count - $rows + 1
 				) and $logs = $wpdb->get_results( $sql, OBJECT );
 
-				// Now we can delete the selected rows relatively safely.
+				// Then we can delete the selected rows relatively safely.
 				if ( isset( $logs ) ) {
 					$list = array();
 					foreach ( $logs as $log ) $list[] = (int)$log->No;
@@ -306,12 +306,12 @@ class IP_Geo_Block_Logs {
 					);
 				}
 
-				// There is a possibility that the logs are duplicated.
+				// But there is a possibility that logs are duplicated.
 				self::backup_log( $logs, $settings );
 			}
 
 			else {
-				// OR just delete the exceeded logs
+				// There are cases where logs are excessively deleted.
 				$sql = $wpdb->prepare(
 					"DELETE FROM `$table` WHERE `hook` = '%s' LIMIT %d",
 					$hook, $count - $rows + 1
