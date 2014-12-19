@@ -56,7 +56,7 @@ if ( $setting['save_statistics'] ) :
 	$field = 'countries';
 	$html = "<ul class=\"${option_slug}-${field}\">";
 	foreach ( $options['countries'] as $key => $val ) {
-		$html .= sprintf( "<li>%2s:%5d</li>", esc_html( $key ), $val );
+		$html .= sprintf( "<li>%2s:%5d</li>", esc_html( $key ), (int)$val );
 	}
 	$html .= "</ul>";
 
@@ -102,8 +102,8 @@ if ( $setting['save_statistics'] ) :
 
 	foreach ( $options['providers'] as $key => $val ) {
 		$html .= "<tr><td>" . esc_html( $key ) . "</td>";
-		$html .= "<td>" . sprintf( "%5d", $val['count'] ) . "</td><td>";
-		$html .= sprintf( "%5d", 1000.0 * $val['time'] / $val['count'] );
+		$html .= "<td>" . sprintf( "%5d", (int)$val['count'] ) . "</td><td>";
+		$html .= sprintf( "%5d", (int)(1000.0 * $val['time'] / $val['count']) );
 		$html .= "</td></tr>";
 	}
 	$html .= "</tbody></table>";

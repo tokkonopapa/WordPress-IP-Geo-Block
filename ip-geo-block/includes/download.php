@@ -10,7 +10,7 @@ define( 'IP_GEO_BLOCK_MAXMIND_IPV4_ZIP', 'http://geolite.maxmind.com/download/ge
 define( 'IP_GEO_BLOCK_MAXMIND_IPV6_ZIP', 'http://geolite.maxmind.com/download/geoip/database/GeoIPv6.dat.gz' );
 
 /**
- * Check file and update last-modified
+ * Set the destination file path and update last-modified
  *
  * @param string $url URL to the source of database zip file.
  * @param string $dir path to the destination directory.
@@ -143,7 +143,13 @@ function ip_geo_block_download( &$db, $dir, $args ) {
 	// directory where database files are saved
 	$dir = trailingslashit(
 		apply_filters( IP_Geo_Block::PLUGIN_SLUG . '-maxmind-dir', $dir )
-	); 
+	);
+
+	if ( validate_file( $dir ) !== 0 )
+		return array(
+			'ipv4' => array( 'message' => 'Error: Invalid absolute path' ),
+			'ipv6' => array( 'message' => 'Error: Invalid absolute path' ),
+		);
 
 	/**
 	 * Download database file for IPv4
@@ -152,7 +158,10 @@ function ip_geo_block_download( &$db, $dir, $args ) {
 		IP_Geo_Block::PLUGIN_SLUG . '-maxmind-zip-ipv4', IP_GEO_BLOCK_MAXMIND_IPV4_ZIP
 	);
 
-	// check the path
+	if ( wp_http_validate_url( $url ) === FALSE )
+		return array( 'ipv4' => array( 'message' => 'Error: Invalid URL' ) );
+
+	// set the destination file path
 	ip_geo_block_download_path( $url, $dir, $db['ipv4_path'], $db['ipv4_last'] );
 
 	// download and unzip file
@@ -171,7 +180,10 @@ function ip_geo_block_download( &$db, $dir, $args ) {
 		IP_Geo_Block::PLUGIN_SLUG . '-maxmind-zip-ipv6', IP_GEO_BLOCK_MAXMIND_IPV6_ZIP
 	);
 
-	// check the path
+	if ( wp_http_validate_url( $url ) === FALSE )
+		return array( 'ipv6' => array( 'message' => 'Error: Invalid URL' ) );
+
+	// set the destination file path
 	ip_geo_block_download_path( $url, $dir, $db['ipv6_path'], $db['ipv6_last'] );
 
 	// download and unzip file

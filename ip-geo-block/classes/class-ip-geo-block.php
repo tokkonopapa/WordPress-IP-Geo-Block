@@ -239,8 +239,8 @@ class IP_Geo_Block {
 			'auth' => get_current_user_id(),
 			'time' => 0,
 			'provider'     => 'ZZ',
-			'code'         => 'ZZ',
-			'countryCode'  => 'ZZ',
+			'code'         => 'ZZ', // for get_country()
+			'countryCode'  => 'ZZ', // for get_location()
 			'errorMessage' => 'unknown',
 		);
 	}

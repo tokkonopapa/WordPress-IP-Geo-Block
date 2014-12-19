@@ -596,11 +596,11 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			}
 		}
 
-		// it is called by auth_fail() when $validate['fail'] is on.
+		// $validate['fail'] is set in auth_fail()
 		if ( isset( $cache[ $ip = $validate['ip'] ] ) ) {
 			$fail = $cache[ $ip ]['fail'] + (int)isset( $validate['fail'] );
 			$call = $cache[ $ip ]['call'] + (int)empty( $validate['fail'] );
-		} else {
+		} else { // if new cache then reset these values
 			$call = 1;
 			$fail = 0;
 		}

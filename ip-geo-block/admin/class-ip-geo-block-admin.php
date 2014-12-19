@@ -288,7 +288,7 @@ class IP_Geo_Block_Admin {
 	 */
 	public function callback_field( $args ) {
 		if ( ! empty( $args['before'] ) )
-			echo $args['before'], "\n";
+			echo $args['before'], "\n"; // should be sanitized at caller
 
 		$id   = "${args['option']}_${args['field']}";
 		$name = "${args['option']}[${args['field']}]";
@@ -353,17 +353,17 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'button': ?>
-<input type="button" class="button-secondary" id="<?php echo $args['field']; ?>" value="<?php echo $args['value']; ?>" />
+<input type="button" class="button-secondary" id="<?php echo esc_attr( $args['field'] ); ?>" value="<?php echo esc_attr( $args['value'] ); ?>" />
 <?php
 			break;
 
 		  case 'html':
-			echo "\n", $args['value'], "\n";
+			echo "\n", $args['value'], "\n"; // should be sanitized at caller
 			break;
 		}
 
 		if ( ! empty( $args['after'] ) )
-			echo $args['after'], "\n";
+			echo $args['after'], "\n"; // should be sanitized at caller
 	}
 
 	/**
@@ -386,7 +386,7 @@ class IP_Geo_Block_Admin {
 		// extract key with 'only-' on its top
 		$only = array_keys( array_diff_key( $input, $output ) );
 		$only = array_shift( $only );
-		$only = strpos( $only, 'only-' ) === 0 ? substr( $only, 5 ) : FALSE;
+		$only = strpos( $only, 'only-' ) === 0 ? substr( $only, 5 ) : NULL;
 
 		/**
 		 * Sanitize a string from user input
@@ -601,7 +601,7 @@ class IP_Geo_Block_Admin {
 			  case 'restore':
 				$which = IP_Geo_Block_Logs::restore_log( $which );
 
-				// compose html
+				// compose html with sanitization
 				foreach ( $which as $hook => $rows ) {
 					$html = '';
 					foreach ( $rows as $logs ) {
