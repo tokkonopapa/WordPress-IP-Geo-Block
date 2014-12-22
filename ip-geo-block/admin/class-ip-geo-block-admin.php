@@ -121,7 +121,7 @@ class IP_Geo_Block_Admin {
 
 			// js for footable https://github.com/bradvin/FooTable
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-footable-js',
-				plugins_url( 'js/footable.all.min.js', __FILE__ ),
+				plugins_url( 'js/footable.min.js', __FILE__ ),
 				array( 'jquery' ), IP_Geo_Block::VERSION
 			);
 
@@ -618,7 +618,7 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
-		if ( isset( $res ) )
+		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0
 			wp_send_json( $res ); // @since 3.5.0
 
 		// End of ajax
