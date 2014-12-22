@@ -3,7 +3,7 @@ Contributors: tokkonopapa
 Donate link:
 Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc
 Requires at least: 3.7
-Tested up to: 4.0.1
+Tested up to: 4.1
 Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,11 +19,11 @@ before Akismet validate it.
 
 = Features =
 
-1. Access to the `wp-comments-post.php` and `xmlrpc.php` will be validated by 
-means of IP address. Free IP Geolocation database and REST APIs are installed 
-in this plugin to get a country code from an IP address. There are two types 
-of API which support only IPv4 or both IPv4 and IPv6. This plugin will 
-automatically select an appropriate API.
+1. Access to the `wp-comments-post.php` and `xmlrpc.php` will be validated 
+by means of IP address. Free IP Geolocation database and REST APIs are 
+installed in this plugin to get a country code from an IP address. There are 
+two types of API which support only IPv4 or both IPv4 and IPv6. This plugin 
+will automatically select an appropriate API.
 
 2. Cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against the burst accesses with a short 
