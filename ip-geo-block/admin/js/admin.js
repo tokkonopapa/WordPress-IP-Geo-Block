@@ -39,9 +39,9 @@
 		alert(status + ' ' + msg);
 	}
 
-	function redirect(url) {
-		if (-1 === url.indexOf('http')) {
-			window.location.href = url;
+	function redirect(page, tab) {
+		if (0 === page.indexOf('options')) {
+			window.location.href = sanitize(page) + '&' + sanitize(tab);
 		}
 	}
 
@@ -131,7 +131,7 @@
 		})
 
 		.done(function (data, textStatus, jqXHR) {
-			redirect(sanitize(data.page) + '&' + sanitize(data.tab));
+			redirect(data.page, data.tab);
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
@@ -155,7 +155,7 @@
 		})
 
 		.done(function (data, textStatus, jqXHR) {
-			redirect(sanitize(data.page) + '&' + sanitize(data.tab));
+			redirect(data.page, data.tab);
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
