@@ -169,7 +169,8 @@ class IP_Geo_Block_Logs {
 	 * These data should be sanitized before rendering
 	 */
 	private static function get_user_agent() {
-		return self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'], '/[\t\n\f\r]/' );
+		return isset( $_SERVER['HTTP_USER_AGENT'] ) ?
+			self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'], '/[\t\n\f\r]/' ) : '';
 	}
 
 	private static function get_http_headers() {
@@ -187,7 +188,6 @@ class IP_Geo_Block_Logs {
 		);
 
 		$headers = array();
-
 		foreach ( array_keys( $_SERVER ) as $key ) {
 			if ( 'HTTP_' === substr( $key, 0, 5 ) && 
 			     empty( $exclusions[ $key ] ) ) {
@@ -292,7 +292,7 @@ class IP_Geo_Block_Logs {
 				// Can't start transaction on the assumption that the db is innoDB.
 				// So we should select the rows which are exceeded the ring buffer.
 				$sql = $wpdb->prepare(
-					"SELECT * FROM `$table` WHERE `hook` = '%s' LIMIT %d",
+					"SELECT * FROM `$table` WHERE `hook` = '%s' ORDER BY `No` ASC LIMIT %d",
 					$hook, $count - $rows + 1
 				) and $logs = $wpdb->get_results( $sql, OBJECT );
 
@@ -313,7 +313,7 @@ class IP_Geo_Block_Logs {
 			else {
 				// There are cases where logs are excessively deleted.
 				$sql = $wpdb->prepare(
-					"DELETE FROM `$table` WHERE `hook` = '%s' LIMIT %d",
+					"DELETE FROM `$table` WHERE `hook` = '%s' ORDER BY `No` ASC LIMIT %d",
 					$hook, $count - $rows + 1
 				) and $wpdb->query( $sql );
 			}
@@ -353,9 +353,9 @@ class IP_Geo_Block_Logs {
 		);
 
 		if ( ! $hook )
-			$sql .= " ORDER BY `hook`, `time` DESC";
+			$sql .= " ORDER BY `hook`, `No` DESC";
 		else
-			$sql .= $wpdb->prepare( " WHERE `hook` = '%s' ORDER BY `time` DESC", $hook );
+			$sql .= $wpdb->prepare( " WHERE `hook` = '%s' ORDER BY `No` DESC", $hook );
 
 		$list = $sql ? $wpdb->get_results( $sql, ARRAY_N ) : array();
 
