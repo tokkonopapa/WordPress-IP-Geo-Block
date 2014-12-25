@@ -188,6 +188,7 @@ class IP_Geo_Block_Logs {
 		);
 
 		$headers = array();
+
 		foreach ( array_keys( $_SERVER ) as $key ) {
 			if ( 'HTTP_' === substr( $key, 0, 5 ) && 
 			     empty( $exclusions[ $key ] ) ) {
@@ -243,6 +244,7 @@ class IP_Geo_Block_Logs {
 			$posts = array();
 			foreach ( $keys as $key => $val )
 				$posts[] = $val ? "$key:$val" : "$key";
+
 			$posts = self::truncate_utf8( implode( ',', $posts ), '/\s+/', ' ' );
 		}
 
@@ -252,8 +254,34 @@ class IP_Geo_Block_Logs {
 	/**
 	 * Backup the validation log
 	 *
+	 * @notice $path should not be in the public_html.
 	 */
-	private static function backup_log( $logs, $settings ) {
+	private static function backup_log( $hook, $validate, $method, $agent, $heads, $posts, $path ) {
+		// $path should be absolute path
+		if ( validate_file( $path ) !== 0 )
+			return;
+
+		$path = trailingslashit( $path ) .
+			IP_Geo_Block::PLUGIN_SLUG . date('-Y-m-w') . '.log';
+
+		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )
+			return;
+
+		// &#044; --> &#130;
+		fprintf( fp, '%d, %s, %s, %d, %s, %s, %s, %s, %s, %s',
+			$_SERVER['REQUEST_TIME'],
+			$validate['ip'],
+			$hook,
+			$validate['auth'],
+			$validate['code'],
+			$validate['result'],
+			$method,
+			str_replace( ',', '‚', $agent ),
+			str_replace( ',', '‚', $heads ),
+			str_replace( ',', '‚', $posts )
+		);
+
+		fclose( fp );
 	}
 
 	/**
@@ -275,6 +303,7 @@ class IP_Geo_Block_Logs {
 		$agent = self::get_user_agent();
 		$heads = self::get_http_headers();
 		$posts = self::get_post_data( $hook, $validate, $settings );
+		$method = $_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . basename( $_SERVER['REQUEST_URI'] );
 
 		// limit the maximum number of rows
 		global $wpdb;
@@ -288,35 +317,12 @@ class IP_Geo_Block_Logs {
 		) and $count = (int)$wpdb->get_var( $sql );
 
 		if ( isset( $count ) && $count >= $rows ) {
-			if ( $settings['validation']['backup'] ) {
-				// Can't start transaction on the assumption that the db is innoDB.
-				// So we should select the rows which are exceeded the ring buffer.
-				$sql = $wpdb->prepare(
-					"SELECT * FROM `$table` WHERE `hook` = '%s' ORDER BY `No` ASC LIMIT %d",
-					$hook, $count - $rows + 1
-				) and $logs = $wpdb->get_results( $sql, OBJECT );
-
-				// Then we can delete the selected rows relatively safely.
-				if ( isset( $logs ) ) {
-					$list = array();
-					foreach ( $logs as $log ) $list[] = (int)$log->No;
-					$wpdb->query(
-						"DELETE IGNORE FROM `$table`
-						WHERE `No` IN (" . implode( ',', $list ) . ")"
-					);
-				}
-
-				// But there is a possibility that logs are duplicated.
-				self::backup_log( $logs, $settings );
-			}
-
-			else {
-				// There are cases where logs are excessively deleted.
-				$sql = $wpdb->prepare(
-					"DELETE FROM `$table` WHERE `hook` = '%s' ORDER BY `No` ASC LIMIT %d",
-					$hook, $count - $rows + 1
-				) and $wpdb->query( $sql );
-			}
+			// Can't start transaction on the assumption that the db is innoDB.
+			// So there are some cases where logs are excessively deleted.
+			$sql = $wpdb->prepare(
+				"DELETE FROM `$table` WHERE `hook` = '%s' ORDER BY `No` ASC LIMIT %d",
+				$hook, $count - $rows + 1
+			) and $wpdb->query( $sql );
 		}
 
 		// insert into DB
@@ -330,11 +336,19 @@ class IP_Geo_Block_Logs {
 			$validate['auth'],
 			$validate['code'],
 			$validate['result'],
-			$_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . basename( $_SERVER['REQUEST_URI'] ),
+			$method,
 			$agent,
 			$heads,
 			$posts
 		) and $wpdb->query( $sql );
+
+		// backup logs
+		if ( $settings['validation']['backup'] ) {
+			self::backup_log(
+				$hook, $validate, $method, $agent,
+				$heads, $posts, $settings['validation']['backup']
+			);
+		}
 	}
 
 	/**

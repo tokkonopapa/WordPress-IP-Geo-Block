@@ -49,7 +49,7 @@ class IP_Geo_Block_Options {
 			    'postkey'     => '',      // Keys in $_POST
 			    // since version 1.3.1
 			    'maxlogs'     => 100,     // Max number of rows of log
-			    'backup'      => FALSE,   // 0:no, 1:yes
+			    'backup'      => NULL,    // Absolute path to backup file
 			),
 			'update'          => array(   // Updating IP address DB
 			    'auto'        => TRUE,    // Auto updating of DB file
