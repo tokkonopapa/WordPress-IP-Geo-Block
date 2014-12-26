@@ -262,13 +262,13 @@ class IP_Geo_Block_Logs {
 			return;
 
 		$path = trailingslashit( $path ) .
-			IP_Geo_Block::PLUGIN_SLUG . date('-Y-m-w') . '.log';
+			IP_Geo_Block::PLUGIN_SLUG . date('-ymw') . '.log';
 
 		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )
 			return;
 
 		// &#044; --> &#130;
-		fprintf( fp, '%d, %s, %s, %d, %s, %s, %s, %s, %s, %s',
+		fprintf( $fp, "%d,%s,%s,%d,%s,%s,%s,%s,%s,%s\n",
 			$_SERVER['REQUEST_TIME'],
 			$validate['ip'],
 			$hook,
@@ -281,7 +281,7 @@ class IP_Geo_Block_Logs {
 			str_replace( ',', '‚', $posts )
 		);
 
-		fclose( fp );
+		fclose( $fp );
 	}
 
 	/**
