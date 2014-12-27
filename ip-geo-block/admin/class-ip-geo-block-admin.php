@@ -114,22 +114,23 @@ class IP_Geo_Block_Admin {
 			);
 
 			// js for google map
+			$footer = TRUE;
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
 				'http://maps.google.com/maps/api/js?sensor=false',
-				array( 'jquery' ), IP_Geo_Block::VERSION, true
+				array( 'jquery' ), IP_Geo_Block::VERSION, $footer
 			);
 
 			// js for footable https://github.com/bradvin/FooTable
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-footable-js',
 				plugins_url( 'js/footable.min.js', __FILE__ ),
-				array( 'jquery' ), IP_Geo_Block::VERSION, true
+				array( 'jquery' ), IP_Geo_Block::VERSION, $footer
 			);
 
 			// js for option page
 			$handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script';
 			wp_enqueue_script( $handle,
 				plugins_url( 'js/admin.js', __FILE__ ),
-				array( 'jquery' ), IP_Geo_Block::VERSION, true
+				array( 'jquery' ), IP_Geo_Block::VERSION, $footer
 			);
 
 			// global value for ajax @since r16
