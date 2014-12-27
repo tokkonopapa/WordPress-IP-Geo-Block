@@ -601,10 +601,13 @@ class IP_Geo_Block_Admin {
 
 			  case 'restore':
 				$which = IP_Geo_Block_Logs::restore_log( $which );
+				$limit = isset( $_POST['time'] ) ? (int)$_POST['time'] : 0;
+				$limit = ( $limit <= 100 ? 100 : 50 ); // if slow then limit
 
 				// compose html with sanitization
 				foreach ( $which as $hook => $rows ) {
 					$html = '';
+					$n = 0;
 					foreach ( $rows as $logs ) {
 						$log = (int)array_shift( $logs );
 						$html .= "<tr>\n<td data-value='" . $log . "'>";
@@ -612,6 +615,7 @@ class IP_Geo_Block_Admin {
 						foreach ( $logs as $log )
 							$html .= "<td>" . esc_html( $log ) . "</td>\n";
 						$html .= "</tr>\n";
+						if ( ++$n >= $limit ) break;
 					}
 					$res[ $hook ] = $html;
 				}
