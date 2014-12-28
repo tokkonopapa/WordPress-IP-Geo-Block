@@ -132,7 +132,8 @@ abstract class IP_Geo_Block_API {
 		$res = array();
 		foreach ( $this->transform_table as $key => $val ) {
 			if ( ! empty( $val ) && ! empty( $data[ $val ] ) )
-				$res[ $key ] = esc_html( $data[ $val ] );
+				$res[ $key ] = is_string( $data[ $val ] ) ? 
+					esc_html( $data[ $val ] ) : $data[ $val ];
 		}
 
 		return $res;
@@ -562,7 +563,6 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 			break;
 		  default:
 			$res = array( 'errorMessage' => 'unknown database type' );
-			break;
 		}
 
 		geoip_close( $geo );
