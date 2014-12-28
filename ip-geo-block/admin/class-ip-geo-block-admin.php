@@ -600,11 +600,11 @@ class IP_Geo_Block_Admin {
 				break;
 
 			  case 'restore':
-				$which = IP_Geo_Block_Logs::restore_log( $which );
-				$limit = isset( $_POST['time'] ) ? (int)$_POST['time'] : 0;
-				$limit = ( $limit <= 100 ? 100 : 50 ); // if slow then limit
+				// if js is slow then limit the number of rows
+				$limit = IP_Geo_Block_Logs::limit_rows( @$_POST['time'] );
 
 				// compose html with sanitization
+				$which = IP_Geo_Block_Logs::restore_log( $which );
 				foreach ( $which as $hook => $rows ) {
 					$html = '';
 					$n = 0;

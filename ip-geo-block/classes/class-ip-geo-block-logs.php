@@ -61,6 +61,22 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
+	 * Limit the number of rows to be shown
+	 *
+	 */
+	public static function limit_rows( $time ) {
+		$time = intval( $time );
+		$options = IP_Geo_Block::get_option( 'settings' );
+
+		if ( $time < 75 /* msec */ )
+			return (int)$options['validation']['maxlogs'];
+		else if ( $time < 150 /* msec */ )
+			return (int)($options['validation']['maxlogs'] / 2);
+
+		return (int)($options['validation']['maxlogs'] / 5);
+	}
+
+	/**
 	 * Validate string whether utf8
 	 *
 	 * @note code from wp_check_invalid_utf8() in wp-includes/formatting.php
