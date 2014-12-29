@@ -273,17 +273,15 @@ class IP_Geo_Block_Logs {
 	 * @notice $path should not be in the public_html.
 	 */
 	private static function backup_log( $hook, $validate, $method, $agent, $heads, $posts, $path ) {
-		// $path should be absolute path
+		// $path should be absolute path to the directory
 		if ( validate_file( $path ) !== 0 )
 			return;
 
 		$path = trailingslashit( $path ) .
 			IP_Geo_Block::PLUGIN_SLUG . date('-ymw') . '.log';
-
 		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )
 			return;
 
-		// &#044; --> &#130;
 		fprintf( $fp, "%d,%s,%s,%d,%s,%s,%s,%s,%s,%s\n",
 			$_SERVER['REQUEST_TIME'],
 			$validate['ip'],
@@ -292,9 +290,9 @@ class IP_Geo_Block_Logs {
 			$validate['code'],
 			$validate['result'],
 			$method,
-			str_replace( ',', '‚', $agent ),
-			str_replace( ',', '‚', $heads ),
-			str_replace( ',', '‚', $posts )
+			str_replace( ',', '‚', $agent ), // &#044; --> &#130;
+			str_replace( ',', '‚', $heads ), // &#044; --> &#130;
+			str_replace( ',', '‚', $posts )  // &#044; --> &#130;
 		);
 
 		fclose( $fp );
@@ -308,7 +306,7 @@ class IP_Geo_Block_Logs {
 	 *
 	 *   1. Record only utf8 under the condition that the site charset is utf8
 	 *   2. Record by limiting the length of the string
-	 *   3. Mask the password regardless of a state of the authentication
+	 *   3. Mask the password if it is authenticated
 	 *
 	 * @param string $hook type of log name
 	 * @param array $validate validation results
@@ -359,10 +357,12 @@ class IP_Geo_Block_Logs {
 		) and $wpdb->query( $sql );
 
 		// backup logs
-		if ( $settings['validation']['backup'] ) {
+		$dir = apply_filters(
+			IP_Geo_Block::PLUGIN_SLUG . '-backup-dir', $settings['validation']['backup']
+		);
+		if ( $dir ) {
 			self::backup_log(
-				$hook, $validate, $method, $agent,
-				$heads, $posts, $settings['validation']['backup']
+				$hook, $validate, $method, $agent, $heads, $posts, $dir
 			);
 		}
 	}
