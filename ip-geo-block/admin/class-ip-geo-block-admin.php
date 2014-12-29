@@ -168,7 +168,7 @@ class IP_Geo_Block_Admin {
 	public function add_plugin_meta_links( $links, $file ) {
 
 		if ( $file === IP_GEO_BLOCK_BASE ) {
-			$title = __( 'Contribute on GitHub', IP_Geo_Block::TEXT_DOMAIN );
+			$title = __( 'Contribute at GitHub', IP_Geo_Block::TEXT_DOMAIN );
 			array_push(
 				$links,
 				"<a href=\"https://github.com/tokkonopapa/WordPress-IP-Geo-Block\" title=\"$title\" target=_blank>$title</a>"

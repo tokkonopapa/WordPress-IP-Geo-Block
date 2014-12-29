@@ -49,10 +49,10 @@ function ip_geo_block_list_accesslog() {
 	foreach ( array_keys( $title ) as $key ) {
 		echo "<h4>", $title[ $key ], "</h4>\n";
 		echo "<table class='fixed ", IP_Geo_Block::PLUGIN_SLUG, "-log' data-page-size='10' data-limit-navigation='2'><thead><tr>\n";
-		echo "<th data-type='numeric'>", __( 'Time of date', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "<th>", __( 'IP address',   IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "<th>", __( 'Country code', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "<th>", __( 'Result',       IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th data-type='numeric'>", __( 'Date', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th>", __( 'IP address', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th>", __( 'Code',       IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th>", __( 'Result',     IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='phone,tablet'>", __( 'Request', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='all'>", __( 'User agent', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='all'>", __( 'HTTP headers', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";

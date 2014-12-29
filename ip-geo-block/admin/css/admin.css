@@ -66,28 +66,36 @@ dfn {
 ul.ip-geo-block-statistics-countries li {
     width: 12em;
     float: left;
+    text-align: right;
+    padding: 0.2em;
 }
 
 /* table */
 .ip-geo-block-statistics-post th,
-.ip-geo-block-statistics-type th,
-.ip-geo-block-statistics-service th,
-.ip-geo-block-statistics-cache th {
-    width: 12em;
-    text-align: right;
-}
-
 .ip-geo-block-statistics-post td,
+.ip-geo-block-statistics-type th,
 .ip-geo-block-statistics-type td,
+.ip-geo-block-statistics-service th,
 .ip-geo-block-statistics-service td,
+.ip-geo-block-statistics-cache th,
 .ip-geo-block-statistics-cache td {
+    width: 12em;
+    margin: 0;
+    padding: 0.2em 0;
     text-align: right;
+    line-height: 1.5em;
 }
 
 /* for footable */
 .ip-geo-block-log {
     width: 100% !important;
 }
+.ip-geo-block-log * {
+    font-size: 13px !important;
+    line-height: 1.5em;
+    vertical-align: middle;
+}
+
 .ip-geo-block-log .pagination ul {
     border-radius: 4px;
     display: inline-block;
@@ -147,10 +155,12 @@ ul.ip-geo-block-statistics-countries li {
 .ip-geo-block-log.breakpoint > tbody > tr > td > span.footable-toggle {
     font-size: 60% !important;
     position: relative;
-    top: -1px
+    top: -1px;
+    left: 2px;
 }
 .ip-geo-block-log > thead > tr > th,
 .ip-geo-block-log > tbody > tr > td {
+    padding: 4px 0;
     width: 20%;
     word-wrap: break-word;
 }
@@ -170,15 +180,11 @@ ul.ip-geo-block-statistics-countries li {
     text-align: left;
 }
 .ip-geo-block-log .footable-row-detail-row,
-.ip-geo-block-log .footable-row-detail-name {
+.ip-geo-block-log .footable-row-detail-name,
+.ip-geo-block-log .footable-row-detail-value {
     display: block;
 }
 .ip-geo-block-log .footable-row-detail-value {
-    display: inline-block;
-    margin-left: 1em;
+    padding: 0 1em 4px 1em;
     overflow: scroll;
-}
-
-td.footable-row-detail-cell * {
-    font-size: 13px !important;
 }
