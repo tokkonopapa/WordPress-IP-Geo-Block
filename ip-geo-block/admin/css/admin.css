@@ -8,7 +8,6 @@ dfn {
     width: 8em;
     display: inline-block;
 }
-
 @media screen and (min-width:782px) {
     #check-provider .code {
         width: 15em;
@@ -23,7 +22,6 @@ dfn {
     width: 16px;
     display: inline-block;
 }
-
 .ip-geo-block-loading {
     background-size: 16px 16px;
     background-position: center center;
@@ -95,7 +93,6 @@ ul.ip-geo-block-statistics-countries li {
     line-height: 1.5em;
     vertical-align: middle;
 }
-
 .ip-geo-block-log .pagination ul {
     border-radius: 4px;
     display: inline-block;
@@ -145,8 +142,6 @@ ul.ip-geo-block-statistics-countries li {
 .ip-geo-block-log .pagination ul > li > a:focus,
 .ip-geo-block-log .pagination ul > .active > a,
 .ip-geo-block-log .pagination ul > .active > span {
-    /*background none repeat scroll 0 0 #2ea2cc;
-    color: #fff;*/
     background-color: #f7f7f7;
 }
 .ip-geo-block-log .pagination-centered {
@@ -161,14 +156,29 @@ ul.ip-geo-block-statistics-countries li {
 .ip-geo-block-log > thead > tr > th,
 .ip-geo-block-log > tbody > tr > td {
     padding: 4px 0;
-    width: 20%;
     word-wrap: break-word;
+    width: 20%;
 }
 .ip-geo-block-log > thead > tr > th:first-child,
 .ip-geo-block-log > tbody > tr > td:first-child,
 .ip-geo-block-log > thead > tr > th:first-child + th,
 .ip-geo-block-log > tbody > tr > td:first-child + td {
     width: 30%;
+}
+.ip-geo-block-log > thead > tr > th:nth-child(5),
+.ip-geo-block-log > tbody > tr > td:nth-child(5),
+.ip-geo-block-log > thead > tr > th:nth-child(5) + th,
+.ip-geo-block-log > tbody > tr > td:nth-child(5) + td {
+    width: 60%;
+    text-align: left;
+}
+@media screen and (min-width: 1024px) {
+    .ip-geo-block-log > thead > tr > th:nth-child(3),
+    .ip-geo-block-log > tbody > tr > td:nth-child(3),
+    .ip-geo-block-log > thead > tr > th:nth-child(3) + th,
+    .ip-geo-block-log > tbody > tr > td:nth-child(3) + td {
+        width: 10%;
+    }
 }
 .ip-geo-block-log > thead > tr > th > span.footable-sort-indicator {
     color: #888;
