@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 2.0.0\n"
+"Project-Id-Version: IP Geo Block 1.4.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2014-12-29 14:41+0900\n"
-"PO-Revision-Date: 2014-12-29 14:41+0900\n"
+"POT-Creation-Date: 2014-12-30 18:31+0900\n"
+"PO-Revision-Date: 2014-12-30 18:33+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,60 +21,59 @@ msgstr ""
 
 # description
 msgid ""
-"A WordPress plugin that blocks any comment, pingback and trackback spams "
-"posted from outside of your nation, and also protect against malicious "
-"access to the login form, admin area and XML-RPC from undesired countries."
+"A WordPress plugin that will blocks any comment, pingback and trackback "
+"spams posted from outside of your nation."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:81
 msgid "You need WordPress 3.7+"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:174
-#: admin/class-ip-geo-block-admin.php:228
+#: admin/class-ip-geo-block-admin.php:157
+#: admin/class-ip-geo-block-admin.php:211
 msgid "Settings"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:188
+#: admin/class-ip-geo-block-admin.php:171
 msgid "Contribute at GitHub"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:206
-#: admin/class-ip-geo-block-admin.php:207
+#: admin/class-ip-geo-block-admin.php:189
+#: admin/class-ip-geo-block-admin.php:190
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:229
+#: admin/class-ip-geo-block-admin.php:212
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:231
+#: admin/class-ip-geo-block-admin.php:214
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:233
+#: admin/class-ip-geo-block-admin.php:216
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:234
+#: admin/class-ip-geo-block-admin.php:217
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:298
+#: admin/class-ip-geo-block-admin.php:281
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:299
+#: admin/class-ip-geo-block-admin.php:282
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:369
+#: admin/class-ip-geo-block-admin.php:352
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:519
+#: admin/class-ip-geo-block-admin.php:502
 msgid "Successfully updated"
 msgstr ""
 
@@ -95,47 +94,39 @@ msgid "<dfn title=\"Validate post to wp-comments-post.php\">Comment post</dfn>"
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:46 admin/includes/tab-settings.php:91
-msgid "<dfn title=\"Validate access to wp-login.php\">Login form</dfn>"
+msgid "<dfn title=\"Validate pingback.ping to xmlrpc.php\">XML-RPC</dfn>"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:47 admin/includes/tab-settings.php:92
-msgid "<dfn title=\"Validate access to wp-admin/admin.php\">Admin area</dfn>"
-msgstr ""
-
-#: admin/includes/tab-accesslog.php:48 admin/includes/tab-settings.php:94
-msgid "<dfn title=\"Validate access to xmlrpc.php\">XML-RPC</dfn>"
-msgstr ""
-
-#: admin/includes/tab-accesslog.php:54
+#: admin/includes/tab-accesslog.php:52
 msgid "Date"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:55 admin/includes/tab-geolocation.php:56
+#: admin/includes/tab-accesslog.php:53 admin/includes/tab-geolocation.php:56
 #: admin/includes/tab-statistics.php:140
 msgid "IP address"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:56
+#: admin/includes/tab-accesslog.php:54
 msgid "Code"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:57
+#: admin/includes/tab-accesslog.php:55
 msgid "Result"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:58
+#: admin/includes/tab-accesslog.php:56
 msgid "Request"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:59
+#: admin/includes/tab-accesslog.php:57
 msgid "User agent"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:60
+#: admin/includes/tab-accesslog.php:58
 msgid "HTTP headers"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:61
+#: admin/includes/tab-accesslog.php:59
 msgid "$_POST data"
 msgstr ""
 
@@ -171,152 +162,146 @@ msgstr ""
 msgid "Validation settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:93
-msgid ""
-"<dfn title=\"Validate access to wp-admin/admin-ajax.php (logged in “Admin "
-"area”)\">Admin Ajax</dfn>"
-msgstr ""
-
-#: admin/includes/tab-settings.php:129
+#: admin/includes/tab-settings.php:115
 msgid "Record validation statistics"
 msgstr ""
 
-#: admin/includes/tab-settings.php:144
+#: admin/includes/tab-settings.php:130
 msgid "Record validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:155
+#: admin/includes/tab-settings.php:141
 msgid "Disable"
 msgstr ""
 
-#: admin/includes/tab-settings.php:156
+#: admin/includes/tab-settings.php:142
 msgid "Only when blocked"
 msgstr ""
 
-#: admin/includes/tab-settings.php:157
+#: admin/includes/tab-settings.php:143
 msgid "Only when passed"
 msgstr ""
 
-#: admin/includes/tab-settings.php:158
+#: admin/includes/tab-settings.php:144
 msgid "Unauthenticated user"
 msgstr ""
 
-#: admin/includes/tab-settings.php:159
+#: admin/includes/tab-settings.php:145
 msgid "Authenticated user"
 msgstr ""
 
-#: admin/includes/tab-settings.php:160
+#: admin/includes/tab-settings.php:146
 msgid "All of validation"
 msgstr ""
 
-#: admin/includes/tab-settings.php:167
+#: admin/includes/tab-settings.php:153
 msgid "<dfn title=\"ex) log, pwd, comment\">$_POST keys in logs</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:177 admin/includes/tab-settings.php:195
-#: admin/includes/tab-settings.php:348 admin/includes/tab-settings.php:364
+#: admin/includes/tab-settings.php:163 admin/includes/tab-settings.php:181
+#: admin/includes/tab-settings.php:334 admin/includes/tab-settings.php:350
 msgid "(comma separated)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:185
+#: admin/includes/tab-settings.php:171
 msgid ""
 "<dfn title=\"ex) HTTP_X_FORWARDED_FOR\">$_SERVER keys for extra IPs</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:205
+#: admin/includes/tab-settings.php:191
 msgid "Maxmind GeoLite settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:213
+#: admin/includes/tab-settings.php:199
 msgid "Path to database (IPv4)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:226 admin/includes/tab-settings.php:247
+#: admin/includes/tab-settings.php:212 admin/includes/tab-settings.php:233
 #: includes/download.php:126
 #, php-format
 msgid "Last update: %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:234
+#: admin/includes/tab-settings.php:220
 msgid "Path to database (IPv6)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:256
+#: admin/includes/tab-settings.php:242
 msgid "Auto updating (once a month)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:271
+#: admin/includes/tab-settings.php:257
 msgid "Download database"
 msgstr ""
 
-#: admin/includes/tab-settings.php:279
+#: admin/includes/tab-settings.php:265
 msgid "Download now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:290
+#: admin/includes/tab-settings.php:276
 msgid "Submission settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:298
+#: admin/includes/tab-settings.php:284
 msgid "Text message on comment form"
 msgstr ""
 
-#: admin/includes/tab-settings.php:309
+#: admin/includes/tab-settings.php:295
 msgid "None"
 msgstr ""
 
-#: admin/includes/tab-settings.php:310
+#: admin/includes/tab-settings.php:296
 msgid "Top"
 msgstr ""
 
-#: admin/includes/tab-settings.php:311
+#: admin/includes/tab-settings.php:297
 msgid "Bottom"
 msgstr ""
 
-#: admin/includes/tab-settings.php:320
+#: admin/includes/tab-settings.php:306
 msgid "Matching rule"
 msgstr ""
 
-#: admin/includes/tab-settings.php:330
+#: admin/includes/tab-settings.php:316
 msgid "White list"
 msgstr ""
 
-#: admin/includes/tab-settings.php:331
+#: admin/includes/tab-settings.php:317
 msgid "Black list"
 msgstr ""
 
-#: admin/includes/tab-settings.php:339
+#: admin/includes/tab-settings.php:325
 #, php-format
 msgid "<dfn title=\"If empth then pass through\">White list</dfn> %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:355
+#: admin/includes/tab-settings.php:341
 #, php-format
 msgid "<dfn title=\"If empth then pass through\">Black list</dfn> %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:371
+#: admin/includes/tab-settings.php:357
 #, php-format
 msgid "Response code %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:403
+#: admin/includes/tab-settings.php:389
 msgid "Cache settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:411
+#: admin/includes/tab-settings.php:397
 msgid "Number of entries"
 msgstr ""
 
-#: admin/includes/tab-settings.php:426
+#: admin/includes/tab-settings.php:412
 msgid "Expiration time [sec]"
 msgstr ""
 
-#: admin/includes/tab-settings.php:444
+#: admin/includes/tab-settings.php:430
 msgid "Plugin settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:452
+#: admin/includes/tab-settings.php:438
 msgid "Remove settings at uninstallation"
 msgstr ""
 
@@ -376,7 +361,7 @@ msgstr ""
 msgid "Clear statistics"
 msgstr ""
 
-#: classes/class-ip-geo-block.php:412
+#: classes/class-ip-geo-block.php:389
 msgid "Sorry, but you cannot be accepted."
 msgstr ""
 

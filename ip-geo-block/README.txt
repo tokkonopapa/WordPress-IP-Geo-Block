@@ -8,7 +8,7 @@ Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress plugin that will block any comment, pingback and trackback spams 
+A WordPress plugin that will blocks any comment, pingback and trackback spams 
 posted from outside of your nation.
 
 == Description ==
@@ -44,12 +44,6 @@ one of the IP2Location plugins (
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
 ), this plugin uses its local database prior to the REST APIs.
 
-= Development =
-
-Development of this plugin is promoted on 
-    [GitHub](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub").
-All contributions will always be welcome.
-
 = Attribution =
 
 This package includes GeoLite data created by MaxMind, available from 
@@ -67,6 +61,12 @@ And also thanks for providing these great services and REST APIs for free.
 * [http://www.geoplugin.com/](http://www.geoplugin.com/ "geoPlugin to geolocate your visitors") (IPv4, IPv6 / free, need an attribution link)
 * [http://ip-api.com/](http://ip-api.com/ "IP-API.com - Free Geolocation API") (IPv4, IPv6 / free for non-commercial use)
 * [http://ipinfodb.com/](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") (IPv4, IPv6 / free for registered user, need API key)
+
+= Development =
+
+Development of this plugin is promoted on 
+    [GitHub](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub").
+All contributions will always be welcome.
 
 == Installation ==
 

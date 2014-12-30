@@ -12,7 +12,7 @@
  *
  * Plugin Name:       IP Geo Block
  * Plugin URI:        http://wordpress.org/plugins/ip-geo-block/
- * Description:       A WordPress plugin that blocks any comment, pingback and trackback spams posted from outside of your nation.
+ * Description:       A WordPress plugin that will blocks any comment, pingback and trackback spams posted from outside of your nation.
  * Version:           1.4.0
  * Author:            tokkonopapa
  * Author URI:        https://github.com/tokkonopapa/WordPress-IP-Geo-Block

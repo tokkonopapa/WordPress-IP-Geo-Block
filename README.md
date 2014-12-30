@@ -1,9 +1,9 @@
 IP Geo Block
 ==============
 
-A WordPress plugin that will block any comment, pingback and trackback spams 
-posted from outside of your nation, and will also protect against malicious 
-access to the login form from undesired countries.
+A WordPress plugin that will blocks any comment, pingback and trackback spams 
+posted from outside of your nation. And it will also protect against malicious 
+access to the login form, admin area and XML-RPC from undesired countries.
 
 This plugin will examine a country code based on the IP address. If the 
 comment, pingback or trackback comes from specific country, it will be blocked 
