@@ -183,12 +183,14 @@ class IP_Geo_Block {
 	 * Get geolocation and country code from an ip address
 	 *
 	 */
-	public static function get_geolocation( $ip, $list = array() ) {
+	public static function get_geolocation( $ip, $list = array(), $callback = 'get_location' ) {
 		$settings = self::get_option( 'settings' );
-		return self::_get_geolocation( $ip, $settings, $list, 'get_location' );
+		return self::_get_geolocation( $ip, $settings, $list, $callback );
 	}
 
 	private static function _get_geolocation( $ip, $settings, $list = array(), $callback = 'get_country' ) {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+
 		// make providers list
 		if ( empty( $list ) ) {
 			$geo = IP_Geo_Block_Provider::get_providers( 'key', TRUE, TRUE );
@@ -316,8 +318,6 @@ class IP_Geo_Block {
 	 * @param array $settings option settings
 	 */
 	private function validate_ip( $hook, $settings ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-
 		// set IP address to be validated
 		$ips = array(
 			(string) apply_filters(
