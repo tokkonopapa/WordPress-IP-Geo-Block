@@ -35,6 +35,9 @@ class IP_Geo_Block_Admin {
 	 * and adding a settings page and menu.
 	 */
 	private function __construct() {
+		// load plugin text domain
+		add_action( 'init', 'IP_Geo_Block::load_plugin_textdomain' );
+
 		// Set unique slug for admin page.
 		foreach ( IP_Geo_Block::$option_keys as $key => $val ) {
 			$this->option_slug[ $key ] = str_replace( '_', '-', $val );

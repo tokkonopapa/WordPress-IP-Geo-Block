@@ -43,9 +43,6 @@ class IP_Geo_Block {
 	 * 
 	 */
 	private function __construct() {
-		// load plugin text domain
-		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
-
 		// check the package version and upgrade if needed
 		$settings = self::get_option( 'settings' );
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 )
@@ -68,9 +65,8 @@ class IP_Geo_Block {
 		}
 
 		// xmlrpc.php @since 3.1.0
-		if ( $settings['validation']['xmlrpc'] ) {
+		if ( $settings['validation']['xmlrpc'] )
 			add_filter( 'wp_xmlrpc_server_class', array( $this, 'validate_admin' ) );
-		}
 	}
 
 	// get default optional values
@@ -116,13 +112,12 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function activate( $network_wide = NULL ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-
 		// upgrade options
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 		$settings = IP_Geo_Block_Options::upgrade();
 
 		// create log
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 		IP_Geo_Block_Logs::create_log();
 
 		// execute to download immediately
@@ -168,7 +163,7 @@ class IP_Geo_Block {
 	 * Load the plugin text domain for translation.
 	 *
 	 */
-	public function load_plugin_textdomain() {
+	public static function load_plugin_textdomain() {
 		load_plugin_textdomain( self::TEXT_DOMAIN, FALSE, dirname( IP_GEO_BLOCK_BASE ) . '/languages/' );
 	}
 
@@ -194,8 +189,6 @@ class IP_Geo_Block {
 	}
 
 	private static function _get_geolocation( $ip, $settings, $list = array(), $callback = 'get_country' ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-
 		// make providers list
 		if ( empty( $list ) ) {
 			$geo = IP_Geo_Block_Provider::get_providers( 'key', TRUE, TRUE );
@@ -323,6 +316,8 @@ class IP_Geo_Block {
 	 * @param array $settings option settings
 	 */
 	private function validate_ip( $hook, $settings ) {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+
 		// set IP address to be validated
 		$ips = array(
 			(string) apply_filters(
@@ -386,6 +381,7 @@ class IP_Geo_Block {
 				$this->update_statistics( $validate );
 
 			// send response code to refuse
+			self::load_plugin_textdomain();
 			$this->send_response(
 				$settings['response_code'],
 				__( 'Sorry, but you cannot be accepted.', self::TEXT_DOMAIN )
