@@ -268,7 +268,7 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Backup the validation log
+	 * Backup the validation log to text files
 	 *
 	 * @notice $path should not be in the public_html.
 	 */
@@ -356,11 +356,11 @@ class IP_Geo_Block_Logs {
 			$posts
 		) and $wpdb->query( $sql );
 
-		// backup logs
-		$dir = apply_filters(
-			IP_Geo_Block::PLUGIN_SLUG . '-backup-dir', $settings['validation']['backup']
-		);
-		if ( $dir ) {
+		// backup logs to text files
+		if ( $dir = apply_filters(
+			IP_Geo_Block::PLUGIN_SLUG . '-backup-dir',
+			$hook, $settings['validation']['backup']
+		) ) {
 			self::backup_log(
 				$hook, $validate, $method, $agent, $heads, $posts, $dir
 			);
