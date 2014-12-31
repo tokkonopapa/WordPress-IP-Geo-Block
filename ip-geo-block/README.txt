@@ -217,6 +217,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 = 1.4.0 =
 * **New feature:** Added a new class for recording the validation logs to 
   analyze posting pattern.
+* Fixed an issue of not being set the own country code at first installation.
 * Fixed an error which occurs when ip address is unknown.
 
 = 1.3.1 =
