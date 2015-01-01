@@ -74,7 +74,7 @@ var start = new Date();
 			warning(textStatus, jqXHR.responseText);
 		})
 
-		.complete(function () {
+		.always(function () {
 			loding('download', false);
 		});
 	}
@@ -117,7 +117,7 @@ var start = new Date();
 			warning(textStatus, jqXHR.responseText);
 		})
 
-		.complete(function () {
+		.always(function () {
 			loding('loading', false);
 		});
 	}
@@ -140,7 +140,7 @@ var start = new Date();
 			warning(textStatus, jqXHR.responseText);
 		})
 
-		.complete(function () {
+		.always(function () {
 			loding('loading', false);
 		});
 	}
@@ -164,7 +164,7 @@ var start = new Date();
 			warning(textStatus, jqXHR.responseText);
 		})
 
-		.complete(function () {
+		.always(function () {
 			loding('loading', false);
 		});
 	}
@@ -194,7 +194,7 @@ var start = new Date();
 			warning(textStatus, jqXHR.responseText);
 		})
 
-		.complete(function () {
+		.always(function () {
 			if (typeof $.fn.footable === 'function') {
 //				console.time('timer');
 				$('.ip-geo-block-log').fadeIn('slow').footable();
