@@ -302,8 +302,10 @@ class IP_Geo_Block {
 			header( 'Location: http://blackhole.webpagetest.org/', TRUE, $code );
 			die();
 
-		  case 4: // 4xx Client Error
-			wp_die( $msg, 'Error', array( 'response' => $code, 'back_link' => TRUE ) );
+		  case 4: // 4xx Client Error ('text/html' is only for comment and login)
+			if ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
+				wp_die( $msg, 'Error', array( 'response' => $code, 'back_link' => TRUE ) );
+			}
 
 		  default: // 5xx Server Error
 			status_header( $code ); // @since 2.0.0
