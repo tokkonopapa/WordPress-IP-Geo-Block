@@ -227,17 +227,13 @@ function get_geolocation(ip) {
 	})
 
 	.always(function (data, textStatus, errorThrown) {
-		if (api.get(data, 'name')) {
-			var $ip = $('#ip-address');
-			$ip.val(combine_ip(
-				$ip.val(), api.get(data, 'name') + ' (' + api.get(data, 'code') + ')'
-			));
-		} else {
-			message(
-				'geolocation',
-				api.api + ': ' + ip + ' ' + api.get(data, 'error')
-			);
-		}
+		var $ip = $('#ip-address');
+		var msg = api.get(data, 'name');
+		if (msg)
+			msg += ' (' + api.get(data, 'code') + ')';
+		else
+			msg = api.get(data, 'error') + ' (' + api.api + ')';
+		$ip.val(combine_ip($ip.val(), msg));
 	});
 
 	return ip;
