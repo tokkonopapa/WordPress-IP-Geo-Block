@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="referrer" content="origin"> <!-- Chrome(39), Safari(7) -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WordPress POST Access Emulator</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="js/transparency.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/script.js"></script>
+</head>
+<body>
+
+<h1 data-bind="_main-title_"></h1>
+
+<!-- Page Settings -->
+<div class="content">
+	<div class="setting">
+		<h2 data-bind="_page-settings_"></h2>
+		<p data-bind="_page_readme_"></p>
+		<form class="page-form" action="">
+			<!-- WordPress Home -->
+			<p>
+				<label for="home-url">
+					<span data-bind="_home-url_"></span>
+				</label>
+				<input type="text" id="home-url" name="home-url" value="" />
+				<input type="button" id="validate-home-url" value="Validate" />
+			</p>
+			<!-- Single Page -->
+			<p>
+				<label for="single-page">
+					<span data-bind="_single-page_"></span>
+				</label>
+				<input type="text" id="single-page" name="single-page" value="" />
+				<input type="button" id="validate-single-page" value="Validate" />
+			</p>
+			<!-- Proxy IP Address -->
+			<p>
+				<label for="ip-address">
+					<span data-bind="_ip-address_"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" id="ip-address" name="ip-address" value="" />
+				<input type="button" id="ip-generate" value="Generate" />
+			</p>
+			<p>
+				<span class="required">*</span>
+				<span class="_note-ip-address_"></span>
+			</p>
+		</form>
+	</div>
+</div>
+
+<!-- POST Access -->
+<div class="content">
+	<div class="setting">
+		<h2 data-bind="_submit_post_"></h2>
+		<p>
+			<input type="submit" name="submit" id="submit" value="Submit" />
+			<input type="button" name="reset" id="reset" value="Reset" />
+		</p>
+		<textarea readonly class="fullsize" id="result" rows="8"></textarea>
+	</div>
+</div>
+
+<!-- Post Settings -->
+<div class="content">
+	<h2 data-bind="_post-settings_"></h2>
+	<p>
+		<span class="required">*</span>
+		<span data-bind="_required_"></span>
+	</p>
+	<p>
+		<input type="checkbox" id="cb-post-items" checked="checked" />
+		<label for="cb-post-items">
+			<span data-bind="_cb-post-items_" id="cb-label"></span>
+		</label>
+	</p>
+
+	<!-- Post Comment -->
+	<div class="setting">
+		<h3 class="collapse" data-bind="_post_comment_"></h3>
+		<input type="checkbox" id="cb-comment" checked="checked" />
+		<form class="post-form" id="comment-form" action="">
+			<!-- Name -->
+			<p>
+				<label for="author">
+					<span data-bind="_author_"></span>
+					<span class="required">*</span>
+				</label>
+				<input id="author" name="author" type="text" value="spam-master" />
+			</p>
+			<!-- Email -->
+			<p>
+				<label for="email">
+					<span data-bind="_email_"></span>
+					<span class="required">*</span>
+				</label>
+				<input id="email" name="email" type="text" value="spam@example.com" />
+			</p>
+			<!-- Site URL -->
+			<p>
+				<label for="site-url">
+					<span data-bind="_site-url_"></span>
+				</label>
+				<input id="site-url" name="url" type="text" value="http://example.com/" />
+			</p>
+			<!-- Comment -->
+			<p>
+				<label for="comment">
+					<span data-bind="_comment_"></span>
+				</label>
+				<textarea id="comment" name="comment" rows="1">This is a spam comment.</textarea>
+			</p>
+			<!-- Comment ID -->
+			<p>
+				<input type="hidden" name="comment_post_ID" id="comment_post_ID" value="0" />
+				<input type="hidden" name="comment_parent" id="comment_parent" value="0" />
+			</p>
+		</form>
+	</div>
+
+	<!-- Trackback -->
+	<div class="setting">
+		<h3 class="collapse" data-bind="_trackback_"></h3>
+		<input type="checkbox" id="cb-trackback" checked="checked" />
+		<form class="post-form" id="trackback-form" action="">
+			<!-- Title -->
+			<p>
+				<label for="title">
+					<span data-bind="_title_"></span>
+					<span class="required">*</span>
+				</label>
+				<input id="title" name="title" type="text" value="About spam" />
+			</p>
+			<!-- Excerpt -->
+			<p>
+				<label for="excerpt">
+					<span data-bind="_excerpt_"></span>
+					<span class="required">*</span>
+				</label>
+				<textarea id="excerpt" name="excerpt" rows="1">This is a trackback spam.</textarea>
+			</p>
+			<!-- Trackback URL -->
+			<p>
+				<label for="trackback-url">
+					<span data-bind="_trackback-url_"></span>
+					<span class="required">*</span>
+				</label>
+				<input id="trackback-url" name="url" type="text" value="http://example.com/" />
+			</p>
+			<!-- Blog Name -->
+			<p>
+				<label for="blog_name">
+					<span data-bind="_blog_name_"></span>
+					<span class="required">*</span>
+				</label>
+				<input id="blog_name" name="blog_name" type="text" value="Spammer's" />
+			</p>
+		</form>
+	</div>
+
+	<!-- Login Form -->
+	<div class="setting">
+		<h3 class="collapse" data-bind="_login_"></h3>
+		<input type="checkbox" id="cb-login" checked="checked" />
+		<form class="post-form" id="login-form" action="">
+			<!-- User Name -->
+			<p>
+				<label for="log">
+					<span data-bind="_user-name_"></span>
+					<span class="required">*</span>
+				</label>
+				<input id="log" name="log" type="text" value="admin" />
+			</p>
+			<!-- Password -->
+			<p>
+				<label for="pwd">
+					<span data-bind="_password_"></span>
+					<span class="required">*</span>
+				</label>
+				<input id="pwd" name="pwd" type="text" value="0123abcd" />
+			</p>
+		</form>
+	</div>
+
+	<!-- Admin Area -->
+	<div class="setting">
+		<h3 class="collapse" data-bind="_admin-area_"></h3>
+		<input type="checkbox" id="cb-admin-area" checked="checked" />
+		<form class="post-form" id="admin-area" action="">
+			<!-- Admin Cookie -->
+			<p>
+				<label for="admin-cookie">
+					<span data-bind="_admin-cookie_"></span>
+				</label>
+				<input id="admin-cookie" name="admin-cookie" type="text" value="wordpress_test_cookie=WP+Cookie+check" />
+			</p>
+		</form>
+	</div>
+
+	<!-- Admin Ajax -->
+	<div class="setting">
+		<h3 class="collapse" data-bind="_admin-ajax_"></h3>
+		<input type="checkbox" id="cb-admin-ajax" checked="checked" />
+		<form class="post-form" id="admin-ajax" action="">
+			<!-- WP nonce -->
+			<p>
+				<label for="action">
+					<span data-bind="_action_"></span>
+					<span class="required">*</span>
+				</label>
+				<input id="action" name="action" type="text" value="myAction" />
+			</p>
+		</form>
+	</div>
+
+	<!-- Pingback -->
+	<div class="setting">
+		<h3 class="collapse" data-bind="_pingback_"></h3>
+		<input type="checkbox" id="cb-pingback" checked="checked" />
+		<form class="post-form" id="pingback" action="">
+			<p data-bind="_pingback_readme_"></p>
+			<textarea class="fullsize" id="pingback-xml" name="pingback-xml" rows="22">&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;methodcall&gt;
+    &lt;methodname&gt;
+        pingback.ping
+    &lt;/methodname&gt;
+    &lt;params&gt;
+        &lt;param&gt;
+            &lt;value&gt;
+                &lt;string&gt;
+                    http://example.com/
+                &lt;/string&gt;
+            &lt;/value&gt;
+        &lt;/param&gt;
+        &lt;param&gt;
+            &lt;value&gt;
+                &lt;string&gt;
+                    %WP_HOME%
+                &lt;/string&gt;
+            &lt;/value&gt;
+        &lt;/param&gt;
+    &lt;/params&gt;
+&lt;/methodcall&gt;</textarea>
+		</form>
+	</div>
+
+	<!-- XML-RPC -->
+	<div class="setting">
+		<h3 class="collapse" data-bind="_xmlrpc_"></h3>
+		<input type="checkbox" id="cb-xmlrpc" checked="checked" />
+		<form class="post-form" id="xmlrpc" action="">
+			<p data-bind="_xmlrpc_readme_"></p>
+			<textarea class="fullsize" id="xmlrpc-xml" name="xmlrpc-xml" rows="29">&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;methodcall&gt;
+    &lt;methodname&gt;
+        wp.getUsers
+    &lt;/methodname&gt;
+    &lt;params&gt;
+        &lt;param&gt;
+            &lt;value&gt;
+                &lt;string&gt;
+                    %USER_NAME%
+                &lt;/string&gt;
+            &lt;/value&gt;
+        &lt;/param&gt;
+        &lt;param&gt;
+            &lt;value&gt;
+                &lt;string&gt;
+                    %PASSWORD%
+                &lt;/string&gt;
+            &lt;/value&gt;
+        &lt;/param&gt;
+        &lt;param&gt;
+            &lt;value&gt;
+                &lt;string&gt;
+                    
+                &lt;/string&gt;
+            &lt;/value&gt;
+        &lt;/param&gt;
+    &lt;/params&gt;
+&lt;/methodcall&gt;</textarea>
+		</form>
+	</div>
+
+	<!-- XML-RPC Demo -->
+	<div class="setting">
+		<h3 class="collapse" data-bind="_xmlrpc-demo_"></h3>
+		<input type="checkbox" id="cb-xmlrpc-demo" checked="checked" />
+		<form class="post-form" id="xmlrpc-demo" action="">
+			<textarea class="fullsize" id="xmlrpc-demo-xml" name="xmlrpc-demo-xml" rows="6">&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;methodcall&gt;
+    &lt;methodname&gt;
+        demo.sayHello
+    &lt;/methodname&gt;
+&lt;/methodcall&gt;</textarea>
+		</form>
+	</div>
+</div>
+
+<div id="footer">
+	<div class="copyright">
+		<p>
+			<a href="https://github.com/tokkonopapa/WordPress-IP-Geo-Block" title="tokkonopapa/WordPress-IP-Geo-Block - GitHub">tokkonopapa/WordPress-IP-Geo-Block</a>
+		</p>
+	</div>
+</div>
+
+</body>
+</html>
