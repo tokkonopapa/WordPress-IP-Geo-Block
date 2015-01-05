@@ -193,7 +193,7 @@ function get_geolocation(ip) {
 			},
 		}
 		,{
-			api: 'Nukudo',
+			api: 'Nekudo',
 			url: 'https://query.yahooapis.com/v1/public/yql?q=select * from %API_FMT% where url="http://geoip.nekudo.com/api/%API_IP%"&format=%API_FMT%&jsonCompat=new',
 			fmt: 'json',
 			type: 'IPv4, IPv6',
