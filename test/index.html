@@ -13,14 +13,14 @@
 </head>
 <body>
 
-<h1 data-bind="_main-title_"></h1>
+<h1 data-bind="_main-title_">&nbsp;</h1>
 
 <!-- Page Settings -->
 <div class="content">
 	<div class="setting">
-		<h2 data-bind="_page-settings_"></h2>
+		<h2 data-bind="_page-settings_">&nbsp;</h2>
 		<p data-bind="_page_readme_"></p>
-		<form class="page-form" action="">
+		<form class="page-form">
 			<!-- WordPress Home -->
 			<p>
 				<label for="home-url">
@@ -57,7 +57,7 @@
 <!-- POST Access -->
 <div class="content">
 	<div class="setting">
-		<h2 data-bind="_submit_post_"></h2>
+		<h2 data-bind="_submit_post_">&nbsp;</h2>
 		<p>
 			<input type="submit" name="submit" id="submit" value="Submit" />
 			<input type="button" name="reset" id="reset" value="Reset" />
@@ -68,7 +68,7 @@
 
 <!-- Post Settings -->
 <div class="content">
-	<h2 data-bind="_post-settings_"></h2>
+	<h2 data-bind="_post-settings_">&nbsp;</h2>
 	<p>
 		<span class="required">*</span>
 		<span data-bind="_required_"></span>
@@ -82,9 +82,9 @@
 
 	<!-- Post Comment -->
 	<div class="setting">
-		<h3 class="collapse" data-bind="_post_comment_"></h3>
+		<h3 class="collapse" data-bind="_post_comment_">&nbsp;</h3>
 		<input type="checkbox" id="cb-comment" checked="checked" />
-		<form class="post-form" id="comment-form" action="">
+		<form class="post-form" id="comment-form">
 			<!-- Name -->
 			<p>
 				<label for="author">
@@ -125,9 +125,9 @@
 
 	<!-- Trackback -->
 	<div class="setting">
-		<h3 class="collapse" data-bind="_trackback_"></h3>
+		<h3 class="collapse" data-bind="_trackback_">&nbsp;</h3>
 		<input type="checkbox" id="cb-trackback" checked="checked" />
-		<form class="post-form" id="trackback-form" action="">
+		<form class="post-form" id="trackback-form">
 			<!-- Title -->
 			<p>
 				<label for="title">
@@ -165,9 +165,9 @@
 
 	<!-- Login Form -->
 	<div class="setting">
-		<h3 class="collapse" data-bind="_login_"></h3>
+		<h3 class="collapse" data-bind="_login_">&nbsp;</h3>
 		<input type="checkbox" id="cb-login" checked="checked" />
-		<form class="post-form" id="login-form" action="">
+		<form class="post-form" id="login-form">
 			<!-- User Name -->
 			<p>
 				<label for="log">
@@ -189,9 +189,9 @@
 
 	<!-- Admin Area -->
 	<div class="setting">
-		<h3 class="collapse" data-bind="_admin-area_"></h3>
+		<h3 class="collapse" data-bind="_admin-area_">&nbsp;</h3>
 		<input type="checkbox" id="cb-admin-area" checked="checked" />
-		<form class="post-form" id="admin-area" action="">
+		<form class="post-form" id="admin-area">
 			<!-- Admin Cookie -->
 			<p>
 				<label for="admin-cookie">
@@ -204,9 +204,9 @@
 
 	<!-- Admin Ajax -->
 	<div class="setting">
-		<h3 class="collapse" data-bind="_admin-ajax_"></h3>
+		<h3 class="collapse" data-bind="_admin-ajax_">&nbsp;</h3>
 		<input type="checkbox" id="cb-admin-ajax" checked="checked" />
-		<form class="post-form" id="admin-ajax" action="">
+		<form class="post-form" id="admin-ajax">
 			<!-- WP nonce -->
 			<p>
 				<label for="action">
@@ -220,9 +220,9 @@
 
 	<!-- Pingback -->
 	<div class="setting">
-		<h3 class="collapse" data-bind="_pingback_"></h3>
+		<h3 class="collapse" data-bind="_pingback_">&nbsp;</h3>
 		<input type="checkbox" id="cb-pingback" checked="checked" />
-		<form class="post-form" id="pingback" action="">
+		<form class="post-form" id="pingback">
 			<p data-bind="_pingback_readme_"></p>
 			<textarea class="fullsize" id="pingback-xml" name="pingback-xml" rows="22">&lt;?xml version='1.0' encoding='utf-8'?&gt;
 &lt;methodcall&gt;
@@ -251,9 +251,9 @@
 
 	<!-- XML-RPC -->
 	<div class="setting">
-		<h3 class="collapse" data-bind="_xmlrpc_"></h3>
+		<h3 class="collapse" data-bind="_xmlrpc_">&nbsp;</h3>
 		<input type="checkbox" id="cb-xmlrpc" checked="checked" />
-		<form class="post-form" id="xmlrpc" action="">
+		<form class="post-form" id="xmlrpc">
 			<p data-bind="_xmlrpc_readme_"></p>
 			<textarea class="fullsize" id="xmlrpc-xml" name="xmlrpc-xml" rows="29">&lt;?xml version='1.0' encoding='utf-8'?&gt;
 &lt;methodcall&gt;
@@ -289,9 +289,9 @@
 
 	<!-- XML-RPC Demo -->
 	<div class="setting">
-		<h3 class="collapse" data-bind="_xmlrpc-demo_"></h3>
+		<h3 class="collapse" data-bind="_xmlrpc-demo_">&nbsp;</h3>
 		<input type="checkbox" id="cb-xmlrpc-demo" checked="checked" />
-		<form class="post-form" id="xmlrpc-demo" action="">
+		<form class="post-form" id="xmlrpc-demo">
 			<textarea class="fullsize" id="xmlrpc-demo-xml" name="xmlrpc-demo-xml" rows="6">&lt;?xml version='1.0' encoding='utf-8'?&gt;
 &lt;methodcall&gt;
     &lt;methodname&gt;
