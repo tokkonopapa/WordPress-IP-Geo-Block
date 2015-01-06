@@ -122,10 +122,11 @@ class IP_Geo_Block_Logs {
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/functions.php
 	 */
-	private static function truncate_utf8( $str, $regexp, $replace = '', $len = IP_GEO_BLOCK_MAX_POST_LEN ) {
-		// remove unnecessary characters ('/[^\t\n\f\r]/')
-		$str = @preg_replace( '/[\x00-\x08\x0b\x0e-\x1f\x7f]/', '', $str );
-		$str = @preg_replace( $regexp, $replace, $str );
+	private static function truncate_utf8( $str, $regexp = NULL, $replace = '', $len = IP_GEO_BLOCK_MAX_POST_LEN ) {
+		// remove unnecessary characters
+		$str = @preg_replace( '/[\x00-\x1f\x7f]/', '', $str );
+		if ( $regexp )
+			$str = @preg_replace( $regexp, $replace, $str );
 
 		// limit the length of the string
 		if ( function_exists( 'mb_strcut' ) ) {
@@ -186,7 +187,7 @@ class IP_Geo_Block_Logs {
 	 */
 	private static function get_user_agent() {
 		return isset( $_SERVER['HTTP_USER_AGENT'] ) ?
-			self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'], '/[\t\n\f\r]/' ) : '';
+			self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'] ) : '';
 	}
 
 	private static function get_http_headers() {
@@ -204,7 +205,6 @@ class IP_Geo_Block_Logs {
 		);
 
 		$headers = array();
-
 		foreach ( array_keys( $_SERVER ) as $key ) {
 			if ( 'HTTP_' === substr( $key, 0, 5 ) && 
 			     empty( $exclusions[ $key ] ) ) {
@@ -212,7 +212,7 @@ class IP_Geo_Block_Logs {
 			}
 		}
 
-		return self::truncate_utf8( implode( ',', $headers ), '/[\t\n\f\r]/' );
+		return self::truncate_utf8( implode( ',', $headers ) );
 	}
 
 	private static function get_post_data( $hook, $validate, $settings ) {
@@ -222,7 +222,7 @@ class IP_Geo_Block_Logs {
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {
 			global $HTTP_RAW_POST_DATA;
-			$posts = self::truncate_utf8( $HTTP_RAW_POST_DATA, '/\s+</', '<' );
+			$posts = self::truncate_utf8( $HTTP_RAW_POST_DATA, '/\s*([<>])\s*/', '$1' );
 
 			// mask the password
 			if ( $mask_pwd &&
