@@ -9,7 +9,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 A WordPress plugin that will blocks any comment, pingback and trackback spams 
-posted from outside of your nation.
+posted from outside your nation.
 
 == Description ==
 

@@ -22,7 +22,7 @@ msgstr ""
 # description
 msgid ""
 "A WordPress plugin that will blocks any comment, pingback and trackback "
-"spams posted from outside of your nation."
+"spams posted from outside your nation."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:81
