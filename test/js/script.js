@@ -466,18 +466,18 @@ function post_xmlrpc_demo(url) {
 function render_template() {
 	var template = {
 		'en': {
-			'_page_readme_': 'After setting the followings, click <span class="highlight">Validate</span> to validate the pages.',
 			'_main-title_': 'WordPress POST Access Emulator',
+			'_page-readme_': 'After setting the followings, click <span class="highlight">Validate</span> to validate the pages.',
 			'_page-settings_': 'Page Settings',
 			'_home-url_': 'WordPress Home',
 			'_single-page_': 'Single Page',
 			'_ip-address_': 'Proxy IP Address',
-			'_note-ip-address_': 'You should add <span class="highlight"><code>HTTP_X_FORWARDED_FOR</code></span> into <span class="highlight"><code>$_SERVER</code> keys for extra IPs</span> on <span class="highlight">Settings</span> tab of IP Geo Block.',
-			'_submit_post_': 'POST Access',
+			'_note-ip-address_': 'You should add <span class="highlight"><code>HTTP_X_FORWARDED_FOR</code></span> into <span class="highlight"><code>$_SERVER</code> keys for extra IPs</span> on <span class="highlight">Settings</span> tab of IP Geo Block in order to emulate the post from outside your nation.',
+			'_submit-post_': 'POST Access',
 			'_post-settings_': 'POST Settings',
 			'_required_': 'Required',
 			'_cb-post-items_': 'Select All',
-			'_post_comment_': 'Post Comment',
+			'_post-comment_': 'Post Comment',
 			'_author_': 'Name',
 			'_email_': 'Email',
 			'_site-url_': 'Site URL',
@@ -495,25 +495,25 @@ function render_template() {
 			'_admin-ajax_': 'Admin Ajax',
 			'_action_': 'Action',
 			'_pingback_': 'Pingback',
-			'_pingback_readme_': '<span class="highlight"><code>%WP_HOME%</code></span> will be replaced with <span class="highlight">WordPress HOME</span>.',
+			'_pingback-readme_': '<span class="highlight"><code>%WP_HOME%</code></span> will be replaced with <span class="highlight">WordPress HOME</span>.',
 			'_xmlrpc_': 'XML-RPC',
-			'_xmlrpc_readme_': '<span class="highlight"><code>%USER_NAME%</code></span> and <span class="highlight"><code>%PASSWORD%</code></span> will be replaced with settings in <span class="highlight">Login Form</span>.',
+			'_xmlrpc-readme_': '<span class="highlight"><code>%USER_NAME%</code></span> and <span class="highlight"><code>%PASSWORD%</code></span> will be replaced with settings in <span class="highlight">Login Form</span>.',
 			'_xmlrpc-demo_': 'XML-RPC Demo',
 			'_end_': ''
 		},
 		'ja': {
-			'_page_readme_': '以下を適切に設定した後、<span class="highlight">Validate</span> を実行して下さい。',
 			'_main-title_': 'WordPressへのPOSTアクセス',
+			'_page-readme_': '以下を適切に設定した後、<span class="highlight">Validate</span> を実行し、正当性を確認して下さい。',
 			'_page-settings_': 'ページ設定',
 			'_home-url_': 'WordPressホーム',
 			'_single-page_': 'シングルページ',
 			'_ip-address_': 'プロキシアドレス',
-			'_note-ip-address_': 'IP Geo Block の <span class="highlight">設定</span> タブで、<span class="highlight">追加検証する<code>$_SERVER</code>のキー</span> に <span class="highlight"><code>HTTP_X_FORWARDED_FOR</code></span> を設定します。',
-			'_submit_post_': 'POSTアクセス',
+			'_note-ip-address_': '海外からの投稿を模擬するために、IP Geo Block の <span class="highlight">設定</span> タブで、<span class="highlight">追加検証する<code>$_SERVER</code>のキー</span> に <span class="highlight"><code>HTTP_X_FORWARDED_FOR</code></span> を設定しておいて下さい。',
+			'_submit-post_': 'POSTアクセス',
 			'_post-settings_': 'POST設定',
 			'_required_': '必須',
 			'_cb-post-items_': '全選択',
-			'_post_comment_': 'コメント投稿',
+			'_post-comment_': 'コメント投稿',
 			'_author_': '名前',
 			'_email_': 'Eメール',
 			'_site-url_': 'サイトURL',
@@ -531,9 +531,9 @@ function render_template() {
 			'_admin-ajax_': '管理領域のAjax',
 			'_action_': 'アクション',
 			'_pingback_': 'ピンバック',
-			'_pingback_readme_': '<span class="highlight"><code>%WP_HOME%</code></span> は <span class="highlight">WordPressホーム</span> の設定値に置き換えられます。',
+			'_pingback-readme_': '<span class="highlight"><code>%WP_HOME%</code></span> は <span class="highlight">WordPressホーム</span> の設定値に置き換えられます。',
 			'_xmlrpc_': 'XML-RPC',
-			'_xmlrpc_readme_': '<span class="highlight"><code>%USER_NAME%</code></span>、<span class="highlight"><code>%PASSWORD%</code></span> は <span class="highlight">ログインフォーム</span> の設定値に置き換えられます。',
+			'_xmlrpc-readme_': '<span class="highlight"><code>%USER_NAME%</code></span>、<span class="highlight"><code>%PASSWORD%</code></span> は <span class="highlight">ログインフォーム</span> の設定値に置き換えられます。',
 			'_xmlrpc-demo_': 'XML-RPC デモ',
 			'_end_': ''
 		}
@@ -541,9 +541,9 @@ function render_template() {
 
 	// http://leonidas.github.io/transparency/
 	var directives = {
-		'_page_readme_':     { html: function() { return this['_page_readme_'];     } },
-		'_pingback_readme_': { html: function() { return this['_pingback_readme_']; } },
-		'_xmlrpc_readme_':   { html: function() { return this['_xmlrpc_readme_'];   } },
+		'_page-readme_':     { html: function() { return this['_page-readme_'];     } },
+		'_pingback-readme_': { html: function() { return this['_pingback-readme_']; } },
+		'_xmlrpc-readme_':   { html: function() { return this['_xmlrpc-readme_'];   } },
 		'_note-ip-address_': { html: function() { return this['_note-ip-address_']; } }
 	};
 
