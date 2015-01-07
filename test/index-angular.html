@@ -30,7 +30,7 @@
 					<span ng-bind="lang.home_url"></span>
 				</label>
 				<input type="text" ng-model="home_url" />
-				<input type="button" ng-click="validate_home_url()" value="Validate" />
+				<input type="button" ng-click="validate_home()" value="Validate" />
 			</p>
 			<!-- Single Page -->
 			<p>
@@ -38,7 +38,7 @@
 					<span ng-bind="lang.single_page"></span>
 				</label>
 				<input type="text" ng-model="single_page" value="" />
-				<input type="button" ng-click="validate_single_page()" value="Validate" />
+				<input type="button" ng-click="validate_page()" value="Validate" />
 			</p>
 			<!-- Proxy IP Address -->
 			<p>
@@ -65,7 +65,7 @@
 			<input type="button" name="submit" ng-click="submit()" value="Submit" />
 			<input type="button" name="reset" ng-click="reset()" value="Reset" />
 		</p>
-		<textarea class="fullsize" id="message" ng-model="message" rows="8"></textarea>
+		<textarea class="fullsize" id="message" rows="8" ng-model="message"></textarea>
 	</div>
 </div>
 
@@ -116,7 +116,7 @@
 				<label for="comment">
 					<span ng-bind="lang.comment"></span>
 				</label>
-				<textarea ng-model="formComment.comment" rows="1"></textarea>
+				<textarea rows="1" ng-model="formComment.comment"></textarea>
 			</p>
 			<!-- Comment ID -->
 			<p>

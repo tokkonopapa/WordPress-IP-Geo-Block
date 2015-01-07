@@ -479,7 +479,7 @@ function($scope, $cookies, $http) {
 	 * Validate if the page is WordPress
 	 *
 	 */
-	$scope.validate_home_url = function() {
+	$scope.validate_home = function() {
 		var title = 'WordPress Home';
 
 		var deferred = $http({
@@ -509,7 +509,7 @@ function($scope, $cookies, $http) {
 	 * Validate if the comment form in the page
 	 *
 	 */
-	$scope.validate_single_page = function() {
+	$scope.validate_page = function() {
 		var title = 'Single Page';
 
 		var deferred = $http({
@@ -737,14 +737,14 @@ function($scope, $cookies, $http) {
 
 		// Post Comment
 		if ($scope.checkbox.comment) {
-			$scope.validate_single_page().then(function() {
+			$scope.validate_page().then(function() {
 				post_comment(home + 'wp-comments-post.php');
 			});
 		}
 
 		// Trackback
 		if ($scope.checkbox.trackback) {
-			$scope.validate_single_page().then(function() {
+			$scope.validate_page().then(function() {
 				post_trackback(page + 'trackback/');
 			});
 		}
