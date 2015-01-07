@@ -31,16 +31,6 @@ function sanitize(str) {
 }
 
 /**
- * Show a message
- *
- */
-function message(title, msg) {
-	var $text = $('#result');
-	var text = $text.val() + title + ': ' + msg + "\n"
-	$text.val(text);
-}
-
-/**
  * Strip tags
  *
  */
@@ -133,6 +123,16 @@ function retrieve_ip(ip) {
 }
 
 /**
+ * Show a message
+ *
+ */
+function message(title, msg) {
+	var $text = $('#result');
+	var text = $text.val() + title + ': ' + msg + "\n"
+	$text.val(text);
+}
+
+/**
  * Get geolocation data from IP address
  *
  */
@@ -141,7 +141,7 @@ function get_geolocation(ip) {
 	var apis = [
 		{
 			api: 'Telize',
-			url: 'http://www.telize.com/geoip/%API_IP%?callback=?',
+			url: 'http://www.telize.com/geoip/%API_IP%',
 			fmt: 'jsonp',
 			type: 'IPv4, IPv6',
 			get: function (data, type) {
@@ -214,6 +214,8 @@ function get_geolocation(ip) {
 			},
 		}
 	];
+
+//	ip = '226.85.76.204'; /* for test purpose */
 
 	var api = apis[get_random_int(0, apis.length-1)];
 	var url = api.url
@@ -290,7 +292,7 @@ function validate_page(url, found) {
 		if (match && match.length) {
 			var canonical = match[0].replace(/.*href=(['"]?)(.+?)\1.+/, '$2');
 			if (canonical !== url) {
-				url = canonical
+				url = canonical;
 				$('#single-page').val(url);
 			}
 		}
@@ -325,7 +327,7 @@ function validate_page(url, found) {
  * Post form data
  *
  */
-function post_form(url, title, $form) {
+function post_form(title, url, $form) {
 	var adrs = retrieve_ip($('#ip-address').val());
 
 	// Post the comment with `X-Forwarded-For` header
@@ -385,7 +387,7 @@ function post_xml(title, url, xml) {
  *
  */
 function post_comment(url) {
-	post_form(url, 'Comment', $('#comment-form'));
+	post_form('Comment', url, $('#comment-form'));
 }
 
 /**
@@ -402,7 +404,7 @@ function post_trackback(url) {
 	// Every time trackback url should be changed
 	$trackback.val(trackback + '#' + get_random_int(1000, 9999));
 
-	post_form(url, 'Trackback', $form);
+	post_form('Trackback', url, $form);
 }
 
 /**
@@ -410,7 +412,7 @@ function post_trackback(url) {
  *
  */
 function post_login(url) {
-	post_form(url, 'Login Form', $('#login-form'));
+	post_form('Login Form', url, $('#login-form'));
 }
 
 /**
@@ -418,7 +420,7 @@ function post_login(url) {
  *
  */
 function post_admin(url) {
-	post_form(url, 'Admin Area', $('#admin-area'));
+	post_form('Admin Area', url, $('#admin-area'));
 }
 
 /**
@@ -426,7 +428,7 @@ function post_admin(url) {
  *
  */
 function post_admin_ajax(url) {
-	post_form(url, 'Admin Ajax', $('#admin-ajax'));
+	post_form('Admin Ajax', url, $('#admin-ajax'));
 }
 
 /**
