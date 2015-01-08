@@ -11,10 +11,15 @@
 	<script src="js/angularjs/1.3.8/angular-sanitize.min.js"></script>
 	<script src="js/angularjs/1.3.8/angular-cookies.min.js"></script>
 	<script src="js/angularjs/1.3.8/angular-animate.min.js"></script>
+	<script src="js/libs.js"></script>
+	<script src="js/svc-language.js"></script>
+	<script src="js/svc-postproxy.js"></script>
+	<script src="js/svc-geolocation.js"></script>
+	<script src="js/svc-validate-wp.js"></script>
 	<script src="js/script-angular.js"></script>
 </head>
 <!-- AppCtrl SCOPE -->
-<body ng-controller="appCtrl">
+<body ng-controller="WPAppCtrl">
 
 <h1 ng-bind="lang.main_title"></h1>
 
@@ -23,7 +28,7 @@
 	<div class="setting">
 		<h2 ng-bind="lang.page_settings"></h2>
 		<p ng-bind-html="lang.page_readme"></p>
-		<form class="page-form" ng-model="form">
+		<form class="page-form">
 			<!-- WordPress Home -->
 			<p>
 				<label for="home-url">
@@ -38,7 +43,7 @@
 					<span ng-bind="lang.single_page"></span>
 				</label>
 				<input type="text" ng-model="single_page" value="" />
-				<input type="button" ng-click="validate_page()" value="Validate" />
+				<input type="button" ng-click="validate_page(true)" value="Validate" />
 			</p>
 			<!-- Proxy IP Address -->
 			<p>
@@ -65,7 +70,9 @@
 			<input type="button" name="submit" ng-click="submit()" value="Submit" />
 			<input type="button" name="reset" ng-click="reset()" value="Reset" />
 		</p>
-		<textarea class="fullsize" id="message" rows="8" ng-model="message"></textarea>
+		<p>
+			<textarea class="fullsize" id="message" rows="8" ng-model="message"></textarea>
+		</p>
 	</div>
 </div>
 
@@ -94,7 +101,7 @@
 					<span ng-bind="lang.author"></span>
 					<span class="required">*</span>
 				</label>
-				<input type="text" ng-model="formComment.author" />
+				<input type="text" name="author" ng-model="form.comment.author" />
 			</p>
 			<!-- Email -->
 			<p>
@@ -102,26 +109,26 @@
 					<span ng-bind="lang.email"></span>
 					<span class="required">*</span>
 				</label>
-				<input type="text" ng-model="formComment.email" />
+				<input type="text" name="email" ng-model="form.comment.email" />
 			</p>
 			<!-- Site URL -->
 			<p>
 				<label for="site-url">
 					<span ng-bind="lang.site_url"></span>
 				</label>
-				<input type="text" ng-model="formComment.url" />
+				<input type="text" name="url" ng-model="form.comment.url" />
 			</p>
 			<!-- Comment -->
 			<p>
 				<label for="comment">
 					<span ng-bind="lang.comment"></span>
 				</label>
-				<textarea rows="1" ng-model="formComment.comment"></textarea>
+				<textarea rows="1" name="comment" ng-model="form.comment.comment"></textarea>
 			</p>
 			<!-- Comment ID -->
 			<p>
-				<input type="hidden" ng-model="formComment.comment_post_ID" />
-				<input type="hidden" ng-model="formComment.comment_parent" />
+				<input type="hidden" name="comment_post_ID" ng-model="form.comment.comment_post_ID" />
+				<input type="hidden" name="comment_parent" ng-model="form.comment.comment_parent" />
 			</p>
 		</form>
 	</div>
@@ -137,7 +144,7 @@
 					<span ng-bind="lang.title"></span>
 					<span class="required">*</span>
 				</label>
-				<input type="text" ng-model="formTrackback.title" />
+				<input type="text" name="title" ng-model="form.trackback.title" />
 			</p>
 			<!-- Excerpt -->
 			<p>
@@ -145,7 +152,7 @@
 					<span ng-bind="lang.excerpt"></span>
 					<span class="required">*</span>
 				</label>
-				<textarea rows="1" ng-model="formTrackback.excerpt"></textarea>
+				<textarea rows="1" name="excerpt" ng-model="form.trackback.excerpt"></textarea>
 			</p>
 			<!-- Trackback URL -->
 			<p>
@@ -153,7 +160,7 @@
 					<span ng-bind="lang.trackback_url"></span>
 					<span class="required">*</span>
 				</label>
-				<input type="text" ng-model="formTrackback.url" />
+				<input type="text" name="url" ng-model="form.trackback.url" />
 			</p>
 			<!-- Blog Name -->
 			<p>
@@ -161,7 +168,7 @@
 					<span ng-bind="lang.blog_name"></span>
 					<span class="required">*</span>
 				</label>
-				<input type="text" ng-model="formTrackback.blog_name" />
+				<input type="text" name="blog_name" ng-model="form.trackback.blog_name" />
 			</p>
 		</form>
 	</div>
@@ -177,7 +184,7 @@
 					<span ng-bind="lang.user_name"></span>
 					<span class="required">*</span>
 				</label>
-				<input type="text" ng-model="formLogin.log" />
+				<input type="text" name="log" ng-model="form.login.log" />
 			</p>
 			<!-- Password -->
 			<p>
@@ -185,7 +192,7 @@
 					<span ng-bind="lang.password"></span>
 					<span class="required">*</span>
 				</label>
-				<input type="text" ng-model="formLogin.pwd" />
+				<input type="text" name="pwd" ng-model="form.login.pwd" />
 			</p>
 		</form>
 	</div>
@@ -200,7 +207,7 @@
 				<label for="admin-cookie">
 					<span ng-bind="lang.admin_cookie"></span>
 				</label>
-				<input type="text" ng-model="formAdminArea.cookie" />
+				<input type="text" name="admin-cookie" ng-model="form.admin.cookie" />
 			</p>
 		</form>
 	</div>
@@ -209,14 +216,14 @@
 	<div class="setting">
 		<h3 class="collapse" ng-bind="lang.admin_ajax" ng-click="toggle('admin_ajax')"></h3>
 		<input type="checkbox" ng-model="checkbox.admin_ajax" />
-		<form class="post-form" ng-show="show.admin_ajax">
+		<form class="post-form animate-show-hide" ng-show="show.admin_ajax">
 			<!-- WP nonce -->
 			<p>
 				<label for="action">
 					<span ng-bind="lang.action"></span>
 					<span class="required">*</span>
 				</label>
-				<input type="text" ng-model="formAdminAjax.action" />
+				<input type="text" name="action" ng-model="form.ajax.action" />
 			</p>
 		</form>
 	</div>
@@ -227,7 +234,9 @@
 		<input type="checkbox" ng-model="checkbox.pingback" />
 		<form class="post-form animate-show-hide" ng-show="show.pingback">
 			<p ng-bind-html="lang.pingback_readme"></p>
-			<textarea class="fullsize" rows="22" ng-model="formPingback.xml"></textarea>
+			<p>
+				<textarea class="fullsize" rows="22" ng-model="form.pingback.xml"></textarea>
+			</p>
 		</form>
 	</div>
 
@@ -237,7 +246,9 @@
 		<input type="checkbox" ng-model="checkbox.xmlrpc" />
 		<form class="post-form animate-show-hide" ng-show="show.xmlrpc">
 			<p ng-bind-html="lang.xmlrpc_readme"></p>
-			<textarea class="fullsize" rows="29" ng-model="formXmlrpc.xml"></textarea>
+			<p>
+				<textarea class="fullsize" rows="29" ng-model="form.xmlrpc.xml"></textarea>
+			</p>
 		</form>
 	</div>
 
@@ -246,7 +257,9 @@
 		<h3 class="collapse" ng-bind="lang.xmlrpc_demo" ng-click="toggle('xmlrpc_demo')"></h3>
 		<input type="checkbox" ng-model="checkbox.xmlrpc_demo" />
 		<form class="post-form animate-show-hide" ng-show="show.xmlrpc_demo">
-			<textarea class="fullsize" rows="6" ng-model="formXmlrpcDemo.xml"></textarea>
+			<p>
+				<textarea class="fullsize" rows="6" ng-model="form.xmlrpc_demo.xml"></textarea>
+			</p>
 		</form>
 	</div>
 </div>

@@ -35,36 +35,40 @@ function sanitize(str) {
  *
  */
 function strip_tags(html) {
-/*	// remove inside the specified tags
-	var tags = ['title', 'style', 'h\\d', 'a'];
+	if ('string' === typeof html) {
+/*		// remove inside the specified tags
+		var tags = ['title', 'style', 'h\\d', 'a'];
 
-	// /<tag[^>]+?\/>|<tag(.|\s)*?\/tag>/gi
-	for (var regexp, i = 0; i < tags.length; i++) {
-		regexp = new RegExp('<(' + tags[i] + ')(.|\\s)*?\\/\\1>', 'gi');
-		html = html.replace(regexp, '');
-	}
+		// /<tag[^>]+?\/>|<tag(.|\s)*?\/tag>/gi
+		for (var regexp, i = 0; i < tags.length; i++) {
+			regexp = new RegExp('<(' + tags[i] + ')(.|\\s)*?\\/\\1>', 'gi');
+			html = html.replace(regexp, '');
+		}
 
-	// strip tags
-	html = $('<div>').html(html).text();
+		// strip tags
+		html = $('<div>').html(html).text();
 */
-	// keep p tags
-	var match = html.match(/<p.*?\/p>/gi);
-	if (match) {
-		for (var text, i = 0; i < match.length; i++) {
-			// remove tags
-			// http://qiita.com/miiitaka/items/793555b4ccb0259a4cb8
-			if (text = match[i].replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')) {
-				html = text;
-				break;
+		// keep p tags
+		var match = html.match(/<p.*?\/p>/gi);
+		if (match) {
+			for (var text, i = 0; i < match.length; i++) {
+				// remove tags
+				// http://qiita.com/miiitaka/items/793555b4ccb0259a4cb8
+				if (text = match[i].replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')) {
+					html = text;
+					break;
+				}
 			}
 		}
+
+		// trim spaces
+		html = html.replace(/[\s]+/g, ' ');
+		html = html.replace(/^[\s]+|[\s]+$/g, '');
+
+		return html;
+	} else {
+		return null;
 	}
-
-	// trim spaces
-	html = html.replace(/[\s]+/g, ' ');
-	html = html.replace(/^[\s]+|[\s]+$/g, '');
-
-	return html;
 }
 
 /**
