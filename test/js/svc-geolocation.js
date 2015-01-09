@@ -70,22 +70,27 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 			get: function (data, type) {
 				switch (type) {
 					case 'name' :
-						if (typeof data.query.results.json.country !== 'undefined')
+						if (data.query.results && 
+							typeof data.query.results.json.msg === 'undefined')
 							return data.query.results.json.country.name;
 						break;
 					case 'code' :
-						if (typeof data.query.results.json.country !== 'undefined')
+						if (data.query.results && 
+							typeof data.query.results.json.msg === 'undefined')
 							return data.query.results.json.country.code;
 						break;
 					case 'error':
-						return data.query.results.json.msg;
+						if (data.query.results)
+							return data.query.results.json.msg;
+						else 
+							return 'error';
 				}
 				return null;
 			}
 		}
 	];
 
-	this.generate_ip = function (ip) {
+	this.get_geolocation = function (ip, callback) {
 		var api = this.apis[get_random_int(0, this.apis.length-1)];
 		var url = api.url
 			.replace('%API_IP%', ip)
@@ -96,28 +101,45 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 			method: 'GET'
 		})
 
+		// retern version
 		// data       – {string|Object} The response body.
 		// status     – {number} HTTP status code of the response.
 		// headers    – {function([headerName])} Header getter function.
 		// config     – {Object} The configuration object used for the request.
 		// statusText – {string} HTTP status text of the response.
-		.then(
+		/*.then(
 			// success
-			function (data) {
-				var geo = api.get(data.data, 'name');
+			function (res) {
+				var geo = api.get(res.data, 'name');
 				if (geo)
-					geo += ' (' + api.get(data.data, 'code') + ')';
+					geo += ' (' + api.get(res.data, 'code') + ')';
 				else
-					geo = api.get(data.data, 'error') + ' (' + api.api + ')';
+					geo = api.get(res.data, 'error') + ' (' + api.api + ')';
 
 				return combine_ip(ip, geo);
 			},
 
 			// error
-			function (data) {
-				var msg = data.data ? ' ' + strip_tags(data.data) : '';
-				return data.status + ' ' + data.statusText + msg;
+			function (res) {
+				var msg = res.data ? ' ' + strip_tags(res.data) : '';
+				return res.status + ' ' + res.statusText + msg;
 			}
-		);
+		);//*/
+
+		// callback version (just `return` makes no effects) 
+		.success(function (data, status, headers, config) {
+			var geo = api.get(data, 'name');
+			if (geo)
+				geo += ' (' + api.get(data, 'code') + ')';
+			else
+				geo = api.get(data, 'error') + ' (' + api.api + ')';
+
+			callback(combine_ip(ip, geo));
+		})
+
+		.error(function (data, status, headers, config) {
+			var msg = data ? ' ' + strip_tags(data) : '';
+			callback(status + ' ' + statusText + msg);
+		});//*/
 	};
 }]);

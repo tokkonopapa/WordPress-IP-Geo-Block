@@ -58,7 +58,9 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 			author: 'spam-master',
 			email: 'spam@example.com',
 			url: 'http://example.com/',
-			comment: 'This is a spam comment.'
+			comment: 'This is a spam comment.',
+			comment_post_ID: 0,
+			comment_parent: 0
 		},
 		trackback: {
 			title: 'About spam',
@@ -196,9 +198,8 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 	$scope.validate_page = function (echo) {
 		return svcWP.validate_page($scope.single_page).then(function (res) {
 			$scope.single_page = res.url;
+			$scope.form.comment.comment_post_ID = res.id;
 			$cookies['single-page'] = res.url;
-			$scope.comment_post_id = res.id;
-			$scope.comment_post_id = 0;
 			if (echo) {
 				messageOut('Single Page', res.stat);
 			}
@@ -211,7 +212,8 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 	 */
 	$scope.generate_ip = function () {
 		$scope.ip_address = get_random_ip();
-		svcGeoloc.generate_ip($scope.ip_address).then(function (ip) {
+//		svcGeoloc.get_geolocation($scope.ip_address).then(function (ip) {
+		svcGeoloc.get_geolocation($scope.ip_address, function (ip) {
 			$scope.ip_address = ip;
 		});
 	};
@@ -222,7 +224,8 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 	 *
 	 */
 	var post_comment = function (url, proxy) {
-		svcProxy.post_form(url, $scope.form.comment, proxy).then(function (res) {
+		var form = serialize_plain($scope.form.comment);
+		svcProxy.post_form(url, form, proxy).then(function (res) {
 			messageOut('Comment', res.stat);
 		});
 	};
@@ -239,7 +242,8 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 		// Every time trackback url should be changed
 		$scope.form.trackback.url = trackback + '#' + get_random_int(1000, 9999);
 
-		svcProxy.post_form(url, $scope.form.trackback, proxy).then(function (res) {
+		var form = serialize_plain($scope.form.trackback);
+		svcProxy.post_form(url, form, proxy).then(function (res) {
 			messageOut('Trackback', res.stat);
 		});
 	}
@@ -249,7 +253,8 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 	 *
 	 */
 	var post_login = function (url, proxy) {
-		svcProxy.post_form(url, $scope.form.login, proxy).then(function (res) {
+		var form = serialize_plain($scope.form.login);
+		svcProxy.post_form(url, form, proxy).then(function (res) {
 			messageOut('Login Form', res.stat);
 		});
 	};
@@ -259,7 +264,8 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 	 *
 	 */
 	var post_admin = function (url, proxy) {
-		svcProxy.post_form(url, $scope.form.admin, proxy).then(function (res) {
+		var form = serialize_plain($scope.form.admin);
+		svcProxy.post_form(url, form, proxy).then(function (res) {
 			messageOut('Admin Area', res.stat);
 		});
 	};
@@ -269,7 +275,8 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 	 *
 	 */
 	var post_admin_ajax = function (url, proxy) {
-		svcProxy.post_form(url, $scope.form.ajax, proxy).then(function (res) {
+		var form = serialize_plain($scope.form.ajax);
+		svcProxy.post_form(url, form, proxy).then(function (res) {
 			messageOut('Admin Ajax', res.stat);
 		});
 	};
@@ -321,14 +328,14 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 
 		// Post Comment
 		if ($scope.checkbox.comment) {
-			$scope.validate_page(false).then(function (res) {
+			$scope.validate_page(false).then(function () {
 				post_comment(home + 'wp-comments-post.php', proxy);
 			});
 		}
 
 		// Trackback
 		if ($scope.checkbox.trackback) {
-			$scope.validate_page(false).then(function (res) {
+			$scope.validate_page(false).then(function () {
 				post_trackback(page + 'trackback/', proxy);
 			});
 		}

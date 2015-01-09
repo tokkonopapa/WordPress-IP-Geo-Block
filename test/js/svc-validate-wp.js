@@ -15,16 +15,16 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 		})
 
 		.then(
-			function (data) {
-				if (-1 !== data.data.indexOf('wp-content')) {
+			function (res) {
+				if (-1 !== res.data.indexOf('wp-content')) {
 					return {stat: 'Site is OK.'};
 				} else {
 					return {stat: 'Can\'t find "wp-content".'};
 				}
 			},
 
-			function (data) {
-				return {stat: data.message};
+			function (res) {
+				return {stat: res.message};
 			}
 		);
 	};
@@ -45,17 +45,17 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 		// config     – {Object} The configuration object used for the request.
 		// statusText – {string} HTTP status text of the response.
 		.then(
-			function (data) {
+			function (res) {
 				// Extract canonical URL
 				var regexp = /<link[^>]+?rel=(['"]?)canonical\1.+/i;
-				var match = data.data.match(regexp);
+				var match = res.data.match(regexp);
 				if (match && match.length) {
 					url = match[0].replace(/.*href=(['"]?)(.+?)\1.+/, '$2');
 				}
 
 				// Extract ID of the post
 				regexp = /<input[^>]+?comment_post_ID.+?>/i;
-				match = data.data.match(regexp);
+				match = res.data.match(regexp);
 				var id = 0;
 				if (match && match.length) {
 					// if found then get post comment ID
@@ -68,11 +68,11 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 				};
 			},
 
-			function (data) {
+			function (res) {
 				return {
 					url: url,
 					id: 0,
-					stat: data.message
+					stat: res.message
 				};
 			}
 		);

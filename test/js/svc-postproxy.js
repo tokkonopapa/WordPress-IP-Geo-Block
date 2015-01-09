@@ -27,15 +27,14 @@ angular.module('postproxy').service('PostProxySvc', ['$http', function ($http) {
 		// statusText – {string} HTTP status text of the response.
 		.then(
 			// In case of the comment being accepted
-			function (data) {
-				console.log(data);
-				return {stat: data.status + ' ' + data.statusText};
+			function (res) {
+				return {stat: res.status + ' ' + res.statusText};
 			},
 
 			// In case of the comment being denied
-			function (data) {
-				var msg = data.data ? ' ' + strip_tags(data.data) : '';
-				return {stat: data.status + ' ' + data.statusText + msg};
+			function (res) {
+				var msg = res.data ? ' ' + strip_tags(res.data) : '';
+				return {stat: res.status + ' ' + res.statusText + msg};
 			}
 		);
 	};
@@ -59,14 +58,14 @@ angular.module('postproxy').service('PostProxySvc', ['$http', function ($http) {
 
 		.then(
 			// In case of the comment being accepted
-			function (data) {
-				return {stat: data.status + ' ' + data.statusText};
+			function (res) {
+				return {stat: res.status + ' ' + res.statusText};
 			},
 
 			// In case of the comment being denied
-			function (data) {
-				var msg = data.data ? ' ' + strip_tags(data.data) : '';
-				return {stat: data.status + ' ' + data.statusText + msg};
+			function (res) {
+				var msg = res.data ? ' ' + strip_tags(res.data) : '';
+				return {stat: res.status + ' ' + res.statusText + msg};
 			}
 		);
 	};

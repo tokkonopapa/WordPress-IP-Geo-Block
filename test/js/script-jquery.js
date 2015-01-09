@@ -112,8 +112,10 @@ function get_random_ip() {
  * Generate random IP address and check the country
  *
  */
-function generate_random_ip() {
-	return get_geolocation(get_random_ip());
+function generate_random_ip(callback) {
+	var ip = get_random_ip();
+	callback(ip);
+	get_geolocation(ip, callback);
 }
 
 function combine_ip(ip, country) {
@@ -140,7 +142,7 @@ function message(title, msg) {
  * Get geolocation data from IP address
  *
  */
-function get_geolocation(ip) {
+function get_geolocation(ip, callback) {
 	// These APIs need to respond `Access-Control-Allow-Origin` in header.
 	var apis = [
 		{
@@ -155,7 +157,7 @@ function get_geolocation(ip) {
 					case 'error': return 'not found';
 				}
 				return null;
-			},
+			}
 		}
 		,{
 			api: 'ip-api',
@@ -169,7 +171,7 @@ function get_geolocation(ip) {
 					case 'error': return data.message || null;
 				}
 				return null;
-			},
+			}
 		}
 		/**
 		 * APIs that doesn't support CORS.
@@ -194,7 +196,7 @@ function get_geolocation(ip) {
 						return data.query.results.error;
 				}
 				return null;
-			},
+			}
 		}
 		,{
 			api: 'Nekudo',
@@ -204,18 +206,23 @@ function get_geolocation(ip) {
 			get: function (data, type) {
 				switch (type) {
 					case 'name' :
-						if (typeof data.query.results.json.country !== 'undefined')
+						if (data.query.results && 
+							typeof data.query.results.json.msg === 'undefined')
 							return data.query.results.json.country.name;
 						break;
 					case 'code' :
-						if (typeof data.query.results.json.country !== 'undefined')
+						if (data.query.results && 
+							typeof data.query.results.json.msg === 'undefined')
 							return data.query.results.json.country.code;
 						break;
 					case 'error':
-						return data.query.results.json.msg;
+						if (data.query.results)
+							return data.query.results.json.msg;
+						else 
+							return 'error';
 				}
 				return null;
-			},
+			}
 		}
 	];
 
@@ -226,34 +233,47 @@ function get_geolocation(ip) {
 		.replace('%API_IP%', ip)
 		.replace(/%API_FMT%/g, api['fmt']);
 
-	$.ajax({
+	return $.ajax({
 		url: url,
 		type: 'get',
 		dataType: api['fmt']
 	})
 
-	.always(function (data, textStatus, errorThrown) {
-		var $ip = $('#ip-address');
-		var msg = api.get(data, 'name');
-		if (msg)
-			msg += ' (' + api.get(data, 'code') + ')';
+	.done(function (data, textStatus, errorThrown) {
+		var geo = api.get(data, 'name');
+		if (geo)
+			geo += ' (' + api.get(data, 'code') + ')';
 		else
-			msg = api.get(data, 'error') + ' (' + api.api + ')';
-		$ip.val(combine_ip($ip.val(), msg));
+			geo = api.get(data, 'error') + ' (' + api.api + ')';
+
+		callback(combine_ip(ip, geo));
+	})
+
+	.fail(function (jqXHR, textStatus, errorThrown) {
+		geo = textStatus + ' (' + api.api + ')';
+
+		callback(combine_ip(ip, geo));
 	});
 
-	return ip;
+	/*.then(
+		function (data, textStatus, jqXHR) {
+			console.log(data);
+		},
+		function (jqXHR, textStatus, errorThrown) {
+			console.log(jqXHR.responseText);
+		}
+	);*/
 }
 
 /**
  * Validate if the page is WordPress
  *
  */
-function validate_home(url) {
-	var title = 'WordPress Home';
+function validate_home(url, callback) {
+	var res = { url: url };
 
 	// Get contents
-	var deferred = $.ajax({
+	return $.ajax({
 		url: url,
 		type: 'get',
 		dataType: 'html'
@@ -261,29 +281,28 @@ function validate_home(url) {
 
 	.done(function (data, textStatus, jqXHR) {
 		if (-1 !== data.indexOf('wp-content')) {
-			$.cookie('home-url', url, {expires: 30});
-			message(title, 'Site is OK.');
+			res.stat = 'Site is OK.';
 		} else {
-			message(title, 'Can\'t find "wp-content".');
+			res.stat = 'Can\'t find "wp-content".';
 		}
+		callback(res);
 	})
 
 	.fail(function (jqXHR, textStatus, errorThrown) {
-		message(title, jqXHR.status + ' ' + jqXHR.statusText + ' ' + textStatus);
+		res.stat = jqXHR.status + ' ' + jqXHR.statusText + ' ' + textStatus;
+		callback(res);
 	});
-
-	return deferred;
 }
 
 /**
  * Validate if the comment form in the page
  *
  */
-function validate_page(url, found) {
-	var title = 'Single Page';
+function validate_page(url, callback) {
+	var res = { url: url };
 
 	// Get contents
-	var deferred = $.ajax({
+	return $.ajax({
 		url: url,
 		type: 'get',
 		dataType: 'html'
@@ -296,8 +315,7 @@ function validate_page(url, found) {
 		if (match && match.length) {
 			var canonical = match[0].replace(/.*href=(['"]?)(.+?)\1.+/, '$2');
 			if (canonical !== url) {
-				url = canonical;
-				$('#single-page').val(url);
+				res.url = canonical;
 			}
 		}
 
@@ -306,55 +324,51 @@ function validate_page(url, found) {
 		match = data.match(regexp);
 		if (match && match.length) {
 			// if found then set ID into form and cookie
-			var comment_post_ID = match[0].replace(/[\D]/g, '');
-			$('#comment_post_ID').val(comment_post_ID);
-			$.cookie('single-page', url, {expires: 30});
-
-			if ( found )
-				message(title, 'Comment form is OK.');
+			res.id = match[0].replace(/[\D]/g, '');
+			res.stat = 'Comment form is OK.';
+			callback(res);
 		} else {
 			// if not found then set ID as zero
-			$('#comment_post_ID').val(0);
-
-			message(title, 'Can\'t find comment form.');
+			res.id = 0;
+			res.stat = 'Can\'t find comment form.';
+			callback(res);
 		}
 	})
 
 	.fail(function (jqXHR, textStatus, errorThrown) {
-		message(title, jqXHR.status + ' ' + jqXHR.statusText + ' ' + textStatus);
+		res.stat = jqXHR.status + ' ' + jqXHR.statusText + ' ' + textStatus;
+		callback(res);
 	});
-
-	return deferred;
 }
 
 /**
  * Post form data
  *
  */
-function post_form(title, url, $form) {
-	var adrs = retrieve_ip($('#ip-address').val());
+function post_form(url, $form, callback) {
+	var proxy = retrieve_ip($('#ip-address').val());
 
 	// Post the comment with `X-Forwarded-For` header
-	$.ajax({
+	return $.ajax({
 		url: url,
 		type: 'post',
 		data: $form.serialize(),
 		contentType: 'application/x-www-form-urlencoded',
 		dataType: 'html',
 		headers: {
-			'X-Forwarded-For': adrs
+			'X-Forwarded-For': proxy
 		}
 	})
 
 	// In case of the comment being accepted
 	.done(function (data, textStatus, jqXHR) {
-		message(title, jqXHR.status + ' ' + jqXHR.statusText + ' ' + textStatus);
+		callback(data.status + ' ' + data.statusText + ' ' + textStatus);
 	})
 
 	// In case of the comment being denied
 	.fail(function (jqXHR, textStatus, errorThrown) {
 		var msg = strip_tags(jqXHR.responseText);
-		message(title, jqXHR.status + ' ' + jqXHR.statusText + ' ' + msg);
+		callback(jqXHR.status + ' ' + jqXHR.statusText + ' ' + msg);
 	});
 }
 
@@ -362,27 +376,30 @@ function post_form(title, url, $form) {
  * Post XML data
  *
  */
-function post_xml(title, url, xml) {
-	var adrs = retrieve_ip($('#ip-address').val());
+function post_xml(url, xml, callback) {
+	var proxy = retrieve_ip($('#ip-address').val());
 	xml = xml.replace(/\s*([<>])\s*/g, '$1');
 
-	$.ajax({
+	return $.ajax({
 		url: url,
 		type: 'post',
 		data: xml,
 		contentType: 'application/xml',
 		dataType: 'text',
 		headers: {
-			'X-Forwarded-For': adrs
+			'X-Forwarded-For': proxy
 		}
 	})
 
-	.always(function (data, textStatus, jqXHR) {
-		if ('success' === textStatus) {
-			message(title, jqXHR.status + ' ' + jqXHR.statusText + ' ' + textStatus);
-		} else {
-			message(title, data.status + ' ' + data.statusText + ' ' + textStatus);
-		}
+	// In case of the comment being accepted
+	.done(function (data, textStatus, jqXHR) {
+		callback(data.status + ' ' + data.statusText + ' ' + textStatus);
+	})
+
+	// In case of the comment being denied
+	.fail(function (jqXHR, textStatus, errorThrown) {
+		var msg = strip_tags(jqXHR.responseText);
+		callback(jqXHR.status + ' ' + jqXHR.statusText + ' ' + msg);
 	});
 }
 
@@ -391,7 +408,9 @@ function post_xml(title, url, xml) {
  *
  */
 function post_comment(url) {
-	post_form('Comment', url, $('#comment-form'));
+	post_form(url, $('#comment-form'), function (msg) {
+		message('Comment', msg);
+	});
 }
 
 /**
@@ -408,7 +427,9 @@ function post_trackback(url) {
 	// Every time trackback url should be changed
 	$trackback.val(trackback + '#' + get_random_int(1000, 9999));
 
-	post_form('Trackback', url, $form);
+	post_form(url, $form, function (msg) {
+		message('Trackback', msg);
+	});
 }
 
 /**
@@ -416,7 +437,9 @@ function post_trackback(url) {
  *
  */
 function post_login(url) {
-	post_form('Login Form', url, $('#login-form'));
+	post_form(url, $('#login-form'), function (msg) {
+		message('Login Form', msg);
+	});
 }
 
 /**
@@ -424,7 +447,9 @@ function post_login(url) {
  *
  */
 function post_admin(url) {
-	post_form('Admin Area', url, $('#admin-area'));
+	post_form(url, $('#admin-area'), function (msg) {
+		message('Admin Area', msg);
+	});
 }
 
 /**
@@ -432,7 +457,9 @@ function post_admin(url) {
  *
  */
 function post_admin_ajax(url) {
-	post_form('Admin Ajax', url, $('#admin-ajax'));
+	post_form(url, $('#admin-ajax'), function (msg) {
+		message('Admin Ajax', msg);
+	});
 }
 
 /**
@@ -442,7 +469,9 @@ function post_admin_ajax(url) {
 function post_pingback(url, page) {
 	var xml = $('#pingback-xml').val();
 	xml = xml.replace(/%WP_HOME%/, page);
-	post_xml('Pingback', url, xml);
+	post_xml(url, xml, function (msg) {
+		message('Pingback', msg);
+	});
 }
 
 /**
@@ -453,7 +482,9 @@ function post_xmlrpc(url) {
 	var xml = $('#xmlrpc-xml').val();
 	xml = xml.replace(/%USER_NAME%/, $('#user-name').val());
 	xml = xml.replace(/%PASSWORD%/, $('#password').val());
-	post_xml('XML-RPC', url, xml);
+	post_xml(url, xml, function (msg) {
+		message('XML-RPC', msg);
+	});
 }
 
 /**
@@ -462,7 +493,9 @@ function post_xmlrpc(url) {
  */
 function post_xmlrpc_demo(url) {
 	var xml = $('#xmlrpc-demo-xml').val();
-	post_xml('XML-RPC demo', url, xml);
+	post_xml(url, xml, function (msg) {
+		message('XML-RPC demo', msg);
+	});
 }
 
 /**
@@ -564,14 +597,13 @@ function render_template() {
  * Initialize Page Settings
  *
  */
-function setup_page_settings() {
+function setup_page_settings($home, $page) {
 	// Set Ajax Options
 	$.ajaxSetup({
 		timeout: 10000
 	});
 
 	// WordPress Home
-	var $home = $('#home-url');
 	var home = $.cookie('home-url');
 	if (home)
 		$home.val(home);
@@ -585,7 +617,6 @@ function setup_page_settings() {
 	}
 
 	// Single Page
-	var $page = $('#single-page');
 	var page = $.cookie('single-page');
 	if (page)
 		$page.val(page)
@@ -598,10 +629,9 @@ function setup_page_settings() {
 	}
 
 	// Proxy IP Address
-	var $adrs = $('#ip-address');
-	if (!$adrs.val()) {
-		$adrs.val(generate_random_ip());
-	}
+	generate_random_ip(function (ip) {
+		$('#ip-address').val(ip);
+	});
 }
 
 /**
@@ -609,25 +639,38 @@ function setup_page_settings() {
  *
  */
 $(function () {
+	var $home = $('#home-url');
+	var $page = $('#single-page');
+
 	// Render page based on language
 	render_template();
 
 	// Initialize Page Settings
-	setup_page_settings();
+	setup_page_settings($home, $page);
 
 	// Validate WordPress Home
 	$('#validate-home-url').on('click', function (event) {
-		validate_home($('#home-url').val());
+		validate_home($home.val(), function (res) {
+			$.cookie('home-url', res.url, {expires: 30});
+			message('WordPress Home', res.stat);
+		});
 	});
 
 	// Validate Single Page
 	$('#validate-single-page').on('click', function (event) {
-		validate_page($('#single-page').val(), true);
+		validate_page($page.val(), function (res) {
+			$page.val(res.url);
+			$('#comment_post_ID').val(res.id);
+			$.cookie('single-page', res.url, {expires: 30});
+			message('Single Page', res.stat);
+		});
 	});
 
 	// Generate IP Address
 	$('#ip-generate').on('click', function () {
-		$('#ip-address').val(generate_random_ip());
+		generate_random_ip(function (ip) {
+			$('#ip-address').val(ip);
+		});
 	});
 
 	// Reset textarea
@@ -650,19 +693,25 @@ $(function () {
 
 	// Submit POST Access
 	$('#submit').on('click', function (event) {
-		var home = trailingslashit($('#home-url').val());
-		var page = trailingslashit($('#single-page').val());
+		var home = trailingslashit($home.val());
+		var page = trailingslashit($page.val());
 
 		// Post Comment
 		if ($('#cb-comment').prop('checked')) {
-			validate_page($('#single-page').val(), false).then(function() {
+			validate_page($page.val(), function (res) {
+				$page.val(res.url);
+				$('#comment_post_ID').val(res.id);
+				$.cookie('single-page', res.url, {expires: 30});
 				post_comment(home + 'wp-comments-post.php');
 			});
 		}
 
 		// Trackback
 		if ($('#cb-trackback').prop('checked')) {
-			validate_page($('#single-page').val(), false).then(function() {
+			validate_page($page.val(), function (res) {
+				$page.val(res.url);
+				$('#comment_post_ID').val(res.id);
+				$.cookie('single-page', res.url, {expires: 30});
 				post_trackback(page + 'trackback/');
 			});
 		}

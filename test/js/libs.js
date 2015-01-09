@@ -105,3 +105,17 @@ function retrieve_ip(ip) {
 	ip = ip.shift();
 	return ip;
 }
+
+/**
+ * Serialize plain object to form type
+ *
+ */
+function serialize_plain(obj) {
+	var data = [];
+	for (var key in obj) {
+		if (obj.hasOwnProperty(key)) {
+			data.push(key + '=' + encodeURIComponent(obj[key]));
+		}
+	}
+	return data.join('&');
+}
