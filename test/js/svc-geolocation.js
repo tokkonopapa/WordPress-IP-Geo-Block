@@ -101,7 +101,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 			method: 'GET'
 		})
 
-		// retern version
+		// Properties of the response object
 		// data       – {string|Object} The response body.
 		// status     – {number} HTTP status code of the response.
 		// headers    – {function([headerName])} Header getter function.

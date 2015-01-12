@@ -3,7 +3,7 @@
  *
  */
 angular.module('language', []);
-angular.module('language').service('LanguageSvc', ['$window', function ($window) {
+angular.module('language').factory('LanguageSvc', ['$window', function ($window) {
 	var language = {
 		'en': {
 			main_title: 'WordPress POST Access Emulator',
