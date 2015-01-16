@@ -54,6 +54,11 @@ one of the IP2Location plugins (
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
 ), this plugin uses its local database prior to the REST APIs.
 
+7. This can be combined with other full spec security plugin such as 
+    [iThemes Security](https://wordpress.org/plugins/better-wp-security/ "WordPress › iThemes Security (formerly Better WP Security) « WordPress Plugins"),
+    [Wordfence Security](https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins")
+(because the function of country bloking is available only for premium users).
+
 = Attribution =
 
 This package includes GeoLite data created by MaxMind, available from 
