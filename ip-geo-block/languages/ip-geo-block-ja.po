@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 2.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
 "POT-Creation-Date: 2015-01-16 18:28+0900\n"
-"PO-Revision-Date: 2015-01-16 18:39+0900\n"
+"PO-Revision-Date: 2015-01-16 23:53+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -103,15 +103,15 @@ msgstr ""
 
 #: admin/includes/tab-accesslog.php:46 admin/includes/tab-settings.php:91
 msgid "<dfn title=\"Validate access to xmlrpc.php\">XML-RPC</dfn>"
-msgstr "<dfn title=\"wp-login.phpへのアクセスを検証\">ログイン・フォーム</dfn>"
+msgstr "<dfn title=\"xmlrpc.phpへのアクセスを検証\">XML-RPC</dfn>"
 
 #: admin/includes/tab-accesslog.php:47 admin/includes/tab-settings.php:92
 msgid "<dfn title=\"Validate access to wp-login.php\">Login form</dfn>"
-msgstr "<dfn title=\"wp-admin/admin.phpへのアクセスを検証\">管理領域</dfn>"
+msgstr "<dfn title=\"wp-login.phpへのアクセスを検証\">ログイン・フォーム</dfn>"
 
 #: admin/includes/tab-accesslog.php:48 admin/includes/tab-settings.php:93
 msgid "<dfn title=\"Validate access to wp-admin/admin.php\">Admin area</dfn>"
-msgstr "<dfn title=\"xmlrpc.phpへのアクセスを検証\">XML-RPC</dfn>"
+msgstr "<dfn title=\"wp-admin/admin.phpへのアクセスを検証\">管理領域</dfn>"
 
 #: admin/includes/tab-accesslog.php:54
 msgid "Date"
