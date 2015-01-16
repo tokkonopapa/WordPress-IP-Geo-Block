@@ -20,7 +20,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '1.4.0';
+	const VERSION = '2.0.0';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -64,9 +64,25 @@ class IP_Geo_Block {
 			add_filter( 'preprocess_comment', array( $this, 'validate_trackback' ) );
 		}
 
-		// xmlrpc.php @since 3.1.0
-		if ( $settings['validation']['xmlrpc'] )
+		// xmlrpc.php @since 3.1.0, wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
+		if ( $settings['validation']['xmlrpc'] ) {
 			add_filter( 'wp_xmlrpc_server_class', array( $this, 'validate_admin' ) );
+			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ) );
+		}
+
+		// wp-login.php @since 2.1.0, wp-includes/pluggable.php @since 2.5.0
+		if ( $settings['validation']['login'] ) {
+			add_action( 'login_init', array( $this, 'validate_login' ) );
+			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
+		}
+
+		// auth_redirect() in wp-includes/pluggable.php @since 3.1.0
+		if ( $settings['validation']['admin'] )
+			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
+
+		// wp-admin/admin.php from wp-admin/admin-apax.php @since 2.5.0
+		if ( $settings['validation']['ajax'] && defined( 'DOING_AJAX' ) && DOING_AJAX )
+			add_action( 'admin_init', array( $this, 'validate_admin' ) );
 	}
 
 	// get default optional values
@@ -322,7 +338,7 @@ class IP_Geo_Block {
 	private function validate_ip( $hook, $settings ) {
 		// set IP address to be validated
 		$ips = array(
-			(string) apply_filters(
+			$this->remote_addr = (string) apply_filters(
 				self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR']
 			)
 		);
@@ -339,6 +355,10 @@ class IP_Geo_Block {
 			}
 		}
 
+		// check if the authentication has been already failed
+		$var = self::PLUGIN_SLUG . "-$hook";
+		add_filter( $var, array( $this, 'auth_check' ), 10, 2 );
+
 		// apply custom filter of validation
 		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
 		// @param $validate = array(
@@ -348,7 +368,6 @@ class IP_Geo_Block {
 		//     'provider' => $provider, /* the name of validator               */
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
-		$var = self::PLUGIN_SLUG . "-$hook";
 		foreach ( $ips as $ip ) {
 			$validate = self::_get_geolocation( $ip, $settings );
 			$validate = apply_filters( $var, $validate, $settings );
@@ -359,6 +378,7 @@ class IP_Geo_Block {
 
 			// if one of IPs is blocked then stop
 			if ( $blocked = ( 'passed' !== $validate['result'] ) ) {
+				$this->remote_addr = $ip;
 				break;
 			}
 		}
@@ -406,9 +426,16 @@ class IP_Geo_Block {
 		return $commentdata;
 	}
 
+	public function validate_login() {
+		if ( isset( $_REQUEST['action'] ) || empty( $_REQUEST['loggedout'] ) )
+			$this->validate_ip( 'login', self::get_option( 'settings' ) );
+	}
+
 	public function validate_admin( $something ) {
-		add_filter( self::PLUGIN_SLUG . "-xmlrpc", array( $this, 'auth_check' ), 10, 2 );
-		$this->validate_ip( 'xmlrpc', self::get_option( 'settings' ) );
+		$this->validate_ip(
+			defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ? 'xmlrpc' : 'admin',
+			self::get_option( 'settings' )
+		);
 
 		return $something; // pass through
 	}
@@ -417,10 +444,39 @@ class IP_Geo_Block {
 	 * Authentication handling
 	 *
 	 */
+	public function auth_fail( $something ) {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+
+		$settings = self::get_option( 'settings' );
+
+		// Count up a number of fails when authentication is failed
+		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $this->remote_addr ) ) {
+			$hook = $cache['hook'];
+			$validate = array(
+				'ip' => $this->remote_addr,
+				'code' => $cache['code'],
+				'auth' => get_current_user_id(),
+				'fail' => TRUE,
+				'result' => 'failed',
+			);
+
+			IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
+		}
+
+		// (1) blocked, unknown, (3) unauthenticated, (5) all
+		if ( (int)$settings['validation']['reclogs'] & 1 ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			IP_Geo_Block_Logs::record_log( $hook, $validate, $settings );
+		}
+
+		return $something; // pass through
+	}
+
 	public function auth_check( $validate, $settings ) {
-		global $HTTP_RAW_POST_DATA;
-		if ( FALSE === strpos( $HTTP_RAW_POST_DATA, '>pingback.ping<' ) )
-			$validate['result'] = 'passed';
+		// Check a number of authentication fails
+		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
+		if ( $cache && $cache['fail'] >= $settings['login_fails'] )
+			$validate += array( 'result' => 'blocked' ); // can not overwrite
 
 		return $validate;
 	}

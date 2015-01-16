@@ -129,4 +129,82 @@ function my_blacklist( $validate ) {
 }
 add_filter( 'ip-geo-block-comment', 'my_blacklist' );
 
+
+/**
+ * Example8: usage of 'ip-geo-block-login'
+ * Use case: allow login only from specific ip addresses in the whitelist
+ * (validate ip address to exclude Brute-force attack on login process)
+ *
+ * @param  string $validate['ip'] ip address
+ * @param  string $validate['code'] country code
+ * @return array $validate add 'result' as 'passed' or 'blocked' if possible
+ */
+function my_whitelist( $validate ) {
+	$whitelist = array(
+		'jp',
+	);
+
+	$validate['result'] = 'blocked';
+
+	foreach ( $whitelist as $country ) {
+		if ( strtoupper( $country ) === $validate['code'] ) {
+			$validate['result'] = 'passed';
+			break;
+		}
+	}
+
+	return $validate;
+}
+add_filter( 'ip-geo-block-login', 'my_whitelist' );
+
+
+/**
+ * Example9: validate ip address before authrization in admin area
+ * Use case: When an emergency situation of your self being locked out
+ *
+ */
+function my_emergency( $validate ) {
+	// password is required even in this case
+	$validate['result'] = 'passed';
+	return $validate;
+}
+add_filter( 'ip-geo-block-login', 'my_emergency' );
+add_filter( 'ip-geo-block-admin', 'my_emergency' );
+
+
+/**
+ * Example10: backup validation logs to text files
+ * Use case: keep verification logs selectively to text files
+ *
+ * @param  string $hook 'comment', 'login', 'admin' or 'xmlrpc'
+ * @param  string $dir default path where text files should be saved
+ * @return string should be absolute path out of the public_html.
+ */
+function my_backup_dir( $hook, $dir ) {
+	if ( 'login' === $hook )
+		return '/absolute/path/to/';
+	else
+		return null;
+}
+add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
+
+
+/**
+ * Example11: usage of 'IP_Geo_Block::get_geolocation()'
+ * Use case: get geolocation of ip address with latitude and longitude
+ *
+ * @param  string $ip ip address
+ * @param  array $providers list of providers
+ * @return array $geolocation array of 'countryCode', 'latitude', 'longitude'
+ */
+function my_geolocation( $ip ) {
+	$providers = array( 'ipinfo.io', 'Telize', 'IP-Json' );
+	$geolocation = IP_Geo_Block::get_geolocation( $ip, $providers );
+
+	if ( empty( $geolocation['errorMessage'] ) )
+		echo va_dump( $geolocation );
+	else
+		echo $geolocation['errorMessage'];
+}
+
 endif;

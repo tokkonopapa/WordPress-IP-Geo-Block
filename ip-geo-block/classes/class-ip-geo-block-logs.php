@@ -8,7 +8,7 @@
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
  * @copyright 2013, 2014 tokkonopapa
  */
-define( 'IP_GEO_BLOCK_MAX_POST_LEN', 256 );
+define( 'IP_GEO_BLOCK_MAX_POST_LEN', 255 );
 
 class IP_Geo_Block_Logs {
 
@@ -23,7 +23,7 @@ class IP_Geo_Block_Logs {
 		$table = $wpdb->prefix . self::TABLE_NAME;
 
 		// creating mixed db engine will cause some troubles.
-		// some of the system can not exceed over 255 for varchar.
+		// some systems can not exceed over 255 for varchar.
 		$wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
  `No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
  `time` int(10) unsigned NOT NULL DEFAULT 0,
@@ -61,7 +61,7 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Limit the number of rows to be shown
+	 * Limit the number of rows to send to the user agent
 	 *
 	 */
 	public static function limit_rows( $time ) {
@@ -317,7 +317,7 @@ class IP_Geo_Block_Logs {
 		$agent = self::get_user_agent();
 		$heads = self::get_http_headers();
 		$posts = self::get_post_data( $hook, $validate, $settings );
-		$method = $_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . basename( $_SERVER['REQUEST_URI'] );
+		$method = $_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . $_SERVER['REQUEST_URI'];
 
 		// limit the maximum number of rows
 		global $wpdb;

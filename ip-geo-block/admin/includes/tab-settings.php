@@ -88,7 +88,10 @@ function ip_geo_block_tab_settings( $context ) {
 	// same as in tab-accesslog.php
 	$title = array(
 		'comment' => __( '<dfn title="Validate post to wp-comments-post.php">Comment post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'xmlrpc'  => __( '<dfn title="Validate pingback.ping to xmlrpc.php">XML-RPC</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'xmlrpc'  => __( '<dfn title="Validate access to xmlrpc.php">XML-RPC</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'login'   => __( '<dfn title="Validate access to wp-login.php">Login form</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'admin'   => __( '<dfn title="Validate access to wp-admin/admin.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'ajax'    => __( '<dfn title="Validate access to wp-admin/admin-ajax.php (logged in “Admin area”)">Admin Ajax</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
 	$field = 'validation';

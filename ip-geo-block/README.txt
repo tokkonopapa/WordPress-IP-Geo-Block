@@ -1,15 +1,16 @@
 === IP Geo Block ===
 Contributors: tokkonopapa
 Donate link:
-Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc
+Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.1
-Stable tag: 1.4.0
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 A WordPress plugin that will blocks any comment, pingback and trackback spams 
-posted from outside your nation.
+posted from outside your nation. And it will also protect against malicious 
+access to the login form, admin area and XML-RPC from undesired countries.
 
 == Description ==
 
@@ -17,25 +18,34 @@ This plugin will examine a country code based on the IP address. If the
 comment, pingback or trackback comes from specific country, it will be blocked 
 before Akismet validate it.
 
+With the same mechanism, it will fight against burst access of brute-force 
+and reverse-brute-force attacks to the login form, admin area and XML-RPC.
+
 = Features =
 
-1. Access to the `wp-comments-post.php` and `xmlrpc.php` will be validated 
+1. Access to the `wp-comments-post.php` and `xmlrpc.php`, `wp-login.php`, 
+admin area (`wp-admin/admin.php`), `wp-admin/admin-ajax.php` will be validated 
 by means of IP address. Free IP Geolocation database and REST APIs are 
 installed in this plugin to get a country code from an IP address. There are 
 two types of API which support only IPv4 or both IPv4 and IPv6. This plugin 
 will automatically select an appropriate API.
 
-2. Cache mechanism with transient API for the fetched IP addresses has been 
+2. In order to prevent the authentication through the login form and XML-RPC 
+against the brute-force and the reverse-brute-force attacks, malicious access 
+will be blocked not only by limiting geolocation of IP addresses but also 
+limiting the number of login attempts.
+
+3. Cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against the burst accesses with a short 
 period of time.
 
-3. Validation logs will be recorded into MySQL data table to analyze posting 
+4. Validation logs will be recorded into MySQL data table to analyze posting 
 pattern under the specified condition.
 
-4. Custom validation function can be added by `add_filter()` with predefined 
+5. Custom validation function can be added by `add_filter()` with predefined 
 filter hook.
 
-5. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+6. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
 (once a month) automatically. And if you have correctly installed 
 one of the IP2Location plugins (
@@ -184,7 +194,10 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-ip-addr`          : IP address of accessor.
 * `ip-geo-block-headers`          : compose http request headers.
 * `ip-geo-block-comment`          : validate IP adress at `wp-comments-post.php`.
+* `ip-geo-block-login`            : validate IP adress at `wp-login.php`.
+* `ip-geo-block-admin`            : validate IP adress at `wp-admin/` area.
 * `ip-geo-block-xmlrpc`           : validate IP adress at `xmlrpc.php`.
+* `ip-geo-block-backup-dir`       : absolute path where log files should be saved.
 * `ip-geo-block-maxmind-dir`      : absolute path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
@@ -213,6 +226,13 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.0.0 =
+* **New feature:** Protection against brute-force and reverse-brute-force 
+  attacks to the admin area, `admin-ajax.php`, `wp-login.php` and `xmlrpc.php`.
+  This is an experimental function and can be enabled on `Settings` tab.
+  Malicious access can try to login only 5 times per IP address. This retry 
+  counter can be reset to zero by `Clear statistics` on `Statistics` tab.
 
 = 1.4.0 =
 * **New feature:** Added a new class for recording the validation logs to 
