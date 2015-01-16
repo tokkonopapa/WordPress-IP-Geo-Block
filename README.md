@@ -43,6 +43,11 @@ correctly installed one of the IP2Location plugins (
     [IP2Location Country Blocker][IP2Blk]
 ), this plugin uses its local database prior to the REST APIs.
 
+7. This can be combined with other full spec security plugin such as 
+    [iThemes Security][isec],
+    [Wordfence Security][wfen]
+(because the function of country bloking is available only for premium users).
+
 ### Installation:
 
 1. Upload `ip-geo-block` directory to your plugins directory.
@@ -280,3 +285,5 @@ This plugin is licensed under the GPL v2 or later.
 [BHS]:      http://blackhole.webpagetest.org/
 [ISO]:      http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
 [RFC]:      http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
+[isec]:     https://wordpress.org/plugins/better-wp-security/ "WordPress › iThemes Security (formerly Better WP Security) « WordPress Plugins"
+[wfen]:     https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins"
