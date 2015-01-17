@@ -2,20 +2,29 @@
  * Service: Language
  *
  */
-angular.module('postproxy', []);
-angular.module('postproxy').service('PostProxySvc', ['$http', function ($http) {
+angular.module('http-proxy', []);
+angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) {
 	/**
 	 * Post form data
 	 *
 	 */
-	this.post_form = function (url, form, proxy) {
+	this.post_form = function (url, form, proxy, method) {
+		if (typeof method === 'undefined') {
+			method = 'POST';
+			type = 'application/x-www-form-urlencoded';
+		} else {
+			method = 'GET';
+			type = 'text/html';
+			url += '?' + decodeURIComponent(form);
+		}
+
 		// Post the comment with `X-Forwarded-For` header
 		return $http({
 			url: url,
-			method: 'POST',
+			method: method,
 			data: form,
 			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Type': type + '; charset=UTF-8',
 				'X-Forwarded-For': proxy
 			}
 		})

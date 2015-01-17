@@ -9,7 +9,7 @@ var app = angular.module('WPApp', [
 	'language',
 	'geolocation',
 	'validate-wp',
-	'postproxy'
+	'http-proxy'
 ]);
 
 /**
@@ -39,7 +39,7 @@ app.factory('$exceptionHandler', ['$window', function ($window) {
  * https://www.airpair.com/angularjs/posts/top-10-mistakes-angularjs-developers-make
  * http://stackoverflow.com/questions/23382109/how-to-avoid-a-large-number-of-dependencies-in-angularjs
  */
-angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'LanguageSvc', 'GeolocationSvc', 'WPValidateSvc', 'PostProxySvc', function ($scope, $cookies, svcLang, svcGeoloc, svcWP, svcProxy) {
+angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'LanguageSvc', 'GeolocationSvc', 'WPValidateSvc', 'HttpProxySvc', function ($scope, $cookies, svcLang, svcGeoloc, svcWP, svcProxy) {
 	// Language
 	$scope.lang = svcLang();
 
@@ -277,7 +277,10 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 	var post_admin_ajax = function (url, proxy) {
 		var form = serialize_plain($scope.form.ajax);
 		svcProxy.post_form(url, form, proxy).then(function (res) {
-			messageOut('Admin Ajax', res.stat);
+			messageOut('Admin Ajax (POST)', res.stat);
+		});
+		svcProxy.post_form(url, form, proxy, 'GET').then(function (res) {
+			messageOut('Admin Ajax (GET)', res.stat);
 		});
 	};
 
