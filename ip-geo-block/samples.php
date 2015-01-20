@@ -13,7 +13,7 @@
 if ( class_exists( 'IP_Geo_Block' ) ):
 
 /**
- * Example1: usage of 'ip-geo-block-ip-addr'
+ * Example 1: usage of 'ip-geo-block-ip-addr'
  * Use case: replace ip address for test purpose
  *
  * @param  string $ip original ip address
@@ -26,7 +26,7 @@ add_filter( 'ip-geo-block-ip-addr', 'my_replace_ip' );
 
 
 /**
- * Example2: usage of 'ip-geo-block-ip-addr'
+ * Example 2: usage of 'ip-geo-block-ip-addr'
  * Use case: retrieve ip address behind the proxy
  *
  * @param  string $ip original ip address
@@ -47,7 +47,7 @@ add_filter( 'ip-geo-block-ip-addr', 'my_retrieve_ip' );
 
 
 /**
- * Example3: usage of 'ip-geo-block-headers'
+ * Example 3: usage of 'ip-geo-block-headers'
  * Use case: change the user agent strings when accessing remote contents
  *
  * Notice: Be careful about HTTP header injection.
@@ -62,7 +62,7 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 
 
 /**
- * Example4: usage of 'ip-geo-block-maxmind-dir'
+ * Example 4: usage of 'ip-geo-block-maxmind-dir'
  * Use case: change the path to Maxmind database files to writable directory
  *
  * @param  string $dir original directory of database files
@@ -76,7 +76,7 @@ add_filter( 'ip-geo-block-maxmind-dir', 'my_maxmind_dir' );
 
 
 /**
- * Example5: usage of 'ip-geo-block-maxmind-zip-ipv[46]'
+ * Example 5: usage of 'ip-geo-block-maxmind-zip-ipv[46]'
  * Use case: replace Maxmind database files to city edition
  *
  * @param  string $url original url to zip file
@@ -93,7 +93,7 @@ add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
 
 
 /**
- * Example6: usage of 'ip-geo-block-ip2location-path'
+ * Example 6: usage of 'ip-geo-block-ip2location-path'
  * Use case: change the path to IP2Location database files
  *
  * @param  string $path original path to database files
@@ -106,7 +106,7 @@ add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
 
 
 /**
- * Example7: usage of 'ip-geo-block-comment'
+ * Example 7: usage of 'ip-geo-block-comment'
  * Use case: exclude specific countries in the blacklist on comment post
  *
  * @param  string $validate['ip'] ip address
@@ -131,8 +131,8 @@ add_filter( 'ip-geo-block-comment', 'my_blacklist' );
 
 
 /**
- * Example8: usage of 'ip-geo-block-login'
- * Use case: allow login only from specific ip addresses in the whitelist
+ * Example 8: usage of 'ip-geo-block-login' and 'ip-geo-block-xmlrpc'
+ * Use case: allow authentication only from specific ip addresses in the whitelist
  * (validate ip address to exclude Brute-force attack on login process)
  *
  * @param  string $validate['ip'] ip address
@@ -156,10 +156,41 @@ function my_whitelist( $validate ) {
 	return $validate;
 }
 add_filter( 'ip-geo-block-login', 'my_whitelist' );
+add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
 
 
 /**
- * Example9: validate ip address before authrization in admin area
+ * Example 9: validate admin-ajax.php regardless of country code
+ * Use case: protect illegal download such as 'wp-config.php'
+ *
+ * @global array $_REQUEST GET or POST values
+ * @param  array $validate
+ * @return array $validate add 'result' as 'blocked' when NG word was found
+ */
+function my_protectives( $validate ) {
+	if ( defined( 'DOING_AJAX' ) &amp;&amp; DOING_AJAX ) {
+		$protectives = array(
+			'wp-config.php',
+			'passwd',
+		);
+
+		$str = urldecode( implode( ' ', array_values( $_REQUEST ) ) );
+
+		foreach ( $protectives as $item ) {
+			if ( strpos( $str, $item ) !== FALSE ) {
+				$validate['result'] = 'blocked';
+				break;
+			}
+		}
+	}
+
+	return $validate; // should not set 'passed' to validate by country code
+}
+add_filter( 'ip-geo-block-admin', 'my_protectives' );
+
+
+/**
+ * Example 10: validate ip address before authrization in admin area
  * Use case: When an emergency situation of your self being locked out
  *
  */
@@ -173,7 +204,7 @@ add_filter( 'ip-geo-block-admin', 'my_emergency' );
 
 
 /**
- * Example10: backup validation logs to text files
+ * Example 11: backup validation logs to text files
  * Use case: keep verification logs selectively to text files
  *
  * @param  string $hook 'comment', 'login', 'admin' or 'xmlrpc'
@@ -190,7 +221,7 @@ add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
 
 
 /**
- * Example11: usage of 'IP_Geo_Block::get_geolocation()'
+ * Example 12: usage of 'IP_Geo_Block::get_geolocation()'
  * Use case: get geolocation of ip address with latitude and longitude
  *
  * @param  string $ip ip address
