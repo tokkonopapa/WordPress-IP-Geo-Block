@@ -266,16 +266,17 @@ class IP_Geo_Block {
 		$white = $settings['white_list']; // 0 == $rule
 		$black = $settings['black_list']; // 1 == $rule
 
-		if ( 'ZZ' !== $validate['code'] ) {
-			// if the list of country code is empty then pass through
-			if ( 0 == $rule && ( ! $white || FALSE !== strpos( $white, $validate['code'] ) ) ||
-			     1 == $rule && ( ! $black || FALSE === strpos( $black, $validate['code'] ) ) )
-				return $validate + array( 'result' => 'passed' ); // It may not be a spam
-			else
-				return $validate + array( 'result' => 'blocked'); // It could be a spam
-		} else {
+		if ( 0 == $rule && ( ! $white || FALSE !== strpos( $white, $validate['code'] ) ) )
+			return $validate + array( 'result' => 'passed' ); // It may not be a spam
+
+		else if ( 1 == $rule && ( ! $black || FALSE !== strpos( $black, $validate['code'] ) ) )
+			return $validate + array( 'result' => 'blocked' ); // It could be a spam
+
+		else if ( 'ZZ' !== $validate['code'] )
 			return $validate + array( 'result' => 'unknown' ); // It can not be decided
-		}
+
+		else
+			return $validate + array( 'result' => 'passed' ); // It may not be a spam
 	}
 
 	/**
@@ -319,9 +320,8 @@ class IP_Geo_Block {
 			die();
 
 		  case 4: // 4xx Client Error ('text/html' is only for comment and login)
-			if ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
+			if ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) )
 				wp_die( $msg, 'Error', array( 'response' => $code, 'back_link' => TRUE ) );
-			}
 
 		  default: // 5xx Server Error
 			status_header( $code ); // @since 2.0.0
