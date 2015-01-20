@@ -168,7 +168,7 @@ add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
  * @return array $validate add 'result' as 'blocked' when NG word was found
  */
 function my_protectives( $validate ) {
-	if ( defined( 'DOING_AJAX' ) &amp;&amp; DOING_AJAX ) {
+	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 		$protectives = array(
 			'wp-config.php',
 			'passwd',
