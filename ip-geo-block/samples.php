@@ -163,7 +163,7 @@ add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
  * Example 9: validate admin-ajax.php regardless of country code
  * Use case: protect illegal download such as 'wp-config.php'
  *
- * @global array $_REQUEST GET or POST values
+ * @global array $_GET and $_POST requested values
  * @param  array $validate
  * @return array $validate add 'result' as 'blocked' when NG word was found
  */
@@ -174,7 +174,8 @@ function my_protectives( $validate ) {
 			'passwd',
 		);
 
-		$str = urldecode( implode( ' ', array_values( $_REQUEST ) ) );
+		$str = array_merge( array_values( $_GET ), array_values( $_POST ) );
+		$str = urldecode( implode( ' ', $str ) );
 
 		foreach ( $protectives as $item ) {
 			if ( strpos( $str, $item ) !== FALSE ) {
