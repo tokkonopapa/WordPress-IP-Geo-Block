@@ -176,10 +176,10 @@ function my_protectives( $validate ) {
 
 		$req = array_merge( array_values( $_GET ), array_values( $_POST ) );
 		if ( ! empty( $req ) ) {
-			$req = urldecode( implode( ' ', $req ) );
+			$str = urldecode( implode( ' ', $req ) );
 
 			foreach ( $protectives as $item ) {
-				if ( strpos( $req, $item ) !== FALSE ) {
+				if ( strpos( $str, $item ) !== FALSE ) {
 					$validate['result'] = 'blocked';
 					break;
 				}
