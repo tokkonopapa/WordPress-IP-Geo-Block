@@ -272,7 +272,7 @@ class IP_Geo_Block {
 		else if ( 1 == $rule && ( ! $black || FALSE !== strpos( $black, $validate['code'] ) ) )
 			return $validate + array( 'result' => 'blocked' ); // It could be a spam
 
-		else if ( 'ZZ' !== $validate['code'] )
+		else if ( 'ZZ' === $validate['code'] )
 			return $validate + array( 'result' => 'unknown' ); // It can not be decided
 
 		else
