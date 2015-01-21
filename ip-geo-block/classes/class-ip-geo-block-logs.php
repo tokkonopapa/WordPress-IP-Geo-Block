@@ -278,7 +278,7 @@ class IP_Geo_Block_Logs {
 			return;
 
 		$path = trailingslashit( $path ) .
-			IP_Geo_Block::PLUGIN_SLUG . date('-ymw') . '.log';
+			IP_Geo_Block::PLUGIN_SLUG . date('-Y-m-w') . '.log';
 		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )
 			return;
 

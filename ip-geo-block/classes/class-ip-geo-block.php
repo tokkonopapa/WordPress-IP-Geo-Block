@@ -261,22 +261,24 @@ class IP_Geo_Block {
 	 *
 	 */
 	private function validate_country( $validate, $settings ) {
-		// matching rule and list of country code
-		$rule  = $settings['matching_rule'];
-		$white = $settings['white_list']; // 0 == $rule
-		$black = $settings['black_list']; // 1 == $rule
+		if ( 0 == $settings['matching_rule'] ) {
+			// Whitelist
+			$list = $settings['white_list'];
+			if ( ! $list || FALSE !== strpos( $list, $validate['code'] ) )
+				return $validate + array( 'result' => 'passed' );
+			else if ( 'ZZ' !== $validate['code'] )
+				return $validate + array( 'result' => 'blocked' );
+		}
+		else {
+			// Blacklist
+			$list = $settings['black_list'];
+			if ( ! $list || FALSE !== strpos( $list, $validate['code'] ) )
+				return $validate + array( 'result' => 'blocked' );
+			else if ( 'ZZ' !== $validate['code'] )
+				return $validate + array( 'result' => 'passed' );
+		}
 
-		if ( 0 == $rule && ( ! $white || FALSE !== strpos( $white, $validate['code'] ) ) )
-			return $validate + array( 'result' => 'passed' ); // It may not be a spam
-
-		else if ( 1 == $rule && ( ! $black || FALSE !== strpos( $black, $validate['code'] ) ) )
-			return $validate + array( 'result' => 'blocked' ); // It could be a spam
-
-		else if ( 'ZZ' === $validate['code'] )
-			return $validate + array( 'result' => 'unknown' ); // It can not be decided
-
-		else
-			return $validate + array( 'result' => 'passed' ); // It may not be a spam
+		return $validate + array( 'result' => 'unknown' );
 	}
 
 	/**

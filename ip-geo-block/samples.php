@@ -48,7 +48,7 @@ add_filter( 'ip-geo-block-ip-addr', 'my_retrieve_ip' );
 
 /**
  * Example 3: usage of 'ip-geo-block-headers'
- * Use case: change the user agent strings when accessing remote contents
+ * Use case: change the user agent strings when accessing geolocation API
  *
  * Notice: Be careful about HTTP header injection.
  * @param  string $args http request headers for `wp_remote_get()`
@@ -63,7 +63,7 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 
 /**
  * Example 4: usage of 'ip-geo-block-maxmind-dir'
- * Use case: change the path to Maxmind database files to writable directory
+ * Use case: change the path of Maxmind database files to writable directory
  *
  * @param  string $dir original directory of database files
  * @return string $dir replaced directory of database files
@@ -107,7 +107,7 @@ add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
 
 /**
  * Example 7: usage of 'ip-geo-block-comment'
- * Use case: exclude specific countries in the blacklist on comment post
+ * Use case: block comment post from specific IP addresses in the blacklist
  *
  * @param  string $validate['ip'] ip address
  * @param  string $validate['code'] country code
@@ -132,7 +132,7 @@ add_filter( 'ip-geo-block-comment', 'my_blacklist' );
 
 /**
  * Example 8: usage of 'ip-geo-block-login' and 'ip-geo-block-xmlrpc'
- * Use case: allow authentication only from specific ip addresses in the whitelist
+ * Use case: allow authentication only from specific countries in the whitelist
  * (validate ip address to exclude Brute-force attack on login process)
  *
  * @param  string $validate['ip'] ip address

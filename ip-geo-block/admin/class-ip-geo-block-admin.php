@@ -288,7 +288,7 @@ class IP_Geo_Block_Admin {
 	/**
 	 * Function that fills the field with the desired inputs as part of the larger form.
 	 * The 'id' and 'name' should match the $id given in the add_settings_field().
-	 * @param array $args A value to be given into the field.
+	 * @param array $args['value'] should be sanitized because it comes from external.
 	 */
 	public function callback_field( $args ) {
 		if ( ! empty( $args['before'] ) )
@@ -613,11 +613,10 @@ class IP_Geo_Block_Admin {
 					$n = 0;
 					foreach ( $rows as $logs ) {
 						$log = (int)array_shift( $logs );
-						$html .= "<tr>\n<td data-value='" . $log . "'>";
-						$html .= ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ) . "</td>\n";
-						foreach ( $logs as $log )
-							$html .= "<td>" . esc_html( $log ) . "</td>\n";
-						$html .= "</tr>\n";
+						$html .= "<tr><td data-value='" . $log . "'>";
+						$html .= ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ) . "</td><td>";
+						$html .= implode( "</td><td>", array_map( 'esc_html', $logs ) );
+						$html .= "</td></tr>";
 						if ( ++$n >= $limit ) break;
 					}
 					$res[ $hook ] = $html;

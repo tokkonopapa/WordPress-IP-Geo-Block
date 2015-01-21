@@ -43,7 +43,9 @@ period of time.
 pattern under the specified condition.
 
 5. Custom validation function can be added by `add_filter()` with predefined 
-filter hook.
+filter hook. See
+    [sample.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
+bundled within this package.
 
 6. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
@@ -54,7 +56,8 @@ one of the IP2Location plugins (
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
 ), this plugin uses its local database prior to the REST APIs.
 
-7. This can be combined with other full spec security plugin such as 
+7. This plugin is simple enough to be able to cooperate with other full spec 
+security plugin such as 
     [iThemes Security](https://wordpress.org/plugins/better-wp-security/ "WordPress › iThemes Security (formerly Better WP Security) « WordPress Plugins"),
     [Wordfence Security](https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins")
 (because the function of country bloking is available only for premium users).
@@ -234,7 +237,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 = 2.0.0 =
 * **New feature:** Protection against brute-force and reverse-brute-force 
-  attacks to the admin area, `admin-ajax.php`, `wp-login.php` and `xmlrpc.php`.
+  attacks to `wp-login.php`, `xmlrpc.php` and admin area.
   This is an experimental function and can be enabled on `Settings` tab.
   Malicious access can try to login only 5 times per IP address. This retry 
   counter can be reset to zero by `Clear statistics` on `Statistics` tab.
