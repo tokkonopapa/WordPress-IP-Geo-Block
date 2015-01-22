@@ -183,7 +183,7 @@ class IP_Geo_Block_Logs {
 	/**
 	 * Get data
 	 *
-	 * These data should be sanitized before rendering
+	 * These data must be sanitized before rendering
 	 */
 	private static function get_user_agent() {
 		return isset( $_SERVER['HTTP_USER_AGENT'] ) ?
@@ -391,7 +391,7 @@ class IP_Geo_Block_Logs {
 
 		foreach ( $list as $row ) {
 			$hook = array_shift( $row );
-			$result[ $hook ][] = $row;
+			$result[ $hook ][] = $row; // must be sanitized just before sending to UA.
 		}
 
 		return isset( $result ) ? $result : array();
