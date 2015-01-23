@@ -175,15 +175,13 @@ function my_protectives( $validate ) {
 			'passwd',
 		);
 
-		$req = array_merge( array_values( $_GET ), array_values( $_POST ) );
-		if ( ! empty( $req ) ) {
-			$str = strtolower( urldecode( implode( ' ', $req ) ) );
+		$req = array_values( $_GET ) + array_values( $_POST );
+		$req = strtolower( urldecode( implode( ' ', $req ) ) );
 
-			foreach ( $protectives as $item ) {
-				if ( strpos( $str, $item ) !== FALSE ) {
-					$validate['result'] = 'blocked';
-					break;
-				}
+		foreach ( $protectives as $item ) {
+			if ( strpos( $req, $item ) !== FALSE ) {
+				$validate['result'] = 'blocked';
+				break;
 			}
 		}
 	}

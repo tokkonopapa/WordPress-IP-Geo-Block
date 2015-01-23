@@ -614,9 +614,12 @@ class IP_Geo_Block_Admin {
 					foreach ( $rows as $logs ) {
 						$log = (int)array_shift( $logs );
 						$html .= "<tr><td data-value='" . $log . "'>";
-						$html .= ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ) . "</td><td>";
-						$html .= implode( "</td><td>", array_map( 'esc_html', $logs ) );
-						$html .= "</td></tr>";
+						$html .= ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
+						foreach ( $logs as $log ) {
+							$log = esc_html( $log );
+							$html .= "<td>$log</td>";
+						}
+						$html .= "</tr>";
 						if ( ++$n >= $limit ) break;
 					}
 					$res[ $hook ] = $html;
