@@ -58,7 +58,7 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 			author: 'spam-master',
 			email: 'spam@example.com',
 			url: 'http://example.com/',
-			comment: 'This is a spam comment.',
+			comment: '<script>alert("XSS")</script>',
 			comment_post_ID: 0,
 			comment_parent: 0
 		},
