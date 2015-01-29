@@ -70,8 +70,8 @@ rm -rf $PLUGINSLUG
 
 # Support for the /assets folder on the .org repo.
 echo "Moving assets"
-mv -f assets/* $SVNPATH/assets/
-rmdir assets
+rm -rf $SVNPATH/assets/
+mv -f assets $SVNPATH
 
 # Update all the files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2}' | xargs svn del
