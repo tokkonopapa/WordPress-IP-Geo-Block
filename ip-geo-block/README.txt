@@ -23,8 +23,8 @@ and reverse-brute-force attacks to the login form, admin area and XML-RPC.
 
 = Features =
 
-1. Access to the basic and important entrances such as `wp-comments-post.php`, 
-`xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php` 
+1. Access to the basic and important entrances such as `wp-comments-post.php`
+, `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php` 
 will be validated by means of a country code based on IP address. 
 
 2. Free IP Geolocation database and REST APIs are installed into this plugin 
