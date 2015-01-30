@@ -2,6 +2,44 @@
 # A modification of Dean Clatworthy's deploy script at: https://github.com/deanc/wordpress-plugin-git-svn
 # The difference is that this script lives in the plugin's git repo & doesn't require an existing SVN repo.
 
+# structure on http://plugins.svn.wordpress.org/ip-geo-block/
+# /ip-geo-block
+#	assets/
+#		icon-256x256.jpg
+#		screenshot-1.png
+#		screenshot-2.png
+#		screenshot-3.png
+#		screenshot-4.png
+#		screenshot-5.png
+#	branches/
+#	tags/
+#		1.0.0/
+#		...
+#		2.0.0/
+#			LICENSE.txt
+#			README.txt
+#			admin/
+#			classes/
+#			database/
+#			includes/
+#			index.php
+#			ip-geo-block.php
+#			languages/
+#			samples.php
+#			uninstall.php
+#	trunk/
+#		LICENSE.txt
+#		README.txt
+#		admin/
+#		classes/
+#		database/
+#		includes/
+#		index.php
+#		ip-geo-block.php
+#		languages/
+#		samples.php
+#		uninstall.php
+
 # main config
 PLUGINSLUG="ip-geo-block"
 CURRENTDIR=`pwd`
@@ -70,8 +108,9 @@ rm -rf $PLUGINSLUG
 
 # Support for the /assets folder on the .org repo.
 echo "Moving assets"
-rm -rf $SVNPATH/assets/
-mv -f assets $SVNPATH
+rm -f $SVNPATH/assets/*
+mv -f assets/* $SVNPATH/assets/
+rmdir assets
 
 # Update all the files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2}' | xargs svn del
