@@ -160,35 +160,17 @@ add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
 
 
 /**
- * Example 9: validate admin-ajax.php regardless of country code
- * Use case: protect malicious access via admin-ajax.php
+ * Example 9: block malicious access via admin-ajax.php regardless of its country code
+ * Use case: add some protectives to the default (wp-congig.php, .htaccess, passwd)
  *
- * @global array $_GET and $_POST requested values
- * @param  array $validate
- * @return array $validate add 'result' as 'blocked' when NG word was found
+ * @param  array $protectives
+ * @return array $protectives add somethig to be protected
+ * @link http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html
  */
-function my_protectives( $validate ) {
-	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-		$protectives = array(
-			'wp-config.php',
-			'.htaccess',
-			'passwd',
-		);
-
-		$req = array_values( $_GET ) + array_values( $_POST );
-		$req = strtolower( urldecode( implode( ' ', $req ) ) );
-
-		foreach ( $protectives as $item ) {
-			if ( strpos( $req, $item ) !== FALSE ) {
-				$validate['result'] = 'blocked';
-				break;
-			}
-		}
-	}
-
-	return $validate; // should not set 'passed' to validate by country code
+function my_protectives( $protectives ) {
+	return $protectives + array( 'somethig to be protected' );
 }
-add_filter( 'ip-geo-block-admin', 'my_protectives' );
+add_filter( 'ip-geo-block-ajax', 'my_protectives' );
 
 
 /**

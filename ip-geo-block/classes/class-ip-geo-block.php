@@ -20,7 +20,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.0.0';
+	const VERSION = '2.0.1';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -82,7 +82,7 @@ class IP_Geo_Block {
 
 		// wp-admin/admin.php from wp-admin/admin-apax.php @since 2.5.0
 		if ( $settings['validation']['ajax'] && defined( 'DOING_AJAX' ) && DOING_AJAX )
-			add_action( 'admin_init', array( $this, 'validate_admin' ) );
+			add_action( 'admin_init', array( $this, 'validate_ajax' ) );
 	}
 
 	// get default optional values
@@ -440,6 +440,36 @@ class IP_Geo_Block {
 		);
 
 		return $something; // pass through
+	}
+
+	public function validate_ajax() {
+		add_filter( self::PLUGIN_SLUG . "-admin", array( $this, 'check_ajax' ), 10, 2 );
+		$this->validate_ip( 'admin', self::get_option( 'settings' ) );
+	}
+
+	public function check_ajax( $validate, $settings ) {
+		// flatten array of requested queries and convert it to a string
+		$req = array_values( $_GET ) + array_values( $_POST );
+		while ( list( $key, $val ) = each( $req ) ) {
+			if ( is_array( $val ) ) {
+				array_splice( $req, $key, 1, $val );
+				next( $req );
+			}
+		}
+		$req = strtolower( urldecode( implode( ' ', $req ) ) );
+
+		$protectives = explode( ',', $settings['validation']['protectives'] );
+		$protectives = apply_filters( self::PLUGIN_SLUG . "-ajax", $protectives );
+
+		// check queries to be protected
+		foreach ( $protectives as $val ) {
+			if ( $val = trim( $val ) && strpos( $req, $val ) !== FALSE ) {
+				$validate['result'] = 'blocked';
+				break;
+			}
+		}
+
+		return $validate;
 	}
 
 	/**

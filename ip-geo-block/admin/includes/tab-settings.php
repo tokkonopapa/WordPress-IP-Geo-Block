@@ -91,24 +91,32 @@ function ip_geo_block_tab_settings( $context ) {
 		'xmlrpc'  => __( '<dfn title="Validate access to xmlrpc.php">XML-RPC</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'login'   => __( '<dfn title="Validate access to wp-login.php">Login form</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'admin'   => __( '<dfn title="Validate access to wp-admin/admin.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'ajax'    => __( '<dfn title="Validate access to wp-admin/admin-ajax.php (logged in “Admin area”)">Admin Ajax</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'ajax'    => __( '<dfn title="Validate access to wp-admin/admin-ajax.php">Admin Ajax</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
 	$field = 'validation';
 	foreach ( $title as $key => $val ) {
+		$args = array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+		);
+/*
+		if ( 'ajax' === $key )
+			$args += array(
+				'protectives' => $options[ $field ]['protectives'],
+				'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+			);
+//*/
 		add_settings_field(
 			$option_name . "_${field}_${key}",
 			$title[ $key ],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
-			array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-			)
+			$args
 		);
 	}
 
