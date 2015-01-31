@@ -76,7 +76,9 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 			cookie: 'wordpress_test_cookie=WP+Cookie+check'
 		},
 		ajax: {
-			action: 'myAction'
+			_wpnonce: '12345abcde',
+			action: 'download',
+			param: '../wp-config.php'
 		},
 		pingback: {
 			xml: 

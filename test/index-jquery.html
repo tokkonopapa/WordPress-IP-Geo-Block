@@ -211,11 +211,24 @@
 		<form class="post-form" id="admin-ajax">
 			<!-- WP nonce -->
 			<p>
+				<label for="_wpnonce">
+					<span data-bind="_wpnonce_"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" id="_wpnonce" name="_wpnonce" value="12345abcde" />
+			</p>
+			<p>
 				<label for="action">
 					<span data-bind="_action_"></span>
 					<span class="required">*</span>
 				</label>
-				<input type="text" id="action" name="action" value="myAction" />
+				<input type="text" id="action" name="action" value="download" />
+			</p>
+			<p>
+				<label for="param">
+					<span data-bind="_param_"></span>
+				</label>
+				<input type="text" id="param" name="param" value="../wp-config.php" />
 			</p>
 		</form>
 	</div>
