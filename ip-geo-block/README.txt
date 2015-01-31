@@ -35,8 +35,8 @@ an appropriate API.
 against the brute-force and the reverse-brute-force attacks, the number of 
 login attempts will be limited per IP address.
 
-4. Protect illegal download and upload caused by some critical vulnerability 
-of some existing plugins like 
+4. Block Local File Inclusion (LFI) caused by some critical vulnerability of 
+some existing plugins like 
     [this](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "WordPress Security Vuln in Slider Revolution Plugin | Sucuri Blog")
 via `admin-ajax.php`.
 
@@ -241,7 +241,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.1 =
-* **New feature:** Block illegal download and upload cause by some critical 
+* **New feature:** Block Local File Inclusion (LFI) caused by some critical 
   vulnerability of some existing plugins like
   [this](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "WordPress Security Vuln in Slider Revolution Plugin | Sucuri Blog")
   via `admin-ajax.php` regardless of its country code.
