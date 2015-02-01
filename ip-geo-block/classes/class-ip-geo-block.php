@@ -453,18 +453,9 @@ class IP_Geo_Block {
 	 */
 	public function check_ajax( $validate, $settings ) {
 		if ( $keywords = $settings['validation']['keywords'] ) {
-			// flatten array of requested queries and convert it to a string
-			$req = array_keys( $_GET ) + array_keys( $_POST );
-			$req[] = array_values( $_GET ) + array_values( $_POST );
-			while ( list( $key, $val ) = each( $req ) ) {
-				if ( is_array( $val ) ) {
-					array_splice( $req, $key, 1, $val );
-					next( $req );
-				}
-			}
-			$req = strtolower( urldecode( implode( ' ', $req ) ) );
-
-			// check queries to be protected
+			// flatten array of request and check keywords to be protected
+			// @note: consider the case which json_encode() returns FALSE
+			$req = strtolower( urldecode( json_encode( $_GET + $_POST ) ) );
 			foreach ( explode( ',', $keywords ) as $val ) {
 				if ( $val = trim( $val ) && strpos( $req, $val ) !== FALSE ) {
 					$validate['result'] = 'blocked';
