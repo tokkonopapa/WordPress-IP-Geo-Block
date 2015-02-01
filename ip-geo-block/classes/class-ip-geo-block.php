@@ -455,7 +455,7 @@ class IP_Geo_Block {
 		if ( $keywords = $settings['validation']['keywords'] ) {
 			// flatten array of requested queries and convert it to a string
 			$req = array_keys( $_GET ) + array_keys( $_POST );
-			$req += array_values( $_GET ) + array_values( $_POST );
+			$req[] = array_values( $_GET ) + array_values( $_POST );
 			while ( list( $key, $val ) = each( $req ) ) {
 				if ( is_array( $val ) ) {
 					array_splice( $req, $key, 1, $val );
