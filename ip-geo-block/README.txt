@@ -35,10 +35,11 @@ an appropriate API.
 against the brute-force and the reverse-brute-force attacks, the number of 
 login attempts will be limited per IP address.
 
-4. Block Local File Inclusion (LFI) caused by some critical vulnerability of 
-some existing plugins like 
+4. Block attacks such as 
+    [File Inclusion](http://hakipedia.com/index.php/File_Inclusion "File Inclusion - Hakipedia")
+caused by some critical vulnerability in some existing plugins like 
     [this](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "WordPress Security Vuln in Slider Revolution Plugin | Sucuri Blog")
-via `admin-ajax.php`.
+via `admin-ajax.php` regardless of its country code.
 
 5. A cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against the burst accesses with a short 
@@ -209,7 +210,6 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/admin.php`.
-* `ip-geo-block-ajax`             : add some protectives to the default (wp-congig.php, .htaccess, passwd).
 * `ip-geo-block-backup-dir`       : absolute path where log files should be saved.
 * `ip-geo-block-maxmind-dir`      : absolute path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
@@ -241,8 +241,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.1 =
-* **New feature:** Block Local File Inclusion (LFI) caused by some critical 
-  vulnerability of some existing plugins like
+* **New feature:** Block attacks such as File Inclusion caused by some 
+  critical vulnerability in some existing plugins like
   [this](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "WordPress Security Vuln in Slider Revolution Plugin | Sucuri Blog")
   via `admin-ajax.php` regardless of its country code.
 

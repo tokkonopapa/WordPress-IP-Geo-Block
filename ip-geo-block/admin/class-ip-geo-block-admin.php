@@ -353,16 +353,16 @@ class IP_Geo_Block_Admin {
 		  case 'checkbox': ?>
 <input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="1"<?php checked( esc_attr( $args['value'] ) ); ?> />
 <label for="<?php echo $id, $sub_id; ?>"><?php _e( 'Enable', IP_Geo_Block::TEXT_DOMAIN ); ?></label>
-<?php /*
-			if ( isset( $args['protectives'] ) ) {
+<?php
+			if ( array_key_exists( 'keywords', $args ) ) {
 				echo "<br />\n";
-				$sub_id   = '_protectives';
-				$sub_name = '[protectives]';
-				$args['value'] = $args['protectives']; ?>
+				$sub_id   = '_keywords';
+				$sub_name = '[keywords]';
+				$args['value'] = $args['keywords']; ?>
 <input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php disabled( ! empty( $args['disabled'] ), TRUE );
 ?> />
 <?php
-			}//*/
+			}
 			break;
 
 		  case 'button': ?>

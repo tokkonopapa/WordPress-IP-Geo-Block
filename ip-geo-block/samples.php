@@ -160,21 +160,7 @@ add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
 
 
 /**
- * Example 9: block malicious access via admin-ajax.php regardless of its country code
- * Use case: add some protectives to the default (wp-congig.php, .htaccess, passwd)
- *
- * @param  array $protectives
- * @return array $protectives add somethig to be protected
- * @link http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html
- */
-function my_protectives( $protectives ) {
-	return $protectives + array( 'somethig to be protected' );
-}
-add_filter( 'ip-geo-block-ajax', 'my_protectives' );
-
-
-/**
- * Example 10: validate ip address before authrization in admin area
+ * Example 9: validate ip address before authrization in admin area
  * Use case: When an emergency situation of your self being locked out
  *
  */
@@ -188,7 +174,7 @@ add_filter( 'ip-geo-block-admin', 'my_emergency' );
 
 
 /**
- * Example 11: backup validation logs to text files
+ * Example 10: backup validation logs to text files
  * Use case: keep verification logs selectively to text files
  *
  * @param  string $hook 'comment', 'login', 'admin' or 'xmlrpc'
@@ -205,7 +191,7 @@ add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
 
 
 /**
- * Example 12: usage of 'IP_Geo_Block::get_geolocation()'
+ * Example 11: usage of 'IP_Geo_Block::get_geolocation()'
  * Use case: get geolocation of ip address with latitude and longitude
  *
  * @param  string $ip ip address

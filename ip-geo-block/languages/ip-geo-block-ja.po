@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 2.0.0\n"
+"Project-Id-Version: IP Geo Block 2.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-01-16 18:28+0900\n"
-"PO-Revision-Date: 2015-01-16 23:53+0900\n"
+"POT-Creation-Date: 2015-02-01 12:24+0900\n"
+"PO-Revision-Date: 2015-02-01 15:40+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,14 +21,12 @@ msgstr ""
 
 # description
 msgid ""
-"A WordPress plugin that will blocks any comment, pingback and trackback "
-"spams posted from outside your nation. And it will also protect against "
-"malicious access to the login form, admin area and XML-RPC from undesired "
-"countries."
+"A WordPress plugin that will block any spams, malicious access and login "
+"attempts posted from outside your nation."
 msgstr ""
-"IPアドレスの地理的位置情報に基き、自国以外から投稿されるコメントやピンバッ"
-"ク、トラックバックのスパムをブロックします。またログインフォームや管理領域へ"
-"の悪意あるアクセスからサイトを守ります。"
+"IPアドレスの地理的位置情報に基き、自国以外から投稿されるコメント、ピンバッ"
+"ク、トラックバックのスパムをブロックし、ログインフォームや管理領域への悪意あ"
+"るアクセスからサイトを守ります。"
 
 #: admin/class-ip-geo-block-admin.php:84
 msgid "You need WordPress 3.7+"
@@ -80,7 +78,7 @@ msgstr ""
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:522
+#: admin/class-ip-geo-block-admin.php:531
 msgid "Successfully updated"
 msgstr "更新に成功しました"
 
@@ -180,153 +178,160 @@ msgstr "検証の設定"
 
 #: admin/includes/tab-settings.php:94
 msgid ""
-"<dfn title=\"Validate access to wp-admin/admin-ajax.php (logged in “Admin "
-"area”)\">Admin Ajax</dfn>"
+"<dfn title=\"Validate access to wp-admin/admin-ajax.php\">Admin Ajax</dfn> "
+"and <dfn title=\"ex) wp-config.php, .htaccess, passwd\">keywords</dfn> to "
+"block such as <a class=\"ip-geo-block-link\" href=\"http://hakipedia.com/"
+"index.php/File_Inclusion\" title=\"File Inclusion - Hakipedia\" "
+"target=_blank>File Inclusion</a>"
 msgstr ""
-"<dfn title=\"wp-admin/admin-ajax.phpへのアクセスを検証（ログは “管理領域” に"
-"記録）\">管理領域のAjax</dfn>"
+"<dfn title=\"wp-admin/admin-ajax.phpへのアクセスを検証\">管理領域のAjax</"
+"dfn>、<a class=\"ip-geo-block-link\" href=\"http://hakipedia.com/index.php/"
+"File_Inclusion\" title=\"File Inclusion - Hakipedia\" target=_blank>LFI</"
+"a>&thinsp;等の攻撃を遮断する<dfn title=\"ex) wp-config.php, .htaccess, passwd"
+"\">キーワード</dfn>"
 
-#: admin/includes/tab-settings.php:129
-msgid "Record validation statistics"
-msgstr "検証の統計を記録"
-
-#: admin/includes/tab-settings.php:144
-msgid "Record validation logs"
-msgstr "検証のログを記録"
-
-#: admin/includes/tab-settings.php:155
-msgid "Disable"
-msgstr "無効"
-
-#: admin/includes/tab-settings.php:156
-msgid "Only when blocked"
-msgstr "遮断時に記録"
-
-#: admin/includes/tab-settings.php:157
-msgid "Only when passed"
-msgstr "通過時に記録"
-
-#: admin/includes/tab-settings.php:158
-msgid "Unauthenticated user"
-msgstr "未認証ユーザーを記録"
-
-#: admin/includes/tab-settings.php:159
-msgid "Authenticated user"
-msgstr "認証済ユーザーを記録"
-
-#: admin/includes/tab-settings.php:160
-msgid "All of validation"
-msgstr "すべての検証を記録"
-
-#: admin/includes/tab-settings.php:167
-msgid "<dfn title=\"ex) log, pwd, comment\">$_POST keys in logs</dfn>"
-msgstr "<dfn title=\"ex) log, pwd, comment\">ログに記録する$_POSTのキー</dfn>"
-
-#: admin/includes/tab-settings.php:177 admin/includes/tab-settings.php:195
-#: admin/includes/tab-settings.php:348 admin/includes/tab-settings.php:364
+#: admin/includes/tab-settings.php:121 admin/includes/tab-settings.php:185
+#: admin/includes/tab-settings.php:203 admin/includes/tab-settings.php:356
+#: admin/includes/tab-settings.php:372
 msgid "(comma separated)"
 msgstr "（カンマ区切り）"
 
-#: admin/includes/tab-settings.php:185
+#: admin/includes/tab-settings.php:137
+msgid "Record validation statistics"
+msgstr "検証の統計を記録"
+
+#: admin/includes/tab-settings.php:152
+msgid "Record validation logs"
+msgstr "検証のログを記録"
+
+#: admin/includes/tab-settings.php:163
+msgid "Disable"
+msgstr "無効"
+
+#: admin/includes/tab-settings.php:164
+msgid "Only when blocked"
+msgstr "遮断時に記録"
+
+#: admin/includes/tab-settings.php:165
+msgid "Only when passed"
+msgstr "通過時に記録"
+
+#: admin/includes/tab-settings.php:166
+msgid "Unauthenticated user"
+msgstr "未認証ユーザーを記録"
+
+#: admin/includes/tab-settings.php:167
+msgid "Authenticated user"
+msgstr "認証済ユーザーを記録"
+
+#: admin/includes/tab-settings.php:168
+msgid "All of validation"
+msgstr "すべての検証を記録"
+
+#: admin/includes/tab-settings.php:175
+msgid "<dfn title=\"ex) log, pwd, comment\">$_POST keys in logs</dfn>"
+msgstr "<dfn title=\"ex) log, pwd, comment\">ログに記録する$_POSTのキー</dfn>"
+
+#: admin/includes/tab-settings.php:193
 msgid ""
 "<dfn title=\"ex) HTTP_X_FORWARDED_FOR\">$_SERVER keys for extra IPs</dfn>"
 msgstr ""
 "<dfn title=\"ex) HTTP_X_FORWARDED_FOR\">追加検証する$_SERVERのキー</dfn>"
 
-#: admin/includes/tab-settings.php:205
+#: admin/includes/tab-settings.php:213
 msgid "Maxmind GeoLite settings"
 msgstr "Maxmind GeoLite&thinsp;の設定"
 
-#: admin/includes/tab-settings.php:213
+#: admin/includes/tab-settings.php:221
 msgid "Path to database (IPv4)"
 msgstr "データベースへのパス（IPv4）"
 
-#: admin/includes/tab-settings.php:226 admin/includes/tab-settings.php:247
+#: admin/includes/tab-settings.php:234 admin/includes/tab-settings.php:255
 #: includes/download.php:126
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
 
-#: admin/includes/tab-settings.php:234
+#: admin/includes/tab-settings.php:242
 msgid "Path to database (IPv6)"
 msgstr "データベースへのパス（IPv6）"
 
-#: admin/includes/tab-settings.php:256
+#: admin/includes/tab-settings.php:264
 msgid "Auto updating (once a month)"
 msgstr "自動更新（月1回）"
 
-#: admin/includes/tab-settings.php:271
+#: admin/includes/tab-settings.php:279
 msgid "Download database"
 msgstr "データベースのダウンロード"
 
-#: admin/includes/tab-settings.php:279
+#: admin/includes/tab-settings.php:287
 msgid "Download now"
 msgstr "今すぐダウンロード"
 
-#: admin/includes/tab-settings.php:290
+#: admin/includes/tab-settings.php:298
 msgid "Submission settings"
 msgstr "投稿時の設定"
 
-#: admin/includes/tab-settings.php:298
+#: admin/includes/tab-settings.php:306
 msgid "Text message on comment form"
 msgstr "投稿フォーム上のテキスト・メッセージ"
 
-#: admin/includes/tab-settings.php:309
+#: admin/includes/tab-settings.php:317
 msgid "None"
 msgstr "なし"
 
-#: admin/includes/tab-settings.php:310
+#: admin/includes/tab-settings.php:318
 msgid "Top"
 msgstr "上部"
 
-#: admin/includes/tab-settings.php:311
+#: admin/includes/tab-settings.php:319
 msgid "Bottom"
 msgstr "下部"
 
-#: admin/includes/tab-settings.php:320
+#: admin/includes/tab-settings.php:328
 msgid "Matching rule"
 msgstr "マッチング規則"
 
-#: admin/includes/tab-settings.php:330
+#: admin/includes/tab-settings.php:338
 msgid "White list"
 msgstr "ホワイトリスト"
 
-#: admin/includes/tab-settings.php:331
+#: admin/includes/tab-settings.php:339
 msgid "Black list"
 msgstr "ブラックリスト"
 
-#: admin/includes/tab-settings.php:339
+#: admin/includes/tab-settings.php:347
 #, php-format
 msgid "<dfn title=\"If empth then pass through\">White list</dfn> %s"
 msgstr "<dfn title=\"空欄の場合は通過\">ホワイトリスト</dfn> %s"
 
-#: admin/includes/tab-settings.php:355
+#: admin/includes/tab-settings.php:363
 #, php-format
 msgid "<dfn title=\"If empth then pass through\">Black list</dfn> %s"
 msgstr "<dfn title=\"空欄の場合は通過\">ブラックリスト</dfn> %s"
 
-#: admin/includes/tab-settings.php:371
+#: admin/includes/tab-settings.php:379
 #, php-format
 msgid "Response code %s"
 msgstr "レスポンスコード %s"
 
-#: admin/includes/tab-settings.php:403
+#: admin/includes/tab-settings.php:411
 msgid "Cache settings"
 msgstr "キャッシュの設定"
 
-#: admin/includes/tab-settings.php:411
+#: admin/includes/tab-settings.php:419
 msgid "Number of entries"
 msgstr "最大保持数"
 
-#: admin/includes/tab-settings.php:426
+#: admin/includes/tab-settings.php:434
 msgid "Expiration time [sec]"
 msgstr "有効時間 [sec]"
 
-#: admin/includes/tab-settings.php:444
+#: admin/includes/tab-settings.php:452
 msgid "Plugin settings"
 msgstr "プラグインの設定"
 
-#: admin/includes/tab-settings.php:452
+#: admin/includes/tab-settings.php:460
 msgid "Remove settings at uninstallation"
 msgstr "アンインストール時に設定を削除"
 
@@ -386,7 +391,7 @@ msgstr "キャッシュ中のIPアドレス"
 msgid "Clear statistics"
 msgstr "統計のクリア"
 
-#: classes/class-ip-geo-block.php:409
+#: classes/class-ip-geo-block.php:411
 msgid "Sorry, but you cannot be accepted."
 msgstr "申し訳ありませんが、受け付けられません。"
 

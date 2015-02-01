@@ -447,25 +447,29 @@ class IP_Geo_Block {
 		$this->validate_ip( 'admin', self::get_option( 'settings' ) );
 	}
 
+	/**
+	 * Protect against Local File Inclusion via admin-ajax.php
+	 *
+	 */
 	public function check_ajax( $validate, $settings ) {
-		// flatten array of requested queries and convert it to a string
-		$req = array_values( $_GET ) + array_values( $_POST );
-		while ( list( $key, $val ) = each( $req ) ) {
-			if ( is_array( $val ) ) {
-				array_splice( $req, $key, 1, $val );
-				next( $req );
+		if ( $keywords = $settings['validation']['keywords'] ) {
+			// flatten array of requested queries and convert it to a string
+			$req = array_keys( $_GET ) + array_keys( $_POST );
+			$req += array_values( $_GET ) + array_values( $_POST );
+			while ( list( $key, $val ) = each( $req ) ) {
+				if ( is_array( $val ) ) {
+					array_splice( $req, $key, 1, $val );
+					next( $req );
+				}
 			}
-		}
-		$req = strtolower( urldecode( implode( ' ', $req ) ) );
+			$req = strtolower( urldecode( implode( ' ', $req ) ) );
 
-		$protectives = explode( ',', $settings['validation']['protectives'] );
-		$protectives = apply_filters( self::PLUGIN_SLUG . "-ajax", $protectives );
-
-		// check queries to be protected
-		foreach ( $protectives as $val ) {
-			if ( $val = trim( $val ) && strpos( $req, $val ) !== FALSE ) {
-				$validate['result'] = 'blocked';
-				break;
+			// check queries to be protected
+			foreach ( explode( ',', $keywords ) as $val ) {
+				if ( $val = trim( $val ) && strpos( $req, $val ) !== FALSE ) {
+					$validate['result'] = 'blocked';
+					break;
+				}
 			}
 		}
 
