@@ -443,7 +443,7 @@ class IP_Geo_Block {
 	}
 
 	public function validate_ajax() {
-		add_filter( self::PLUGIN_SLUG . "-admin", array( $this, 'check_ajax' ), 10, 2 );
+//		add_filter( self::PLUGIN_SLUG . "-admin", array( $this, 'check_ajax' ), 10, 2 );
 		$this->validate_ip( 'admin', self::get_option( 'settings' ) );
 	}
 

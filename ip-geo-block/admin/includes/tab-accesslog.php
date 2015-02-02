@@ -11,32 +11,44 @@ function ip_geo_block_tab_accesslog( $context ) {
 		$option_name
 	);
 
-	/*----------------------------------------*
-	 * Validation logs
-	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
-	add_settings_section(
-		$section,
-		__( 'Validation logs', IP_Geo_Block::TEXT_DOMAIN ),
-		'ip_geo_block_list_accesslog',
-		$option_slug
-	);
+	$settings = IP_Geo_Block::get_option( 'settings' );
+	if ( $settings['validation']['reclogs'] ) {
+		/* Validation logs */
+		$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
+		add_settings_section(
+			$section,
+			__( 'Validation logs', IP_Geo_Block::TEXT_DOMAIN ),
+			'ip_geo_block_list_accesslog',
+			$option_slug
+		);
 
-	$field = 'clear_logs';
-	add_settings_field(
-		$option_name . "_$field",
-		__( 'Clear logs', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'button',
-			'option' => $option_name,
-			'field' => $field,
-			'value' => __( 'Clear now', IP_Geo_Block::TEXT_DOMAIN ),
-			'after' => '<div id="ip-geo-block-loading"></div>',
-		)
-	);
+		$field = 'clear_logs';
+		add_settings_field(
+			$option_name . "_$field",
+			__( 'Clear logs', IP_Geo_Block::TEXT_DOMAIN ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'button',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => __( 'Clear now', IP_Geo_Block::TEXT_DOMAIN ),
+				'after' => '<div id="ip-geo-block-loading"></div>',
+			)
+		);
+	}
+
+	else {
+		/* Warning */
+		$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
+		add_settings_section(
+			$section,
+			__( 'Validation logs', IP_Geo_Block::TEXT_DOMAIN ),
+			'ip_geo_block_warn_accesslog',
+			$option_slug
+		);
+	}
 }
 
 function ip_geo_block_list_accesslog() {
@@ -48,17 +60,17 @@ function ip_geo_block_list_accesslog() {
 		'admin'   => __( '<dfn title="Validate access to wp-admin/admin.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
-	foreach ( array_keys( $title ) as $key ) {
-		echo "<h4>", $title[ $key ], "</h4>\n";
+	foreach ( $title as $key => $val ) {
+		echo "<h4>$val</h4>\n";
 		echo "<table class='fixed ", IP_Geo_Block::PLUGIN_SLUG, "-log' data-page-size='10' data-limit-navigation='2'><thead><tr>\n";
 		echo "<th data-type='numeric'>", __( 'Date', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'IP address', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'Code',       IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'Result',     IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='phone,tablet'>", __( 'Request', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "<th data-hide='all'>", __( 'User agent', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th data-hide='all'>", __( 'User agent',   IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th data-hide='all'>", __( 'HTTP headers', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
-		echo "<th data-hide='all'>", __( '$_POST data', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
+		echo "<th data-hide='all'>", __( '$_POST data',  IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "</tr></thead><tbody id='", IP_Geo_Block::PLUGIN_SLUG, "-log-", $key, "'>\n";
 		echo <<<EOT
 </tbody>
@@ -73,4 +85,8 @@ function ip_geo_block_list_accesslog() {
 
 EOT;
 	}
+}
+
+function ip_geo_block_warn_accesslog() {
+	echo "<p>", __( 'Current selection of [<strong>Record validation logs</strong>] on [<strong>Settings</strong>] tab is [<strong>Disable</strong>].</p><p>Please select the proper condition to record and analyze the validation logs.', IP_Geo_Block::TEXT_DOMAIN ), "</p>\n";
 }
