@@ -160,7 +160,41 @@ add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
 
 
 /**
- * Example 9: validate ip address before authrization in admin area
+ * Example 9: validate requested queries via admin-ajax.php
+ * Use case: block malicious access such as `File Inclusion`
+ *
+ * @link http://hakipedia.com/index.php/File_Inclusion
+ * @link http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html
+ *
+ * @global array $_GET and $_POST requested queries
+ * @param  array $validate
+ * @return array $validate add 'result' as 'blocked' when NG word was found
+ */
+function my_protectives( $validate ) {
+	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+		$protectives = array(
+			'wp-config.php',
+			'.htaccess',
+			'passwd',
+		);
+
+		$req = strtolower( serialize( $_GET + $_POST ) );
+
+		foreach ( $protectives as $item ) {
+			if ( strpos( $req, $item ) !== FALSE ) {
+				$validate['result'] = 'blocked';
+				break;
+			}
+		}
+	}
+
+	return $validate; // should not set 'passed' to validate by country code
+}
+add_filter( 'ip-geo-block-admin', 'my_protectives' );
+
+
+/**
+ * Example 10: validate ip address before authrization in admin area
  * Use case: When an emergency situation of your self being locked out
  *
  */
@@ -174,7 +208,7 @@ add_filter( 'ip-geo-block-admin', 'my_emergency' );
 
 
 /**
- * Example 10: backup validation logs to text files
+ * Example 11: backup validation logs to text files
  * Use case: keep verification logs selectively to text files
  *
  * @param  string $hook 'comment', 'login', 'admin' or 'xmlrpc'
@@ -191,7 +225,7 @@ add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
 
 
 /**
- * Example 11: usage of 'IP_Geo_Block::get_geolocation()'
+ * Example 12: usage of 'IP_Geo_Block::get_geolocation()'
  * Use case: get geolocation of ip address with latitude and longitude
  *
  * @param  string $ip ip address

@@ -1,8 +1,8 @@
 IP Geo Block
 ==============
 
-A WordPress plugin that will block any spams, malicious access and login 
-attempts posted from outside your nation.
+A WordPress plugin that will block any spams, login attempts and malicious 
+access posted from outside your nation.
 
 This plugin will examine a country code based on the IP address.If a comment, 
 pingback or trackback comes from specific country, it will be blocked before 
@@ -13,8 +13,8 @@ and reverse-brute-force attacks to the login form, admin area and XML-RPC.
 
 ### Features:
 
-1. Access to the basic and important entrances such as `wp-comments-post.php`
-, `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php` 
+1. Access to the basic and important entrances such as `wp-comments-post.php`,
+ `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php` 
 will be validated by means of a country code based on IP address. 
 
 2. Free IP Geolocation database and REST APIs are installed into this plugin 
@@ -26,25 +26,19 @@ an appropriate API.
 against the brute-force and the reverse-brute-force attacks, the number of 
 login attempts will be limited per IP address.
 
-4. Block attacks such as 
-    [File Inclusion][hakipedia]
-caused by some critical vulnerability in some existing plugins like 
-    [this][revslider]
-via `admin-ajax.php` regardless of its country code.
-
-5. A cache mechanism with transient API for the fetched IP addresses has been 
+4. A cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against the burst accesses with a short 
 period of time.
 
-6. Validation logs will be recorded into MySQL data table to analyze posting 
+5. Validation logs will be recorded into MySQL data table to analyze posting 
 pattern under the specified condition.
 
-7. Custom validation function can be added by `add_filter()` with predefined 
+6. Custom validation function can be added by `add_filter()` with predefined 
 filter hook. See
     [sample.php](sample)
 bundled within this package.
 
-8. [MaxMind][MaxMind] GeoLite free database for IPv4 and IPv6 will be 
+7. [MaxMind][MaxMind] GeoLite free database for IPv4 and IPv6 will be 
 downloaded and updated (once a month) automatically. And if you have 
 correctly installed one of the IP2Location plugins (
     [IP2Location Tags][IP2Tag],
@@ -52,7 +46,7 @@ correctly installed one of the IP2Location plugins (
     [IP2Location Country Blocker][IP2Blk]
 ), this plugin uses its local database prior to the REST APIs.
 
-9. This plugin is simple and lite enough to be able to cooperate with other 
+8. This plugin is simple and lite enough to be able to cooperate with other 
 full spec security plugin such as 
     [Wordfence Security][wordfence]
 (because the function of country bloking is available only for premium users).
@@ -138,8 +132,8 @@ Check `statistics` tab on this plugin's option page.
 #### How can I test on the local site? ####
 
 There are two ways. One is to add some code like below somewhere in your php 
-(typically `functions.php` in your theme) to substitute local IP address 
-through filter fook `ip-geo-block-ip-addr` as follows:
+(typically `functions.php` in your theme) to substitute local IP address via 
+filter fook `ip-geo-block-ip-addr` as follows:
 
 ```php
 function my_replace_ip( $ip ) {
@@ -305,6 +299,4 @@ This plugin is licensed under the GPL v2 or later.
 [ISO]:      http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
 [RFC]:      http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
 [sample]:   https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
-[hakipedia]:http://hakipedia.com/index.php/File_Inclusion "File Inclusion - Hakipedia"
-[revslider]:http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "WordPress Security Vuln in Slider Revolution Plugin | Sucuri Blog"
 [wordfence]:https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins"

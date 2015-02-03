@@ -228,16 +228,12 @@ class IP_Geo_Block_Logs {
 			if ( $mask_pwd &&
 			     preg_match_all( '/<string>(\S*?)<\/string>/', $posts, $matches ) >= 2 &&
 			     strpos( $matches[1][1], home_url() ) !== 0 ) { // except pingback
-				$val = str_repeat( '*', strlen( $matches[1][1] ) );
-				$posts = str_replace( $matches[1][1], $val, $posts );
+				$posts = str_replace( $matches[1][1], '***', $posts );
 			}
 			/*if ( FALSE !== ( $xml = @simplexml_load_string( $HTTP_RAW_POST_DATA ) ) ) {
 				// mask the password
 				if ( $mask_pwd && 'wp.' === substr( $xml->methodName, 0, 3 ) ) {
-					$xml->params->param[1]->value->string =
-						str_repeat(
-							'*', strlen( $xml->params->param[1]->value->string )
-						);
+					$xml->params->param[1]->value->string = '***';
 				}
 				$posts = self::truncate_utf8( json_encode( $xml ), '/["\\\\]/' );
 			} else {
@@ -251,8 +247,7 @@ class IP_Geo_Block_Logs {
 			foreach ( explode( ',', $settings['validation']['postkey'] ) as $key ) {
 				if ( array_key_exists( $key, $_POST ) ) {
 					// mask the password
-					$keys[ $key ] = ( 'pwd' === $key && $mask_pwd ) ?
-						str_repeat( '*', strlen( $_POST[ $key ] ) ) : $_POST[ $key ];
+					$keys[ $key ] = ( 'pwd' === $key && $mask_pwd ) ? '***' : $_POST[ $key ];
 				}
 			}
 

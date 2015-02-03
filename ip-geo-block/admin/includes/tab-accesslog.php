@@ -13,7 +13,9 @@ function ip_geo_block_tab_accesslog( $context ) {
 
 	$settings = IP_Geo_Block::get_option( 'settings' );
 	if ( $settings['validation']['reclogs'] ) {
-		/* Validation logs */
+		/*----------------------------------------*
+		 * Validation logs
+		 *----------------------------------------*/
 		$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
 		add_settings_section(
 			$section,
@@ -40,7 +42,9 @@ function ip_geo_block_tab_accesslog( $context ) {
 	}
 
 	else {
-		/* Warning */
+		/*----------------------------------------*
+		 * Warning
+		 *----------------------------------------*/
 		$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
 		add_settings_section(
 			$section,
@@ -51,13 +55,17 @@ function ip_geo_block_tab_accesslog( $context ) {
 	}
 }
 
+/**
+ * Function that fills the section with the desired content.
+ *
+ */
 function ip_geo_block_list_accesslog() {
 	// same as in tab-settings.php
 	$title = array(
 		'comment' => __( '<dfn title="Validate post to wp-comments-post.php">Comment post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'xmlrpc'  => __( '<dfn title="Validate access to xmlrpc.php">XML-RPC</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'login'   => __( '<dfn title="Validate access to wp-login.php">Login form</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'admin'   => __( '<dfn title="Validate access to wp-admin/admin.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'admin'   => __( '<dfn title="Validate access to wp-admin/*.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
 	foreach ( $title as $key => $val ) {

@@ -82,7 +82,7 @@ class IP_Geo_Block {
 
 		// wp-admin/admin.php from wp-admin/admin-apax.php @since 2.5.0
 		if ( $settings['validation']['ajax'] && defined( 'DOING_AJAX' ) && DOING_AJAX )
-			add_action( 'admin_init', array( $this, 'validate_ajax' ) );
+			add_action( 'admin_init', array( $this, 'validate_admin' ) );
 	}
 
 	// get default optional values
@@ -440,31 +440,6 @@ class IP_Geo_Block {
 		);
 
 		return $something; // pass through
-	}
-
-	public function validate_ajax() {
-//		add_filter( self::PLUGIN_SLUG . "-admin", array( $this, 'check_ajax' ), 10, 2 );
-		$this->validate_ip( 'admin', self::get_option( 'settings' ) );
-	}
-
-	/**
-	 * Protect against Local File Inclusion via admin-ajax.php
-	 *
-	 */
-	public function check_ajax( $validate, $settings ) {
-		if ( $keywords = $settings['validation']['keywords'] ) {
-			// flatten array of request and check keywords to be protected
-			// @note: consider the case which json_encode() returns FALSE
-			$req = strtolower( urldecode( json_encode( $_GET + $_POST ) ) );
-			foreach ( explode( ',', $keywords ) as $val ) {
-				if ( $val = trim( $val ) && strpos( $req, $val ) !== FALSE ) {
-					$validate['result'] = 'blocked';
-					break;
-				}
-			}
-		}
-
-		return $validate;
 	}
 
 	/**

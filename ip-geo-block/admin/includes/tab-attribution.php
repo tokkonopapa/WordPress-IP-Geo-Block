@@ -14,7 +14,7 @@ function ip_geo_block_tab_attribution( $context ) {
 	add_settings_section(
 		$section,
 		__( 'Attribution links', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_attribution' ),
+		'ip_geo_block_attribution',
 		$option_slug
 	);
 
@@ -36,4 +36,13 @@ function ip_geo_block_tab_attribution( $context ) {
 			)
 		);
 	}
+}
+
+/**
+ * Function that fills the section with the desired content.
+ *
+ */
+function ip_geo_block_attribution() {
+	echo "<p>" . __( 'Thanks for providing these great services for free.', IP_Geo_Block::TEXT_DOMAIN ) . "</p>\n";
+	echo "<p>" . __( '(Most browsers will redirect you to each site without referrer when you click the link.)', IP_Geo_Block::TEXT_DOMAIN ) . "</p>\n";
 }

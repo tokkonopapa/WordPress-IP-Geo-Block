@@ -4,12 +4,12 @@ Donate link:
 Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force, vulnerability
 Requires at least: 3.7
 Tested up to: 4.1
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress plugin that will block any spams, malicious access and login 
-attempts posted from outside your nation.
+A WordPress plugin that will block any spams, login attempts and malicious 
+access posted from outside your nation.
 
 == Description ==
 
@@ -22,8 +22,8 @@ and reverse-brute-force attacks to the login form, admin area and XML-RPC.
 
 = Features =
 
-1. Access to the basic and important entrances such as `wp-comments-post.php`
-, `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php` 
+1. Access to the basic and important entrances such as `wp-comments-post.php`,
+ `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php` 
 will be validated by means of a country code based on IP address. 
 
 2. Free IP Geolocation database and REST APIs are installed into this plugin 
@@ -35,25 +35,19 @@ an appropriate API.
 against the brute-force and the reverse-brute-force attacks, the number of 
 login attempts will be limited per IP address.
 
-4. Block attacks such as 
-    [File Inclusion](http://hakipedia.com/index.php/File_Inclusion "File Inclusion - Hakipedia")
-caused by some critical vulnerability in some existing plugins like 
-    [this](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "WordPress Security Vuln in Slider Revolution Plugin | Sucuri Blog")
-via `admin-ajax.php` regardless of its country code.
-
-5. A cache mechanism with transient API for the fetched IP addresses has been 
+4. A cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against the burst accesses with a short 
 period of time.
 
-6. Validation logs will be recorded into MySQL data table to analyze posting 
+5. Validation logs will be recorded into MySQL data table to analyze posting 
 pattern under the specified condition.
 
-7. Custom validation function can be added by `add_filter()` with predefined 
+6. Custom validation function can be added by `add_filter()` with predefined 
 filter hook. See
     [sample.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
 bundled within this package.
 
-8. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+7. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
 (once a month) automatically. And if you have correctly installed 
 one of the IP2Location plugins (
@@ -62,7 +56,7 @@ one of the IP2Location plugins (
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
 ), this plugin uses its local database prior to the REST APIs.
 
-9. This plugin is simple and lite enough to be able to cooperate with other 
+8. This plugin is simple and lite enough to be able to cooperate with other 
 full spec security plugin such as 
     [Wordfence Security](https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins")
 (because the function of country bloking is available only for premium users).
@@ -155,8 +149,8 @@ Check `statistics` tab on this plugin's option page.
 = How can I test on the local site? =
 
 There are two ways. One is to add some code like below somewhere in your php 
-(typically `functions.php` in your theme) to substitute local IP address 
-through filter fook `ip-geo-block-ip-addr` as follows:
+(typically `functions.php` in your theme) to substitute local IP address via 
+filter fook `ip-geo-block-ip-addr` as follows:
 
 `function my_replace_ip( $ip ) {
     return '98.139.183.24'; // yahoo.com
@@ -241,10 +235,9 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.1 =
-* **New feature:** Block attacks such as File Inclusion caused by some 
-  critical vulnerability in some existing plugins like
-  [this](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "WordPress Security Vuln in Slider Revolution Plugin | Sucuri Blog")
-  via `admin-ajax.php` regardless of its country code.
+* Fixed the issue of improper scheme to load google map from HTTPS site.
+* Changed the pattern of masked password recorded in logs to hide the 
+  length of password.
 
 = 2.0.0 =
 * **New feature:** Protection against brute-force and reverse-brute-force 

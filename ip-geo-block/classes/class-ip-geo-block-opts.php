@@ -50,8 +50,6 @@ class IP_Geo_Block_Options {
 			    // since version 1.3.1
 			    'maxlogs'     => 100,     // Max number of rows of log
 			    'backup'      => NULL,    // Absolute path to directory for backup
-				// since version 2.0.1
-				'keywords'    => NULL,    // Keywords to block LFI (ex: wp-config.php)
 			),
 			'update'          => array(   // Updating IP address DB
 			    'auto'        => TRUE,    // Auto updating of DB file
@@ -163,10 +161,6 @@ class IP_Geo_Block_Options {
 				$settings['validation']['proxy'] ? 'HTTP_X_FORWARDED_FOR' : NULL;
 				foreach ( array( 'maxlogs', 'backup' ) as $tmp )
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
-			}
-
-			if ( version_compare( $settings['version'], '2.0.1' ) < 0 ) {
-				$settings['validation']['keywords'] = $default[ $key[0] ]['validation']['keywords'];
 			}
 
 			// update local goelocation database files

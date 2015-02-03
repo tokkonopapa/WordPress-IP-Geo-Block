@@ -258,8 +258,6 @@ var start = new Date();
 				'ipinfo.io',
 				'www.telize.com',
 				'ip-json.rhcloud.com',
-				'ip.pycox.com',
-				'geoip.nekudo.com',
 				'xhanch.com',
 				'www.geoplugin.com',
 				'ip-api.com',
@@ -267,7 +265,6 @@ var start = new Date();
 				'www.maxmind.com',
 				'dev.maxmind.com',
 				'www.ip2location.com',
-				'hakipedia.com',
 				'en.wikipedia.org',
 				'tools.ietf.org'
 			];

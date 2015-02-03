@@ -92,32 +92,23 @@ function ip_geo_block_tab_settings( $context ) {
 		'login'   => __( '<dfn title="Validate access to wp-login.php">Login form</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'admin'   => __( '<dfn title="Validate access to wp-admin/admin.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'ajax'    => __( '<dfn title="Validate access to wp-admin/admin-ajax.php">Admin Ajax</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-//		'ajax'    => __( '<dfn title="Validate access to wp-admin/admin-ajax.php">Admin Ajax</dfn> and <dfn title="ex) wp-config.php, .htaccess, passwd">keywords</dfn> to block such as <a class="ip-geo-block-link" href="http://hakipedia.com/index.php/File_Inclusion" title="File Inclusion - Hakipedia" target=_blank>File Inclusion</a>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
 	$field = 'validation';
 	foreach ( $title as $key => $val ) {
-		$args = array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-		);
-/*
-		if ( 'ajax' === $key )
-			$args += array(
-				'keywords' => $options[ $field ]['keywords'],
-				'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
-			);
-//*/
 		add_settings_field(
 			$option_name . "_${field}_${key}",
 			$title[ $key ],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
-			$args
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+			)
 		);
 	}
 

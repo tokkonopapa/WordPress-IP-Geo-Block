@@ -274,15 +274,6 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Function that fills the section with the desired content.
-	 *
-	 */
-	public function callback_attribution() {
-		echo "<p>" . __( 'Thanks for providing these great services for free.', IP_Geo_Block::TEXT_DOMAIN ) . "</p>\n";
-		echo "<p>" . __( '(Most browsers will redirect you to each site without referrer when you click the link.)', IP_Geo_Block::TEXT_DOMAIN ) . "</p>\n";
-	}
-
-	/**
 	 * Function that fills the field with the desired inputs as part of the larger form.
 	 * The 'id' and 'name' should match the $id given in the add_settings_field().
 	 * @param array $args['value'] must be sanitized because it comes from external.
@@ -351,15 +342,6 @@ class IP_Geo_Block_Admin {
 <input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="1"<?php checked( esc_attr( $args['value'] ) ); ?> />
 <label for="<?php echo $id, $sub_id; ?>"><?php _e( 'Enable', IP_Geo_Block::TEXT_DOMAIN ); ?></label>
 <?php
-			if ( array_key_exists( 'keywords', $args ) ) {
-				echo "<br />\n";
-				$sub_id   = '_keywords';
-				$sub_name = '[keywords]';
-				$args['value'] = $args['keywords']; ?>
-<input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php disabled( ! empty( $args['disabled'] ), TRUE );
-?> />
-<?php
-			}
 			break;
 
 		  case 'button': ?>
@@ -386,6 +368,7 @@ class IP_Geo_Block_Admin {
 	 * @link http://codex.wordpress.org/Function_Reference/sanitize_option
 	 * @link http://codex.wordpress.org/Function_Reference/sanitize_text_field
 	 * @link http://codex.wordpress.org/Plugin_API/Filter_Reference/sanitize_option_$option
+	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
 	private function validate_options( $option_name, $input ) {
 		// setup base options
