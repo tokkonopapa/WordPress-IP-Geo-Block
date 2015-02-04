@@ -56,17 +56,56 @@ full spec security plugin such as
 1. Upload `ip-geo-block` directory to your plugins directory.
 2. Activate the plugin on the Plugin dashboard.
 
-#### Settings
+#### Geolocation API settings
 
-- **Service provider and API key**  
-    If you wish to use `IPInfoDB`, you should register from [here][register]
+- **API selection and key settings**  
+    If you wish to use `IPInfoDB`, you should register from 
+    [their site](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") 
     to get a free API key and set it into the textfield.
     And `ip-api.com` and `Smart-IP.net` require non-commercial use.
 
-- **Validation settings**  
-    `XML-RPC` is for validation of pingback spam. Additional IP addresses will 
-    be validated if some of keys for `$_SERVER` variable are specified in 
-    `$_SERVER keys for extra IPs`.
+#### Validation settings
+
+- **Comment post**  
+    Validate post to `wp-comment-post.php`. Comment post and trackback will be 
+    validated.
+
+- **XML-RPC**  
+    Validate access to `xmlrpc.php`. Pingback and other remote command with 
+    username and password will be validated.
+
+- **Login form**  
+    Validate access to `wp-login.php`.
+
+- **Admin area**  
+    Validate access to `wp-admin/admin.php` except `wp-admin/admin-ajax.php` 
+    and `wp-admin/admin-post.php`.
+
+- ** Admin Ajax**  
+    Validate access to `wp-admin/admin-ajax.php`.
+
+- **Record validation statistics**  
+    If enable, you can see `Statistics of validation` on Statistics tab.
+
+- **Record validation logs**  
+    If you select anything but `Disable`, you can see `Validation logs` on 
+    Logs tab.
+
+- **$_POST keys in logs**  
+    Normally, you can see just keys at `$_POST data:`. If you put some of 
+    interested keys into this, you can see value of key like `key=value`.
+
+- **$_SERVER keys for extra IPs**  
+    Additional IP addresses will be validated if some of keys for `$_SERVER` 
+    variable are specified in `$_SERVER keys for extra IPs`.
+
+#### Maxmind GeoLite settings
+
+- **Auto updating (once a month)**
+    If `Enable`, Maxmind GeoLite database will be downloaded automatically 
+    by WordPress cron job.
+
+#### Submission settings
 
 - **Text position on comment form**  
     If you want to put some text message on your comment form, please select
@@ -78,14 +117,28 @@ full spec security plugin such as
     from which you want to pass or block.
 
 - **White list**, **Black list**  
-    Specify the country code with two letters (see [ISO 3166-1 alpha-2][ISO]).
-    Each of them should be separated by comma.
+    Specify the country code with two letters (see 
+    [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")
+    ). Each of them should be separated by comma.
 
 - **Response code**  
-    Select one of the [response code][RFC] to be sent when it blocks a comment.
-    The 2xx code will lead to your top page, the 3xx code will redirect to
-    [Black Hole Server][BHS], the 4xx code will lead to WordPress error page, 
-    and the 5xx will pretend an server error.
+    Select one of the 
+    [response code](http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1")
+    to be sent when it blocks a comment.
+    The 2xx code will lead to your top page, the 3xx code will redirect to 
+    [Black Hole Server](http://blackhole.webpagetest.org/),
+    the 4xx code will lead to WordPress error page, and the 5xx will pretend 
+    an server error.
+
+#### Cache settings
+
+- **Number of entries**  
+    Maximum number of IPs to be cached.
+
+- **Expiration time [sec]**  
+    Maximum time in sec to keep cache.
+
+#### Plugin settings
 
 - **Remove settings at uninstallation**  
     If you checked this option, all settings will be removed when this plugin
@@ -216,10 +269,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 #### Change log
 
 - 2.0.1
-    - **New feature:** Block attacks such as File Inclusion caused by some 
-      critical vulnerability in some existing plugins like
-      [this](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "WordPress Security Vuln in Slider Revolution Plugin | Sucuri Blog")
-      via `admin-ajax.php` regardless of its country code.
+    - Fixed the issue of improper scheme from the HTTPS site when loading js 
+      for google map.
+    - In order to prevent accidental disclosure of the length of password, 
+      changed the length of `*` (masked password) which is logged into the 
+      database.
 - 2.0.0
     - **New feature:** Protection against brute-force and reverse-brute-force 
       attacks to the admin area, `wp-login.php` and `xmlrpc.php`. This is an 

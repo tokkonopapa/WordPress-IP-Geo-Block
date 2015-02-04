@@ -1,7 +1,7 @@
 === IP Geo Block ===
 Contributors: tokkonopapa
 Donate link:
-Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force, vulnerability
+Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.1
 Stable tag: 2.0.1
@@ -94,19 +94,56 @@ All contributions will always be welcome.
 3. Click 'Install Now'
 4. Activate the plugin on the Plugin dashboard
 
-= Settings =
+= Geolocation API settings =
 
-* **Service provider and API key**  
+* **API selection and key settings**  
     If you wish to use `IPInfoDB`, you should register from 
     [their site](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") 
     to get a free API key and set it into the textfield.
     And `ip-api.com` and `Smart-IP.net` require non-commercial use.
 
-* **Validation settings**  
-    `XML-RPC` is for validation of pingback spam. Additional IP addresses will 
-    be validated if some of keys for `$_SERVER` variable are specified in 
-    `$_SERVER keys for extra IPs`.
+= Validation settings =
 
+* **Comment post**  
+    Validate post to `wp-comment-post.php`. Comment post and trackback will be 
+    validated.
+
+* **XML-RPC**  
+    Validate access to `xmlrpc.php`. Pingback and other remote command with 
+    username and password will be validated.
+
+* **Login form**  
+    Validate access to `wp-login.php`.
+
+* **Admin area**  
+    Validate access to `wp-admin/admin.php` except `wp-admin/admin-ajax.php` 
+    and `wp-admin/admin-post.php`.
+
+* ** Admin Ajax**  
+    Validate access to `wp-admin/admin-ajax.php`.
+
+* **Record validation statistics**  
+    If enable, you can see `Statistics of validation` on Statistics tab.
+
+* **Record validation logs**  
+    If you select anything but `Disable`, you can see `Validation logs` on 
+    Logs tab.
+
+* **$_POST keys in logs**  
+    Normally, you can see just keys at `$_POST data:`. If you put some of 
+    interested keys into this, you can see value of key like `key=value`.
+
+* **$_SERVER keys for extra IPs**  
+    Additional IP addresses will be validated if some of keys for `$_SERVER` 
+    variable are specified in `$_SERVER keys for extra IPs`.
+
+= Maxmind GeoLite settings =
+
+* **Auto updating (once a month)**
+    If `Enable`, Maxmind GeoLite database will be downloaded automatically 
+    by WordPress cron job.
+
+= Submission settings =
 * **Text position on comment form**  
     If you want to put some text message on your comment form, please select
     `Top` or `Bottom` and put text into the **Text message on comment form**
@@ -129,6 +166,16 @@ All contributions will always be welcome.
     [Black Hole Server](http://blackhole.webpagetest.org/),
     the 4xx code will lead to WordPress error page, and the 5xx will pretend 
     an server error.
+
+= Cache settings =
+
+* **Number of entries**  
+    Maximum number of IPs to be cached.
+
+* **Expiration time [sec]**  
+    Maximum time in sec to keep cache.
+
+= Plugin settings =
 
 * **Remove settings at uninstallation**  
     If you checked this option, all settings will be removed when this plugin
@@ -235,9 +282,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.1 =
-* Fixed the issue of improper scheme to load google map from HTTPS site.
-* Changed the pattern of masked password recorded in logs to hide the 
-  length of password.
+* Fixed the issue of improper scheme from the HTTPS site when loading js 
+  for google map.
+* In order to prevent accidental disclosure of the length of password, 
+  changed the length of `*` (masked password) which is logged into the 
+  database.
 
 = 2.0.0 =
 * **New feature:** Protection against brute-force and reverse-brute-force 
