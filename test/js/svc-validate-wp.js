@@ -1,5 +1,5 @@
 /**
- * Service: Language
+ * Service: Validate wordpress pages
  *
  */
 angular.module('validate-wp', []);

@@ -1,5 +1,5 @@
 /**
- * Service: Language
+ * Service: Post data with X-Forwarded-For
  *
  */
 angular.module('http-proxy', []);

@@ -304,8 +304,8 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 	 */
 	var post_xmlrpc = function (url, proxy) {
 		var xml = $scope.form.xmlrpc.xml;
-		xml = xml.replace(/%USER_NAME%/, $scope.form.admin.log);
-		xml = xml.replace(/%PASSWORD%/, $scope.form.admin.pwd);
+		xml = xml.replace(/%USER_NAME%/, $scope.form.login.log);
+		xml = xml.replace(/%PASSWORD%/, $scope.form.login.pwd);
 		svcProxy.post_xml(url, xml, proxy).then(function (res) {
 			messageOut('XML-RPC', res.stat); 
 		});
