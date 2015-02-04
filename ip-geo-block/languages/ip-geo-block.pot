@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-02-03 21:35+0900\n"
-"PO-Revision-Date: 2015-02-03 21:36+0900\n"
+"POT-Creation-Date: 2015-02-04 09:20+0900\n"
+"PO-Revision-Date: 2015-02-04 09:21+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -67,7 +67,7 @@ msgstr ""
 msgid "Successfully updated"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:22 admin/includes/tab-accesslog.php:51
+#: admin/includes/tab-accesslog.php:22 admin/includes/tab-accesslog.php:50
 msgid "Validation logs"
 msgstr ""
 
@@ -79,60 +79,64 @@ msgstr ""
 msgid "Clear now"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:65 admin/includes/tab-settings.php:90
+#: admin/includes/tab-accesslog.php:64 admin/includes/tab-settings.php:90
 msgid "<dfn title=\"Validate post to wp-comments-post.php\">Comment post</dfn>"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:66 admin/includes/tab-settings.php:91
+#: admin/includes/tab-accesslog.php:65 admin/includes/tab-settings.php:91
 msgid "<dfn title=\"Validate access to xmlrpc.php\">XML-RPC</dfn>"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:67 admin/includes/tab-settings.php:92
+#: admin/includes/tab-accesslog.php:66 admin/includes/tab-settings.php:92
 msgid "<dfn title=\"Validate access to wp-login.php\">Login form</dfn>"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:68
+#: admin/includes/tab-accesslog.php:67
 msgid "<dfn title=\"Validate access to wp-admin/*.php\">Admin area</dfn>"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:74
+#: admin/includes/tab-accesslog.php:73
 msgid "Date"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:75 admin/includes/tab-geolocation.php:56
+#: admin/includes/tab-accesslog.php:74 admin/includes/tab-geolocation.php:56
 #: admin/includes/tab-statistics.php:140
 msgid "IP address"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:76
+#: admin/includes/tab-accesslog.php:75
 msgid "Code"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:77
+#: admin/includes/tab-accesslog.php:76
 msgid "Result"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:78
+#: admin/includes/tab-accesslog.php:77
 msgid "Request"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:79
+#: admin/includes/tab-accesslog.php:78
 msgid "User agent"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:80
+#: admin/includes/tab-accesslog.php:79
 msgid "HTTP headers"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:81
+#: admin/includes/tab-accesslog.php:80
 msgid "$_POST data"
+msgstr ""
+
+#: admin/includes/tab-accesslog.php:98
+msgid ""
+"Current selection of [<strong>Record validation logs</strong>] on "
+"[<strong>Settings</strong>] tab is [<strong>Disable</strong>]."
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:99
 msgid ""
-"Current selection of [<strong>Record validation logs</strong>] on "
-"[<strong>Settings</strong>] tab is [<strong>Disable</strong>].</p><p>Please "
-"select the proper condition to record and analyze the validation logs."
+"Please select the proper condition to record and analyze the validation logs."
 msgstr ""
 
 #: admin/includes/tab-attribution.php:16

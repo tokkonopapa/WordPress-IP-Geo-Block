@@ -40,7 +40,6 @@ function ip_geo_block_tab_accesslog( $context ) {
 			)
 		);
 	}
-
 	else {
 		/*----------------------------------------*
 		 * Warning
@@ -96,5 +95,6 @@ EOT;
 }
 
 function ip_geo_block_warn_accesslog() {
-	echo "<p>", __( 'Current selection of [<strong>Record validation logs</strong>] on [<strong>Settings</strong>] tab is [<strong>Disable</strong>].</p><p>Please select the proper condition to record and analyze the validation logs.', IP_Geo_Block::TEXT_DOMAIN ), "</p>\n";
+	echo "<p>", __( 'Current selection of [<strong>Record validation logs</strong>] on [<strong>Settings</strong>] tab is [<strong>Disable</strong>].', IP_Geo_Block::TEXT_DOMAIN ), "</p>\n";
+	echo "<p>", __( 'Please select the proper condition to record and analyze the validation logs.', IP_Geo_Block::TEXT_DOMAIN ), "</p>\n";
 }
