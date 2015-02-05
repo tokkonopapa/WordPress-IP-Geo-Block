@@ -13,7 +13,7 @@ access posted from outside your nation.
 
 == Description ==
 
-This plugin will examine a country code based on the IP address.If a comment, 
+This plugin will examine a country code based on the IP address. If a comment, 
 pingback or trackback comes from specific country, it will be blocked before 
 Akismet validate it.
 
@@ -123,19 +123,20 @@ All contributions will always be welcome.
     Validate access to `wp-admin/admin-ajax.php`.
 
 * **Record validation statistics**  
-    If enable, you can see `Statistics of validation` on Statistics tab.
+    If `Enable`, you can see `Statistics of validation` on Statistics tab.
 
 * **Record validation logs**  
     If you select anything but `Disable`, you can see `Validation logs` on 
     Logs tab.
 
 * **$_POST keys in logs**  
-    Normally, you can see just keys at `$_POST data:`. If you put some of 
-    interested keys into this, you can see value of key like `key=value`.
+    Normally, you can see just keys at `$_POST data:` on Logs tab. If you put 
+    some of interested keys into this textfield, you can see the value of key 
+    like `key=value`.
 
 * **$_SERVER keys for extra IPs**  
-    Additional IP addresses will be validated if some of keys for `$_SERVER` 
-    variable are specified in `$_SERVER keys for extra IPs`.
+    Additional IP addresses will be validated if some of keys in `$_SERVER` 
+    variable are specified in this textfield. Typically `HTTP_X_FORWARDED_FOR`.
 
 = Maxmind GeoLite settings =
 
@@ -144,6 +145,7 @@ All contributions will always be welcome.
     by WordPress cron job.
 
 = Submission settings =
+
 * **Text position on comment form**  
     If you want to put some text message on your comment form, please select
     `Top` or `Bottom` and put text into the **Text message on comment form**

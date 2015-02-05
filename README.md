@@ -60,7 +60,7 @@ full spec security plugin such as
 
 - **API selection and key settings**  
     If you wish to use `IPInfoDB`, you should register from 
-    [their site](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") 
+    [their site][IPInfoDB]
     to get a free API key and set it into the textfield.
     And `ip-api.com` and `Smart-IP.net` require non-commercial use.
 
@@ -85,19 +85,20 @@ full spec security plugin such as
     Validate access to `wp-admin/admin-ajax.php`.
 
 - **Record validation statistics**  
-    If enable, you can see `Statistics of validation` on Statistics tab.
+    If `Enable`, you can see `Statistics of validation` on Statistics tab.
 
 - **Record validation logs**  
     If you select anything but `Disable`, you can see `Validation logs` on 
     Logs tab.
 
 - **$_POST keys in logs**  
-    Normally, you can see just keys at `$_POST data:`. If you put some of 
-    interested keys into this, you can see value of key like `key=value`.
+    Normally, you can see just keys at `$_POST data:` on Logs tab. If you put 
+    some of interested keys into this textfield, you can see the value of key 
+    like `key=value`.
 
 - **$_SERVER keys for extra IPs**  
-    Additional IP addresses will be validated if some of keys for `$_SERVER` 
-    variable are specified in `$_SERVER keys for extra IPs`.
+    Additional IP addresses will be validated if some of keys in `$_SERVER` 
+    variable are specified in this textfield. Typically `HTTP_X_FORWARDED_FOR`.
 
 #### Maxmind GeoLite settings
 
@@ -118,15 +119,15 @@ full spec security plugin such as
 
 - **White list**, **Black list**  
     Specify the country code with two letters (see 
-    [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")
+    [ISO 3166-1 alpha-2][ISO]
     ). Each of them should be separated by comma.
 
 - **Response code**  
     Select one of the 
-    [response code](http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1")
+    [response code][RFC]
     to be sent when it blocks a comment.
     The 2xx code will lead to your top page, the 3xx code will redirect to 
-    [Black Hole Server](http://blackhole.webpagetest.org/),
+    [Black Hole Server][BHS],
     the 4xx code will lead to WordPress error page, and the 5xx will pretend 
     an server error.
 

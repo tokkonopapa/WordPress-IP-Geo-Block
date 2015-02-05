@@ -178,7 +178,7 @@ function my_protectives( $validate ) {
 			'passwd',
 		);
 
-		$req = strtolower( serialize( $_GET + $_POST ) );
+		$req = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
 		foreach ( $protectives as $item ) {
 			if ( strpos( $req, $item ) !== FALSE ) {
