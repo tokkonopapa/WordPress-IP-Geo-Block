@@ -5,53 +5,56 @@ require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 function ip_geo_block_tab_accesslog( $context ) {
 	$option_slug = $context->option_slug['settings'];
 	$option_name = $context->option_name['settings'];
+	$settings = IP_Geo_Block::get_option( 'settings' );
 
 	register_setting(
 		$option_slug,
 		$option_name
 	);
 
-	$settings = IP_Geo_Block::get_option( 'settings' );
-	if ( $settings['validation']['reclogs'] ) {
-		/*----------------------------------------*
-		 * Validation logs
-		 *----------------------------------------*/
-		$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
-		add_settings_section(
-			$section,
-			__( 'Validation logs', IP_Geo_Block::TEXT_DOMAIN ),
-			'ip_geo_block_list_accesslog',
-			$option_slug
-		);
+if ( $settings['validation']['reclogs'] ) :
 
-		$field = 'clear_logs';
-		add_settings_field(
-			$option_name . "_$field",
-			__( 'Clear logs', IP_Geo_Block::TEXT_DOMAIN ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'button',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => __( 'Clear now', IP_Geo_Block::TEXT_DOMAIN ),
-				'after' => '<div id="ip-geo-block-loading"></div>',
-			)
-		);
-	}
-	else {
-		/*----------------------------------------*
-		 * Warning
-		 *----------------------------------------*/
-		$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
-		add_settings_section(
-			$section,
-			__( 'Validation logs', IP_Geo_Block::TEXT_DOMAIN ),
-			'ip_geo_block_warn_accesslog',
-			$option_slug
-		);
-	}
+	/*----------------------------------------*
+	 * Validation logs
+	 *----------------------------------------*/
+	$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
+	add_settings_section(
+		$section,
+		__( 'Validation logs', IP_Geo_Block::TEXT_DOMAIN ),
+		'ip_geo_block_list_accesslog',
+		$option_slug
+	);
+
+	$field = 'clear_logs';
+	add_settings_field(
+		$option_name . "_$field",
+		__( 'Clear logs', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'button',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => __( 'Clear now', IP_Geo_Block::TEXT_DOMAIN ),
+			'after' => '<div id="ip-geo-block-loading"></div>',
+		)
+	);
+
+else:
+
+	/*----------------------------------------*
+	 * Warning
+	 *----------------------------------------*/
+	$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
+	add_settings_section(
+		$section,
+		__( 'Validation logs', IP_Geo_Block::TEXT_DOMAIN ),
+		'ip_geo_block_warn_accesslog',
+		$option_slug
+	);
+
+endif;
 }
 
 /**

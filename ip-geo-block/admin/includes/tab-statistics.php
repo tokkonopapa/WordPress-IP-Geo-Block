@@ -122,6 +122,19 @@ if ( $setting['save_statistics'] ) :
 		)
 	);
 
+else:
+
+	/*----------------------------------------*
+	 * Warning
+	 *----------------------------------------*/
+	$section = IP_Geo_Block::PLUGIN_SLUG . '-statistics';
+	add_settings_section(
+		$section,
+		__( 'Statistics of validation', IP_Geo_Block::TEXT_DOMAIN ),
+		'ip_geo_block_warn_statistics',
+		$option_slug
+	);
+
 endif;
 
 	/*----------------------------------------*
@@ -192,4 +205,13 @@ endif;
 			'after' => '<div id="ip-geo-block-loading"></div>',
 		)
 	);
+}
+
+/**
+ * Function that fills the section with the desired content.
+ *
+ */
+function ip_geo_block_warn_statistics() {
+	echo "<p>", __( 'Current setting of [<strong>Record validation statistics</strong>] on [<strong>Settings</strong>] tab is [<strong>Disable</strong>].', IP_Geo_Block::TEXT_DOMAIN ), "</p>\n";
+	echo "<p>", __( 'Please set the proper condition to record and analyze the validation statistics.', IP_Geo_Block::TEXT_DOMAIN ), "</p>\n";
 }
