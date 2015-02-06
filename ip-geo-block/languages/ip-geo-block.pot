@@ -223,7 +223,7 @@ msgid "All of validation"
 msgstr ""
 
 #: admin/includes/tab-settings.php:156
-msgid "<dfn title=\"ex) log, pwd, comment\">$_POST keys in logs</dfn>"
+msgid "<dfn title=\"ex) log, pwd, comment\">$_POST keys to be recorded with their values in logs</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:166 admin/includes/tab-settings.php:184
