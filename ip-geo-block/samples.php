@@ -196,7 +196,7 @@ add_filter( 'ip-geo-block-admin', 'my_protectives' );
 
 /**
  * Example 10: validate requested queries via admin-ajax.php
- * Use case: Give ajax permission in case of clean actions on frontend
+ * Use case: Give ajax permission in case of clean actions on front facing
  *
  * @global array $_GET and $_POST requested queries
  * @param  array $validate

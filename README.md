@@ -274,6 +274,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
       in the `Admin Area`. This feature is to protect against a vulnerability 
       such as 'Analysis of the Fancybox-For-WordPress Vulnerability' on Sucuri 
       Blog http://t.co/0t6UNXrjUG
+    - Added a sample code snippet as a use case for 'Give ajax permission in 
+      case of clean actions on front facing'. See Example 10 in `sample.php`.
 
 - 2.0.1
     - Fixed the issue of improper scheme from the HTTPS site when loading js 
