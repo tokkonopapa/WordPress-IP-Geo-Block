@@ -4,7 +4,7 @@ Donate link:
 Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.1
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -282,6 +282,12 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.0.2 =
+* **New feature:** Include `wp-admin/admin-post.php` as a validation target 
+  in the `Admin Area`. This feature is to protect against a vulnerability 
+  such as 'Analysis of the Fancybox-For-WordPress Vulnerability' on Sucuri 
+  Blog http://t.co/0t6UNXrjUG
 
 = 2.0.1 =
 * Fixed the issue of improper scheme from the HTTPS site when loading js 

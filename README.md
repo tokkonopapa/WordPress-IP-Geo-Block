@@ -269,6 +269,12 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 #### Change log
 
+- 2.0.2
+    - **New feature:** Include `wp-admin/admin-post.php` as a validation target 
+      in the `Admin Area`. This feature is to protect against a vulnerability 
+      such as 'Analysis of the Fancybox-For-WordPress Vulnerability' on Sucuri 
+      Blog http://t.co/0t6UNXrjUG
+
 - 2.0.1
     - Fixed the issue of improper scheme from the HTTPS site when loading js 
       for google map.

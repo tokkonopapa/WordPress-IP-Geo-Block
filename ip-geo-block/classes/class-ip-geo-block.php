@@ -20,7 +20,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.0.1';
+	const VERSION = '2.0.2';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -76,12 +76,13 @@ class IP_Geo_Block {
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
 		}
 
-		// auth_redirect() in wp-includes/pluggable.php @since 3.1.0
-		if ( $settings['validation']['admin'] )
-			add_filter( 'secure_auth_redirect', array( $this, 'validate_admin' ) );
+		// secure_auth_redirect() in wp-includes/pluggable.php @since 3.1.0
+		$is_ajax = defined( 'DOING_AJAX' ) && DOING_AJAX;
+		if ( $settings['validation']['admin'] && ! $is_ajax )
+			add_filter( 'admin_init', array( $this, 'validate_admin' ) );
 
 		// wp-admin/admin.php from wp-admin/admin-apax.php @since 2.5.0
-		if ( $settings['validation']['ajax'] && defined( 'DOING_AJAX' ) && DOING_AJAX )
+		if ( $settings['validation']['ajax'] && $is_ajax )
 			add_action( 'admin_init', array( $this, 'validate_admin' ) );
 	}
 
