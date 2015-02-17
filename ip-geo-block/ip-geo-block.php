@@ -8,12 +8,12 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
- * @copyright 2013, 2014 tokkonopapa
+ * @copyright 2013 - 2015 tokkonopapa
  *
  * Plugin Name:       IP Geo Block
  * Plugin URI:        http://wordpress.org/plugins/ip-geo-block/
  * Description:       A WordPress plugin that will block any spams, login attempts and malicious access posted from outside your nation.
- * Version:           2.0.1
+ * Version:           2.0.2
  * Author:            tokkonopapa
  * Author URI:        https://github.com/tokkonopapa/WordPress-IP-Geo-Block
  * Text Domain:       ip-geo-block
