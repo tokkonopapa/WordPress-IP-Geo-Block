@@ -2,20 +2,21 @@ IP Geo Block
 ==============
 
 A WordPress plugin that will block any spams, login attempts and malicious 
-access posted from outside your nation.
+access to the admin area posted from outside your nation.
 
-This plugin will examine a country code based on the IP address.If a comment, 
+This plugin will examine a country code based on the IP address. If a comment, 
 pingback or trackback comes from specific country, it will be blocked before 
 Akismet validate it.
 
 With the same mechanism, it will fight against burst access of brute-force 
-and reverse-brute-force attacks to the login form, admin area and XML-RPC.
+and reverse-brute-force attacks to the login form, XML-RPC and admin area.
 
 ### Features:
 
 1. Access to the basic and important entrances such as `wp-comments-post.php`,
- `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php` 
-will be validated by means of a country code based on IP address. 
+ `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php`,
+ `wp-admin/admin-post.php` will be validated by means of a country code based 
+on IP address.
 
 2. Free IP Geolocation database and REST APIs are installed into this plugin 
 to get a country code from an IP address. There are two types of API which 
@@ -261,9 +262,9 @@ After installing these IP2Location plugins, you should be once deactivated
 and then activated in order to set the path to `database.bin`.
 
 If you do not want to keep the IP2Location plugins (
-    [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
-    [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
-    [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
+    [IP2Location Tags][IP2Tag],
+    [IP2Location Variables][IP2Var],
+    [IP2Location Country Blocker][IP2Blk]
 ) in `wp-content/plugins/` directory but just want to use its database, 
 you can rename it to `ip2location` and upload it to `wp-content/`.
 
@@ -272,8 +273,9 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 - 2.0.2
     - **New feature:** Include `wp-admin/admin-post.php` as a validation target 
       in the `Admin Area`. This feature is to protect against a vulnerability 
-      such as 'Analysis of the Fancybox-For-WordPress Vulnerability' on Sucuri 
-      Blog http://t.co/0t6UNXrjUG
+      such as 
+      [Analysis of the Fancybox-For-WordPress Vulnerability](http://blog.sucuri.net/2015/02/analysis-of-the-fancybox-for-wordpress-vulnerability.html)
+      on Sucuri Blog.
     - Added a sample code snippet as a use case for 'Give ajax permission in 
       case of clean actions on front facing'. See Example 10 in `sample.php`.
 
@@ -354,7 +356,7 @@ This plugin is licensed under the GPL v2 or later.
 [MaxMind]:  http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
 [IP2Loc]:   http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location"
 [IP2Tag]:   http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"
-[IP2Var]:   http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Tags - WordPress Plugins"
+[IP2Var]:   http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"
 [IP2Blk]:   http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins"
 [register]: http://ipinfodb.com/register.php
 [codex]:    http://codex.wordpress.org/Plugin_API/Filter_Reference/preprocess_comment "Plugin API/Filter Reference/preprocess comment &laquo; WordPress Codex"

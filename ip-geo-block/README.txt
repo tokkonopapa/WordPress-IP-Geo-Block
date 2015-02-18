@@ -9,7 +9,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 A WordPress plugin that will block any spams, login attempts and malicious 
-access posted from outside your nation.
+access to the admin area posted from outside your nation.
 
 == Description ==
 
@@ -18,13 +18,14 @@ pingback or trackback comes from specific country, it will be blocked before
 Akismet validate it.
 
 With the same mechanism, it will fight against burst access of brute-force 
-and reverse-brute-force attacks to the login form, admin area and XML-RPC.
+and reverse-brute-force attacks to the login form, XML-RPC and admin area.
 
 = Features =
 
 1. Access to the basic and important entrances such as `wp-comments-post.php`,
- `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php` 
-will be validated by means of a country code based on IP address. 
+ `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php`,
+ `wp-admin/admin-post.php` will be validated by means of a country code based 
+on IP address. 
 
 2. Free IP Geolocation database and REST APIs are installed into this plugin 
 to get a country code from an IP address. There are two types of API which 
@@ -286,8 +287,9 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 = 2.0.2 =
 * **New feature:** Include `wp-admin/admin-post.php` as a validation target 
   in the `Admin Area`. This feature is to protect against a vulnerability 
-  such as 'Analysis of the Fancybox-For-WordPress Vulnerability' on Sucuri 
-  Blog http://t.co/0t6UNXrjUG
+  such as 
+  [Analysis of the Fancybox-For-WordPress Vulnerability](http://blog.sucuri.net/2015/02/analysis-of-the-fancybox-for-wordpress-vulnerability.html)
+  on Sucuri Blog.
 * Added a sample code snippet as a use case for 'Give ajax permission in 
   case of clean actions on front facing'. See Example 10 in `sample.php`.
 
