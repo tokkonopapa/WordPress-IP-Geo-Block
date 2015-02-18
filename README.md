@@ -82,7 +82,7 @@ full spec security plugin such as
     Validate access to `wp-admin/admin.php` except `wp-admin/admin-ajax.php` 
     and `wp-admin/admin-post.php`.
 
-- ** Admin Ajax**  
+- **Admin Ajax**  
     Validate access to `wp-admin/admin-ajax.php`.
 
 - **Record validation statistics**  
