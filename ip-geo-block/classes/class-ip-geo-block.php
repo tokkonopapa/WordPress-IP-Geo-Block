@@ -76,13 +76,10 @@ class IP_Geo_Block {
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
 		}
 
-		// secure_auth_redirect() in wp-includes/pluggable.php @since 3.1.0
+		// wp-admin/{admin.php|admin-apax.php|admin-post.php} @since 2.5.0
 		$is_ajax = defined( 'DOING_AJAX' ) && DOING_AJAX;
-		if ( $settings['validation']['admin'] && ! $is_ajax )
-			add_filter( 'admin_init', array( $this, 'validate_admin' ) );
-
-		// wp-admin/admin.php from wp-admin/admin-apax.php @since 2.5.0
-		if ( $settings['validation']['ajax'] && $is_ajax )
+		if ( ( $settings['validation']['admin'] && ! $is_ajax ) ||
+		     ( $settings['validation']['ajax' ] &&   $is_ajax ) )
 			add_action( 'admin_init', array( $this, 'validate_admin' ) );
 	}
 
