@@ -242,7 +242,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	 */
 	var post_comment = function (url, proxy) {
 		var form = serialize_plain($scope.form.comment);
-		svcProxy.post_form(url, form, proxy).then(function (res) {
+		svcProxy.post_form(url, form, proxy, 'POST').then(function (res) {
 			messageOut('Comment', res.stat);
 		});
 	};
@@ -260,7 +260,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		$scope.form.trackback.url = trackback + '#' + get_random_int(1000, 9999);
 
 		var form = serialize_plain($scope.form.trackback);
-		svcProxy.post_form(url, form, proxy).then(function (res) {
+		svcProxy.post_form(url, form, proxy, 'POST').then(function (res) {
 			messageOut('Trackback', res.stat);
 		});
 	}

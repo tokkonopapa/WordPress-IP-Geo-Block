@@ -11,14 +11,14 @@ angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) 
 	this.post_form = function (url, form, proxy, method) {
 		var type;
 		switch(method.toLowerCase()) {
-		  case 'post':
-			method = 'POST';
-			type = 'application/x-www-form-urlencoded';
-			break;
-		  default:
+		  case 'get':
 			method = 'GET';
 			type = 'text/html';
 			url += '?' + decodeURIComponent(form);
+			break;
+		  default:
+			method = 'POST';
+			type = 'application/x-www-form-urlencoded';
 		}
 
 		// Post the comment with `X-Forwarded-For` header
