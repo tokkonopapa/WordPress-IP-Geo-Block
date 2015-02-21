@@ -9,10 +9,13 @@ angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) 
 	 *
 	 */
 	this.post_form = function (url, form, proxy, method) {
-		if (typeof method === 'undefined') {
+		var type;
+		switch(method.toLowerCase()) {
+		  case 'post':
 			method = 'POST';
 			type = 'application/x-www-form-urlencoded';
-		} else {
+			break;
+		  default:
 			method = 'GET';
 			type = 'text/html';
 			url += '?' + decodeURIComponent(form);
