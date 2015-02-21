@@ -219,24 +219,45 @@
 		<form class="post-form animate-show-hide" ng-show="show.admin_ajax">
 			<!-- WP nonce -->
 			<p>
-				<label for="_wpnonce">
-					<span ng-bind="lang._wpnonce"></span>
+				<label>
+					<span ng-bind="lang.param"></span>
 					<span class="required">*</span>
 				</label>
-				<input type="text" name="_wpnonce" ng-model="form.ajax._wpnonce" />
+				<ul class="clearfix">
+					<li>
+						<input type="text" name="key[0]" ng-model="form.ajax.key[0]" />
+					</li>
+					<li>
+						<input type="text" name="val[0]" ng-model="form.ajax.val[0]" />
+					</li>
+				</ul>
 			</p>
 			<p>
-				<label for="action">
-					<span ng-bind="lang.action"></span>
+				<label>
+					<span ng-bind="lang.param"></span>
 					<span class="required">*</span>
 				</label>
-				<input type="text" name="action" ng-model="form.ajax.action" />
+				<ul class="clearfix">
+					<li>
+						<input type="text" name="key[1]" ng-model="form.ajax.key[1]" />
+					</li>
+					<li>
+						<input type="text" name="val[1]" ng-model="form.ajax.val[1]" />
+					</li>
+				</ul>
 			</p>
 			<p>
-				<label for="param">
+				<label>
 					<span ng-bind="lang.param"></span>
 				</label>
-				<input type="text" name="param" ng-model="form.ajax.param" />
+				<ul class="clearfix">
+					<li>
+						<input type="text" name="key[2]" ng-model="form.ajax.key[2]" />
+					</li>
+					<li>
+						<input type="text" name="val[2]" ng-model="form.ajax.val[2]" />
+					</li>
+				</ul>
 			</p>
 		</form>
 	</div>

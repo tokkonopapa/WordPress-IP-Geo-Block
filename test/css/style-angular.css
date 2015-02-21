@@ -35,6 +35,14 @@ span.highlight {
     padding: 2px 6px;
     border-radius: 3px;
 }
+ul.clearfix li {
+    list-style-type: none;
+    float: left;
+    width: 15em;
+}
+ul.clearfix li input {
+    width: 13em;
+}
 .content {
     margin: 1em;
 }

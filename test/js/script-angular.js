@@ -39,7 +39,23 @@ app.factory('$exceptionHandler', ['$window', function ($window) {
  * https://www.airpair.com/angularjs/posts/top-10-mistakes-angularjs-developers-make
  * http://stackoverflow.com/questions/23382109/how-to-avoid-a-large-number-of-dependencies-in-angularjs
  */
-angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'LanguageSvc', 'GeolocationSvc', 'WPValidateSvc', 'HttpProxySvc', function ($scope, $cookies, svcLang, svcGeoloc, svcWP, svcProxy) {
+angular.module('WPApp').controller('WPAppCtrl', [
+	'$scope',
+	'$cookies',
+	'$cookieStore',
+	'LanguageSvc',
+	'GeolocationSvc',
+	'WPValidateSvc',
+	'HttpProxySvc',
+	function (
+		$scope,
+		$cookies,
+		$cookieStore,
+		svcLang,
+		svcGeoloc,
+		svcWP,
+		svcProxy
+	) {
 	// Language
 	$scope.lang = svcLang();
 
@@ -76,9 +92,8 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 			cookie: 'wordpress_test_cookie=WP+Cookie+check'
 		},
 		ajax: {
-			_wpnonce: '12345abcde',
-			action: 'download',
-			param: '../wp-config.php'
+			key: ['_wpnonce',   'action',   'file'            ],
+			val: ['12345abcde', 'download', '../wp-config.php']
 		},
 		pingback: {
 			xml: 
@@ -251,38 +266,12 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 	}
 
 	/**
-	 * Access to login form
+	 * Post form
 	 *
 	 */
-	var post_login = function (url, proxy) {
-		var form = serialize_plain($scope.form.login);
-		svcProxy.post_form(url, form, proxy).then(function (res) {
-			messageOut('Login Form', res.stat);
-		});
-	};
-
-	/**
-	 * Access to admin area
-	 *
-	 */
-	var post_admin = function (url, proxy) {
-		var form = serialize_plain($scope.form.admin);
-		svcProxy.post_form(url, form, proxy).then(function (res) {
-			messageOut('Admin Area', res.stat);
-		});
-	};
-
-	/**
-	 * Access to admin ajax
-	 *
-	 */
-	var post_admin_ajax = function (url, proxy) {
-		var form = serialize_plain($scope.form.ajax);
-		svcProxy.post_form(url, form, proxy).then(function (res) {
-			messageOut('Admin Ajax (POST)', res.stat);
-		});
-		svcProxy.post_form(url, form, proxy, 'GET').then(function (res) {
-			messageOut('Admin Ajax (GET)', res.stat);
+	var post_form = function (url, form, proxy, method, message) {
+		svcProxy.post_form(url, form, proxy, method).then(function (res) {
+			messageOut(message, res.stat);
 		});
 	};
 
@@ -346,16 +335,25 @@ angular.module('WPApp').controller('WPAppCtrl', ['$scope', '$cookies', 'Language
 		}
 
 		// Login Form
-		if ($scope.checkbox.login)
-			post_login(home + 'wp-login.php', proxy);
+		if ($scope.checkbox.login) {
+			var form = serialize_plain($scope.form.login);
+			post_form(home + 'wp-login.php', form, proxy, 'POST', 'Login Form');
+		}
 
 		// Admin Area
-		if ($scope.checkbox.admin_area)
-			post_admin(home + 'wp-admin/', proxy);
+		if ($scope.checkbox.admin_area) {
+			var form = serialize_plain($scope.form.admin);
+			post_form(home + 'wp-admin/', form, proxy, 'POST', 'Admin Area');
+		}
 
-		// Admin Ajax
-		if ($scope.checkbox.admin_ajax)
-			post_admin_ajax(home + 'wp-admin/admin-ajax.php', proxy);
+		// Admin Ajax and post
+		if ($scope.checkbox.admin_ajax) {
+			var url = home + 'wp-admin/admin-';
+			var form = serialize_array($scope.form.ajax);
+			post_form(url + 'ajax.php', form, proxy, 'GET',  'Admin Ajax (GET)');
+			post_form(url + 'ajax.php', form, proxy, 'POST', 'Admin Ajax (POST)');
+			post_form(url + 'post.php', form, proxy, 'POST', 'Admin Post');
+		}
 
 		// Pingback
 		if ($scope.checkbox.pingback)

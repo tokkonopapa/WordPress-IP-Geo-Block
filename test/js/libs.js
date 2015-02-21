@@ -107,7 +107,7 @@ function retrieve_ip(ip) {
 }
 
 /**
- * Serialize plain object to form type
+ * Serialize plain object and array to the type of form
  *
  */
 function serialize_plain(obj) {
@@ -116,6 +116,14 @@ function serialize_plain(obj) {
 		if (obj.hasOwnProperty(key)) {
 			data.push(key + '=' + encodeURIComponent(obj[key]));
 		}
+	}
+	return data.join('&');
+}
+
+function serialize_array(obj) {
+	var data = [];
+	for (var i = 0; i < obj.key.length; i++) {
+		data.push(obj.key[i] + '=' + encodeURIComponent(obj.val[i]));
 	}
 	return data.join('&');
 }
