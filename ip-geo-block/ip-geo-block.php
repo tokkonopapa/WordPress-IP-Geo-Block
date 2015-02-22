@@ -8,7 +8,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
- * @copyright 2013 - 2015 tokkonopapa
+ * @copyright 2013-2015 tokkonopapa
  *
  * Plugin Name:       IP Geo Block
  * Plugin URI:        http://wordpress.org/plugins/ip-geo-block/

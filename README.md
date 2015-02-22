@@ -79,8 +79,7 @@ full spec security plugin such as
     Validate access to `wp-login.php`.
 
 - **Admin area**  
-    Validate access to `wp-admin/admin.php` except `wp-admin/admin-ajax.php` 
-    and `wp-admin/admin-post.php`.
+    Validate access to `wp-admin/*.php` except `wp-admin/admin-ajax.php`.
 
 - **Admin Ajax**  
     Validate access to `wp-admin/admin-ajax.php`.

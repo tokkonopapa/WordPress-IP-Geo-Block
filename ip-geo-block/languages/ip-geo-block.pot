@@ -1,8 +1,8 @@
-# Copyright (C) 2013 tokkonopapa
+# Copyright (C) 2013-2015 tokkonopapa
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 2.0.1\n"
+"Project-Id-Version: IP Geo Block 2.0.2\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
 "POT-Creation-Date: 2015-02-05 23:54+0900\n"
 "PO-Revision-Date: 2015-02-05 23:54+0900\n"

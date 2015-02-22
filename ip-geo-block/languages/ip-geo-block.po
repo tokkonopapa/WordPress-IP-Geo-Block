@@ -1,4 +1,4 @@
-# Copyright (C) 2013 tokkonopapa
+# Copyright (C) 2013-2015 tokkonopapa
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""

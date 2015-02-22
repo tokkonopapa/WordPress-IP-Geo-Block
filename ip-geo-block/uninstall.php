@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
- * @copyright 2013 tokkonopapa
+ * @copyright 2013-2015 tokkonopapa
  */
 
 // If uninstall not called from WordPress, then exit

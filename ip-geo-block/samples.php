@@ -7,7 +7,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
- * @copyright 2014 tokkonopapa
+ * @copyright 2014-2015 tokkonopapa
  */
 
 if ( class_exists( 'IP_Geo_Block' ) ):
