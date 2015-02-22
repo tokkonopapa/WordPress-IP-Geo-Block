@@ -212,6 +212,6 @@ endif;
  *
  */
 function ip_geo_block_warn_statistics() {
-	echo "<p>", __( 'Current setting of [<strong>Record validation statistics</strong>] on [<strong>Settings</strong>] tab is [<strong>Disable</strong>].', IP_Geo_Block::TEXT_DOMAIN ), "</p>\n";
+	echo "<p>", __( 'Current setting of [<strong>Record validation statistics</strong>] on [<strong>Settings</strong>] tab is not selected [<strong>Enable</strong>].', IP_Geo_Block::TEXT_DOMAIN ), "</p>\n";
 	echo "<p>", __( 'Please set the proper condition to record and analyze the validation statistics.', IP_Geo_Block::TEXT_DOMAIN ), "</p>\n";
 }

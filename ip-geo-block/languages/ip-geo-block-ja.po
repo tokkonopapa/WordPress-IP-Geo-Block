@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 2.0.1\n"
+"Project-Id-Version: IP Geo Block 2.0.2\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-02-05 23:54+0900\n"
-"PO-Revision-Date: 2015-02-06 23:05+0900\n"
+"POT-Creation-Date: 2015-02-22 15:56+0900\n"
+"PO-Revision-Date: 2015-02-22 16:41+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 # description
 msgid ""
 "A WordPress plugin that will block any spams, login attempts and malicious "
-"access posted from outside your nation."
+"access to the admin area posted from outside your nation."
 msgstr ""
 "IPアドレスの地理的位置情報に基き、自国以外から投稿されるコメント、ピンバッ"
 "ク、トラックバックのスパムをブロックし、ログインフォームや管理領域への悪意あ"
@@ -95,7 +95,7 @@ msgstr "<dfn title=\"xmlrpc.phpへのアクセスを検証\">XML-RPC</dfn>"
 msgid "<dfn title=\"Validate access to wp-login.php\">Login form</dfn>"
 msgstr "<dfn title=\"wp-login.phpへのアクセスを検証\">ログイン・フォーム</dfn>"
 
-#: admin/includes/tab-accesslog.php:70
+#: admin/includes/tab-accesslog.php:70 admin/includes/tab-settings.php:93
 msgid "<dfn title=\"Validate access to wp-admin/*.php\">Admin area</dfn>"
 msgstr "<dfn title=\"wp-admin/*.phpへのアクセスを検証\">管理領域</dfn>"
 
@@ -137,7 +137,7 @@ msgid ""
 "Current selection of [<strong>Record validation logs</strong>] on "
 "[<strong>Settings</strong>] tab is [<strong>Disable</strong>]."
 msgstr ""
-"現在［<strong>設定</strong>］タブの［<strong>検証のログを記録</strong>］には"
+"現在［<strong>設定</strong>］タブの［<strong>検証のログを記録</strong>］は"
 "［<strong>無効</strong>］が選択されています。"
 
 #: admin/includes/tab-accesslog.php:102
@@ -188,10 +188,6 @@ msgstr "APIの選択とキーの設定"
 #: admin/includes/tab-settings.php:83
 msgid "Validation settings"
 msgstr "検証の設定"
-
-#: admin/includes/tab-settings.php:93
-msgid "<dfn title=\"Validate access to wp-admin/admin.php\">Admin area</dfn>"
-msgstr "<dfn title=\"wp-admin/admin.phpへのアクセスを検証\">管理領域</dfn>"
 
 #: admin/includes/tab-settings.php:94
 msgid ""
@@ -406,10 +402,10 @@ msgstr "統計のクリア"
 #: admin/includes/tab-statistics.php:215
 msgid ""
 "Current setting of [<strong>Record validation statistics</strong>] on "
-"[<strong>Settings</strong>] tab is [<strong>Disable</strong>]."
+"[<strong>Settings</strong>] tab is not selected [<strong>Enable</strong>]."
 msgstr ""
-"現在［<strong>設定</strong>］タブの［<strong>検証の統計を記録</strong>］には"
-"［<strong>無効</strong>］が設定されています。"
+"現在［<strong>設定</strong>］タブの［<strong>検証の統計を記録</strong>］は"
+"［<strong>有効</strong>］が選択されていません。"
 
 #: admin/includes/tab-statistics.php:216
 msgid ""
@@ -417,7 +413,7 @@ msgid ""
 "statistics."
 msgstr "検証の統計を記録し分析するためには、適切な条件を設定して下さい。"
 
-#: classes/class-ip-geo-block.php:411
+#: classes/class-ip-geo-block.php:409
 msgid "Sorry, but you cannot be accepted."
 msgstr "申し訳ありませんが、受け付けられません。"
 
