@@ -78,8 +78,8 @@ class IP_Geo_Block {
 
 		// wp-admin/{admin.php|admin-apax.php|admin-post.php} @since 2.5.0
 		$is_ajax = defined( 'DOING_AJAX' ) && DOING_AJAX;
-		if ( ( $settings['validation']['admin'] && ! $is_ajax ) ||
-		     ( $settings['validation']['ajax' ] &&   $is_ajax ) )
+		if ( ( ! $is_ajax && $settings['validation']['admin'] ) ||
+		     (   $is_ajax && $settings['validation']['ajax' ] ) )
 			add_action( 'admin_init', array( $this, 'validate_admin' ) );
 	}
 
