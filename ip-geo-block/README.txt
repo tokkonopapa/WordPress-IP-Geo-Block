@@ -32,7 +32,7 @@ to get a country code from an IP address. There are two types of API which
 support only IPv4 or both IPv4 and IPv6. This plugin will automatically select 
 an appropriate API.
 
-3. In order to prevent the authentication through the login form and XML-RPC 
+3. In order to prevent the invasion through the login form and XML-RPC 
 against the brute-force and the reverse-brute-force attacks, the number of 
 login attempts will be limited per IP address.
 
@@ -43,8 +43,8 @@ period of time.
 5. Validation logs will be recorded into MySQL data table to analyze posting 
 pattern under the specified condition.
 
-6. Custom validation function can be added by `add_filter()` with predefined 
-filter hook. See
+6. Custom validation function can be added via `add_filter()` with pre-defined 
+filter hook. See various use cases in 
     [sample.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
 bundled within this package.
 
@@ -69,7 +69,7 @@ This package includes GeoLite data created by MaxMind, available from
 and also includes IP2Location open source libraries available from 
     [IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
 
-And also thanks for providing these great services and REST APIs for free.
+Also thanks for providing the following great services and REST APIs for free.
 
 * [http://freegeoip.net/](http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service") (IPv4 / free)
 * [http://ipinfo.io/](http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details") (IPv4, IPv6 / free)
@@ -290,7 +290,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
   [Analysis of the Fancybox-For-WordPress Vulnerability](http://blog.sucuri.net/2015/02/analysis-of-the-fancybox-for-wordpress-vulnerability.html)
   on Sucuri Blog.
 * Added a sample code snippet as a use case for 'Give ajax permission in 
-  case of clean actions on front facing'. See Example 10 in `sample.php`.
+  case of safe actions on front facing'. See Example 10 in `sample.php`.
 
 = 2.0.1 =
 * Fixed the issue of improper scheme from the HTTPS site when loading js 
