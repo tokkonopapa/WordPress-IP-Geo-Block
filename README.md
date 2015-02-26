@@ -4,14 +4,33 @@ IP Geo Block
 A WordPress plugin that will block any spams, login attempts and malicious 
 access to the admin area posted from outside your nation.
 
+There are three major cases that your site is infected. The first one is the 
+case that contaminated files are uploaded from your PC via FTP or some kind of 
+uploader. In this case, scaning integrity of files on your site is useful to 
+detect (not protect) the infection.
+
+The second one is the cracking of the login password. In this case, 
+strengthening of the password is the rule of right.
+
+The last one is the case that a plugin or theme in your site has vulnerability.
+For example, the attackers can easily download the `wp-config.php` by hitting 
+ `http://example.com/wp-admin/admin-ajax.php?action=vulnerable_plugin&file=../wp-config.php`
+on their browser. In this case, the attackers doesn't need to know the username 
+and the password.
+
+The protection based on IP addresses is not a perfect solution for security, 
+but for some cases and site owners it still can reduce the risk of infection.
+
+This is the reason why this plugin is here.
+
+### Features:
+
 This plugin will examine a country code based on the IP address. If a comment, 
 pingback or trackback comes from specific country, it will be blocked before 
 Akismet validate it.
 
 With the same mechanism, it will fight against burst access of brute-force 
 and reverse-brute-force attacks to the login form, XML-RPC and admin area.
-
-### Features:
 
 1. Access to the basic and important entrances such as `wp-comments-post.php`,
  `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php`,
