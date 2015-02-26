@@ -9,8 +9,8 @@ case that contaminated files are uploaded from your PC via FTP or some kind of
 uploaders. In this case, scaning integrity of files on your site is useful to 
 detect (not protect) the infection.
 
-The second one is the cracking of the login password. In this case, 
-strengthening of the password is the rule of right.
+The second one is a cracking of the login password. In this case, strengthening 
+of the password is the rule of right.
 
 The last one is the case that a plugin or theme in your site has vulnerability.
 For example, the attackers can easily download the `wp-config.php` by hitting 
