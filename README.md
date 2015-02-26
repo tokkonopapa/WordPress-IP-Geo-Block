@@ -18,7 +18,7 @@ For example, the attackers can easily download the `wp-config.php` by hitting
 on their browser. In this case, the attackers doesn't need to know the username 
 and the password.
 
-The protection based on IP addresses is not a perfect solution for security, 
+The protection based on the IP address is not a perfect solution for security, 
 but for some cases and site owners it still can reduce the risk of infection.
 
 This is the reason why this plugin is here.
