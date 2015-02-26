@@ -6,7 +6,7 @@ access to the admin area posted from outside your nation.
 
 There are three major cases that your site is infected. The first one is the 
 case that contaminated files are uploaded from your PC via FTP or some kind of 
-uploader. In this case, scaning integrity of files on your site is useful to 
+uploaders. In this case, scaning integrity of files on your site is useful to 
 detect (not protect) the infection.
 
 The second one is the cracking of the login password. In this case, 
