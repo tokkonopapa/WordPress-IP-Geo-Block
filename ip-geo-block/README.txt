@@ -13,22 +13,26 @@ access to the admin area posted from outside your nation.
 
 == Description ==
 
-There are three major cases that your site is infected. The first one is the 
-case that contaminated files are uploaded from your PC via FTP or some kind of 
-uploaders. In this case, scaning integrity of files on your site is useful to 
-detect (not protect) the infection.
+There are some cases that your site is infected. The first one is the case 
+that contaminated files are uploaded via FTP or some kind of uploaders. 
+In this case, scaning and verifing integrity of files on your site is useful 
+to detect the infection.
 
-The second one is the cracking of the login password. In this case, 
-strengthening of the password is the rule of right.
+The second one is the cracking of the login password. In this case, the rule 
+of right is to strengthen the password.
 
-The last one is the case that a plugin or theme in your site has vulnerability.
-For example, the attackers can easily download the `wp-config.php` by hitting 
- `http://example.com/wp-admin/admin-ajax.php?action=vulnerable_plugin&file=../wp-config.php`
-on their browser. In this case, the attackers doesn't need to know the username 
-and the password.
+The third one is caused by malicious access to the core files. The major issue 
+in this case is that a plugin or theme in your site has vulnerability such as 
+XSS, CSRF, SQLi, LFI and so on. If a plugin has vulnerability of Local File 
+Inclusion (LFI), the attackers can easily download the `wp-config.php` without 
+knowing the username and the password by simply hitting 
+ `http://example.com/wp-admin/admin-ajax.php?action=something_vulnerable&file=../wp-config.php`
+on their browser.
 
-The protection based on IP addresses is not a perfect solution for security, 
-but for some cases and site owners it still can reduce the risk of infection.
+For these cases, the protection based on the IP address is not a perfect 
+solution for everyone. But for some site owners or some certain cases such 
+as 'zero-day-attack', it can still reduce the risk of infection against the 
+specific attacks.
 
 This is the reason why this plugin is here.
 
@@ -44,7 +48,7 @@ and reverse-brute-force attacks to the login form, XML-RPC and admin area.
 1. Access to the basic and important entrances such as `wp-comments-post.php`,
  `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php`,
  `wp-admin/admin-post.php` will be validated by means of a country code based 
-on IP address. 
+on IP address.
 
 2. Free IP Geolocation database and REST APIs are installed into this plugin 
 to get a country code from an IP address. There are two types of API which 
@@ -204,12 +208,6 @@ All contributions will always be welcome.
 
 == Frequently Asked Questions ==
 
-= What is this plugin for? =
-
-It's for blocking spam comments. If you can not specify countries with white 
-list or black list to protect your site against undesired access, you should 
-choose other awesome plugins.
-
 = How can I check this plugin works? =
 
 Check `statistics` tab on this plugin's option page.
@@ -230,37 +228,31 @@ the plugin settings page. Most of the IP Geolocation services return empty
 (with some status) if a local IP address (e.g. 127.0.0.0) is requested, but 
 only `freegeoip.net` returns `RD`.
 
-= Can I add an additional validation function into this plugin? =
+= How can I protect `wp-config.php` maliciously accessed from my country? =
 
-Yes, you can use `add_filter()` with filter hook `ip-geo-block-comment` in 
-somewhere (typically `functions.php` in your theme) as follows:
+You can use `add_filter()` with filter hook `ip-geo-block-admin` in somewhere 
+(typically `functions.php` in your theme) as follows:
 
-`function my_blacklist( $validate ) {
-    $blacklist = array(
-        '123.456.789.',
-    );
+`function my_protectives( $validate ) {
+    if ( ! $validate['auth'] ) {
+        $protectives = array(
+            'wp-config.php',
+            'passwd',
+        );
 
-    foreach ( $blacklist as $ip ) {
-        if ( strpos( $ip, $validate['ip'] ) === 0 ) {
-            $validate['result'] = 'blocked';
-            break;
+        $req = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
+
+        foreach ( $protectives as $item ) {
+            if ( strpos( $req, $item ) !== FALSE ) {
+                $validate['result'] = 'blocked';
+                break;
+            }
         }
     }
 
     return $validate;
 }
-add_filter( 'ip-geo-block-comment', 'my_blacklist' );`
-
-= Can I change user agent strings when fetching services? =
-
-Yes. The default is something like `Wordpress/4.0; ip-geo-block 1.2.0`.
-You can change it as follows:
-
-`function my_user_agent( $args ) {
-    $args['user-agent'] = 'my user agent strings';
-    return $args;
-}
-add_filter( 'ip-geo-block-headers', 'my_user_agent' );`
+add_filter( 'ip-geo-block-admin', 'my_protectives' );`
 
 = Are there any other filter hooks? =
 
@@ -294,11 +286,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 == Screenshots ==
 
-1. **IP Geo Plugin** - Settings.
-2. **IP Geo Plugin** - Statistics.
-3. **IP Geo Plugin** - Logs.
-4. **IP Geo Plugin** - Search.
-5. **IP Geo Plugin** - Attribution.
+1. **IP Geo Plugin** - Settings., screenshot-1.png
+2. **IP Geo Plugin** - Statistics., screenshot-2.png
+3. **IP Geo Plugin** - Logs., screenshot-3.png
+4. **IP Geo Plugin** - Search., screenshot-4.png
+5. **IP Geo Plugin** - Attribution., screenshot-5.png
 
 == Changelog ==
 
@@ -309,7 +301,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
   [Analysis of the Fancybox-For-WordPress Vulnerability](http://blog.sucuri.net/2015/02/analysis-of-the-fancybox-for-wordpress-vulnerability.html)
   on Sucuri Blog.
 * Added a sample code snippet as a use case for 'Give ajax permission in 
-  case of safe actions on front facing'. See Example 10 in `sample.php`.
+  case of safe actions on front facing page'. See Example 10 in `sample.php`.
 
 = 2.0.1 =
 * Fixed the issue of improper scheme from the HTTPS site when loading js 
