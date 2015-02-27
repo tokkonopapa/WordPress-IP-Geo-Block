@@ -17,7 +17,7 @@ in this case is that a plugin or theme in your site has vulnerability such as
 XSS, CSRF, SQLi, LFI and so on. If a plugin has vulnerability of Local File 
 Inclusion (LFI), the attackers can easily download the `wp-config.php` without 
 knowing the username and the password by simply hitting 
- `http://example.com/wp-admin/admin-ajax.php?action=something_vulnerable&file=../wp-config.php`
+    [http://example.com/wp-admin/admin-ajax.php?action=something_vulnerable&file=../wp-config.php](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "WordPress Security Vuln in Slider Revolution Plugin | Sucuri Blog")
 on their browser.
 
 For these cases, the protection based on the IP address is not a perfect 
