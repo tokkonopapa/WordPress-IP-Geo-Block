@@ -208,7 +208,7 @@ All contributions will always be welcome.
 
 == Frequently Asked Questions ==
 
-= I was locked down. What should I do? =
+= I was locked down. What shall I do? =
 
 Add the following codes to `functions.php` in your theme and upload it via FTP.
 
@@ -219,7 +219,7 @@ Add the following codes to `functions.php` in your theme and upload it via FTP.
 add_filter( 'ip-geo-block-login', 'my_emergency' );
 add_filter( 'ip-geo-block-admin', 'my_emergency' );`
 
-= How can I protect `wp-config.php` maliciously accessed from my country? =
+= How can I protect my `wp-config.php` against malicious access? =
 
 `function my_protectives( $validate ) {
     if ( ! $validate['auth'] ) {
