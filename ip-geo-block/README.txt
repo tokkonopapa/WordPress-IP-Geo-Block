@@ -208,30 +208,18 @@ All contributions will always be welcome.
 
 == Frequently Asked Questions ==
 
-= How can I check this plugin works? =
+= I was locked down. What should I do? =
 
-Check `statistics` tab on this plugin's option page.
+Add the following codes to `functions.php` in your theme and upload it via FTP.
 
-= How can I test on the local site? =
-
-There are two ways. One is to add some code like below somewhere in your php 
-(typically `functions.php` in your theme) to substitute local IP address via 
-filter fook `ip-geo-block-ip-addr` as follows:
-
-`function my_replace_ip( $ip ) {
-    return '98.139.183.24'; // yahoo.com
+`function my_emergency( $validate ) {
+    $validate['result'] = 'passed';
+    return $validate;
 }
-add_filter( 'ip-geo-block-ip-addr', 'my_replace_ip' );`
-
-Another method is adding a country code into `White list` or `Black list` on 
-the plugin settings page. Most of the IP Geolocation services return empty 
-(with some status) if a local IP address (e.g. 127.0.0.0) is requested, but 
-only `freegeoip.net` returns `RD`.
+add_filter( 'ip-geo-block-login', 'my_emergency' );
+add_filter( 'ip-geo-block-admin', 'my_emergency' );`
 
 = How can I protect `wp-config.php` maliciously accessed from my country? =
-
-You can use `add_filter()` with filter hook `ip-geo-block-admin` in somewhere 
-(typically `functions.php` in your theme) as follows:
 
 `function my_protectives( $validate ) {
     if ( ! $validate['auth'] ) {
