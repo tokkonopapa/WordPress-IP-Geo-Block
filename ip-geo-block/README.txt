@@ -13,7 +13,7 @@ access to the admin area posted from outside your nation.
 
 == Description ==
 
-There are some cases that your site is infected. The first one is the case 
+There are some cases of the site being infected. The first one is the case 
 that contaminated files are uploaded via FTP or some kind of uploaders. 
 In this case, scaning and verifing integrity of files on your site is useful 
 to detect the infection.
@@ -23,10 +23,12 @@ of right is to strengthen the password.
 
 The third one is caused by malicious access to the core files. The major issue 
 in this case is that a plugin or theme in your site has vulnerability such as 
-XSS, CSRF, SQLi, LFI and so on. If a plugin has vulnerability of Local File 
-Inclusion (LFI), the attackers can easily download the `wp-config.php` without 
-knowing the username and the password by simply hitting 
-    [http://example.com/wp-admin/admin-ajax.php?action=something_vulnerable&file=../wp-config.php](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
+XSS, CSRF, SQLi, LFI and so on. For example, if a plugin has vulnerability of 
+Local File Inclusion (LFI), the attackers can easily download the `wp-config.php` 
+without knowing the username and the password by simply hitting 
+    [wp-admin/admin-ajax.php?action=something_vulnerable&file=../wp-config.php]
+    (http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html
+    "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
 on their browser.
 
 For these cases, the protection based on the IP address is not a perfect 
@@ -34,7 +36,7 @@ solution for everyone. But for some site owners or some certain cases such
 as 'zero-day-attack', it can still reduce the risk of infection against the 
 specific attacks.
 
-This is the reason why this plugin is here.
+That's why this plugin is here.
 
 = Features =
 
@@ -68,7 +70,9 @@ pattern under the specified condition.
 
 6. Custom validation function can be added via `add_filter()` with pre-defined 
 filter hook. See various use cases in 
-    [sample.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
+    [sample.php]
+    (https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php
+    "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
 bundled within this package.
 
 7. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
@@ -222,7 +226,7 @@ add_filter( 'ip-geo-block-admin', 'my_emergency' );`
 = How can I protect my `wp-config.php` against malicious access? =
 
 `function my_protectives( $validate ) {
-    if ( ! $validate['auth'] ) {
+    if ( ! is_user_logged_in() ) {
         $protectives = array(
             'wp-config.php',
             'passwd',
