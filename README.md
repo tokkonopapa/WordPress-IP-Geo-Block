@@ -13,10 +13,11 @@ The second one is the cracking of the login password. In this case, the rule
 of right is to strengthen the password.
 
 The third one is caused by malicious access to the core files. The major issue 
-in this case is that a plugin or theme in your site has vulnerability such as 
-XSS, CSRF, SQLi, LFI and so on. For example, if a plugin has vulnerability of 
-Local File Inclusion (LFI), the attackers can easily download the `wp-config.php` 
-without knowing the username and the password by simply hitting 
+in this case is that a plugin or theme in your site can potentially have some 
+vulnerability such as XSS, CSRF, SQLi, LFI and so on. For example, if a plugin 
+has vulnerability of Local File Inclusion (LFI), the attackers can easily 
+download the `wp-config.php` without knowing the username and the password by 
+simply hitting 
     [wp-admin/admin-ajax.php?action=something_vulnerable&file=../wp-config.php]
     (http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html
     "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
@@ -276,7 +277,6 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
       on Sucuri Blog.
     - Added a sample code snippet as a use case for 'Give ajax permission in 
       case of safe actions on front facing page'. See Example 10 in `sample.php`.
-
 - 2.0.1
     - Fixed the issue of improper scheme from the HTTPS site when loading js 
       for google map.

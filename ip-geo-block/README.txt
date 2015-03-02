@@ -22,10 +22,11 @@ The second one is the cracking of the login password. In this case, the rule
 of right is to strengthen the password.
 
 The third one is caused by malicious access to the core files. The major issue 
-in this case is that a plugin or theme in your site has vulnerability such as 
-XSS, CSRF, SQLi, LFI and so on. For example, if a plugin has vulnerability of 
-Local File Inclusion (LFI), the attackers can easily download the `wp-config.php` 
-without knowing the username and the password by simply hitting 
+in this case is that a plugin or theme in your site can potentially have some 
+vulnerability such as XSS, CSRF, SQLi, LFI and so on. For example, if a plugin 
+has vulnerability of Local File Inclusion (LFI), the attackers can easily 
+download the `wp-config.php` without knowing the username and the password by 
+simply hitting 
     [wp-admin/admin-ajax.php?action=something_vulnerable&file=../wp-config.php]
     (http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html
     "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
@@ -278,11 +279,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 == Screenshots ==
 
-1. **IP Geo Plugin** - Settings., screenshot-1.png
-2. **IP Geo Plugin** - Statistics., screenshot-2.png
-3. **IP Geo Plugin** - Logs., screenshot-3.png
-4. **IP Geo Plugin** - Search., screenshot-4.png
-5. **IP Geo Plugin** - Attribution., screenshot-5.png
+1. **IP Geo Plugin** - Settings.
+2. **IP Geo Plugin** - Statistics.
+3. **IP Geo Plugin** - Logs.
+4. **IP Geo Plugin** - Search.
+5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
 
