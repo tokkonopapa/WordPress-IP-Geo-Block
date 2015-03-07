@@ -496,12 +496,12 @@ class IP_Geo_Block {
 			);
 
 			IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
-		}
 
-		// (1) blocked, unknown, (3) unauthenticated, (5) all
-		if ( (int)$settings['validation']['reclogs'] & 1 ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-			IP_Geo_Block_Logs::record_log( $hook, $validate, $settings );
+			// (1) blocked, unknown, (3) unauthenticated, (5) all
+			if ( (int)$settings['validation']['reclogs'] & 1 ) {
+				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+				IP_Geo_Block_Logs::record_log( $hook, $validate, $settings );
+			}
 		}
 
 		return $something; // pass through
