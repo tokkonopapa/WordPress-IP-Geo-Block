@@ -60,8 +60,8 @@ login attempts will be limited per IP address.
 3. **D**efence against **Z**ero-day attack for admin **A**jax and **P**ost 
 (DZAP). This is an experimental new feature to block malicious access to 
  `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` regardless of the 
-country code. It will prevent certain types of attack such as CSRF, SQLi, FI 
-and so on even if you have some [vulnerable plugins]
+country code. It will prevent certain types of attack such as CSRF, SQLi and 
+so on even if you have some [vulnerable plugins]
 (https://wpvulndb.com/statistics "WordPress Vulnerability Statistics") 
 in your site.
 
