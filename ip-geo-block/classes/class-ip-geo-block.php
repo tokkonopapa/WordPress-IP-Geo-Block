@@ -99,7 +99,7 @@ class IP_Geo_Block {
 	 * Register nonce to the header
 	 *
 	 */
-	public static function register_nonce() {
+	public function register_nonce() {
 		$slug = self::PLUGIN_SLUG . '-auth-nonce';
 		$nonce = wp_create_nonce( $slug );
 		echo '<meta name="', $slug, '" content="', $nonce, "\" />\n";
@@ -109,7 +109,7 @@ class IP_Geo_Block {
 	 * Register and enqueue admin-specific style sheet and JavaScript.
 	 *
 	 */
-	public static function enqueue_nonce() {
+	public function enqueue_nonce() {
 		wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce',
 			plugins_url( 'admin/js/auth-nonce.js', IP_GEO_BLOCK_BASE ),
 			array( 'jquery' ), IP_Geo_Block::VERSION

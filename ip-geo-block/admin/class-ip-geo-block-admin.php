@@ -45,8 +45,9 @@ class IP_Geo_Block_Admin {
 		}
 
 		// Load authenticated nonce
-		add_action( 'admin_head', 'IP_Geo_Block::register_nonce' );
-		add_action( 'admin_enqueue_scripts', 'IP_Geo_Block::enqueue_nonce' );
+		$context = IP_Geo_Block::get_instance();
+		add_action( 'admin_head', array( $context, 'register_nonce' ) );
+		add_action( 'admin_enqueue_scripts', array( $context, 'enqueue_nonce' ) );
 
 		// Add the options page and menu item.
 		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ) );
