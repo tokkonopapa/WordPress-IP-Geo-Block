@@ -91,7 +91,6 @@ function ip_geo_block_tab_settings( $context ) {
 		'xmlrpc'  => __( '<dfn title="Validate access to xmlrpc.php">XML-RPC</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'login'   => __( '<dfn title="Validate access to wp-login.php">Login form</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		'admin'   => __( '<dfn title="Validate access to wp-admin/*.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'ajax'    => __( '<dfn title="Validate access to wp-admin/admin-ajax.php">Admin Ajax</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
 	$field = 'validation';
@@ -111,6 +110,27 @@ function ip_geo_block_tab_settings( $context ) {
 			)
 		);
 	}
+
+	add_settings_field(
+		$option_name . "_${field}_ajax",
+		__( '<dfn title="Validate access to wp-admin/admin-{ajax|post}.php">Admin ajax/post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'select',
+			'option' => $option_name,
+			'field' => $field,
+			'sub-field' => 'ajax',
+			'value' => $options[ $field ]['ajax'],
+			'list' => array(
+				__( 'Disable',                 IP_Geo_Block::TEXT_DOMAIN ) => 0,
+				__( 'Enable',                  IP_Geo_Block::TEXT_DOMAIN ) => 1,
+				__( 'Prevent zero-day attack', IP_Geo_Block::TEXT_DOMAIN ) => 2,
+			),
+			'after' => '<div style="display:none" id="ip-geo-block-admin-ajax-desc">' . __( 'It will block a malicious request via Admin ajax/post regardless of the country code. This is an experimental feature. If you have any troubles with it, please open a new issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a>.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
+		)
+	);
 
 	$field = 'save_statistics';
 	add_settings_field(
@@ -325,7 +345,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'white_list';
 	add_settings_field(
 		$option_name . "_$field",
-		sprintf( __( '<dfn title="If empth then pass through">White list</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
+		sprintf( __( '<dfn title="If empty then pass through">White list</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -341,7 +361,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'black_list';
 	add_settings_field(
 		$option_name . "_$field",
-		sprintf( __( '<dfn title="If empth then pass through">Black list</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
+		sprintf( __( '<dfn title="If empty then pass through">Black list</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,

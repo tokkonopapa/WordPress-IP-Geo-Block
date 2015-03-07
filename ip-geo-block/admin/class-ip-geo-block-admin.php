@@ -44,13 +44,14 @@ class IP_Geo_Block_Admin {
 			$this->option_name[ $key ] = $val;
 		}
 
-		// Load admin style sheet and JavaScript.
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_cssjs' ) );
-		add_action( 'wp_ajax_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
+		// Load authenticated nonce
+		add_action( 'admin_head', 'IP_Geo_Block::register_nonce' );
+		add_action( 'admin_enqueue_scripts', 'IP_Geo_Block::enqueue_nonce' );
 
 		// Add the options page and menu item.
 		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'register_admin_settings' ) );
+		add_action( 'wp_ajax_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
 
 		// Add an action link pointing to the options page. @since 2.7
 		add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
@@ -60,7 +61,6 @@ class IP_Geo_Block_Admin {
 		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 ) {
 			add_action( 'admin_notices', array( $this, 'admin_notice' ) );
 		}
-
 	}
 
 	/**
@@ -94,59 +94,51 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Register and enqueue admin-specific style sheet and JavaScript.
+	 * Register and enqueue plugin-specific style sheet and JavaScript.
 	 *
 	 */
-	public function enqueue_admin_cssjs() {
+	public function enqueue_plugin_assets() {
+		// css for option page
+		wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-admin-styles',
+			plugins_url( 'css/admin.css', __FILE__ ),
+			array(), IP_Geo_Block::VERSION
+		);
 
-		if ( ! isset( $this->plugin_screen_hook_suffix ) )
-			return;
+		// css for footable https://github.com/bradvin/FooTable
+		wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-footable-css',
+			plugins_url( 'css/footable.core.min.css', __FILE__ ),
+			array(), IP_Geo_Block::VERSION
+		);
 
-		$screen = get_current_screen();
-		if ( $this->plugin_screen_hook_suffix == $screen->id ) {
-			// css for option page
-			wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-admin-styles',
-				plugins_url( 'css/admin.css', __FILE__ ),
-				array(), IP_Geo_Block::VERSION
-			);
+		// js for google map
+		$footer = TRUE;
+		wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
+			'//maps.google.com/maps/api/js?sensor=false',
+			array( 'jquery' ), IP_Geo_Block::VERSION, $footer
+		);
 
-			// css for footable https://github.com/bradvin/FooTable
-			wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-footable-css',
-				plugins_url( 'css/footable.core.min.css', __FILE__ ),
-				array(), IP_Geo_Block::VERSION
-			);
+		// js for footable https://github.com/bradvin/FooTable
+		wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-footable-js',
+			plugins_url( 'js/footable.min.js', __FILE__ ),
+			array( 'jquery' ), IP_Geo_Block::VERSION, $footer
+		);
 
-			// js for google map
-			$footer = TRUE;
-			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
-				'//maps.google.com/maps/api/js?sensor=false',
-				array( 'jquery' ), IP_Geo_Block::VERSION, $footer
-			);
+		// js for option page
+		$handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script';
+		wp_enqueue_script( $handle,
+			plugins_url( 'js/admin.js', __FILE__ ),
+			array( 'jquery' ), IP_Geo_Block::VERSION, $footer
+		);
 
-			// js for footable https://github.com/bradvin/FooTable
-			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-footable-js',
-				plugins_url( 'js/footable.min.js', __FILE__ ),
-				array( 'jquery' ), IP_Geo_Block::VERSION, $footer
-			);
-
-			// js for option page
-			$handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script';
-			wp_enqueue_script( $handle,
-				plugins_url( 'js/admin.js', __FILE__ ),
-				array( 'jquery' ), IP_Geo_Block::VERSION, $footer
-			);
-
-			// global value for ajax @since r16
-			wp_localize_script( $handle,
-				'IP_GEO_BLOCK',
-				array(
-					'action' => 'ip_geo_block',
-					'url' => admin_url( 'admin-ajax.php' ),
-					'nonce' => wp_create_nonce( $this->get_ajax_action() ),
-				)
-			);
-		}
-
+		// global value for ajax @since r16
+		wp_localize_script( $handle,
+			'IP_GEO_BLOCK',
+			array(
+				'action' => 'ip_geo_block',
+				'url' => admin_url( 'admin-ajax.php' ),
+				'nonce' => wp_create_nonce( $this->get_ajax_action() ),
+			)
+		);
 	}
 
 	/**
@@ -186,7 +178,6 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function add_plugin_admin_menu() {
-
 		// Add a settings page for this plugin to the Settings menu.
 		$this->plugin_screen_hook_suffix = add_options_page(
 			__( 'IP Geo Block', IP_Geo_Block::TEXT_DOMAIN ),
@@ -196,6 +187,13 @@ class IP_Geo_Block_Admin {
 			array( $this, 'display_plugin_admin_page' )
 		);
 
+		// If successful, load admin assets only on that page.
+		if ( $this->plugin_screen_hook_suffix ) {
+			add_action(
+				'load-' . $this->plugin_screen_hook_suffix,
+				array( $this, 'enqueue_plugin_assets' )
+			);
+		}
 	}
 
 	/**

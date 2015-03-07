@@ -4,7 +4,7 @@ Donate link:
 Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.1.1
-Stable tag: 2.0.2
+Stable tag: 2.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,30 +53,38 @@ and reverse-brute-force attacks to the login form, XML-RPC and admin area.
  `wp-admin/admin-post.php` will be validated by means of a country code based 
 on IP address.
 
-2. Free IP Geolocation database and REST APIs are installed into this plugin 
-to get a country code from an IP address. There are two types of API which 
-support only IPv4 or both IPv4 and IPv6. This plugin will automatically select 
-an appropriate API.
-
-3. In order to prevent the invasion through the login form and XML-RPC 
+2. In order to prevent the invasion through the login form and XML-RPC 
 against the brute-force and the reverse-brute-force attacks, the number of 
 login attempts will be limited per IP address.
 
-4. A cache mechanism with transient API for the fetched IP addresses has been 
-equipped to reduce load on the server against the burst accesses with a short 
-period of time.
+3. **D**efence against **Z**ero-day attack for admin **A**jax and **P**ost 
+(DZAP). This is an experimental new feature to block malicious access to 
+ `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` regardless of the 
+country code. It will prevent certain types of attack such as CSRF, SQLi, FI 
+and so on even if you have some [vulnerable plugins]
+(https://wpvulndb.com/statistics "WordPress Vulnerability Statistics") 
+in your site.
 
-5. Validation logs will be recorded into MySQL data table to analyze posting 
+4. Validation logs will be recorded into MySQL data table to analyze posting 
 pattern under the specified condition.
 
-6. Custom validation function can be added via `add_filter()` with pre-defined 
+5. Custom validation function can be added via `add_filter()` with pre-defined 
 filter hook. See various use cases in 
     [sample.php]
     (https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php
     "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
 bundled within this package.
 
-7. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+6. Free IP Geolocation database and REST APIs are installed into this plugin 
+to get a country code from an IP address. There are two types of API which 
+support only IPv4 or both IPv4 and IPv6. This plugin will automatically select 
+an appropriate API.
+
+7. A cache mechanism with transient API for the fetched IP addresses has been 
+equipped to reduce load on the server against the burst accesses with a short 
+period of time.
+
+8. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
 (once a month) automatically. And if you have correctly installed 
 one of the IP2Location plugins (
@@ -85,7 +93,7 @@ one of the IP2Location plugins (
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
 ), this plugin uses its local database prior to the REST APIs.
 
-8. This plugin is simple and lite enough to be able to cooperate with other 
+9. This plugin is simple and lite enough to be able to cooperate with other 
 full spec security plugin such as 
     [Wordfence Security](https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins")
 (because the function of country bloking is available only for premium users).
@@ -145,10 +153,10 @@ All contributions will always be welcome.
     Validate access to `wp-login.php`.
 
 * **Admin area**  
-    Validate access to `wp-admin/*.php` except `wp-admin/admin-ajax.php`.
+    Validate access to `wp-admin/*.php` except `wp-admin/admin-{ajax|post}.php`.
 
-* ** Admin Ajax**  
-    Validate access to `wp-admin/admin-ajax.php`.
+* **Admin Ajax**  
+    Validate access to `wp-admin/admin-{ajax|post}.php`.
 
 * **Record validation statistics**  
     If `Enable`, you can see `Statistics of validation` on Statistics tab.
@@ -224,6 +232,8 @@ Add the following codes to `functions.php` in your theme and upload it via FTP.
 add_filter( 'ip-geo-block-login', 'my_emergency' );
 add_filter( 'ip-geo-block-admin', 'my_emergency' );`
 
+And then `Clear statistics` at `Statistics` tab on your dashborad.
+
 = How can I protect my `wp-config.php` against malicious access? =
 
 `function my_protectives( $validate ) {
@@ -286,6 +296,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.0.3 =
+* **New feature:** Added defence against zero-day attack for admin ajax and 
+  post. Because this is an experimental feature, please open a new issue if 
+  you have any troubles with it.
 
 = 2.0.2 =
 * **New feature:** Include `wp-admin/admin-post.php` as a validation target 

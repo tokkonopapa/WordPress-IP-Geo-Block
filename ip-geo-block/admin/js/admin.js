@@ -204,6 +204,15 @@ var start = new Date();
 		});
 	}
 
+	// Show/Hide description of DZAP
+	function show_ajax_description() {
+		if ( 2 == $('#ip_geo_block_settings_validation_ajax').val() ) {
+			$('#ip-geo-block-admin-ajax-desc').show();
+		} else {
+			$('#ip-geo-block-admin-ajax-desc').hide();
+		}
+	}
+
 	$(function () {
 		// Kick-off footable
 		if ($('.ip-geo-block-log').hide().length) {
@@ -266,7 +275,8 @@ var start = new Date();
 				'dev.maxmind.com',
 				'www.ip2location.com',
 				'en.wikipedia.org',
-				'tools.ietf.org'
+				'tools.ietf.org',
+				'wordpress.org'
 			];
 
 			var url = this.href;
@@ -280,6 +290,12 @@ var start = new Date();
 				}
 			});
 			return false;
+		});
+
+		// Show/Hide description of DZAP
+		show_ajax_description();
+		$('#ip_geo_block_settings_validation_ajax').on('click', function (event) {
+			show_ajax_description();
 		});
 	});
 }(jQuery));

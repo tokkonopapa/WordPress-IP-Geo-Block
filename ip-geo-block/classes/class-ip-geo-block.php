@@ -20,7 +20,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.0.2';
+	const VERSION = '2.0.3';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -77,10 +77,43 @@ class IP_Geo_Block {
 		}
 
 		// wp-admin/{admin.php|admin-apax.php|admin-post.php} @since 2.5.0
-		$is_ajax = defined( 'DOING_AJAX' ) && DOING_AJAX;
+		$is_ajax = $this->is_ajax();
 		if ( ( ! $is_ajax && $settings['validation']['admin'] ) ||
 		     (   $is_ajax && $settings['validation']['ajax' ] ) )
 			add_action( 'admin_init', array( $this, 'validate_admin' ) );
+
+		// Load authenticated nonce
+		if ( is_user_logged_in() ) {
+			add_action( 'wp_head', array( $this, 'register_nonce' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_nonce' ) );
+		}
+	}
+
+	// check admin-ajax.php or admin-post.php
+	private function is_ajax() {
+		return ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ||
+		       ( strpos( basename( $_SERVER['REQUEST_URI'] ), 'admin-post.php' ) === 0 ) ? TRUE : FALSE;
+	}
+
+	/**
+	 * Register nonce to the header
+	 *
+	 */
+	public static function register_nonce() {
+		$slug = self::PLUGIN_SLUG . '-auth-nonce';
+		$nonce = wp_create_nonce( $slug );
+		echo '<meta name="', $slug, '" content="', $nonce, "\" />\n";
+	}
+
+	/**
+	 * Register and enqueue admin-specific style sheet and JavaScript.
+	 *
+	 */
+	public static function enqueue_nonce() {
+		wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce',
+			plugins_url( 'admin/js/auth-nonce.js', IP_GEO_BLOCK_BASE ),
+			array( 'jquery' ), IP_Geo_Block::VERSION
+		);
 	}
 
 	// get default optional values
@@ -362,10 +395,9 @@ class IP_Geo_Block {
 		// apply custom filter of validation
 		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
 		// @param $validate = array(
-		//     'ip'       => $ip,       /* ip address                          */
-		//     'time'     => $time,     /* processing time                     */
+		//     'ip'       => $ip,       /* validated ip address                */
+		//     'auth'     => $auth,     /* authenticated or not                */
 		//     'code'     => $code,     /* country code or reason of rejection */
-		//     'provider' => $provider, /* the name of validator               */
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
 		foreach ( $ips as $ip ) {
@@ -432,6 +464,9 @@ class IP_Geo_Block {
 	}
 
 	public function validate_admin( $something ) {
+		if ( $this->is_ajax() )
+			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'ajax_check' ), 10, 2 );
+
 		$this->validate_ip(
 			defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ? 'xmlrpc' : 'admin',
 			self::get_option( 'settings' )
@@ -477,6 +512,33 @@ class IP_Geo_Block {
 		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
 		if ( $cache && $cache['fail'] >= $settings['login_fails'] )
 			$validate += array( 'result' => 'blocked' ); // can not overwrite
+
+		return $validate;
+	}
+
+	/**
+	 * validate requested queries via admin-ajax.php
+	 *
+	 */
+	public function ajax_check( $validate, $settings ) {
+		global $wp_filter;
+
+		// check actions for user who has no privilege
+		$action = $_REQUEST['action'];
+		if ( isset( $wp_filter[ $action ] ) && (
+			strpos( $action, 'wp_ajax_nopriv_' ) === 0 ||
+			strpos( $action, "admin_post_nopriv_" ) === 0 ) ) {
+			return $validate;
+		}
+
+		// check authenticated nonce
+		if ( 2 === $settings['validation']['ajax'] ) {
+			$action = self::PLUGIN_SLUG . '-auth-nonce';
+			if ( ! is_user_logged_in() || empty( $_REQUEST[ $action ] ) ||
+				 ! wp_verify_nonce( $_REQUEST[ $action ], $action ) ) {
+				$validate['result'] = 'blocked';
+			}
+		}
 
 		return $validate;
 	}
