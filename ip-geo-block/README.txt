@@ -48,43 +48,46 @@ Akismet validate it.
 With the same mechanism, it will fight against burst access of brute-force 
 and reverse-brute-force attacks to the login form, XML-RPC and admin area.
 
-1. Access to the basic and important entrances such as `wp-comments-post.php`,
- `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php`,
- `wp-admin/admin-post.php` will be validated by means of a country code based 
-on IP address.
+1. Access to the basic and important entrances into the back-end such as 
+ `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`, 
+ `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by 
+means of a country code based on IP address.
 
 2. In order to prevent the invasion through the login form and XML-RPC 
 against the brute-force and the reverse-brute-force attacks, the number of 
 login attempts will be limited per IP address.
 
 3. **D**efence against **Z**ero-day attack for admin **A**jax and **P**ost 
-(DZAP). This is an experimental new feature to block malicious access to 
- `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` regardless of the 
-country code. It will prevent certain types of attack such as CSRF, SQLi and 
-so on even if you have some [vulnerable plugins]
+system (DZAP system). This is an experimental new feature to block malicious 
+access to  `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` regardless 
+of the country code. It will prevent certain types of attack such as CSRF, SQLi
+and so on even if you have some [vulnerable plugins]
 (https://wpvulndb.com/statistics "WordPress Vulnerability Statistics") 
 in your site.
 
-4. Validation logs will be recorded into MySQL data table to analyze posting 
+4. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
+ `404 Not Found` to hide pages or even `200 OK`.
+
+5. Validation logs will be recorded into MySQL data table to analyze posting 
 pattern under the specified condition.
 
-5. Custom validation function can be added via `add_filter()` with pre-defined 
+6. Custom validation function can be added via `add_filter()` with pre-defined 
 filter hook. See various use cases in 
     [sample.php]
     (https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php
     "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
 bundled within this package.
 
-6. Free IP Geolocation database and REST APIs are installed into this plugin 
+7. Free IP Geolocation database and REST APIs are installed into this plugin 
 to get a country code from an IP address. There are two types of API which 
 support only IPv4 or both IPv4 and IPv6. This plugin will automatically select 
 an appropriate API.
 
-7. A cache mechanism with transient API for the fetched IP addresses has been 
+8. A cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against the burst accesses with a short 
 period of time.
 
-8. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+9. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
 (once a month) automatically. And if you have correctly installed 
 one of the IP2Location plugins (
@@ -93,7 +96,7 @@ one of the IP2Location plugins (
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
 ), this plugin uses its local database prior to the REST APIs.
 
-9. This plugin is simple and lite enough to be able to cooperate with other 
+10. This plugin is simple and lite enough to be able to cooperate with other 
 full spec security plugin such as 
     [Wordfence Security](https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins")
 (because the function of country bloking is available only for premium users).
@@ -299,8 +302,9 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 = 2.0.3 =
 * **New feature:** Added defence against zero-day attack for admin ajax and 
-  post. Because this is an experimental feature, please open a new issue if 
-  you have any troubles with it.
+  post. Because this is an experimental feature, please open a new issue at 
+  [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
+  if you have any troubles with it.
 
 = 2.0.2 =
 * **New feature:** Include `wp-admin/admin-post.php` as a validation target 
