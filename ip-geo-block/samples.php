@@ -193,7 +193,7 @@ add_filter( 'ip-geo-block-admin', 'my_protectives' );
 
 
 /**
- * Example 10: validate requested queries via admin-ajax.php
+ * Example 10: validate action of admin-ajax.php
  * Use case: Give ajax permission in case of safe actions on front facing page
  *
  * @global array $_GET and $_POST requested queries
@@ -206,11 +206,8 @@ function my_permission( $validate ) {
 			'something',
 		);
 
-		foreach ( $permitted as $item ) {
-			if ( $item === $_REQUEST['action'] ) {
-				$validate['result'] = 'passed';
-				break;
-			}
+		if ( in_array( $_REQUEST['action'], $permitted ) ) {
+			$validate['result'] = 'passed';
 		}
 	}
 
