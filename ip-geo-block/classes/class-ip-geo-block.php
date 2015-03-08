@@ -521,8 +521,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function ajax_check( $validate, $settings ) {
-		// check core actions
-		$core_actions = array(
+		$safe_actions = array(
 			// core_actions_get
 			'fetch-list', 'ajax-tag-search', 'wp-compression-test', 'imgedit-preview', 'oembed-cache',
 			'autocomplete-user', 'dashboard-widgets', 'logged-in',
@@ -541,12 +540,17 @@ class IP_Geo_Block {
 			'save-user-color-scheme', 'update-widget', 'query-themes', 'parse-embed', 'set-attachment-thumbnail',
 			'parse-media-shortcode', 'destroy-sessions',
 		);
-		if ( in_array( $action = $_REQUEST['action'], $core_actions ) ) {
+
+		global $wp_filter;
+		$action = $_REQUEST['action'];
+		$safe_actions = apply_filters( self::PLUGIN_SLUG . '-safe-actions', $safe_actions );
+
+		// check safe actions
+		if ( in_array( $action, $safe_actions ) ) {
 			return $validate;
 		}
 
 		// check actions for user who has no privilege
-		global $wp_filter;
 		if ( isset( $wp_filter[ $action ] ) && (
 			strpos( $action, 'wp_ajax_nopriv_' ) === 0 ||
 			strpos( $action, "admin_post_nopriv_" ) === 0 ) ) {
