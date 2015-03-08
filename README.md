@@ -57,7 +57,7 @@ and so on even if you have some [vulnerable plugins]
 in your site.
 
 4. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
- `404 Not Found` to hide pages or even `200 OK`.
+ `404 Not Found` to hide pages or even `200 OK` to redirect to top page.
 
 5. Validation logs will be recorded into MySQL data table to analyze posting 
 pattern under the specified condition.
