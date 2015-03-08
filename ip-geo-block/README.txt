@@ -58,10 +58,10 @@ against the brute-force and the reverse-brute-force attacks, the number of
 login attempts will be limited per IP address.
 
 3. An experimental new feature '**D**efence against **Z**ero-day attack for 
-admin **A**jax and **P**ost system' (DZAP system) is now available to block 
-malicious access to `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` 
-**regardless of the country code**. It will prevent certain types of attack 
-such as CSRF, SQLi and so on even if you have some [vulnerable plugins]
+admin **A**jax and **P**ost' (DZAP) system is now available to block malicious 
+access to `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` **regardless 
+of the country code**. It will prevent certain types of attack such as CSRF, 
+SQLi and so on even if you have some [vulnerable plugins]
 (https://wpvulndb.com/statistics "WordPress Vulnerability Statistics") 
 in your site.
 
@@ -270,7 +270,7 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
-* `ip-geo-block-safe-actions`     : array of safe actions for `wp-admin/admin-{ajax|post}.php`.
+* `ip-geo-block-admin-actions`    : array of actions for `wp-admin/admin-{ajax|post}.php`.
 * `ip-geo-block-backup-dir`       : absolute path where log files should be saved.
 * `ip-geo-block-maxmind-dir`      : absolute path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
@@ -306,8 +306,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
   post. Because this is an experimental feature, please open a new issue at 
   [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles with it.
-* Also added filter hook `ip-geo-block-safe-actions` to add safe actions to 
-  array for `wp-admin/admin-{ajax|post}.php`.
+* Also added filter hook `ip-geo-block-admin-actions` to add safe actions to
+  array for `wp-admin/admin-{ajax|post}.php` on backend.
 
 = 2.0.2 =
 * **New feature:** Include `wp-admin/admin-post.php` as a validation target 
