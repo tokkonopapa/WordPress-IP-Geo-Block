@@ -547,14 +547,14 @@ class IP_Geo_Block {
 
 		// check safe actions
 		if ( in_array( $action, $safe_actions ) ) {
-			return $validate;
+			return $validate; // still potentially be blocked by country code
 		}
 
 		// check actions for user who has no privilege
 		if ( isset( $wp_filter[ $action ] ) && (
 			strpos( $action, 'wp_ajax_nopriv_' ) === 0 ||
 			strpos( $action, "admin_post_nopriv_" ) === 0 ) ) {
-			return $validate;
+			return $validate; // still potentially be blocked by country code
 		}
 
 		// check authenticated nonce
