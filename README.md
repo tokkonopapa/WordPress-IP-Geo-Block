@@ -270,6 +270,17 @@ Yes, here is the list of all hooks.
 
 For more details, see `samples.php` bundled within this package.
 
+#### How does DZAP system defend zero-day attak? ####
+
+According to my research, most of vulnerabilities in WordPress plugin lack 
+either the authentication and nonce or both. So DZAP system will make up both 
+of them on the admin screen when you are logged in.
+
+This simple system will protect your dashboard from attack such as Arbitrary 
+File Uploading, SQL injection (SQLi), Cross Site Request Forgeries (CSRF) and 
+etc through `wp-admin/admin-{ajax|post}.php`. But it's incapable of preventing 
+Privilege Escalation (PE) and Cross Site Scripting (XSS).
+
 ### Other Notes:
 
 After installing these IP2Location plugins, you should be once deactivated 
