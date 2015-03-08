@@ -521,7 +521,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function ajax_check( $validate, $settings ) {
-		$safe_actions = array(
+		$admin_actions = array(
 			// core_actions_get
 			'fetch-list', 'ajax-tag-search', 'wp-compression-test', 'imgedit-preview', 'oembed-cache',
 			'autocomplete-user', 'dashboard-widgets', 'logged-in',
@@ -543,10 +543,10 @@ class IP_Geo_Block {
 
 		global $wp_filter;
 		$action = $_REQUEST['action'];
-		$safe_actions = apply_filters( self::PLUGIN_SLUG . '-safe-actions', $safe_actions );
+		$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', $admin_actions );
 
-		// check safe actions
-		if ( in_array( $action, $safe_actions ) ) {
+		// check admin actions
+		if ( in_array( $action, $admin_actions ) ) {
 			return $validate; // still potentially be blocked by country code
 		}
 
@@ -561,7 +561,7 @@ class IP_Geo_Block {
 		if ( 2 === $settings['validation']['ajax'] ) {
 			$action = self::PLUGIN_SLUG . '-auth-nonce';
 			if ( ! is_user_logged_in() || empty( $_REQUEST[ $action ] ) ||
-				 ! wp_verify_nonce( $_REQUEST[ $action ], $action ) ) {
+			     ! wp_verify_nonce( $_REQUEST[ $action ], $action ) ) {
 				$validate['result'] = 'blocked';
 			}
 		}
