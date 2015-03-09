@@ -521,36 +521,16 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function ajax_check( $validate, $settings ) {
-		$admin_actions = array(
-			// core_actions_get
-			'fetch-list', 'ajax-tag-search', 'wp-compression-test', 'imgedit-preview', 'oembed-cache',
-			'autocomplete-user', 'dashboard-widgets', 'logged-in',
-			// core_actions_post
-			'oembed-cache', 'image-editor', 'delete-comment', 'delete-tag', 'delete-link',
-			'delete-meta', 'delete-post', 'trash-post', 'untrash-post', 'delete-page', 'dim-comment',
-			'add-link-category', 'add-tag', 'get-tagcloud', 'get-comments', 'replyto-comment',
-			'edit-comment', 'add-menu-item', 'add-meta', 'add-user', 'closed-postboxes',
-			'hidden-columns', 'update-welcome-panel', 'menu-get-metabox', 'wp-link-ajax',
-			'menu-locations-save', 'menu-quick-search', 'meta-box-order', 'get-permalink',
-			'sample-permalink', 'inline-save', 'inline-save-tax', 'find_posts', 'widgets-order',
-			'save-widget', 'set-post-thumbnail', 'date_format', 'time_format', 'wp-fullscreen-save-post',
-			'wp-remove-post-lock', 'dismiss-wp-pointer', 'upload-attachment', 'get-attachment',
-			'query-attachments', 'save-attachment', 'save-attachment-compat', 'send-link-to-editor',
-			'send-attachment-to-editor', 'save-attachment-order', 'heartbeat', 'get-revision-diffs',
-			'save-user-color-scheme', 'update-widget', 'query-themes', 'parse-embed', 'set-attachment-thumbnail',
-			'parse-media-shortcode', 'destroy-sessions',
-		);
-
-		global $wp_filter;
-		$action = $_REQUEST['action'];
-		$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', $admin_actions );
-
 		// check admin actions
+		$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array() );
+
+		$action = $_REQUEST['action'];
 		if ( in_array( $action, $admin_actions ) ) {
 			return $validate; // still potentially be blocked by country code
 		}
 
 		// check actions for user who has no privilege
+		global $wp_filter;
 		if ( isset( $wp_filter[ $action ] ) && (
 			strpos( $action, 'wp_ajax_nopriv_' ) === 0 ||
 			strpos( $action, "admin_post_nopriv_" ) === 0 ) ) {

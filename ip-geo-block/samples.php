@@ -193,8 +193,8 @@ add_filter( 'ip-geo-block-admin', 'my_protectives' );
 
 
 /**
- * Example 10: validate action of admin-ajax.php
- * Use case: Give ajax permission in case of safe actions on front facing page
+ * Example 10: validate action of admin-ajax.php at front end
+ * Use case: Give permission to ajax at public facing page
  *
  * @global array $_GET and $_POST requested queries
  * @param  array $validate
@@ -217,7 +217,23 @@ add_filter( 'ip-geo-block-admin', 'my_permission' );
 
 
 /**
- * Example 11: validate ip address before authrization in admin area
+ * Example 11: validate action of admin-{ajax|post}.php with DZAP at back end
+ * Use case: Give permission to admin actions for `wp-admin/admin-{ajax|post}.php`
+ *
+ * @param  array $admin_actions array of permitted admin actions
+ * @return array $admin_actions extended permitted admin actions
+ */
+function my_admin_actions( $admin_actions ) {
+	$actions = array(
+		'something',
+	);
+	return $admin_actions + $actions;
+}
+add_filter( 'ip-geo-block-admin-actions', 'my_admin_actions' );
+
+
+/**
+ * Example 12: validate ip address before authrization in admin area
  * Use case: When an emergency situation of your self being locked out
  *
  */
@@ -231,7 +247,7 @@ add_filter( 'ip-geo-block-admin', 'my_emergency' );
 
 
 /**
- * Example 12: backup validation logs to text files
+ * Example 13: backup validation logs to text files
  * Use case: keep verification logs selectively to text files
  *
  * @param  string $hook 'comment', 'login', 'admin' or 'xmlrpc'
@@ -248,7 +264,7 @@ add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
 
 
 /**
- * Example 13: usage of 'IP_Geo_Block::get_geolocation()'
+ * Example 14: usage of 'IP_Geo_Block::get_geolocation()'
  * Use case: get geolocation of ip address with latitude and longitude
  *
  * @param  string $ip ip address
