@@ -33,13 +33,13 @@
 			var data, uri = parse_uri(settings.url);
 			if (typeof settings.data === 'undefined' || uri.query) {
 				data = uri.query ? uri.query.split('&') : [];
-				data.push('ip-geo-block-auth-nonce=' + nonce);
+				data.push('ip-geo-block-auth-nonce=' + encodeURIComponent(nonce));
 				settings.url  = uri.scheme ? uri.scheme + '://' : '';
 				settings.url += uri.authority + uri.path;
 				settings.url += '?' + data.join('&');
 			} else {
 				data = settings.data ? settings.data.split('&') : [];
-				data.push('ip-geo-block-auth-nonce=' + nonce);
+				data.push('ip-geo-block-auth-nonce=' + encodeURIComponent(nonce));
 				settings.data = data.join('&');
 			}
 		}
