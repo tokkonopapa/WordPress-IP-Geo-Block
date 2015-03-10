@@ -15,7 +15,7 @@ access to the admin area posted from outside your nation.
 
 There are some cases of the site being infected. The first one is the case 
 that contaminated files are uploaded via FTP or some kind of uploaders. 
-In this case, scaning and verifing integrity of files on your site is useful 
+In this case, scaning and verifing integrity of files in your site is useful 
 to detect the infection.
 
 The second one is the cracking of the login password. In this case, the rule 
@@ -55,15 +55,19 @@ means of a country code based on IP address.
 
 2. In order to prevent the invasion through the login form and XML-RPC 
 against the brute-force and the reverse-brute-force attacks, the number of 
-login attempts will be limited per IP address.
+login attempts will be limited per IP address. This feature is independent 
+of the country code.
 
-3. An experimental new feature '**D**efence against **Z**ero-day attack for 
-admin **A**jax and **P**ost' (DZAP) system is now available to block malicious 
+3. The original new feature '**D**efence against **Z**ero-day attack for admin 
+**A**jax and **P**ost' (DZAP) system is now available to block malicious 
 access to `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` **regardless 
 of the country code**. It will prevent certain types of attack such as CSRF, 
 SQLi and so on even if you have some [vulnerable plugins]
 (https://wpvulndb.com/statistics "WordPress Vulnerability Statistics") 
-in your site.
+in your site. Because this is an experimental feature, please open an issue on 
+[support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
+if you have any troubles. I will be profoundly grateful your contribution to 
+improved this function.
 
 4. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
  `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
@@ -281,7 +285,8 @@ For more details, see `samples.php` bundled within this package.
 
 = How does DZAP system defend zero-day attak? =
 
-According to my research, most of vulnerabilities in WordPress plugin lack 
+After I read the [Sucuri Blog](http://blog.sucuri.net/ "Home | Sucuri Blog"), 
+I found that a considerable number of vulnerabilities in WordPress plugin lack 
 either the authentication and nonce or both. So DZAP system will make up both 
 of them on the admin screen when you are logged in.
 
