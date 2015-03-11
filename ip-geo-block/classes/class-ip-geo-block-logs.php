@@ -208,7 +208,7 @@ class IP_Geo_Block_Logs {
 		foreach ( array_keys( $_SERVER ) as $key ) {
 			if ( 'HTTP_' === substr( $key, 0, 5 ) && 
 			     empty( $exclusions[ $key ] ) ) {
-				$headers[] = "$key:" . $_SERVER[ $key ];
+				$headers[] = "$key=" . $_SERVER[ $key ];
 			}
 		}
 
@@ -254,7 +254,7 @@ class IP_Geo_Block_Logs {
 			// Join array elements
 			$posts = array();
 			foreach ( $keys as $key => $val )
-				$posts[] = $val ? "$key:$val" : "$key";
+				$posts[] = $val ? "$key=$val" : "$key";
 
 			$posts = self::truncate_utf8( implode( ',', $posts ), '/\s+/', ' ' );
 		}

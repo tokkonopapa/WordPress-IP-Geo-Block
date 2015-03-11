@@ -45,7 +45,6 @@ class IP_Geo_Block_Admin {
 		}
 
 		// Load authenticated nonce
-		add_action( 'admin_head', array( 'IP_Geo_Block', 'register_nonce' ) );
 		add_action( 'admin_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ) );
 
 		// Add the options page and menu item.
@@ -124,8 +123,7 @@ class IP_Geo_Block_Admin {
 		);
 
 		// js for option page
-		$handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script';
-		wp_enqueue_script( $handle,
+		wp_enqueue_script( $handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script',
 			plugins_url( 'js/admin.js', __FILE__ ),
 			array( 'jquery' ), IP_Geo_Block::VERSION, $footer
 		);

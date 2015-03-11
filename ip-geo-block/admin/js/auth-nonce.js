@@ -21,7 +21,7 @@
 	}
 
 	$(document).ajaxSend(function (event, jqxhr, settings) {
-		var nonce = $('meta[name=ip-geo-block-auth-nonce]').attr('content');
+		var nonce = IP_GEO_AUTH.nonce || null;
 		if (nonce && (
 			settings.url.indexOf('wp-admin/admin-ajax.php') >= 0 ||
 			settings.url.indexOf('wp-admin/admin-post.php') >= 0
@@ -46,7 +46,7 @@
 	});
 
 	$(function () {
-		var nonce = $('meta[name=ip-geo-block-auth-nonce]').attr('content');
+		var nonce = IP_GEO_AUTH.nonce || null;
 		if (nonce) {
 			$('form').append('<input type="hidden" name="ip-geo-block-auth-nonce" value="' + nonce + '" />');
 		}

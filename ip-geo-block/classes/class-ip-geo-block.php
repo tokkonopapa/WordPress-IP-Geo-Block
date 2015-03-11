@@ -84,7 +84,6 @@ class IP_Geo_Block {
 
 		// Load authenticated nonce
 		if ( is_user_logged_in() ) {
-			add_action( 'wp_head', array( 'IP_Geo_Block', 'register_nonce' ) );
 			add_action( 'wp_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ) );
 		}
 	}
@@ -96,23 +95,18 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Register nonce to the header
-	 *
-	 */
-	public static function register_nonce() {
-		$slug = self::PLUGIN_SLUG . '-auth-nonce';
-		$nonce = wp_create_nonce( $slug );
-		echo '<meta name="', $slug, '" content="', $nonce, "\" />\n";
-	}
-
-	/**
 	 * Register and enqueue admin-specific style sheet and JavaScript.
 	 *
 	 */
 	public static function enqueue_nonce() {
-		wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce',
+		wp_enqueue_script( $handle = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce',
 			plugins_url( 'admin/js/auth-nonce.js', IP_GEO_BLOCK_BASE ),
 			array( 'jquery' ), IP_Geo_Block::VERSION
+		);
+
+		wp_localize_script( $handle,
+			'IP_GEO_AUTH',
+			array( 'nonce' => wp_create_nonce( $handle ) )
 		);
 	}
 
@@ -521,16 +515,9 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function ajax_check( $validate, $settings ) {
-		// check admin actions
-		$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array() );
-
-		$action = $_REQUEST['action'];
-		if ( in_array( $action, $admin_actions ) ) {
-			return $validate; // still potentially be blocked by country code
-		}
-
 		// check actions for user who has no privilege
 		global $wp_filter;
+		$action = $_REQUEST['action'];
 		if ( isset( $wp_filter[ $action ] ) && (
 			strpos( $action, 'wp_ajax_nopriv_' ) === 0 ||
 			strpos( $action, "admin_post_nopriv_" ) === 0 ) ) {
@@ -539,8 +526,15 @@ class IP_Geo_Block {
 
 		// check authenticated nonce
 		if ( 2 === $settings['validation']['ajax'] ) {
+			$login = is_user_logged_in();
+
+			// exclude safe admin actions
+			$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array() );
+			if ( $login && in_array( $action, $admin_actions ) )
+				return $validate; // still potentially be blocked by country code
+
 			$action = self::PLUGIN_SLUG . '-auth-nonce';
-			if ( ! is_user_logged_in() || empty( $_REQUEST[ $action ] ) ||
+			if ( ! $login || empty( $_REQUEST[ $action ] ) ||
 			     ! wp_verify_nonce( $_REQUEST[ $action ], $action ) ) {
 				$validate['result'] = 'blocked';
 			}
