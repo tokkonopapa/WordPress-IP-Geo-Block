@@ -34,7 +34,7 @@ on their browser.
 
 For these cases, the protection based on the IP address is not a perfect 
 solution for everyone. But for some site owners or some certain cases such 
-as 'zero-day-attack', it can still reduce the risk of infection against the 
+as 'zero-day attack', it can still reduce the risk of infection against the 
 specific attacks.
 
 That's why this plugin is here.
@@ -58,13 +58,13 @@ against the brute-force and the reverse-brute-force attacks, the number of
 login attempts will be limited per IP address. This feature is independent 
 of the country code.
 
-3. The original new feature '**D**efence against **Z**ero-day attack for admin 
+3. The original new feature '**D**efence against **Z**ero-day attack via admin 
 **A**jax and **P**ost' (DZAP) system is now available to block malicious 
-access to `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` **regardless 
-of the country code**. It will prevent certain types of attack such as CSRF, 
-SQLi and so on even if you have some [vulnerable plugins]
+access to `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` regardless 
+of the country code. It will prevent certain types of attack such as CSRF, SQLi 
+and so on even if you have some [vulnerable plugins]
 (https://wpvulndb.com/statistics "WordPress Vulnerability Statistics") 
-in your site. Because this is an experimental feature, please open an issue on 
+in your site. Because this is an experimental feature, please open an issue at 
 [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
 if you have any troubles. I will be profoundly grateful your contribution to 
 improved this function.
@@ -141,7 +141,7 @@ All contributions will always be welcome.
 = Geolocation API settings =
 
 * **API selection and key settings**  
-    If you wish to use `IPInfoDB`, you should register from 
+    If you wish to use `IPInfoDB`, you should register at 
     [their site](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") 
     to get a free API key and set it into the textfield.
     And `ip-api.com` and `Smart-IP.net` require non-commercial use.
@@ -318,11 +318,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.3 =
-* **New feature:** Added defence against zero-day attack for admin ajax and 
+* **New feature:** Added defence against zero-day attack via admin ajax and 
   post. Because this is an experimental feature, please open a new issue at 
   [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles with it.
-* Also added filter hook `ip-geo-block-admin-actions` for safe actions via 
+* Also added filter hook `ip-geo-block-admin-actions` for safe actions of 
   `wp-admin/admin-{ajax|post}.php` on back-end.
 
 = 2.0.2 =
