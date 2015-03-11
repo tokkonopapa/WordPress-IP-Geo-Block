@@ -528,8 +528,8 @@ class IP_Geo_Block {
 		if ( 2 === $settings['validation']['ajax'] ) {
 			$login = is_user_logged_in();
 
-			// exclude safe admin actions
-			$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array() );
+			// exclude safe admin actions (default: wp-admin/async-upload.php)
+			$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array( 'upload-attachment' ) );
 			if ( $login && in_array( $action, $admin_actions ) )
 				return $validate; // still potentially be blocked by country code
 

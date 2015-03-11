@@ -26,21 +26,29 @@
 			settings.url.indexOf('wp-admin/admin-ajax.php') >= 0 ||
 			settings.url.indexOf('wp-admin/admin-post.php') >= 0
 		)) {
-			// Behavior of jQuery Ajax
-			// method query query+data data
-			// GET    query query      data
-			// POST   query query      data
-			var data, uri = parse_uri(settings.url);
-			if (typeof settings.data === 'undefined' || uri.query) {
-				data = uri.query ? uri.query.split('&') : [];
-				data.push('ip-geo-block-auth-nonce=' + encodeURIComponent(nonce));
-				settings.url  = uri.scheme ? uri.scheme + '://' : '';
-				settings.url += uri.authority + uri.path;
-				settings.url += '?' + data.join('&');
-			} else {
-				data = settings.data ? settings.data.split('&') : [];
-				data.push('ip-geo-block-auth-nonce=' + encodeURIComponent(nonce));
-				settings.data = data.join('&');
+			// multipart/form-data
+			if (settings.data instanceof FormData) {
+				settings.data.append('ip-geo-block-auth-nonce', nonce);
+			}
+
+			// application/x-www-form-urlencoded
+			else {
+				// Behavior of jQuery Ajax
+				// method query query+data data
+				// GET    query query      data
+				// POST   query query      data
+				var data, uri = parse_uri(settings.url);
+				if (typeof settings.data === 'undefined' || uri.query) {
+					data = uri.query ? uri.query.split('&') : [];
+					data.push('ip-geo-block-auth-nonce=' + encodeURIComponent(nonce));
+					settings.url  = uri.scheme ? uri.scheme + '://' : '';
+					settings.url += uri.authority + uri.path;
+					settings.url += '?' + data.join('&');
+				} else {
+					data = settings.data ? settings.data.split('&') : [];
+					data.push('ip-geo-block-auth-nonce=' + encodeURIComponent(nonce));
+					settings.data = data.join('&');
+				}
 			}
 		}
 	});

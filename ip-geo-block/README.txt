@@ -13,7 +13,7 @@ access to the admin area posted from outside your nation.
 
 == Description ==
 
-There are some cases of the site being infected. The first one is the case 
+There are some cases of a site being infected. The first one is the case 
 that contaminated files are uploaded via FTP or some kind of uploaders. 
 In this case, scaning and verifing integrity of files in your site is useful 
 to detect the infection.
@@ -294,6 +294,20 @@ This simple system will protect your dashboard from attack such as Arbitrary
 File Uploading, SQL injection (SQLi), Cross Site Request Forgeries (CSRF) and 
 etc through `wp-admin/admin-{ajax|post}.php`. But it's incapable of preventing 
 Privilege Escalation (PE) and Cross Site Scripting (XSS).
+
+= Admin Ajax doesn't work when DZAP is on =
+
+DZAP will embed a nonce into the admin screen pages and will add it to the ajax 
+request using `.ajaxSend()` when jQuery ajax is triggered. This process depends 
+on the jQuery file. So at first, please check HTML src and the loading order of 
+jQuery file and `wp-content/plugins/ip-geo-block/admin/js/auth-nonce.js`.
+
+If it's correct, please check `ip-geo-block-auth-nonce` in your ajax request by 
+firebug or Chrome developer tools. The supported content type is 
+ `application/x-www-form-urlencoded` and `multipart/form-data`.
+
+If it's OK, then please let me know about your plugin which send that request 
+at the support forum.
 
 == Other Notes ==
 
