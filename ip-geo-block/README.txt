@@ -342,8 +342,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.3 =
-* **New feature:** Added 'Prevention of Zero-day attack via admin Ajax and 
-  Post'. Because it is an experimental feature, please open a new issue at 
+* **New feature:** Added 'Zero-day exploit Prevention for admin ajax and 
+  post'. Because it is an experimental feature, please open a new issue at 
   [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles with it.
 * Also added filter hook `ip-geo-block-admin-actions` for safe actions of 
