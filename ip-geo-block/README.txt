@@ -27,7 +27,7 @@ vulnerability such as XSS, CSRF, SQLi, LFI and so on. For example, if a plugin
 has vulnerability of Local File Inclusion (LFI), the attackers can easily 
 download the `wp-config.php` without knowing the username and the password by 
 simply hitting 
-    [wp-admin/admin-ajax.php?action=something_vulnerable&file=../wp-config.php]
+    [wp-admin/admin-ajax.php?action=something-vulnerable&file=../wp-config.php]
     (http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html
     "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
 on their browser.
@@ -58,11 +58,11 @@ against the brute-force and the reverse-brute-force attacks, the number of
 login attempts will be limited per IP address. This feature is independent 
 of the country code.
 
-3. The original new feature '**P**revention of **Z**ero-day exploits via admin 
-**A**jax and **P**ost' (PZAP) system is now available to block malicious 
-access to `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` besides the 
-country code. It will protect against certain types of attack such as CSRF, 
-SQLi and so on even if you have some [vulnerable plugins]
+3. The original new feature '**Z**ero-day **E**xploit **P**revention for admin 
+ajax and post' (ZEP) system is now available to block malicious access to 
+ `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` besides the country 
+code. It will protect against certain types of attack such as CSRF, SQLi and 
+so on even if you have some [vulnerable plugins]
 (https://wpvulndb.com/statistics "WordPress Vulnerability Statistics") 
 in your site. Because this is an experimental feature, please open an issue at 
 [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
@@ -284,11 +284,11 @@ Yes, here is the list of all hooks.
 
 For more details, see `samples.php` bundled within this package.
 
-= How does PZAP system prevent zero-day attak? =
+= How does ZEP system prevent zero-day attak? =
 
 After I read the [Sucuri Blog](http://blog.sucuri.net/ "Home | Sucuri Blog"), 
 I found that a considerable number of vulnerabilities in WordPress plugin lack 
-either the authentication and nonce, or both. So PZAP system will make up both 
+either the authentication and nonce, or both. So ZEP system will make up both 
 of them on the admin screen when you are logged in.
 
 This simple system will protect your dashboard from attack such as Arbitrary 
@@ -296,9 +296,9 @@ File Uploading, SQL injection (SQLi), Cross Site Request Forgeries (CSRF) and
 etc through `wp-admin/admin-{ajax|post}.php`. But it's incapable of preventing 
 Privilege Escalation (PE) and Cross Site Scripting (XSS).
 
-= Admin Ajax doesn't work when PZAP is on. =
+= Admin Ajax doesn't work when ZEP is on. =
 
-PZAP will embed a nonce into the admin screen pages and will add it to the ajax 
+ZEP will embed a nonce into the admin screen pages and will add it to the ajax 
 request using `.ajaxSend()` when jQuery ajax is triggered. This process depends 
 on the jQuery file. So at first, please check HTML src and the loading order of 
 jQuery file and `wp-content/plugins/ip-geo-block/admin/js/auth-nonce.js`.
@@ -310,7 +310,7 @@ type is `application/x-www-form-urlencoded` or `multipart/form-data`.
 If it's OK, then please let me know about your plugin which send that request 
 at the support forum.
 
-= I want to use only PZAP. =
+= I want to use only ZEP. =
 
 Uncheck the `Comment post`, `XML-RPC`, `Login form`, `Admin area` and select
  `Prevent zero-day attack` for `Admin ajax/post` in `Validation settings` on

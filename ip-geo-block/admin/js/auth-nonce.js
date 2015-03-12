@@ -1,7 +1,6 @@
 /**
- * PZAP - Prevention of Zero-day exploit via admin Ajax and Post
+ * ZEP - Zero-day exploit Prevention for admin ajax and post
  *
- * <meta name="ip-geo-block-auth-nonce" content="..." />
  */
 (function ($) {
 	// http://tools.ietf.org/html/rfc2396#appendix-B
