@@ -295,7 +295,7 @@ File Uploading, SQL injection (SQLi), Cross Site Request Forgeries (CSRF) and
 etc through `wp-admin/admin-{ajax|post}.php`. But it's incapable of preventing 
 Privilege Escalation (PE) and Cross Site Scripting (XSS).
 
-= Admin Ajax doesn't work when DZAP is on =
+= Admin Ajax doesn't work when DZAP is on. =
 
 DZAP will embed a nonce into the admin screen pages and will add it to the ajax 
 request using `.ajaxSend()` when jQuery ajax is triggered. This process depends 
@@ -308,6 +308,15 @@ firebug or Chrome developer tools. The supported content type is
 
 If it's OK, then please let me know about your plugin which send that request 
 at the support forum.
+
+= I want to use only DZAP. =
+
+Uncheck the `Comment post`, `XML-RPC`, `Login form`, `Admin area` and select 
+ `Prevent zero-day attack` for `Admin ajax/post` in `Validation settings` on 
+ `Setting` tab.
+
+And then empty the textfield of `White list` or `Black list` according to the 
+ `Matching rule`.
 
 == Other Notes ==
 

@@ -300,6 +300,15 @@ firebug or Chrome developer tools. Currently, the supported content type is
 If it's OK, then please let me know about your plugin which send that request 
 at the support forum.
 
+= I want to use only DZAP. =
+
+Uncheck the `Comment post`, `XML-RPC`, `Login form`, `Admin area` and select 
+ `Prevent zero-day attack` for `Admin ajax/post` in `Validation settings` on 
+ `Setting` tab.
+
+And then empty the textfield of `White list` or `Black list` according to the 
+ `Matching rule`.
+
 ### Other Notes:
 
 After installing these IP2Location plugins, you should be once deactivated 
