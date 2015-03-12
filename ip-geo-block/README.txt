@@ -18,8 +18,8 @@ that contaminated files are uploaded via FTP or some kind of uploaders.
 In this case, scaning and verifing integrity of files in your site is useful 
 to detect the infection.
 
-The second one is the cracking of the login password. In this case, the rule 
-of right is to strengthen the password.
+The second one is the cracking of the login username and password. In this 
+case, the rule of right is to strengthen the password.
 
 The third one is caused by malicious access to the core files. The major issue 
 in this case is that a plugin or theme in your site can potentially have some 
@@ -58,11 +58,11 @@ against the brute-force and the reverse-brute-force attacks, the number of
 login attempts will be limited per IP address. This feature is independent 
 of the country code.
 
-3. The original new feature '**D**efence against **Z**ero-day attack via admin 
-**A**jax and **P**ost' (DZAP) system is now available to block malicious 
-access to `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` regardless 
-of the country code. It will prevent certain types of attack such as CSRF, SQLi 
-and so on even if you have some [vulnerable plugins]
+3. The original new feature '**P**revention of **Z**ero-day exploits via admin 
+**A**jax and **P**ost' (PZAP) system is now available to block malicious 
+access to `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` besides the 
+country code. It will protect against certain types of attack such as CSRF, 
+SQLi and so on even if you have some [vulnerable plugins]
 (https://wpvulndb.com/statistics "WordPress Vulnerability Statistics") 
 in your site. Because this is an experimental feature, please open an issue at 
 [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
@@ -239,7 +239,8 @@ Add the following codes to `functions.php` in your theme and upload it via FTP.
 add_filter( 'ip-geo-block-login', 'my_emergency' );
 add_filter( 'ip-geo-block-admin', 'my_emergency' );`
 
-And then `Clear statistics` at `Statistics` tab on your dashborad.
+And `Clear statistics` at `Statistics` tab on your dashborad. Then you can 
+remove above codes.
 
 = How can I protect my `wp-config.php` against malicious access? =
 
@@ -283,11 +284,11 @@ Yes, here is the list of all hooks.
 
 For more details, see `samples.php` bundled within this package.
 
-= How does DZAP system defend zero-day attak? =
+= How does PZAP system prevent zero-day attak? =
 
 After I read the [Sucuri Blog](http://blog.sucuri.net/ "Home | Sucuri Blog"), 
 I found that a considerable number of vulnerabilities in WordPress plugin lack 
-either the authentication and nonce or both. So DZAP system will make up both 
+either the authentication and nonce, or both. So PZAP system will make up both 
 of them on the admin screen when you are logged in.
 
 This simple system will protect your dashboard from attack such as Arbitrary 
@@ -295,27 +296,27 @@ File Uploading, SQL injection (SQLi), Cross Site Request Forgeries (CSRF) and
 etc through `wp-admin/admin-{ajax|post}.php`. But it's incapable of preventing 
 Privilege Escalation (PE) and Cross Site Scripting (XSS).
 
-= Admin Ajax doesn't work when DZAP is on. =
+= Admin Ajax doesn't work when PZAP is on. =
 
-DZAP will embed a nonce into the admin screen pages and will add it to the ajax 
+PZAP will embed a nonce into the admin screen pages and will add it to the ajax 
 request using `.ajaxSend()` when jQuery ajax is triggered. This process depends 
 on the jQuery file. So at first, please check HTML src and the loading order of 
 jQuery file and `wp-content/plugins/ip-geo-block/admin/js/auth-nonce.js`.
 
-If it's correct, please check `ip-geo-block-auth-nonce` in your ajax request by 
-firebug or Chrome developer tools. The supported content type is 
- `application/x-www-form-urlencoded` and `multipart/form-data`.
+If it's correct, please check `ip-geo-block-auth-nonce` parameter in your ajax 
+request by firebug or Chrome developer tools. Currently, the supported content 
+type is `application/x-www-form-urlencoded` or `multipart/form-data`.
 
 If it's OK, then please let me know about your plugin which send that request 
 at the support forum.
 
-= I want to use only DZAP. =
+= I want to use only PZAP. =
 
-Uncheck the `Comment post`, `XML-RPC`, `Login form`, `Admin area` and select 
- `Prevent zero-day attack` for `Admin ajax/post` in `Validation settings` on 
+Uncheck the `Comment post`, `XML-RPC`, `Login form`, `Admin area` and select
+ `Prevent zero-day attack` for `Admin ajax/post` in `Validation settings` on
  `Setting` tab.
 
-And then empty the textfield of `White list` or `Black list` according to the 
+And then empty the textfield of `White list` or `Black list` according to the
  `Matching rule`.
 
 == Other Notes ==
@@ -341,8 +342,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.3 =
-* **New feature:** Added defence against zero-day attack via admin ajax and 
-  post. Because this is an experimental feature, please open a new issue at 
+* **New feature:** Added 'Prevention of Zero-day attack via admin Ajax and 
+  Post'. Because it is an experimental feature, please open a new issue at 
   [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles with it.
 * Also added filter hook `ip-geo-block-admin-actions` for safe actions of 

@@ -1,5 +1,5 @@
 /**
- * DZAP - Defence of Zero-day Attack for Admin Ajax/Post
+ * PZAP - Prevention of Zero-day exploit via admin Ajax and Post
  *
  * <meta name="ip-geo-block-auth-nonce" content="..." />
  */

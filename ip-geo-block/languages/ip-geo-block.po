@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 2.0.3\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
 "POT-Creation-Date: 2015-03-07 13:50+0900\n"
-"PO-Revision-Date: 2015-03-07 15:24+0900\n"
+"PO-Revision-Date: 2015-03-12 22:05+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -192,7 +192,7 @@ msgid "Disable"
 msgstr ""
 
 #: admin/includes/tab-settings.php:129
-msgid "Prevent zero-day attack"
+msgid "Prevent zero-day exploit"
 msgstr ""
 
 #: admin/includes/tab-settings.php:131

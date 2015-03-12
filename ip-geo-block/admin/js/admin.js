@@ -204,7 +204,7 @@ var start = new Date();
 		});
 	}
 
-	// Show/Hide description of DZAP
+	// Show/Hide description of PZAP
 	function show_ajax_description() {
 		if ( 2 == $('#ip_geo_block_settings_validation_ajax').val() ) {
 			$('#ip-geo-block-admin-ajax-desc').show();
@@ -292,7 +292,7 @@ var start = new Date();
 			return false;
 		});
 
-		// Show/Hide description of DZAP
+		// Show/Hide description of PZAP
 		show_ajax_description();
 		$('#ip_geo_block_settings_validation_ajax').on('click', function (event) {
 			show_ajax_description();

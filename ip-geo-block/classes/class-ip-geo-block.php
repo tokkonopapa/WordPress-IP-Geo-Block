@@ -84,7 +84,7 @@ class IP_Geo_Block {
 
 		// Load authenticated nonce
 		if ( is_user_logged_in() ) {
-			add_action( 'wp_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ) );
+			add_action( 'wp_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ), 1 );
 		}
 	}
 
@@ -526,11 +526,12 @@ class IP_Geo_Block {
 
 		// check authenticated nonce
 		if ( 2 === $settings['validation']['ajax'] ) {
-			$login = is_user_logged_in();
+			// exclude safe admin actions
+			$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
+				'upload-attachment', // wp-admin/async-upload.php
+			) );
 
-			// exclude safe admin actions (default: wp-admin/async-upload.php)
-			$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array( 'upload-attachment' ) );
-			if ( $login && in_array( $action, $admin_actions ) )
+			if ( ( $login = is_user_logged_in() ) && in_array( $action, $admin_actions ) )
 				return $validate; // still potentially be blocked by country code
 
 			$action = self::PLUGIN_SLUG . '-auth-nonce';
@@ -588,8 +589,7 @@ class IP_Geo_Block {
 		self::schedule_cron_job( $settings['update'], $settings['maxmind'] );
 
 		// update only the portion related to Maxmind
-		if ( $only )
-			$settings[ $only ] = TRUE;
+		if ( $only ) $settings[ $only ] = TRUE;
 
 		// update option settings
 		update_option( self::$option_keys['settings'], $settings );

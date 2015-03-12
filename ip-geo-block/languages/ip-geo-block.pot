@@ -192,7 +192,7 @@ msgid "Disable"
 msgstr ""
 
 #: admin/includes/tab-settings.php:129
-msgid "Prevent zero-day attack"
+msgid "Prevent zero-day exploit"
 msgstr ""
 
 #: admin/includes/tab-settings.php:131

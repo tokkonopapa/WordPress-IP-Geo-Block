@@ -124,9 +124,9 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => 'ajax',
 			'value' => $options[ $field ]['ajax'],
 			'list' => array(
-				__( 'Disable',                 IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Enable',                  IP_Geo_Block::TEXT_DOMAIN ) => 1,
-				__( 'Prevent zero-day attack', IP_Geo_Block::TEXT_DOMAIN ) => 2,
+				__( 'Disable',                  IP_Geo_Block::TEXT_DOMAIN ) => 0,
+				__( 'Enable',                   IP_Geo_Block::TEXT_DOMAIN ) => 1,
+				__( 'Prevent zero-day exploit', IP_Geo_Block::TEXT_DOMAIN ) => 2,
 			),
 			'after' => '<div style="display:none" id="ip-geo-block-admin-ajax-desc">' . __( 'It will block a malicious request via Admin ajax/post regardless of the country code. This is an experimental feature. If you have any troubles with it, please open a new issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a>.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
 		)
