@@ -9,14 +9,14 @@ that contaminated files are uploaded via FTP or some kind of uploaders.
 In this case, scaning and verifing integrity of files in your site is useful 
 to detect the infection.
 
-The second one is the cracking of the login username and password. In this 
-case, the rule of right is to strengthen the password.
+The second one is cracking of the login username and password. In this case, 
+the rule of right is to strengthen the password.
 
 The third one is caused by malicious access to the core files. The major issue 
 in this case is that a plugin or theme in your site can potentially have some 
 vulnerability such as XSS, CSRF, SQLi, LFI and so on. For example, if a plugin 
 has vulnerability of Local File Inclusion (LFI), the attackers can easily 
-download the `wp-config.php` without knowing the username and the password by 
+download the `wp-config.php` without knowing the username and password by 
 simply hitting 
     [wp-admin/admin-ajax.php?action=something-vulnerable&file=../wp-config.php]
     (http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html
@@ -33,8 +33,8 @@ That's why this plugin is here.
 ### Features:
 
 This plugin will examine a country code based on the IP address. If a comment, 
-pingback or trackback comes from specific country, it will be blocked before 
-Akismet validate it.
+pingback or trackback comes from the specific country, it will be blocked 
+before Akismet validate it.
 
 With the same mechanism, it will fight against burst access of brute-force 
 and reverse-brute-force attacks to the login form, XML-RPC and admin area.
@@ -275,31 +275,33 @@ Yes, here is the list of all hooks.
 
 For more details, see `samples.php` bundled within this package.
 
-#### How does ZEP system prevent zero-day attak? ####
+#### How does ZEP for admin ajax and post prevent zero-day attack? ####
 
-After I read the [Sucuri Blog](http://blog.sucuri.net/ "Home | Sucuri Blog"), 
-I found that a considerable number of vulnerabilities in WordPress plugin lack 
-either the authentication and nonce, or both. So ZEP system will make up both 
-of them on the admin screen when you are logged in.
+After reading the [Sucuri Blog](http://blog.sucuri.net/ "Home | Sucuri Blog"), 
+I found that a considerable number of vulnerabilities lack either the nonce and 
+authentication, or both. So ZEP system will make up both of them on the admin 
+screen. It affects the request only to the back-end.
 
 This simple system will protect your dashboard from attack such as Arbitrary 
 File Uploading, SQL injection (SQLi), Cross Site Request Forgeries (CSRF) and 
 etc through `wp-admin/admin-{ajax|post}.php`. But it's incapable of preventing 
 Privilege Escalation (PE).
 
-#### Admin Ajax doesn't work when ZEP is on. ####
+#### Admin Ajax/Post doesn't work when ZEP is on. ####
 
 ZEP will embed a nonce into the admin screen pages and will add it to the ajax 
-request using `.ajaxSend()` when jQuery ajax is triggered. This process depends 
-on the jQuery file. So at first, please check HTML src and the loading order of 
-jQuery file and `wp-content/plugins/ip-geo-block/admin/js/auth-nonce.js`.
+request via jQuery. So at first, please check the request comes from jQuery.
+If not (for example, from flash), add the name of action into the safe action 
+list through the filter hook `ip-geo-block-admin-actions`.
+
+If the request comes from jQuery, then see the HTML src to check loading order 
+of jQuery file and `wp-content/plugins/ip-geo-block/admin/js/auth-nonce.js`.
 
 If it's correct, please check `ip-geo-block-auth-nonce` parameter in your ajax 
 request by firebug or Chrome developer tools. Currently, the supported content 
 type is `application/x-www-form-urlencoded` or `multipart/form-data`.
 
-If it's OK, then please let me know about your plugin which send that request 
-at the support forum.
+If it's OK, then please let me know about your plugin at the support forum.
 
 #### I want to use only ZEP. ####
 
@@ -329,8 +331,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
       post'. Because it is an experimental feature, please open a new issue at 
       [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
       if you have any troubles with it.
-    - Also added filter hook `ip-geo-block-admin-actions` for safe actions of 
-      `wp-admin/admin-{ajax|post}.php` on back-end.
+    - Also added the filter hook `ip-geo-block-admin-actions` for safe actions 
+      of `wp-admin/admin-{ajax|post}.php` on back-end.
 - 2.0.2
     - **New feature:** Include `wp-admin/admin-post.php` as a validation target 
       in the `Admin Area`. This feature is to protect against a vulnerability 

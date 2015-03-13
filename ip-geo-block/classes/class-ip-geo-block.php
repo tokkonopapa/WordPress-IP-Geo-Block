@@ -104,8 +104,7 @@ class IP_Geo_Block {
 			array( 'jquery' ), IP_Geo_Block::VERSION
 		);
 
-		wp_localize_script( $handle,
-			'IP_GEO_AUTH',
+		wp_localize_script( $handle, 'IP_GEO_AUTH',
 			array( 'nonce' => wp_create_nonce( $handle ) )
 		);
 	}
@@ -459,7 +458,7 @@ class IP_Geo_Block {
 
 	public function validate_admin( $something ) {
 		if ( $this->is_ajax() )
-			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'ajax_check' ), 10, 2 );
+			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_action' ), 10, 2 );
 
 		$this->validate_ip(
 			defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ? 'xmlrpc' : 'admin',
@@ -511,10 +510,10 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * validate requested queries via admin-ajax.php
+	 * validate requested queries via admin-{ajax|post}.php
 	 *
 	 */
-	public function ajax_check( $validate, $settings ) {
+	public function check_action( $validate, $settings ) {
 		// check actions for user who has no privilege
 		global $wp_filter;
 		$action = $_REQUEST['action'];
@@ -589,7 +588,8 @@ class IP_Geo_Block {
 		self::schedule_cron_job( $settings['update'], $settings['maxmind'] );
 
 		// update only the portion related to Maxmind
-		if ( $only ) $settings[ $only ] = TRUE;
+		if ( $only )
+			$settings[ $only ] = TRUE;
 
 		// update option settings
 		update_option( self::$option_keys['settings'], $settings );
