@@ -294,7 +294,7 @@ var start = new Date();
 
 		// Show/Hide description of ZEP
 		show_ajax_description();
-		$('#ip_geo_block_settings_validation_ajax').on('click', function (event) {
+		$('#ip_geo_block_settings_validation_ajax').on('change', function (event) {
 			show_ajax_description();
 		});
 	});
