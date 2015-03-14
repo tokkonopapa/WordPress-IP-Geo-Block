@@ -83,9 +83,8 @@ class IP_Geo_Block {
 			add_action( 'admin_init', array( $this, 'validate_admin' ) );
 
 		// Load authenticated nonce
-		if ( is_user_logged_in() ) {
+		if ( is_user_logged_in() )
 			add_action( 'wp_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ), 1 );
-		}
 	}
 
 	// check admin-ajax.php or admin-post.php
@@ -334,7 +333,7 @@ class IP_Geo_Block {
 	 * Send response header with http code.
 	 *
 	 */
-	private function send_response( $code, $msg ) {
+	private function send_response( $code ) {
 		nocache_headers(); // nocache and response code
 		switch ( (int)substr( "$code", 0, 1 ) ) {
 		  case 2: // 2xx Success
@@ -347,7 +346,9 @@ class IP_Geo_Block {
 
 		  case 4: // 4xx Client Error ('text/html' is only for comment and login)
 			if ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) )
-				wp_die( $msg, 'Error', array( 'response' => $code, 'back_link' => TRUE ) );
+				wp_die( get_status_header_desc( $code ), '',
+					array( 'response' => $code, 'back_link' => TRUE )
+				);
 
 		  default: // 5xx Server Error
 			status_header( $code ); // @since 2.0.0
@@ -382,7 +383,7 @@ class IP_Geo_Block {
 		}
 
 		// check if the authentication has been already failed
-		$var = self::PLUGIN_SLUG . "-$hook";
+		$var = self::PLUGIN_SLUG . "-${hook}";
 		add_filter( $var, array( $this, 'auth_check' ), 10, 2 );
 
 		// apply custom filter of validation
@@ -428,11 +429,7 @@ class IP_Geo_Block {
 				$this->update_statistics( $validate );
 
 			// send response code to refuse
-			self::load_plugin_textdomain();
-			$this->send_response(
-				$settings['response_code'],
-				__( 'Sorry, but you cannot be accepted.', self::TEXT_DOMAIN )
-			);
+			$this->send_response( $settings['response_code'] );
 		}
 	}
 
@@ -457,12 +454,12 @@ class IP_Geo_Block {
 	}
 
 	public function validate_admin( $something ) {
-		if ( $this->is_ajax() )
+		$settings = self::get_option( 'settings' );
+		if ( $this->is_ajax() && (int)$settings['validation']['ajax'] === 2 )
 			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_action' ), 10, 2 );
 
 		$this->validate_ip(
-			defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ? 'xmlrpc' : 'admin',
-			self::get_option( 'settings' )
+			defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ? 'xmlrpc' : 'admin', $settings
 		);
 
 		return $something; // pass through
@@ -516,29 +513,26 @@ class IP_Geo_Block {
 	public function check_action( $validate, $settings ) {
 		// check actions for user who has no privilege
 		global $wp_filter;
-		$action = $_REQUEST['action'];
-		if ( isset( $wp_filter[ $action ] ) && (
-			strpos( $action, 'wp_ajax_nopriv_' ) === 0 ||
-			strpos( $action, "admin_post_nopriv_" ) === 0 ) ) {
+		$action = empty( $_REQUEST['action'] ) ? '' : $_REQUEST['action'];
+		if ( isset( $wp_filter[ "wp_ajax_nopriv_${action}"    ] ) ||
+		     isset( $wp_filter[ "admin_post_nopriv_${action}" ] ) ||
+		     isset( $wp_filter[ "admin_post_nopriv"           ] ) )
 			return $validate; // still potentially be blocked by country code
-		}
+
+		// exclude safe admin actions
+		$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
+			'upload-attachment', // wp-admin/async-upload.php
+		) );
+
+		$login = is_user_logged_in();
+		if ( $login && in_array( $action, $admin_actions ) )
+			return $validate; // still potentially be blocked by country code
 
 		// check authenticated nonce
-		if ( 2 === $settings['validation']['ajax'] ) {
-			// exclude safe admin actions
-			$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
-				'upload-attachment', // wp-admin/async-upload.php
-			) );
-
-			if ( ( $login = is_user_logged_in() ) && in_array( $action, $admin_actions ) )
-				return $validate; // still potentially be blocked by country code
-
-			$action = self::PLUGIN_SLUG . '-auth-nonce';
-			if ( ! $login || empty( $_REQUEST[ $action ] ) ||
-			     ! wp_verify_nonce( $_REQUEST[ $action ], $action ) ) {
-				$validate['result'] = 'blocked';
-			}
-		}
+		$action = self::PLUGIN_SLUG . '-auth-nonce';
+		if ( ! $login || empty( $_REQUEST[ $action ] ) ||
+		     ! wp_verify_nonce( $_REQUEST[ $action ], $action ) )
+			$validate['result'] = 'blocked';
 
 		return $validate;
 	}
