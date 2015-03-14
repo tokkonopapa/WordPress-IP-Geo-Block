@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.0.3\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-03-07 13:50+0900\n"
-"PO-Revision-Date: 2015-03-12 22:05+0900\n"
+"POT-Creation-Date: 2015-03-15 01:45+0900\n"
+"PO-Revision-Date: 2015-03-15 01:47+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,45 +25,45 @@ msgid ""
 "access to the admin area posted from outside your nation."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:84
+#: admin/class-ip-geo-block-admin.php:83
 msgid "You need WordPress 3.7+"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:173
-#: admin/class-ip-geo-block-admin.php:232
+#: admin/class-ip-geo-block-admin.php:150
+#: admin/class-ip-geo-block-admin.php:209
 msgid "Settings"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:187
+#: admin/class-ip-geo-block-admin.php:164
 msgid "Contribute at GitHub"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:204
-#: admin/class-ip-geo-block-admin.php:205
+#: admin/class-ip-geo-block-admin.php:181
+#: admin/class-ip-geo-block-admin.php:182
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:233
+#: admin/class-ip-geo-block-admin.php:210
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:234
+#: admin/class-ip-geo-block-admin.php:211
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:235
+#: admin/class-ip-geo-block-admin.php:212
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:236
+#: admin/class-ip-geo-block-admin.php:213
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:362 admin/includes/tab-settings.php:128
+#: admin/class-ip-geo-block-admin.php:339 admin/includes/tab-settings.php:128
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:512
+#: admin/class-ip-geo-block-admin.php:489
 msgid "Successfully updated"
 msgstr ""
 
@@ -411,10 +411,6 @@ msgstr ""
 msgid ""
 "Please set the proper condition to record and analyze the validation "
 "statistics."
-msgstr ""
-
-#: classes/class-ip-geo-block.php:414
-msgid "Sorry, but you cannot be accepted."
 msgstr ""
 
 #: includes/download.php:90
