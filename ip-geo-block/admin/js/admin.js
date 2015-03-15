@@ -205,11 +205,19 @@ var start = new Date();
 	}
 
 	// Show/Hide description of ZEP
+	function show_admin_description() {
+		if ( 2 == $('#ip_geo_block_settings_validation_admin').val() ) {
+			$('#ip-geo-block-admin-desc').show();
+		} else {
+			$('#ip-geo-block-admin-desc').hide();
+		}
+	}
+
 	function show_ajax_description() {
 		if ( 2 == $('#ip_geo_block_settings_validation_ajax').val() ) {
-			$('#ip-geo-block-admin-ajax-desc').show();
+			$('#ip-geo-block-ajax-desc').show();
 		} else {
-			$('#ip-geo-block-admin-ajax-desc').hide();
+			$('#ip-geo-block-ajax-desc').hide();
 		}
 	}
 
@@ -293,6 +301,10 @@ var start = new Date();
 		});
 
 		// Show/Hide description of ZEP
+		show_admin_description();
+		$('#ip_geo_block_settings_validation_admin').on('change', function (event) {
+			show_admin_description();
+		});
 		show_ajax_description();
 		$('#ip_geo_block_settings_validation_ajax').on('change', function (event) {
 			show_ajax_description();

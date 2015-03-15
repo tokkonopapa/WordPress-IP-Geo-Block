@@ -77,9 +77,7 @@ class IP_Geo_Block {
 		}
 
 		// wp-admin/{admin.php|admin-apax.php|admin-post.php} @since 2.5.0
-		$is_ajax = $this->is_ajax();
-		if ( ( ! $is_ajax && $settings['validation']['admin'] ) ||
-		     (   $is_ajax && $settings['validation']['ajax' ] ) )
+		if ( $settings['validation']['admin'] || $settings['validation']['ajax'] )
 			add_action( 'admin_init', array( $this, 'validate_admin' ) );
 
 		// Load authenticated nonce
@@ -87,16 +85,7 @@ class IP_Geo_Block {
 			add_action( 'wp_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ), 1 );
 	}
 
-	// check admin-ajax.php or admin-post.php
-	private function is_ajax() {
-		return ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ||
-		       ( strpos( basename( $_SERVER['REQUEST_URI'] ), 'admin-post.php' ) === 0 ) ? TRUE : FALSE;
-	}
-
-	/**
-	 * Register and enqueue admin-specific style sheet and JavaScript.
-	 *
-	 */
+	// Register and enqueue admin-specific style sheet and JavaScript.
 	public static function enqueue_nonce() {
 		wp_enqueue_script( $handle = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce',
 			plugins_url( 'admin/js/auth-nonce.js', IP_GEO_BLOCK_BASE ),
@@ -455,8 +444,25 @@ class IP_Geo_Block {
 
 	public function validate_admin( $something ) {
 		$settings = self::get_option( 'settings' );
-		if ( $this->is_ajax() && (int)$settings['validation']['ajax'] === 2 )
-			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_action' ), 10, 2 );
+		$action = empty( $_REQUEST['action'] ) ? '' : $_REQUEST['action'];
+		$req =
+			( defined( 'DOING_AJAX' ) && DOING_AJAX ) ||
+			( strpos( basename( $_SERVER['REQUEST_URI'] ), 'admin-post.php' ) === 0 )
+			? 'ajax' :
+			( strpos( basename( $_SERVER['REQUEST_URI'] ), 'admin.php' ) === 0 )
+			? 'admin' : NULL;
+		if (
+			// check request from wp-admin/admin.php?action=...
+			( 'admin' === $req && (int)$settings['validation'][ $req ] === 2 && $action ) ||
+
+			// check request from wp-admin/admin-{ajax|post}.php?action=...
+			( 'ajax'  === $req && (int)$settings['validation'][ $req ] === 2 &&
+			   ! has_action( "wp_ajax_nopriv_${action}"    ) &&
+			   ! has_action( "admin_post_nopriv_${action}" ) &&
+			   ! has_action( "admin_post_nopriv"           ) )
+		) {
+			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+		}
 
 		$this->validate_ip(
 			defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ? 'xmlrpc' : 'admin', $settings
@@ -510,22 +516,32 @@ class IP_Geo_Block {
 	 * validate requested queries via admin-{ajax|post}.php
 	 *
 	 */
-	public function check_action( $validate, $settings ) {
-		// check actions for user who has no privilege
-		global $wp_filter;
-		$action = empty( $_REQUEST['action'] ) ? '' : $_REQUEST['action'];
-		if ( isset( $wp_filter[ "wp_ajax_nopriv_${action}"    ] ) ||
-		     isset( $wp_filter[ "admin_post_nopriv_${action}" ] ) ||
-		     isset( $wp_filter[ "admin_post_nopriv"           ] ) )
-			return $validate; // still potentially be blocked by country code
-
-		// exclude safe admin actions
+	public function check_nonce( $validate, $settings ) {
+		// exclude core admin actions
 		$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
-			'upload-attachment', // wp-admin/async-upload.php
+			// $core_actions_get in wp-admin/admin-ajax.php
+			'fetch-list', 'ajax-tag-search', 'wp-compression-test', 'imgedit-preview', 'oembed-cache',
+			'autocomplete-user', 'dashboard-widgets', 'logged-in',
+
+			// $core_actions_post in wp-admin/admin-ajax.php
+			'oembed-cache', 'image-editor', 'delete-comment', 'delete-tag', 'delete-link',
+			'delete-meta', 'delete-post', 'trash-post', 'untrash-post', 'delete-page', 'dim-comment',
+			'add-link-category', 'add-tag', 'get-tagcloud', 'get-comments', 'replyto-comment',
+			'edit-comment', 'add-menu-item', 'add-meta', 'add-user', 'closed-postboxes',
+			'hidden-columns', 'update-welcome-panel', 'menu-get-metabox', 'wp-link-ajax',
+			'menu-locations-save', 'menu-quick-search', 'meta-box-order', 'get-permalink',
+			'sample-permalink', 'inline-save', 'inline-save-tax', 'find_posts', 'widgets-order',
+			'save-widget', 'set-post-thumbnail', 'date_format', 'time_format', 'wp-fullscreen-save-post',
+			'wp-remove-post-lock', 'dismiss-wp-pointer', 'upload-attachment', 'get-attachment',
+			'query-attachments', 'save-attachment', 'save-attachment-compat', 'send-link-to-editor',
+			'send-attachment-to-editor', 'save-attachment-order', 'heartbeat', 'get-revision-diffs',
+			'save-user-color-scheme', 'update-widget', 'query-themes', 'parse-embed', 'set-attachment-thumbnail',
+			'parse-media-shortcode', 'destroy-sessions',
 		) );
 
-		$login = is_user_logged_in();
-		if ( $login && in_array( $action, $admin_actions ) )
+		// check safe actions
+		$action = empty( $_REQUEST['action'] ) ? '' : $_REQUEST['action'];
+		if ( ( $login = is_user_logged_in() ) && in_array( $action, $admin_actions ) )
 			return $validate; // still potentially be blocked by country code
 
 		// check authenticated nonce

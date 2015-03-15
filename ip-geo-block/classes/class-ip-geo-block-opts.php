@@ -41,7 +41,7 @@ class IP_Geo_Block_Options {
 			'validation'      => array(   // Action hook for validation
 			    'comment'     => TRUE,    // Validate on comment post
 			    'login'       => FALSE,   // Validate on login
-			    'admin'       => FALSE,   // Validate on admin
+			    'admin'       => 0,       // Validate on admin
 			    'ajax'        => 0,       // Validate on admin ajax
 			    'xmlrpc'      => TRUE,    // Validate on xmlrpc
 			    'proxy'       => NULL,    // $_SERVER variables for IPs

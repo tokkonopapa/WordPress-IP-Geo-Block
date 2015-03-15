@@ -20,8 +20,13 @@
 	}
 
 	function is_admin(url) {
-		return url.indexOf('wp-admin/admin-ajax.php') >= 0 ||
-		       url.indexOf('wp-admin/admin-post.php') >= 0 ? true : false;
+		var admin = (
+//			url.indexOf('wp-admin'      ) >= 0 ||
+			url.indexOf('admin.php'     ) >= 0 ||
+			url.indexOf('admin-ajax.php') >= 0 ||
+			url.indexOf('admin-post.php') >= 0
+		) ? true : false;
+		return admin;
 	}
 
 	function query_args(uri, args) {
@@ -60,18 +65,20 @@
 	$(function () {
 		var nonce = IP_GEO_AUTH.nonce || null;
 		if (nonce) {
-//			$('a').on('click', function(event) {
-			$('a').each(function(index, elem) {
+			$('a').on('click', function(event) {
 				var href = $(this).attr('href');
 				if (is_admin(href)) {
 					var data, uri = uri = parse_uri(href);
 					data = uri.query ? uri.query.split('&') : [];
 					data.push('ip-geo-block-auth-nonce=' + encodeURIComponent(nonce));
-					$(this).attr('href', query_args(uri, data));
+					href = query_args(uri, data);
+					$(this).attr('href', href);
 				}
 			});
 
-			$('form').append('<input type="hidden" name="ip-geo-block-auth-nonce" value="' + nonce + '" />');
+			$('form').on('submit', function(event) {
+				$(this).append('<input type="hidden" name="ip-geo-block-auth-nonce" value="' + nonce + '" />');
+			});
 		}
 	});
 }(jQuery));
