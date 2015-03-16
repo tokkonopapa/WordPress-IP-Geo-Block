@@ -59,10 +59,10 @@ login attempts will be limited per IP address. This feature is independent
 of the country code.
 
 3. The original new feature '**Z**ero-day **E**xploit **P**revention for admin 
-ajax and post' (ZEP) system is now available to block malicious access to 
- `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` besides the country 
-code. It will protect against certain types of attack such as CSRF, SQLi and 
-so on even if you have some [vulnerable plugins]
+area' (ZEP) system is now available to block malicious access to 
+ `wp-admin/admin.php`, `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` 
+besides the country code. It will protect against certain types of attack such 
+as CSRF, SQLi and so on even if you have some [vulnerable plugins]
 (https://wpvulndb.com/statistics "WordPress Vulnerability Statistics") 
 in your site. Because this is an experimental feature, please open an issue at 
 [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
@@ -284,19 +284,20 @@ Yes, here is the list of all hooks.
 
 For more details, see `samples.php` bundled within this package.
 
-= How does ZEP for admin ajax and post prevent zero-day attack? =
+= How does ZEP for admin area prevent zero-day attack? =
 
-After reading the [Sucuri Blog](http://blog.sucuri.net/ "Home | Sucuri Blog"), 
-I found that a considerable number of vulnerabilities lack either the nonce and 
-authentication, or both. So ZEP system will make up both of them on the admin 
-screen. It affects the request only to the back-end.
+After reading the [Sucuri Blog](http://blog.sucuri.net/ "Home | Sucuri Blog") 
+widely, I found that a considerable number of vulnerable plugins are lacking 
+in validating either the nonce and authentication or both. So ZEP system will 
+make up both of them on the admin screen. It doesn't affects the ajax and post 
+request from the front-end.
 
 This simple system will protect your dashboard from attack such as Arbitrary 
 File Uploading, SQL injection (SQLi), Cross Site Request Forgeries (CSRF) and 
 etc through `wp-admin/admin-{ajax|post}.php`. But it's incapable of preventing 
 Privilege Escalation (PE).
 
-= Admin Ajax/Post doesn't work when ZEP is on. =
+= Some admin function doesn't work when ZEP is on. =
 
 ZEP will embed a nonce into the admin screen pages and will add it to the ajax 
 request via jQuery. So at first, please check the request comes from jQuery.
@@ -314,11 +315,11 @@ If it's OK, then please let me know about your plugin at the support forum.
 
 = I want to use only ZEP. =
 
-Uncheck the `Comment post`, `XML-RPC`, `Login form`, `Admin area` and select
- `Prevent zero-day attack` for `Admin ajax/post` in `Validation settings` on
- `Setting` tab.
+Uncheck the `Comment post`, `XML-RPC` and `Login form` in `Validation settings` 
+on `Setting` tab. And select `Prevent zero-day attack` for `Admin area` and 
+ `Admin ajax/post`
 
-And then empty the textfield of `White list` or `Black list` according to the
+Then empty the textfield of `White list` or `Black list` according to the
  `Matching rule`.
 
 == Other Notes ==
@@ -344,18 +345,20 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.3 =
-* **New feature:** Added 'Zero-day exploit Prevention for admin ajax and 
-  post'. Because it is an experimental feature, please open a new issue at 
-  [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
+* **New feature:** Added 'Zero-day exploit Prevention for admin area'.
+  Because it is an experimental feature, please open a new issue at 
+  [support forum](https://wordpress.org/support/plugin/ip-geo-block
+  "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles with it.
 * Also added the filter hook `ip-geo-block-admin-actions` for safe actions 
-  of `wp-admin/admin-{ajax|post}.php` on back-end.
+  of `wp-admin/admin.php` and `admin-{ajax|post}.php` on back-end.
 
 = 2.0.2 =
 * **New feature:** Include `wp-admin/admin-post.php` as a validation target 
   in the `Admin Area`. This feature is to protect against a vulnerability 
   such as 
-  [Analysis of the Fancybox-For-WordPress Vulnerability](http://blog.sucuri.net/2015/02/analysis-of-the-fancybox-for-wordpress-vulnerability.html)
+  [Analysis of the Fancybox-For-WordPress Vulnerability]
+  (http://blog.sucuri.net/2015/02/analysis-of-the-fancybox-for-wordpress-vulnerability.html)
   on Sucuri Blog.
 * Added a sample code snippet as a use case for 'Give ajax permission in 
   case of safe actions on front facing page'. See Example 10 in `sample.php`.
