@@ -1,5 +1,5 @@
 /**
- * ZEP - Zero-day exploit Prevention for admin ajax and post
+ * ZEP - Zero-day exploit Prevention for admin area
  *
  */
 (function ($) {

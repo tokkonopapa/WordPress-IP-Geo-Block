@@ -326,21 +326,21 @@ class IP_Geo_Block {
 		nocache_headers(); // nocache and response code
 		switch ( (int)substr( "$code", 0, 1 ) ) {
 		  case 2: // 2xx Success
-			header( 'Refresh: 0; url=' . home_url(), TRUE, $code ); // @since 3.0
+			header( 'Refresh: 0; url=' . home_url(), TRUE, (int)$code ); // @since 3.0
 			die();
 
 		  case 3: // 3xx Redirection
-			header( 'Location: http://blackhole.webpagetest.org/', TRUE, $code );
+			header( 'Location: http://blackhole.webpagetest.org/', TRUE, (int)$code );
 			die();
 
 		  case 4: // 4xx Client Error ('text/html' is only for comment and login)
 			if ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) )
 				wp_die( get_status_header_desc( $code ), '',
-					array( 'response' => $code, 'back_link' => TRUE )
+					array( 'response' => (int)$code, 'back_link' => TRUE )
 				);
 
 		  default: // 5xx Server Error
-			status_header( $code ); // @since 2.0.0
+			status_header( (int)$code ); // @since 2.0.0
 			die();
 		}
 	}
@@ -445,21 +445,19 @@ class IP_Geo_Block {
 	public function validate_admin( $something ) {
 		$settings = self::get_option( 'settings' );
 		$action = empty( $_REQUEST['action'] ) ? '' : $_REQUEST['action'];
-		$req =
-			( defined( 'DOING_AJAX' ) && DOING_AJAX ) ||
-			( strpos( basename( $_SERVER['REQUEST_URI'] ), 'admin-post.php' ) === 0 )
-			? 'ajax' :
-			( strpos( basename( $_SERVER['REQUEST_URI'] ), 'admin.php' ) === 0 )
-			? 'admin' : NULL;
+		$req = basename( $_SERVER['REQUEST_URI'] );
+		$req = ( defined( 'DOING_AJAX' ) && DOING_AJAX  ) ? 'ajax'  : 
+		       ( strpos( $req, 'admin-post.php' ) === 0 ) ? 'ajax'  :
+		       ( strpos( $req, 'admin.php'      ) === 0 ) ? 'admin' : NULL;
 		if (
 			// check request from wp-admin/admin.php?action=...
 			( 'admin' === $req && (int)$settings['validation'][ $req ] === 2 && $action ) ||
 
 			// check request from wp-admin/admin-{ajax|post}.php?action=...
 			( 'ajax'  === $req && (int)$settings['validation'][ $req ] === 2 &&
-			   ! has_action( "wp_ajax_nopriv_${action}"    ) &&
-			   ! has_action( "admin_post_nopriv_${action}" ) &&
-			   ! has_action( "admin_post_nopriv"           ) )
+			  ! has_action( "wp_ajax_nopriv_${action}"    ) &&
+			  ! has_action( "admin_post_nopriv_${action}" ) &&
+			  ! has_action( "admin_post_nopriv"           ) )
 		) {
 			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 		}
