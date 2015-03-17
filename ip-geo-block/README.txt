@@ -310,27 +310,27 @@ preventing the vulnerability of Privilege Escalation (PE).
 
 = Some admin function doesn't work when WP-ZEP is on. =
 
-WP-ZEP will embed a nonce into the admin screen pages and will add it to the 
+WP-ZEP will embed a nonce into the every admin screen and will add it to the 
 link, form and ajax request from jQuery. So at first, please check the request 
 comes from those. If not (for example, from flash), add the name of action into 
 the safe action list through the filter hook `ip-geo-block-admin-actions`.
 
-If the request comes from jQuery, then see the HTML src to check loading order 
+If the request comes from jQuery, then check the HTML and the loading order 
 of jQuery file and `wp-content/plugins/ip-geo-block/admin/js/auth-nonce.js`.
 
 If it's correct, please check `ip-geo-block-auth-nonce` parameter in your ajax 
 request using firebug or Chrome developer tools. Currently, the supported 
 content type is `application/x-www-form-urlencoded` or `multipart/form-data`.
 
-If it's OK, then please let me know about your plugin at the support forum.
+If it's OK, please let me know about your plugin at the support forum.
 
 = I want to use only WP-ZEP. =
 
 Uncheck the `Comment post`, `XML-RPC` and `Login form` in `Validation settings` 
-on `Setting` tab. And select `Prevent zero-day attack` for `Admin area` and 
+on `Setting` tab. And select `Prevent zero-day exploit` for `Admin area` and 
  `Admin ajax/post`
 
-Then empty the textfield of `White list` or `Black list` according to the
+At last empty the textfield of `White list` or `Black list` according to the 
  `Matching rule`.
 
 == Other Notes ==
