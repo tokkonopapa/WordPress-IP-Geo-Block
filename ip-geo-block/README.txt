@@ -296,18 +296,24 @@ request from the front-end.
 This simple system will protect your dashboard from attack such as Arbitrary 
 File Uploading, SQL injection (SQLi), Cross Site Request Forgeries (CSRF) and 
 etc through `wp-admin/admin.php` and `wp-admin/admin-{ajax|post}.php` with a 
-query parameter `action`. It means that a request such as 
- `wp-admin/admin.php?action=...` will be validated but 
- `wp-admin/admin.php?page=...` will not.
+query parameter `action`.
 
-And also it's incapable of preventing Privilege Escalation (PE).
+It means that a request such as 
+ `wp-admin/admin.php?action=do-something` will be validated but 
+ `wp-admin/admin.php?page=show-something` will not.
+
+Even in the former, there are a few limitations that WP-ZEP would not work.
+One is redirection at server side (by PHP or `.htaccess`) and client side 
+(by location object of JavaScript). Another is that this plugin can not 
+decide capabilities such as `manage_options`. So it's incapable of 
+preventing the vulnerability of Privilege Escalation (PE).
 
 = Some admin function doesn't work when WP-ZEP is on. =
 
 WP-ZEP will embed a nonce into the admin screen pages and will add it to the 
-ajax request via jQuery. So at first, please check the request comes from 
-jQuery. If not (for example, from flash), add the name of action into the safe 
-action list through the filter hook `ip-geo-block-admin-actions`.
+link, form and ajax request from jQuery. So at first, please check the request 
+comes from those. If not (for example, from flash), add the name of action into 
+the safe action list through the filter hook `ip-geo-block-admin-actions`.
 
 If the request comes from jQuery, then see the HTML src to check loading order 
 of jQuery file and `wp-content/plugins/ip-geo-block/admin/js/auth-nonce.js`.
