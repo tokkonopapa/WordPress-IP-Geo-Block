@@ -1,11 +1,11 @@
 /**
- * ZEP - Zero-day exploit Prevention for admin area
+ * WP-ZEP - Zero-day exploit Prevention for wp-admin
  *
  */
 (function ($) {
-	// http://tools.ietf.org/html/rfc2396#appendix-B
 	function parse_uri(uri) {
 		var m = uri.match(
+			// http://tools.ietf.org/html/rfc2396#appendix-B
 			/^(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/
 		);
 
@@ -49,7 +49,7 @@
 				// GET    query query      data
 				// POST   query query      data
 				var data, uri = parse_uri(settings.url);
-				if (typeof settings.data === 'undefined' || uri.query) {
+				if ((typeof settings.data === 'undefined') || uri.query) {
 					data = uri.query ? uri.query.split('&') : [];
 					data.push('ip-geo-block-auth-nonce=' + encodeURIComponent(nonce));
 					settings.url = query_args(uri, data);
@@ -65,10 +65,10 @@
 	$(function () {
 		var nonce = IP_GEO_AUTH.nonce || null;
 		if (nonce) {
-			$('a').on('click', function(event) {
+			$('a').on('click', function (event) {
 				var href = $(this).attr('href');
 				if (is_admin(href)) {
-					var data, uri = uri = parse_uri(href);
+					var data, uri = parse_uri(href);
 					data = uri.query ? uri.query.split('&') : [];
 					data.push('ip-geo-block-auth-nonce=' + encodeURIComponent(nonce));
 					href = query_args(uri, data);
@@ -76,7 +76,7 @@
 				}
 			});
 
-			$('form').on('submit', function(event) {
+			$('form').on('submit', function (event) {
 				$(this).append('<input type="hidden" name="ip-geo-block-auth-nonce" value="' + nonce + '" />');
 			});
 		}

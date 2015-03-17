@@ -204,7 +204,7 @@ var start = new Date();
 		});
 	}
 
-	// Show/Hide description of ZEP
+	// Show/Hide description of WP-ZEP
 	function show_admin_description() {
 		if ( 2 == $('#ip_geo_block_settings_validation_admin').val() ) {
 			$('#ip-geo-block-admin-desc').show();
@@ -300,7 +300,7 @@ var start = new Date();
 			return false;
 		});
 
-		// Show/Hide description of ZEP
+		// Show/Hide description of WP-ZEP
 		show_admin_description();
 		$('#ip_geo_block_settings_validation_admin').on('change', function (event) {
 			show_admin_description();
