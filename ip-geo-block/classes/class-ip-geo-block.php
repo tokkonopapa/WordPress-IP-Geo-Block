@@ -330,7 +330,7 @@ class IP_Geo_Block {
 			die();
 
 		  case 3: // 3xx Redirection
-			header( 'Location: http://blackhole.webpagetest.org/', TRUE, (int)$code );
+			wp_redirect( 'http://blackhole.webpagetest.org/', (int)$code );
 			die();
 
 		  case 4: // 4xx Client Error ('text/html' is only for comment and login)
@@ -365,7 +365,7 @@ class IP_Geo_Block {
 				foreach ( explode( ',', $_SERVER[ $var ] ) as $ip ) {
 					if ( ! in_array( $ip = trim( $ip ), $ips ) &&
 					     filter_var( $ip, FILTER_VALIDATE_IP ) ) {
-						$ips[] = $ip;
+						$ips = array( $ip ) + $ips;
 					}
 				}
 			}
@@ -445,16 +445,16 @@ class IP_Geo_Block {
 	public function validate_admin( $something ) {
 		$settings = self::get_option( 'settings' );
 		$action = empty( $_REQUEST['action'] ) ? '' : $_REQUEST['action'];
-		$req = basename( $_SERVER['REQUEST_URI'] );
-		$req = ( defined( 'DOING_AJAX' ) && DOING_AJAX  ) ? 'ajax'  : 
-		       ( strpos( $req, 'admin-post.php' ) === 0 ) ? 'ajax'  :
-		       ( strpos( $req, 'admin.php'      ) === 0 ) ? 'admin' : NULL;
+		global $pagenow; // http://codex.wordpress.org/Global_Variables
+		$req = $pagenow === 'admin-ajax.php' ? 'ajax'  :
+		       $pagenow === 'admin-post.php' ? 'ajax'  :
+		       $pagenow === 'admin.php'      ? 'admin' : NULL;
 		if (
 			// check request from wp-admin/admin.php?action=...
-			( 'admin' === $req && (int)$settings['validation'][ $req ] === 2 && $action ) ||
+			( 'admin' === $req && $settings['validation'][ $req ] == 2 && $action ) ||
 
 			// check request from wp-admin/admin-{ajax|post}.php?action=...
-			( 'ajax'  === $req && (int)$settings['validation'][ $req ] === 2 &&
+			( 'ajax'  === $req && $settings['validation'][ $req ] == 2 &&
 			  ! has_action( "wp_ajax_nopriv_${action}"    ) &&
 			  ! has_action( "admin_post_nopriv_${action}" ) &&
 			  ! has_action( "admin_post_nopriv"           ) )
@@ -515,7 +515,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_nonce( $validate, $settings ) {
-		// exclude core admin actions
+		// exclude core admin actions (this list is apparently over-specifications)
 		$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
 			// $core_actions_get in wp-admin/admin-ajax.php
 			'fetch-list', 'ajax-tag-search', 'wp-compression-test', 'imgedit-preview', 'oembed-cache',
