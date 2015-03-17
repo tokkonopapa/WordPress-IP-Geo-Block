@@ -58,16 +58,17 @@ against the brute-force and the reverse-brute-force attacks, the number of
 login attempts will be limited per IP address. This feature is independent 
 of the country code.
 
-3. The original new feature '**Z**ero-day **E**xploit **P**revention for admin 
-area' (ZEP) system is now available to block malicious access to 
- `wp-admin/admin.php`, `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` 
-besides the country code. It will protect against certain types of attack such 
-as CSRF, SQLi and so on even if you have some [vulnerable plugins]
-(https://wpvulndb.com/statistics "WordPress Vulnerability Statistics") 
-in your site. Because this is an experimental feature, please open an issue at 
-[support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
-if you have any troubles. I will be profoundly grateful your contribution to 
-improved this function.
+3. Besides the country code, the original new feature '**Z**ero-day 
+**E**xploit **P**revention for wp-admin' (WP-ZEP) is now available to block 
+malicious access to `wp-admin/admin.php`, `wp-admin/admin-ajax.php` and 
+ `wp-admin/admin-post.php`. It will protect against certain types of attack 
+such as CSRF, SQLi and so on even if you have some [vulnerable plugins]
+(https://wpvulndb.com/ "WPScan Vulnerability Database") in your site.
+Because this is an experimental feature, please open an issue at 
+[support forum](https://wordpress.org/support/plugin/ip-geo-block 
+"WordPress &#8250; Support &raquo; IP Geo Block")
+if you have any troubles. I'll be profoundly grateful your contribution to 
+improve this feature.
 
 4. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
  `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
@@ -162,7 +163,7 @@ All contributions will always be welcome.
 * **Admin area**  
     Validate access to `wp-admin/*.php` except `wp-admin/admin-{ajax|post}.php`.
 
-* **Admin Ajax**  
+* **Admin ajax/post**  
     Validate access to `wp-admin/admin-{ajax|post}.php`.
 
 * **Record validation statistics**  
@@ -239,8 +240,8 @@ Add the following codes to `functions.php` in your theme and upload it via FTP.
 add_filter( 'ip-geo-block-login', 'my_emergency' );
 add_filter( 'ip-geo-block-admin', 'my_emergency' );`
 
-And `Clear statistics` at `Statistics` tab on your dashborad. Then you can 
-remove above codes.
+Then `Clear statistics` at `Statistics` tab on your dashborad. After that, you 
+can remove above codes.
 
 = How can I protect my `wp-config.php` against malicious access? =
 
@@ -261,7 +262,7 @@ remove above codes.
         }
     }
 
-    return $validate;
+    return $validate; // should not set 'passed' to validate by country code
 }
 add_filter( 'ip-geo-block-admin', 'my_protectives' );`
 
@@ -284,36 +285,40 @@ Yes, here is the list of all hooks.
 
 For more details, see `samples.php` bundled within this package.
 
-= How does ZEP for admin area prevent zero-day attack? =
+= How does WP-ZEP prevent zero-day attack? =
 
 After reading the [Sucuri Blog](http://blog.sucuri.net/ "Home | Sucuri Blog") 
 widely, I found that a considerable number of vulnerable plugins are lacking 
-in validating either the nonce and authentication or both. So ZEP system will 
-make up both of them on the admin screen. It doesn't affects the ajax and post 
+in validating either the nonce and authentication or both. So WP-ZEP will make 
+up both of them on the admin screen. It doesn't affects the ajax and post 
 request from the front-end.
 
 This simple system will protect your dashboard from attack such as Arbitrary 
 File Uploading, SQL injection (SQLi), Cross Site Request Forgeries (CSRF) and 
-etc through `wp-admin/admin-{ajax|post}.php`. But it's incapable of preventing 
-Privilege Escalation (PE).
+etc through `wp-admin/admin.php` and `wp-admin/admin-{ajax|post}.php` with a 
+query parameter `action`. It means that a request such as 
+ `wp-admin/admin.php?action=...` will be validated but 
+ `wp-admin/admin.php?page=...` will not.
 
-= Some admin function doesn't work when ZEP is on. =
+And also it's incapable of preventing Privilege Escalation (PE).
 
-ZEP will embed a nonce into the admin screen pages and will add it to the ajax 
-request via jQuery. So at first, please check the request comes from jQuery.
-If not (for example, from flash), add the name of action into the safe action 
-list through the filter hook `ip-geo-block-admin-actions`.
+= Some admin function doesn't work when WP-ZEP is on. =
+
+WP-ZEP will embed a nonce into the admin screen pages and will add it to the 
+ajax request via jQuery. So at first, please check the request comes from 
+jQuery. If not (for example, from flash), add the name of action into the safe 
+action list through the filter hook `ip-geo-block-admin-actions`.
 
 If the request comes from jQuery, then see the HTML src to check loading order 
 of jQuery file and `wp-content/plugins/ip-geo-block/admin/js/auth-nonce.js`.
 
 If it's correct, please check `ip-geo-block-auth-nonce` parameter in your ajax 
-request by firebug or Chrome developer tools. Currently, the supported content 
-type is `application/x-www-form-urlencoded` or `multipart/form-data`.
+request using firebug or Chrome developer tools. Currently, the supported 
+content type is `application/x-www-form-urlencoded` or `multipart/form-data`.
 
 If it's OK, then please let me know about your plugin at the support forum.
 
-= I want to use only ZEP. =
+= I want to use only WP-ZEP. =
 
 Uncheck the `Comment post`, `XML-RPC` and `Login form` in `Validation settings` 
 on `Setting` tab. And select `Prevent zero-day attack` for `Admin area` and 
@@ -345,17 +350,17 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.3 =
-* **New feature:** Added 'Zero-day exploit Prevention for admin area'.
+* **New feature:** Added 'Zero-day exploit Prevention for wp-admin'.
   Because it is an experimental feature, please open a new issue at 
   [support forum](https://wordpress.org/support/plugin/ip-geo-block
   "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles with it.
 * Also added the filter hook `ip-geo-block-admin-actions` for safe actions 
-  of `wp-admin/admin.php` and `admin-{ajax|post}.php` on back-end.
+  on back-end.
 
 = 2.0.2 =
 * **New feature:** Include `wp-admin/admin-post.php` as a validation target 
-  in the `Admin Area`. This feature is to protect against a vulnerability 
+  in the `Admin area`. This feature is to protect against a vulnerability 
   such as 
   [Analysis of the Fancybox-For-WordPress Vulnerability]
   (http://blog.sucuri.net/2015/02/analysis-of-the-fancybox-for-wordpress-vulnerability.html)
