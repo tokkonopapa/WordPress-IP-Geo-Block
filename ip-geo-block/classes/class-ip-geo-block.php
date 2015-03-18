@@ -284,7 +284,7 @@ class IP_Geo_Block {
 		else {
 			// Blacklist
 			$list = $settings['black_list'];
-			if ( ! $list || FALSE !== strpos( $list, $validate['code'] ) )
+			if ( $list && FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'blocked' );
 			else if ( 'ZZ' !== $validate['code'] )
 				return $validate + array( 'result' => 'passed' );
@@ -446,14 +446,14 @@ class IP_Geo_Block {
 		$settings = self::get_option( 'settings' );
 		$action = empty( $_REQUEST['action'] ) ? '' : $_REQUEST['action'];
 		global $pagenow; // http://codex.wordpress.org/Global_Variables
-		$req = $pagenow === 'admin-ajax.php' ? 'ajax'  :
-		       $pagenow === 'admin-post.php' ? 'ajax'  :
-		       $pagenow === 'admin.php'      ? 'admin' : NULL;
+		$req = $pagenow === 'admin-ajax.php' ? 'ajax'  : (
+		       $pagenow === 'admin-post.php' ? 'ajax'  : (
+		       $pagenow === 'admin.php'      ? 'admin' : NULL ) );
 		if (
-			// check request from wp-admin/admin.php?action=...
+			// check request `wp-admin/admin.php?action=...`
 			( 'admin' === $req && $settings['validation'][ $req ] == 2 && $action ) ||
 
-			// check request from wp-admin/admin-{ajax|post}.php?action=...
+			// check request `wp-admin/admin-{ajax|post}.php?action=...` with privilege
 			( 'ajax'  === $req && $settings['validation'][ $req ] == 2 &&
 			  ! has_action( "wp_ajax_nopriv_${action}"    ) &&
 			  ! has_action( "admin_post_nopriv_${action}" ) &&
