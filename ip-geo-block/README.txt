@@ -289,40 +289,37 @@ For more details, see `samples.php` bundled within this package.
 
 After reading the [Sucuri Blog](http://blog.sucuri.net/ "Home | Sucuri Blog") 
 widely, I found that a considerable number of vulnerable plugins are lacking 
-in validating either the nonce and authentication or both. So WP-ZEP will make 
-up both of them on the admin screen. It doesn't affects the ajax and post 
-request from the front-end.
+in validating either the nonce and authentication or both. WP-ZEP will make 
+up both of them embedding a nonce into the link, form and ajax request from 
+jQuery on every admin screen. 
 
-This simple system will protect your dashboard from attack such as Arbitrary 
-File Uploading, SQL injection (SQLi), Cross Site Request Forgeries (CSRF) and 
-etc through `wp-admin/admin.php` and `wp-admin/admin-{ajax|post}.php` with a 
-query parameter `action`.
+This simple sysmtem will protect your admin screen from attack such as 
+Arbitrary File Uploading, SQL Injection (SQLi), Cross Site Request Forgeries 
+(CSRF) and etc via `wp-admin/admin.php` and `wp-admin/admin-{ajax|post}.php` 
+with a query parameter `action`. And then it doesn't affects the request for 
+non-logged-in user.
 
-It means that a request such as 
- `wp-admin/admin.php?action=do-something` will be validated but 
- `wp-admin/admin.php?page=show-something` will not.
-
-Even in the former, there are a few limitations that WP-ZEP would not work.
-One is redirection at server side (by PHP or `.htaccess`) and client side 
-(by location object of JavaScript). Another is that this plugin can not 
-decide capabilities such as `manage_options`. So it's incapable of 
-preventing the vulnerability of Privilege Escalation (PE).
+On the other hand, the details of above process are slightly delicate. For 
+example, it's incapable of preventing Privilege Escalation (PE) because it 
+can't be decided which capabilities does the request need.
 
 = Some admin function doesn't work when WP-ZEP is on. =
 
-WP-ZEP will embed a nonce into the every admin screen and will add it to the 
-link, form and ajax request from jQuery. So at first, please check the request 
-comes from those. If not (for example, from flash), add the name of action into 
-the safe action list through the filter hook `ip-geo-block-admin-actions`.
+There are a few cases that WP-ZEP would not work. One is redirection at server 
+side (by PHP or `.htaccess`) and client side (by JavaScript location object).
 
-If the request comes from jQuery, then check the HTML and the loading order 
-of jQuery file and `wp-content/plugins/ip-geo-block/admin/js/auth-nonce.js`.
+Another is a limit related to the content type. This plugin will only support 
+ `application/x-www-form-urlencoded` and `multipart/form-data`.
 
-If it's correct, please check `ip-geo-block-auth-nonce` parameter in your ajax 
-request using firebug or Chrome developer tools. Currently, the supported 
-content type is `application/x-www-form-urlencoded` or `multipart/form-data`.
+The other is the case that a ajax/post request comes from not jQuery but flash 
+or something. In this case, this plugin will bypass WP-ZEP.
 
-If it's OK, please let me know about your plugin at the support forum.
+So in those cases, please find the name of `action` in the requested queries 
+and add it into the safe action list via the filter hook 
+ `ip-geo-block-admin-actions`.
+
+If you can not figure out your troubles, please let me know about the plugin 
+you are using at the support forum.
 
 = I want to use only WP-ZEP. =
 
