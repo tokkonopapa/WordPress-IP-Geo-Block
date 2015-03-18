@@ -205,20 +205,8 @@ var start = new Date();
 	}
 
 	// Show/Hide description of WP-ZEP
-	function show_admin_description() {
-		if ( 2 == $('#ip_geo_block_settings_validation_admin').val() ) {
-			$('#ip-geo-block-admin-desc').show();
-		} else {
-			$('#ip-geo-block-admin-desc').hide();
-		}
-	}
-
-	function show_ajax_description() {
-		if ( 2 == $('#ip_geo_block_settings_validation_ajax').val() ) {
-			$('#ip-geo-block-ajax-desc').show();
-		} else {
-			$('#ip-geo-block-ajax-desc').hide();
-		}
+	function show_description(select, id) {
+		2 == $(select).val() ? $(id).show() : $(id).hide();
 	}
 
 	$(function () {
@@ -268,46 +256,13 @@ var start = new Date();
 			return false;
 		});
 
-		// Attribution link (redirect without referer)
-		$('a.ip-geo-block-link').on('click', function (event) {
-			var list = [
-				'freegeoip.net',
-				'ipinfo.io',
-				'www.telize.com',
-				'ip-json.rhcloud.com',
-				'xhanch.com',
-				'www.geoplugin.com',
-				'ip-api.com',
-				'ipinfodb.com',
-				'www.maxmind.com',
-				'dev.maxmind.com',
-				'www.ip2location.com',
-				'en.wikipedia.org',
-				'tools.ietf.org',
-				'wordpress.org'
-			];
-
-			var url = this.href;
-			$.each(list, function (i, val) {
-				if (0 === url.indexOf('http://' + this)) {
-					var w = window.open();
-					w.document.write(
-						'<meta http-equiv="refresh" content="0; url=' + sanitize(url) + '">'
-					);
-					w.document.close();
-				}
-			});
-			return false;
-		});
-
 		// Show/Hide description of WP-ZEP
-		show_admin_description();
 		$('#ip_geo_block_settings_validation_admin').on('change', function (event) {
-			show_admin_description();
-		});
-		show_ajax_description();
+			show_description(this, '#ip-geo-block-admin-desc');
+		}).trigger('change');
+
 		$('#ip_geo_block_settings_validation_ajax').on('change', function (event) {
-			show_ajax_description();
-		});
+			show_description(this, '#ip-geo-block-ajax-desc');
+		}).trigger('change');
 	});
 }(jQuery));
