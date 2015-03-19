@@ -19,29 +19,34 @@
 		};
 	}
 
-	function is_admin(url, method) {
-		var uri = parse_uri(url.toLowerCase());
-		if (uri.scheme.indexOf('http') === 0 &&
-		    uri.authority !== location.host.toLowerCase()) {
+	function is_admin(url, query) {
+		var uri = parse_uri(url.toLowerCase()),
+		    http = uri.scheme.indexOf('http') === 0,
+		    path = uri.path;
+
+		if (http && uri.authority !== location.host.toLowerCase()) {
 			return -1; // -1: external
 		}
-		return ( // 1: target, 0: other internal
-			url.indexOf('admin.php'     ) >= 0 ||
-			url.indexOf('admin-ajax.php') >= 0 ||
-			url.indexOf('admin-post.php') >= 0 ) && (
-			uri.query.indexOf('action=' ) >= 0 ||
-			'post' === method.toLowerCase()
-		) ? 1 : 0;
+
+		// check scheme, path, query
+		return (http || ! uri.scheme) && (
+			path.indexOf('admin.php'     ) >= 0 ||
+			path.indexOf('admin-ajax.php') >= 0 ||
+			path.indexOf('admin-post.php') >= 0 ) && (
+			typeof query === 'string' ?
+				/(?:action)=/.test(query) :
+				typeof query.action !== 'undefined'
+		) ? 1 : 0; // 1: target, 0: other
 	}
 
 	function query_args(uri, args) {
-		var url = uri.scheme ? uri.scheme + '://' : '';
-		return url + uri.authority + uri.path + '?' + args.join('&');
+		return (uri.scheme ? uri.scheme + '://' : '') +
+		       (uri.authority + uri.path + '?' + args.join('&'));
 	}
 
 	$(document).ajaxSend(function (event, jqxhr, settings) {
 		var nonce = IP_GEO_AUTH.nonce || null;
-		if (nonce && is_admin(settings.url, settings.type) === 1) {
+		if (nonce && is_admin(settings.url, settings.data) === 1) {
 			// multipart/form-data
 			if (settings.data instanceof FormData) {
 				settings.data.append('ip-geo-block-auth-nonce', nonce);
@@ -72,11 +77,11 @@
 		if (nonce) {
 			$('a').on('click', function (event) {
 				var href = $(this).attr('href'),
-				    admin = is_admin(href, 'GET');
+				    admin = is_admin(href, href);
 
 				// if target
 				if (admin === 1) {
-					var uri = parse_uri(href),
+					var uri = parse_uri(href), data;
 					data = uri.query ? uri.query.split('&') : [];
 					data.push('ip-geo-block-auth-nonce=' + encodeURIComponent(nonce));
 					$(this).attr('href', query_args(uri, data));
@@ -95,11 +100,11 @@
 			});
 
 			$('form').on('submit', function (event) {
-				var url = $(this).attr('action');
+				var $this = $(this);
 
-				// if not external
-				if (is_admin(url, $(this).attr('method')) !== -1) {
-					$(this).append(
+				// if target
+				if (is_admin($this.attr('action'), $this.serialize()) === 1) {
+					$this.append(
 						'<input type="hidden" name="ip-geo-block-auth-nonce" value="'
 						+ nonce + '" />'
 					);
