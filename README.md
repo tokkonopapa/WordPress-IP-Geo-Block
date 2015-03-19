@@ -287,7 +287,7 @@ jQuery on every admin screen.
 This simple sysmtem will protect your admin screen from attack such as 
 Arbitrary File Uploading, SQL Injection (SQLi), Cross Site Request Forgeries 
 (CSRF) and etc via `wp-admin/admin.php` and `wp-admin/admin-{ajax|post}.php` 
-with a query parameter `action`. And then it doesn't affects the request for 
+with a query parameter `action`. Moreover, it doesn't affects the request for 
 non-logged-in user.
 
 On the other hand, the details of above process are slightly delicate. For 
@@ -299,15 +299,14 @@ can't be decided which capabilities does the request need.
 There are a few cases that WP-ZEP would not work. One is redirection at server 
 side (by PHP or `.htaccess`) and client side (by JavaScript location object).
 
-Another is a limit related to the content type. This plugin will only support 
- `application/x-www-form-urlencoded` and `multipart/form-data`.
+Another is a restriction related to the content type. This plugin will only 
+support `application/x-www-form-urlencoded` and `multipart/form-data`.
 
 The other is the case that a ajax/post request comes from not jQuery but flash 
 or something. In this case, this plugin will bypass WP-ZEP.
 
-So in those cases, please find the name of `action` in the requested queries 
-and add it into the safe action list via the filter hook 
- `ip-geo-block-admin-actions`.
+In those cases, find the `action` in the requested queries and add its value 
+into the safe action list via the filter hook `ip-geo-block-admin-actions`.
 
 If you can not figure out your troubles, please let me know about the plugin 
 you are using at the support forum.
