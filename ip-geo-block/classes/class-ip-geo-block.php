@@ -443,28 +443,29 @@ class IP_Geo_Block {
 	}
 
 	public function validate_admin( $something ) {
-		$settings = self::get_option( 'settings' );
-		$action = empty( $_REQUEST['action'] ) ? '' : $_REQUEST['action'];
 		global $pagenow; // http://codex.wordpress.org/Global_Variables
-		$req = $pagenow === 'admin-ajax.php' ? 'ajax'  : (
-		       $pagenow === 'admin-post.php' ? 'ajax'  : (
-		       $pagenow === 'admin.php'      ? 'admin' : NULL ) );
-		if (
-			// check request `wp-admin/admin.php?action=...`
-			( 'admin' === $req && $settings['validation'][ $req ] == 2 && $action ) ||
+		$action = NULL;
+		$settings = self::get_option( 'settings' );
 
-			// check request `wp-admin/admin-{ajax|post}.php?action=...` with privilege
-			( 'ajax'  === $req && $settings['validation'][ $req ] == 2 &&
-			  ! has_action( "wp_ajax_nopriv_${action}"    ) &&
-			  ! has_action( "admin_post_nopriv_${action}" ) &&
-			  ! has_action( "admin_post_nopriv"           ) )
-		) {
-			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+		if ( ! empty( $_REQUEST['action'] ) ) {
+			switch ( $pagenow ) {
+			  case 'admin-ajax.php':
+				if ( ! has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) )
+					$action = 'ajax';
+				break;
+			  case 'admin-post.php':
+				if ( ! has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) )
+					$action = 'ajax';
+				break;
+			  case 'admin.php':
+				$action = 'admin';
+			}
 		}
 
-		$this->validate_ip(
-			defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ? 'xmlrpc' : 'admin', $settings
-		);
+		if ( $action && (int)$settings['validation'][ $action ] === 2 )
+			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+
+		$this->validate_ip( 'xmlrpc.php' === $pagenow ? 'xmlrpc' : 'admin', $settings );
 
 		return $something; // pass through
 	}
@@ -538,8 +539,9 @@ class IP_Geo_Block {
 		) );
 
 		// check safe actions
+		$login = is_user_logged_in(); // or user_can_access_admin_page()
 		$action = empty( $_REQUEST['action'] ) ? '' : $_REQUEST['action'];
-		if ( ( $login = is_user_logged_in() ) && in_array( $action, $admin_actions ) )
+		if ( $login && in_array( $action, $admin_actions ) )
 			return $validate; // still potentially be blocked by country code
 
 		// check authenticated nonce
