@@ -73,19 +73,22 @@ improve this feature.
 4. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
  `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
 
-5. Validation logs will be recorded into MySQL data table to analyze posting 
+5. Referer silencer for external link. When you click an external hyperlink on 
+admin screen, http referer will be suppressed to hide a footprint of your site.
+
+6. Validation logs will be recorded into MySQL data table to analyze posting 
 pattern under the specified condition.
 
-6. Free IP Geolocation database and REST APIs are installed into this plugin 
+7. Free IP Geolocation database and REST APIs are installed into this plugin 
 to get a country code from an IP address. There are two types of API which 
 support only IPv4 or both IPv4 and IPv6. This plugin will automatically select 
 an appropriate API.
 
-7. A cache mechanism with transient API for the fetched IP addresses has been 
+8. A cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against the burst accesses with a short 
 period of time.
 
-8. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+9. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
 (once a month) automatically. And if you have correctly installed 
 one of the IP2Location plugins (
@@ -94,12 +97,12 @@ one of the IP2Location plugins (
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
 ), this plugin uses its local database prior to the REST APIs.
 
-9. This plugin is simple and lite enough to be able to cooperate with other 
+10. This plugin is simple and lite enough to be able to cooperate with other 
 full spec security plugin such as 
     [Wordfence Security](https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins")
 (because the function of country bloking is available only for premium users).
 
-10. You can customize the basic behavior of this plugin via `add_filter()` with 
+11. You can customize the basic behavior of this plugin via `add_filter()` with 
 pre-defined filter hook. See various use cases in 
     [sample.php]
     (https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php
@@ -352,7 +355,12 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.3 =
-* **New feature:** Added 'Zero-day exploit Prevention for wp-admin'.
+* **Bug fix:** Fixed an issue that blank black list doesn't work when 
+  matching rule is black list.
+* **New feature:** Referer silencer for external link. When you click an 
+  external hyperlink on admin screen, http referer will be suppressed to 
+  hide a footprint of your site.
+* **New feature:** Added 'Zero-day Exploit Prevention for wp-admin'.
   Because it is an experimental feature, please open a new issue at 
   [support forum](https://wordpress.org/support/plugin/ip-geo-block
   "WordPress &#8250; Support &raquo; IP Geo Block")
