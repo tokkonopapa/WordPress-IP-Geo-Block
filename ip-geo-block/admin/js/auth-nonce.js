@@ -44,6 +44,18 @@
 		       (uri.authority + uri.path + '?' + args.join('&'));
 	}
 
+	function sanitize(str) {
+		return (str + '').replace(/[&<>"']/g, function (match) {
+			return {
+				'&' : '&amp;',
+				'<' : '&lt;',
+				'>' : '&gt;',
+				'"' : '&quot;',
+				"'" : '&#39;'
+			}[match];
+		});
+	}
+
 	$(document).ajaxSend(function (event, jqxhr, settings) {
 		var nonce = IP_GEO_AUTH.nonce || null;
 		if (nonce && is_admin(settings.url, settings.data) === 1) {
@@ -92,7 +104,8 @@
 					// redirect with no referrer not to leak out the nonce
 					var w = window.open();
 					w.document.write(
-						'<meta http-equiv="refresh" content="0; url=' + href + '">'
+						'<meta http-equiv="refresh" content="0; url=' + 
+						sanitize(this.href) + '">'
 					);
 					w.document.close();
 					return false;
