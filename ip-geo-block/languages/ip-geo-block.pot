@@ -202,13 +202,13 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:139
 msgid ""
-"<dfn title=\"Validate access to wp-admin/admin-{ajax|post}.php\">Admin ajax/"
+"<dfn title=\"Validate access to wp-admin/admin-(ajax|post).php\">Admin ajax/"
 "post</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:154
 msgid ""
-"It will block a malicious request to <code>wp-admin/admin-{ajax|post}.php</"
+"It will block a malicious request to <code>wp-admin/admin-(ajax|post).php</"
 "code> besides the country code. Because this is an experimental feature, "
 "please open a new issue at <a class=\"ip-geo-block-link\" href=\"http://"
 "wordpress.org/support/plugin/ip-geo-block\" title=\"WordPress &#8250; "
