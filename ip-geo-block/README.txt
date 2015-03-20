@@ -164,10 +164,10 @@ All contributions will always be welcome.
     Validate access to `wp-login.php`.
 
 * **Admin area**  
-    Validate access to `wp-admin/*.php` except `wp-admin/admin-{ajax|post}.php`.
+    Validate access to `wp-admin/*.php` except `wp-admin/admin-(ajax|post).php`.
 
 * **Admin ajax/post**  
-    Validate access to `wp-admin/admin-{ajax|post}.php`.
+    Validate access to `wp-admin/admin-(ajax|post).php`.
 
 * **Record validation statistics**  
     If `Enable`, you can see `Statistics of validation` on Statistics tab.
@@ -279,7 +279,7 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
-* `ip-geo-block-admin-actions`    : array of actions for `wp-admin/admin-{ajax|post}.php`.
+* `ip-geo-block-admin-actions`    : array of actions for `wp-admin/admin-(ajax|post).php`.
 * `ip-geo-block-backup-dir`       : absolute path where log files should be saved.
 * `ip-geo-block-maxmind-dir`      : absolute path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
@@ -292,15 +292,14 @@ For more details, see `samples.php` bundled within this package.
 
 After reading the [Sucuri Blog](http://blog.sucuri.net/ "Home | Sucuri Blog") 
 widely, I found that a considerable number of vulnerable plugins are lacking 
-in validating either the nonce and authentication or both. WP-ZEP will make 
-up both of them embedding a nonce into the link, form and ajax request from 
-jQuery on every admin screen. 
+in validating either the nonce and privilege or both. WP-ZEP will make up both 
+of them embedding a nonce into the link, form and ajax request from jQuery on 
+every admin screen. 
 
-This simple sysmtem will protect your admin screen from attack such as 
-Arbitrary File Uploading, SQL Injection (SQLi), Cross Site Request Forgeries 
-(CSRF) and etc via `wp-admin/admin.php` and `wp-admin/admin-{ajax|post}.php` 
-with a query parameter `action`. Moreover, it doesn't affects the request for 
-non-logged-in user.
+This simple system will validate both of them on behalf of vulnerable plugins 
+in your site and will block a request with a query parameter `action` through 
+ `wp-admin/admin.php` and `wp-admin/admin-(ajax|post).php` if it has no nonce 
+and privilege. Moreover, it doesn't affects a request from non-logged-in user.
 
 On the other hand, the details of above process are slightly delicate. For 
 example, it's incapable of preventing Privilege Escalation (PE) because it 
@@ -309,16 +308,18 @@ can't be decided which capabilities does the request need.
 = Some admin function doesn't work when WP-ZEP is on. =
 
 There are a few cases that WP-ZEP would not work. One is redirection at server 
-side (by PHP or `.htaccess`) and client side (by JavaScript location object).
+side (by PHP or `.htaccess`) and client side (by JavaScript location object or 
+meta tag for refresh).
 
 Another is a restriction related to the content type. This plugin will only 
 support `application/x-www-form-urlencoded` and `multipart/form-data`.
 
 The other is the case that a ajax/post request comes from not jQuery but flash 
-or something. In this case, this plugin will bypass WP-ZEP.
+or something.
 
-In those cases, find the `action` in the requested queries and add its value 
-into the safe action list via the filter hook `ip-geo-block-admin-actions`.
+In those cases, this plugin should bypass WP-ZEP. So please find the `action` 
+in the requested queries and add its value into the safe action list via the 
+filter hook `ip-geo-block-admin-actions`.
 
 If you can not figure out your troubles, please let me know about the plugin 
 you are using at the support forum.
@@ -357,14 +358,14 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 = 2.0.3 =
 * **Bug fix:** Fixed an issue that blank black list doesn't work when 
   matching rule is black list.
-* **New feature:** Referer silencer for external link. When you click an 
-  external hyperlink on admin screen, http referer will be suppressed to 
-  hide a footprint of your site.
 * **New feature:** Added 'Zero-day Exploit Prevention for wp-admin'.
   Because it is an experimental feature, please open a new issue at 
   [support forum](https://wordpress.org/support/plugin/ip-geo-block
   "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles with it.
+* **New feature:** Referer silencer for external link. When you click an 
+  external hyperlink on admin screen, http referer will be suppressed to 
+  hide a footprint of your site.
 * Also added the filter hook `ip-geo-block-admin-actions` for safe actions 
   on back-end.
 
