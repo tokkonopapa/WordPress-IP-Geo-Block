@@ -92,7 +92,7 @@ class IP_Geo_Block {
 			array( 'jquery' ), IP_Geo_Block::VERSION
 		);
 
-		wp_localize_script( $handle, 'IP_GEO_AUTH',
+		wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH',
 			array( 'nonce' => wp_create_nonce( $handle ) )
 		);
 	}
@@ -512,11 +512,11 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * validate requested queries via admin-{ajax|post}.php
+	 * validate requested queries via admin-(ajax|post).php
 	 *
 	 */
 	public function check_nonce( $validate, $settings ) {
-		// exclude core admin actions (this list is apparently over-specifications)
+		// exclude core admin actions (this list is apparently redundant)
 		$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
 			// $core_actions_get in wp-admin/admin-ajax.php
 			'fetch-list', 'ajax-tag-search', 'wp-compression-test', 'imgedit-preview', 'oembed-cache',
