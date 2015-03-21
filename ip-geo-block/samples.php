@@ -225,7 +225,7 @@ add_filter( 'ip-geo-block-admin', 'my_permission' );
  */
 function my_admin_actions( $admin_actions ) {
 	$actions = array(
-		'something',
+		'do-some-plugin-action',
 	);
 	return $admin_actions + $actions;
 }
@@ -265,20 +265,24 @@ add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
 
 /**
  * Example 14: usage of 'IP_Geo_Block::get_geolocation()'
- * Use case: get geolocation of ip address with latitude and longitude
+ * Use case: get geolocation of visitor's ip address with latitude and longitude
  *
- * @param  string $ip ip address
- * @param  array $providers list of providers
- * @return array $geolocation array of 'countryCode', 'latitude', 'longitude'
  */
-function my_geolocation( $ip ) {
-	$providers = array( 'ipinfo.io', 'Telize', 'IP-Json' );
-	$geolocation = IP_Geo_Block::get_geolocation( $ip, $providers );
+function my_geolocation() {
+	/**
+	 * get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_location' )
+	 *
+	 * @param string $ip IP address / default $_SERVER['REMOTE_ADDR']
+	 * @param array $providers list of providers / ex: array( 'ipinfo.io' )
+	 * @param string $callback geolocation function / ex: 'get_county'
+	 * @return array or string geolocation data or just country code
+	 */
+	$geolocation = IP_Geo_Block::get_geolocation();
 
-	if ( empty( $geolocation['errorMessage'] ) )
-		echo va_dump( $geolocation );
+	if ( isset( $geolocation['countryCode'] ) )
+		var_dump( $geolocation );
 	else
-		echo $geolocation['errorMessage'];
+		var_dump( $geolocation['errorMessage'] );
 }
 
 endif;
