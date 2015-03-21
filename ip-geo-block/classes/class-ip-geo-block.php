@@ -211,29 +211,24 @@ class IP_Geo_Block {
 	 * Get geolocation and country code from an ip address
 	 *
 	 */
-	public static function get_geolocation( $ip, $list = array(), $callback = 'get_location' ) {
-		$settings = self::get_option( 'settings' );
-		return self::_get_geolocation( $ip, $settings, $list, $callback );
-	}
-
-	private static function _get_geolocation( $ip, $settings, $list = array(), $callback = 'get_country' ) {
+	public static function get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_location' ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
-		// make providers list
-		if ( empty( $list ) ) {
-			$geo = IP_Geo_Block_Provider::get_providers( 'key', TRUE, TRUE );
-			foreach ( $geo as $provider => $key ) {
-				if ( ! empty( $settings['providers'][ $provider ] ) || (
-				     ! isset( $settings['providers'][ $provider ] ) && NULL === $key ) ) {
-					$list[] = $provider;
-				}
-			}
-		}
+		return self::_get_geolocation(
+			$ip ? $ip : $_SERVER['REMOTE_ADDR'],
+			self::get_option( 'settings' ), $providers, $callback
+		);
+	}
+
+	private static function _get_geolocation( $ip, $settings, $providers = array(), $callback = 'get_country' ) {
+		// make valid providers list
+		if ( empty( $providers ) )
+			$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
 
 		// set arguments for wp_remote_get()
 		$args = self::get_request_headers( $settings );
 
-		foreach ( $list as $provider ) {
+		foreach ( $providers as $provider ) {
 			$time = microtime( TRUE );
 			$name = IP_Geo_Block_API::get_class_name( $provider );
 
@@ -375,6 +370,10 @@ class IP_Geo_Block {
 		$var = self::PLUGIN_SLUG . "-${hook}";
 		add_filter( $var, array( $this, 'auth_check' ), 10, 2 );
 
+		// make valid provider name list
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
+
 		// apply custom filter of validation
 		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
 		// @param $validate = array(
@@ -384,7 +383,7 @@ class IP_Geo_Block {
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
 		foreach ( $ips as $ip ) {
-			$validate = self::_get_geolocation( $ip, $settings );
+			$validate = self::_get_geolocation( $ip, $settings, $providers );
 			$validate = apply_filters( $var, $validate, $settings );
 
 			// if no 'result' then validate ip address by country
@@ -443,26 +442,26 @@ class IP_Geo_Block {
 	}
 
 	public function validate_admin( $something ) {
+		$type = NULL; // type of validation
 		global $pagenow; // http://codex.wordpress.org/Global_Variables
-		$action = NULL;
-		$settings = self::get_option( 'settings' );
 
 		if ( ! empty( $_REQUEST['action'] ) ) {
 			switch ( $pagenow ) {
 			  case 'admin-ajax.php':
 				if ( ! has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) )
-					$action = 'ajax';
+					$type = 'ajax';
 				break;
 			  case 'admin-post.php':
 				if ( ! has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) )
-					$action = 'ajax';
+					$type = 'ajax';
 				break;
 			  case 'admin.php':
-				$action = 'admin';
+				$type = 'admin';
 			}
 		}
 
-		if ( $action && (int)$settings['validation'][ $action ] === 2 )
+		$settings = self::get_option( 'settings' );
+		if ( $type && (int)$settings['validation'][ $type ] === 2 )
 			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 
 		$this->validate_ip( 'xmlrpc.php' === $pagenow ? 'xmlrpc' : 'admin', $settings );
@@ -540,8 +539,7 @@ class IP_Geo_Block {
 
 		// check safe actions
 		$login = is_user_logged_in(); // or user_can_access_admin_page()
-		$action = empty( $_REQUEST['action'] ) ? '' : $_REQUEST['action'];
-		if ( $login && in_array( $action, $admin_actions ) )
+		if ( $login && ! empty( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], $admin_actions ) )
 			return $validate; // still potentially be blocked by country code
 
 		// check authenticated nonce

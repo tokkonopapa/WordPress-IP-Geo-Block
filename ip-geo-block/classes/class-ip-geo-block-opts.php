@@ -116,7 +116,7 @@ class IP_Geo_Block_Options {
 		if ( FALSE === ( $settings = get_option( $key[0] ) ) ) {
 			// get country code from admin's IP address and set it into white list
 			$name = array( 'ipinfo.io', 'Telize', 'IP-Json' ); shuffle( $name );
-			$tmp = IP_Geo_Block::get_geolocation( $_SERVER['REMOTE_ADDR'], $name, 'get_country' );
+			$tmp = IP_Geo_Block::get_geolocation( NULL, $name, 'get_country' );
 			$default[ $key[0] ]['white_list'] = isset( $tmp['code'] ) ? $tmp['code'] : NULL;
 
 			// update local goelocation database files

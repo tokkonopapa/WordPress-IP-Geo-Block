@@ -767,4 +767,22 @@ class IP_Geo_Block_Provider {
 		return $list;
 	}
 
+	/**
+	 * Returns providers name list which are checked in settings
+	 *
+	 */
+	public static function get_valid_providers( $settings ) {
+		$list = array();
+		$geo = self::get_providers( 'key', TRUE, TRUE );
+
+		foreach ( $geo as $provider => $key ) {
+			if ( ! empty( $settings[ $provider ] ) || (
+				 ! isset( $settings[ $provider ] ) && NULL === $key ) ) {
+				$list[] = $provider;
+			}
+		}
+
+		return $list;
+	}
+
 }
