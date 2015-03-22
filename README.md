@@ -339,8 +339,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 #### Change log
 
 - 2.0.3
-    - **Bug fix:** Fixed an issue that blank black list doesn't work when 
-      matching rule is black list.
+    - **Bug fix:** Fixed an issue that empty black list doesn't work correctly 
+      when matching rule is black list.
     - **New feature:** Added 'Zero-day Exploit Prevention for wp-admin'.
       Because it is an experimental feature, please open a new issue at 
       [support forum](https://wordpress.org/support/plugin/ip-geo-block
