@@ -350,7 +350,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 == Changelog ==
 
-= 2.0.5 =
+= 2.0.6 =
 * Sorry for urgent update but avoid an javascript error.
 
 = 2.0.4 =
