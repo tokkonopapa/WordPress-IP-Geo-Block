@@ -29,7 +29,7 @@
 	}
 
 	function is_admin(url, query) {
-		var uri = parse_uri(url.toString().toLowerCase()),
+		var uri = parse_uri(url ? url.toLowerCase() : ''),
 		    http = /https?/.test(uri.scheme),
 		    path = uri.path || location.pathname;
 
