@@ -100,7 +100,7 @@ add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
  * @return string $path replaced path to database files
  */
 function my_ip2location_path( $path ) {
-	return WP_CONTENT_DIR . '/ip2location/IP2LOCATION-LITE-DB1.IPV6.BIN';
+	return WP_PLUGIN_DIR . '/ip2location-tags/IP2LOCATION-LITE-DB1.IPV6.BIN';
 }
 add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
 
@@ -270,19 +270,27 @@ add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
  */
 function my_geolocation() {
 	/**
-	 * get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_location' )
+	 * get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_county' )
 	 *
-	 * @param string $ip IP address / default $_SERVER['REMOTE_ADDR']
-	 * @param array $providers list of providers / ex: array( 'ipinfo.io' )
-	 * @param string $callback geolocation function / ex: 'get_county'
-	 * @return array or string geolocation data or just country code
+	 * @param string $ip IP address / default: $_SERVER['REMOTE_ADDR']
+	 * @param array  $providers list of providers / ex: array( 'ipinfo.io' )
+	 * @param string $callback geolocation function / ex: 'get_location'
+	 * @return array country code and so on
 	 */
 	$geolocation = IP_Geo_Block::get_geolocation();
 
-	if ( isset( $geolocation['countryCode'] ) )
-		var_dump( $geolocation );
-	else
-		var_dump( $geolocation['errorMessage'] );
+	/**
+	 * 'ip'       => validated ip address
+	 * 'auth'     => authenticated or not
+	 * 'time'     => processing time
+	 * 'code'     => country code
+	 * 'provider' => IP geolocation service provider
+	 */
+	var_dump( $geolocation );
+
+	if ( isset( $geolocation['errorMessage'] ) ) {
+		// error handling
+	}
 }
 
 endif;

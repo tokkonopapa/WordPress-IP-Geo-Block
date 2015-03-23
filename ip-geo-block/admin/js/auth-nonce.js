@@ -116,8 +116,8 @@
 					// redirect with no referrer not to leak out the nonce
 					var w = window.open();
 					w.document.write(
-						'<meta http-equiv="refresh" content="0; url='
-						+ sanitize(this.href) + '">'
+						'<meta name="referrer" content="never" />' +
+						'<meta http-equiv="refresh" content="0; url=' + sanitize(this.href) + '" />'
 					);
 					w.document.close();
 					return false;

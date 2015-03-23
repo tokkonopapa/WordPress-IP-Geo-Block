@@ -46,6 +46,27 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	/**
+	 * Check status of provider selection
+	 *
+	 */
+	$field = 0;
+	$providers = IP_Geo_Block_Provider::get_providers( 'key' );
+	foreach ( $providers as $key => $val ) {
+		if ( ( NULL   === $val   && ! isset( $options['providers'][ $key ] ) ) ||
+		     ( FALSE  === $val   && ! empty( $options['providers'][ $key ] ) ) ||
+		     ( is_string( $val ) && ! empty( $options['providers'][ $key ] ) ) ) {
+			$field++;
+		}
+	}
+	if ( 0 === $field ) {
+		$context->notice[] = __(
+			'You need to select at least one IP geolocation service. Otherwise <strong>you will be locked out</strong> when the cache expires.',
+			IP_Geo_Block::TEXT_DOMAIN
+		);
+		add_action( 'admin_notices', array( $context, 'admin_notice' ) );
+	}
+
+	/**
 	 * Register a settings field to the settings page and section.
 	 * @link http://codex.wordpress.org/Function_Reference/add_settings_field
 	 *
@@ -69,7 +90,7 @@ function ip_geo_block_tab_settings( $context ) {
 			'option' => $option_name,
 			'field' => $field,
 			'value' => $options[ $field ],
-			'providers' => IP_Geo_Block_Provider::get_providers( 'key' ),
+			'providers' => $providers,
 			'titles' => IP_Geo_Block_Provider::get_providers( 'type' ),
 		)
 	);

@@ -58,6 +58,7 @@ class IP_Geo_Block_Admin {
 
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 ) {
+			$this->notice[] = __( 'You need WordPress 3.7+', IP_Geo_Block::TEXT_DOMAIN );
 			add_action( 'admin_notices', array( $this, 'admin_notice' ) );
 		}
 	}
@@ -79,9 +80,11 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function admin_notice() {
-		$info = $this->get_plugin_info();
-		$msg = __( 'You need WordPress 3.7+', IP_Geo_Block::TEXT_DOMAIN );
-		echo "\n<div class=\"error\"><p>", $info['Name'], ": $msg</p></div>\n";
+		if ( isset( $this->notice ) ) {
+			foreach ( $this->notice as $msg ) {
+				echo "\n<div class=\"error\"><p>IP Geo Block: $msg</p></div>\n";
+			}
+		}
 	}
 
 	/**

@@ -20,7 +20,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.0.3';
+	const VERSION = '2.0.4';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -211,7 +211,7 @@ class IP_Geo_Block {
 	 * Get geolocation and country code from an ip address
 	 *
 	 */
-	public static function get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_location' ) {
+	public static function get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_country' ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		return self::_get_geolocation(
@@ -360,7 +360,7 @@ class IP_Geo_Block {
 				foreach ( explode( ',', $_SERVER[ $var ] ) as $ip ) {
 					if ( ! in_array( $ip = trim( $ip ), $ips ) &&
 					     filter_var( $ip, FILTER_VALIDATE_IP ) ) {
-						$ips = array( $ip ) + $ips;
+						array_unshift( $ips, $ip );
 					}
 				}
 			}

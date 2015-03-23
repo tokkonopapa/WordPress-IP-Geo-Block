@@ -4,7 +4,7 @@ Donate link:
 Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.1.1
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,9 +27,7 @@ vulnerability such as XSS, CSRF, SQLi, LFI and so on. For example, if a plugin
 has vulnerability of Local File Inclusion (LFI), the attackers can easily 
 download the `wp-config.php` without knowing the username and password by 
 simply hitting 
-    [wp-admin/admin-ajax.php?action=something-vulnerable&file=../wp-config.php]
-    (http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html
-    "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
+    [wp-admin/admin-ajax.php?action=something-vulnerable&file=../wp-config.php](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
 on their browser.
 
 For these cases, the protection based on the IP address is not a perfect 
@@ -62,11 +60,10 @@ of the country code.
 **E**xploit **P**revention for wp-admin' (WP-ZEP) is now available to block 
 malicious access to `wp-admin/admin.php`, `wp-admin/admin-ajax.php` and 
  `wp-admin/admin-post.php`. It will protect against certain types of attack 
-such as CSRF, SQLi and so on even if you have some [vulnerable plugins]
-(https://wpvulndb.com/ "WPScan Vulnerability Database") in your site.
-Because this is an experimental feature, please open an issue at 
-[support forum](https://wordpress.org/support/plugin/ip-geo-block 
-"WordPress &#8250; Support &raquo; IP Geo Block")
+such as CSRF, SQLi and so on even if you have some 
+    [vulnerable plugins](https://wpvulndb.com/ "WPScan Vulnerability Database")
+in your site. Because this is an experimental feature, please open an issue at 
+    [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
 if you have any troubles. I'll be profoundly grateful your contribution to 
 improve this feature.
 
@@ -104,9 +101,7 @@ full spec security plugin such as
 
 11. You can customize the basic behavior of this plugin via `add_filter()` with 
 pre-defined filter hook. See various use cases in 
-    [sample.php]
-    (https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php
-    "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
+    [sample.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
 bundled within this package.
 
 = Attribution =
@@ -355,13 +350,20 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 == Changelog ==
 
+= 2.0.4 =
+* Sorry for frequent update but added a function of showing admin notice 
+  when none of the IP geolocation providers is selected. Because the user 
+  will be locked out from admin screen when the cache expires.
+* **Bug fix:** Fixed an issue of `get_geolocation()` method at a time of 
+  when the cache of IP address is cleared.
+* Referer silencer now supports [meta referrer](https://wiki.whatwg.org/wiki/Meta_referrer "Meta referrer - WHATWG Wiki")
+
 = 2.0.3 =
 * **Bug fix:** Fixed an issue that empty black list doesn't work correctly 
   when matching rule is black list.
 * **New feature:** Added 'Zero-day Exploit Prevention for wp-admin'.
   Because it is an experimental feature, please open a new issue at 
-  [support forum](https://wordpress.org/support/plugin/ip-geo-block
-  "WordPress &#8250; Support &raquo; IP Geo Block")
+  [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles with it.
 * **New feature:** Referer silencer for external link. When you click an 
   external hyperlink on admin screen, http referer will be suppressed to 
@@ -373,8 +375,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 * **New feature:** Include `wp-admin/admin-post.php` as a validation target 
   in the `Admin area`. This feature is to protect against a vulnerability 
   such as 
-  [Analysis of the Fancybox-For-WordPress Vulnerability]
-  (http://blog.sucuri.net/2015/02/analysis-of-the-fancybox-for-wordpress-vulnerability.html)
+  [Analysis of the Fancybox-For-WordPress Vulnerability](http://blog.sucuri.net/2015/02/analysis-of-the-fancybox-for-wordpress-vulnerability.html)
   on Sucuri Blog.
 * Added a sample code snippet as a use case for 'Give ajax permission in 
   case of safe actions on front facing page'. See Example 10 in `sample.php`.
