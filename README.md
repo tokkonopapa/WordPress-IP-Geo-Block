@@ -335,6 +335,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 #### Change log
 
+- 2.0.5
+    - Sorry for urgent update but avoid an javascript error.
 - 2.0.4
     - Sorry for frequent update but added a function of showing admin notice 
       when none of the IP geolocation providers is selected. Because the user 
