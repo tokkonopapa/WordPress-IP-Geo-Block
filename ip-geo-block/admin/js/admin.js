@@ -11,7 +11,7 @@ var ip_geo_block_start = new Date();
 
 (function ($) {
 	function sanitize(str) {
-		return str.toString().replace(/[&<>"']/g, function (match) {
+		return str ? str.toString().replace(/[&<>"']/g, function (match) {
 			return {
 				'&' : '&amp;',
 				'<' : '&lt;',
@@ -19,7 +19,7 @@ var ip_geo_block_start = new Date();
 				'"' : '&quot;',
 				"'" : '&#39;'
 			}[match];
-		});
+		}) : '';
 	}
 
 	function loding(id, flag) {

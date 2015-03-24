@@ -6,10 +6,10 @@
 	var auth_nonce = 'ip-geo-block-auth-nonce';
 
 	function parse_uri(uri) {
-		var m = uri.match(
+		var m = uri ? uri.match(
 			// https://tools.ietf.org/html/rfc3986#appendix-B
 			/^(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/
-		);
+		) : [];
 
 		// scheme :// authority path ? query # fragment
 		return {
@@ -55,7 +55,7 @@
 	}
 
 	function sanitize(str) {
-		return str.toString().replace(/[&<>"']/g, function (match) {
+		return str ? str.toString().replace(/[&<>"']/g, function (match) {
 			return {
 				'&' : '&amp;',
 				'<' : '&lt;',
@@ -63,7 +63,7 @@
 				'"' : '&quot;',
 				"'" : '&#39;'
 			}[match];
-		});
+		}) : '';
 	}
 
 	$(document).ajaxSend(function (event, jqxhr, settings) {
