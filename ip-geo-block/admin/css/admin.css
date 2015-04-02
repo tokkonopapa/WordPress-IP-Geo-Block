@@ -4,6 +4,26 @@ dfn {
     border-bottom: 1px dotted;
 }
 
+/* legend and fieldset in the form */
+h3 {
+    margin: 1.05em 0.947em 0.675em;
+}
+.form-table {
+    margin: 0 1em;
+}
+fieldset.ip-geo-block-field {
+    border: 1px solid #ccc;
+    padding: 0.35em 0.625em 0.75em 1em;
+    margin: 1.35em 0 1.5em;
+}
+fieldset.ip-geo-block-field h3 {
+    padding: 0;
+    margin: 0;
+}
+fieldset.ip-geo-block-field .form-table {
+    margin: 0.5em 0 0;
+}
+
 #check-provider label {
     width: 8em;
     display: inline-block;
@@ -40,7 +60,6 @@ dfn {
 }
 
 #ip-geo-block-map {
-    width: 95%;
     height: 360px;
     margin-top: 1em;
     margin-left: auto;
@@ -69,8 +88,6 @@ ul.ip-geo-block-statistics-countries li {
 }
 
 /* table */
-.ip-geo-block-statistics-post th,
-.ip-geo-block-statistics-post td,
 .ip-geo-block-statistics-type th,
 .ip-geo-block-statistics-type td,
 .ip-geo-block-statistics-service th,

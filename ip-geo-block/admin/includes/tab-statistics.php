@@ -122,6 +122,22 @@ if ( $setting['save_statistics'] ) :
 		)
 	);
 
+	$field = 'clear_statistics';
+	add_settings_field(
+		$option_name . "_$field",
+		__( 'Clear statistics', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'button',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => __( 'Clear now', IP_Geo_Block::TEXT_DOMAIN ),
+			'after' => '<div id="ip-geo-block-loading"></div>',
+		)
+	);
+
 else:
 
 	/*----------------------------------------*
@@ -190,10 +206,10 @@ endif;
 		)
 	);
 
-	$field = 'clear_statistics';
+	$field = 'clear_cache';
 	add_settings_field(
 		$option_name . "_$field",
-		__( 'Clear statistics', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Clear cache', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,

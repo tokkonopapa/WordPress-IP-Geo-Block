@@ -22,7 +22,7 @@ var ip_geo_block_start = new Date();
 		}) : '';
 	}
 
-	function loding(id, flag) {
+	function loading(id, flag) {
 		if (flag) {
 			$('#ip-geo-block-' + id).addClass('ip-geo-block-loading');
 		} else {
@@ -41,19 +41,20 @@ var ip_geo_block_start = new Date();
 	}
 
 	function redirect(page, tab) {
-		if (0 === page.indexOf('options')) {
+		if (-1 !== location.href.indexOf(page)) {
 			window.location.href = sanitize(page) + '&' + sanitize(tab);
 		}
 	}
 
 	// Download from Maxmind server
 	function ajax_update_database() {
-		loding('download', true);
+		loading('download', true);
 
 		$.post(IP_GEO_BLOCK.url, {
 			action: IP_GEO_BLOCK.action,
 			nonce: IP_GEO_BLOCK.nonce,
-			download: 'maxmind'
+			cmd: 'download',
+			which: 'maxmind'
 		})
 
 		.done(function (data, textStatus, jqXHR) {
@@ -77,19 +78,20 @@ var ip_geo_block_start = new Date();
 		})
 
 		.always(function () {
-			loding('download', false);
+			loading('download', false);
 		});
 	}
 
 	// Search Geolocation
 	function ajax_get_location(service, ip) {
-		loding('loading', true);
+		loading('loading', true);
 
 		// `IP_GEO_BLOCK` is enqueued by wp_localize_script()
 		$.post(IP_GEO_BLOCK.url, {
 			action: IP_GEO_BLOCK.action,
 			nonce: IP_GEO_BLOCK.nonce,
-			provider: service,
+			cmd: 'search',
+			which: service,
 			ip: ip
 		})
 
@@ -123,41 +125,18 @@ var ip_geo_block_start = new Date();
 		})
 
 		.always(function () {
-			loding('loading', false);
+			loading('loading', false);
 		});
 	}
 
-	// Clear statistics
-	function ajax_clear_statistics() {
-		loding('loading', true);
+	// Clear statistics, cache, logs
+	function ajax_clear(cmd, type) {
+		loading('loading', true);
 
 		$.post(IP_GEO_BLOCK.url, {
 			action: IP_GEO_BLOCK.action,
 			nonce: IP_GEO_BLOCK.nonce,
-			statistics: 'clear'
-		})
-
-		.done(function (data, textStatus, jqXHR) {
-			redirect(data.page, data.tab);
-		})
-
-		.fail(function (jqXHR, textStatus, errorThrown) {
-			warning(textStatus, jqXHR.responseText);
-		})
-
-		.always(function () {
-			loding('loading', false);
-		});
-	}
-
-	// Clear logs
-	function ajax_clear_logs(type) {
-		loding('loading', true);
-
-		$.post(IP_GEO_BLOCK.url, {
-			action: IP_GEO_BLOCK.action,
-			nonce: IP_GEO_BLOCK.nonce,
-			validation: 'clear',
+			cmd: 'clear-' + cmd,
 			which: type
 		})
 
@@ -170,18 +149,18 @@ var ip_geo_block_start = new Date();
 		})
 
 		.always(function () {
-			loding('loading', false);
+			loading('loading', false);
 		});
 	}
 
 	// Load logs
 	function ajax_load_logs(type) {
-		loding('loading', true);
+		loading('loading', true);
 
 		$.post(IP_GEO_BLOCK.url, {
 			action: IP_GEO_BLOCK.action,
 			nonce: IP_GEO_BLOCK.nonce,
-			validation: 'restore',
+			cmd: 'restore',
 			which: type,
 			time: new Date() - ip_geo_block_start
 		})
@@ -190,7 +169,7 @@ var ip_geo_block_start = new Date();
 			var key;
 			for (key in data) {
 				if (data.hasOwnProperty(key)) {
-					key = sanitize(key); // already sanitized at the server
+					key = sanitize(key); // data has been already sanitized
 //					html = $.parseHTML(data[key]); // @since 1.8
 //					$('#ip-geo-block-log-' + key).empty().append(html);
 					$('#ip-geo-block-log-' + key).html(data[key]);
@@ -208,7 +187,7 @@ var ip_geo_block_start = new Date();
 				$('.ip-geo-block-log').fadeIn('slow').footable();
 //				console.timeEnd('timer');
 			}
-			loding('loading', false);
+			loading('loading', false);
 		});
 	}
 
@@ -222,6 +201,17 @@ var ip_geo_block_start = new Date();
 	}
 
 	$(function () {
+		// Make form style with fieldset and legend
+		$('.form-table').each(function () {
+			$this = $(this);
+			var title = $this.prev();
+			if (title.prop('tagName').toLowerCase() === 'h3') {
+				// Move title into the fieldset and wrap with legend
+				$this.wrap('<fieldset class="ip-geo-block-field"></fieldset>')
+				     .parent().prepend(title.wrap('<legend></legend>').parent());
+			}
+		});
+
 		// Kick-off footable
 		if ($('.ip-geo-block-log').hide().length) {
 			ajax_load_logs(null);
@@ -240,7 +230,15 @@ var ip_geo_block_start = new Date();
 		// Statistics
 		$('#clear_statistics').on('click', function (event) {
 			confirm('Clear statistics ?', function () {
-				ajax_clear_statistics();
+				ajax_clear('statistics', null);
+			});
+			return false;
+		});
+
+		// Statistics
+		$('#clear_cache').on('click', function (event) {
+			confirm('Clear cache ?', function () {
+				ajax_clear('cache', null);
 			});
 			return false;
 		});
@@ -248,7 +246,7 @@ var ip_geo_block_start = new Date();
 		// Validation Logs
 		$('#clear_logs').on('click', function (event) {
 			confirm('Clear logs ?', function () {
-				ajax_clear_logs(null);
+				ajax_clear('logs', null);
 			});
 			return false;
 		});

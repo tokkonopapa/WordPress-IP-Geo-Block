@@ -29,7 +29,7 @@
 	}
 
 	function is_admin(url, query) {
-		var uri = parse_uri(url ? url.toString().toLowerCase() : ''),
+		var uri = parse_uri(url ? url.toLowerCase() : ''),
 		    http = /https?/.test(uri.scheme),
 		    path = uri.path || location.pathname;
 
@@ -55,7 +55,7 @@
 	}
 
 	function sanitize(str) {
-		return str ? str.toString().replace(/[&<>"']/g, function (match) {
+		return str ? str.replace(/[&<>"']/g, function (match) {
 			return {
 				'&' : '&amp;',
 				'<' : '&lt;',
@@ -67,7 +67,7 @@
 	}
 
 	$(document).ajaxSend(function (event, jqxhr, settings) {
-		var nonce = IP_GEO_BLOCK_AUTH.nonce || null;
+		var nonce = IP_GEO_BLOCK_AUTH.nonce || '';
 		if (nonce && is_admin(settings.url, null/*settings.data*/) === 1) {
 			// multipart/form-data (XMLHttpRequest Level 2)
 			// IE10+, Firefox 4+, Safari 5+, Android 3+
@@ -97,10 +97,10 @@
 	});
 
 	$(function () {
-		var nonce = IP_GEO_BLOCK_AUTH.nonce || null;
+		var nonce = IP_GEO_BLOCK_AUTH.nonce || '';
 		if (nonce) {
 			$('a').on('click', function (event) {
-				var href = $(this).attr('href'),
+				var href = $(this).attr('href'), // String or undefined
 				    admin = is_admin(href, href);
 
 				// if target

@@ -335,6 +335,10 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 #### Change log
 
+- 2.0.7
+    - Avoid JavaScript error which occurs if an anchor link has no `href`.
+    - Improved UI on admin screen.
+    - Added a diagnosis for creation of database table.
 - 2.0.6
     - Sorry for urgent update but avoid an javascript error.
 - 2.0.4

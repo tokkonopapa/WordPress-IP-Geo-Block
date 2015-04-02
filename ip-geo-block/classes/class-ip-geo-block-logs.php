@@ -60,6 +60,19 @@ class IP_Geo_Block_Logs {
 			$wpdb->query( "TRUNCATE TABLE `$table`" );
 	}
 
+	public static function diag_table() {
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_NAME;
+
+		if ( $wpdb->get_var( "show tables like '$table'" ) !== $table )
+			return __(
+				'Creating a database table for verification log had failed. Once de-activate this plugin, and then activate again.',
+				IP_Geo_Block::TEXT_DOMAIN
+			);
+
+		return NULL;
+	}
+
 	/**
 	 * Limit the number of rows to send to the user agent
 	 *

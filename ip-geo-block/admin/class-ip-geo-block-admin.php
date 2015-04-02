@@ -55,12 +55,6 @@ class IP_Geo_Block_Admin {
 		// Add an action link pointing to the options page. @since 2.7
 		add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
 		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
-
-		// Check version and compatibility
-		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 ) {
-			$this->notice[] = __( 'You need WordPress 3.7+', IP_Geo_Block::TEXT_DOMAIN );
-			add_action( 'admin_notices', array( $this, 'admin_notice' ) );
-		}
 	}
 
 	/**
@@ -80,11 +74,13 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function admin_notice() {
-		if ( isset( $this->notice ) ) {
-			foreach ( $this->notice as $msg ) {
-				echo "\n<div class=\"error\"><p>IP Geo Block: $msg</p></div>\n";
-			}
+		foreach ( $this->notice as $msg ) {
+			echo "\n<div class=\"error\"><p>IP Geo Block: $msg</p></div>\n";
 		}
+	}
+
+	private function setting_notice( $name, $type, $msg ) {
+		add_settings_error( $this->option_slug, $this->option_name[ $name ], $msg, $type );
 	}
 
 	/**
@@ -179,6 +175,21 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function add_plugin_admin_menu() {
+		// Check version and compatibility
+		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 )
+			$this->notice[] = __( 'You need WordPress 3.7+', IP_Geo_Block::TEXT_DOMAIN );
+
+		// Check creation of database table
+		$settings = IP_Geo_Block::get_option( 'settings' );
+		if ( $settings['validation']['reclogs'] ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			if ( $error = IP_Geo_Block_Logs::diag_table() )
+				$this->notice[] = $error;
+		}
+
+		if ( isset( $this->notice ) )
+			add_action( 'admin_notices', array( $this, 'admin_notice' ) );
+
 		// Add a settings page for this plugin to the Settings menu.
 		$this->plugin_screen_hook_suffix = add_options_page(
 			__( 'IP Geo Block', IP_Geo_Block::TEXT_DOMAIN ),
@@ -226,6 +237,8 @@ class IP_Geo_Block_Admin {
 <?php if ( 2 === $tab ) { ?>
 	<div id="ip-geo-block-map"></div>
 <?php } else if ( 3 === $tab ) { ?>
+	<p><?php echo __( 'Thanks for providing these great services for free.', IP_Geo_Block::TEXT_DOMAIN ); ?><br />
+	<?php echo __( '(Most browsers will redirect you to each site without referrer when you click the link.)', IP_Geo_Block::TEXT_DOMAIN ); ?></p>
 	<p>This product includes GeoLite data created by MaxMind, available from <a class="ip-geo-block-link" href="http://www.maxmind.com" rel=noreferrer target=_blank>http://www.maxmind.com</a>.<br />
 	This product includes IP2Location open source libraries available from <a class="ip-geo-block-link" href="http://www.ip2location.com" rel=noreferrer target=_blank>http://www.ip2location.com</a>.</p>
 <?php } ?>
@@ -420,6 +433,11 @@ class IP_Geo_Block_Admin {
 							sanitize_text_field( $input[ $key ][ $provider ] ) : '';
 					}
 				}
+
+				// Check providers setting
+				if ( $error = IP_Geo_Block_Provider::diag_providers( $output[ $key ] ) ) {
+					$this->setting_notice( $option_name, 'error', $error );
+				}
 				break;
 /*
 			  case 'comment':
@@ -486,11 +504,8 @@ class IP_Geo_Block_Admin {
 		}
 
 		// Register a settings error to be displayed to the user
-		add_settings_error(
-			$this->option_slug,
-			$this->option_name[ $option_name ],
-			__( 'Successfully updated', IP_Geo_Block::TEXT_DOMAIN ),
-			'updated'
+		$this->setting_notice( $option_name, 'updated',
+			__( 'Successfully updated', IP_Geo_Block::TEXT_DOMAIN )
 		);
 
 		return $output;
@@ -519,100 +534,95 @@ class IP_Geo_Block_Admin {
 			status_header( 403 ); // Forbidden @since 2.0.0
 		}
 
-		// download database
-		else if ( isset( $_POST['download'] ) && 'maxmind' === $_POST['download'] ) {
-			$res = IP_Geo_Block::download_database( 'only-maxmind' ); // download now
-		}
+		$which = isset( $_POST['which'] ) ? $_POST['which'] : NULL;
+		switch ( isset( $_POST['cmd'  ] ) ? $_POST['cmd'  ] : NULL ) {
+		  case 'download':
+			if ( 'maxmind' === $which )
+				$res = IP_Geo_Block::download_database( 'only-maxmind' );
+			break;
 
-		// Check ip address
-		else if ( isset( $_POST['provider'] ) ) {
+		  case 'search':
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 			// check format
 			if ( filter_var( $ip = $_POST['ip'], FILTER_VALIDATE_IP ) ) {
-				// get location
-				$provider = $_POST['provider'];
-				$name = IP_Geo_Block_API::get_class_name( $provider );
-
-				if ( $name ) {
+				if ( $name = IP_Geo_Block_API::get_class_name( $which ) ) {
 					// get option settings and compose request headers
 					$options = IP_Geo_Block::get_option( 'settings' );
 					$args = IP_Geo_Block::get_request_headers( $options );
 
 					// create object for provider and get location
-					$key = ! empty( $options['providers'][ $provider ] );
-					$geo = new $name( $key ? $options['providers'][ $provider ] : NULL );
+					$key = ! empty( $options['providers'][ $which ] );
+					$geo = new $name( $key ? $options['providers'][ $which ] : NULL );
 					$res = $geo->get_location( $ip, $args );
 				}
-
 				else {
 					$res = array( 'errorMessage' => 'Unknown service.' );
 				}
 			}
-
 			else {
 				$res = array( 'errorMessage' => 'Invalid IP address.' );
 			}
-		}
+			break;
 
-		// Clear statistics
-		else if ( isset( $_POST['statistics'] ) && 'clear' === $_POST['statistics'] ) {
+		  case 'clear-statistics':
 			// set default values
 			update_option(
 				$this->option_name['statistics'],
 				IP_Geo_Block::get_default( 'statistics' )
 			);
+			$res = array(
+				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
+				'tab' => "tab=1"
+			);
+			break;
 
+		  case 'clear-cache':
 			// delete cache of IP address
 			delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
 			$res = array(
 				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
 				'tab' => "tab=1"
 			);
-		}
+			break;
 
-		// Validation logs
-		else if ( isset( $_POST['validation'] ) ) {
+		  case 'clear-logs':
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
-			$hook = array( NULL, 'comment', 'login', 'admin', 'xmlrpc' );
-			$which = isset( $_POST['which'] ) ? (int)$_POST['which'] : 0;
-			$which = (0 <= $which && $which <= 4) ? $hook[ $which ] : NULL;
+			$hook = array( 'comment', 'login', 'admin', 'xmlrpc' );
+			$which = in_array( $which, $hook ) ? $which : NULL;
+			IP_Geo_Block_Logs::clean_log( $which );
+			$res = array(
+				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
+				'tab' => "tab=4"
+			);
+			break;
 
-			switch ( $_POST['validation'] ) {
-			  case 'clear':
-				IP_Geo_Block_Logs::clean_log( $which );
+		  case 'restore':
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
-				$res = array(
-					'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
-					'tab' => "tab=4"
-				);
-				break;
+			// if js is slow then limit the number of rows
+			$limit = IP_Geo_Block_Logs::limit_rows( @$_POST['time'] );
 
-			  case 'restore':
-				// if js is slow then limit the number of rows
-				$limit = IP_Geo_Block_Logs::limit_rows( @$_POST['time'] );
-
-				// compose html with sanitization
-				$which = IP_Geo_Block_Logs::restore_log( $which );
-				foreach ( $which as $hook => $rows ) {
-					$html = '';
-					$n = 0;
-					foreach ( $rows as $logs ) {
-						$log = (int)array_shift( $logs );
-						$html .= "<tr><td data-value='" . $log . "'>";
-						$html .= ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
-						foreach ( $logs as $log ) {
-							$log = esc_html( $log );
-							$html .= "<td>$log</td>";
-						}
-						$html .= "</tr>";
-						if ( ++$n >= $limit ) break;
+			// compose html with sanitization
+			$which = IP_Geo_Block_Logs::restore_log( $which );
+			foreach ( $which as $hook => $rows ) {
+				$html = '';
+				$n = 0;
+				foreach ( $rows as $logs ) {
+					$log = (int)array_shift( $logs );
+					$html .= "<tr><td data-value='" . $log . "'>";
+					$html .= ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
+					foreach ( $logs as $log ) {
+						$log = esc_html( $log );
+						$html .= "<td>$log</td>";
 					}
-					$res[ $hook ] = $html;
+					$html .= "</tr>";
+					if ( ++$n >= $limit ) break;
 				}
-				break;
+				$res[ $hook ] = $html;
 			}
+			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

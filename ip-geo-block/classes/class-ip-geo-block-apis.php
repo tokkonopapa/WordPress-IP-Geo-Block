@@ -785,4 +785,32 @@ class IP_Geo_Block_Provider {
 		return $list;
 	}
 
+	/**
+	 * Check status of provider selection
+	 *
+	 */
+	public static function diag_providers( $settings = NULL ) {
+		if ( ! $settings ) {
+			$settings = IP_Geo_Block::get_option( 'settings' );
+			$settings = $settings['providers'];
+		}
+
+		$field = 0;
+		foreach ( self::get_providers( 'key' ) as $key => $val ) {
+			if ( ( NULL   === $val   && ! isset( $settings[ $key ] ) ) ||
+				 ( FALSE  === $val   && ! empty( $settings[ $key ] ) ) ||
+				 ( is_string( $val ) && ! empty( $settings[ $key ] ) ) ) {
+				$field++;
+			}
+		}
+
+		if ( 0 === $field )
+			return __(
+				'You need to select at least one IP geolocation service. Otherwise <strong>you will be locked out</strong> when the cache expires.',
+				IP_Geo_Block::TEXT_DOMAIN
+			);
+
+		return NULL;
+	}
+
 }
