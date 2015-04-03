@@ -611,8 +611,8 @@ class IP_Geo_Block_Admin {
 				$html = '';
 				$n = 0;
 				foreach ( $rows as $logs ) {
-					$log = (int)array_shift( $logs );
-					$html .= "<tr><td data-value='" . $log . "'>";
+					$log = array_shift( $logs );
+					$html .= "<tr><td data-value=\"$log\">";
 					$html .= ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
 					foreach ( $logs as $log ) {
 						$log = esc_html( $log );
