@@ -599,6 +599,7 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'restore':
+			require_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 			// if js is slow then limit the number of rows

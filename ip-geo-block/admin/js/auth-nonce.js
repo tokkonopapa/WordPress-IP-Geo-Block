@@ -6,7 +6,7 @@
 	var auth_nonce = 'ip-geo-block-auth-nonce';
 
 	function parse_uri(uri) {
-		var m = uri ? uri.match(
+		var m = uri ? uri.toString().match(
 			// https://tools.ietf.org/html/rfc3986#appendix-B
 			/^(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/
 		) : [];
@@ -22,14 +22,14 @@
 	}
 
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
-	function encodeURIComponentRFC3986 (str) {
+	function encodeURIComponentRFC3986(str) {
 		return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
 			return '%' + c.charCodeAt(0).toString(16);
 		});
 	}
 
 	function is_admin(url, query) {
-		var uri = parse_uri(url ? url.toLowerCase() : ''),
+		var uri = parse_uri(url ? url.toString().toLowerCase() : ''),
 		    http = /https?/.test(uri.scheme),
 		    path = uri.path || location.pathname;
 
@@ -55,7 +55,7 @@
 	}
 
 	function sanitize(str) {
-		return str ? str.replace(/[&<>"']/g, function (match) {
+		return str ? str.toString().replace(/[&<>"']/g, function (match) {
 			return {
 				'&' : '&amp;',
 				'<' : '&lt;',
