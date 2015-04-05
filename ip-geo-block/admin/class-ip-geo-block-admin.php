@@ -35,7 +35,10 @@ class IP_Geo_Block_Admin {
 			$this->option_name[ $key ] = $val;
 		}
 
-		// Load authenticated nonce
+		// Load plugin text domain.
+		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+
+		// Load authenticated nonce.
 		add_action( 'admin_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ) );
 		add_action( 'wp_ajax_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
 
@@ -53,6 +56,14 @@ class IP_Geo_Block_Admin {
 			self::$instance = new self;
 
 		return self::$instance;
+	}
+
+	/**
+	 * Load the plugin text domain for translation.
+	 *
+	 */
+	public function load_plugin_textdomain() {
+		load_plugin_textdomain( IP_Geo_Block::TEXT_DOMAIN, FALSE, dirname( IP_GEO_BLOCK_BASE ) . '/languages/' );
 	}
 
 	/**
@@ -111,7 +122,6 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function setup_admin_screen() {
-		$this->load_plugin_textdomain();
 		$this->add_plugin_admin_menu();
 		$this->diagnose_admin_settings();
 		$this->register_admin_settings();
@@ -119,14 +129,6 @@ class IP_Geo_Block_Admin {
 		// Add an action link pointing to the options page. @since 2.7
 		add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
 		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
-	}
-
-	/**
-	 * Load the plugin text domain for translation.
-	 *
-	 */
-	private function load_plugin_textdomain() {
-		load_plugin_textdomain( IP_Geo_Block::TEXT_DOMAIN, FALSE, dirname( IP_GEO_BLOCK_BASE ) . '/languages/' );
 	}
 
 	/**
@@ -204,7 +206,7 @@ class IP_Geo_Block_Admin {
 	private function diagnose_admin_settings() {
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 )
-			$this->notice[] = __( 'You need WordPress 3.7+', IP_Geo_Block::TEXT_DOMAIN );
+			$this->notice[] = __( 'You need WordPress 3.7+.', IP_Geo_Block::TEXT_DOMAIN );
 
 		// Check creation of database table
 		$settings = IP_Geo_Block::get_option( 'settings' );
@@ -506,7 +508,7 @@ class IP_Geo_Block_Admin {
 
 		// Register a settings error to be displayed to the user
 		$this->setting_notice( $option_name, 'updated',
-			__( 'Successfully updated', IP_Geo_Block::TEXT_DOMAIN )
+			__( 'Successfully updated.', IP_Geo_Block::TEXT_DOMAIN )
 		);
 
 		return $output;

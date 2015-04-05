@@ -219,10 +219,8 @@ class IP_Geo_Block_Logs {
 
 		$headers = array();
 		foreach ( array_keys( $_SERVER ) as $key ) {
-			if ( 'HTTP_' === substr( $key, 0, 5 ) && 
-			     empty( $exclusions[ $key ] ) ) {
+			if ( 'HTTP_' === substr( $key, 0, 5 ) && empty( $exclusions[ $key ] ) )
 				$headers[] = "$key=" . $_SERVER[ $key ];
-			}
 		}
 
 		return self::truncate_utf8( implode( ',', $headers ) );

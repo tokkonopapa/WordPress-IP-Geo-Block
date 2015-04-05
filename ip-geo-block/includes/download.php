@@ -64,7 +64,7 @@ function ip_geo_block_download_zip( $url, $args, $filename, $modified ) {
 	if ( 304 == $code )
 		return array(
 			'code' => $code,
-			'message' => "$code $msg",
+			'message' => __( 'Your database file is up-to-date.', IP_Geo_Block::TEXT_DOMAIN ),
 			'filename' => $filename,
 			'modified' => $modified,
 		);

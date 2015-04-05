@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.0.8\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-04-05 10:26+0900\n"
-"PO-Revision-Date: 2015-04-05 10:41+0900\n"
+"POT-Creation-Date: 2015-04-05 12:58+0900\n"
+"PO-Revision-Date: 2015-04-05 19:23+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -43,7 +43,7 @@ msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
 #: admin/class-ip-geo-block-admin.php:207
-msgid "You need WordPress 3.7+"
+msgid "You need WordPress 3.7+."
 msgstr "WordPress 3.7&thinsp;以上が必要です。"
 
 #: admin/class-ip-geo-block-admin.php:234
@@ -80,7 +80,7 @@ msgid "Enable"
 msgstr "有効"
 
 #: admin/class-ip-geo-block-admin.php:509
-msgid "Successfully updated"
+msgid "Successfully updated."
 msgstr "更新に成功しました。"
 
 #: admin/includes/tab-accesslog.php:23 admin/includes/tab-accesslog.php:52
@@ -474,6 +474,10 @@ msgid ""
 msgstr ""
 "検証のログ用データベース・テーブルが作成されていません。このプラグインを一旦"
 "無効化し、再度有効化して下さい。"
+
+#: includes/download.php:67
+msgid "Your database file is up-to-date."
+msgstr "データベース・ファイルは最新です。"
 
 #: includes/download.php:90
 #, php-format
