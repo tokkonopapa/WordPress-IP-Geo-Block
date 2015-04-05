@@ -5,7 +5,7 @@
 # structure on http://plugins.svn.wordpress.org/ip-geo-block/
 # /ip-geo-block
 #	assets/
-#		icon-256x256.jpg
+#		icon-128x128.png
 #		screenshot-1.png
 #		screenshot-2.png
 #		screenshot-3.png
