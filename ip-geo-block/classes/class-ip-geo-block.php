@@ -20,7 +20,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.0.7';
+	const VERSION = '2.0.8';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -185,14 +185,6 @@ class IP_Geo_Block {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			IP_Geo_Block_Logs::delete_log();
 		}
-	}
-
-	/**
-	 * Load the plugin text domain for translation.
-	 *
-	 */
-	public static function load_plugin_textdomain() {
-		load_plugin_textdomain( self::TEXT_DOMAIN, FALSE, dirname( IP_GEO_BLOCK_BASE ) . '/languages/' );
 	}
 
 	/**
@@ -442,8 +434,8 @@ class IP_Geo_Block {
 	}
 
 	public function validate_admin( $something ) {
-		$type = NULL; // type of validation
 		global $pagenow; // http://codex.wordpress.org/Global_Variables
+		$type = NULL;    // type of validation
 
 		if ( ! empty( $_REQUEST['action'] ) ) {
 			switch ( $pagenow ) {
@@ -581,7 +573,7 @@ class IP_Geo_Block {
 	 * Database auto downloader.
 	 *
 	 */
-	public static function download_database( $only = NULL ) {
+	public static function download_database() {
 		require_once( IP_GEO_BLOCK_PATH . 'includes/download.php' );
 
 		// download database files
@@ -594,10 +586,6 @@ class IP_Geo_Block {
 
 		// re-schedule cron job
 		self::schedule_cron_job( $settings['update'], $settings['maxmind'] );
-
-		// update only the portion related to Maxmind
-		if ( $only )
-			$settings[ $only ] = TRUE;
 
 		// update option settings
 		update_option( self::$option_keys['settings'], $settings );

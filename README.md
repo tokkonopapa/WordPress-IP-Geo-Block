@@ -335,6 +335,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 #### Change log
 
+- 2.0.8
+    - Optimized to avoid redundant resource loading.
 - 2.0.7
     - Avoid JavaScript error which occurs if an anchor link has no `href`.
     - Improved UI on admin screen.
