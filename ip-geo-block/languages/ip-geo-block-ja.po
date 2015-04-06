@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 2.0.8\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
 "POT-Creation-Date: 2015-04-05 12:58+0900\n"
-"PO-Revision-Date: 2015-04-05 19:23+0900\n"
+"PO-Revision-Date: 2015-04-07 00:18+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -64,8 +64,7 @@ msgstr "リンク"
 
 #: admin/class-ip-geo-block-admin.php:250
 msgid "Thanks for providing these great services for free."
-msgstr ""
-"すばらしいサービスの提供元である以下のサイトに、敬意と感謝の意を表します！"
+msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
 #: admin/class-ip-geo-block-admin.php:251
 msgid ""
