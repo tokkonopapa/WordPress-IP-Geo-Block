@@ -42,7 +42,6 @@ class IP_Geo_Block_Options {
 			    'comment'     => TRUE,    // Validate on comment post
 			    'login'       => FALSE,   // Validate on login
 			    'admin'       => 0,       // Validate on admin
-			    'ajax'        => 0,       // Validate on admin ajax
 			    'xmlrpc'      => TRUE,    // Validate on xmlrpc
 			    'proxy'       => NULL,    // $_SERVER variables for IPs
 			    'reclogs'     => 0,       // 1:blocked 2:passed 3:unauth 4:auth 5:all

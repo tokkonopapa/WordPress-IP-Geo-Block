@@ -18,7 +18,7 @@ vulnerability such as XSS, CSRF, SQLi, LFI and so on. For example, if a plugin
 has vulnerability of Local File Inclusion (LFI), the attackers can easily 
 download the `wp-config.php` without knowing the username and password by 
 simply hitting 
-    [wp-admin/admin-ajax.php?action=something-vulnerable&file=../wp-config.php](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
+    [wp-admin/admin-ajax.php?action=show-me&file=../wp-config.php](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
 on their browser.
 
 For these cases, the protection based on the IP address is not a perfect 
@@ -49,9 +49,9 @@ of the country code.
 
 3. Besides the country code, the original new feature '**Z**ero-day 
 **E**xploit **P**revention for wp-admin' (WP-ZEP) is now available to block 
-malicious access to `wp-admin/admin.php`, `wp-admin/admin-ajax.php` and 
- `wp-admin/admin-post.php`. It will protect against certain types of attack 
-such as CSRF, SQLi and so on even if you have some 
+malicious access to `wp-admin/(admin|admin-ajax|admin-post).php`. It will 
+protect against certain types of attack such as CSRF, SQLi and so on even 
+if you have some 
     [vulnerable plugins](https://wpvulndb.com/ "WPScan Vulnerability Database")
 in your site. Because this is an experimental feature, please open an issue at 
     [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
@@ -95,6 +95,32 @@ pre-defined filter hook. See various use cases in
     [sample.php](sample)
 bundled within this package.
 
+### Requirement:
+
+- WordPress 3.7+
+
+### Attribution:
+
+This package includes GeoLite data created by MaxMind, available from 
+    [MaxMind][MaxMind],
+and also includes IP2Location open source libraries available from 
+    [IP2Location][IP2Loc].
+
+Also thanks for providing the following great services and REST APIs for free.
+
+    Provider                               | Supported type | Licence
+    ---------------------------------------|----------------|--------
+    [http://freegeoip.net/]    [freegeoip] | IPv4           | free
+    [http://ipinfo.io/]           [ipinfo] | IPv4, IPv6     | free
+    [http://www.telize.com/]      [Telize] | IPv4, IPv6     | free
+    [http://ip-json.rhcloud.com/] [IPJson] | IPv4, IPv6     | free
+    [http://ip.pycox.com/]         [Pycox] | IPv4, IPv6     | free
+    [http://geoip.nekudo.com/]    [Nekudo] | IPv4, IPv6     | free
+    [http://xhanch.com/]          [Xhanch] | IPv4           | free
+    [http://www.geoplugin.com/][geoplugin] | IPv4, IPv6     | free, need an attribution link
+    [http://ip-api.com/]           [ipapi] | IPv4, IPv6     | free for non-commercial use
+    [http://ipinfodb.com/]      [IPInfoDB] | IPv4, IPv6     | free for registered user
+
 ### Installation:
 
 1. Upload `ip-geo-block` directory to your plugins directory.
@@ -122,39 +148,11 @@ bundled within this package.
     Validate access to `wp-login.php`.
 
 - **Admin area**  
-    Validate access to `wp-admin/*.php` except `wp-admin/admin-(ajax|post).php`.
-
-- **Admin ajax/post**  
-    Validate access to `wp-admin/admin-(ajax|post).php`.
-
-- **Record validation statistics**  
-    If `Enable`, you can see `Statistics of validation` on Statistics tab.
-
-- **Record validation logs**  
-    If you select anything but `Disable`, you can see `Validation logs` on 
-    Logs tab.
-
-- **$_POST keys in logs**  
-    Normally, you can see just keys at `$_POST data:` on Logs tab. If you put 
-    some of interested keys into this textfield, you can see the value of key 
-    like `key=value`.
+    Validate access to `wp-admin/*.php`.
 
 - **$_SERVER keys for extra IPs**  
     Additional IP addresses will be validated if some of keys in `$_SERVER` 
     variable are specified in this textfield. Typically `HTTP_X_FORWARDED_FOR`.
-
-#### Maxmind GeoLite settings
-
-- **Auto updating (once a month)**
-    If `Enable`, Maxmind GeoLite database will be downloaded automatically 
-    by WordPress cron job.
-
-#### Submission settings
-
-- **Text position on comment form**  
-    If you want to put some text message on your comment form, please select
-    `Top` or `Bottom` and put text into the **Text message on comment form**
-    textfield.
 
 - **Matching rule**  
     Select `White list` (recommended) or `Black list` to specify the countries
@@ -174,6 +172,33 @@ bundled within this package.
     the 4xx code will lead to WordPress error page, and the 5xx will pretend 
     an server error.
 
+#### Record settings
+
+- **Record validation statistics**  
+    If `Enable`, you can see `Statistics of validation` on Statistics tab.
+
+- **Record validation logs**  
+    If you select anything but `Disable`, you can see `Validation logs` on 
+    Logs tab.
+
+- **$_POST keys in logs**  
+    Normally, you can see just keys at `$_POST data:` on Logs tab. If you put 
+    some of interested keys into this textfield, you can see the value of key 
+    like `key=value`.
+
+#### Maxmind GeoLite settings
+
+- **Auto updating (once a month)**
+    If `Enable`, Maxmind GeoLite database will be downloaded automatically 
+    by WordPress cron job.
+
+#### Submission settings
+
+- **Text position on comment form**  
+    If you want to put some text message on your comment form, please select
+    `Top` or `Bottom` and put text into the **Text message on comment form**
+    textfield.
+
 #### Cache settings
 
 - **Number of entries**  
@@ -187,32 +212,6 @@ bundled within this package.
 - **Remove settings at uninstallation**  
     If you checked this option, all settings will be removed when this plugin
     is uninstalled for clean uninstalling.
-
-### Requirement:
-
-- WordPress 3.7+
-
-### Attribution:
-
-This package includes GeoLite data created by MaxMind, available from 
-    [MaxMind][MaxMind],
-and also includes IP2Location open source libraries available from 
-    [IP2Location][IP2Loc].
-
-Also thanks for providing the following great services and REST APIs for free.
-
-    Provider                               | Supported type | Licence
-    ---------------------------------------|----------------|--------
-    [http://freegeoip.net/]    [freegeoip] | IPv4           | free
-    [http://ipinfo.io/]           [ipinfo] | IPv4, IPv6     | free
-    [http://www.telize.com/]      [Telize] | IPv4, IPv6     | free
-    [http://ip-json.rhcloud.com/] [IPJson] | IPv4, IPv6     | free
-    [http://ip.pycox.com/]         [Pycox] | IPv4, IPv6     | free
-    [http://geoip.nekudo.com/]    [Nekudo] | IPv4, IPv6     | free
-    [http://xhanch.com/]          [Xhanch] | IPv4           | free
-    [http://www.geoplugin.com/][geoplugin] | IPv4, IPv6     | free, need an attribution link
-    [http://ip-api.com/]           [ipapi] | IPv4, IPv6     | free for non-commercial use
-    [http://ipinfodb.com/]      [IPInfoDB] | IPv4, IPv6     | free for registered user
 
 ### FAQ:
 
@@ -267,7 +266,7 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
-* `ip-geo-block-admin-actions`    : array of actions for `wp-admin/admin-(ajax|post).php`.
+* `ip-geo-block-admin-actions`    : array of actions for `wp-admin/(admin|admin-ajax|admin-post).php`.
 * `ip-geo-block-backup-dir`       : absolute path where log files should be saved.
 * `ip-geo-block-maxmind-dir`      : absolute path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
@@ -286,8 +285,8 @@ every admin screen.
 
 This simple system will validate both of them on behalf of vulnerable plugins 
 in your site and will block a request with a query parameter `action` through 
- `wp-admin/admin.php` and `wp-admin/admin-(ajax|post).php` if it has no nonce 
-and privilege. Moreover, it doesn't affects a request from non-logged-in user.
+ `wp-admin/(admin|admin-ajax|admin-post).php` if it has no nonce and privilege.
+Moreover, it doesn't affects a request from non-logged-in user.
 
 On the other hand, the details of above process are slightly delicate. For 
 example, it's incapable of preventing Privilege Escalation (PE) because it 
@@ -315,8 +314,7 @@ you are using at the support forum.
 #### I want to use only WP-ZEP. ####
 
 Uncheck the `Comment post`, `XML-RPC` and `Login form` in `Validation settings` 
-on `Setting` tab. And select `Prevent zero-day exploit` for `Admin area` and 
- `Admin ajax/post`
+on `Setting` tab. And select `Prevent zero-day exploit` for `Admin area`.
 
 At last empty the textfield of `White list` or `Black list` according to the 
  `Matching rule`.
@@ -336,7 +334,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 #### Change log
 
 - 2.0.8
-    - Optimized to avoid redundant resource loading.
+    - Optimized resource loading settings to avoid redundancy.
+    - Unified validatoin of wp-admin area.
 - 2.0.7
     - Avoid JavaScript error which occurs if an anchor link has no `href`.
     - Improved UI on admin screen.

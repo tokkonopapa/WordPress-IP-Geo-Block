@@ -76,8 +76,8 @@ class IP_Geo_Block {
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
 		}
 
-		// wp-admin/{admin.php|admin-apax.php|admin-post.php} @since 2.5.0
-		if ( $settings['validation']['admin'] || $settings['validation']['ajax'] )
+		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
+		if ( $settings['validation']['admin'] )
 			add_action( 'admin_init', array( $this, 'validate_admin' ) );
 
 		// Load authenticated nonce
@@ -441,11 +441,11 @@ class IP_Geo_Block {
 			switch ( $pagenow ) {
 			  case 'admin-ajax.php':
 				if ( ! has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) )
-					$type = 'ajax';
+					$type = 'admin';
 				break;
 			  case 'admin-post.php':
 				if ( ! has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) )
-					$type = 'ajax';
+					$type = 'admin';
 				break;
 			  case 'admin.php':
 				$type = 'admin';
