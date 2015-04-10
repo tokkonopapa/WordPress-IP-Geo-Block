@@ -237,8 +237,8 @@ Add the following codes to `functions.php` in your theme and upload it via FTP.
 add_filter( 'ip-geo-block-login', 'my_emergency' );
 add_filter( 'ip-geo-block-admin', 'my_emergency' );`
 
-Then `Clear statistics` at `Statistics` tab on your dashborad. After that, you 
-can remove above codes.
+Then `Clear cache` at `Statistics` tab on your dashborad. After that, you can 
+remove above codes.
 
 = How can I protect my `wp-config.php` against malicious access? =
 
