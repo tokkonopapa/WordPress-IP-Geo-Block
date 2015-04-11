@@ -482,4 +482,42 @@ function ip_geo_block_tab_settings( $context ) {
 			'value' => $options[ $field ],
 		)
 	);
+
+	require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+
+	if ( IP_Geo_Block_Logs::diag_table() ) {
+		$field = 'create_table';
+		add_settings_field(
+			$option_name . "_$field",
+			__( 'Create DB table for validation logs', IP_Geo_Block::TEXT_DOMAIN ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'button',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => __( 'Create now', IP_Geo_Block::TEXT_DOMAIN ),
+				'after' => '<div id="ip-geo-block-loading"></div>',
+			)
+		);
+	}
+
+	if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
+		$field = 'delete_table';
+		add_settings_field(
+			$option_name . "_$field",
+			__( 'Delete DB table for validation logs', IP_Geo_Block::TEXT_DOMAIN ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'button',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => __( 'Delete now', IP_Geo_Block::TEXT_DOMAIN ),
+				'after' => '<div id="ip-geo-block-loading"></div>',
+			)
+		);
+	}
 }

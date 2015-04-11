@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.0.8\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-04-07 23:04+0900\n"
-"PO-Revision-Date: 2015-04-07 23:19+0900\n"
+"POT-Creation-Date: 2015-04-11 17:25+0900\n"
+"PO-Revision-Date: 2015-04-11 17:42+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -122,7 +122,7 @@ msgstr "IPアドレス"
 
 #: admin/includes/tab-accesslog.php:78
 msgid "Code"
-msgstr "コード"
+msgstr "国"
 
 #: admin/includes/tab-accesslog.php:79
 msgid "Result"
@@ -360,6 +360,22 @@ msgstr "プラグインの設定"
 msgid "Remove settings at uninstallation"
 msgstr "アンインストール時に設定を削除"
 
+#: admin/includes/tab-settings.php:492
+msgid "Create DB table for validation logs"
+msgstr "検証のログ用データベース・テーブルの作成"
+
+#: admin/includes/tab-settings.php:500
+msgid "Create now"
+msgstr "今すぐ作成"
+
+#: admin/includes/tab-settings.php:510
+msgid "Delete DB table for validation logs"
+msgstr "検証のログ用データベース・テーブルの削除"
+
+#: admin/includes/tab-settings.php:518
+msgid "Delete now"
+msgstr "今すぐ削除"
+
 #: admin/includes/tab-statistics.php:21 admin/includes/tab-statistics.php:149
 msgid "Statistics of validation"
 msgstr "検証の統計"
@@ -442,13 +458,14 @@ msgstr ""
 "少なくとも1つ以上の位置情報サービスを選択して下さい。未選択の場合、キャッシュ"
 "の有効期限切れと共に<strong>ロックアウトされます</strong>。"
 
-#: classes/class-ip-geo-block-logs.php:69
+#: classes/class-ip-geo-block-logs.php:71
 msgid ""
-"Creating a database table for verification log had failed. Once de-activate "
-"this plugin, and then activate again."
+"Creating a DB table for verification logs had failed. Please try "
+"<code>Create now</code> at <code>Plugin settings</code> on <code>Settings</"
+"code> tab."
 msgstr ""
-"検証のログ用データベース・テーブルが作成されていません。このプラグインを一旦"
-"無効化し、再度有効化して下さい。"
+"検証のログ用データベース・テーブルが作成されていません。<code>設定</code>タブ"
+"の<code>プラグインの設定</code>からテーブルを再作成して下さい。"
 
 #: includes/download.php:67
 msgid "Your database file is up-to-date."

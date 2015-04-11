@@ -8,7 +8,10 @@
  * @link      http://tokkono.cute.coocan.jp/blog/slow/
  * @copyright 2013-2015 tokkonopapa
  */
-define( 'IP_GEO_BLOCK_MAX_POST_LEN', 255 );
+
+// varchar can not be exceeded over 255 before MySQL-5.0.3.
+define( 'IP_GEO_BLOCK_MAX_STR_LEN', 255 );
+define( 'IP_GEO_BLOCK_MAX_TXT_LEN', 511 );
 
 class IP_Geo_Block_Logs {
 
@@ -22,8 +25,7 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_NAME;
 
-		// creating mixed db engine will cause some troubles.
-		// some systems can not exceed over 255 for varchar.
+		// creating mixed storage engine may cause troubles with some plugins.
 		$wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
  `No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
  `time` int(10) unsigned NOT NULL DEFAULT 0,
@@ -32,14 +34,14 @@ class IP_Geo_Block_Logs {
  `auth` int(10) unsigned NOT NULL DEFAULT 0,
  `code` varchar(2) NOT NULL DEFAULT 'ZZ',
  `result` varchar(8) NULL,
- `method` varchar(255) NOT NULL,
- `user_agent` varchar(255) NULL,
- `headers` varchar(511) NULL,
+ `method` varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
+ `user_agent` varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
+ `headers` varchar("    . IP_GEO_BLOCK_MAX_TXT_LEN . ") NULL,
  `data` text NULL,
  PRIMARY KEY (`No`),
  KEY `time` (`time`),
  KEY `hook` (`hook`)
-) CHARACTER SET 'utf8'" );
+) CHARACTER SET 'utf8'" ); // ENGINE 'InnoDB' or 'MyISAM'
 	}
 
 	public static function delete_log() {
@@ -66,7 +68,7 @@ class IP_Geo_Block_Logs {
 
 		if ( $wpdb->get_var( "show tables like '$table'" ) !== $table )
 			return __(
-				'Creating a database table for verification log had failed. Once de-activate this plugin, and then activate again.',
+				'Creating a DB table for verification logs had failed. Please try <code>Create now</code> at <code>Plugin settings</code> on <code>Settings</code> tab.',
 				IP_Geo_Block::TEXT_DOMAIN
 			);
 
@@ -135,7 +137,7 @@ class IP_Geo_Block_Logs {
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/functions.php
 	 */
-	private static function truncate_utf8( $str, $regexp = NULL, $replace = '', $len = IP_GEO_BLOCK_MAX_POST_LEN ) {
+	private static function truncate_utf8( $str, $regexp = NULL, $replace = '', $len = IP_GEO_BLOCK_MAX_STR_LEN ) {
 		// remove unnecessary characters
 		$str = @preg_replace( '/[\x00-\x1f\x7f]/', '', $str );
 		if ( $regexp )
@@ -223,7 +225,9 @@ class IP_Geo_Block_Logs {
 				$headers[] = "$key=" . $_SERVER[ $key ];
 		}
 
-		return self::truncate_utf8( implode( ',', $headers ) );
+		return self::truncate_utf8(
+			implode( ',', $headers ), NULL, '', IP_GEO_BLOCK_MAX_TXT_LEN
+		);
 	}
 
 	private static function get_post_data( $hook, $validate, $settings ) {
@@ -233,7 +237,9 @@ class IP_Geo_Block_Logs {
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {
 			global $HTTP_RAW_POST_DATA;
-			$posts = self::truncate_utf8( $HTTP_RAW_POST_DATA, '/\s*([<>])\s*/', '$1' );
+			$posts = self::truncate_utf8(
+				$HTTP_RAW_POST_DATA, '/\s*([<>])\s*/', '$1', IP_GEO_BLOCK_MAX_TXT_LEN
+			);
 
 			// mask the password
 			if ( $mask_pwd &&
@@ -267,7 +273,9 @@ class IP_Geo_Block_Logs {
 			foreach ( $keys as $key => $val )
 				$posts[] = $val ? "$key=$val" : "$key";
 
-			$posts = self::truncate_utf8( implode( ',', $posts ), '/\s+/', ' ' );
+			$posts = self::truncate_utf8(
+				implode( ',', $posts ), '/\s+/', ' ', IP_GEO_BLOCK_MAX_TXT_LEN
+			);
 		}
 
 		return $posts;
@@ -285,6 +293,7 @@ class IP_Geo_Block_Logs {
 
 		$path = trailingslashit( $path ) .
 			IP_Geo_Block::PLUGIN_SLUG . date('-Y-m') . '.log';
+
 		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )
 			return;
 
@@ -332,12 +341,11 @@ class IP_Geo_Block_Logs {
 
 		// count the number of rows for each hook
 		$sql = $wpdb->prepare(
-			"SELECT count(*) FROM `$table` WHERE `hook` = '%s'",
-			$hook
+			"SELECT count(*) FROM `$table` WHERE `hook` = '%s'", $hook
 		) and $count = (int)$wpdb->get_var( $sql );
 
 		if ( isset( $count ) && $count >= $rows ) {
-			// Can't start transaction on the assumption that the db is innoDB.
+			// Can't start transaction on the assumption that the storage engine is innoDB.
 			// So there are some cases where logs are excessively deleted.
 			$sql = $wpdb->prepare(
 				"DELETE FROM `$table` WHERE `hook` = '%s' ORDER BY `No` ASC LIMIT %d",
@@ -397,9 +405,10 @@ class IP_Geo_Block_Logs {
 
 		foreach ( $list as $row ) {
 			$hook = array_shift( $row );
-			$result[ $hook ][] = $row; // must be sanitized just before sending to UA.
+			$result[ $hook ][] = $row;
 		}
 
+		// must be sanitized just before sending to UA.
 		return isset( $result ) ? $result : array();
 	}
 

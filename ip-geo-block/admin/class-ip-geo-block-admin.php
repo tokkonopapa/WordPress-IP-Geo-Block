@@ -626,6 +626,23 @@ class IP_Geo_Block_Admin {
 				}
 				$res[ $hook ] = $html;
 			}
+			break;
+
+		  case 'create_table':
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			IP_Geo_Block_Logs::create_log();
+			$res = array(
+				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
+			);
+			break;
+
+		  case 'delete_table':
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			IP_Geo_Block_Logs::delete_log();
+			$res = array(
+				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
+			);
+			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

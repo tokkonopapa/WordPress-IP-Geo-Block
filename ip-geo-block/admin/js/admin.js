@@ -42,7 +42,7 @@ var ip_geo_block_start = new Date();
 
 	function redirect(page, tab) {
 		if (-1 !== location.href.indexOf(page)) {
-			window.location.href = sanitize(page) + '&' + sanitize(tab);
+			window.location.href = sanitize(page) + (tab ? '&' + sanitize(tab) : '');
 		}
 	}
 
@@ -191,6 +191,29 @@ var ip_geo_block_start = new Date();
 		});
 	}
 
+	// Manipulate DB table for validation logs
+	function ajax_table(cmd) {
+		loading('loading', true);
+
+		$.post(IP_GEO_BLOCK.url, {
+			action: IP_GEO_BLOCK.action,
+			nonce: IP_GEO_BLOCK.nonce,
+			cmd: cmd
+		})
+
+		.done(function (data, textStatus, jqXHR) {
+			redirect(data.page, data.tab);
+		})
+
+		.fail(function (jqXHR, textStatus, errorThrown) {
+			warning(textStatus, jqXHR.responseText);
+		})
+
+		.always(function () {
+			loading('loading', false);
+		});
+	}
+
 	// Show/Hide description of WP-ZEP
 	function show_description(select, id) {
 		if (2 == $(select).val()) {
@@ -243,10 +266,24 @@ var ip_geo_block_start = new Date();
 			return false;
 		});
 
-		// Validation Logs
+		// Validation logs
 		$('#clear_logs').on('click', function (event) {
 			confirm('Clear logs ?', function () {
 				ajax_clear('logs', null);
+			});
+			return false;
+		});
+
+	// Manipulate DB table for validation logs
+		$('#create_table').on('click', function (event) {
+			confirm('Create table ?', function () {
+				ajax_table('create_table');
+			});
+			return false;
+		});
+		$('#delete_table').on('click', function (event) {
+			confirm('Delete table ?', function () {
+				ajax_table('delete_table');
 			});
 			return false;
 		});

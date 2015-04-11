@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.0.8\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-04-07 23:04+0900\n"
-"PO-Revision-Date: 2015-04-07 23:05+0900\n"
+"POT-Creation-Date: 2015-04-11 17:25+0900\n"
+"PO-Revision-Date: 2015-04-11 17:27+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -345,6 +345,22 @@ msgstr ""
 msgid "Remove settings at uninstallation"
 msgstr ""
 
+#: admin/includes/tab-settings.php:492
+msgid "Create DB table for validation logs"
+msgstr ""
+
+#: admin/includes/tab-settings.php:500
+msgid "Create now"
+msgstr ""
+
+#: admin/includes/tab-settings.php:510
+msgid "Delete DB table for validation logs"
+msgstr ""
+
+#: admin/includes/tab-settings.php:518
+msgid "Delete now"
+msgstr ""
+
 #: admin/includes/tab-statistics.php:21 admin/includes/tab-statistics.php:149
 msgid "Statistics of validation"
 msgstr ""
@@ -423,10 +439,11 @@ msgid ""
 "<strong>you will be locked out</strong> when the cache expires."
 msgstr ""
 
-#: classes/class-ip-geo-block-logs.php:69
+#: classes/class-ip-geo-block-logs.php:71
 msgid ""
-"Creating a database table for verification log had failed. Once de-activate "
-"this plugin, and then activate again."
+"Creating a DB table for verification logs had failed. Please try "
+"<code>Create now</code> at <code>Plugin settings</code> on <code>Settings</"
+"code> tab."
 msgstr ""
 
 #: includes/download.php:67
