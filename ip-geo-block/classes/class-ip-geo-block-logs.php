@@ -43,6 +43,7 @@ class IP_Geo_Block_Logs {
 
 		ip_geo_block_log( get_option( 'active_plugins' ), __FILE__, __LINE__ );
 		ip_geo_block_log( get_site_option( 'active_sitewide_plugins' ), __FILE__, __LINE__ );
+		ip_geo_block_log( IP_Geo_Block::get_option( 'settings' ), __FILE__, __LINE__ );
 
 		ip_geo_block_log( $ret, __FILE__, __LINE__ );
 		ip_geo_block_log( $wpdb->get_results( "SHOW CREATE TABLE $table" ), __FILE__, __LINE__ );
