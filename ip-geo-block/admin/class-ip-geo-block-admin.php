@@ -629,16 +629,11 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'create_table':
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-			IP_Geo_Block_Logs::create_log();
-			$res = array(
-				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
-			);
-			break;
-
 		  case 'delete_table':
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-			IP_Geo_Block_Logs::delete_log();
+			'create_table' === $_POST['cmd'] ?
+				IP_Geo_Block_Logs::create_log() :
+				IP_Geo_Block_Logs::delete_log();
 			$res = array(
 				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
 			);
