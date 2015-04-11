@@ -66,13 +66,14 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_NAME;
 
-		if ( $wpdb->get_var( "show tables like '$table'" ) !== $table )
-			return __(
-				'Creating a DB table for verification logs had failed. Please try <code>Create now</code> at <code>Plugin settings</code> on <code>Settings</code> tab.',
-				IP_Geo_Block::TEXT_DOMAIN
-			);
+		static $done = NULL;
+		if ( $done === NULL )
+			$done = $wpdb->get_var( "show tables like '$table'" );
 
-		return NULL;
+		return $done !== $table ? __(
+			'Creating a DB table for verification logs had failed. Please try <code>Create now</code> at <code>Plugin settings</code> on <code>Settings</code> tab.',
+			IP_Geo_Block::TEXT_DOMAIN
+		) : NULL;
 	}
 
 	/**
@@ -103,8 +104,8 @@ class IP_Geo_Block_Logs {
 			return '';
 
 		// Store the site charset as a static to avoid multiple calls to get_option()
-		static $is_utf8;
-		if ( ! isset( $is_utf8 ) )
+		static $is_utf8 = NULL;
+		if ( $is_utf8 === NULL )
 			$is_utf8 = array_key_exists(
 				get_option( 'blog_charset' ),
 				array( 'utf8' => NULL, 'utf-8' => NULL, 'UTF8' => NULL, 'UTF-8' => NULL )
@@ -115,8 +116,8 @@ class IP_Geo_Block_Logs {
 			return '…';
 
 		// Check support for utf8 in the installed PCRE library
-		static $utf8_pcre;
-		if ( ! isset( $utf8_pcre ) )
+		static $utf8_pcre = NULL;
+		if ( $utf8_pcre === NULL )
 			$utf8_pcre = @preg_match( '/^./u', 'a' );
 
 		// if no support then reject $str for safety
