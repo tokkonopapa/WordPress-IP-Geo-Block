@@ -24,7 +24,7 @@ class IP_Geo_Block_Logs {
 
 		// creating mixed db engine will cause some troubles.
 		// some systems can not exceed over 255 for varchar.
-		$wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
+		$ret = $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
  `No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
  `time` int(10) unsigned NOT NULL DEFAULT 0,
  `ip` varchar(40) NOT NULL,
@@ -40,6 +40,13 @@ class IP_Geo_Block_Logs {
  KEY `time` (`time`),
  KEY `hook` (`hook`)
 ) CHARACTER SET 'utf8'" );
+
+		ip_geo_block_log( get_option( 'active_plugins' ), __FILE__, __LINE__ );
+		ip_geo_block_log( get_site_option( 'active_sitewide_plugins' ), __FILE__, __LINE__ );
+
+		ip_geo_block_log( $ret, __FILE__, __LINE__ );
+		ip_geo_block_log( $wpdb->get_results( "SHOW CREATE TABLE $table" ), __FILE__, __LINE__ );
+		ip_geo_block_log( $wpdb->get_results( "DESCRIBE $table" ), __FILE__, __LINE__ );
 	}
 
 	public static function delete_log() {
@@ -284,13 +291,15 @@ class IP_Geo_Block_Logs {
 		// $path should be absolute path to the directory
 		if ( validate_file( $path ) !== 0 )
 			return;
-
+/*
 		$path = trailingslashit( $path ) .
 			IP_Geo_Block::PLUGIN_SLUG . date('-Y-m') . '.log';
+
 		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )
 			return;
-
-		fprintf( $fp, "%d,%s,%s,%d,%s,%s,%s,%s,%s,%s\n",
+*/
+//		fprintf( $fp, "%d,%s,%s,%d,%s,%s,%s,%s,%s,%s\n",
+		$logs = sprintf( "%d,%s,%s,%d,%s,%s,%s,%s,%s,%s\n",
 			$_SERVER['REQUEST_TIME'],
 			$validate['ip'],
 			$hook,
@@ -302,8 +311,12 @@ class IP_Geo_Block_Logs {
 			str_replace( ',', '‚', $heads ), // &#044; --> &#130;
 			str_replace( ',', '‚', $posts )  // &#044; --> &#130;
 		);
+		ip_geo_block_log( $logs, __FILE__, __LINE__ );
+//		fclose( $fp );
+	}
 
-		fclose( $fp );
+	public static function backup_dir( $hook, $dir ) {
+		return WP_CONTENT_DIR . '/debug.log';
 	}
 
 	/**
@@ -362,7 +375,10 @@ class IP_Geo_Block_Logs {
 			$agent,
 			$heads,
 			$posts
-		) and $wpdb->query( $sql );
+		) and $sql = $wpdb->query( $sql );
+
+		ip_geo_block_log( $sql, __FILE__, __LINE__ );
+		add_filter( 'ip-geo-block-backup-dir', 'IP_Geo_Block_Logs::backup_dir', 10, 2 );
 
 		// backup logs to text files
 		if ( $dir = apply_filters(

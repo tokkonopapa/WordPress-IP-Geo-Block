@@ -27,6 +27,18 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+function ip_geo_block_log( $msg, $file = null, $line = null, $trace = false ) {
+	// https://codex.wordpress.org/Debugging_in_WordPress
+	$file = basename( $file );
+	$msg = is_scalar( $msg ) ? "$msg" : print_r( $msg, true );
+	error_log(
+		( $file ? "$file " : '' ) .
+		( $line ? "($line) " : '' ) .
+		trim( $msg ) .
+		( $trace ? ' ' . print_r( debug_backtrace(), true ) : '' )
+	);
+}
+
 /*----------------------------------------------------------------------------*
  * Global definition
  *----------------------------------------------------------------------------*/
