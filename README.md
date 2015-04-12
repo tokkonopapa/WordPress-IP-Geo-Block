@@ -336,8 +336,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 - 2.0.8
     - Optimized resource loading settings to avoid redundancy.
     - Unified validatoin of wp-admin area.
-    - Added the `Create now` button in case of creating DB table for validation 
-      logs accidentally failed at activation process.
+    - Added re-creating DB table for validation logs in case of accidentally 
+      failed at activation process.
     - The time of day is shown with local time by adding GMT offset.
 - 2.0.7
     - Avoid JavaScript error which occurs if an anchor link has no `href`.

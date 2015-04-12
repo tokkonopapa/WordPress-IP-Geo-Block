@@ -26,7 +26,7 @@ class IP_Geo_Block_Logs {
 		$table = $wpdb->prefix . self::TABLE_NAME;
 
 		// creating mixed storage engine may cause troubles with some plugins.
-		$wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
+		return $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
  `No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
  `time` int(10) unsigned NOT NULL DEFAULT 0,
  `ip` varchar(40) NOT NULL,
@@ -66,12 +66,8 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_NAME;
 
-		static $done = NULL;
-		if ( $done === NULL )
-			$done = $wpdb->get_var( "show tables like '$table'" );
-
-		return $done !== $table ? __(
-			'Creating a DB table for verification logs had failed. Please try <code>Create now</code> at <code>Plugin settings</code> on <code>Settings</code> tab.',
+		return $wpdb->get_var( "show tables like '$table'" ) !== $table ? __(
+			'Creating a DB table for verification logs had failed. Once de-activate this plugin, and then activate again.',
 			IP_Geo_Block::TEXT_DOMAIN
 		) : NULL;
 	}

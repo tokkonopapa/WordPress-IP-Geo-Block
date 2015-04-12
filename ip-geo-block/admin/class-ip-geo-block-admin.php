@@ -123,7 +123,7 @@ class IP_Geo_Block_Admin {
 	 */
 	public function setup_admin_screen() {
 		$this->add_plugin_admin_menu();
-		$this->diagnose_admin_settings();
+		$this->diagnose_admin_screen();
 		$this->register_admin_settings();
 
 		// Add an action link pointing to the options page. @since 2.7
@@ -203,7 +203,7 @@ class IP_Geo_Block_Admin {
 	 * Diagnosis of admin settings.
 	 *
 	 */
-	private function diagnose_admin_settings() {
+	private function diagnose_admin_screen() {
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 )
 			$this->notice[] = __( 'You need WordPress 3.7+.', IP_Geo_Block::TEXT_DOMAIN );
@@ -212,8 +212,9 @@ class IP_Geo_Block_Admin {
 		$settings = IP_Geo_Block::get_option( 'settings' );
 		if ( $settings['validation']['reclogs'] ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-			if ( $error = IP_Geo_Block_Logs::diag_table() )
-				$this->notice[] = $error;
+			if ( ( $warn = IP_Geo_Block_Logs::diag_table() ) &&
+			     FALSE === IP_Geo_Block_Logs::create_log() )
+				$this->notice[] = $warn;
 		}
 
 		if ( isset( $this->notice ) )
@@ -637,7 +638,6 @@ class IP_Geo_Block_Admin {
 			$res = array(
 				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
 			);
-			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

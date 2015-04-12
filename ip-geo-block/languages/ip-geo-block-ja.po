@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.0.8\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-04-11 17:25+0900\n"
-"PO-Revision-Date: 2015-04-11 17:42+0900\n"
+"POT-Creation-Date: 2015-04-12 10:07+0900\n"
+"PO-Revision-Date: 2015-04-12 10:26+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr ""
 "るアクセスからサイトを守ります。"
 
 #: admin/class-ip-geo-block-admin.php:98
-#: admin/class-ip-geo-block-admin.php:235
+#: admin/class-ip-geo-block-admin.php:236
 msgid "Settings"
 msgstr "設定"
 
@@ -46,38 +46,38 @@ msgstr "IP Geo Block"
 msgid "You need WordPress 3.7+."
 msgstr "WordPress 3.7&thinsp;以上が必要です。"
 
-#: admin/class-ip-geo-block-admin.php:236
+#: admin/class-ip-geo-block-admin.php:237
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:237
+#: admin/class-ip-geo-block-admin.php:238
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:238
+#: admin/class-ip-geo-block-admin.php:239
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:239
+#: admin/class-ip-geo-block-admin.php:240
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:252
+#: admin/class-ip-geo-block-admin.php:253
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:253
+#: admin/class-ip-geo-block-admin.php:254
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
 msgstr ""
 "（ほとんどのブラウザでは、参照元を残さずに各サイトにリダイレクトできます。）"
 
-#: admin/class-ip-geo-block-admin.php:367 admin/includes/tab-settings.php:130
+#: admin/class-ip-geo-block-admin.php:368 admin/includes/tab-settings.php:130
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:511
+#: admin/class-ip-geo-block-admin.php:512
 msgid "Successfully updated."
 msgstr "更新に成功しました。"
 
@@ -361,20 +361,20 @@ msgid "Remove settings at uninstallation"
 msgstr "アンインストール時に設定を削除"
 
 #: admin/includes/tab-settings.php:492
-msgid "Create DB table for validation logs"
-msgstr "検証のログ用データベース・テーブルの作成"
-
-#: admin/includes/tab-settings.php:500
-msgid "Create now"
-msgstr "今すぐ作成"
-
-#: admin/includes/tab-settings.php:510
 msgid "Delete DB table for validation logs"
 msgstr "検証のログ用データベース・テーブルの削除"
 
-#: admin/includes/tab-settings.php:518
+#: admin/includes/tab-settings.php:500
 msgid "Delete now"
 msgstr "今すぐ削除"
+
+#: admin/includes/tab-settings.php:508
+msgid "Create DB table for validation logs"
+msgstr "検証のログ用データベース・テーブルの作成"
+
+#: admin/includes/tab-settings.php:516
+msgid "Create now"
+msgstr "今すぐ作成"
 
 #: admin/includes/tab-statistics.php:21 admin/includes/tab-statistics.php:149
 msgid "Statistics of validation"
@@ -458,14 +458,13 @@ msgstr ""
 "少なくとも1つ以上の位置情報サービスを選択して下さい。未選択の場合、キャッシュ"
 "の有効期限切れと共に<strong>ロックアウトされます</strong>。"
 
-#: classes/class-ip-geo-block-logs.php:71
+#: classes/class-ip-geo-block-logs.php:70
 msgid ""
-"Creating a DB table for verification logs had failed. Please try "
-"<code>Create now</code> at <code>Plugin settings</code> on <code>Settings</"
-"code> tab."
+"Creating a DB table for verification logs had failed. Once de-activate this "
+"plugin, and then activate again."
 msgstr ""
-"検証のログ用データベース・テーブルが作成されていません。<code>設定</code>タブ"
-"の<code>プラグインの設定</code>からテーブルを再作成して下さい。"
+"検証のログ用データベース・テーブルが作成されていません。一旦このプラグインを"
+"無効化してから、再度有効化して下さい。"
 
 #: includes/download.php:67
 msgid "Your database file is up-to-date."

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.0.8\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-04-11 17:25+0900\n"
-"PO-Revision-Date: 2015-04-11 17:27+0900\n"
+"POT-Creation-Date: 2015-04-12 10:07+0900\n"
+"PO-Revision-Date: 2015-04-12 10:08+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:98
-#: admin/class-ip-geo-block-admin.php:235
+#: admin/class-ip-geo-block-admin.php:236
 msgid "Settings"
 msgstr ""
 
@@ -43,37 +43,37 @@ msgstr ""
 msgid "You need WordPress 3.7+."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:236
+#: admin/class-ip-geo-block-admin.php:237
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:237
+#: admin/class-ip-geo-block-admin.php:238
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:238
+#: admin/class-ip-geo-block-admin.php:239
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:239
+#: admin/class-ip-geo-block-admin.php:240
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:252
+#: admin/class-ip-geo-block-admin.php:253
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:253
+#: admin/class-ip-geo-block-admin.php:254
 msgid ""
 "(Most browsers will redirect you to each site without referrer when you "
 "click the link.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:367 admin/includes/tab-settings.php:130
+#: admin/class-ip-geo-block-admin.php:368 admin/includes/tab-settings.php:130
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:511
+#: admin/class-ip-geo-block-admin.php:512
 msgid "Successfully updated."
 msgstr ""
 
@@ -346,19 +346,19 @@ msgid "Remove settings at uninstallation"
 msgstr ""
 
 #: admin/includes/tab-settings.php:492
-msgid "Create DB table for validation logs"
-msgstr ""
-
-#: admin/includes/tab-settings.php:500
-msgid "Create now"
-msgstr ""
-
-#: admin/includes/tab-settings.php:510
 msgid "Delete DB table for validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:518
+#: admin/includes/tab-settings.php:500
 msgid "Delete now"
+msgstr ""
+
+#: admin/includes/tab-settings.php:508
+msgid "Create DB table for validation logs"
+msgstr ""
+
+#: admin/includes/tab-settings.php:516
+msgid "Create now"
 msgstr ""
 
 #: admin/includes/tab-statistics.php:21 admin/includes/tab-statistics.php:149
@@ -439,11 +439,10 @@ msgid ""
 "<strong>you will be locked out</strong> when the cache expires."
 msgstr ""
 
-#: classes/class-ip-geo-block-logs.php:71
+#: classes/class-ip-geo-block-logs.php:70
 msgid ""
-"Creating a DB table for verification logs had failed. Please try "
-"<code>Create now</code> at <code>Plugin settings</code> on <code>Settings</"
-"code> tab."
+"Creating a DB table for verification logs had failed. Once de-activate this "
+"plugin, and then activate again."
 msgstr ""
 
 #: includes/download.php:67
