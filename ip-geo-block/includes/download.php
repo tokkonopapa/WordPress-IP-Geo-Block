@@ -57,7 +57,7 @@ function ip_geo_block_download_zip( $url, $args, $filename, $modified ) {
 		);
 
 	$code = wp_remote_retrieve_response_code   ( $res );
-	$msg  = wp_remote_retrieve_response_message( $res );
+	$mssg = wp_remote_retrieve_response_message( $res );
 	$data = wp_remote_retrieve_header( $res, 'last-modified' );
 	$modified = $data ? strtotime( $data ) : $modified;
 
@@ -72,7 +72,7 @@ function ip_geo_block_download_zip( $url, $args, $filename, $modified ) {
 	else if ( 200 != $code )
 		return array(
 			'code' => $code,
-			'message' => "$code $msg",
+			'message' => "$code $mssg",
 		);
 
 	// downloaded and unzip

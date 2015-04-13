@@ -92,7 +92,7 @@ full spec security plugin such as
 
 11. You can customize the basic behavior of this plugin via `add_filter()` with 
 pre-defined filter hook. See various use cases in 
-    [sample.php](sample)
+    [sample.php][sample]
 bundled within this package.
 
 ### Requirement:
@@ -228,8 +228,8 @@ add_filter( 'ip-geo-block-login', 'my_emergency' );
 add_filter( 'ip-geo-block-admin', 'my_emergency' );
 ```
 
-Then `Clear cache` at `Statistics` tab on your dashborad. After that, you 
-can remove above codes.
+Then `Clear cache` at `Statistics` tab on your dashborad. After that, you can 
+remove above codes.
 
 #### How can I protect my `wp-config.php` against malicious access? ####
 
@@ -273,7 +273,9 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
 * `ip-geo-block-ip2location-path` : absolute path to IP2Location LITE DB file.
 
-For more details, see `samples.php` bundled within this package.
+For more details, see 
+    [samples.php][sample]
+bundled within this package.
 
 #### How does WP-ZEP prevent zero-day attack? ####
 
@@ -331,107 +333,6 @@ If you do not want to keep the IP2Location plugins (
 ) in `wp-content/plugins/` directory but just want to use its database, 
 you can rename it to `ip2location` and upload it to `wp-content/`.
 
-#### Change log
-
-- 2.0.8
-    - Optimized resource loading settings to avoid redundancy.
-    - Unified validatoin of wp-admin area.
-    - Added re-creating DB table for validation logs in case of accidentally 
-      failed at activation process.
-    - The time of day is shown with local time by adding GMT offset.
-- 2.0.7
-    - Avoid JavaScript error which occurs if an anchor link has no `href`.
-    - Improved UI on admin screen.
-    - Added a diagnosis for creation of database table.
-- 2.0.6
-    - Sorry for urgent update but avoid an javascript error.
-- 2.0.4
-    - Sorry for frequent update but added a function of showing admin notice 
-      when none of the IP geolocation providers is selected. Because the user 
-      will be locked out from admin screen when the cache expires.
-    - **Bug fix:** Fixed an issue of `get_geolocation()` method at a time of 
-      when the cache of IP address is cleared.
-    - Referer silencer now supports [meta referrer](https://wiki.whatwg.org/wiki/Meta_referrer "Meta referrer - WHATWG Wiki")
-- 2.0.3
-    - **Bug fix:** Fixed an issue that empty black list doesn't work correctly 
-      when matching rule is black list.
-    - **New feature:** Added 'Zero-day Exploit Prevention for wp-admin'.
-      Because it is an experimental feature, please open a new issue at 
-      [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
-      if you have any troubles with it.
-    - **New feature:** Referer silencer for external link. When you click an 
-      external hyperlink on admin screen, http referer will be suppressed to 
-      hide a footprint of your site.
-    - Also added the filter hook `ip-geo-block-admin-actions` for safe actions 
-      on back-end.
-- 2.0.2
-    - **New feature:** Include `wp-admin/admin-post.php` as a validation target 
-      in the `Admin area`. This feature is to protect against a vulnerability 
-      such as 
-      [Analysis of the Fancybox-For-WordPress Vulnerability](http://blog.sucuri.net/2015/02/analysis-of-the-fancybox-for-wordpress-vulnerability.html)
-      on Sucuri Blog.
-    - Added a sample code snippet as a use case for 'Give ajax permission in 
-      case of safe actions on front facing page'. See Example 10 in `sample.php`.
-- 2.0.1
-    - Fixed the issue of improper scheme from the HTTPS site when loading js 
-      for google map.
-    - In order to prevent accidental disclosure of the length of password, 
-      changed the length of `*` (masked password) which is logged into the 
-      database.
-- 2.0.0
-    - **New feature:** Protection against brute-force and reverse-brute-force 
-      attacks to the admin area, `wp-login.php` and `xmlrpc.php`. This is an 
-      experimental function and can be enabled on `Settings` tab. Malicious 
-      access can try to login only 5 times per IP address. This retry counter 
-      can be reset to zero by `Clear statistics` on `Statistics` tab.
-- 1.4.0
-    - **New feature:** Added a new class for recording the validation logs to 
-      analyze posting pattern.
-    - Fixed an issue of not being set the own country code at first install.
-    - Fixed an error which occurs when ip address is unknown.
-- 1.3.1
-    - **New feature:** Added validation of trackback spam.
-    - Added `$_SERVER keys for extra IPs` into options to validate additional 
-      IP addresses.
-    - Removed some redundant codes and corrected all PHP notices and warnings 
-      which had been suppressed by WordPress.
-- 1.3.0
-    - **New feature:** Added validation of pingback.ping through `xmlrpc.php` 
-      and new option to validate all the IP addresses in HTTP_X_FORWARDED_FOR.
-    - **Fixed an issue:** Maxmind database file may be downloaded automatically
-      without deactivate/re-activate when upgrade is finished.
-    - This is the final version on 1.x. On next release, accesses to `login.php`
-      and admin area will be also validated for security purpose.
-- 1.2.1
-    - **Fixed an issue:** Option table will be updated automatically without
-      deactivate/re-activate when this plugin is upgraded.
-    - **A little bit performance improvement:**
-      Less memory footprint at the time of downloading Maxmind database file.
-      Less sql queries when `Save statistics` is enabled.
-- 1.2.0
-    - **New feature:** Added Maxmind GeoLite database auto downloader and updater.
-    - The filter hook `ip-geo-block-validate` was discontinued.
-      Instead of it, the new filter hook `ip-geo-block-comment` is introduced.
-    - **Performance improvement:** IP address is verified at an earlier stage 
-      than before.
-    - **Others:** Fix a bug of handling cache, update status of some REST APIs.
-- 1.1.1  Fixed issue of default country code.
-         When activating this plugin for the first time, get the country code 
-         from admin's IP address and set it into white list.
-         Add number of calls in cache of IP address.
-- 1.1.0  Implement the cache mechanism to reduce load on the server.
-         Better handling of errors on the search tab so as to facilitate 
-         the analysis of the service problems.
-         Fixed a bug of setting user agent strings in 1.0.2. 
-         Now the user agent strings (`WordPress/3.9.2; http://example.com/`) 
-         becomes to its own (`WordPress/3.9.2; ip-geo-block 1.1.0`).
-- 1.0.3  Temporarily stop setting user agent strings to supress a bug in 1.0.2.
-- 1.0.2  Update provider settings (`class-ip-geo-block-api.php`).
-         Set user agent strings for `WP_Http` (`class-ip-geo-block.php`).
-- 1.0.1  Modify Plugin URL.
-         Add `apply_filters()` to be able to change headers.
-- 1.0.0  Ready to release.
-
 ### License:
 
 This plugin is licensed under the GPL v2 or later.
@@ -451,8 +352,6 @@ This plugin is licensed under the GPL v2 or later.
 [IP2Tag]:   http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"
 [IP2Var]:   http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"
 [IP2Blk]:   http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins"
-[register]: http://ipinfodb.com/register.php
-[codex]:    http://codex.wordpress.org/Plugin_API/Filter_Reference/preprocess_comment "Plugin API/Filter Reference/preprocess comment &laquo; WordPress Codex"
 [BHS]:      http://blackhole.webpagetest.org/
 [ISO]:      http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
 [RFC]:      http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"

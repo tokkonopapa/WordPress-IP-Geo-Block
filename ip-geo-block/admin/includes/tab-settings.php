@@ -484,8 +484,7 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-
+		// Manipulate DB table for validation logs
 		$field = 'delete_table';
 		add_settings_field(
 			$option_name . "_$field",

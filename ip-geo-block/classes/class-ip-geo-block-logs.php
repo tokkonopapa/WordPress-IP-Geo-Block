@@ -41,7 +41,7 @@ class IP_Geo_Block_Logs {
  PRIMARY KEY (`No`),
  KEY `time` (`time`),
  KEY `hook` (`hook`)
-) CHARACTER SET 'utf8'" ); // ENGINE 'InnoDB' or 'MyISAM'
+) CHARACTER SET utf8" ); // ENGINE=InnoDB or MyISAM
 	}
 
 	public static function delete_log() {

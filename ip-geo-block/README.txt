@@ -101,7 +101,7 @@ full spec security plugin such as
 
 11. You can customize the basic behavior of this plugin via `add_filter()` with 
 pre-defined filter hook. See various use cases in 
-    [sample.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
+    [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
 bundled within this package.
 
 = Attribution =
@@ -280,7 +280,9 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
 * `ip-geo-block-ip2location-path` : absolute path to IP2Location LITE DB file.
 
-For more details, see `samples.php` bundled within this package.
+For more details, see 
+    [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
+bundled within this package.
 
 = How does WP-ZEP prevent zero-day attack? =
 
@@ -349,10 +351,10 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.8 =
-* Optimized resource loading settings to avoid redundancy.
+* Optimized resource loading and settings to avoid redundancy.
 * Unified validatoin of wp-admin area.
-* Added the `Create now` button in case of creating DB table for validation 
-  logs accidentally failed at activation process.
+* Added re-creating DB table for validation logs in case of accidentally 
+  failed at activation process.
 * The time of day is shown with local time by adding GMT offset.
 
 = 2.0.7 =
