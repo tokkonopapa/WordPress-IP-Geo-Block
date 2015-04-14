@@ -47,66 +47,21 @@ add_filter( 'ip-geo-block-ip-addr', 'my_retrieve_ip' );
 
 
 /**
- * Example 3: usage of 'ip-geo-block-headers'
- * Use case: change the user agent strings when accessing geolocation API
+ * Example 3: validate ip address before authrization in admin area
+ * Use case: When an emergency situation of your self being locked out
  *
- * Notice: Be careful about HTTP header injection.
- * @param  string $args http request headers for `wp_remote_get()`
- * @return string $args http request headers for `wp_remote_get()`
  */
-function my_user_agent( $args ) {
-    $args['user-agent'] = 'my user agent strings';
-    return $args;
+function my_emergency( $validate ) {
+	// password is required even in this case
+	$validate['result'] = 'passed';
+	return $validate;
 }
-add_filter( 'ip-geo-block-headers', 'my_user_agent' );
+add_filter( 'ip-geo-block-login', 'my_emergency' );
+add_filter( 'ip-geo-block-admin', 'my_emergency' );
 
 
 /**
- * Example 4: usage of 'ip-geo-block-maxmind-dir'
- * Use case: change the path of Maxmind database files to writable directory
- *
- * @param  string $dir original directory of database files
- * @return string $dir replaced directory of database files
- */
-function my_maxmind_dir( $dir ) {
-	$upload = wp_upload_dir();
-	return $upload['basedir'];
-}
-add_filter( 'ip-geo-block-maxmind-dir', 'my_maxmind_dir' );
-
-
-/**
- * Example 5: usage of 'ip-geo-block-maxmind-zip-ipv[46]'
- * Use case: replace Maxmind database files to city edition
- *
- * @param  string $url original url to zip file
- * @return string $url replaced url to zip file
- */
-function my_maxmind_ipv4( $url ) {
-	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
-}
-function my_maxmind_ipv6( $url ) {
-	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCityv6-beta/GeoLiteCityv6.dat.gz';
-}
-add_filter( 'ip-geo-block-maxmind-zip-ipv4', 'my_maxmind_ipv4' );
-add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
-
-
-/**
- * Example 6: usage of 'ip-geo-block-ip2location-path'
- * Use case: change the path to IP2Location database files
- *
- * @param  string $path original path to database files
- * @return string $path replaced path to database files
- */
-function my_ip2location_path( $path ) {
-	return WP_PLUGIN_DIR . '/ip2location-tags/IP2LOCATION-LITE-DB1.IPV6.BIN';
-}
-add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
-
-
-/**
- * Example 7: usage of 'ip-geo-block-comment'
+ * Example 4: usage of 'ip-geo-block-comment'
  * Use case: block comment post from specific IP addresses in the blacklist
  *
  * @param  string $validate['ip'] ip address
@@ -131,7 +86,7 @@ add_filter( 'ip-geo-block-comment', 'my_blacklist' );
 
 
 /**
- * Example 8: usage of 'ip-geo-block-login' and 'ip-geo-block-xmlrpc'
+ * Example 5: usage of 'ip-geo-block-login' and 'ip-geo-block-xmlrpc'
  * Use case: allow authentication only from specific countries in the whitelist
  * (validate ip address to exclude Brute-force attack on login process)
  *
@@ -141,16 +96,14 @@ add_filter( 'ip-geo-block-comment', 'my_blacklist' );
  */
 function my_whitelist( $validate ) {
 	$whitelist = array(
-		'jp',
+		'JP', // should be upper case
 	);
 
 	$validate['result'] = 'blocked';
 
-	foreach ( $whitelist as $country ) {
-		if ( strtoupper( $country ) === $validate['code'] ) {
-			$validate['result'] = 'passed';
-			break;
-		}
+	if ( in_array( $validate['code'], $whitelist ) ) {
+		$validate['result'] = 'passed';
+		break;
 	}
 
 	return $validate;
@@ -160,7 +113,7 @@ add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
 
 
 /**
- * Example 9: validate requested queries via admin-ajax.php
+ * Example 6: validate requested queries via admin-ajax.php
  * Use case: block malicious access such as `File Inclusion`
  *
  * @link http://hakipedia.com/index.php/File_Inclusion
@@ -171,19 +124,17 @@ add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
  * @return array $validate add 'result' as 'blocked' when NG word was found
  */
 function my_protectives( $validate ) {
-	if ( ! is_user_logged_in() ) {
-		$protectives = array(
-			'wp-config.php',
-			'passwd',
-		);
+	$protectives = array(
+		'wp-config.php',
+		'passwd',
+	);
 
-		$req = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
+	$req = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
-		foreach ( $protectives as $item ) {
-			if ( strpos( $req, $item ) !== FALSE ) {
-				$validate['result'] = 'blocked';
-				break;
-			}
+	foreach ( $protectives as $item ) {
+		if ( strpos( $req, $item ) !== FALSE ) {
+			$validate['result'] = 'blocked';
+			break;
 		}
 	}
 
@@ -193,7 +144,7 @@ add_filter( 'ip-geo-block-admin', 'my_protectives' );
 
 
 /**
- * Example 10: validate action of admin-ajax.php at front-end
+ * Example 7: validate action of admin-ajax.php at front-end
  * Use case: Give permission to ajax at public facing page
  *
  * @global array $_GET and $_POST requested queries
@@ -217,7 +168,7 @@ add_filter( 'ip-geo-block-admin', 'my_permission' );
 
 
 /**
- * Example 11: validate action of admin-(ajax|post).php with ZEP at back-end
+ * Example 8: validate action of admin-(ajax|post).php with ZEP at back-end
  * Use case: Give permission to admin actions via `wp-admin/admin-(ajax|post).php`
  *
  * @param  array $admin_actions array of permitted admin actions
@@ -233,17 +184,62 @@ add_filter( 'ip-geo-block-admin-actions', 'my_admin_actions' );
 
 
 /**
- * Example 12: validate ip address before authrization in admin area
- * Use case: When an emergency situation of your self being locked out
+ * Example 9: usage of 'ip-geo-block-headers'
+ * Use case: change the user agent strings when accessing geolocation API
  *
+ * Notice: Be careful about HTTP header injection.
+ * @param  string $args http request headers for `wp_remote_get()`
+ * @return string $args http request headers for `wp_remote_get()`
  */
-function my_emergency( $validate ) {
-	// password is required even in this case
-	$validate['result'] = 'passed';
-	return $validate;
+function my_user_agent( $args ) {
+    $args['user-agent'] = 'my user agent strings';
+    return $args;
 }
-add_filter( 'ip-geo-block-login', 'my_emergency' );
-add_filter( 'ip-geo-block-admin', 'my_emergency' );
+add_filter( 'ip-geo-block-headers', 'my_user_agent' );
+
+
+/**
+ * Example 10: usage of 'ip-geo-block-maxmind-dir'
+ * Use case: change the path of Maxmind database files to writable directory
+ *
+ * @param  string $dir original directory of database files
+ * @return string $dir replaced directory of database files
+ */
+function my_maxmind_dir( $dir ) {
+	$upload = wp_upload_dir();
+	return $upload['basedir'];
+}
+add_filter( 'ip-geo-block-maxmind-dir', 'my_maxmind_dir' );
+
+
+/**
+ * Example 11: usage of 'ip-geo-block-maxmind-zip-ipv[46]'
+ * Use case: replace Maxmind database files to city edition
+ *
+ * @param  string $url original url to zip file
+ * @return string $url replaced url to zip file
+ */
+function my_maxmind_ipv4( $url ) {
+	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
+}
+function my_maxmind_ipv6( $url ) {
+	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCityv6-beta/GeoLiteCityv6.dat.gz';
+}
+add_filter( 'ip-geo-block-maxmind-zip-ipv4', 'my_maxmind_ipv4' );
+add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
+
+
+/**
+ * Example 12: usage of 'ip-geo-block-ip2location-path'
+ * Use case: change the path to IP2Location database files
+ *
+ * @param  string $path original path to database files
+ * @return string $path replaced path to database files
+ */
+function my_ip2location_path( $path ) {
+	return WP_PLUGIN_DIR . '/ip2location-tags/IP2LOCATION-LITE-DB1.IPV6.BIN';
+}
+add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
 
 
 /**
