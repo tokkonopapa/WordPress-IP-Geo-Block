@@ -14,7 +14,7 @@ define( 'IP_GEO_BLOCK_MAXMIND_IPV6_ZIP', 'http://geolite.maxmind.com/download/ge
  *
  * @param string $url URL to the source of database zip file.
  * @param string $dir path to the destination directory.
- * @param string $filename pull path of uncompressed file.
+ * @param string $filename full path of uncompressed file.
  * @param int $modified time of last modified on the remote server.
  */
 function ip_geo_block_download_path( $url, $dir, &$filename, &$modified ) {
@@ -35,7 +35,7 @@ function ip_geo_block_download_path( $url, $dir, &$filename, &$modified ) {
  *
  * @param string $url URL of remote file to be downloaded.
  * @param array $args request headers.
- * @param string $filename path to downloaded file.
+ * @param string $filename full path to downloaded file.
  * @param int $modified time of last modified on the remote server.
  * @return array status message.
  */

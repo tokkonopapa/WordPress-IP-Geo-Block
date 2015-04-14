@@ -51,12 +51,12 @@ and reverse-brute-force attacks to the login form, XML-RPC and admin area.
  `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by 
 means of a country code based on IP address.
 
-2. In order to prevent the invasion through the login form and XML-RPC 
-against the brute-force and the reverse-brute-force attacks, the number of 
-login attempts will be limited per IP address. This feature is independent 
-of the country code.
+2. In order to prevent the invasion through the login form and XML-RPC against 
+the brute-force and the reverse-brute-force attacks, the number of login 
+attempts will be limited per IP address. This feature works independently from 
+blocking by country code.
 
-3. Besides the country code, the original new feature '**Z**ero-day 
+3. Besides blocking by country code, the original new feature '**Z**ero-day 
 **E**xploit **P**revention for wp-admin' (WP-ZEP) is now available to block 
 malicious access to `wp-admin/(admin|admin-ajax|admin-post).php`. It will 
 protect against certain types of attack such as CSRF, SQLi and so on even 
@@ -243,19 +243,17 @@ remove above codes.
 = How can I protect my `wp-config.php` against malicious access? =
 
 `function my_protectives( $validate ) {
-    if ( ! is_user_logged_in() ) {
-        $protectives = array(
-            'wp-config.php',
-            'passwd',
-        );
+    $protectives = array(
+        'wp-config.php',
+        'passwd',
+    );
 
-        $req = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
+    $req = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
-        foreach ( $protectives as $item ) {
-            if ( strpos( $req, $item ) !== FALSE ) {
-                $validate['result'] = 'blocked';
-                break;
-            }
+    foreach ( $protectives as $item ) {
+        if ( strpos( $req, $item ) !== FALSE ) {
+            $validate['result'] = 'blocked';
+            break;
         }
     }
 
@@ -274,11 +272,11 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
 * `ip-geo-block-admin-actions`    : array of actions for `wp-admin/(admin|admin-ajax|admin-post).php`.
-* `ip-geo-block-backup-dir`       : absolute path where log files should be saved.
-* `ip-geo-block-maxmind-dir`      : absolute path where Maxmind GeoLite DB files should be saved.
+* `ip-geo-block-backup-dir`       : full path where log files should be saved.
+* `ip-geo-block-maxmind-dir`      : full path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
-* `ip-geo-block-ip2location-path` : absolute path to IP2Location LITE DB file.
+* `ip-geo-block-ip2location-path` : full path to IP2Location LITE DB file.
 
 For more details, see 
     [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
@@ -307,11 +305,11 @@ There are a few cases that WP-ZEP would not work. One is redirection at server
 side (by PHP or `.htaccess`) and client side (by JavaScript location object or 
 meta tag for refresh).
 
-Another is a restriction related to the content type. This plugin will only 
-support `application/x-www-form-urlencoded` and `multipart/form-data`.
+Another is the case related to the content type. This plugin will only support 
+ `application/x-www-form-urlencoded` and `multipart/form-data`.
 
-The other is the case that a ajax/post request comes from not jQuery but flash 
-or something.
+The other case is that a ajax/post request comes from not jQuery but flash or 
+something.
 
 In those cases, this plugin should bypass WP-ZEP. So please find the `action` 
 in the requested queries and add its value into the safe action list via the 
@@ -323,7 +321,7 @@ you are using at the support forum.
 = I want to use only WP-ZEP. =
 
 Uncheck the `Comment post`, `XML-RPC` and `Login form` in `Validation settings` 
-on `Setting` tab. And select `Prevent zero-day exploit` for `Admin area`.
+on `Settings` tab. And select `Prevent zero-day exploit` for `Admin area`.
 
 At last empty the textfield of `White list` or `Black list` according to the 
  `Matching rule`.
@@ -351,11 +349,12 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.8 =
-* Optimized resource loading and settings to avoid redundancy.
-* Unified validatoin of wp-admin area.
+* Optimized resource settings and loadings to avoid redundancy.
+* Unified validatoin of wp-admin area and admin ajax/post.
 * Added re-creating DB table for validation logs in case of accidentally 
   failed at activation process.
-* The time of day is shown with local time by adding GMT offset.
+* The time of day is shown with local time by adding GMT offset based on 
+  the time zone setting.
 
 = 2.0.7 =
 * Avoid JavaScript error which occurs if an anchor link has no `href`.
