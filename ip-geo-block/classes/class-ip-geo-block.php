@@ -78,11 +78,11 @@ class IP_Geo_Block {
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
 		if ( $settings['validation']['admin'] )
-			add_action( 'admin_init', array( $this, 'validate_admin' ) );
+			add_action( 'init', array( $this, 'validate_admin' ), 0 );
 
 		// Load authenticated nonce
 		if ( is_user_logged_in() )
-			add_action( 'wp_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ), 1 );
+			add_action( 'wp_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ), 0 );
 	}
 
 	// Register and enqueue admin-specific style sheet and JavaScript.
@@ -435,28 +435,32 @@ class IP_Geo_Block {
 
 	public function validate_admin( $something ) {
 		global $pagenow; // http://codex.wordpress.org/Global_Variables
-		$type = NULL;    // type of validation
-
-		if ( ! empty( $_REQUEST['action'] ) ) {
-			switch ( $pagenow ) {
-			  case 'admin-ajax.php':
-				if ( ! has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) )
-					$type = 'admin';
-				break;
-			  case 'admin-post.php':
-				if ( ! has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) )
-					$type = 'admin';
-				break;
-			  case 'admin.php':
-				$type = 'admin';
-			}
+		switch ( $pagenow ) {
+		  case 'admin-ajax.php':
+			$type = 'admin';
+			if ( isset( $_REQUEST['action'] ) && ! has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) )
+				$check_nonce = TRUE;
+			break;
+		  case 'admin-post.php':
+			$type = 'admin';
+			if ( isset( $_REQUEST['action'] ) && ! has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) )
+				$check_nonce = TRUE;
+			break;
+		  case 'admin.php':
+			$type = 'admin';
+			break;
+		  case 'xmlrpc.php':
+			$type = 'xmlrpc';
+			break;
 		}
 
-		$settings = self::get_option( 'settings' );
-		if ( $type && (int)$settings['validation'][ $type ] === 2 )
-			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+		if ( isset( $type ) ) {
+			$settings = self::get_option( 'settings' );
+			if ( $settings['validation'][ $type ] == 2 && isset( $check_nonce ) )
+				add_filter( self::PLUGIN_SLUG . "-{$type}", array( $this, 'check_nonce' ), 10, 2 );
 
-		$this->validate_ip( 'xmlrpc.php' === $pagenow ? 'xmlrpc' : 'admin', $settings );
+			$this->validate_ip( $type, $settings );
+		}
 
 		return $something; // pass through
 	}

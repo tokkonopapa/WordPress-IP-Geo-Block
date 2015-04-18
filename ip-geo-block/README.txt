@@ -349,6 +349,10 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.8 =
+* Fixed an issue that 
+  [a certain attack vector](https://blog.sucuri.net/2014/08/database-takeover-in-custom-contact-forms.html "Critical Vulnerability Disclosed on WordPress Custom Contact Forms Plugin")
+  can not be blocked even if it comes from outside the whitelist or inside the 
+  blacklist.
 * Optimized resource settings and loadings to avoid redundancy.
 * Unified validatoin of wp-admin area and admin ajax/post.
 * Added re-creating DB table for validation logs in case of accidentally 
