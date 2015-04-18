@@ -8,9 +8,11 @@ description: A WordPress plugin that will blocks any comment, pingback and
 author: tokkonopapa
 email: tokkonopapa@yahoo.com
 
-# the subpath of your site, e.g. /blog/
-baseurl: ""
+# the subpath of your site, e.g. /blog
+baseurl: "/WordPress-IP-Geo-Block"
 url: "https://github.com/tokkonopapa/WordPress-IP-Geo-Block"
+
+exclude: []
 
 project:
   name: "Wordpress-ip-geo-block"
