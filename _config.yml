@@ -22,4 +22,5 @@ github_username:  tokkonopapa
 
 # Build settings
 markdown: kramdown
+highlight: pygments
 excerpt_separator: "<!--more-->"
