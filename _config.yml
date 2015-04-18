@@ -1,0 +1,23 @@
+# Site settings
+title: IP Geo Block
+description: A WordPress plugin that will blocks any comment, pingback and 
+ trackback spams posted from outside your nation.
+ And it will also protect against malicious  access to the login form, admin 
+ area and XML-RPC from undesired countries.
+
+author: tokkonopapa
+email: tokkonopapa@yahoo.com
+
+# the subpath of your site, e.g. /blog/
+baseurl: ""
+url: "https://github.com/tokkonopapa/WordPress-IP-Geo-Block"
+
+project:
+  name: "Wordpress-ip-geo-block"
+
+twitter_username: tokkonoPapa
+github_username:  tokkonopapa
+
+# Build settings
+markdown: kramdown
+excerpt_separator: "<!--more-->"

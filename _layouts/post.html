@@ -1,0 +1,15 @@
+---
+layout: default
+---
+<article class="blog-post">
+
+  <header class="post-header">
+    <h2 class="blog-post-title">{{ page.title }}</h2>
+    <p class="blog-post-meta">{{ page.date | date: "%b %-d, %Y" }}{% if page.author %}{{ page.author }}{% endif %}{% if page.meta %}{{ page.meta }}{% endif %}</p>
+  </header>
+
+  {{ content }}
+
+</article><!-- /.blog-post -->
+
+<div id="disqus_thread"></div>

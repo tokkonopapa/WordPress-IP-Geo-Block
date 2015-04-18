@@ -1,0 +1,24 @@
+<div class="sidebar-module">
+  <a href="{{ "/" | prepend: site.baseurl }}" title="Blog Home">
+    <img class="img-responsive center-block" src="{{ "/img/wp-medal.png" | prepend: site.baseurl }}" alt="WordPress Logo" />
+  </a>
+</div>
+
+<div class="sidebar-module">
+  <h4>Posts</h4>
+  <ol class="list-unstyled">
+  {% for post in site.posts %}
+    <li>
+      <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+    </li>
+  {% endfor %}
+  </ol>
+</div>
+
+<div class="sidebar-module">
+  <h4>Links</h4>
+  <ol class="list-unstyled">
+    <li><a href="https://wordpress.org/plugins/ip-geo-block/" title="WordPress &#8250; IP Geo Block &laquo; WordPress Plugins">IP Geo Block &laquo; WordPress.org</a></li>
+    <li class="rss-subscribe"><a href="{{ "/feed.xml" | prepend: site.baseurl }}">subscribe via RSS</a></li>
+  </ol>
+</div>
