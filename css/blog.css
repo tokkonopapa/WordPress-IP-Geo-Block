@@ -238,6 +238,9 @@ p.blog-post-more {
 /*
  * pygments for github.css
  */
+pre {
+  overflow-x: auto;
+}
 code[class*="language"] {
   max-height: 29em;
   display: block;
