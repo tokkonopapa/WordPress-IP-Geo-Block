@@ -3,7 +3,7 @@
  */
 body {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #606C71;
+  color: #606c71;
 }
 
 h1, .h1,
@@ -132,8 +132,8 @@ h6, .h6 {
   margin-bottom: 60px;
 }
 .blog-post-title {
+  font-size: 2em;
   margin-bottom: 5px;
-  font-size: 40px;
 }
 .blog-post-meta {
   color: #999;
@@ -178,8 +178,19 @@ img {
   max-width: 100%;
 }
 
-.blog-post-title {
+.blog-post h1,
+.blog-post h2,
+.blog-post h3,
+.blog-post h4,
+.blog-post h5,
+.blog-post h6 {
   color: #159957;
+}
+.blog-post h3,
+.blog-post h4,
+.blog-post h5,
+.blog-post h6 {
+  margin-top: 1.1em;
 }
 p.blog-post-more {
   margin-left: 0.5em;
