@@ -435,32 +435,22 @@ class IP_Geo_Block {
 
 	public function validate_admin( $something ) {
 		global $pagenow; // http://codex.wordpress.org/Global_Variables
+		$settings = self::get_option( 'settings' );
+
 		switch ( $pagenow ) {
 		  case 'admin-ajax.php':
-			$type = 'admin';
-			if ( isset( $_REQUEST['action'] ) && ! has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) )
-				$check_nonce = TRUE;
-			break;
 		  case 'admin-post.php':
-			$type = 'admin';
-			if ( isset( $_REQUEST['action'] ) && ! has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) )
-				$check_nonce = TRUE;
-			break;
 		  case 'admin.php':
 			$type = 'admin';
+			if ( isset( $_REQUEST['action'] ) && $settings['validation'][ $type ] == 2 )
+				add_filter( self::PLUGIN_SLUG . "-{$type}", array( $this, 'check_nonce' ), 10, 2 );
 			break;
 		  case 'xmlrpc.php':
 			$type = 'xmlrpc';
-			break;
 		}
 
-		if ( isset( $type ) ) {
-			$settings = self::get_option( 'settings' );
-			if ( $settings['validation'][ $type ] == 2 && isset( $check_nonce ) )
-				add_filter( self::PLUGIN_SLUG . "-{$type}", array( $this, 'check_nonce' ), 10, 2 );
-
+		if ( isset( $type ) )
 			$this->validate_ip( $type, $settings );
-		}
 
 		return $something; // pass through
 	}
