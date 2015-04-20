@@ -356,7 +356,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
   ) could not be blocked because some of the plugins accept it on earlier 
   hook (ie `init`) than this plugin (ie `admin_init`).
 * Optimized resource settings and loadings to avoid redundancy.
-* Unified validatoin of admin area and admin ajax/post.
+* Unified validation of admin area and admin ajax/post from the viewpoint of 
+  preventing malicious access.
 * Added re-creating DB table for validation logs in case of accidentally 
   failed at activation process.
 * The time of day is shown with local time by adding GMT offset based on 
