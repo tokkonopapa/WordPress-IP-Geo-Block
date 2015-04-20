@@ -77,7 +77,7 @@ class IP_Geo_Block {
 		}
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
-		if ( $settings['validation']['admin'] )
+		if ( $settings['validation']['admin'] && is_admin() )
 			add_action( 'init', array( $this, 'validate_admin' ), 0 );
 
 		// Load authenticated nonce
@@ -437,24 +437,25 @@ class IP_Geo_Block {
 		global $pagenow; // http://codex.wordpress.org/Global_Variables
 		$settings = self::get_option( 'settings' );
 
-		switch ( $pagenow ) {
-		  case 'xmlrpc.php':
-			$type = 'xmlrpc';
-			break;
-		  case 'admin-ajax.php':
-		  case 'admin-post.php':
-		  case 'admin.php':
-			$type = 'admin';
-			if ( isset( $_REQUEST['action'] ) && $settings['validation'][ $type ] == 2 )
-				add_filter( self::PLUGIN_SLUG . "-{$type}", array( $this, 'check_nonce' ), 10, 2 );
-			break;
-		  default:
-			if ( is_admin() )
+		if ( isset( $_REQUEST['action'] ) ) {
+			switch ( $pagenow ) {
+			  case 'admin-ajax.php':
+				if ( ! has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) )
+					$type = 'admin';
+				break;
+			  case 'admin-post.php':
+				if ( ! has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) )
+					$type = 'admin';
+				break;
+			  case 'admin.php':
 				$type = 'admin';
+			}
 		}
 
-		if ( isset( $type ) )
-			$this->validate_ip( $type, $settings );
+		if ( isset( $type ) && (int)$settings['validation'][ $type ] === 2 )
+			add_filter( self::PLUGIN_SLUG . "-admin", array( $this, 'check_nonce' ), 10, 2 );
+
+		$this->validate_ip( 'xmlrpc.php' === $pagenow ? 'xmlrpc' : 'admin', $settings );
 
 		return $something; // pass through
 	}
@@ -521,8 +522,9 @@ class IP_Geo_Block {
 		// check authenticated nonce
 		$action = self::PLUGIN_SLUG . '-auth-nonce';
 		if ( ! $login || empty( $_REQUEST[ $action ] ) ||
-		     ! wp_verify_nonce( $_REQUEST[ $action ], $action ) )
+		     ! wp_verify_nonce( $_REQUEST[ $action ], $action ) ) {
 			$validate['result'] = 'blocked';
+		}
 
 		return $validate;
 	}

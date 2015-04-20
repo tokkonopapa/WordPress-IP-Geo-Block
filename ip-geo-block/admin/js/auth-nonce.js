@@ -44,7 +44,7 @@
 			path.indexOf('admin-ajax.php') >= 0 ||
 			path.indexOf('admin-post.php') >= 0
 		) && (
-			// currently, request via jQuery ajax is always true
+			// if method is POST, then type of query is 'object'
 			typeof query === 'string' ? /(?:action)=/.test(query) : true
 		) ? 1 : 0; // 1: target, 0: other
 	}
@@ -103,7 +103,7 @@
 				var href = $(this).attr('href'), // String or undefined
 				    admin = is_admin(href, href);
 
-				// if target
+				// if admin area
 				if (admin === 1) {
 					var uri = parse_uri(href), data;
 					data = uri.query ? uri.query.split('&') : [];
@@ -127,7 +127,7 @@
 			$('form').on('submit', function (event) {
 				var $this = $(this);
 
-				// if target
+				// if admin area
 				if (is_admin($this.attr('action'), $this.serialize()) === 1) {
 					$this.append(
 						'<input type="hidden" name="' + auth_nonce + '" value="'
