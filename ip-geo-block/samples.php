@@ -144,8 +144,8 @@ add_filter( 'ip-geo-block-admin', 'my_protectives' );
 
 
 /**
- * Example 7: validate action of admin-ajax.php at front-end
- * Use case: Give permission to ajax at public facing page
+ * Example 7: validate specific actions of admin-ajax.php at front-end
+ * Use case: give permission to ajax with specific action at public facing page
  *
  * @global array $_GET and $_POST requested queries
  * @param  array $validate
@@ -168,8 +168,8 @@ add_filter( 'ip-geo-block-admin', 'my_permission' );
 
 
 /**
- * Example 8: validate action of admin-(ajax|post).php with ZEP at back-end
- * Use case: Give permission to admin actions via `wp-admin/admin-(ajax|post).php`
+ * Example 8: usage of 'ip-geo-block-admin-actions'
+ * Use case: give permission to prevent blocking by WP-ZEP
  *
  * @param  array $admin_actions array of permitted admin actions
  * @return array $admin_actions extended permitted admin actions
