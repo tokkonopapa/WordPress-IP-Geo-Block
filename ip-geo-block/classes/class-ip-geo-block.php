@@ -438,6 +438,9 @@ class IP_Geo_Block {
 		$settings = self::get_option( 'settings' );
 
 		switch ( $pagenow ) {
+		  case 'xmlrpc.php':
+			$type = 'xmlrpc';
+			break;
 		  case 'admin-ajax.php':
 		  case 'admin-post.php':
 		  case 'admin.php':
@@ -445,8 +448,9 @@ class IP_Geo_Block {
 			if ( isset( $_REQUEST['action'] ) && $settings['validation'][ $type ] == 2 )
 				add_filter( self::PLUGIN_SLUG . "-{$type}", array( $this, 'check_nonce' ), 10, 2 );
 			break;
-		  case 'xmlrpc.php':
-			$type = 'xmlrpc';
+		  default:
+			if ( is_admin() )
+				$type = 'admin';
 		}
 
 		if ( isset( $type ) )
