@@ -353,7 +353,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 = 2.0.8 =
 * Fixed an issue that a certain type of attack vector to the admin area (
   [example](https://blog.sucuri.net/2014/08/database-takeover-in-custom-contact-forms.html "Critical Vulnerability Disclosed on WordPress Custom Contact Forms Plugin")
-  ) could not be blocked because some of the plugins accept it on earlier 
+  ) could not be blocked by the reason that some plugins accept it on earlier 
   hook (ie `init`) than this plugin (ie `admin_init`).
 * Optimized resource settings and loadings to avoid redundancy.
 * Unified validation of admin area and admin ajax/post from the viewpoint of 
