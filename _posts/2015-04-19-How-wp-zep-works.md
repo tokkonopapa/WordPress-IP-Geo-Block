@@ -11,13 +11,17 @@ unveiled vulnerability. I call it "**Z**ero-day **E**xploit **P**revention
 for wp-admin" (WP-ZEP).
 
 In this article, I'll explain about its mechanism and also its limitations.
+
 <!--more-->
 
 ### What's the best practice of plugin actions? ###
 
-We can find [the answer on Stack Exchange][Stack-Exchange].
+While we can find [the answer at Stack Exchange][Stack-Exchange], I'd like to 
+describe a little in detail.
 
 #### Showing plugin page ####
+
+The plugin page can be displayed according to its category like this:
 
 * `wp-admin/admin.php?page=my-plugin`
 * `wp-admin/tools.php?page=my-plugin`
@@ -26,7 +30,10 @@ We can find [the answer on Stack Exchange][Stack-Exchange].
 
 #### Requesting to <samp>wp-admin/admin.php</samp> ####
 
-{% highlight ruby %}
+On the plugin page, we can put a form to provide an action `do-my-action` 
+for our users via `admin.php` like this:
+
+{% highlight php startinline=true %}
 <?php
 add_action( 'admin_action_' . 'do-my-action', 'my_action' );
 ?>
@@ -37,7 +44,9 @@ add_action( 'admin_action_' . 'do-my-action', 'my_action' );
 </form>
 {% endhighlight %}
 
-{% highlight ruby %}
+Or a link:
+
+{% highlight php startinline=true %}
 <?php
 $link = add_query_arg(
     array(
@@ -52,19 +61,27 @@ $link = add_query_arg(
 
 #### Requesting to <samp>wp-admin/admin-ajax.php</samp> ####
 
-{% highlight ruby %}
+We can also do the same thing via `admin-ajax.php` by `GET` or `POST` method 
+using jQuery.
+
+{% highlight php startinline=true %}
 add_action( 'wp_ajax_' . 'do-my-action', 'my_action' );
 {% endhighlight %}
 
 #### Requesting to <samp>wp-admin/admin-post.php</samp> ####
 
-{% highlight ruby %}
+WordPress also give us a chance to handle only `POST` method via 
+`admin-post.php`.
+
+{% highlight php startinline=true %}
 add_action( 'admin_post_' . 'do-my-action', 'my_action' );
 {% endhighlight %}
 
 #### Handling request ####
 
-{% highlight ruby %}
+All above-mentioned can be handled by the function `my_action`.
+
+{% highlight php startinline=true %}
 function my_action() {
     // validate privilege and nonce
     if ( ! current_user_can( 'manage_options' ) ||
@@ -103,7 +120,37 @@ function my_action() {
 
 ### The mechanism of WP-ZEP ###
 
+In the above code, she most important things before **doing my action** are:
+
+1. validate privilege of users with `current_user_can()`.
+2. validate the nonce with `check_admin_referer()`.
+3. validate the given input.
+
+When either lacks, the result becomes serious.
+
+So WP-ZEP will make up the former two of them by embedding a nonce into the 
+request.
+
 ### The limitation of WP-ZEP ###
+<!--
+One big challenge for WP-ZEP is to decide the request hander is vulnerable or 
+not if the same function `my_action()` is registered for both authorized and 
+unauthorized users like this:
+
+{% highlight php startinline=true %}
+add_action( 'wp_ajax_'        . 'do-my-action', 'my_action' );
+add_action( 'wp_ajax_nopriv_' . 'do-my-action', 'my_action' );
+{% endhighlight %}
+
+If WP-ZEP blocks the action `do-my-action`, users on the public facing pages 
+can not take any benefit via the ajax call. So in this case, WP-ZEP currently 
+do nothing but validate IP address by country code.
+
+This bypass causes a serious problem: can't block 
+[vulnerability in Slider Revolution][Slider-Rev] 
+if the malicous access comes from the permitted country.
+-->
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress &#8250; IP Geo Block &laquo; WordPress Plugins"
 [Stack-Exchange]: http://wordpress.stackexchange.com/questions/10500/how-do-i-best-handle-custom-plugin-page-actions "wp admin - How do i best handle custom plugin page actions? - WordPress Development Stack Exchange"
+[Slider-Rev]: https://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog"
