@@ -1,0 +1,1 @@
+log=admin&pwd=bruteforce&wp-submit=Log+In&redirect_to=http%3A%2F%2Flocalhost%3A8888%2Fwordpress%2Fwp-admin%2F&testcookie=1

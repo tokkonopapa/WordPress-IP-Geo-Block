@@ -236,14 +236,14 @@ remove above codes.
 
 ```php
 function my_protectives( $validate ) {
-    $protectives = array(
+    $blacklist = array(
         'wp-config.php',
         'passwd',
     );
 
     $req = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
-    foreach ( $protectives as $item ) {
+    foreach ( $blacklist as $item ) {
         if ( strpos( $req, $item ) !== FALSE ) {
             $validate['result'] = 'blocked';
             break;

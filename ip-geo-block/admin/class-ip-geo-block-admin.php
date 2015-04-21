@@ -89,49 +89,6 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Add settings action link to the plugins page.
-	 *
-	 */
-	public function add_action_links( $links ) {
-		return array_merge(
-			array(
-				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG ) . '">' . __( 'Settings' ) . '</a>'
-			),
-			$links
-		);
-	}
-
-	/**
-	 * Add plugin meta links
-	 *
-	 */
-	public function add_plugin_meta_links( $links, $file ) {
-		if ( $file === IP_GEO_BLOCK_BASE ) {
-			$title = __( 'Contribute at GitHub', IP_Geo_Block::TEXT_DOMAIN );
-			array_push(
-				$links,
-				"<a href=\"https://github.com/tokkonopapa/WordPress-IP-Geo-Block\" title=\"$title\" target=_blank>$title</a>"
-			);
-		}
-
-		return $links;
-	}
-
-	/**
-	 * Setup the options page and menu item.
-	 *
-	 */
-	public function setup_admin_screen() {
-		$this->add_plugin_admin_menu();
-		$this->diagnose_admin_screen();
-		$this->register_admin_settings();
-
-		// Add an action link pointing to the options page. @since 2.7
-		add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
-		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
-	}
-
-	/**
 	 * Register and enqueue plugin-specific style sheet and JavaScript.
 	 *
 	 */
@@ -181,6 +138,35 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
+	 * Add settings action link to the plugins page.
+	 *
+	 */
+	public function add_action_links( $links ) {
+		return array_merge(
+			array(
+				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG ) . '">' . __( 'Settings' ) . '</a>'
+			),
+			$links
+		);
+	}
+
+	/**
+	 * Add plugin meta links
+	 *
+	 */
+	public function add_plugin_meta_links( $links, $file ) {
+		if ( $file === IP_GEO_BLOCK_BASE ) {
+			$title = __( 'Contribute at GitHub', IP_Geo_Block::TEXT_DOMAIN );
+			array_push(
+				$links,
+				"<a href=\"https://github.com/tokkonopapa/WordPress-IP-Geo-Block\" title=\"$title\" target=_blank>$title</a>"
+			);
+		}
+
+		return $links;
+	}
+
+	/**
 	 * Register the administration menu into the WordPress Dashboard menu.
 	 *
 	 */
@@ -219,6 +205,20 @@ class IP_Geo_Block_Admin {
 
 		if ( isset( $this->notice ) )
 			add_action( 'admin_notices', array( $this, 'admin_notice' ) );
+	}
+
+	/**
+	 * Setup the options page and menu item.
+	 *
+	 */
+	public function setup_admin_screen() {
+		$this->add_plugin_admin_menu();
+		$this->diagnose_admin_screen();
+		$this->register_admin_settings();
+
+		// Add an action link pointing to the options page. @since 2.7
+		add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
+		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
 	}
 
 	/**

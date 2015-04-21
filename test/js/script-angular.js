@@ -96,7 +96,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			val: ['12345abcde', 'download', '../wp-config.php']
 		},
 		pingback: {
-			xml: 
+			xml:
 "<?xml version='1.0' encoding='utf-8'?>\n" +
 "<methodcall>\n" +
 "    <methodname>\n" +
@@ -171,6 +171,9 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		login: true,
 		admin_area: true,
 		admin_ajax: true,
+		admin_ajax_get: true,
+		admin_ajax_post: true,
+		admin_post: true,
 		pingback: true,
 		xmlrpc: true,
 		xmlrpc_demo: true
@@ -241,6 +244,10 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	 *
 	 */
 	var post_comment = function (url, proxy) {
+		$scope.form.comment.comment =
+			$scope.form.comment.comment.replace(
+				/(XSS)(?:#?\d*)/, "$1#" + get_random_int(1000, 9999)
+			);
 		var form = serialize_plain($scope.form.comment);
 		svcProxy.post_form(url, form, proxy, 'POST').then(function (res) {
 			messageOut('Comment', res.stat);
@@ -334,6 +341,18 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			});
 		}
 
+		// Pingback
+		if ($scope.checkbox.pingback)
+			post_pingback(home + 'xmlrpc.php', page, proxy);
+
+		// XML-RPC
+		if ($scope.checkbox.xmlrpc)
+			post_xmlrpc(home + 'xmlrpc.php', proxy);
+
+		// XML-RPC Demo
+		if ($scope.checkbox.xmlrpc_demo)
+			post_xmlrpc_demo(home + 'xmlrpc.php', proxy);
+
 		// Login Form
 		if ($scope.checkbox.login) {
 			var form = serialize_plain($scope.form.login);
@@ -350,22 +369,16 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		if ($scope.checkbox.admin_ajax) {
 			var url = home + 'wp-admin/admin-';
 			var form = serialize_array($scope.form.ajax);
-			post_form(url + 'ajax.php', form, proxy, 'GET',  'Admin Ajax (GET)');
-			post_form(url + 'ajax.php', form, proxy, 'POST', 'Admin Ajax (POST)');
-			post_form(url + 'post.php', form, proxy, 'POST', 'Admin Post');
+
+			if ($scope.checkbox.admin_ajax_get)
+				post_form(url + 'ajax.php', form, proxy, 'GET',  'Admin Ajax (GET)');
+
+			if ($scope.checkbox.admin_ajax_post)
+				post_form(url + 'ajax.php', form, proxy, 'POST', 'Admin Ajax (POST)');
+	
+			if ($scope.checkbox.admin_post)
+				post_form(url + 'post.php', form, proxy, 'POST', 'Admin Post');
 		}
-
-		// Pingback
-		if ($scope.checkbox.pingback)
-			post_pingback(home + 'xmlrpc.php', page, proxy);
-
-		// XML-RPC
-		if ($scope.checkbox.xmlrpc)
-			post_xmlrpc(home + 'xmlrpc.php', proxy);
-
-		// XML-RPC Demo
-		if ($scope.checkbox.xmlrpc_demo)
-			post_xmlrpc_demo(home + 'xmlrpc.php', proxy);
 	};
 
 	$scope.reset = function () {

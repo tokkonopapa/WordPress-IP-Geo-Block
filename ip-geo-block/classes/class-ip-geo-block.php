@@ -77,7 +77,8 @@ class IP_Geo_Block {
 		}
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
-		if ( $settings['validation']['admin'] && is_admin() )
+		if ( ( $settings['validation']['admin'] || 
+		       $settings['validation']['ajax' ] ) && is_admin() )
 			add_action( 'init', array( $this, 'validate_admin' ), 0 );
 
 		// Load authenticated nonce
@@ -441,11 +442,11 @@ class IP_Geo_Block {
 			switch ( $pagenow ) {
 			  case 'admin-ajax.php':
 				if ( ! has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) )
-					$type = 'admin';
+					$type = 'ajax';
 				break;
 			  case 'admin-post.php':
 				if ( ! has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) )
-					$type = 'admin';
+					$type = 'ajax';
 				break;
 			  case 'admin.php':
 				$type = 'admin';
@@ -522,9 +523,8 @@ class IP_Geo_Block {
 		// check authenticated nonce
 		$action = self::PLUGIN_SLUG . '-auth-nonce';
 		if ( ! $login || empty( $_REQUEST[ $action ] ) ||
-		     ! wp_verify_nonce( $_REQUEST[ $action ], $action ) ) {
+		     ! wp_verify_nonce( $_REQUEST[ $action ], $action ) )
 			$validate['result'] = 'blocked';
-		}
 
 		return $validate;
 	}

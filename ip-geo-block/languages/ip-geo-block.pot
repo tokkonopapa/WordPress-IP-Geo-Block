@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.0.8\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-04-12 10:07+0900\n"
-"PO-Revision-Date: 2015-04-12 10:07+0900\n"
+"POT-Creation-Date: 2015-04-21 23:01+0900\n"
+"PO-Revision-Date: 2015-04-21 23:01+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,21 +25,21 @@ msgid ""
 "access to the admin area posted from outside your nation."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:98
+#: admin/class-ip-geo-block-admin.php:147
 #: admin/class-ip-geo-block-admin.php:236
 msgid "Settings"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:110
+#: admin/class-ip-geo-block-admin.php:159
 msgid "Contribute at GitHub"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:190
-#: admin/class-ip-geo-block-admin.php:191
+#: admin/class-ip-geo-block-admin.php:176
+#: admin/class-ip-geo-block-admin.php:177
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:209
+#: admin/class-ip-geo-block-admin.php:195
 msgid "You need WordPress 3.7+."
 msgstr ""
 
@@ -70,6 +70,7 @@ msgid ""
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:368 admin/includes/tab-settings.php:130
+#: admin/includes/tab-settings.php:152
 msgid "Enable"
 msgstr ""
 
@@ -182,182 +183,198 @@ msgstr ""
 msgid "Validation settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:129 admin/includes/tab-settings.php:275
+#: admin/includes/tab-settings.php:129 admin/includes/tab-settings.php:151
+#: admin/includes/tab-settings.php:297
 msgid "Disable"
 msgstr ""
 
-#: admin/includes/tab-settings.php:131
+#: admin/includes/tab-settings.php:131 admin/includes/tab-settings.php:153
 msgid "Prevent zero-day exploit"
 msgstr ""
 
 #: admin/includes/tab-settings.php:133
 msgid ""
-"It will block a malicious request to <code>wp-admin/(admin|admin-ajax|admin-"
-"post).php</code> besides the country code. Because this is an experimental "
-"feature, please open a new issue at <a class=\"ip-geo-block-link\" href="
-"\"http://wordpress.org/support/plugin/ip-geo-block\" title=\"WordPress "
-"&#8250; Support &raquo; IP Geo Block\" target=_blank>support forum</a> if "
-"you have any troubles with it."
+"It will block a malicious request to <code>wp-admin/admin.php</code> besides "
+"the country code. Because this is an experimental feature, please open a new "
+"issue at <a class=\"ip-geo-block-link\" href=\"http://wordpress.org/support/"
+"plugin/ip-geo-block\" title=\"WordPress &#8250; Support &raquo; IP Geo Block"
+"\" target=_blank>support forum</a> if you have any troubles with it."
 msgstr ""
 
 #: admin/includes/tab-settings.php:140
+msgid ""
+"<dfn title=\"Validate access to wp-admin/admin-(ajax|post).php\">Admin ajax/"
+"post</dfn>"
+msgstr ""
+
+#: admin/includes/tab-settings.php:155
+msgid ""
+"It will block a malicious request to <code>wp-admin/admin-(ajax|post).php</"
+"code> besides the country code. Because this is an experimental feature, "
+"please open a new issue at <a class=\"ip-geo-block-link\" href=\"http://"
+"wordpress.org/support/plugin/ip-geo-block\" title=\"WordPress &#8250; "
+"Support &raquo; IP Geo Block\" target=_blank>support forum</a> if you have "
+"any troubles with it."
+msgstr ""
+
+#: admin/includes/tab-settings.php:162
 msgid "Matching rule"
 msgstr ""
 
-#: admin/includes/tab-settings.php:150
+#: admin/includes/tab-settings.php:172
 msgid "White list"
 msgstr ""
 
-#: admin/includes/tab-settings.php:151
+#: admin/includes/tab-settings.php:173
 msgid "Black list"
 msgstr ""
 
-#: admin/includes/tab-settings.php:159
+#: admin/includes/tab-settings.php:181
 #, php-format
 msgid "<dfn title=\"If empty then pass through\">White list</dfn> %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:168 admin/includes/tab-settings.php:184
-#: admin/includes/tab-settings.php:202 admin/includes/tab-settings.php:297
+#: admin/includes/tab-settings.php:190 admin/includes/tab-settings.php:206
+#: admin/includes/tab-settings.php:224 admin/includes/tab-settings.php:319
 msgid "(comma separated)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:175
+#: admin/includes/tab-settings.php:197
 #, php-format
 msgid "<dfn title=\"If empty then pass through\">Black list</dfn> %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:192
+#: admin/includes/tab-settings.php:214
 msgid ""
 "<dfn title=\"ex) HTTP_X_FORWARDED_FOR\">$_SERVER keys for extra IPs</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:209
+#: admin/includes/tab-settings.php:231
 #, php-format
 msgid "Response code %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:241
+#: admin/includes/tab-settings.php:263
 msgid "Record settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:249
+#: admin/includes/tab-settings.php:271
 msgid "Record validation statistics"
 msgstr ""
 
-#: admin/includes/tab-settings.php:264
+#: admin/includes/tab-settings.php:286
 msgid "Record validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:276
+#: admin/includes/tab-settings.php:298
 msgid "Only when blocked"
 msgstr ""
 
-#: admin/includes/tab-settings.php:277
+#: admin/includes/tab-settings.php:299
 msgid "Only when passed"
 msgstr ""
 
-#: admin/includes/tab-settings.php:278
+#: admin/includes/tab-settings.php:300
 msgid "Unauthenticated user"
 msgstr ""
 
-#: admin/includes/tab-settings.php:279
+#: admin/includes/tab-settings.php:301
 msgid "Authenticated user"
 msgstr ""
 
-#: admin/includes/tab-settings.php:280
+#: admin/includes/tab-settings.php:302
 msgid "All of validation"
 msgstr ""
 
-#: admin/includes/tab-settings.php:287
+#: admin/includes/tab-settings.php:309
 msgid ""
 "<dfn title=\"ex) log, pwd, comment\">$_POST keys to be recorded with their "
 "values in logs</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:307
+#: admin/includes/tab-settings.php:329
 msgid "Maxmind GeoLite settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:315
+#: admin/includes/tab-settings.php:337
 msgid "Path to database (IPv4)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:328 admin/includes/tab-settings.php:349
+#: admin/includes/tab-settings.php:350 admin/includes/tab-settings.php:371
 #: includes/download.php:126
 #, php-format
 msgid "Last update: %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:336
+#: admin/includes/tab-settings.php:358
 msgid "Path to database (IPv6)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:358
+#: admin/includes/tab-settings.php:380
 msgid "Auto updating (once a month)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:373
+#: admin/includes/tab-settings.php:395
 msgid "Download database"
 msgstr ""
 
-#: admin/includes/tab-settings.php:381
+#: admin/includes/tab-settings.php:403
 msgid "Download now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:392
+#: admin/includes/tab-settings.php:414
 msgid "Submission settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:400
+#: admin/includes/tab-settings.php:422
 msgid "Text message on comment form"
 msgstr ""
 
-#: admin/includes/tab-settings.php:411
+#: admin/includes/tab-settings.php:433
 msgid "None"
 msgstr ""
 
-#: admin/includes/tab-settings.php:412
+#: admin/includes/tab-settings.php:434
 msgid "Top"
 msgstr ""
 
-#: admin/includes/tab-settings.php:413
+#: admin/includes/tab-settings.php:435
 msgid "Bottom"
 msgstr ""
 
-#: admin/includes/tab-settings.php:425
+#: admin/includes/tab-settings.php:447
 msgid "Cache settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:433
+#: admin/includes/tab-settings.php:455
 msgid "Number of entries"
 msgstr ""
 
-#: admin/includes/tab-settings.php:448
+#: admin/includes/tab-settings.php:470
 msgid "Expiration time [sec]"
 msgstr ""
 
-#: admin/includes/tab-settings.php:466
+#: admin/includes/tab-settings.php:488
 msgid "Plugin settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:474
+#: admin/includes/tab-settings.php:496
 msgid "Remove settings at uninstallation"
 msgstr ""
 
-#: admin/includes/tab-settings.php:492
+#: admin/includes/tab-settings.php:513
 msgid "Delete DB table for validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:500
+#: admin/includes/tab-settings.php:521
 msgid "Delete now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:508
+#: admin/includes/tab-settings.php:529
 msgid "Create DB table for validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:516
+#: admin/includes/tab-settings.php:537
 msgid "Create now"
 msgstr ""
 

@@ -65,8 +65,7 @@ if you have some
 in your site. Because this is an experimental feature, please open an issue at 
     [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
 if you have any troubles. I'll be profoundly grateful your contribution to 
-improve this feature. See more details on 
-    [the blog of this plugin](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
+improve this feature.
 
 4. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
  `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
@@ -244,14 +243,14 @@ remove above codes.
 = How can I protect my `wp-config.php` against malicious access? =
 
 `function my_protectives( $validate ) {
-    $protectives = array(
+    $blacklist = array(
         'wp-config.php',
         'passwd',
     );
 
     $req = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
-    foreach ( $protectives as $item ) {
+    foreach ( $blacklist as $item ) {
         if ( strpos( $req, $item ) !== FALSE ) {
             $validate['result'] = 'blocked';
             break;
@@ -297,9 +296,6 @@ Moreover, it doesn't affects a request from non-logged-in user.
 On the other hand, the details of above process are slightly delicate. For 
 example, it's incapable of preventing Privilege Escalation (PE) because it 
 can't be decided which capabilities does the request need.
-
-See more details on 
-[the blog of this plugin](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
 = Some admin function doesn't work when WP-ZEP is on. =
 
@@ -354,14 +350,12 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 * Fixed an issue that a certain type of attack vector to the admin area (
   [example](https://blog.sucuri.net/2014/08/database-takeover-in-custom-contact-forms.html "Critical Vulnerability Disclosed on WordPress Custom Contact Forms Plugin")
   ) could not be blocked by the reason that some plugins accept it on earlier 
-  hook (ie `init`) than this plugin (ie `admin_init`).
-* Optimized resource settings and loadings to avoid redundancy.
-* Unified validation of admin area and admin ajax/post from the viewpoint of 
-  preventing malicious access.
+  hook (ie `init`) than this plugin (previously `admin_init`).
 * Added re-creating DB table for validation logs in case of accidentally 
   failed at activation process.
 * The time of day is shown with local time by adding GMT offset based on 
   the time zone setting.
+* Optimized resource loading and settings to avoid redundancy.
 
 = 2.0.7 =
 * Avoid JavaScript error which occurs if an anchor link has no `href`.
