@@ -51,6 +51,8 @@ class IP_Geo_Block_Options {
 			    'maxlogs'     => 100,     // Max number of rows of log
 			    'backup'      => NULL,    // Absolute path to directory for backup
 			),
+			// since version 2.0.8
+			'priority'        => 0,       // Action priority for WP-ZEP
 			'update'          => array(   // Updating IP address DB
 			    'auto'        => TRUE,    // Auto updating of DB file
 			    'retry'       => 0,       // Number of retry to download
@@ -161,6 +163,10 @@ class IP_Geo_Block_Options {
 				$settings['validation']['proxy'] ? 'HTTP_X_FORWARDED_FOR' : NULL;
 				foreach ( array( 'maxlogs', 'backup' ) as $tmp )
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
+			}
+
+			if ( version_compare( $settings['version'], '2.0.8' ) < 0 ) {
+				$settings['priority'] = $default[ $key[0] ]['priority'];
 			}
 
 			// update local goelocation database files

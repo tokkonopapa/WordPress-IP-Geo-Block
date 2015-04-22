@@ -79,11 +79,11 @@ class IP_Geo_Block {
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
 		if ( ( $settings['validation']['admin'] || 
 		       $settings['validation']['ajax' ] ) && is_admin() )
-			add_action( 'init', array( $this, 'validate_admin' ), 0 );
+			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
 
 		// Load authenticated nonce
 		if ( is_user_logged_in() )
-			add_action( 'wp_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ), 0 );
+			add_action( 'wp_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ), $settings['priority'] );
 	}
 
 	// Register and enqueue admin-specific style sheet and JavaScript.
