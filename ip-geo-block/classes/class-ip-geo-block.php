@@ -441,12 +441,10 @@ class IP_Geo_Block {
 		if ( isset( $_REQUEST['action'] ) ) {
 			switch ( $pagenow ) {
 			  case 'admin-ajax.php':
-				if ( ! has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) )
-					$type = 'ajax';
+				$type = has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) ? NULL : 'ajax';
 				break;
 			  case 'admin-post.php':
-				if ( ! has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) )
-					$type = 'ajax';
+				$type = has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) ? NULL : 'ajax';
 				break;
 			  case 'admin.php':
 				$type = 'admin';

@@ -40,10 +40,10 @@ class IP_Geo_Block_Admin {
 
 		// Setup a nonce to validate authentication.
 		add_action( 'admin_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ) );
-		add_action( 'wp_ajax_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
 
 		// Add the options page and menu item.
 		add_action( 'admin_menu', array( $this, 'setup_admin_screen' ) );
+		add_action( 'wp_ajax_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
 	}
 
 	/**
@@ -107,7 +107,7 @@ class IP_Geo_Block_Admin {
 
 		// js for google map
 		$footer = TRUE;
-		if ( isset( $_GET['tab'] ) && '2' === $_GET['tab'] ) {
+		if ( isset( $_GET['tab'] ) && (int)$_GET['tab'] === 2 ) {
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
 				'//maps.google.com/maps/api/js?sensor=false',
 				array( 'jquery' ), IP_Geo_Block::VERSION, $footer
