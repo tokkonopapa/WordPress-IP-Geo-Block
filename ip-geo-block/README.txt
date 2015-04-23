@@ -65,7 +65,8 @@ if you have some
 in your site. Because this is an experimental feature, please open an issue at 
     [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
 if you have any troubles. I'll be profoundly grateful your contribution to 
-improve this feature.
+improve this feature. See more details on 
+    [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
 4. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
  `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
@@ -296,6 +297,9 @@ Moreover, it doesn't affects a request from non-logged-in user.
 On the other hand, the details of above process are slightly delicate. For 
 example, it's incapable of preventing Privilege Escalation (PE) because it 
 can't be decided which capabilities does the request need.
+
+See more details on 
+[this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
 = Some admin function doesn't work when WP-ZEP is on. =
 

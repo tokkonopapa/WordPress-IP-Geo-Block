@@ -354,7 +354,7 @@ class IP_Geo_Block_Logs {
 		$sql = $wpdb->prepare(
 			"INSERT INTO `$table`
 			(`time`, `ip`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, `data`)
-			values (%d, %s, %s, %d, %s, %s, %s, %s, %s, %s)",
+			VALUES (%d, %s, %s, %d, %s, %s, %s, %s, %s, %s)",
 			$_SERVER['REQUEST_TIME'],
 			$validate['ip'],
 			$hook,
