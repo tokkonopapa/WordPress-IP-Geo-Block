@@ -190,7 +190,8 @@ img {
 .blog-post h4,
 .blog-post h5,
 .blog-post h6 {
-  margin-top: 1.1em;
+  font-weight: 700;
+  margin-top: 1em;
 }
 p.blog-post-more {
   margin-left: 0.5em;
@@ -238,15 +239,30 @@ p.blog-post-more {
 /*
  * pygments for github.css
  */
-pre {
-  overflow-x: auto;
+code[class*="language-"],
+pre[class*="language-"] {
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+pre[class*="language-"] {
+  overflow: visible;
 }
 code[class*="language"] {
-  max-height: 29em;
   display: block;
-  white-space: pre;
   overflow: scroll;
+  max-height: 30em;
 }
+
 .highlight pre { font-size: 16px; margin-bottom: 1em; padding: 0.5em 0.75em; }
 .highlight { background-color: #ffffcc }
 .c { color: #999988; font-style: italic } /* Comment */

@@ -11,6 +11,7 @@ unveiled vulnerability. I call it "**Z**ero-day **E**xploit **P**revention
 for wp-admin" (WP-ZEP).
 
 In this article, I'll explain about its mechanism and also its limitations.
+But at first, I'll mention about the best practice of plugin actions.
 
 <!--more-->
 
@@ -30,17 +31,17 @@ The plugin page can be displayed according to its category like this:
 
 #### Requesting to <samp>wp-admin/admin.php</samp> ####
 
-On the plugin page, we can put a form to provide an action `do-my-action` 
-for our users via `admin.php` like this:
+On the plugin's dashboard, we can provide an action `do-my-action` via 
+`admin.php` with a form like this:
 
 {% highlight php startinline=true %}
 <?php
 add_action( 'admin_action_' . 'do-my-action', 'my_action' );
 ?>
-<form method="post" action="<?php echo admin_url( 'admin.php' ); ?>">
+<form action="<?php echo admin_url( 'admin.php' ); ?>">
     <?php wp_nonce_field( 'do-my-action' ); ?>
-    <input type="hidden" name="action" value="do-my-action">
-    <input type="submit" value="Do my action" class="button">
+    <input type="hidden" name="action" value="do-my-action" />
+    <input type="submit" value="Do my action" class="button" />
 </form>
 {% endhighlight %}
 
@@ -70,8 +71,7 @@ add_action( 'wp_ajax_' . 'do-my-action', 'my_action' );
 
 #### Requesting to <samp>wp-admin/admin-post.php</samp> ####
 
-WordPress also give us a chance to handle only `POST` method via 
-`admin-post.php`.
+WordPress also give us a chance to handle `POST` request via `admin-post.php`.
 
 {% highlight php startinline=true %}
 add_action( 'admin_post_' . 'do-my-action', 'my_action' );
@@ -120,15 +120,15 @@ function my_action() {
 
 ### The mechanism of WP-ZEP ###
 
-In the above code, she most important things before **doing my action** are:
+In the above code, the most important things before **doing my action** are:
 
-1. validate privilege of users with `current_user_can()`.
+1. validate user privilege with `current_user_can()`.
 2. validate the nonce with `check_admin_referer()`.
 3. validate the given input.
 
 When either lacks, the result becomes serious.
 
-So WP-ZEP will make up the former two of them by embedding a nonce into the 
+So WP-ZEP will make up 1. and 2. by embedding a nonce into the 
 request.
 
 ### The limitation of WP-ZEP ###
