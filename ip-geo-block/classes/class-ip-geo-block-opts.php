@@ -51,8 +51,6 @@ class IP_Geo_Block_Options {
 			    'maxlogs'     => 100,     // Max number of rows of log
 			    'backup'      => NULL,    // Absolute path to directory for backup
 			),
-			// since version 2.0.8
-			'priority'        => 0,       // Action priority for WP-ZEP
 			'update'          => array(   // Updating IP address DB
 			    'auto'        => TRUE,    // Auto updating of DB file
 			    'retry'       => 0,       // Number of retry to download
@@ -70,6 +68,8 @@ class IP_Geo_Block_Options {
 			    'ipv4_last'   => NULL,    // Last-Modified of DB file
 			    'ipv6_last'   => NULL,    // Last-Modified of DB file
 			),
+			// since version 2.0.8
+			'priority'        => 0,       // Action priority for WP-ZEP
 		),
 
 		// statistics (autoloaded since version 1.2.1)
