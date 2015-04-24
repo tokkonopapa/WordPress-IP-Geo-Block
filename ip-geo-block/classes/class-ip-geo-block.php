@@ -505,18 +505,34 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_nonce( $validate, $settings ) {
+		// exclude core admin actions
+		// note: those are defined in wp-admin/includes/ajax-actions.php but not included at this moment.
 		$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
-			// list of excluded admin actions
+			// $core_actions_get
+			'fetch-list', 'ajax-tag-search', 'wp-compression-test', 'imgedit-preview', 'oembed-cache',
+			'autocomplete-user', 'dashboard-widgets', 'logged-in',
+
+			// $core_actions_post
+			'oembed-cache', 'image-editor', 'delete-comment', 'delete-tag', 'delete-link',
+			'delete-meta', 'delete-post', 'trash-post', 'untrash-post', 'delete-page', 'dim-comment',
+			'add-link-category', 'add-tag', 'get-tagcloud', 'get-comments', 'replyto-comment',
+			'edit-comment', 'add-menu-item', 'add-meta', 'add-user', 'closed-postboxes',
+			'hidden-columns', 'update-welcome-panel', 'menu-get-metabox', 'wp-link-ajax',
+			'menu-locations-save', 'menu-quick-search', 'meta-box-order', 'get-permalink',
+			'sample-permalink', 'inline-save', 'inline-save-tax', 'find_posts', 'widgets-order',
+			'save-widget', 'set-post-thumbnail', 'date_format', 'time_format', 'wp-fullscreen-save-post',
+			'wp-remove-post-lock', 'dismiss-wp-pointer', 'upload-attachment', 'get-attachment',
+			'query-attachments', 'save-attachment', 'save-attachment-compat', 'send-link-to-editor',
+			'send-attachment-to-editor', 'save-attachment-order', 'heartbeat', 'get-revision-diffs',
+			'save-user-color-scheme', 'update-widget', 'query-themes', 'parse-embed', 'set-attachment-thumbnail',
+			'parse-media-shortcode', 'destroy-sessions', 'install-plugin', 'update-plugin', 'press-this-save-post',
+			'press-this-add-category',
 		) );
 
-		// check admin actions (core ajax calls in wp-admin/includes/ajax-actions.php)
+		// check safe actions
 		$login = is_user_logged_in(); // or user_can_access_admin_page()
-		if ( ( $login && ! empty( $_REQUEST['action'] ) ) && (
-			in_array( $_REQUEST['action'], $admin_actions ) ||
-			function_exists( 'wp_ajax_' . str_replace( '-', '_', $_REQUEST['action'] ) )
-		) ) {
+		if ( $login && ! empty( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], $admin_actions ) )
 			return $validate; // still potentially be blocked by country code
-		}
 
 		// check authenticated nonce
 		$action = self::PLUGIN_SLUG . '-auth-nonce';
