@@ -117,6 +117,7 @@
 					var w = window.open();
 					w.document.write(
 						'<meta name="referrer" content="never" />' +
+						'<meta name="referrer" content="no-referrer" />' +
 						'<meta http-equiv="refresh" content="0; url=' + sanitize(this.href) + '" />'
 					);
 					w.document.close();
