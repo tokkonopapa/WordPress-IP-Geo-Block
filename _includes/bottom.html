@@ -1,4 +1,4 @@
-<!-- Disqus 
+<!-- Disqus -->
 <script type="text/javascript">
   var disqus_shortname = 'ip-geo-block';
   (function() {
@@ -7,11 +7,13 @@
       dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }
-    add('embed.js');
-//  add('count.js');
+    if (location.hostname.indexOf('github') >= 0) {
+        add('embed.js');
+//      add('count.js');
+    }
   })();
 </script>
--->
+
 <!-- Bootstrap core JavaScript -->
 <!--
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
