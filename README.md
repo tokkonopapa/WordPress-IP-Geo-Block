@@ -62,8 +62,9 @@ improve this feature. See more details on
 4. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
  `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
 
-5. Referer silencer for external link. When you click an external hyperlink on 
-admin screen, http referer will be suppressed to hide a footprint of your site.
+5. Referer suppressor for external link. When you click an external hyperlink 
+on admin screen, http referer will be eliminated to hide a footprint of your 
+site.
 
 6. Validation logs will be recorded into MySQL data table to analyze posting 
 pattern under the specified condition.

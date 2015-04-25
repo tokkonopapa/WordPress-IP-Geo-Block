@@ -71,8 +71,9 @@ improve this feature. See more details on
 4. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
  `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
 
-5. Referer silencer for external link. When you click an external hyperlink on 
-admin screen, http referer will be suppressed to hide a footprint of your site.
+5. Referer suppressor for external link. When you click an external hyperlink 
+on admin screen, http referer will be eliminated to hide a footprint of your 
+site.
 
 6. Validation logs will be recorded into MySQL data table to analyze posting 
 pattern under the specified condition.
@@ -375,7 +376,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
   will be locked out from admin screen when the cache expires.
 * **Bug fix:** Fixed an issue of `get_geolocation()` method at a time of 
   when the cache of IP address is cleared.
-* Referer silencer now supports [meta referrer](https://wiki.whatwg.org/wiki/Meta_referrer "Meta referrer - WHATWG Wiki")
+* Referer suppressor now supports [meta referrer](https://wiki.whatwg.org/wiki/Meta_referrer "Meta referrer - WHATWG Wiki")
 
 = 2.0.3 =
 * **Bug fix:** Fixed an issue that empty black list doesn't work correctly 
@@ -384,7 +385,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
   Because it is an experimental feature, please open a new issue at 
   [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles with it.
-* **New feature:** Referer silencer for external link. When you click an 
+* **New feature:** Referer suppressor for external link. When you click an 
   external hyperlink on admin screen, http referer will be suppressed to 
   hide a footprint of your site.
 * Also added the filter hook `ip-geo-block-admin-actions` for safe actions 

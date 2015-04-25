@@ -165,9 +165,8 @@ class IP_Geo_Block_Options {
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
 			}
 
-			if ( version_compare( $settings['version'], '2.0.8' ) < 0 ) {
+			if ( version_compare( $settings['version'], '2.0.8' ) < 0 )
 				$settings['priority'] = $default[ $key[0] ]['priority'];
-			}
 
 			// update local goelocation database files
 			$settings['ip2location']['ipv4_path'] = $ip2;
