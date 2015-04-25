@@ -6,7 +6,7 @@
 function ip_geo_block_localdate( $timestamp = FALSE, $format = NULL ) {
 	static $offset = NULL;
 	if ( $offset === NULL )
-		$offset = (int)( 'UTC' === date_default_timezone_get() ?
+		$offset = (int)( 'UTC' === @date_default_timezone_get() ?
 			get_option( 'gmt_offset' ) * HOUR_IN_SECONDS : 0 );
 
 	if ( ! $format )
