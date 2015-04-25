@@ -12,7 +12,7 @@ favorite feature of [IP Geo Block][IP-Geo-Block] <span class="emoji">
 </span>.
 
 It came to this plugin as a logical consequence of WP-ZEP. In this article, 
-I'll show you that reason.
+I'll tell you the story.
 
 <!--more-->
 
