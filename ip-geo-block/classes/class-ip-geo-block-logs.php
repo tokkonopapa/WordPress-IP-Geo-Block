@@ -223,7 +223,7 @@ class IP_Geo_Block_Logs {
 		}
 
 		return self::truncate_utf8(
-			implode( ',', $headers ), NULL, '', IP_GEO_BLOCK_MAX_TXT_LEN
+			implode( ',', $headers ), NULL, '', IP_GEO_BLOCK_MAX_STR_LEN
 		);
 	}
 
@@ -235,7 +235,7 @@ class IP_Geo_Block_Logs {
 		if ( 'xmlrpc' === $hook ) {
 			global $HTTP_RAW_POST_DATA;
 			$posts = self::truncate_utf8(
-				$HTTP_RAW_POST_DATA, '/\s*([<>])\s*/', '$1', IP_GEO_BLOCK_MAX_TXT_LEN
+				$HTTP_RAW_POST_DATA, '/\s*([<>])\s*/', '$1', IP_GEO_BLOCK_MAX_STR_LEN
 			);
 
 			// mask the password
@@ -271,7 +271,7 @@ class IP_Geo_Block_Logs {
 				$posts[] = $val ? "$key=$val" : "$key";
 
 			$posts = self::truncate_utf8(
-				implode( ',', $posts ), '/\s+/', ' ', IP_GEO_BLOCK_MAX_TXT_LEN
+				implode( ',', $posts ), '/\s+/', ' ', IP_GEO_BLOCK_MAX_STR_LEN
 			);
 		}
 
