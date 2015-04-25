@@ -7,7 +7,9 @@ published: true
 ---
 
 "Referer Suppressor" which eliminate the browser's referer is one of my 
-favorite feature of [IP Geo Block][IP-Geo-Block] :heart_eyes: .
+favorite feature of [IP Geo Block][IP-Geo-Block] <span class="emoji">
+![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
+</span>.
 
 It came to this plugin as a logical consequence of WP-ZEP. In this article, 
 I'll show you that reason.
