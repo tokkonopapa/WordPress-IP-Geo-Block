@@ -6,11 +6,10 @@ categories: article
 published: true
 ---
 
-"Referer Suppressor" which eliminate the browser's referer when I click a 
-external link on admin screenis is one of my favorite feature of 
-[IP Geo Block][IP-Geo-Block].
+"Referer Suppressor" which eliminate the browser's referer is one of my 
+favorite feature of [IP Geo Block][IP-Geo-Block] :heart_eyes: .
 
-This came to this plugin as a logical consequence of WP-ZEP. In this article, 
+It came to this plugin as a logical consequence of WP-ZEP. In this article, 
 I'll show you that reason.
 
 <!--more-->

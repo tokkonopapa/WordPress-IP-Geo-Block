@@ -177,6 +177,13 @@ img {
   height: auto;
   max-width: 100%;
 }
+span.emoji {
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+  position: relative;
+  top: -2px;
+}
 
 .blog-post h1,
 .blog-post h2,
