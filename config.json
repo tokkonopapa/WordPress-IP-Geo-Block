@@ -386,11 +386,10 @@
     "buttons.less",
     "responsive-utilities.less",
     "glyphicons.less",
-    "breadcrumbs.less",
     "pagination.less",
     "pager.less",
-    "labels.less"
+    "alerts.less"
   ],
   "js": [],
-  "customizerUrl": "http://getbootstrap.com/customize/?id=3123624734eca4c74e4d"
+  "customizerUrl": "http://getbootstrap.com/customize/?id=1f4b63bb8d6c51f5e175"
 }
