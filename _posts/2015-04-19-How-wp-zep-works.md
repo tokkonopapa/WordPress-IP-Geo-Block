@@ -22,7 +22,7 @@ describe a little in detail.
 
 #### Showing plugin page ####
 
-The plugin page can be displayed according to its category like this:
+A plugin page can be displayed according to its category like these:
 
 * `wp-admin/admin.php?page=my-plugin`
 * `wp-admin/tools.php?page=my-plugin`
@@ -31,8 +31,8 @@ The plugin page can be displayed according to its category like this:
 
 #### Requesting to <samp>wp-admin/admin.php</samp> ####
 
-On the plugin's dashboard, we can provide an action `do-my-action` via 
-`admin.php` with a form like this:
+On a plugin dashboard, we can provide an action `do-my-action` via `admin.php` 
+with a form like this:
 
 {% highlight php startinline=true %}
 <?php
@@ -79,7 +79,7 @@ add_action( 'admin_post_' . 'do-my-action', 'my_action' );
 
 #### Handling request ####
 
-All above-mentioned can be handled by the function `my_action`.
+All above-mentioned can be handled by the function `my_action()`.
 
 {% highlight php startinline=true %}
 function my_action() {
@@ -88,15 +88,15 @@ function my_action() {
          ! check_admin_referer( 'do-my-action' ) ) {
         return; // force to redirect to login page
     }
- 
+
     // do my action
     ...
- 
+
     // show result in case of Ajax
     if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
         wp_send_json( $result );
     }
- 
+
     // show result after page transition
     else {
         if ( isset( $_REQUEST['_wp_http_referer'] ) ) {
@@ -111,7 +111,7 @@ function my_action() {
             // redirect to the plugin page
             $redirect_to = admin_url( 'admin.php?page=my-plugin' );
         }
- 
+
         wp_safe_redirect( $redirect_to );
         exit;
     }
@@ -120,22 +120,25 @@ function my_action() {
 
 ### The mechanism of WP-ZEP ###
 
-In the above code, the most important things before **doing my action** are:
+In `my_action()`, the most important processes before **doing my action** are:
 
 1. validate user privilege with `current_user_can()`.
 2. validate the nonce with `check_admin_referer()`.
 3. validate the given input.
 
-When either lacks, the result becomes serious.
+When a plugin developer loses one of those, the result becomes serious.
 
-So WP-ZEP will make up 1. and 2. by embedding a nonce into the 
-request.
+So WP-ZEP will make up 1. and 2. by embedding a nonce into the request.
 
-### The limitation of WP-ZEP ###
-<!--
-One big challenge for WP-ZEP is to decide the request hander is vulnerable or 
-not if the same function `my_action()` is registered for both authorized and 
-unauthorized users like this:
+### The limitations of WP-ZEP ###
+
+One big challenge for WP-ZEP is to embed a nonce. You already notice that 
+there're countlessly many ways to do a job besides the best practice. WP-ZEP 
+can do nothing about those cases.
+
+Another big challenge is to decide whether the request hander is vulnerable or 
+not if `my_action()` is registered for both authorized and unauthorized users 
+like this:
 
 {% highlight php startinline=true %}
 add_action( 'wp_ajax_'        . 'do-my-action', 'my_action' );
@@ -143,14 +146,55 @@ add_action( 'wp_ajax_nopriv_' . 'do-my-action', 'my_action' );
 {% endhighlight %}
 
 If WP-ZEP blocks the action `do-my-action`, users on the public facing pages 
-can not take any benefit via the ajax call. So in this case, WP-ZEP currently 
-do nothing but validate IP address by country code.
+can not have any services via the ajax call. So in this case, validating IP 
+address by county code is all has to be done.
 
-This bypass causes a serious problem: can't block 
+This causes a serious problem: 
 [vulnerability in Slider Revolution][Slider-Rev] 
-if the malicous access comes from the permitted country.
--->
+cannot be blocked when the attack comes from the permitted country.
+To protect against this kind of attack, you should add following snippet into 
+your `functions.php`. (I should implement this kind of WAF functionality in 
+the future!)
 
-[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress &#8250; IP Geo Block &laquo; WordPress Plugins"
-[Stack-Exchange]: http://wordpress.stackexchange.com/questions/10500/how-do-i-best-handle-custom-plugin-page-actions "wp admin - How do i best handle custom plugin page actions? - WordPress Development Stack Exchange"
-[Slider-Rev]: https://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog"
+{% highlight php startinline=true %}
+add_filter( 'ip-geo-block-admin', 'my_protectives' );
+function my_protectives( $validate ) {
+    $signatures = array(
+        'wp-config.php',
+        'passwd',
+    );
+
+    $req = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
+
+    foreach ( $signatures as $item ) {
+        if ( strpos( $req, $item ) !== FALSE ) {
+            $validate['result'] = 'blocked';
+            break;
+        }
+    }
+
+    return $validate;
+}
+{% endhighlight %}
+
+The last limitation is related to validation of user privilege. WP-ZEP can not 
+know which privilege is needed to `do-my-action`. For example, some plugins 
+need `manage_options`, but `moderate_comments` is sufficient for others. All 
+WP-ZEP can do is to validate that user is logged-in or not.
+
+This limitation will allow the vulnerability of 
+[Privilege Escalation][PrivilegeEscalation]. You should limit the user's 
+registration in order to prevent it.
+
+### Conclusion ###
+
+So many security plugins are there on WordPress.org, but nothing is perfect 
+against the "Zero-day Attack".
+
+So I'd like to keep this plugin simple and light enough to collaborate with 
+other plugins while playing a certain degree of role by itself.
+
+[Slider-Rev]:          https://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog"
+[IP-Geo-Block]:        https://wordpress.org/plugins/ip-geo-block/ "WordPress &#8250; IP Geo Block &laquo; WordPress Plugins"
+[Stack-Exchange]:      http://wordpress.stackexchange.com/questions/10500/how-do-i-best-handle-custom-plugin-page-actions "wp admin - How do i best handle custom plugin page actions? - WordPress Development Stack Exchange"
+[PrivilegeEscalation]: http://en.wikipedia.org/wiki/Privilege_escalation "Privilege escalation - Wikipedia, the free encyclopedia"

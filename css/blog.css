@@ -257,10 +257,10 @@ pre[class*="language-"] {
 pre[class*="language-"] {
   overflow: visible;
 }
-code[class*="language"] {
+code[class*="language-"] {
   display: block;
-  overflow: scroll;
-  max-height: 30em;
+  max-height: 28.3em;
+/*overflow: scroll;*/
 }
 
 .highlight pre { font-size: 16px; margin-bottom: 1em; padding: 0.5em 0.75em; }
