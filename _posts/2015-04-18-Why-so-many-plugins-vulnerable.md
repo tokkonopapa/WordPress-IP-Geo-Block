@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Why so many vulnerabilities in WordPress plugins?"
+title:  "Why so many WordPress plugins vulnerable?"
 date:   2015-04-18 00:00:00
 categories: article
 ---
