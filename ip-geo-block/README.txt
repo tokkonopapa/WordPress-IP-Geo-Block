@@ -361,6 +361,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 * The time of day is shown with local time by adding GMT offset based on 
   the time zone setting.
 * Optimized resource loading and settings to avoid redundancy.
+* See details at [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/2015/04/29/Release-2.0.8.html "Release 2.0.8").
 
 = 2.0.7 =
 * Avoid JavaScript error which occurs if an anchor link has no `href`.

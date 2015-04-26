@@ -452,7 +452,7 @@ class IP_Geo_Block {
 		}
 
 		if ( isset( $type ) && (int)$settings['validation'][ $type ] === 2 )
-			add_filter( self::PLUGIN_SLUG . "-admin", array( $this, 'check_nonce' ), 10, 2 );
+			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 
 		$this->validate_ip( 'xmlrpc.php' === $pagenow ? 'xmlrpc' : 'admin', $settings );
 
@@ -505,14 +505,14 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_nonce( $validate, $settings ) {
-		// exclude core admin actions
-		// note: those are defined in wp-admin/includes/ajax-actions.php but not included at this moment.
+		// exclude core admin actions (defined in wp-admin/includes/ajax-actions.php)
+		// note: corresponding functions are not included until `admin_init`.
 		$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
-			// $core_actions_get
+			// $core_actions_get in wp-admin/admin-ajax.php
 			'fetch-list', 'ajax-tag-search', 'wp-compression-test', 'imgedit-preview', 'oembed-cache',
 			'autocomplete-user', 'dashboard-widgets', 'logged-in',
 
-			// $core_actions_post
+			// $core_actions_post in wp-admin/admin-ajax.php
 			'oembed-cache', 'image-editor', 'delete-comment', 'delete-tag', 'delete-link',
 			'delete-meta', 'delete-post', 'trash-post', 'untrash-post', 'delete-page', 'dim-comment',
 			'add-link-category', 'add-tag', 'get-tagcloud', 'get-comments', 'replyto-comment',
