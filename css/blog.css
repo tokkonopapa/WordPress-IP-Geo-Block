@@ -283,20 +283,19 @@ body {
  * @link: http://stackoverflow.com/questions/11093233/how-to-support-scrolling-when-using-pygments-with-jekyll
  * @link: http://inteist.com/pygments-theme-for-jekyll-monokai/
  */
-.highlight pre, 
-.highlight code {
-  white-space: pre;
-  overflow: auto;
-  word-wrap: normal; /* horizontal scrolling */
-}
 .highlight pre {
   font-size: 16px;
   margin-bottom: 1em;
   padding: 0.5em 0.75em;
+
+  overflow: auto;
+  white-space: pre;
+  word-wrap: normal; /* horizontal scrolling */
 }
 .highlight code {
   display: block;
-  max-height: 28.75em;
+  max-height: 28.2em;
+  white-space: pre;
 }
 .highlight .lineno {
   color: #bbb;
