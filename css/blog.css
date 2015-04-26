@@ -296,7 +296,7 @@ body {
 }
 .highlight code {
   display: block;
-  max-height: 28.5em;
+  max-height: 28.75em;
 }
 .highlight .lineno {
   color: #bbb;
