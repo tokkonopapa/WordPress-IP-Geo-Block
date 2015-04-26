@@ -39,7 +39,7 @@ with a form like this:
 <form action="<?php echo admin_url( 'admin.php' ); ?>">
     <?php wp_nonce_field( 'do-my-action' ); ?>
     <input type="hidden" name="action" value="do-my-action" />
-    <input type="submit" value="Do my action" class="button" />
+    <input type="submit" class="button" value="Do my action" />
 </form>
 ```
 
