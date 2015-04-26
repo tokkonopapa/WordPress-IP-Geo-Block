@@ -289,12 +289,11 @@ body {
   padding: 0.5em 0.75em;
 
   overflow: auto;
-  white-space: pre;
   word-wrap: normal; /* horizontal scrolling */
 }
 .highlight code {
   display: block;
-  max-height: 28.2em;
+  max-height: 29.72em;
   white-space: pre;
 }
 .highlight .lineno {
