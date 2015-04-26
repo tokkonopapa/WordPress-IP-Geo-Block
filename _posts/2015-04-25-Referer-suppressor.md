@@ -34,21 +34,21 @@ kill this possibility.
 Old school method is using [meta refresh][meta-refresh] that is not part of 
 HTTP standard like this:
 
-{% highlight html startinline=true %}
+```html
 <meta http-equiv="refresh" content="0; url=http://example.com/">
-{% endhighlight %}
+```
 
 [Meta referrer][meta-referrer] is a new school:
 
-{% highlight html startinline=true %}
+```html
 <meta name="referrer" content="no-referrer">
-{% endhighlight %}
+```
 
 or
 
-{% highlight html startinline=true %}
+```html
 <a href="http://example.com" referrer="no-referrer">
-{% endhighlight %}
+```
 
 #### Note: ####
 

@@ -136,7 +136,7 @@ On August 2014, Sucuri reported about
 
 Here is the POC. It dumps the SQL queries and download previous ones.
 
-{% highlight php startinline=true %}
+{% highlight php startinline %}
 if (!is_admin()) { /* is front */
     ...
     $custom_contact_front = new CustomContactFormsFront();
@@ -193,20 +193,20 @@ On February 3 2015, Sucuri disclosed [PE in UpdraftPlus plugin][UpdraftPlus].
 
 Suppose a registered user hit a button on the dashboard to do something.
 
-{% highlight php startinline=true %}
+```html+php
 <form action="<?php echo admin_url( 'admin.php' ); ?>">
     <?php wp_nonce_field( 'foo-secret-nonce' ); ?>
     <input type="hidden" name="action" value="foo" />
     <input type="submit" value="Something to do" />
 </form>
-{% endhighlight %}
+```
 
 When `wp-admin/?action=foo` is requested, the function `foo_handler` will be 
 triggered via action hook `admin_action_foo` by following code:
 
-{% highlight php startinline=true %}
-add_action( 'admin_action_foo', 'foo_handler' );
-{% endhighlight %}
+```php
+<?php add_action( 'admin_action_foo', 'foo_handler' ); ?>
+```
 
 If the `foo-secret-nonce` is also used for an administrator function to do an 
 important job and only `check_admin_referer('foo-secret-nonce')` is examined 
@@ -244,9 +244,9 @@ On September 2014,
 became a big topic. For certain functions for the administrators, an attack 
 could download any files via a request to `admin-ajax.php`.
 
-{% highlight text %}
+```
 http://example.com/wp-admin/admin-ajax.php?action=show-me&file=../wp-config.php
-{% endhighlight %}
+```
 
 This request was handled with:
 

@@ -185,6 +185,10 @@ span.emoji {
   top: -2px;
 }
 
+samp {
+  font-size: 0.9em;
+}
+
 .blog-post h1,
 .blog-post h2,
 .blog-post h3,
@@ -197,7 +201,7 @@ span.emoji {
 .blog-post h4,
 .blog-post h5,
 .blog-post h6 {
-  font-weight: 700;
+/*font-weight: 700;*/
   margin-top: 1em;
 }
 p.blog-post-more {
@@ -244,32 +248,57 @@ p.blog-post-more {
 }
 
 /*
- * pygments for github.css
+ * chapter
  */
-code[class*="language-"],
-pre[class*="language-"] {
-  white-space: pre;
-  word-spacing: normal;
-  word-break: normal;
-
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
-  tab-size: 4;
-
-  -webkit-hyphens: none;
-  -moz-hyphens: none;
-  -ms-hyphens: none;
-  hyphens: none;
+body {
+  counter-reset: first;
 }
-pre[class*="language-"] {
-  overflow: visible;
+.blog-post h3 {
+  counter-increment: first;
+  counter-reset: second;
 }
-code[class*="language-"] {
+.blog-post h3:before {
+  content: counter(first) ". ";
+  font-size: 125%;
+}
+.blog-post h4 {
+  counter-increment: second;
+  counter-reset: third;
+}
+.blog-post h4:before {
+  content: counter(first) "." counter(second) ". ";
+  font-size: 125%;
+}
+.blog-post h5 {
+  counter-increment: third;
+}
+.blog-post h5:before {
+  content: counter(first) "." counter(second) "." counter(third) ". ";
+  font-size: 120%;
+}
+
+/*
+ * pygments for github.css
+ *
+ * @link: http://stackoverflow.com/questions/11093233/how-to-support-scrolling-when-using-pygments-with-jekyll
+ * @link: http://inteist.com/pygments-theme-for-jekyll-monokai/
+ */
+.highlight pre code * {
+  white-space: nowrap;    /* this sets all children inside to nowrap */
+}
+.highlight pre {
+  overflow: auto;         /* this sets the scrolling */
+}
+.highlight pre code {
+  white-space: pre;       /* forces <code> to respect <pre> formatting */
+}
+.highlight code {
   display: block;
   max-height: 28.3em;
-  overflow: auto; /*scroll;*/
 }
-
+.highlight .lineno {
+  color: #bbb;
+}
 .highlight pre { font-size: 16px; margin-bottom: 1em; padding: 0.5em 0.75em; }
 .highlight { background-color: #ffffcc }
 .c { color: #999988; font-style: italic } /* Comment */

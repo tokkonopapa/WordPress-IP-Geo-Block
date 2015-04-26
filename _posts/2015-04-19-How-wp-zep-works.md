@@ -34,20 +34,18 @@ A plugin page can be displayed according to its category like these:
 On a plugin dashboard, we can provide an action `do-my-action` via `admin.php` 
 with a form like this:
 
-{% highlight php startinline=true %}
-<?php
-add_action( 'admin_action_' . 'do-my-action', 'my_action' );
-?>
+```html+php
+<?php add_action( 'admin_action_' . 'do-my-action', 'my_action' ); ?>
 <form action="<?php echo admin_url( 'admin.php' ); ?>">
     <?php wp_nonce_field( 'do-my-action' ); ?>
     <input type="hidden" name="action" value="do-my-action" />
     <input type="submit" value="Do my action" class="button" />
 </form>
-{% endhighlight %}
+```
 
 Or a link:
 
-{% highlight php startinline=true %}
+```html+php
 <?php
 $link = add_query_arg(
     array(
@@ -58,30 +56,30 @@ $link = add_query_arg(
 );
 ?>
 <a href="<?php echo esc_url( $link ); ?>">Do my action</a>
-{% endhighlight %}
+```
 
 #### Requesting to <samp>wp-admin/admin-ajax.php</samp> ####
 
 We can also do the same thing via `admin-ajax.php` by `GET` or `POST` method 
 using jQuery.
 
-{% highlight php startinline=true %}
-add_action( 'wp_ajax_' . 'do-my-action', 'my_action' );
-{% endhighlight %}
+```php
+<?php add_action( 'wp_ajax_' . 'do-my-action', 'my_action' ); ?>
+```
 
 #### Requesting to <samp>wp-admin/admin-post.php</samp> ####
 
 WordPress also give us a chance to handle `POST` request via `admin-post.php`.
 
-{% highlight php startinline=true %}
-add_action( 'admin_post_' . 'do-my-action', 'my_action' );
-{% endhighlight %}
+```php
+<?php add_action( 'admin_post_' . 'do-my-action', 'my_action' ); ?>
+```
 
 #### Handling request ####
 
 All above-mentioned can be handled by the function `my_action()`.
 
-{% highlight php startinline=true %}
+{% highlight php startinline %}
 function my_action() {
     // validate privilege and nonce
     if ( ! current_user_can( 'manage_options' ) ||
@@ -140,7 +138,7 @@ Another big challenge is to decide whether the request hander is vulnerable or
 not if `my_action()` is registered for both authorized and unauthorized users 
 like this:
 
-{% highlight php startinline=true %}
+{% highlight php startinline %}
 add_action( 'wp_ajax_'        . 'do-my-action', 'my_action' );
 add_action( 'wp_ajax_nopriv_' . 'do-my-action', 'my_action' );
 {% endhighlight %}
@@ -156,7 +154,7 @@ To protect against this kind of attack, you should add following snippet into
 your `functions.php`. (I should implement this kind of WAF functionality in 
 the future!)
 
-{% highlight php startinline=true %}
+{% highlight php startinline %}
 add_filter( 'ip-geo-block-admin', 'my_protectives' );
 function my_protectives( $validate ) {
     $signatures = array(

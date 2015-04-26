@@ -8,9 +8,14 @@ published: false
 
 <!--more-->
 
-{% highlight php startinline=true %}
+{% highlight php startinline linenos %}
 {% endhighlight %}
 
+<!-- html+php, css+php, js+php -->
+```html
+```
+
+<!-- success, info, warning, danger -->
 <div class="alert alert-info" role="alert">
 </div>
 
@@ -18,9 +23,9 @@ published: false
   "title"
 )][link]
 
+<!-- http://www.emoji-cheat-sheet.com/ -->
 <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span>
-<!-- http://www.emoji-cheat-sheet.com/ -->
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress &#8250; IP Geo Block &laquo; WordPress Plugins"

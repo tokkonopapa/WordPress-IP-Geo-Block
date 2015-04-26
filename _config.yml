@@ -21,6 +21,21 @@ twitter_username: tokkonoPapa
 github_username:  tokkonopapa
 
 # Build settings
-markdown: kramdown
 highlight: pygments
+markdown: redcarpet
+
+# extensions for GitHub Flavored Markdown
+# pygments:
+#   options: ["startinline"]
+redcarpet:
+  extensions: [
+    "no_intra_emphasis",            # not apply em to foo_bar_baz
+    "tables",                       # enable tables
+    "fenced_code_blocks",           # enable ```
+    "autolink",                     # enable auto link
+    "disable_indented_code_blocks", # disable code block with spaces
+    "strikethrough",                # del tag with ~~
+    "superscript"                   # use sup ex: 2^n
+  ]
+
 excerpt_separator: "<!--more-->"
