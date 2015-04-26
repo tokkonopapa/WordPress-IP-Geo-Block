@@ -66,7 +66,7 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_NAME;
 
-		return $wpdb->get_var( "show tables like '$table'" ) !== $table ? __(
+		return $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ? __(
 			'Creating a DB table for verification logs had failed. Once de-activate this plugin, and then activate again.',
 			IP_Geo_Block::TEXT_DOMAIN
 		) : NULL;
