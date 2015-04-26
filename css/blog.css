@@ -112,6 +112,9 @@ h6, .h6 {
 .sidebar-module-inset ol:last-child {
   margin-bottom: 0;
 }
+.sidebar-module li {
+  margin-bottom: 0.5em;
+}
 
 /* Pagination */
 .pager {
@@ -275,6 +278,13 @@ body {
 .blog-post h5:before {
   content: counter(first) "." counter(second) "." counter(third) ". ";
   font-size: 120%;
+}
+
+/*
+ * Disqus
+ */
+#disqus_thread {
+  width: 100%;
 }
 
 /*
