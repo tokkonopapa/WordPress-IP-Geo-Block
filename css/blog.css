@@ -283,6 +283,11 @@ body {
  * @link: http://stackoverflow.com/questions/11093233/how-to-support-scrolling-when-using-pygments-with-jekyll
  * @link: http://inteist.com/pygments-theme-for-jekyll-monokai/
  */
+.highlight {
+  white-space: pre;
+  overflow: auto;
+  word-wrap: normal; /* horizontal scrolling */
+}
 .highlight pre,
 .highlight code {
   white-space: pre;
