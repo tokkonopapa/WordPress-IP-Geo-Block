@@ -39,7 +39,7 @@ When a click event is triggered on a hyperlink which have an anchor to the
 external url, this plugin opens a new document to redirect to that url with 
 some extra meta tags.
 
-"[Meta refresh][meta-refresh]" is an old school which is not part of HTTP 
+"[Meta refresh][meta-refresh]" is an old school which is not a part of HTTP 
 standard.
 
 ```html
@@ -48,7 +48,7 @@ standard.
 
 On a static page including this tag, IE or Firefox doesn't send the referer to 
 the redirected url, but Chrome, Safari or Opera does. On the other hand, on a 
-dynamically opened page, even those browsers doesn't send it to the url.
+dynamically opened page, even those browsers doesn't send it to that url.
 
 ```js
 var w = window.open();
