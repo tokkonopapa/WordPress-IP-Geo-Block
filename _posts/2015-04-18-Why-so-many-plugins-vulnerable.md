@@ -20,6 +20,8 @@ After reading the [Sucuri Blog][Sucuri-Blog] deeply and widely, I came to
 the conclusion that there are some kind of disuse and misuse of WordPress 
 core functions.
 
+I'd like to verify each vulnerability in this point of view.
+
 <!--more-->
 
 ### XSS ###
@@ -77,9 +79,9 @@ in OWASP and "[Data Validation][Data-Validation]" in Codex.
   </table>
 </div>
 
-You already know this very well? Good!
+You already know about this very well?
 
-When it comes to [Blubrry PowerPress <= 6.0][XSS-PowerPress], XSS had already 
+Yes, in case of [Blubrry PowerPress <= 6.0][XSS-PowerPress], XSS had already 
 taken into account. The following statistics shows before and after fixing XSS.
 
 <div class="table-responsive text-center">
@@ -115,26 +117,29 @@ taken into account. The following statistics shows before and after fixing XSS.
   </table>
 </div>
 
-In fact, those paches could be seen every where in their codes. It was hard to 
-track before and after. Additionally, there were `htmlspecialchars()` and 
-`esc_html()` mixed up.
+In fact, those paches could be seen every where in their codes. Those were 
+hard to track before and after. Additionally, `htmlspecialchars()` and
+`esc_html()` were mixed up.
 
 Speaking about `esc_html()`, the third parameter to `htmlspecialchars()` is 
 specified more strictly than their codes. I could hardly say that's OK or not, 
-but using core functions is always OK.
+but I think using core functions is always OK.
+
+I think this issue is caused by disuse and misuse of WordPress core functions.
 
 Also it's important to design codes to separate "Validating Input" in "Model" 
-and "Escaping Output" in "View". I'm not saying about MVC Here. But codex says 
+and "Escaping Output" in "View". I'm not saying about MVC here. But codex says 
 to use 
 "[Validating Sanitizing and Escaping User Data][Sanitizing-Escaping]" 
-along the context. So I think that we should design the context at first.
+along the context. So the developer should design the context at first.
 
 ### SQL Injection ###
 
 On August 2014, Sucuri reported about 
 [SQLi in Custom Contact Forms][Custom-Contact-Forms].
 
-Here is the POC. It dumps the SQL queries and download previous ones.
+The following snippet from CCF (<= 5.1.0.3) dumps the set of SQL queries and 
+download the previous one.
 
 {% highlight php startinline %}
 if (!is_admin()) { /* is front */
@@ -155,8 +160,8 @@ function adminInit() {
 }
 {% endhighlight %}
 
-The function `adminInit` is no doubt for administrators, but the codes had 
-at least next five issues.
+The `adminInit` was no doubt for the administrators. But it had at least next 
+five issues:
 
 1. Validate user role by `is_admin()`.
 2. Lack of consideration of unexpected access route.
@@ -164,8 +169,9 @@ at least next five issues.
 4. Export raw SQL to the client.
 5. Import raw SQL from the client.
 
-As a result, an attacker can easyly know the DB prefix set in the 
-`wp-config.php` and upload some malicious SQL to exploit the site.
+As a result, an attacker could easyly know the DB prefix defined in the 
+`wp-config.php` with a certain attack vector and could inject some malicious 
+SQL to exploit the site.
 
 [![Vulnerability of Custom Contact Form]({{ "/img/2015-04/custom-contact-form.png" | prepend: site.baseurl }}
   "Vulnerability of Custom Contact Form"
@@ -178,18 +184,19 @@ To avoid this vulnerability, the developer must follow the
 [SQL Injection Prevention Cheat Sheet][OWASP-SQL] like below:
 
 1. Validate user privilege by `current_user_can()` with `manage_options`.
-2. Validate nonece to limit the access route.
+2. Validate nonce to limit the access route.
 3. Export and import validated and parameterized queries.
 4. Use stored procedures.
 5. Escape all user supplied input.
 
-The action hook `admin_init` may cause similar misuse. Sucuri reported 
-[RFI in MailPoet Plugin][MailPoet] on July 1 2014, and
+The action hook `admin_init` may cause similar misuse. For example, Sucuri 
+reported [RFI in MailPoet Plugin][MailPoet] on July 1 2014, and
 [RCE in Platform theme][Platform-theme] on Jan 21 2015.
 
 ### Privilege Escalation ###
 
-On February 3 2015, Sucuri disclosed [PE in UpdraftPlus plugin][UpdraftPlus].
+On February 3 2015, Sucuri disclosed 
+[PE in UpdraftPlus plugin <= 1.9.50][UpdraftPlus].
 
 Suppose a registered user hit a button on the dashboard to do something.
 
@@ -202,17 +209,17 @@ Suppose a registered user hit a button on the dashboard to do something.
 ```
 
 When `wp-admin/?action=foo` is requested, the function `foo_handler` will be 
-triggered via action hook `admin_action_foo` by following code:
+triggered via the action hook `admin_action_foo` by following code:
 
 ```php
 <?php add_action( 'admin_action_foo', 'foo_handler' ); ?>
 ```
 
-If the `foo-secret-nonce` is also used for an administrator function to do an 
-important job and only `check_admin_referer('foo-secret-nonce')` is examined 
-without validating user privilege, a PE will happen.
+If the `foo-secret-nonce` is also used in a function for an administrator to 
+do an important job and only `check_admin_referer('foo-secret-nonce')` is 
+examined without validating user privilege, a PE will happen.
 
-Exactly the same vulnerability in WPtouch was also 
+Exactly the same vulnerability in WPtouch (<= 3.4.2) was also 
 [disclosed on July 14, 2014][WPtouch].
 
 This is caused by disuse of WordPress nonce.
@@ -230,19 +237,19 @@ In this case, only validation of user authentication or privilege at saving
 process can not prevent this vulnerability because an administrator potencially 
 click a malicious link with own authorized cookie.
 
-Disuse of nonce 
+Such disuse of nonce 
 [leads many plugins to CSRF](https://wpvulndb.com/search?text=&vuln_type=3).
 
 ### File Inclusion ###
 
 <abbr title="File Inclusion">FI</abbr> (or Arbitrary File Download) is a 
-vulnerability that occurs by giving the user supplied input  without proper 
+vulnerability that occurs by giving the user supplied input without proper 
 validation to some file system functions such as `file_get_contents()`.
 
 On September 2014, 
 [a vulnerability of Slider Revolution][Slider-Revolution]
-became a big topic. For certain functions for the administrators, an attack 
-could download any files via a request to `admin-ajax.php`.
+became a big topic. For certain functions for the administrators, an attacker 
+could download any files via a request to `admin-ajax.php` like this:
 
 ```
 http://example.com/wp-admin/admin-ajax.php?action=show-me&file=../wp-config.php
@@ -270,7 +277,7 @@ user privilege.
 
 I've found a lot of disuse and misuse of WordPress core functions in 
 [Sucuri Blog][Sucuri-Blog]
-and conclude followings for developing WordPress plugins and themes.
+and conclude the followings for developing WordPress plugins and themes.
 
 * Input has been contaminated.
 * The DB has also been contaminated.

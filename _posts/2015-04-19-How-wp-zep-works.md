@@ -5,13 +5,13 @@ date:   2015-04-19 00:00:00
 categories: article
 ---
 
-["IP Geo Block"][IP-Geo-Block] is the only plugin which has an ability to 
+"[IP Geo Block][IP-Geo-Block]" is the only plugin which has an ability to 
 prevent zero-day attack even if some of plugins in a WordPress site have 
 unveiled vulnerability. I call it "**Z**ero-day **E**xploit **P**revention 
 for wp-admin" (WP-ZEP).
 
 In this article, I'll explain about its mechanism and also its limitations.
-But at first, I'll mention about the best practice of plugin actions.
+Before that, I'll mention about the best practice of plugin actions.
 
 <!--more-->
 
@@ -69,7 +69,7 @@ using jQuery.
 
 #### Requesting to <samp>wp-admin/admin-post.php</samp> ####
 
-WordPress also give us a chance to handle `POST` request via `admin-post.php`.
+WordPress also gives us a chance to handle `POST` request via `admin-post.php`.
 
 ```php
 <?php add_action( 'admin_post_' . 'do-my-action', 'my_action' ); ?>
@@ -144,15 +144,15 @@ add_action( 'wp_ajax_nopriv_' . 'do-my-action', 'my_action' );
 {% endhighlight %}
 
 If WP-ZEP blocks the action `do-my-action`, users on the public facing pages 
-can not have any services via the ajax call. So in this case, validating IP 
-address by county code is all has to be done.
+can not have any services via the ajax call. So in this case, all this plugin 
+has to do is validating IP address by county code.
 
 This causes a serious problem: 
 [vulnerability in Slider Revolution][Slider-Rev] 
 cannot be blocked when the attack comes from the permitted country.
 To protect against this kind of attack, you should add following snippet into 
-your `functions.php`. (I should implement this kind of WAF functionality in 
-the future!)
+your `functions.php`. (Should I implement this kind of WAF functionality in 
+the future?)
 
 {% highlight php startinline %}
 add_filter( 'ip-geo-block-admin', 'my_protectives' );
@@ -177,12 +177,13 @@ function my_protectives( $validate ) {
 
 The last limitation is related to validation of user privilege. WP-ZEP can not 
 know which privilege is needed to `do-my-action`. For example, some plugins 
-need `manage_options`, but `moderate_comments` is sufficient for others. All 
-WP-ZEP can do is to validate that user is logged-in or not.
+need `manage_options`, while `moderate_comments` is sufficient for others.
+So all WP-ZEP can do is to validate that user is logged-in or not as a minimum 
+privilege.
 
 This limitation will allow the vulnerability of 
-[Privilege Escalation][PrivilegeEscalation]. You should limit the user's 
-registration in order to prevent it.
+[Privilege Escalation][PrivilegeEscalation]. You should prohibit guest users 
+from registrating to pretend it.
 
 ### Conclusion ###
 

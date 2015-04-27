@@ -180,12 +180,13 @@ img {
   height: auto;
   max-width: 100%;
 }
-span.emoji {
+span.emoji img {
   height: 16px;
   width: 16px;
   display: inline-block;
+  vertical-align: text-top;
   position: relative;
-  top: -2px;
+  top: 4px;
 }
 
 samp {
@@ -205,7 +206,7 @@ samp {
 .blog-post h5,
 .blog-post h6 {
 /*font-weight: 700;*/
-  margin-top: 1em;
+  margin-top: 20px;
 }
 p.blog-post-more {
   margin-left: 0.5em;

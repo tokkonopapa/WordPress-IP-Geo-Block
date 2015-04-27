@@ -13,3 +13,6 @@ layout: default
 </article><!-- /.blog-post -->
 
 <div id="disqus_thread"></div>
+{% if page.script %}{% for script in page.script %}
+<script src="{{ script | prepend: site.baseurl }}"></script>
+{% endfor %}{% endif %}
