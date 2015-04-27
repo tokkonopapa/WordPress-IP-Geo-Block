@@ -46,20 +46,9 @@ standard.
 <meta http-equiv="refresh" content="0; url=http://example.com/">
 ```
 
-On a static page including this tag, IE or Firefox doesn't send the referer to 
-the redirected url, but Chrome, Safari or Opera does. On the other hand, on a 
-dynamically opened page, even those browsers doesn't send it to that url.
-
-```js
-var w = window.open();
-w.document.write(
-    '<meta http-equiv="refresh" content="0; url=http://example.com/" />'
-);
-w.document.close();
-```
-
-A method of this old school heavily depends on the browsers. So we need a new 
-school, i.e. "[Meta referrer][meta-referrer]":
+On a page including this tag, IE or Firefox does not send the referer to the 
+redirected url, but Chrome, Safari or Opera does. So we need a new school, 
+i.e. "[Meta referrer][meta-referrer]":
 
 ```html
 <meta name="referrer" content="no-referrer">
