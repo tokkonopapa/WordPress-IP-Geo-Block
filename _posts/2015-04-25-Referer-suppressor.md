@@ -94,6 +94,7 @@ And another method can be found in [this article][coderwall].
 
 ### Samples ###
 
+- <a href="http://tokkono.cute.coocan.jp/demo/libs/referer.php" target="_blank">Simple link</a>
 - <a href="http://tokkono.cute.coocan.jp/demo/libs/referer.php" data-meta-referrer="false">Meta refresh</a>
 - <a href="http://tokkono.cute.coocan.jp/demo/libs/referer.php" data-meta-referrer="true">Meta refresh + Meta referrer</a>
 
