@@ -226,8 +226,8 @@ var ip_geo_block_start = new Date();
 	$(function () {
 		// Make form style with fieldset and legend
 		$('.form-table').each(function () {
-			$this = $(this);
-			var title = $this.prev();
+			var $this = $(this),
+			    title = $this.prev();
 			if (title.prop('tagName').toLowerCase() === 'h3') {
 				// Move title into the fieldset and wrap with legend
 				$this.wrap('<fieldset class="ip-geo-block-field"></fieldset>')
