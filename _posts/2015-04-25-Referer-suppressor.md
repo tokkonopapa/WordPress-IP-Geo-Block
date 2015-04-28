@@ -60,17 +60,15 @@ or
 <a href="http://example.com" referrer="no-referrer">
 ```
 
-Then the final solution is as follows.
+Then the final solution bocomes as follows.
 
-```js
-var w = window.open();
-w.document.write(
-    '<meta name="referrer" content="never" />' +
-    '<meta name="referrer" content="no-referrer" />' +
-    '<meta http-equiv="refresh" content="0; url=http://example.com/" />'
-);
-w.document.close();
+```html
+<meta name="referrer" content="never" />
+<meta name="referrer" content="no-referrer" />
+<meta http-equiv="refresh" content="0; url=http://example.com/" />
 ```
+
+You can find this in [auth-nonce.js][auth-nonce-js].
 
 #### Note 1: ####
 
@@ -91,6 +89,7 @@ And another method can be found in [this article][coderwall].
 [meta-refresh]:  http://en.wikipedia.org/wiki/Meta_refresh "Meta refresh - Wikipedia, the free encyclopedia"
 [meta-referrer]: http://w3c.github.io/webappsec/specs/referrer-policy/#referrer-policy-delivery-meta "Referrer Policy - W3C Editor's Draft"
 [WHATWG-Wiki]:   https://wiki.whatwg.org/wiki/Meta_referrer "Meta referrer - WHATWG Wiki"
+[auth-nonce-js]: https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/admin/js/auth-nonce.js "WordPress-IP-Geo-Block/auth-nonce.js at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
 [stackoverflow]: http://stackoverflow.com/questions/2985579/does-http-equiv-refresh-keep-referrer-info-and-metadata "html - Does http-equiv=&quot;refresh&quot; keep referrer info and metadata? - Stack Overflow"
 [coderwall]:     https://coderwall.com/p/7a09ja/no-referer-after-redirect-solved "No referer after redirect (Solved)"
 [sample-link]:   http://tokkono.cute.coocan.jp/demo/libs/referer.php
