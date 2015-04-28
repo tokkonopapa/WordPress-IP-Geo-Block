@@ -5,7 +5,7 @@ date:   2015-04-18 00:00:00
 categories: article
 ---
 
-[![WordPress Vulnerability Statistics]({{ "/img/2015-04/vurlerability-statistics.jpg" | prepend: site.baseurl }}
+[![WordPress Vulnerability Statistics]({{ "/img/2015-04/vurlerability-statistics.png" | prepend: site.baseurl }}
   "WordPress Vulnerability Statistics by WPScan Vulnerability Database"
 )][WPScan]
 
