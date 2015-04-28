@@ -20,18 +20,18 @@ I'll tell you the story.
 ### A possibility of nonce disclosure ###
 
 A nonce is a secret information which can be known only by the user who 
-accesses a certain page at a certain moment. It's very important to prevent 
-<abbr title="Cross Site Request Forgeries">CSRF</abbr> or other vulnerability.
+accesses a certain page at a certain moment. It's one of basic and important 
+factor to prevent <abbr title="Cross Site Request Forgeries">CSRF</abbr> or 
+other vulnerability.
 
 Instead of vulnerable plugins, WP-ZEP will embed a nonce into hyperlinks and 
-forms which have a request to the admin area. In order to keep it secret, 
-this plugin should prevent from disclosing the embeded nonce.
+forms which have requests to somewhere in the admin area. To keep it secret, 
+WP-ZEP must kill the possibility of disclosing nonce.
 
-One possibility of nonce disclosure lies in a referer string that was left 
-on the site as a footprint you visited via hyperlinks. So WP-ZEP must kill 
-this possibility.
+One possibility lies in referer strings that was left on the external site as 
+a footprint you visited via hyperlinks.
 
-That's why this plugin need "Referer Suppressor".
+That's why "Referer Suppressor" is needed.
 
 ### How to suppress a referer? ###
 
@@ -40,7 +40,7 @@ external url, this plugin opens a new document to redirect to that url with
 some extra meta tags.
 
 "[Meta refresh][meta-refresh]" is an old school which is not a part of HTTP 
-standard.
+standard, but every browser redirects to the specified url.
 
 ```html
 <meta http-equiv="refresh" content="0; url=http://example.com/">
