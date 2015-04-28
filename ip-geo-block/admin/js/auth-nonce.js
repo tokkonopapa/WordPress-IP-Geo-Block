@@ -31,7 +31,7 @@
 	function is_admin(url, query) {
 		var uri = parse_uri(url ? url.toString().toLowerCase() : ''),
 		    http = /https?/.test(uri.scheme),
-		    path = uri.path || location.pathname;
+		    path = uri.path.charAt(0) === '/' ? uri.path : location.pathname;
 
 		// explicit scheme and external domain
 		if (http && uri.authority !== location.host.toLowerCase()) {
@@ -39,10 +39,9 @@
 		}
 
 		// check scheme, path, query
-		return (http || !uri.scheme) && (
-			path.indexOf('admin.php'     ) >= 0 ||
-			path.indexOf('admin-ajax.php') >= 0 ||
-			path.indexOf('admin-post.php') >= 0
+		return (
+			// under the wp-admin
+			path.indexOf('/wp-admin/') >= 0
 		) && (
 			// if method is POST, then type of query is 'object'
 			typeof query === 'string' ? /(?:action)=/.test(query) : true
