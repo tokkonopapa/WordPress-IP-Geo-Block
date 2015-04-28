@@ -149,10 +149,10 @@ has to do is validating IP address by county code.
 
 This causes a serious problem: 
 [vulnerability in Slider Revolution][Slider-Rev] 
-cannot be blocked when the attack comes from the permitted country.
-To protect against this kind of attack, you should add following snippet into 
-your `functions.php`. (Should I implement this kind of WAF functionality in 
-the future?)
+cannot be blocked when the attack comes from the permitted country. (Because 
+it had registered the above two actions!!) To protect against this kind of 
+attack, you should add following snippet into your `functions.php`.
+(Should I implement this kind of WAF functionality in the future?)
 
 {% highlight php startinline %}
 add_filter( 'ip-geo-block-admin', 'my_protectives' );
