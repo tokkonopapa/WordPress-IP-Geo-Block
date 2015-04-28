@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Impact on site performance by security plugins"
-date:   2015-05-xx 00:00:00
-categories: article
+title:  "Post Title"
+date:   2015-xx-xx 00:00:00
+categories: article changelog
 published: false
 ---
 
@@ -28,4 +28,4 @@ published: false
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span>
 
-[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress &#8250; IP Geo Block &laquo; WordPress Plugins"
+[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"

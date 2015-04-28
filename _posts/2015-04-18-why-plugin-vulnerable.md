@@ -5,7 +5,7 @@ date:   2015-04-18 00:00:00
 categories: article
 ---
 
-[![WordPress Vulnerability Statistics]({{ "/img/2015-04/vurlerability-statistics.png" | prepend: site.baseurl }}
+[![WordPress Vulnerability Statistics]({{ "/img/2015-04/vurlerability-statistics.jpg" | prepend: site.baseurl }}
   "WordPress Vulnerability Statistics by WPScan Vulnerability Database"
 )][WPScan]
 
@@ -251,7 +251,7 @@ On September 2014,
 became a big topic. For certain functions for the administrators, an attacker 
 could download any files via a request to `admin-ajax.php` like this:
 
-```
+```html
 http://example.com/wp-admin/admin-ajax.php?action=show-me&file=../wp-config.php
 ```
 
@@ -277,7 +277,10 @@ user privilege.
 
 I've found a lot of disuse and misuse of WordPress core functions in 
 [Sucuri Blog][Sucuri-Blog]
-and conclude the followings for developing WordPress plugins and themes.
+and conclude the followings for developing WordPress plugins and themes 
+<span class="emoji">
+![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f31d.png)
+</span>.
 
 * Input has been contaminated.
 * The DB has also been contaminated.
@@ -299,6 +302,6 @@ and conclude the followings for developing WordPress plugins and themes.
 [OWASP-SQL]:            https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet#Introduction "SQL Injection Prevention Cheat Sheet"
 [OWASP-XSS]:            https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#XSS_Prevention_Rules_Summary "XSS (Cross Site Scripting) Prevention Cheat Sheet - OWASP"
 [XSS-PowerPress]:       https://wpvulndb.com/vulnerabilities/7773 "Blubrry PowerPress &lt;= 6.0 - Cross-Site Scripting (XSS)"
-[Data-Validation]:      http://codex.wordpress.org/Data_Validation "Data Validation &laquo; WordPress Codex"
-[Sanitizing-Escaping]:  http://codex.wordpress.org/Validating_Sanitizing_and_Escaping_User_Data "Validating Sanitizing and Escaping User Data &laquo; WordPress Codex"
-[IP-Geo-Block]:         https://wordpress.org/plugins/ip-geo-block/ "WordPress &#8250; IP Geo Block &laquo; WordPress Plugins"
+[Data-Validation]:      http://codex.wordpress.org/Data_Validation "Data Validation « WordPress Codex"
+[Sanitizing-Escaping]:  http://codex.wordpress.org/Validating_Sanitizing_and_Escaping_User_Data "Validating Sanitizing and Escaping User Data « WordPress Codex"
+[IP-Geo-Block]:         https://wordpress.org/plugins/ip-geo-block/ "WordPress &#8250; IP Geo Block « WordPress Plugins"

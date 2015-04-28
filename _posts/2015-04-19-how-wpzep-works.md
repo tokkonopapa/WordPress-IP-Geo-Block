@@ -5,7 +5,7 @@ date:   2015-04-19 00:00:00
 categories: article
 ---
 
-"[IP Geo Block][IP-Geo-Block]" is the only plugin which has an ability to 
+[IP Geo Block][IP-Geo-Block] is the only plugin which has an ability to 
 prevent zero-day attack even if some of plugins in a WordPress site have 
 unveiled vulnerability. I call it "**Z**ero-day **E**xploit **P**revention 
 for wp-admin" (WP-ZEP).
@@ -22,7 +22,8 @@ describe a little in detail.
 
 #### Showing plugin page ####
 
-A plugin page can be displayed according to its category like these:
+A url to the plugin dashboard depending on 
+[its parent category][Sub-Level-Menu] can be specified  as follows:
 
 * `wp-admin/admin.php?page=my-plugin`
 * `wp-admin/tools.php?page=my-plugin`
@@ -31,8 +32,8 @@ A plugin page can be displayed according to its category like these:
 
 #### Requesting to <samp>wp-admin/admin.php</samp> ####
 
-On a plugin dashboard, we can provide an action `do-my-action` via `admin.php` 
-with a form like this:
+On the plugin dashboard, we can provide an action `do-my-action` via 
+`admin.php` with a form like this:
 
 ```html+php
 <?php add_action( 'admin_action_' . 'do-my-action', 'my_action' ); ?>
@@ -61,7 +62,7 @@ $link = add_query_arg(
 #### Requesting to <samp>wp-admin/admin-ajax.php</samp> ####
 
 We can also do the same thing via `admin-ajax.php` by `GET` or `POST` method 
-using jQuery.
+using jQuery. This request can be handled via `wp_ajax_xxxx` action hook.
 
 ```php
 <?php add_action( 'wp_ajax_' . 'do-my-action', 'my_action' ); ?>
@@ -75,9 +76,9 @@ WordPress also gives us a chance to handle `POST` request via `admin-post.php`.
 <?php add_action( 'admin_post_' . 'do-my-action', 'my_action' ); ?>
 ```
 
-#### Handling request ####
+#### Processing the requests ####
 
-All above-mentioned can be handled by the function `my_action()`.
+All above-mentioned can be processed by the function `my_action()`.
 
 {% highlight php startinline %}
 function my_action() {
@@ -131,8 +132,15 @@ So WP-ZEP will make up 1. and 2. by embedding a nonce into the request.
 ### The limitations of WP-ZEP ###
 
 One big challenge for WP-ZEP is to embed a nonce. You already notice that 
-there're countlessly many ways to do a job besides the best practice. WP-ZEP 
-can do nothing about those cases.
+there're countlessly many ways to do their own job besides the best practice.
+For example, it is possible to distribute the request into their jobs in a 
+plugin side.
+
+```html
+wp-admin/?page=my-plugin&job=do-my-job
+```
+
+WP-ZEP can do nothing about those cases.
 
 Another big challenge is to decide whether the request hander is vulnerable or 
 not if `my_action()` is registered for both authorized and unauthorized users 
@@ -144,15 +152,17 @@ add_action( 'wp_ajax_nopriv_' . 'do-my-action', 'my_action' );
 {% endhighlight %}
 
 If WP-ZEP blocks the action `do-my-action`, users on the public facing pages 
-can not have any services via the ajax call. So in this case, all this plugin 
+can not get any services via the ajax call. So in this case, all this plugin 
 has to do is validating IP address by county code.
 
 This causes a serious problem: 
-[vulnerability in Slider Revolution][Slider-Rev] 
+[vulnerability in Slider Revolution][Slider-Revolution] 
 cannot be blocked when the attack comes from the permitted country. (Because 
-it had registered the above two actions!!) To protect against this kind of 
-attack, you should add following snippet into your `functions.php`.
-(Should I implement this kind of WAF functionality in the future?)
+it had added the above two actions <span class="emoji">
+![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f620.png)
+</span> !!) To protect against this kind of attack, you should add following 
+snippet into your `functions.php`.
+(Should I implement this kind of WAF functionality in this plugin?)
 
 {% highlight php startinline %}
 add_filter( 'ip-geo-block-admin', 'my_protectives' );
@@ -178,10 +188,10 @@ function my_protectives( $validate ) {
 The last limitation is related to validation of user privilege. WP-ZEP can not 
 know which privilege is needed to `do-my-action`. For example, some plugins 
 need `manage_options`, while `moderate_comments` is sufficient for others.
-So all WP-ZEP can do is to validate that user is logged-in or not as a minimum 
+So all WP-ZEP can do is to validate if a user is logged-in or not as a minimum 
 privilege.
 
-This limitation will allow the vulnerability of 
+This limitation will tolerate the vulnerability of 
 [Privilege Escalation][PrivilegeEscalation]. You should prohibit guest users 
 from registrating to pretend it.
 
@@ -193,7 +203,8 @@ against the "Zero-day Attack".
 So I'd like to keep this plugin simple and light enough to collaborate with 
 other plugins while playing a certain degree of role by itself.
 
-[Slider-Rev]:          https://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog"
-[IP-Geo-Block]:        https://wordpress.org/plugins/ip-geo-block/ "WordPress &#8250; IP Geo Block &laquo; WordPress Plugins"
+[IP-Geo-Block]:        https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [Stack-Exchange]:      http://wordpress.stackexchange.com/questions/10500/how-do-i-best-handle-custom-plugin-page-actions "wp admin - How do i best handle custom plugin page actions? - WordPress Development Stack Exchange"
+[Sub-Level-Menu]:      https://codex.wordpress.org/Administration_Menus#Sub-Level_Menus "Administration Menus « WordPress Codex"
+[Slider-Revolution]:   https://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog"
 [PrivilegeEscalation]: http://en.wikipedia.org/wiki/Privilege_escalation "Privilege escalation - Wikipedia, the free encyclopedia"

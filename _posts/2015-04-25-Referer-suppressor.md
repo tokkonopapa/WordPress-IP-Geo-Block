@@ -24,11 +24,11 @@ accesses a certain page at a certain moment. It's one of basic and important
 factor to prevent <abbr title="Cross Site Request Forgeries">CSRF</abbr> or 
 other vulnerability.
 
-Instead of vulnerable plugins, WP-ZEP will embed a nonce into hyperlinks and 
-forms which have requests to somewhere in the admin area. To keep it secret, 
-WP-ZEP must kill the possibility of disclosing nonce.
+Instead of vulnerable plugins, WP-ZEP embed a nonce into hyperlinks and forms 
+that have requests to somewhere in the admin area. To keep it secret, WP-ZEP 
+must kill the possibility of disclosing nonce.
 
-One possibility lies in referer strings that was left on the external site as 
+One possibility lies in referer strings that was left on the external page as 
 a footprint you visited via hyperlinks.
 
 That's why "Referer Suppressor" is needed.
@@ -46,9 +46,9 @@ standard, but every browser redirects to the specified url.
 <meta http-equiv="refresh" content="0; url=http://example.com/">
 ```
 
-On a page including this tag, IE or Firefox does not send the referer to the 
-redirected url, but Chrome, Safari or Opera does. So we need a new school, 
-i.e. "[Meta referrer][meta-referrer]":
+On a page including this tag, [IE or Firefox does not send the referer to the 
+redirected url, but Chrome, Safari or Opera does][stackoverflow]. So we need 
+a new school, i.e. "[Meta referrer][meta-referrer]":
 
 ```html
 <meta name="referrer" content="no-referrer">
@@ -70,22 +70,17 @@ Then the final solution bocomes as follows.
 
 You can find this in [auth-nonce.js][auth-nonce-js].
 
-#### Note 1: ####
+#### Note ####
 
 The keywords `never`, `default`, `always` are [obsolete][WHATWG-Wiki].
 
-#### Note 2: ####
-
-We can find a similar discussion in [Stack Overflow][stackoverflow].
-And another method can be found in [this article][coderwall].
-
 ### Samples ###
 
-- <a href="http://tokkono.cute.coocan.jp/demo/libs/referer.php" target="_blank">Simple link</a>
-- <a href="http://tokkono.cute.coocan.jp/demo/libs/referer.php" data-meta-referrer="false">Meta refresh</a>
-- <a href="http://tokkono.cute.coocan.jp/demo/libs/referer.php" data-meta-referrer="true">Meta refresh + Meta referrer</a>
+- <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" target="_blank">Simple link</a>
+- <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" data-meta-referrer="false">Meta refresh</a>
+- <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" data-meta-referrer="true" referrer="no-referrer">Meta refresh + Meta referrer</a>
 
-[IP-Geo-Block]:  https://wordpress.org/plugins/ip-geo-block/ "WordPress &#8250; IP Geo Block &laquo; WordPress Plugins"
+[IP-Geo-Block]:  https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [meta-refresh]:  http://en.wikipedia.org/wiki/Meta_refresh "Meta refresh - Wikipedia, the free encyclopedia"
 [meta-referrer]: http://w3c.github.io/webappsec/specs/referrer-policy/#referrer-policy-delivery-meta "Referrer Policy - W3C Editor's Draft"
 [WHATWG-Wiki]:   https://wiki.whatwg.org/wiki/Meta_referrer "Meta referrer - WHATWG Wiki"
