@@ -118,8 +118,8 @@ taken into account. The following statistics shows before and after fixing XSS.
 </div>
 
 In fact, those paches could be seen every where in their codes. Those were 
-hard to track before and after. Additionally, `htmlspecialchars()` and
-`esc_html()` were mixed and used.
+hard to track before and after. More over, `htmlspecialchars()` and 
+`esc_html()`were mixed and used.
 
 Speaking about `esc_html()`, the third parameter to `htmlspecialchars()` is 
 specified more strictly than their codes. I could hardly say that's OK or not, 
