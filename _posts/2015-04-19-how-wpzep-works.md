@@ -201,7 +201,9 @@ So many security plugins are there on WordPress.org, but nothing is perfect
 against the "Zero-day Attack".
 
 So I'd like to keep this plugin simple and light enough to collaborate with 
-other plugins while playing a certain degree of role by itself.
+other plugins while playing a certain degree of role by itself <span class="emoji">
+![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f47b.png)
+</span>.
 
 [IP-Geo-Block]:        https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [Stack-Exchange]:      http://wordpress.stackexchange.com/questions/10500/how-do-i-best-handle-custom-plugin-page-actions "wp admin - How do i best handle custom plugin page actions? - WordPress Development Stack Exchange"

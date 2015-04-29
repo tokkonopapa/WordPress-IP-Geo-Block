@@ -21,7 +21,7 @@ I'll tell you the story.
 
 A nonce is a secret information which can be known only by the user who 
 accesses a certain page at a certain moment. It's one of basic and important 
-factor to prevent <abbr title="Cross Site Request Forgeries">CSRF</abbr> or 
+factors to prevent <abbr title="Cross Site Request Forgeries">CSRF</abbr> or 
 other vulnerability.
 
 Instead of vulnerable plugins, WP-ZEP embed a nonce into hyperlinks and forms 
@@ -76,9 +76,93 @@ The keywords `never`, `default`, `always` are [obsolete][WHATWG-Wiki].
 
 ### Samples ###
 
+Please try the following links:
+
 - <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" target="_blank">Simple link</a>
 - <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" data-meta-referrer="false">Meta refresh</a>
 - <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" data-meta-referrer="true">Meta refresh + Meta referrer</a>
+
+If you find any browsers that take referer strings to the redirected page when 
+you click 
+<q><a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" data-meta-referrer="true">Meta refresh + Meta referrer</a></q>
+please let me know. Thanks <span class="emoji">
+![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f340.png)
+</span>.
+
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Browser</th>
+        <th>Version</th>
+        <th>Platform</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Chrome</td>
+        <td>42.0</td>
+        <td>OS X 10.9.5</td>
+        <td>OK</td>
+      </tr>
+      <tr>
+        <td>Firefox</td>
+        <td>37.0</td>
+        <td>OS X 10.9.5</td>
+        <td>OK</td>
+      </tr>
+      <tr>
+        <td>Safari</td>
+        <td>7.1.5</td>
+        <td>OS X 10.9.5</td>
+        <td>OK</td>
+      </tr>
+      <tr>
+        <td>Opera</td>
+        <td>12.6</td>
+        <td>OS X 10.9.5</td>
+        <td>NG</td>
+      </tr>
+      <tr>
+        <td>Opera</td>
+        <td>29.0</td>
+        <td>OS X 10.9.5</td>
+        <td>OK</td>
+      </tr>
+      <tr>
+        <td>IE11</td>
+        <td>11.0</td>
+        <td>Windows 7</td>
+        <td>OK</td>
+      </tr>
+      <tr>
+        <td>Android Native</td>
+        <td>4.0</td>
+        <td>Android 2.3.5</td>
+        <td>OK</td>
+      </tr>
+      <tr>
+        <td>Android Firefox</td>
+        <td>34.0</td>
+        <td>Android 2.3.5</td>
+        <td>OK</td>
+      </tr>
+      <tr>
+        <td>Mobile Chrome</td>
+        <td>42.0</td>
+        <td>iOS 8.3</td>
+        <td>OK</td>
+      </tr>
+      <tr>
+        <td>Mobile Safari</td>
+        <td>8.0</td>
+        <td>iOS 8.3</td>
+        <td>OK</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 [IP-Geo-Block]:  https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [meta-refresh]:  http://en.wikipedia.org/wiki/Meta_refresh "Meta refresh - Wikipedia, the free encyclopedia"

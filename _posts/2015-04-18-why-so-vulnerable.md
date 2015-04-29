@@ -11,8 +11,8 @@ categories: article
 
 The above graph shows recent statistics of WordPress vulnerability from 
 [WPScan Vulnerability Database][WPScan] analyzed by [Sucuri][Sucuri] which 
-is a world wide security company especially famous for analyzing WordPress 
-vulnerability.
+is a world wide security company especially famous for analyzing vulnerability 
+in WordPress.
 
 Why so many vulnerabilities are there in WP plugins?
 
