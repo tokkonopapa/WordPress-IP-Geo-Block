@@ -78,7 +78,7 @@ The keywords `never`, `default`, `always` are [obsolete][WHATWG-Wiki].
 
 - <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" target="_blank">Simple link</a>
 - <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" data-meta-referrer="false">Meta refresh</a>
-- <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" data-meta-referrer="true" referrer="no-referrer">Meta refresh + Meta referrer</a>
+- <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" data-meta-referrer="true">Meta refresh + Meta referrer</a>
 
 [IP-Geo-Block]:  https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [meta-refresh]:  http://en.wikipedia.org/wiki/Meta_refresh "Meta refresh - Wikipedia, the free encyclopedia"
