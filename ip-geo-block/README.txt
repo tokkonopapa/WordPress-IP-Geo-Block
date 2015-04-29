@@ -3,7 +3,7 @@ Contributors: tokkonopapa
 Donate link:
 Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force
 Requires at least: 3.7
-Tested up to: 4.2
+Tested up to: 4.2.1
 Stable tag: 2.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
