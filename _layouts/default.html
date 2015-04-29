@@ -7,23 +7,17 @@
 
     {% include header.html %}
 
-    <div class="container-fluid">
+    <div class="container">
 
-      <div class="row">
+      <div class="col-xs-12 blog-main">
 
-        <div class="col-sm-9 blog-main">
-          {{ content }}
-        </div><!-- /.blog-main -->
+        {{ content }}
 
-        <div class="col-sm-3 blog-sidebar">
-          {% include sidebar.html %}
-        </div>
-
-      </div><!-- /.row -->
+      </div><!-- /.blog-main -->
 
     </div><!-- /.container -->
 
-    {% include footer.html %}
+    {% include footer-single.html %}
 
     {% include bottom.html %}
 
