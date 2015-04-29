@@ -22,8 +22,8 @@ describe a little in detail.
 
 #### Showing plugin page ####
 
-A url to the plugin dashboard depending on 
-[its parent category][Sub-Level-Menu] can be specified  as follows:
+A url to the plugin dashboard can be specified depending on 
+[its parent category][Sub-Level-Menu] as follows:
 
 * `wp-admin/admin.php?page=my-plugin`
 * `wp-admin/tools.php?page=my-plugin`
@@ -133,14 +133,13 @@ So WP-ZEP will make up 1. and 2. by embedding a nonce into the request.
 
 One big challenge for WP-ZEP is to embed a nonce. You already notice that 
 there're countlessly many ways to do their own job besides the best practice.
-For example, it is possible to distribute the request into their jobs in a 
-plugin side.
 
 ```html
 wp-admin/?page=my-plugin&job=do-my-job
 ```
 
-WP-ZEP can do nothing about those cases.
+In this case, the requested job will be distributed into their hander in a 
+plugin side. So WP-ZEP can do nothing about it.
 
 Another big challenge is to decide whether the request hander is vulnerable or 
 not if `my_action()` is registered for both authorized and unauthorized users 
@@ -160,8 +159,8 @@ This causes a serious problem:
 cannot be blocked when the attack comes from the permitted country. (Because 
 it had added the above two actions <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f620.png)
-</span> !!) To protect against this kind of attack, you should add following 
-snippet into your `functions.php`.
+</span> !!) To prevent this kind of attack, you should add following snippet 
+into your `functions.php`.
 (Should I implement this kind of WAF functionality in this plugin?)
 
 {% highlight php startinline %}
@@ -185,8 +184,8 @@ function my_protectives( $validate ) {
 }
 {% endhighlight %}
 
-The last limitation is related to validation of user privilege. WP-ZEP can not 
-know which privilege is needed to `do-my-action`. For example, some plugins 
+The last limitation is related to the validation of user privilege. WP-ZEP can 
+not know which privilege is needed to `do-my-action`. For example, some plugins
 need `manage_options`, while `moderate_comments` is sufficient for others.
 So all WP-ZEP can do is to validate if a user is logged-in or not as a minimum 
 privilege.

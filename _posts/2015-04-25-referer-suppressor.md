@@ -87,7 +87,7 @@ you click
 <q><a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" data-meta-referrer="true">Meta refresh + Meta referrer</a></q>
 please let me know. Thanks <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f340.png)
-</span>.
+</span>
 
 <div class="table-responsive">
   <table class="table">

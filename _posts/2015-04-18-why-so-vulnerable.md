@@ -10,7 +10,7 @@ categories: article
 )][WPScan]
 
 The above graph shows recent statistics of WordPress vulnerability from 
-[WPScan Vulnerability Database][WPScan] analyzed by [Sucuri][Sucuri] which 
+[WPScan Vulnerability Database][WPScan] summarized by [Sucuri][Sucuri] which 
 is a world wide security company especially famous for analyzing vulnerability 
 in WordPress.
 
@@ -32,7 +32,7 @@ of untrusted data which comes from the outside (including from the DB) and
 lack of an escape just before responding to the user agent. The later is a 
 fundamental countermeasure.
 
-I make corresponding table between "[XSS Prevention Cheat Sheet][OWASP-XSS]" 
+I made a corresponding table between "[XSS Prevention Cheat Sheet][OWASP-XSS]" 
 in OWASP and "[Data Validation][Data-Validation]" in Codex.
 
 <div class="table-responsive">
@@ -81,7 +81,7 @@ in OWASP and "[Data Validation][Data-Validation]" in Codex.
 
 You already know about this very well?
 
-Yes, in case of [Blubrry PowerPress <= 6.0][XSS-PowerPress], XSS had already 
+Sure, in case of [Blubrry PowerPress <= 6.0][XSS-PowerPress], XSS had already 
 taken into account. The following statistics shows before and after fixing XSS.
 
 <div class="table-responsive text-center">
@@ -119,11 +119,11 @@ taken into account. The following statistics shows before and after fixing XSS.
 
 In fact, those paches could be seen every where in their codes. Those were 
 hard to track before and after. Additionally, `htmlspecialchars()` and
-`esc_html()` were mixed up.
+`esc_html()` were mixed and used.
 
 Speaking about `esc_html()`, the third parameter to `htmlspecialchars()` is 
 specified more strictly than their codes. I could hardly say that's OK or not, 
-but I think using core functions is always OK.
+but using core functions is always OK.
 
 I think this issue is caused by disuse and misuse of WordPress core functions.
 
@@ -131,7 +131,7 @@ Also it's important to design codes to separate "Validating Input" in "Model"
 and "Escaping Output" in "View". I'm not saying about MVC here. But codex says 
 to use 
 "[Validating Sanitizing and Escaping User Data][Sanitizing-Escaping]" 
-along the context. So the developer should design the context at first.
+along the context. So every developer should design the context at first.
 
 ### SQL Injection ###
 
@@ -139,7 +139,7 @@ On August 2014, Sucuri reported about
 [SQLi in Custom Contact Forms][Custom-Contact-Forms].
 
 The following snippet from CCF (<= 5.1.0.3) dumps the set of SQL queries and 
-download the previous one.
+downloads the previous one.
 
 {% highlight php startinline %}
 if (!is_admin()) { /* is front */
@@ -160,8 +160,8 @@ function adminInit() {
 }
 {% endhighlight %}
 
-The `adminInit` was no doubt for the administrators. But it had at least next 
-five issues:
+The function `adminInit()` was no doubt for the administrators. But this 
+snippet had at least next five issues:
 
 1. Validate user role by `is_admin()`.
 2. Lack of consideration of unexpected access route.
@@ -177,7 +177,7 @@ SQL to exploit the site.
   "Vulnerability of Custom Contact Form"
 )][Custom-Contact-Forms]
 
-This is caused by misuse of `is_admin()` which is always `true` when someone 
+This was caused by misuse of `is_admin()` which is always `true` when someone 
 access the admin area even without authentication.
 
 To avoid this vulnerability, the developer must follow the 
@@ -234,8 +234,8 @@ In a sequence of these process, if no nonce is on the page before transition
 or no validation of nonce before saving data, CSRF immediately occurs.
 
 In this case, only validation of user authentication or privilege at saving 
-process can not prevent this vulnerability because an administrator potencially 
-click a malicious link with own authorized cookie.
+process is not enough to prevent this vulnerability because an administrator 
+potencially click a malicious link with own authorized cookie.
 
 Such disuse of nonce 
 [leads many plugins to CSRF](https://wpvulndb.com/search?text=&vuln_type=3).
@@ -261,7 +261,8 @@ This request was handled with:
 2. No validation of nonce.
 3. No validation of given input.
 
-As a result, the attacker could easily download `wp-config.php`.
+As a result, the attacker could easily download `wp-config.php` without knowing
+the user name and password.
 
 [![Vulnerability of Slider Revolution]({{ "/img/2015-04/revslider.png" | prepend: site.baseurl }}
   "Vulnerability of Slider Revolution"
@@ -270,8 +271,8 @@ As a result, the attacker could easily download `wp-config.php`.
 We can find this kind of vulnerability in the old version of 
 [HD FLV Player][HD-FLV-Player]. In this plugin, `download.php` was called 
 directly regardless of WordPress context where we should follow its event 
-driven programming style to use appropriate functions to validate a nonce and 
-user privilege.
+driven programming style to use appropriate functions for validating a nonce 
+and user privilege.
 
 ### Conclusion ###
 
