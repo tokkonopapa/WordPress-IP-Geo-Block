@@ -1,12 +1,42 @@
 ---
 layout: post
-title:  "How many vulnerabilities can WP-ZEP prevent?"
-date:   2015-05-xx 00:00:00
+title:  "Which attack can WP-ZEP prevent?"
+date:   2015-05-01 00:00:00
 categories: article
 published: false
 ---
-http://aristeides.com/blog/why-i-like-jetpack/
+
+On [WPScan Vulnerability Database][wpvulndb] maintained by [Sucuri][Sucuri],
+we can find 5 or 6 new vulnerable plugins every month. Of course WP-ZEP is 
+not God Almighty for these. Then you may be interested that:
+
+- Which attack can WP-ZEP prevent?
+- How many attacks can WP-ZEP prevent?
+
+Me too!!
+
 <!--more-->
+
+Each Vulnerability has its own attack vectors. Some of them are classified in 
+a direct attack onto the plugin files, and some of them are classified in an 
+indirect attack via WordPress core files.
+
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Browser</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Chrome</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
 https://wpvulndb.com/plugins
 https://wpvulndb.com/vulnerabilities/7879 sqli
 https://wpvulndb.com/vulnerabilities/7873 xss
@@ -61,4 +91,6 @@ wp_redirect にはフィルタ・フックがあるので、nonce を注ぎ足�
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span>
 
+[wpvulndb]:     https://wpvulndb.com/plugins "WordPress Plugin Vulnerabilities"
+[Sucuri]:       https://sucuri.net/ "Sucuri Security — Website Protection, Malware Removal, and Blacklist Prevention"
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"

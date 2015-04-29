@@ -8,7 +8,7 @@ script: [/js/jquery-1.11.2.min.js, /js/meta-redirect.js]
 ---
 
 "Referer Suppressor" which eliminate the browser's referer is one of my 
-favorite feature of [IP Geo Block][IP-Geo-Block] <span class="emoji">
+favorite feature in [IP Geo Block][IP-Geo-Block] <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span>.
 
@@ -143,7 +143,7 @@ please let me know. Thanks <span class="emoji">
         <td>OK</td>
       </tr>
       <tr>
-        <td>Android Firefox</td>
+        <td>Mobile Firefox</td>
         <td>34.0</td>
         <td>Android 2.3.5</td>
         <td>OK</td>

@@ -95,6 +95,16 @@ h6, .h6 {
 .blog-main p {
   margin-bottom: 1em;
 }
+.blog-main table {
+  margin-left: -0.5em;
+  margin-bottom: 1em;
+}
+.blog-main th,
+.blog-main td {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
 
 /* Sidebar modules for boxing content */
 .sidebar-module {

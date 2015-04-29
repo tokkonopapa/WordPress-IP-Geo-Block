@@ -18,12 +18,14 @@ exclude: [README.md]
 project:
   name: "Wordpress-ip-geo-block"
 
+excerpt_separator: "<!--more-->"
+
 twitter_username: tokkonoPapa
 github_username:  tokkonopapa
 
 # Build settings
 highlight: pygments
-markdown: redcarpet
+markdown: redcarpet # kramdown
 
 # extensions for GitHub Flavored Markdown
 # pygments:
@@ -39,4 +41,5 @@ redcarpet:
     "superscript"                   # use sup ex: 2^n
   ]
 
-excerpt_separator: "<!--more-->"
+kramdown:
+  input: GFM
