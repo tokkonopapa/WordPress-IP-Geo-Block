@@ -456,28 +456,8 @@ class IP_Geo_Block {
 				$type = 'admin';
 			}
 
-			// exclude core admin actions (defined in wp-admin/includes/ajax-actions.php)
-			// note: corresponding functions are not included until `admin_init`.
+			// exclude admin actions
 			$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
-				// $core_actions_get in wp-admin/admin-ajax.php
-				'fetch-list', 'ajax-tag-search', 'wp-compression-test', 'imgedit-preview', 'oembed-cache',
-				'autocomplete-user', 'dashboard-widgets', 'logged-in',
-
-				// $core_actions_post in wp-admin/admin-ajax.php
-				'oembed-cache', 'image-editor', 'delete-comment', 'delete-tag', 'delete-link',
-				'delete-meta', 'delete-post', 'trash-post', 'untrash-post', 'delete-page', 'dim-comment',
-				'add-link-category', 'add-tag', 'get-tagcloud', 'get-comments', 'replyto-comment',
-				'edit-comment', 'add-menu-item', 'add-meta', 'add-user', 'closed-postboxes',
-				'hidden-columns', 'update-welcome-panel', 'menu-get-metabox', 'wp-link-ajax',
-				'menu-locations-save', 'menu-quick-search', 'meta-box-order', 'get-permalink',
-				'sample-permalink', 'inline-save', 'inline-save-tax', 'find_posts', 'widgets-order',
-				'save-widget', 'set-post-thumbnail', 'date_format', 'time_format', 'wp-fullscreen-save-post',
-				'wp-remove-post-lock', 'dismiss-wp-pointer', 'upload-attachment', 'get-attachment',
-				'query-attachments', 'save-attachment', 'save-attachment-compat', 'send-link-to-editor',
-				'send-attachment-to-editor', 'save-attachment-order', 'heartbeat', 'get-revision-diffs',
-				'save-user-color-scheme', 'update-widget', 'query-themes', 'parse-embed', 'set-attachment-thumbnail',
-				'parse-media-shortcode', 'destroy-sessions', 'install-plugin', 'update-plugin', 'press-this-save-post',
-				'press-this-add-category',
 			) );
 
 			// Register to check nonce
@@ -487,6 +467,18 @@ class IP_Geo_Block {
 			}
 		}
 
+		else if ( isset( $_REQUEST['page'] ) ) {
+			// exclude admin pages
+			$admin_pages = apply_filters( self::PLUGIN_SLUG . '-admin-pages', array(
+			) );
+
+			if ( ! in_array( $_REQUEST['page'], $admin_pages ) &&
+				 (int)$settings['validation']['admin'] >= 2 ) {
+				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+			}
+		}
+
+		// Validate country by IP
 		$this->validate_ip( 'admin', $settings );
 	}
 
@@ -532,17 +524,43 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * validate requested queries via admin-(ajax|post).php
+	 * Retrieve nonce
+	 *
+	 */
+	public static function retrieve_nonce( $key ) {
+		$regexp = "/$key=([\w]+)/";
+
+		if ( isset( $_REQUEST[ $key ] ) ) {
+			return $_REQUEST[ $key ];
+		}
+
+		else if ( isset( $_REQUEST['_wp_http_referer'] ) ) {
+			if ( @preg_match( $regexp, $_REQUEST['_wp_http_referer'], $matches ) ) {
+				return $matches[1];
+			}
+		}
+
+		else if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
+			if ( @preg_match( $regexp, $_SERVER['HTTP_REFERER'], $matches ) ) {
+				return $matches[1];
+			}
+		}
+
+		return NULL;
+	}
+
+	/**
+	 * Validate nonce
 	 *
 	 */
 	public function check_nonce( $validate, $settings ) {
-		// check authenticated nonce
-		$login = is_user_logged_in(); // or user_can_access_admin_page()
-		$action = self::PLUGIN_SLUG . '-auth-nonce';
+		$key = self::PLUGIN_SLUG . '-auth-nonce';
+		$nonce = self::retrieve_nonce( $key );
 
-		if ( ! $login || empty( $_REQUEST[ $action ] ) ||
-		     ! wp_verify_nonce( $_REQUEST[ $action ], $action ) )
+		if ( ! is_user_logged_in() || // or user_can_access_admin_page()
+		     ! $nonce || ! wp_verify_nonce( $nonce, $key ) ) {
 			$validate['result'] = 'blocked';
+		}
 
 		return $validate;
 	}

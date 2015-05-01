@@ -49,15 +49,8 @@ var IP_GEO_BLOCK_ZEP = {
 			return -1; // -1: external
 		}
 
-		// check scheme, path, query
-		return (
-			path.indexOf('admin.php'     ) >= 0 ||
-			path.indexOf('admin-ajax.php') >= 0 ||
-			path.indexOf('admin-post.php') >= 0
- 		) && (
-			// currently, request via jQuery ajax is always true
- 			typeof query === 'string' ? /(?:action)=/.test(query) : true
-		) ? 1 : 0; // 1: target, 0: other
+		// // 1: target, 0: other
+		return ( uri.path || uri.query ) && path.indexOf('/wp-admin/') >= 0 ? 1 : 0;
 	}
 
 	function query_args(uri, args) {

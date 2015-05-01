@@ -40,6 +40,7 @@ class IP_Geo_Block_Admin {
 
 		// Setup a nonce to validate authentication.
 		add_action( 'admin_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ) );
+		add_filter( 'wp_redirect', array( $this, 'add_admin_nonce' ), 10, 2 );
 
 		// Add the options page and menu item.
 		add_action( 'admin_menu', array( $this, 'setup_admin_screen' ) );
@@ -64,6 +65,23 @@ class IP_Geo_Block_Admin {
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain( IP_Geo_Block::TEXT_DOMAIN, FALSE, dirname( IP_GEO_BLOCK_BASE ) . '/languages/' );
+	}
+
+	/**
+	 * Add nonce through redirection to wp-admin.
+	 *
+	 */
+	public function add_admin_nonce( $location, $status ) {
+		if ( false === ( $lp = parse_url( $location ) ) )
+			return $location;
+
+		$key = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce';
+		if ( $nonce = IP_Geo_Block::retrieve_nonce( $key ) ) {
+			remove_query_arg( $key ); // remove nonce from $_SERVER['REQUEST_URI']
+			$location .= ( strpos( $location, '?' ) === FALSE ? '?' : '&' ) . "$key=$nonce";
+		}
+
+		return $location;
 	}
 
 	/**

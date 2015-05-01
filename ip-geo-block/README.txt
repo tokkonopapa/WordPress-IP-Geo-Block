@@ -352,8 +352,6 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.0.9 =
-* Sorry for frequent update but fixed an issue of `Add Media` on `Edit Post`.
-* See details at [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.0.9.html "Release 2.0.9").
 
 = 2.0.8 =
 * Fixed an issue that a certain type of attack vector to the admin area (
