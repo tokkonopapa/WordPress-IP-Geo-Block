@@ -4,7 +4,7 @@ Donate link:
 Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.2.1
-Stable tag: 2.0.9
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -351,7 +351,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 == Changelog ==
 
-= 2.0.9 =
+= 2.1.0 =
 
 = 2.0.8 =
 * Fixed an issue that a certain type of attack vector to the admin area (

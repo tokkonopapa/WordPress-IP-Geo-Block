@@ -221,7 +221,7 @@ var ip_geo_block_start = new Date();
 
 	// Show/Hide description of WP-ZEP
 	function show_description(select, id) {
-		if (2 == $(select).val()) {
+		if (2 <= $(select).val()) {
 			$(id).show();
 		} else {
 			$(id).hide();

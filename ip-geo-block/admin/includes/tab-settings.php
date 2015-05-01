@@ -128,9 +128,10 @@ function ip_geo_block_tab_settings( $context ) {
 			'list' => array(
 				__( 'Disable',                  IP_Geo_Block::TEXT_DOMAIN ) => 0,
 				__( 'Enable',                   IP_Geo_Block::TEXT_DOMAIN ) => 1,
-				__( 'Prevent zero-day exploit', IP_Geo_Block::TEXT_DOMAIN ) => 2,
+				__( 'Prevent zero-day exploit (Lv1)', IP_Geo_Block::TEXT_DOMAIN ) => 2,
+				__( 'Prevent zero-day exploit (Lv2)', IP_Geo_Block::TEXT_DOMAIN ) => 3,
 			),
-			'after' => '<div style="display:none" id="ip-geo-block-admin-desc">' . __( 'It will block a malicious request to <code>wp-admin/admin.php</code> besides the country code. Because this is an experimental feature, please open a new issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with it.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
+			'after' => '<div style="display:none" id="ip-geo-block-admin-desc">' . __( 'It will block a malicious request to <code>wp-admin/admin.php</code> (Lv1) or <code>wp-admin/*.php</code> (Lv2) besides the country code. Because this is an experimental feature, please open a new issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with it.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
 		)
 	);
 
