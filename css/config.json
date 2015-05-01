@@ -387,8 +387,9 @@
     "responsive-utilities.less",
     "pagination.less",
     "pager.less",
+    "labels.less",
     "alerts.less"
   ],
   "js": [],
-  "customizerUrl": "http://getbootstrap.com/customize/?id=f85e613fab5a4a143c61"
+  "customizerUrl": "http://getbootstrap.com/customize/?id=472abe86f86c9a04a542"
 }
