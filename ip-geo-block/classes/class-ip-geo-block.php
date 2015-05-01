@@ -436,7 +436,6 @@ class IP_Geo_Block {
 
 	public function validate_xmlrpc( $something ) {
 		$this->validate_ip( 'xmlrpc', self::get_option( 'settings' ) );
-
 		return $something; // pass through
 	}
 
@@ -472,8 +471,9 @@ class IP_Geo_Block {
 			$admin_pages = apply_filters( self::PLUGIN_SLUG . '-admin-pages', array(
 			) );
 
+			// Register to check nonce
 			if ( ! in_array( $_REQUEST['page'], $admin_pages ) &&
-				 (int)$settings['validation']['admin'] >= 2 ) {
+				 (int)$settings['validation']['admin'] >= 3 ) {
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 			}
 		}
@@ -528,20 +528,18 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function retrieve_nonce( $key ) {
-		$regexp = "/$key=([\w]+)/";
-
 		if ( isset( $_REQUEST[ $key ] ) ) {
 			return $_REQUEST[ $key ];
 		}
 
 		else if ( isset( $_REQUEST['_wp_http_referer'] ) ) {
-			if ( @preg_match( $regexp, $_REQUEST['_wp_http_referer'], $matches ) ) {
+			if ( @preg_match( "/$key=([\w]+)/", $_REQUEST['_wp_http_referer'], $matches ) ) {
 				return $matches[1];
 			}
 		}
 
 		else if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-			if ( @preg_match( $regexp, $_SERVER['HTTP_REFERER'], $matches ) ) {
+			if ( @preg_match( "/$key=([\w]+)/", $_SERVER['HTTP_REFERER'], $matches ) ) {
 				return $matches[1];
 			}
 		}
