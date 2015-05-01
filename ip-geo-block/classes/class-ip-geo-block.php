@@ -20,7 +20,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.0.8';
+	const VERSION = '2.0.9';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -66,7 +66,7 @@ class IP_Geo_Block {
 
 		// xmlrpc.php @since 3.1.0, wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
 		if ( $settings['validation']['xmlrpc'] ) {
-			add_filter( 'wp_xmlrpc_server_class', array( $this, 'validate_admin' ) );
+			add_filter( 'wp_xmlrpc_server_class', array( $this, 'validate_xmlrpc' ) );
 			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ) );
 		}
 
@@ -88,9 +88,9 @@ class IP_Geo_Block {
 
 	// Register and enqueue admin-specific style sheet and JavaScript.
 	public static function enqueue_nonce() {
-		wp_enqueue_script( $handle = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce',
+		wp_enqueue_script( $handle = self::PLUGIN_SLUG . '-auth-nonce',
 			plugins_url( 'admin/js/auth-nonce.js', IP_GEO_BLOCK_BASE ),
-			array( 'jquery' ), IP_Geo_Block::VERSION
+			array( 'jquery' ), self::VERSION
 		);
 
 		wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH',
@@ -116,7 +116,7 @@ class IP_Geo_Block {
 	public static function get_request_headers( $settings ) {
 		global $wp_version;
 		return apply_filters(
-			IP_Geo_Block::PLUGIN_SLUG . '-headers',
+			self::PLUGIN_SLUG . '-headers',
 			array(
 				'timeout' => (int)$settings['timeout'],
 				'user-agent' => "WordPress/$wp_version; " . self::PLUGIN_SLUG . ' ' . self::VERSION,
@@ -434,7 +434,13 @@ class IP_Geo_Block {
 			$this->validate_ip( 'login', self::get_option( 'settings' ) );
 	}
 
-	public function validate_admin( $something ) {
+	public function validate_xmlrpc( $something ) {
+		$this->validate_ip( 'xmlrpc', self::get_option( 'settings' ) );
+
+		return $something; // pass through
+	}
+
+	public function validate_admin() {
 		global $pagenow; // http://codex.wordpress.org/Global_Variables
 		$settings = self::get_option( 'settings' );
 
@@ -449,14 +455,39 @@ class IP_Geo_Block {
 			  case 'admin.php':
 				$type = 'admin';
 			}
+
+			// exclude core admin actions (defined in wp-admin/includes/ajax-actions.php)
+			// note: corresponding functions are not included until `admin_init`.
+			$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
+				// $core_actions_get in wp-admin/admin-ajax.php
+				'fetch-list', 'ajax-tag-search', 'wp-compression-test', 'imgedit-preview', 'oembed-cache',
+				'autocomplete-user', 'dashboard-widgets', 'logged-in',
+
+				// $core_actions_post in wp-admin/admin-ajax.php
+				'oembed-cache', 'image-editor', 'delete-comment', 'delete-tag', 'delete-link',
+				'delete-meta', 'delete-post', 'trash-post', 'untrash-post', 'delete-page', 'dim-comment',
+				'add-link-category', 'add-tag', 'get-tagcloud', 'get-comments', 'replyto-comment',
+				'edit-comment', 'add-menu-item', 'add-meta', 'add-user', 'closed-postboxes',
+				'hidden-columns', 'update-welcome-panel', 'menu-get-metabox', 'wp-link-ajax',
+				'menu-locations-save', 'menu-quick-search', 'meta-box-order', 'get-permalink',
+				'sample-permalink', 'inline-save', 'inline-save-tax', 'find_posts', 'widgets-order',
+				'save-widget', 'set-post-thumbnail', 'date_format', 'time_format', 'wp-fullscreen-save-post',
+				'wp-remove-post-lock', 'dismiss-wp-pointer', 'upload-attachment', 'get-attachment',
+				'query-attachments', 'save-attachment', 'save-attachment-compat', 'send-link-to-editor',
+				'send-attachment-to-editor', 'save-attachment-order', 'heartbeat', 'get-revision-diffs',
+				'save-user-color-scheme', 'update-widget', 'query-themes', 'parse-embed', 'set-attachment-thumbnail',
+				'parse-media-shortcode', 'destroy-sessions', 'install-plugin', 'update-plugin', 'press-this-save-post',
+				'press-this-add-category',
+			) );
+
+			// Register to check nonce
+			if ( ! in_array( $_REQUEST['action'], $admin_actions ) &&
+			     isset( $type ) && (int)$settings['validation'][ $type ] >= 2 ) {
+				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+			}
 		}
 
-		if ( isset( $type ) && (int)$settings['validation'][ $type ] === 2 )
-			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
-
-		$this->validate_ip( 'xmlrpc.php' === $pagenow ? 'xmlrpc' : 'admin', $settings );
-
-		return $something; // pass through
+		$this->validate_ip( 'admin', $settings );
 	}
 
 	/**
@@ -505,37 +536,10 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_nonce( $validate, $settings ) {
-		// exclude core admin actions (defined in wp-admin/includes/ajax-actions.php)
-		// note: corresponding functions are not included until `admin_init`.
-		$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
-			// $core_actions_get in wp-admin/admin-ajax.php
-			'fetch-list', 'ajax-tag-search', 'wp-compression-test', 'imgedit-preview', 'oembed-cache',
-			'autocomplete-user', 'dashboard-widgets', 'logged-in',
-
-			// $core_actions_post in wp-admin/admin-ajax.php
-			'oembed-cache', 'image-editor', 'delete-comment', 'delete-tag', 'delete-link',
-			'delete-meta', 'delete-post', 'trash-post', 'untrash-post', 'delete-page', 'dim-comment',
-			'add-link-category', 'add-tag', 'get-tagcloud', 'get-comments', 'replyto-comment',
-			'edit-comment', 'add-menu-item', 'add-meta', 'add-user', 'closed-postboxes',
-			'hidden-columns', 'update-welcome-panel', 'menu-get-metabox', 'wp-link-ajax',
-			'menu-locations-save', 'menu-quick-search', 'meta-box-order', 'get-permalink',
-			'sample-permalink', 'inline-save', 'inline-save-tax', 'find_posts', 'widgets-order',
-			'save-widget', 'set-post-thumbnail', 'date_format', 'time_format', 'wp-fullscreen-save-post',
-			'wp-remove-post-lock', 'dismiss-wp-pointer', 'upload-attachment', 'get-attachment',
-			'query-attachments', 'save-attachment', 'save-attachment-compat', 'send-link-to-editor',
-			'send-attachment-to-editor', 'save-attachment-order', 'heartbeat', 'get-revision-diffs',
-			'save-user-color-scheme', 'update-widget', 'query-themes', 'parse-embed', 'set-attachment-thumbnail',
-			'parse-media-shortcode', 'destroy-sessions', 'install-plugin', 'update-plugin', 'press-this-save-post',
-			'press-this-add-category',
-		) );
-
-		// check safe actions
-		$login = is_user_logged_in(); // or user_can_access_admin_page()
-		if ( $login && ! empty( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], $admin_actions ) )
-			return $validate; // still potentially be blocked by country code
-
 		// check authenticated nonce
+		$login = is_user_logged_in(); // or user_can_access_admin_page()
 		$action = self::PLUGIN_SLUG . '-auth-nonce';
+
 		if ( ! $login || empty( $_REQUEST[ $action ] ) ||
 		     ! wp_verify_nonce( $_REQUEST[ $action ], $action ) )
 			$validate['result'] = 'blocked';

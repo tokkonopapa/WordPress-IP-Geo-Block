@@ -42,7 +42,12 @@ var ip_geo_block_start = new Date();
 
 	function redirect(page, tab) {
 		if (-1 !== location.href.indexOf(page)) {
-			window.location.href = sanitize(page) + (tab ? '&' + sanitize(tab) : '');
+			var url = sanitize(page) + (tab ? '&' + sanitize(tab) : '');
+			if (typeof IP_GEO_BLOCK_ZEP === 'undefined') {
+				window.location.href = url;
+			} else {
+				IP_GEO_BLOCK_ZEP.redirect(url);
+			}
 		}
 	}
 
