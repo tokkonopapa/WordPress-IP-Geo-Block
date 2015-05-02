@@ -104,61 +104,61 @@ please let me know. Thanks <span class="emoji">
         <td>Chrome</td>
         <td>42.0</td>
         <td>OS X 10.9.5</td>
-        <td>OK</td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr>
         <td>Firefox</td>
         <td>37.0</td>
         <td>OS X 10.9.5</td>
-        <td>OK</td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr>
         <td>Safari</td>
         <td>7.1.5</td>
         <td>OS X 10.9.5</td>
-        <td>OK</td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr>
         <td>Opera</td>
         <td>12.6</td>
         <td>OS X 10.9.5</td>
-        <td>NG</td>
+        <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr>
         <td>Opera</td>
         <td>29.0</td>
         <td>OS X 10.9.5</td>
-        <td>OK</td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr>
         <td>IE11</td>
         <td>11.0</td>
         <td>Windows 7</td>
-        <td>OK</td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr>
         <td>Android Native</td>
         <td>4.0</td>
         <td>Android 2.3.5</td>
-        <td>OK</td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr>
         <td>Mobile Firefox</td>
         <td>34.0</td>
         <td>Android 2.3.5</td>
-        <td>OK</td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr>
         <td>Mobile Chrome</td>
         <td>42.0</td>
         <td>iOS 8.3</td>
-        <td>OK</td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr>
         <td>Mobile Safari</td>
         <td>8.0</td>
         <td>iOS 8.3</td>
-        <td>OK</td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
     </tbody>
   </table>

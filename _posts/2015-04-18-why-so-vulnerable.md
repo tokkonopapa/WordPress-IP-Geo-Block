@@ -7,7 +7,7 @@ categories: article
 
 [![WordPress Vulnerability Statistics]({{ "/img/2015-04/vurlerability-statistics.png" | prepend: site.baseurl }}
   "WordPress Vulnerability Statistics by WPScan Vulnerability Database"
-)][WPScan]
+) <small>Source: &copy; The WPScan Team</small>][WPScan]
 
 The above graph shows recent statistics of WordPress vulnerability from 
 [WPScan Vulnerability Database][WPScan] summarized by [Sucuri][Sucuri] which 
