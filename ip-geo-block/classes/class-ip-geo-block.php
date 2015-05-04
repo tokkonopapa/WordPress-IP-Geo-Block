@@ -445,14 +445,14 @@ class IP_Geo_Block {
 
 		if ( isset( $_REQUEST['action'] ) ) {
 			switch ( $pagenow ) {
-			  case 'admin-ajax.php':
-				$type = has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) ? NULL : 'ajax';
+			  case 'admin-ajax.php': // isset( $type ) is always true
+				$type = has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) ? FALSE : 'ajax';
 				break;
-			  case 'admin-post.php':
-				$type = has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) ? NULL : 'ajax';
+			  case 'admin-post.php': // isset( $type ) is always true
+				$type = has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) ? FALSE : 'ajax';
 				break;
-			  case 'admin.php':
-				$type = 'admin';
+			  case 'admin.php': // isset( $type ) is false if $type is null
+				$type = has_action( "admin_action_{$_REQUEST['action']}" ) ? NULL : 'admin';
 			}
 
 			// exclude admin actions
@@ -461,19 +461,25 @@ class IP_Geo_Block {
 
 			// Register to check nonce
 			if ( ! in_array( $_REQUEST['action'], $admin_actions ) &&
-			     isset( $type ) && (int)$settings['validation'][ $type ] >= 2 ) {
+			     isset( $type ) && $settings['validation'][ $type ] >= 2 ) {
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 			}
 		}
 
-		else if ( isset( $_REQUEST['page'] ) ) {
+		if ( isset( $_REQUEST['page'] ) && ! isset( $type ) && $settings['validation']['admin'] >= 3 ) {
+			// redirect if there's a nonce in referer to deal with javascript location object
+			$type = self::PLUGIN_SLUG . '-auth-nonce';
+			if ( empty( $_REQUEST[ $type ] ) && self::retrieve_nonce( $type ) ) {
+				wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
+				exit;
+			}
+
 			// exclude admin pages
 			$admin_pages = apply_filters( self::PLUGIN_SLUG . '-admin-pages', array(
 			) );
 
 			// Register to check nonce
-			if ( ! in_array( $_REQUEST['page'], $admin_pages ) &&
-				 (int)$settings['validation']['admin'] >= 3 ) {
+			if ( ! in_array( $_REQUEST['page'], $admin_pages ) ) {
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 			}
 		}
@@ -529,18 +535,18 @@ class IP_Geo_Block {
 	 */
 	public static function retrieve_nonce( $key ) {
 		if ( isset( $_REQUEST[ $key ] ) ) {
-			return $_REQUEST[ $key ];
+			return sanitize_text_field( $_REQUEST[ $key ] );
 		}
 
 		else if ( isset( $_REQUEST['_wp_http_referer'] ) ) {
 			if ( @preg_match( "/$key=([\w]+)/", $_REQUEST['_wp_http_referer'], $matches ) ) {
-				return $matches[1];
+				return sanitize_text_field( $matches[1] );
 			}
 		}
 
 		else if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
 			if ( @preg_match( "/$key=([\w]+)/", $_SERVER['HTTP_REFERER'], $matches ) ) {
-				return $matches[1];
+				return sanitize_text_field( $matches[1] );
 			}
 		}
 
