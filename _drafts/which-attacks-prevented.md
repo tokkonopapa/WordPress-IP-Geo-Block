@@ -139,7 +139,7 @@ Well then, let's take a look at the results:
         <td>&lt;= 1.3.9.5</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
         <td><abbr title="Plugin Direct including wp-load.php"><a href="https://research.g0blin.co.uk/g0blin-00036/">PD*</a></abbr></td>
-        <td><span class="label label-success">OK</span></td>
+        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
