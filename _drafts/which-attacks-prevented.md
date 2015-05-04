@@ -89,20 +89,20 @@ Well then, let's take a look at the results:
       </tr>
     </thead>
     <tbody>
-      <tr><!-- 1. /wp-content/plugins/wp-business-intelligence/view.php?t=... -->
+      <tr><!-- 1. /wp-content/plugins/wp-business-intelligence-lite/view.php?t=... | wp-load.php -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7879" title="WP Business Intelligence Lite &lt;= 1.6.1 - SQL Injection">WP Business Intelligence Lite</a></td>
         <td>&lt;= 1.6.1</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/131228/">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct including wp-load.php"><a href="http://packetstormsecurity.com/files/131228/">PD*</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 2. plugin direct -->
+      <tr><!-- 2. /?account=1&pwd=1&uid=1&setFirst=0... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7873" title="Ptengine &lt;= 1.0.1 - Reflected Cross-Site Scripting (XSS)">Ptengine</a></td>
         <td>&lt;= 1.0.1</td>
         <td><abbr title="Cross Site Scripting">XSS</abbr></td>
-        <td><abbr title="Plugin Direct">PD</abbr></td>
+        <td><abbr title="Front End"><a href="https://wpvulndb.com/vulnerabilities/7873">FE</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
@@ -134,11 +134,11 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 6. /wp-content/plugins/wpshop/includes/ajax.php?elementCode=ajaxUpload... -->
+      <tr><!-- 6. /wp-content/plugins/wpshop/includes/ajax.php?elementCode=ajaxUpload... | wp-load.php -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7830" title="Wpshop - eCommerce &lt;= 1.3.9.5 - Arbitrary File Upload">WPshop - eCommerce</a></td>
         <td>&lt;= 1.3.9.5</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="https://research.g0blin.co.uk/g0blin-00036/">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct including wp-load.php"><a href="https://research.g0blin.co.uk/g0blin-00036/">PD*</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
@@ -323,20 +323,20 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 27. /wp-content/plugins/wp-ultimate-csv-importer/modules/export/templates/export.php -->
+      <tr><!-- 27. /wp-content/plugins/wp-ultimate-csv-importer/modules/export/templates/export.php | wp-load.php -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7778" title="WP Ultimate CSV Importer &lt;= 3.6.74 - Database Table Export">WP Ultimate CSV Importer</a></td>
         <td>&lt;= 3.6.74</td>
         <td><abbr title="Authentication Bypass">AB</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="https://research.g0blin.co.uk/g0blin-00025/">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct including wp-load.php"><a href="https://research.g0blin.co.uk/g0blin-00025/">PD*</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 28. /templates/readfile.php?file_name=... -->
+      <tr><!-- 28. /wp-content/plugins/wp-ultimate-csv-importer/templates/readfile.php?file_name=... | wp-load.php -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7949" title="WP Ultimate CSV Importer &lt;= 3.7.1 - Directory Traversal">WP Ultimate CSV Importer</a></td>
         <td>&lt;= 3.7.1</td>
         <td><abbr title="Directory Traversal">DT</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="http://www.pritect.net/blog/wp-ultimate-csv-importer-3-7-1-critical-vulnerability">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct including wp-load.php"><a href="http://www.pritect.net/blog/wp-ultimate-csv-importer-3-7-1-critical-vulnerability">PD*</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
@@ -377,11 +377,11 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 33. /wp-content/plugins/ultimate-member/core/lib/upload/um-file-upload.php... -->
+      <tr><!-- 33. /wp-content/plugins/ultimate-member/core/lib/upload/um-file-upload.php... | wp-load.php -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7850" title="Ultimate Member &lt;= 1.0.78 - Multiple Vulnerabilities">Ultimate Member</a></td>
         <td>&lt;= 1.0.78</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="http://www.pritect.net/blog/ultimate-member-plugin-1-0-78-critical-security-vulnerability">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct including wp-load.php"><a href="http://www.pritect.net/blog/ultimate-member-plugin-1-0-78-critical-security-vulnerability">PD*</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
@@ -431,11 +431,11 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 39. /wp-content/plugins/simple-ads-manager/sam-ajax-admin.php... -->
+      <tr><!-- 39. /wp-content/plugins/simple-ads-manager/sam-ajax-admin.php... | wp-load.php -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7882" title="Simple Ads Manager &lt;= 2.5.94 - Arbitrary File Upload & SQL Injection">Simple Ads Manager</a></td>
         <td>&lt;= 2.5.94</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr>, <abbr title="SQL Injection">SQLI</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/131282/">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct including wp-load.php"><a href="http://packetstormsecurity.com/files/131282/">PD*</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
@@ -467,7 +467,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 43. lack of nonce wp-admin/admin.php?page=PlusCaptcha&... -->
+      <tr><!-- 43. lack of nonce /wp-admin/admin.php?page=PlusCaptcha&... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7870" title="PlusCaptcha Plugin - CSRF">PlusCaptcha</a></td>
         <td>&lt;= 2.0.14</td>
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr></td>
@@ -476,7 +476,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 44. can't esc_url() or something -->
+      <tr><!-- 44. lack of esc_url() -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7924" title="P3 (Plugin Performance Profiler) &lt;= 1.5.3.8 - Cross-Site Scripting (XSS)">Plugin Performance Profiler</a></td>
         <td>&lt;= 1.5.3.8</td>
         <td><abbr title="Cross Site Scripting">XSS</abbr></td>
