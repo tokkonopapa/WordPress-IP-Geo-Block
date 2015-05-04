@@ -32,7 +32,7 @@ markdown: redcarpet # kramdown
 #   options: ["startinline"]
 redcarpet:
   extensions: [
-    "no_intra_emphasis",            # not apply em to foo_bar_baz
+#   "no_intra_emphasis",            # not apply em to foo_bar_baz
     "tables",                       # enable tables
     "fenced_code_blocks",           # enable ```
     "autolink",                     # enable auto link
