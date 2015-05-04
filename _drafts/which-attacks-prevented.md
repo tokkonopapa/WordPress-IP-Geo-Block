@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Which attack can WP-ZEP prevent?"
+title:  "Which attacks can WP-ZEP prevent?"
 date:   2015-05-01 00:00:00
 categories: article
 published: true
