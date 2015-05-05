@@ -248,7 +248,7 @@ add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
  * @param  string $dir default path where text files should be saved
  * @return string should be absolute path out of the public_html.
  */
-function my_backup_dir( $hook, $dir ) {
+function my_backup_dir( $dir, $hook ) {
 	if ( 'login' === $hook )
 		return '/absolute/path/to/';
 	else
@@ -287,4 +287,4 @@ function my_geolocation() {
 	}
 }
 
-endif;
+endif; /* class_exists( 'IP_Geo_Block' ) */

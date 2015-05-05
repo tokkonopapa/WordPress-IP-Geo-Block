@@ -370,7 +370,7 @@ class IP_Geo_Block_Logs {
 		// backup logs to text files
 		if ( $dir = apply_filters(
 			IP_Geo_Block::PLUGIN_SLUG . '-backup-dir',
-			$hook, $settings['validation']['backup']
+			$settings['validation']['backup'], $hook
 		) ) {
 			self::backup_log(
 				$hook, $validate, $method, $agent, $heads, $posts, $dir
