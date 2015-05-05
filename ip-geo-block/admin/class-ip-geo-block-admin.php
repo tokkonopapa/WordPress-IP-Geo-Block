@@ -72,13 +72,15 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function add_admin_nonce( $location, $status ) {
-		if ( is_user_logged_in() ) {
-			$key = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce';
-			if ( $nonce = IP_Geo_Block::retrieve_nonce( $key ) ) { // must be sanitized
-				$location = esc_url_raw( // delete onece, and add again
-					add_query_arg( array( $key => false, $key => $nonce ), $location )
-				);
-			}
+		$key = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce';
+		if ( $nonce = IP_Geo_Block::retrieve_nonce( $key ) ) { // must be sanitized
+			$location = esc_url_raw( add_query_arg(
+				array(
+					$key => false, // delete onece
+					$key => $nonce // add again
+				),
+				$location
+			) );
 		}
 
 		return $location;
@@ -294,6 +296,7 @@ class IP_Geo_Block_Admin {
 		  case 1:
 			// Statistics
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-statistics.php' );
+			nocache_headers();
 			ip_geo_block_tab_statistics( $this );
 			break;
 
@@ -394,7 +397,6 @@ class IP_Geo_Block_Admin {
 
 		  case 'html':
 			echo "\n", $args['value'], "\n"; // must be sanitized at caller
-			break;
 		}
 
 		if ( ! empty( $args['after'] ) )

@@ -112,6 +112,12 @@ function ip_geo_block_tab_settings( $context ) {
 		);
 	}
 
+	$title = array(
+		__( 'Disable',                  IP_Geo_Block::TEXT_DOMAIN ) => 0,
+		__( 'Enable',                   IP_Geo_Block::TEXT_DOMAIN ) => 1,
+		__( 'Prevent zero-day exploit', IP_Geo_Block::TEXT_DOMAIN ) => 2,
+	);
+
 	$key = 'admin';
 	add_settings_field(
 		$option_name . "_${field}_${key}",
@@ -125,13 +131,8 @@ function ip_geo_block_tab_settings( $context ) {
 			'field' => $field,
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
-			'list' => array(
-				__( 'Disable',                  IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Enable',                   IP_Geo_Block::TEXT_DOMAIN ) => 1,
-				__( 'Prevent zero-day exploit (Lv1)', IP_Geo_Block::TEXT_DOMAIN ) => 2,
-				__( 'Prevent zero-day exploit (Lv2)', IP_Geo_Block::TEXT_DOMAIN ) => 3,
-			),
-			'after' => '<div style="display:none" id="ip-geo-block-admin-desc">' . __( 'It will block a malicious request to <code>wp-admin/admin.php</code> (Lv1) or <code>wp-admin/*.php</code> (Lv2) besides the country code. Because this is an experimental feature, please open a new issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with it.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
+			'list' => $title,
+			'after' => '<div style="display:none" id="ip_geo_block_settings_validation_admin_desc">' . __( 'It will block a malicious request to <code>wp-admin/*.php</code> besides the country code. Because this is an experimental feature, please open a new issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with it.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
 		)
 	);
 
@@ -148,12 +149,44 @@ function ip_geo_block_tab_settings( $context ) {
 			'field' => $field,
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
-			'list' => array(
-				__( 'Disable',                  IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Enable',                   IP_Geo_Block::TEXT_DOMAIN ) => 1,
-				__( 'Prevent zero-day exploit', IP_Geo_Block::TEXT_DOMAIN ) => 2,
-			),
-			'after' => '<div style="display:none" id="ip-geo-block-ajax-desc">' . __( 'It will block a malicious request to <code>wp-admin/admin-(ajax|post).php</code> besides the country code. Because this is an experimental feature, please open a new issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with it.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
+			'list' => $title,
+			'after' => '<div style="display:none" id="ip_geo_block_settings_validation_ajax_desc">' . __( 'It will block a malicious request to <code>wp-admin/admin-(ajax|post).php</code> besides the country code. Because this is an experimental feature, please open a new issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with it.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
+		)
+	);
+
+	$key = 'plugins';
+	add_settings_field(
+		$option_name . "_${field}_${key}",
+		__( '<dfn title="Validate direct access to wp-content/plugins/&hellip;/*.php">Plugins area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'select',
+			'option' => $option_name,
+			'field' => $field,
+			'sub-field' => $key,
+			'value' => $options[ $field ][ $key ],
+			'list' => $title,
+			'after' => '<div style="display:none" id="ip_geo_block_settings_validation_plugins_desc">' . __( 'It will block a malicious request to <code>wp-content/plugins/&hellip;/*.php</code> besides the country code. Because this is an experimental feature, please open a new issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with it.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
+		)
+	);
+
+	$key = 'themes';
+	add_settings_field(
+		$option_name . "_${field}_${key}",
+		__( '<dfn title="Validate direct access to wp-content/themes/&hellip;/*.php">Themes area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'select',
+			'option' => $option_name,
+			'field' => $field,
+			'sub-field' => $key,
+			'value' => $options[ $field ][ $key ],
+			'list' => $title,
+			'after' => '<div style="display:none" id="ip_geo_block_settings_validation_themes_desc">' . __( 'It will block a malicious request to <code>wp-content/themes/&hellip;/*.php</code> besides the country code. Because this is an experimental feature, please open a new issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with it.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
 		)
 	);
 

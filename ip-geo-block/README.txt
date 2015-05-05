@@ -352,6 +352,13 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.1.0 =
+* **New feature:** Expanded the operating range of ZP-ZEP, that includes admin 
+  area, plugins area, themes area. Now it can prevent a direct malicios attack 
+  to the file in plugins and themes area. Please go to the "Validation Settings"
+  on "Settings" tab and check it. Also check my article in 
+  "[Whick attacks can WP-ZEP prevent?](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/which-attacks-prevented.html)".
+* **Bug fix:** Fixed the issue that action hook `ip-geo-block-backup-dir` did 
+  not work correctly because the order of argument was mismatched.
 
 = 2.0.8 =
 * Fixed an issue that a certain type of attack vector to the admin area (

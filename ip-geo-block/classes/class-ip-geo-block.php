@@ -38,6 +38,10 @@ class IP_Geo_Block {
 		'statistics' => 'ip_geo_block_statistics',
 	);
 
+	// private values
+	private $logged_in = FALSE;
+	private $remote_addr = NULL;
+
 	/**
 	 * Initialize the plugin
 	 * 
@@ -81,8 +85,13 @@ class IP_Geo_Block {
 		       $settings['validation']['ajax' ] ) && is_admin() )
 			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
 
+		// wp-content/(plugins|themes)/*.php with including wp-load.php
+		if ( ( $settings['validation']['plugins'] && strpos( $_SERVER['REQUEST_URI'], parse_url( plugins_url(), PHP_URL_PATH ) ) === 0 ) ||
+		     ( $settings['validation']['themes' ] && strpos( $_SERVER['REQUEST_URI'], parse_url( get_theme_root_uri(), PHP_URL_PATH ) ) === 0 ) )
+			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
+
 		// Load authenticated nonce
-		if ( is_user_logged_in() )
+		if ( $this->logged_in = is_user_logged_in() )
 			add_action( 'wp_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ), $settings['priority'] );
 	}
 
@@ -439,48 +448,60 @@ class IP_Geo_Block {
 		return $something; // pass through
 	}
 
+	public function validate_direct() {
+		$settings = self::get_option( 'settings' );
+
+		if ( @preg_match( '/\/(plugins|themes)\/.*?\.php/', $_SERVER['REQUEST_URI'], $matches ) &&
+		     $settings['validation'][ $matches[1] ] >= 2 ) {
+			// register to check nonce
+			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+		}
+
+		// Validate country by IP
+		$this->validate_ip( 'admin', $settings );
+	}
+
 	public function validate_admin() {
-		global $pagenow; // http://codex.wordpress.org/Global_Variables
 		$settings = self::get_option( 'settings' );
 
 		if ( isset( $_REQUEST['action'] ) ) {
+			global $pagenow; // http://codex.wordpress.org/Global_Variables
 			switch ( $pagenow ) {
-			  case 'admin-ajax.php': // isset( $type ) is always true
-				$type = has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) ? FALSE : 'ajax';
+			  case 'admin-ajax.php':
+				$type = has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) ? NULL : 'ajax';
 				break;
-			  case 'admin-post.php': // isset( $type ) is always true
-				$type = has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) ? FALSE : 'ajax';
+			  case 'admin-post.php':
+				$type = has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) ? NULL : 'ajax';
 				break;
-			  case 'admin.php': // isset( $type ) is false if $type is null
+			  case 'admin.php':
 				$type = has_action( "admin_action_{$_REQUEST['action']}" ) ? NULL : 'admin';
 			}
 
-			// exclude admin actions
-			$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
-			) );
+			if ( isset( $type ) && $settings['validation'][ $type ] >= 2 ) {
+				// exclude admin actions
+				$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
+				) );
 
-			// Register to check nonce
-			if ( ! in_array( $_REQUEST['action'], $admin_actions ) &&
-			     isset( $type ) && $settings['validation'][ $type ] >= 2 ) {
-				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+				// register to check nonce
+				if ( ! in_array( $_REQUEST['action'], $admin_actions ) ) {
+					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+				}
 			}
 		}
 
-		if ( isset( $_REQUEST['page'] ) && ! isset( $type ) && $settings['validation']['admin'] >= 3 ) {
-			// redirect if there's a nonce in referer to deal with javascript location object
-			$type = self::PLUGIN_SLUG . '-auth-nonce';
-			if ( empty( $_REQUEST[ $type ] ) && self::retrieve_nonce( $type ) ) {
-				wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
-				exit;
-			}
+		if ( isset( $_REQUEST['page'] ) ) {
+			if ( empty( $type ) && $settings['validation']['admin'] >= 2 ) {
+				// trace nonce in referer
+				$this->trace_nonce();
 
-			// exclude admin pages
-			$admin_pages = apply_filters( self::PLUGIN_SLUG . '-admin-pages', array(
-			) );
+				// exclude admin pages
+				$admin_pages = apply_filters( self::PLUGIN_SLUG . '-admin-pages', array(
+				) );
 
-			// Register to check nonce
-			if ( ! in_array( $_REQUEST['page'], $admin_pages ) ) {
-				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+				// register to check nonce
+				if ( ! in_array( $_REQUEST['page'], $admin_pages ) ) {
+					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+				}
 			}
 		}
 
@@ -557,12 +578,25 @@ class IP_Geo_Block {
 	 * Validate nonce
 	 *
 	 */
-	public function check_nonce( $validate, $settings ) {
-		$key = self::PLUGIN_SLUG . '-auth-nonce';
-		$nonce = self::retrieve_nonce( $key );
+	private function trace_nonce() {
+		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
 
-		if ( ! is_user_logged_in() || // or user_can_access_admin_page()
-		     ! $nonce || ! wp_verify_nonce( $nonce, $key ) ) {
+		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) ) {
+			if ( $this->logged_in ) {
+				// redirect if there's a nonce in referer
+				// to handle with javascript location object.
+				wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
+				exit;
+			}
+		}
+	}
+
+	public function check_nonce( $validate, $settings ) {
+		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
+		$value = self::retrieve_nonce( $nonce );
+
+		if ( ! $this->logged_in || // or user_can_access_admin_page()
+		     ! $value || ! wp_verify_nonce( $value, $nonce ) ) {
 			$validate['result'] = 'blocked';
 		}
 

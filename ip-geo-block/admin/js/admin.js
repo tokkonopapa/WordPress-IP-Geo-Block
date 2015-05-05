@@ -220,7 +220,8 @@ var ip_geo_block_start = new Date();
 	}
 
 	// Show/Hide description of WP-ZEP
-	function show_description(select, id) {
+	function show_description(select) {
+		var id = '#' + select.id + '_desc';
 		if (2 <= $(select).val()) {
 			$(id).show();
 		} else {
@@ -309,12 +310,11 @@ var ip_geo_block_start = new Date();
 		});
 
 		// Show/Hide description of WP-ZEP
-		$('#ip_geo_block_settings_validation_admin').on('change', function (event) {
-			show_description(this, '#ip-geo-block-admin-desc');
-		}).trigger('change');
-
-		$('#ip_geo_block_settings_validation_ajax').on('change', function (event) {
-			show_description(this, '#ip-geo-block-ajax-desc');
-		}).trigger('change');
+		var item = ['admin', 'ajax', 'plugins', 'themes'], i;
+		for (i = 0; i < item.length; i++) {
+			$('#ip_geo_block_settings_validation_' + item[i]).on('change', function (event) {
+				show_description(this);
+			}).trigger('change');
+		}
 	});
 }(jQuery));
