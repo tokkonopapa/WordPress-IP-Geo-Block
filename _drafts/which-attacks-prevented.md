@@ -12,8 +12,7 @@ inline: <script>
     var cols = [
       'attack-vec',
       'geolocation',
-      'wp-zep-lv1',
-      'wp-zep-lv2'
+      'wp-zep',
     ];
     for (var i = 0; i < cols.length; i++) {
       $(table).find('#' + cols[i]).removeClass('sort-default');
@@ -59,17 +58,17 @@ patterns. Here are the short descriptions of abbreviation about these pattern.
 | AX           | **A**ja**x** / Post   |
 | WA           | **w**p-**a**dmin      |
 
-I also categorized the prevention ability of WP-ZEP into three:
+And I examined the prevention ability of [IP Geo Block in 2.1.0][IP-Geo-Block] 
+on the basis of evaluation criterion which are:
 
-1. validate only **Geo**location
-2. WP-ZEP **Lv1** (validate access to `wp-admin/admin(-ajax|-post)?.php`)
-3. WP-ZEP **Lv2** (validate access to `wp-admin/*.php`)
+1. validate by **Geo**location
+2. validate by WP-**ZEP**
 
-Where "WP-ZEP Lv2" is available in [IP Geo Block in 2.0.9][IP-Geo-Block].
+where "Validation Settings" of 2. is as follows:
 
-![Validation Settings in IP Geo Block in 2.0.9](
+![Validation Settings in IP Geo Block in 2.1.0](
   {{ "/img/2015-05/validation-settings.png" | prepend: site.baseurl }}
-  "Validation Settings in IP Geo Block in 2.0.9"
+  "Validation Settings in IP Geo Block in 2.1.0"
 )
 
 Well then, let's take a look at the results:
@@ -84,8 +83,7 @@ Well then, let's take a look at the results:
         <th>Type</th>
         <th id="attack-vec"><abbr title="Attack Vector">Vec</abbr></th>
         <th id="geolocation"><abbr title="Geolocation">Geo</abbr></th>
-        <th id="wp-zep-lv1"><abbr title="WP-ZEP Lv1">Lv1</abbr></th>
-        <th id="wp-zep-lv2"><abbr title="WP-ZEP Lv2">Lv2</abbr></th>
+        <th id="wp-zep"><abbr title="WP-ZEP">ZEP</abbr></th>
       </tr>
     </thead>
     <tbody>
@@ -94,16 +92,14 @@ Well then, let's take a look at the results:
         <td>&lt;= 1.6.1</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
         <td><abbr title="Plugin Direct including wp-load.php"><a href="http://packetstormsecurity.com/files/131228/">PD*</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-success">OK</span></td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 2. /?account=1&pwd=1&uid=1&setFirst=0... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7873" title="Ptengine &lt;= 1.0.1 - Reflected Cross-Site Scripting (XSS)">Ptengine</a></td>
         <td>&lt;= 1.0.1</td>
         <td><abbr title="Cross Site Scripting">XSS</abbr></td>
         <td><abbr title="Front End"><a href="https://wpvulndb.com/vulnerabilities/7873">FE</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -114,14 +110,12 @@ Well then, let's take a look at the results:
         <td><abbr title="Ajax/Post">AX</abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 4. /wp-admin/admin.php?page=wonderplugin_audio_show_items... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7798" title="WonderPlugin Audio Player 2.0 Blind SQL Injection and XSS">WonderPlugin Audio Player</a></td>
         <td>&lt;= 2.0</td>
         <td><abbr title="SQL Injection">SQLI</abbr>, <abbr title="Cross Site Scripting">XSS</abbr></td>
         <td><abbr title="Ajax/Post"><a href="https://www.exploit-db.com/exploits/36086/">AX</a></abbr></td>
-        <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -132,16 +126,14 @@ Well then, let's take a look at the results:
         <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/131040/">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 6. /wp-content/plugins/wpshop/includes/ajax.php?elementCode=ajaxUpload... | wp-load.php -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7830" title="Wpshop - eCommerce &lt;= 1.3.9.5 - Arbitrary File Upload">WPshop - eCommerce</a></td>
         <td>&lt;= 1.3.9.5</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
         <td><abbr title="Plugin Direct including wp-load.php"><a href="https://research.g0blin.co.uk/g0blin-00036/">PD*</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-success">OK</span></td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 7. lack of check_admin_referer() -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7813" title="WPBook &lt;= 2.7 - Cross-Site Request Forgery (CSRF)">WPBook</a></td>
@@ -149,7 +141,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr></td>
         <td><abbr title="wp-admin">WA</abbr></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 8. /wp-admin/options-general.php?page=wp-vipergb... -->
@@ -158,7 +149,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Cross Site Scripting">XSS</abbr>, <abbr title="Cross-Site Request Forgery">CSRF</abbr></td>
         <td><abbr title="wp-admin"><a href="http://packetstormsecurity.com/files/129501">WA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 9. /wp-admin/admin-ajax.php?action=ajax_survey -->
@@ -168,7 +158,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Ajax/Post"><a href="http://packetstormsecurity.com/files/130381/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 10. /wp-admin/upload.php?s=test&page=wp-media-cleaner... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7814" title="WP Media Cleaner &lt;= 2.2.6 - Cross-Site Scripting (XSS)">WP Media Cleaner</a></td>
@@ -176,7 +165,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Cross-Site Scripting">XSS</abbr></td>
         <td><abbr title="wp-admin"><a href="http://packetstormsecurity.com/files/130576/">WA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 11. /wp-admin/admin.php?page=wss-images... -->
@@ -185,7 +173,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr></td>
         <td><abbr title="wp-admin"><a href="https://www.exploit-db.com/exploits/36612/">WA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 12. /wp-admin/admin-ajax.php?nm_webcontact_upload_file... -->
@@ -195,14 +182,12 @@ Well then, let's take a look at the results:
         <td><abbr title="Ajax/Post"><a href="http://packetstormsecurity.com/files/131413/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 13. /?page_id=2&artistletter=G' UNION ALL SELECT... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7901" title="Tune Library &lt;= 1.5.4 - SQL Injection">Tune Library</a></td>
         <td>&lt;= 1.5.4</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
         <td><abbr title="Front End"><a href="http://packetstormsecurity.com/files/131558/">FE</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -212,7 +197,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr>, <abbr title="Cross-Site Scripting">XSS</abbr></td>
         <td><abbr title="wp-admin"><a href="http://packetstormsecurity.com/files/130314/">WA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 15. /wp-content/plugins/php-event-calendar/server/classes/uploadify.php... -->
@@ -220,7 +204,6 @@ Well then, let's take a look at the results:
         <td>&lt;= 1.5</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
         <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/131277/">PD</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -231,7 +214,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Front End">FE</abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 17. /wp-admin/options-general.php?page=mobile-domain... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7792" title="Mobile Domain &lt;= 1.5.2 - CSRF/XSS">Mobile Domain</a></td>
@@ -239,7 +221,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr>, <abbr title="Cross-Site Scripting">XSS</abbr></td>
         <td><abbr title="wp-admin"><a href="http://packetstormsecurity.com/files/130316/">WA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 18. /wp-content/plugins/mailchimp-subscribe-sm/data.php -->
@@ -249,7 +230,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Plugin Direct"><a href="http://plugins.svn.wordpress.org/mailchimp-subscribe-sm/tags/1.1/data.php">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 19. /wp-admin/admin.php?page=wp-IPBLC... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7816" title="IP Blacklist Cloud &lt;= 3.4 - SQL Injection">IP Blacklist Cloud</a></td>
@@ -257,7 +237,6 @@ Well then, let's take a look at the results:
         <td><abbr title="SQL Injection">SQLI</abbr></td>
         <td><abbr title="wp-admin">WA</abbr></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 20. /?action=importCSVIPCloud... -->
@@ -265,7 +244,6 @@ Well then, let's take a look at the results:
         <td>&lt;= 3.42</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
         <td><abbr title="Front End"><a href="https://research.g0blin.co.uk/g0blin-00037/">FE</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -276,7 +254,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/130957/">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 22. /wp-admin/plugins.php?page=image_metadata_cruncher-options... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7796" title="Image Metadata Cruncher - Multiple XSS">Image Metadata Cruncher</a></td>
@@ -284,7 +261,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr>, <abbr title="Cross-Site Scripting">XSS</abbr></td>
         <td><abbr title="wp-admin"><a href="http://www.securityfocus.com/archive/1/archive/1/534718/100/0/threaded">WA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 23. /wp-admin/options-general.php?page=thisismyurl_csj.php... -->
@@ -293,7 +269,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr>, <abbr title="Cross-Site Scripting">XSS</abbr></td>
         <td><abbr title="wp-admin"><a href="http://packetstormsecurity.com/files/130313/">WA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 24. /wp-content/plugins/Wordpress/Aaspose-pdf-exporter/aspose_pdf_exporter_download.php?file=... -->
@@ -301,7 +276,6 @@ Well then, let's take a look at the results:
         <td>&lt; 2.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
         <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/131161/">PD</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -312,7 +286,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/131162/">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 26. /wp-content/plugins/aspose-doc-exporter/aspose_doc_exporter_download.php?file=... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7869" title="Aspose DOC Exporter 1.0 - Arbitrary File Download">Aspose DOC Exporter</a></td>
@@ -321,32 +294,28 @@ Well then, let's take a look at the results:
         <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/131167/">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 27. /wp-content/plugins/wp-ultimate-csv-importer/modules/export/templates/export.php | wp-load.php -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7778" title="WP Ultimate CSV Importer &lt;= 3.6.74 - Database Table Export">WP Ultimate CSV Importer</a></td>
         <td>&lt;= 3.6.74</td>
         <td><abbr title="Authentication Bypass">AB</abbr></td>
         <td><abbr title="Plugin Direct including wp-load.php"><a href="https://research.g0blin.co.uk/g0blin-00025/">PD*</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-success">OK</span></td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 28. /wp-content/plugins/wp-ultimate-csv-importer/templates/readfile.php?file_name=... | wp-load.php -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7949" title="WP Ultimate CSV Importer &lt;= 3.7.1 - Directory Traversal">WP Ultimate CSV Importer</a></td>
         <td>&lt;= 3.7.1</td>
         <td><abbr title="Directory Traversal">DT</abbr></td>
         <td><abbr title="Plugin Direct including wp-load.php"><a href="http://www.pritect.net/blog/wp-ultimate-csv-importer-3-7-1-critical-vulnerability">PD*</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-success">OK</span></td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 29. /wp-content/themes/mTheme-Unus/css/css.php?files=... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7898" title="WP Mobile Edition &lt;= 2.7 - Remote File Disclosure">WP Mobile Edition</a></td>
         <td>&lt;= 2.2.7</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
        <td><abbr title="Plugin Direct"><a href="https://www.exploit-db.com/exploits/36733/">PD</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -357,14 +326,12 @@ Well then, let's take a look at the results:
         <td><abbr title="Ajax/Post"><a href="http://packetstormsecurity.com/files/130596/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 31. /wp-admin/admin-apax.php?action=auto_detect_cf&... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7852" title="WP All Import &lt;= 3.2.4 - Multiple Vulnerabilities">WP All Import</a></td>
         <td>&lt;= 3.2.4</td>
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr>, <abbr title="Cross-Site Scripting">XSS</abbr></td>
         <td><abbr title="Ajax/Post">AX</abbr></td>
-        <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -375,23 +342,20 @@ Well then, let's take a look at the results:
         <td><abbr title="Ajax/Post">AX</abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 33. /wp-content/plugins/ultimate-member/core/lib/upload/um-file-upload.php... | wp-load.php -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7850" title="Ultimate Member &lt;= 1.0.78 - Multiple Vulnerabilities">Ultimate Member</a></td>
         <td>&lt;= 1.0.78</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
         <td><abbr title="Plugin Direct including wp-load.php"><a href="http://www.pritect.net/blog/ultimate-member-plugin-1-0-78-critical-security-vulnerability">PD*</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-success">OK</span></td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 34. /wp-admin/admin-ajax.php?action=widgets_init&Action=UPCP_AddProductSpreadsheet -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7939" title="Ultimate Product Catalogue Plugin &lt;= 3.1.1 - Unauthenticated File Upload">Ultimate Product Catalogue</a></td>
         <td>&lt;= 3.1.1</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
         <td><abbr title="Ajax/Post"><a href="https://wpvulndb.com/vulnerabilities/7939">AX</a></abbr></td>
-        <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -402,14 +366,12 @@ Well then, let's take a look at the results:
         <td><abbr title="Ajax/Post"><a href="https://www.exploit-db.com/exploits/36823/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 36. /?SingleProduct=2'+and+'a'='a -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7948" title="Ultimate Product Catalogue Plugin &lt;= 3.1.2 - Unauthenticated SQL Injection">Ultimate Product Catalogue</a></td>
         <td>&lt;= 3.1.2</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
         <td><abbr title="Front End"><a href="https://www.exploit-db.com/exploits/36824/">FE</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -420,7 +382,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Ajax/Post"><a href="https://vexatioustendencies.com/wordpress-plugin-vulnerability-dump-part-2/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 38. /wp-admin/admin.php?page=sliders_huge_it_slider&task=... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7811" title="Huge-IT Slider - SQL Injection ">Huge-IT Slider</a></td>
@@ -428,7 +389,6 @@ Well then, let's take a look at the results:
         <td><abbr title="SQL Injection">SQLI</abbr></td>
         <td><abbr title="Ajax/Post"><a href="https://www.htbridge.com/advisory/HTB23250">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 39. /wp-content/plugins/simple-ads-manager/sam-ajax-admin.php... | wp-load.php -->
@@ -436,16 +396,14 @@ Well then, let's take a look at the results:
         <td>&lt;= 2.5.94</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr>, <abbr title="SQL Injection">SQLI</abbr></td>
         <td><abbr title="Plugin Direct including wp-load.php"><a href="http://packetstormsecurity.com/files/131282/">PD*</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-success">OK</span></td>
+        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 40. should escape just before output to public page -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7922" title="Related Posts for WordPress &lt;= 1.8.1 - Cross-Site Scripting (XSS)">Related Posts for WordPress</a></td>
         <td>&lt;= 1.8.1</td>
         <td><abbr title="Cross-Site Scripting">XSS</abbr></td>
         <td><abbr title="Front End">FE</abbr></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -456,14 +414,12 @@ Well then, let's take a look at the results:
         <td><abbr title="Ajax/Post"><a href="http://research.evex.pw/?vuln=9">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 42. /wp-admin/admin.php?page=powerpress/powerpressadmin_categoryfeeds.php&action=powerpress-editcategoryfeed... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7773" title="Blubrry PowerPress &lt;= 6.0 - Cross-Site Scripting (XSS)">Blubrry PowerPress</a></td>
         <td>&lt;= 6.0</td>
         <td><abbr title="Cross Site Scripting">XSS</abbr></td>
         <td><abbr title="wp-admin"><a href="https://www.netsparker.com/cve-2015-1385-xss-vulnerability-in-blubrry-powerpress/">WA</a></abbr></td>
-        <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -473,7 +429,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr></td>
         <td><abbr title="wp-admin">WA</abbr></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 44. lack of esc_url() -->
@@ -481,7 +436,6 @@ Well then, let's take a look at the results:
         <td>&lt;= 1.5.3.8</td>
         <td><abbr title="Cross Site Scripting">XSS</abbr></td>
         <td><abbr title="wp-admin">WA</abbr></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -492,14 +446,12 @@ Well then, let's take a look at the results:
         <td><abbr title="Ajax/Post"><a href="https://www.exploit-db.com/exploits/36800/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 46. /?action=download&option=com_miwoftp&item=wp-config.php -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7848" title="MiwoFTP - File & Folder Manager &lt;= 1.0.4 - Arbitrary File Disclosure">MiwoFTP</a></td>
         <td>&lt;= 1.0.4</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
         <td><abbr title="Front End"><a href="https://research.g0blin.co.uk/g0blin-00038/">FE</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -510,14 +462,12 @@ Well then, let's take a look at the results:
         <td><abbr title="wp-admin"><a href="http://packetstormsecurity.com/files/131436/">WA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 48. /?login_required=1&user=... -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7839" title="MainWP Child &lt;= 2.0.9.1 - Authentication Bypass">MainWP Child</a></td>
         <td>&lt;= 2.0.9.1</td>
         <td><abbr title="Authentication Bypass">AB</abbr></td>
         <td><abbr title="Front End">FE</abbr></td>
-        <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -528,7 +478,6 @@ Well then, let's take a look at the results:
         <td><abbr title="Ajax/Post"><a href="https://research.g0blin.co.uk/g0blin-00045/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
-        <td><span class="label label-success">OK</span></td>
       </tr>
       <tr><!-- 50. allow ajax to anonymous users with `wp_ajax_nopriv_` -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7871" title="WordPress Leads 1.6.1-1.6.2 - Persistent XSS">WordPress Leads</a></td>
@@ -537,13 +486,11 @@ Well then, let's take a look at the results:
         <td><abbr title="Ajax/Post"><a href="https://research.g0blin.co.uk/g0blin-00042/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
-        <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr class="no-sort"><!-- Summary -->
         <th class="text-right" colspan="4">The total amount of <span class="label label-success">OK</span></tt>
-        <td class="text-center">28</td>
-        <td class="text-center">13</td>
-        <td class="text-center">24</td>
+        <td class="text-center">33</td>
+        <td class="text-center">30</td>
       </tr>
     </tbody>
   </table>
@@ -559,50 +506,63 @@ So I'd like to dive into these attack vectors.
 
 #### Plugin Direct ####
 
-Some plugin or theme authors tend to call the files directly in their plugin or
-theme directory and then bootstrap WordPress. This is not generally recommended
-from the WordPress security point of view. While such authors have their own 
-reasons (for example they prefer to reuse their own great resources), that does
-not mean to excuse of ignoring the WordPress programming paradigm that has the 
-[event-driven architecture][Tom-McFarlin].
+Some plugin or theme authors tend to call the files directly under their plugin 
+or theme folder. Some of these files include `wp-load.php` to bootstrap 
+WordPress, which cases are indicated as "PD*". This is not generally 
+recommended from the WordPress security point of view. While such authors have 
+their own reasons (for example they prefer to reuse their own great resources), 
+that does not mean to excuse of ignoring the WordPress programming paradigm, 
+that is [event-driven architecture][Tom-McFarlin].
 
 > [In almost every case there is no reason to allow code to be called directly]
   (http://www.pritect.net/blog/wp-ultimate-csv-importer-3-7-1-critical-vulnerability
   "by James Golovich").
 
-It is a remarkable fact that a variety of vulnerabilities are there in the 
-category of this attack vector.
-
-Anyway, malicious assess to the `/wp-content/plugins/` or `/wp-content/themes/`
-by direct calling from the outside should be blocked to prevent various 
-vulnerability.
+It's also a remarkable fact that a variety of vulnerabilities are there in this 
+type of attack vector. So, a direct assess to the `/wp-content/plugins/` and 
+`/wp-content/themes/` from outside the site should be blocked to prevent
+various vulnerability.
 
 #### Front End ####
 
 There was [an vulnerability][MainWP-Child] that allowed anyone to login as an 
-administrator without any fences by following access to the top like this:
+administrator without any fences by following access on the top:
 
 ```html
 http://example.com/?login_required=1&user=admin&...
 ```
 
 Typical case in this type of vulnerability is that the `init` action is hooked 
-to some functions to make significant processing for administrators, which can 
-be triggered by anyone when visiting at public facing pages.
+to some functions to make significant jobs for administrators, which can be 
+triggered by anyone when visiting at public facing pages.
 
-Generally speaking, all we should do is to filter out the malicious queries 
-from requests with whitelist or blacklist to prevent vulnerability such as 
-LFI, XSS, SQLI.
+Generally speaking, all we should do is to filter out any malicious queries 
+from the requests using whitelist or blacklist to prevent vulnerability such 
+as LFI, XSS, SQLI.
 
 ### Conclusion ###
 
-After this investigation, I've got the great motivation and direction of 
-developing WP-ZEP toward the future release. It's a long way to go for me 
-<span class="emoji">
-![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f40c.png "snail")
-</span>.
-But I'd like to make progress with paying any special attention about this 
-topics!!
+The estimated amount of ratio to prevent zero-day exploitation is about 60%.
+Is it too low? Yes it is. But please consider that no plugins but WP-ZEP have 
+the ability of preventing unveiled attacks.
+
+After this investigation, I found two things. One is that it's better to 
+implement the blocking functionarity on the public facing pages based on 
+the geolocation according to my bacic concept of this plugin, that is:
+
+> the protection based on the IP address is not a perfect solution for everyone.
+> But for some site owners or some certain cases such as 'zero-day attack', 
+> it can still reduce the risk of infection against the specific attacks.
+
+The second is that denying access to the WP admin, plugins or themes area by 
+restricting IP address to the server's IP via `.htaccess` can be a bullet proof 
+for "Zero-day Attack". But most people do not do this because it's hard to know 
+the range of IP addresses which are depending on the server components.
+
+I'd like to challenge the above issues with different ways from other plugins 
+in the future <span class="emoji">
+![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2693.png "anchor")
+</span> !!
 
 [wpvulndb]:     https://wpvulndb.com/plugins "WordPress Plugin Vulnerabilities"
 [Sucuri]:       https://sucuri.net/ "Sucuri Security — Website Protection, Malware Removal, and Blacklist Prevention"
