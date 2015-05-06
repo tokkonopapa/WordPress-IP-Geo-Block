@@ -191,7 +191,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 12. /wp-admin/admin-ajax.php?nm_webcontact_upload_file... -->
+      <tr><!-- 12. /wp-admin/admin-ajax.php?action=nm_webcontact_upload_file... (both privilege and no-privilege are triggerd) -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7896" title="N-Media Website Contact Form with File Upload &lt;= 1.3.4 - Arbitrary File Upload">N-Media Website Contact Form</a></td>
         <td>&lt;= 1.3.4</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
@@ -495,7 +495,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 50. allow ajax to anonymous users with `wp_ajax_nopriv_` -->
+      <tr><!-- 50. allow ajax to both privilege and anonymous users with `wp_ajax_nopriv_` -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7871" title="WordPress Leads 1.6.1-1.6.2 - Persistent XSS">WordPress Leads</a></td>
         <td>&lt;= 1.6.2</td>
         <td><abbr title="Cross Site Scripting">XSS</abbr></td>
