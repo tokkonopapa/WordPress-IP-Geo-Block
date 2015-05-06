@@ -482,7 +482,7 @@ class IP_Geo_Block {
 				$type = has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) ? NULL : 'ajax';
 				break;
 			  case 'admin.php':
-				$type = has_action( "admin_action_{$_REQUEST['action']}" ) ? NULL : 'admin';
+				$type = has_action( "admin_action_{$_REQUEST['action']}" ) ? 'admin' : NULL;
 			}
 
 			if ( isset( $type ) && $settings['validation'][ $type ] >= 2 ) {
