@@ -48,8 +48,23 @@ confirm the attack vectors.
 
 Each vulnerability has its own attack vectors. Some of them are classified in 
 a direct attack onto the plugin files, and some of them are classified in an 
-indirect attack via WordPress core files. So I categorized these into several 
-patterns. Here are the short descriptions of abbreviation about these pattern.
+indirect attack via WordPress core files. So at first I must make clarify the 
+definition of "Attack Vector" itself. My definition is:
+
+```text
+Attack Vector = Type x Path
+```
+
+where:
+
+- **Type**: The type of vulnerability that an attacker can abuse. For example, 
+  XSS, SQLI, LFI and so on. Also it includes some certain parameters which 
+  are generally called "signature".
+- **Path**: The path to the entrance into WordPress where an attacker can 
+  deliver a payload or malicious code.
+
+Father more, I categorized the "**Path**" into severals patterns. Here are the 
+short descriptions of abbreviation in the later part of this article.
 
 | Abbreviation | Description           |
 |:-------------|:----------------------|
@@ -58,13 +73,14 @@ patterns. Here are the short descriptions of abbreviation about these pattern.
 | AX           | **A**ja**x** / Post   |
 | WA           | **w**p-**a**dmin      |
 
-And I examined the prevention ability of [IP Geo Block in 2.1.0][IP-Geo-Block] 
-on the basis of evaluation criterion which are:
+Then I examined the prevention ability of 
+  [IP Geo Block in 2.1.0][IP-Geo-Block] 
+based on the type of validation which are:
 
 1. validate by **Geo**location
 2. validate by WP-**ZEP**
 
-where "Validation Settings" of 2. is as follows:
+For example, 2. is available on "Validation Settings" as follows:
 
 ![Validation Settings in IP Geo Block in 2.1.0](
   {{ "/img/2015-05/validation-settings.png" | prepend: site.baseurl }}
@@ -80,10 +96,10 @@ Well then, let's take a look at the results:
       <tr>
         <th>Vulnerability</th>
         <th class="no-sort">Version</th>
-        <th>Type</th>
-        <th id="attack-vec"><abbr title="Attack Vector">Vec</abbr></th>
-        <th id="geolocation"><abbr title="Geolocation">Geo</abbr></th>
-        <th id="wp-zep"><abbr title="WP-ZEP">ZEP</abbr></th>
+        <th><abbr title="Type of vulnerability">Type</abbr></th>
+        <th id="attack-vec"><abbr title="Attack Vector">Path</abbr></th>
+        <th id="geolocation"><abbr title="validate by Geolocation">Geo</abbr></th>
+        <th id="wp-zep"><abbr title="validate by WP-ZEP">ZEP</abbr></th>
       </tr>
     </thead>
     <tbody>
@@ -498,9 +514,9 @@ Well then, let's take a look at the results:
 
 ### Analysis of Attack Vectors ###
 
-The results gives me something of great interest when I 
+The results gave me something of great interest when I 
 <a href="javascript:void(0);" onclick="sortby('attack-vec');" 
-   title="execute to sort by Vec">sort by attack vector</a>.
+   title="execute to sort by Path">sort by "<strong>Path</strong>"</a>.
 "PD" (Plugin Direct) and "FE" (Front End) are all in red.
 So I'd like to dive into these attack vectors.
 
@@ -518,9 +534,9 @@ that is [event-driven architecture][Tom-McFarlin].
   (http://www.pritect.net/blog/wp-ultimate-csv-importer-3-7-1-critical-vulnerability
   "by James Golovich").
 
-It's also a remarkable fact that a variety of vulnerabilities are there in this 
-type of attack vector. So, a direct assess to the `/wp-content/plugins/` and 
-`/wp-content/themes/` from outside the site should be blocked to prevent
+It's also a remarkable fact that a variety of vulnerabilities are there in 
+this type of attack vector. So, a direct assess to the `/wp-content/plugins/` 
+and `/wp-content/themes/` from outside the site should be blocked to prevent 
 various vulnerability.
 
 #### Front End ####
@@ -542,27 +558,30 @@ as LFI, XSS, SQLI.
 
 ### Conclusion ###
 
-The estimated amount of ratio to prevent zero-day exploitation is about 60%.
-Is it too low? Yes it is. But please consider that no plugins but WP-ZEP have 
-the ability of preventing unveiled attacks.
+For WP-ZEP, the estimated amount of ratio to prevent zero-day exploitation is 
+about 60%. Is it too low? Yes it is. But please consider that none of plugins 
+but WP-ZEP have the ability of preventing unveiled attacks.
 
-After this investigation, I found two things. One is that it's better to 
-implement the blocking functionarity on the public facing pages based on 
-the geolocation according to my bacic concept of this plugin, that is:
+After this investigation, I found two things. The first One is that denying 
+an attacker accessing to the plugins/themes area by restricting IP addresses 
+via `.htaccess` can be a bullet proof for zero-day attack. But I think most 
+people do not do this because it's hard to know the range of IP addresses 
+which depend on the server components.
+
+The second is that it's better to implement the blocking functionarity on the 
+public facing pages based on the geolocation according to my bacic concept of 
+this plugin, that is:
 
 > the protection based on the IP address is not a perfect solution for everyone.
 > But for some site owners or some certain cases such as 'zero-day attack', 
 > it can still reduce the risk of infection against the specific attacks.
 
-The second is that denying access to the WP admin, plugins or themes area by 
-restricting IP address to the server's IP via `.htaccess` can be a bullet proof 
-for "Zero-day Attack". But most people do not do this because it's hard to know 
-the range of IP addresses which are depending on the server components.
-
-I'd like to challenge the above issues with different ways from other plugins 
-in the future <span class="emoji">
+The another way to prevent malicious access to the front end is detecting 
+signature base on the type of vulnerability like 
+<abbr title="Web Applicatio Firewall">WAF</abbr>. But I think this 
+functionarity is out of scope of this plugin. <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2693.png "anchor")
-</span> !!
+</span>.
 
 [wpvulndb]:     https://wpvulndb.com/plugins "WordPress Plugin Vulnerabilities"
 [Sucuri]:       https://sucuri.net/ "Sucuri Security — Website Protection, Malware Removal, and Blacklist Prevention"

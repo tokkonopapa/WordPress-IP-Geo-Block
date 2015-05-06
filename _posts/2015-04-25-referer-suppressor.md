@@ -131,6 +131,12 @@ please let me know. Thanks <span class="emoji">
         <td><span class="label label-success">OK</span></td>
       </tr>
       <tr>
+        <td>IE8</td>
+        <td>8.0</td>
+        <td>Windows 7</td>
+        <td><span class="label label-success">OK</span></td>
+      </tr>
+      <tr>
         <td>IE11</td>
         <td>11.0</td>
         <td>Windows 7</td>
