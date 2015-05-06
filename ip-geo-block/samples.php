@@ -174,7 +174,7 @@ add_filter( 'ip-geo-block-admin', 'my_permission' );
  */
 function my_admin_actions( $admin_actions ) {
 	$whitelist = array(
-		'do-some-plugin-action',
+		'do-plugin-action',
 	);
 	return $admin_actions + $whitelist;
 }
@@ -182,7 +182,43 @@ add_filter( 'ip-geo-block-admin-actions', 'my_admin_actions' );
 
 
 /**
- * Example 9: Usage of 'ip-geo-block-headers'
+ * Example 9: Usage of 'ip-geo-block-admin-pages'
+ * Use case: Give permission to prevent blocking by WP-ZEP
+ *
+ * @param  array $admin_pages array of permitted admin pages
+ * @return array $admin_pages extended permitted admin pages
+ */
+function my_admin_pages( $admin_pages ) {
+	// ex) wp-admin/upload.php?page=plugin-name
+	$whitelist = array(
+		'plugin-name',
+	);
+	return $admin_pages + $whitelist;
+}
+add_filter( 'ip-geo-block-admin-pages', 'my_admin_pages' );
+
+
+/**
+ * Example 10: Usage of 'ip-geo-block-wp-content'
+ * Use case: Give permission to prevent blocking by WP-ZEP
+ *
+ * @param  array $names array of permitted plugins/themes
+ * @return array $names extended permitted plugins/themes
+ */
+function my_wp_content( $names ) {
+	// ex) wp-content/plugins/plugin-name/
+	// ex) wp-content/themes/theme-name/
+	$whitelist = array(
+		'plugin-name',
+		'theme-name',
+	);
+	return $names + $whitelist;
+}
+add_filter( 'ip-geo-block-wp-content', 'my_wp_content' );
+
+
+/**
+ * Example 11: Usage of 'ip-geo-block-headers'
  * Use case: Change the user agent strings when accessing geolocation API
  *
  * Notice: Be careful about HTTP header injection.
@@ -197,7 +233,7 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 
 
 /**
- * Example 10: Usage of 'ip-geo-block-maxmind-dir'
+ * Example 12: Usage of 'ip-geo-block-maxmind-dir'
  * Use case: Change the path of Maxmind database files to writable directory
  *
  * @param  string $dir original directory of database files
@@ -211,7 +247,7 @@ add_filter( 'ip-geo-block-maxmind-dir', 'my_maxmind_dir' );
 
 
 /**
- * Example 11: Usage of 'ip-geo-block-maxmind-zip-ipv[46]'
+ * Example 13: Usage of 'ip-geo-block-maxmind-zip-ipv[46]'
  * Use case: Replace Maxmind database files to city edition
  *
  * @param  string $url original url to zip file
@@ -228,7 +264,7 @@ add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
 
 
 /**
- * Example 12: Usage of 'ip-geo-block-ip2location-path'
+ * Example 14: Usage of 'ip-geo-block-ip2location-path'
  * Use case: Change the path to IP2Location database files
  *
  * @param  string $path original path to database files
@@ -241,7 +277,7 @@ add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
 
 
 /**
- * Example 13: Backup validation logs to text files
+ * Example 15: Backup validation logs to text files
  * Use case: Keep verification logs selectively to text files
  *
  * @param  string $hook 'comment', 'login', 'admin' or 'xmlrpc'
@@ -258,7 +294,7 @@ add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
 
 
 /**
- * Example 14: Usage of 'IP_Geo_Block::get_geolocation()'
+ * Example 16: Usage of 'IP_Geo_Block::get_geolocation()'
  * Use case: Get geolocation of visitor's ip address with latitude and longitude
  *
  */

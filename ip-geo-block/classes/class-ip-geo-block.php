@@ -451,10 +451,18 @@ class IP_Geo_Block {
 	public function validate_direct() {
 		$settings = self::get_option( 'settings' );
 
-		if ( @preg_match( '/\/(plugins|themes)\/.*?\.php/', $_SERVER['REQUEST_URI'], $matches ) &&
+		// retrieve name of the plugin/theme
+		if ( @preg_match( '/\/(plugins|themes)\/(.*?)\//', $_SERVER['REQUEST_URI'], $matches ) &&
 		     $settings['validation'][ $matches[1] ] >= 2 ) {
-			// register to check nonce
-			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+
+			// exclude certain plugin/theme
+			$list = apply_filters( self::PLUGIN_SLUG . '-wp-content', array(
+			) );
+
+			if ( empty( $matches[2] ) || ! in_array( $matches[2], $list ) ) {
+				// register to check nonce
+				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+			}
 		}
 
 		// Validate country by IP
@@ -479,11 +487,11 @@ class IP_Geo_Block {
 
 			if ( isset( $type ) && $settings['validation'][ $type ] >= 2 ) {
 				// exclude admin actions
-				$admin_actions = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
+				$list = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
 				) );
 
 				// register to check nonce
-				if ( ! in_array( $_REQUEST['action'], $admin_actions ) ) {
+				if ( ! in_array( $_REQUEST['action'], $list ) ) {
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 				}
 			}
@@ -495,11 +503,11 @@ class IP_Geo_Block {
 				$this->trace_nonce();
 
 				// exclude admin pages
-				$admin_pages = apply_filters( self::PLUGIN_SLUG . '-admin-pages', array(
+				$list = apply_filters( self::PLUGIN_SLUG . '-admin-pages', array(
 				) );
 
 				// register to check nonce
-				if ( ! in_array( $_REQUEST['page'], $admin_pages ) ) {
+				if ( ! in_array( $_REQUEST['page'], $list ) ) {
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 				}
 			}
