@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 2.1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
 "POT-Creation-Date: 2015-05-05 17:58+0900\n"
-"PO-Revision-Date: 2015-05-05 17:58+0900\n"
+"PO-Revision-Date: 2015-05-08 00:13+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,8 +21,8 @@ msgstr ""
 
 # description
 msgid ""
-"A WordPress plugin that will block any spams, login attempts and malicious "
-"access to the admin area posted from outside your nation."
+"It blocks any spams, login attempts and malicious access to the admin area "
+"posted from outside your nation, and also prevents zero-day exploit."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:167
