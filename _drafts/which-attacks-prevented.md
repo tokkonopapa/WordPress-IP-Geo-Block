@@ -49,7 +49,7 @@ confirm the attack vectors.
 Each vulnerability has its own attack vectors. Some of them are classified in 
 a direct attack onto the plugin files, and some of them are classified in an 
 indirect attack via WordPress core files. So at first I must make clarify the 
-definition of "Attack Vector" itself. My definition is:
+definition of "Attack Vector" itself. My definition here is:
 
 ```text
 Attack Vector = Type x Path
@@ -61,21 +61,21 @@ where:
   XSS, SQLI, LFI and so on. Also it includes some certain parameters which 
   are generally called "signature".
 - **Path**: The path to the entrance into WordPress where an attacker can 
-  deliver a payload or malicious code.
+  deliver the certain type of vulnerability.
 
-Father more, I categorized the "**Path**" into severals patterns. Here are the 
-short descriptions of abbreviation in the later part of this article.
+The "**Path**" can be categorized into severals patterns. Here are the short 
+descriptions of abbreviation in the later part of this article.
 
-| Abbreviation | Description           |
-|:-------------|:----------------------|
-| PD           | **P**lugin **D**irect |
-| FE           | **F**ront **E**nd     |
-| AX           | **A**ja**x** / Post   |
-| WA           | **w**p-**a**dmin      |
+| Abbreviation of **Path** | Description           |
+|:------------------------:|:----------------------|
+| PD                       | **P**lugin **D**irect |
+| FE                       | **F**ront **E**nd     |
+| AX                       | **A**ja**x** / Post   |
+| WA                       | **w**p-**a**dmin      |
 
 Then I examined the prevention ability of 
   [IP Geo Block in 2.1.0][IP-Geo-Block] 
-based on the type of validation which are:
+based on the type of validation, that are:
 
 1. validate by **Geo**location
 2. validate by WP-**ZEP**
@@ -195,7 +195,7 @@ Well then, let's take a look at the results:
         <td><a href="https://wpvulndb.com/vulnerabilities/7896" title="N-Media Website Contact Form with File Upload &lt;= 1.3.4 - Arbitrary File Upload">N-Media Website Contact Form</a></td>
         <td>&lt;= 1.3.4</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="http://packetstormsecurity.com/files/131413/">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post"><a href="http://packetstormsecurity.com/files/131413/">AX+</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -499,7 +499,7 @@ Well then, let's take a look at the results:
         <td><a href="https://wpvulndb.com/vulnerabilities/7871" title="WordPress Leads 1.6.1-1.6.2 - Persistent XSS">WordPress Leads</a></td>
         <td>&lt;= 1.6.2</td>
         <td><abbr title="Cross Site Scripting">XSS</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="https://research.g0blin.co.uk/g0blin-00042/">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post"><a href="https://research.g0blin.co.uk/g0blin-00042/">AX+</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -517,71 +517,60 @@ Well then, let's take a look at the results:
 The results gave me something of great interest when I 
 <a href="javascript:void(0);" onclick="sortby('attack-vec');" 
    title="execute to sort by Path">sort by "<strong>Path</strong>"</a>.
-"PD" (Plugin Direct) and "FE" (Front End) are all in red.
-So I'd like to dive into these attack vectors.
+The "PD" (Plugin Direct) and "FE" (Front End) are all in red. So I'd like to 
+dive into these attack vectors.
 
 #### Plugin Direct ####
 
-Some plugin or theme authors tend to call the files directly under their plugin 
-or theme folder. Some of these files include `wp-load.php` to bootstrap 
-WordPress, which cases are indicated as "PD*". This is not generally 
-recommended from the WordPress security point of view. While such authors have 
-their own reasons (for example they prefer to reuse their own great resources), 
-that does not mean to excuse of ignoring the WordPress programming paradigm, 
-that is [event-driven architecture][Tom-McFarlin].
+Some plugin or theme authors tend to call the files directly in their plugin 
+or theme folder. It's a remarkable fact that a variety of vulnerabilities are 
+there in this type of attack vector. This is not generally recommended from 
+the WordPress security point of view.
 
 > [In almost every case there is no reason to allow code to be called directly]
   (http://www.pritect.net/blog/wp-ultimate-csv-importer-3-7-1-critical-vulnerability
   "by James Golovich").
 
-It's also a remarkable fact that a variety of vulnerabilities are there in 
-this type of attack vector. So, a direct assess to the `/wp-content/plugins/` 
-and `/wp-content/themes/` from outside the site should be blocked to prevent 
-various vulnerability.
+While such authors have their own reasons (for example they prefer to reuse 
+their own great resources), that does not mean to excuse of ignoring the 
+WordPress programming paradigm, that is [event-driven model][Tom-McFarlin].
+
+So, a direct assess to the `/wp-content/plugins/` and `/wp-content/themes/` 
+from outside the site should be blocked to prevent various vulnerability.
+
+And fortunately, some of these files include `wp-load.php` to bootstrap WP, 
+which cases are indicated as "PD*" and those have a chance to be validated by 
+WP-ZEP.
 
 #### Front End ####
 
 There was [an vulnerability][MainWP-Child] that allowed anyone to login as an 
-administrator without any fences by following access on the top:
+administrator without any fences by following access on the WP home:
 
 ```html
 http://example.com/?login_required=1&user=admin&...
 ```
 
-Typical case in this type of vulnerability is that the `init` action is hooked 
-to some functions to make significant jobs for administrators, which can be 
-triggered by anyone when visiting at public facing pages.
+In this type of vulnerability, the `init` action is hooked to some functions 
+to make significant jobs for administrators, which can be triggered by anybody 
+who visits the public facing pages.
 
-Generally speaking, all we should do is to filter out any malicious queries 
-from the requests using whitelist or blacklist to prevent vulnerability such 
-as LFI, XSS, SQLI.
+In this case, all we should do is to filter out any malicious queries 
+("signature") from the requests using whitelist or blacklist to prevent 
+vulnerability such as LFI, XSS, SQLI.
 
 ### Conclusion ###
 
-For WP-ZEP, the estimated amount of ratio to prevent zero-day exploitation is 
-about 60%. Is it too low? Yes it is. But please consider that none of plugins 
-but WP-ZEP have the ability of preventing unveiled attacks.
+The estimated amount of ratio of preventing zero-day exploitation using WP-ZEP 
+is about 60%.
 
-After this investigation, I found two things. The first One is that denying 
-an attacker accessing to the plugins/themes area by restricting IP addresses 
-via `.htaccess` can be a bullet proof for zero-day attack. But I think most 
-people do not do this because it's hard to know the range of IP addresses 
-which depend on the server components.
+Is it still too low?
 
-The second is that it's better to implement the blocking functionarity on the 
-public facing pages based on the geolocation according to my bacic concept of 
-this plugin, that is:
-
-> the protection based on the IP address is not a perfect solution for everyone.
-> But for some site owners or some certain cases such as 'zero-day attack', 
-> it can still reduce the risk of infection against the specific attacks.
-
-The another way to prevent malicious access to the front end is detecting 
-signature base on the type of vulnerability like 
-<abbr title="Web Applicatio Firewall">WAF</abbr>. But I think this 
-functionarity is out of scope of this plugin. <span class="emoji">
+Yes it is. So I'd like to challenge to make WP-ZEP have an ability to prevent 
+the "Plugin Direct" vulnerability without requiring `wp-load.php`!!
+<span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2693.png "anchor")
-</span>.
+</span>
 
 [wpvulndb]:     https://wpvulndb.com/plugins "WordPress Plugin Vulnerabilities"
 [Sucuri]:       https://sucuri.net/ "Sucuri Security — Website Protection, Malware Removal, and Blacklist Prevention"
