@@ -564,10 +564,10 @@ vulnerability such as LFI, XSS, SQLI.
 The estimated amount of ratio of preventing zero-day exploitation using WP-ZEP 
 is about 60%.
 
-Is it still too low?
+Is it still too low? -- Yes it is. 
 
-Yes it is. So I'd like to challenge to make WP-ZEP have an ability to prevent 
-the "Plugin Direct" vulnerability without requiring `wp-load.php`!!
+So I'd like to challenge to make WP-ZEP have an ability to prevent the "Plugin 
+Direct" vulnerability
 <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2693.png "anchor")
 </span>

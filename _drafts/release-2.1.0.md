@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Release note on 2.1.0"
+title:  "2.1.0 Release Notes"
 date:   2015-05-02 00:00:00
 categories: changelog
 published: true
@@ -11,7 +11,7 @@ previous version, the successful probability of preventing zero-day attack
 was estimated about 26%. But now it's 60%.
 
 The background of these numbers, please refer to 
-[this article][[investigation].
+[this article][investigation].
 
 In this release note, I'll explain about the functionarity of 2.1.0.
 
@@ -65,5 +65,5 @@ on the dashboard have not finished before firing the browser's document ready.
 I'll fix this issue in the next release.
 
 [IP-Geo-Block]:       https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[investigation]:      {{ "/article/2015-xx-xx-which-attacks-prevented.html" | prepend: site.baseurl }} "Whick attacks prevented?"
-[Referer-Suppressor]: {{ "/article/2015-04-25-referer-suppressor.html" | prepend: site.baseurl }} "Referer Suppressor for external link"
+[investigation]:      {{ "/article/which-attacks-prevented.html" | prepend: site.baseurl }} "Whick attacks prevented?"
+[Referer-Suppressor]: {{ "/article/referer-suppressor.html" | prepend: site.baseurl }} "Referer Suppressor for external link"
