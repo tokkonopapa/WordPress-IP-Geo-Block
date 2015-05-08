@@ -290,6 +290,11 @@ and conclude the followings for developing WordPress plugins and themes
 * Attacks may come from unexpected route.
 * Attacker actually doesn't access to the page.
 
+And I have the same opinion with [James Golovich][James-Golovich]:
+
+> If you have the WordPress tools available to you then you should use them.
+> Something like current_user_can() and a nonce should always be used.
+
 [WPScan]:               https://wpvulndb.com/statistics "WordPress Vulnerability Statistics"
 [Sucuri]:               https://sucuri.net/ "Sucuri Security - Website Protection, Malware Removal, and Blacklist Prevention"
 [Sucuri-Blog]:          https://blog.sucuri.net/ "Sucuri Blog"
@@ -305,4 +310,5 @@ and conclude the followings for developing WordPress plugins and themes
 [XSS-PowerPress]:       https://wpvulndb.com/vulnerabilities/7773 "Blubrry PowerPress &lt;= 6.0 - Cross-Site Scripting (XSS)"
 [Data-Validation]:      http://codex.wordpress.org/Data_Validation "Data Validation « WordPress Codex"
 [Sanitizing-Escaping]:  http://codex.wordpress.org/Validating_Sanitizing_and_Escaping_User_Data "Validating Sanitizing and Escaping User Data « WordPress Codex"
+[James-Golovich]:       http://www.pritect.net/blog/wp-ultimate-csv-importer-3-7-1-critical-vulnerability "wp ultimate csv importer"
 [IP-Geo-Block]:         https://wordpress.org/plugins/ip-geo-block/ "WordPress &#8250; IP Geo Block « WordPress Plugins"
