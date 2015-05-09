@@ -2,10 +2,10 @@
 require_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
+/* wp-content/(plugins|themes) */
 function ip_geo_block_content_dir( $path ) {
-	$path = explode( '/', $path );
-	$path = array( array_pop( $path ), array_pop( $path ) );
-	return "$path[1]/$path[0]";
+	@preg_match( '/^.*\/(.*?\/.*?)$/', $path, $matches );
+	return $matches[1];
 }
 
 function ip_geo_block_tab_settings( $context ) {
