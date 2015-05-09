@@ -563,21 +563,16 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function retrieve_nonce( $key ) {
-		if ( isset( $_REQUEST[ $key ] ) ) {
+		if ( isset( $_REQUEST[ $key ] ) )
 			return sanitize_text_field( $_REQUEST[ $key ] );
-		}
 
-		else if ( isset( $_REQUEST['_wp_http_referer'] ) ) {
-			if ( @preg_match( "/$key=([\w]+)/", $_REQUEST['_wp_http_referer'], $matches ) ) {
+		else if ( isset( $_REQUEST['_wp_http_referer'] ) )
+			if ( @preg_match( "/$key=([\w]+)/", $_REQUEST['_wp_http_referer'], $matches ) )
 				return sanitize_text_field( $matches[1] );
-			}
-		}
 
-		else if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-			if ( @preg_match( "/$key=([\w]+)/", $_SERVER['HTTP_REFERER'], $matches ) ) {
+		else if ( isset( $_SERVER['HTTP_REFERER'] ) )
+			if ( @preg_match( "/$key=([\w]+)/", $_SERVER['HTTP_REFERER'], $matches ) )
 				return sanitize_text_field( $matches[1] );
-			}
-		}
 
 		return NULL;
 	}
@@ -591,9 +586,8 @@ class IP_Geo_Block {
 
 		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) ) {
 			if ( $this->logged_in ) {
-				// redirect if there's a nonce in referer
-				// to handle with javascript location object.
-				wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ) );
+				// redirect to handle with js location object.
+				wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
 				exit;
 			}
 		}
