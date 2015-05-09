@@ -2,8 +2,8 @@
 title: IP Geo Block
 description: A WordPress plugin that will blocks any comment, pingback and 
  trackback spams posted from outside your nation.
- And it will also protect against malicious  access to the login form, admin 
- area and XML-RPC from undesired countries.
+ And it will also protect against malicious access to the login form, admin 
+ area and XML-RPC from undesired countries with zero-day exploit prevention.
 
 author: tokkonopapa
 email: tokkonopapa@yahoo.com
@@ -32,7 +32,7 @@ markdown: redcarpet # kramdown
 #   options: ["startinline"]
 redcarpet:
   extensions: [
-#   "no_intra_emphasis",            # not apply em to foo_bar_baz
+    "no_intra_emphasis",            # not apply em to foo_bar_baz
     "tables",                       # enable tables
     "fenced_code_blocks",           # enable ```
     "autolink",                     # enable auto link

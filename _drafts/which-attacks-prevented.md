@@ -103,7 +103,7 @@ Well then, let's take a look at the results:
       </tr>
     </thead>
     <tbody>
-      <tr><!-- 1. /wp-content/plugins/wp-business-intelligence-lite/view.php?t=... | wp-load.php -->
+      <tr><!-- 1. /wp-content/plugins/wp-business-intelligence-lite/view.php?t=... | wp-load.php | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7879" title="WP Business Intelligence Lite &lt;= 1.6.1 - SQL Injection">WP Business Intelligence Lite</a></td>
         <td>&lt;= 1.6.1</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
@@ -143,7 +143,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 6. /wp-content/plugins/wpshop/includes/ajax.php?elementCode=ajaxUpload... | wp-load.php -->
+      <tr><!-- 6. /wp-content/plugins/wpshop/includes/ajax.php?elementCode=ajaxUpload... | wp-load.php | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7830" title="Wpshop - eCommerce &lt;= 1.3.9.5 - Arbitrary File Upload">WPshop - eCommerce</a></td>
         <td>&lt;= 1.3.9.5</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
@@ -311,7 +311,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 27. /wp-content/plugins/wp-ultimate-csv-importer/modules/export/templates/export.php | wp-load.php -->
+      <tr><!-- 27. /wp-content/plugins/wp-ultimate-csv-importer/modules/export/templates/export.php | wp-load.php | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7778" title="WP Ultimate CSV Importer &lt;= 3.6.74 - Database Table Export">WP Ultimate CSV Importer</a></td>
         <td>&lt;= 3.6.74</td>
         <td><abbr title="Authentication Bypass">AB</abbr></td>
@@ -319,7 +319,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 28. /wp-content/plugins/wp-ultimate-csv-importer/templates/readfile.php?file_name=... | wp-load.php -->
+      <tr><!-- 28. /wp-content/plugins/wp-ultimate-csv-importer/templates/readfile.php?file_name=... | wp-load.php | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7949" title="WP Ultimate CSV Importer &lt;= 3.7.1 - Directory Traversal">WP Ultimate CSV Importer</a></td>
         <td>&lt;= 3.7.1</td>
         <td><abbr title="Directory Traversal">DT</abbr></td>
@@ -359,7 +359,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 33. /wp-content/plugins/ultimate-member/core/lib/upload/um-file-upload.php... | wp-load.php -->
+      <tr><!-- 33. /wp-content/plugins/ultimate-member/core/lib/upload/um-file-upload.php... | wp-load.php | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7850" title="Ultimate Member &lt;= 1.0.78 - Multiple Vulnerabilities">Ultimate Member</a></td>
         <td>&lt;= 1.0.78</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
@@ -407,7 +407,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 39. /wp-content/plugins/simple-ads-manager/sam-ajax-admin.php... | wp-load.php -->
+      <tr><!-- 39. /wp-content/plugins/simple-ads-manager/sam-ajax-admin.php... | wp-load.php | 2 for admin, 1 for anonymous -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7882" title="Simple Ads Manager &lt;= 2.5.94 - Arbitrary File Upload & SQL Injection">Simple Ads Manager</a></td>
         <td>&lt;= 2.5.94</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr>, <abbr title="SQL Injection">SQLI</abbr></td>
@@ -535,12 +535,15 @@ While such authors have their own reasons (for example they prefer to reuse
 their own great resources), that does not mean to excuse of ignoring the 
 WordPress programming paradigm, that is [event-driven model][Tom-McFarlin].
 
-So, a direct assess to the `/wp-content/plugins/` and `/wp-content/themes/` 
-from outside the site should be blocked to prevent various vulnerability.
+If such a direct assess to the PHP file in `/wp-content/plugins/` and 
+`/wp-content/themes/` from outside the site should be blocked to prevent 
+various vulnerability.
 
-And fortunately, some of these files include `wp-load.php` to bootstrap WP, 
-which cases are indicated as "PD*" and those have a chance to be validated by 
-WP-ZEP.
+And fortunately for me, some of these files include `wp-load.php` to kick WP, 
+which cases are indicated as "PD*". It means that WP-ZEP have a chance to 
+validate these. Moreover, almost all the above listed "PD*" (besides 
+[this][SimpleAdsMan]) are related to admin. So I decided to make WP-ZEP 
+prevent these direct access.
 
 #### Front End ####
 
@@ -568,7 +571,7 @@ Is it still too low? -- Yes it is.
 
 So I'd like to challenge to make WP-ZEP have an ability to prevent the "Plugin 
 Direct" vulnerability, which means the successful probability of preventing is 
-about 80%.
+about 80% !!
 <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2693.png "anchor")
 </span>
@@ -579,4 +582,5 @@ about 80%.
 [Packet-Storm]: http://packetstormsecurity.com/ "Packet Storm"
 [Tom-McFarlin]: https://tommcfarlin.com/wordpress-and-mvc/ "WordPress and MVC (Gloves Aren't Made for Feet) | Tom McFarlin"
 [MainWP-Child]: https://blog.sucuri.net/2015/03/security-advisory-mainwp-child-wordpress-plugin.html "Security Advisory: MainWP-Child WordPress Plugin | Sucuri Blog"
+[SimpleAdsMan]: http://packetstormsecurity.com/files/131280/ "WordPress Simple Ads Manager 2.5.94 / 2.5.96 SQL Injection ≈ Packet Storm"
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"

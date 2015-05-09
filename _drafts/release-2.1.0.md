@@ -1,19 +1,19 @@
 ---
 layout: post
-title:  "2.1.0 Release Notes"
+title:  "2.1.0 Release Note"
 date:   2015-05-02 00:00:00
 categories: changelog
 published: true
 ---
 
-In this release, the ability of WP-ZEP have been greatly improved. In the 
-previous version, the successful probability of preventing zero-day attack 
-was estimated about 26%. But now it's 60%.
+In this release, the ability of WP-ZEP have been greatly improved. Previously, 
+the successful probability of preventing zero-day attack was estimated about 
+26%. But now it's 60%.
 
-The background of these numbers, please refer to 
+About the background of these numbers, please refer to 
 [this article][investigation].
 
-In this release note, I'll explain about the functionarity of 2.1.0.
+In this note, I'll explain about the functionarity of 2.1.0.
 
 <!--more-->
 
@@ -22,11 +22,11 @@ In this release note, I'll explain about the functionarity of 2.1.0.
 In 2.0.8 or less, the prevention target of WP-ZEP was as follows:
 
 * `wp-admin/admin-ajax.php` and `wp-admin/admin-post.php` with `action`
-* `wp-admin/*.php` (prevent only from the prohibited countries)
+* `wp-admin/admin.php` with `action`
 
 In 2.1.0, the followings are added:
 
-* `wp-admin/*.php` with `page` (prevent even from the permitted countries)
+* `wp-admin/*.php` with `page`
 * `wp-content/plugins/name-of-plugin/…/*.php`
 * `wp-content/themes/name-of-theme/…/*.php`
 
@@ -40,7 +40,7 @@ add_filter( 'ip-geo-block-admin-pages', 'my_admin_pages' );
 add_filter( 'ip-geo-block-wp-content', 'my_wp_content' );
 
 function my_admin_pages( $names ) {
-    // ex) wp-admin/upload.php?page=name-of-page
+    // ex) wp-admin/tools.php?page=name-of-page
     return $names + array( 'name-of-page' );
 }
 
