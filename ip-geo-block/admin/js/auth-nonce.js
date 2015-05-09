@@ -2,6 +2,7 @@
  * WP-ZEP - Zero-day exploit Prevention for wp-admin
  *
  */
+/* utility object */
 var IP_GEO_BLOCK_ZEP = {
 	auth: 'ip-geo-block-auth-nonce',
 	nonce: IP_GEO_BLOCK_AUTH.nonce || '',
