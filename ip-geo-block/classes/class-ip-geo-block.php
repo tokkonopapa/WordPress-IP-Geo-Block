@@ -553,7 +553,7 @@ class IP_Geo_Block {
 		// Check a number of authentication fails
 		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
 		if ( $cache && $cache['fail'] >= $settings['login_fails'] )
-			$validate += array( 'result' => 'blocked' ); // can not overwrite
+			$validate['result'] = 'blocked';
 
 		return $validate;
 	}
