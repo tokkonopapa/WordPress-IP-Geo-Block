@@ -37,10 +37,10 @@ class IP_Geo_Block {
 		'settings'   => 'ip_geo_block_settings',
 		'statistics' => 'ip_geo_block_statistics',
 	);
-	// content uri
-	public static $content_uri = array(
-		'plugins' => 'wp-content/plugins',
-		'themes'  => 'wp-content/themes',
+	// content folders
+	public static $content_dir = array(
+		'plugins' => 'wp-content/plugins/',
+		'themes'  => 'wp-content/themes/',
 	);
 
 	// private values
@@ -56,12 +56,6 @@ class IP_Geo_Block {
 		$settings = self::get_option( 'settings' );
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 )
 			$settings = self::activate();
-
-		// get content uri (w/o trailing slash)
-		if ( @preg_match( '/^.*\/(.*?\/.*?)$/', plugins_url(), $pos ) )
-			self::$content_uri['plugins'] = $pos[1];
-		if ( @preg_match( '/^.*\/(.*?\/.*?)$/', get_theme_root_uri(), $pos ) )
-			self::$content_uri['themes' ] = $pos[1];
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] && ! has_action( self::CRON_NAME ) )
@@ -91,9 +85,19 @@ class IP_Geo_Block {
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
 		}
 
-		// wp-content/(plugins|themes)/*.php with including wp-load.php
-		if ( ( $settings['validation']['plugins'] && strpos( $_SERVER['REQUEST_URI'], self::$content_uri['plugins'] . '/' ) === 0 ) ||
-		     ( $settings['validation']['themes' ] && strpos( $_SERVER['REQUEST_URI'], self::$content_uri['themes' ] . '/' ) === 0 ) )
+		// get content folders (with trailing slash)
+		$plugins = parse_url( plugins_url(), PHP_URL_PATH );
+		$themes  = parse_url( get_theme_root_uri(), PHP_URL_PATH );
+
+		if ( @preg_match( '/^.*\/(.*?\/.*?)$', $plugins, $pos ) )
+			self::$content_dir['plugins'] = "$pos[1]/";
+
+		if ( @preg_match( '/^.*\/(.*?\/.*?)$', $themes,  $pos ) )
+			self::$content_dir['themes' ] = "$pos[1]/";
+
+		// wp-content/(plugins|themes)/.../*.php
+		if ( ( $settings['validation']['plugins'] && strpos( $_SERVER['REQUEST_URI'], "$plugins/" ) === 0 ) ||
+		     ( $settings['validation']['themes' ] && strpos( $_SERVER['REQUEST_URI'], "$themes/"  ) === 0 ) )
 			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
@@ -116,8 +120,8 @@ class IP_Geo_Block {
 		wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH',
 			array(
 				'nonce'   => wp_create_nonce( $handle ),
-				'plugins' => self::$content_uri['plugins'],
-				'themes'  => self::$content_uri['themes' ],
+				'plugins' => self::$content_dir['plugins'],
+				'themes'  => self::$content_dir['themes' ],
 			)
 		);
 	}

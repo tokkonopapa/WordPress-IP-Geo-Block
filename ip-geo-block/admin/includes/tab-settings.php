@@ -161,10 +161,10 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	$key = 'plugins';
-	$val = IP_Geo_Block::$content_uri['plugins'];
+	$val = IP_Geo_Block::$content_dir['plugins'];
 	add_settings_field(
 		$option_name . "_${field}_${key}",
-		sprintf( $desc[0], "$val/&hellip;/*.php", __( 'Plugins area', IP_Geo_Block::TEXT_DOMAIN ) ),
+		sprintf( $desc[0], "$val&hellip;/*.php", __( 'Plugins area', IP_Geo_Block::TEXT_DOMAIN ) ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -175,15 +175,15 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $title,
-			'after' => $desc[2] . sprintf( $desc[1], "$val/&hellip;/*.php" ) . '</div>',
+			'after' => $desc[2] . sprintf( $desc[1], "$val&hellip;/*.php" ) . '</div>',
 		)
 	);
 
 	$key = 'themes';
-	$val = IP_Geo_Block::$content_uri['themes'];
+	$val = IP_Geo_Block::$content_dir['themes'];
 	add_settings_field(
 		$option_name . "_${field}_${key}",
-		sprintf( $desc[0], "$val/&hellip;/*.php", __( 'Themes area', IP_Geo_Block::TEXT_DOMAIN ) ),
+		sprintf( $desc[0], "$val&hellip;/*.php", __( 'Themes area', IP_Geo_Block::TEXT_DOMAIN ) ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -194,7 +194,7 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $title,
-			'after' => $desc[2] . sprintf( $desc[1], "$val/&hellip;/*.php" ) . '</div>',
+			'after' => $desc[2] . sprintf( $desc[1], "$val&hellip;/*.php" ) . '</div>',
 		)
 	);
 
