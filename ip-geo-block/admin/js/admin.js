@@ -221,11 +221,11 @@ var ip_geo_block_start = new Date();
 
 	// Show/Hide description of WP-ZEP
 	function show_description(select) {
-		var id = '#' + select.id + '_desc';
-		if (2 <= $(select).val()) {
-			$(id).show();
+		var desc = '.ip_geo_block_settings_validation_desc';
+		if (2 <= (select = $(select)).val()) {
+			select.next(desc).show();
 		} else {
-			$(id).hide();
+			select.next(desc).hide();
 		}
 	}
 

@@ -43,15 +43,19 @@ var IP_GEO_BLOCK_ZEP = {
 	function is_admin(url, query) {
 		var uri = parse_uri(url ? url.toString().toLowerCase() : ''),
 		    // directory traversal should be checked more strictly ?
-		    path = uri.path.replace('/\./g', '').charAt(0) === '/' ? uri.path : location.pathname;
+		    path = (uri.path.replace('/\./g', '').charAt(0) === '/' ? uri.path : location.pathname);
 
 		// explicit scheme and external domain
 		if (/https?/.test(uri.scheme) && uri.authority !== location.host.toLowerCase()) {
 			return -1; // -1: external
 		}
 
-		// 1: target, 0: other (possibly scheme is `javascript` or path is `;`)
-		return (uri.scheme || uri.path || uri.query) && path.indexOf('/wp-admin/') >= 0 ? 1 : 0;
+		var regexp = new RegExp(
+			'/(?:wp-admin|' + IP_GEO_BLOCK_AUTH.plugins + '|' + IP_GEO_BLOCK_AUTH.themes + ')/'
+		);
+
+		// possibly scheme is `javascript` or path is `;`
+		return (uri.scheme || uri.path || uri.query) && path.match(regexp) ? 1: 0;
 	}
 
 	function query_args(uri, args) {

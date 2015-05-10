@@ -2,12 +2,6 @@
 require_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
-/* wp-content/(plugins|themes) */
-function ip_geo_block_content_dir( $path ) {
-	@preg_match( '/^.*\/(.*?\/.*?)$/', $path, $matches );
-	return $matches[1];
-}
-
 function ip_geo_block_tab_settings( $context ) {
 	$option_slug = $context->option_slug['settings'];
 	$option_name = $context->option_name['settings'];
@@ -127,7 +121,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$desc = array(
 		__( '<dfn title="Validate access to %s">%s</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		__( 'It will block a malicious request to <code>%s</code> besides the country code. Because this is an experimental feature, please open a new issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with it.', IP_Geo_Block::TEXT_DOMAIN ),
-		'<div style="display:none" id="ip_geo_block_settings_validation_',
+		'<div style="display:none" class="ip_geo_block_settings_validation_desc">',
 	);
 
 	$key = 'admin';
@@ -144,7 +138,7 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $title,
-			'after' => $desc[2] . 'admin_desc">' . sprintf( $desc[1], 'wp-admin/*.php' ) . '</div>',
+			'after' => $desc[2] . sprintf( $desc[1], 'wp-admin/*.php' ) . '</div>',
 		)
 	);
 
@@ -162,12 +156,12 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $title,
-			'after' => $desc[2] . 'ajax_desc">' . sprintf( $desc[1], 'wp-admin/admin-(ajax|post).php' ) . '</div>',
+			'after' => $desc[2] . sprintf( $desc[1], 'wp-admin/admin-(ajax|post).php' ) . '</div>',
 		)
 	);
 
 	$key = 'plugins';
-	$val = ip_geo_block_content_dir( plugins_url() );
+	$val = IP_Geo_Block::$content_uri['plugins'];
 	add_settings_field(
 		$option_name . "_${field}_${key}",
 		sprintf( $desc[0], "$val/&hellip;/*.php", __( 'Plugins area', IP_Geo_Block::TEXT_DOMAIN ) ),
@@ -181,12 +175,12 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $title,
-			'after' => $desc[2] . 'plugins_desc">' . sprintf( $desc[1], "$val/&hellip;/*.php" ) . '</div>',
+			'after' => $desc[2] . sprintf( $desc[1], "$val/&hellip;/*.php" ) . '</div>',
 		)
 	);
 
 	$key = 'themes';
-	$val = ip_geo_block_content_dir( get_theme_root_uri() );
+	$val = IP_Geo_Block::$content_uri['themes'];
 	add_settings_field(
 		$option_name . "_${field}_${key}",
 		sprintf( $desc[0], "$val/&hellip;/*.php", __( 'Themes area', IP_Geo_Block::TEXT_DOMAIN ) ),
@@ -200,7 +194,7 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $title,
-			'after' => $desc[2] . 'themes_desc">' . sprintf( $desc[1], "$val/&hellip;/*.php" ) . '</div>',
+			'after' => $desc[2] . sprintf( $desc[1], "$val/&hellip;/*.php" ) . '</div>',
 		)
 	);
 

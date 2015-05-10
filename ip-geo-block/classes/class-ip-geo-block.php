@@ -37,6 +37,11 @@ class IP_Geo_Block {
 		'settings'   => 'ip_geo_block_settings',
 		'statistics' => 'ip_geo_block_statistics',
 	);
+	// content uri
+	public static $content_uri = array(
+		'plugins' => 'wp-content/plugins',
+		'themes'  => 'wp-content/themes',
+	);
 
 	// private values
 	private $logged_in = FALSE;
@@ -51,6 +56,12 @@ class IP_Geo_Block {
 		$settings = self::get_option( 'settings' );
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 )
 			$settings = self::activate();
+
+		// get content uri (w/o trailing slash)
+		if ( @preg_match( '/^.*\/(.*?\/.*?)$/', plugins_url(), $pos ) )
+			self::$content_uri['plugins'] = $pos[1];
+		if ( @preg_match( '/^.*\/(.*?\/.*?)$/', get_theme_root_uri(), $pos ) )
+			self::$content_uri['themes' ] = $pos[1];
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] && ! has_action( self::CRON_NAME ) )
@@ -80,15 +91,15 @@ class IP_Geo_Block {
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
 		}
 
-		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
-		if ( ( $settings['validation']['admin'] || 
-		       $settings['validation']['ajax' ] ) && is_admin() )
-			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
-
 		// wp-content/(plugins|themes)/*.php with including wp-load.php
-		if ( ( $settings['validation']['plugins'] && strpos( $_SERVER['REQUEST_URI'], parse_url( plugins_url(), PHP_URL_PATH ) ) === 0 ) ||
-		     ( $settings['validation']['themes' ] && strpos( $_SERVER['REQUEST_URI'], parse_url( get_theme_root_uri(), PHP_URL_PATH ) ) === 0 ) )
+		if ( ( $settings['validation']['plugins'] && strpos( $_SERVER['REQUEST_URI'], self::$content_uri['plugins'] . '/' ) === 0 ) ||
+		     ( $settings['validation']['themes' ] && strpos( $_SERVER['REQUEST_URI'], self::$content_uri['themes' ] . '/' ) === 0 ) )
 			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
+
+		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
+		else if ( ( $settings['validation']['admin'] || 
+		            $settings['validation']['ajax' ] ) && is_admin() )
+			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
 
 		// Load authenticated nonce
 		if ( $this->logged_in = is_user_logged_in() )
@@ -103,7 +114,11 @@ class IP_Geo_Block {
 		);
 
 		wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH',
-			array( 'nonce' => wp_create_nonce( $handle ) )
+			array(
+				'nonce'   => wp_create_nonce( $handle ),
+				'plugins' => self::$content_uri['plugins'],
+				'themes'  => self::$content_uri['themes' ],
+			)
 		);
 	}
 
@@ -462,11 +477,16 @@ class IP_Geo_Block {
 			if ( empty( $matches[2] ) || ! in_array( $matches[2], $list ) ) {
 				// register to check nonce
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+//				add_action( self::PLUGIN_SLUG . '-direct', array( $this, 'exec_direct' ), 10, 1 );
 			}
 		}
 
 		// Validate country by IP
 		$this->validate_ip( 'admin', $settings );
+
+		// Execute requested uri via admin.php (need .htaccess in plugins/themes)
+//		if ( is_admin() )
+//			do_action( self::PLUGIN_SLUG . '-direct', $settings );
 	}
 
 	public function validate_admin() {
@@ -559,40 +579,9 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Retrieve nonce
-	 *
-	 */
-	public static function retrieve_nonce( $key ) {
-		if ( isset( $_REQUEST[ $key ] ) )
-			return sanitize_text_field( $_REQUEST[ $key ] );
-
-		else if ( isset( $_REQUEST['_wp_http_referer'] ) )
-			if ( @preg_match( "/$key=([\w]+)/", $_REQUEST['_wp_http_referer'], $matches ) )
-				return sanitize_text_field( $matches[1] );
-
-		else if ( isset( $_SERVER['HTTP_REFERER'] ) )
-			if ( @preg_match( "/$key=([\w]+)/", $_SERVER['HTTP_REFERER'], $matches ) )
-				return sanitize_text_field( $matches[1] );
-
-		return NULL;
-	}
-
-	/**
 	 * Validate nonce
 	 *
 	 */
-	private function trace_nonce() {
-		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
-
-		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) ) {
-			if ( $this->logged_in ) {
-				// redirect to handle with js location object.
-				wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
-				exit;
-			}
-		}
-	}
-
 	public function check_nonce( $validate, $settings ) {
 		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
 		$value = self::retrieve_nonce( $nonce );
@@ -603,6 +592,51 @@ class IP_Geo_Block {
 		}
 
 		return $validate;
+	}
+
+	private function trace_nonce() {
+		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
+
+		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) ) {
+			if ( $this->logged_in ) {
+				// redirect to handle with javascript location object.
+				wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
+				exit;
+			}
+		}
+	}
+
+	public static function retrieve_nonce( $key ) {
+		if ( isset( $_REQUEST[ $key ] ) )
+			return sanitize_text_field( $_REQUEST[ $key ] );
+
+		if ( isset( $_REQUEST['_wp_http_referer'] ) )
+			if ( @preg_match( "/$key=([\w]+)/", $_REQUEST['_wp_http_referer'], $matches ) )
+				return sanitize_text_field( $matches[1] );
+
+		if ( isset( $_SERVER['HTTP_REFERER'] ) )
+			if ( @preg_match( "/$key=([\w]+)/", $_SERVER['HTTP_REFERER'], $matches ) )
+				return sanitize_text_field( $matches[1] );
+
+		return NULL;
+	}
+
+	/**
+	 * Execute requested URI (still under construction)
+	 * @note: take care of path traversal and null byte attack
+	 */
+	public function exec_direct( $settings ) {
+		$path = $_SERVER['DOCUMENT_ROOT'] . $_SERVER['REQUEST_URI'];
+		if ( isset( $_SERVER['QUERY_STRING'] ) )
+			$path = str_replace( "?{$_SERVER['QUERY_STRING']}", '', $path );
+
+		if ( ! is_file( $path ) || strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ) !== 'php' )
+			$this->send_response( $settings['response_code'] );
+
+		else if ( @chdir( dirname( $path ) ) )
+			@include $path;
+
+		exit;
 	}
 
 	/**
