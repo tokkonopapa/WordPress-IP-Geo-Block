@@ -37,6 +37,7 @@ class IP_Geo_Block {
 		'settings'   => 'ip_geo_block_settings',
 		'statistics' => 'ip_geo_block_statistics',
 	);
+
 	// content folders
 	public static $content_dir = array(
 		'plugins' => 'wp-content/plugins/',
@@ -471,9 +472,12 @@ class IP_Geo_Block {
 		$settings = self::get_option( 'settings' );
 
 		// retrieve name of the plugin/theme
-		if ( @preg_match( '/\/(plugins|themes)\/(.*?)\//', $_SERVER['REQUEST_URI'], $matches ) &&
-		     $settings['validation'][ $matches[1] ] >= 2 ) {
+		if ( FAIL !== strpos( $_SERVER['REQUEST_URI'], self::$content_dir['plugins'] ) )
+			$type = 'plugins';
+		else if ( FAIL !== strpos( $_SERVER['REQUEST_URI'], self::$content_dir['themes'] ) )
+			$type = 'themes';
 
+		if ( isset( $type ) && $settings['validation'][ $matches[1] ] >= 2 ) {
 			// exclude certain plugin/theme
 			$list = apply_filters( self::PLUGIN_SLUG . '-wp-content', array(
 			) );
@@ -481,16 +485,16 @@ class IP_Geo_Block {
 			if ( empty( $matches[2] ) || ! in_array( $matches[2], $list ) ) {
 				// register to check nonce
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
-//				add_action( self::PLUGIN_SLUG . '-direct', array( $this, 'exec_direct' ), 10, 1 );
+				add_action( self::PLUGIN_SLUG . '-direct', array( $this, 'exec_direct' ), 10, 1 );
 			}
 		}
 
 		// Validate country by IP
 		$this->validate_ip( 'admin', $settings );
 
-		// Execute requested uri via admin.php (need .htaccess in plugins/themes)
-//		if ( is_admin() )
-//			do_action( self::PLUGIN_SLUG . '-direct', $settings );
+		// Execute requested uri with a rewrite rule in plugins/themes
+		if ( defined( 'IP_GEO_BLOCK_DIRECT' ) )
+			do_action( self::PLUGIN_SLUG . '-direct', $settings );
 	}
 
 	public function validate_admin() {
