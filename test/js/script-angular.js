@@ -95,6 +95,10 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			key: ['_wpnonce',   'action',   'file'            ],
 			val: ['12345abcde', 'download', '../wp-config.php']
 		},
+		wp_content: {
+			path:   'wp-content/plugins/ip-geo-block/test/rewrite-test.php',
+			query:  'wp-load=true',
+		},
 		pingback: {
 			xml:
 "<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -174,6 +178,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		admin_ajax_get: true,
 		admin_ajax_post: true,
 		admin_post: true,
+		wp_content: true,
 		pingback: true,
 		xmlrpc: true,
 		xmlrpc_demo: true
@@ -378,6 +383,13 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	
 			if ($scope.checkbox.admin_post)
 				post_form(url + 'post.php', form, proxy, 'POST', 'Admin Post');
+		}
+
+		// Plugins / Themes
+		if ($scope.checkbox.wp_content) {
+			var url = home + $scope.form.wp_content.path;
+			var form = $scope.form.wp_content.query;
+			post_form(url, form, proxy, 'GET', 'Plugins / Themes (GET)');
 		}
 	};
 

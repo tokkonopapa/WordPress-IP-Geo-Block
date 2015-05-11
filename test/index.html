@@ -297,6 +297,29 @@
 			</p>
 		</form>
 	</div>
+
+	<!-- Plugins / Themes -->
+	<div class="setting">
+		<h3 class="collapse" ng-bind="lang.wp_content" ng-click="toggle('wp_content')"></h3>
+		<input type="checkbox" ng-model="checkbox.wp_content" />
+		<form class="post-form animate-show-hide" ng-show="show.wp_content">
+			<!-- target -->
+			<p>
+				<label>
+					<span ng-bind="lang.target"></span>
+					<span class="required">*</span>
+				</label>
+				<ul class="clearfix">
+					<li>
+						<input type="text" name="path" ng-model="form.wp_content.path" />
+					</li>
+					<li>
+						<input type="text" name="query" ng-model="form.wp_content.query" />
+					</li>
+				</ul>
+			</p>
+		</form>
+	</div>
 </div>
 
 <!-- POST Access -->
