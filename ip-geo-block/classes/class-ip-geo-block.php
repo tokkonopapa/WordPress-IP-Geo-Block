@@ -32,13 +32,12 @@ class IP_Geo_Block {
 	 */
 	protected static $instance = null;
 
-	// option table accessor by name
+	// option table accessor by name and content folders
 	public static $option_keys = array(
 		'settings'   => 'ip_geo_block_settings',
 		'statistics' => 'ip_geo_block_statistics',
 	);
 
-	// content folders
 	public static $content_dir = array(
 		'plugins' => 'wp-content/plugins/',
 		'themes'  => 'wp-content/themes/',
@@ -472,12 +471,9 @@ class IP_Geo_Block {
 		$settings = self::get_option( 'settings' );
 
 		// retrieve name of the plugin/theme
-		if ( FAIL !== strpos( $_SERVER['REQUEST_URI'], self::$content_dir['plugins'] ) )
-			$type = 'plugins';
-		else if ( FAIL !== strpos( $_SERVER['REQUEST_URI'], self::$content_dir['themes'] ) )
-			$type = 'themes';
+		if ( @preg_match( '/\/(' . self::$content_dir['plugins'] . '|' . self::$content_dir['themes'] . ')\/(.*?)\//', $_SERVER['REQUEST_URI'], $matches ) &&
+		     $settings['validation'][ $matches[1] === self::$content_dir['plugins'] ? 'plugins' : 'themes' ] >= 2 ) {
 
-		if ( isset( $type ) && $settings['validation'][ $matches[1] ] >= 2 ) {
 			// exclude certain plugin/theme
 			$list = apply_filters( self::PLUGIN_SLUG . '-wp-content', array(
 			) );
