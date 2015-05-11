@@ -69,7 +69,7 @@ function ip_geo_block_download_zip( $url, $args, $filename, $modified ) {
 			'modified' => $modified,
 		);
 
-	else if ( 200 != $code )
+	elseif ( 200 != $code )
 		return array(
 			'code' => $code,
 			'message' => "$code $mssg",

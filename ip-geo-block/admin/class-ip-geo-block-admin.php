@@ -269,7 +269,7 @@ class IP_Geo_Block_Admin {
 	</form>
 <?php if ( 2 === $tab ) { ?>
 	<div id="ip-geo-block-map"></div>
-<?php } else if ( 3 === $tab ) { ?>
+<?php } elseif ( 3 === $tab ) { ?>
 	<p><?php echo __( 'Thanks for providing these great services for free.', IP_Geo_Block::TEXT_DOMAIN ); ?><br />
 	<?php echo __( '(Most browsers will redirect you to each site without referrer when you click the link.)', IP_Geo_Block::TEXT_DOMAIN ); ?></p>
 	<p>This product includes GeoLite data created by MaxMind, available from <a class="ip-geo-block-link" href="http://www.maxmind.com" rel=noreferrer target=_blank>http://www.maxmind.com</a>.<br />
@@ -443,7 +443,7 @@ class IP_Geo_Block_Admin {
 					}
 
 					// non-commercial
-					else if ( FALSE === $api ) {
+					elseif ( FALSE === $api ) {
 						if ( isset( $input[ $key ][ $provider ] ) )
 							$output['providers'][ $provider ] = '@';
 						else
@@ -491,7 +491,7 @@ class IP_Geo_Block_Admin {
 					}
 
 					// otherwise if implicit
-					else if ( isset( $input[ $key ] ) ) {
+					elseif ( isset( $input[ $key ] ) ) {
 						$output[ $key ] = is_int( $default[ $key ] ) ?
 							(int)$input[ $key ] :
 							sanitize_text_field( trim( $input[ $key ] ) );
@@ -506,12 +506,12 @@ class IP_Geo_Block_Admin {
 					}
 
 					// for checkbox
-					else if ( is_bool( $default[ $key ][ $sub ] ) ) {
+					elseif ( is_bool( $default[ $key ][ $sub ] ) ) {
 						$output[ $key ][ $sub ] = ! empty( $input[ $key ][ $sub ] );
 					}
 
 					// otherwise if implicit
-					else if ( isset( $input[ $key ][ $sub ] ) ) {
+					elseif ( isset( $input[ $key ][ $sub ] ) ) {
 						$output[ $key ][ $sub ] = is_int( $default[ $key ][ $sub ] ) ?
 							(int)$input[ $key ][ $sub ] :
 							sanitize_text_field(

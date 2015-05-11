@@ -101,8 +101,8 @@ class IP_Geo_Block {
 			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
-		else if ( ( $settings['validation']['admin'] || 
-		            $settings['validation']['ajax' ] ) && is_admin() )
+		elseif ( ( $settings['validation']['admin'] || 
+		           $settings['validation']['ajax' ] ) && is_admin() )
 			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
 
 		// Load authenticated nonce
@@ -294,7 +294,7 @@ class IP_Geo_Block {
 			$list = $settings['white_list'];
 			if ( ! $list || FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'passed' );
-			else if ( 'ZZ' !== $validate['code'] )
+			elseif ( 'ZZ' !== $validate['code'] )
 				return $validate + array( 'result' => 'blocked' );
 		}
 		else {
@@ -302,7 +302,7 @@ class IP_Geo_Block {
 			$list = $settings['black_list'];
 			if ( $list && FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'blocked' );
-			else if ( 'ZZ' !== $validate['code'] )
+			elseif ( 'ZZ' !== $validate['code'] )
 				return $validate + array( 'result' => 'passed' );
 		}
 
@@ -318,7 +318,7 @@ class IP_Geo_Block {
 
 		if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
 			$statistics['IPv4']++;
-		else if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
+		elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
 			$statistics['IPv6']++;
 
 		@$statistics[ $validate['result'] ]++;
@@ -467,32 +467,6 @@ class IP_Geo_Block {
 		return $something; // pass through
 	}
 
-	public function validate_direct() {
-		$settings = self::get_option( 'settings' );
-
-		// retrieve name of the plugin/theme
-		if ( @preg_match( '/\/(' . self::$content_dir['plugins'] . '|' . self::$content_dir['themes'] . ')\/(.*?)\//', $_SERVER['REQUEST_URI'], $matches ) &&
-		     $settings['validation'][ $matches[1] === self::$content_dir['plugins'] ? 'plugins' : 'themes' ] >= 2 ) {
-
-			// exclude certain plugin/theme
-			$list = apply_filters( self::PLUGIN_SLUG . '-wp-content', array(
-			) );
-
-			if ( empty( $matches[2] ) || ! in_array( $matches[2], $list ) ) {
-				// register to check nonce
-				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
-				add_action( self::PLUGIN_SLUG . '-direct', array( $this, 'exec_direct' ), 10, 1 );
-			}
-		}
-
-		// Validate country by IP
-		$this->validate_ip( 'admin', $settings );
-
-		// Execute requested uri with a rewrite rule in plugins/themes
-		if ( defined( 'IP_GEO_BLOCK_DIRECT' ) )
-			do_action( self::PLUGIN_SLUG . '-direct', $settings );
-	}
-
 	public function validate_admin() {
 		$settings = self::get_option( 'settings' );
 
@@ -539,6 +513,32 @@ class IP_Geo_Block {
 
 		// Validate country by IP
 		$this->validate_ip( 'admin', $settings );
+	}
+
+	public function validate_direct() {
+		$settings = self::get_option( 'settings' );
+
+		// retrieve name of the plugin/theme
+		if ( @preg_match( '/\/(' . self::$content_dir['plugins'] . '|' . self::$content_dir['themes'] . ')\/(.*?)\//', $_SERVER['REQUEST_URI'], $matches ) &&
+		     $settings['validation'][ $matches[1] === self::$content_dir['plugins'] ? 'plugins' : 'themes' ] >= 2 ) {
+
+			// exclude certain plugin/theme
+			$list = apply_filters( self::PLUGIN_SLUG . '-wp-content', array(
+			) );
+
+			if ( empty( $matches[2] ) || ! in_array( $matches[2], $list ) ) {
+				// register to check nonce
+				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+				add_action( self::PLUGIN_SLUG . '-direct', array( $this, 'exec_direct' ), 10, 1 );
+			}
+		}
+
+		// Validate country by IP
+		$this->validate_ip( 'admin', $settings );
+
+		// Execute requested uri with a rewrite rule in plugins/themes
+		if ( defined( 'IP_GEO_BLOCK_DIRECT' ) )
+			do_action( self::PLUGIN_SLUG . '-direct', $settings );
 	}
 
 	/**
@@ -637,7 +637,7 @@ class IP_Geo_Block {
 		if ( ! is_file( $path ) || strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ) !== 'php' )
 			$this->send_response( $settings['response_code'] );
 
-		else if ( @chdir( dirname( $path ) ) )
+		elseif ( @chdir( dirname( $path ) ) )
 			@include $path;
 
 		exit;

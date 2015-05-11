@@ -470,7 +470,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 			$file = IP_GEO_BLOCK_IP2LOC_IPV4;
 			$type = IP_GEO_BLOCK_API_TYPE_IPV4;
 		}
-		else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			$file = IP_GEO_BLOCK_IP2LOC_IPV4; // currently, support only one file
 			$type = IP_GEO_BLOCK_API_TYPE_IPV6;
 		}
@@ -537,7 +537,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 		// setup database file and function
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
 			$file = IP_GEO_BLOCK_MAXMIND_IPV4;
-		else if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
+		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
 			$file = IP_GEO_BLOCK_MAXMIND_IPV6;
 		else
 			return array( 'errorMessage' => 'illegal format' );

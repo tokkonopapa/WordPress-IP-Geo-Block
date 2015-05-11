@@ -82,7 +82,7 @@ class IP_Geo_Block_Logs {
 
 		if ( $time < 75 /* msec */ )
 			return (int)$options['validation']['maxlogs'];
-		else if ( $time < 150 /* msec */ )
+		elseif ( $time < 150 /* msec */ )
 			return (int)($options['validation']['maxlogs'] / 2);
 
 		return (int)($options['validation']['maxlogs'] / 5);
@@ -203,7 +203,7 @@ class IP_Geo_Block_Logs {
 	}
 
 	private static function get_http_headers() {
-		static $exclusions = array(
+		$exclusions = array(
 			'HTTP_ACCEPT' => TRUE,
 			'HTTP_ACCEPT_CHARSET' => TRUE,
 			'HTTP_ACCEPT_ENCODING' => TRUE,
