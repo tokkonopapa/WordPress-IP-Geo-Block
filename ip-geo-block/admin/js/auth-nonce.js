@@ -108,7 +108,7 @@ var IP_GEO_BLOCK_ZEP = {
 	$(function () {
 		var nonce = IP_GEO_BLOCK_ZEP.nonce;
 		if (nonce) {
-			$('a').on('click', function (event) {
+			$('body').on('click', 'a', function (event) {
 				var href = $(this).attr('href'), // String or undefined
 				    admin = is_admin(href, href);
 
@@ -134,7 +134,7 @@ var IP_GEO_BLOCK_ZEP = {
 				}
 			});
 
-			$('form').on('submit', function (event) {
+			$('body').on('submit', 'form', function (event) {
 				var $this = $(this);
 
 				// if admin area
