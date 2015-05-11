@@ -122,7 +122,7 @@ class IP_Geo_Block_Options {
 			// get country code from admin's IP address and set it into white list
 			$name = array( 'ipinfo.io', 'Telize', 'IP-Json' ); shuffle( $name );
 			$tmp = IP_Geo_Block::get_geolocation( NULL, $name, 'get_country' );
-			$default[ $key[0] ]['white_list'] = isset( $tmp['code'] ) ? $tmp['code'] : NULL;
+			$default[ $key[0] ]['white_list'] = 'ZZ' !== $tmp['code'] ? $tmp['code'] : NULL;
 
 			// update local goelocation database files
 			$default[ $key[0] ]['ip2location']['ipv4_path'] = $ip2;
