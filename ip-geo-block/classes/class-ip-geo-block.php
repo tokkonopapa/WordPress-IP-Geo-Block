@@ -32,12 +32,13 @@ class IP_Geo_Block {
 	 */
 	protected static $instance = null;
 
-	// option table accessor by name and content folders
+	// option table accessor by name
 	public static $option_keys = array(
 		'settings'   => 'ip_geo_block_settings',
 		'statistics' => 'ip_geo_block_statistics',
 	);
 
+	// default content folders
 	public static $content_dir = array(
 		'plugins' => 'wp-content/plugins/',
 		'themes'  => 'wp-content/themes/',
@@ -86,13 +87,13 @@ class IP_Geo_Block {
 		}
 
 		// get content folders (with trailing slash)
-		$plugins = parse_url( plugins_url(), PHP_URL_PATH );
-		$themes  = parse_url( get_theme_root_uri(), PHP_URL_PATH );
+		$plugins = parse_url( plugins_url(),        PHP_URL_PATH ); // w/o trailing slash @since 2.6.0
+		$themes  = parse_url( get_theme_root_uri(), PHP_URL_PATH ); // w/o trailing slash @since 1.5.0
 
-		if ( @preg_match( '/^.*\/(.*?\/.*?)$', $plugins, $pos ) )
+		if ( @preg_match( '/\/(.*?\/.*?)$', $plugins, $pos ) )
 			self::$content_dir['plugins'] = "$pos[1]/";
 
-		if ( @preg_match( '/^.*\/(.*?\/.*?)$', $themes,  $pos ) )
+		if ( @preg_match( '/\/(.*?\/.*?)$', $themes,  $pos ) )
 			self::$content_dir['themes' ] = "$pos[1]/";
 
 		// wp-content/(plugins|themes)/.../*.php
@@ -511,34 +512,43 @@ class IP_Geo_Block {
 			}
 		}
 
-		// Validate country by IP
+		// Validate country by IP address
 		$this->validate_ip( 'admin', $settings );
 	}
 
 	public function validate_direct() {
 		$settings = self::get_option( 'settings' );
 
-		// retrieve name of the plugin/theme
-		if ( @preg_match( '/\/(' . self::$content_dir['plugins'] . '|' . self::$content_dir['themes'] . ')\/(.*?)\//', $_SERVER['REQUEST_URI'], $matches ) &&
-		     $settings['validation'][ $matches[1] === self::$content_dir['plugins'] ? 'plugins' : 'themes' ] >= 2 ) {
+		// retrieve the name of the plugin/theme
+		$plugins = preg_quote( self::$content_dir['plugins'], '/' );
+		$themes  = preg_quote( self::$content_dir['themes' ], '/' );
 
+		if ( @preg_match( "/\/($plugins|$themes)(.*?)\//", $_SERVER['REQUEST_URI'], $matches ) ) {
 			// exclude certain plugin/theme
 			$list = apply_filters( self::PLUGIN_SLUG . '-wp-content', array(
 			) );
 
 			if ( empty( $matches[2] ) || ! in_array( $matches[2], $list ) ) {
+				$type = $matches[1] === self::$content_dir['plugins'] ? 'plugins' : 'themes';
+
+				// register exec direct
+				if ( $settings['validation'][ $type ] >= 1 ) {
+					add_filter( self::PLUGIN_SLUG . '-exec', array( $this, 'exec_direct' ), 10, 2 );
+				}
+
 				// register to check nonce
-				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
-				add_action( self::PLUGIN_SLUG . '-direct', array( $this, 'exec_direct' ), 10, 1 );
+				if ( $settings['validation'][ $type ] >= 2 ) {
+					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+				}
 			}
 		}
 
-		// Validate country by IP
+		// Validate country by IP address
 		$this->validate_ip( 'admin', $settings );
 
 		// Execute requested uri with a rewrite rule in plugins/themes
-		if ( defined( 'IP_GEO_BLOCK_DIRECT' ) )
-			do_action( self::PLUGIN_SLUG . '-direct', $settings );
+		if ( is_admin() )
+			do_action( self::PLUGIN_SLUG . '-exec', $settings );
 	}
 
 	/**
@@ -637,8 +647,8 @@ class IP_Geo_Block {
 		if ( ! is_file( $path ) || strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ) !== 'php' )
 			$this->send_response( $settings['response_code'] );
 
-		elseif ( @chdir( dirname( $path ) ) )
-			@include $path;
+		elseif ( chdir( dirname( $path ) ) )
+			include $path;
 
 		exit;
 	}
