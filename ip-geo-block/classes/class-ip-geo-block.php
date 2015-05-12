@@ -53,8 +53,10 @@ class IP_Geo_Block {
 	 * 
 	 */
 	private function __construct() {
-		// check the package version and upgrade if needed
 		$settings = self::get_option( 'settings' );
+		$validate = $settings['validation'];
+
+		// check the package version and upgrade if needed
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 )
 			$settings = self::activate();
 
@@ -62,7 +64,7 @@ class IP_Geo_Block {
 		if ( $settings['update']['auto'] && ! has_action( self::CRON_NAME ) )
 			add_action( self::CRON_NAME, array( 'IP_Geo_Block', 'download_database' ) );
 
-		if ( $settings['validation']['comment'] ) {
+		if ( $validate['comment'] ) {
 			// message text on comment form
 			if ( $settings['comment']['pos'] ) {
 				$pos = 'comment_form' . ( $settings['comment']['pos'] == 1 ? '_top' : '' );
@@ -75,20 +77,20 @@ class IP_Geo_Block {
 		}
 
 		// xmlrpc.php @since 3.1.0, wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
-		if ( $settings['validation']['xmlrpc'] ) {
+		if ( $validate['xmlrpc'] ) {
 			add_filter( 'wp_xmlrpc_server_class', array( $this, 'validate_xmlrpc' ) );
 			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ) );
 		}
 
 		// wp-login.php @since 2.1.0, wp-includes/pluggable.php @since 2.5.0
-		if ( $settings['validation']['login'] ) {
+		if ( $validate['login'] ) {
 			add_action( 'login_init', array( $this, 'validate_login' ) );
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
 		}
 
 		// get content folders (with trailing slash)
-		$plugins = parse_url( plugins_url(),        PHP_URL_PATH ); // w/o trailing slash @since 2.6.0
-		$themes  = parse_url( get_theme_root_uri(), PHP_URL_PATH ); // w/o trailing slash @since 1.5.0
+		$plugins = parse_url( plugins_url(),        PHP_URL_PATH );
+		$themes  = parse_url( get_theme_root_uri(), PHP_URL_PATH );
 
 		if ( @preg_match( '/\/(.*?\/.*?)$', $plugins, $pos ) )
 			self::$content_dir['plugins'] = "$pos[1]/";
@@ -97,13 +99,13 @@ class IP_Geo_Block {
 			self::$content_dir['themes' ] = "$pos[1]/";
 
 		// wp-content/(plugins|themes)/.../*.php
-		if ( ( $settings['validation']['plugins'] && strpos( $_SERVER['REQUEST_URI'], "$plugins/" ) === 0 ) ||
-		     ( $settings['validation']['themes' ] && strpos( $_SERVER['REQUEST_URI'], "$themes/"  ) === 0 ) )
+		if ( ( $validate['plugins'] && strpos( $_SERVER['REQUEST_URI'], "$plugins/" ) === 0 ) ||
+		     ( $validate['themes' ] && strpos( $_SERVER['REQUEST_URI'], "$themes/"  ) === 0 ) )
 			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
-		elseif ( ( $settings['validation']['admin'] || 
-		           $settings['validation']['ajax' ] ) && is_admin() )
+		elseif ( ( $validate['admin'] || 
+		           $validate['ajax' ] ) && is_admin() )
 			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
 
 		// Load authenticated nonce
@@ -441,6 +443,8 @@ class IP_Geo_Block {
 			// send response code to refuse
 			$this->send_response( $settings['response_code'] );
 		}
+
+		return $validate;
 	}
 
 	/**
@@ -532,8 +536,8 @@ class IP_Geo_Block {
 				$type = $matches[1] === self::$content_dir['plugins'] ? 'plugins' : 'themes';
 
 				// register exec direct
-				if ( $settings['validation'][ $type ] >= 1 ) {
-					add_filter( self::PLUGIN_SLUG . '-exec', array( $this, 'exec_direct' ), 10, 2 );
+				if ( defined( 'IP_GEO_BLOCK_EXEC' ) ) {
+					add_action( IP_Geo_Block::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_EXEC, 10, 2 );
 				}
 
 				// register to check nonce
@@ -544,11 +548,11 @@ class IP_Geo_Block {
 		}
 
 		// Validate country by IP address
-		$this->validate_ip( 'admin', $settings );
+		$validate = $this->validate_ip( 'admin', $settings );
 
 		// Execute requested uri with a rewrite rule in plugins/themes
-		if ( is_admin() )
-			do_action( self::PLUGIN_SLUG . '-exec', $settings );
+		if ( has_action( self::PLUGIN_SLUG . '-exec' ) )
+			do_action( self::PLUGIN_SLUG . '-exec', $validate, $settings );
 	}
 
 	/**
@@ -633,24 +637,6 @@ class IP_Geo_Block {
 				return sanitize_text_field( $matches[1] );
 
 		return NULL;
-	}
-
-	/**
-	 * Execute requested URI (still under construction)
-	 * @note: take care of path traversal and null byte attack
-	 */
-	public function exec_direct( $settings ) {
-		$path = $_SERVER['DOCUMENT_ROOT'] . $_SERVER['REQUEST_URI'];
-		if ( isset( $_SERVER['QUERY_STRING'] ) )
-			$path = str_replace( "?{$_SERVER['QUERY_STRING']}", '', $path );
-
-		if ( ! is_file( $path ) || strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ) !== 'php' )
-			$this->send_response( $settings['response_code'] );
-
-		elseif ( chdir( dirname( $path ) ) )
-			include $path;
-
-		exit;
 	}
 
 	/**
