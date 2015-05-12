@@ -239,7 +239,7 @@ class IP_Geo_Block {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		return self::_get_geolocation(
-			$ip ? $ip : $_SERVER['REMOTE_ADDR'],
+			$ip ? $ip : apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] ),
 			self::get_option( 'settings' ), $providers, $callback
 		);
 	}
@@ -316,7 +316,7 @@ class IP_Geo_Block {
 	 * Update statistics
 	 *
 	 */
-	private function update_statistics( $validate ) {
+	public function update_statistics( $validate ) {
 		$statistics = self::get_option( 'statistics' );
 
 		if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
@@ -341,7 +341,7 @@ class IP_Geo_Block {
 	 * Send response header with http code.
 	 *
 	 */
-	private function send_response( $code ) {
+	public function send_response( $code ) {
 		nocache_headers(); // nocache and response code
 		switch ( (int)substr( "$code", 0, 1 ) ) {
 		  case 2: // 2xx Success
