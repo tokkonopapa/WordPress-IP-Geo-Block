@@ -121,11 +121,7 @@ class IP_Geo_Block {
 		);
 
 		wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH',
-			array(
-				'nonce'   => wp_create_nonce( $handle ),
-				'plugins' => self::$content_dir['plugins'],
-				'themes'  => self::$content_dir['themes' ],
-			)
+			array( 'nonce' => wp_create_nonce( $handle ) ) + self::$content_dir
 		);
 	}
 
@@ -502,7 +498,7 @@ class IP_Geo_Block {
 
 		if ( isset( $_REQUEST['page'] ) ) {
 			if ( empty( $type ) && $settings['validation']['admin'] >= 2 ) {
-				// trace nonce in referer
+				// redirect with nonce in referer
 				$this->trace_nonce();
 
 				// exclude admin pages
@@ -537,7 +533,7 @@ class IP_Geo_Block {
 
 				// register exec direct
 				if ( defined( 'IP_GEO_BLOCK_EXEC' ) ) {
-					add_action( IP_Geo_Block::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_EXEC, 10, 2 );
+					add_action( self::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_EXEC, 10, 2 );
 				}
 
 				// register to check nonce

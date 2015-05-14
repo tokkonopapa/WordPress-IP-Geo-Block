@@ -369,6 +369,9 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
   "[Whick attacks can WP-ZEP prevent?](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/which-attacks-prevented.html)".
 * **Bug fix:** Fixed the issue that action hook `ip-geo-block-backup-dir` did 
   not work correctly because the order of argument was mismatched.
+* **Improvement:** Fixed the issue that Referer Suppressor do nothing with a 
+  new element which is added into DOM after DOM ready. The event handler is 
+  now delegated at the `body`.
 
 = 2.0.8 =
 * Fixed an issue that a certain type of attack vector to the admin area (
