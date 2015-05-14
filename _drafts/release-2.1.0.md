@@ -56,14 +56,22 @@ I expect that there's no need this kind of bypass.
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span>
 
-### A remaining issue ###
+### Bug fix ###
+There's a bug that the order of arguments was incorrect in the action handler 
+of `ip-geo-block-backup-dir`. Now it works correctly as shown in the 
+[`samples.php`][samples.php].
 
-"[Referer Suppressor][Referer-Suppressor]" which eliminate the browser's 
-referer does'nt work correctly when the ajax request from "WordPress News" 
-on the dashboard have not finished before firing the browser's document ready.
+### Improvement ###
+In the previous version, the "[Referer Suppressor][Referer-Suppressor]", that 
+eliminate the browser's referer, do nothing with a new element which is added 
+into DOM after DOM ready. This issue could be seen typically at the 
+"WordPress News" on the dashboard, that is the ajax request was handled after 
+firing the browser's document ready.
 
-I'll fix this issue in the next release.
+It does'nt mean that this plugin was vulnerable but should be fixed. 
+The `click` event handler is now delegated at the `body`.
 
 [IP-Geo-Block]:       https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
+[samples.php]:        https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
 [investigation]:      {{ "/article/which-attacks-prevented.html" | prepend: site.baseurl }} "Whick attacks prevented?"
 [Referer-Suppressor]: {{ "/article/referer-suppressor.html" | prepend: site.baseurl }} "Referer Suppressor for external link"

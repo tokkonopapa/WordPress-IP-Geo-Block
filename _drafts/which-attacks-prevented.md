@@ -531,9 +531,10 @@ the WordPress security point of view.
   (http://www.pritect.net/blog/wp-ultimate-csv-importer-3-7-1-critical-vulnerability
   "by James Golovich").
 
-While such authors have their own reasons (for example they prefer to reuse 
-their own great resources), that does not mean to excuse of ignoring the 
-WordPress programming paradigm, that is [event-driven model][Tom-McFarlin].
+While such authors have their own reasons (the main reason may be the spped, 
+and sometimes they may prefer to reuse their own great resources), that does 
+not mean to excuse of ignoring the WordPress programming paradigm, that is 
+[event-driven model][Tom-McFarlin].
 
 If such a direct assess to the PHP file in `/wp-content/plugins/` and 
 `/wp-content/themes/` from outside the site should be blocked to prevent 
@@ -564,14 +565,14 @@ vulnerability such as LFI, XSS, SQLI.
 
 ### Conclusion ###
 
-The estimated amount of ratio of preventing zero-day exploitation using WP-ZEP 
-is about 60%.
+Before I finalized this investigation, the estimated amount of true positive 
+against preventing zero-day exploitation in the real world using WP-ZEP was 
+about 13% in version 2.0.8, but now 60% in 2.1.0.
 
-Is it still too low? -- Yes it is.
+Is it still low? -- Yes it is.
 
-So I'd like to challenge to make WP-ZEP have an ability to prevent the "Plugin 
-Direct" vulnerability, which means the successful probability of preventing is 
-about 80% !!
+So I'd like to make WP-ZEP have an ability to prevent the "Plugin Direct" 
+vulnerability, which means the true positive is about 80% !!
 <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2693.png "anchor")
 </span>

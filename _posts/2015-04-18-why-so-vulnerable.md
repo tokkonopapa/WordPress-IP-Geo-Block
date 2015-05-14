@@ -290,7 +290,7 @@ and conclude the followings for developing WordPress plugins and themes
 * Attacks may come from unexpected route.
 * Attacker actually doesn't access to the page.
 
-And I have the same opinion with [James Golovich][James-Golovich]:
+And I quite agree with [James Golovich][James-Golovich]:
 
 > If you have the WordPress tools available to you then you should use them.
 > Something like current_user_can() and a nonce should always be used.
