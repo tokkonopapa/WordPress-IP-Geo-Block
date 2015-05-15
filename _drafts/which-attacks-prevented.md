@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Which attacks can WP-ZEP prevent?"
-date:   2015-05-01 00:00:00
+date:   2015-05-01 00:00:01
 categories: article
 published: true
 script: [/js/jquery-1.11.2.min.js, /js/tablesort.min.js]
@@ -70,7 +70,7 @@ descriptions of abbreviation in the later part of this article.
 |:------------------------:|:----------------------|
 | PD                       | **P**lugin **D**irect |
 | FE                       | **F**ront **E**nd     |
-| AX                       | **A**ja**x** / Post   |
+| AX            | **A**ja<strong>x</strong> / Post |
 | WA                       | **w**p-**a**dmin      |
 
 Then I examined the prevention ability of 
@@ -135,7 +135,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 5. /wp-content/plugins/aspose-cloud-ebook-generator/aspose_posts_exporter_download.php?file=... -->
+      <tr><!-- 5. /wp-content/plugins/aspose-cloud-ebook-generator/aspose_posts_exporter_download.php?file=... | for anonymous -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7866" title="Aspose Cloud eBook Generator - File Download">Aspose Cloud eBook Generator</a></td>
         <td>&lt;= 1.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
@@ -215,7 +215,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 15. /wp-content/plugins/php-event-calendar/server/classes/uploadify.php... -->
+      <tr><!-- 15. /wp-content/plugins/php-event-calendar/server/classes/uploadify.php... | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7884" title="PHP Event Calendar &lt;= 1.5 - Arbitrary File Upload">PHP Event Calendar</a></td>
         <td>&lt;= 1.5</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
@@ -239,7 +239,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 18. /wp-content/plugins/mailchimp-subscribe-sm/data.php -->
+      <tr><!-- 18. /wp-content/plugins/mailchimp-subscribe-sm/data.php | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7935" title="MailChimp Subscribe Form &lt;= 1.1 - Email Field Remote PHP Code Execution">MailChimp Subscribe Form</a></td>
         <td>&lt;= 1.1</td>
         <td><abbr title="Remote Code Execution">RCE</abbr></td>
@@ -263,7 +263,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 21. /wp-content/plugins/inboundio-marketing/admin/partials/csv_uploader.php -->
+      <tr><!-- 21. /wp-content/plugins/inboundio-marketing/admin/partials/csv_uploader.php | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7864" title="InBoundio Marketing Plugin &lt;= 2.0.3 - Shell Upload">InBoundio Marketing</a></td>
         <td>&lt;= 2.0.3</td>
         <td><abbr title="Remote File Upload">RFU</abbr></td>
@@ -287,7 +287,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 24. /wp-content/plugins/Wordpress/Aaspose-pdf-exporter/aspose_pdf_exporter_download.php?file=... -->
+      <tr><!-- 24. /wp-content/plugins/Wordpress/Aaspose-pdf-exporter/aspose_pdf_exporter_download.php?file=... | for anonymous -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7876" title="Aspose PDF Exporter - Arbitrary File Download">Aspose PDF Exporter</a></td>
         <td>&lt; 2.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
@@ -295,7 +295,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 25. /wp-content/plugins/aspose-importer-exporter/aspose_import_export_download?file=... -->
+      <tr><!-- 25. /wp-content/plugins/aspose-importer-exporter/aspose_import_export_download?file=... | for anonymous -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7877" title="Aspose Importer and Exporter 1.0 - Arbitrary File Download">Aspose Importer &amp; Exporter</a></td>
         <td>&lt;= 1.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
@@ -303,7 +303,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 26. /wp-content/plugins/aspose-doc-exporter/aspose_doc_exporter_download.php?file=... -->
+      <tr><!-- 26. /wp-content/plugins/aspose-doc-exporter/aspose_doc_exporter_download.php?file=... | for anonymous -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7869" title="Aspose DOC Exporter 1.0 - Arbitrary File Download">Aspose DOC Exporter</a></td>
         <td>&lt;= 1.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
@@ -522,52 +522,51 @@ dive into these attack vectors.
 
 #### Plugin Direct ####
 
-Some plugin or theme authors tend to call the files directly in their plugin 
-or theme folder. It's a remarkable fact that a variety of vulnerabilities are 
-there in this type of attack vector. This is not generally recommended from 
-the WordPress security point of view.
+Some plugin or theme authors tend to call their PHP files in 
+`wp-content/plugins/` and `wp-content/themes/`. The reason may be mainly for 
+the performance.
+
+But you know the WordPress programming model is basically 
+[event-driven][Tom-McFarlin], so such a direct call is not generally 
+recommended from the WordPress security point of view.
 
 > [In almost every case there is no reason to allow code to be called directly]
   (http://www.pritect.net/blog/wp-ultimate-csv-importer-3-7-1-critical-vulnerability
   "by James Golovich").
 
-While such authors have their own reasons (the main reason may be the spped, 
-and sometimes they may prefer to reuse their own great resources), that does 
-not mean to excuse of ignoring the WordPress programming paradigm, that is 
-[event-driven model][Tom-McFarlin].
+And such a direct call should be blocked to prevent various vulnerability 
+if it's for the administrator.
 
-If such a direct assess to the PHP file in `/wp-content/plugins/` and 
-`/wp-content/themes/` from outside the site should be blocked to prevent 
-various vulnerability.
-
-And fortunately for me, some of these files include `wp-load.php` to kick WP, 
+Fortunately for me, some of these files include `wp-load.php` to kick WP, 
 which cases are indicated as "PD*". It means that WP-ZEP have a chance to 
 validate these. Moreover, almost all the above listed "PD*" (besides 
 [this][SimpleAdsMan]) are related to admin. So I decided to make WP-ZEP 
-prevent these direct access.
+prevent these type of direct access.
+
+But "PD" (without *) is still in red.
 
 #### Front End ####
 
 There was [an vulnerability][MainWP-Child] that allowed anyone to login as an 
-administrator without any fences by following access on the WP home:
+administrator without any fences by following access:
 
 ```html
 http://example.com/?login_required=1&user=admin&...
 ```
 
-In this type of vulnerability, the `init` action is hooked to some functions 
-to make significant jobs for administrators, which can be triggered by anybody 
-who visits the public facing pages.
+In this type of vulnerability, the `init` action, which is always triggered by 
+anybody who visits the public facing pages, is hooked to some functions to 
+make significant jobs for the administrator.
 
 In this case, all we should do is to filter out any malicious queries 
-("signature") from the requests using whitelist or blacklist to prevent 
-vulnerability such as LFI, XSS, SQLI.
+(i.e. "signature") from the requests using whitelist or blacklist to prevent 
+LFI, XSS, SQLI.
 
 ### Conclusion ###
 
 Before I finalized this investigation, the estimated amount of true positive 
-against preventing zero-day exploitation in the real world using WP-ZEP was 
-about 13% in version 2.0.8, but now 60% in 2.1.0.
+against preventing zero-day exploitation by WP-ZEP in the real world was about 
+26% in version 2.0.8, but now 60% in 2.1.0.
 
 Is it still low? -- Yes it is.
 

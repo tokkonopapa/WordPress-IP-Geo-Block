@@ -1,19 +1,17 @@
 ---
 layout: post
 title:  "2.1.0 Release Note"
-date:   2015-05-02 00:00:00
+date:   2015-05-01 00:00:00
 categories: changelog
 published: true
 ---
 
 In this release, the ability of WP-ZEP have been greatly improved. Previously, 
-the successful probability of preventing zero-day attack was estimated about 
-26%. But now it's 60%.
+true positive of preventing zero-day attack was estimated about 26%. But now 
+it's 60%. Please refer to [this article][investigation] about the background 
+of these numbers.
 
-About the background of these numbers, please refer to 
-[this article][investigation].
-
-In this note, I'll explain about the functionarity of 2.1.0.
+In this note, I'll mention what's new in 2.1.0.
 
 <!--more-->
 
@@ -31,9 +29,9 @@ In 2.1.0, the followings are added:
 * `wp-content/themes/name-of-theme/…/*.php`
 
 Along with these expansions, two filter hooks `ip-geo-block-admin-pages` and 
-`ip-geo-block-wp-content` can be available to drop from the target. To use 
-those filter hooks, you should add appropriate code into your `functions.php` 
-as follows:
+`ip-geo-block-wp-content` can be available to specify some pages or plugins 
+to drop them from the target. To use those filter hooks, you should add 
+appropriate code into your `functions.php` as follows:
 
 {% highlight php startinline linenos %}
 add_filter( 'ip-geo-block-admin-pages', 'my_admin_pages' );
@@ -51,24 +49,24 @@ function my_wp_content( $names ) {
 }
 {% endhighlight %}
 
-I expect that there's no need this kind of bypass.
+I hope there's no need this kind of bypass.
 <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span>
 
 ### Bug fix ###
-There's a bug that the order of arguments was incorrect in the action handler 
-of `ip-geo-block-backup-dir`. Now it works correctly as shown in the 
-[`samples.php`][samples.php].
+There's a bug that the order of the arguments for the action handler 
+`ip-geo-block-backup-dir` was incorrect. Now it works correctly as shown in 
+the [samples.php][samples.php].
 
 ### Improvement ###
 In the previous version, the "[Referer Suppressor][Referer-Suppressor]", that 
-eliminate the browser's referer, do nothing with a new element which is added 
-into DOM after DOM ready. This issue could be seen typically at the 
-"WordPress News" on the dashboard, that is the ajax request was handled after 
-firing the browser's document ready.
+eliminate the browser's referer, do nothing with an element which is added into 
+the DOM after DOM ready. This issue could be seen at the "WordPress News" on 
+the dashboard, that is the contents were added after firing the browser's 
+document ready.
 
-It does'nt mean that this plugin was vulnerable but should be fixed. 
+It does not mean that this plugin was vulnerable but should be fixed. 
 The `click` event handler is now delegated at the `body`.
 
 [IP-Geo-Block]:       https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
