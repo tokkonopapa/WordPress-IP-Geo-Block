@@ -5,7 +5,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
- * @link      http://tokkono.cute.coocan.jp/blog/slow/
+ * @link      https://github.com/tokkonopapa
  * @copyright 2014-2015 tokkonopapa
  */
 
