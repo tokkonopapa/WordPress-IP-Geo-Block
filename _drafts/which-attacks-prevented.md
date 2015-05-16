@@ -26,7 +26,7 @@ On [WPScan Vulnerability Database][wpvulndb] maintained by [Sucuri][Sucuri],
 we can find many new plugins and themes every month. Of course [WP-ZEP][WP-ZEP]
 is not God Almighty against these. Then you may wonder about:
 
-- Which attack can WP-ZEP prevent?
+- Which attacks can WP-ZEP prevent?
 - How many attacks can WP-ZEP prevent?
 
 I'm with you!!
@@ -75,7 +75,7 @@ descriptions of abbreviation in the later part of this article.
 
 Then I examined the prevention ability of 
   [IP Geo Block in 2.1.0][IP-Geo-Block] 
-based on the type of validation, that are:
+based on the type of validation method, that are:
 
 1. validate by **Geo**location
 2. validate by WP-**ZEP**
@@ -139,7 +139,7 @@ Well then, let's take a look at the results:
         <td><a href="https://wpvulndb.com/vulnerabilities/7866" title="Aspose Cloud eBook Generator - File Download">Aspose Cloud eBook Generator</a></td>
         <td>&lt;= 1.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/131040/">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct for anonymous user"><a href="http://packetstormsecurity.com/files/131040/">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -219,7 +219,7 @@ Well then, let's take a look at the results:
         <td><a href="https://wpvulndb.com/vulnerabilities/7884" title="PHP Event Calendar &lt;= 1.5 - Arbitrary File Upload">PHP Event Calendar</a></td>
         <td>&lt;= 1.5</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/131277/">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct for admin"><a href="http://packetstormsecurity.com/files/131277/">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -243,7 +243,7 @@ Well then, let's take a look at the results:
         <td><a href="https://wpvulndb.com/vulnerabilities/7935" title="MailChimp Subscribe Form &lt;= 1.1 - Email Field Remote PHP Code Execution">MailChimp Subscribe Form</a></td>
         <td>&lt;= 1.1</td>
         <td><abbr title="Remote Code Execution">RCE</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="http://plugins.svn.wordpress.org/mailchimp-subscribe-sm/tags/1.1/data.php">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct for admin"><a href="http://plugins.svn.wordpress.org/mailchimp-subscribe-sm/tags/1.1/data.php">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -267,7 +267,7 @@ Well then, let's take a look at the results:
         <td><a href="https://wpvulndb.com/vulnerabilities/7864" title="InBoundio Marketing Plugin &lt;= 2.0.3 - Shell Upload">InBoundio Marketing</a></td>
         <td>&lt;= 2.0.3</td>
         <td><abbr title="Remote File Upload">RFU</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/130957/">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct for admin"><a href="http://packetstormsecurity.com/files/130957/">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -291,7 +291,7 @@ Well then, let's take a look at the results:
         <td><a href="https://wpvulndb.com/vulnerabilities/7876" title="Aspose PDF Exporter - Arbitrary File Download">Aspose PDF Exporter</a></td>
         <td>&lt; 2.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/131161/">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct for anonymous user"><a href="http://packetstormsecurity.com/files/131161/">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -299,7 +299,7 @@ Well then, let's take a look at the results:
         <td><a href="https://wpvulndb.com/vulnerabilities/7877" title="Aspose Importer and Exporter 1.0 - Arbitrary File Download">Aspose Importer &amp; Exporter</a></td>
         <td>&lt;= 1.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/131162/">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct for anonymous user"><a href="http://packetstormsecurity.com/files/131162/">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -307,7 +307,7 @@ Well then, let's take a look at the results:
         <td><a href="https://wpvulndb.com/vulnerabilities/7869" title="Aspose DOC Exporter 1.0 - Arbitrary File Download">Aspose DOC Exporter</a></td>
         <td>&lt;= 1.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
-        <td><abbr title="Plugin Direct"><a href="http://packetstormsecurity.com/files/131167/">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct for anonymous user"><a href="http://packetstormsecurity.com/files/131167/">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -327,11 +327,11 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 29. /wp-content/themes/mTheme-Unus/css/css.php?files=... -->
+      <tr><!-- 29. /wp-content/themes/mTheme-Unus/css/css.php?files=... |  for anonymous -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7898" title="WP Mobile Edition &lt;= 2.7 - Remote File Disclosure">WP Mobile Edition</a></td>
         <td>&lt;= 2.2.7</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
-       <td><abbr title="Plugin Direct"><a href="https://www.exploit-db.com/exploits/36733/">PD</a></abbr></td>
+       <td><abbr title="Plugin Direct for anonymous user"><a href="https://www.exploit-db.com/exploits/36733/">PD</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -534,14 +534,15 @@ recommended from the WordPress security point of view.
   (http://www.pritect.net/blog/wp-ultimate-csv-importer-3-7-1-critical-vulnerability
   "by James Golovich").
 
-And such a direct call should be blocked to prevent various vulnerability 
-if it's for the administrator.
+It's a remarkable fact that a variety of vulnerabilities are there in this 
+type of attack vector. And such a direct call should be blocked to prevent 
+various vulnerability if it's for the administrator.
 
-Fortunately for me, some of these files include `wp-load.php` to kick WP, 
-which cases are indicated as "PD*". It means that WP-ZEP have a chance to 
-validate these. Moreover, almost all the above listed "PD*" (besides 
-[this][SimpleAdsMan]) are related to admin. So I decided to make WP-ZEP 
-prevent these type of direct access.
+Fortunately for me, some of these files include `wp-load.php` to get the 
+WordPress context, which cases are indicated as "PD*". It means that WP-ZEP 
+have a chance to validate these. Moreover, almost all the above listed "PD*" 
+are related to admin (besides [this][SimpleAdsMan]). So I decided to make 
+WP-ZEP prevent these type of direct access.
 
 But "PD" (without *) is still in red.
 
@@ -571,7 +572,7 @@ against preventing zero-day exploitation by WP-ZEP in the real world was about
 Is it still low? -- Yes it is.
 
 So I'd like to make WP-ZEP have an ability to prevent the "Plugin Direct" 
-vulnerability, which means the true positive is about 80% !!
+(without *) vulnerability, which means the true positive becomes to 80%.
 <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2693.png "anchor")
 </span>

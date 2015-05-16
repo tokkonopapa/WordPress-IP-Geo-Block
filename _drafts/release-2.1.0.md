@@ -7,9 +7,9 @@ published: true
 ---
 
 In this release, the ability of WP-ZEP have been greatly improved. Previously, 
-true positive of preventing zero-day attack was estimated about 26%. But now 
-it's 60%. Please refer to [this article][investigation] about the background 
-of these numbers.
+the probability of successful prevention against the zero-day attack (true 
+positive) was estimated about 26%. But now it's 60%. Please refer to 
+[this article][investigation] about the background of these percentage.
 
 In this note, I'll mention what's new in 2.1.0.
 
@@ -63,10 +63,10 @@ the [samples.php][samples.php].
 In the previous version, the "[Referer Suppressor][Referer-Suppressor]", that 
 eliminate the browser's referer, do nothing with an element which is added into 
 the DOM after DOM ready. This issue could be seen at the "WordPress News" on 
-the dashboard, that is the contents were added after firing the browser's 
+the dashboard, where the contents were added after firing the browser's 
 document ready.
 
-It does not mean that this plugin was vulnerable but should be fixed. 
+It doesn't mean that this plugin was vulnerable but should be fixed.
 The `click` event handler is now delegated at the `body`.
 
 [IP-Geo-Block]:       https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
