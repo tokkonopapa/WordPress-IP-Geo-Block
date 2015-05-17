@@ -114,14 +114,14 @@ class IP_Geo_Block_Logs {
 		// Check support for utf8 in the installed PCRE library
 		static $utf8_pcre = NULL;
 		if ( $utf8_pcre === NULL )
-			$utf8_pcre = @preg_match( '/^./u', 'a' );
+			$utf8_pcre = preg_match( '/^./u', 'a' );
 
 		// if no support then reject $str for safety
 		if ( ! $utf8_pcre )
 			return '…';
 
 		// preg_match fails when it encounters invalid UTF8 in $str
-		if ( 1 === @preg_match( '/^./us', $str ) )
+		if ( 1 === preg_match( '/^./us', $str ) )
 			return $str;
 
 		return '…';
@@ -136,9 +136,9 @@ class IP_Geo_Block_Logs {
 	 */
 	private static function truncate_utf8( $str, $regexp = NULL, $replace = '', $len = IP_GEO_BLOCK_MAX_STR_LEN ) {
 		// remove unnecessary characters
-		$str = @preg_replace( '/[\x00-\x1f\x7f]/', '', $str );
+		$str = preg_replace( '/[\x00-\x1f\x7f]/', '', $str );
 		if ( $regexp )
-			$str = @preg_replace( $regexp, $replace, $str );
+			$str = preg_replace( $regexp, $replace, $str );
 
 		// limit the length of the string
 		if ( function_exists( 'mb_strcut' ) ) {

@@ -474,7 +474,7 @@ class IP_Geo_Block_Admin {
 			  case 'black_list':
 				$output[ $key ] = isset( $input[ $key ] ) ?
 					sanitize_text_field(
-						@preg_replace( '/[^A-Z,]/', '', strtoupper( $input[ $key ] ) )
+						preg_replace( '/[^A-Z,]/', '', strtoupper( $input[ $key ] ) )
 					) : '';
 				break;
 
@@ -515,10 +515,10 @@ class IP_Geo_Block_Admin {
 						$output[ $key ][ $sub ] = is_int( $default[ $key ][ $sub ] ) ?
 							(int)$input[ $key ][ $sub ] :
 							sanitize_text_field(
-								@preg_replace( '/\s/', '', $input[ $key ][ $sub ] )
+								preg_replace( '/\s/', '', $input[ $key ][ $sub ] )
 							);
 						if ( 'proxy' === $sub ) {
-							$output[ $key ][ $sub ] = @preg_replace( '/[^\w,]/', '',
+							$output[ $key ][ $sub ] = preg_replace( '/[^\w,]/', '',
 								strtoupper( $output[ $key ][ $sub ] ) );
 						}
 					}

@@ -92,10 +92,10 @@ class IP_Geo_Block {
 		$plugins = parse_url( plugins_url(),        PHP_URL_PATH );
 		$themes  = parse_url( get_theme_root_uri(), PHP_URL_PATH );
 
-		if ( @preg_match( '/\/(.*?\/.*?)$', $plugins, $pos ) )
+		if ( preg_match( '/\/(.*?\/.*?)$/', $plugins, $pos ) )
 			self::$content_dir['plugins'] = "$pos[1]/";
 
-		if ( @preg_match( '/\/(.*?\/.*?)$', $themes,  $pos ) )
+		if ( preg_match( '/\/(.*?\/.*?)$/', $themes,  $pos ) )
 			self::$content_dir['themes' ] = "$pos[1]/";
 
 		// wp-content/(plugins|themes)/.../*.php
@@ -523,7 +523,7 @@ class IP_Geo_Block {
 		$plugins = preg_quote( self::$content_dir['plugins'], '/' );
 		$themes  = preg_quote( self::$content_dir['themes' ], '/' );
 
-		if ( @preg_match( "/\/($plugins|$themes)(.*?)\//", $_SERVER['REQUEST_URI'], $matches ) ) {
+		if ( preg_match( "/\/($plugins|$themes)(.*?)\//", $_SERVER['REQUEST_URI'], $matches ) ) {
 			// exclude certain plugin/theme
 			$list = apply_filters( self::PLUGIN_SLUG . '-wp-content', array(
 			) );
@@ -625,11 +625,11 @@ class IP_Geo_Block {
 			return sanitize_text_field( $_REQUEST[ $key ] );
 
 		if ( isset( $_REQUEST['_wp_http_referer'] ) )
-			if ( @preg_match( "/$key=([\w]+)/", $_REQUEST['_wp_http_referer'], $matches ) )
+			if ( preg_match( "/$key=([\w]+)/", $_REQUEST['_wp_http_referer'], $matches ) )
 				return sanitize_text_field( $matches[1] );
 
 		if ( isset( $_SERVER['HTTP_REFERER'] ) )
-			if ( @preg_match( "/$key=([\w]+)/", $_SERVER['HTTP_REFERER'], $matches ) )
+			if ( preg_match( "/$key=([\w]+)/", $_SERVER['HTTP_REFERER'], $matches ) )
 				return sanitize_text_field( $matches[1] );
 
 		return NULL;
