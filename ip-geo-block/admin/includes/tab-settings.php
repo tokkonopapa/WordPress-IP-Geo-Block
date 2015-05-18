@@ -348,7 +348,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	add_settings_field(
 		$option_name . "_${field}_postkey",
-		__( '<dfn title="ex) log, pwd, comment">$_POST keys to be recorded with their values in logs</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		__( '<dfn title="ex) action, comment, log, pwd">$_POST keys to be recorded with their values in logs</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
