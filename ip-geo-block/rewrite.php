@@ -62,8 +62,8 @@ class IP_Geo_Block_Rewrite {
 		// while malicios URI may be intercepted by the server,
 		// null byte attack should be invalidated just in case.
 		// ex) $path = "/etc/passwd\0.php"
-		$path = str_replace( "\0", '', $path );
 //		$path = @realpath( $path ); // should resolve symbolic link?
+		$path = str_replace( "\0", '', $path );
 
 		// check file and extention
 		// @note: is_readable() and is_file() need a valid path.
@@ -74,8 +74,8 @@ class IP_Geo_Block_Rewrite {
 		}
 
 		// execute !!
-		chdir( dirname( $path ) );
-		include_once $path;
+		if ( chdir( dirname( $path ) ) )
+			include_once basename( $path );
 		exit;
 	}
 
@@ -96,7 +96,7 @@ IP_Geo_Block_Rewrite::exec(
 	IP_Geo_Block::get_option( 'settings' )
 );
 
-endif;
+endif; /* ! defined( 'IP_GEO_BLOCK_EXEC' ) */
 
 /**
  * Configuration samples for .htaccess for apache
