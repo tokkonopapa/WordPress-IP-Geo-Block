@@ -18,10 +18,12 @@ if ( class_exists( 'IP_Geo_Block' ) ):
  * @param  string $ip original ip address
  * @return string $ip replaced ip address
  */
+if ( ! function_exists( 'my_replace_ip' ) ):
 function my_replace_ip( $ip ) {
 	return '98.139.183.24'; // yahoo.com
 }
 add_filter( 'ip-geo-block-ip-addr', 'my_replace_ip' );
+endif;
 
 
 /**
@@ -31,6 +33,7 @@ add_filter( 'ip-geo-block-ip-addr', 'my_replace_ip' );
  * @param  string $ip original ip address
  * @return string $ip replaced ip address
  */
+if ( ! function_exists( 'my_retrieve_ip' ) ):
 function my_retrieve_ip( $ip ) {
 	if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
 		$tmp = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
@@ -43,6 +46,7 @@ function my_retrieve_ip( $ip ) {
 	return $ip;
 }
 add_filter( 'ip-geo-block-ip-addr', 'my_retrieve_ip' );
+endif;
 
 
 /**
@@ -50,6 +54,7 @@ add_filter( 'ip-geo-block-ip-addr', 'my_retrieve_ip' );
  * Use case: When an emergency of yourself being locked out
  *
  */
+if ( ! function_exists( 'my_emergency' ) ):
 function my_emergency( $validate ) {
 	// password is required even in this case
 	$validate['result'] = 'passed';
@@ -57,6 +62,7 @@ function my_emergency( $validate ) {
 }
 add_filter( 'ip-geo-block-login', 'my_emergency' );
 add_filter( 'ip-geo-block-admin', 'my_emergency' );
+endif;
 
 
 /**
@@ -67,6 +73,7 @@ add_filter( 'ip-geo-block-admin', 'my_emergency' );
  * @param  string $validate['code'] country code
  * @return array $validate add 'result' as 'passed' or 'blocked' if possible
  */
+if ( ! function_exists( 'my_blacklist' ) ):
 function my_blacklist( $validate ) {
 	$blacklist = array(
 		'123.456.789.',
@@ -82,6 +89,7 @@ function my_blacklist( $validate ) {
 	return $validate;
 }
 add_filter( 'ip-geo-block-comment', 'my_blacklist' );
+endif;
 
 
 /**
@@ -92,6 +100,7 @@ add_filter( 'ip-geo-block-comment', 'my_blacklist' );
  * @param  string $validate['code'] country code
  * @return array $validate add 'result' as 'passed' or 'blocked' if possible
  */
+if ( ! function_exists( 'my_whitelist' ) ):
 function my_whitelist( $validate ) {
 	$whitelist = array(
 		'JP', // should be upper case
@@ -108,6 +117,7 @@ function my_whitelist( $validate ) {
 }
 add_filter( 'ip-geo-block-login', 'my_whitelist' );
 add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
+endif;
 
 
 /**
@@ -121,6 +131,7 @@ add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
  * @param  array $validate
  * @return array $validate add 'result' as 'blocked' when NG word was found
  */
+if ( ! function_exists( 'my_protectives' ) ):
 function my_protectives( $validate ) {
 	$blacklist = array(
 		'wp-config.php',
@@ -139,6 +150,7 @@ function my_protectives( $validate ) {
 	return $validate; // should not set 'passed' to validate by country code
 }
 add_filter( 'ip-geo-block-admin', 'my_protectives' );
+endif;
 
 
 /**
@@ -149,6 +161,7 @@ add_filter( 'ip-geo-block-admin', 'my_protectives' );
  * @param  array $validate
  * @return array $validate add 'result' as 'passed' when 'action' is OK
  */
+if ( ! function_exists( 'my_permission' ) ):
 function my_permission( $validate ) {
 	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 		$whitelist = array(
@@ -163,6 +176,7 @@ function my_permission( $validate ) {
 	return $validate; // should not set 'passed' to validate by country code
 }
 add_filter( 'ip-geo-block-admin', 'my_permission' );
+endif;
 
 
 /**
@@ -172,6 +186,7 @@ add_filter( 'ip-geo-block-admin', 'my_permission' );
  * @param  array $admin_actions array of permitted admin actions
  * @return array $admin_actions extended permitted admin actions
  */
+if ( ! function_exists( 'my_admin_actions' ) ):
 function my_admin_actions( $admin_actions ) {
 	$whitelist = array(
 		'do-plugin-action',
@@ -179,6 +194,7 @@ function my_admin_actions( $admin_actions ) {
 	return $admin_actions + $whitelist;
 }
 add_filter( 'ip-geo-block-admin-actions', 'my_admin_actions' );
+endif;
 
 
 /**
@@ -188,6 +204,7 @@ add_filter( 'ip-geo-block-admin-actions', 'my_admin_actions' );
  * @param  array $admin_pages array of permitted admin pages
  * @return array $admin_pages extended permitted admin pages
  */
+if ( ! function_exists( 'my_admin_pages' ) ):
 function my_admin_pages( $admin_pages ) {
 	// ex) wp-admin/upload.php?page=plugin-name
 	$whitelist = array(
@@ -196,6 +213,7 @@ function my_admin_pages( $admin_pages ) {
 	return $admin_pages + $whitelist;
 }
 add_filter( 'ip-geo-block-admin-pages', 'my_admin_pages' );
+endif;
 
 
 /**
@@ -205,6 +223,7 @@ add_filter( 'ip-geo-block-admin-pages', 'my_admin_pages' );
  * @param  array $names array of permitted plugins/themes
  * @return array $names extended permitted plugins/themes
  */
+if ( ! function_exists( 'my_wp_content' ) ):
 function my_wp_content( $names ) {
 	// ex) wp-content/plugins/plugin-name/
 	// ex) wp-content/themes/theme-name/
@@ -215,6 +234,7 @@ function my_wp_content( $names ) {
 	return $names + $whitelist;
 }
 add_filter( 'ip-geo-block-wp-content', 'my_wp_content' );
+endif;
 
 
 /**
@@ -225,11 +245,13 @@ add_filter( 'ip-geo-block-wp-content', 'my_wp_content' );
  * @param  string $args http request headers for `wp_remote_get()`
  * @return string $args http request headers for `wp_remote_get()`
  */
+if ( ! function_exists( 'my_user_agent' ) ):
 function my_user_agent( $args ) {
     $args['user-agent'] = 'my user agent strings';
     return $args;
 }
 add_filter( 'ip-geo-block-headers', 'my_user_agent' );
+endif;
 
 
 /**
@@ -239,11 +261,13 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
  * @param  string $dir original directory of database files
  * @return string $dir replaced directory of database files
  */
+if ( ! function_exists( 'my_maxmind_dir' ) ):
 function my_maxmind_dir( $dir ) {
 	$upload = wp_upload_dir();
 	return $upload['basedir'];
 }
 add_filter( 'ip-geo-block-maxmind-dir', 'my_maxmind_dir' );
+endif;
 
 
 /**
@@ -253,6 +277,7 @@ add_filter( 'ip-geo-block-maxmind-dir', 'my_maxmind_dir' );
  * @param  string $url original url to zip file
  * @return string $url replaced url to zip file
  */
+if ( ! function_exists( 'my_maxmind_ipv4' ) ):
 function my_maxmind_ipv4( $url ) {
 	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
 }
@@ -261,6 +286,7 @@ function my_maxmind_ipv6( $url ) {
 }
 add_filter( 'ip-geo-block-maxmind-zip-ipv4', 'my_maxmind_ipv4' );
 add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
+endif;
 
 
 /**
@@ -270,10 +296,12 @@ add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
  * @param  string $path original path to database files
  * @return string $path replaced path to database files
  */
+if ( ! function_exists( 'my_ip2location_path' ) ):
 function my_ip2location_path( $path ) {
 	return WP_PLUGIN_DIR . '/ip2location-tags/IP2LOCATION-LITE-DB1.IPV6.BIN';
 }
 add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
+endif;
 
 
 /**
@@ -284,6 +312,7 @@ add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
  * @param  string $dir default path where text files should be saved
  * @return string should be absolute path out of the public_html.
  */
+if ( ! function_exists( 'my_backup_dir' ) ):
 function my_backup_dir( $dir, $hook ) {
 	if ( 'login' === $hook )
 		return '/absolute/path/to/';
@@ -291,6 +320,7 @@ function my_backup_dir( $dir, $hook ) {
 		return null;
 }
 add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
+endif;
 
 
 /**
@@ -298,6 +328,7 @@ add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
  * Use case: Get geolocation of visitor's ip address with latitude and longitude
  *
  */
+if ( ! function_exists( 'my_geolocation' ) ):
 function my_geolocation() {
 	/**
 	 * get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_county' )
@@ -322,5 +353,6 @@ function my_geolocation() {
 		// error handling
 	}
 }
+endif;
 
 endif; /* class_exists( 'IP_Geo_Block' ) */
