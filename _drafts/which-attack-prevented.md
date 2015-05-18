@@ -119,19 +119,19 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 3. ajax/post -->
+      <tr><!-- 3. ajax/post | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7821" title="EZ Portfolio &lt;= 1.0.1 - Multiple Cross-Site Scripting (XSS) ">EZ Portfolio</a></td>
         <td>&lt;= 1.0.1</td>
         <td><abbr title="Cross Site Scripting">XSS</abbr></td>
-        <td><abbr title="Ajax/Post">AX</abbr></td>
+        <td><abbr title="Ajax/Post for admin">AX</abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 4. /wp-admin/admin.php?page=wonderplugin_audio_show_items... -->
+      <tr><!-- 4. /wp-admin/admin.php?page=wonderplugin_audio_show_items... | for admin-->
         <td><a href="https://wpvulndb.com/vulnerabilities/7798" title="WonderPlugin Audio Player 2.0 Blind SQL Injection and XSS">WonderPlugin Audio Player</a></td>
         <td>&lt;= 2.0</td>
         <td><abbr title="SQL Injection">SQLI</abbr>, <abbr title="Cross Site Scripting">XSS</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="https://www.exploit-db.com/exploits/36086/">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post for admin"><a href="https://www.exploit-db.com/exploits/36086/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -167,11 +167,11 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 9. /wp-admin/admin-ajax.php?action=ajax_survey -->
+      <tr><!-- 9. /wp-admin/admin-ajax.php?action=ajax_survey | for admin-->
         <td><a href="https://wpvulndb.com/vulnerabilities/7794" title="WordPress Survey & Poll &lt;= 1.1.7 - Blind SQL Injection">WordPress Survey & Poll</a></td>
         <td>&lt;= 1.1.7</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="http://packetstormsecurity.com/files/130381/">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post for admin"><a href="http://packetstormsecurity.com/files/130381/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -195,7 +195,7 @@ Well then, let's take a look at the results:
         <td><a href="https://wpvulndb.com/vulnerabilities/7896" title="N-Media Website Contact Form with File Upload &lt;= 1.3.4 - Arbitrary File Upload">N-Media Website Contact Form</a></td>
         <td>&lt;= 1.3.4</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="http://packetstormsecurity.com/files/131413/">AX+</a></abbr></td>
+        <td><abbr title="Ajax/Post for privilege and no-privilege user"><a href="http://packetstormsecurity.com/files/131413/">AX+</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -335,27 +335,27 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 30. /wp-admin/admin-ajax.php?page=pmxi-admin-settings&action=upload... -->
+      <tr><!-- 30. /wp-admin/admin-ajax.php?page=pmxi-admin-settings&action=upload... | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7809" title="WP All Import &lt;= 3.2.3 - RCE">WP All Import</a></td>
         <td>&lt;= 3.2.3</td>
         <td><abbr title="Remote Code Execution">RCE</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="http://packetstormsecurity.com/files/130596/">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post for admin"><a href="http://packetstormsecurity.com/files/130596/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 31. /wp-admin/admin-apax.php?action=auto_detect_cf&... -->
+      <tr><!-- 31. /wp-admin/admin-apax.php?action=auto_detect_cf&... | for admin-->
         <td><a href="https://wpvulndb.com/vulnerabilities/7852" title="WP All Import &lt;= 3.2.4 - Multiple Vulnerabilities">WP All Import</a></td>
         <td>&lt;= 3.2.4</td>
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr>, <abbr title="Cross-Site Scripting">XSS</abbr></td>
-        <td><abbr title="Ajax/Post">AX</abbr></td>
+        <td><abbr title="Ajax/Post for admin">AX</abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 32. /wp-admin.php/admin.php?action=upgrade-plugin&... -->
+      <tr><!-- 32. /wp-admin.php/admin.php?action=upgrade-plugin&... | for login user -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7781" title="UpdraftPlus &lt;= 1.9.50 - Privilege Escalation">UpdraftPlus</a></td>
         <td>&lt;= 1.9.50</td>
         <td><abbr title="Privilege Escalation">PE</abbr></td>
-        <td><abbr title="Ajax/Post">AX</abbr></td>
+        <td><abbr title="Ajax/Post for login user">AX</abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -367,19 +367,19 @@ Well then, let's take a look at the results:
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 34. /wp-admin/admin-ajax.php?action=widgets_init&Action=UPCP_AddProductSpreadsheet -->
+      <tr><!-- 34. /wp-admin/admin-ajax.php?action=widgets_init&Action=UPCP_AddProductSpreadsheet | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7939" title="Ultimate Product Catalogue Plugin &lt;= 3.1.1 - Unauthenticated File Upload">Ultimate Product Catalogue</a></td>
         <td>&lt;= 3.1.1</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="https://wpvulndb.com/vulnerabilities/7939">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post for admin"><a href="https://wpvulndb.com/vulnerabilities/7939">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 35. /wp-admin/admin-ajax.php?action=record_view&Item_ID=2&... -->
+      <tr><!-- 35. /wp-admin/admin-ajax.php?action=record_view&Item_ID=2&... | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7946" title="Ultimate Product Catalogue Plugin &lt;= 3.1.2 - Unauthenticated SQL Injection">Ultimate Product Catalogue</a></td>
         <td>&lt;= 3.1.2</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="https://www.exploit-db.com/exploits/36823/">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post for admin"><a href="https://www.exploit-db.com/exploits/36823/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -391,19 +391,19 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 37. /wp-admin/options-general.php?page=tinymce-advanced&... -->
+      <tr><!-- 37. /wp-admin/options-general.php?page=tinymce-advanced&... | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7775" title="TinyMCE Advanced 4.1 - Setting Reset CSRF">TinyMCE Advanced</a></td>
         <td>&lt;= 4.1</td>
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="https://vexatioustendencies.com/wordpress-plugin-vulnerability-dump-part-2/">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post for admin"><a href="https://vexatioustendencies.com/wordpress-plugin-vulnerability-dump-part-2/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
-      <tr><!-- 38. /wp-admin/admin.php?page=sliders_huge_it_slider&task=... -->
+      <tr><!-- 38. /wp-admin/admin.php?page=sliders_huge_it_slider&task=... | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7811" title="Huge-IT Slider - SQL Injection ">Huge-IT Slider</a></td>
         <td>&lt;= 2.6.8</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="https://www.htbridge.com/advisory/HTB23250">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post for admin"><a href="https://www.htbridge.com/advisory/HTB23250">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -423,11 +423,11 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 41. /wp-admin/admin-ajax.php?page=ajax-search-lite/backend/settings.php&action=wpdreams-ajaxinput... -->
+      <tr><!-- 41. /wp-admin/admin-ajax.php?page=ajax-search-lite/backend/settings.php&action=wpdreams-ajaxinput... | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7858" title="Ajax Search Lite &lt;= 3.1 - Authenticated RCE">Ajax Search Lite</a></td>
         <td>&lt;= 3.1</td>
         <td><abbr title="Remote Code Execution">RCE</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="http://research.evex.pw/?vuln=9">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post for admin"><a href="http://research.evex.pw/?vuln=9">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -455,11 +455,11 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 45. /wp-admin/admin-ajax.php?action=submit_nex_form&nex_forms_Id=10 AND (SELECT * FROM (SELECT(SLEEP(10)))NdbE) -->
+      <tr><!-- 45. /wp-admin/admin-ajax.php?action=submit_nex_form&nex_forms_Id=10 AND (SELECT * FROM (SELECT(SLEEP(10)))NdbE) | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7928" title="NEX-Forms - Ultimate Form builder &lt;= 3.0 - SQL Injection">NEX-Forms</a></td>
         <td>&lt;= 3.0</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="https://www.exploit-db.com/exploits/36800/">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post for admin"><a href="https://www.exploit-db.com/exploits/36800/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -487,11 +487,11 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
-      <tr><!-- 49. /wp-admin/admin-ajax.php?action=-&mashsb-action=tools_tab_system_info -->
+      <tr><!-- 49. /wp-admin/admin-ajax.php?action=-&mashsb-action=tools_tab_system_info | for admin -->
         <td><a href="https://wpvulndb.com/vulnerabilities/7936" title="Mashshare &lt;= 2.3.0 - Information Disclosure">Mashshare</a></td>
         <td>&lt;= 2.3.0</td>
         <td><abbr title="Authentication Bypass">AB</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="https://research.g0blin.co.uk/g0blin-00045/">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post for admin"><a href="https://research.g0blin.co.uk/g0blin-00045/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -499,7 +499,7 @@ Well then, let's take a look at the results:
         <td><a href="https://wpvulndb.com/vulnerabilities/7871" title="WordPress Leads 1.6.1-1.6.2 - Persistent XSS">WordPress Leads</a></td>
         <td>&lt;= 1.6.2</td>
         <td><abbr title="Cross Site Scripting">XSS</abbr></td>
-        <td><abbr title="Ajax/Post"><a href="https://research.g0blin.co.uk/g0blin-00042/">AX+</a></abbr></td>
+        <td><abbr title="Ajax/Post for privilege and no-privilege user"><a href="https://research.g0blin.co.uk/g0blin-00042/">AX+</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -572,7 +572,7 @@ against preventing zero-day exploitation by WP-ZEP in the real world was about
 Is it still low? -- Yes it is.
 
 So I'd like to make WP-ZEP have an ability to prevent the "Plugin Direct" 
-(without *) vulnerability, which means the true positive becomes to 80%.
+(without *) vulnerability, which means the true positive becomes to 80% !!
 <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2693.png "anchor")
 </span>
