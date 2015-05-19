@@ -62,13 +62,13 @@ class IP_Geo_Block_Rewrite {
 		// while malicios URI may be intercepted by the server,
 		// null byte attack should be invalidated just in case.
 		// ex) $path = "/etc/passwd\0.php"
-//		$path = @realpath( $path ); // should resolve symbolic link?
 		$path = str_replace( "\0", '', $path );
 
 		// check file and extention
 		// @note: is_readable() and is_file() need a valid path.
+		// @link: http://php.net/releases/5_3_4.php, https://bugs.php.net/bug.php?id=39863
 		// ex) is_file("/etc/passwd\0.php") === true (5.2.14), false (5.4.4)
-		if ( ! @is_readable( $path ) && ! @is_file( $path ) ||
+		if ( ! @is_readable( $path ) || ! @is_file( $path ) ||
 		     'php' !== pathinfo( $path, PATHINFO_EXTENSION ) ) {
 			self::abort( $validate, $settings, file_exists( $path ) );
 		}
