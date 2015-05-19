@@ -97,7 +97,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		},
 		wp_content: {
 			path:   'wp-content/plugins/ip-geo-block/test/rewrite-test.php',
-			query:  'wp-load=true',
+			query:  'wp-load=1',
 		},
 		pingback: {
 			xml:

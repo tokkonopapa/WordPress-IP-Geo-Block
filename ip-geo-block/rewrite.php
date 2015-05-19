@@ -51,7 +51,7 @@ class IP_Geo_Block_Rewrite {
 	 */
 	public static function exec( $validate, $settings ) {
 
-		$path  = $_SERVER['DOCUMENT_ROOT'];
+		$path = str_replace( '\\', '/', realpath( $_SERVER['DOCUMENT_ROOT'] ) );
 		$path .= parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
 
 		// check path
@@ -73,7 +73,7 @@ class IP_Geo_Block_Rewrite {
 			self::abort( $validate, $settings, file_exists( $path ) );
 		}
 
-		// execute !!
+		// reconfirm the requested URI is on the file system
 		if ( chdir( dirname( $path ) ) )
 			include_once basename( $path );
 		exit;
@@ -87,7 +87,7 @@ include_once '../../../wp-load.php';
 /**
  * Fallback execution
  *
- * Here's never reached when `Validate access to (plugins/themes)/*.php` is enable.
+ * Here's never reached when `Validate access to (plugins|themes)/*.php` is enable.
  * But when disable, the requested uri should be executed indirectly as a fallback.
  */
 
@@ -112,12 +112,14 @@ endif; /* ! defined( 'IP_GEO_BLOCK_EXEC' ) */
  * </IfModule>
  * # END IP Geo Block
  *
+ * # BEGIN IP Geo Block
  * <IfModule mod_rewrite.c>
  * RewriteEngine on
  * RewriteBase /wordpress/wp-content/plugins/ip-geo-block/
  * RewriteRule ^ip-geo-block/rewrite.php$ - [L]
  * RewriteRule ^.*\.php$ rewrite.php [L]
  * </IfModule>
+ * # END IP Geo Block
  *
  * # BEGIN IP Geo Block
  * <IfModule mod_rewrite.c>
