@@ -41,7 +41,7 @@ class IP_Geo_Block_Logs {
  PRIMARY KEY (`No`),
  KEY `time` (`time`),
  KEY `hook` (`hook`)
-) CHARACTER SET utf8" ); // ENGINE=InnoDB or MyISAM
+) CHARACTER SET utf8" ); // utf8mb4 ENGINE=InnoDB or MyISAM
 	}
 
 	public static function delete_log() {
@@ -94,7 +94,7 @@ class IP_Geo_Block_Logs {
 	 * @note code from wp_check_invalid_utf8() in wp-includes/formatting.php
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
-	private static function validate_utf8( $str ) {
+	public static function validate_utf8( $str ) {
 		$str = (string) $str;
 		if ( 0 === strlen( $str ) )
 			return '';
@@ -402,7 +402,7 @@ class IP_Geo_Block_Logs {
 
 		foreach ( $list as $row ) {
 			$hook = array_shift( $row );
-			$result[ $hook ][] = $row;
+			$result[ $hook ][] = $row; // array_map( 'IP_Geo_Block_Logs::validate_utf8', $row );
 		}
 
 		// must be sanitized just before sending to UA.
