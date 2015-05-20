@@ -51,8 +51,16 @@ class IP_Geo_Block_Rewrite {
 	 */
 	public static function exec( $validate, $settings ) {
 
-		$path = str_replace( '\\', '/', realpath( $_SERVER['DOCUMENT_ROOT'] ) );
-		$path .= parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
+		// get document root
+		// @see wp-admin/network.php
+		// @link http://blog.fyneworks.com/2007/08/php-documentroot-in-iis-windows-servers.html
+		// @link http://stackoverflow.com/questions/11893832/is-it-a-good-idea-to-use-serverdocument-root-in-includes
+		// @link http://davidwalsh.name/iis-php-server-request_uri
+		if ( ! ( $root = realpath( $_SERVER['DOCUMENT_ROOT'] ) ) )
+			$root = substr( $_SERVER['SCRIPT_FILENAME'], 0, -strlen( $_SERVER['SCRIPT_NAME'] ) );
+
+		$path = str_replace( '\\', '/', $root ) .
+		        parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
 
 		// check path
 		if ( preg_match( "/.*\/([^\/]*?)$/", $path, $matches ) )
