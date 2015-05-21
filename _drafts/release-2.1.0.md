@@ -59,6 +59,15 @@ There's a bug that the order of the arguments for the action handler
 `ip-geo-block-backup-dir` was incorrect. Now it works correctly as shown in 
 the [samples.php][samples.php].
 
+### Bug fix ###
+In WordPress 4.2, MySQL tables had been [upgraded to `utf8mb4`][utf8mb4] if 
+it is available. If the charset of the table is `utf8` and there's 4 bytes 
+character in the record, `$wpdb->query()` will fail to insert it into db.
+
+Because `utf8mb4` is available only on MySQL 5.5.3 or higher, I've decided to 
+keep `utf8` for the charset of validation logs. So I added the script which 
+eliminate 4 byte character from the record.
+
 ### Improvement ###
 In the previous version, the "[Referer Suppressor][Referer-Suppressor]", that 
 eliminate the browser's referer, do nothing with an element which is added into 
@@ -71,5 +80,6 @@ The `click` event handler is now delegated at the `body`.
 
 [IP-Geo-Block]:       https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [samples.php]:        https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
+[utf8mb4]:            https://make.wordpress.org/core/2015/04/02/the-utf8mb4-upgrade/ "WordPress › The utf8mb4 Upgrade « Make WordPress Core"
 [investigation]:      {{ "/article/which-attack-prevented.html" | prepend: site.baseurl }} "Whick attacks prevented?"
 [Referer-Suppressor]: {{ "/article/referer-suppressor.html" | prepend: site.baseurl }} "Referer Suppressor for external link"
