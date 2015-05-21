@@ -489,7 +489,7 @@ class IP_Geo_Block {
 				$list = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
 				) );
 
-				// register to check nonce
+				// register validation of nonce
 				if ( ! in_array( $_REQUEST['action'], $list ) ) {
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 				}
@@ -505,7 +505,7 @@ class IP_Geo_Block {
 				$list = apply_filters( self::PLUGIN_SLUG . '-admin-pages', array(
 				) );
 
-				// register to check nonce
+				// register validation of nonce
 				if ( ! in_array( $_REQUEST['page'], $list ) ) {
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 				}
@@ -531,12 +531,12 @@ class IP_Geo_Block {
 			if ( empty( $matches[2] ) || ! in_array( $matches[2], $list ) ) {
 				$type = $matches[1] === self::$content_dir['plugins'] ? 'plugins' : 'themes';
 
-				// register exec direct
-				if ( defined( 'IP_GEO_BLOCK_EXEC' ) ) {
-					add_action( self::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_EXEC, 10, 2 );
+				// register rewrited request
+				if ( defined( 'IP_GEO_BLOCK_REWRITE' ) ) {
+					add_action( self::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_REWRITE, 10, 2 );
 				}
 
-				// register to check nonce
+				// register validation of nonce
 				if ( $settings['validation'][ $type ] >= 2 ) {
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 				}
@@ -546,7 +546,7 @@ class IP_Geo_Block {
 		// Validate country by IP address
 		$validate = $this->validate_ip( 'admin', $settings );
 
-		// Execute requested uri with a rewrite rule in plugins/themes
+		// Execute requested uri via a rewrite rule in plugins/themes
 		if ( has_action( self::PLUGIN_SLUG . '-exec' ) )
 			do_action( self::PLUGIN_SLUG . '-exec', $validate, $settings );
 	}

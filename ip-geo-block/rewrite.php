@@ -1,6 +1,6 @@
 <?php
 /**
- * IP Geo Block - Execute requested URI
+ * IP Geo Block - Execute rewrited request
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
@@ -9,13 +9,13 @@
  * @copyright 2013-2015 tokkonopapa
  */
 
-if ( ! defined( 'IP_GEO_BLOCK_EXEC' ) ):
+if ( ! defined( 'IP_GEO_BLOCK_REWRITE' ) ):
 
 /**
- * Global definition of API
+ * API Definition of this class
  *
  */
-define( 'IP_GEO_BLOCK_EXEC', 'IP_Geo_Block_Rewrite::exec' );
+define( 'IP_GEO_BLOCK_REWRITE', 'IP_Geo_Block_Rewrite::exec' );
 
 class IP_Geo_Block_Rewrite {
 
@@ -23,7 +23,7 @@ class IP_Geo_Block_Rewrite {
 	 * Blocking post process (never return)
 	 *
 	 */
-	public static function abort( $validate, $settings, $exist ) {
+	private static function abort( $validate, $settings, $exist ) {
 
 		$context = IP_Geo_Block::get_instance();
 
@@ -52,14 +52,15 @@ class IP_Geo_Block_Rewrite {
 	public static function exec( $validate, $settings ) {
 
 		// get document root
-		// @see wp-admin/network.php
+		// @see wp-admin/network.php, get_home_path() in wp-admin/includes/file.php
 		// @link http://blog.fyneworks.com/2007/08/php-documentroot-in-iis-windows-servers.html
 		// @link http://stackoverflow.com/questions/11893832/is-it-a-good-idea-to-use-serverdocument-root-in-includes
-		// @link http://davidwalsh.name/iis-php-server-request_uri
-		if ( ! ( $root = realpath( $_SERVER['DOCUMENT_ROOT'] ) ) )
-			$root = substr( $_SERVER['SCRIPT_FILENAME'], 0, -strlen( $_SERVER['SCRIPT_NAME'] ) );
+		if ( ! ( $path = $_SERVER['DOCUMENT_ROOT'] ) )
+			$path = substr( $_SERVER['SCRIPT_FILENAME'], 0, -strlen( $_SERVER['SCRIPT_NAME'] ) );
 
-		$path = str_replace( '\\', '/', $root ) .
+		// get absolute path of requested uri
+		// @link http://davidwalsh.name/iis-php-server-request_uri
+		$path = str_replace( '\\', '/', realpath( $path ) ) .
 		        parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
 
 		// check path
@@ -84,6 +85,7 @@ class IP_Geo_Block_Rewrite {
 		// reconfirm the requested URI is on the file system
 		if ( chdir( dirname( $path ) ) )
 			include_once basename( $path );
+
 		exit;
 	}
 
@@ -104,10 +106,10 @@ IP_Geo_Block_Rewrite::exec(
 	IP_Geo_Block::get_option( 'settings' )
 );
 
-endif; /* ! defined( 'IP_GEO_BLOCK_EXEC' ) */
+endif; /* ! defined( 'IP_GEO_BLOCK_REWRITE' ) */
 
 /**
- * Configuration samples for .htaccess for apache
+ * Configuration samples of .htaccess for apache
  *
  * 1. `wp-content/plugins/.htaccess`
  *
