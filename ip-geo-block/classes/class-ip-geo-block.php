@@ -99,12 +99,12 @@ class IP_Geo_Block {
 			self::$content_dir['themes' ] = "$pos[1]/";
 
 		// wp-content/(plugins|themes)/.../*.php
-		if ( ( $validate['plugins'] && strpos( $_SERVER['REQUEST_URI'], "$plugins/" ) === 0 ) ||
-		     ( $validate['themes' ] && strpos( $_SERVER['REQUEST_URI'], "$themes/"  ) === 0 ) )
+		if ( ( $validate['plugins'] && 0 !== strpos( $_SERVER['REQUEST_URI'], "$plugins/" ) ) ||
+		     ( $validate['themes' ] && 0 !== strpos( $_SERVER['REQUEST_URI'], "$themes/"  ) ) )
 			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
-		elseif ( ( $validate['admin'] || 
+		elseif ( ( $validate['admin'] ||
 		           $validate['ajax' ] ) && is_admin() )
 			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
 
@@ -471,6 +471,7 @@ class IP_Geo_Block {
 	public function validate_admin() {
 		$settings = self::get_option( 'settings' );
 
+		// 1st condition of applying WP-ZEP
 		if ( isset( $_REQUEST['action'] ) ) {
 			global $pagenow; // http://codex.wordpress.org/Global_Variables
 			switch ( $pagenow ) {
@@ -490,15 +491,15 @@ class IP_Geo_Block {
 				) );
 
 				// register validation of nonce
-				if ( ! in_array( $_REQUEST['action'], $list ) ) {
+				if ( ! in_array( $_REQUEST['action'], $list ) )
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
-				}
 			}
 		}
 
+		// 2nd condition of applying WP-ZEP
 		if ( isset( $_REQUEST['page'] ) ) {
 			if ( empty( $type ) && $settings['validation']['admin'] >= 2 ) {
-				// redirect with nonce in referer
+				// redirect if valid nonce in referer
 				$this->trace_nonce();
 
 				// exclude admin pages
@@ -506,9 +507,8 @@ class IP_Geo_Block {
 				) );
 
 				// register validation of nonce
-				if ( ! in_array( $_REQUEST['page'], $list ) ) {
+				if ( ! in_array( $_REQUEST['page'], $list ) )
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
-				}
 			}
 		}
 
@@ -532,14 +532,12 @@ class IP_Geo_Block {
 				$type = $matches[1] === self::$content_dir['plugins'] ? 'plugins' : 'themes';
 
 				// register rewrited request
-				if ( defined( 'IP_GEO_BLOCK_REWRITE' ) ) {
+				if ( defined( 'IP_GEO_BLOCK_REWRITE' ) )
 					add_action( self::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_REWRITE, 10, 2 );
-				}
 
 				// register validation of nonce
-				if ( $settings['validation'][ $type ] >= 2 ) {
+				if ( $settings['validation'][ $type ] >= 2 )
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
-				}
 			}
 		}
 
@@ -547,8 +545,7 @@ class IP_Geo_Block {
 		$validate = $this->validate_ip( 'admin', $settings );
 
 		// Execute requested uri via a rewrite rule in plugins/themes
-		if ( has_action( self::PLUGIN_SLUG . '-exec' ) )
-			do_action( self::PLUGIN_SLUG . '-exec', $validate, $settings );
+		do_action( self::PLUGIN_SLUG . '-exec', $validate, $settings );
 	}
 
 	/**
@@ -584,8 +581,9 @@ class IP_Geo_Block {
 	}
 
 	public function auth_check( $validate, $settings ) {
-		// Check a number of authentication fails
 		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
+
+		// Check a number of authentication fails
 		if ( $cache && $cache['fail'] >= $settings['login_fails'] )
 			$validate['result'] = 'blocked';
 

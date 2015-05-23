@@ -12,5 +12,5 @@
 if ( isset( $_GET['wp-load'] ) && (int)$_GET['wp-load'] )
 	include_once('../../../../wp-load.php');
 if ( isset( $_GET['echo'] ) )
-	echo htmlspecialchars( $_GET['echo'] );
+	echo htmlspecialchars( $_GET['echo'], ENT_QUOTES, 'UTF-8' );
 exit;

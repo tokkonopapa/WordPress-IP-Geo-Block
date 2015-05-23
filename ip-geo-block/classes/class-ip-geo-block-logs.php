@@ -122,7 +122,7 @@ class IP_Geo_Block_Logs {
 
 		// preg_match fails when it encounters invalid UTF8 in $str
 		if ( 1 === preg_match( '/^./us', $str ) ) {
-			// remove utf8mb4 character
+			// remove utf8mb4 4 bytes character
 			// @see strip_invalid_text() in wp-includes/wp-db.php
 			$regex = '/(?:\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2})/';
 			return preg_replace( $regex, '', $str );

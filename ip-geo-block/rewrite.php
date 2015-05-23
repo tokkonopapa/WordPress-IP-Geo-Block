@@ -12,7 +12,7 @@
 if ( ! defined( 'IP_GEO_BLOCK_REWRITE' ) ):
 
 /**
- * API Definition of this class
+ * Define the API of this class
  *
  */
 define( 'IP_GEO_BLOCK_REWRITE', 'IP_Geo_Block_Rewrite::exec' );
@@ -20,7 +20,7 @@ define( 'IP_GEO_BLOCK_REWRITE', 'IP_Geo_Block_Rewrite::exec' );
 class IP_Geo_Block_Rewrite {
 
 	/**
-	 * Blocking post process (never return)
+	 * Post process (never return)
 	 *
 	 */
 	private static function abort( $validate, $settings, $exist ) {

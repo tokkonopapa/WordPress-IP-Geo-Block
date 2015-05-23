@@ -155,10 +155,10 @@ Also thanks for providing the following great services and REST APIs for free.
     Validate access to `wp-admin/admin-(ajax|post)*.php`.
 
 - **Plugins area**  
-    Validate direct access to plugins. Typically `wp-content/plugins/*.php`.
+    Validate direct access to plugins. Typically `wp-content/plugins/…/*.php`.
 
 - **Themes area**  
-    Validate direct access to themes. Typically `wp-content/themes/*.php`.
+    Validate direct access to themes. Typically `wp-content/themes/…/*.php`.
 
 - **$_SERVER keys for extra IPs**  
     Additional IP addresses will be validated if some of keys in `$_SERVER` 
