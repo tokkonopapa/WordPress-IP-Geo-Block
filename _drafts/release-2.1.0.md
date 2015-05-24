@@ -28,6 +28,12 @@ In 2.1.0, the followings are added:
 * `wp-content/plugins/name-of-plugin/…/*.php`
 * `wp-content/themes/name-of-theme/…/*.php`
 
+<div class="row">
+  <div class="center-block" style="max-width:320px">
+    <img class="img-responsive" src='{{ "/img/2015-05/vulnerable-path-e.jpg" | prepend: site.baseurl }}' alt="Path of WordPress plugin's vulnerability" />
+  </div>
+</div>
+
 Along with these expansions, two filter hooks `ip-geo-block-admin-pages` and 
 `ip-geo-block-wp-content` can be available to specify some pages or plugins 
 to drop them from the target. To use those filter hooks, you should add 
@@ -81,5 +87,5 @@ The `click` event handler is now delegated at the `body`.
 [IP-Geo-Block]:       https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [samples.php]:        https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
 [utf8mb4]:            https://make.wordpress.org/core/2015/04/02/the-utf8mb4-upgrade/ "WordPress › The utf8mb4 Upgrade « Make WordPress Core"
-[investigation]:      {{ "/article/which-attack-prevented.html" | prepend: site.baseurl }} "Whick attacks prevented?"
+[investigation]:      {{ "/article/which-attack-prevented.html" | prepend: site.baseurl }} "Which attacks prevented?"
 [Referer-Suppressor]: {{ "/article/referer-suppressor.html" | prepend: site.baseurl }} "Referer Suppressor for external link"

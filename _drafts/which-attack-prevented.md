@@ -90,7 +90,7 @@ For example, 2. is available on "Validation Settings" as follows:
 Well then, let's take a look at the results:
 
 <div class="table-responsive">
-  <a href="https://wpvulndb.com/plugins" title="WordPress Plugin Vulnerabilities"><small>Source: &copy; The WPScan Team</small></a>
+  <cite><a href="https://wpvulndb.com/plugins" title="WordPress Plugin Vulnerabilities"><small>Source: &copy; The WPScan Team</small></a></cite>
   <table id="my-table" class="table">
     <thead>
       <tr>
@@ -504,7 +504,7 @@ Well then, let's take a look at the results:
         <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr class="no-sort"><!-- Summary -->
-        <th class="text-right" colspan="4">The total amount of <span class="label label-success">OK</span></tt>
+        <th class="text-right" colspan="4">The total amount of <span class="label label-success">OK</span></th>
         <td class="text-center">33</td>
         <td class="text-center">30</td>
       </tr>
