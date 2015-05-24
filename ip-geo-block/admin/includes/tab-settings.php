@@ -377,7 +377,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'maxmind';
 	add_settings_field(
 		$option_name . "_${field}_ipv4",
-		__( 'Path to database (IPv4)', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Path to database', IP_Geo_Block::TEXT_DOMAIN ) . ' (IPv4)',
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -398,7 +398,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	add_settings_field(
 		$option_name . "_${field}_ipv6",
-		__( 'Path to database (IPv6)', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Path to database', IP_Geo_Block::TEXT_DOMAIN ) . ' (IPv6)',
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,

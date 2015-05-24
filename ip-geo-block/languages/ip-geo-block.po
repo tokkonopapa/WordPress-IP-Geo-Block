@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-05-24 18:29+0900\n"
-"PO-Revision-Date: 2015-05-24 18:30+0900\n"
+"POT-Creation-Date: 2015-05-24 20:42+0900\n"
+"PO-Revision-Date: 2015-05-24 20:44+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -295,18 +295,14 @@ msgstr ""
 msgid "Maxmind GeoLite settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:380
-msgid "Path to database (IPv4)"
+#: admin/includes/tab-settings.php:380 admin/includes/tab-settings.php:401
+msgid "Path to database"
 msgstr ""
 
 #: admin/includes/tab-settings.php:393 admin/includes/tab-settings.php:414
 #: includes/download.php:126
 #, php-format
 msgid "Last update: %s"
-msgstr ""
-
-#: admin/includes/tab-settings.php:401
-msgid "Path to database (IPv6)"
 msgstr ""
 
 #: admin/includes/tab-settings.php:423
