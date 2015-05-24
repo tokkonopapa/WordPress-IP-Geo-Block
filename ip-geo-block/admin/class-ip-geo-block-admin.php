@@ -352,7 +352,7 @@ class IP_Geo_Block_Admin {
 				( FALSE  === $val   && ! empty( $args['value'][ $key ] ) ) ||
 				( is_string( $val ) && ! empty( $args['value'][ $key ] ) )
 			); ?> />
-		<label for="<?php echo $id; ?>" title="<?php echo $args['titles'][ $key ]; ?>"><?php echo $key; ?></label>
+		<label for="<?php echo $id; ?>" title="<?php echo esc_attr( $args['titles'][ $key ] ); ?>"><?php echo $key; ?></label>
 <?php
 				if ( is_string( $val ) ) { ?>
 		<input type="text" class="regular-text code" name="<?php echo $name; ?>" value="<?php echo esc_attr( isset( $args['value'][ $key ] ) ? $args['value'][ $key ] : '' ); ?>"<?php if ( ! isset( $val ) ) disabled( TRUE, TRUE ); ?> />
@@ -386,7 +386,7 @@ class IP_Geo_Block_Admin {
 
 		  case 'checkbox': ?>
 <input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="1"<?php checked( esc_attr( $args['value'] ) ); ?> />
-<label for="<?php echo $id, $sub_id; ?>"><?php _e( 'Enable', IP_Geo_Block::TEXT_DOMAIN ); ?></label>
+<label for="<?php echo $id, $sub_id; ?>"><?php echo esc_attr( isset( $args['text'] ) ? $args['text'] : __( 'Enable', IP_Geo_Block::TEXT_DOMAIN ) ); ?></label>
 <?php
 			break;
 

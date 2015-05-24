@@ -108,13 +108,14 @@ function ip_geo_block_tab_settings( $context ) {
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
+				'text' => __( 'Block by country', IP_Geo_Block::TEXT_DOMAIN ),
 			)
 		);
 	}
 
 	$title = array(
 		__( 'Disable',                  IP_Geo_Block::TEXT_DOMAIN ) => 0,
-		__( 'Enable',                   IP_Geo_Block::TEXT_DOMAIN ) => 1,
+		__( 'Block by country',         IP_Geo_Block::TEXT_DOMAIN ) => 1,
 		__( 'Prevent zero-day exploit', IP_Geo_Block::TEXT_DOMAIN ) => 2,
 	);
 
@@ -220,7 +221,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'white_list';
 	add_settings_field(
 		$option_name . "_$field",
-		sprintf( __( '<dfn title="If empty then pass through">White list</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
+		sprintf( __( '<dfn title="If empty then pass through">%s</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), __( 'White list', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -236,7 +237,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'black_list';
 	add_settings_field(
 		$option_name . "_$field",
-		sprintf( __( '<dfn title="If empty then pass through">Black list</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
+		sprintf( __( '<dfn title="If empty then pass through">%s</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), __( 'Black list', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
