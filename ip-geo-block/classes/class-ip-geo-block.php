@@ -99,8 +99,8 @@ class IP_Geo_Block {
 			self::$content_dir['themes' ] = "$pos[1]/";
 
 		// wp-content/(plugins|themes)/.../*.php
-		if ( ( $validate['plugins'] && 0 !== strpos( $_SERVER['REQUEST_URI'], "$plugins/" ) ) ||
-		     ( $validate['themes' ] && 0 !== strpos( $_SERVER['REQUEST_URI'], "$themes/"  ) ) )
+		if ( ( $validate['plugins'] && 0 === strpos( $_SERVER['REQUEST_URI'], "$plugins/" ) ) ||
+		     ( $validate['themes' ] && 0 === strpos( $_SERVER['REQUEST_URI'], "$themes/"  ) ) )
 			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
