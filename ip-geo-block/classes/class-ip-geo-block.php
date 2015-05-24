@@ -92,10 +92,10 @@ class IP_Geo_Block {
 		$plugins = parse_url( plugins_url(),        PHP_URL_PATH );
 		$themes  = parse_url( get_theme_root_uri(), PHP_URL_PATH );
 
-		if ( preg_match( '/\/(.*?\/.*?)$/', $plugins, $pos ) )
+		if ( preg_match( '/^.*\/(.*?\/.*?)$/', $plugins, $pos ) )
 			self::$content_dir['plugins'] = "$pos[1]/";
 
-		if ( preg_match( '/\/(.*?\/.*?)$/', $themes,  $pos ) )
+		if ( preg_match( '/^.*\/(.*?\/.*?)$/', $themes,  $pos ) )
 			self::$content_dir['themes' ] = "$pos[1]/";
 
 		// wp-content/(plugins|themes)/.../*.php
