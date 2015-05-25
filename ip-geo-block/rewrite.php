@@ -12,7 +12,7 @@
 if ( ! defined( 'IP_GEO_BLOCK_REWRITE' ) ):
 
 /**
- * Define the API of this class
+ * API definition of this class
  *
  */
 define( 'IP_GEO_BLOCK_REWRITE', 'IP_Geo_Block_Rewrite::exec' );
@@ -45,7 +45,7 @@ class IP_Geo_Block_Rewrite {
 	}
 
 	/**
-	 * Validate direct excution
+	 * Validation of direct excution
 	 *
 	 * @note: This function doesn't care about malicious query string.
 	 */
@@ -64,9 +64,9 @@ class IP_Geo_Block_Rewrite {
 		        parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
 
 		// check path
-		if ( preg_match( "/.*\/([^\/]*?)$/", $path, $matches ) )
+		if ( preg_match( "/\/([^\/]*)$/", $path, $matches ) )
 			if ( empty( $matches[1] ) )
-				$path .= "index.php";
+				$path .= 'index.php';
 
 		// while malicios URI may be intercepted by the server,
 		// null byte attack should be invalidated just in case.

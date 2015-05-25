@@ -9,8 +9,12 @@
  * @copyright 2015 tokkonopapa
  */
 
-if ( isset( $_GET['wp-load'] ) && (int)$_GET['wp-load'] )
-	include_once('../../../../wp-load.php');
+if ( isset( $_GET['wp-load'] ) && (int)$_GET['wp-load'] ) {
+	$home = substr( __FILE__, 0, strpos( __FILE__, '/wp-content/' ) );
+	include_once  "$home/wp-load.php";
+}
+
 if ( isset( $_GET['echo'] ) )
 	echo htmlspecialchars( $_GET['echo'], ENT_QUOTES, 'UTF-8' );
+
 exit;
