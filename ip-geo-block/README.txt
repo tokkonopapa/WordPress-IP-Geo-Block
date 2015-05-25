@@ -366,7 +366,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
   area, plugins area, themes area. Now it can prevent a direct malicios attack 
   to the file in plugins and themes area. Please go to the "Validation Settings"
   on "Settings" tab and check it. Also check my article in 
-  "[Whick attacks can WP-ZEP prevent?](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/which-attacks-prevented.html)".
+  "[Analysis of Attack Vector against WP Plugins](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/analysis-attack-vector.html)".
 * **Bug fix:** Fixed the issue that action hook `ip-geo-block-backup-dir` did 
   not work correctly because the order of argument was mismatched.
 * **Bug fix:** Fixed the issue that a record including utf8 4 bytes character 
