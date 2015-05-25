@@ -87,5 +87,5 @@ The `click` event handler is now delegated at the `body`.
 [IP-Geo-Block]:       https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [samples.php]:        https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
 [utf8mb4]:            https://make.wordpress.org/core/2015/04/02/the-utf8mb4-upgrade/ "WordPress › The utf8mb4 Upgrade « Make WordPress Core"
-[investigation]:      {{ "/article/which-attack-prevented.html" | prepend: site.baseurl }} "Which attacks prevented?"
+[investigation]:      {{ "/article/analysis-attack-vector.html" | prepend: site.baseurl }} "Analysis of Attack Vector against WP Plugins"
 [Referer-Suppressor]: {{ "/article/referer-suppressor.html" | prepend: site.baseurl }} "Referer Suppressor for external link"
