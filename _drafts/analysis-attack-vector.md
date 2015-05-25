@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Which attack can WP-ZEP prevent?"
+title:  "Analysis of Attack Vector against WP Plugins"
 date:   2015-05-01 00:00:01
 categories: article
 published: true
