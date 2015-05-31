@@ -101,10 +101,12 @@ include_once '../../../wp-load.php';
  * But when disable, the requested uri should be executed indirectly as a fallback.
  */
 
-IP_Geo_Block_Rewrite::exec(
-	IP_Geo_Block::get_geolocation(),
-	IP_Geo_Block::get_option( 'settings' )
-);
+if ( class_exists( 'IP_Geo_Block' ) ) {
+	IP_Geo_Block_Rewrite::exec(
+		IP_Geo_Block::get_geolocation(),
+		IP_Geo_Block::get_option( 'settings' )
+	);
+}
 
 endif; /* ! defined( 'IP_GEO_BLOCK_REWRITE' ) */
 

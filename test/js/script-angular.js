@@ -79,7 +79,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			comment_parent: 0
 		},
 		trackback: {
-			title: 'About spam',
+			title: "Hi, I'm spam.",
 			excerpt: 'This is a trackback spam.',
 			url: 'http://example.com/',
 			blog_name: 'Spammer\'s'

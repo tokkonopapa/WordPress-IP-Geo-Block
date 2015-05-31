@@ -121,7 +121,7 @@ echo "Creating new SVN tag & committing it"
 cd $SVNPATH
 
 # Delete unused files
-# svn delete --force trunk/classes/class-ip-geo-block-api.php trunk/includes/upgrade.php trunk/admin/js/footable.all.min.js
+svn delete --force trunk/classes/class-ip-geo-block-api.php trunk/includes/upgrade.php trunk/admin/js/footable.all.min.js
 
 # Copy all files to tags
 svn copy trunk/ tags/$NEWVERSION1/
