@@ -104,8 +104,7 @@ class IP_Geo_Block {
 			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
-		elseif ( ( $validate['admin'] ||
-		           $validate['ajax' ] ) && is_admin() )
+		elseif ( ( $validate['admin'] || $validate['ajax'] ) && is_admin() )
 			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
 
 		// Load authenticated nonce
@@ -348,14 +347,19 @@ class IP_Geo_Block {
 			wp_redirect( 'http://blackhole.webpagetest.org/', (int)$code );
 			die();
 
-		  case 4: // 4xx Client Error ('text/html' is only for comment and login)
-			if ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) )
-				wp_die( get_status_header_desc( $code ), '',
-					array( 'response' => (int)$code, 'back_link' => TRUE )
-				);
-
-		  default: // 5xx Server Error
+		  default: // 4xx Client Error, 5xx Server Error
 			status_header( (int)$code ); // @since 2.0.0
+			if ( count( preg_grep( "/content-type:\s*?text\/xml;/i", headers_list() ) ) )
+				@trackback_response( $code, get_status_header_desc( $code ) );
+			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
+				if ( 404 == $code && @is_readable( TEMPLATEPATH . '/404.php' ) )
+					include( TEMPLATEPATH . '/404.php' );
+				else {
+					wp_die( get_status_header_desc( $code ), '',
+						array( 'response' => (int)$code, 'back_link' => TRUE )
+					);
+				}
+			}
 			die();
 		}
 	}

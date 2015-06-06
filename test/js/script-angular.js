@@ -79,7 +79,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			comment_parent: 0
 		},
 		trackback: {
-			title: "Hi, I'm spam.",
+			title: "Hi, I'm a spam.",
 			excerpt: 'This is a trackback spam.',
 			url: 'http://example.com/',
 			blog_name: 'Spammer\'s'
@@ -273,7 +273,9 @@ angular.module('WPApp').controller('WPAppCtrl', [
 
 		var form = serialize_plain($scope.form.trackback);
 		svcProxy.post_form(url, form, proxy, 'POST').then(function (res) {
-			messageOut('Trackback', res.stat);
+			messageOut('Trackback', res.stat.replace(
+				/^(\d{3}\s+?\w+).*<message>(.*?)<\/message>.*$/, "$1 $2"
+			));
 		});
 	}
 
