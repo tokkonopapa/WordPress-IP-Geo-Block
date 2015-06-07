@@ -538,7 +538,7 @@ class IP_Geo_Block {
 					add_action( self::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_REWRITE, 10, 2 );
 
 				// register validation of nonce
-				if ( $settings['validation'][ $matches[1] ? 'plugins' : 'themes' ] >= 2 )
+				if ( $settings['validation'][ isset( $matches[1] ) ? 'plugins' : 'themes' ] >= 2 )
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 			}
 		}
