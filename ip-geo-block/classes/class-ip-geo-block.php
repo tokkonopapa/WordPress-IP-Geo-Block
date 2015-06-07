@@ -108,7 +108,7 @@ class IP_Geo_Block {
 			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
 
 		// Load authenticated nonce
-		if ( $this->logged_in = is_user_logged_in() )
+		if ( $this->logged_in = is_user_logged_in() ) // or user_can_access_admin_page()
 			add_action( 'wp_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ), $settings['priority'] );
 	}
 
@@ -527,20 +527,18 @@ class IP_Geo_Block {
 		$plugins = preg_quote( self::$content_dir['plugins'], '/' );
 		$themes  = preg_quote( self::$content_dir['themes' ], '/' );
 
-		if ( preg_match( "/\/($plugins|$themes)([^\/]*)\//", $_SERVER['REQUEST_URI'], $matches ) ) {
+		if ( preg_match( "/\/(?:($plugins)|($themes))([^\/]*)\//", $_SERVER['REQUEST_URI'], $matches ) ) {
 			// exclude certain plugin/theme
 			$list = apply_filters( self::PLUGIN_SLUG . '-wp-content', array(
 			) );
 
-			if ( empty( $matches[2] ) || ! in_array( $matches[2], $list ) ) {
-				$type = $matches[1] === self::$content_dir['plugins'] ? 'plugins' : 'themes';
-
+			if ( empty( $matches[3] ) || ! in_array( $matches[3], $list ) ) {
 				// register rewrited request
 				if ( defined( 'IP_GEO_BLOCK_REWRITE' ) )
 					add_action( self::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_REWRITE, 10, 2 );
 
 				// register validation of nonce
-				if ( $settings['validation'][ $type ] >= 2 )
+				if ( $settings['validation'][ $matches[1] ? 'plugins' : 'themes' ] >= 2 )
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 			}
 		}
@@ -599,13 +597,11 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_nonce( $validate, $settings ) {
-		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
+		$nonce = self::PLUGIN_SLUG . ( $this->logged_in ? '-auth-nonce' : '-pub-nonce' );
 		$value = self::retrieve_nonce( $nonce );
 
-		if ( ! $this->logged_in || // or user_can_access_admin_page()
-		     ! $value || ! wp_verify_nonce( $value, $nonce ) ) {
+		if ( ! $value || ! wp_verify_nonce( $value, $nonce ) )
 			$validate['result'] = 'blocked';
-		}
 
 		return $validate;
 	}

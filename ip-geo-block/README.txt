@@ -361,6 +361,10 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 == Changelog ==
 
+= 2.1.1 =
+* **Improvement:** Improved response at blocking. The 404.php in the theme 
+  template directory is used if it exists.
+
 = 2.1.0 =
 * **New feature:** Expanded the operating range of ZP-ZEP, that includes admin 
   area, plugins area, themes area. Now it can prevent a direct malicios attack 
