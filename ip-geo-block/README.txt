@@ -4,7 +4,7 @@ Donate link:
 Tags: comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.2.1
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -281,9 +281,9 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
-* `ip-geo-block-admin-actions`    : array of actions for `wp-admin/(admin|admin-ajax|admin-post).php`.
-* `ip-geo-block-admin-pages`      : array of page for `wp-admin/*.php`.
-* `ip-geo-block-wp-content`       : array of name for the plugin/theme directory.
+* `ip-geo-block-bypass-queries`   : array of query string which should bypass WP-ZEP.
+* `ip-geo-block-bypass-plugins`   : array of plugin name which should bypass WP-ZEP.
+* `ip-geo-block-bypass-themes`    : array of theme name which should bypass WP-ZEP.
 * `ip-geo-block-backup-dir`       : full path where log files should be saved.
 * `ip-geo-block-maxmind-dir`      : full path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
@@ -315,8 +315,8 @@ See more details on
 = Some admin function doesn't work when WP-ZEP is on. =
 
 There are a few cases that WP-ZEP would not work. One is redirection at server 
-side (by PHP or `.htaccess`) and client side (by JavaScript location object or 
-meta tag for refresh).
+side (caused by PHP or `.htaccess`) and client side (by caused JavaScript 
+location object or meta tag for refresh).
 
 Another is the case related to the content type. This plugin will only support 
  `application/x-www-form-urlencoded` and `multipart/form-data`.
@@ -324,9 +324,9 @@ Another is the case related to the content type. This plugin will only support
 The other case is that a ajax/post request comes from not jQuery but flash or 
 something.
 
-In those cases, this plugin should bypass WP-ZEP. So please find the `action` 
-in the requested queries and add its value into the safe action list via the 
-filter hook `ip-geo-block-admin-actions`.
+In those cases, this plugin should bypass WP-ZEP. So please find the unique 
+strings in the requested queries and add it into the safe query list via the 
+filter hook `ip-geo-block-bypass-queries`.
 
 If you can not figure out your troubles, please let me know about the plugin 
 you are using at the support forum.
@@ -364,6 +364,10 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 = 2.1.1 =
 * **Improvement:** Improved response at blocking. The 404.php in the theme 
   template directory is used if it exists.
+* **Obsoleted:** Obsoleted the filter hooks 
+  `ip-geo-block-(admin-actions|admin-pages|wp-content)`. Alternatively new 
+  filter hooks `ip-geo-block-bypass-(queries|plugins|themes)` are added to 
+  bypass WP-ZEP. See more detail at [release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.1.html "Release 2.1.1").
 
 = 2.1.0 =
 * **New feature:** Expanded the operating range of ZP-ZEP, that includes admin 

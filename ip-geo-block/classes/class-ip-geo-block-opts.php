@@ -53,6 +53,8 @@ class IP_Geo_Block_Options {
 			    // since version 2.1.0
 			    'plugins'     => 0,       // Validate on wp-content/plugins
 			    'themes'      => 0,       // Validate on wp-content/themes
+			    // since version 2.1.1
+			    'public'      => FALSE,   // Validate on public facing pages
 			),
 			'update'          => array(   // Updating IP address DB
 			    'auto'        => TRUE,    // Auto updating of DB file
@@ -175,6 +177,9 @@ class IP_Geo_Block_Options {
 				foreach ( array( 'plugins', 'themes' ) as $tmp )
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
 			}
+
+			if ( version_compare( $settings['version'], '2.1.1' ) < 0 )
+				$settings['validation']['public'] = $default[ $key[0] ]['validation']['public'];
 
 			// update local goelocation database files
 			$settings['ip2location']['ipv4_path'] = $ip2;

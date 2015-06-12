@@ -20,7 +20,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.1.0';
+	const VERSION = '2.1.1';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -62,7 +62,7 @@ class IP_Geo_Block {
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] && ! has_action( self::CRON_NAME ) )
-			add_action( self::CRON_NAME, array( 'IP_Geo_Block', 'download_database' ) );
+			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ) );
 
 		if ( $validate['comment'] ) {
 			// message text on comment form
@@ -78,14 +78,16 @@ class IP_Geo_Block {
 
 		// xmlrpc.php @since 3.1.0, wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
 		if ( $validate['xmlrpc'] ) {
-			add_filter( 'wp_xmlrpc_server_class', array( $this, 'validate_xmlrpc' ) );
+			add_filter( 'wp_xmlrpc_server_class', array( $this, 'validate_filter' ) );
 			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ) );
 		}
 
-		// wp-login.php @since 2.1.0, wp-includes/pluggable.php @since 2.5.0
-		if ( $validate['login'] ) {
+		// wp-login.php @since 2.1.0
+		if ( 1 == $validate['login'] ) { // wp-includes/pluggable.php @since 2.5.0
 			add_action( 'login_init', array( $this, 'validate_login' ) );
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
+		} elseif ( 2 == $validate['login'] ) { // wp-include/user.php @since 2.1.0
+			add_filter( 'user_registration_email', array( $this, 'validate_filter' ) );
 		}
 
 		// get content folders (with trailing slash)
@@ -93,32 +95,31 @@ class IP_Geo_Block {
 		$themes  = parse_url( get_theme_root_uri(), PHP_URL_PATH );
 
 		if ( preg_match( '/\/([^\/]*\/[^\/]*)$/', $plugins, $pos ) )
-			self::$content_dir['plugins'] = "$pos[1]/";
+			self::$content_dir['plugins'] = $plugins = "$pos[1]/";
 
 		if ( preg_match( '/\/([^\/]*\/[^\/]*)$/', $themes,  $pos ) )
-			self::$content_dir['themes' ] = "$pos[1]/";
+			self::$content_dir['themes' ] = $themes  = "$pos[1]/";
 
 		// wp-content/(plugins|themes)/.../*.php
-		if ( ( $validate['plugins'] && 0 === strpos( $_SERVER['REQUEST_URI'], "$plugins/" ) ) ||
-		     ( $validate['themes' ] && 0 === strpos( $_SERVER['REQUEST_URI'], "$themes/"  ) ) )
+		if ( ( $validate['plugins'] && FALSE !== strpos( $_SERVER['REQUEST_URI'], "/$plugins" ) ) ||
+		     ( $validate['themes' ] && FALSE !== strpos( $_SERVER['REQUEST_URI'], "/$themes"  ) ) )
 			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
 		elseif ( ( $validate['admin'] || $validate['ajax'] ) && is_admin() )
 			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
 
-		// Load authenticated nonce
-		if ( $this->logged_in = is_user_logged_in() ) // or user_can_access_admin_page()
-			add_action( 'wp_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ), $settings['priority'] );
+		// embed a nonce into the page / cf. user_can_access_admin_page()
+		if ( $this->logged_in = is_user_logged_in() )
+			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $settings['priority'] );
 	}
 
 	// Register and enqueue admin-specific style sheet and JavaScript.
 	public static function enqueue_nonce() {
-		wp_enqueue_script( $handle = self::PLUGIN_SLUG . '-auth-nonce',
-			plugins_url( 'admin/js/auth-nonce.js', IP_GEO_BLOCK_BASE ),
-			array( 'jquery' ), self::VERSION
-		);
+		$handle = self::PLUGIN_SLUG . '-auth-nonce';
+		$script = plugins_url( 'admin/js/auth-nonce.js', IP_GEO_BLOCK_BASE );
 
+		wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
 		wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH',
 			array( 'nonce' => wp_create_nonce( $handle ) ) + self::$content_dir
 		);
@@ -130,7 +131,7 @@ class IP_Geo_Block {
 		return IP_Geo_Block_Options::get_table( self::$option_keys[ $name ] );
 	}
 
-	// get optional values from wp_options
+	// get optional values from wp options
 	public static function get_option( $name = 'settings' ) {
 		if ( FALSE === ( $option = get_option( self::$option_keys[ $name ] ) ) )
 			$option = self::get_default( $name );
@@ -177,7 +178,7 @@ class IP_Geo_Block {
 
 		// execute to download immediately
 		if ( $settings['update']['auto'] ) {
-			add_action( self::CRON_NAME, array( 'IP_Geo_Block', 'download_database' ) );
+			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ) );
 			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
 		}
 
@@ -287,15 +288,18 @@ class IP_Geo_Block {
 	 *
 	 */
 	private function validate_country( $validate, $settings ) {
-		if ( 0 == $settings['matching_rule'] ) {
+		// when 'login' is disable, logged in user takes priority
+		if ( ! $settings['validation']['login'] && self::$logged_in )
+			return $validate + array( 'result' => 'passed' );
+
+		elseif ( 0 == $settings['matching_rule'] ) {
 			// Whitelist
 			$list = $settings['white_list'];
 			if ( ! $list || FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'passed' );
 			elseif ( 'ZZ' !== $validate['code'] )
 				return $validate + array( 'result' => 'blocked' );
-		}
-		else {
+		} else {
 			// Blacklist
 			$list = $settings['black_list'];
 			if ( $list && FALSE !== strpos( $list, $validate['code'] ) )
@@ -458,7 +462,6 @@ class IP_Geo_Block {
 	public function validate_trackback( $commentdata ) {
 		if ( 'trackback' === $commentdata['comment_type'] )
 			$this->validate_ip( 'comment', self::get_option( 'settings' ) );
-
 		return $commentdata;
 	}
 
@@ -467,53 +470,49 @@ class IP_Geo_Block {
 			$this->validate_ip( 'login', self::get_option( 'settings' ) );
 	}
 
-	public function validate_xmlrpc( $something ) {
-		$this->validate_ip( 'xmlrpc', self::get_option( 'settings' ) );
+	public function validate_filter( $something ) {
+		global $pagenow; // http://codex.wordpress.org/Global_Variables
+		$this->validate_ip(
+			'xmlrpc.php' === $pagenow ? 'xmlrpc' : 'login',
+			self::get_option( 'settings' )
+		);
 		return $something; // pass through
 	}
 
 	public function validate_admin() {
 		$settings = self::get_option( 'settings' );
+		$query = isset( $_REQUEST['action'] ) ? "_{$_REQUEST['action']}" : '';
 
-		// 1st condition of applying WP-ZEP
-		if ( isset( $_REQUEST['action'] ) ) {
-			global $pagenow; // http://codex.wordpress.org/Global_Variables
-			switch ( $pagenow ) {
-			  case 'admin-ajax.php':
-				$type = has_action( "wp_ajax_nopriv_{$_REQUEST['action']}" ) ? NULL : 'ajax';
-				break;
-			  case 'admin-post.php':
-				$type = has_action( "admin_post_nopriv_{$_REQUEST['action']}" ) ? NULL : 'ajax';
-				break;
-			  case 'admin.php':
-				$type = has_action( "admin_action_{$_REQUEST['action']}" ) ? 'admin' : NULL;
-			}
-
-			if ( isset( $type ) && $settings['validation'][ $type ] >= 2 ) {
-				// exclude admin actions
-				$list = apply_filters( self::PLUGIN_SLUG . '-admin-actions', array(
-				) );
-
-				// register validation of nonce
-				if ( ! in_array( $_REQUEST['action'], $list ) )
-					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
-			}
+		global $pagenow; // http://codex.wordpress.org/Global_Variables
+		switch ( $pagenow ) {
+		  case 'admin-ajax.php':
+			$type = $query && ! has_action( "wp_ajax_nopriv{$query}" ) ? 'ajax' : NULL;
+			break;
+		  case 'admin-post.php':
+			$type = $query && ! has_action( "admin_post_nopriv{$query}" ) ? 'ajax' : NULL;
+			break;
+		  default:
+			$type = empty( $_GET ) && empty( $_POST ) ? NULL : 'admin';
 		}
 
-		// 2nd condition of applying WP-ZEP
-		if ( isset( $_REQUEST['page'] ) ) {
-			if ( empty( $type ) && $settings['validation']['admin'] >= 2 ) {
-				// redirect if valid nonce in referer
-				$this->trace_nonce();
+		if ( isset( $type ) && $settings['validation'][ $type ] >= 2 ) {
+			// redirect if valid nonce in referer
+			$this->trace_nonce();
 
-				// exclude admin pages
-				$list = apply_filters( self::PLUGIN_SLUG . '-admin-pages', array(
-				) );
+			// list of request with a specific query to bypass WP-ZEP
+			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-queries', array(
+			) );
 
-				// register validation of nonce
-				if ( ! in_array( $_REQUEST['page'], $list ) )
-					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+			// register validation of nonce
+			$request = urldecode( http_build_query( $_GET + $_POST ) );
+			foreach ( $list as $query ) {
+				if ( FALSE !== strpos( $request, $query ) ) {
+					$type = NULL;
+					break;
+				}
 			}
+			if ( $type )
+				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 		}
 
 		// Validate country by IP address
@@ -528,19 +527,24 @@ class IP_Geo_Block {
 		$themes  = preg_quote( self::$content_dir['themes' ], '/' );
 
 		if ( preg_match( "/\/(?:($plugins)|($themes))([^\/]*)\//", $_SERVER['REQUEST_URI'], $matches ) ) {
-			// exclude certain plugin/theme
-			$list = apply_filters( self::PLUGIN_SLUG . '-wp-content', array(
-			) );
+			// list of plugins/themes to bypass WP-ZEP
+			$list = array(
+				'plugins' => array(),
+				'themes'  => array(),
+			);
 
+			$type = isset( $matches[1] ) ? 'plugins' : 'themes';
+			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $list[ $type ] );
+
+			// register validation of nonce
 			if ( empty( $matches[3] ) || ! in_array( $matches[3], $list ) ) {
-				// register rewrited request
-				if ( defined( 'IP_GEO_BLOCK_REWRITE' ) )
-					add_action( self::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_REWRITE, 10, 2 );
-
-				// register validation of nonce
-				if ( $settings['validation'][ isset( $matches[1] ) ? 'plugins' : 'themes' ] >= 2 )
+				if ( $settings['validation'][ $type ] >= 2 )
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
 			}
+
+			// register rewrited request
+			if ( defined( 'IP_GEO_BLOCK_REWRITE' ) )
+				add_action( self::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_REWRITE, 10, 2 );
 		}
 
 		// Validate country by IP address
@@ -597,10 +601,10 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_nonce( $validate, $settings ) {
-		$nonce = self::PLUGIN_SLUG . ( $this->logged_in ? '-auth-nonce' : '-pub-nonce' );
+		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
 		$value = self::retrieve_nonce( $nonce );
 
-		if ( ! $value || ! wp_verify_nonce( $value, $nonce ) )
+		if ( ! $this->logged_in || ! $value || ! wp_verify_nonce( $value, $nonce ) )
 			$validate['result'] = 'blocked';
 
 		return $validate;

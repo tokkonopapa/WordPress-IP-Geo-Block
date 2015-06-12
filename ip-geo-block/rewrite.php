@@ -97,10 +97,10 @@ include_once '../../../wp-load.php';
 /**
  * Fallback execution
  *
- * Here's never reached when `Validate access to (plugins|themes)/*.php` is enable.
- * But when disable, the requested uri should be executed indirectly as a fallback.
+ * Here's never reached if `Validate access to wp-content/(plugins|themes)/.../*.php`
+ * is enable. But in case of disable, the requested uri should be executed indirectly
+ * as a fallback.
  */
-
 if ( class_exists( 'IP_Geo_Block' ) ) {
 	IP_Geo_Block_Rewrite::exec(
 		IP_Geo_Block::get_geolocation(),
