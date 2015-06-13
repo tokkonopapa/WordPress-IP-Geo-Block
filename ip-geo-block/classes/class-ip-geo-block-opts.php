@@ -40,7 +40,7 @@ class IP_Geo_Block_Options {
 			'login_fails'     => 5,       // Limited number of login attempts
 			'validation'      => array(   // Action hook for validation
 			    'comment'     => TRUE,    // Validate on comment post
-			    'login'       => TRUE,    // Validate on login
+			    'login'       => 1,       // Validate on login
 			    'admin'       => 0,       // Validate on admin
 			    'ajax'        => 0,       // Validate on ajax/post
 			    'xmlrpc'      => TRUE,    // Validate on xmlrpc

@@ -281,7 +281,7 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
-* `ip-geo-block-bypass-queries`   : array of query string which should bypass WP-ZEP.
+* `ip-geo-block-bypass-admins`    : array of query string which should bypass WP-ZEP.
 * `ip-geo-block-bypass-plugins`   : array of plugin name which should bypass WP-ZEP.
 * `ip-geo-block-bypass-themes`    : array of theme name which should bypass WP-ZEP.
 * `ip-geo-block-backup-dir`       : full path where log files should be saved.
@@ -326,7 +326,7 @@ something.
 
 In those cases, this plugin should bypass WP-ZEP. So please find the unique 
 strings in the requested queries and add it into the safe query list via the 
-filter hook `ip-geo-block-bypass-queries`.
+filter hook `ip-geo-block-bypass-admins`.
 
 If you can not figure out your troubles, please let me know about the plugin 
 you are using at the support forum.
@@ -362,12 +362,19 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.1.1 =
+* **New feature:** Added `Block by country at registration` on `Login form`.
+  Previously, every validation by county code and WP-ZEP is always prior to 
+  the state of logged in. In this release, though the `Block by country` on 
+  `Login form` is exactly the same as the previous version, note that `Disable`
+  and `Block by country at registration` will always bypass other validations 
+  of country code (but all WP-ZEP are still effective) when the user logged in.
 * **Improvement:** Improved response at blocking. The 404.php in the theme 
   template directory is used if it exists.
 * **Obsoleted:** Obsoleted the filter hooks 
   `ip-geo-block-(admin-actions|admin-pages|wp-content)`. Alternatively new 
-  filter hooks `ip-geo-block-bypass-(queries|plugins|themes)` are added to 
-  bypass WP-ZEP. See more detail at [release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.1.html "Release 2.1.1").
+  filter hooks `ip-geo-block-bypass-(admins|plugins|themes)` are added to 
+  bypass WP-ZEP.
+* Find out more details in the [release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.1.html "Release 2.1.1").
 
 = 2.1.0 =
 * **New feature:** Expanded the operating range of ZP-ZEP, that includes admin 

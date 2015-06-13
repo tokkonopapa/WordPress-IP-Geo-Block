@@ -166,13 +166,13 @@ add_filter( 'ip-geo-block-admin', 'my_permission' );
 
 
 /**
- * Example 8: Usage of 'ip-geo-block-bypass-queries'
+ * Example 8: Usage of 'ip-geo-block-bypass-admins'
  * Use case: Specify the admin request with a specific query string to bypass WP-ZEP
  *
  * @param  array of query string which should be excluded from ZEP
  * @return array of query string which should be excluded from ZEP
  */
-function my_bypass_queries( $queries ) {
+function my_bypass_admins( $queries ) {
 	// <form method="POST" action="wp-admin/admin-post.php">
 	// <input type="hidden" name="action" value="do-my-action" />
 	// </form>
@@ -181,7 +181,7 @@ function my_bypass_queries( $queries ) {
 	);
 	return $queries + $whitelist;
 }
-add_filter( 'ip-geo-block-bypass-queries', 'my_bypass_queries' );
+add_filter( 'ip-geo-block-bypass-admins', 'my_bypass_admins' );
 
 
 /**

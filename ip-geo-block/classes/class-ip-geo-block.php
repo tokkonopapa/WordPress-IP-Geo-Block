@@ -288,8 +288,8 @@ class IP_Geo_Block {
 	 *
 	 */
 	private function validate_country( $validate, $settings ) {
-		// when 'login' is disable, logged in user takes priority
-		if ( ! $settings['validation']['login'] && self::$logged_in )
+		// if 'login' is not `Block by country`, logged in user takes priority
+		if ( 1 != $settings['validation']['login'] && $this->logged_in )
 			return $validate + array( 'result' => 'passed' );
 
 		elseif ( 0 == $settings['matching_rule'] ) {
@@ -500,7 +500,7 @@ class IP_Geo_Block {
 			$this->trace_nonce();
 
 			// list of request with a specific query to bypass WP-ZEP
-			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-queries', array(
+			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
 			) );
 
 			// register validation of nonce

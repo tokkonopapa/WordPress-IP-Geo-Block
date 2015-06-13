@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 2.1.0\n"
+"Project-Id-Version: IP Geo Block 2.1.1\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-05-24 20:42+0900\n"
-"PO-Revision-Date: 2015-05-24 20:44+0900\n"
+"POT-Creation-Date: 2015-06-13 13:18+0900\n"
+"PO-Revision-Date: 2015-06-13 13:19+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -182,24 +182,30 @@ msgstr ""
 msgid "Validation settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:111 admin/includes/tab-settings.php:118
+#: admin/includes/tab-settings.php:113 admin/includes/tab-settings.php:134
+#: admin/includes/tab-settings.php:141
 msgid "Block by country"
 msgstr ""
 
-#: admin/includes/tab-settings.php:117 admin/includes/tab-settings.php:340
+#: admin/includes/tab-settings.php:132 admin/includes/tab-settings.php:140
+#: admin/includes/tab-settings.php:363
 msgid "Disable"
 msgstr ""
 
-#: admin/includes/tab-settings.php:119
+#: admin/includes/tab-settings.php:133
+msgid "Block by country at registration"
+msgstr ""
+
+#: admin/includes/tab-settings.php:142
 msgid "Prevent zero-day exploit"
 msgstr ""
 
-#: admin/includes/tab-settings.php:123
+#: admin/includes/tab-settings.php:146
 #, php-format
 msgid "<dfn title=\"Validate access to %s\">%s</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:124
+#: admin/includes/tab-settings.php:147
 #, php-format
 msgid ""
 "It will block a malicious request to <code>%s</code> besides the country "
@@ -209,167 +215,167 @@ msgid ""
 "target=_blank>support forum</a> if you have any troubles with it."
 msgstr ""
 
-#: admin/includes/tab-settings.php:149
+#: admin/includes/tab-settings.php:172
 msgid "Admin ajax/post"
 msgstr ""
 
-#: admin/includes/tab-settings.php:168
+#: admin/includes/tab-settings.php:191
 msgid "Plugins area"
 msgstr ""
 
-#: admin/includes/tab-settings.php:187
+#: admin/includes/tab-settings.php:210
 msgid "Themes area"
 msgstr ""
 
-#: admin/includes/tab-settings.php:205
+#: admin/includes/tab-settings.php:228
 msgid "Matching rule"
 msgstr ""
 
-#: admin/includes/tab-settings.php:215 admin/includes/tab-settings.php:224
+#: admin/includes/tab-settings.php:238 admin/includes/tab-settings.php:247
 msgid "White list"
 msgstr ""
 
-#: admin/includes/tab-settings.php:216 admin/includes/tab-settings.php:240
+#: admin/includes/tab-settings.php:239 admin/includes/tab-settings.php:263
 msgid "Black list"
 msgstr ""
 
-#: admin/includes/tab-settings.php:224 admin/includes/tab-settings.php:240
+#: admin/includes/tab-settings.php:247 admin/includes/tab-settings.php:263
 #, php-format
 msgid "<dfn title=\"If empty then pass through\">%s</dfn> %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:233 admin/includes/tab-settings.php:249
-#: admin/includes/tab-settings.php:267 admin/includes/tab-settings.php:362
+#: admin/includes/tab-settings.php:256 admin/includes/tab-settings.php:272
+#: admin/includes/tab-settings.php:290 admin/includes/tab-settings.php:385
 msgid "(comma separated)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:257
+#: admin/includes/tab-settings.php:280
 msgid ""
 "<dfn title=\"ex) HTTP_X_FORWARDED_FOR\">$_SERVER keys for extra IPs</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:274
+#: admin/includes/tab-settings.php:297
 #, php-format
 msgid "Response code %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:306
+#: admin/includes/tab-settings.php:329
 msgid "Record settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:314
+#: admin/includes/tab-settings.php:337
 msgid "Record validation statistics"
 msgstr ""
 
-#: admin/includes/tab-settings.php:329
+#: admin/includes/tab-settings.php:352
 msgid "Record validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:341
+#: admin/includes/tab-settings.php:364
 msgid "Only when blocked"
 msgstr ""
 
-#: admin/includes/tab-settings.php:342
+#: admin/includes/tab-settings.php:365
 msgid "Only when passed"
 msgstr ""
 
-#: admin/includes/tab-settings.php:343
+#: admin/includes/tab-settings.php:366
 msgid "Unauthenticated user"
 msgstr ""
 
-#: admin/includes/tab-settings.php:344
+#: admin/includes/tab-settings.php:367
 msgid "Authenticated user"
 msgstr ""
 
-#: admin/includes/tab-settings.php:345
+#: admin/includes/tab-settings.php:368
 msgid "All of validation"
 msgstr ""
 
-#: admin/includes/tab-settings.php:352
+#: admin/includes/tab-settings.php:375
 msgid ""
 "<dfn title=\"ex) action, comment, log, pwd\">$_POST keys to be recorded with "
 "their values in logs</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:372
+#: admin/includes/tab-settings.php:395
 msgid "Maxmind GeoLite settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:380 admin/includes/tab-settings.php:401
+#: admin/includes/tab-settings.php:403 admin/includes/tab-settings.php:424
 msgid "Path to database"
 msgstr ""
 
-#: admin/includes/tab-settings.php:393 admin/includes/tab-settings.php:414
+#: admin/includes/tab-settings.php:416 admin/includes/tab-settings.php:437
 #: includes/download.php:126
 #, php-format
 msgid "Last update: %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:423
+#: admin/includes/tab-settings.php:446
 msgid "Auto updating (once a month)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:438
+#: admin/includes/tab-settings.php:461
 msgid "Download database"
 msgstr ""
 
-#: admin/includes/tab-settings.php:446
+#: admin/includes/tab-settings.php:469
 msgid "Download now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:457
+#: admin/includes/tab-settings.php:480
 msgid "Submission settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:465
+#: admin/includes/tab-settings.php:488
 msgid "Text message on comment form"
 msgstr ""
 
-#: admin/includes/tab-settings.php:476
+#: admin/includes/tab-settings.php:499
 msgid "None"
 msgstr ""
 
-#: admin/includes/tab-settings.php:477
+#: admin/includes/tab-settings.php:500
 msgid "Top"
 msgstr ""
 
-#: admin/includes/tab-settings.php:478
+#: admin/includes/tab-settings.php:501
 msgid "Bottom"
 msgstr ""
 
-#: admin/includes/tab-settings.php:490
+#: admin/includes/tab-settings.php:513
 msgid "Cache settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:498
+#: admin/includes/tab-settings.php:521
 msgid "Number of entries"
 msgstr ""
 
-#: admin/includes/tab-settings.php:513
+#: admin/includes/tab-settings.php:536
 msgid "Expiration time [sec]"
 msgstr ""
 
-#: admin/includes/tab-settings.php:531
+#: admin/includes/tab-settings.php:554
 msgid "Plugin settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:539
+#: admin/includes/tab-settings.php:562
 msgid "Remove settings at uninstallation"
 msgstr ""
 
-#: admin/includes/tab-settings.php:556
+#: admin/includes/tab-settings.php:579
 msgid "Delete DB table for validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:564
+#: admin/includes/tab-settings.php:587
 msgid "Delete now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:572
+#: admin/includes/tab-settings.php:595
 msgid "Create DB table for validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:580
+#: admin/includes/tab-settings.php:603
 msgid "Create now"
 msgstr ""
 
