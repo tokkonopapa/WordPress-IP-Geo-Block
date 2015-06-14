@@ -82,12 +82,10 @@ class IP_Geo_Block {
 			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ) );
 		}
 
-		// wp-login.php @since 2.1.0
-		if ( 1 == $validate['login'] ) { // wp-includes/pluggable.php @since 2.5.0
+		// wp-login.php @since 2.1.0, wp-includes/pluggable.php @since 2.5.0
+		if ( $validate['login'] ) {
 			add_action( 'login_init', array( $this, 'validate_login' ) );
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
-		} elseif ( 2 == $validate['login'] ) { // wp-include/user.php @since 2.1.0
-			add_filter( 'user_registration_email', array( $this, 'validate_filter' ) );
 		}
 
 		// get content folders (with trailing slash)
@@ -289,7 +287,7 @@ class IP_Geo_Block {
 	 */
 	private function validate_country( $validate, $settings ) {
 		// if 'login' is not `Block by country`, logged in user takes priority
-		if ( 1 != $settings['validation']['login'] && $this->logged_in )
+		if ( 2 == $settings['validation']['login'] && $this->logged_in )
 			return $validate + array( 'result' => 'passed' );
 
 		elseif ( 0 == $settings['matching_rule'] ) {
@@ -466,8 +464,14 @@ class IP_Geo_Block {
 	}
 
 	public function validate_login() {
-		if ( isset( $_REQUEST['action'] ) || empty( $_REQUEST['loggedout'] ) )
-			$this->validate_ip( 'login', self::get_option( 'settings' ) );
+		$settings = self::get_option( 'settings' );
+		if ( 2 != $settings['validation']['login'] ) {
+			if ( empty( $_REQUEST['loggedout'] ) || isset( $_REQUEST['action'] ) )
+				$this->validate_ip( 'login', $settings );
+		} else {
+			if ( isset( $_REQUEST['action'] ) && 'login' !== $_REQUEST['action'] )
+				$this->validate_ip( 'login', $settings );
+		}
 	}
 
 	public function validate_filter( $something ) {
@@ -512,7 +516,7 @@ class IP_Geo_Block {
 				}
 			}
 			if ( $type )
-				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 		}
 
 		// Validate country by IP address
@@ -539,7 +543,7 @@ class IP_Geo_Block {
 			// register validation of nonce
 			if ( empty( $matches[3] ) || ! in_array( $matches[3], $list ) ) {
 				if ( $settings['validation'][ $type ] >= 2 )
-					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 10, 2 );
+					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 			}
 
 			// register rewrited request

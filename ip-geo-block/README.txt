@@ -67,8 +67,9 @@ if you have any troubles. I'll be profoundly grateful your contribution to
 improve this feature. See more details on 
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-4. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
- `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
+4. HTTP Response code can be selectable as `403 Forbidden` to deny access 
+pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top 
+page.
 
 5. Referer suppressor for external link. When you click an external hyperlink 
 on admin screen, http referer will be eliminated to hide a footprint of your 
@@ -79,7 +80,7 @@ pattern under the specified condition.
 
 7. Free IP Geolocation database and REST APIs are installed into this plugin 
 to get a country code from an IP address. There are two types of API which 
-support only IPv4 or both IPv4 and IPv6. This plugin will automatically select 
+support only IPv4 or both IPv4 and IPv6. This plugin will automatically choose 
 an appropriate API.
 
 8. A cache mechanism with transient API for the fetched IP addresses has been 
@@ -176,7 +177,7 @@ All contributions will always be welcome.
     variable are specified in this textfield. Typically `HTTP_X_FORWARDED_FOR`.
 
 * **Matching rule**  
-    Select `White list` (recommended) or `Black list` to specify the countries
+    Choose `White list` (recommended) or `Black list` to specify the countries
     from which you want to pass or block.
 
 * **White list**, **Black list**  
@@ -185,7 +186,7 @@ All contributions will always be welcome.
     ). Each of them should be separated by comma.
 
 * **Response code**  
-    Select one of the 
+    Choose one of the 
     [response code](http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1")
     to be sent when it blocks a comment.
     The 2xx code will lead to your top page, the 3xx code will redirect to 
@@ -199,7 +200,7 @@ All contributions will always be welcome.
     If `Enable`, you can see `Statistics of validation` on Statistics tab.
 
 * **Record validation logs**  
-    If you select anything but `Disable`, you can see `Validation logs` on 
+    If you choose anything but `Disable`, you can see `Validation logs` on 
     Logs tab.
 
 * **$_POST keys in logs**  
@@ -216,7 +217,7 @@ All contributions will always be welcome.
 = Submission settings =
 
 * **Text position on comment form**  
-    If you want to put some text message on your comment form, please select
+    If you want to put some text message on your comment form, please choose
     `Top` or `Bottom` and put text into the **Text message on comment form**
     textfield.
 
@@ -334,7 +335,7 @@ you are using at the support forum.
 = I want to use only WP-ZEP. =
 
 Uncheck the `Comment post`, `XML-RPC` and `Login form` in `Validation settings` 
-on `Settings` tab. And select `Prevent zero-day exploit` for `Admin area`.
+on `Settings` tab. And choose `Prevent zero-day exploit` for `Admin area`.
 
 At last empty the textfield of `White list` or `Black list` according to the 
  `Matching rule`.
