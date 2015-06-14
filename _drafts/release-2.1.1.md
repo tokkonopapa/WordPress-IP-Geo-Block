@@ -67,10 +67,6 @@ add_filter( 'ip-geo-block-login', 'my_whitelist' );
 The `404.php` in the theme template directory is used (if it exists) when this 
 plugin blocks access to some pages.
 
-[![title]({{ "/img/2015-xx/sample.png" | prepend: site.baseurl }}
-  "title"
-)][link]
-
 ### Obsoleted filter hooks ###
 
 With the improvement of the internal logic, 
@@ -80,6 +76,25 @@ are added to bypass WP-ZEP.
 
 Please check out [samples.php][samples.php] about the usage of these hooks.
 
+### Capturing malicious access to the plugins/themes ###
+
+Some silly attackers (or tools) send invalid requests to the plugins or themes 
+area whose path are like this :
+
+![silly access]({{ "/img/2015-06/invalid-plugins.png" | prepend: site.baseurl }}
+ "silly access")
+
+This kind of access seems to be aimed at the contaminated sites. Normally those 
+fail on "404 Not Found" and don't matter if we leave them alone. However, I 
+think it's a good chance to know the malicious post pattern if I can record 
+their logs. So I made the condition of capturing access to the plugins/themes 
+area in a loose manner.
+
+Although it's a little annoying, please be patient !! <span class="emoji">
+![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f609.png)
+</span>
+
+
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [Asking-for-extending]: https://wordpress.org/support/topic/asking-for-extending "WordPress › Support » Asking for extending"
-[samples.php]:        https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
+[samples.php]: https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
