@@ -101,7 +101,6 @@ function my_whitelist( $validate ) {
 
 	if ( in_array( $validate['code'], $whitelist ) ) {
 		$validate['result'] = 'passed';
-		break;
 	}
 
 	return $validate;
@@ -167,17 +166,19 @@ add_filter( 'ip-geo-block-admin', 'my_permission' );
 
 /**
  * Example 8: Usage of 'ip-geo-block-bypass-admins'
- * Use case: Specify the admin request with a specific query string to bypass WP-ZEP
+ * Use case: Specify the admin request with a specific queries to bypass WP-ZEP
  *
- * @param  array of query string which should be excluded from ZEP
- * @return array of query string which should be excluded from ZEP
+ * @param  array $queries array of admin queries which should bypass WP-ZEP.
+ * @return array $queries array of admin queries which should bypass WP-ZEP.
  */
 function my_bypass_admins( $queries ) {
 	// <form method="POST" action="wp-admin/admin-post.php">
 	// <input type="hidden" name="action" value="do-my-action" />
+	// <input type="hidden" name="page" value="my-plugin-page" />
 	// </form>
 	$whitelist = array(
-		'action=do-my-action',
+		'do-my-action',
+		'my-plugin-page',
 	);
 	return $queries + $whitelist;
 }
@@ -186,10 +187,10 @@ add_filter( 'ip-geo-block-bypass-admins', 'my_bypass_admins' );
 
 /**
  * Example 9: Usage of 'ip-geo-block-bypass-plugins'
- * Use case: Specify the plugin which need a direct call to bypass WP-ZEP
+ * Use case: Specify the plugin which should bypass WP-ZEP
  *
- * @param  array of plugin name which should be excluded from ZEP
- * @return array of plugin name which should be excluded from ZEP
+ * @param  array of plugin name which should bypass WP-ZEP.
+ * @return array of plugin name which should bypass WP-ZEP.
  */
 function my_bypass_plugins( $plugins ) {
 	// ex) wp-content/plugins/my-plugin/something.php
@@ -203,10 +204,10 @@ add_filter( 'ip-geo-block-bypass-plugins', 'my_bypass_plugins' );
 
 /**
  * Example 10: Usage of 'ip-geo-block-bypass-themes'
- * Use case: Specify the theme which need a direct call to bypass WP-ZEP
+ * Use case: Specify the theme which should bypass WP-ZEP
  *
- * @param  array of theme name which should be excluded from ZEP
- * @return array of theme name which should be excluded from ZEP
+ * @param  array of theme name which should bypass WP-ZEP.
+ * @return array of theme name which should bypass WP-ZEP.
  */
 function my_bypass_themes( $themes ) {
 	// ex) wp-content/themes/my-theme/something.php

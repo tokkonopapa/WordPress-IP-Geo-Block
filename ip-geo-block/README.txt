@@ -282,7 +282,7 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
-* `ip-geo-block-bypass-admins`    : array of query string which should bypass WP-ZEP.
+* `ip-geo-block-bypass-admins`    : array of admin queries which should bypass WP-ZEP.
 * `ip-geo-block-bypass-plugins`   : array of plugin name which should bypass WP-ZEP.
 * `ip-geo-block-bypass-themes`    : array of theme name which should bypass WP-ZEP.
 * `ip-geo-block-backup-dir`       : full path where log files should be saved.
