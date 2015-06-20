@@ -171,12 +171,12 @@ add_filter( 'ip-geo-block-admin', 'my_permission' );
  * @param  int $code or string $msg
  * @return int $code or string $msg
  */
-function my_xmlrpc_response( $code ) { return 403; }
-function my_login_response ( $code ) { return 503; }
-function my_login_message  ( $msg  ) { return "Sorry, this service is unavailable."; }
-add_filter( 'ip-geo-block-xmlrpc-response', 'my_xmlrpc_response' );
-add_filter( 'ip-geo-block-login-response', 'my_login_response' );
-add_filter( 'ip-geo-block-login-message', 'my_login_message' );
+function my_xmlrpc_status( $code ) { return 403; }
+function my_login_status ( $code ) { return 503; }
+function my_login_reason ( $msg  ) { return "Sorry, this service is unavailable."; }
+add_filter( 'ip-geo-block-xmlrpc-status', 'my_xmlrpc_status' );
+add_filter( 'ip-geo-block-login-status',  'my_login_status'  );
+add_filter( 'ip-geo-block-login-reason',  'my_login_reason'  );
 
 
 /**
