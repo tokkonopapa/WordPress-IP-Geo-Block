@@ -61,8 +61,10 @@ improve this feature. See more details on
 4. Support membership `Anyone can register` and [BuddyPress][BuddyPress]
 to reduce registration and BuddyPress spam.
 
-5. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
- `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
+5. HTTP Response code can be selectable as `403 Forbidden` to deny access 
+pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top 
+page. You can also have a custom `403.php` in your theme template directory or 
+child theme directory to fit your theme.
 
 6. Referer suppressor for external link. When you click an external hyperlink 
 on admin screen, http referer will be eliminated to hide a footprint of your 
@@ -73,7 +75,7 @@ pattern under the specified condition.
 
 8. Free IP Geolocation database and REST APIs are installed into this plugin 
 to get a country code from an IP address. There are two types of API which 
-support only IPv4 or both IPv4 and IPv6. This plugin will automatically select 
+support only IPv4 or both IPv4 and IPv6. This plugin will automatically choose 
 an appropriate API.
 
 9. A cache mechanism with transient API for the fetched IP addresses has been 
@@ -168,7 +170,7 @@ Also thanks for providing the following great services and REST APIs for free.
     variable are specified in this textfield. Typically `HTTP_X_FORWARDED_FOR`.
 
 - **Matching rule**  
-    Select `White list` (recommended) or `Black list` to specify the countries
+    Choose `White list` (recommended) or `Black list` to specify the countries
     from which you want to pass or block.
 
 - **White list**, **Black list**  
@@ -177,7 +179,7 @@ Also thanks for providing the following great services and REST APIs for free.
     ). Each of them should be separated by comma.
 
 - **Response code**  
-    Select one of the 
+    Choose one of the 
     [response code][RFC]
     to be sent when it blocks a comment.
     The 2xx code will lead to your top page, the 3xx code will redirect to 
@@ -191,7 +193,7 @@ Also thanks for providing the following great services and REST APIs for free.
     If `Enable`, you can see `Statistics of validation` on Statistics tab.
 
 - **Record validation logs**  
-    If you select anything but `Disable`, you can see `Validation logs` on 
+    If you choose anything but `Disable`, you can see `Validation logs` on 
     Logs tab.
 
 - **$_POST keys in logs**  
@@ -208,7 +210,7 @@ Also thanks for providing the following great services and REST APIs for free.
 #### Submission settings
 
 - **Text position on comment form**  
-    If you want to put some text message on your comment form, please select
+    If you want to put some text message on your comment form, please choose
     `Top` or `Bottom` and put text into the **Text message on comment form**
     textfield.
 
@@ -313,8 +315,8 @@ See more details on
 #### Some admin function doesn't work when WP-ZEP is on. ####
 
 There are a few cases that WP-ZEP would not work. One is redirection at server 
-side (by PHP or `.htaccess`) and client side (by JavaScript location object or 
-meta tag for refresh).
+side (caused by PHP or `.htaccess`) and client side (by caused JavaScript 
+location object or meta tag for refresh).
 
 Another is the case related to the content type. This plugin will only support 
  `application/x-www-form-urlencoded` and `multipart/form-data`.
@@ -322,9 +324,9 @@ Another is the case related to the content type. This plugin will only support
 The other case is that a ajax/post request comes from not jQuery but flash or 
 something.
 
-In those cases, this plugin should bypass WP-ZEP. So please find the `action` 
-in the requested queries and add its value into the safe action list via the 
-filter hook `ip-geo-block-admin-actions`.
+In those cases, this plugin should bypass WP-ZEP. So please find the unique 
+strings in the requested queries and add it into the safe query list via the 
+filter hook `ip-geo-block-bypass-admins`.
 
 If you can not figure out your troubles, please let me know about the plugin 
 you are using at the support forum.
@@ -332,7 +334,7 @@ you are using at the support forum.
 #### I want to use only WP-ZEP. ####
 
 Uncheck the `Comment post`, `XML-RPC` and `Login form` in `Validation settings` 
-on `Settings` tab. And select `Prevent zero-day exploit` for `Admin area`.
+on `Settings` tab. And choose `Prevent zero-day exploit` for `Admin area`.
 
 At last empty the textfield of `White list` or `Black list` according to the 
  `Matching rule`.

@@ -72,7 +72,8 @@ to reduce registration and BuddyPress spam.
 
 5. HTTP Response code can be selectable as `403 Forbidden` to deny access 
 pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top 
-page.
+page. You can also have a custom `403.php` in your theme template directory or 
+child theme directory to fit your theme.
 
 6. Referer suppressor for external link. When you click an external hyperlink 
 on admin screen, http referer will be eliminated to hide a footprint of your 
