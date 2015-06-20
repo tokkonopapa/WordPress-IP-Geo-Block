@@ -330,12 +330,12 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Send response header with http code.
+	 * Send response header with http status code and reason.
 	 *
 	 */
 	public function send_response( $hook, $code ) {
-		$code = (int   )apply_filters( self::PLUGIN_SLUG . "-{$hook}-response", (int)$code );
-		$mesg = (string)apply_filters( self::PLUGIN_SLUG . "-{$hook}-message", get_status_header_desc( $code ) );
+		$code = (int   )apply_filters( self::PLUGIN_SLUG . "-{$hook}-status", (int)$code );
+		$mesg = (string)apply_filters( self::PLUGIN_SLUG . "-{$hook}-reason", get_status_header_desc( $code ) );
 
 		nocache_headers(); // nocache and response code
 		switch ( (int)substr( "$code", 0, 1 ) ) {

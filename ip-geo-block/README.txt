@@ -285,8 +285,8 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
-* `ip-geo-block-xxxxxx-response`  : http response status code for comment|xmlrpc|login|admin.
-* `ip-geo-block-xxxxxx-message`   : http response message     for comment|xmlrpc|login|admin.
+* `ip-geo-block-xxxxxx-status`    : http response status code for comment|xmlrpc|login|admin.
+* `ip-geo-block-xxxxxx-reason`    : http response reason      for comment|xmlrpc|login|admin.
 * `ip-geo-block-bypass-admins`    : array of admin queries which should bypass WP-ZEP.
 * `ip-geo-block-bypass-plugins`   : array of plugin name which should bypass WP-ZEP.
 * `ip-geo-block-bypass-themes`    : array of theme name which should bypass WP-ZEP.
@@ -377,8 +377,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 * **Improvement:** Improved http response status code and message at blocking.
   For example the `404.php` in the theme template directory or in the child 
   theme directory is used if it exists. And new filter hooks 
-  `ip-geo-block-(comment|xmlrpc|login|admin)-(response|message)` are available 
-  to apply the custom response code and message for human.
+  `ip-geo-block-(comment|xmlrpc|login|admin)-(status|reason)` are available 
+  to apply the custom response code and reason for human.
 * **Obsoleted:** Obsoleted the filter hooks 
   `ip-geo-block-(admin-actions|admin-pages|wp-content)`. Alternatively new 
   filter hooks `ip-geo-block-bypass-(admins|plugins|themes)` are added to 
