@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.1.1\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-06-13 13:18+0900\n"
-"PO-Revision-Date: 2015-06-13 13:31+0900\n"
+"POT-Creation-Date: 2015-06-20 00:51+0900\n"
+"PO-Revision-Date: 2015-06-20 21:12+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -189,29 +189,37 @@ msgid "Validation settings"
 msgstr "検証の設定"
 
 #: admin/includes/tab-settings.php:113 admin/includes/tab-settings.php:134
-#: admin/includes/tab-settings.php:141
+#: admin/includes/tab-settings.php:142
 msgid "Block by country"
 msgstr "国コードで遮断"
 
-#: admin/includes/tab-settings.php:132 admin/includes/tab-settings.php:140
-#: admin/includes/tab-settings.php:363
+#: admin/includes/tab-settings.php:132 admin/includes/tab-settings.php:141
+#: admin/includes/tab-settings.php:364
 msgid "Disable"
 msgstr "無効"
 
 #: admin/includes/tab-settings.php:133
-msgid "Block by country at registration"
-msgstr "ユーザー登録のみ国コードで遮断"
+msgid "Block by country (register, lost password)"
+msgstr "国コードで遮断（ユーザー登録、パスワード再発行）"
 
-#: admin/includes/tab-settings.php:142
+#: admin/includes/tab-settings.php:136
+msgid ""
+"Registered users can login from anywhere, but a new user registration "
+"request and the password reset request will be blocked by the country code."
+msgstr ""
+"登録済みユーザーはどこからでもログインできますが、新規ユーザの登録要求やパス"
+"ワードのリセット要求は国コードでブロックされます。"
+
+#: admin/includes/tab-settings.php:143
 msgid "Prevent zero-day exploit"
 msgstr "ゼロデイ攻撃を遮断"
 
-#: admin/includes/tab-settings.php:146
+#: admin/includes/tab-settings.php:147
 #, php-format
 msgid "<dfn title=\"Validate access to %s\">%s</dfn>"
 msgstr "<dfn title=\"%sへのアクセスを検証\">%s</dfn>"
 
-#: admin/includes/tab-settings.php:147
+#: admin/includes/tab-settings.php:148
 #, php-format
 msgid ""
 "It will block a malicious request to <code>%s</code> besides the country "
@@ -226,84 +234,84 @@ msgstr ""
 "&#8250; Support &raquo; IP Geo Block\" target=_blank>サポート・フォーラム</a>"
 "へのご報告をお願いします。"
 
-#: admin/includes/tab-settings.php:172
+#: admin/includes/tab-settings.php:173
 msgid "Admin ajax/post"
 msgstr "管理領域&thinsp;ajax/post"
 
-#: admin/includes/tab-settings.php:191
+#: admin/includes/tab-settings.php:192
 msgid "Plugins area"
 msgstr "プラグイン領域"
 
-#: admin/includes/tab-settings.php:210
+#: admin/includes/tab-settings.php:211
 msgid "Themes area"
 msgstr "テーマ領域"
 
-#: admin/includes/tab-settings.php:228
+#: admin/includes/tab-settings.php:229
 msgid "Matching rule"
 msgstr "マッチング規則"
 
-#: admin/includes/tab-settings.php:238 admin/includes/tab-settings.php:247
+#: admin/includes/tab-settings.php:239 admin/includes/tab-settings.php:248
 msgid "White list"
 msgstr "ホワイトリスト"
 
-#: admin/includes/tab-settings.php:239 admin/includes/tab-settings.php:263
+#: admin/includes/tab-settings.php:240 admin/includes/tab-settings.php:264
 msgid "Black list"
 msgstr "ブラックリスト"
 
-#: admin/includes/tab-settings.php:247 admin/includes/tab-settings.php:263
+#: admin/includes/tab-settings.php:248 admin/includes/tab-settings.php:264
 #, php-format
 msgid "<dfn title=\"If empty then pass through\">%s</dfn> %s"
 msgstr "<dfn title=\"空欄の場合は通過\">%s</dfn> %s"
 
-#: admin/includes/tab-settings.php:256 admin/includes/tab-settings.php:272
-#: admin/includes/tab-settings.php:290 admin/includes/tab-settings.php:385
+#: admin/includes/tab-settings.php:257 admin/includes/tab-settings.php:273
+#: admin/includes/tab-settings.php:291 admin/includes/tab-settings.php:386
 msgid "(comma separated)"
 msgstr "（カンマ区切り）"
 
-#: admin/includes/tab-settings.php:280
+#: admin/includes/tab-settings.php:281
 msgid ""
 "<dfn title=\"ex) HTTP_X_FORWARDED_FOR\">$_SERVER keys for extra IPs</dfn>"
 msgstr ""
 "<dfn title=\"例）HTTP_X_FORWARDED_FOR\">追加検証する$_SERVERのキー</dfn>"
 
-#: admin/includes/tab-settings.php:297
+#: admin/includes/tab-settings.php:298
 #, php-format
 msgid "Response code %s"
 msgstr "レスポンスコード %s"
 
-#: admin/includes/tab-settings.php:329
+#: admin/includes/tab-settings.php:330
 msgid "Record settings"
 msgstr "記録の設定"
 
-#: admin/includes/tab-settings.php:337
+#: admin/includes/tab-settings.php:338
 msgid "Record validation statistics"
 msgstr "検証の統計を記録"
 
-#: admin/includes/tab-settings.php:352
+#: admin/includes/tab-settings.php:353
 msgid "Record validation logs"
 msgstr "検証のログを記録"
 
-#: admin/includes/tab-settings.php:364
+#: admin/includes/tab-settings.php:365
 msgid "Only when blocked"
 msgstr "遮断時に記録"
 
-#: admin/includes/tab-settings.php:365
+#: admin/includes/tab-settings.php:366
 msgid "Only when passed"
 msgstr "通過時に記録"
 
-#: admin/includes/tab-settings.php:366
+#: admin/includes/tab-settings.php:367
 msgid "Unauthenticated user"
 msgstr "未認証ユーザーを記録"
 
-#: admin/includes/tab-settings.php:367
+#: admin/includes/tab-settings.php:368
 msgid "Authenticated user"
 msgstr "認証済ユーザーを記録"
 
-#: admin/includes/tab-settings.php:368
+#: admin/includes/tab-settings.php:369
 msgid "All of validation"
 msgstr "すべての検証を記録"
 
-#: admin/includes/tab-settings.php:375
+#: admin/includes/tab-settings.php:376
 msgid ""
 "<dfn title=\"ex) action, comment, log, pwd\">$_POST keys to be recorded with "
 "their values in logs</dfn>"
@@ -311,85 +319,85 @@ msgstr ""
 "<dfn title=\"例）action, comment, log, pwd\">ログに記録する際に内容を展開する"
 "$_POSTのキー</dfn>"
 
-#: admin/includes/tab-settings.php:395
+#: admin/includes/tab-settings.php:396
 msgid "Maxmind GeoLite settings"
 msgstr "Maxmind GeoLite&thinsp;の設定"
 
-#: admin/includes/tab-settings.php:403 admin/includes/tab-settings.php:424
+#: admin/includes/tab-settings.php:404 admin/includes/tab-settings.php:425
 msgid "Path to database"
 msgstr "データベースへのパス"
 
-#: admin/includes/tab-settings.php:416 admin/includes/tab-settings.php:437
+#: admin/includes/tab-settings.php:417 admin/includes/tab-settings.php:438
 #: includes/download.php:126
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
 
-#: admin/includes/tab-settings.php:446
+#: admin/includes/tab-settings.php:447
 msgid "Auto updating (once a month)"
 msgstr "自動更新（月1回）"
 
-#: admin/includes/tab-settings.php:461
+#: admin/includes/tab-settings.php:462
 msgid "Download database"
 msgstr "データベースのダウンロード"
 
-#: admin/includes/tab-settings.php:469
+#: admin/includes/tab-settings.php:470
 msgid "Download now"
 msgstr "今すぐダウンロード"
 
-#: admin/includes/tab-settings.php:480
+#: admin/includes/tab-settings.php:481
 msgid "Submission settings"
 msgstr "投稿時の設定"
 
-#: admin/includes/tab-settings.php:488
+#: admin/includes/tab-settings.php:489
 msgid "Text message on comment form"
 msgstr "投稿フォーム上のテキスト・メッセージ"
 
-#: admin/includes/tab-settings.php:499
+#: admin/includes/tab-settings.php:500
 msgid "None"
 msgstr "なし"
 
-#: admin/includes/tab-settings.php:500
+#: admin/includes/tab-settings.php:501
 msgid "Top"
 msgstr "上部"
 
-#: admin/includes/tab-settings.php:501
+#: admin/includes/tab-settings.php:502
 msgid "Bottom"
 msgstr "下部"
 
-#: admin/includes/tab-settings.php:513
+#: admin/includes/tab-settings.php:514
 msgid "Cache settings"
 msgstr "キャッシュの設定"
 
-#: admin/includes/tab-settings.php:521
+#: admin/includes/tab-settings.php:522
 msgid "Number of entries"
 msgstr "最大保持数"
 
-#: admin/includes/tab-settings.php:536
+#: admin/includes/tab-settings.php:537
 msgid "Expiration time [sec]"
 msgstr "有効時間 [sec]"
 
-#: admin/includes/tab-settings.php:554
+#: admin/includes/tab-settings.php:555
 msgid "Plugin settings"
 msgstr "プラグインの設定"
 
-#: admin/includes/tab-settings.php:562
+#: admin/includes/tab-settings.php:563
 msgid "Remove settings at uninstallation"
 msgstr "アンインストール時に設定を削除"
 
-#: admin/includes/tab-settings.php:579
+#: admin/includes/tab-settings.php:580
 msgid "Delete DB table for validation logs"
 msgstr "検証のログ用データベース・テーブルの削除"
 
-#: admin/includes/tab-settings.php:587
+#: admin/includes/tab-settings.php:588
 msgid "Delete now"
 msgstr "今すぐ削除"
 
-#: admin/includes/tab-settings.php:595
+#: admin/includes/tab-settings.php:596
 msgid "Create DB table for validation logs"
 msgstr "検証のログ用データベース・テーブルの作成"
 
-#: admin/includes/tab-settings.php:603
+#: admin/includes/tab-settings.php:604
 msgid "Create now"
 msgstr "今すぐ作成"
 

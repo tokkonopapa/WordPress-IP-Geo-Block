@@ -333,30 +333,28 @@ class IP_Geo_Block {
 	 * Send response header with http code.
 	 *
 	 */
-	public function send_response( $code ) {
+	public function send_response( $hook, $code ) {
+		$code = (int   )apply_filters( self::PLUGIN_SLUG . "-{$hook}-response", (int)$code );
+		$mesg = (string)apply_filters( self::PLUGIN_SLUG . "-{$hook}-message", get_status_header_desc( $code ) );
+
 		nocache_headers(); // nocache and response code
 		switch ( (int)substr( "$code", 0, 1 ) ) {
 		  case 2: // 2xx Success
-			header( 'Refresh: 0; url=' . home_url(), TRUE, (int)$code ); // @since 3.0
+			header( 'Refresh: 0; url=' . home_url(), TRUE, $code ); // @since 3.0
 			die();
 
 		  case 3: // 3xx Redirection
-			wp_redirect( 'http://blackhole.webpagetest.org/', (int)$code );
+			wp_redirect( 'http://blackhole.webpagetest.org/', $code );
 			die();
 
 		  default: // 4xx Client Error, 5xx Server Error
-			status_header( (int)$code ); // @since 2.0.0
+			status_header( $code ); // @since 2.0.0
 			if ( count( preg_grep( "/content-type:\s*?text\/xml;/i", headers_list() ) ) )
-				@trackback_response( $code, get_status_header_desc( $code ) );
-			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
-				if ( 404 == $code && @is_readable( TEMPLATEPATH . '/404.php' ) )
-					include( TEMPLATEPATH . '/404.php' );
-				else {
-					wp_die( get_status_header_desc( $code ), '',
-						array( 'response' => (int)$code, 'back_link' => TRUE )
-					);
-				}
-			}
+				@trackback_response( $code, $mesg );
+			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) )
+				if ( FALSE === @include( STYLESHEETPATH . "/{$code}.php" ) )
+					if ( FALSE === @include( TEMPLATEPATH . "/{$code}.php" ) )
+						wp_die( $mesg, '', array( 'response' => $code, 'back_link' => TRUE ) );
 			die();
 		}
 	}
@@ -442,7 +440,7 @@ class IP_Geo_Block {
 				$this->update_statistics( $validate );
 
 			// send response code to refuse
-			$this->send_response( $settings['response_code'] );
+			$this->send_response( $hook, $settings['response_code'] );
 		}
 
 		return $validate;

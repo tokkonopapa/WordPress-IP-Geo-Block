@@ -58,26 +58,29 @@ if you have any troubles. I'll be profoundly grateful your contribution to
 improve this feature. See more details on 
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-4. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
+4. Support membership `Anyone can register` and [BuddyPress][BuddyPress]
+to reduce registration and BuddyPress spam.
+
+5. HTTP Response code can be selected as `403 Forbidden` to deny access pages, 
  `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
 
-5. Referer suppressor for external link. When you click an external hyperlink 
+6. Referer suppressor for external link. When you click an external hyperlink 
 on admin screen, http referer will be eliminated to hide a footprint of your 
 site.
 
-6. Validation logs will be recorded into MySQL data table to audit posting 
+7. Validation logs will be recorded into MySQL data table to audit posting 
 pattern under the specified condition.
 
-7. Free IP Geolocation database and REST APIs are installed into this plugin 
+8. Free IP Geolocation database and REST APIs are installed into this plugin 
 to get a country code from an IP address. There are two types of API which 
 support only IPv4 or both IPv4 and IPv6. This plugin will automatically select 
 an appropriate API.
 
-8. A cache mechanism with transient API for the fetched IP addresses has been 
+9. A cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against the burst accesses with a short 
 period of time.
 
-9. [MaxMind][MaxMind]
+10. [MaxMind][MaxMind]
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
 (once a month) automatically. And if you have correctly installed 
 one of the IP2Location plugins (
@@ -86,12 +89,12 @@ one of the IP2Location plugins (
     [IP2Location Country Blocker][IP2Blk]
 ), this plugin uses its local database prior to the REST APIs.
 
-10. This plugin is simple and lite enough to be able to cooperate with other 
+11. This plugin is simple and lite enough to be able to cooperate with other 
 full spec security plugin such as 
     [Wordfence Security][wordfence]
 (because the function of country bloking is available only for premium users).
 
-11. You can customize the basic behavior of this plugin via `add_filter()` with 
+12. You can customize the basic behavior of this plugin via `add_filter()` with 
 pre-defined filter hook. See various use cases in 
     [samples.php][sample]
 bundled within this package.
@@ -274,9 +277,11 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
-* `ip-geo-block-admin-actions`    : array of actions for `wp-admin/(admin|admin-ajax|admin-post).php`.
-* `ip-geo-block-admin-pages`      : array of page for `wp-admin/*.php`.
-* `ip-geo-block-wp-content`       : array of name for the plugin/theme directory.
+* `ip-geo-block-xxxxxx-response`  : http response status code for comment|xmlrpc|login|admin.
+* `ip-geo-block-xxxxxx-message`   : http response message     for comment|xmlrpc|login|admin.
+* `ip-geo-block-bypass-admins`    : array of admin queries which should bypass WP-ZEP.
+* `ip-geo-block-bypass-plugins`   : array of plugin name which should bypass WP-ZEP.
+* `ip-geo-block-bypass-themes`    : array of theme name which should bypass WP-ZEP.
 * `ip-geo-block-backup-dir`       : full path where log files should be saved.
 * `ip-geo-block-maxmind-dir`      : full path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
@@ -368,3 +373,4 @@ This plugin is licensed under the GPL v2 or later.
 [RFC]:      http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
 [sample]:   https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
 [wordfence]:https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins"
+[BuddyPress:https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins"

@@ -67,27 +67,30 @@ if you have any troubles. I'll be profoundly grateful your contribution to
 improve this feature. See more details on 
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-4. HTTP Response code can be selectable as `403 Forbidden` to deny access 
+4. Support membership `Anyone can register` and [BuddyPress](https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins")
+to reduce registration and BuddyPress spam.
+
+5. HTTP Response code can be selectable as `403 Forbidden` to deny access 
 pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top 
 page.
 
-5. Referer suppressor for external link. When you click an external hyperlink 
+6. Referer suppressor for external link. When you click an external hyperlink 
 on admin screen, http referer will be eliminated to hide a footprint of your 
 site.
 
-6. Validation logs will be recorded into MySQL data table to audit posting 
+7. Validation logs will be recorded into MySQL data table to audit posting 
 pattern under the specified condition.
 
-7. Free IP Geolocation database and REST APIs are installed into this plugin 
+8. Free IP Geolocation database and REST APIs are installed into this plugin 
 to get a country code from an IP address. There are two types of API which 
 support only IPv4 or both IPv4 and IPv6. This plugin will automatically choose 
 an appropriate API.
 
-8. A cache mechanism with transient API for the fetched IP addresses has been 
+9. A cache mechanism with transient API for the fetched IP addresses has been 
 equipped to reduce load on the server against the burst accesses with a short 
 period of time.
 
-9. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+10. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
 GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
 (once a month) automatically. And if you have correctly installed 
 one of the IP2Location plugins (
@@ -96,12 +99,12 @@ one of the IP2Location plugins (
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
 ), this plugin uses its local database prior to the REST APIs.
 
-10. This plugin is simple and lite enough to be able to cooperate with other 
+11. This plugin is simple and lite enough to be able to cooperate with other 
 full spec security plugin such as 
     [Wordfence Security](https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins")
 (because the function of country bloking is available only for premium users).
 
-11. You can customize the basic behavior of this plugin via `add_filter()` with 
+12. You can customize the basic behavior of this plugin via `add_filter()` with 
 pre-defined filter hook. See various use cases in 
     [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
 bundled within this package.
@@ -282,6 +285,8 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
+* `ip-geo-block-xxxxxx-response`  : http response status code for comment|xmlrpc|login|admin.
+* `ip-geo-block-xxxxxx-message`   : http response message     for comment|xmlrpc|login|admin.
 * `ip-geo-block-bypass-admins`    : array of admin queries which should bypass WP-ZEP.
 * `ip-geo-block-bypass-plugins`   : array of plugin name which should bypass WP-ZEP.
 * `ip-geo-block-bypass-themes`    : array of theme name which should bypass WP-ZEP.
@@ -369,8 +374,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
   `Login form` is exactly the same as the previous version, note that `Disable`
   and `Block by country at registration` will always bypass other validations 
   of country code (but all WP-ZEP are still effective) when the user logged in.
-* **Improvement:** Improved response at blocking. The 404.php in the theme 
-  template directory is used if it exists.
+* **Improvement:** Improved http response status code and message at blocking.
+  For example the `404.php` in the theme template directory or in the child 
+  theme directory is used if it exists. And new filter hooks 
+  `ip-geo-block-(comment|xmlrpc|login|admin)-(response|message)` are available 
+  to apply the custom response code and message for human.
 * **Obsoleted:** Obsoleted the filter hooks 
   `ip-geo-block-(admin-actions|admin-pages|wp-content)`. Alternatively new 
   filter hooks `ip-geo-block-bypass-(admins|plugins|themes)` are added to 

@@ -165,7 +165,22 @@ add_filter( 'ip-geo-block-admin', 'my_permission' );
 
 
 /**
- * Example 8: Usage of 'ip-geo-block-bypass-admins'
+ * Example 8: Usage of `ip-geo-block-xxxxxx-(response|message)`
+ * Use case: Customize the http response status code and message at blocking
+ *
+ * @param  int $code or string $msg
+ * @return int $code or string $msg
+ */
+function my_xmlrpc_response( $code ) { return 403; }
+function my_login_response ( $code ) { return 503; }
+function my_login_message  ( $msg  ) { return "Sorry, this service is unavailable."; }
+add_filter( 'ip-geo-block-xmlrpc-response', 'my_xmlrpc_response' );
+add_filter( 'ip-geo-block-login-response', 'my_login_response' );
+add_filter( 'ip-geo-block-login-message', 'my_login_message' );
+
+
+/**
+ * Example 9: Usage of 'ip-geo-block-bypass-admins'
  * Use case: Specify the admin request with a specific queries to bypass WP-ZEP
  *
  * @param  array $queries array of admin queries which should bypass WP-ZEP.
@@ -186,7 +201,7 @@ add_filter( 'ip-geo-block-bypass-admins', 'my_bypass_admins' );
 
 
 /**
- * Example 9: Usage of 'ip-geo-block-bypass-plugins'
+ * Example 10: Usage of 'ip-geo-block-bypass-plugins'
  * Use case: Specify the plugin which should bypass WP-ZEP
  *
  * @param  array of plugin name which should bypass WP-ZEP.
@@ -203,7 +218,7 @@ add_filter( 'ip-geo-block-bypass-plugins', 'my_bypass_plugins' );
 
 
 /**
- * Example 10: Usage of 'ip-geo-block-bypass-themes'
+ * Example 11: Usage of 'ip-geo-block-bypass-themes'
  * Use case: Specify the theme which should bypass WP-ZEP
  *
  * @param  array of theme name which should bypass WP-ZEP.
@@ -220,7 +235,7 @@ add_filter( 'ip-geo-block-bypass-themes', 'my_bypass_themes' );
 
 
 /**
- * Example 11: Usage of 'ip-geo-block-headers'
+ * Example 12: Usage of 'ip-geo-block-headers'
  * Use case: Change the user agent strings when accessing geolocation API
  *
  * Notice: Be careful about HTTP header injection.
@@ -235,7 +250,7 @@ add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 
 
 /**
- * Example 12: Usage of 'ip-geo-block-maxmind-dir'
+ * Example 13: Usage of 'ip-geo-block-maxmind-dir'
  * Use case: Change the path of Maxmind database files to writable directory
  *
  * @param  string $dir original directory of database files
@@ -249,7 +264,7 @@ add_filter( 'ip-geo-block-maxmind-dir', 'my_maxmind_dir' );
 
 
 /**
- * Example 13: Usage of 'ip-geo-block-maxmind-zip-ipv[46]'
+ * Example 14: Usage of 'ip-geo-block-maxmind-zip-ipv[46]'
  * Use case: Replace Maxmind database files to city edition
  *
  * @param  string $url original url to zip file
@@ -266,7 +281,7 @@ add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
 
 
 /**
- * Example 14: Usage of 'ip-geo-block-ip2location-path'
+ * Example 15: Usage of 'ip-geo-block-ip2location-path'
  * Use case: Change the path to IP2Location database files
  *
  * @param  string $path original path to database files
@@ -279,7 +294,7 @@ add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
 
 
 /**
- * Example 15: Backup validation logs to text files
+ * Example 16: Backup validation logs to text files
  * Use case: Keep verification logs selectively to text files
  *
  * @param  string $hook 'comment', 'login', 'admin' or 'xmlrpc'
@@ -296,7 +311,7 @@ add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
 
 
 /**
- * Example 16: Usage of 'IP_Geo_Block::get_geolocation()'
+ * Example 17: Usage of 'IP_Geo_Block::get_geolocation()'
  * Use case: Get geolocation of visitor's ip address with latitude and longitude
  *
  */

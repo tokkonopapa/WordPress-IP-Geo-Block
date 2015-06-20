@@ -129,10 +129,11 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => array(
-				__( 'Disable',                          IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Block by country at registration', IP_Geo_Block::TEXT_DOMAIN ) => 2,
-				__( 'Block by country',                 IP_Geo_Block::TEXT_DOMAIN ) => 1,
+				__( 'Disable', IP_Geo_Block::TEXT_DOMAIN ) => 0,
+				__( 'Block by country (register, lost password)', IP_Geo_Block::TEXT_DOMAIN ) => 2,
+				__( 'Block by country', IP_Geo_Block::TEXT_DOMAIN ) => 1,
 			),
+			'after' => '<div style="display:none" class="ip_geo_block_settings_validation_desc">' . __( 'Registered users can login from anywhere, but a new user registration request and the password reset request will be blocked by the country code.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
 		)
 	);
 
