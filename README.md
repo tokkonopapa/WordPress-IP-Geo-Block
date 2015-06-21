@@ -58,13 +58,15 @@ if you have any troubles. I'll be profoundly grateful your contribution to
 improve this feature. See more details on 
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-4. Support membership `Anyone can register` and [BuddyPress][BuddyPress]
-to reduce registration and BuddyPress spam.
+4. Support `Anyone can register` for membership and [BuddyPress][BuddyPress] 
+to reduce registration spam. Registered users can login as membership from 
+anywhere but the request of new user registration or lost password is blocked 
+by the country code.
 
 5. HTTP Response code can be selectable as `403 Forbidden` to deny access 
 pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top 
-page. You can also have a custom `403.php` in your theme template directory or 
-child theme directory to fit your theme.
+page. You can also have the custom error page (for example `403.php`) in your 
+theme template directory or child theme directory to fit your theme.
 
 6. Referer suppressor for external link. When you click an external hyperlink 
 on admin screen, http referer will be eliminated to hide a footprint of your 
@@ -355,24 +357,24 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 This plugin is licensed under the GPL v2 or later.
 
-[freegeoip]:http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service"
-[ipinfo]:   http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details"
-[Telize]:   http://www.telize.com/ "Telize - JSON IP and GeoIP REST API"
-[IPJson]:   http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service"
-[Pycox]:    http://ip.pycox.com/ "Free IP Geolocation Web Service"
-[Nekudo]:   http://geoip.nekudo.com/ "eoip.nekudo.com | Free IP geolocation API"
-[Xhanch]:   http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API - IP Get Detail | Xhanch Studio"
-[geoplugin]:http://www.geoplugin.com/ "geoPlugin to geolocate your visitors"
-[ipapi]:    http://ip-api.com/ "IP-API.com - Free Geolocation API"
-[IPInfoDB]: http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
-[MaxMind]:  http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
-[IP2Loc]:   http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location"
-[IP2Tag]:   http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"
-[IP2Var]:   http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"
-[IP2Blk]:   http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins"
-[BHS]:      http://blackhole.webpagetest.org/
-[ISO]:      http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
-[RFC]:      http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
-[sample]:   https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
-[wordfence]:https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins"
-[BuddyPress:https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins"
+[freegeoip]: http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service"
+[ipinfo]:    http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details"
+[Telize]:    http://www.telize.com/ "Telize - JSON IP and GeoIP REST API"
+[IPJson]:    http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service"
+[Pycox]:     http://ip.pycox.com/ "Free IP Geolocation Web Service"
+[Nekudo]:    http://geoip.nekudo.com/ "eoip.nekudo.com | Free IP geolocation API"
+[Xhanch]:    http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API - IP Get Detail | Xhanch Studio"
+[geoplugin]: http://www.geoplugin.com/ "geoPlugin to geolocate your visitors"
+[ipapi]:     http://ip-api.com/ "IP-API.com - Free Geolocation API"
+[IPInfoDB]:  http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
+[MaxMind]:   http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
+[IP2Loc]:    http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location"
+[IP2Tag]:    http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"
+[IP2Var]:    http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"
+[IP2Blk]:    http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins"
+[BHS]:       http://blackhole.webpagetest.org/
+[ISO]:       http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
+[RFC]:       http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
+[sample]:    https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
+[wordfence]: https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins"
+[BuddyPress]:https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins"

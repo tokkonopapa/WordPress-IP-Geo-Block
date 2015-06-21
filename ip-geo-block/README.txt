@@ -67,13 +67,15 @@ if you have any troubles. I'll be profoundly grateful your contribution to
 improve this feature. See more details on 
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-4. Support membership `Anyone can register` and [BuddyPress](https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins")
-to reduce registration and BuddyPress spam.
+4. Support `Anyone can register` for membership and [BuddyPress](https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins") 
+to reduce registration spam. Registered users can login as membership from 
+anywhere but the request of new user registration or lost password is blocked 
+by the country code.
 
 5. HTTP Response code can be selectable as `403 Forbidden` to deny access 
 pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top 
-page. You can also have a custom `403.php` in your theme template directory or 
-child theme directory to fit your theme.
+page. You can also have the custom error page (for example `403.php`) in your 
+theme template directory or child theme directory to fit your theme.
 
 6. Referer suppressor for external link. When you click an external hyperlink 
 on admin screen, http referer will be eliminated to hide a footprint of your 
@@ -369,17 +371,15 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.1.1 =
-* **New feature:** Added `Block by country at registration` on `Login form`.
-  Previously, every validation by county code and WP-ZEP is always prior to 
-  the state of logged in. In this release, though the `Block by country` on 
-  `Login form` is exactly the same as the previous version, note that `Disable`
-  and `Block by country at registration` will always bypass other validations 
-  of country code (but all WP-ZEP are still effective) when the user logged in.
-* **Improvement:** Improved http response status code and message at blocking.
-  For example the `404.php` in the theme template directory or in the child 
-  theme directory is used if it exists. And new filter hooks 
+* **New feature:** Added `Block by country (register, lost password)` at 
+  `Login form` on `Settings` tab in order to accept the registered users as 
+  membership from anywhere but block the request of new user ragistration and 
+  lost password by the country code.
+* **Improvement:** Added showing the custom error page for http response code 
+  4xx and 5xx. For example the `403.php` in the theme template directory or in 
+  the child theme directory is used if it exists. And new filter hooks 
   `ip-geo-block-(comment|xmlrpc|login|admin)-(status|reason)` are available 
-  to apply the custom response code and reason for human.
+  to customize the response code and reason for human.
 * **Obsoleted:** Obsoleted the filter hooks 
   `ip-geo-block-(admin-actions|admin-pages|wp-content)`. Alternatively new 
   filter hooks `ip-geo-block-bypass-(admins|plugins|themes)` are added to 

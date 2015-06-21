@@ -133,7 +133,7 @@ function ip_geo_block_tab_settings( $context ) {
 				__( 'Block by country (register, lost password)', IP_Geo_Block::TEXT_DOMAIN ) => 2,
 				__( 'Block by country', IP_Geo_Block::TEXT_DOMAIN ) => 1,
 			),
-			'after' => '<div style="display:none" class="ip_geo_block_settings_validation_desc">' . __( 'Registered users can login from anywhere, but a new user registration request and the password reset request will be blocked by the country code.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
+			'after' => '<div style="display:none" class="ip_geo_block_settings_validation_desc">' . __( 'Registered users can login as membership from anywhere, but the request of new user registration and lost password is blocked by the country code.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
 		)
 	);
 

@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 2.1.1\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
 "POT-Creation-Date: 2015-06-20 00:51+0900\n"
-"PO-Revision-Date: 2015-06-20 00:52+0900\n"
+"PO-Revision-Date: 2015-06-21 10:52+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -198,8 +198,8 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:136
 msgid ""
-"Registered users can login from anywhere, but a new user registration "
-"request and the password reset request will be blocked by the country code."
+"Registered users can login as membership from anywhere, but the request of "
+"new user registration and lost password is blocked by the country code."
 msgstr ""
 
 #: admin/includes/tab-settings.php:143
