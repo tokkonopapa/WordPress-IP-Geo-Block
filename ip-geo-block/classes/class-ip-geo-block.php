@@ -85,9 +85,8 @@ class IP_Geo_Block {
 		if ( $validate['login'] ) {
 			add_action( 'login_init', array( $this, 'validate_login' ) );
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
-			add_filter( 'registration_errors', array( $this, 'validate_filter' ), 10, 3 );
-			add_action( 'bp_before_register_page', array( $this, 'validate_filter' ) );
-			add_action( 'bp_before_activation_page', array( $this, 'validate_filter' ) );
+			add_action( 'bp_core_screen_signup', array( $this, 'validate_filter' ) );
+			add_action( 'bp_signup_pre_validate', array( $this, 'validate_filter' ) );
 		}
 
 		// get content folders (with trailing slash)
