@@ -493,7 +493,7 @@ class IP_Geo_Block {
 			$type = ! has_action( "admin_post_nopriv{$action}" ) ? 'ajax' : NULL;
 			break;
 		  default:
-			$type = empty( $_GET ) && empty( $_POST ) ? NULL : 'admin';
+			$type = $page || $action ? 'admin' : NULL;
 		}
 
 		if ( isset( $type ) && $settings['validation'][ $type ] >= 2 ) {
