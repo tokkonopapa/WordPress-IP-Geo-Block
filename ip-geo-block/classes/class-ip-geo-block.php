@@ -72,12 +72,12 @@ class IP_Geo_Block {
 
 			// wp-comments-post.php @since 2.8.0, wp-includes/comment.php @since 1.5.0
 			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ) );
-			add_filter( 'preprocess_comment', array( $this, 'validate_trackback' ) );
+			add_filter( 'preprocess_comment', array( $this, 'validate_comment' ) );
 		}
 
 		// xmlrpc.php @since 3.1.0, wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
 		if ( $validate['xmlrpc'] ) {
-			add_filter( 'wp_xmlrpc_server_class', array( $this, 'validate_filter' ) );
+			add_filter( 'wp_xmlrpc_server_class', array( $this, 'validate_xmlrpc' ) );
 			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ) );
 		}
 
@@ -85,8 +85,8 @@ class IP_Geo_Block {
 		if ( $validate['login'] ) {
 			add_action( 'login_init', array( $this, 'validate_login' ) );
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
-			add_action( 'bp_core_screen_signup', array( $this, 'validate_filter' ) );
-			add_action( 'bp_signup_pre_validate', array( $this, 'validate_filter' ) );
+			add_action( 'bp_core_screen_signup', array( $this, 'validate_signup' ) );
+			add_action( 'bp_signup_pre_validate', array( $this, 'validate_signup' ) );
 		}
 
 		// get content folders (with trailing slash)
@@ -450,14 +450,16 @@ class IP_Geo_Block {
 	 * Validate ip address at comment, login, admin, xmlrpc
 	 *
 	 */
-	public function validate_comment() {
-		$this->validate_ip( 'comment', self::get_option( 'settings' ) );
-	}
-
-	public function validate_trackback( $commentdata ) {
-		if ( 'trackback' === $commentdata['comment_type'] )
+	public function validate_comment( $commentdata ) {
+		if ( ! is_array( $commentdata ) ||
+		     'trackback' === $commentdata['comment_type'] )
 			$this->validate_ip( 'comment', self::get_option( 'settings' ) );
 		return $commentdata;
+	}
+
+	public function validate_xmlrpc( $something ) {
+		$this->validate_ip( 'xmlrpc.php', self::get_option( 'settings' ) );
+		return $something; // pass through
 	}
 
 	public function validate_login() {
@@ -466,18 +468,14 @@ class IP_Geo_Block {
 			if ( empty( $_REQUEST['loggedout'] ) || isset( $_REQUEST['action'] ) )
 				$this->validate_ip( 'login', $settings );
 		} else {
-			if ( isset( $_REQUEST['action'] ) && 'login' !== $_REQUEST['action'] )
+			if ( isset( $_REQUEST['action'] ) &&
+			     FALSE === in_array( $_REQUEST['action'], array( 'login', 'logout') ) )
 				$this->validate_ip( 'login', $settings );
 		}
 	}
 
-	public function validate_filter( $something ) {
-		global $pagenow; // http://codex.wordpress.org/Global_Variables
-		$this->validate_ip(
-			'xmlrpc.php' === $pagenow ? 'xmlrpc' : 'login',
-			self::get_option( 'settings' )
-		);
-		return $something; // pass through
+	public function validate_signup() {
+		$this->validate_ip( 'login', self::get_option( 'settings' ) );
 	}
 
 	public function validate_admin() {
