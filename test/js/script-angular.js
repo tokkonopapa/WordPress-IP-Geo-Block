@@ -75,7 +75,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			email: 'spam@example.com',
 			url: 'http://example.com/',
 			comment: '<script>alert("XSS")</script>',
-			comment_post_ID: 0,
+			comment_post_ID: 1,
 			comment_parent: 0
 		},
 		trackback: {
