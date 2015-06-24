@@ -451,7 +451,9 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_comment( $commentdata ) {
-		$this->validate_ip( 'comment', self::get_option( 'settings' ) );
+		if ( ! is_array( $commentdata ) ||
+		     'trackback' === $commentdata['comment_type'] )
+			$this->validate_ip( 'comment', self::get_option( 'settings' ) );
 		return $commentdata;
 	}
 
