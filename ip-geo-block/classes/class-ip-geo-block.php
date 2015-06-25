@@ -465,8 +465,10 @@ class IP_Geo_Block {
 	public function validate_login() {
 		$settings = self::get_option( 'settings' );
 
-		if ( 2 != $settings['validation']['login'] or isset( $_REQUEST['action'] ) &&
-		     FALSE !== in_array( $_REQUEST['action'], array( 'login', 'logout') ) )
+		if ( 2 != $settings['validation']['login'] )
+			$this->validate_ip( 'login', $settings );
+
+		elseif ( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout') ) )
 			$this->validate_ip( 'login', $settings );
 	}
 
