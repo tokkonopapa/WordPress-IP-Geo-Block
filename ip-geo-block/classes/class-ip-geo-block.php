@@ -107,7 +107,8 @@ class IP_Geo_Block {
 		elseif ( ( $validate['admin'] || $validate['ajax'] ) && is_admin() )
 			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
 
-		// embed a nonce into the page
+		// remove redirection at logout (@since 4.2), embed a nonce into the page
+		add_filter( 'logout_redirect', array( $this, 'logout_redirect' ), 10, 3 );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $settings['priority'] );
 	}
 
@@ -286,14 +287,14 @@ class IP_Geo_Block {
 	 */
 	private function validate_country( $validate, $settings ) {
 		if ( 0 == $settings['matching_rule'] ) {
-			// Whitelist
 			$list = $settings['white_list'];
 			if ( ! $list || FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'passed' );
 			elseif ( 'ZZ' !== $validate['code'] )
 				return $validate + array( 'result' => 'blocked' );
-		} else {
-			// Blacklist
+		}
+
+		else {
 			$list = $settings['black_list'];
 			if ( $list && FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'blocked' );
@@ -451,8 +452,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_comment( $commentdata ) {
-		if ( ! is_array( $commentdata ) ||
-		     'trackback' === $commentdata['comment_type'] )
+		if ( ! is_array( $commentdata ) || 'trackback' === $commentdata['comment_type'] )
 			$this->validate_ip( 'comment', self::get_option( 'settings' ) );
 		return $commentdata;
 	}
@@ -464,18 +464,19 @@ class IP_Geo_Block {
 
 	public function validate_login() {
 		$settings = self::get_option( 'settings' );
-		if ( 2 != $settings['validation']['login'] ) {
-			if ( empty( $_REQUEST['loggedout'] ) || isset( $_REQUEST['action'] ) )
-				$this->validate_ip( 'login', $settings );
-		} else {
-			if ( isset( $_REQUEST['action'] ) &&
-			     FALSE === in_array( $_REQUEST['action'], array( 'login', 'logout') ) )
-				$this->validate_ip( 'login', $settings );
-		}
+
+		if ( 2 != $settings['validation']['login'] or isset( $_REQUEST['action'] ) &&
+		     FALSE !== in_array( $_REQUEST['action'], array( 'login', 'logout') ) )
+			$this->validate_ip( 'login', $settings );
 	}
 
 	public function validate_signup() {
 		$this->validate_ip( 'login', self::get_option( 'settings' ) );
+	}
+
+	/* Remove the log out redirect URL not to be blocked by WP-ZEP */
+	public function logout_redirect() {
+		return 'wp-login.php?loggedout=true';
 	}
 
 	public function validate_admin() {
@@ -590,6 +591,7 @@ class IP_Geo_Block {
 		return $validate;
 	}
 
+	/* authentication should be prior to other validation when anyone can login */
 	public function check_auth( $validate, $settings ) {
 		return is_user_logged_in() ? $validate + array( 'result' => 'passed' ) : $validate;
 	}
