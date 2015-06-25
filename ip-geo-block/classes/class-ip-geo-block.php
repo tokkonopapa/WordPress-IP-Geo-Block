@@ -458,7 +458,7 @@ class IP_Geo_Block {
 	}
 
 	public function validate_xmlrpc( $something ) {
-		$this->validate_ip( 'xmlrpc.php', self::get_option( 'settings' ) );
+		$this->validate_ip( 'xmlrpc', self::get_option( 'settings' ) );
 		return $something;
 	}
 
