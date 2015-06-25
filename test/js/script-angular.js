@@ -206,7 +206,8 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	// Single Page
 	url = $cookies['single-page'];
 	if (!url) {
-		url = trailingslashit($scope.home_url) + '?p=0';
+		url = trailingslashit($scope.home_url) +
+			'?p=' + $scope.form.comment.comment_post_ID;
 	}
 	$scope.single_page = url;
 
