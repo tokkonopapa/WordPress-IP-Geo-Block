@@ -58,9 +58,9 @@ if you have any troubles. I'll be profoundly grateful your contribution to
 improve this feature. See more details on 
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-4. Support `Anyone can register` for membership of
-    [BuddyPress][BuddyPress]
-    and [bbPress][bbPress]
+4. Support `Anyone can register` for membership of 
+    [BuddyPress](https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins")
+    and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins")
 to reduce registration spam. Registered users can login as membership from 
 anywhere but the request of new user registration or lost password is blocked 
 by the country code.
