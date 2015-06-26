@@ -85,8 +85,8 @@ class IP_Geo_Block {
 		if ( $validate['login'] ) {
 			add_action( 'login_init', array( $this, 'validate_login' ) );
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
-			add_action( 'bp_core_screen_signup', array( $this, 'validate_signup' ) );
-			add_action( 'bp_signup_pre_validate', array( $this, 'validate_signup' ) );
+			add_action( 'bp_core_screen_signup', array( $this, 'validate_login' ) );
+			add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ) );
 		}
 
 		// get content folders (with trailing slash)
@@ -107,8 +107,8 @@ class IP_Geo_Block {
 		elseif ( ( $validate['admin'] || $validate['ajax'] ) && is_admin() )
 			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
 
-		// remove redirection at logout (@since 4.2), embed a nonce into the page
-		add_filter( 'logout_redirect', array( $this, 'logout_redirect' ), 10, 3 );
+		// overwrite the redirect URL at logout, embed a nonce into the page
+		add_filter( 'wp_redirect', array( $this, 'logout_redirect' ), PHP_INT_MAX, 2 );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $settings['priority'] );
 	}
 
@@ -448,7 +448,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Validate ip address at comment, login, admin, xmlrpc
+	 * Validate ip address for comment, xmlrpc, login, admin, plugins/themes
 	 *
 	 */
 	public function validate_comment( $commentdata ) {
@@ -465,20 +465,11 @@ class IP_Geo_Block {
 	public function validate_login() {
 		$settings = self::get_option( 'settings' );
 
-		if ( 2 != $settings['validation']['login'] )
+		if ( 2 != $settings['validation']['login'] || 'bp_' === substr( current_filter(), 0, 3 ) )
 			$this->validate_ip( 'login', $settings );
 
 		elseif ( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout') ) )
 			$this->validate_ip( 'login', $settings );
-	}
-
-	public function validate_signup() {
-		$this->validate_ip( 'login', self::get_option( 'settings' ) );
-	}
-
-	/* Remove the log out redirect URL not to be blocked by WP-ZEP */
-	public function logout_redirect() {
-		return 'wp-login.php?loggedout=true';
 	}
 
 	public function validate_admin() {
@@ -549,6 +540,11 @@ class IP_Geo_Block {
 
 		// Execute requested uri via a rewrite rule in plugins/themes
 		do_action( self::PLUGIN_SLUG . '-exec', $validate, $settings );
+	}
+
+	/* overwrite the redirect URL at logout not to be blocked by WP-ZEP */
+	public function logout_redirect( $location ) {
+		return isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] ? 'wp-login.php?loggedout=true' : $location;
 	}
 
 	/**
