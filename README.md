@@ -58,7 +58,9 @@ if you have any troubles. I'll be profoundly grateful your contribution to
 improve this feature. See more details on 
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-4. Support `Anyone can register` for membership and [BuddyPress][BuddyPress] 
+4. Support `Anyone can register` for membership of
+    [BuddyPress][BuddyPress]
+    and [bbPress][bbPress]
 to reduce registration spam. Registered users can login as membership from 
 anywhere but the request of new user registration or lost password is blocked 
 by the country code.
@@ -378,3 +380,4 @@ This plugin is licensed under the GPL v2 or later.
 [sample]:    https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
 [wordfence]: https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins"
 [BuddyPress]:https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins"
+[bbPress]   :https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins"
