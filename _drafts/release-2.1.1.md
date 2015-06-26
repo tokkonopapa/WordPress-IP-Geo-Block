@@ -6,9 +6,10 @@ categories: changelog
 published: true
 ---
 
-I sometimes go abroad on bussiness, and from there I want to manage WordPress 
-as an administrator. To realize this, I implemented a new feature which was 
-proposed by one of my users at the [support forum][Asking-for-extending].
+When I go abroad, I want to manage my WordPress site as an administrator from 
+there. To realize this, I've implemented a new feature which was proposed at 
+the [support forum][Asking-for-extending]. (Thanks [digiblogger][digiblogger]
+!!)
 
 <!--more-->
 
@@ -16,14 +17,15 @@ proposed by one of my users at the [support forum][Asking-for-extending].
 
 A new choice `Block by country (register, lost password)` has been equipped at 
 "**Login form**" on "**Settings**" tab. This feature allows you to "**login**" 
-and "**logout**" from anywhere, but any other request to `wp-login.php` will be 
+and "**logout**" from anywhere, but any other request to login form will be 
 validated by the country code.
 
 ![Block by country (register, lost password)]({{ "/img/2015-06/validation-settings.png" | prepend: site.baseurl }}
  "Block by country (register, lost password)")
 
 It's suitable for "**Membership: Anyone can register**" on 
-"[Settings General Screen][general-settings]" and also [BuddPress][BuddyPress].
+"[Settings General Screen][general-settings]". Also for [BuddPress][BuddyPress] 
+and [bbPress][bbPress].
 
 One thing you should know about this feature is that it changes the priority of 
 validation rules. Basically, this plugin has 3 rules, i.e. **WP-ZEP**, 
@@ -42,7 +44,7 @@ In this version :
 | `BBC`      |     WP-ZEP     |  country code  | authentication |
 
 The reason why the `BBC (…)` has different priority from `BBC` is that I would 
-not like to change the priority of the previous version.So you have nothing to 
+not like to change the priority of the previous version. So you have nothing to 
 do if you would not use this feature.
 
 If you choose it and want to add more permitted countries for login, you can 
@@ -70,7 +72,7 @@ For example, the `403.php` in the theme template directory or child theme
 directory is used (if it exists) when this plugin blocks specific requests.
 
 And also some new filter hooks are available to customize the http response 
-status code and reason :
+status code and reason message :
 
 * `ip-geo-block-comment-status`, `ip-geo-block-comment-reason`
 * `ip-geo-block-xmlrpc-status`, `ip-geo-block-xmlrpc-reason`
@@ -120,8 +122,10 @@ Although it's a little annoying, please be patient and enjyo this release !!
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f609.png)
 </span>
 
+[digiblogger]: https://wordpress.org/support/profile/digiblogger "WordPress › Support » digiblogger"
 [general-settings]: https://codex.wordpress.org/Settings_General_Screen "Settings General Screen « WordPress Codex"
 [BuddyPress]: https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins"
+[bbPress]: https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins"
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [Asking-for-extending]: https://wordpress.org/support/topic/asking-for-extending "WordPress › Support » Asking for extending"
 [samples.php]: https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
