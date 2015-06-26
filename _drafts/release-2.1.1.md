@@ -8,7 +8,7 @@ published: true
 
 When I go abroad, I want to manage my WordPress site as an administrator from 
 there. To realize this, I've implemented a new feature which was proposed at 
-the [support forum][Asking-for-extending]. (Thanks [digiblogger][digiblogger]
+the [support forum][Asking-for-extending]. (Thanks, [digiblogger][digiblogger]
 !!)
 
 <!--more-->
@@ -40,10 +40,10 @@ In this version :
 
 | Login form |  1st priority  |  2nd priority  | 3rd priofity   |
 |:-----------|:--------------:|:--------------:|:--------------:|
-| `BBC (…)`  |     WP-ZEP     | authentication |  country code  |
+| `BBC (窶ｦ)`  |     WP-ZEP     | authentication |  country code  |
 | `BBC`      |     WP-ZEP     |  country code  | authentication |
 
-The reason why the `BBC (…)` has different priority from `BBC` is that I would 
+The reason why the `BBC (窶ｦ)` has different priority from `BBC` is that I would 
 not like to change the priority of the previous version. So you have nothing to 
 do if you would not use this feature.
 
@@ -122,10 +122,10 @@ Although it's a little annoying, please be patient and enjyo this release !!
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f609.png)
 </span>
 
-[digiblogger]: https://wordpress.org/support/profile/digiblogger "WordPress › Support » digiblogger"
-[general-settings]: https://codex.wordpress.org/Settings_General_Screen "Settings General Screen « WordPress Codex"
-[BuddyPress]: https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins"
-[bbPress]: https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins"
-[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[Asking-for-extending]: https://wordpress.org/support/topic/asking-for-extending "WordPress › Support » Asking for extending"
+[digiblogger]: https://wordpress.org/support/profile/digiblogger "WordPress 窶ｺ Support ﾂｻ digiblogger"
+[general-settings]: https://codex.wordpress.org/Settings_General_Screen "Settings General Screen ﾂｫ WordPress Codex"
+[BuddyPress]: https://wordpress.org/plugins/buddypress/ "WordPress 窶ｺ BuddyPress ﾂｫ WordPress Plugins"
+[bbPress]: https://wordpress.org/plugins/bbpress/ "WordPress 窶ｺ bbPress ﾂｫ WordPress Plugins"
+[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress 窶ｺ IP Geo Block ﾂｫ WordPress Plugins"
+[Asking-for-extending]: https://wordpress.org/support/topic/asking-for-extending "WordPress 窶ｺ Support ﾂｻ Asking for extending"
 [samples.php]: https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
