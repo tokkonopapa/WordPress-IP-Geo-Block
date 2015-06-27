@@ -73,6 +73,12 @@ class IP_Geo_Block {
 			// wp-comments-post.php @since 2.8.0, wp-trackback.php @since 1.5.0
 			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ) );
 			add_filter( 'preprocess_comment', array( $this, 'validate_comment' ) );
+
+			// bbPress: prevent creating topic/relpy and rendering form
+			add_filter( 'bbp_new_topic_pre_title', array( $this, 'validate_comment' ) );
+			add_filter( 'bbp_new_reply_pre_title', array( $this, 'validate_comment' ) );
+			add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_filter' ) );
+			add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_filter' ) );
 		}
 
 		// xmlrpc.php @since 3.1.0, wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
@@ -85,6 +91,8 @@ class IP_Geo_Block {
 		if ( $validate['login'] ) {
 			add_action( 'login_init', array( $this, 'validate_login' ) );
 			add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
+
+			// BuddyPress: prevent registration and rendering form
 			add_action( 'bp_core_screen_signup', array( $this, 'validate_login' ) );
 			add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ) );
 		}
@@ -215,7 +223,7 @@ class IP_Geo_Block {
 	 * Render a text message to the comment form.
 	 *
 	 */
-	public function comment_form_message( $id ) {
+	public function comment_form_message() {
 		$msg = self::get_option( 'settings' );
 		$msg = esc_html( $msg['comment']['msg'] ); // Escaping for HTML blocks
 		if ( $msg ) echo '<p id="', self::PLUGIN_SLUG, '-msg">', $msg, '</p>';
@@ -364,7 +372,7 @@ class IP_Geo_Block {
 	 * @param string $hook a name to identify action hook applied in this call.
 	 * @param array $settings option settings
 	 */
-	private function validate_ip( $hook, $settings ) {
+	private function validate_ip( $hook, $settings, $refuse = TRUE ) {
 		// set IP address to be validated
 		$ips = array(
 			$this->remote_addr = (string) apply_filters(
@@ -439,7 +447,8 @@ class IP_Geo_Block {
 				$this->update_statistics( $validate );
 
 			// send response code to refuse
-			$this->send_response( $hook, $settings['response_code'] );
+			if ( $refuse )
+				$this->send_response( $hook, $settings['response_code'] );
 		}
 
 		return $validate;
@@ -449,6 +458,11 @@ class IP_Geo_Block {
 	 * Validate ip address for comment, xmlrpc, login, admin, plugins/themes
 	 *
 	 */
+	public function validate_filter( $val ) {
+		$validate = $this->validate_ip( 'comment', self::get_option( 'settings' ), FALSE );
+		return 'passed' !== $validate['result'] ? FALSE : $val;
+	}
+
 	public function validate_comment( $commentdata ) {
 		if ( ! is_array( $commentdata ) || 'trackback' === $commentdata['comment_type'] )
 			$this->validate_ip( 'comment', self::get_option( 'settings' ) );
