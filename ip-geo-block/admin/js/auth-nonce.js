@@ -51,7 +51,7 @@ var IP_GEO_BLOCK_ZEP = {
 		}
 
 		var regexp = new RegExp(
-			'/(?:wp-admin/|' + IP_GEO_BLOCK_AUTH.plugins + '|' + IP_GEO_BLOCK_AUTH.themes + ')'
+			'(?:/wp-admin/|' + IP_GEO_BLOCK_AUTH.plugins + '|' + IP_GEO_BLOCK_AUTH.themes + ')'
 		);
 
 		// possibly scheme is `javascript` or path is `;`

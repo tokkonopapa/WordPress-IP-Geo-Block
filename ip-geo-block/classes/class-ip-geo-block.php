@@ -40,8 +40,8 @@ class IP_Geo_Block {
 
 	// default content folders
 	public static $content_dir = array(
-		'plugins' => 'wp-content/plugins/',
-		'themes'  => 'wp-content/themes/',
+		'plugins' => '/wp-content/plugins/',
+		'themes'  => '/wp-content/themes/',
 	);
 
 	// private values
@@ -90,17 +90,15 @@ class IP_Geo_Block {
 		}
 
 		// get content folders (with trailing slash)
-		$plugins = parse_url( plugins_url(),        PHP_URL_PATH );
-		if ( preg_match( '/\/([^\/]*\/[^\/]*)$/', $plugins, $pos ) )
-			self::$content_dir['plugins'] = $plugins = "$pos[1]/";
+		if ( preg_match( '/(\/[^\/]*\/[^\/]*)$/', parse_url( plugins_url(), PHP_URL_PATH ), $pos ) )
+			self::$content_dir['plugins'] = "$pos[1]/";
 
-		$themes  = parse_url( get_theme_root_uri(), PHP_URL_PATH );
-		if ( preg_match( '/\/([^\/]*\/[^\/]*)$/', $themes,  $pos ) )
-			self::$content_dir['themes' ] = $themes  = "$pos[1]/";
+		if ( preg_match( '/(\/[^\/]*\/[^\/]*)$/', parse_url( get_theme_root_uri(), PHP_URL_PATH ), $pos ) )
+			self::$content_dir['themes'] = "$pos[1]/";
 
 		// wp-content/(plugins|themes)/.../*.php
-		if ( ( $validate['plugins'] && FALSE !== strpos( $_SERVER['REQUEST_URI'], "/$plugins" ) ) ||
-		     ( $validate['themes' ] && FALSE !== strpos( $_SERVER['REQUEST_URI'], "/$themes"  ) ) )
+		if ( ( $validate['plugins'] && FALSE !== strpos( $_SERVER['REQUEST_URI'], self::$content_dir['plugins'] ) ) ||
+		     ( $validate['themes' ] && FALSE !== strpos( $_SERVER['REQUEST_URI'], self::$content_dir['themes' ] ) ) )
 			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
@@ -475,16 +473,16 @@ class IP_Geo_Block {
 	public function validate_admin() {
 		$settings = self::get_option( 'settings' );
 
-		$page   = isset( $_REQUEST['page'  ] ) ?  "{$_REQUEST['page'  ]}" : NULL;
-		$action = isset( $_REQUEST['action'] ) ? "_{$_REQUEST['action']}" : NULL;
+		$page   = isset( $_REQUEST['page'  ] ) ? $_REQUEST['page'  ] : NULL;
+		$action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : NULL;
 
 		global $pagenow; // http://codex.wordpress.org/Global_Variables
 		switch ( $pagenow ) {
 		  case 'admin-ajax.php':
-			$type = ! has_action( "wp_ajax_nopriv{$action}" ) ? 'ajax' : NULL;
+			$type = ! has_action( 'wp_ajax_nopriv_' . $action ) ? 'ajax' : NULL;
 			break;
 		  case 'admin-post.php':
-			$type = ! has_action( "admin_post_nopriv{$action}" ) ? 'ajax' : NULL;
+			$type = ! has_action( 'admin_post_nopriv' . ($action ? '_' : '') . $action ) ? 'ajax' : NULL;
 			break;
 		  default:
 			$type = $page || $action ? 'admin' : NULL;
@@ -496,6 +494,8 @@ class IP_Geo_Block {
 
 			// list of request with a specific query to bypass WP-ZEP
 			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
+				// event won't fire in "Media Library"
+				'upload-attachment', 'imgedit-preview', 'bp_avatar_upload',
 			) );
 
 			// register validation of nonce
@@ -514,7 +514,7 @@ class IP_Geo_Block {
 		$plugins = preg_quote( self::$content_dir['plugins'], '/' );
 		$themes  = preg_quote( self::$content_dir['themes' ], '/' );
 
-		if ( preg_match( "/\/(?:($plugins)|($themes))([^\/]*)\//", $_SERVER['REQUEST_URI'], $matches ) ) {
+		if ( preg_match( "/(?:($plugins)|($themes))([^\/]*)\//", $_SERVER['REQUEST_URI'], $matches ) ) {
 			// list of plugins/themes to bypass WP-ZEP
 			$list = array(
 				'plugins' => array(),
@@ -525,10 +525,9 @@ class IP_Geo_Block {
 			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $list[ $type ] );
 
 			// register validation of nonce
-			if ( empty( $matches[3] ) || ! in_array( $matches[3], $list, TRUE ) ) {
+			if ( empty( $matches[3] ) || ! in_array( $matches[3], $list, TRUE ) )
 				if ( $settings['validation'][ $type ] >= 2 )
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
-			}
 
 			// register rewrited request
 			if ( defined( 'IP_GEO_BLOCK_REWRITE' ) )
@@ -600,9 +599,8 @@ class IP_Geo_Block {
 	 */
 	public function check_nonce( $validate, $settings ) {
 		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
-		$value = self::retrieve_nonce( $nonce );
 
-		if ( ! is_user_logged_in() || ! $value || ! wp_verify_nonce( $value, $nonce ) )
+		if ( ! wp_verify_nonce( self::retrieve_nonce( $nonce ), $nonce ) )
 			$validate['result'] = 'blocked';
 
 		return $validate;
@@ -612,7 +610,7 @@ class IP_Geo_Block {
 		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
 
 		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) ) {
-			if ( is_user_logged_in() ) {
+			if ( is_user_logged_in() && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
 				// redirect to handle with javascript location object.
 				wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
 				exit;
