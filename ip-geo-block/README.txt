@@ -67,10 +67,10 @@ if you have any troubles. I'll be profoundly grateful your contribution to
 improve this feature. See more details on 
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-4. Support `Anyone can register` for membership. You can configure this plugin 
-such that a registered user can login as the membership from anywhere, but a 
-request of a new user registration, lost password or subscribing comment is 
-blocked by the country code. It is suitable for 
+4. Support "**Anyone can register**" for membership. You can configure this 
+plugin such that a registered user can login as the membership from anywhere, 
+but a request of a new user registration, lost password or subscribing comment 
+is blocked by the country code. It is suitable for 
     [BuddyPress](https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins")
     and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins")
 to help reducing spams. 
@@ -377,7 +377,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 * **New feature:** Added `Block by country (register, lost password)` at 
   `Login form` on `Settings` tab in order to accept the registered users as 
   membership from anywhere but block the request of new user ragistration and 
-  lost password by the country code.
+  lost password by the country code. Is't suitable for BuddyPress and bbPress.
 * **Improvement:** Added showing the custom error page for http response code 
   4xx and 5xx. For example the `403.php` in the theme template directory or in 
   the child theme directory is used if it exists. And new filter hooks 
