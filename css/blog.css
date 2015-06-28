@@ -203,6 +203,10 @@ span.emoji img {
   top: 5px;
 }
 
+ol, ul {
+  margin-bottom: 1em;
+}
+
 samp {
   font-size: 0.9em;
 }
