@@ -75,10 +75,10 @@ class IP_Geo_Block {
 			add_filter( 'preprocess_comment', array( $this, 'validate_comment' ) );
 
 			// bbPress: prevent creating topic/relpy and rendering form
-			add_filter( 'bbp_new_topic_pre_title', array( $this, 'validate_comment' ) );
-			add_filter( 'bbp_new_reply_pre_title', array( $this, 'validate_comment' ) );
-			add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_filter' ) );
-			add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_filter' ) );
+			add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ) );
+			add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ) );
+			add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_access' ) );
+			add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_access' ) );
 		}
 
 		// xmlrpc.php @since 3.1.0, wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
@@ -114,7 +114,7 @@ class IP_Geo_Block {
 			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
 
 		// overwrite the redirect URL at logout, embed a nonce into the page
-		add_filter( 'wp_redirect', array( $this, 'logout_redirect' ), PHP_INT_MAX, 2 );
+		add_filter( 'wp_redirect', array( $this, 'logout_redirect' ), 20, 2 );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $settings['priority'] );
 	}
 
@@ -372,7 +372,7 @@ class IP_Geo_Block {
 	 * @param string $hook a name to identify action hook applied in this call.
 	 * @param array $settings option settings
 	 */
-	private function validate_ip( $hook, $settings, $refuse = TRUE ) {
+	private function validate_ip( $hook, $settings, $block = TRUE ) {
 		// set IP address to be validated
 		$ips = array(
 			$this->remote_addr = (string) apply_filters(
@@ -441,14 +441,13 @@ class IP_Geo_Block {
 			IP_Geo_Block_Logs::record_log( $hook, $validate, $settings );
 		}
 
-		if ( $blocked ) {
+		if ( $block && $blocked ) {
 			// update statistics
 			if ( $settings['save_statistics'] )
 				$this->update_statistics( $validate );
 
 			// send response code to refuse
-			if ( $refuse )
-				$this->send_response( $hook, $settings['response_code'] );
+			$this->send_response( $hook, $settings['response_code'] );
 		}
 
 		return $validate;
@@ -458,12 +457,12 @@ class IP_Geo_Block {
 	 * Validate ip address for comment, xmlrpc, login, admin, plugins/themes
 	 *
 	 */
-	public function validate_filter( $val ) {
+	public function validate_access( $val = TRUE ) {
 		$validate = $this->validate_ip( 'comment', self::get_option( 'settings' ), FALSE );
 		return 'passed' !== $validate['result'] ? FALSE : $val;
 	}
 
-	public function validate_comment( $commentdata ) {
+	public function validate_comment( $commentdata = NULL ) {
 		if ( ! is_array( $commentdata ) || 'trackback' === $commentdata['comment_type'] )
 			$this->validate_ip( 'comment', self::get_option( 'settings' ) );
 		return $commentdata;
@@ -508,7 +507,7 @@ class IP_Geo_Block {
 
 			// list of request with a specific query to bypass WP-ZEP
 			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
-				// event won't fire in "Media Library"
+				// pluploader won't fire an event in "Media Library"
 				'upload-attachment', 'imgedit-preview', 'bp_avatar_upload',
 			) );
 

@@ -146,6 +146,16 @@ var IP_GEO_BLOCK_ZEP = {
 					$this.attr('action', query_args(uri, data));
 				}
 			});
+
+			$('form').each(function (index) {
+				var $this = $(this);
+				if ('multipart/form-data' === $this.attr('enctype')) {
+					$this.append(
+						'<input type="hidden" name="' + IP_GEO_BLOCK_ZEP.auth + '" value="'
+						+ sanitize(nonce) + '" />'
+					);
+				}
+			});
 		}
 	});
 }(jQuery, document));
