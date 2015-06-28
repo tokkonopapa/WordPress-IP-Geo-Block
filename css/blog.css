@@ -188,10 +188,15 @@ a {
 img {
   height: auto;
   max-width: 100%;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2);
+}
+img.site-logo {
+  box-shadow: none;
 }
 span.emoji img {
   height: 16px;
   width: 16px;
+  box-shadow: none;
   display: inline-block;
   vertical-align: text-top;
   position: relative;
