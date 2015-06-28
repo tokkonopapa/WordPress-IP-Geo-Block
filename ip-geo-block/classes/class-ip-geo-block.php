@@ -538,9 +538,10 @@ class IP_Geo_Block {
 			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $list[ $type ] );
 
 			// register validation of nonce
-			if ( empty( $matches[3] ) || ! in_array( $matches[3], $list, TRUE ) )
+			if ( empty( $matches[3] ) || ! in_array( $matches[3], $list, TRUE ) ) {
 				if ( $settings['validation'][ $type ] >= 2 )
 					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
+			}
 
 			// register rewrited request
 			if ( defined( 'IP_GEO_BLOCK_REWRITE' ) )
