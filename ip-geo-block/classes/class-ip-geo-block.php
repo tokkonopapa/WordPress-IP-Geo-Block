@@ -98,15 +98,16 @@ class IP_Geo_Block {
 		}
 
 		// get content folders (with trailing slash)
-		if ( preg_match( '/(\/[^\/]*\/[^\/]*)$/', parse_url( plugins_url(), PHP_URL_PATH ), $pos ) )
-			self::$content_dir['plugins'] = "$pos[1]/";
+		if ( preg_match( '/(\/[^\/]*\/[^\/]*)$/', parse_url( plugins_url(), PHP_URL_PATH ), $uri ) )
+			self::$content_dir['plugins'] = "$uri[1]/";
 
-		if ( preg_match( '/(\/[^\/]*\/[^\/]*)$/', parse_url( get_theme_root_uri(), PHP_URL_PATH ), $pos ) )
-			self::$content_dir['themes'] = "$pos[1]/";
+		if ( preg_match( '/(\/[^\/]*\/[^\/]*)$/', parse_url( get_theme_root_uri(), PHP_URL_PATH ), $uri ) )
+			self::$content_dir['themes'] = "$uri[1]/";
 
 		// wp-content/(plugins|themes)/.../*.php
-		if ( ( $validate['plugins'] && FALSE !== strpos( $_SERVER['REQUEST_URI'], self::$content_dir['plugins'] ) ) ||
-		     ( $validate['themes' ] && FALSE !== strpos( $_SERVER['REQUEST_URI'], self::$content_dir['themes' ] ) ) )
+		$uri = preg_replace( '|/+|', '/', $_SERVER['REQUEST_URI'] );
+		if ( ( $validate['plugins'] && FALSE !== strpos( $uri, self::$content_dir['plugins'] ) ) ||
+		     ( $validate['themes' ] && FALSE !== strpos( $uri, self::$content_dir['themes' ] ) ) )
 			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
@@ -538,10 +539,8 @@ class IP_Geo_Block {
 			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $list[ $type ] );
 
 			// register validation of nonce
-			if ( empty( $matches[3] ) || ! in_array( $matches[3], $list, TRUE ) ) {
-				if ( $settings['validation'][ $type ] >= 2 )
-					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
-			}
+			if ( 2 <= $settings['validation'][ $type ] && ! in_array( $matches[3], $list, TRUE ) )
+				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 
 			// register rewrited request
 			if ( defined( 'IP_GEO_BLOCK_REWRITE' ) )
@@ -564,7 +563,7 @@ class IP_Geo_Block {
 	 * Authentication handling
 	 *
 	 */
-	public function auth_fail( $something ) {
+	public function auth_fail( $something = NULL ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		$settings = self::get_option( 'settings' );
