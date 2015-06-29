@@ -105,7 +105,7 @@ class IP_Geo_Block {
 			self::$content_dir['themes'] = "$uri[1]/";
 
 		// wp-content/(plugins|themes)/.../*.php
-		$uri = preg_replace( '|/+|', '/', $_SERVER['REQUEST_URI'] );
+		$uri = preg_replace( '|//+|', '/', $_SERVER['REQUEST_URI'] );
 		if ( ( $validate['plugins'] && FALSE !== strpos( $uri, self::$content_dir['plugins'] ) ) ||
 		     ( $validate['themes' ] && FALSE !== strpos( $uri, self::$content_dir['themes' ] ) ) )
 			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
