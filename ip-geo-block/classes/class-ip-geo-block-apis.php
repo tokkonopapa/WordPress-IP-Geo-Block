@@ -488,7 +488,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 						$res[ $key ] = $data->$val;
 				}
 
-				if ( strlen( $res['countryCode'] ) === 2 ) {
+				if ( isset( $res['countryCode'] ) && strlen( $res['countryCode'] ) === 2 ) {
 					if ( is_string( $res['latitude' ] ) ) unset( $res['latitude' ] );
 					if ( is_string( $res['longitude'] ) ) unset( $res['longitude'] );
 					return $res;
