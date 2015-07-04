@@ -7,6 +7,27 @@
  * @license   GPL-2.0+
  * @link      https://github.com/tokkonopapa
  * @copyright 2013-2015 tokkonopapa
+ *
+ * THIS IS FOR THE ADVANCED USERS:
+ * This file is for WP-ZEP. If a plugin/theme accept direct malicious requests
+ * to the php files under the plugin/theme directory, WP-ZEP will be bypassed.
+ * To avoid such a bypassing, those requests should be redirected to this file
+ * and be validated by WP-ZEP. The `.htaccess` in the plugin/theme directory
+ * will help this redirection if it configured as follows (for apache):
+ *
+ * # BEGIN IP Geo Block
+ * <IfModule mod_rewrite.c>
+ * RewriteEngine on
+ * RewriteBase /wp-content/plugins/ip-geo-block/
+ * RewriteCond %{REQUEST_URI} !ip-geo-block/rewrite.php$
+ * RewriteRule ^.*\.php$ rewrite.php [L]
+ * </IfModule>
+ * # END IP Geo Block
+ *
+ * The redirected requests will be validated on a case according to the attack
+ * pattern such as null byte attack or directory traversal, and then load the
+ * WordPress core module through wp-load.php to triger WP-ZEP. If it ends up
+ * successfully, this includes the originally requested php file to excute it.
  */
 
 if ( ! defined( 'IP_GEO_BLOCK_REWRITE' ) ):
@@ -55,35 +76,37 @@ class IP_Geo_Block_Rewrite {
 		// @see wp-admin/network.php, get_home_path() in wp-admin/includes/file.php
 		// @link http://blog.fyneworks.com/2007/08/php-documentroot-in-iis-windows-servers.html
 		// @link http://stackoverflow.com/questions/11893832/is-it-a-good-idea-to-use-serverdocument-root-in-includes
-		if ( ! ( $path = $_SERVER['DOCUMENT_ROOT'] ) )
-			$path = substr( $_SERVER['SCRIPT_FILENAME'], 0, -strlen( $_SERVER['SCRIPT_NAME'] ) );
+		if ( ! ( $root = $_SERVER['DOCUMENT_ROOT'] ) )
+			$root = substr( $_SERVER['SCRIPT_FILENAME'], 0, -strlen( $_SERVER['SCRIPT_NAME'] ) );
 
 		// get absolute path of requested uri
 		// @link http://davidwalsh.name/iis-php-server-request_uri
-		$path = str_replace( '\\', '/', realpath( $path ) ) .
-		        parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
-
-		// check path
-		if ( preg_match( "/\/([^\/]*)$/", $path, $matches ) )
-			if ( empty( $matches[1] ) )
-				$path .= 'index.php';
+		$path = ( $root = str_replace( '\\', '/', $root ) ) . parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
 
 		// while malicios URI may be intercepted by the server,
 		// null byte attack should be invalidated just in case.
 		// ex) $path = "/etc/passwd\0.php"
-		$path = str_replace( "\0", '', $path );
+		$path = realpath( str_replace( "\0", '', $path ) );
+
+		// check path if under the document root
+		if ( 0 !== strpos( $path, $root ) )
+			self::abort( $validate, $settings, file_exists( $path ) );
+
+		// check default index
+		if ( 1 !== preg_match( "/\/([^\/]+)$/", $path, $matches ) )
+			$path .= 'index.php';
 
 		// check file and extention
-		// @note: is_readable() and is_file() need a valid path.
+		// @note: is_file() and is_readable() need a valid path.
 		// @link: http://php.net/releases/5_3_4.php, https://bugs.php.net/bug.php?id=39863
 		// ex) is_file("/etc/passwd\0.php") === true (5.2.14), false (5.4.4)
-		if ( ! @is_readable( $path ) || ! @is_file( $path ) ||
+		if ( ! @is_file( $path ) || ! @is_readable( $path ) ||
 		     'php' !== pathinfo( $path, PATHINFO_EXTENSION ) ) {
 			self::abort( $validate, $settings, file_exists( $path ) );
 		}
 
 		// reconfirm the requested URI is on the file system
-		if ( chdir( dirname( $path ) ) )
+		if ( @chdir( dirname( $path ) ) )
 			include_once basename( $path );
 
 		exit;
@@ -113,7 +136,7 @@ endif; /* ! defined( 'IP_GEO_BLOCK_REWRITE' ) */
 /**
  * Configuration samples of .htaccess for apache
  *
- * 1. `wp-content/plugins/.htaccess`
+ * 1. `/wordpress/wp-content/plugins/.htaccess`
  *
  * # BEGIN IP Geo Block
  * <IfModule mod_rewrite.c>
@@ -134,6 +157,7 @@ endif; /* ! defined( 'IP_GEO_BLOCK_REWRITE' ) */
  * # END IP Geo Block
  *
  * # BEGIN IP Geo Block
+ * # Bypass `my-plugin/somthing.php`
  * <IfModule mod_rewrite.c>
  * RewriteEngine on
  * RewriteBase /wordpress/wp-content/plugins/ip-geo-block/
@@ -144,6 +168,7 @@ endif; /* ! defined( 'IP_GEO_BLOCK_REWRITE' ) */
  * # END IP Geo Block
  *
  * # BEGIN IP Geo Block
+ * # Bypass `my-plugin/somthing.php`
  * <IfModule mod_rewrite.c>
  * RewriteEngine on
  * RewriteBase /wordpress/wp-content/plugins/ip-geo-block/
@@ -153,7 +178,7 @@ endif; /* ! defined( 'IP_GEO_BLOCK_REWRITE' ) */
  * </IfModule>
  * # END IP Geo Block
  * 
- * 2. `wp-content/themes/.htaccess`
+ * 2. `/wordpress/wp-content/themes/.htaccess`
  *
  * # BEGIN IP Geo Block
  * <IfModule mod_rewrite.c>
