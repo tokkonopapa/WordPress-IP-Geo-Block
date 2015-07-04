@@ -20,7 +20,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.1.1';
+	const VERSION = '2.1.2';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -360,9 +360,9 @@ class IP_Geo_Block {
 			if ( count( preg_grep( "/content-type:\s*?text\/xml;/i", headers_list() ) ) )
 				@trackback_response( $code, $mesg );
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) )
-				if ( FALSE === @include( STYLESHEETPATH . "/{$code}.php" ) )
-					if ( FALSE === @include( TEMPLATEPATH . "/{$code}.php" ) )
-						wp_die( $mesg, '', array( 'response' => $code, 'back_link' => TRUE ) );
+				FALSE !== ( @include( STYLESHEETPATH . "/{$code}.php" ) ) or // child  theme
+				FALSE !== ( @include( TEMPLATEPATH   . "/{$code}.php" ) ) or // parent theme
+				wp_die( $mesg, '', array( 'response' => $code, 'back_link' => TRUE ) );
 			die();
 		}
 	}
@@ -375,10 +375,8 @@ class IP_Geo_Block {
 	 */
 	private function validate_ip( $hook, $settings, $block = TRUE ) {
 		// set IP address to be validated
-		$ips = array(
-			$this->remote_addr = (string) apply_filters(
-				self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR']
-			)
+		$ips = array( $this->remote_addr = (string)
+			apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] )
 		);
 
 		// pick up all the IPs in HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP and etc.
@@ -502,7 +500,7 @@ class IP_Geo_Block {
 			$type = $page || $action ? 'admin' : NULL;
 		}
 
-		if ( isset( $type ) && $settings['validation'][ $type ] >= 2 ) {
+		if ( isset( $type ) && 2 <= $settings['validation'][ $type ] ) {
 			// redirect if valid nonce in referer
 			$this->trace_nonce();
 
@@ -570,7 +568,6 @@ class IP_Geo_Block {
 
 		// Count up a number of fails when authentication is failed
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $this->remote_addr ) ) {
-			$hook = $cache['hook'];
 			$validate = array(
 				'ip' => $this->remote_addr,
 				'code' => $cache['code'],
@@ -579,12 +576,12 @@ class IP_Geo_Block {
 				'result' => 'failed',
 			);
 
-			IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
+			IP_Geo_Block_API_Cache::update_cache( $cache['hook'], $validate, $settings );
 
 			// (1) blocked, unknown, (3) unauthenticated, (5) all
 			if ( (int)$settings['validation']['reclogs'] & 1 ) {
 				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-				IP_Geo_Block_Logs::record_log( $hook, $validate, $settings );
+				IP_Geo_Block_Logs::record_log( $cache['hook'], $validate, $settings );
 			}
 		}
 

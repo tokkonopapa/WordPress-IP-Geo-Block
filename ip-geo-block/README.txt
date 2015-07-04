@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.2.1
-Stable tag: 2.1.1
+Stable tag: 2.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -372,6 +372,15 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.1.2 =
+This is just a maintenance release.
+
+* **Improvement:** Hide checking the existence of log db behind the symbol 
+  `IP_GEO_BLOCK_DEBUG` to reduce 1 query on admin screen.
+* **Improvement:** Add alternative functions of BCMath extension to avoid 
+  `PHP Fatal error: Call to undefined function` in `IP2Location.php` when 
+  IPv6 is specified.
 
 = 2.1.1 =
 * **New feature:** Added `Block by country (register, lost password)` at 

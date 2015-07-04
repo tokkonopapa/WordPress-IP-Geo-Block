@@ -19,7 +19,7 @@ class IP_Geo_Block_Options {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
-			'version'         => '1.3.1', // This table version (not package)
+			'version'         => '2.1.0', // This table version (not package)
 			// since version 1.0
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
