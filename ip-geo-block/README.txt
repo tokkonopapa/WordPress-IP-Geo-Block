@@ -376,6 +376,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 = 2.1.2 =
 This is just a maintenance release.
 
+* **Bug fix:** Fixed the issue that does not count the login fail when 
+  validation on login form is `block by country (register, lost password)`.
 * **Improvement:** Hide checking the existence of log db behind the symbol 
   `IP_GEO_BLOCK_DEBUG` to reduce 1 query on admin screen.
 * **Improvement:** Add alternative functions of BCMath extension to avoid 
