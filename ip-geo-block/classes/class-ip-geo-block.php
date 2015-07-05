@@ -236,6 +236,15 @@ class IP_Geo_Block {
 	 * Get geolocation and country code from an ip address
 	 *
 	 */
+	private static function make_validation( $ip, $result ) {
+		return array_merge( array(
+			'ip' => $ip,
+			'time' => 0,
+			'auth' => get_current_user_id(),
+			'code' => 'ZZ',
+		), $result );
+	}
+
 	public static function get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_country' ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
@@ -262,30 +271,15 @@ class IP_Geo_Block {
 				$geo = new $name( $key ? $settings['providers'][ $provider ] : NULL );
 
 				// get country code
-				if ( $code = $geo->$callback( $ip, $args ) ) {
-					$ret = array(
-						'ip' => $ip,
-						'auth' => get_current_user_id(),
+				if ( $code = $geo->$callback( $ip, $args ) )
+					return self::make_validation( $ip, array(
 						'time' => microtime( TRUE ) - $time,
 						'provider' => $provider,
-					);
-
-					return is_array( $code ) ?
-						$ret + $code :
-						$ret + array( 'code' => $code );
-				}
+					) + ( is_array( $code ) ? $code : array( 'code' => $code ) ) );
 			}
 		}
 
-		return array(
-			'ip' => $ip,
-			'auth' => get_current_user_id(),
-			'time' => 0,
-			'provider'     => 'ZZ',
-			'code'         => 'ZZ', // for get_country()
-			'countryCode'  => 'ZZ', // for get_location()
-			'errorMessage' => 'unknown',
-		);
+		return self::make_validation( $ip, array( 'errorMessage' => 'unknown' ) );
 	}
 
 	/**
@@ -327,7 +321,7 @@ class IP_Geo_Block {
 		@$statistics[ $validate['result'] ]++;
 		@$statistics['countries'][ $validate['code'] ]++;
 
-		$provider = $validate['provider'] ? $validate['provider'] : 'ZZ';
+		$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'ZZ';
 		if ( empty( $statistics['providers'][ $provider ] ) )
 			$statistics['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
 
@@ -375,7 +369,7 @@ class IP_Geo_Block {
 	 */
 	private function validate_ip( $hook, $settings, $block = TRUE ) {
 		// set IP address to be validated
-		$ips = array( $this->remote_addr = (string)
+		$ips = array(
 			apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] )
 		);
 
@@ -393,11 +387,11 @@ class IP_Geo_Block {
 
 		// check if the authentication has been already failed
 		$var = self::PLUGIN_SLUG . "-${hook}";
-		add_filter( $var, array( $this, 'check_fail' ), 10, 2 );
+		add_filter( $var, array( $this, 'check_fail' ), 9, 2 );
 
 		// check the authentication when anyone can login
 		if ( 2 == $settings['validation']['login'] )
-			add_filter( $var, array( $this, 'check_auth' ), 10, 2 );
+			add_filter( $var, array( $this, 'check_auth' ), 8, 2 );
 
 		// make valid provider name list
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
@@ -412,7 +406,7 @@ class IP_Geo_Block {
 		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
 		// );
 		foreach ( $ips as $ip ) {
-			$validate = self::_get_geolocation( $ip, $settings, $providers );
+			$validate = self::_get_geolocation( $this->remote_addr = $ip, $settings, $providers );
 			$validate = apply_filters( $var, $validate, $settings );
 
 			// if no 'result' then validate ip address by country
@@ -420,33 +414,33 @@ class IP_Geo_Block {
 				$validate = $this->validate_country( $validate, $settings );
 
 			// if one of IPs is blocked then stop
-			if ( $blocked = ( 'passed' !== $validate['result'] ) ) {
-				$this->remote_addr = $ip;
+			if ( $blocked = ( 'passed' !== $validate['result'] ) )
 				break;
-			}
 		}
 
 		// update cache
 		IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
-		// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
-		$var = (int)$settings['validation']['reclogs'];
-		if ( ( 1 === $var &&   $blocked ) || // blocked, unknown
-		     ( 2 === $var && ! $blocked ) || // passed
-		     ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
-		     ( 4 === $var &&   $validate['auth'] ) || // authenticated
-		     ( 5 === $var ) ) { // all
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-			IP_Geo_Block_Logs::record_log( $hook, $validate, $settings );
-		}
+		if ( $block ) {
+			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
+			$var = (int)$settings['validation']['reclogs'];
+			if ( ( 1 === $var &&   $blocked ) || // blocked, unknown
+			     ( 2 === $var && ! $blocked ) || // passed
+			     ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
+			     ( 4 === $var &&   $validate['auth'] ) || // authenticated
+			     ( 5 === $var ) ) { // all
+				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+				IP_Geo_Block_Logs::record_log( $hook, $validate, $settings );
+			}
 
-		if ( $block && $blocked ) {
-			// update statistics
-			if ( $settings['save_statistics'] )
-				$this->update_statistics( $validate );
+			if ( $blocked ) {
+				// update statistics
+				if ( $settings['save_statistics'] )
+					$this->update_statistics( $validate );
 
-			// send response code to refuse
-			$this->send_response( $hook, $settings['response_code'] );
+				// send response code to refuse
+				$this->send_response( $hook, $settings['response_code'] );
+			}
 		}
 
 		return $validate;
@@ -473,13 +467,13 @@ class IP_Geo_Block {
 	}
 
 	public function validate_login() {
-		$settings = self::get_option( 'settings' );
+		// delayed validation if BuddyPress or any actions except login/out
+		$this->delayed = (
+			( 'bp_' === substr( current_filter(), 0, 3 ) ) ||
+			( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout' ) ) )
+		) ? FALSE : TRUE; // FALSE: bypass, TRUE: validate
 
-		if ( 2 != $settings['validation']['login'] || 'bp_' === substr( current_filter(), 0, 3 ) )
-			$this->validate_ip( 'login', $settings );
-
-		elseif ( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout') ) )
-			$this->validate_ip( 'login', $settings );
+		$this->validate_ip( 'login', self::get_option( 'settings' ) );
 	}
 
 	public function validate_admin() {
@@ -512,7 +506,7 @@ class IP_Geo_Block {
 
 			// register validation of nonce
 			if ( ! in_array( $action, $list, TRUE ) && ! in_array( $page, $list, TRUE ) )
-				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
+				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 7, 2 );
 		}
 
 		// Validate country by IP address
@@ -538,7 +532,7 @@ class IP_Geo_Block {
 
 			// register validation of nonce
 			if ( 2 <= $settings['validation'][ $type ] && ! in_array( $matches[3], $list, TRUE ) )
-				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
+				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 7, 2 );
 
 			// register rewrited request
 			if ( defined( 'IP_GEO_BLOCK_REWRITE' ) )
@@ -568,13 +562,11 @@ class IP_Geo_Block {
 
 		// Count up a number of fails when authentication is failed
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $this->remote_addr ) ) {
-			$validate = array(
-				'ip' => $this->remote_addr,
+			$validate = self::make_validation( $this->remote_addr, array(
 				'code' => $cache['code'],
-				'auth' => get_current_user_id(),
 				'fail' => TRUE,
 				'result' => 'failed',
-			);
+			) );
 
 			IP_Geo_Block_API_Cache::update_cache( $cache['hook'], $validate, $settings );
 
@@ -600,7 +592,7 @@ class IP_Geo_Block {
 
 	/* authentication should be prior to other validation when anyone can login */
 	public function check_auth( $validate, $settings ) {
-		return is_user_logged_in() ? $validate + array( 'result' => 'passed' ) : $validate;
+		return is_user_logged_in() || ! empty( $this->delayed ) ? $validate + array( 'result' => 'passed' ) : $validate;
 	}
 
 	/**
