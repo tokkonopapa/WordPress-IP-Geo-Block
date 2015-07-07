@@ -4,7 +4,9 @@
  * base on IP2Location PHP Module Version: 7.0.0
  * from http://www.ip2location.com/developers/php
  */
-include_once dirname( __FILE__ ) . '/bcmath.php';
+if ( ! extension_loaded('bcmath') ):
+	include_once dirname( __FILE__ ) . '/bcmath.php';
+endif;
 
 /**
  * Copyright (C) 2005-2014 IP2Location.com

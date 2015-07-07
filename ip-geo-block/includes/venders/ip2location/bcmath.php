@@ -3,9 +3,6 @@
  * Alternative library for BCMath extension
  *
  */
-
-if ( ! extension_loaded('bcmath') ):
-
 if ( extension_loaded('gmp') ):
 
 function bcadd( $Num1 = '0', $Num2 = '0', $Scale = null ) {
@@ -200,5 +197,4 @@ function bcpow($num, $power) {
 }
 
 endif; // extension_loaded('gmp')
-
-endif; // ! extension_loaded('bcmath')
+?>

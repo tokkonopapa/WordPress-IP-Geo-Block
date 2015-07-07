@@ -376,8 +376,12 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 = 2.1.2 =
 This is just a maintenance release.
 
-* **Bug fix:** Fixed the issue that does not count the login fail when 
-  validation on login form is `block by country (register, lost password)`.
+* **Bug fix:** Fix the issue that the login-fail-counter didn't work when the 
+  validation at `Login form` was `block by country (register, lost password)`.
+  In this release, the login-fail-counter works correctly.
+* **Bug fix:** Fix the issue that the validation settings of `Admin area` and 
+  `Admin ajax/post` were influential with each other. Now those settings work 
+  individually.
 * **Improvement:** Hide checking the existence of log db behind the symbol 
   `IP_GEO_BLOCK_DEBUG` to reduce 1 query on admin screen.
 * **Improvement:** Add alternative functions of BCMath extension to avoid 
