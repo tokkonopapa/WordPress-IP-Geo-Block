@@ -572,38 +572,38 @@ function ip_geo_block_tab_settings( $context ) {
 		)
 	);
 
-	if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
-		// Manipulate DB table for validation logs
-		$field = 'delete_table';
-		add_settings_field(
-			$option_name . "_$field",
-			__( 'Delete DB table for validation logs', IP_Geo_Block::TEXT_DOMAIN ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'button',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => __( 'Delete now', IP_Geo_Block::TEXT_DOMAIN ),
-				'after' => '<div id="ip-geo-block-loading"></div>',
-			)
-		);
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+	// Manipulate DB table for validation logs
+	$field = 'delete_table';
+	add_settings_field(
+		$option_name . "_$field",
+		__( 'Delete DB table for validation logs', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'button',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => __( 'Delete now', IP_Geo_Block::TEXT_DOMAIN ),
+			'after' => '<div id="ip-geo-block-loading"></div>',
+		)
+	);
 
-		$field = 'create_table';
-		add_settings_field(
-			$option_name . "_$field",
-			__( 'Create DB table for validation logs', IP_Geo_Block::TEXT_DOMAIN ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'button',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => __( 'Create now', IP_Geo_Block::TEXT_DOMAIN ),
-				'after' => '<div id="ip-geo-block-loading"></div>',
-			)
-		);
-	}
+	$field = 'create_table';
+	add_settings_field(
+		$option_name . "_$field",
+		__( 'Create DB table for validation logs', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'button',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => __( 'Create now', IP_Geo_Block::TEXT_DOMAIN ),
+			'after' => '<div id="ip-geo-block-loading"></div>',
+		)
+	);
+endif;
 }

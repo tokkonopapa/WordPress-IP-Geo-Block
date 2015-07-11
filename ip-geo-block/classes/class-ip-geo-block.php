@@ -104,15 +104,17 @@ class IP_Geo_Block {
 		if ( preg_match( '/(\/[^\/]*\/[^\/]*)$/', parse_url( get_theme_root_uri(), PHP_URL_PATH ), $uri ) )
 			self::$content_dir['themes'] = "$uri[1]/";
 
-		// wp-content/(plugins|themes)/.../*.php
-		$uri = preg_replace( '|//+|', '/', $_SERVER['REQUEST_URI'] );
-		if ( ( $validate['plugins'] && FALSE !== strpos( $uri, self::$content_dir['plugins'] ) ) ||
-		     ( $validate['themes' ] && FALSE !== strpos( $uri, self::$content_dir['themes' ] ) ) )
-			add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
-
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
-		elseif ( ( $validate['admin'] || $validate['ajax'] ) && is_admin() )
+		if ( is_admin() && ( $validate['admin'] || $validate['ajax'] ) )
 			add_action( 'init', array( $this, 'validate_admin' ), $settings['priority'] );
+
+		// wp-content/(plugins|themes)/.../*.php
+		else {
+			$uri = preg_replace( '|//+|', '/', $_SERVER['REQUEST_URI'] );
+			if ( ( $validate['plugins'] && FALSE !== strpos( $uri, self::$content_dir['plugins'] ) ) ||
+			     ( $validate['themes' ] && FALSE !== strpos( $uri, self::$content_dir['themes' ] ) ) )
+				add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
+		}
 
 		// overwrite the redirect URL at logout, embed a nonce into the page
 		add_filter( 'wp_redirect', array( $this, 'logout_redirect' ), 20, 2 );
@@ -381,7 +383,6 @@ class IP_Geo_Block {
 
 			if ( count( preg_grep( "/content-type:\s*?text\/xml;/i", headers_list() ) ) )
 				@trackback_response( $code, $mesg );
-
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) )
 				FALSE !== ( @include( STYLESHEETPATH . "/{$code}.php" ) ) or // child  theme
 				FALSE !== ( @include( TEMPLATEPATH   . "/{$code}.php" ) ) or // parent theme
@@ -512,7 +513,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_login() {
-		// enables to skip authentication at login/out (BuddyPress signup should be excluded)
+		// enables to skip authentication at login/out except BuddyPress signup
 		if ( ( 'bp_' !== substr( current_filter(), 0, 3 ) ) &&
 		     ( empty( $_REQUEST['action'] ) || in_array( $_REQUEST['action'], array( 'login', 'logout' ) ) ) )
 			$this->skip_auth = TRUE;
@@ -550,26 +551,24 @@ class IP_Geo_Block {
 			$type = 'admin';
 		}
 
-		if ( $settings['validation'][ $type ] ) {
-			// setup WP-ZEP
-			if ( $zep && 2 <= $settings['validation'][ $type ] ) {
-				// redirect if valid nonce in referer
-				$this->trace_nonce();
+		// setup WP-ZEP
+		if ( $zep && 2 <= $settings['validation'][ $type ] ) {
+			// redirect if valid nonce in referer
+			$this->trace_nonce();
 
-				// list of request with a specific query to bypass WP-ZEP
-				$list = apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
-					// pluploader won't fire an event in "Media Library"
-					'upload-attachment', 'imgedit-preview', 'bp_avatar_upload',
-				) );
+			// list of request with a specific query to bypass WP-ZEP
+			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
+				// pluploader won't fire an event in "Media Library"
+				'upload-attachment', 'imgedit-preview', 'bp_avatar_upload',
+			) );
 
-				// register validation of nonce
-				if ( ! in_array( $action, $list, TRUE ) && ! in_array( $page, $list, TRUE ) )
-					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 7, 2 );
-			}
-
-			// Validate country by IP address
-			$this->validate_ip( 'admin', $settings );
+			// register validation of nonce
+			if ( ! in_array( $action, $list, TRUE ) && ! in_array( $page, $list, TRUE ) )
+				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 7, 2 );
 		}
+
+		// Validate country by IP address
+		$this->validate_ip( 'admin', $settings );
 	}
 
 	/**
@@ -582,30 +581,32 @@ class IP_Geo_Block {
 		// retrieve the name of the plugin/theme
 		$plugins = preg_quote( self::$content_dir['plugins'], '/' );
 		$themes  = preg_quote( self::$content_dir['themes' ], '/' );
+		$request = preg_replace( '|//+|', '/', $_SERVER['REQUEST_URI'] );
 
-		if ( preg_match( "/(?:($plugins)|($themes))([^\/]*)\//", $_SERVER['REQUEST_URI'], $matches ) ) {
-			// list of plugins/themes to bypass WP-ZEP
+		if ( preg_match( "/(?:($plugins)|($themes))([^\/]*)\//", $request, $matches ) ) {
+			// setup WP-ZEP
 			$list = array(
 				'plugins' => array(),
 				'themes'  => array(),
 			);
 
-			$type = isset( $matches[1] ) ? 'plugins' : 'themes';
+			// list of plugins/themes to bypass WP-ZEP
+			$type = empty( $matches[2] ) ? 'plugins' : 'themes';
 			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $list[ $type ] );
 
 			// register validation of nonce
 			if ( 2 <= $settings['validation'][ $type ] && ! in_array( $matches[3], $list, TRUE ) )
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 7, 2 );
-
-			// register rewrited request
-			if ( defined( 'IP_GEO_BLOCK_REWRITE' ) )
-				add_action( self::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_REWRITE, 10, 2 );
 		}
 
 		// Validate country by IP address
 		$validate = $this->validate_ip( 'admin', $settings );
 
-		// Execute requested uri via a rewrite rule in plugins/themes
+		// register rewrited request
+		if ( defined( 'IP_GEO_BLOCK_REWRITE' ) )
+			add_action( self::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_REWRITE, 10, 2 );
+
+		// Execute requested uri via rewrite.php
 		do_action( self::PLUGIN_SLUG . '-exec', $validate, $settings );
 	}
 
@@ -673,12 +674,11 @@ class IP_Geo_Block {
 	private function trace_nonce() {
 		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
 
-		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) ) {
-			if ( is_user_logged_in() && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
-				// redirect to handle with javascript location object.
-				wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
-				exit;
-			}
+		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) &&
+		     is_user_logged_in() && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
+			// redirect to handle with the client side redirection.
+			wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
+			exit;
 		}
 	}
 

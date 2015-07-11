@@ -380,7 +380,7 @@ This is just a maintenance release.
   validation at `Login form` was `block by country (register, lost password)`.
   In this release, the login-fail-counter works correctly.
 * **Bug fix:** Fix the issue that the validation settings of `Admin area` and 
-  `Admin ajax/post` were influential with each other. Now those settings work 
+  `Admin ajax/post` were influential with each other. Now each of those works 
   individually.
 * **Improvement:** Hide checking the existence of log db behind the symbol 
   `IP_GEO_BLOCK_DEBUG` to reduce 1 query on admin screen.
