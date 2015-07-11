@@ -99,6 +99,29 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			path:   'wp-content/plugins/ip-geo-block/test/rewrite-test.php',
 			query:  'wp-load=1',
 		},
+		BuddyPress: {
+			path: 'register/',
+			signup_username: 'anonymous',
+			signup_email: 'anonymous@example.com',
+			signup_password: '0123abcd',
+			signup_password_confirm: '',
+			signup_profile_field_ids: 1,
+			field_1: '',
+			_wpnonce: 'abcde01234',
+			_wp_http_referer: ''
+		},
+		bbPress: {
+			path: 'forums/forum/sample-forum/',
+			bbp_anonymous_name: 'anonymous',
+			bbp_anonymous_email: 'anonymous@example.com',
+			bbp_anonymous_website: 'http://example.com',
+			bbp_topic_title: 'Anonymous Topic',
+			bbp_topic_content: 'Hi there, I\'m anonymous.',
+			bbp_forum_id: '100',
+			action: 'bbp-new-topic',
+			_wpnonce: 'abcde01234',
+			_wp_http_referer: ''
+		},
 		pingback: {
 			xml:
 "<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -179,6 +202,8 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		admin_ajax_post: true,
 		admin_post: true,
 		wp_content: true,
+		BuddyPress: true,
+		bbPress: true,
 		pingback: true,
 		xmlrpc: true,
 		xmlrpc_demo: true
@@ -216,11 +241,15 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	 *
 	 */
 	$scope.validate_home = function () {
+		// BuddyPress
+		$scope.form.BuddyPress._wp_http_referer = $scope.home_url + $scope.form.BuddyPress.path;
+
 		return svcWP.validate_home($scope.home_url).then(function (res) {
 			$cookies['home-url'] = $scope.home_url;
 			messageOut('WordPress Home', res.stat);
 		});
 	};
+
 	$scope.validate_page = function (echo) {
 		return svcWP.validate_page($scope.single_page).then(function (res) {
 			$scope.single_page = res.url;
@@ -393,6 +422,30 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			var url = home + $scope.form.wp_content.path;
 			var form = $scope.form.wp_content.query;
 			post_form(url, form, proxy, 'GET', 'Plugins / Themes (GET)');
+		}
+
+		// BuddyPress
+		if ($scope.checkbox.BuddyPress) {
+			// hidden parameters
+			$scope.form.BuddyPress._wp_http_referer = $scope.home_url + $scope.form.BuddyPress.path;
+			$scope.form.BuddyPress.signup_password_confirm = $scope.form.BuddyPress.signup_password;
+			$scope.form.BuddyPress.field_1 = $scope.form.BuddyPress.signup_username;
+
+			var url = home + $scope.form.BuddyPress.path;
+			var form = serialize_plain($scope.form.BuddyPress);
+			post_form(url, form, proxy, 'POST', 'BuddyPress');
+//			var form = new FormData(document.getElementById('BuddyPress'));
+//			post_form(url, form, proxy, 'MULTI', 'BuddyPress');
+		}
+
+		// bbPress
+		if ($scope.checkbox.bbPress) {
+			// hidden parameters
+			$scope.form.bbPress._wp_http_referer = $scope.home_url + $scope.form.bbPress.path;
+
+			var url = home + $scope.form.bbPress.path;
+			var form = serialize_plain($scope.form.bbPress);
+			post_form(url, form, proxy, 'POST', 'bbPress');
 		}
 	};
 

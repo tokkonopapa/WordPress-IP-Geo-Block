@@ -13,12 +13,17 @@ angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) 
 		switch(method.toLowerCase()) {
 		  case 'get':
 			method = 'GET';
-			type = 'text/html';
+			type = 'text/html; charset=UTF-8';
 			url += '?' + decodeURIComponent(form);
 			break;
+		  case 'post':
+			method = 'POST';
+			type = 'application/x-www-form-urlencoded; charset=UTF-8';
+			break;
+		  case 'multi':
 		  default:
 			method = 'POST';
-			type = 'application/x-www-form-urlencoded';
+			type = undefined; // 'multipart/form-data' will fail in the invalid boundary.
 		}
 
 		// Post the comment with `X-Forwarded-For` header
@@ -27,7 +32,7 @@ angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) 
 			method: method,
 			data: form,
 			headers: {
-				'Content-Type': type + '; charset=UTF-8',
+				'Content-Type': type,
 				'X-Forwarded-For': proxy
 			}
 		})

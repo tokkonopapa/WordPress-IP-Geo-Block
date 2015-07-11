@@ -320,6 +320,138 @@
 			</p>
 		</form>
 	</div>
+
+	<!-- BuddyPress -->
+	<div class="setting">
+		<h3 class="collapse" ng-bind="lang.BuddyPress" ng-click="toggle('BuddyPress')"></h3>
+		<input type="checkbox" ng-model="checkbox.BuddyPress" />
+		<form class="post-form animate-show-hide" ng-show="show.BuddyPress" method="post" enctype="multipart/form-data" id="BuddyPress">
+			<!-- Path -->
+			<p>
+				<label for="path">
+					<span ng-bind="lang.path"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" name="path" ng-model="form.BuddyPress.path" />
+			</p>
+			<!-- user name -->
+			<p>
+				<label>
+					<span ng-bind="lang.user_name"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" name="signup_username" ng-model="form.BuddyPress.signup_username" />
+			</p>
+			<!-- email -->
+			<p>
+				<label>
+					<span ng-bind="lang.email"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" name="signup_email" ng-model="form.BuddyPress.signup_email" />
+			</p>
+			<!-- password -->
+			<p>
+				<label>
+					<span ng-bind="lang.password"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" name="signup_password" ng-model="form.BuddyPress.signup_password" />
+				<input type="hidden" name="signup_password_confirm" ng-model="form.BuddyPress.signup_password" />
+			</p>
+			<!-- nonce -->
+			<p>
+				<label>
+					<span ng-bind="lang.nonce"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" name="_wpnonce" ng-model="form.BuddyPress._wpnonce" />
+			</p>
+			<!-- referer -->
+			<p>
+				<label>
+					<span ng-bind="lang.referer"></span>
+				</label>
+				<input type="text" name="_wp_http_referer" ng-model="form.BuddyPress._wp_http_referer" />
+			</p>
+			<!-- others -->
+			<input type="hidden" name="field_1" ng-model="form.BuddyPress.signup_username" />
+			<input type="hidden" name="signup_profile_field_ids" value="1" />
+		</form>
+	</div>
+
+	<!-- bbPress -->
+	<div class="setting">
+		<h3 class="collapse" ng-bind="lang.bbPress" ng-click="toggle('bbPress')"></h3>
+		<input type="checkbox" ng-model="checkbox.bbPress" />
+		<form class="post-form animate-show-hide" ng-show="show.bbPress">
+			<!-- Path -->
+			<p>
+				<label for="path">
+					<span ng-bind="lang.path"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" name="path" ng-model="form.bbPress.path" />
+			</p>
+			<!-- user name -->
+			<p>
+				<label>
+					<span ng-bind="lang.user_name"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" name="bbp_anonymous_name" ng-model="form.bbPress.bbp_anonymous_name" />
+			</p>
+			<!-- email -->
+			<p>
+				<label>
+					<span ng-bind="lang.email"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" name="bbp_anonymous_email" ng-model="form.bbPress.bbp_anonymous_email" />
+			</p>
+			<!-- website -->
+			<p>
+				<label>
+					<span ng-bind="lang.site_url"></span>
+				</label>
+				<input type="text" name="bbp_anonymous_website" ng-model="form.bbPress.bbp_anonymous_website" />
+			</p>
+			<!-- title -->
+			<p>
+				<label>
+					<span ng-bind="lang.title"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" name="bbp_topic_title" ng-model="form.bbPress.bbp_topic_title" />
+			</p>
+			<!-- content -->
+			<p>
+				<label>
+					<span ng-bind="lang.comment"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" name="bbp_topic_content" ng-model="form.bbPress.bbp_topic_content" />
+			</p>
+			<!-- nonce -->
+			<p>
+				<label>
+					<span ng-bind="lang.nonce"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" name="_wpnonce" ng-model="form.bbPress._wpnonce" />
+			</p>
+			<!-- referer -->
+			<p>
+				<label>
+					<span ng-bind="lang.referer"></span>
+				</label>
+				<input type="text" name="_wp_http_referer" ng-model="form.bbPress._wp_http_referer" />
+			</p>
+			<!-- others -->
+			<input type="hidden" name="bbp_forum_id" ng-model="form.bbPress.bbp_forum_id" />
+			<input type="hidden" name="action" value="form.bbPress.action" />
+		</form>
+	</div>
 </div>
 
 <!-- POST Access -->
