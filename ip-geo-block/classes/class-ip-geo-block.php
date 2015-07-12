@@ -383,6 +383,7 @@ class IP_Geo_Block {
 
 			if ( count( preg_grep( "/content-type:\s*?text\/xml;/i", headers_list() ) ) )
 				@trackback_response( $code, $mesg );
+
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) )
 				FALSE !== ( @include( STYLESHEETPATH . "/{$code}.php" ) ) or // child  theme
 				FALSE !== ( @include( TEMPLATEPATH   . "/{$code}.php" ) ) or // parent theme
@@ -535,13 +536,13 @@ class IP_Geo_Block {
 		switch ( $pagenow ) {
 		  case 'admin-ajax.php':
 			// if the request has an action for no privilege user, skip WP-ZEP
-			$zep = ! has_action( 'wp_ajax_nopriv_' . $action );
+			$zep = ! has_action( "wp_ajax_nopriv_{$action}" );
 			$type = 'ajax';
 			break;
 
 		  case 'admin-post.php':
 			// if the request has an action for no privilege user, skip WP-ZEP
-			$zep = ! has_action( 'admin_post_nopriv' . ($action ? '_' : '') . $action );
+			$zep = ! has_action( "admin_post_nopriv" . ($action ? "_{$action}" : "") );
 			$type = 'ajax';
 			break;
 
@@ -552,7 +553,7 @@ class IP_Geo_Block {
 		}
 
 		// setup WP-ZEP
-		if ( $zep && 2 <= $settings['validation'][ $type ] ) {
+		if ( $zep && 2 == $settings['validation'][ $type ] ) {
 			// redirect if valid nonce in referer
 			$this->trace_nonce();
 
@@ -568,7 +569,8 @@ class IP_Geo_Block {
 		}
 
 		// Validate country by IP address
-		$this->validate_ip( 'admin', $settings );
+		if ( $settings['validation'][ $type ] )
+			$this->validate_ip( 'admin', $settings );
 	}
 
 	/**
@@ -595,19 +597,21 @@ class IP_Geo_Block {
 			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $list[ $type ] );
 
 			// register validation of nonce
-			if ( 2 <= $settings['validation'][ $type ] && ! in_array( $matches[3], $list, TRUE ) )
+			if ( 2 == $settings['validation'][ $type ] && ! in_array( $matches[3], $list, TRUE ) )
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 7, 2 );
+
+			// Validate country by IP address
+			if ( $settings['validation'][ $type ] ) {
+				$validate = $this->validate_ip( 'admin', $settings );
+
+				// register rewrited request
+				if ( defined( 'IP_GEO_BLOCK_REWRITE' ) )
+					add_action( self::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_REWRITE, 10, 2 );
+
+				// Execute requested uri via rewrite.php
+				do_action( self::PLUGIN_SLUG . '-exec', $validate, $settings );
+			}
 		}
-
-		// Validate country by IP address
-		$validate = $this->validate_ip( 'admin', $settings );
-
-		// register rewrited request
-		if ( defined( 'IP_GEO_BLOCK_REWRITE' ) )
-			add_action( self::PLUGIN_SLUG . '-exec', IP_GEO_BLOCK_REWRITE, 10, 2 );
-
-		// Execute requested uri via rewrite.php
-		do_action( self::PLUGIN_SLUG . '-exec', $validate, $settings );
 	}
 
 	/**
