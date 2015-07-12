@@ -11,6 +11,8 @@
 
 if ( class_exists( 'IP_Geo_Block' ) ):
 
+define( 'IP_GEO_BLOCK_DEBUG', false );
+
 /**
  * Example 1: Usage of 'ip-geo-block-ip-addr'
  * Use case: Replace ip address for test purpose
