@@ -14,17 +14,17 @@ to make it work properly.
 
 ### Fix the issue of login-fail-counter ###
 
-In the last release 2.1.1, I added `block by country (register, lost password)` 
-which enables to login from anywhere but disables other actions such as new user
-registration or lost password. But "login-fail-counter" didn't work correctly at
-that release.
+In the last release 2.1.1, I added `block by country (register, lost password)`
+which enables to login from anywhere but disables other actions such as new 
+user registration or lost password. But "login-fail-counter" didn't work 
+correctly only in this setting.
 
 And now, it works properly to block brute force attack to the `wp-login.php`.
 
 ### Fix the issue of validation settings for admin ###
 
 The `Admin area` and `Admin ajax/post` at "**Validation settings**" on 
-"**Settings**" tab should be able to set different behaviors individually.
+"**Settings**" tab should be able to set individual behaviors separately.
 But previously it wasn't.
 
 For example, `Prevent zero-day exploit` for `Admin area` protects a site 
@@ -36,21 +36,20 @@ always accepts ajax requested from your country.
   "Validation settings"
 )
 
-<!-- success, info, warning, danger -->
 <div class="alert alert-info" role="alert">
 <strong>For technical details:</strong>
-<code>Prevent zero-day exploit</code> for <code>Admin ajax/post</code> can also 
-accept ajax requested from outside your own country if a plugin defines 
+<code>Prevent zero-day exploit</code> for <code>Admin ajax/post</code> can 
+also accept ajax requested from outside your own country if a plugin defines 
 different handlers for privileged users and non privileged users separately. 
-Its behavior depeneds on the plugin's implementation.
+So its behavior depeneds on the plugin's implementation.
 </div>
 
 ### Improvement of diagnosis on admin screen ###
 
-From [release 2.0.8][release-note-2.0.8], the diagnosis for validation logs had 
-been implemented because of [issue #1][issue1]. In this release, the diagnosis 
-has been hidden behind the definition of symbol `IP_GEO_BLOCK_DEBUG`. To revive 
-this functionality, add the following code in your `functions.php`.
+From [release 2.0.8][2.0.8], the diagnosis for validation logs had been 
+implemented because of [issue #1][issue1]. In this release, the diagnosis is 
+hidden behind the definition of symbol `IP_GEO_BLOCK_DEBUG`. To revive this 
+functionality, add the following code in your `functions.php`.
 
 {% highlight php startinline %}
 define( 'IP_GEO_BLOCK_DEBUG', true );
@@ -65,13 +64,14 @@ With the above definition, additional functions will appear on
 
 ### Improvement of handling IPv6 in IP2Location ###
 
-The [IP2Location&trade; PHP Module][IP2Location-Module] can handle both IPv4 and
-IPv6, but for the IPv6 it needs [GMP Functions][GMP-Functions] in your server.
-So I provide the alternatives using [BC Math Functions][BC-Math-Functions].
+The [IP2Location&trade; PHP Module][IP2-PHP] can handle both IPv4 and IPv6 
+using local database. But for the IPv6 it needs [GMP Functions][GMP] in the 
+server. So I provide the alternatives using [BC Math Functions][BC-Math] in 
+case there is no GMP in the server.
 
-An advantage of local database of IP2Location is getting latitude and longitude.
-You can download [Free IP2Location LITE Databases][IP2-LITE] after your email 
-address registration and sign up a free account.
+An advantage of using local database is getting latitude and longitude. You 
+can download [Free IP2Location LITE Databases][IP2-LITE] after you register 
+your email address and sign up a free account.
 
 Here's a sample and a result using [DB5.LITE][DB5-LITE].
 
@@ -106,18 +106,16 @@ function my_geolocation() {
         // error handling
     }
 }
-my_geolocation();
 {% endhighlight %}
 
 I hope you enjoy this release !! <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span>
 
-[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[release-note-2.0.8]: {{ "/changelog/release-2.0.8.html" | prepend: site.baseurl }} "2.0.8 Release Note"
-[issue1]: https://github.com/tokkonopapa/WordPress-IP-Geo-Block/issues/1 "IP Geo Block not providing logs #1"
-[IP2Location-Module]: http://www.ip2location.com/developers/php "PHP Module | IP2Location.com"
-[GMP-Functions]: http://php.net/manual/ref.gmp.php "PHP: GMP Functions - Manual"
-[BC-Math-Functions]: http://php.net/manual/ref.bc.php "PHP: BC Math Functions - Manual"
+[2.0.8]:    {{ "/changelog/release-2.0.8.html" | prepend: site.baseurl }} "2.0.8 Release Note"
+[issue1]:   https://github.com/tokkonopapa/WordPress-IP-Geo-Block/issues/1 "IP Geo Block not providing logs #1"
+[GMP]:      http://php.net/manual/ref.gmp.php "PHP: GMP Functions - Manual"
+[BC-Math]:  http://php.net/manual/ref.bc.php "PHP: BC Math Functions - Manual"
+[IP2-PHP]:  http://www.ip2location.com/developers/php "PHP Module | IP2Location.com"
 [IP2-LITE]: http://lite.ip2location.com/ "Free IP Geolocation Database"
 [DB5-LITE]: http://lite.ip2location.com/database-ip-country-region-city-latitude-longitude "Free IP2Location LITE IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE"
