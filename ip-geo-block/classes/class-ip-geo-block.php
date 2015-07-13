@@ -268,14 +268,23 @@ class IP_Geo_Block {
 	/**
 	 * Get geolocation and country code from an ip address.
 	 *
+	 * @param string $ip IP address / default: $_SERVER['REMOTE_ADDR']
+	 * @param array  $providers list of providers / ex: array( 'ipinfo.io' )
+	 * @param string $callback geolocation function / ex: 'get_location'
+	 * @return array $result country code and so on
 	 */
 	public static function get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_country' ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
-		return self::_get_geolocation(
+		$result = self::_get_geolocation(
 			$ip ? $ip : apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] ),
 			self::get_option( 'settings' ), $providers, $callback
 		);
+
+		if ( isset( $result['countryCode'] ) )
+			$result['code'] = $result['countryCode'];
+
+		return $result;
 	}
 
 	/**
@@ -372,24 +381,21 @@ class IP_Geo_Block {
 		switch ( (int)substr( "$code", 0, 1 ) ) {
 		  case 2: // 2xx Success
 			header( 'Refresh: 0; url=' . home_url(), TRUE, $code ); // @since 3.0
-			die();
+			exit;
 
 		  case 3: // 3xx Redirection
 			wp_redirect( 'http://blackhole.webpagetest.org/', $code );
-			die();
+			exit;
 
 		  default: // 4xx Client Error, 5xx Server Error
 			status_header( $code ); // @since 2.0.0
-
 			if ( count( preg_grep( "/content-type:\s*?text\/xml;/i", headers_list() ) ) )
 				@trackback_response( $code, $mesg );
-
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) )
 				FALSE !== ( @include( STYLESHEETPATH . "/{$code}.php" ) ) or // child  theme
 				FALSE !== ( @include( TEMPLATEPATH   . "/{$code}.php" ) ) or // parent theme
 				wp_die( $mesg, '', array( 'response' => $code, 'back_link' => TRUE ) );
-
-			die();
+			exit;
 		}
 	}
 
