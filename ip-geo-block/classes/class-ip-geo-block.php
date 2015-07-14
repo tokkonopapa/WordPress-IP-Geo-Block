@@ -61,7 +61,7 @@ class IP_Geo_Block {
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] && ! has_action( self::CRON_NAME ) )
-			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ) );
+			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ), 10, 1 );
 
 		if ( $validate['comment'] ) {
 			// message text on comment form
@@ -148,7 +148,7 @@ class IP_Geo_Block {
 
 		// execute to download immediately
 		if ( $settings['update']['auto'] ) {
-			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ) );
+			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ), 10, 1 );
 			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
 		}
 
@@ -729,7 +729,7 @@ class IP_Geo_Block {
 				$next = $now + ( $immediate ? 0 : DAY_IN_SECONDS );
 			}
 
-			wp_schedule_single_event( $next, self::CRON_NAME );
+			wp_schedule_single_event( $next, self::CRON_NAME, array( $immediate ) );
 		}
 	}
 
@@ -737,7 +737,7 @@ class IP_Geo_Block {
 	 * Database auto downloader.
 	 *
 	 */
-	public static function download_database() {
+	public static function download_database( $immediate = FALSE ) {
 		require_once( IP_GEO_BLOCK_PATH . 'includes/download.php' );
 
 		// download database files
@@ -749,10 +749,20 @@ class IP_Geo_Block {
 		);
 
 		// re-schedule cron job
-		self::schedule_cron_job( $settings['update'], $settings['maxmind'] );
+		self::schedule_cron_job( $settings['update'], $settings['maxmind'], FALSE );
 
 		// update option settings
 		update_option( self::$option_keys['settings'], $settings );
+
+		// setup country code if it needs to be initialized
+		if ( $immediate && -1 == $settings['matching_rule'] ) {
+			$immediate = self::get_geolocation( NULL, array( 'maxmind', 'ipinfo.io', 'Telize', 'IP-Json' ) );
+			if ( 'ZZ' !== $immediate['code'] ) {
+				$settings['white_list'] = $immediate['code'];
+				$settings['matching_rule'] = 0; // white list
+				update_option( self::$option_keys['settings'], $settings );
+			}
+		}
 
 		return $res;
 	}
