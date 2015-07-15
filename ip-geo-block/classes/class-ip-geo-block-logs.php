@@ -80,9 +80,9 @@ class IP_Geo_Block_Logs {
 		$time = intval( $time );
 		$options = IP_Geo_Block::get_option( 'settings' );
 
-		if ( $time < 75 /* msec */ )
+		if ( $time < 100 /* msec */ )
 			return (int)$options['validation']['maxlogs'];
-		elseif ( $time < 150 /* msec */ )
+		elseif ( $time < 200 /* msec */ )
 			return (int)($options['validation']['maxlogs'] / 2);
 
 		return (int)($options['validation']['maxlogs'] / 5);
