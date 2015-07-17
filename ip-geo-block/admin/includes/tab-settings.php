@@ -236,7 +236,7 @@ function ip_geo_block_tab_settings( $context ) {
 			'field' => $field,
 			'value' => $options[ $field ],
 			'list' => array(
-				__( 'Neither',    IP_Geo_Block::TEXT_DOMAIN ) => -1,
+				__( 'Disable',    IP_Geo_Block::TEXT_DOMAIN ) => -1,
 				__( 'White list', IP_Geo_Block::TEXT_DOMAIN ) => 0,
 				__( 'Black list', IP_Geo_Block::TEXT_DOMAIN ) => 1,
 			),

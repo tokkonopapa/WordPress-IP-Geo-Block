@@ -324,20 +324,25 @@ class IP_Geo_Block {
 	 *
 	 */
 	private function validate_country( $validate, $settings ) {
-		if ( 0 == $settings['matching_rule'] ) {
+		switch ( $settings['matching_rule'] ) {
+		  case 0:
 			$list = $settings['white_list'];
 			if ( ! $list || FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'passed' );
 			elseif ( 'ZZ' !== $validate['code'] )
 				return $validate + array( 'result' => 'blocked' );
-		}
+			break;
 
-		else {
+		  case 1:
 			$list = $settings['black_list'];
 			if ( $list && FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'blocked' );
 			elseif ( 'ZZ' !== $validate['code'] )
 				return $validate + array( 'result' => 'passed' );
+			break;
+
+		  default: // Disable
+			return $validate + array( 'result' => 'passed' );
 		}
 
 		return $validate + array( 'result' => 'unknown' );
@@ -696,13 +701,13 @@ class IP_Geo_Block {
 		if ( isset( $_REQUEST[ $key ] ) )
 			return sanitize_text_field( $_REQUEST[ $key ] );
 
-		if ( isset( $_REQUEST['_wp_http_referer'] ) )
-			if ( preg_match( "/$key=([\w]+)/", $_REQUEST['_wp_http_referer'], $matches ) )
-				return sanitize_text_field( $matches[1] );
+		if ( isset( $_REQUEST['_wp_http_referer'] ) &&
+		     preg_match( "/$key=([\w]+)/", $_REQUEST['_wp_http_referer'], $matches ) )
+			return sanitize_text_field( $matches[1] );
 
-		if ( isset( $_SERVER['HTTP_REFERER'] ) )
-			if ( preg_match( "/$key=([\w]+)/", $_SERVER['HTTP_REFERER'], $matches ) )
-				return sanitize_text_field( $matches[1] );
+		if ( isset( $_SERVER['HTTP_REFERER'] ) &&
+		     preg_match( "/$key=([\w]+)/", $_SERVER['HTTP_REFERER'], $matches ) )
+			return sanitize_text_field( $matches[1] );
 
 		return NULL;
 	}
