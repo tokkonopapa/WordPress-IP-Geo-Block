@@ -221,7 +221,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	};
 
 	// Home URL
-	var url = $cookies['home-url'];
+	var url = $cookies.get('home-url');
 	if (!url) {
 		url = parse_uri(location.href);
 		url = url['scheme'] + '://' + url['authority'] + '/';
@@ -229,7 +229,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	$scope.home_url = url;
 
 	// Single Page
-	url = $cookies['single-page'];
+	url = $cookies.get('single-page');
 	if (!url) {
 		url = trailingslashit($scope.home_url) +
 			'?p=' + $scope.form.comment.comment_post_ID;
@@ -242,7 +242,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	 */
 	$scope.validate_home = function () {
 		return svcWP.validate_home($scope.home_url).then(function (res) {
-			$cookies['home-url'] = $scope.home_url;
+			$cookies.put('home-url', $scope.home_url);
 
 			// Update Single Page
 			var home = parse_uri($scope.home_url);
@@ -266,7 +266,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		return svcWP.validate_page($scope.single_page).then(function (res) {
 			$scope.single_page = res.url;
 			$scope.form.comment.comment_post_ID = res.id;
-			$cookies['single-page'] = res.url;
+			$cookies.put('single-page', res.url);
 			if (echo) {
 				messageOut('Single Page', res.stat);
 			}
