@@ -5,16 +5,6 @@
 !function(){for(var e,n=function(){},o=["assert","clear","count","debug","dir","dirxml","error","exception","group","groupCollapsed","groupEnd","info","log","markTimeline","profile","profileEnd","table","time","timeEnd","timeline","timelineEnd","timeStamp","trace","warn"],i=o.length,r=window.console=window.console||{};i--;)e=o[i],r[e]||(r[e]=n)}();
 
 /**
- * Appends a trailing slash if it does not exist at the end
- *
- */
-function trailingslashit(url) {
-	if (typeof(url) !== 'undefined' && url.substr(-1) === '/')
-		url = url.substr(0, url.length - 1);
-	return url + '/';
-}
-
-/**
  * Sanitize strings
  *
  */
@@ -60,19 +50,135 @@ function strip_tags(html) {
 }
 
 /**
- * Parse url (scheme://authority/path?query#fragment)
+ * Parse url
  *
  */
 function parse_uri(uri) {
-	var reg = /^(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/;
-	var m = uri.match(reg);
-	if (m) {
-		return {
-			"scheme":m[1], "authority":m[2], "path":m[3], "query":m[4], "fragment":m[5]
-		};
-	} else {
-		return null;
+	var m = uri ? uri.toString().match(
+		// https://tools.ietf.org/html/rfc3986#appendix-B
+		/^(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/
+	) : [];
+
+	// scheme :// authority path ? query # fragment
+	return {
+		scheme    : m[1] || '',
+		authority : m[2] || '',
+		path      : m[3] || '',
+		query     : m[4] || '',
+		fragment  : m[5] || ''
+	};
+}
+
+/**
+ * Returns trailing name component of path.
+ * @link http://phpjs.org/functions/basename/
+ */
+function basename(path, suffix) {
+	var b = path;
+	var lastChar = b.charAt(b.length - 1);
+
+	if (lastChar === '/' || lastChar === '\\') {
+		b = b.slice(0, -1);
 	}
+
+	b = b.replace(/^.*[\/\\]/g, '');
+
+	if (typeof suffix === 'string' && b.substr(b.length - suffix.length) == suffix) {
+		b = b.substr(0, b.length - suffix.length);
+	}
+
+	return b;
+}
+
+/**
+ * Returns parent directory's path.
+ * @link http://phpjs.org/functions/dirname/
+ */
+function dirname(path) {
+	return path.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '');
+}
+
+/**
+ * Returns top directory's path.
+ * @link http://phpjs.org/functions/dirname/
+ */
+function dirtop(path) {
+	return (path.split('/', 2))[0];
+}
+
+/**
+ * Removes whitespace from both ends of a string. 
+ * @link https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/trim
+ */
+if(!String.prototype.trim) {
+	String.prototype.trim = function () {
+		return this.replace(/^\s+|\s+$/g,'');
+	};
+}
+
+/**
+ * Strip whitespace (or other characters) from the beginning and end of a string.
+ * @link http://phpjs.org/functions/trim/
+ */
+function php_trim(str, charlist) {
+	var whitespace, l = 0, i = 0;
+	str += '';
+
+	if (!charlist) {
+		// default list
+		whitespace = ' \n\r\t\f\x0b\xa0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000';
+	} else {
+		// preg_quote custom list
+		charlist += '';
+		whitespace = charlist.replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '$1');
+	}
+
+	l = str.length;
+	for (i = 0; i < l; i++) {
+		if (whitespace.indexOf(str.charAt(i)) === -1) {
+			str = str.substring(i);
+			break;
+		}
+	}
+
+	l = str.length;
+	for (i = l - 1; i >= 0; i--) {
+		if (whitespace.indexOf(str.charAt(i)) === -1) {
+			str = str.substring(0, i + 1);
+			break;
+		}
+	}
+
+	return whitespace.indexOf(str.charAt(0)) === -1 ? str : '';
+}
+
+/**
+ * Strip whitespace (or other characters) from the end of a string.
+ * @link http://phpjs.org/functions/rtrim/
+ */
+function php_rtrim(str, charlist) {
+	charlist = !charlist ? ' \\s\u00A0' : (charlist + '').replace(/([\[\]\(\)\.\?\/\*\{\}\+\$\^\:])/g, '\\$1');
+	var re = new RegExp('[' + charlist + ']+$', 'g');
+	return (str + '').replace(re, '');
+}
+
+/**
+ * Appends a trailing slash if it does not exist at the end.
+ *
+ */
+function trailingslashit(str) {
+//	if (typeof(url) !== 'undefined' && url.substr(-1) === '/')
+//		url = url.substr(0, url.length - 1);
+//	return url + '/';
+	return untrailingslashit(str) + '/';
+}
+
+/**
+ * Removes trailing forward slashes and backslashes if they exist.
+ *
+ */
+function untrailingslashit(str) {
+	return php_rtrim(str, '/');
 }
 
 /**

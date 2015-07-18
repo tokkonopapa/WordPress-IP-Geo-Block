@@ -111,7 +111,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			_wp_http_referer: ''
 		},
 		bbPress: {
-			path: 'forums/forum/sample-forum/',
+			path: 'forums/',
 			bbp_anonymous_name: 'anonymous',
 			bbp_anonymous_email: 'anonymous@example.com',
 			bbp_anonymous_website: 'http://example.com',
@@ -241,11 +241,23 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	 *
 	 */
 	$scope.validate_home = function () {
-		// BuddyPress
-		$scope.form.BuddyPress._wp_http_referer = $scope.home_url + $scope.form.BuddyPress.path;
-
 		return svcWP.validate_home($scope.home_url).then(function (res) {
 			$cookies['home-url'] = $scope.home_url;
+
+			// Update Single Page
+			var home = parse_uri($scope.home_url);
+			var page = parse_uri($scope.single_page);
+			home['path'] = untrailingslashit(home['path']);
+			page['path'] = page['path'].replace(home['path'], '');
+			$scope.single_page =
+				(home['scheme'] + '://' + home['authority'] + home['path']) +
+				(page['path'] ? page['path'] : '') +
+				(page['query'] ? '?' + page['query'] : '') +
+				(page['fragment'] ? '#' + page['fragment'] : '');
+
+			// Update BuddyPress
+			$scope.form.BuddyPress._wp_http_referer = $scope.home_url + $scope.form.BuddyPress.path;
+
 			messageOut('WordPress Home', res.stat);
 		});
 	};
@@ -427,7 +439,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		// BuddyPress
 		if ($scope.checkbox.BuddyPress) {
 			// hidden parameters
-			$scope.form.BuddyPress._wp_http_referer = $scope.home_url + $scope.form.BuddyPress.path;
+			$scope.form.BuddyPress._wp_http_referer = home + $scope.form.BuddyPress.path;
 			$scope.form.BuddyPress.signup_password_confirm = $scope.form.BuddyPress.signup_password;
 			$scope.form.BuddyPress.field_1 = $scope.form.BuddyPress.signup_username;
 
@@ -440,12 +452,17 @@ angular.module('WPApp').controller('WPAppCtrl', [
 
 		// bbPress
 		if ($scope.checkbox.bbPress) {
-			// hidden parameters
-			$scope.form.bbPress._wp_http_referer = $scope.home_url + $scope.form.bbPress.path;
+			// Get url to the forum
+			svcWP.get_forum(home + trailingslashit(dirtop($scope.form.bbPress.path))).then(function (res) {
+				$scope.form.bbPress.path = res.url.replace(home, '');
 
-			var url = home + $scope.form.bbPress.path;
-			var form = serialize_plain($scope.form.bbPress);
-			post_form(url, form, proxy, 'POST', 'bbPress');
+				// hidden parameters
+				$scope.form.bbPress._wp_http_referer = home + $scope.form.bbPress.path;
+
+				var url = home + $scope.form.bbPress.path;
+				var form = serialize_plain($scope.form.bbPress);
+				post_form(url, form, proxy, 'POST', 'bbPress');
+			});
 		}
 	};
 

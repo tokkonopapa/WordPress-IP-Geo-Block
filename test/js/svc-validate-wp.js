@@ -77,4 +77,30 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 			}
 		);
 	};
+
+	/**
+	 * Get url to the forum
+	 *
+	 */
+	this.get_forum = function (url) {
+		return $http({
+			method: 'GET',
+			url: url
+		})
+		.then(
+			function (res) {
+				// Extract a link to forum
+				regexp = /<a class=["']bbp-forum-title["'] href=["']([^"']+?)["']>/i;
+				match = res.data.match(regexp);
+				return {
+					url: match[1] || url
+				};
+			},
+			function (res) {
+				return {
+					url: url
+				};
+			}
+		);
+	};
 }]);
