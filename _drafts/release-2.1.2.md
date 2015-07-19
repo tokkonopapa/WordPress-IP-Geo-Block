@@ -6,9 +6,8 @@ categories: changelog
 published: true
 ---
 
-This is a maintenance release including 2 of bug fixes and 2 of improvements.
-No one claimed about these bugs, but every user of this plugin should update 
-to make it work properly.
+This is a maintenance release including 2 of bug fixes and 3 of improvements.
+Every user of this plugin should update to make it work properly.
 
 <!--more-->
 
@@ -40,8 +39,8 @@ always accepts ajax requested from your country.
 <strong>For technical details:</strong>
 <code>Prevent zero-day exploit</code> for <code>Admin ajax/post</code> can 
 also accept ajax requested from outside your own country if a plugin defines 
-different handlers for privileged users and non privileged users separately. 
-So its behavior depeneds on the plugin's implementation.
+same handler for privileged users and non privileged users separately. So its 
+behavior depeneds on the plugin's implementation.
 </div>
 
 ### Improvement of diagnosis on admin screen ###
@@ -69,37 +68,47 @@ using local database. But for the IPv6 it needs [GMP Functions][GMP] in the
 server. So I provide the alternatives using [BC Math Functions][BC-Math] in 
 case there is no GMP in the server.
 
-An advantage of using local database is getting latitude and longitude. You 
-can download [Free IP2Location LITE Databases][IP2-LITE] after you register 
+An advantage of using local database is getting detail information. You can 
+download the [Free IP2Location LITE Databases][IP2-LITE] after you register 
 your email address and sign up a free account.
 
-Here's a sample and a result using [DB5.LITE][DB5-LITE].
+Here's a sample and a result using the [DB5.LITE][DB5-LITE] which is uploaded 
+into this plugin's database directory.
 
 {% highlight php startinline %}
+/**
+ * Set path to the IP2Location Lite.
+ *
+ */
+function my_ip2location_path( $path ) {
+    return WP_PLUGIN_DIR . '/ip-geo-block/database/IP2LOCATION-LITE-DB5.IPV6.BIN';
+}
+add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
+
+/**
+ * Dump the geolocation infomation.
+ *
+ */
 function my_geolocation() {
-    /**
-     * IP_Geo_Block::get_geolocation(
-     *    $ip = NULL, $providers = array(), $callback = 'get_country'
-     * );
-     *
-     * @param string $ip IP address / default: $_SERVER['REMOTE_ADDR']
-     * @param array  $providers list of providers / ex: array( 'ipinfo.io' )
-     * @param string $callback geolocation function / ex: 'get_location'
-     * @return array country code and so on
-     */
+    // IP_Geo_Block::get_geolocation(
+    //    $ip = NULL, $providers = array(), $callback = 'get_country'
+    // );
+    //
+    // @param string $ip IP address / default: $_SERVER['REMOTE_ADDR']
+    // @param array  $providers list of providers / ex: array( 'ipinfo.io' )
+    // @param string $callback geolocation function / ex: 'get_location'
+    // @return array country code and so on
     $geolocation = IP_Geo_Block::get_geolocation(
         '5.165.178.77', array( 'ip2location' ), 'get_location'
     );
 
-    /**
-     * [provider] => ip2location
-     * [countryCode] => RU
-     * [countryName] => Russian Federation
-     * [regionName] => Penza
-     * [cityName] => Penza
-     * [latitude] => 53.2006607056
-     * [longitude] => 45.0046386719
-     */
+    // [provider] => ip2location
+    // [countryCode] => RU
+    // [countryName] => Russian Federation
+    // [regionName] => Penza
+    // [cityName] => Penza
+    // [latitude] => 53.2006607056
+    // [longitude] => 45.0046386719
     var_dump( $geolocation );
 
     if ( isset( $geolocation['errorMessage'] ) ) {
@@ -107,6 +116,27 @@ function my_geolocation() {
     }
 }
 {% endhighlight %}
+
+### Improvement at activation process ###
+
+At the activation process just after you had installed, this plugin uses 
+RESTFul API to get and put your country code into the whitelist. After that, 
+[MaxMind GeoLite Legacy Database][GeoLite] was downloaded and used for the main 
+source of validating the country code of IP addresses.
+
+It meant that the database was different between activation process and after.
+This had a possibility to block yourself by means of accuracy of those DBs.
+
+<!-- https://wordpress.org/support/topic/doesnt-work-249 -->
+
+From this release, MaxMind database will be used at activation process not to 
+cause inconsistency at activation and after. (Of course, a fallback process in 
+case that the service of MaxMind is unavailable is still there.)
+
+If you are locked out yourself unfortunately, please download the 
+[emergency version][Special] of `ip-geo-block.php` and upload it instead of the 
+original one via FTP so that you can update your settings.
+(See also [this topic][Topic].)
 
 I hope you enjoy this release !! <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
@@ -119,3 +149,6 @@ I hope you enjoy this release !! <span class="emoji">
 [IP2-PHP]:  http://www.ip2location.com/developers/php "PHP Module | IP2Location.com"
 [IP2-LITE]: http://lite.ip2location.com/ "Free IP Geolocation Database"
 [DB5-LITE]: http://lite.ip2location.com/database-ip-country-region-city-latitude-longitude "Free IP2Location LITE IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE"
+[GeoLite]:  http://dev.maxmind.com/geoip/legacy/geolite/ "GeoLite Legacy Downloadable Databases « Maxmind Developer Site"
+[Special]:  https://gist.github.com/tokkonopapa/c16fe2dfe31e28b092ce "IP Geo Block Emergency"
+[Topic]:    https://wordpress.org/support/topic/when-i-activate-after-install-i-cannot-access-at-all-wordpress-nor-the-plugin "WordPress › Support » When I activate after install, I cannot access at all - wordpress nor the plugin"
