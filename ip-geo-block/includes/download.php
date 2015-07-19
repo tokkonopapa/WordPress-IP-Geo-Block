@@ -110,8 +110,8 @@ function ip_geo_block_download_zip( $url, $args, $filename, $modified ) {
 	}
 
 	catch ( Exception $e ) {
-		if ( $gz ) gzclose( $gz );
-		if ( $fp ) fclose ( $fp );
+		if ( ! empty( $gz ) ) gzclose( $gz );
+		if ( ! empty( $fp ) ) fclose ( $fp );
 		if ( ! is_wp_error( $res ) ) @unlink( $res );
 
 		return array(
