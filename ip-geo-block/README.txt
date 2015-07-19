@@ -374,7 +374,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.1.2 =
-This is just a maintenance release.
+This is a maintenance release.
 
 * **Bug fix:** Fix the issue that the login-fail-counter didn't work when the 
   validation at `Login form` was `block by country (register, lost password)`.
@@ -387,6 +387,9 @@ This is just a maintenance release.
 * **Improvement:** Add alternative functions of BCMath extension to avoid 
   `PHP Fatal error: Call to undefined function` in `IP2Location.php` when 
   IPv6 is specified.
+* **Improvement:** Use MaxMind database at the activating process not to be 
+  locked out by means of inconsistency of database at the activation and after.
+* See more details at [2.1.1 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.2.html "2.1.2 Release Note")
 
 = 2.1.1 =
 * **New feature:** Added `Block by country (register, lost password)` at 
@@ -402,7 +405,7 @@ This is just a maintenance release.
   `ip-geo-block-(admin-actions|admin-pages|wp-content)`. Alternatively new 
   filter hooks `ip-geo-block-bypass-(admins|plugins|themes)` are added to 
   bypass WP-ZEP.
-* Find out more details in the [release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.1.html "Release 2.1.1").
+* Find out more details in the [2.1.1 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.1.html "2.1.1 Release Note").
 
 = 2.1.0 =
 * **New feature:** Expanded the operating range of ZP-ZEP, that includes admin 
@@ -428,7 +431,7 @@ This is just a maintenance release.
 * The time of day is shown with local time by adding GMT offset based on 
   the time zone setting.
 * Optimized resource loading and settings to avoid redundancy.
-* See details at [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.0.8.html "Release 2.0.8").
+* See details at [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.0.8.html "2.0.8 Release Note").
 
 = 2.0.7 =
 * Avoid JavaScript error which occurs if an anchor link has no `href`.
