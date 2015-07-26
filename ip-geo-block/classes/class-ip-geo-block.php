@@ -577,8 +577,10 @@ class IP_Geo_Block {
 				'jetpack_modules', 'atd_settings',
 			) );
 
-			// register validation of nonce
-			if ( ! in_array( $action, $list, TRUE ) && ! in_array( $page, $list, TRUE ) )
+			// condition of nonce validation
+			// neither $page nor $action is to be bypassed
+			if ( ( $page   || ! in_array( $action, $list, TRUE ) ) &&
+			     ( $action || ! in_array( $page,   $list, TRUE ) ) )
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 7, 2 );
 		}
 
