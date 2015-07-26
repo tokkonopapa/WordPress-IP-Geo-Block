@@ -23,8 +23,8 @@ And now, it works properly to block brute force attack to the `wp-login.php`.
 ### Fix the issue of validation settings for admin ###
 
 The `Admin area` and `Admin ajax/post` at "**Validation settings**" on 
-"**Settings**" tab should be able to set individual behaviors separately.
-But previously it wasn't.
+"**Settings**" tab should be able to perform individual behavior. But 
+previously it wasn't.
 
 For example, `Prevent zero-day exploit` for `Admin area` protects a site 
 against attacks even from your own country, and `Block by country` for 
@@ -39,8 +39,8 @@ always accepts ajax requested from your country.
 <strong>For technical details:</strong>
 <code>Prevent zero-day exploit</code> for <code>Admin ajax/post</code> can 
 also accept ajax requested from outside your own country if a plugin defines 
-same handler for privileged users and non privileged users separately. So its 
-behavior depeneds on the plugin's implementation.
+same handler for privileged users and non privileged users. So its behavior 
+depeneds on the plugin's implementation.
 </div>
 
 ### Improvement of diagnosis on admin screen ###
@@ -77,7 +77,7 @@ into this plugin's database directory.
 
 {% highlight php startinline %}
 /**
- * Set path to the IP2Location Lite.
+ * Set the path to the IP2Location Lite Database.
  *
  */
 function my_ip2location_path( $path ) {
@@ -86,7 +86,7 @@ function my_ip2location_path( $path ) {
 add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
 
 /**
- * Dump the geolocation infomation.
+ * Get the geolocation information of specific IP address.
  *
  */
 function my_geolocation() {
@@ -120,22 +120,22 @@ function my_geolocation() {
 ### Improvement at activation process ###
 
 At the activation process just after you had installed, this plugin uses 
-RESTFul API to get and put your country code into the whitelist. After that, 
-[MaxMind GeoLite Legacy Database][GeoLite] was downloaded and used for the main 
-source of validating the country code of IP addresses.
+RESTful API to get and put your country code into the whitelist. After that, 
+[MaxMind GeoLite Legacy Database][GeoLite] was downloaded and used for the 
+main source of validating the country code of IP addresses.
 
-It meant that the database was different between activation process and after.
+It meant that the database was different between before and after activation.
 This had a possibility to block yourself by means of accuracy of those DBs.
 
 <!-- https://wordpress.org/support/topic/doesnt-work-249 -->
 
-From this release, MaxMind database will be used at activation process not to 
-cause inconsistency at activation and after. (Of course, a fallback process in 
-case that the service of MaxMind is unavailable is still there.)
+From this release, MaxMind database will be also used at the activation to 
+keep consistency of validation. (Of course, a fallback process in case that 
+the service of MaxMind is unavailable is still there.)
 
-If you are locked out yourself unfortunately, please download the 
-[emergency version][Special] of `ip-geo-block.php` and upload it instead of the 
-original one via FTP so that you can update your settings.
+Unfortunately when you are locked out yourself, download the 
+[emergent version][Special] of `ip-geo-block.php` and upload it instead of the 
+original one via FTP so that you can update your settings and this plugin itself.
 (See also [this topic][Topic].)
 
 I hope you enjoy this release !! <span class="emoji">
