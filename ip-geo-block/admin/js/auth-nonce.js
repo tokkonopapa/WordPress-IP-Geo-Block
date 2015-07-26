@@ -63,6 +63,13 @@ var IP_GEO_BLOCK_ZEP = {
 		       (uri.authority + uri.path + '?' + args.join('&'));
 	}
 
+	function add_query_nonce(src, nonce) {
+		var uri = parse_uri(src), data;
+		data = uri.query ? uri.query.split('&') : [];
+		data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
+		return query_args(uri, data);
+	}
+
 	function sanitize(str) {
 		return str ? str.toString().replace(/[&<>"']/g, function (match) {
 			return {
@@ -108,16 +115,24 @@ var IP_GEO_BLOCK_ZEP = {
 	$(function () {
 		var nonce = IP_GEO_BLOCK_ZEP.nonce;
 		if (nonce) {
-			$('body').on('click', 'a', function (event) {
+			$body = $('body');
+
+			$body.find('img').each(function (index) {
+				var src = $(this).attr('src');
+
+				// if admin area
+				if (is_admin(src, src) === 1) {
+					$(this).attr('src', add_query_nonce(src, nonce));
+				}
+			});
+
+			$body.on('click', 'a', function (event) {
 				var href = $(this).attr('href'), // String or undefined
 				    admin = is_admin(href, href);
 
 				// if admin area
 				if (admin === 1) {
-					var uri = parse_uri(href), data;
-					data = uri.query ? uri.query.split('&') : [];
-					data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
-					$(this).attr('href', query_args(uri, data));
+					$(this).attr('href', add_query_nonce(href, nonce));
 				}
 
 				// if external
@@ -134,22 +149,20 @@ var IP_GEO_BLOCK_ZEP = {
 				}
 			});
 
-			$('body').on('submit', 'form', function (event) {
+			$body.on('submit', 'form', function (event) {
 				var $this = $(this),
 				    action = $this.attr('action');
 
 				// if admin area
 				if (is_admin(action, $this.serialize()) === 1) {
-					var uri = parse_uri(action), data;
-					data = uri.query ? uri.query.split('&') : [];
-					data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
-					$this.attr('action', query_args(uri, data));
+					$this.attr('action', add_query_nonce(action, nonce));
 				}
 			});
 
 			$('form').each(function (index) {
-				var $this = $(this);
-				if ('multipart/form-data' === $this.attr('enctype')) {
+				var $this = $(this), action = $this.attr('action');
+				if (is_admin(action, action) === 1 &&
+				    'multipart/form-data' === $this.attr('enctype')) {
 					$this.append(
 						'<input type="hidden" name="' + IP_GEO_BLOCK_ZEP.auth + '" value="'
 						+ sanitize(nonce) + '" />'

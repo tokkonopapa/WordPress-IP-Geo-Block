@@ -572,6 +572,9 @@ class IP_Geo_Block {
 			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
 				// pluploader won't fire an event in "Media Library"
 				'upload-attachment', 'imgedit-preview', 'bp_avatar_upload',
+
+				// jetpack excute multiple redirect, cross domai ajax
+				'jetpack_modules', 'atd_settings',
 			) );
 
 			// register validation of nonce
