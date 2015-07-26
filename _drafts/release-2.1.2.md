@@ -6,7 +6,7 @@ categories: changelog
 published: true
 ---
 
-This is a maintenance release including 2 of bug fixes and 3 of improvements.
+This is a maintenance release including 3 of bug fixes and 3 of improvements.
 Every user of this plugin should update to make it work properly.
 
 <!--more-->
@@ -42,6 +42,16 @@ also accept ajax requested from outside your own country if a plugin defines
 same handler for privileged users and non privileged users. So its behavior 
 depeneds on the plugin's implementation.
 </div>
+
+### Fix some issues for Jetpack ###
+
+Jetpack is a super popular plugin and has a lot of awesome features. But some 
+of them were blocked by WP-ZEP. For example, "[Site Stats][SiteStats]" using 
+**Sparkline** did not appear on the admin bar which issue was reported on the 
+[support forum][issue-jet] (thanks [H][TH-WP-ORG]).
+
+The solution is not perfect, but tentatively fixed. In the future release, 
+compatibility with Jetpack should be more advanced.
 
 ### Improvement of diagnosis on admin screen ###
 
@@ -142,13 +152,16 @@ I hope you enjoy this release !! <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span>
 
-[2.0.8]:    {{ "/changelog/release-2.0.8.html" | prepend: site.baseurl }} "2.0.8 Release Note"
-[issue1]:   https://github.com/tokkonopapa/WordPress-IP-Geo-Block/issues/1 "IP Geo Block not providing logs #1"
-[GMP]:      http://php.net/manual/ref.gmp.php "PHP: GMP Functions - Manual"
-[BC-Math]:  http://php.net/manual/ref.bc.php "PHP: BC Math Functions - Manual"
-[IP2-PHP]:  http://www.ip2location.com/developers/php "PHP Module | IP2Location.com"
-[IP2-LITE]: http://lite.ip2location.com/ "Free IP Geolocation Database"
-[DB5-LITE]: http://lite.ip2location.com/database-ip-country-region-city-latitude-longitude "Free IP2Location LITE IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE"
-[GeoLite]:  http://dev.maxmind.com/geoip/legacy/geolite/ "GeoLite Legacy Downloadable Databases « Maxmind Developer Site"
-[Special]:  https://gist.github.com/tokkonopapa/c16fe2dfe31e28b092ce "IP Geo Block Emergency"
-[Topic]:    https://wordpress.org/support/topic/when-i-activate-after-install-i-cannot-access-at-all-wordpress-nor-the-plugin "WordPress › Support » When I activate after install, I cannot access at all - wordpress nor the plugin"
+[2.0.8]:     {{ "/changelog/release-2.0.8.html" | prepend: site.baseurl }} "2.0.8 Release Note"
+[issue1]:    https://github.com/tokkonopapa/WordPress-IP-Geo-Block/issues/1 "IP Geo Block not providing logs #1"
+[GMP]:       http://php.net/manual/ref.gmp.php "PHP: GMP Functions - Manual"
+[BC-Math]:   http://php.net/manual/ref.bc.php "PHP: BC Math Functions - Manual"
+[IP2-PHP]:   http://www.ip2location.com/developers/php "PHP Module | IP2Location.com"
+[IP2-LITE]:  http://lite.ip2location.com/ "Free IP Geolocation Database"
+[DB5-LITE]:  http://lite.ip2location.com/database-ip-country-region-city-latitude-longitude "Free IP2Location LITE IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE"
+[GeoLite]:   http://dev.maxmind.com/geoip/legacy/geolite/ "GeoLite Legacy Downloadable Databases « Maxmind Developer Site"
+[Special]:   https://gist.github.com/tokkonopapa/c16fe2dfe31e28b092ce "IP Geo Block Emergency"
+[Topic]:     https://wordpress.org/support/topic/when-i-activate-after-install-i-cannot-access-at-all-wordpress-nor-the-plugin "WordPress › Support » When I activate after install, I cannot access at all - wordpress nor the plugin"
+[SiteStats]: https://en.support.wordpress.com/stats/ "Stats - Support - WordPress.com"
+[issue-jet]: https://wordpress.org/support/topic/admin-area-prevent-zero-day-exploit-incompatible-with-jetpack-site-stats-in-a "WordPress › Support » Admin area - Prevent zero-day exploit: Incompatible with Jetpack Site Stats in A"
+[TH-WP-ORG]: https://wordpress.org/support/profile/thwordpressorg "WordPress › Support » THWordPressOrg"
