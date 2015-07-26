@@ -382,6 +382,8 @@ This is a maintenance release.
 * **Bug fix:** Fix the issue that the validation settings of `Admin area` and 
   `Admin ajax/post` were influential with each other. Now each of those works 
   individually.
+* **Bug fix:** "Site Stats" of Jetpack is now shown on the admin bar which 
+  issue was reported on [support forum](https://wordpress.org/support/topic/admin-area-prevent-zero-day-exploit-incompatible-with-jetpack-site-stats-in-a "WordPress › Support » Admin area - Prevent zero-day exploit: Incompatible with Jetpack Site Stats in A").
 * **Improvement:** Hide checking the existence of log db behind the symbol 
   `IP_GEO_BLOCK_DEBUG` to reduce 1 query on admin screen.
 * **Improvement:** Add alternative functions of BCMath extension to avoid 
