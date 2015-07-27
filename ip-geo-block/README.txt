@@ -391,7 +391,7 @@ This is a maintenance release.
   IPv6 is specified.
 * **Improvement:** Use MaxMind database at the activating process not to be 
   locked out by means of inconsistency of database at the activation and after.
-* See more details at [2.1.1 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.2.html "2.1.2 Release Note")
+* See more details at [2.1.2 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.2.html "2.1.2 Release Note")
 
 = 2.1.1 =
 * **New feature:** Added `Block by country (register, lost password)` at 
