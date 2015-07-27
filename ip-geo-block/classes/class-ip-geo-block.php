@@ -570,15 +570,11 @@ class IP_Geo_Block {
 
 			// list of request with a specific query to bypass WP-ZEP
 			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
-				// pluploader won't fire an event in "Media Library"
-				'upload-attachment', 'imgedit-preview', 'bp_avatar_upload',
-
-				// jetpack excute multiple redirect, cross domai ajax
-				'jetpack_modules', 'atd_settings',
+				'upload-attachment', 'imgedit-preview', 'bp_avatar_upload', // pluploader won't fire an event in "Media Library"
+				'jetpack_modules', 'atd_settings', // jetpack: multiple redirect for modules, cross domain ajax for proofreading
 			) );
 
-			// condition of nonce validation
-			// neither $page nor $action is to be bypassed
+			// combination with vulnerable key and bypass key should be prevented
 			if ( ( $page   || ! in_array( $action, $list, TRUE ) ) &&
 			     ( $action || ! in_array( $page,   $list, TRUE ) ) )
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 7, 2 );
@@ -670,10 +666,9 @@ class IP_Geo_Block {
 	}
 
 	public function check_auth( $validate, $settings ) {
-		// when anyone can login, authentication should be prior to the validation of
-		// the country code, but the result can't be overwritten if it already exists.
+		// authentication should be prior to the validation by country when anyone can login
 		if ( is_user_logged_in() || ! empty( $this->skip_auth ) )
-			$validate += array( 'result' => 'passed' );
+			$validate += array( 'result' => 'passed' ); // can't overwrite the existing result
 
 		return $validate;
 	}
