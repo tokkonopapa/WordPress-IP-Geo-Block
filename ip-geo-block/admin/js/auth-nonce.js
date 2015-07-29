@@ -40,10 +40,13 @@ var IP_GEO_BLOCK_ZEP = {
 		});
 	}
 
-	function is_admin(url) {
-		var uri = parse_uri(url ? url.toString().toLowerCase() : ''),
-		    // directory traversal should be checked more strictly ?
-		    path = (uri.path.replace('/\./g', '').charAt(0) === '/' ? uri.path : location.pathname);
+	function is_admin(uri) {
+		if (typeof uri !== 'object') { // should be 'string' or 'undefined'
+			uri = parse_uri(uri ? uri.toString().toLowerCase() : '');
+		}
+
+		// directory traversal should be checked more strictly ?
+		var path = (uri.path.replace('/\./g', '').charAt(0) === '/' ? uri.path : location.pathname);
 
 		// explicit scheme and external domain
 		if (/https?/.test(uri.scheme) && uri.authority !== location.host.toLowerCase()) {
@@ -118,10 +121,11 @@ var IP_GEO_BLOCK_ZEP = {
 			$body = $('body');
 
 			$body.find('img').each(function (index) {
-				var src = $(this).attr('src'), uri = parse_uri(src);
+				var src = $(this).attr('src'),
+				    uri = parse_uri(src);
 
 				// if admin area
-				if (is_admin(src) === 1 && uri.path.match(/(\/|\.php)$/i)) {
+				if (is_admin(uri) === 1 && uri.path.match(/(\/|\.php)$/i)) {
 					$(this).attr('src', add_query_nonce(src, nonce));
 				}
 			});
@@ -160,9 +164,11 @@ var IP_GEO_BLOCK_ZEP = {
 			});
 
 			$('form').each(function (index) {
-				var $this = $(this), action = $this.attr('action');
-				if (is_admin(action) === 1 &&
-				    'multipart/form-data' === $this.attr('enctype')) {
+				var $this = $(this),
+				    action = $this.attr('action');
+
+				// if admin area
+				if (is_admin(action) === 1 && 'multipart/form-data' === $this.attr('enctype')) {
 					$this.append(
 						'<input type="hidden" name="' + IP_GEO_BLOCK_ZEP.auth + '" value="'
 						+ sanitize(nonce) + '" />'
