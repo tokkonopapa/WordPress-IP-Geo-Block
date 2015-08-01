@@ -3,7 +3,7 @@ layout: post
 title:  "How to test IP Geo Block works properly?"
 date:   2015-09-01 00:00:00
 categories: article changelog
-published: true
+published: false
 ---
 
 <!--more-->
