@@ -41,7 +41,7 @@ var IP_GEO_BLOCK_ZEP = {
 	}
 
 	function is_admin(uri) {
-		if (typeof uri !== 'object') { // should be 'string' or 'undefined'
+		if (typeof uri !== 'object') { // if 'string' or 'undefined'
 			uri = parse_uri(uri ? uri.toString().toLowerCase() : '');
 		}
 
@@ -131,7 +131,7 @@ var IP_GEO_BLOCK_ZEP = {
 			});
 
 			$body.on('click', 'a', function (event) {
-				var href = $(this).attr('href'), // String or undefined
+				var href = $(this).attr('href'), // 'string' or 'undefined'
 				    admin = is_admin(href);
 
 				// if admin area
