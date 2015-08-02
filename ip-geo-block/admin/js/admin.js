@@ -241,7 +241,7 @@ var ip_geo_block_start = new Date();
 				var title = $(this);
 				title.parent().next().toggle();
 				title.toggleClass('ip-geo-block-dropup').toggleClass('ip-geo-block-dropdown');
-				cookie[title.closest('fieldset').data('ip-geo-block')] = title.hasClass('ip-geo-block-dropdown');
+				cookie[title.closest('fieldset').data('ip-geo-block')] = title.hasClass('ip-geo-block-dropdown') ? 1 : 0;
 				wpCookies.setHash('ip-geo-block-admin', cookie);
 			});
 		}
@@ -257,16 +257,10 @@ var ip_geo_block_start = new Date();
 
 				// Show/Hide form-table on tab 0
 				if (typeof wpCookies && 0 === tabNum) {
-					if ('undefined' === typeof cookie[index] ||
-					    'undefined' === cookie[index] ||
-					    'true' === cookie[index] ||
-					    true === cookie[index]) {
-						title.addClass('ip-geo-block-dropdown');
-						title.parent().next().show();
-					} else {
-						title.addClass('ip-geo-block-dropup');
-						title.parent().next().hide();
-					}
+					('undefined' === typeof cookie[index] || 'undefined' === cookie[index] || 1 == cookie[index] ?
+						title.addClass('ip-geo-block-dropdown').parent().next().show():
+						title.addClass('ip-geo-block-dropup'  ).parent().next().hide()
+					);
 				}
 			}
 		});
