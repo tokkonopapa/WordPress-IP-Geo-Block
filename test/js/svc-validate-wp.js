@@ -90,10 +90,10 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 		.then(
 			function (res) {
 				// Extract a link to forum
-				regexp = /<a\s+?class=["']bbp-forum-title["']\s+?href=["']([^"']+?)["']/i;
-				match = res.data.match(regexp);
+				var regexp = /<a\s+?class=["']bbp-forum-title["']\s+?href=["']([^"']+?)["']/i;
+				var match = res.data.match(regexp);
 				return {
-					url: match[1] || url
+					url: match ? (match[1] || url) : url
 				};
 			},
 			function (res) {
