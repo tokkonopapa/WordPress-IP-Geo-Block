@@ -373,6 +373,10 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 
 == Changelog ==
 
+= 2.1.3 =
+* **Improvement:** Add "show" / "hide" on each section on the "Settings" page.
+* **Improvement:** Some of code refinement.
+
 = 2.1.2 =
 This is a maintenance release.
 
