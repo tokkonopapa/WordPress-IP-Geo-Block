@@ -110,9 +110,9 @@ class IP_Geo_Block {
 
 		// wp-content/(plugins|themes)/.../*.php
 		else {
-			$uri = preg_replace( '|//+|', '/', $_SERVER['REQUEST_URI'] );
-			if ( ( $validate['plugins'] && FALSE !== strpos( $uri, self::$content_dir['plugins'] ) ) ||
-			     ( $validate['themes' ] && FALSE !== strpos( $uri, self::$content_dir['themes' ] ) ) )
+			$uri = parse_url( preg_replace( '|//+|', '/', $_SERVER['REQUEST_URI'] ) ); // pathinfo() is not suitable to extract extension
+			if ( ( $validate['plugins'] && FALSE !== strpos( $uri['path'], self::$content_dir['plugins'] ) && FALSE !== strripos( $uri['path'], '.php', -4 ) ) ||
+			     ( $validate['themes' ] && FALSE !== strpos( $uri['path'], self::$content_dir['themes' ] ) && FALSE !== strripos( $uri['path'], '.php', -4 ) ) )
 				add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
 		}
 
