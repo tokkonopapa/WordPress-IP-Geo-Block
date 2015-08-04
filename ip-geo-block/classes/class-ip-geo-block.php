@@ -574,7 +574,7 @@ class IP_Geo_Block {
 				'jetpack_modules', 'atd_settings', // jetpack: multiple redirect for modules, cross domain ajax for proofreading
 			) );
 
-			// combination with vulnerable key and bypass key should be prevented
+			// combination with both vulnerable key and bypass key should be prevented
 			if ( ( $page   || ! in_array( $action, $list, TRUE ) ) &&
 			     ( $action || ! in_array( $page,   $list, TRUE ) ) )
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 7, 2 );

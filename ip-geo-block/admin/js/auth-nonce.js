@@ -10,7 +10,7 @@ var IP_GEO_BLOCK_ZEP = {
 		if (-1 !== location.href.indexOf(url)) {
 			if (this.nonce) {
 				url += (url.indexOf('?') >= 0 ? '&' : '?') + this.auth + '=' + this.nonce;
-			} 
+			}
 			window.location.href = url;
 		}
 	}
@@ -53,12 +53,14 @@ var IP_GEO_BLOCK_ZEP = {
 			return -1; // -1: external
 		}
 
-		var regexp = new RegExp(
-			'(?:/wp-admin/|' + IP_GEO_BLOCK_AUTH.plugins + '|' + IP_GEO_BLOCK_AUTH.themes + ')'
-		);
+		var item, items = ['plugins', 'themes'], regexp = '(?:/wp-admin/';
+		while (item = items.shift()) {
+			regexp += IP_GEO_BLOCK_AUTH[item] ? '|' + IP_GEO_BLOCK_AUTH[item] : '';
+		}
+		regexp = new RegExp(regexp + ')');
 
 		// possibly scheme is `javascript` or path is `;`
-		return (uri.scheme || uri.path || uri.query) && path.match(regexp) ? 1 : 0;
+		return (uri.scheme || uri.path || uri.query) && regexp.test(path) ? 1 : 0;
 	}
 
 	function query_args(uri, args) {
@@ -118,14 +120,14 @@ var IP_GEO_BLOCK_ZEP = {
 	$(function () {
 		var nonce = IP_GEO_BLOCK_ZEP.nonce;
 		if (nonce) {
-			$body = $('body');
+			var $body = $('body');
 
 			$body.find('img').each(function (index) {
 				var src = $(this).attr('src'),
 				    uri = parse_uri(src);
 
 				// if admin area
-				if (is_admin(uri) === 1 && uri.path.match(/(\/|\.php)$/i)) {
+				if (is_admin(uri) === 1 && /(?:\/|\.php)$/i.test(uri.path)) {
 					$(this).attr('src', add_query_nonce(src, nonce));
 				}
 			});

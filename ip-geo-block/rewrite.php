@@ -62,7 +62,7 @@ class IP_Geo_Block_Rewrite {
 			$context->update_statistics( $validate );
 
 		// send response code to refuse
-		$context->send_response( $exist ? $settings['response_code'] : 404 );
+		$context->send_response( 'admin', $exist ? $settings['response_code'] : 404 );
 	}
 
 	/**
@@ -85,7 +85,9 @@ class IP_Geo_Block_Rewrite {
 
 		// while malicios URI may be intercepted by the server,
 		// null byte attack should be invalidated just in case.
-		// ex) $path = "/etc/passwd\0.php"
+		// @note: is_file(), is_readable(), file_exists() need a valid path.
+		// @link: http://php.net/releases/5_3_4.php, https://bugs.php.net/bug.php?id=39863
+		// ex) $path = "/etc/passwd\0.php"; is_file( $path ) === true (5.2.14), false (5.4.4)
 		$path = realpath( str_replace( "\0", '', $path ) );
 
 		// check path if under the document root
@@ -93,21 +95,17 @@ class IP_Geo_Block_Rewrite {
 			self::abort( $validate, $settings, file_exists( $path ) );
 
 		// check default index
-		if ( 1 !== preg_match( "/\/([^\/]+)$/", $path, $matches ) )
+		if ( preg_match( "/\/([^\/]+)$/", $path, $matches ) )
 			$path .= 'index.php';
 
-		// check file and extention
-		// @note: is_file() and is_readable() need a valid path.
-		// @link: http://php.net/releases/5_3_4.php, https://bugs.php.net/bug.php?id=39863
-		// ex) is_file("/etc/passwd\0.php") === true (5.2.14), false (5.4.4)
-		if ( ! @is_file( $path ) || ! @is_readable( $path ) ||
-		     'php' !== pathinfo( $path, PATHINFO_EXTENSION ) ) {
+		// check file extention
+		// @note: if it fails, rewrite rule may be misconfigured
+		if ( FALSE !== strripos( $path, '.php', -4 ) )
 			self::abort( $validate, $settings, file_exists( $path ) );
-		}
 
 		// reconfirm the requested URI is on the file system
-		if ( @chdir( dirname( $path ) ) )
-			include_once basename( $path );
+		if ( ! @chdir( dirname( $path ) ) || FALSE === ( @include basename( $path ) ) )
+			self::abort( $validate, $settings, file_exists( $path ) );
 
 		exit;
 	}

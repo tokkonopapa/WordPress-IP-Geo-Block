@@ -257,10 +257,11 @@ var ip_geo_block_start = new Date();
 
 				// Show/Hide form-table on tab 0
 				if (typeof wpCookies && 0 === tabNum) {
-					('undefined' === typeof cookie[index] || 'undefined' === cookie[index] || 1 == cookie[index] ?
-						title.addClass('ip-geo-block-dropdown').parent().next().show():
-						title.addClass('ip-geo-block-dropup'  ).parent().next().hide()
-					);
+					if ('undefined' === typeof cookie[index] || 'undefined' === cookie[index] || 1 == cookie[index]) {
+						title.addClass('ip-geo-block-dropdown').parent().next().show();
+					} else {
+						title.addClass('ip-geo-block-dropup').parent().next().hide();
+					}
 				}
 			}
 		});
