@@ -10,7 +10,7 @@ angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) 
 	 */
 	this.post_form = function (url, form, proxy, method) {
 		var type;
-		switch(method.toLowerCase()) {
+		switch (method.toLowerCase()) {
 		  case 'get':
 			method = 'GET';
 			type = 'text/html; charset=UTF-8';

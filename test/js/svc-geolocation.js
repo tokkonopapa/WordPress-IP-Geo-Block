@@ -16,43 +16,43 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 			type: 'IPv4, IPv6',
 			get: function (data, type) {
 				switch (type) {
-					case 'name' : return data.country || null;
-					case 'code' : return data.country_code || null;
+					case 'name':  return data.country || null;
+					case 'code':  return data.country_code || null;
 					case 'error': return 'not found';
 				}
 				return null;
 			}
-		}
-		,{
+		},
+		{
 			api: 'ip-api',
 			url: 'http://ip-api.com/%API_FMT%/%API_IP%',
 			fmt: 'json',
 			type: 'IPv4',
 			get: function (data, type) {
 				switch (type) {
-					case 'name' : return data.country || null;
-					case 'code' : return data.countryCode || null;
+					case 'name':  return data.country || null;
+					case 'code':  return data.countryCode || null;
 					case 'error': return data.message || null;
 				}
 				return null;
 			}
-		}
+		},
 		/**
 		 * APIs that doesn't support CORS.
 		 * These are accessed through https://developer.yahoo.com/yql/
 		 */
-		,{
+		{
 			api: 'Pycox',
 			url: 'https://query.yahooapis.com/v1/public/yql?q=select * from %API_FMT% where url="http://ip.pycox.com/%API_FMT%/%API_IP%"&format=%API_FMT%&jsonCompat=new',
 			fmt: 'json',
 			type: 'IPv4',
 			get: function (data, type) {
 				switch (type) {
-					case 'name' :
+					case 'name':
 						if (typeof data.query.results.json !== 'undefined')
 							return data.query.results.json.country_name;
 						break;
-					case 'code' :
+					case 'code':
 						if (typeof data.query.results.json !== 'undefined')
 							return data.query.results.json.country_code
 						break;
@@ -61,8 +61,8 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				}
 				return null;
 			}
-		}
-		,{
+		},
+		{
 			api: 'Nekudo',
 			url: 'https://query.yahooapis.com/v1/public/yql?q=select * from %API_FMT% where url="http://geoip.nekudo.com/api/%API_IP%"&format=%API_FMT%&jsonCompat=new',
 			fmt: 'json',
@@ -70,19 +70,19 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 			get: function (data, type) {
 				switch (type) {
 					case 'name' :
-						if (data.query.results && 
+						if (data.query.results &&
 							typeof data.query.results.json.msg === 'undefined')
 							return data.query.results.json.country.name;
 						break;
 					case 'code' :
-						if (data.query.results && 
+						if (data.query.results &&
 							typeof data.query.results.json.msg === 'undefined')
 							return data.query.results.json.country.code;
 						break;
 					case 'error':
 						if (data.query.results)
 							return data.query.results.json.msg;
-						else 
+						else
 							return 'error';
 				}
 				return null;

@@ -29,7 +29,8 @@ function strip_tags(html) {
 		// keep p tags
 		var match = html.match(/<p.*?\/p>/gi);
 		if (match) {
-			for (var text, i = 0; i < match.length; i++) {
+			var text, i;
+			for (i = 0; i < match.length; i++) {
 				// remove tags
 				// http://qiita.com/miiitaka/items/793555b4ccb0259a4cb8
 				if (text = match[i].replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')) {
@@ -74,8 +75,8 @@ function parse_uri(uri) {
  * @link http://phpjs.org/functions/basename/
  */
 function basename(path, suffix) {
-	var b = path;
-	var lastChar = b.charAt(b.length - 1);
+	var b = path,
+	    lastChar = b.charAt(b.length - 1);
 
 	if (lastChar === '/' || lastChar === '\\') {
 		b = b.slice(0, -1);
@@ -110,7 +111,7 @@ function dirtop(path) {
  * Removes whitespace from both ends of a string. 
  * @link https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/trim
  */
-if(!String.prototype.trim) {
+if (!String.prototype.trim) {
 	String.prototype.trim = function () {
 		return this.replace(/^\s+|\s+$/g,'');
 	};
@@ -194,12 +195,11 @@ function get_random_int(min, max) {
  *
  */
 function get_random_ip() {
-	$ip =
+	return
 		get_random_int(11, 230) + '.' +
 		get_random_int( 0, 255) + '.' +
 		get_random_int( 0, 255) + '.' +
 		get_random_int( 0, 255);
-	return $ip;
 }
 
 function combine_ip(ip, country) {

@@ -47,8 +47,8 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 		.then(
 			function (res) {
 				// Extract canonical URL
-				var regexp = /<link[^>]+?rel=(['"]?)canonical\1.+/i;
-				var match = res.data.match(regexp);
+				var regexp = /<link[^>]+?rel=(['"]?)canonical\1.+/i,
+				    match = res.data.match(regexp);
 				if (match && match.length) {
 					url = match[0].replace(/.*href=(['"]?)(.+?)\1.+/, '$2');
 				}
@@ -90,8 +90,8 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 		.then(
 			function (res) {
 				// Extract a link to forum
-				var regexp = /<a\s+?class=["']bbp-forum-title["']\s+?href=["']([^"']+?)["']/i;
-				var match = res.data.match(regexp);
+				var regexp = /<a\s+?class=["']bbp-forum-title["']\s+?href=["']([^"']+?)["']/i,
+				    match = res.data.match(regexp);
 				return {
 					url: match ? (match[1] || url) : url
 				};
