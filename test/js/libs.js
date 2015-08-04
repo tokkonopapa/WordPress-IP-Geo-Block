@@ -195,11 +195,12 @@ function get_random_int(min, max) {
  *
  */
 function get_random_ip() {
-	return
+	var ip =
 		get_random_int(11, 230) + '.' +
 		get_random_int( 0, 255) + '.' +
 		get_random_int( 0, 255) + '.' +
 		get_random_int( 0, 255);
+	return ip;
 }
 
 function combine_ip(ip, country) {
