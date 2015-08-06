@@ -17,6 +17,12 @@ var IP_GEO_BLOCK_ZEP = {
 };
 
 (function ($, document) {
+	// for is_admin()
+	var regexp = new RegExp('(?:/wp-admin/' +
+		(IP_GEO_BLOCK_AUTH.plugins ? '|' + IP_GEO_BLOCK_AUTH.plugins : '') +
+		(IP_GEO_BLOCK_AUTH.themes  ? '|' + IP_GEO_BLOCK_AUTH.thems   : '') + ')'
+	);
+
 	function parse_uri(uri) {
 		var m = uri ? uri.toString().match(
 			// https://tools.ietf.org/html/rfc3986#appendix-B
@@ -52,12 +58,6 @@ var IP_GEO_BLOCK_ZEP = {
 		if (/https?/.test(uri.scheme) && uri.authority !== location.host.toLowerCase()) {
 			return -1; // -1: external
 		}
-
-		var item, items = ['plugins', 'themes'], regexp = '(?:/wp-admin/';
-		while (item = items.shift()) {
-			regexp += IP_GEO_BLOCK_AUTH[item] ? '|' + IP_GEO_BLOCK_AUTH[item] : '';
-		}
-		regexp = new RegExp(regexp + ')');
 
 		// possibly scheme is `javascript` or path is `;`
 		return (uri.scheme || uri.path || uri.query) && regexp.test(path) ? 1 : 0;

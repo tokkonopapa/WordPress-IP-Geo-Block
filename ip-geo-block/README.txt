@@ -3,7 +3,7 @@ Contributors: tokkonopapa
 Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force
 Requires at least: 3.7
-Tested up to: 4.2.3
+Tested up to: 4.3
 Stable tag: 2.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -374,8 +374,13 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.1.3 =
-* **Improvement:** Add "show" / "hide" on each section on the "Settings" page.
-* **Improvement:** Some of code refinement.
+* **New feature:** Add emergency function of invalidating blocking behavior 
+  in case yourself is locked out. This feature is commented out at the end of 
+  `ip-geo-block.php`.
+* **Improvement:** Prevent adding query strings to the static resources under 
+  the `wp-content/(plugins|themes)/` from the point of view of site speed 
+  when users logged in.
+* **Bug fix:** Fix minor bug in `rewrite.php` for the advanced users.
 
 = 2.1.2 =
 This is a maintenance release.

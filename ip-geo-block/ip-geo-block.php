@@ -68,3 +68,19 @@ if ( is_admin() ) {
 	require_once( IP_GEO_BLOCK_PATH . 'admin/class-ip-geo-block-admin.php' );
 	add_action( 'plugins_loaded', array( 'IP_Geo_Block_Admin', 'get_instance' ) );
 }
+
+/*----------------------------------------------------------------------------*
+ * Emergent Functionality 
+ *----------------------------------------------------------------------------*/
+
+/**
+ * Invalidate blocking behavior in case yourself is locked out
+ *
+ *//*
+function ip_geo_block_emergency( $validate ) {
+	$validate['result'] = 'passed';
+	return $validate;
+}
+add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency' );
+add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
+//*/
