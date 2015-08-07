@@ -91,19 +91,19 @@ class IP_Geo_Block_Rewrite {
 		$path = realpath( str_replace( "\0", '', $path ) );
 
 		// check path if under the document root
-		if ( 0 !== strpos( $path, $root ) )
+		if ( 0 !== strpos( $path, "$root/" ) )
 			self::abort( $validate, $settings, file_exists( $path ) );
 
 		// check default index
-		if ( preg_match( "/\/([^\/]+)$/", $path, $matches ) )
+		if ( 0 === preg_match( "/\/([^\/]+)$/", $path, $matches ) )
 			$path .= 'index.php';
 
 		// check file extention
 		// @note: if it fails, rewrite rule may be misconfigured
-		if ( FALSE !== strripos( $path, '.php', -4 ) )
+		elseif ( FALSE !== strripos( $path, '.php', -4 ) )
 			self::abort( $validate, $settings, file_exists( $path ) );
 
-		// reconfirm the requested URI is on the file system
+		// reconfirm permition for the requested URI
 		if ( ! @chdir( dirname( $path ) ) || FALSE === ( @include basename( $path ) ) )
 			self::abort( $validate, $settings, file_exists( $path ) );
 
