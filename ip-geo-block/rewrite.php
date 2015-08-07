@@ -100,7 +100,7 @@ class IP_Geo_Block_Rewrite {
 
 		// check file extention
 		// @note: if it fails, rewrite rule may be misconfigured
-		elseif ( FALSE !== strripos( $path, '.php', -4 ) )
+		elseif ( FALSE === strripos( $path, '.php', -4 ) )
 			self::abort( $validate, $settings, file_exists( $path ) );
 
 		// reconfirm permition for the requested URI
