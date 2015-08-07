@@ -310,11 +310,8 @@ var ip_geo_block_start = new Date();
 		});
 
 		// Show/Hide description of WP-ZEP
-		var item = ['login', 'admin', 'ajax', 'plugins', 'themes'], i;
-		for (i = 0; i < item.length; i++) {
-			$('#ip_geo_block_settings_validation_' + item[i]).on('change', function (event) {
-				show_description(this);
-			}).trigger('change');
-		}
+		$('select[name^="ip_geo_block_settings[validation]"]').on('change', function (event) {
+			show_description(this);
+		}).trigger('change');
 	});
 }(jQuery));
