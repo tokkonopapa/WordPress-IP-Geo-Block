@@ -106,6 +106,9 @@ h6, .h6 {
   padding-right: 0.5em;
 }
 
+#archive li {
+  color: #999;
+}
 
 /* Sidebar modules for boxing content */
 .sidebar-module {
@@ -149,7 +152,8 @@ h6, .h6 {
 }
 .blog-post-meta {
   color: #999;
-  margin-bottom: 20px;
+  display: inline-block;
+  width: 7em;
 }
 
 /*
@@ -328,16 +332,16 @@ table th.sort-header:after {
   border-style:solid;
   border-color:#404040 transparent;
   visibility:hidden;
-  }
+}
 table th.sort-header:hover:after {
   visibility:visible;
-  }
+}
 table th.sort-up:after,
 table th.sort-down:after,
 table th.sort-down:hover:after {
   visibility:visible;
   opacity:0.4;
-  }
+}
 table th.sort-up:after {
   border-bottom:none;
   border-width:4px 4px 0;

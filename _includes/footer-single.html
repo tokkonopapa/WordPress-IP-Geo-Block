@@ -14,8 +14,11 @@
           <li>
             <a href="https://wordpress.org/plugins/ip-geo-block/" title="WordPress &#8250; IP Geo Block &laquo; WordPress Plugins">IP Geo Block &laquo; WordPress.org</a>
           </li>
+          <li>
+            <a href="{{ '/archives.html' | prepend: site.baseurl }}">Category arvhives</a>
+          </li>
           <li class="rss-subscribe">
-            <a href="{{ "/feed.xml" | prepend: site.baseurl }}">subscribe via RSS</a>
+            <a href="{{ '/feed.xml' | prepend: site.baseurl }}">subscribe via RSS</a>
           </li>
         </ul>
       </div><!--sidebar-module-->
@@ -23,7 +26,7 @@
       <div class="col-xs-12 col-sm-5 sidebar-module text-left">
         <h4>Recent Posts</h4>
         <ul>
-          {% for post in site.posts %}<li>
+          {% for post in site.posts limit:5 %}<li>
             <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
           </li>{% endfor %}
         </ul>
