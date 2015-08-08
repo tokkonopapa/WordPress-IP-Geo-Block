@@ -374,12 +374,12 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.1.3 =
-* **New feature:** Add emergency function of invalidating blocking behavior 
-  in case yourself is locked out. This feature is commented out by default 
-  at the end of `ip-geo-block.php`.
+* **New feature:** Add an emergency function that invalidate blocking behavior 
+  in case yourself is locked out. This feature is commented out by default at 
+  the end of `ip-geo-block.php`.
 * **Improvement:** Prevent adding query strings to the static resources under 
-  the `wp-content/(plugins|themes)/` from the point of view of site speed 
-  when users logged in.
+  the `wp-content/(plugins|themes)/` from the point of view of site speed when 
+  users logged in.
 * **Bug fix:** Fix minor bug in `rewrite.php` for the advanced use case.
 
 = 2.1.2 =

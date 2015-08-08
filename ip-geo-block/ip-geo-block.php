@@ -74,13 +74,13 @@ if ( is_admin() ) {
  *----------------------------------------------------------------------------*/
 
 /**
- * Invalidate blocking behavior in case yourself is locked out
- *
- *//*
+ * Invalidate blocking behavior in case yourself is locked out.
+ * @note: activate the following code and upload this file via FTP.
+ */ /*
 function ip_geo_block_emergency( $validate ) {
 	$validate['result'] = 'passed';
 	return $validate;
 }
 add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency' );
 add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
-//*/
+// */
