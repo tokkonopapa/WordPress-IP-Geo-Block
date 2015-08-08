@@ -75,12 +75,138 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	/*----------------------------------------*
-	 * Validation settings
+	 * Validation rule settings
 	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-validation';
+	$section = IP_Geo_Block::PLUGIN_SLUG . '-validation-rule';
 	add_settings_section(
 		$section,
-		__( 'Validation settings', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Validation rule settings', IP_Geo_Block::TEXT_DOMAIN ),
+		NULL,
+		$option_slug
+	);
+
+	$key = IP_Geo_Block::get_geolocation();
+	$field = 'ip_country';
+	add_settings_field(
+		$option_name . "_$field",
+		__( 'Your IP address / Country', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'html',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => esc_html( $key['ip'] . ' / ' . $key['code'] ),
+		)
+	);
+
+	$field = 'matching_rule';
+	add_settings_field(
+		$option_name . "_$field",
+		__( 'Matching rule', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'select',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => $options[ $field ],
+			'list' => array(
+				__( 'Disable',    IP_Geo_Block::TEXT_DOMAIN ) => -1,
+				__( 'White list', IP_Geo_Block::TEXT_DOMAIN ) => 0,
+				__( 'Black list', IP_Geo_Block::TEXT_DOMAIN ) => 1,
+			),
+		)
+	);
+
+	$field = 'white_list';
+	add_settings_field(
+		$option_name . "_$field",
+		sprintf( __( '<dfn title="If empty then pass through">%s</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), __( 'White list', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'text',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => $options[ $field ],
+			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+		)
+	);
+
+	$field = 'black_list';
+	add_settings_field(
+		$option_name . "_$field",
+		sprintf( __( '<dfn title="If empty then pass through">%s</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), __( 'Black list', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'text',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => $options[ $field ],
+			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+		)
+	);
+
+	$key = 'proxy';
+	$field = 'validation';
+	add_settings_field(
+		$option_name . "_${field}_${key}",
+		__( '<dfn title="ex) HTTP_X_FORWARDED_FOR">$_SERVER keys for extra IPs</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'text',
+			'option' => $option_name,
+			'field' => $field,
+			'sub-field' => $key,
+			'value' => $options[ $field ][ $key ],
+			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+		)
+	);
+
+	$field = 'response_code';
+	add_settings_field(
+		$option_name . "_$field",
+		sprintf( __( 'Response code %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1" target=_blank>RFC 2616</a>)' ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'select',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => $options[ $field ],
+			'list' => array(
+				'200 OK' => 200,
+				'205 Reset Content' => 205,
+				'301 Moved Permanently' => 301,
+				'302 Found' => 302,
+				'307 Temporary Redirect' => 307,
+				'400 Bad Request' => 400,
+				'403 Forbidden' => 403,
+				'404 Not Found' => 404,
+				'406 Not Acceptable' => 406,
+				'410 Gone' => 410,
+				'500 Internal Server Error' => 500,
+				'503 Service Unavailable' => 503,
+			),
+		)
+	);
+
+	/*----------------------------------------*
+	 * Validation target settings
+	 *----------------------------------------*/
+	$section = IP_Geo_Block::PLUGIN_SLUG . '-validation-target';
+	add_settings_section(
+		$section,
+		__( 'Validation target settings', IP_Geo_Block::TEXT_DOMAIN ),
 		NULL,
 		$option_slug
 	);
@@ -220,105 +346,6 @@ function ip_geo_block_tab_settings( $context ) {
 			'value' => $options[ $field ][ $key ],
 			'list' => $title,
 			'after' => $desc[2] . sprintf( $desc[1], "$val&hellip;/*.php" ) . '</div>',
-		)
-	);
-
-	$field = 'matching_rule';
-	add_settings_field(
-		$option_name . "_$field",
-		__( 'Matching rule', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'select',
-			'option' => $option_name,
-			'field' => $field,
-			'value' => $options[ $field ],
-			'list' => array(
-				__( 'Disable',    IP_Geo_Block::TEXT_DOMAIN ) => -1,
-				__( 'White list', IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Black list', IP_Geo_Block::TEXT_DOMAIN ) => 1,
-			),
-		)
-	);
-
-	$field = 'white_list';
-	add_settings_field(
-		$option_name . "_$field",
-		sprintf( __( '<dfn title="If empty then pass through">%s</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), __( 'White list', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'text',
-			'option' => $option_name,
-			'field' => $field,
-			'value' => $options[ $field ],
-			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
-		)
-	);
-
-	$field = 'black_list';
-	add_settings_field(
-		$option_name . "_$field",
-		sprintf( __( '<dfn title="If empty then pass through">%s</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), __( 'Black list', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'text',
-			'option' => $option_name,
-			'field' => $field,
-			'value' => $options[ $field ],
-			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
-		)
-	);
-
-	$key = 'proxy';
-	$field = 'validation';
-	add_settings_field(
-		$option_name . "_${field}_${key}",
-		__( '<dfn title="ex) HTTP_X_FORWARDED_FOR">$_SERVER keys for extra IPs</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'text',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => $key,
-			'value' => $options[ $field ][ $key ],
-			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
-		)
-	);
-
-	$field = 'response_code';
-	add_settings_field(
-		$option_name . "_$field",
-		sprintf( __( 'Response code %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1" target=_blank>RFC 2616</a>)' ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'select',
-			'option' => $option_name,
-			'field' => $field,
-			'value' => $options[ $field ],
-			'list' => array(
-				'200 OK' => 200,
-				'205 Reset Content' => 205,
-				'301 Moved Permanently' => 301,
-				'302 Found' => 302,
-				'307 Temporary Redirect' => 307,
-				'400 Bad Request' => 400,
-				'403 Forbidden' => 403,
-				'404 Not Found' => 404,
-				'406 Not Acceptable' => 406,
-				'410 Gone' => 410,
-				'500 Internal Server Error' => 500,
-				'503 Service Unavailable' => 503,
-			),
 		)
 	);
 

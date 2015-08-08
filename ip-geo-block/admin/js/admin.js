@@ -230,14 +230,39 @@ var ip_geo_block_start = new Date();
 	}
 
 	$(function () {
+		// Get tab number and check wpCookies in wp-includes/js/utils.js
+		var cookie, tabNum = /&tab=(\d)/.exec(window.location.href);
+		tabNum = Number(tabNum && tabNum[1]);
+		if (typeof wpCookies && 0 === tabNum) {
+			cookie = wpCookies.getHash('ip-geo-block-admin') || [];
+
+			// Click event handler to show/hide form-table
+			$('form').on('click', 'h3', function (event) {
+				var title = $(this);
+				title.parent().next().toggle();
+				title.toggleClass('ip-geo-block-dropup').toggleClass('ip-geo-block-dropdown');
+				cookie[title.closest('fieldset').data('ip-geo-block')] = title.hasClass('ip-geo-block-dropdown') ? 1 : 0;
+				wpCookies.setHash('ip-geo-block-admin', cookie);
+			});
+		}
+
 		// Make form style with fieldset and legend
-		$('.form-table').each(function () {
+		$('.form-table').each(function (index) {
 			var $this = $(this),
 			    title = $this.prev();
 			if (title.prop('tagName').toLowerCase() === 'h3') {
 				// Move title into the fieldset and wrap with legend
-				$this.wrap('<fieldset class="ip-geo-block-field"></fieldset>')
+				$this.wrap('<fieldset data-ip-geo-block=' + index + ' class="ip-geo-block-field"></fieldset>')
 				     .parent().prepend(title.wrap('<legend></legend>').parent());
+
+				// Show/Hide form-table on tab 0
+				if (typeof wpCookies && 0 === tabNum) {
+					if ('undefined' === typeof cookie[index] || 'undefined' === cookie[index] || 1 == cookie[index]) {
+						title.addClass('ip-geo-block-dropdown').parent().next().show();
+					} else {
+						title.addClass('ip-geo-block-dropup').parent().next().hide();
+					}
+				}
 			}
 		});
 

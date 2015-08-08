@@ -374,6 +374,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.1.3 =
+* **New feature:** Add "show" / "hide" on each section on the "Settings" page.
 * **New feature:** Add an emergency function that invalidate blocking behavior 
   in case yourself is locked out. This feature is commented out by default at 
   the end of `ip-geo-block.php`.

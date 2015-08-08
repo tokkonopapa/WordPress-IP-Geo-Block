@@ -103,7 +103,7 @@ class IP_Geo_Block_Rewrite {
 		elseif ( FALSE === strripos( $path, '.php', -4 ) )
 			self::abort( $validate, $settings, file_exists( $path ) );
 
-		// reconfirm permition for the requested URI
+		// reconfirm permission for the requested URI
 		if ( ! @chdir( dirname( $path ) ) || FALSE === ( @include basename( $path ) ) )
 			self::abort( $validate, $settings, file_exists( $path ) );
 

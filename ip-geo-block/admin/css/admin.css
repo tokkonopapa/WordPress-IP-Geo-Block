@@ -20,6 +20,30 @@ fieldset.ip-geo-block-field h3 {
     padding: 0;
     margin: 0;
 }
+fieldset.ip-geo-block-field h3.ip-geo-block-dropup,
+fieldset.ip-geo-block-field h3.ip-geo-block-dropdown {
+    cursor: pointer;
+    position: relative;
+    padding-left: 1em;
+}
+fieldset.ip-geo-block-field h3.ip-geo-block-dropup:before,
+fieldset.ip-geo-block-field h3.ip-geo-block-dropdown:before {
+    content: '';
+    height: 0;
+    width: 0;
+    border: 0.4em solid transparent;
+    position: absolute;
+}
+fieldset.ip-geo-block-field h3.ip-geo-block-dropup:before {
+    border-left: 0.4em solid #555;
+    top: 15%;
+    left: 3%;
+}
+fieldset.ip-geo-block-field h3.ip-geo-block-dropdown:before {
+    border-top: 0.4em solid #555;
+    top: 35%;
+    left: 0;
+}
 fieldset.ip-geo-block-field .form-table {
     margin: 0.5em 0 0;
 }
