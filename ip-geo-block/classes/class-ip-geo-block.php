@@ -138,16 +138,15 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function activate( $network_wide = NULL ) {
-		// upgrade options
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+
+		// create log, upgrade options
+		IP_Geo_Block_Logs::create_log();
 		$settings = IP_Geo_Block_Options::upgrade();
 
-		// create log
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-		IP_Geo_Block_Logs::create_log();
-
 		// execute to download immediately
-		if ( $settings['update']['auto'] ) {
+		if ( @current_user_can( 'manage_options' ) ) {
 			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ), 10, 1 );
 			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
 		}
@@ -323,7 +322,7 @@ class IP_Geo_Block {
 	 * Validate geolocation by country code.
 	 *
 	 */
-	private function validate_country( $validate, $settings ) {
+	private static function validate_country( $validate, $settings ) {
 		switch ( $settings['matching_rule'] ) {
 		  case 0:
 			$list = $settings['white_list'];
@@ -421,8 +420,7 @@ class IP_Geo_Block {
 		foreach ( explode( ',', $settings['validation']['proxy'] ) as $var ) {
 			if ( isset( $_SERVER[ $var ] ) ) {
 				foreach ( explode( ',', $_SERVER[ $var ] ) as $ip ) {
-					if ( ! in_array( $ip = trim( $ip ), $ips ) &&
-					     filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+					if ( ! in_array( $ip = trim( $ip ), $ips ) && filter_var( $ip, FILTER_VALIDATE_IP ) ) {
 						array_unshift( $ips, $ip );
 					}
 				}
@@ -455,7 +453,7 @@ class IP_Geo_Block {
 
 			// if no 'result' then validate ip address by country
 			if ( empty( $validate['result'] ) )
-				$validate = $this->validate_country( $validate, $settings );
+				$validate = self::validate_country( $validate, $settings );
 
 			// if one of IPs is blocked then stop
 			if ( $blocked = ( 'passed' !== $validate['result'] ) )
@@ -759,14 +757,21 @@ class IP_Geo_Block {
 		// update option settings
 		update_option( self::$option_keys['settings'], $settings );
 
-		// setup country code if it needs to be initialized
-		if ( $immediate && -1 == $settings['matching_rule'] ) {
-			$immediate = self::get_geolocation( NULL, array( 'maxmind', 'ipinfo.io', 'Telize', 'IP-Json' ) );
-			if ( 'ZZ' !== $immediate['code'] ) {
-				$settings['white_list'] = $immediate['code'];
+		if ( $immediate ) {
+			$validate = self::get_geolocation( NULL, array( 'maxmind', 'ipinfo.io', 'Telize', 'IP-Json' ) );
+			$validate = self::validate_country( $validate, $settings );
+
+			// if blocking may happen then disable validation
+			if ( -1 != $settings['matching_rule'] && 'passed' !== $validate['result'] )
+				$settings['matching_rule'] = -1;
+
+			// setup country code if it needs to be initialized
+			if ( -1 == $settings['matching_rule'] && 'ZZ' !== $validate['code'] ) {
 				$settings['matching_rule'] = 0; // white list
-				update_option( self::$option_keys['settings'], $settings );
+				$settings['white_list'] .= ( $settings['white_list'] ? ',' : '' ) . $validate['code'];
 			}
+
+			update_option( self::$option_keys['settings'], $settings );
 		}
 
 		return $res;
