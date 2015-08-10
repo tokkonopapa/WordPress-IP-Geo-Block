@@ -68,7 +68,7 @@ Then the final solution bocomes as follows.
 <meta http-equiv="refresh" content="0; url=http://example.com/" />
 ```
 
-You can find this in [auth-nonce.js][auth-nonce-js].
+You can find this in [authenticate.js][authenticate].
 
 #### Note ####
 
@@ -174,7 +174,7 @@ please let me know. Thanks <span class="emoji">
 [meta-refresh]:  http://en.wikipedia.org/wiki/Meta_refresh "Meta refresh - Wikipedia, the free encyclopedia"
 [meta-referrer]: http://w3c.github.io/webappsec/specs/referrer-policy/#referrer-policy-delivery-meta "Referrer Policy - W3C Editor's Draft"
 [WHATWG-Wiki]:   https://wiki.whatwg.org/wiki/Meta_referrer "Meta referrer - WHATWG Wiki"
-[auth-nonce-js]: https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/admin/js/auth-nonce.js "WordPress-IP-Geo-Block/auth-nonce.js at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
+[authenticate]:  https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/admin/js/authenticate.js "WordPress-IP-Geo-Block/auth-nonce.js at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
 [stackoverflow]: http://stackoverflow.com/questions/2985579/does-http-equiv-refresh-keep-referrer-info-and-metadata "html - Does http-equiv=&quot;refresh&quot; keep referrer info and metadata? - Stack Overflow"
 [coderwall]:     https://coderwall.com/p/7a09ja/no-referer-after-redirect-solved "No referer after redirect (Solved)"
 [sample-link]:   http://tokkono.cute.coocan.jp/demo/libs/referer.php
