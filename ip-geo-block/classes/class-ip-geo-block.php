@@ -141,17 +141,14 @@ class IP_Geo_Block {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 
-		// create log, upgrade options
+		// download database immediately
+		add_action( 'activated_plugin', array( __CLASS__, 'exec_download' ), 10, 2 );
+
+		// create log
 		IP_Geo_Block_Logs::create_log();
-		$settings = IP_Geo_Block_Options::upgrade();
 
-		// execute to download database immediately
-		if ( @current_user_can( 'manage_options' ) ) {
-			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ), 10, 1 );
-			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
-		}
-
-		return $settings;
+		// upgrade options and return new settings
+		return IP_Geo_Block_Options::upgrade();
 	}
 
 	/**
@@ -171,15 +168,12 @@ class IP_Geo_Block {
 		$settings = self::get_option( 'settings' );
 
 		if ( $settings['clean_uninstall'] ) {
-			// delete settings options
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+
+			// delete settings options, IP address cache, log
 			delete_option( self::$option_keys['settings'  ] ); // @since 1.2.0
 			delete_option( self::$option_keys['statistics'] ); // @since 1.2.0
-
-			// delete IP address cache
 			delete_transient( self::CACHE_KEY ); // @since 2.8
-
-			// delete log
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			IP_Geo_Block_Logs::delete_log();
 		}
 	}
@@ -740,15 +734,21 @@ class IP_Geo_Block {
 	 * Database auto downloader.
 	 *
 	 */
+	public static function exec_download( $plugin, $network_activation ) {
+		if ( 0 === strpos( $plugin, self::PLUGIN_SLUG ) && current_user_can( 'manage_options' ) ) {
+			$settings = self::get_option( 'settings' );
+			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ), 10, 1 );
+			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
+		}
+	}
+
 	public static function download_database( $immediate = FALSE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'includes/download.php' );
+		$settings = self::get_option( 'settings' );
 
 		// download database files
-		$settings = self::get_option( 'settings' );
+		require_once( IP_GEO_BLOCK_PATH . 'includes/download.php' );
 		$res = ip_geo_block_download(
-			$settings['maxmind'],
-			IP_GEO_BLOCK_DB_DIR,
-			self::get_request_headers( $settings )
+			$settings['maxmind'], IP_GEO_BLOCK_DB_DIR, self::get_request_headers( $settings )
 		);
 
 		// re-schedule cron job
