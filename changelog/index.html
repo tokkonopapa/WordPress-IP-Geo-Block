@@ -1,0 +1,20 @@
+---
+layout: default
+title: Category &raquo; changelog
+---
+<nav>
+    <a href="{{ "/" | prepend: site.baseurl }}" title="Blog Home">Home</a> &raquo; changelog
+</nav>
+<section id="archive">
+    <div class="catbloc" id="{{ category | first | remove:' ' }}">
+        <h2 class="blog-post-title">{{ category | first }}</h2>
+        <ul>
+        {% for post in site.categories.changelog %}{% if post.url %}
+             <li>
+                 <time class="blog-post-meta">{{ post.date | date: "%b %-d, %Y" }}</time>
+                 <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+             </li>
+        {% endif %}{% endfor %}
+        </ul>
+    </div>
+</section>

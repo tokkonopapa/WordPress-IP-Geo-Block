@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "2.1.3 Release Note"
-date:   2015-08-10 09:00:00
+date:   2015-08-20 09:00:00
 categories: changelog
 published: true
 ---
@@ -46,7 +46,7 @@ open and close . And also you can check your IP and country code at
  "New settings tab"
 )
 
-### A wrong path at emergency ###
+### A rescue process at emergency ###
 
 I strongly recommend the above mentioned features at your emergency. However, 
 all users are not familiar with editing PHP file. So I implemented another 
@@ -60,29 +60,36 @@ dashboard.
  "Force to delete"
 )
 
-After that you can reinstall and reactivate it, but you'll find that you are 
-blocked again because your settings still remains in the mySQL database. Well, 
-... after pausing for breath, you can visit your admin dashboard page again !!
+After that, you can reinstall and reactivate it. But you'll find soon you're 
+blocked again because your settings still remains in the mySQL database.
+Well then..., after pausing for breath, you can visit your admin dashboard 
+again!!
 
-A rescue process will be kicked off by who has rigth permission for managing 
-options as a cron job at the reactivation process in order to overwrite your 
-settings in the mySQL database. Therefore you should reconfirm you settings.
+At the reactivation process, a rescue process will be kicked off as a cron job 
+by who has rigth permission for managing options in order to overwrite your 
+settings in the mySQL database. Therefore after you revive as an admin, you 
+should reconfirm your settings of this plugin.
 
 ### Removing unneeded query string ###
 
-In the previous version, a query string was added to each static resource under 
-the `wp-content/(plugins|themes)/` when you logged in as an administrator. This 
-was bad for the site performance. But it's essential for WP-ZEP. So now adding 
-a query string is restricted to a request to the PHP file.
+In the previous version, a query string including nonce was attached to each 
+resource under the `wp-content/(plugins|themes)/` when you are logged in as 
+an admin. This is necessary for [WP-ZEP][WP-ZEP] but bad for the site 
+performance if it attached to the "static" resources. So I just restrict it 
+to the PHP files.
 
 ### Living with Autoptimize ###
 
 [Autoptimize][AO] speeds up your site by aggregating and minimizing JS, CSS and 
 HTML. In general, this functionarity has some delicate processes. For example, 
-JS file whose name has a word "nonce" should be excluded in its cache because a 
-nonce should not be kept in the cache.
+a JS file whose name has a word "nonce" will be excluded in Autoptimize cache 
+because a nonce should be "dynamic" and not be kept in its cache.
 
-So I changed the name of JS file from `auth-nonce.js` to `authenticate.js`.
+This caused [an issue][AO-issue] that some links into the `wp-admin/` were 
+blocked by [WP-ZEP][WP-ZEP].
+
+Although I wonder a JS file could be "dynamic", everything goes fine after 
+changing the name of JS file from `auth-nonce.js` to `authenticate.js`.
 
 ### Conclusion ###
 
@@ -95,3 +102,5 @@ hesitate posting your annoyances at the [support forum][forum] <span class="emoj
 [forum]: https://wordpress.org/support/plugin/ip-geo-block "WordPress › Support » IP Geo Block"
 [editors]: https://codex.wordpress.org/Editing_Files#Using_Text_Editors "Editing Files « WordPress Codex"
 [AO]: https://wordpress.org/plugins/autoptimize/ "WordPress › Autoptimize « WordPress Plugins"
+[AO-issue]: https://wordpress.org/support/topic/issue-to-edit-a-post-from-a-post "WordPress › Support » Issue to edit a post from a post"
+[WP-ZEP]: {{ "/article/how-wpzep-works.html" | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"

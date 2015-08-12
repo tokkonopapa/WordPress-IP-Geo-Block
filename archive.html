@@ -17,7 +17,7 @@ title: Category archives
         {% for posts in category %}{% for post in posts %}{% if post.url %}
              <li>
                  <time class="blog-post-meta">{{ post.date | date: "%b %-d, %Y" }}</time>
-                 <a class="blog-post-link" href="{{ post.url }}">{{ post.title }}</a>
+                 <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
              </li>
         {% endif %}{% endfor %}{% endfor %}
         </ul>
