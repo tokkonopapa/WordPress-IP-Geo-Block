@@ -381,6 +381,7 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 * **Improvement:** Prevent adding query strings to the static resources under 
   the `wp-content/(plugins|themes)/` from the point of view of site speed when 
   users logged in.
+* **Improvement:** Improved the compatibility with Autoptimize.
 * **Bug fix:** Fix minor bug in `rewrite.php` for the advanced use case.
 * See details at [2.1.3 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.3.html "2.1.3 Release Note").
 

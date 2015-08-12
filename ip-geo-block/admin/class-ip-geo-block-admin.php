@@ -220,7 +220,7 @@ class IP_Geo_Block_Admin {
 			if ( $settings['validation']['reclogs'] ) {
 				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 				if ( ( $warn = IP_Geo_Block_Logs::diag_table() ) &&
-					 FALSE === IP_Geo_Block_Logs::create_log() )
+				     FALSE === IP_Geo_Block_Logs::create_log() )
 					$this->notice[] = $warn;
 			}
 
@@ -300,7 +300,6 @@ class IP_Geo_Block_Admin {
 		  case 1:
 			// Statistics
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/tab-statistics.php' );
-			nocache_headers();
 			ip_geo_block_tab_statistics( $this );
 			break;
 

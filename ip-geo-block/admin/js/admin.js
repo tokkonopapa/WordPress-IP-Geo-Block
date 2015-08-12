@@ -237,20 +237,22 @@ var ip_geo_block_start = new Date();
 			cookie = wpCookies.getHash('ip-geo-block-admin') || [];
 
 			// Click event handler to show/hide form-table
-			$('form').on('click', 'h3', function (event) {
+			$('form').on('click', 'h2,h3', function (event) {
 				var title = $(this);
 				title.parent().next().toggle();
 				title.toggleClass('ip-geo-block-dropup').toggleClass('ip-geo-block-dropdown');
 				cookie[title.closest('fieldset').data('ip-geo-block')] = title.hasClass('ip-geo-block-dropdown') ? 1 : 0;
 				wpCookies.setHash('ip-geo-block-admin', cookie);
+				return false;
 			});
 		}
 
 		// Make form style with fieldset and legend
 		$('.form-table').each(function (index) {
 			var $this = $(this),
-			    title = $this.prev();
-			if (title.prop('tagName').toLowerCase() === 'h3') {
+			    title = $this.prev(),
+			    tagName = title.prop('tagName').toLowerCase();
+			if ( 'h2' === tagName || 'h3' === tagName ) {
 				// Move title into the fieldset and wrap with legend
 				$this.wrap('<fieldset data-ip-geo-block=' + index + ' class="ip-geo-block-field"></fieldset>')
 				     .parent().prepend(title.wrap('<legend></legend>').parent());
@@ -279,6 +281,7 @@ var ip_geo_block_start = new Date();
 		// Update database
 		$('#update').on('click', function (event) {
 			ajax_update_database();
+			return false;
 		});
 
 		// Statistics
@@ -337,6 +340,7 @@ var ip_geo_block_start = new Date();
 		// Show/Hide description of WP-ZEP
 		$('select[name^="ip_geo_block_settings[validation]"]').on('change', function (event) {
 			show_description(this);
+			return false;
 		}).trigger('change');
 	});
 }(jQuery));

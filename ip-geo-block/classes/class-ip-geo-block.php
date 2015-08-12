@@ -145,7 +145,7 @@ class IP_Geo_Block {
 		IP_Geo_Block_Logs::create_log();
 		$settings = IP_Geo_Block_Options::upgrade();
 
-		// execute to download immediately
+		// execute to download database immediately
 		if ( @current_user_can( 'manage_options' ) ) {
 			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ), 10, 1 );
 			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
@@ -494,7 +494,7 @@ class IP_Geo_Block {
 	 */
 	public function validate_front( $can_access = TRUE ) {
 		$validate = $this->validate_ip( 'comment', self::get_option( 'settings' ), FALSE );
-		return 'passed' !== $validate['result'] ? FALSE : $can_access;
+		return ( 'passed' === $validate['result'] ? $can_access : FALSE );
 	}
 
 	/**
