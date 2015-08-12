@@ -29,9 +29,9 @@ Replacing `/*` (opening multi-line comment) to `//` (single line comment) is
 also good. And save it then upload it to this plugin's directory on your server 
 via FTP.
 
-This trouble may be caused by a mismatch between the country code derived from 
-your IP address and the rule of "**Validation settings**" on "**Settings**" tab.
-It depends on the accuracy of geolocation database.
+The accuracy of the country code depends on the geolocation database. Sometimes 
+this trouble may be caused by a mismatch between the country code derived from 
+IP address and the rule of "**Validation rule settings**" on "**Settings**" tab.
 
 After reconfiguring those settings properly, do not forget to restore the 
 `ip-geo-block.php` on your server to the original.
@@ -39,7 +39,7 @@ After reconfiguring those settings properly, do not forget to restore the
 ### New feature on Settings tab ###
 
 Now you can click a section title on "**Settings**" tab to flip each settings 
-open and close . And also you can check your IP and country code at 
+open and close. And also you can check your IP and country code at 
 "**Validation rule settings**".
 
 ![New settings tab]({{ "/img/2015-08/NewSettings.png" | prepend: site.baseurl }}
@@ -72,8 +72,8 @@ should reconfirm your settings of this plugin.
 
 ### Removing unneeded query string ###
 
-In the previous version, a query string including nonce was attached to each 
-resource under the `wp-content/(plugins|themes)/` when you are logged in as 
+In the previous version, a query string containing nonce was attached to 
+resources under the `wp-content/(plugins|themes)/` when you are logged-in as 
 an admin. This is necessary for [WP-ZEP][WP-ZEP] but bad for the site 
 performance if it attached to the "static" resources. So I just restrict it 
 to the PHP files.
@@ -81,8 +81,8 @@ to the PHP files.
 ### Living with Autoptimize ###
 
 [Autoptimize][AO] speeds up your site by aggregating and minimizing JS, CSS and 
-HTML. In general, this functionarity has some delicate processes. For example, 
-a JS file whose name has a word "nonce" will be excluded in Autoptimize cache 
+HTML. In general, this functionality has some delicate processes. For example, 
+a JS file whose name has a word "nonce" will be excluded from Autoptimize cache 
 because a nonce should be "dynamic" and not be kept in its cache.
 
 This caused [an issue][AO-issue] that some links into the `wp-admin/` were 
