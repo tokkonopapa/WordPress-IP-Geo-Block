@@ -217,8 +217,10 @@ class IP_Geo_Block_Admin {
 		if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 			// Check creation of database table
 			$settings = IP_Geo_Block::get_option( 'settings' );
+
 			if ( $settings['validation']['reclogs'] ) {
 				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+
 				if ( ( $warn = IP_Geo_Block_Logs::diag_table() ) &&
 				     FALSE === IP_Geo_Block_Logs::create_log() )
 					$this->notice[] = $warn;
