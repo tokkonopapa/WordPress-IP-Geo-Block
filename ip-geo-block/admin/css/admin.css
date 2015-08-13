@@ -235,5 +235,7 @@ ul.ip-geo-block-statistics-countries li {
 }
 .ip-geo-block-log .footable-row-detail-value {
     padding: 0 1em 4px 1em;
-    overflow: scroll;
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
 }
