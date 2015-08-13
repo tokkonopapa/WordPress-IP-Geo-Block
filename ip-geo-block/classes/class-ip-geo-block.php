@@ -141,13 +141,13 @@ class IP_Geo_Block {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 
-		// download database immediately
+		// kick off a cron job to download database immediately
 		add_action( 'activated_plugin', array( __CLASS__, 'exec_download' ), 10, 2 );
 
 		// create log
 		IP_Geo_Block_Logs::create_log();
 
-		// upgrade options and return new settings
+		// upgrade and return new options
 		return IP_Geo_Block_Options::upgrade();
 	}
 
@@ -210,7 +210,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Overwrite the redirected URL at logout not to be blocked by WP-ZEP.
+	 * Remove the redirecting URL at logout not to be blocked by WP-ZEP.
 	 *
 	 */
 	public function logout_redirect( $uri ) {
@@ -708,7 +708,7 @@ class IP_Geo_Block {
 	 * Cron scheduler.
 	 *
 	 */
-	public static function schedule_cron_job( &$update, $db, $immediate = FALSE ) {
+	private static function schedule_cron_job( &$update, $db, $immediate = FALSE ) {
 		wp_clear_scheduled_hook( self::CRON_NAME ); // @since 2.1.0
 
 		if ( $update['auto'] ) {
@@ -735,7 +735,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function exec_download( $plugin, $network_activation ) {
-		if ( 0 === strpos( $plugin, self::PLUGIN_SLUG ) && current_user_can( 'manage_options' ) ) {
+		if ( $plugin === IP_GEO_BLOCK_BASE && current_user_can( 'manage_options' ) ) {
 			$settings = self::get_option( 'settings' );
 			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ), 10, 1 );
 			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
