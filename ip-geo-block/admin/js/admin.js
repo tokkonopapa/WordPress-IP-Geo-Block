@@ -329,10 +329,9 @@ var ip_geo_block_start = new Date();
 
 		// Search Geolocation
 		$('#get_location').on('click', function (event) {
-			var ip = $('#ip_geo_block_settings_ip_address').val(),
-			    service = $('#ip_geo_block_settings_service').val();
+			var ip = $('#ip_geo_block_settings_ip_address').val();
 			if (ip) {
-				ajax_get_location(service, ip);
+				ajax_get_location($('#ip_geo_block_settings_service').val(), ip);
 			}
 			return false;
 		});

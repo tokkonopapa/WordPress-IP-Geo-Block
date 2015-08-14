@@ -17,12 +17,6 @@ var IP_GEO_BLOCK_ZEP = {
 };
 
 (function ($, document) {
-	// for is_admin()
-	var regexp = new RegExp('(?:/wp-admin/' +
-		(IP_GEO_BLOCK_AUTH.plugins ? '|' + IP_GEO_BLOCK_AUTH.plugins : '') +
-		(IP_GEO_BLOCK_AUTH.themes  ? '|' + IP_GEO_BLOCK_AUTH.thems   : '') + ')'
-	);
-
 	function parse_uri(uri) {
 		var m = uri ? uri.toString().match(
 			// https://tools.ietf.org/html/rfc3986#appendix-B
@@ -46,16 +40,21 @@ var IP_GEO_BLOCK_ZEP = {
 		});
 	}
 
-	function is_admin(uri) {
-		if (typeof uri !== 'object') { // if 'string' or 'undefined'
-			uri = parse_uri(uri ? uri.toString().toLowerCase() : '');
-		}
+	// `/wp-admin/`, `/wp-admin/something.php` or `something.php` for is_admin()
+	var regexp = new RegExp(
+		'(?:\/wp-admin\/.*(?:\.php|\/)+' +
+		(IP_GEO_BLOCK_AUTH.plugins ? '|' + IP_GEO_BLOCK_AUTH.plugins + '.*(?:\.php|\/)+' : '') +
+		(IP_GEO_BLOCK_AUTH.themes  ? '|' + IP_GEO_BLOCK_AUTH.thems   + '.*(?:\.php|\/)+' : '') +
+		'|^[^\/]+\.php)$'
+	);
 
+	function is_admin(uri) {
 		// directory traversal should be checked more strictly ?
+		uri = parse_uri(uri ? uri.toString().toLowerCase() : '');
 		var path = (uri.path.replace('/\./g', '').charAt(0) === '/' ? uri.path : location.pathname);
 
-		// explicit scheme and external domain
-		if (/https?/.test(uri.scheme) && uri.authority !== location.host.toLowerCase()) {
+		// external domain (`http://example` or `www.example`)
+		if ((/https?/.test(uri.scheme) || (! uri.scheme && uri.authority)) && uri.authority !== location.host.toLowerCase()) {
 			return -1; // -1: external
 		}
 
@@ -117,22 +116,31 @@ var IP_GEO_BLOCK_ZEP = {
 		}
 	});
 
+	// Set the event priority to the first (jQuery 1.8+, WP 3.5+)
+	// http://stackoverflow.com/questions/2360655/jquery-event-handlers-always-execute-in-order-they-were-bound-any-way-around-t
+	$.fn.bindFirst = function (event, selector, fn) {
+		this.on(event, selector, fn).each(function () {
+			var handlers = $._data(this, 'events')[event.split('.')[0]],
+			    handler = handlers.pop();
+			handlers.splice(0, 0, handler);
+		});
+	};
+
 	$(function () {
 		var nonce = IP_GEO_BLOCK_ZEP.nonce;
 		if (nonce) {
 			var $body = $('body');
 
 			$body.find('img').each(function (index) {
-				var src = $(this).attr('src'),
-				    uri = parse_uri(src);
+				var src = $(this).attr('src');
 
 				// if admin area
-				if (is_admin(uri) === 1 && /(?:\/|\.php)$/i.test(uri.path)) {
+				if (is_admin(src) === 1) {
 					$(this).attr('src', add_query_nonce(src, nonce));
 				}
 			});
 
-			$body.on('click', 'a', function (event) {
+			$body.bindFirst('click', 'a', function (event) {
 				var href = $(this).attr('href'), // 'string' or 'undefined'
 				    admin = is_admin(href);
 
@@ -155,7 +163,7 @@ var IP_GEO_BLOCK_ZEP = {
 				}
 			});
 
-			$body.on('submit', 'form', function (event) {
+			$body.bindFirst('submit', 'form', function (event) {
 				var $this = $(this),
 				    action = $this.attr('action');
 

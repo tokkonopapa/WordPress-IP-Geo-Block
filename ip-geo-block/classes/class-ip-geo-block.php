@@ -551,7 +551,7 @@ class IP_Geo_Block {
 
 		  default:
 			// if the request has no page and no action, skip WP-ZEP
-			$zep = $page || $action ? TRUE : FALSE;
+			$zep = ($page || $action) ? TRUE : FALSE;
 			$type = 'admin';
 		}
 
