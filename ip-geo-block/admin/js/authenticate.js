@@ -40,31 +40,98 @@ var IP_GEO_BLOCK_ZEP = {
 		});
 	}
 
-	// `/wp-admin/`, `/wp-admin/something.php` or `something.php` for is_admin()
+	/**
+	 * Returns canonicalized absolute pathname
+	 *
+	 * This code is based on http://phpjs.org/functions/realpath/
+	 */
+	function realpath(uri) {
+		var path, real = [];
+
+		// extract pathname
+		if (typeof uri !== 'object') {
+			// avoid `undefined`
+			uri = parse_uri(uri ? uri.toString() : '');
+		}
+
+		// focusing only at pathname
+		path = uri.path;
+
+		// if it's not absolute, add root path
+		if ('/' !== path.charAt(0)) {
+			var p = this.window.location.pathname;
+			path = p.substring(0, p.lastIndexOf('/') + 1) + path;
+		}
+
+		// explode the given path into it's parts
+		path = path.split('/');
+
+		// if path ends with `/`, adds it to the last part
+		if ('' === path[path.length-1]) {
+			path.pop();
+			path[path.length-1] += '/';
+		}
+
+		for (var i in path) {
+			// this is'nt really interesting
+			if ('.' === path[i]) {
+				continue;
+			}
+
+			// this reduces the realpath
+			if ('..' === path[i]) {
+				if (real.length > 0) {
+					real.pop();
+				}
+			}
+
+			// this adds parts to the realpath
+			else {
+				if ((real.length < 1) || (path[i] !== '')) {
+					real.push(path[i]);
+				}
+			}
+		}
+
+		// returns the absloute path as a string
+		return real.join('/').replace(/\/\//g, '/');
+	}
+
+	// `/wp-admin/`, `/wp-admin/something.php` for is_admin()
 	var regexp = new RegExp(
-		'(?:\/wp-admin\/.*(?:\.php|\/)+' +
-		(IP_GEO_BLOCK_AUTH.plugins ? '|' + IP_GEO_BLOCK_AUTH.plugins + '.*(?:\.php|\/)+' : '') +
-		(IP_GEO_BLOCK_AUTH.themes  ? '|' + IP_GEO_BLOCK_AUTH.thems   + '.*(?:\.php|\/)+' : '') +
-		'|^[^\/]+\.php)$'
+		'(?:\/wp-admin\/' +
+		(IP_GEO_BLOCK_AUTH.plugins ? '|' + IP_GEO_BLOCK_AUTH.plugins : '') +
+		(IP_GEO_BLOCK_AUTH.themes  ? '|' + IP_GEO_BLOCK_AUTH.themes  : '') +
+		')(?:.*\.php|.*\/)?$'
 	);
 
 	function is_admin(uri) {
-		// directory traversal should be checked more strictly ?
-		uri = parse_uri(uri ? uri.toString().toLowerCase() : '');
-		var path = (uri.path.replace('/\./g', '').charAt(0) === '/' ? uri.path : location.pathname);
+		// parse uri and get real path
+		uri = parse_uri(uri ? uri.toString().toLowerCase() : location.pathname);
 
-		// external domain (`http://example` or `www.example`)
-		if ((/https?/.test(uri.scheme) || (! uri.scheme && uri.authority)) && uri.authority !== location.host.toLowerCase()) {
-			return -1; // -1: external
+		// get absolute path with flattening `./`, `../`, `//`
+		var path = realpath(uri);
+
+		// possibly scheme is `javascript` and path is `void(0);`
+		if (/https?/.test(uri.scheme) || ! uri.scheme) {
+			// external domain (`http://example` or `www.example`)
+			if (uri.authority && uri.authority !== location.host.toLowerCase()) {
+				return -1; // external
+			}
+
+			// possibly only fragment is `#...`
+			else if ((uri.scheme || uri.path || uri.query) && regexp.test(path)) {
+				return 1; // internal admin
+			}
 		}
 
-		// possibly scheme is `javascript` or path is `;`
-		return (uri.scheme || uri.path || uri.query) && regexp.test(path) ? 1 : 0;
+		return 0; // internal not admin
 	}
 
 	function query_args(uri, args) {
 		return (uri.scheme ? uri.scheme + '://' : '') +
-		       (uri.authority + uri.path + '?' + args.join('&'));
+		       (uri.authority + uri.path + '?' + args.join('&')) +
+		       (uri.fragment);
 	}
 
 	function add_query_nonce(src, nonce) {
@@ -116,8 +183,11 @@ var IP_GEO_BLOCK_ZEP = {
 		}
 	});
 
-	// Set the event priority to the first (jQuery 1.8+, WP 3.5+)
-	// http://stackoverflow.com/questions/2360655/jquery-event-handlers-always-execute-in-order-they-were-bound-any-way-around-t
+	/**
+	 * Set the event priority to the first (jQuery 1.8+, WP 3.5+)
+	 *
+	 * http://stackoverflow.com/questions/2360655/jquery-event-handlers-always-execute-in-order-they-were-bound-any-way-around-t
+	 */
 	$.fn.bindFirst = function (event, selector, fn) {
 		this.on(event, selector, fn).each(function () {
 			var handlers = $._data(this, 'events')[event.split('.')[0]],
@@ -141,8 +211,8 @@ var IP_GEO_BLOCK_ZEP = {
 			});
 
 			$body.bindFirst('click', 'a', function (event) {
-				var href = $(this).attr('href'), // 'string' or 'undefined'
-				    admin = is_admin(href);
+				// 'string' or 'undefined'
+				var href = $(this).attr('href'), admin = is_admin(href);
 
 				// if admin area
 				if (admin === 1) {
@@ -164,8 +234,7 @@ var IP_GEO_BLOCK_ZEP = {
 			});
 
 			$body.bindFirst('submit', 'form', function (event) {
-				var $this = $(this),
-				    action = $this.attr('action');
+				var $this = $(this), action = $this.attr('action');
 
 				// if admin area
 				if (is_admin(action) === 1) {
@@ -174,8 +243,7 @@ var IP_GEO_BLOCK_ZEP = {
 			});
 
 			$('form').each(function (index) {
-				var $this = $(this),
-				    action = $this.attr('action');
+				var $this = $(this), action = $this.attr('action');
 
 				// if admin area
 				if (is_admin(action) === 1 && 'multipart/form-data' === $this.attr('enctype')) {
