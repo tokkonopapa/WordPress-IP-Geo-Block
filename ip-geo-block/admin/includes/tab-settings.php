@@ -270,12 +270,15 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	$desc = array(
-		__( '<dfn title="Validate access to %s">%s</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		__( 'It will block a malicious request to <code>%s</code> besides the country code. Because this is an experimental feature, please open a new issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with it.', IP_Geo_Block::TEXT_DOMAIN ),
 		'<div style="display:none" class="ip_geo_block_settings_validation_desc">',
+		__( '<dfn title="Validate access to %s">%s</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Besides the country code, it will block malicious assesses to the PHP files under <code>%s</code>.', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Besides the country code, it will block malicious assesses to <code>%s</code>.', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Because this is an experimental feature, please open an issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with it.</div>', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
 	$key = 'admin';
+	$val = substr( IP_Geo_Block::$content_dir['admin'], 1 );
 	add_settings_field(
 		$option_name . "_${field}_${key}",
 		$admin,
@@ -289,14 +292,14 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $title,
-			'after' => $desc[2] . sprintf( $desc[1], 'wp-admin/*.php' ) . '</div>',
+			'after' => $desc[0] . sprintf( $desc[2], $val ) . $desc[4],
 		)
 	);
 
 	$key = 'ajax';
 	add_settings_field(
 		$option_name . "_${field}_${key}",
-		sprintf( $desc[0], 'wp-admin/admin-(ajax|post).php', __( 'Admin ajax/post', IP_Geo_Block::TEXT_DOMAIN ) ),
+		sprintf( $desc[1], "{$val}admin-(ajax|post).php", __( 'Admin ajax/post', IP_Geo_Block::TEXT_DOMAIN ) ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -307,15 +310,15 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $title,
-			'after' => $desc[2] . sprintf( $desc[1], 'wp-admin/admin-(ajax|post).php' ) . '</div>',
+			'after' => $desc[0] . sprintf( $desc[3], "{$val}admin-(ajax|post).php" ) . $desc[4],
 		)
 	);
 
 	$key = 'plugins';
-	$val = IP_Geo_Block::$content_dir['plugins'];
+	$val = substr( IP_Geo_Block::$content_dir['plugins'], 1 );
 	add_settings_field(
 		$option_name . "_${field}_${key}",
-		sprintf( $desc[0], "$val&hellip;/*.php", __( 'Plugins area', IP_Geo_Block::TEXT_DOMAIN ) ),
+		sprintf( $desc[1], "{$val}&hellip;/*.php", __( 'Plugins area', IP_Geo_Block::TEXT_DOMAIN ) ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -326,15 +329,15 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $title,
-			'after' => $desc[2] . sprintf( $desc[1], "$val&hellip;/*.php" ) . '</div>',
+			'after' => $desc[0] . sprintf( $desc[2], $val ) . $desc[4],
 		)
 	);
 
 	$key = 'themes';
-	$val = IP_Geo_Block::$content_dir['themes'];
+	$val = substr( IP_Geo_Block::$content_dir['themes'], 1 );
 	add_settings_field(
 		$option_name . "_${field}_${key}",
-		sprintf( $desc[0], "$val&hellip;/*.php", __( 'Themes area', IP_Geo_Block::TEXT_DOMAIN ) ),
+		sprintf( $desc[1], "{$val}&hellip;/*.php", __( 'Themes area', IP_Geo_Block::TEXT_DOMAIN ) ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -345,7 +348,7 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $title,
-			'after' => $desc[2] . sprintf( $desc[1], "$val&hellip;/*.php" ) . '</div>',
+			'after' => $desc[0] . sprintf( $desc[2], $val ) . $desc[4],
 		)
 	);
 
@@ -588,7 +591,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'clean_uninstall';
 	add_settings_field(
 		$option_name . "_$field",
-		__( 'Remove settings at uninstallation', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Remove all settings at uninstallation', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,

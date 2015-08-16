@@ -188,9 +188,9 @@ var ip_geo_block_start = new Date();
 
 		.always(function () {
 			if (typeof $.fn.footable === 'function') {
-//				console.time('timer');
+//				console.time('footable');
 				$('.ip-geo-block-log').fadeIn('slow').footable();
-//				console.timeEnd('timer');
+//				console.timeEnd('footable');
 			}
 			loading('loading', false);
 		});

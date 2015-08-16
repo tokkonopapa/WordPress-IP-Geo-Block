@@ -275,7 +275,7 @@ class IP_Geo_Block_Admin {
 	<div id="ip-geo-block-map"></div>
 <?php } elseif ( 3 === $tab ) { ?>
 	<p><?php echo __( 'Thanks for providing these great services for free.', IP_Geo_Block::TEXT_DOMAIN ); ?><br />
-	<?php echo __( '(Most browsers will redirect you to each site without referrer when you click the link.)', IP_Geo_Block::TEXT_DOMAIN ); ?></p>
+	<?php echo __( '(Most browsers will redirect you to each site <a href="http://tokkonopapa.github.io/WordPress-IP-Geo-Block/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', IP_Geo_Block::TEXT_DOMAIN ); ?></p>
 	<p>This product includes GeoLite data created by MaxMind, available from <a class="ip-geo-block-link" href="http://www.maxmind.com" rel=noreferrer target=_blank>http://www.maxmind.com</a>.<br />
 	This product includes IP2Location open source libraries available from <a class="ip-geo-block-link" href="http://www.ip2location.com" rel=noreferrer target=_blank>http://www.ip2location.com</a>.</p>
 <?php } ?>
