@@ -17,8 +17,11 @@ var IP_GEO_BLOCK_ZEP = {
 };
 
 (function ($, document) {
+	// Parse a URL and return its components
 	function parse_uri(uri) {
-		var m = uri ? uri.toString().match(
+		uri = decodeURIComponent(uri ? uri.toString() : '');
+
+		var m = uri.match(
 			// https://tools.ietf.org/html/rfc3986#appendix-B
 			/^(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/
 		) : [];
@@ -48,10 +51,9 @@ var IP_GEO_BLOCK_ZEP = {
 	function realpath(uri) {
 		var path, real = [];
 
-		// extract pathname
+		// extract pathname (avoid `undefined`)
 		if (typeof uri !== 'object') {
-			// avoid `undefined`
-			uri = parse_uri(uri ? uri.toString() : '');
+			uri = parse_uri(uri);
 		}
 
 		// focusing only at pathname
@@ -107,7 +109,7 @@ var IP_GEO_BLOCK_ZEP = {
 
 	function is_admin(uri) {
 		// parse uri and get real path
-		uri = parse_uri(uri ? decodeURIComponent(uri.toString().toLowerCase()) : location.pathname);
+		uri = parse_uri(uri ? uri.toString().toLowerCase() : location.pathname);
 
 		// get absolute path with flattening `./`, `../`, `//`
 		var path = realpath(uri);
