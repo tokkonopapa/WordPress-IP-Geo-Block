@@ -24,7 +24,7 @@ var IP_GEO_BLOCK_ZEP = {
 		var m = uri.match(
 			// https://tools.ietf.org/html/rfc3986#appendix-B
 			/^(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/
-		) : [];
+		);
 
 		// scheme :// authority path ? query # fragment
 		return {
