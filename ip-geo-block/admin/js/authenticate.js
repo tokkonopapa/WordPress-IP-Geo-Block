@@ -107,7 +107,7 @@ var IP_GEO_BLOCK_ZEP = {
 
 	function is_admin(uri) {
 		// parse uri and get real path
-		uri = parse_uri(uri ? uri.toString().toLowerCase() : location.pathname);
+		uri = parse_uri(uri ? decodeURIComponent(uri.toString().toLowerCase()) : location.pathname);
 
 		// get absolute path with flattening `./`, `../`, `//`
 		var path = realpath(uri);
