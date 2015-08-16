@@ -38,11 +38,8 @@ class IP_Geo_Block {
 		'statistics' => 'ip_geo_block_statistics',
 	);
 
-	// default content folders
-	public static $content_dir = array(
-		'plugins' => '/wp-content/plugins/',
-		'themes'  => '/wp-content/themes/',
-	);
+	// content folders
+	public static $content_dir;
 
 	// private values
 	private $remote_addr = NULL;
@@ -97,12 +94,14 @@ class IP_Geo_Block {
 			add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ) );
 		}
 
-		// get content folders (with trailing slash)
-		if ( preg_match( '/(\/[^\/]*\/[^\/]*)$/', parse_url( plugins_url(), PHP_URL_PATH ), $uri ) )
-			self::$content_dir['plugins'] = "$uri[1]/";
-
-		if ( preg_match( '/(\/[^\/]*\/[^\/]*)$/', parse_url( get_theme_root_uri(), PHP_URL_PATH ), $uri ) )
-			self::$content_dir['themes'] = "$uri[1]/";
+		// get content folders (with/without trailing slash)
+		$pos = home_url();
+		self::$content_dir = array(
+			'root'    => untrailingslashit( parse_url( home_url(), PHP_URL_PATH ) ),
+			'admin'   =>   trailingslashit( str_replace( $pos, '', admin_url() ) ),
+			'plugins' =>   trailingslashit( str_replace( $pos, '', plugins_url() ) ),
+			'themes'  =>   trailingslashit( str_replace( $pos, '', get_theme_root_uri() ) ),
+		);
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
 		if ( is_admin() && ( $validate['admin'] || $validate['ajax'] ) )
@@ -734,14 +733,6 @@ class IP_Geo_Block {
 	 * Database auto downloader.
 	 *
 	 */
-	public static function exec_download( $plugin, $network_activation ) {
-		if ( $plugin === IP_GEO_BLOCK_BASE && current_user_can( 'manage_options' ) ) {
-			$settings = self::get_option( 'settings' );
-			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ), 10, 1 );
-			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
-		}
-	}
-
 	public static function download_database( $immediate = FALSE ) {
 		$settings = self::get_option( 'settings' );
 
@@ -775,6 +766,15 @@ class IP_Geo_Block {
 		}
 
 		return $res;
+	}
+
+	// Kick off a cron job to download database immediately
+	public static function exec_download( $plugin, $network_activation ) {
+		if ( $plugin === IP_GEO_BLOCK_BASE && current_user_can( 'manage_options' ) ) {
+			$settings = self::get_option( 'settings' );
+			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ), 10, 1 );
+			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
+		}
 	}
 
 }

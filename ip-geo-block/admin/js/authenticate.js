@@ -99,10 +99,10 @@ var IP_GEO_BLOCK_ZEP = {
 
 	// `/wp-admin/`, `/wp-admin/something.php` for is_admin()
 	var regexp = new RegExp(
-		'(?:\/wp-admin\/' +
-		(IP_GEO_BLOCK_AUTH.plugins ? '|' + IP_GEO_BLOCK_AUTH.plugins : '') +
-		(IP_GEO_BLOCK_AUTH.themes  ? '|' + IP_GEO_BLOCK_AUTH.themes  : '') +
-		')(?:.*\.php|.*\/)?$'
+		'(?:' + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.admin
+		+ '|' + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.plugins
+		+ '|' + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.themes
+		+ ')(?:.*\.php|.*\/)?$'
 	);
 
 	function is_admin(uri) {
