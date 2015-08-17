@@ -1,31 +1,30 @@
-<!DOCTYPE html>
-<html>
-  <head>
-  <meta charset="utf-8">
-  <title>Referer Checker</title>
-  <style>
-    th, td { text-align: left; padding: 5px; }
-  </style>
-  </head>
-  <body>
+---
+layout: default
+title: Referer Checker
+---
     <table>
       <tr>
         <th>HTTP_USER_AGENT</th>
-        <td><code id="user-agent"></code></td>
+        <td id="user-agent"></td>
         </tr>
         <tr>
           <th>HTTP_REFERER</th>
-          <td><code id="referer"></code></td>
+          <td id="referer"></td>
         </tr>
     </table>
+    <p>Go to the article:
+      <q><a href="{{ '/article/referer-suppressor.html' | prepend: site.baseurl }}">Referer Suppressor for external link</a></q>
+    </p>
     <script>
       function insertText(id, text) {
-        id = document.getElementById(id);
+        var code = document.createElement('code');
         text = document.createTextNode(text);
-        id.appendChild(text, id);
+        code.appendChild(text, code);
+        id = document.getElementById(id);
+        id.appendChild(code, id);
       }
       insertText("user-agent", navigator.userAgent);
-      insertText("referer", document.referrer);
+      if (document.referrer) {
+        insertText("referer", document.referrer);
+      }
     </script>
-  </body>
-</html>
