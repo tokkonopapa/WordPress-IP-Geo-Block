@@ -2,7 +2,12 @@
  * WP-ZEP - Zero-day exploit Prevention for wp-admin
  *
  */
-/* utility object */
+
+// Polyfill of Array.prototype.indexOf()
+// https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+Array.prototype.indexOf||(Array.prototype.indexOf=function(d,e){var a;if(null==this)throw new TypeError('"this" is null or not defined');var c=Object(this),b=c.length>>>0;if(0===b)return-1;a=+e||0;Infinity===Math.abs(a)&&(a=0);if(a>=b)return-1;for(a=Math.max(0<=a?a:b-Math.abs(a),0);a<b;){if(a in c&&c[a]===d)return a;a++}return-1});
+
+// utility object
 var IP_GEO_BLOCK_ZEP = {
 	auth: 'ip-geo-block-auth-nonce',
 	nonce: IP_GEO_BLOCK_AUTH.nonce || '',
@@ -101,13 +106,18 @@ var IP_GEO_BLOCK_ZEP = {
 
 	// `/wp-admin/`, `/wp-admin/something.php` for is_admin()
 	var regexp = new RegExp(
-		'(?:' + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.admin
-		+ '|' + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.plugins
-		+ '|' + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.themes
+		'^(?:' + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.admin
+		+ '|'  + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.plugins
+		+ '|'  + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.themes
 		+ ')(?:.*\.php|.*\/)?$'
 	);
 
-	function is_admin(uri) {
+	// list of excluded links so that the nonce will be added at ajaxSend()
+	var ajax_links = [
+		IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.admin + 'theme-install.php'
+	];
+
+	function is_admin(uri, exclude) {
 		// parse uri and get real path
 		uri = parse_uri(uri ? uri.toString().toLowerCase() : location.pathname);
 
@@ -121,9 +131,11 @@ var IP_GEO_BLOCK_ZEP = {
 				return -1; // external
 			}
 
-			// possibly only fragment is `#...`
-			else if ((uri.scheme || uri.path || uri.query) && regexp.test(path)) {
-				return 1; // internal admin
+			// avoid the case that is fragment (`#...`) only
+			if ((uri.scheme || uri.path || uri.query) && regexp.test(path) &&
+			    (!exclude || ajax_links.indexOf(path) < 0)) {
+					return 1; // internal for admin
+				}
 			}
 		}
 
@@ -214,7 +226,7 @@ var IP_GEO_BLOCK_ZEP = {
 
 			$body.bindFirst('click', 'a', function (event) {
 				// 'string' or 'undefined'
-				var href = $(this).attr('href'), admin = is_admin(href);
+				var href = $(this).attr('href'), admin = is_admin(href, true);
 
 				// if admin area
 				if (admin === 1) {
