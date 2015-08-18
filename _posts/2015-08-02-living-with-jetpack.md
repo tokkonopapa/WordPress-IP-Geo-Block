@@ -6,11 +6,12 @@ categories: article
 published: true
 ---
 
-[Jetpack][Jetpack] is the Swiss army knife for your WordPress site. A plentiful 
-awesome features are served for free by hooking to the WordPress.com.
+[Jetpack][Jetpack.me] is the Swiss army knife for your WordPress site.
+A plentiful awesome features are served for free by hooking to the 
+WordPress.com.
 
-In this article, I show some notes related to living with [Jetpack][Jetpack2] 
-and [IP Geo Block][IP-Geo-Block].
+In this article, I show some notes related to living with 
+[Jetpack][Jetpack.wp] and [IP Geo Block][IP-Geo-Block].
 
 <!--more-->
 
@@ -53,8 +54,8 @@ So the conflict never happnes <span class="emoji">
 </span>.
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[Jetpack]: http://jetpack.me/ "Jetpack for WordPress"
-[Jetpack2]: https://wordpress.org/plugins/jetpack/ "WordPress › Jetpack by WordPress.com « WordPress Plugins"
+[Jetpack.me]: http://jetpack.me/ "Jetpack for WordPress"
+[Jetpack.wp]: https://wordpress.org/plugins/jetpack/ "WordPress › Jetpack by WordPress.com « WordPress Plugins"
 [JPP]: http://jetpack.me/support/security-features/ "Security Features - Jetpack for WordPress"
 [LLA]: https://wordpress.org/plugins/limit-login-attempts/ "WordPress › Limit Login Attempts « WordPress Plugins"
 [WFS]: https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins"

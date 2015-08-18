@@ -30,3 +30,6 @@ if (location.hostname.indexOf('github') >= 0) {
 -->
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="{{ "/js/ie10-viewport-bug-workaround.js" | prepend: site.baseurl }}"></script>
+{% if page.script %}{% for script in page.script %}
+<script src="{{ script | prepend: site.baseurl }}"></script>
+{% endfor %}{% endif %}{% if page.inline %}{{ page.inline }}{% endif %}

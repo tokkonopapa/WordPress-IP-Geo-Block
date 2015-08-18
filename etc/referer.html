@@ -1,30 +1,29 @@
 ---
 layout: default
 title: Referer Checker
+script: [/js/referer.js]
 ---
-    <table>
+<div class="table-responsive">
+  <table class="table">
+    <thead>
       <tr>
-        <th>HTTP_USER_AGENT</th>
+        <th>Variable</th>
+        <th>Contents</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>HTTP_USER_AGENT</th>
         <td id="user-agent"></td>
-        </tr>
-        <tr>
-          <th>HTTP_REFERER</th>
-          <td id="referer"></td>
-        </tr>
-    </table>
-    <p>Go to the article:
-      <q><a href="{{ '/article/referer-suppressor.html' | prepend: site.baseurl }}">Referer Suppressor for external link</a></q>
-    </p>
-    <script>
-      function insertText(id, text) {
-        var code = document.createElement('code');
-        text = document.createTextNode(text);
-        code.appendChild(text, code);
-        id = document.getElementById(id);
-        id.appendChild(code, id);
-      }
-      insertText("user-agent", navigator.userAgent);
-      if (document.referrer) {
-        insertText("referer", document.referrer);
-      }
-    </script>
+      </tr>
+      <tr>
+        <td>HTTP_REFERER</th>
+        <td id="referer"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>Back to the article:
+  <q><a href="{{ '/article/referer-suppressor.html' | prepend: site.baseurl }}">Referer Suppressor for external link</a></q>
+</p>
