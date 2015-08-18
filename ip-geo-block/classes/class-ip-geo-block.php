@@ -125,6 +125,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function get_instance() {
+		// If the single instance hasn't been set, set it now.
 		if ( null == self::$instance )
 			self::$instance = new self;
 
@@ -560,7 +561,6 @@ class IP_Geo_Block {
 
 			// list of request with a specific query to bypass WP-ZEP
 			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
-				'query-themes', // the parameter `request[browse]` will be overwritten by a nonce at jQuery.ajaxSend()
 				'upload-attachment', 'imgedit-preview', 'bp_avatar_upload', // pluploader won't fire an event in "Media Library"
 				'jetpack_modules', 'atd_settings', // jetpack: multiple redirect for modules, cross domain ajax for proofreading
 			) );

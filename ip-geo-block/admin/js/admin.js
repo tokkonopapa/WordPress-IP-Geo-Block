@@ -1,3 +1,4 @@
+/*jslint white: true */
 /*
  * Project: GmapRS - google map for WordPress IP Geo Block
  * Description: A really simple google map plugin based on jQuery-boilerplate.
@@ -10,14 +11,16 @@ if(typeof google==="object")(function(c,f,g,a){var e="GmapRS",d="plugin_"+e,b={z
 var ip_geo_block_start = new Date();
 
 (function ($) {
+	'use strict';
+
 	function sanitize(str) {
 		return str ? str.toString().replace(/[&<>"']/g, function (match) {
 			return {
-				'&' : '&amp;',
-				'<' : '&lt;',
-				'>' : '&gt;',
-				'"' : '&quot;',
-				"'" : '&#39;'
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#39;'
 			}[match];
 		}) : '';
 	}
@@ -37,7 +40,7 @@ var ip_geo_block_start = new Date();
 	}
 
 	function warning(status, msg) {
-		alert(status + ' ' + msg);
+		window.alert(status + ' ' + msg);
 	}
 
 	function redirect(page, tab) {
@@ -52,7 +55,7 @@ var ip_geo_block_start = new Date();
 	}
 
 	// Download from Maxmind server
-	function ajax_update_database() {
+	function ajax_update_database(callback) {
 		loading('download', true);
 
 		$.post(IP_GEO_BLOCK.url, {
@@ -63,18 +66,8 @@ var ip_geo_block_start = new Date();
 		})
 
 		.done(function (data, textStatus, jqXHR) {
-			var key;
-			for (key in data) { // key: ipv4, ipv6
-				if (data.hasOwnProperty(key)) {
-					key = sanitize(key);
-					if (data[key].filename) {
-						$('#ip_geo_block_settings_maxmind_'
-						+ key + '_path').val(sanitize(data[key].filename));
-					}
-					if (data[key].message) {
-						$('#ip_geo_block_' + key).text(sanitize(data[key].message));
-					}
-				}
+			if (callback) {
+				callback(data);
 			}
 		})
 
@@ -88,7 +81,7 @@ var ip_geo_block_start = new Date();
 	}
 
 	// Search Geolocation
-	function ajax_get_location(service, ip) {
+	function ajax_get_location(ip, service, callback) {
 		loading('loading', true);
 
 		// `IP_GEO_BLOCK` is enqueued by wp_localize_script()
@@ -101,28 +94,9 @@ var ip_geo_block_start = new Date();
 		})
 
 		.done(function (data, textStatus, jqXHR) {
-			var key, info = '<ul>';
-			for (key in data) {
-				if (data.hasOwnProperty(key)) {
-					key = sanitize(key);
-					info +=
-						'<li>'
-							+ '<span class="ip-geo-block-title">' + key
-							+ ' : </span>' + '<span class="ip-geo-block-result">'
-							+ sanitize(data[key]) + '</span>' +
-						'</li>';
-				}
+			if (callback) {
+				callback(data);
 			}
-			info += '</ul>';
-
-			$('#ip-geo-block-map').GmapRS('addMarker', {
-				latitude: data.latitude || 0,
-				longitude: data.longitude || 0,
-				title: ip,
-				content: info,
-				show: true,
-				zoom: 8
-			});
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
@@ -159,7 +133,7 @@ var ip_geo_block_start = new Date();
 	}
 
 	// Load logs
-	function ajax_load_logs(type) {
+	function ajax_load_logs(type, callback) {
 		loading('loading', true);
 
 		$.post(IP_GEO_BLOCK.url, {
@@ -171,14 +145,8 @@ var ip_geo_block_start = new Date();
 		})
 
 		.done(function (data, textStatus, jqXHR) {
-			var key;
-			for (key in data) {
-				if (data.hasOwnProperty(key)) {
-					key = sanitize(key); // data has been already sanitized
-//					html = $.parseHTML(data[key]); // @since 1.8
-//					$('#ip-geo-block-log-' + key).empty().append(html);
-					$('#ip-geo-block-log-' + key).html(data[key]);
-				}
+			if (callback) {
+				callback(data);
 			}
 		})
 
@@ -187,12 +155,12 @@ var ip_geo_block_start = new Date();
 		})
 
 		.always(function () {
+			loading('loading', false);
 			if (typeof $.fn.footable === 'function') {
 //				console.time('footable');
 				$('.ip-geo-block-log').fadeIn('slow').footable();
 //				console.timeEnd('footable');
 			}
-			loading('loading', false);
 		});
 	}
 
@@ -241,7 +209,7 @@ var ip_geo_block_start = new Date();
 				var title = $(this);
 				title.parent().next().toggle();
 				title.toggleClass('ip-geo-block-dropup').toggleClass('ip-geo-block-dropdown');
-				cookie[title.closest('fieldset').data('ip-geo-block')] = title.hasClass('ip-geo-block-dropdown') ? 1 : 0;
+				cookie[title.closest('fieldset').data('ip-geo-block')] = title.hasClass('ip-geo-block-dropdown') ? '1' : '0';
 				wpCookies.setHash('ip-geo-block-admin', cookie);
 				return false;
 			});
@@ -252,14 +220,14 @@ var ip_geo_block_start = new Date();
 			var $this = $(this),
 			    title = $this.prev(),
 			    tagName = title.prop('tagName').toLowerCase();
-			if ( 'h2' === tagName || 'h3' === tagName ) {
+			if ('h2' === tagName || 'h3' === tagName) {
 				// Move title into the fieldset and wrap with legend
 				$this.wrap('<fieldset data-ip-geo-block=' + index + ' class="ip-geo-block-field"></fieldset>')
 				     .parent().prepend(title.wrap('<legend></legend>').parent());
 
 				// Show/Hide form-table on tab 0
 				if (typeof wpCookies && 0 === tabNum) {
-					if ('undefined' === typeof cookie[index] || 'undefined' === cookie[index] || 1 == cookie[index]) {
+					if ('undefined' === typeof cookie[index] || 'undefined' === cookie[index] || '1' === cookie[index]) {
 						title.addClass('ip-geo-block-dropdown').parent().next().show();
 					} else {
 						title.addClass('ip-geo-block-dropup').parent().next().hide();
@@ -270,7 +238,17 @@ var ip_geo_block_start = new Date();
 
 		// Kick-off footable
 		if ($('.ip-geo-block-log').hide().length) {
-			ajax_load_logs(null);
+			ajax_load_logs(null, function (data) {
+				var key;
+				for (key in data) {
+					if (data.hasOwnProperty(key)) {
+						key = sanitize(key); // data has been already sanitized
+//						html = $.parseHTML(data[key]); // @since jQuery 1.8
+//						$('#ip-geo-block-log-' + key).empty().append(html);
+						$('#ip-geo-block-log-' + key).html(data[key]);
+					}
+				}
+			});
 		}
 
 		// Inhibit to submit by return key
@@ -280,7 +258,20 @@ var ip_geo_block_start = new Date();
 
 		// Update database
 		$('#update').on('click', function (event) {
-			ajax_update_database();
+			ajax_update_database(function (data) {
+				var key;
+				for (key in data) { // key: ipv4, ipv6
+					if (data.hasOwnProperty(key)) {
+						key = sanitize(key);
+						if (data[key].filename) {
+							$('#ip_geo_block_settings_maxmind_' + key + '_path').val(sanitize(data[key].filename));
+						}
+						if (data[key].message) {
+							$('#ip_geo_block_' + key).text(sanitize(data[key].message));
+						}
+					}
+				}
+			});
 			return false;
 		});
 
@@ -315,6 +306,7 @@ var ip_geo_block_start = new Date();
 			});
 			return false;
 		});
+
 		$('#delete_table').on('click', function (event) {
 			confirm('Delete table ?', function () {
 				ajax_table('delete_table');
@@ -329,9 +321,32 @@ var ip_geo_block_start = new Date();
 
 		// Search Geolocation
 		$('#get_location').on('click', function (event) {
-			var ip = $('#ip_geo_block_settings_ip_address').val();
+			var ip = $('#ip_geo_block_settings_ip_address').val(),
+			    service = $('#ip_geo_block_settings_service').val();
 			if (ip) {
-				ajax_get_location($('#ip_geo_block_settings_service').val(), ip);
+				ajax_get_location(ip, service, function (data) {
+					var key, info = '<ul>';
+					for (key in data) {
+						if (data.hasOwnProperty(key)) {
+							key = sanitize(key);
+							info +=
+								'<li>' +
+									'<span class="ip-geo-block-title">' + key + ' : </span>' +
+									'<span class="ip-geo-block-result">' + sanitize(data[key]) + '</span>' +
+								'</li>';
+						}
+					}
+					info += '</ul>';
+
+					$('#ip-geo-block-map').GmapRS('addMarker', {
+						latitude: data.latitude || 0,
+						longitude: data.longitude || 0,
+						title: ip,
+						content: info,
+						show: true,
+						zoom: 8
+					});
+				});
 			}
 			return false;
 		});

@@ -1,16 +1,14 @@
+/*jslint white: true */
 /**
  * WP-ZEP - Zero-day exploit Prevention for wp-admin
  *
  */
-// Polyfill of Array.prototype.indexOf()
-// https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
-Array.prototype.indexOf||(Array.prototype.indexOf=function(d,e){var a;if(null==this)throw new TypeError('"this" is null or not defined');var c=Object(this),b=c.length>>>0;if(0===b)return-1;a=+e||0;Infinity===Math.abs(a)&&(a=0);if(a>=b)return-1;for(a=Math.max(0<=a?a:b-Math.abs(a),0);a<b;){if(a in c&&c[a]===d)return a;a++}return-1});
-
 // utility object
 var IP_GEO_BLOCK_ZEP = {
 	auth: 'ip-geo-block-auth-nonce',
 	nonce: IP_GEO_BLOCK_AUTH.nonce || '',
 	redirect: function (url) {
+		'use strict';
 		if (-1 !== location.href.indexOf(url)) {
 			if (this.nonce) {
 				url += (url.indexOf('?') >= 0 ? '&' : '?') + this.auth + '=' + this.nonce;
@@ -21,6 +19,21 @@ var IP_GEO_BLOCK_ZEP = {
 };
 
 (function ($, document) {
+	'use strict';
+
+	// produce safe text for HTML
+	function sanitize(str) {
+		return str ? str.toString().replace(/[&<>"']/g, function (match) {
+			return {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#39;'
+			}[match];
+		}) : '';
+	}
+
 	// Parse a URL and return its components
 	function parse_uri(uri) {
 		uri = decodeURIComponent(uri ? uri.toString() : '');
@@ -32,19 +45,12 @@ var IP_GEO_BLOCK_ZEP = {
 
 		// scheme :// authority path ? query # fragment
 		return {
-			scheme    : m[1] || '',
-			authority : m[2] || '',
-			path      : m[3] || '',
-			query     : m[4] || '',
-			fragment  : m[5] || ''
+			scheme:    m[1] || '',
+			authority: m[2] || '',
+			path:      m[3] || '',
+			query:     m[4] || '',
+			fragment:  m[5] || ''
 		};
-	}
-
-	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
-	function encodeURIComponentRFC3986(str) {
-		return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
-			return '%' + c.charCodeAt(0).toString(16);
-		});
 	}
 
 	/**
@@ -53,7 +59,7 @@ var IP_GEO_BLOCK_ZEP = {
 	 * This code is based on http://phpjs.org/functions/realpath/
 	 */
 	function realpath(uri) {
-		var path, real = [];
+		var i, path, real = [];
 
 		// extract pathname (avoid `undefined`)
 		if (typeof uri !== 'object') {
@@ -65,7 +71,7 @@ var IP_GEO_BLOCK_ZEP = {
 
 		// if it's not absolute, add root path
 		if ('/' !== path.charAt(0)) {
-			var p = this.window.location.pathname;
+			var p = window.location.pathname;
 			path = p.substring(0, p.lastIndexOf('/') + 1) + path;
 		}
 
@@ -73,28 +79,30 @@ var IP_GEO_BLOCK_ZEP = {
 		path = path.split('/');
 
 		// if path ends with `/`, adds it to the last part
-		if ('' === path[path.length-1]) {
+		if ('' === path[path.length - 1]) {
 			path.pop();
-			path[path.length-1] += '/';
+			path[path.length - 1] += '/';
 		}
 
-		for (var i in path) {
-			// this is'nt really interesting
-			if ('.' === path[i]) {
-				continue;
-			}
-
-			// this reduces the realpath
-			if ('..' === path[i]) {
-				if (real.length > 0) {
-					real.pop();
+		for (i in path) {
+			if (path.hasOwnProperty(i)) {
+				// this is'nt really interesting
+				if ('.' === path[i]) {
+					continue;
 				}
-			}
 
-			// this adds parts to the realpath
-			else {
-				if ((real.length < 1) || (path[i] !== '')) {
-					real.push(path[i]);
+				// this reduces the realpath
+				if ('..' === path[i]) {
+					if (real.length > 0) {
+						real.pop();
+					}
+				}
+
+				// this adds parts to the realpath
+				else {
+					if ((real.length < 1) || (path[i] !== '')) {
+						real.push(path[i]);
+					}
 				}
 			}
 		}
@@ -103,7 +111,28 @@ var IP_GEO_BLOCK_ZEP = {
 		return real.join('/').replace(/\/\//g, '/');
 	}
 
-	// `/wp-admin/`, `/wp-admin/something.php` for is_admin()
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
+	function encodeURIComponentRFC3986(str) {
+		return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+			return '%' + c.charCodeAt(0).toString(16);
+		});
+	}
+
+	// append the nonce as query strings to the uri
+	function add_query_nonce(uri, nonce) {
+		if (typeof uri !== 'object') {
+			uri = parse_uri(uri);
+		}
+
+		var data = uri.query ? uri.query.split('&') : [];
+		data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
+
+		return (uri.scheme ? uri.scheme + '://' : '') +
+		       (uri.authority + uri.path + '?' + data.join('&')) +
+		       (uri.fragment);
+	}
+
+	// regular expression to find target for is_admin()
 	var regexp = new RegExp(
 		'^(?:' + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.admin
 		+ '|'  + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.plugins
@@ -111,12 +140,8 @@ var IP_GEO_BLOCK_ZEP = {
 		+ ')(?:.*\.php|.*\/)?$'
 	);
 
-	// list of excluded links so that the nonce will be added at ajaxSend()
-	var ajax_links = [
-		IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.admin + 'theme-install.php'
-	];
-
-	function is_admin(uri, exclude) {
+	// check the URI where the nonce is needed
+	function is_admin(uri) {
 		// parse uri and get real path
 		uri = parse_uri(uri ? uri.toString().toLowerCase() : location.pathname);
 
@@ -124,15 +149,14 @@ var IP_GEO_BLOCK_ZEP = {
 		var path = realpath(uri);
 
 		// possibly scheme is `javascript` and path is `void(0);`
-		if (/https?/.test(uri.scheme) || ! uri.scheme) {
+		if (/https?/.test(uri.scheme) || !uri.scheme) {
 			// external domain (`http://example` or `www.example`)
 			if (uri.authority && uri.authority !== location.host.toLowerCase()) {
 				return -1; // external
 			}
 
-			// avoid the case that is fragment (`#...`) only
-			if ((uri.scheme || uri.path || uri.query) && regexp.test(path) &&
-			    (!exclude || ajax_links.indexOf(path) < 0)) {
+			// exclude the case components consists only fragment (`#...`)
+			if ((uri.scheme || uri.path || uri.query) && regexp.test(path)) {
 				return 1; // internal for admin
 			}
 		}
@@ -140,38 +164,35 @@ var IP_GEO_BLOCK_ZEP = {
 		return 0; // internal not admin
 	}
 
-	function query_args(uri, args) {
-		return (uri.scheme ? uri.scheme + '://' : '') +
-		       (uri.authority + uri.path + '?' + args.join('&')) +
-		       (uri.fragment);
+	// list of excluded links
+	var ajax_links = {};
+
+	// the parameter `request[browse]` which is overwritten with a nonce should be corrected.
+	ajax_links[IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.admin + 'theme-install.php'] = function (data) {
+		var i, n = data.length;
+		for (i = 0; i < n; i++) {
+			if (0 === data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth')) {
+				var j = data[i].split('=');
+				j[1] = 'featured';
+				data[i] = j.join('=');
+				break;
+			}
+		}
+		return data;
+	};
+
+	// check excluded path
+	function check_ajax(path) {
+		return ajax_links.hasOwnProperty(path) ? ajax_links[path] : null;
 	}
 
-	function add_query_nonce(src, nonce) {
-		var uri = parse_uri(src), data;
-		data = uri.query ? uri.query.split('&') : [];
-		data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
-		return query_args(uri, data);
-	}
-
-	function sanitize(str) {
-		return str ? str.toString().replace(/[&<>"']/g, function (match) {
-			return {
-				'&' : '&amp;',
-				'<' : '&lt;',
-				'>' : '&gt;',
-				'"' : '&quot;',
-				"'" : '&#39;'
-			}[match];
-		}) : '';
-	}
-
+	// embed a nonce before an Ajax request is sent
 	$(document).ajaxSend(function (event, jqxhr, settings) {
 		var nonce = IP_GEO_BLOCK_ZEP.nonce;
 		if (nonce && is_admin(settings.url) === 1) {
 			// multipart/form-data (XMLHttpRequest Level 2)
 			// IE10+, Firefox 4+, Safari 5+, Android 3+
-			if (typeof window.FormData !== 'undefined' &&
-			    settings.data instanceof FormData) {
+			if (typeof window.FormData !== 'undefined' && settings.data instanceof FormData) {
 				settings.data.append(IP_GEO_BLOCK_ZEP.auth, nonce);
 			}
 
@@ -181,13 +202,16 @@ var IP_GEO_BLOCK_ZEP = {
 				// method  url  url+data data
 				// GET    query  query   data
 				// POST   query  query   data
-				var uri = parse_uri(settings.url), data;
+				var uri = parse_uri(settings.url);
+
 				if (typeof settings.data === 'undefined' || uri.query) {
-					data = uri.query ? uri.query.split('&') : [];
-					data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
-					settings.url = query_args(uri, data);
+					settings.url = add_query_nonce(uri, nonce);
 				} else {
-					data = settings.data ? settings.data.split('&') : [];
+					var data = settings.data ? settings.data.split('&') : [],
+					    callback = check_ajax(location.pathname);
+					if (callback) {
+						data = callback(data);
+					}
 					data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
 					settings.data = data.join('&');
 				}
@@ -224,7 +248,8 @@ var IP_GEO_BLOCK_ZEP = {
 
 			$body.bindFirst('click', 'a', function (event) {
 				// 'string' or 'undefined'
-				var href = $(this).attr('href'), admin = is_admin(href, true);
+				var href = $(this).attr('href'),
+				    admin = is_admin(href);
 
 				// if admin area
 				if (admin === 1) {
@@ -246,7 +271,8 @@ var IP_GEO_BLOCK_ZEP = {
 			});
 
 			$body.bindFirst('submit', 'form', function (event) {
-				var $this = $(this), action = $this.attr('action');
+				var $this = $(this),
+				    action = $this.attr('action');
 
 				// if admin area
 				if (is_admin(action) === 1) {
@@ -255,13 +281,13 @@ var IP_GEO_BLOCK_ZEP = {
 			});
 
 			$('form').each(function (index) {
-				var $this = $(this), action = $this.attr('action');
+				var $this = $(this),
+				    action = $this.attr('action');
 
 				// if admin area
 				if (is_admin(action) === 1 && 'multipart/form-data' === $this.attr('enctype')) {
 					$this.append(
-						'<input type="hidden" name="' + IP_GEO_BLOCK_ZEP.auth + '" value="'
-						+ sanitize(nonce) + '" />'
+						'<input type="hidden" name="' + IP_GEO_BLOCK_ZEP.auth + '" value="' + sanitize(nonce) + '" />'
 					);
 				}
 			});
