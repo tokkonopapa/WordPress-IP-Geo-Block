@@ -171,10 +171,8 @@ var IP_GEO_BLOCK_ZEP = {
 	ajax_links[IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.admin + 'theme-install.php'] = function (data) {
 		var i, n = data.length;
 		for (i = 0; i < n; i++) {
-			if (0 === data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth')) {
-				var j = data[i].split('=');
-				j[1] = 'featured';
-				data[i] = j.join('=');
+			if (data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth') === 0) {
+				data[i] = 'request%5Bbrowse%5D=featured';
 				break;
 			}
 		}
