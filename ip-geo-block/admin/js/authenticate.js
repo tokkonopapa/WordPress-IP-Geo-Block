@@ -155,7 +155,7 @@ var IP_GEO_BLOCK_ZEP = {
 				return -1; // external
 			}
 
-			// exclude the case components consists only fragment (`#...`)
+			// exclude the case which component is only fragment (`#...`)
 			if ((uri.scheme || uri.path || uri.query) && regexp.test(path)) {
 				return 1; // internal for admin
 			}
@@ -169,8 +169,8 @@ var IP_GEO_BLOCK_ZEP = {
 
 	// the parameter `request[browse]` which is overwritten with a nonce should be corrected.
 	ajax_links[IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.admin + 'theme-install.php'] = function (data) {
-		var i, n = data.length;
-		for (i = 0; i < n; i++) {
+		var i = data.length;
+		while (i-- > 0) {
 			if (data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth') === 0) {
 				data[i] = 'request%5Bbrowse%5D=featured';
 				break;
