@@ -66,9 +66,7 @@ var ip_geo_block_start = new Date();
 		})
 
 		.done(function (data, textStatus, jqXHR) {
-			if (callback) {
-				callback(data);
-			}
+			callback(data);
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
@@ -84,7 +82,6 @@ var ip_geo_block_start = new Date();
 	function ajax_get_location(ip, service, callback) {
 		loading('loading', true);
 
-		// `IP_GEO_BLOCK` is enqueued by wp_localize_script()
 		$.post(IP_GEO_BLOCK.url, {
 			action: IP_GEO_BLOCK.action,
 			nonce: IP_GEO_BLOCK.nonce,
@@ -94,9 +91,7 @@ var ip_geo_block_start = new Date();
 		})
 
 		.done(function (data, textStatus, jqXHR) {
-			if (callback) {
-				callback(data);
-			}
+			callback(data);
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
@@ -145,9 +140,7 @@ var ip_geo_block_start = new Date();
 		})
 
 		.done(function (data, textStatus, jqXHR) {
-			if (callback) {
-				callback(data);
-			}
+			callback(data);
 		})
 
 		.fail(function (jqXHR, textStatus, errorThrown) {
@@ -321,10 +314,9 @@ var ip_geo_block_start = new Date();
 
 		// Search Geolocation
 		$('#get_location').on('click', function (event) {
-			var ip = $('#ip_geo_block_settings_ip_address').val(),
-			    service = $('#ip_geo_block_settings_service').val();
+			var ip = $('#ip_geo_block_settings_ip_address').val();
 			if (ip) {
-				ajax_get_location(ip, service, function (data) {
+				ajax_get_location(ip, $('#ip_geo_block_settings_service').val(), function (data) {
 					var key, info = '<ul>';
 					for (key in data) {
 						if (data.hasOwnProperty(key)) {
