@@ -124,7 +124,15 @@ var IP_GEO_BLOCK_ZEP = {
 			uri = parse_uri(uri);
 		}
 
-		var data = uri.query ? uri.query.split('&') : [];
+		var i, data = uri.query ? uri.query.split('&') : [];
+
+		for (i = 0; i < data.length; i++) {
+			if (data[i].indexOf(IP_GEO_BLOCK_ZEP.auth) === 0) {
+				data.splice(i, 1);
+				break;
+			}
+		}
+
 		data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
 
 		return (uri.scheme ? uri.scheme + '://' : '') +
@@ -245,18 +253,19 @@ var IP_GEO_BLOCK_ZEP = {
 			});
 
 			$body.bindFirst('click', 'a', function (event) {
+				var $this = $(this);
+
 				// 'string' or 'undefined'
-				var href = $(this).attr('href'),
+				var href = $this.attr('href'),
 				    admin = is_admin(href);
 
-				// if admin area
+				// if admin area then add the nonce
 				if (admin === 1) {
-					$(this).attr('href', add_query_nonce(href, nonce));
+					$this.attr('href', add_query_nonce(href, nonce));
 				}
 
-				// if external
+				// if external then redirect with no referrer not to leak out the nonce
 				else if (admin === -1) {
-					// redirect with no referrer not to leak out the nonce
 					var w = window.open();
 					w.document.write(
 						'<meta name="referrer" content="never" />' +
@@ -272,9 +281,9 @@ var IP_GEO_BLOCK_ZEP = {
 				var $this = $(this),
 				    action = $this.attr('action');
 
-				// if admin area
+				// if admin area then add the nonce
 				if (is_admin(action) === 1) {
-					$this.attr('action', add_query_nonce(action, nonce));
+					$this.attr('action', add_query_nonce(action ? action : location.href, nonce));
 				}
 			});
 
@@ -282,7 +291,7 @@ var IP_GEO_BLOCK_ZEP = {
 				var $this = $(this),
 				    action = $this.attr('action');
 
-				// if admin area
+				// if admin area then add the nonce
 				if (is_admin(action) === 1 && 'multipart/form-data' === $this.attr('enctype')) {
 					$this.append(
 						'<input type="hidden" name="' + IP_GEO_BLOCK_ZEP.auth + '" value="' + sanitize(nonce) + '" />'

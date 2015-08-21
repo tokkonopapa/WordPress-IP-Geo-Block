@@ -35,12 +35,12 @@ function ip_geo_block_tab_settings( $context ) {
 	 * @since 2.7.0
 	 */
 	/*----------------------------------------*
-	 * Geolocation service settings
+	 * Validation rule settings
 	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-provider';
+	$section = IP_Geo_Block::PLUGIN_SLUG . '-validation-rule';
 	add_settings_section(
 		$section,
-		__( 'Geolocation API settings', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Validation rule settings', IP_Geo_Block::TEXT_DOMAIN ),
 		NULL,
 		$option_slug
 	);
@@ -57,34 +57,6 @@ function ip_geo_block_tab_settings( $context ) {
 	 * @param string $section The section of the settings page in which to show the box.
 	 * @param array $args Additional arguments that are passed to the $callback function.
 	 */
-	$field = 'providers';
-	add_settings_field(
-		$option_name . "_$field",
-		__( 'API selection and key settings', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'check-provider',
-			'option' => $option_name,
-			'field' => $field,
-			'value' => $options[ $field ],
-			'providers' => IP_Geo_Block_Provider::get_providers( 'key' ),
-			'titles' => IP_Geo_Block_Provider::get_providers( 'type' ),
-		)
-	);
-
-	/*----------------------------------------*
-	 * Validation rule settings
-	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-validation-rule';
-	add_settings_section(
-		$section,
-		__( 'Validation rule settings', IP_Geo_Block::TEXT_DOMAIN ),
-		NULL,
-		$option_slug
-	);
-
 	$key = IP_Geo_Block::get_geolocation();
 	$field = 'ip_country';
 	add_settings_field(
@@ -353,68 +325,30 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	/*----------------------------------------*
-	 * Record settings
+	 * Geolocation service settings
 	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-recording';
+	$section = IP_Geo_Block::PLUGIN_SLUG . '-provider';
 	add_settings_section(
 		$section,
-		__( 'Record settings', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Geolocation API settings', IP_Geo_Block::TEXT_DOMAIN ),
 		NULL,
 		$option_slug
 	);
 
-	$field = 'save_statistics';
+	$field = 'providers';
 	add_settings_field(
 		$option_name . "_$field",
-		__( 'Record validation statistics', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'API selection and key settings', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
 		array(
-			'type' => 'checkbox',
+			'type' => 'check-provider',
 			'option' => $option_name,
 			'field' => $field,
 			'value' => $options[ $field ],
-		)
-	);
-
-	$field = 'validation';
-	add_settings_field(
-		$option_name . "_${field}_reclogs",
-		__( 'Record validation logs', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'select',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'reclogs',
-			'value' => $options[ $field ]['reclogs'],
-			'list' => array(
-				__( 'Disable',              IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Only when blocked',    IP_Geo_Block::TEXT_DOMAIN ) => 1,
-				__( 'Only when passed',     IP_Geo_Block::TEXT_DOMAIN ) => 2,
-				__( 'Unauthenticated user', IP_Geo_Block::TEXT_DOMAIN ) => 3,
-				__( 'Authenticated user',   IP_Geo_Block::TEXT_DOMAIN ) => 4,
-				__( 'All of validation',    IP_Geo_Block::TEXT_DOMAIN ) => 5,
-			),
-		)
-	);
-
-	add_settings_field(
-		$option_name . "_${field}_postkey",
-		__( '<dfn title="ex) action, comment, log, pwd">$_POST keys to be recorded with their values in logs</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'text',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'postkey',
-			'value' => $options[ $field ]['postkey'],
-			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+			'providers' => IP_Geo_Block_Provider::get_providers( 'key' ),
+			'titles' => IP_Geo_Block_Provider::get_providers( 'type' ),
 		)
 	);
 
@@ -504,39 +438,6 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	/*----------------------------------------*
-	 * Submission settings
-	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-submission';
-	add_settings_section(
-		$section,
-		__( 'Submission settings', IP_Geo_Block::TEXT_DOMAIN ),
-		NULL,
-		$option_slug
-	);
-
-	$field = 'comment';
-	add_settings_field(
-		$option_name . "_$field",
-		__( 'Text message on comment form', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'comment-msg',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'pos',
-			'value' => $options[ $field ]['pos'],
-			'list' => array(
-				__( 'None',   IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Top',    IP_Geo_Block::TEXT_DOMAIN ) => 1,
-				__( 'Bottom', IP_Geo_Block::TEXT_DOMAIN ) => 2,
-			),
-			'text' => $options[ $field ]['msg'], // sanitized at 'comment-msg'
-		)
-	);
-
-	/*----------------------------------------*
 	 * Cache settings
 	 *----------------------------------------*/
 	$section = IP_Geo_Block::PLUGIN_SLUG . '-cache';
@@ -574,6 +475,105 @@ function ip_geo_block_tab_settings( $context ) {
 			'option' => $option_name,
 			'field' => $field,
 			'value' => $options[ $field ],
+		)
+	);
+
+	/*----------------------------------------*
+	 * Record settings
+	 *----------------------------------------*/
+	$section = IP_Geo_Block::PLUGIN_SLUG . '-recording';
+	add_settings_section(
+		$section,
+		__( 'Record settings', IP_Geo_Block::TEXT_DOMAIN ),
+		NULL,
+		$option_slug
+	);
+
+	$field = 'save_statistics';
+	add_settings_field(
+		$option_name . "_$field",
+		__( 'Record validation statistics', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'checkbox',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => $options[ $field ],
+		)
+	);
+
+	$field = 'validation';
+	add_settings_field(
+		$option_name . "_${field}_reclogs",
+		__( 'Record validation logs', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'select',
+			'option' => $option_name,
+			'field' => $field,
+			'sub-field' => 'reclogs',
+			'value' => $options[ $field ]['reclogs'],
+			'list' => array(
+				__( 'Disable',              IP_Geo_Block::TEXT_DOMAIN ) => 0,
+				__( 'Only when blocked',    IP_Geo_Block::TEXT_DOMAIN ) => 1,
+				__( 'Only when passed',     IP_Geo_Block::TEXT_DOMAIN ) => 2,
+				__( 'Unauthenticated user', IP_Geo_Block::TEXT_DOMAIN ) => 3,
+				__( 'Authenticated user',   IP_Geo_Block::TEXT_DOMAIN ) => 4,
+				__( 'All of validation',    IP_Geo_Block::TEXT_DOMAIN ) => 5,
+			),
+		)
+	);
+
+	add_settings_field(
+		$option_name . "_${field}_postkey",
+		__( '<dfn title="ex) action, comment, log, pwd">$_POST keys to be recorded with their values in logs</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'text',
+			'option' => $option_name,
+			'field' => $field,
+			'sub-field' => 'postkey',
+			'value' => $options[ $field ]['postkey'],
+			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+		)
+	);
+
+	/*----------------------------------------*
+	 * Submission settings
+	 *----------------------------------------*/
+	$section = IP_Geo_Block::PLUGIN_SLUG . '-submission';
+	add_settings_section(
+		$section,
+		__( 'Submission settings', IP_Geo_Block::TEXT_DOMAIN ),
+		NULL,
+		$option_slug
+	);
+
+	$field = 'comment';
+	add_settings_field(
+		$option_name . "_$field",
+		__( 'Text message on comment form', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'comment-msg',
+			'option' => $option_name,
+			'field' => $field,
+			'sub-field' => 'pos',
+			'value' => $options[ $field ]['pos'],
+			'list' => array(
+				__( 'None',   IP_Geo_Block::TEXT_DOMAIN ) => 0,
+				__( 'Top',    IP_Geo_Block::TEXT_DOMAIN ) => 1,
+				__( 'Bottom', IP_Geo_Block::TEXT_DOMAIN ) => 2,
+			),
+			'text' => $options[ $field ]['msg'], // sanitized at 'comment-msg'
 		)
 	);
 

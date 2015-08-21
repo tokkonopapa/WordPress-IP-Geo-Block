@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.3
-Stable tag: 2.1.3
+Stable tag: 2.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,74 +46,78 @@ before Akismet validate it.
 With the same mechanism, it will fight against burst access of brute-force 
 and reverse-brute-force attacks to the login form, XML-RPC and admin area.
 
-1. Access to the basic and important entrances into the back-end such as 
- `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`,
- `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by 
-means of a country code based on IP address.
+* Access to the basic and important entrances into the back-end such as
+  `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`,
+  `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by
+  means of a country code based on IP address.
 
-2. In order to prevent the invasion through the login form and XML-RPC against 
-the brute-force and the reverse-brute-force attacks, the number of login 
-attempts will be limited per IP address. This feature works independently from 
-blocking by country code.
+* In order to prevent the invasion through the login form and XML-RPC against
+  the brute-force and the reverse-brute-force attacks, the number of login
+  attempts will be limited per IP address. This feature works independently
+  from blocking by country code.
 
-3. Besides blocking by country code, the original new feature '**Z**ero-day 
-**E**xploit **P**revention for wp-admin' (WP-ZEP) is now available to block 
-malicious access to `wp-admin/*.php`. It will protect against certain types 
-of attack such as CSRF, SQLi and so on even if you have some 
+* Besides blocking by country code, the original new feature '**Z**ero-day
+  **E**xploit **P**revention for wp-admin' (WP-ZEP) is now available to block
+  malicious access to `wp-admin/*.php`. It will protect against certain types
+  of attack such as CSRF, SQLi and so on even if you have some
     [vulnerable plugins](https://wpvulndb.com/ "WPScan Vulnerability Database")
-in your site. Because this is an experimental feature, please open an issue at 
-    [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
-if you have any troubles. I'll be profoundly grateful your contribution to 
-improve this feature. See more details on 
+  in your site. Because this is an experimental feature, please open an issue
+  at [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
+  if you have any troubles. I'll be profoundly grateful your contribution to
+  improve this feature. See more details on
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-4. Support "**Anyone can register**" for membership. You can configure this 
-plugin such that a registered user can login as the membership from anywhere, 
-but a request of a new user registration, lost password or subscribing comment 
-is blocked by the country code. It is suitable for 
+* Support "**Anyone can register**" for membership. You can configure this
+  plugin such that a registered user can login as the membership from anywhere,
+  but a request of a new user registration, lost password or subscribing comment
+  is blocked by the country code. It is suitable for
     [BuddyPress](https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins")
     and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins")
-to help reducing spams. 
+  to help reducing spams.
 
-5. HTTP Response code can be selectable as `403 Forbidden` to deny access 
-pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top 
-page. You can also have the custom error page (for example `403.php`) in your 
-theme template directory or child theme directory to fit your theme.
+* HTTP Response code can be selectable as `403 Forbidden` to deny access pages,
+  `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
+  You can also have the custom error page (for example `403.php`) in your theme
+  template directory or child theme directory to fit your theme.
 
-6. Referer suppressor for external link. When you click an external hyperlink 
-on admin screen, http referer will be eliminated to hide a footprint of your 
-site.
+* Referer suppressor for external link. When you click an external hyperlink
+  on admin screen, http referer will be eliminated to hide a footprint of your
+  site.
 
-7. Validation logs will be recorded into MySQL data table to audit posting 
-pattern under the specified condition.
+* Validation logs will be recorded into MySQL data table to audit posting
+  pattern under the specified condition.
 
-8. Free IP Geolocation database and REST APIs are installed into this plugin 
-to get a country code from an IP address. There are two types of API which 
-support only IPv4 or both IPv4 and IPv6. This plugin will automatically choose 
-an appropriate API.
+* Free IP Geolocation database and REST APIs are installed into this plugin to
+  get a country code from an IP address. There are two types of API which
+  support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
+  choose an appropriate API.
 
-9. A cache mechanism with transient API for the fetched IP addresses has been 
-equipped to reduce load on the server against the burst accesses with a short 
-period of time.
+* A cache mechanism with transient API for the fetched IP addresses has been 
+  equipped to reduce load on the server against the burst accesses with a short
+  period of time.
 
-10. [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
-GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
-(once a month) automatically. And if you have correctly installed 
-one of the IP2Location plugins (
+* [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+  GeoLite free database for IPv4 and IPv6 will be downloaded and updated (once
+  a month) automatically. And if you have correctly installed one of the
+  IP2Location plugins (
     [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
     [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
     [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
-), this plugin uses its local database prior to the REST APIs.
+  ), this plugin uses its local database prior to the REST APIs.
 
-11. This plugin is simple and lite enough to be able to cooperate with other 
-full spec security plugin such as 
+* This plugin is simple and lite enough to be able to cooperate with other full
+  spec security plugin such as 
     [Wordfence Security](https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins")
-(because the function of country bloking is available only for premium users).
+  (because the function of country bloking is available only for premium users).
 
-12. You can customize the basic behavior of this plugin via `add_filter()` with 
-pre-defined filter hook. See various use cases in 
+* You can customize the basic behavior of this plugin via `add_filter()` with
+  pre-defined filter hook. See various use cases in
     [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
-bundled within this package.
+  bundled within this package.
+
+* Clean uninstallation. Nothing is left in your precious mySQL database after
+  uninstallation. So you can feel free to install and activate to make a trial
+  of this plugin's functionality.
 
 = Attribution =
 
@@ -372,6 +376,13 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.1.4 =
+* **Bug fix:** Fix the issue that this plugin broke functionality of a certail 
+  plugin. Thanks to **opsec** for reporting this issue at 
+  [support forum](https://wordpress.org/support/topic/blocks-saves-in-types-or-any-plugins-from-wp-typescom "WordPress › Support » Blocks saves in Types or any plugins from wp-types.com").
+* **Improvement:** Arrage the order of setting sections to focus the goal of 
+  this plugin.
 
 = 2.1.3 =
 * **New feature:** Add "show" / "hide" at each section on the "Settings" tab.
