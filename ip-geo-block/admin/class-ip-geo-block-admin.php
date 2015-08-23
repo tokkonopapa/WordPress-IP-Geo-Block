@@ -113,32 +113,35 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function enqueue_admin_assets() {
+		$footer = TRUE;
+		$tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
+		$tab = min( 4, max( 0, $tab ) );
+
 		// css for option page
 		wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-admin-styles',
 			plugins_url( 'css/admin.css', __FILE__ ),
 			array(), IP_Geo_Block::VERSION
 		);
 
-		// css for footable https://github.com/bradvin/FooTable
-		wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-footable-css',
-			plugins_url( 'css/footable.core.min.css', __FILE__ ),
-			array(), IP_Geo_Block::VERSION
-		);
-
 		// js for google map
-		$footer = TRUE;
-		if ( isset( $_GET['tab'] ) && (int)$_GET['tab'] === 2 ) {
+		if ( 2 === $tab ) {
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
 				'//maps.google.com/maps/api/js?sensor=false',
 				array( 'jquery' ), IP_Geo_Block::VERSION, $footer
 			);
 		}
 
-		// js for footable https://github.com/bradvin/FooTable
-		wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-footable-js',
-			plugins_url( 'js/footable.min.js', __FILE__ ),
-			array( 'jquery' ), IP_Geo_Block::VERSION, $footer
-		);
+		if ( 4 === $tab ) {
+			// footable https://github.com/bradvin/FooTable
+			wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-footable-css',
+				plugins_url( 'css/footable.core.min.css', __FILE__ ),
+				array(), IP_Geo_Block::VERSION
+			);
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-footable-js',
+				plugins_url( 'js/footable.min.js', __FILE__ ),
+				array( 'jquery' ), IP_Geo_Block::VERSION, $footer
+			);
+		}
 
 		// js for option page
 		wp_enqueue_script( $handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script',

@@ -378,6 +378,8 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.1.4 =
+Sorry for frequent update.
+
 * **Bug fix:** Fix the issue that this plugin broke functionality of a certain 
   plugin. Thanks to **opsec** for reporting this issue at 
   [support forum](https://wordpress.org/support/topic/blocks-saves-in-types-or-any-plugins-from-wp-typescom "WordPress › Support » Blocks saves in Types or any plugins from wp-types.com").

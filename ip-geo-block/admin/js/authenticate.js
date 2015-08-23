@@ -120,13 +120,15 @@ var IP_GEO_BLOCK_ZEP = {
 
 	// append the nonce as query strings to the uri
 	function add_query_nonce(uri, nonce) {
-		if (typeof uri !== 'object') {
-			uri = parse_uri(uri);
+		if (typeof uri !== 'object') { // `string` or `undefined`
+			uri = parse_uri(uri ? uri : location.href);
 		}
 
-		var i, data = uri.query ? uri.query.split('&') : [];
+		var data = uri.query ? uri.query.split('&') : [],
+		    i = data.length;
 
-		for (i = 0; i < data.length; i++) {
+		// remove an old nonce
+		while (i-- > 0) {
 			if (data[i].indexOf(IP_GEO_BLOCK_ZEP.auth) === 0) {
 				data.splice(i, 1);
 				break;
@@ -234,7 +236,7 @@ var IP_GEO_BLOCK_ZEP = {
 		this.on(event, selector, fn).each(function () {
 			var handlers = $._data(this, 'events')[event.split('.')[0]],
 			    handler = handlers.pop();
-			handlers.splice(0, 0, handler);
+			handlers.unshift(handler);
 		});
 	};
 
@@ -283,19 +285,7 @@ var IP_GEO_BLOCK_ZEP = {
 
 				// if admin area then add the nonce
 				if (is_admin(action) === 1) {
-					$this.attr('action', add_query_nonce(action ? action : location.href, nonce));
-				}
-			});
-
-			$('form').each(function (index) {
-				var $this = $(this),
-				    action = $this.attr('action');
-
-				// if admin area then add the nonce
-				if (is_admin(action) === 1 && 'multipart/form-data' === $this.attr('enctype')) {
-					$this.append(
-						'<input type="hidden" name="' + IP_GEO_BLOCK_ZEP.auth + '" value="' + sanitize(nonce) + '" />'
-					);
+					$this.attr('action', add_query_nonce(action, nonce));
 				}
 			});
 		}
