@@ -41,11 +41,11 @@ class IP_Geo_Block_Options {
 			'validation'      => array(   // Action hook for validation
 			    'comment'     => TRUE,    // Validate on comment post
 			    'login'       => 1,       // Validate on login
-			    'admin'       => 0,       // Validate on admin
-			    'ajax'        => 0,       // Validate on ajax/post
+			    'admin'       => 1,       // Validate on admin (1:country 2:ZEP)
+			    'ajax'        => 0,       // Validate on ajax/post (1:country 2:ZEP)
 			    'xmlrpc'      => TRUE,    // Validate on xmlrpc
 			    'proxy'       => NULL,    // $_SERVER variables for IPs
-			    'reclogs'     => 0,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
+			    'reclogs'     => 1,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
 			    'postkey'     => '',      // Keys in $_POST
 			    // since version 1.3.1
 			    'maxlogs'     => 100,     // Max number of rows of log
