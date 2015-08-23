@@ -31,7 +31,7 @@ class IP_Geo_Block_Options {
 			'black_list'      => NULL,    // Comma separeted country code
 			'timeout'         => 5,       // Timeout in second
 			'response_code'   => 403,     // Response code
-			'save_statistics' => FALSE,   // Save statistics
+			'save_statistics' => TRUE,    // Save statistics
 			'clean_uninstall' => FALSE,   // Remove all savings from DB
 			// since version 1.1
 			'cache_hold'      => 10,      // Max entries in cache
