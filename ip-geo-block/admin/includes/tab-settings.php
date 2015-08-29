@@ -637,4 +637,22 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		)
 	);
 endif;
+
+	// check force to save
+	if ( isset( $_REQUEST['force_to_save'] ) && empty( $_REQUEST['settings-updated'] ) ) {
+		$field = 'force_to_save';
+		add_settings_field(
+			$option_name . "_$field",
+			__( 'Force to save', IP_Geo_Block::TEXT_DOMAIN ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => 0,
+			)
+		);
+	}
 }

@@ -246,6 +246,14 @@ class IP_Geo_Block_Admin {
 		// Add an action link pointing to the options page. @since 2.7
 		add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
 		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
+
+		// check force to save
+		if ( isset( $_REQUEST['force_to_save'] ) && empty( $_REQUEST['settings-updated'] ) ) {
+			$this->setting_notice( 'settings', 'error', sprintf(
+				__( 'Specified validation rule will block yourself. Please enable <code>%s</code> if you need.', IP_Geo_Block::TEXT_DOMAIN ),
+				__( 'Force to save', IP_Geo_Block::TEXT_DOMAIN )
+			) );
+		}
 	}
 
 	/**
@@ -535,6 +543,16 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
+		// check force to save
+		if ( empty( $_REQUEST['force_to_save'] ) && empty( $input['force_to_save'] ) ) {
+			$validate = IP_Geo_Block::get_geolocation();
+			$validate = IP_Geo_Block::validate_country( $validate, $output );
+			if ( 'passed' !== $validate['result'] ) {
+				wp_redirect( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG . '&force_to_save' );
+				die();
+			}
+		}
+
 		// Register a settings error to be displayed to the user
 		$this->setting_notice( $option_name, 'updated',
 			__( 'Successfully updated.', IP_Geo_Block::TEXT_DOMAIN )
@@ -604,8 +622,8 @@ class IP_Geo_Block_Admin {
 				IP_Geo_Block::get_default( 'statistics' )
 			);
 			$res = array(
-				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
-				'tab' => "tab=1"
+				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
+				'tab' => 'tab=1'
 			);
 			break;
 
@@ -613,8 +631,8 @@ class IP_Geo_Block_Admin {
 			// delete cache of IP address
 			delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
 			$res = array(
-				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
-				'tab' => "tab=1"
+				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
+				'tab' => 'tab=1'
 			);
 			break;
 
@@ -625,8 +643,8 @@ class IP_Geo_Block_Admin {
 			$which = in_array( $which, $hook ) ? $which : NULL;
 			IP_Geo_Block_Logs::clean_log( $which );
 			$res = array(
-				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
-				'tab' => "tab=4"
+				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
+				'tab' => 'tab=4'
 			);
 			break;
 
@@ -664,7 +682,7 @@ class IP_Geo_Block_Admin {
 				IP_Geo_Block_Logs::create_log() :
 				IP_Geo_Block_Logs::delete_log();
 			$res = array(
-				'page' => "options-general.php?page=" . IP_Geo_Block::PLUGIN_SLUG,
+				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
 			);
 		}
 

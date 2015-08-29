@@ -314,7 +314,7 @@ class IP_Geo_Block {
 	 * Validate geolocation by country code.
 	 *
 	 */
-	private static function validate_country( $validate, $settings ) {
+	public static function validate_country( $validate, $settings ) {
 		switch ( $settings['matching_rule'] ) {
 		  case 0:
 			$list = $settings['white_list'];
