@@ -403,6 +403,8 @@ Sorry for frequent update.
 * **Bug fix:** Fix the issue that this plugin broke functionality of a certain 
   plugin. Thanks to **opsec** for reporting this issue at 
   [support forum](https://wordpress.org/support/topic/blocks-saves-in-types-or-any-plugins-from-wp-typescom "WordPress › Support » Blocks saves in Types or any plugins from wp-types.com").
+* **Improvement:** Add checking process for validation rule to prevent being 
+  blocked itself.
 * **Improvement:** Arrage the order of setting sections to focus the goal of 
   this plugin.
 * See details at [2.1.4 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.4.html "2.1.4 Release Note").

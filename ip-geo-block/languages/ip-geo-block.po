@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 2.1.4\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
 "POT-Creation-Date: 2015-08-29 16:32+0900\n"
-"PO-Revision-Date: 2015-08-29 16:34+0900\n"
+"PO-Revision-Date: 2015-08-29 22:51+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -46,8 +46,8 @@ msgstr ""
 #: admin/class-ip-geo-block-admin.php:278
 #, php-format
 msgid ""
-"Specified validation rule will block yourself. Please enable <code>%s</code> "
-"if you need."
+"Validation rule you have specified will block yourself. Enable <code>%s</"
+"code> if you need."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:279 admin/includes/tab-settings.php:646

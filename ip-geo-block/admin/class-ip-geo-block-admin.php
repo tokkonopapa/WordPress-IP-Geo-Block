@@ -250,7 +250,7 @@ class IP_Geo_Block_Admin {
 		// check force to save
 		if ( isset( $_REQUEST['force_to_save'] ) && empty( $_REQUEST['settings-updated'] ) ) {
 			$this->setting_notice( 'settings', 'error', sprintf(
-				__( 'Specified validation rule will block yourself. Please enable <code>%s</code> if you need.', IP_Geo_Block::TEXT_DOMAIN ),
+				__( 'Validation rule you have specified will block yourself. Enable <code>%s</code> if you need.', IP_Geo_Block::TEXT_DOMAIN ),
 				__( 'Force to save', IP_Geo_Block::TEXT_DOMAIN )
 			) );
 		}
