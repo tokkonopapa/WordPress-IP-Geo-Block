@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.1.4\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-08-29 16:32+0900\n"
-"PO-Revision-Date: 2015-08-29 22:52+0900\n"
+"POT-Creation-Date: 2015-08-30 12:22+0900\n"
+"PO-Revision-Date: 2015-08-30 12:51+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr ""
 "領域への悪意あるアクセスからサイトを守ります。"
 
 #: admin/class-ip-geo-block-admin.php:195
-#: admin/class-ip-geo-block-admin.php:296
+#: admin/class-ip-geo-block-admin.php:297
 msgid "Settings"
 msgstr "設定"
 
@@ -48,37 +48,41 @@ msgstr "WordPress 3.7&thinsp;以上が必要です。"
 #: admin/class-ip-geo-block-admin.php:278
 #, php-format
 msgid ""
-"Validation rule you have specified will block yourself. Enable <code>%s</"
-"code> if you need."
+"Validation rule you have specified will block yourself. Enable <code>%1$s</"
+"code> at <code>%2$s</code> if you need."
 msgstr ""
-"指定された検証ルールは自身をブロックします。必要なら<code>%s</code>を有効にし"
-"て下さい。"
+"指定された検証ルールは自身をブロックします。必要なら<code>%2$s</code>で<code>"
+"%1$s</code>を有効にして下さい。"
 
 #: admin/class-ip-geo-block-admin.php:279 admin/includes/tab-settings.php:646
 msgid "Force to save"
 msgstr "強制保存する"
 
-#: admin/class-ip-geo-block-admin.php:297
+#: admin/class-ip-geo-block-admin.php:280 admin/includes/tab-settings.php:586
+msgid "Plugin settings"
+msgstr "プラグインの設定"
+
+#: admin/class-ip-geo-block-admin.php:298
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:298
+#: admin/class-ip-geo-block-admin.php:299
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:299
+#: admin/class-ip-geo-block-admin.php:300
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:300
+#: admin/class-ip-geo-block-admin.php:301
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:313
+#: admin/class-ip-geo-block-admin.php:314
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:314
+#: admin/class-ip-geo-block-admin.php:315
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://tokkonopapa."
 "github.io/WordPress-IP-Geo-Block/etc/referer.html\" title=\"Referer Checker"
@@ -88,11 +92,11 @@ msgstr ""
 "IP-Geo-Block/etc/referer.html\" title=\"Referer Checker\">参照元を残さずに各"
 "サイトにリダイレクトできます</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:430
+#: admin/class-ip-geo-block-admin.php:431
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:583
+#: admin/class-ip-geo-block-admin.php:584
 msgid "Successfully updated."
 msgstr "更新に成功しました。"
 
@@ -414,10 +418,6 @@ msgstr "上部"
 #: admin/includes/tab-settings.php:574
 msgid "Bottom"
 msgstr "下部"
-
-#: admin/includes/tab-settings.php:586
-msgid "Plugin settings"
-msgstr "プラグインの設定"
 
 #: admin/includes/tab-settings.php:594
 msgid "Remove all settings at uninstallation"

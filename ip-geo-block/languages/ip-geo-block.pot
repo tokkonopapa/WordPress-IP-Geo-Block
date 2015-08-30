@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.1.4\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-08-29 16:32+0900\n"
-"PO-Revision-Date: 2015-08-29 22:50+0900\n"
+"POT-Creation-Date: 2015-08-30 12:49+0900\n"
+"PO-Revision-Date: 2015-08-30 12:49+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:195
-#: admin/class-ip-geo-block-admin.php:296
+#: admin/class-ip-geo-block-admin.php:297
 msgid "Settings"
 msgstr ""
 
@@ -46,46 +46,50 @@ msgstr ""
 #: admin/class-ip-geo-block-admin.php:278
 #, php-format
 msgid ""
-"Validation rule you have specified will block yourself. Enable <code>%s</"
-"code> if you need."
+"Validation rule you have specified will block yourself. Enable <code>%1$s</"
+"code> at <code>%2$s</code> if you need."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:279 admin/includes/tab-settings.php:646
 msgid "Force to save"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:297
-msgid "Statistics"
+#: admin/class-ip-geo-block-admin.php:280 admin/includes/tab-settings.php:586
+msgid "Plugin settings"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:298
-msgid "Logs"
+msgid "Statistics"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:299
-msgid "Search"
+msgid "Logs"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:300
+msgid "Search"
+msgstr ""
+
+#: admin/class-ip-geo-block-admin.php:301
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:313
+#: admin/class-ip-geo-block-admin.php:314
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:314
+#: admin/class-ip-geo-block-admin.php:315
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://tokkonopapa."
 "github.io/WordPress-IP-Geo-Block/etc/referer.html\" title=\"Referer Checker"
 "\">without referrer when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:430
+#: admin/class-ip-geo-block-admin.php:431
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:583
+#: admin/class-ip-geo-block-admin.php:584
 msgid "Successfully updated."
 msgstr ""
 
@@ -391,10 +395,6 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:574
 msgid "Bottom"
-msgstr ""
-
-#: admin/includes/tab-settings.php:586
-msgid "Plugin settings"
 msgstr ""
 
 #: admin/includes/tab-settings.php:594
