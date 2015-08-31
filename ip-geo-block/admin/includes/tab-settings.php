@@ -438,47 +438,6 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	/*----------------------------------------*
-	 * Cache settings
-	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-cache';
-	add_settings_section(
-		$section,
-		__( 'Cache settings', IP_Geo_Block::TEXT_DOMAIN ),
-		NULL,
-		$option_slug
-	);
-
-	$field = 'cache_hold';
-	add_settings_field(
-		$option_name . "_$field",
-		__( 'Number of entries', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'text',
-			'option' => $option_name,
-			'field' => $field,
-			'value' => $options[ $field ],
-		)
-	);
-
-	$field = 'cache_time';
-	add_settings_field(
-		$option_name . "_$field",
-		__( 'Expiration time [sec]', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'text',
-			'option' => $option_name,
-			'field' => $field,
-			'value' => $options[ $field ],
-		)
-	);
-
-	/*----------------------------------------*
 	 * Record settings
 	 *----------------------------------------*/
 	$section = IP_Geo_Block::PLUGIN_SLUG . '-recording';
@@ -541,6 +500,47 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => 'postkey',
 			'value' => $options[ $field ]['postkey'],
 			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+		)
+	);
+
+	/*----------------------------------------*
+	 * Cache settings
+	 *----------------------------------------*/
+	$section = IP_Geo_Block::PLUGIN_SLUG . '-cache';
+	add_settings_section(
+		$section,
+		__( 'Cache settings', IP_Geo_Block::TEXT_DOMAIN ),
+		NULL,
+		$option_slug
+	);
+
+	$field = 'cache_hold';
+	add_settings_field(
+		$option_name . "_$field",
+		__( 'Number of entries', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'text',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => $options[ $field ],
+		)
+	);
+
+	$field = 'cache_time';
+	add_settings_field(
+		$option_name . "_$field",
+		__( 'Expiration time [sec]', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'text',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => $options[ $field ],
 		)
 	);
 
