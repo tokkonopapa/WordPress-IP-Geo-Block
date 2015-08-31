@@ -13,12 +13,12 @@ The second one is cracking of the login username and password. In this case,
 the rule of right is to strengthen the password.
 
 The third one is caused by malicious access to the core files. The major issue 
-in this case is that a plugin or theme in your site can potentially have some 
+in this case is that a plugin or theme in your site can potentially has some 
 vulnerability such as XSS, CSRF, SQLi, LFI and so on. For example, if a plugin 
 has vulnerability of Local File Inclusion (LFI), the attackers can easily 
 download the `wp-config.php` without knowing the username and password by 
 simply hitting 
-    [wp-admin/admin-ajax.php?action=show-me&file=../wp-config.php](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
+    [wp-admin/admin-ajax.php?action=show&file=../wp-config.php](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
 on their browser.
 
 For these cases, the protection based on the IP address is not a perfect 
@@ -37,74 +37,98 @@ before Akismet validate it.
 With the same mechanism, it will fight against burst access of brute-force 
 and reverse-brute-force attacks to the login form, XML-RPC and admin area.
 
-1. Access to the basic and important entrances into the back-end such as 
- `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`,
- `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by 
-means of a country code based on IP address.
+* **Immigration control:**  
+  Access to the basic and important entrances into the back-end such as 
+  `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-admin/admin.php`,
+  `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by 
+  means of a country code based on IP address.
 
-2. In order to prevent the invasion through the login form and XML-RPC against 
-the brute-force and the reverse-brute-force attacks, the number of login 
-attempts will be limited per IP address. This feature works independently from 
-blocking by country code.
+* **Gate keeping:**  
+  In order to prevent the invasion through the login form and XML-RPC against
+  the brute-force and the reverse-brute-force attacks, the number of login 
+  attempts will be limited per IP address. This feature works independently 
+  from blocking by country code.
 
-3. Besides blocking by country code, the original new feature '**Z**ero-day 
-**E**xploit **P**revention for wp-admin' (WP-ZEP) is now available to block 
-malicious access to `wp-admin/*.php`. It will protect against certain types 
-of attack such as CSRF, SQLi and so on even if you have some 
+* **Zero-day Exploit Prevention:**  
+  Besides blocking by country code, the original new feature '**Z**ero-day 
+  **E**xploit **P**revention for wp-admin' (WP-ZEP) is now available to block 
+  malicious access to `wp-admin/*.php`. It will protect against certain types 
+  of attack such as CSRF, SQLi and so on even if you have some
     [vulnerable plugins](https://wpvulndb.com/ "WPScan Vulnerability Database")
-in your site. Because this is an experimental feature, please open an issue at 
+  in your site. Because this is an experimental feature, please open an issue at
     [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
-if you have any troubles. I'll be profoundly grateful your contribution to 
-improve this feature. See more details on 
+  if you have any troubles. I'll be profoundly grateful your contribution to
+  improve this feature. See more details on
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-4. Support "**Anyone can register**" for membership. You can configure this 
-plugin such that a registered user can login as the membership from anywhere, 
-but a request of a new user registration, lost password or subscribing comment 
-is blocked by the country code. It is suitable for 
-    [BuddyPress](https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins")
-    and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins")
-to help reducing spams. 
+* **Supports of BuddyPress and bbPress:**  
+  You can configure this plugin such that a registered user can login as the
+  membership from anywhere, but a request such as a new user registration,
+  lost password, creating a new topic, and subscribing comment is blocked by 
+  the country code. It is suitable for
+    [BuddyPress][BuddyPress]
+    and [bbPress][bbPress]
+  to help reducing spams.
 
-5. HTTP Response code can be selectable as `403 Forbidden` to deny access 
-pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top 
-page. You can also have the custom error page (for example `403.php`) in your 
-theme template directory or child theme directory to fit your theme.
+* **Customizing response:**  
+  HTTP Response code can be selectable as `403 Forbidden` to deny access pages,
+  `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
+  You can also have the custom error page (for example `403.php`) in your theme
+  template directory or child theme directory to fit your theme.
 
-6. Referer suppressor for external link. When you click an external hyperlink 
-on admin screen, http referer will be eliminated to hide a footprint of your 
-site.
+* **Referer suppressor for external links:**  
+  When you click an external hyperlink on admin screen, http referer will be 
+  eliminated to hide a footprint of your site.
 
-7. Validation logs will be recorded into MySQL data table to audit posting 
-pattern under the specified condition.
+* **Validation logs:**  
+  Logs will be recorded into MySQL data table to audit posting pattern under 
+  the specified condition.
 
-8. Free IP Geolocation database and REST APIs are installed into this plugin 
-to get a country code from an IP address. There are two types of API which 
-support only IPv4 or both IPv4 and IPv6. This plugin will automatically choose 
-an appropriate API.
+* **Multi source of IP Geolocation database:**  
+  Free IP Geolocation database and REST APIs are installed into this plugin to
+  get a country code from an IP address. There are two types of API which 
+  support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
+  choose an appropriate API.
 
-9. A cache mechanism with transient API for the fetched IP addresses has been 
-equipped to reduce load on the server against the burst accesses with a short 
-period of time.
+* **Cache mechanism:**  
+  A cache mechanism with transient API for the fetched IP addresses has been 
+  equipped to reduce load on the server against the burst accesses with a short
+  period of time.
 
-10. [MaxMind][MaxMind]
-GeoLite free database for IPv4 and IPv6 will be downloaded and updated 
-(once a month) automatically. And if you have correctly installed 
-one of the IP2Location plugins (
+* **Database auto updater:**  
+  [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+  GeoLite free database for IPv4 and IPv6 will be downloaded and updated (once
+  a month) automatically. And if you have correctly installed one of the
+  IP2Location plugins (
     [IP2Location Tags][IP2Tag],
     [IP2Location Variables][IP2Var],
     [IP2Location Country Blocker][IP2Blk]
-), this plugin uses its local database prior to the REST APIs.
+  ), this plugin uses its local database prior to the REST APIs.
 
-11. This plugin is simple and lite enough to be able to cooperate with other 
-full spec security plugin such as 
+* **Cooperation with full spec security plugin:**  
+  This plugin is simple and lite enough to be able to cooperate with other full
+  spec security plugin such as 
     [Wordfence Security][wordfence]
-(because the function of country bloking is available only for premium users).
+  (because the function of country bloking is available only for premium users).
 
-12. You can customize the basic behavior of this plugin via `add_filter()` with 
-pre-defined filter hook. See various use cases in 
+* **Extensibility:**  
+  You can customize the basic behavior of this plugin via `add_filter()` with
+  pre-defined filter hook. See various use cases in
     [samples.php][sample]
-bundled within this package.
+  bundled within this package.
+
+* **Self blocking prevention and easy rescue:**  
+  Most of users do not prefer themselves to be blocked. This plugin prevents 
+  such thing unless you force it.
+    ([release 2.1.4](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.4.html "2.1.4 Release Note"))
+  And futhermore, if such a situation occurs, you can rescue yourself easily.
+    ([release 2.1.3](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.3.html "2.1.3 Release Note"))
+
+* **Clean uninstallation:**  
+  Nothing is left in your precious mySQL database after uninstallation. So you
+  can feel free to install and activate to make a trial of this plugin's
+  functionality. Several days later, you'll find many undesirable accesses in
+  your validation logs if you make all validation targets enable.
 
 ### Requirement:
 
@@ -139,117 +163,123 @@ Also thanks for providing the following great services and REST APIs for free.
 
 #### Geolocation API settings
 
-- **API selection and key settings**  
-    If you wish to use `IPInfoDB`, you should register at 
+* **API selection and key settings**  
+  If you wish to use `IPInfoDB`, you should register at 
     [their site][IPInfoDB]
-    to get a free API key and set it into the textfield.
-    And `ip-api.com` and `Smart-IP.net` require non-commercial use.
+  to get a free API key and set it into the textfield. And `ip-api.com` and 
+  `Smart-IP.net` require non-commercial use.
 
 #### Validation settings
 
-- **Comment post**  
-    Validate post to `wp-comment-post.php`. Comment post and trackback will be 
-    validated.
+* **Comment post**  
+  Validate post to `wp-comment-post.php`. Comment post and trackback will be 
+  validated.
 
-- **XML-RPC**  
-    Validate access to `xmlrpc.php`. Pingback and other remote command with 
-    username and password will be validated.
+* **XML-RPC**  
+  Validate access to `xmlrpc.php`. Pingback and other remote command with 
+  username and password will be validated.
 
-- **Login form**  
-    Validate access to `wp-login.php`.
+* **Login form**  
+  Validate access to `wp-login.php`.
 
-- **Admin area**  
-    Validate access to `wp-admin/*.php`.
+* **Admin area**  
+  Validate access to `wp-admin/*.php`.
 
-- **Admin ajax/post**  
-    Validate access to `wp-admin/admin-(ajax|post)*.php`.
+* **Admin ajax/post**  
+  Validate access to `wp-admin/admin-(ajax|post)*.php`.
 
-- **Plugins area**  
-    Validate direct access to plugins. Typically `wp-content/plugins/…/*.php`.
+* **Plugins area**  
+  Validate direct access to plugins. Typically `wp-content/plugins/…/*.php`.
 
-- **Themes area**  
-    Validate direct access to themes. Typically `wp-content/themes/…/*.php`.
+* **Themes area**  
+  Validate direct access to themes. Typically `wp-content/themes/…/*.php`.
 
-- **$_SERVER keys for extra IPs**  
-    Additional IP addresses will be validated if some of keys in `$_SERVER` 
-    variable are specified in this textfield. Typically `HTTP_X_FORWARDED_FOR`.
+* **$_SERVER keys for extra IPs**  
+  Additional IP addresses will be validated if some of keys in `$_SERVER` 
+  variable are specified in this textfield. Typically `HTTP_X_FORWARDED_FOR`.
 
-- **Matching rule**  
-    Choose `White list` (recommended) or `Black list` to specify the countries
-    from which you want to pass or block.
+* **Matching rule**  
+  Choose `White list` (recommended) or `Black list` to specify the countries
+  from which you want to pass or block.
 
-- **White list**, **Black list**  
-    Specify the country code with two letters (see 
+* **White list**, **Black list**  
+  Specify the country code with two letters (see 
     [ISO 3166-1 alpha-2][ISO]
-    ). Each of them should be separated by comma.
+  ). Each of them should be separated by comma.
 
-- **Response code**  
-    Choose one of the 
+* **Response code**  
+  Choose one of the 
     [response code][RFC]
-    to be sent when it blocks a comment.
-    The 2xx code will lead to your top page, the 3xx code will redirect to 
+  to be sent when it blocks a comment.
+  The 2xx code will lead to your top page, the 3xx code will redirect to 
     [Black Hole Server][BHS],
-    the 4xx code will lead to WordPress error page, and the 5xx will pretend 
-    an server error.
+  the 4xx code will lead to WordPress error page, and the 5xx will pretend 
+  an server error.
 
 #### Record settings
 
-- **Record validation statistics**  
-    If `Enable`, you can see `Statistics of validation` on Statistics tab.
+* **Record validation statistics**  
+  If `Enable`, you can see `Statistics of validation` on Statistics tab.
 
-- **Record validation logs**  
-    If you choose anything but `Disable`, you can see `Validation logs` on 
-    Logs tab.
+* **Record validation logs**  
+  If you choose anything but `Disable`, you can see `Validation logs` on 
+  Logs tab.
 
-- **$_POST keys in logs**  
-    Normally, you can see just keys at `$_POST data:` on Logs tab. If you put 
-    some of interested keys into this textfield, you can see the value of key 
-    like `key=value`.
+* **$_POST keys in logs**  
+  Normally, you can see just keys at `$_POST data:` on Logs tab. If you put 
+  some of interested keys into this textfield, you can see the value of key 
+  like `key=value`.
 
 #### Maxmind GeoLite settings
 
-- **Auto updating (once a month)**
-    If `Enable`, Maxmind GeoLite database will be downloaded automatically 
-    by WordPress cron job.
+* **Auto updating (once a month)**
+  If `Enable`, Maxmind GeoLite database will be downloaded automatically by 
+  WordPress cron job.
 
 #### Submission settings
 
-- **Text position on comment form**  
-    If you want to put some text message on your comment form, please choose
-    `Top` or `Bottom` and put text into the **Text message on comment form**
-    textfield.
+* **Text position on comment form**  
+  If you want to put some text message on your comment form, please choose
+  `Top` or `Bottom` and put text into the **Text message on comment form**
+  textfield.
 
 #### Cache settings
 
-- **Number of entries**  
-    Maximum number of IPs to be cached.
+* **Number of entries**  
+  Maximum number of IPs to be cached.
 
-- **Expiration time [sec]**  
-    Maximum time in sec to keep cache.
+* **Expiration time [sec]**  
+  Maximum time in sec to keep cache.
 
 #### Plugin settings
 
-- **Remove settings at uninstallation**  
-    If you checked this option, all settings will be removed when this plugin
-    is uninstalled for clean uninstalling.
+* **Remove settings at uninstallation**  
+  If you checked this option, all settings will be removed when this plugin
+  is uninstalled for clean uninstalling.
 
 ### FAQ:
 
 #### I was locked down. What shall I do? ####
 
-Add the following codes to `functions.php` in your theme and upload it via FTP.
+Activate the following codes at the bottom of `ip-geo-block.php` and upload it 
+via FTP.
 
 ```php
-function my_emergency( $validate ) {
+/**
+ * Invalidate blocking behavior in case yourself is locked out.
+ * @note: activate the following code and upload this file via FTP.
+ */ //
+function ip_geo_block_emergency( $validate ) {
     $validate['result'] = 'passed';
     return $validate;
 }
-add_filter( 'ip-geo-block-login', 'my_emergency' );
-add_filter( 'ip-geo-block-admin', 'my_emergency' );
+add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency' );
+add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
+// */
 ```
 
-Then `Clear cache` at `Statistics` tab on your dashborad. After that, you can 
-remove above codes.
+Then `Clear cache` at `Statistics` tab on your dashborad. Remember that you 
+should upload the original one to deactivate above feature.
 
 #### How can I protect my `wp-config.php` against malicious access? ####
 

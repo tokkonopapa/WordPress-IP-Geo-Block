@@ -126,6 +126,13 @@ and reverse-brute-force attacks to the login form, XML-RPC and admin area.
     [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
   bundled within this package.
 
+* **Self blocking prevention and easy rescue:**  
+  Most of users do not prefer themselves to be blocked. This plugin prevents 
+  such thing unless you force it.
+    ([release 2.1.4](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.4.html "2.1.4 Release Note"))
+  And futhermore, if such a situation occurs, you can rescue yourself easily.
+    ([release 2.1.3](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.3.html "2.1.3 Release Note"))
+
 * **Clean uninstallation:**  
   Nothing is left in your precious mySQL database after uninstallation. So you
   can feel free to install and activate to make a trial of this plugin's
@@ -398,8 +405,6 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 == Changelog ==
 
 = 2.1.4 =
-Sorry for frequent update.
-
 * **Bug fix:** Fix the issue that this plugin broke functionality of a certain 
   plugin. Thanks to **opsec** for reporting this issue at 
   [support forum](https://wordpress.org/support/topic/blocks-saves-in-types-or-any-plugins-from-wp-typescom "WordPress › Support » Blocks saves in Types or any plugins from wp-types.com").

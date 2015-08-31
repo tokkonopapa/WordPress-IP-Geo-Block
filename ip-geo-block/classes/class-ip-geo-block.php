@@ -682,7 +682,7 @@ class IP_Geo_Block {
 
 		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) &&
 		     is_user_logged_in() && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
-			// redirect to handle with the client side redirection.
+			// add nonce at add_admin_nonce() to handle the client side redirection.
 			wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
 			exit;
 		}
