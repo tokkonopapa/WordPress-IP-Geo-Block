@@ -411,4 +411,4 @@ This plugin is licensed under the GPL v2 or later.
 [sample]:     https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
 [wordfence]:  https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins"
 [BuddyPress]: https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins"
-[bbPress]   : https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins"
+[bbPress]:    https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins"
