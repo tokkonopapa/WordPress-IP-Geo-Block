@@ -52,7 +52,7 @@ and reverse-brute-force attacks to the login form, XML-RPC and admin area.
   `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by 
   means of a country code based on IP address.
 
-* **Gate keeping:**  
+* **Guard against login attempts:**  
   In order to prevent the invasion through the login form and XML-RPC against
   the brute-force and the reverse-brute-force attacks, the number of login 
   attempts will be limited per IP address. This feature works independently 
@@ -70,7 +70,7 @@ and reverse-brute-force attacks to the login form, XML-RPC and admin area.
   improve this feature. See more details on
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-* **Supports of BuddyPress and bbPress:**  
+* **Support of BuddyPress and bbPress:**  
   You can configure this plugin such that a registered user can login as the
   membership from anywhere, but a request such as a new user registration,
   lost password, creating a new topic, and subscribing comment is blocked by 
@@ -85,8 +85,8 @@ and reverse-brute-force attacks to the login form, XML-RPC and admin area.
   You can also have the custom error page (for example `403.php`) in your theme
   template directory or child theme directory to fit your theme.
 
-* **Referer suppressor for external links:**  
-  When you click an external hyperlink on admin screen, http referer will be 
+* **Referrer suppressor for external links:**  
+  When you click an external hyperlink on admin screen, http referrer will be 
   eliminated to hide a footprint of your site.
 
 * **Validation logs:**  
@@ -137,7 +137,7 @@ and reverse-brute-force attacks to the login form, XML-RPC and admin area.
   Nothing is left in your precious mySQL database after uninstallation. So you
   can feel free to install and activate to make a trial of this plugin's
   functionality. Several days later, you'll find many undesirable accesses in
-  your validation logs if you make all validation targets enable.
+  your validation logs if all validation targets are enabled.
 
 = Attribution =
 
@@ -473,7 +473,7 @@ This is a maintenance release.
   not work correctly because the order of argument was mismatched.
 * **Bug fix:** Fixed the issue that a record including utf8 4 bytes character 
   in its columns was not logged into DB in WordPress 4.2.
-* **Improvement:** Fixed the issue that Referer Suppressor do nothing with a 
+* **Improvement:** Fixed the issue that Referrer Suppressor do nothing with a 
   new element which is added into DOM after DOM ready. The event handler is 
   now delegated at the `body`.
 
@@ -503,7 +503,7 @@ This is a maintenance release.
   will be locked out from admin screen when the cache expires.
 * **Bug fix:** Fixed an issue of `get_geolocation()` method at a time of 
   when the cache of IP address is cleared.
-* Referer suppressor now supports [meta referrer](https://wiki.whatwg.org/wiki/Meta_referrer "Meta referrer - WHATWG Wiki")
+* Referrer suppressor now supports [meta referrer](https://wiki.whatwg.org/wiki/Meta_referrer "Meta referrer - WHATWG Wiki")
 
 = 2.0.3 =
 * **Bug fix:** Fixed an issue that empty black list doesn't work correctly 
@@ -512,8 +512,8 @@ This is a maintenance release.
   Because it is an experimental feature, please open a new issue at 
   [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles with it.
-* **New feature:** Referer suppressor for external link. When you click an 
-  external hyperlink on admin screen, http referer will be suppressed to 
+* **New feature:** Referrer suppressor for external link. When you click an 
+  external hyperlink on admin screen, http referrer will be suppressed to 
   hide a footprint of your site.
 * Also added the filter hook `ip-geo-block-admin-actions` for safe actions 
   on back-end.
