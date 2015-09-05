@@ -24,7 +24,7 @@ Make sure to set `HTTP_X_FOWARDED_FOR` to `$_SERVER keys for extra IPs` at
 `Validation rule settings` on `Settings` tab like following so that the 
 malicios burst accesses can be blocked.
 
-[HTTP_X_FOWARDED_FOR][X-Forwarded]
+![HTTP_X_FOWARDED_FOR][X-Forwarded]
 
 ### Parameter files: ###
 
