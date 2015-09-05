@@ -6,7 +6,7 @@ caused by malicios burst access using [apache bench][ApacheBench].
 
 ### Usage: ###
 
-    ./attack.sh [-a "IP address of attacker"] [-h "Home URL of WordPress"] [1-4]
+    ./attack.sh [-a "attacker IP address"] [-h "Home URL of WordPress"] [1-4]
 
 where `[1-4]` should be specified as a target PHP file as follows:
 
@@ -19,6 +19,12 @@ or edit the following lines in `attack.sh`.
 
     WPHOME="http://localhost:8888/wordpress/"
     HEADER="X-Forwarded-For: 129.223.152.47"
+
+Make sure to set `HTTP_X_FOWARDED_FOR` to `$_SERVER keys for extra IPs` at 
+`Validation rule settings` on `Settings` tab like following so that the 
+malicios burst accesses can be blocked.
+
+[HTTP_X_FOWARDED_FOR][X-Forwarded]
 
 ### Parameter files: ###
 
@@ -40,3 +46,4 @@ The following files are used to request by POST method.
 Do not abuse.
 
 [ApacheBench]: http://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool"
+[X-Forwarded]: http://tokkonopapa.github.io/WordPress-IP-Geo-Block/img/2015-09/X-Forwarded-For.png "$_SERVER keys for extra IPs"
