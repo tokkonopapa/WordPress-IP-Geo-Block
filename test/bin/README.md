@@ -35,4 +35,8 @@ The following files are used to request by POST method.
 * timelimit  
   Maximum number of seconds to spend for benchmarking. [60]
 
+### CAUTION ###
+
+Never abuse.
+
 [ApacheBench]: http://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool"
