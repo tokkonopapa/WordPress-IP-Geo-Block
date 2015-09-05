@@ -1,0 +1,1 @@
+<?xml version='1.0' encoding='utf-8'?><methodcall><methodname>pingback.ping</methodname><params><param><value><string>http://example.com/</string></value></param><param><value><string>http://example.com/hello-world/</string></value></param></params></methodcall>
