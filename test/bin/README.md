@@ -20,7 +20,7 @@ or edit the following lines in `attack.sh`.
     WPHOME="http://localhost:8888/wordpress/"
     HEADER="X-Forwarded-For: 129.223.152.47"
 
-Make sure to set `HTTP_X_FOWARDED_FOR` to `$_SERVER keys for extra IPs` at 
+Make sure to put `HTTP_X_FOWARDED_FOR` to `$_SERVER keys for extra IPs` at 
 `Validation rule settings` on `Settings` tab so that the malicios burst 
 accesses can be blocked like following:
 
