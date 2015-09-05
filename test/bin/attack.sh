@@ -4,7 +4,9 @@
 
 WPHOME="http://localhost:8888/wordpress/"
 HEADER="X-Forwarded-For: 129.223.152.47"
+
 COOKIE="wordpress_test_cookie=WP+Cookie+check"
+ABOPTS="-t 60 -c 5"
 
 while [ $# -ge 1 ]; do
     case $1 in
@@ -30,19 +32,19 @@ done
 case ${ATTACK} in
     1) # wp-comments-post.php
         echo "=== attack on wp-comments-post.php ===\n"
-        ab -t 60 -c 5 -H "${HEADER}" -C "${COOKIE}" -T "application/x-www-form-urlencoded" -p "wp-comments-post.txt" ${WPHOME}wp-comments-post.php
+        ab ${ABOPTS} -H "${HEADER}" -C "${COOKIE}" -T "application/x-www-form-urlencoded" -p "wp-comments-post.txt" ${WPHOME}wp-comments-post.php
         ;;
     2) # xmlrpc.php
         echo "=== attack on xmlrpc.php ===\n"
-        ab -t 60 -c 5 -H "${HEADER}" -C "${COOKIE}" -T "text/html" -p "xmlrpc.txt" ${WPHOME}xmlrpc.php
+        ab ${ABOPTS} -H "${HEADER}" -C "${COOKIE}" -T "text/html" -p "xmlrpc.txt" ${WPHOME}xmlrpc.php
         ;;
     3) # wp-login.php
         echo "=== attack on wp-login.php ===\n"
-        ab -t 60 -c 5 -H "${HEADER}" -C "${COOKIE}" -T "application/x-www-form-urlencoded" -p "wp-login.txt" ${WPHOME}wp-login.php
+        ab ${ABOPTS} -H "${HEADER}" -C "${COOKIE}" -T "application/x-www-form-urlencoded" -p "wp-login.txt" ${WPHOME}wp-login.php
         ;;
     4) # wp-admin/admin-ajax.php
         echo "=== attack on wp-admin/admin-ajax.php ===\n"
-        ab -t 60 -c 5 -H "${HEADER}" -C "${COOKIE}" -T "text/plain" "${WPHOME}wp-admin/admin-ajax.php?action=revslider_show_image&img=../wp-config.php"
+        ab ${ABOPTS} -H "${HEADER}" -C "${COOKIE}" -T "text/plain" "${WPHOME}wp-admin/admin-ajax.php?action=revslider_show_image&img=../wp-config.php"
         ;;
     *) # help
         echo "usage: $0 [-a \"attacker IP address\"] [-h \"WordPress home URL\"] [1-4]"
