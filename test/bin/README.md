@@ -20,7 +20,7 @@ or edit the following lines in `attack.sh`.
     WPHOME="http://localhost:8888/wordpress/"
     HEADER="X-Forwarded-For: 129.223.152.47"
 
-### Parameter files ###
+### Parameter files: ###
 
 The following files are used to request by POST method.
 
@@ -28,15 +28,15 @@ The following files are used to request by POST method.
 * `xmlrpc.txt`
 * `wp-login.txt`
 
-### Settings for ab ###
+### Settings for ab: ###
 
 * concurrency  
   Number of multiple requests to perform at a time. [5]
 * timelimit  
   Maximum number of seconds to spend for benchmarking. [60]
 
-### CAUTION ###
+### CAUTION: ###
 
-Never abuse.
+Do not abuse.
 
 [ApacheBench]: http://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool"
