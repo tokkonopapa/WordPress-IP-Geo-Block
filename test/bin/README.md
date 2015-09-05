@@ -1,5 +1,5 @@
-The load caused by burst access
-===============================
+Measuring server load caused by burst access
+============================================
 
 The `attack.sh` can mesure the load of the server caused by malicios burst 
 access using [apache bench][ApacheBench].
