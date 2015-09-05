@@ -21,8 +21,8 @@ or edit the following lines in `attack.sh`.
     HEADER="X-Forwarded-For: 129.223.152.47"
 
 Make sure to set `HTTP_X_FOWARDED_FOR` to `$_SERVER keys for extra IPs` at 
-`Validation rule settings` on `Settings` tab like following so that the 
-malicios burst accesses can be blocked.
+`Validation rule settings` on `Settings` tab so that the malicios burst 
+accesses can be blocked like following:
 
 ![HTTP_X_FOWARDED_FOR][X-Forwarded]
 
