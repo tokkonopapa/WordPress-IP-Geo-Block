@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  "Post Title"
-date:   2015-01-01 00:00:00
-categories: article changelog
-published: false
+title:  "Measuring load of broute-force attack"
+date:   2015-09-22 09:00:00
+categories: article
+published: true
 script: []
 inline:
 ---
@@ -42,7 +42,7 @@ code
 | zebra stripes | are neat        |            $1 |
 
 <div class="table-responsive">
-	<cite></cite>
+	<cite>cite</cite>
 	<table class="table">
 		<thead>
 			<tr>
