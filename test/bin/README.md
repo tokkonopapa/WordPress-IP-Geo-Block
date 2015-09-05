@@ -2,7 +2,7 @@ Measuring impact of broute-force attack
 =======================================
 
 The `attack.sh` is a shell program which can mesure the load on the server 
-caused by malicios burst access using [apache bench][ApacheBench].
+caused by malicious burst access using [apache bench][ApacheBench].
 
 ### Usage: ###
 
@@ -21,8 +21,8 @@ or edit the following lines in `attack.sh`.
     HEADER="X-Forwarded-For: 129.223.152.47"
 
 Make sure to put `HTTP_X_FOWARDED_FOR` to `$_SERVER keys for extra IPs` at 
-`Validation rule settings` on `Settings` tab so that the malicios burst 
-accesses can be blocked like following:
+`Validation rule settings` on `Settings` tab like following so that the 
+malicious burst accesses can be blocked by IP Geo Block.
 
 ![HTTP_X_FOWARDED_FOR][X-Forwarded]
 
@@ -45,5 +45,6 @@ The following files are used to request by POST method.
 
 Do not abuse.
 
-[ApacheBench]: http://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool"
-[X-Forwarded]: http://tokkonopapa.github.io/WordPress-IP-Geo-Block/img/2015-09/X-Forwarded-For.png "$_SERVER keys for extra IPs"
+[ApacheBench]:  http://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool"
+[X-Forwarded]:  http://tokkonopapa.github.io/WordPress-IP-Geo-Block/img/2015-09/X-Forwarded-For.png "$_SERVER keys for extra IPs"
+[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
