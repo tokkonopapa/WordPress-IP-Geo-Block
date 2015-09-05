@@ -1,5 +1,5 @@
-Measuring server load caused by burst access
-============================================
+Measuring impact of broute-force attack
+=======================================
 
 The `attack.sh` can mesure the load of the server caused by malicios burst 
 access using [apache bench][ApacheBench].
