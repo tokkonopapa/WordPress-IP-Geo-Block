@@ -1,5 +1,5 @@
-Measuring impact of broute-force attack
-=======================================
+Measuring load of broute-force attack
+=====================================
 
 The `attack.sh` is a shell program which can mesure the load on the server 
 caused by malicious burst access using [apache bench][ApacheBench].
