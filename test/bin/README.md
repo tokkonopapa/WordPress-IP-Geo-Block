@@ -8,12 +8,12 @@ access using [apache bench][ApacheBench].
 
     ./attack.sh [-a "IP address of attacker"] [-h "Home URL of WordPress"] [1-4]
 
-where: 
+where `[1-4]` should be specified as a target PHP file as follows:
 
-1  `wp-comments-post.php`
-2  `xmlrpc.php`
-3  `wp-login.php`
-4  `wp-admin/admin-ajax.php`
+1. `wp-comments-post.php`
+2. `xmlrpc.php`
+3. `wp-login.php`
+4. `wp-admin/admin-ajax.php`
 
 or edit the following lines in `attack.sh`:
 
