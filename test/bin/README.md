@@ -28,7 +28,7 @@ The following files are used to request by POST method.
 * `xmlrpc.txt`
 * `wp-login.txt`
 
-### Options for ab ###
+### Settings for ab ###
 
 * concurrency  
   Number of multiple requests to perform at a time. [5]
