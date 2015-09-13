@@ -14,6 +14,11 @@ baseurl: "/WordPress-IP-Geo-Block"
 url: "http://tokkonopapa.github.io/WordPress-IP-Geo-Block"
 permalink: none
 
+# Paginate
+recent_post: 5
+paginate: 5
+paginate_path: "/:num/"
+
 exclude: [README.md]
 
 project:

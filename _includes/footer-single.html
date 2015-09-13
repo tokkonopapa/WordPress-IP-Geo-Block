@@ -26,7 +26,7 @@
       <div class="col-xs-12 col-sm-5 sidebar-module text-left">
         <h4>Recent Posts</h4>
         <ul>
-          {% for post in site.posts limit:5 %}<li>
+          {% for post in site.posts limit: site.recent_post %}<li>
             <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
           </li>{% endfor %}
         </ul>
