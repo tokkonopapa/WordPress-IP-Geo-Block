@@ -656,10 +656,10 @@ class IP_Geo_Block_Admin {
 					$res[ $provider ] = array(
 						'type' => $type[ $provider ],
 						'code' => esc_html(
-							FALSE === $ret ? __( 'n/a', IP_Geo_Block::TEXT_DOMAIN ) :
+							FALSE === $ret ? __( 'n/a', IP_Geo_Block::TEXT_DOMAIN ) : (
 							! empty( $ret['errorMessage'] ) ? $ret['errorMessage'] : (
 							! empty( $ret['countryCode' ] ) ? $ret['countryCode' ] :
-							__( 'UNKNOWN', IP_Geo_Block::TEXT_DOMAIN ) )
+							__( 'UNKNOWN', IP_Geo_Block::TEXT_DOMAIN ) ) )
 						),
 					);
 				}
