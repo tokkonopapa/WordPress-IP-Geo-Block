@@ -2,6 +2,7 @@
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 function ip_geo_block_tab_geolocation( $context ) {
+	$plugin_slug = IP_Geo_Block::PLUGIN_SLUG;
 	$option_slug = $context->option_slug['settings'];
 	$option_name = $context->option_name['settings'];
 	$options = IP_Geo_Block::get_option( 'settings' );
@@ -14,7 +15,7 @@ function ip_geo_block_tab_geolocation( $context ) {
 	/*----------------------------------------*
 	 * Geolocation
 	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-search';
+	$section = "${plugin_slug}-search";
 	add_settings_section(
 		$section,
 		__( 'Search IP address geolocation', IP_Geo_Block::TEXT_DOMAIN ),
@@ -77,7 +78,7 @@ function ip_geo_block_tab_geolocation( $context ) {
 			'option' => $option_name,
 			'field' => $field,
 			'value' => __( 'Search now', IP_Geo_Block::TEXT_DOMAIN ),
-			'after' => '<div id="ip-geo-block-loading"></div>',
+			'after' => "<div id=\"${plugin_slug}-loading\"></div>",
 		)
 	);
 }

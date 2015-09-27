@@ -136,6 +136,10 @@ abstract class IP_Geo_Block_API {
 					esc_html( $data[ $val ] ) : $data[ $val ];
 		}
 
+		// if country code is '-' or 'UNDEFINED' then error.
+		if ( ! empty( $res['countryCode'] ) )
+			$res['countryCode'] = preg_match( '/^[A-Z]{2}/', $res['countryCode'], $matches ) ? $matches[0] : NULL;
+
 		return $res;
 	}
 
@@ -145,14 +149,8 @@ abstract class IP_Geo_Block_API {
 	 * Override this method if a provider supports this feature for quick response.
 	 */
 	public function get_country( $ip, $args = array() ) {
-
 		$res = $this->get_location( $ip, $args );
-
-		// if country code is '-' or 'UNDEFINED' then error.
-		if ( $res && ! empty( $res['countryCode'] ) )
-			return preg_match( '/^[A-Z]{2}/', $res['countryCode'], $matches ) ? $matches[0] : NULL;
-		else
-			return NULL;
+		return FALSE === $res ? FALSE : ( empty( $res['countryCode'] ) ? NULL : $res['countryCode'] );
 	}
 
 	/**
@@ -162,6 +160,14 @@ abstract class IP_Geo_Block_API {
 	public static function get_class_name( $provider ) {
 		$provider = 'IP_Geo_Block_API_' . preg_replace( '/[\W]/', '', $provider );
 		return class_exists( $provider ) ? $provider : NULL;
+	}
+
+	/**
+	 * Get option key
+	 *
+	 */
+	public static function get_api_key( $provider, $options ) {
+		return ! empty( $options['providers'][ $provider ] ) ? $options['providers'][ $provider ] : NULL;
 	}
 }
 
@@ -174,11 +180,11 @@ abstract class IP_Geo_Block_API {
  * Rate limit  : 10,000 queries per hour
  * Sample URL  : http://freegeoip.net/json/124.83.187.140
  * Sample URL  : http://freegeoip.net/xml/yahoo.co.jp
- * Input type  : IP address (IPv4) / domain name
+ * Input type  : IP address (IPv4, IPv6) / domain name
  * Output type : json, jsonp, xml, csv
  */
 class IP_Geo_Block_API_freegeoipnet extends IP_Geo_Block_API {
-	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
 		'%API_FORMAT%' => 'json',
 	);
@@ -366,7 +372,7 @@ class IP_Geo_Block_API_geoPlugin extends IP_Geo_Block_API {
  * Output type : json, xml
  */
 class IP_Geo_Block_API_ipapicom extends IP_Geo_Block_API {
-	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
 		'%API_FORMAT%' => 'json',
 	);
@@ -395,7 +401,7 @@ class IP_Geo_Block_API_ipapicom extends IP_Geo_Block_API {
  * Output type : json, xml
  */
 class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
-	protected $api_type = IP_GEO_BLOCK_API_TYPE_IPV4;
+	protected $api_type = IP_GEO_BLOCK_API_TYPE_BOTH;
 	protected $api_template = array(
 		'%API_FORMAT%' => 'xml',
 		'%API_OPTION%' => 'ip-city',
@@ -664,8 +670,8 @@ class IP_Geo_Block_Provider {
 
 		'freegeoip.net' => array(
 			'key'  => NULL,
-			'type' => 'IPv4 / free',
-			'link' => '<a class="ip-geo-block-link" href="http://freegeoip.net/" title="freegeoip.net: FREE IP Geolocation Web Service" rel=noreferrer target=_blank>http://freegeoip.net/</a>&nbsp;(IPv4 / free)',
+			'type' => 'IPv4, IPv6 / free',
+			'link' => '<a class="ip-geo-block-link" href="http://freegeoip.net/" title="freegeoip.net: FREE IP Geolocation Web Service" rel=noreferrer target=_blank>http://freegeoip.net/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'ipinfo.io' => array(
@@ -700,7 +706,7 @@ class IP_Geo_Block_Provider {
 
 		'ip-api.com' => array(
 			'key'  => FALSE,
-			'type' => 'IPv4 / free for non-commercial use',
+			'type' => 'IPv4, IPv6 / free for non-commercial use',
 			'link' => '<a class="ip-geo-block-link" href="http://ip-api.com/" title="IP-API.com - Free Geolocation API" rel=noreferrer target=_blank>http://ip-api.com/</a>&nbsp;(IPv4, IPv6 / free for non-commercial use)',
 		),
 
@@ -771,9 +777,9 @@ class IP_Geo_Block_Provider {
 	 * Returns providers name list which are checked in settings
 	 *
 	 */
-	public static function get_valid_providers( $settings ) {
+	public static function get_valid_providers( $settings, $rand = TRUE, $cache = TRUE ) {
 		$list = array();
-		$geo = self::get_providers( 'key', TRUE, TRUE );
+		$geo = self::get_providers( 'key', $rand, $cache );
 
 		foreach ( $geo as $provider => $key ) {
 			if ( ! empty( $settings[ $provider ] ) || (

@@ -53,6 +53,13 @@ var IP_GEO_BLOCK_ZEP = {
 		};
 	}
 
+	function compose_uri(uri) {
+		return (uri.scheme ? uri.scheme + '://' : '') +
+		       (uri.authority + uri.path ) +
+		       (uri.query ? '?' + uri.query : '' ) +
+		       (uri.fragment ? '#' + uri.fragment : '');
+	}
+
 	/**
 	 * Returns canonicalized absolute pathname
 	 *
@@ -121,7 +128,7 @@ var IP_GEO_BLOCK_ZEP = {
 	// append the nonce as query strings to the uri
 	function add_query_nonce(uri, nonce) {
 		if (typeof uri !== 'object') { // `string` or `undefined`
-			uri = parse_uri(uri ? uri : location.href);
+			uri = parse_uri(uri || location.href);
 		}
 
 		var data = uri.query ? uri.query.split('&') : [],
@@ -136,10 +143,9 @@ var IP_GEO_BLOCK_ZEP = {
 		}
 
 		data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
+		uri.query = data.join('&');
 
-		return (uri.scheme ? uri.scheme + '://' : '') +
-		       (uri.authority + uri.path + '?' + data.join('&')) +
-		       (uri.fragment);
+		return compose_uri(uri);
 	}
 
 	// regular expression to find target for is_admin()
@@ -177,12 +183,12 @@ var IP_GEO_BLOCK_ZEP = {
 	// list of excluded links
 	var ajax_links = {};
 
-	// the parameter `request[browse]` which is overwritten with a nonce should be corrected.
+	// `theme-install.php` eats the query and set it to `request[browse]` as a parameter
 	ajax_links[IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.admin + 'theme-install.php'] = function (data) {
 		var i = data.length;
 		while (i-- > 0) {
 			if (data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth') === 0) {
-				data[i] = 'request%5Bbrowse%5D=featured';
+				data[i] = 'request%5Bbrowse%5D=featured'; // correct the parameter
 				break;
 			}
 		}
@@ -257,13 +263,16 @@ var IP_GEO_BLOCK_ZEP = {
 			$body.bindFirst('click', 'a', function (event) {
 				var $this = $(this);
 
-				// 'string' or 'undefined'
+				// attr() returns 'string' or 'undefined'
 				var href = $this.attr('href'),
+				    rel = $this.attr('rel'),
 				    admin = is_admin(href);
 
-				// if admin area then add the nonce
+				// if admin area (except in comment) then add a nonce
 				if (admin === 1) {
-					$this.attr('href', add_query_nonce(href, nonce));
+					$this.attr('href', add_query_nonce(
+						href, (!rel || rel.indexOf('nofollow') < 0 ? nonce : 'nofollow')
+					));
 				}
 
 				// if external then redirect with no referrer not to leak out the nonce

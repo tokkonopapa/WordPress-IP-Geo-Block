@@ -39,7 +39,6 @@ class IP_Geo_Block_Admin {
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
 		// Setup a nonce to validate authentication.
-		add_action( 'admin_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ) );
 		add_filter( 'wp_redirect', array( $this, 'add_admin_nonce' ), 10, 2 );
 
 		// Add the options page and menu item.
@@ -87,16 +86,26 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Display notice
+	 * Display global notice
 	 *
+	 * @notice: Sanitization should be done at the caller
 	 */
-	public function admin_notice() {
-		foreach ( $this->notice as $msg ) {
-			echo "\n<div class=\"error\"><p>IP Geo Block: $msg</p></div>\n";
+	public function admin_notices() {
+		foreach ( $this->notice as $notice ) {
+			echo "\n<div class=\"notice is-dismissible ", key( $notice ), "\"><p><strong>IP Geo Block:</strong> ", current( $notice ), "</p></div>\n";
 		}
 	}
 
-	private function setting_notice( $name, $type, $msg ) {
+	public function add_admin_notice( $type, $msg ) {
+		$this->notice[] = array( $type => $msg );
+	}
+
+	/**
+	 * Display local notice
+	 *
+	 * @notice: Sanitization should be done at the caller
+	 */
+	public function setting_notice( $name, $type, $msg ) {
 		add_settings_error( $this->option_slug, $this->option_name[ $name ], $msg, $type );
 	}
 
@@ -114,6 +123,7 @@ class IP_Geo_Block_Admin {
 	 */
 	public function enqueue_admin_assets() {
 		$footer = TRUE;
+		$dependency = array( 'jquery' );
 		$tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
 		$tab = min( 4, max( 0, $tab ) );
 
@@ -123,15 +133,23 @@ class IP_Geo_Block_Admin {
 			array(), IP_Geo_Block::VERSION
 		);
 
-		// js for google map
-		if ( 2 === $tab ) {
+		switch ( $tab ) {
+		  case 1:
+			// js for google chart
+			wp_enqueue_script( $addon = IP_Geo_Block::PLUGIN_SLUG . '-google-chart',
+				'https://www.google.com/jsapi', array(), NULL, $footer
+			);
+			break;
+
+		  case 2:
+			// js for google map
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
 				'//maps.google.com/maps/api/js?sensor=false',
-				array( 'jquery' ), IP_Geo_Block::VERSION, $footer
+				$dependency, IP_Geo_Block::VERSION, $footer
 			);
-		}
+			break;
 
-		if ( 4 === $tab ) {
+		  case 4:
 			// footable https://github.com/bradvin/FooTable
 			wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-footable-css',
 				plugins_url( 'css/footable.core.min.css', __FILE__ ),
@@ -139,14 +157,15 @@ class IP_Geo_Block_Admin {
 			);
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-footable-js',
 				plugins_url( 'js/footable.min.js', __FILE__ ),
-				array( 'jquery' ), IP_Geo_Block::VERSION, $footer
+				$dependency, IP_Geo_Block::VERSION, $footer
 			);
 		}
 
-		// js for option page
+		// js for IP Geo Block admin page
 		wp_enqueue_script( $handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script',
 			plugins_url( 'js/admin.js', __FILE__ ),
-			array( 'jquery' ), IP_Geo_Block::VERSION, $footer
+			$dependency + ( isset( $addon ) ? array( $addon ) : array() ),
+			IP_Geo_Block::VERSION, $footer
 		);
 
 		// global value for ajax @since r16
@@ -215,22 +234,40 @@ class IP_Geo_Block_Admin {
 	private function diagnose_admin_screen() {
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 )
-			$this->notice[] = __( 'You need WordPress 3.7+.', IP_Geo_Block::TEXT_DOMAIN );
+			$this->add_admin_notice( 'error', __( 'You need WordPress 3.7+.', IP_Geo_Block::TEXT_DOMAIN ) );
+
+		// Check consistency of matching rule
+		$settings = IP_Geo_Block::get_option( 'settings' );
+		if ( -1 == $settings['matching_rule'] ) {
+			$this->add_admin_notice( 'notice-warning', sprintf(
+				__( 'Welcome to %s!! At first, please confirm &#8217;<strong>Matching rule</strong>&#8217; at <a href="%s">Validation rule settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
+				__( 'IP Geo Block', IP_Geo_Block::TEXT_DOMAIN ),
+				admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG )
+			) );
+		}
+
+		// check force to save
+		elseif ( 1 == $settings['validation']['login'] ) {
+			$validate = IP_Geo_Block::get_geolocation();
+			$validate = IP_Geo_Block::validate_country( $validate, $settings );
+			if ( 'passed' !== $validate['result'] ) {
+				$url = admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG ) . '#';
+				$this->add_admin_notice( 'error', sprintf(
+					__( 'You will be blocked out when you log out. Please confirm &#8217;<strong>Matching rule</strong>&#8217; and the country code in &#8217;<strong>White list</strong>&#8217; or &#8217;<strong>Black list</strong>&#8217; at <a href="%s">Validation rule settings</a>. Otherwise select &#8217;<strong>Block by country (register, lost password)</strong>&#8217; for &#8217;<strong>Login form</strong>&#8217; at <a href="%s">Validation target settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
+					$url . IP_Geo_Block::PLUGIN_SLUG . '-settings-0', $url . IP_Geo_Block::PLUGIN_SLUG . '-settings-1'
+				) );
+			}
+		}
 
 		if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 			// Check creation of database table
-			$settings = IP_Geo_Block::get_option( 'settings' );
-
 			if ( $settings['validation']['reclogs'] ) {
 				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 				if ( ( $warn = IP_Geo_Block_Logs::diag_table() ) &&
 				     FALSE === IP_Geo_Block_Logs::create_log() )
-					$this->notice[] = $warn;
+					$this->add_admin_notice( 'notice-warning', $warn );
 			}
-
-			if ( isset( $this->notice ) )
-				add_action( 'admin_notices', array( $this, 'admin_notice' ) );
 		}
 	}
 
@@ -239,22 +276,18 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function setup_admin_screen() {
-		$this->add_plugin_admin_menu();
 		$this->diagnose_admin_screen();
+		$this->add_plugin_admin_menu();
 		$this->register_admin_settings();
 
 		// Add an action link pointing to the options page. @since 2.7
-		add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
+		add_action( 'admin_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ) );
 		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
+		add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
 
-		// check force to save
-		if ( isset( $_REQUEST['force_to_save'] ) && empty( $_REQUEST['settings-updated'] ) ) {
-			$this->setting_notice( 'settings', 'error', sprintf(
-				__( 'Validation rule you have specified will block yourself. Enable <code>%1$s</code> at <code>%2$s</code> if you need.', IP_Geo_Block::TEXT_DOMAIN ),
-				__( 'Force to save', IP_Geo_Block::TEXT_DOMAIN ),
-				__( 'Plugin settings', IP_Geo_Block::TEXT_DOMAIN )
-			) );
-		}
+		// Register admin notice
+		if ( isset( $this->notice ) )
+			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 	}
 
 	/**
@@ -269,11 +302,11 @@ class IP_Geo_Block_Admin {
 <div class="wrap">
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 	<h2 class="nav-tab-wrapper">
-		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=0" class="nav-tab <?php echo $tab == 0 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings',    IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=1" class="nav-tab <?php echo $tab == 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics',  IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab == 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs',        IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=2" class="nav-tab <?php echo $tab == 2 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Search',      IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=3" class="nav-tab <?php echo $tab == 3 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=0" class="nav-tab <?php echo $tab === 0 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings',    IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=1" class="nav-tab <?php echo $tab === 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics',  IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab === 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs',        IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=2" class="nav-tab <?php echo $tab === 2 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Search',      IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=3" class="nav-tab <?php echo $tab === 3 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
 	</h2>
 	<form method="post" action="options.php"<?php if ( 0 !== $tab ) echo " id=\"", IP_Geo_Block::PLUGIN_SLUG, "-inhibit\""; ?>>
 <?php
@@ -383,11 +416,9 @@ class IP_Geo_Block_Admin {
 		  case 'select':
 		  case 'comment-msg':
 			echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\">\n";
-			foreach ( $args['list'] as $key => $val ) {
-				echo "\t<option value=\"$val\"", 
-					selected( $args['value'], $val, FALSE ), ">$key</option>\n";
-			}
-			echo "</select>\n";
+			foreach ( $args['list'] as $key => $val )
+				echo "\t<option value=\"$val\"", ( $val < 0 ? ' selected disabled' : selected( $args['value'], $val, FALSE ) ), ">$key</option>\n";
+			echo isset( $optgroup ) ? "</optgroup>\n" : "", "</select>\n";
 			if ( 'select' === $args['type'] )
 				break;
 			echo "<br />\n";
@@ -544,16 +575,6 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
-		// check force to save
-		if ( empty( $_REQUEST['force_to_save'] ) && empty( $input['force_to_save'] ) ) {
-			$validate = IP_Geo_Block::get_geolocation();
-			$validate = IP_Geo_Block::validate_country( $validate, $output );
-			if ( 'passed' !== $validate['result'] ) {
-				wp_redirect( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG . '&force_to_save' );
-				die();
-			}
-		}
-
 		// Register a settings error to be displayed to the user
 		$this->setting_notice( $option_name, 'updated',
 			__( 'Successfully updated.', IP_Geo_Block::TEXT_DOMAIN )
@@ -600,11 +621,10 @@ class IP_Geo_Block_Admin {
 				if ( $name = IP_Geo_Block_API::get_class_name( $which ) ) {
 					// get option settings and compose request headers
 					$options = IP_Geo_Block::get_option( 'settings' );
-					$args = IP_Geo_Block::get_request_headers( $options );
+					$args    = IP_Geo_Block::get_request_headers( $options );
 
 					// create object for provider and get location
-					$key = ! empty( $options['providers'][ $which ] );
-					$geo = new $name( $key ? $options['providers'][ $which ] : NULL );
+					$geo = new $name( IP_Geo_Block_API::get_api_key( $which, $options ) );
 					$res = $geo->get_location( $ip, $args );
 				}
 				else {
@@ -613,6 +633,36 @@ class IP_Geo_Block_Admin {
 			}
 			else {
 				$res = array( 'errorMessage' => 'Invalid IP address.' );
+			}
+			break;
+
+		  case 'scan-code':
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+
+			// scan all the country code using selected APIs
+			$ip        = IP_Geo_Block::get_ip_address();
+			$options   = IP_Geo_Block::get_option( 'settings' );
+			$args      = IP_Geo_Block::get_request_headers( $options );
+			$type      = IP_Geo_Block_Provider::get_providers( 'type', FALSE, FALSE );
+			$providers = IP_Geo_Block_Provider::get_valid_providers( $options['providers'], FALSE, FALSE );
+
+			$res = array();
+			$res['IP address'] = esc_html( $ip );
+
+			foreach ( $providers as $provider ) {
+				if ( $name = IP_Geo_Block_API::get_class_name( $provider ) ) {
+					$geo = new $name( IP_Geo_Block_API::get_api_key( $provider, $options ) );
+					$ret = $geo->get_location( $ip, $args );
+					$res[ $provider ] = array(
+						'type' => $type[ $provider ],
+						'code' => esc_html(
+							FALSE === $ret ? __( 'n/a', IP_Geo_Block::TEXT_DOMAIN ) :
+							! empty( $ret['errorMessage'] ) ? $ret['errorMessage'] : (
+							! empty( $ret['countryCode' ] ) ? $ret['countryCode' ] :
+							__( 'UNKNOWN', IP_Geo_Block::TEXT_DOMAIN ) )
+						),
+					);
+				}
 			}
 			break;
 
@@ -679,9 +729,12 @@ class IP_Geo_Block_Admin {
 		  case 'create_table':
 		  case 'delete_table':
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-			'create_table' === $_POST['cmd'] ?
-				IP_Geo_Block_Logs::create_log() :
+
+			if ( 'create_table' === $_POST['cmd'] )
+				IP_Geo_Block_Logs::create_log();
+			else
 				IP_Geo_Block_Logs::delete_log();
+
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
 			);

@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force
 Requires at least: 3.7
-Tested up to: 4.3
-Stable tag: 2.1.4
+Tested up to: 4.3.1
+Stable tag: 2.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,6 +70,11 @@ and reverse-brute-force attacks to the login form, XML-RPC and admin area.
   improve this feature. See more details on
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
+* **Cache mechanism:**  
+  A cache mechanism with transient API for the fetched IP addresses has been 
+  equipped to reduce load on the server against the burst accesses with a short
+  period of time.
+
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin such that a registered user can login as the
   membership from anywhere, but a request such as a new user registration,
@@ -98,11 +103,6 @@ and reverse-brute-force attacks to the login form, XML-RPC and admin area.
   get a country code from an IP address. There are two types of API which 
   support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
   choose an appropriate API.
-
-* **Cache mechanism:**  
-  A cache mechanism with transient API for the fetched IP addresses has been 
-  equipped to reduce load on the server against the burst accesses with a short
-  period of time.
 
 * **Database auto updater:**  
   [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
@@ -403,6 +403,16 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.1.5 =
+* **Enhancement:** Enforce preventing self blocking at the first installation.
+  And add the scan button to get all the country code using selected API.
+  Thanks to **Nils** for a nice idea at 
+  [support forum](https://wordpress.org/support/topic/locked-out-due-to-eu-vs-country "WordPress › Support » Locked out due to EU vs. Country").
+* **New feature:** Add pie chart to display statistics of "Blocked by country".
+* **Enhancement:** WP-ZEP is reinforced against CSRF.
+* **Bug fix:** Fix illegal handling of the fragment in a link.
+* See details at [2.1.5 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.5.html "2.1.5 Release Note").
 
 = 2.1.4 =
 * **Bug fix:** Fix the issue that this plugin broke functionality of a certain 

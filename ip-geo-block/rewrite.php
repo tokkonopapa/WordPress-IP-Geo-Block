@@ -73,9 +73,15 @@ class IP_Geo_Block_Rewrite {
 	public static function exec( $validate, $settings ) {
 
 		// get document root
+		// @note: super global can not be infected even when `register_globals` is on.
 		// @see wp-admin/network.php, get_home_path() in wp-admin/includes/file.php
+		// @link http://php.net/manual/en/security.globals.php
+		// @link http://php.net/manual/en/reserved.variables.php#63831
 		// @link http://blog.fyneworks.com/2007/08/php-documentroot-in-iis-windows-servers.html
 		// @link http://stackoverflow.com/questions/11893832/is-it-a-good-idea-to-use-serverdocument-root-in-includes
+		// @link http://community.sitepoint.com/t/-server-document-root-injection-vulnerability/5274
+		// @link http://www.securityfocus.com/archive/1/476274/100/0/threaded
+		// @link http://www.securityfocus.com/archive/1/476437/100/0/threaded
 		if ( ! ( $root = $_SERVER['DOCUMENT_ROOT'] ) )
 			$root = substr( $_SERVER['SCRIPT_FILENAME'], 0, -strlen( $_SERVER['SCRIPT_NAME'] ) );
 

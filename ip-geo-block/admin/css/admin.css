@@ -35,7 +35,7 @@ fieldset.ip-geo-block-field .ip-geo-block-dropdown:before {
 fieldset.ip-geo-block-field .ip-geo-block-dropup:before {
     border-left: 0.4em solid #555;
     top: 15%;
-    left: 3%;
+    left: 3px;
 }
 fieldset.ip-geo-block-field .ip-geo-block-dropdown:before {
     border-top: 0.4em solid #555;
@@ -57,18 +57,28 @@ fieldset.ip-geo-block-field .form-table {
 }
 
 #ip-geo-block-loading,
-#ip-geo-block-download {
-    padding: 0;
-    margin: 0.25em 0 0 2em;
+#ip-geo-block-download,
+#ip-geo-block-scanning,
+#ip-geo-block-delete_table,
+#ip-geo-block-create_table,
+#ip-geo-block-statistics,
+#ip-geo-block-cache,
+#ip-geo-block-logs {
     height: 16px;
     width: 16px;
+    margin-left: 1em;
     display: inline-block;
+    vertical-align: middle;
 }
 .ip-geo-block-loading {
     background-size: 16px 16px;
     background-position: center center;
     background-repeat: no-repeat;
     background-image: url(data:image/gif;base64,R0lGODlhEAAQAPIGAAAAAMLCwkJCQpKSkmJiYoKCgv///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAGACwAAAAAEAAQAAADM2i63P4wyklrC0IEKgAQnAdOmGYFBLExwboQWcG2rlHEwTDQLUsUOd2mBxkUCgNKa+dIAAAh+QQJCgAGACwAAAIACgAOAAADLWgWIqHQCABEVLPe1R4MBOFFRFNsRUNsYDFewTC8iixvQ1EMyxjEvyBLODQkAAAh+QQJCgAGACwAAAAACgAOAAADLWi6IRJrCQCECoU0ag1xxeBARuEQ0UUU5DUM7fK+qTEUYR0EcM3Ev51uB7wAEwAh+QQJCgAGACwAAAAADgAKAAADLWi6URQrLiJEkSaM0eqrkLFtAVEEAgAIylAUQ5SuSqCFNZjhWG3zmB8wOJQkAAAh+QQJCgAGACwCAAAADgAKAAADK2hqMRMrLuekCnCU8gqBDCZ2glBcYkSUxIJJgQdaUVDOtAAAAr3oPN/llgAAIfkECQoABgAsBgAAAAoADgAAAytoEdauiz0Yx5BQFTvN2EMXWNgUFETZFIJQdERLiGgZtKohAIDQ7T0RrpEAACH5BAkKAAYALAYAAgAKAA4AAAMqaKoR+609Fie1K4zhZiibNRSg1XAQUXQPIQgE835voQgAIARqh+ummSUBACH5BAUKAAYALAIABgAOAAoAAAMsaLpsES2+F9mEddEgBFbBMGACAAiMOCrlGRBFWBQD2L0dYYjfUuQZEKynSAAAOw==);
+}
+
+.ip-geo-block-notice {
+    color: #dd3d36;
 }
 
 .ip-geo-block-title {
@@ -82,7 +92,7 @@ fieldset.ip-geo-block-field .form-table {
 }
 
 #ip-geo-block-map {
-    height: 360px;
+    height: 400px;
     margin-top: 1em;
     margin-left: auto;
     margin-right: auto;
@@ -169,7 +179,8 @@ ul.ip-geo-block-statistics-countries li {
     border-width: 1px 1px 1px 0;
     float: left;
     line-height: 20px;
-    padding: 4px 12px;
+    padding: 4px;
+    width: 20px;
     text-decoration: none;
 }
 .ip-geo-block-log .pagination ul > .active > a,
@@ -238,4 +249,18 @@ ul.ip-geo-block-statistics-countries li {
     white-space: normal;
     word-wrap: break-word;
     word-break: break-all;
+}
+
+/* Scan the country code */
+#ip-geo-block-scan-code {
+    vertical-align: middle;
+}
+#ip-geo-block-code-list {
+    display: none;
+    margin-bottom: 0;
+}
+
+/* for google chart */
+#ip-geo-block-countries {
+    display: none;
 }

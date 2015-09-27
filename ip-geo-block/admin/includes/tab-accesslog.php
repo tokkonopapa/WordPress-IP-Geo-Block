@@ -3,6 +3,7 @@ require_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 function ip_geo_block_tab_accesslog( $context ) {
+	$plugin_slug = IP_Geo_Block::PLUGIN_SLUG;
 	$option_slug = $context->option_slug['settings'];
 	$option_name = $context->option_name['settings'];
 	$settings = IP_Geo_Block::get_option( 'settings' );
@@ -17,7 +18,7 @@ if ( $settings['validation']['reclogs'] ) :
 	/*----------------------------------------*
 	 * Validation logs
 	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
+	$section = "${plugin_slug}-accesslog";
 	add_settings_section(
 		$section,
 		__( 'Validation logs', IP_Geo_Block::TEXT_DOMAIN ),
@@ -37,7 +38,7 @@ if ( $settings['validation']['reclogs'] ) :
 			'option' => $option_name,
 			'field' => $field,
 			'value' => __( 'Clear now', IP_Geo_Block::TEXT_DOMAIN ),
-			'after' => '<div id="ip-geo-block-loading"></div>',
+			'after' => "<div id=\"${plugin_slug}-logs\"></div>",
 		)
 	);
 
@@ -46,7 +47,7 @@ else:
 	/*----------------------------------------*
 	 * Warning
 	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
+	$section = "${plugin_slug}-accesslog";
 	add_settings_section(
 		$section,
 		__( 'Validation logs', IP_Geo_Block::TEXT_DOMAIN ),
@@ -72,7 +73,7 @@ function ip_geo_block_list_accesslog() {
 
 	foreach ( $title as $key => $val ) {
 		echo "<h4>$val</h4>\n";
-		echo "<table class='fixed ", IP_Geo_Block::PLUGIN_SLUG, "-log' data-page-size='10' data-limit-navigation='2'><thead><tr>\n";
+		echo "<table class='fixed ", IP_Geo_Block::PLUGIN_SLUG, "-log' data-page-size='10' data-limit-navigation='5'><thead><tr>\n";
 		echo "<th data-type='numeric'>", __( 'Date', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'IP address', IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";
 		echo "<th>", __( 'Code',       IP_Geo_Block::TEXT_DOMAIN ), "</th>\n";

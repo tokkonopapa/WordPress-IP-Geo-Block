@@ -61,6 +61,11 @@ and reverse-brute-force attacks to the login form, XML-RPC and admin area.
   improve this feature. See more details on
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
+* **Cache mechanism:**  
+  A cache mechanism with transient API for the fetched IP addresses has been 
+  equipped to reduce load on the server against the burst accesses with a short
+  period of time.
+
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin such that a registered user can login as the
   membership from anywhere, but a request such as a new user registration,
@@ -89,11 +94,6 @@ and reverse-brute-force attacks to the login form, XML-RPC and admin area.
   get a country code from an IP address. There are two types of API which 
   support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
   choose an appropriate API.
-
-* **Cache mechanism:**  
-  A cache mechanism with transient API for the fetched IP addresses has been 
-  equipped to reduce load on the server against the burst accesses with a short
-  period of time.
 
 * **Database auto updater:**  
   [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
@@ -145,7 +145,7 @@ Also thanks for providing the following great services and REST APIs for free.
 
     Provider                               | Supported type | Licence
     ---------------------------------------|----------------|--------
-    [http://freegeoip.net/]    [freegeoip] | IPv4           | free
+    [http://freegeoip.net/]    [freegeoip] | IPv4, IPv6     | free
     [http://ipinfo.io/]           [ipinfo] | IPv4, IPv6     | free
     [http://www.telize.com/]      [Telize] | IPv4, IPv6     | free
     [http://ip-json.rhcloud.com/] [IPJson] | IPv4, IPv6     | free

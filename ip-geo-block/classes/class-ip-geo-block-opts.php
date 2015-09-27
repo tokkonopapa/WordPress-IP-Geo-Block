@@ -83,6 +83,8 @@ class IP_Geo_Block_Options {
 			'IPv6'      => 0,
 			'countries' => array(),
 			'providers' => array(),
+			// since version 2.1.5
+			'daystats'  => array(),
 		),
 	);
 

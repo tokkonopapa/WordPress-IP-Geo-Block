@@ -1,5 +1,6 @@
 <?php
 function ip_geo_block_tab_statistics( $context ) {
+	$plugin_slug = IP_Geo_Block::PLUGIN_SLUG;
 	$option_slug = $context->option_slug['statistics'];
 	$option_name = $context->option_name['statistics'];
 	$options = IP_Geo_Block::get_option( 'statistics' );
@@ -15,7 +16,7 @@ if ( $setting['save_statistics'] ) :
 	/*----------------------------------------*
 	 * Statistics of comment post
 	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-statistics';
+	$section = "${plugin_slug}-statistics";
 	add_settings_section(
 		$section,
 		__( 'Statistics of validation', IP_Geo_Block::TEXT_DOMAIN ),
@@ -54,7 +55,10 @@ if ( $setting['save_statistics'] ) :
 	);
 
 	$field = 'countries';
-	$html = "<ul class=\"${option_slug}-${field}\">";
+	$html = "<div id=\"${plugin_slug}-chart-countries\"></div>";
+	$html .= "<ul id=\"${plugin_slug}-countries\" class=\"${option_slug}-${field}\">";
+
+	arsort( $options['countries'] );
 	foreach ( $options['countries'] as $key => $val ) {
 		$html .= sprintf( "<li>%2s:%5d</li>", esc_html( $key ), (int)$val );
 	}
@@ -62,7 +66,7 @@ if ( $setting['save_statistics'] ) :
 
 	add_settings_field(
 		$option_name . "_$field",
-		__( 'Blocked by countries', IP_Geo_Block::TEXT_DOMAIN ),
+		__( 'Blocked by countries', IP_Geo_Block::TEXT_DOMAIN ) . '<br>(<a id="show-hide-details" href="javascript:void(0)" title="Show/Hide details">' . __( 'Show/Hide details', IP_Geo_Block::TEXT_DOMAIN ) . '</a>)',
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -134,7 +138,7 @@ if ( $setting['save_statistics'] ) :
 			'option' => $option_name,
 			'field' => $field,
 			'value' => __( 'Clear now', IP_Geo_Block::TEXT_DOMAIN ),
-			'after' => '<div id="ip-geo-block-loading"></div>',
+			'after' => "<div id=\"${plugin_slug}-statistics\"></div>",
 		)
 	);
 
@@ -143,7 +147,7 @@ else:
 	/*----------------------------------------*
 	 * Warning
 	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-statistics';
+	$section = "${plugin_slug}-statistics";
 	add_settings_section(
 		$section,
 		__( 'Statistics of validation', IP_Geo_Block::TEXT_DOMAIN ),
@@ -156,7 +160,7 @@ endif;
 	/*----------------------------------------*
 	 * Statistics of cache
 	 *----------------------------------------*/
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-cache';
+	$section = "${plugin_slug}-cache";
 	add_settings_section(
 		$section,
 		__( 'Statistics of cache', IP_Geo_Block::TEXT_DOMAIN ),
@@ -218,7 +222,7 @@ endif;
 			'option' => $option_name,
 			'field' => $field,
 			'value' => __( 'Clear now', IP_Geo_Block::TEXT_DOMAIN ),
-			'after' => '<div id="ip-geo-block-loading"></div>',
+			'after' => "<div id=\"${plugin_slug}-cache\"></div>",
 		)
 	);
 }

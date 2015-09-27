@@ -2,6 +2,7 @@
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 function ip_geo_block_tab_attribution( $context ) {
+	$plugin_slug = IP_Geo_Block::PLUGIN_SLUG;
 	$option_slug = $context->option_slug['settings'];
 	$option_name = $context->option_name['settings'];
 
@@ -10,7 +11,7 @@ function ip_geo_block_tab_attribution( $context ) {
 		$option_name
 	);
 
-	$section = IP_Geo_Block::PLUGIN_SLUG . '-attribution';
+	$section = "${plugin_slug}-attribution";
 	add_settings_section(
 		$section,
 		__( 'Attribution links', IP_Geo_Block::TEXT_DOMAIN ),
