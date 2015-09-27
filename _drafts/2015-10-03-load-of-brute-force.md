@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Measuring load of brute-force attack"
-date:   2015-09-29 09:00:00
+date:   2015-10-03 09:00:00
 categories: article
 published: true
 script: []
@@ -20,7 +20,7 @@ burst accesses to WordPress back-end such as `wp-comments-post.php`,
 `xmlrpc.php`, `wp-login.php`, `wp-admin/admin-ajax.php` using 
 [ApacheBench][ApacheBench].
 
-[![attack.sh]({{ "/img/2015-09/attack-sh.png" | prepend: site.baseurl }}
+[![attack.sh]({{ "/img/2015-10/attack-sh.png" | prepend: site.baseurl }}
   "attack.sh"
 )][repository]
 
@@ -40,7 +40,7 @@ I setup the testbed in my local PC which specifications are followings:
 
 And here are the plugins which installed in the above environments:
 
-![Plugins]({{ "/img/2015-09/Plugins.png" | prepend: site.baseurl }}
+![Plugins]({{ "/img/2015-10/Plugins.png" | prepend: site.baseurl }}
  "Plugins"
 )
 
@@ -57,7 +57,7 @@ installation.
 On the other hand, options for [IP Geo Block][IP-Geo-Block] are changed as 
 follows:
 
-![Validation target settings]({{ "/img/2015-09/ValidationTarget.png" | prepend: site.baseurl }}
+![Validation target settings]({{ "/img/2015-10/ValidationTarget.png" | prepend: site.baseurl }}
  "Validation target settings"
 )
 
