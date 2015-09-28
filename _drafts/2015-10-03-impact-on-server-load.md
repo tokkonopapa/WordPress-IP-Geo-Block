@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Measuring load of brute-force attack"
+title:  "Measuring the impact on server load caused by brute-force attacks"
 date:   2015-10-03 09:00:00
 categories: article
 published: true
@@ -126,7 +126,7 @@ Wordfence is higher than IP Geo Block.
 
 Speaking about the site performance, more plugins leads to less speed. The 
 results shows that the performance of load reduction by IP Geo Block against 
-brute-force attack is not so outstanding, but I think it minimize a rise of 
+brute-force attacks is not so outstanding, but I think it minimize a rise of 
 the load. <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2728.png)
 </span>
@@ -138,3 +138,4 @@ the load. <span class="emoji">
 [Testbed]:      https://en.wikipedia.org/wiki/Testbed "Testbed - Wikipedia, the free encyclopedia"
 [Wordfence]:    https://www.wordfence.com/ "WordPress Security Plugin | Wordfence"
 [OptimizeDB]:   https://wordpress.org/plugins/rvg-optimize-database/ "WordPress › Optimize Database after Deleting Revisions « WordPress Plugins"
+[NinjaFire]:    http://blog.nintechnet.com/wordpress-brute-force-attack-detection-plugins-comparison/ "WordPress: Brute-force attack detection plugins comparison"
