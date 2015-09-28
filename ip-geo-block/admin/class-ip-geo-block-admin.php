@@ -251,10 +251,10 @@ class IP_Geo_Block_Admin {
 			$validate = IP_Geo_Block::get_geolocation();
 			$validate = IP_Geo_Block::validate_country( $validate, $settings );
 			if ( 'passed' !== $validate['result'] ) {
-				$url = admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG ) . '#';
+				$url = admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG . '#' . IP_Geo_Block::PLUGIN_SLUG );
 				$this->add_admin_notice( 'error', sprintf(
 					__( 'You will be blocked out when you log out. Please confirm &#8217;<strong>Matching rule</strong>&#8217; and the country code in &#8217;<strong>White list</strong>&#8217; or &#8217;<strong>Black list</strong>&#8217; at <a href="%s">Validation rule settings</a>. Otherwise select &#8217;<strong>Block by country (register, lost password)</strong>&#8217; for &#8217;<strong>Login form</strong>&#8217; at <a href="%s">Validation target settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
-					$url . IP_Geo_Block::PLUGIN_SLUG . '-settings-0', $url . IP_Geo_Block::PLUGIN_SLUG . '-settings-1'
+					"${url}-settings-0", "${url}-settings-1"
 				) );
 			}
 		}

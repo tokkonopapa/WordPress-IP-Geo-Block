@@ -78,10 +78,7 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	// If the matching rule is not initialized, then add a caution
-	$list = array();
-	if ( -1 == $options['matching_rule'] )
-		$list = array( __( 'Disable', IP_Geo_Block::TEXT_DOMAIN ) => -1 );
-
+	$list = ( 0 <= $options['matching_rule'] ? array() : array( __( 'Disable', IP_Geo_Block::TEXT_DOMAIN ) => -1 ) );
 	$list += array(
 		__( 'White list', IP_Geo_Block::TEXT_DOMAIN ) => 0,
 		__( 'Black list', IP_Geo_Block::TEXT_DOMAIN ) => 1,
