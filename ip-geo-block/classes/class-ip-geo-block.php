@@ -40,7 +40,9 @@ class IP_Geo_Block {
 
 	// Globals in this class
 	public static $content_dir;
+	private $skip_auth = FALSE;
 	private $remote_addr = NULL;
+	private static $user_validation;
 
 	/**
 	 * Initialize the plugin
@@ -249,16 +251,20 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Prepare for the validation result.
+	 * Build the validation result for the current user.
 	 *
 	 */
 	private static function make_validation( $ip, $result ) {
-		return array_merge( array(
+		return self::$user_validation = array_merge( array(
 			'ip' => $ip,
 			'time' => 0,
 			'auth' => get_current_user_id(),
 			'code' => NULL,
 		), $result );
+	}
+
+	public static function get_user_validation() {
+		return self::$user_validation;
 	}
 
 	/**
@@ -653,7 +659,7 @@ class IP_Geo_Block {
 
 	public function check_auth( $validate, $settings ) {
 		// authentication should be prior to the validation by country when anyone can login
-		if ( $validate['auth'] || ! empty( $this->skip_auth ) )
+		if ( $validate['auth'] || $this->skip_auth )
 			$validate += array( 'result' => 'passed' ); // can't overwrite the existing result
 
 		return $validate;
