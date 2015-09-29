@@ -9,8 +9,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$options = IP_Geo_Block::get_option( 'settings' );
 
 	// Get the country code
-//	$key = IP_Geo_Block::get_geolocation();
-	$key = IP_Geo_Block::get_user_validation();
+	$key = IP_Geo_Block::get_geolocation();
 
 	/**
 	 * Register a setting and its sanitization callback.

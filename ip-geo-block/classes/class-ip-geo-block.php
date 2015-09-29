@@ -42,7 +42,6 @@ class IP_Geo_Block {
 	public static $content_dir;
 	private $skip_auth = FALSE;
 	private $remote_addr = NULL;
-	private static $user_validation;
 
 	/**
 	 * Initialize the plugin
@@ -255,16 +254,12 @@ class IP_Geo_Block {
 	 *
 	 */
 	private static function make_validation( $ip, $result ) {
-		return self::$user_validation = array_merge( array(
+		return array_merge( array(
 			'ip' => $ip,
 			'time' => 0,
 			'auth' => get_current_user_id(),
-			'code' => NULL,
+			'code' => 'ZZ',
 		), $result );
-	}
-
-	public static function get_user_validation() {
-		return self::$user_validation;
 	}
 
 	/**

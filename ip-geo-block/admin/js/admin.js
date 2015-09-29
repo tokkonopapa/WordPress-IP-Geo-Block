@@ -296,7 +296,7 @@ var ip_geo_block_time = new Date();
 
 		  case 1:
 			// https://developers.google.com/loader/#Dynamic
-			if ($('#ip-geo-block-chart-countries').length) {
+			if ($('#ip-geo-block-chart-countries').length && 'object' === typeof google) {
 				google.load("visualization", "1", {
 					packages: ["corechart"],
 					callback: function () { chart.draw(); }
