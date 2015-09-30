@@ -94,9 +94,8 @@ class IP_Geo_Block {
 		}
 
 		// get content folders (with/without trailing slash)
-		$uri = home_url();
 		self::$content_dir = array(
-			'root'    => untrailingslashit( parse_url  ( $uri, PHP_URL_PATH ) ),
+			'root'    => untrailingslashit( parse_url  ( $uri = home_url(), PHP_URL_PATH ) ),
 			'admin'   =>   trailingslashit( str_replace( $uri, '', admin_url() ) ),
 			'plugins' =>   trailingslashit( str_replace( $uri, '', plugins_url() ) ),
 			'themes'  =>   trailingslashit( str_replace( $uri, '', get_theme_root_uri() ) ),
@@ -258,7 +257,7 @@ class IP_Geo_Block {
 			'ip' => $ip,
 			'time' => 0,
 			'auth' => get_current_user_id(),
-			'code' => 'ZZ',
+			'code' => 'ZZ', // may be overwrited with $result
 		), $result );
 	}
 
@@ -315,7 +314,7 @@ class IP_Geo_Block {
 	 */
 	public static function validate_country( $validate, $settings ) {
 		switch ( $settings['matching_rule'] ) {
-		  case 0:
+		  case 0: // 'ZZ' will be blocked if it's not in the $list.
 			$list = $settings['white_list'];
 			if ( ! $list || FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'passed' );
@@ -323,7 +322,7 @@ class IP_Geo_Block {
 				return $validate + array( 'result' => 'blocked' );
 			break;
 
-		  case 1:
+		  case 1: // 'ZZ' will be blocked if it's not in the $list.
 			$list = $settings['black_list'];
 			if ( $list && FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'blocked' );
