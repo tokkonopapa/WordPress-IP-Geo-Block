@@ -321,8 +321,10 @@ class IP_Geo_Block {
 			return $validate + array( 'result' => 'blocked' );
 			break;
 
-		  case 1: // 'ZZ' will not be blocked if it's not in the $list.
+		  case 1: // 'ZZ' will always be blocked.
 			$list = $settings['black_list'];
+			if ( $list )
+				$list += ',ZZ';
 			if ( $list && FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'blocked' );
 			return $validate + array( 'result' => 'passed' );
