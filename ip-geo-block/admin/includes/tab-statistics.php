@@ -39,21 +39,6 @@ if ( $setting['save_statistics'] ) :
 		)
 	);
 
-	$field = 'unknown';
-	add_settings_field(
-		$option_name . "_$field",
-		__( 'Unknown (blocked)', IP_Geo_Block::TEXT_DOMAIN ),
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'html',
-			'option' => $option_name,
-			'field' => $field,
-			'value' => esc_html( $options[ $field ] ),
-		)
-	);
-
 	$field = 'countries';
 	$html = "<div id=\"${plugin_slug}-chart-countries\"></div>";
 	$html .= "<ul id=\"${plugin_slug}-countries\" class=\"${option_slug}-${field}\">";

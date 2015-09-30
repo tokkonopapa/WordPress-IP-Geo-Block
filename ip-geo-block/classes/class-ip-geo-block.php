@@ -318,23 +318,19 @@ class IP_Geo_Block {
 			$list = $settings['white_list'];
 			if ( ! $list || FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'passed' );
-			elseif ( ! empty( $validate['code'] ) )
-				return $validate + array( 'result' => 'blocked' );
+			return $validate + array( 'result' => 'blocked' );
 			break;
 
-		  case 1: // 'ZZ' will be blocked if it's not in the $list.
+		  case 1: // 'ZZ' will not be blocked if it's not in the $list.
 			$list = $settings['black_list'];
 			if ( $list && FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'blocked' );
-			elseif ( ! $list || ! empty( $validate['code'] ) )
-				return $validate + array( 'result' => 'passed' );
-			break;
-
-		  default: // -1: Disable
 			return $validate + array( 'result' => 'passed' );
+			break;
 		}
 
-		return $validate + array( 'result' => 'unknown' );
+		// -1: Disable
+		return $validate + array( 'result' => 'passed' );
 	}
 
 	/**
@@ -434,7 +430,7 @@ class IP_Geo_Block {
 		//     'ip'       => $ip,       /* validated ip address                */
 		//     'auth'     => $auth,     /* authenticated or not                */
 		//     'code'     => $code,     /* country code or reason of rejection */
-		//     'result'   => $result,   /* 'passed', 'blocked' or 'unknown'    */
+		//     'result'   => $result,   /* 'passed', 'blocked'                 */
 		// );
 		foreach ( $ips as $this->remote_addr ) {
 			$validate = self::_get_geolocation( $this->remote_addr, $settings, $providers );
@@ -455,7 +451,7 @@ class IP_Geo_Block {
 		if ( $die ) {
 			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
 			$var = (int)$settings['validation']['reclogs'];
-			if ( ( 1 === $var &&   $blocked ) || // blocked, unknown
+			if ( ( 1 === $var &&   $blocked ) || // blocked
 			     ( 2 === $var && ! $blocked ) || // passed
 			     ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
 			     ( 4 === $var &&   $validate['auth'] ) || // authenticated
@@ -631,7 +627,7 @@ class IP_Geo_Block {
 			$settings = self::get_option( 'settings' );
 			IP_Geo_Block_API_Cache::update_cache( $cache['hook'], $validate, $settings );
 
-			// (1) blocked, unknown, (3) unauthenticated, (5) all
+			// (1) blocked, (3) unauthenticated, (5) all
 			if ( (int)$settings['validation']['reclogs'] & 1 ) {
 				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 				IP_Geo_Block_Logs::record_log( $cache['hook'], $validate, $settings );
