@@ -8,7 +8,9 @@ on.
 It emulates the specific requests from various countries, and shows the HTTP 
 response codes and messages.
 
+<div style="width:50%; box-shadow:0 1px 4px rgba(0,0,0,0.2);">
 ![Access Emulator][Emulator]
+</div>
 
 ### Limitation: ###
 

@@ -251,8 +251,8 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			page['path'] = page['path'].replace(home['path'], '');
 			$scope.single_page =
 				(home['scheme'] + '://' + home['authority'] + home['path']) +
-				(page['path'] ? page['path'] : '') +
-				(page['query'] ? '?' + page['query'] : '') +
+				(page['path'    ] ?       page['path'    ] : '') +
+				(page['query'   ] ? '?' + page['query'   ] : '') +
 				(page['fragment'] ? '#' + page['fragment'] : '');
 
 			// Update BuddyPress
