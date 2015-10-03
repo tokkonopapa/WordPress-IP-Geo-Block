@@ -8,9 +8,7 @@ on.
 It emulates the specific requests from various countries, and shows the HTTP 
 response codes and messages.
 
-<div style="width:50%; box-shadow:0 1px 4px rgba(0,0,0,0.2);">
-    <img src="http://tokkonopapa.github.io/WordPress-IP-Geo-Block/img/2015-09/Emulator.png" title="Access Emulator" />
-</div>
+![Access Emulator][Emulator]
 
 ### Limitation: ###
 
