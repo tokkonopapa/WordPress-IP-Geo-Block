@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Measuring the impact on server load caused by brute-force attacks"
-date:   2015-10-03 09:00:00
+date:   2015-10-04 10:00:00
 categories: article
 published: true
 script: []
@@ -54,8 +54,8 @@ into consideration when you see the results.
 [Wordfence][Wordfence] has a lot of options. So I leave them as just after 
 installation.
 
-On the other hand, options for [IP Geo Block][IP-Geo-Block] are changed as 
-follows:
+On the other hand, options for [IP Geo Block 2.1.5][IP-Geo-Block] are changed 
+as follows:
 
 ![Validation target settings]({{ "/img/2015-10/ValidationTarget.png" | prepend: site.baseurl }}
  "Validation target settings"
