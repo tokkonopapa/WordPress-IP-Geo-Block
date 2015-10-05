@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Measuring the impact on server load caused by brute-force attacks"
+title:  "Impact on server load caused by brute-force attacks"
 date:   2015-10-04 10:00:00
 categories: article
 published: true
