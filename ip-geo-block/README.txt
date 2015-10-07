@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.3.1
-Stable tag: 2.1.5
+Stable tag: 2.1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -403,6 +403,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.1.5.1 =
+* **Bug fix:** Fixed the issue that the Blacklist did not work properly. Thanks
+  to TJayYay for reporting this issue at
+  [support forum](https://wordpress.org/support/topic/hackers-from-country-in-blocked-list-of-countries-trying-to-login "WordPress › Support » Hackers from country in Blocked List of Countries trying to login").
 
 = 2.1.5 =
 * **Enhancement:** Enforce preventing self blocking at the first installation.
