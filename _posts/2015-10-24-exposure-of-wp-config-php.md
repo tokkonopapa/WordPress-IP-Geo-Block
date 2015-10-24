@@ -13,6 +13,8 @@ From July to September, 33 types of malicious requests to attempt exposing the
 I analyzed all of them to identify if [IP Geo Block][IP-Geo-Block] can block 
 these or not.
 
+<!--more-->
+
 Unfortunately, I could not find all the causes of exposure because most of 
 them were already removed from the WordPress repository. So I can't say the 
 right thing with confidence, but the only 2 of these could be blocked by 
@@ -20,8 +22,6 @@ right thing with confidence, but the only 2 of these could be blocked by
 
 In this article, I should clarify how to prevent exposure of `wp-config.php` 
 against such malicous requests.
-
-<!--more-->
 
 ### <span id="sec1">Analysis of Attack Vectors</span> ###
 
