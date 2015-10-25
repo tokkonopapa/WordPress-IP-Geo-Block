@@ -326,12 +326,12 @@ Those will redirect a request, which is pointed to
 `/wp-content/plugins/.../*.php` or to 
 `/wp-content/themes/.../*.php`, to the [rewrite.php][WritePHP] in 
 [IP Geo Block][IP-Geo-Block] in order to load `wp-load.php` and then it will 
-be validated by contry code or WP-ZEP <span class="emoji">
+be validated by country code or WP-ZEP <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f4aa.png)
 </span>.
 
 Another consideration for **Type** in **Attack Vector** is that 
-[IP Geo Block][IP-Geo-Block] should filter out the "**malicious signature**" 
+[IP Geo Block][IP-Geo-Block] should filter out the "**Malicious signature**" 
 such as `wp-config.php` or `passwd` to defence against attacks from the 
 permitted countries.
 
