@@ -1,7 +1,7 @@
 ---
-layout: post
+layout: page
 title: "Analysis of Attack Vectors"
-date: 2015-11-07 09:00:00
+date: 2015-11-01 09:00:00
 script: [/js/jquery-1.11.2.min.js, /js/tablesort.min.js]
 inline: <script>
   var table = document.getElementById('my-table');
@@ -19,6 +19,96 @@ inline: <script>
   }
   </script>
 ---
+
+### Analysis Conditions ###
+
+- **IP Geo Block:**  
+  2.2.0
+
+- **Server settings:**  
+  According to [this article][PREVENT-EXPOSURE], `.htaccess` is applied to 
+  `wp-content/plugins/` and `wp-content/themes/`.
+
+- **Abbreviation:**  {% highlight text %}
+  Attack Vector = Type x Path
+  {% endhighlight %} <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AB</td>
+        <td>Authentication Bypass</td>
+      </tr>
+      <tr>
+        <td>AFU</td>
+        <td>Arbitrary File Upload</td>
+      </tr>
+      <tr>
+        <td>CSRF</td>
+        <td>Cross-Site Request Forgery</td>
+      </tr>
+      <tr>
+        <td>DT</td>
+        <td>Directory Traversal</td>
+      </tr>
+      <tr>
+        <td>LFI</td>
+        <td>Local File Inclusion</td>
+      </tr>
+      <tr>
+        <td>PE</td>
+        <td>Privilege Escalation</td>
+      </tr>
+      <tr>
+        <td>RCE</td>
+        <td>Remote Code Execution</td>
+      </tr>
+      <tr>
+        <td>RFU</td>
+        <td>Remote File Upload</td>
+      </tr>
+      <tr>
+        <td>SQLI</td>
+        <td>SQL Injection</td>
+      </tr>
+      <tr>
+        <td>XSS</td>
+        <td>Cross-Site Scripting</td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <thead>
+      <tr>
+        <th>Path</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>PD</td>
+        <td>Plugin Direct</td>
+      </tr>
+      <tr>
+        <td>FE</td>
+        <td>Front End</td>
+      </tr>
+      <tr>
+        <td>AX</td>
+        <td>Admin ajax / post</td>
+      </tr>
+      <tr>
+        <td>WA</td>
+        <td>wp-admin</td>
+      </tr>
+    </tbody>
+  </table>
+
+### Results ###
 
 <div class="table-responsive">
   <cite><a href="https://wpvulndb.com/plugins" title="WordPress Plugin Vulnerabilities"><small>Source: &copy; The WPScan Team</small></a></cite>
@@ -442,3 +532,5 @@ inline: <script>
     </tbody>
   </table>
 </div>
+
+[PREVENT-EXPOSURE]: {{ "/article/exposure-of-wp-config-php.html" | prepend: site.baseurl }} "Prevent exposure of wp-config.php"

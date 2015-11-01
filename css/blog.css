@@ -198,13 +198,13 @@ img.site-logo {
   box-shadow: none;
 }
 span.emoji img {
-  height: 16px;
-  width: 16px;
+  height: 1em;
+  width: 1em;
   box-shadow: none;
   display: inline-block;
   vertical-align: text-top;
   position: relative;
-  top: 5px;
+  top: 4px;
 }
 
 ol, ul {
