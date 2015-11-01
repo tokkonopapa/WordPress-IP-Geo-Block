@@ -30,13 +30,7 @@
  * successfully, this includes the originally requested php file to excute it.
  */
 
-if ( ! defined( 'IP_GEO_BLOCK_REWRITE' ) ):
-
-/**
- * API definition of this class
- *
- */
-define( 'IP_GEO_BLOCK_REWRITE', 'IP_Geo_Block_Rewrite::exec' );
+if ( ! class_exists( 'IP_Geo_Block_Rewrite' ) ):
 
 class IP_Geo_Block_Rewrite {
 
@@ -87,7 +81,7 @@ class IP_Geo_Block_Rewrite {
 
 		// get absolute path of requested uri
 		// @link http://davidwalsh.name/iis-php-server-request_uri
-		$path = ( $root = str_replace( '\\', '/', $root ) ) . parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
+		$path = ( $root = wp_normalize_path( $root ) ) . parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
 
 		// while malicios URI may be intercepted by the server,
 		// null byte attack should be invalidated just in case.
@@ -97,6 +91,8 @@ class IP_Geo_Block_Rewrite {
 		$path = realpath( str_replace( "\0", '', $path ) );
 
 		// check path if under the document root
+		// This may be meaningless because the HTTP request is always inside the document root.
+		// The only possibility is a symbolic link pointed to outside of the document root.
 		if ( 0 !== strpos( $path, "$root/" ) )
 			self::abort( $validate, $settings, file_exists( $path ) );
 
@@ -106,7 +102,7 @@ class IP_Geo_Block_Rewrite {
 
 		// check file extention
 		// @note: if it fails, rewrite rule may be misconfigured
-		elseif ( FALSE === strripos( $path, '.php', -4 ) )
+		if ( FALSE === strripos( strtolower( $path ), '.php', -4 ) )
 			self::abort( $validate, $settings, file_exists( $path ) );
 
 		// reconfirm permission for the requested URI
@@ -135,7 +131,7 @@ if ( class_exists( 'IP_Geo_Block' ) ) {
 	);
 }
 
-endif; /* ! defined( 'IP_GEO_BLOCK_REWRITE' ) */
+endif; /* ! class_exists( 'IP_Geo_Block_Rewrite' ) */
 
 /**
  * Configuration samples of .htaccess for apache

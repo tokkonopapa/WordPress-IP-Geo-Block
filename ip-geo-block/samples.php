@@ -112,58 +112,70 @@ add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
 
 
 /**
- * Example 6: Validate requested queries via admin-ajax.php
- * Use case: Block malicious access such as `File Inclusion`
- *
- * @link http://hakipedia.com/index.php/File_Inclusion
- * @link http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html
- *
- * @global array $_GET and $_POST requested queries
- * @param  array $validate
- * @return array $validate add 'result' as 'blocked' when NG word was found
- */
-function my_protectives( $validate ) {
-	$blacklist = array(
-		'wp-config.php',
-		'passwd',
-	);
-
-	$req = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
-
-	foreach ( $blacklist as $item ) {
-		if ( strpos( $req, $item ) !== FALSE ) {
-			$validate['result'] = 'blocked';
-			break;
-		}
-	}
-
-	return $validate; // should not set 'passed' to validate by country code
-}
-add_filter( 'ip-geo-block-admin', 'my_protectives' );
-
-
-/**
- * Example 7: Validate specific actions of admin-ajax.php at front-end
+ * Example 6: Validate specific actions of admin-ajax.php at front-end
  * Use case: Give permission to ajax with specific action at public facing page
  *
  * @global array $_GET and $_POST requested queries
  * @param  array $validate
  * @return array $validate add 'result' as 'passed' when 'action' is OK
  */
-function my_permission( $validate ) {
-	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-		$whitelist = array(
-			'something',
-		);
+function my_permitted_ajax( $validate ) {
+	$whitelist = array(
+		'permitted_action',
+	);
 
-		if ( in_array( $_REQUEST['action'], $permitted ) ) {
-			$validate['result'] = 'passed';
-		}
-	}
+	if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], $ whitelist ) )
+		$validate['result'] = 'passed';
 
 	return $validate; // should not set 'passed' to validate by country code
 }
-add_filter( 'ip-geo-block-admin', 'my_permission' );
+if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
+	add_filter( 'ip-geo-block-admin', 'my_permitted_ajax' );
+
+
+/**
+ * Example 7: Validate extra IP addresses with CIDR prior to other validations
+ * Use case: Get IPs with CIDR from Amazon AWS and set them to the black list
+ *
+ * @param  array $extra_ips array of white list and black list
+ * @param  string $hook 'comment', 'login', 'admin' or 'xmlrpc'
+ * @return array $extra_ips updated array
+ */
+define( 'MY_EXTRA_IPS_LIST', 'my_extra_ips_list' );
+define( 'MY_EXTRA_IPS_CRON', 'my_extra_ips_cron' );
+function my_extra_ips_get() {
+	$list = json_decode(
+		@file_get_contents( 'https://ip-ranges.amazonaws.com/ip-ranges.json' ),
+		TRUE // convert object to array
+	);
+
+	//  keep the list in the cache
+	if ( is_array( $list['prefixes'] ) ) {
+		$list = implode( ',', array_column( $list['prefixes'], 'ip_prefix' ) );
+		set_transient( MY_EXTRA_IPS_LIST, $list, DAY_IN_SECONDS );
+	}
+
+	if ( ! wp_next_scheduled( MY_EXTRA_IPS_CRON ) )
+		wp_schedule_single_event( time() + HOUR_IN_SECONDS, MY_EXTRA_IPS_CRON );
+
+	return $list;
+}
+function my_extra_ips_hook( $extra_ips, $hook ) {
+	// restrict the target hook
+	if ( in_array( $hook, array( 'xmlrpc', 'login' ) ) ) {
+		$list = get_transient( MY_EXTRA_IPS_LIST );
+
+		// if the list does not exist, then update
+		if ( ! $list )
+			$list = my_extra_ips_get();
+
+		$extra_ips['black_list'] .= ( $extra_ips['black_list'] ? ',' : '' ) . $list;
+	}
+
+	return $extra_ips;
+}
+add_action( MY_EXTRA_IPS_CRON, 'my_extra_ips_get' );
+add_filter( 'ip-geo-block-extra-ips', 'my_extra_ips_hook', 10, 2 );
 
 
 /**

@@ -19,7 +19,7 @@ class IP_Geo_Block_Options {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
-			'version'         => '2.1.0', // This table version (not package)
+			'version'         => '2.2.0', // This table version (not package)
 			// since version 1.0
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
@@ -28,7 +28,7 @@ class IP_Geo_Block_Options {
 			),
 			'matching_rule'   => -1,      // -1:neither, 0:white list, 1:black list
 			'white_list'      => NULL,    // Comma separeted country code
-			'black_list'      => NULL,    // Comma separeted country code
+			'black_list'      => 'ZZ',    // Comma separeted country code
 			'timeout'         => 5,       // Timeout in second
 			'response_code'   => 403,     // Response code
 			'save_statistics' => TRUE,    // Save statistics
@@ -73,6 +73,17 @@ class IP_Geo_Block_Options {
 			),
 			// since version 2.0.8
 			'priority'        => 0,       // Action priority for WP-ZEP
+			// since version 2.2.0
+			'anonymize'       => FALSE,   // Anonymize IP address to hide privacy
+			'signature'       => 'wp-config.php,passwd', // malicious signature
+			'extra_ips'       => array(   // Additional IP validation
+			    'white_list'  => NULL,    // White list of IP addresses
+			    'black_list'  => NULL,    // Black list of IP addresses
+			),
+			'rewrite'         => array(   // Backup of rewrite rule
+			    'plugins'     => NULL,    // for wp-content/plugins
+			    'themes'      => NULL,    // for wp-content/themes
+			),
 		),
 
 		// statistics (autoloaded since version 1.2.1)
@@ -134,6 +145,9 @@ class IP_Geo_Block_Options {
 		}
 
 		else {
+			// update local goelocation database files
+			$settings['ip2location']['ipv4_path'] = $ip2;
+
 			if ( version_compare( $settings['version'], '1.1' ) < 0 ) {
 				foreach ( array( 'cache_hold', 'cache_time' ) as $tmp )
 					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
@@ -173,8 +187,14 @@ class IP_Geo_Block_Options {
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
 			}
 
-			// update local goelocation database files
-			$settings['ip2location']['ipv4_path'] = $ip2;
+			if ( version_compare( $settings['version'], '2.2.0' ) < 0 ) {
+				foreach ( array( 'anonymize', 'signature', 'extra_ips', 'rewrite' ) as $tmp )
+					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
+
+				foreach ( array( 'admin', 'ajax' ) as $tmp )
+					if ( $settings['validation'][ $tmp ] == 2 )
+						$settings['validation'][ $tmp ] = 3; // WP-ZEP + Block by country
+			}
 
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;

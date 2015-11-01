@@ -164,6 +164,8 @@ endif;
 		$time = time();
 		$debug = defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG;
 		foreach ( $transient as $key => $val ) {
+			if ( $setting['anonymize'] )
+				$key = preg_replace( '/\d{1,3}$/', '***', $key );
 			if ( empty( $val['auth'] ) || $debug ) { // hide authenticated user
 				$html .= "<tr><td>" . esc_html( $key ) . "</td>";
 				$html .= "<td>"     . esc_html( $val['code'] ) . " / ";

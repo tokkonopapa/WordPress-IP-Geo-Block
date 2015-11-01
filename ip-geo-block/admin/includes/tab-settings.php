@@ -64,7 +64,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'ip_country';
 	add_settings_field(
 		$option_name . "_$field",
-		__( '<dfn title="You can confirm the appropriate Geolocation APIs and country code by referring &#8217;Scan your country code&#8217;.">Your IP address / Country</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		__( '<dfn title="You can confirm the appropriate Geolocation APIs and country code by referring &#8220;Scan your country code&#8221;.">Your IP address / Country</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -78,16 +78,22 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	// If the matching rule is not initialized, then add a caution
-	$list = ( 0 <= $options['matching_rule'] ? array() : array( __( 'Disable', IP_Geo_Block::TEXT_DOMAIN ) => -1 ) );
+	$list = ( 0 <= $options['matching_rule'] ? array() : array( -1 => __( 'Disable', IP_Geo_Block::TEXT_DOMAIN ) ) );
 	$list += array(
-		__( 'White list', IP_Geo_Block::TEXT_DOMAIN ) => 0,
-		__( 'Black list', IP_Geo_Block::TEXT_DOMAIN ) => 1,
+		0 => __( 'White list', IP_Geo_Block::TEXT_DOMAIN ),
+		1 => __( 'Black list', IP_Geo_Block::TEXT_DOMAIN ),
+	);
+
+	$comma = '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>';
+	$dfn = sprintf(
+		__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. Please consider to include &#8220;ZZ&#8221; which means UNKNOWN especially in case of black list.">Country code for matching rule</dfn>%s', IP_Geo_Block::TEXT_DOMAIN ),
+		' (<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)'
 	);
 
 	$field = 'matching_rule';
 	add_settings_field(
 		$option_name . "_$field",
-		__( '<dfn title="Please select either &#8217;White list&#8217; or &#8217;Black list&#8217;.">Matching rule</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		__( '<dfn title="Please select either &#8220;White list&#8221; or &#8220;Black list&#8221;.">Matching rule</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -103,7 +109,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'white_list';
 	add_settings_field(
 		$option_name . "_$field",
-		sprintf( __( '<dfn title="&#8217;Block by country&#8217; will be bypassed in case of empty.">%s</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), __( 'White list', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
+		$dfn,
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -112,14 +118,15 @@ function ip_geo_block_tab_settings( $context ) {
 			'option' => $option_name,
 			'field' => $field,
 			'value' => $options[ $field ],
-			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+			'display' => $options['matching_rule'] !== 1,
+			'after' => $comma,
 		)
 	);
 
 	$field = 'black_list';
 	add_settings_field(
 		$option_name . "_$field",
-		sprintf( __( '<dfn title="&#8217;Block by country&#8217; will be bypassed in case of empty.">%s</dfn> %s', IP_Geo_Block::TEXT_DOMAIN ), __( 'Black list', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)' ),
+		$dfn,
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -128,15 +135,17 @@ function ip_geo_block_tab_settings( $context ) {
 			'option' => $option_name,
 			'field' => $field,
 			'value' => $options[ $field ],
-			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+			'display' => $options['matching_rule'] !== 0,
+			'after' => $comma,
 		)
 	);
 
-	$key = 'proxy';
-	$field = 'validation';
+	$field = 'extra_ips';
+	$key = 'white_list';
 	add_settings_field(
 		$option_name . "_${field}_${key}",
-		__( '<dfn title="ex) HTTP_X_FORWARDED_FOR">$_SERVER keys for extra IPs</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		__( '<dfn title="e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, &#8220;69.46.36.0/27&#8221; for WordFence server">White list of extra IP addresses prior to country code</dfn>', IP_Geo_Block::TEXT_DOMAIN ) .
+		' (<a class="ip-geo-block-link" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia, the free encyclopedia" target=_blank>CIDR</a>)',
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -146,7 +155,43 @@ function ip_geo_block_tab_settings( $context ) {
 			'field' => $field,
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
-			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+			'after' => $comma,
+		)
+	);
+
+	$key = 'black_list';
+	add_settings_field(
+		$option_name . "_${field}_${key}",
+		__( '<dfn title="Server level access control (e.g. .htaccess) is recommended.">Black list of extra IP addresses prior to country code</dfn>', IP_Geo_Block::TEXT_DOMAIN ) .
+		' (<a class="ip-geo-block-link" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia, the free encyclopedia" target=_blank>CIDR</a>)',
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'text',
+			'option' => $option_name,
+			'field' => $field,
+			'sub-field' => $key,
+			'value' => $options[ $field ][ $key ],
+			'after' => $comma,
+		)
+	);
+
+	$field = 'validation';
+	$key = 'proxy';
+	add_settings_field(
+		$option_name . "_${field}_${key}",
+		__( '<dfn title="e.g. HTTP_X_FORWARDED_FOR">$_SERVER keys to retrieve extra IP addresses</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'text',
+			'option' => $option_name,
+			'field' => $field,
+			'sub-field' => $key,
+			'value' => $options[ $field ][ $key ],
+			'after' => $comma,
 		)
 	);
 
@@ -163,18 +208,18 @@ function ip_geo_block_tab_settings( $context ) {
 			'field' => $field,
 			'value' => $options[ $field ],
 			'list' => array(
-				'200 OK' => 200,
-				'205 Reset Content' => 205,
-				'301 Moved Permanently' => 301,
-				'302 Found' => 302,
-				'307 Temporary Redirect' => 307,
-				'400 Bad Request' => 400,
-				'403 Forbidden' => 403,
-				'404 Not Found' => 404,
-				'406 Not Acceptable' => 406,
-				'410 Gone' => 410,
-				'500 Internal Server Error' => 500,
-				'503 Service Unavailable' => 503,
+				200 => '200 OK',
+				205 => '205 Reset Content',
+				301 => '301 Moved Permanently',
+				302 => '302 Found',
+				307 => '307 Temporary Redirect',
+				400 => '400 Bad Request',
+				403 => '403 Forbidden',
+				404 => '404 Not Found',
+				406 => '406 Not Acceptable',
+				410 => '410 Gone',
+				500 => '500 Internal Server Error',
+				503 => '503 Service Unavailable',
 			),
 		)
 	);
@@ -186,16 +231,17 @@ function ip_geo_block_tab_settings( $context ) {
 	add_settings_section(
 		$section,
 		__( 'Validation target settings', IP_Geo_Block::TEXT_DOMAIN ),
-		NULL,
+		'ip_geo_block_note_target',
 		$option_slug
 	);
 
 	// same as in tab-accesslog.php
+	$dfn = __( '<dfn title="Validate access to %s.">%s</dfn>', IP_Geo_Block::TEXT_DOMAIN );
 	$list = array(
-		'comment' => __( '<dfn title="Validate post to wp-comments-post.php">Comment post</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'xmlrpc'  => __( '<dfn title="Validate access to xmlrpc.php">XML-RPC</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'login'   => __( '<dfn title="Validate access to wp-login.php">Login form</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		'admin'   => __( '<dfn title="Validate access to wp-admin/*.php">Admin area</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		'comment' => sprintf( $dfn, 'wp-comments-post.php', __( 'Comment post', IP_Geo_Block::TEXT_DOMAIN ) ),
+		'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',      IP_Geo_Block::TEXT_DOMAIN ) ),
+		'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',   IP_Geo_Block::TEXT_DOMAIN ) ),
+		'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',   IP_Geo_Block::TEXT_DOMAIN ) ),
 	);
 
 	$admin = array_pop( $list );
@@ -234,30 +280,28 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => array(
-				__( 'Disable', IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Block by country (register, lost password)', IP_Geo_Block::TEXT_DOMAIN ) => 2,
-				__( 'Block by country', IP_Geo_Block::TEXT_DOMAIN ) => 1,
+				0 => __( 'Disable', IP_Geo_Block::TEXT_DOMAIN ),
+				2 => __( 'Block by country (register, lost password)', IP_Geo_Block::TEXT_DOMAIN ),
+				1 => __( 'Block by country', IP_Geo_Block::TEXT_DOMAIN ),
 			),
-			'after' => '<div style="display:none" class="ip_geo_block_settings_validation_desc">' . __( 'Registered users can login as membership from anywhere, but the request for new user registration and lost password is blocked by the country code.', IP_Geo_Block::TEXT_DOMAIN ) . '</div>',
+			'desc' => array(
+				2 => __( 'Registered users can login as membership from anywhere, but the request for new user registration and lost password is blocked by the country code.', IP_Geo_Block::TEXT_DOMAIN ),
+			),
+			'after' => '<div class="ip_geo_block_settings_desc"></div>',
 		)
 	);
 
 	$list = array(
-		__( 'Disable',                  IP_Geo_Block::TEXT_DOMAIN ) => 0,
-		__( 'Block by country',         IP_Geo_Block::TEXT_DOMAIN ) => 1,
-		__( 'Prevent zero-day exploit', IP_Geo_Block::TEXT_DOMAIN ) => 2,
+		1 => __( 'Block by country', IP_Geo_Block::TEXT_DOMAIN ),
+		2 => __( 'Prevent Zero-day Exploit', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
-	$desc = array(
-		'<div style="display:none" class="ip_geo_block_settings_validation_desc">',
-		__( '<dfn title="Validate access to %s">%s</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-		__( 'Besides the country code, it will block malicious accesses to the PHP files under <code>%s</code>.', IP_Geo_Block::TEXT_DOMAIN ),
-		__( 'Besides the country code, it will block malicious accesses to <code>%s</code>.', IP_Geo_Block::TEXT_DOMAIN ),
-		__( 'Because this is an experimental feature, please open an issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with it.</div>', IP_Geo_Block::TEXT_DOMAIN ),
+	$login = array(
+		1 => __( 'It will block a request related to the services for both public facing pages and the dashboard.', IP_Geo_Block::TEXT_DOMAIN ),
+		2 => __( 'Regardless of the country code, it will block a malicious request related to the services only for the dashboard.', IP_Geo_Block::TEXT_DOMAIN ),
 	);
 
 	$key = 'admin';
-	$val = substr( IP_Geo_Block::$content_dir['admin'], 1 );
 	add_settings_field(
 		$option_name . "_${field}_${key}",
 		$admin,
@@ -265,39 +309,43 @@ function ip_geo_block_tab_settings( $context ) {
 		$option_slug,
 		$section,
 		array(
-			'type' => 'select',
+			'type' => 'checkboxes',
 			'option' => $option_name,
 			'field' => $field,
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $list,
-			'after' => $desc[0] . sprintf( $desc[2], $val ) . $desc[4],
+			'desc' => $login,
 		)
 	);
 
 	$key = 'ajax';
+	$val = esc_html( substr( IP_Geo_Block::$content_dir['admin'], 1 ) );
 	add_settings_field(
 		$option_name . "_${field}_${key}",
-		sprintf( $desc[1], "{$val}admin-(ajax|post).php", __( 'Admin ajax/post', IP_Geo_Block::TEXT_DOMAIN ) ),
+		sprintf( $dfn, "{$val}admin-(ajax|post).php", __( 'Admin ajax/post', IP_Geo_Block::TEXT_DOMAIN ) ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
 		array(
-			'type' => 'select',
+			'type' => 'checkboxes',
 			'option' => $option_name,
 			'field' => $field,
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $list,
-			'after' => $desc[0] . sprintf( $desc[3], "{$val}admin-(ajax|post).php" ) . $desc[4],
+			'desc' => $login,
 		)
 	);
 
+	array_unshift( $list, __( 'Disable', IP_Geo_Block::TEXT_DOMAIN ) );
+	$admin = __( 'Regardless of the country code, it will block a malicious request to <code>%s&hellip;/*.php</code>.', IP_Geo_Block::TEXT_DOMAIN );
+
 	$key = 'plugins';
-	$val = substr( IP_Geo_Block::$content_dir['plugins'], 1 );
+	$val = esc_html( substr( IP_Geo_Block::$content_dir['plugins'], 1 ) );
 	add_settings_field(
 		$option_name . "_${field}_${key}",
-		sprintf( $desc[1], "{$val}&hellip;/*.php", __( 'Plugins area', IP_Geo_Block::TEXT_DOMAIN ) ),
+		sprintf( $dfn, "{$val}&hellip;/*.php", __( 'Plugins area', IP_Geo_Block::TEXT_DOMAIN ) ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -308,15 +356,18 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $list,
-			'after' => $desc[0] . sprintf( $desc[2], $val ) . $desc[4],
+			'desc' => array(
+				2 => sprintf( $admin, $val ),
+			),
+			'after' => '<div class="ip_geo_block_settings_desc"></div>',
 		)
 	);
 
 	$key = 'themes';
-	$val = substr( IP_Geo_Block::$content_dir['themes'], 1 );
+	$val = esc_html( substr( IP_Geo_Block::$content_dir['themes'], 1 ) );
 	add_settings_field(
 		$option_name . "_${field}_${key}",
-		sprintf( $desc[1], "{$val}&hellip;/*.php", __( 'Themes area', IP_Geo_Block::TEXT_DOMAIN ) ),
+		sprintf( $dfn, "{$val}&hellip;/*.php", __( 'Themes area', IP_Geo_Block::TEXT_DOMAIN ) ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -327,7 +378,26 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => $key,
 			'value' => $options[ $field ][ $key ],
 			'list' => $list,
-			'after' => $desc[0] . sprintf( $desc[2], $val ) . $desc[4],
+			'desc' => array(
+				2 => sprintf( $admin, $val ),
+			),
+			'after' => '<div class="ip_geo_block_settings_desc"></div>',
+		)
+	);
+
+	$field = 'signature';
+	add_settings_field(
+		$option_name . "_$field",
+		__( '<dfn title="This works independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221;, and validates malicious signature to prevent disclosing the important files via vulnerable plugins or themes.">Important files</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'text',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => $options[ $field ],
+			'after' => $comma,
 		)
 	);
 
@@ -338,14 +408,14 @@ function ip_geo_block_tab_settings( $context ) {
 	add_settings_section(
 		$section,
 		__( 'Geolocation API settings', IP_Geo_Block::TEXT_DOMAIN ),
-		NULL,
+		'ip_geo_block_note_services',
 		$option_slug
 	);
 
 	$field = 'providers';
 	add_settings_field(
 		$option_name . "_$field",
-		__( '<dfn title="Cache and Maxmind are scaned at the top priority">API selection and key settings</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		__( '<dfn title="Cache and local database are scaned at the top priority.">API selection and key settings</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -484,19 +554,19 @@ function ip_geo_block_tab_settings( $context ) {
 			'sub-field' => 'reclogs',
 			'value' => $options[ $field ]['reclogs'],
 			'list' => array(
-				__( 'Disable',              IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Only when blocked',    IP_Geo_Block::TEXT_DOMAIN ) => 1,
-				__( 'Only when passed',     IP_Geo_Block::TEXT_DOMAIN ) => 2,
-				__( 'Unauthenticated user', IP_Geo_Block::TEXT_DOMAIN ) => 3,
-				__( 'Authenticated user',   IP_Geo_Block::TEXT_DOMAIN ) => 4,
-				__( 'All of validation',    IP_Geo_Block::TEXT_DOMAIN ) => 5,
+				0 => __( 'Disable',              IP_Geo_Block::TEXT_DOMAIN ),
+				1 => __( 'Only when blocked',    IP_Geo_Block::TEXT_DOMAIN ),
+				2 => __( 'Only when passed',     IP_Geo_Block::TEXT_DOMAIN ),
+				3 => __( 'Unauthenticated user', IP_Geo_Block::TEXT_DOMAIN ),
+				4 => __( 'Authenticated user',   IP_Geo_Block::TEXT_DOMAIN ),
+				5 => __( 'All of validation',    IP_Geo_Block::TEXT_DOMAIN ),
 			),
 		)
 	);
 
 	add_settings_field(
 		$option_name . "_${field}_postkey",
-		__( '<dfn title="ex) action, comment, log, pwd">$_POST keys to be recorded with their values in logs</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		__( '<dfn title="e.g. action, comment, log, pwd">$_POST keys to be recorded with their values in logs</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -506,7 +576,22 @@ function ip_geo_block_tab_settings( $context ) {
 			'field' => $field,
 			'sub-field' => 'postkey',
 			'value' => $options[ $field ]['postkey'],
-			'after' => '<span style="margin-left: 0.2em">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+			'after' => $comma,
+		)
+	);
+
+	$field = 'anonymize';
+	add_settings_field(
+		$option_name . "_$field",
+		__( '<dfn title="e.g. 123.456.789.***">Anonymize IP address</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'checkbox',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => $options[ $field ],
 		)
 	);
 
@@ -562,25 +647,29 @@ function ip_geo_block_tab_settings( $context ) {
 		$option_slug
 	);
 
+	$val = $GLOBALS['allowedtags'];
+	unset( $val['blockquote'] );
+
 	$field = 'comment';
 	add_settings_field(
 		$option_name . "_$field",
-		__( 'Text message on comment form', IP_Geo_Block::TEXT_DOMAIN ),
+		'<dfn title="' . __( 'The whole will be wrapped by &lt;p&gt; tag. Allowed tags: ', IP_Geo_Block::TEXT_DOMAIN ) . implode( ', ', array_keys( $val ) ) . '">' . __( 'Message on comment form', IP_Geo_Block::TEXT_DOMAIN ) . '</dfn>',
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
 		array(
-			'type' => 'comment-msg',
+			'type' => 'select-text',
 			'option' => $option_name,
 			'field' => $field,
 			'sub-field' => 'pos',
+			'txt-field' => 'msg',
 			'value' => $options[ $field ]['pos'],
 			'list' => array(
-				__( 'None',   IP_Geo_Block::TEXT_DOMAIN ) => 0,
-				__( 'Top',    IP_Geo_Block::TEXT_DOMAIN ) => 1,
-				__( 'Bottom', IP_Geo_Block::TEXT_DOMAIN ) => 2,
+				0 => __( 'None',   IP_Geo_Block::TEXT_DOMAIN ),
+				1 => __( 'Top',    IP_Geo_Block::TEXT_DOMAIN ),
+				2 => __( 'Bottom', IP_Geo_Block::TEXT_DOMAIN ),
 			),
-			'text' => $options[ $field ]['msg'], // sanitized at 'comment-msg'
+			'text' => $options[ $field ]['msg'], // sanitized at 'select-text'
 		)
 	);
 
@@ -644,4 +733,23 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		)
 	);
 endif;
+}
+
+/**
+ * Subsidiary note
+ */
+function ip_geo_block_note_target() {
+	echo
+		'<ul class="ip-geo-block-note">',
+			'<li>', __( 'To enhance the protection ability, please consider to apply a rewrite rule to &#8220;<strong>Plugins area</strong>&#8221; and &#8220;<strong>Themes area</strong>&#8221;. See <a href="http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/exposure-of-wp-config-php.html" title="Prevent exposure of wp-config.php">more details here</a>.', IP_Geo_Block::TEXT_DOMAIN ), '</li>',
+			'<li>', __( 'Please open an issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with these.', IP_Geo_Block::TEXT_DOMAIN ), '</li>',
+		'</ul>';
+}
+
+function ip_geo_block_note_services() {
+	echo
+		'<ul class="ip-geo-block-note">',
+			'<li>', __('While Maxmind and IP2Location will fetch the local database, others will pass a IP address to thier API via HTTP.', IP_Geo_Block::TEXT_DOMAIN ), '</li>',
+			'<li>', __('Please select the appropriate APIs to fit the privacy law in your country.', IP_Geo_Block::TEXT_DOMAIN ), '</li>',
+		'</ul>';
 }

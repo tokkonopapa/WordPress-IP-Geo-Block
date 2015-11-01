@@ -1,7 +1,7 @@
 /* This stylesheet is used to style the admin option form of the plugin. */
 dfn {
     cursor: help;
-    border-bottom: 1px dotted;
+    border-bottom: 1px dotted #888;
 }
 
 /* legend and fieldset in the form */
@@ -46,12 +46,22 @@ fieldset.ip-geo-block-field .form-table {
     margin: 0.5em 0 0;
 }
 
-#check-provider label {
-    width: 8em;
+ul.ip-geo-block-note {
+    list-style: disc outside;
+    margin-left: 1em;
+}
+ul.ip-geo-block-list {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
+ul.ip-geo-block-list label {
+    display: inline-block;
+}
+.ip_geo_block_settings_desc {
     display: inline-block;
 }
 @media screen and (min-width:782px) {
-    #check-provider .code {
+    ul.ip-geo-block-list .code {
         width: 15em;
     }
 }

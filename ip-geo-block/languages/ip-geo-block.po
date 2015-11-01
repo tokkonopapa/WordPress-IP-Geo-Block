@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 2.1.5\n"
+"Project-Id-Version: IP Geo Block 2.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/tokkonopapa/WordPress-IP-Geo-Block\n"
-"POT-Creation-Date: 2015-09-27 14:23+0900\n"
-"PO-Revision-Date: 2015-09-27 14:26+0900\n"
+"POT-Creation-Date: 2015-11-01 13:02+0900\n"
+"PO-Revision-Date: 2015-11-01 17:57+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -47,19 +47,18 @@ msgstr ""
 #: admin/class-ip-geo-block-admin.php:243
 #, php-format
 msgid ""
-"Welcome to %s!! At first, please confirm &#8217;<strong>Matching rule</"
-"strong>&#8217; at <a href=\"%s\">Validation rule settings</a>."
+"Welcome to %s!! At first, please confirm &#8220;<strong>Matching rule</"
+"strong>&#8221; at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:256
 #, php-format
 msgid ""
-"You will be blocked out when you log out. Please confirm &#8217;"
-"<strong>Matching rule</strong>&#8217; and the country code in &#8217;"
-"<strong>White list</strong>&#8217; or &#8217;<strong>Black list</"
-"strong>&#8217; at <a href=\"%s\">Validation rule settings</a>. Otherwise "
-"select &#8217;<strong>Block by country (register, lost password)</"
-"strong>&#8217; for &#8217;<strong>Login form</strong>&#8217; at <a href=\"%s"
+"You'll be blocked after you log out. Please confirm &#8220;<strong>Matching "
+"rule</strong>&#8221; and &#8220;<strong>Country code for matching rule</"
+"strong>&#8221; at <a href=\"%s\">Validation rule settings</a>. Otherwise "
+"select &#8220;<strong>Block by country (register, lost password)</"
+"strong>&#8221; for &#8220;<strong>Login form</strong>&#8221; at <a href=\"%s"
 "\">Validation target settings</a>."
 msgstr ""
 
@@ -90,19 +89,19 @@ msgid ""
 "\">without referrer when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:437
+#: admin/class-ip-geo-block-admin.php:440
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:580
+#: admin/class-ip-geo-block-admin.php:625
 msgid "Successfully updated."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:659
+#: admin/class-ip-geo-block-admin.php:704
 msgid "n/a"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:662 admin/includes/tab-settings.php:75
+#: admin/class-ip-geo-block-admin.php:707 admin/includes/tab-settings.php:75
 msgid "UNKNOWN"
 msgstr ""
 
@@ -114,67 +113,72 @@ msgstr ""
 msgid "Clear logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:40 admin/includes/tab-statistics.php:140
-#: admin/includes/tab-statistics.php:224
+#: admin/includes/tab-accesslog.php:40 admin/includes/tab-statistics.php:125
+#: admin/includes/tab-statistics.php:211
 msgid "Clear now"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:68 admin/includes/tab-settings.php:197
-msgid "<dfn title=\"Validate post to wp-comments-post.php\">Comment post</dfn>"
+#: admin/includes/tab-accesslog.php:67 admin/includes/tab-settings.php:239
+#, php-format
+msgid "<dfn title=\"Validate access to %s.\">%s</dfn>"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:69 admin/includes/tab-settings.php:198
-msgid "<dfn title=\"Validate access to xmlrpc.php\">XML-RPC</dfn>"
+#: admin/includes/tab-accesslog.php:69 admin/includes/tab-settings.php:241
+msgid "Comment post"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:70 admin/includes/tab-settings.php:199
-msgid "<dfn title=\"Validate access to wp-login.php\">Login form</dfn>"
+#: admin/includes/tab-accesslog.php:70 admin/includes/tab-settings.php:242
+msgid "XML-RPC"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:71 admin/includes/tab-settings.php:200
-msgid "<dfn title=\"Validate access to wp-admin/*.php\">Admin area</dfn>"
+#: admin/includes/tab-accesslog.php:71 admin/includes/tab-settings.php:243
+msgid "Login form"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:77
+#: admin/includes/tab-accesslog.php:72 admin/includes/tab-settings.php:244
+msgid "Admin area"
+msgstr ""
+
+#: admin/includes/tab-accesslog.php:78
 msgid "Date"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:78 admin/includes/tab-geolocation.php:57
-#: admin/includes/tab-statistics.php:173
+#: admin/includes/tab-accesslog.php:79 admin/includes/tab-geolocation.php:57
+#: admin/includes/tab-statistics.php:158
 msgid "IP address"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:79
+#: admin/includes/tab-accesslog.php:80
 msgid "Code"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:80
+#: admin/includes/tab-accesslog.php:81
 msgid "Result"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:81
+#: admin/includes/tab-accesslog.php:82
 msgid "Request"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:82
+#: admin/includes/tab-accesslog.php:83
 msgid "User agent"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:83
+#: admin/includes/tab-accesslog.php:84
 msgid "HTTP headers"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:84
+#: admin/includes/tab-accesslog.php:85
 msgid "$_POST data"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:102
+#: admin/includes/tab-accesslog.php:103
 msgid ""
 "Current selection of [<strong>Record validation logs</strong>] on "
 "[<strong>Settings</strong>] tab is [<strong>Disable</strong>]."
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:103
+#: admin/includes/tab-accesslog.php:104
 msgid ""
 "Please select the proper condition to record and analyze the validation logs."
 msgstr ""
@@ -206,7 +210,7 @@ msgstr ""
 #: admin/includes/tab-settings.php:67
 msgid ""
 "<dfn title=\"You can confirm the appropriate Geolocation APIs and country "
-"code by referring &#8217;Scan your country code&#8217;.\">Your IP address / "
+"code by referring &#8220;Scan your country code&#8221;.\">Your IP address / "
 "Country</dfn>"
 msgstr ""
 
@@ -218,243 +222,293 @@ msgstr ""
 msgid "Scan your country code"
 msgstr ""
 
-#: admin/includes/tab-settings.php:81 admin/includes/tab-settings.php:108
-msgid "White list"
-msgstr ""
-
-#: admin/includes/tab-settings.php:82 admin/includes/tab-settings.php:124
-msgid "Black list"
-msgstr ""
-
-#: admin/includes/tab-settings.php:87 admin/includes/tab-settings.php:239
-#: admin/includes/tab-settings.php:248 admin/includes/tab-settings.php:489
+#: admin/includes/tab-settings.php:81 admin/includes/tab-settings.php:283
+#: admin/includes/tab-settings.php:341 admin/includes/tab-settings.php:557
 msgid "Disable"
 msgstr ""
 
-#: admin/includes/tab-settings.php:92
-msgid ""
-"<dfn title=\"Please select either &#8217;White list&#8217; or &#8217;Black "
-"list&#8217;.\">Matching rule</dfn>"
+#: admin/includes/tab-settings.php:83
+msgid "White list"
 msgstr ""
 
-#: admin/includes/tab-settings.php:108 admin/includes/tab-settings.php:124
-#, php-format
-msgid ""
-"<dfn title=\"&#8217;Block by country&#8217; will be bypassed in case of "
-"empty.\">%s</dfn> %s"
+#: admin/includes/tab-settings.php:84
+msgid "Black list"
 msgstr ""
 
-#: admin/includes/tab-settings.php:117 admin/includes/tab-settings.php:133
-#: admin/includes/tab-settings.php:151 admin/includes/tab-settings.php:511
+#: admin/includes/tab-settings.php:87
 msgid "(comma separated)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:141
+#: admin/includes/tab-settings.php:89
+#, php-format
 msgid ""
-"<dfn title=\"ex) HTTP_X_FORWARDED_FOR\">$_SERVER keys for extra IPs</dfn>"
+"<dfn title=\"&#8220;Block by country&#8221; will be bypassed in case of "
+"empty. Please consider to include &#8220;ZZ&#8221; which means UNKNOWN "
+"especially in case of black list.\">Country code for matching rule</dfn>%s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:158
+#: admin/includes/tab-settings.php:96
+msgid ""
+"<dfn title=\"Please select either &#8220;White list&#8221; or &#8220;Black "
+"list&#8221;.\">Matching rule</dfn>"
+msgstr ""
+
+#: admin/includes/tab-settings.php:147
+msgid ""
+"<dfn title=\"e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, "
+"&#8220;69.46.36.0/27&#8221; for WordFence server\">White list of extra IP "
+"addresses prior to country code</dfn>"
+msgstr ""
+
+#: admin/includes/tab-settings.php:165
+msgid ""
+"<dfn title=\"Server level access control (e.g. .htaccess) is recommended."
+"\">Black list of extra IP addresses prior to country code</dfn>"
+msgstr ""
+
+#: admin/includes/tab-settings.php:184
+msgid ""
+"<dfn title=\"e.g. HTTP_X_FORWARDED_FOR\">$_SERVER keys to retrieve extra IP "
+"addresses</dfn>"
+msgstr ""
+
+#: admin/includes/tab-settings.php:201
 #, php-format
 msgid "Response code %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:190
+#: admin/includes/tab-settings.php:233
 msgid "Validation target settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:220 admin/includes/tab-settings.php:241
-#: admin/includes/tab-settings.php:249
+#: admin/includes/tab-settings.php:264 admin/includes/tab-settings.php:285
+#: admin/includes/tab-settings.php:295
 msgid "Block by country"
 msgstr ""
 
-#: admin/includes/tab-settings.php:240
+#: admin/includes/tab-settings.php:284
 msgid "Block by country (register, lost password)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:243
+#: admin/includes/tab-settings.php:288
 msgid ""
 "Registered users can login as membership from anywhere, but the request for "
 "new user registration and lost password is blocked by the country code."
 msgstr ""
 
-#: admin/includes/tab-settings.php:250
-msgid "Prevent zero-day exploit"
+#: admin/includes/tab-settings.php:296
+msgid "Prevent Zero-day Exploit"
 msgstr ""
 
-#: admin/includes/tab-settings.php:255
-#, php-format
-msgid "<dfn title=\"Validate access to %s\">%s</dfn>"
-msgstr ""
-
-#: admin/includes/tab-settings.php:256
-#, php-format
+#: admin/includes/tab-settings.php:300
 msgid ""
-"Besides the country code, it will block malicious accesses to the PHP files "
-"under <code>%s</code>."
+"It will block a request related to the services for both public facing pages "
+"and the dashboard."
 msgstr ""
 
-#: admin/includes/tab-settings.php:257
-#, php-format
+#: admin/includes/tab-settings.php:301
 msgid ""
-"Besides the country code, it will block malicious accesses to <code>%s</"
-"code>."
+"Regardless of the country code, it will block a malicious request related to "
+"the services only for the dashboard."
 msgstr ""
 
-#: admin/includes/tab-settings.php:258
-msgid ""
-"Because this is an experimental feature, please open an issue at <a class="
-"\"ip-geo-block-link\" href=\"http://wordpress.org/support/plugin/ip-geo-block"
-"\" title=\"WordPress &#8250; Support &raquo; IP Geo Block\" "
-"target=_blank>support forum</a> if you have any troubles with it.</div>"
-msgstr ""
-
-#: admin/includes/tab-settings.php:283
+#: admin/includes/tab-settings.php:326
 msgid "Admin ajax/post"
 msgstr ""
 
-#: admin/includes/tab-settings.php:302
+#: admin/includes/tab-settings.php:342
+#, php-format
+msgid ""
+"Regardless of the country code, it will block a malicious request to <code>"
+"%s&hellip;/*.php</code>."
+msgstr ""
+
+#: admin/includes/tab-settings.php:348
 msgid "Plugins area"
 msgstr ""
 
-#: admin/includes/tab-settings.php:321
+#: admin/includes/tab-settings.php:370
 msgid "Themes area"
 msgstr ""
 
-#: admin/includes/tab-settings.php:342
+#: admin/includes/tab-settings.php:391
+msgid ""
+"<dfn title=\"This works independently of &#8220;Block by country&#8221; and "
+"&#8220;Prevent Zero-day Exploit&#8221;, and validates malicious signature to "
+"prevent disclosing the important files via vulnerable plugins or themes."
+"\">Important files</dfn>"
+msgstr ""
+
+#: admin/includes/tab-settings.php:410
 msgid "Geolocation API settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:350
+#: admin/includes/tab-settings.php:418
 msgid ""
-"<dfn title=\"Cache and Maxmind are scaned at the top priority\">API "
+"<dfn title=\"Cache and local database are scaned at the top priority.\">API "
 "selection and key settings</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:370
+#: admin/includes/tab-settings.php:438
 msgid "Maxmind GeoLite settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:378 admin/includes/tab-settings.php:399
+#: admin/includes/tab-settings.php:446 admin/includes/tab-settings.php:467
 msgid "Path to database"
 msgstr ""
 
-#: admin/includes/tab-settings.php:391 admin/includes/tab-settings.php:412
+#: admin/includes/tab-settings.php:459 admin/includes/tab-settings.php:480
 #: includes/download.php:126
 #, php-format
 msgid "Last update: %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:421
+#: admin/includes/tab-settings.php:489
 msgid "Auto updating (once a month)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:436
+#: admin/includes/tab-settings.php:504
 msgid "Download database"
 msgstr ""
 
-#: admin/includes/tab-settings.php:444
+#: admin/includes/tab-settings.php:512
 msgid "Download now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:455
+#: admin/includes/tab-settings.php:523
 msgid "Record settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:463
+#: admin/includes/tab-settings.php:531
 msgid "Record validation statistics"
 msgstr ""
 
-#: admin/includes/tab-settings.php:478
+#: admin/includes/tab-settings.php:546
 msgid "Record validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:490
+#: admin/includes/tab-settings.php:558
 msgid "Only when blocked"
 msgstr ""
 
-#: admin/includes/tab-settings.php:491
+#: admin/includes/tab-settings.php:559
 msgid "Only when passed"
 msgstr ""
 
-#: admin/includes/tab-settings.php:492
+#: admin/includes/tab-settings.php:560
 msgid "Unauthenticated user"
 msgstr ""
 
-#: admin/includes/tab-settings.php:493
+#: admin/includes/tab-settings.php:561
 msgid "Authenticated user"
 msgstr ""
 
-#: admin/includes/tab-settings.php:494
+#: admin/includes/tab-settings.php:562
 msgid "All of validation"
 msgstr ""
 
-#: admin/includes/tab-settings.php:501
+#: admin/includes/tab-settings.php:569
 msgid ""
-"<dfn title=\"ex) action, comment, log, pwd\">$_POST keys to be recorded with "
-"their values in logs</dfn>"
+"<dfn title=\"e.g. action, comment, log, pwd\">$_POST keys to be recorded "
+"with their values in logs</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:521
+#: admin/includes/tab-settings.php:586
+msgid "<dfn title=\"e.g. 123.456.789.***\">Anonymize IP address</dfn>"
+msgstr ""
+
+#: admin/includes/tab-settings.php:604
 msgid "Cache settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:529
+#: admin/includes/tab-settings.php:612
 msgid "Number of entries"
 msgstr ""
 
-#: admin/includes/tab-settings.php:544
+#: admin/includes/tab-settings.php:627
 #, php-format
 msgid ""
 "<dfn title=\"If user authentication fails consecutively %d times, subsequent "
 "login will also be prohibited for this period.\">Expiration time [sec]</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:562
+#: admin/includes/tab-settings.php:645
 msgid "Submission settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:570
-msgid "Text message on comment form"
+#: admin/includes/tab-settings.php:656
+msgid "The whole will be wrapped by &lt;p&gt; tag. Allowed tags: "
 msgstr ""
 
-#: admin/includes/tab-settings.php:581
+#: admin/includes/tab-settings.php:656
+msgid "Message on comment form"
+msgstr ""
+
+#: admin/includes/tab-settings.php:668
 msgid "None"
 msgstr ""
 
-#: admin/includes/tab-settings.php:582
+#: admin/includes/tab-settings.php:669
 msgid "Top"
 msgstr ""
 
-#: admin/includes/tab-settings.php:583
+#: admin/includes/tab-settings.php:670
 msgid "Bottom"
 msgstr ""
 
-#: admin/includes/tab-settings.php:595
+#: admin/includes/tab-settings.php:682
 msgid "Plugin settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:603
+#: admin/includes/tab-settings.php:690
 msgid "Remove all settings at uninstallation"
 msgstr ""
 
-#: admin/includes/tab-settings.php:620
+#: admin/includes/tab-settings.php:707
 msgid "Delete DB table for validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:628
+#: admin/includes/tab-settings.php:715
 msgid "Delete now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:636
+#: admin/includes/tab-settings.php:723
 msgid "Create DB table for validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:644
+#: admin/includes/tab-settings.php:731
 msgid "Create now"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:22 admin/includes/tab-statistics.php:153
+#: admin/includes/tab-settings.php:744
+msgid ""
+"To enhance the protection ability, please consider to apply a rewrite rule "
+"to &#8220;<strong>Plugins area</strong>&#8221; and &#8220;<strong>Themes "
+"area</strong>&#8221;. See <a href=\"http://tokkonopapa.github.io/WordPress-"
+"IP-Geo-Block/article/exposure-of-wp-config-php.html\" title=\"Prevent "
+"exposure of wp-config.php\">more details here</a>."
+msgstr ""
+
+#: admin/includes/tab-settings.php:745
+msgid ""
+"Please open an issue at <a class=\"ip-geo-block-link\" href=\"http://"
+"wordpress.org/support/plugin/ip-geo-block\" title=\"WordPress &#8250; "
+"Support &raquo; IP Geo Block\" target=_blank>support forum</a> if you have "
+"any troubles with these."
+msgstr ""
+
+#: admin/includes/tab-settings.php:752
+msgid ""
+"While Maxmind and IP2Location will fetch the local database, others will "
+"pass a IP address to thier API via HTTP."
+msgstr ""
+
+#: admin/includes/tab-settings.php:753
+msgid ""
+"Please select the appropriate APIs to fit the privacy law in your country."
+msgstr ""
+
+#: admin/includes/tab-statistics.php:22 admin/includes/tab-statistics.php:138
 msgid "Statistics of validation"
 msgstr ""
 
@@ -462,69 +516,65 @@ msgstr ""
 msgid "Blocked"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:45
-msgid "Unknown (blocked)"
-msgstr ""
-
-#: admin/includes/tab-statistics.php:69
+#: admin/includes/tab-statistics.php:54
 msgid "Blocked by countries"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:69
+#: admin/includes/tab-statistics.php:54
 msgid "Show/Hide details"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:84
+#: admin/includes/tab-statistics.php:69
 msgid "Blocked by type of IP address"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:102
+#: admin/includes/tab-statistics.php:87
 msgid "Name of API"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:103
+#: admin/includes/tab-statistics.php:88
 msgid "Calls"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:104
+#: admin/includes/tab-statistics.php:89
 msgid "Response [msec]"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:117
+#: admin/includes/tab-statistics.php:102
 msgid "Average response time of each API"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:132
+#: admin/includes/tab-statistics.php:117
 msgid "Clear statistics"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:166
+#: admin/includes/tab-statistics.php:151
 msgid "Statistics of cache"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:174
+#: admin/includes/tab-statistics.php:159
 msgid "Country code / Access"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:175
+#: admin/includes/tab-statistics.php:160
 msgid "Elapsed [sec] / Calls"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:201
+#: admin/includes/tab-statistics.php:188
 msgid "IP address in cache"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:216
+#: admin/includes/tab-statistics.php:203
 msgid "Clear cache"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:235
+#: admin/includes/tab-statistics.php:222
 msgid ""
 "Current setting of [<strong>Record validation statistics</strong>] on "
 "[<strong>Settings</strong>] tab is not selected [<strong>Enable</strong>]."
 msgstr ""
 
-#: admin/includes/tab-statistics.php:236
+#: admin/includes/tab-statistics.php:223
 msgid ""
 "Please set the proper condition to record and analyze the validation "
 "statistics."
@@ -533,7 +583,7 @@ msgstr ""
 #: classes/class-ip-geo-block-apis.php:815
 msgid ""
 "You need to select at least one IP geolocation service. Otherwise "
-"<strong>you will be locked out</strong> when the cache expires."
+"<strong>you'll be blocked</strong> after the cache expires."
 msgstr ""
 
 #: classes/class-ip-geo-block-logs.php:70

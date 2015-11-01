@@ -3,14 +3,15 @@
  * Return local time of day.
  *
  */
-function ip_geo_block_localdate( $timestamp = FALSE, $format = NULL ) {
+function ip_geo_block_localdate( $timestamp = FALSE, $fmt = NULL ) {
 	static $offset = NULL;
-	if ( $offset === NULL )
-		$offset = (int)( 'UTC' === @date_default_timezone_get() ?
-			get_option( 'gmt_offset' ) * HOUR_IN_SECONDS : 0 );
+	static $format = NULL;
 
-	if ( ! $format )
+	if ( NULL === $offset )
+		$offset = wp_timezone_override_offset() * HOUR_IN_SECONDS;
+
+	if ( NULL === $format )
 		$format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
-	return date_i18n( $format, $timestamp ? (int)$timestamp + $offset : FALSE );
+	return date_i18n( $fmt ? $fmt : $format, $timestamp ? (int)$timestamp + $offset : FALSE );
 }

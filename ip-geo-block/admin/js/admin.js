@@ -13,6 +13,12 @@ var ip_geo_block_time = new Date();
 (function ($) {
 	'use strict';
 
+	function str_rot13(str) {
+		return (str + '').replace(/[a-z]/gi, function(s) {
+			return String.fromCharCode(s.charCodeAt(0) + ('n' > s.toLowerCase() ? 13 : -13));
+		});
+	}
+
 	function sanitize(str) {
 		return str ? str.toString().replace(/[&<>"']/g, function (match) {
 			return {
@@ -100,11 +106,11 @@ var ip_geo_block_time = new Date();
 
 	// Show/Hide description of WP-ZEP
 	function show_description(select) {
-		var desc = '.ip_geo_block_settings_validation_desc';
-		if (2 <= (select = $(select)).val()) {
-			select.next(desc).show();
-		} else {
-			select.next(desc).hide();
+		var data, desc = '.ip_geo_block_settings_desc';
+		select = $(select);
+		select.next(desc).empty();
+		if (data = select.children('option:selected').data('desc')) {
+			select.next(desc).html($.parseHTML(data)); // jQuery 1.8+
 		}
 	}
 
@@ -153,24 +159,27 @@ var ip_geo_block_time = new Date();
 		tabNum = Number(tabNum && tabNum[1]);
 
 		// Make form style with fieldset and legend
+		var fieldset = $('<fieldset class="ip-geo-block-field"></fieldset>'),
+		    legend = $('<legend></legend>');
 		$('.form-table').each(function (index) {
 			var $this = $(this),
-			    title = $this.prev(),
-			    thead = title.prop('tagName').toLowerCase();
+			    title = $this.prevAll('h2,h3:first'),
+			    notes = title.nextUntil($this);
 
-			if ('h2' === thead || 'h3' === thead) {
-				// Move title into the fieldset and wrap with legend
-				$this.wrap('<fieldset id="ip-geo-block-settings-' + index + '" data-ip-geo-block="' + index + '" class="ip-geo-block-field"></fieldset>')
-				     .parent().prepend(title.wrap('<legend></legend>').parent());
+			// Move title into the fieldset and wrap with legend
+			$this.wrap(fieldset).parent() // fieldset itself
+			     .attr('id', 'ip-geo-block-settings-' + index)
+			     .data('ip-geo-block', index)
+			     .prepend(title.wrap(legend).parent());
+			notes.insertBefore($this);
 
-				// Show/Hide form-table on tab 0, 1
-				if (tabNum <= 1) {
-					index += (tabNum ? 8 : 0);
-					if ('undefined' === typeof cookie[index] || cookie[index]) { // 'undefined' or 'o'
-						title.addClass('ip-geo-block-dropdown').parent().next().show();
-					} else {
-						title.addClass('ip-geo-block-dropup').parent().next().hide();
-					}
+			// Initialize show/hide form-table on tab 0, 1
+			if (tabNum <= 1) {
+				index += (tabNum ? 8 : 0);
+				if ('undefined' === typeof cookie[index] || cookie[index]) { // 'undefined' or 'o'
+					title.addClass('ip-geo-block-dropdown').parent().nextAll().show();
+				} else {
+					title.addClass('ip-geo-block-dropup').parent().nextAll().hide();
 				}
 			}
 		});
@@ -181,9 +190,11 @@ var ip_geo_block_time = new Date();
 				var title = $(this),
 				    index = title.closest('fieldset').data('ip-geo-block');
 
-				// Save cookie
-				title.parent().next().toggle();
+				// Show/Hide
+				title.parent().nextAll().toggle();
 				title.toggleClass('ip-geo-block-dropup').toggleClass('ip-geo-block-dropdown');
+
+				// Save cookie
 				cookie[index + (tabNum ? 8: 0)] = title.hasClass('ip-geo-block-dropdown') ? 'o' : '';
 				wpCookies.setHash('ip-geo-block-admin', cookie);
 
@@ -210,10 +221,10 @@ var ip_geo_block_time = new Date();
 				ajax_post('scanning', {
 					cmd: 'scan-code'
 				}, function (data) {
-					if (!parent.find('ul').length) {
+					if (!parent.children('ul').length) {
 						parent.append('<ul id="ip-geo-block-code-list"></ul>');
 					}
-					parent = parent.find('ul').empty();
+					parent = parent.children('ul').empty();
 
 					var key, val;
 					for (key in data) {
@@ -236,15 +247,15 @@ var ip_geo_block_time = new Date();
 
 			// Matching rule
 			$('#ip_geo_block_settings_matching_rule').on('change', function () {
-				$('#ip_geo_block_settings_white_list').prop('disabled', this.value !== '0');
-				$('#ip_geo_block_settings_black_list').prop('disabled', this.value !== '1');
+				$('#ip_geo_block_settings_white_list').closest('tr').toggle(this.value !== '1');
+				$('#ip_geo_block_settings_black_list').closest('tr').toggle(this.value !== '0');
 				return false;
 			}).trigger('change');
 
 			$('form').on('submit', function () {
 				if ($(this).find('#submit').length) {
-					$('#ip_geo_block_settings_white_list').prop('disabled', false);
-					$('#ip_geo_block_settings_black_list').prop('disabled', false);
+					var signature = $('#ip_geo_block_settings_signature');
+					signature.val(str_rot13(signature.val()));
 				}
 				return true;
 			});
@@ -380,8 +391,7 @@ var ip_geo_block_time = new Date();
 					for (key in data) {
 						if (data.hasOwnProperty(key)) {
 							key = sanitize(key); // data has been already sanitized
-//							html = $.parseHTML(data[key]); // @since jQuery 1.8
-//							$('#ip-geo-block-log-' + key).empty().append(html);
+//							$('#ip-geo-block-log-' + key).html($.parseHTML(data[key])); // jQuery 1.8+
 							$('#ip-geo-block-log-' + key).html(data[key]);
 						}
 					}

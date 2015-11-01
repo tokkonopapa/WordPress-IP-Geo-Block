@@ -253,7 +253,7 @@ class IP_Geo_Block_Logs {
 				if ( $mask_pwd && 'wp.' === substr( $xml->methodName, 0, 3 ) ) {
 					$xml->params->param[1]->value->string = '***';
 				}
-				$posts = self::truncate_utf8( json_encode( $xml ), '/["\\\\]/' );
+				$posts = self::truncate_utf8( wp_json_encode( $xml ), '/["\\\\]/' );
 			} else {
 				$posts = 'xml parse error: malformed xml';
 			}*/
@@ -334,6 +334,9 @@ class IP_Geo_Block_Logs {
 		$heads = self::get_http_headers();
 		$posts = self::get_post_data( $hook, $validate, $settings );
 		$method = $_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . $_SERVER['REQUEST_URI'];
+
+		if ( $settings['anonymize'] )
+			$validate['ip'] = preg_replace( '/\d{1,3}$/', '***', $validate['ip'] );
 
 		// limit the maximum number of rows
 		global $wpdb;

@@ -240,7 +240,7 @@ class IP_Geo_Block_Admin {
 		$settings = IP_Geo_Block::get_option( 'settings' );
 		if ( -1 == $settings['matching_rule'] ) {
 			$this->add_admin_notice( 'notice-warning', sprintf(
-				__( 'Welcome to %s!! At first, please confirm &#8217;<strong>Matching rule</strong>&#8217; at <a href="%s">Validation rule settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
+				__( 'Welcome to %s!! At first, please confirm &#8220;<strong>Matching rule</strong>&#8221; at <a href="%s">Validation rule settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
 				__( 'IP Geo Block', IP_Geo_Block::TEXT_DOMAIN ),
 				admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG )
 			) );
@@ -253,7 +253,7 @@ class IP_Geo_Block_Admin {
 			if ( 'passed' !== $validate['result'] ) {
 				$url = admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG . '#' . IP_Geo_Block::PLUGIN_SLUG );
 				$this->add_admin_notice( 'error', sprintf(
-					__( 'You will be blocked out when you log out. Please confirm &#8217;<strong>Matching rule</strong>&#8217; and the country code in &#8217;<strong>White list</strong>&#8217; or &#8217;<strong>Black list</strong>&#8217; at <a href="%s">Validation rule settings</a>. Otherwise select &#8217;<strong>Block by country (register, lost password)</strong>&#8217; for &#8217;<strong>Login form</strong>&#8217; at <a href="%s">Validation target settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
+					__( 'You\'ll be blocked after you log out. Please confirm &#8220;<strong>Matching rule</strong>&#8221; and &#8220;<strong>Country code for matching rule</strong>&#8221; at <a href="%s">Validation rule settings</a>. Otherwise select &#8220;<strong>Block by country (register, lost password)</strong>&#8221; for &#8220;<strong>Login form</strong>&#8221; at <a href="%s">Validation target settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
 					"${url}-settings-0", "${url}-settings-1"
 				) );
 			}
@@ -378,8 +378,12 @@ class IP_Geo_Block_Admin {
 		if ( ! empty( $args['before'] ) )
 			echo $args['before'], "\n"; // must be sanitized at caller
 
-		$id   = "${args['option']}_${args['field']}";
-		$name = "${args['option']}[${args['field']}]";
+		// field
+		$id = $name = '';
+		if ( ! empty( $args['field'] ) ) {
+			$id   = "${args['option']}_${args['field']}";
+			$name = "${args['option']}[${args['field']}]";
+		}
 
 		// sub field
 		$sub_id = $sub_name = '';
@@ -391,7 +395,7 @@ class IP_Geo_Block_Admin {
 		switch ( $args['type'] ) {
 
 		  case 'check-provider':
-			echo "\n<ul id=\"check-provider\">\n";
+			echo "\n<ul class=\"ip-geo-block-list\">\n";
 			foreach ( $args['providers'] as $key => $val ) {
 				$id   = "${args['option']}_providers_$key";
 				$name = "${args['option']}[providers][$key]"; ?>
@@ -402,7 +406,7 @@ class IP_Geo_Block_Admin {
 				( FALSE  === $val   && ! empty( $args['value'][ $key ] ) ) ||
 				( is_string( $val ) && ! empty( $args['value'][ $key ] ) )
 			); ?> />
-		<label for="<?php echo $id; ?>" title="<?php echo esc_attr( $args['titles'][ $key ] ); ?>"><?php echo $key; ?></label>
+		<label for="<?php echo $id; ?>"><?php echo '<dfn title="', esc_attr( $args['titles'][ $key ] ), '">', $key, '</dfn>'; ?></label>
 <?php
 				if ( is_string( $val ) ) { ?>
 		<input type="text" class="regular-text code" name="<?php echo $name; ?>" value="<?php echo esc_attr( isset( $args['value'][ $key ] ) ? $args['value'][ $key ] : '' ); ?>"<?php if ( ! isset( $val ) ) disabled( TRUE, TRUE ); ?> />
@@ -413,30 +417,53 @@ class IP_Geo_Block_Admin {
 			echo "</ul>\n";
 			break;
 
-		  case 'select':
-		  case 'comment-msg':
-			echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\">\n";
-			foreach ( $args['list'] as $key => $val )
-				echo "\t<option value=\"$val\"", ( $val < 0 ? ' selected disabled' : selected( $args['value'], $val, FALSE ) ), ">$key</option>\n";
-			echo isset( $optgroup ) ? "</optgroup>\n" : "", "</select>\n";
-			if ( 'select' === $args['type'] )
-				break;
-			echo "<br />\n";
-			$sub_id   = '_msg';
-			$sub_name = '[msg]';
-			$args['value'] = $args['text'];
-
-		  case 'text': ?>
-<input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php disabled( ! empty( $args['disabled'] ), TRUE );
-?> />
+		  case 'checkboxes':
+			echo "\n<ul class=\"ip-geo-block-list\">\n";
+			foreach ( $args['list'] as $key => $val ) { ?>
+	<li>
+		<input type="checkbox" id="<?php echo $id, $sub_id, '_', $key; ?>" name="<?php echo $name, $sub_name, '[', $key, ']'; ?>" value="<?php echo $key; ?>"<?php
+			checked( $key & $args['value'] ? TRUE : FALSE ); ?> />
+		<label for="<?php echo $id, $sub_id, '_', $key; ?>"><?php
+			if ( isset( $args['desc'][ $key ] ) ) 
+				echo '<dfn title="', $args['desc'][ $key ], '">', $val, '</dfn>';
+			else
+				echo $val;
+		?></label>
+	</li>
 <?php
-			break; // disabled @since 3.0
+			}
+			echo "</ul>\n";
+			break;
 
 		  case 'checkbox': ?>
 <input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="1"<?php checked( esc_attr( $args['value'] ) ); ?> />
 <label for="<?php echo $id, $sub_id; ?>"><?php echo esc_attr( isset( $args['text'] ) ? $args['text'] : __( 'Enable', IP_Geo_Block::TEXT_DOMAIN ) ); ?></label>
 <?php
 			break;
+
+		  case 'select':
+		  case 'select-text':
+			echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\">\n";
+			foreach ( $args['list'] as $key => $val ) {
+				echo "\t<option value=\"$key\"", ( $key < 0 ? ' selected disabled' : selected( $args['value'], $key, FALSE ) );
+				if ( isset( $args['desc'][ $key ] ) )
+					echo " data-desc=\"", $args['desc'][ $key ], "\"";
+				echo ">$val</option>\n";
+			}
+			echo "</select>\n";
+			if ( 'select' === $args['type'] )
+				break;
+			echo "<br />\n";
+			$sub_id   = '_' . $args['txt-field'];
+			$sub_name = '[' . $args['txt-field'] . ']';
+			$args['value'] = $args['text'];
+
+		  case 'text': ?>
+<input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php
+	disabled( ! empty( $args['disabled'] ), TRUE );
+?> />
+<?php
+			break; // disabled @since 3.0
 
 		  case 'button': ?>
 <input type="button" class="button-secondary" id="<?php echo esc_attr( $args['field'] ); ?>" value="<?php echo esc_attr( $args['value'] ); ?>" />
@@ -467,6 +494,11 @@ class IP_Geo_Block_Admin {
 		// setup base options
 		$output = IP_Geo_Block::get_option( $option_name );
 		$default = IP_Geo_Block::get_default( $option_name );
+
+		// checkboxes
+		foreach ( array( 'admin', 'ajax', 'plugins', 'themes' ) as $key ) {
+			$output['validation'][ $key ] = 0;
+		}
 
 		/**
 		 * Sanitize a string from user input
@@ -511,13 +543,13 @@ class IP_Geo_Block_Admin {
 					$this->setting_notice( $option_name, 'error', $error );
 				}
 				break;
-/*
+
 			  case 'comment':
 				global $allowedtags;
 				$output[ $key ]['pos'] = (int)$input[ $key ]['pos'];
 				$output[ $key ]['msg'] = wp_kses( $input[ $key ]['msg'], $allowedtags );
 				break;
-*/
+
 			  case 'white_list':
 			  case 'black_list':
 				$output[ $key ] = isset( $input[ $key ] ) ?
@@ -560,20 +592,33 @@ class IP_Geo_Block_Admin {
 
 					// otherwise if implicit
 					elseif ( isset( $input[ $key ][ $sub ] ) ) {
-						$output[ $key ][ $sub ] = is_int( $default[ $key ][ $sub ] ) ?
-							(int)$input[ $key ][ $sub ] :
-							sanitize_text_field(
-								preg_replace( '/\s/', '', $input[ $key ][ $sub ] )
-							);
-						if ( 'proxy' === $sub ) {
-							$output[ $key ][ $sub ] = preg_replace( '/[^\w,]/', '',
-								strtoupper( $output[ $key ][ $sub ] ) );
+						// for checkboxes
+						if ( is_array( $input[ $key ][ $sub ] ) ) {
+							foreach ( $input[ $key ][ $sub ] as $k => $v ) {
+								$output[ $key ][ $sub ] |= $v;
+							}
+						}
+
+						else {
+							$output[ $key ][ $sub ] = is_int( $default[ $key ][ $sub ] ) ?
+								(int)$input[ $key ][ $sub ] :
+								sanitize_text_field(
+									preg_replace( '/\s/', '', $input[ $key ][ $sub ] )
+								);
+							if ( 'proxy' === $sub ) {
+								$output[ $key ][ $sub ] = preg_replace( '/[^\w,]/', '',
+									strtoupper( $output[ $key ][ $sub ] ) );
+							}
 						}
 					}
 				}
 				break;
 			}
 		}
+
+		// malicious signatures
+		$output['signature'] = str_rot13( $output['signature'] ); // avoid self blocking
+		$output['signature'] = implode( ',', array_map( 'trim', explode( ',', $output['signature'] ) ) );
 
 		// Register a settings error to be displayed to the user
 		$this->setting_notice( $option_name, 'updated',
