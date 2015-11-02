@@ -21,15 +21,7 @@
 * @link       http://pear.php.net/package/Net_IPv4
 */
 
-//require_once 'PEAR.php';
-class PEAR {
-	static raiseError( $msg ) {
-		return false;
-	}
-	static isError( $data, $msgcode ) {
-		return false === $data;
-	}
-}
+require_once 'PEAR.php';
 
 // {{{ GLOBALS
 /**
