@@ -124,7 +124,7 @@ function my_permitted_ajax( $validate ) {
 		'permitted_action',
 	);
 
-	if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], $ whitelist ) )
+	if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], $whitelist ) )
 		$validate['result'] = 'passed';
 
 	return $validate; // should not set 'passed' to validate by country code
