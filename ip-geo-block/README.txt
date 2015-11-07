@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.3.1
-Stable tag: 2.2.0
+Stable tag: 2.2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,25 +55,25 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 * **Guard against login attempts:**  
   In order to prevent the invasion through the login form and XML-RPC against
   the brute-force and the reverse-brute-force attacks, the number of login 
-  attempts even from the permitted countries will be limited per IP address.
+  attempts will be limited per IP address even from the permitted countries.
 
 * **Zero-day Exploit Prevention:**  
-  The original new feature '**Z**ero-day **E**xploit **P**revention for WP' 
-  (WP-ZEP) is now available to block malicious access to `wp-admin/*.php`. 
-  It will protect against certain types of attack such as CSRF, SQLi and so on 
-  even if you have some
+  The original feature "**Z**ero-day **E**xploit **P**revention for WP" (WP-ZEP)
+  will block any malicious accesses to `wp-admin/*.php` even from the permitted
+  countries. It will protect against certain types of attack such as CSRF, SQLi
+  and so on, even if you have some
     [vulnerable plugins](https://wpvulndb.com/ "WPScan Vulnerability Database")
-  in your site. This feature works completely independently blocking by country.
+  in your site.
   Because this is an experimental feature, please open an issue at
     [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles. I'll be profoundly grateful your contribution to
   improve this feature. See more details on
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-* **Protection of `wp-config.php`:**  
+* **Protection of wp-config.php:**  
   A malicious request to try to expose `wp-config.php` via vulnerable plugins 
   or themes can be blocked. A numerous such attacks can be found in 
-    [this article]().
+    [this article](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php").
 
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin such that a registered user can login as the
@@ -103,21 +103,11 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   Logs will be recorded into MySQL data table to audit posting pattern under 
   the specified condition.
 
-* **Multi source of IP Geolocation database:**  
+* **Multiple source of IP Geolocation database:**  
   Free IP Geolocation database and REST APIs are installed into this plugin to
   get a country code from an IP address. There are two types of API which 
   support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
   choose an appropriate API.
-
-* **Database auto updater:**  
-  [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
-  GeoLite free database for IPv4 and IPv6 will be downloaded and updated (once
-  a month) automatically. And if you have correctly installed one of the
-  IP2Location plugins (
-    [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
-    [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
-    [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
-  ), this plugin uses its local database prior to the REST APIs.
 
 * **Cooperation with full spec security plugin:**  
   This plugin is simple and lite enough to be able to cooperate with other full
@@ -295,7 +285,7 @@ via FTP.
 `/**
  * Invalidate blocking behavior in case yourself is locked out.
  * @note: activate the following code and upload this file via FTP.
- */ //* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTION --
+ */ /* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTION -- */
 function ip_geo_block_emergency( $validate ) {
     $validate['result'] = 'passed';
     return $validate;
@@ -317,33 +307,9 @@ You can add an IP address to the `X-Forwarded-For` header to emulate the
 access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` 
 into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
 
-You can also add the following code into your `functions.php` to replace your 
-IP using 
-  [User Agent Switcher](https://www.google.com/search?q=User%20Agent%20Switcher) 
-on your browser (Chrome or Firefox) with "Your unique user agent".
+= Are there any filter hooks? =
 
-`/**
- * Example: Usage of 'ip-geo-block-ip-addr'
- * Use case: Replace ip address for test purpose
- *
- * @param  string $ip original ip address
- * @return string $ip replaced ip address
- */
-function my_replace_ip( $ip ) {
-    if ( FALSE !== stripos( $_SERVER['HTTP_USER_AGENT'], 'Your unique user agent' ) )
-        $ip = '98.139.183.24'; // yahoo.com
-
-    return $ip;
-}
-add_filter( 'ip-geo-block-ip-addr', 'my_replace_ip' );`
-
-The last one is to use 
-  [this tool](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/tree/master/test "WordPress Access Emulator")
-to test verious post patterns.
-
-= Are there any other filter hooks? =
-
-Yes, here is the list of all hooks.
+Yes, here is the list of all hooks to extend the feature of this plugin.
 
 * `ip-geo-block-ip-addr`          : IP address of accessor.
 * `ip-geo-block-headers`          : compose http request headers.
@@ -440,6 +406,11 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.2.0.1 =
+Sorry for frequent update.
+
+* **Fix:** Fixed the issue that some actions of other plugins were blocked.
 
 = 2.2.0 =
 * **Important:** Now **Block by country** and **Prevent Zero-day Exploit** 

@@ -20,7 +20,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.0';
+	const VERSION = '2.2.0.1';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -40,7 +40,6 @@ class IP_Geo_Block {
 
 	// Globals in this class
 	public static $content_dir;
-	private $skip_auth = FALSE;
 	private $remote_addr = NULL;
 
 	/**
@@ -114,7 +113,7 @@ class IP_Geo_Block {
 				add_action( 'init', array( $this, 'validate_direct' ), $settings['priority'] );
 		}
 
-		// overwrite the redirect URL at logout to remove nonce, embed a nonce into the page
+		// force to change the redirect URL at logout to remove nonce, embed a nonce into pages
 		add_filter( 'wp_redirect', array( $this, 'logout_redirect' ), 20, 2 ); // logout_redirect @4.2
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $settings['priority'] );
 	}
@@ -220,12 +219,11 @@ class IP_Geo_Block {
 	 * @see http://codex.wordpress.org/Function_Reference/wp_remote_get
 	 */
 	public static function get_request_headers( $settings ) {
-		global $wp_version;
 		return apply_filters(
 			self::PLUGIN_SLUG . '-headers',
 			array(
 				'timeout' => (int)$settings['timeout'],
-				'user-agent' => "WordPress/$wp_version; " . self::PLUGIN_SLUG . ' ' . self::VERSION,
+				'user-agent' => 'WordPress/' . $GLOBALS['wp_version'] . self::PLUGIN_SLUG . ' ' . self::VERSION,
 			)
 		);
 	}
@@ -248,7 +246,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Build the validation result for the current user.
+	 * Build a validation result for the current user.
 	 *
 	 */
 	private static function make_validation( $ip, $result ) {
@@ -314,16 +312,16 @@ class IP_Geo_Block {
 		if ( $block && 0 == $settings['matching_rule'] ) {
 			// 'ZZ' will be blocked if it's not in the $list.
 			if ( ( $list = $settings['white_list'] ) && FALSE === strpos( $list, $validate['code'] ) )
-				return $validate += array( 'result' => 'blocked' );
+				return $validate += array( 'result' => 'blocked' ); // can't overwrite existing result
 		}
 
 		elseif( $block && 1 == $settings['matching_rule'] ) {
 			// 'ZZ' will NOT be blocked if it's not in the $list.
 			if ( ( $list = $settings['black_list'] ) && FALSE !== strpos( $list, $validate['code'] ) )
-				return $validate += array( 'result' => 'blocked' );
+				return $validate += array( 'result' => 'blocked' ); // can't overwrite existing result
 		}
 
-		return $validate + array( 'result' => 'passed' );
+		return $validate + array( 'result' => 'passed' ); // can't overwrite existing result
 	}
 
 	/**
@@ -410,15 +408,12 @@ class IP_Geo_Block {
 
 		// register auxiliary validation functions
 		$var = self::PLUGIN_SLUG . "-${hook}";
+		add_filter( $var, array( $this, 'check_auth' ), 9, 2 );
+		add_filter( $var, array( $this, 'check_fail' ), 8, 2 );
+
 		$settings['extra_ips'] = apply_filters( self::PLUGIN_SLUG . '-extra-ips', $settings['extra_ips'], $hook );
-		$settings['extra_ips']['white_list'] && add_filter( $var, array( $this, 'check_ips_white' ), 9, 2 );
-		$settings['extra_ips']['black_list'] && add_filter( $var, array( $this, 'check_ips_black' ), 9, 2 );
-
-		add_filter( $var, array( $this, 'check_auth' ), 8, 2 );
-		add_filter( $var, array( $this, 'check_fail' ), 7, 2 );
-
-		if ( 'admin' === $hook )
-			add_filter( $var, array( $this, 'check_signature' ), 6, 2 );
+		$settings['extra_ips']['white_list'] && add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
+		$settings['extra_ips']['black_list'] && add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
 
 		// make valid provider name list
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
@@ -510,12 +505,12 @@ class IP_Geo_Block {
 	public function validate_login() {
 		$settings = self::get_option( 'settings' );
 
-		// enables to skip authentication at login/out except BuddyPress signup
-		if ( ( 'bp_' !== substr( current_filter(), 0, 3 ) ) &&
-		     ( empty( $_REQUEST['action'] ) || in_array( $_REQUEST['action'], array( 'login', 'logout' ) ) ) )
-			$this->skip_auth = ( 1 != $settings['validation']['login'] ); // don't skip if `Block by country`
+		// enables to skip validation by country at login/out except BuddyPress signup
+		$block = ( 1 == $settings['validation']['login'] ) ||
+			( 'bp_' === substr( current_filter(), 0, 3 ) ) ||
+			( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout' ) ) );
 
-		$this->validate_ip( 'login', $settings );
+		$this->validate_ip( 'login', $settings, $block );
 	}
 
 	/**
@@ -558,13 +553,16 @@ class IP_Geo_Block {
 				'jetpack_modules', 'atd_settings', // jetpack: multiple redirect for modules, cross domain ajax for proofreading
 			) );
 
-			// the combination of vulnerable keys should be prevented not to bypass WP-ZEP
+			// combination of vulnerable keys should be prevented not to bypass WP-ZEP
 			if ( ( $page   || ! in_array( $action, $list, TRUE ) ) &&
 			     ( $action || ! in_array( $page,   $list, TRUE ) ) )
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 		}
 
-		// Validate country by IP address (1: Block by country)
+		// register validation by malicious signature
+		add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
+
+		// validate country by IP address (1: Block by country)
 		$this->validate_ip( 'admin', $settings, 1 & $settings['validation'][ $type ] );
 	}
 
@@ -573,7 +571,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_direct() {
-		// retrieve the name of the plugin/theme
+		// retrieve the name of plugins/themes
 		$plugins = preg_quote( self::$content_dir['plugins'], '/' );
 		$themes  = preg_quote( self::$content_dir['themes' ], '/' );
 		$request = preg_replace( '!(//+|/\.+/)!', '/', $_SERVER['REQUEST_URI'] );
@@ -589,14 +587,17 @@ class IP_Geo_Block {
 			);
 			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $list[ $type ] );
 
-			// register validation of nonce (2: WP-ZEP)
+			// register validation by nonce (2: WP-ZEP)
 			if ( 2 & $settings['validation'][ $type ] && ! in_array( $matches[3], $list, TRUE ) )
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 
-			// Validate country by IP address (1: Block by country)
+			// register validation by malicious signature
+			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
+
+			// validate country by IP address (1: Block by country)
 			$validate = $this->validate_ip( 'admin', $settings, 1 & $settings['validation'][ $type ] );
 
-			// If the validation is successful, execute the requested uri via rewrite.php
+			// if the validation is successful, execute the requested uri via rewrite.php
 			if ( class_exists( 'IP_Geo_Block_Rewrite' ) )
 				IP_Geo_Block_Rewrite::exec( $validate, $settings );
 		}
@@ -633,27 +634,25 @@ class IP_Geo_Block {
 	public function check_fail( $validate, $settings ) {
 		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
 
-		// if a number of fails is exceeded, overwrite the prior result
+		// if a number of fails is exceeded, then fail
 		if ( $cache && $cache['fail'] >= $settings['login_fails'] )
-			( empty( $validate['result'] ) || 'passed' === $validate['result'] ) && ( $validate['result'] = 'failed' );
+			if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
+				$validate['result'] = 'failed'; // can't overwrite existing result
 
 		return $validate;
 	}
 
 	public function check_auth( $validate, $settings ) {
-		// authentication should be prior to the validation by country when anyone can login
-		if ( $validate['auth'] || $this->skip_auth )
-			$validate += array( 'result' => 'passed' ); // can't overwrite the existing result
-
-		return $validate;
+		// authentication should be prior to validation by country (can't overwrite existing result)
+		return $validate['auth'] ? $validate + array( 'result' => 'passed' ) : $validate;
 	}
 
 	public function check_signature( $validate, $settings ) {
 		$request = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
 		foreach ( explode( ',', $settings['signature'] ) as $signature ) {
-			if ( $signature && FALSE !== strpos( $request, $signature ) )
-				$validate += array( 'result' => 'badsig' ); // can't overwrite existing the result
+			if ( ( $signature = trim( $signature ) ) && FALSE !== strpos( $request, "/$signature" ) )
+				return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
 		}
 
 		return $validate;
@@ -667,7 +666,8 @@ class IP_Geo_Block {
 		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
 
 		if ( ! wp_verify_nonce( self::retrieve_nonce( $nonce ), $nonce ) )
-			( empty( $validate['result'] ) || 'passed' === $validate['result'] ) && ( $validate['result'] = 'wp-zep' );
+			if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
+				$validate['result'] = 'wp-zep'; // can't overwrite existing result
 
 		return $validate;
 	}
@@ -712,7 +712,7 @@ class IP_Geo_Block {
 
 		if ( FALSE === strpos( $ips, '/' ) ) {
 			if ( FALSE !== strpos( $ips, $ip ) )
-				$validate += array( 'result' => $which ? 'extra' : 'passed' ); // can't overwrite
+				$validate += array( 'result' => $which ? 'extra' : 'passed' ); // can't overwrite existing result
 		}
 
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
@@ -721,7 +721,7 @@ class IP_Geo_Block {
 				$j = explode( '/', $i = trim( $i ) );
 				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) &&
 				     Net_IPv4::ipInNetwork( $ip, ! empty( $j[1] ) ? $i : "$i/32" ) ) {
-					$validate += array( 'result' => $which ? 'extra' : 'passed' ); // can't overwrite
+					$validate += array( 'result' => $which ? 'extra' : 'passed' ); // can't overwrite existing result
 					break;
 				}
 			}
@@ -733,7 +733,7 @@ class IP_Geo_Block {
 				$j = explode( '/', $i = trim( $i ) );
 				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) &&
 				     Net_IPv6::isInNetmask( $ip, ! empty( $j[1] ) ? $i : "$i/128" ) ) {
-					$validate += array( 'result' => $which ? 'extra' : 'passed' ); // can't overwrite
+					$validate += array( 'result' => $which ? 'extra' : 'passed' ); // can't overwrite existing result
 					break;
 				}
 			}
@@ -796,7 +796,7 @@ class IP_Geo_Block {
 				$settings['matching_rule'] = -1;
 
 			// setup country code if it needs to be initialized
-			if ( -1 == $settings['matching_rule'] && ! empty( $validate['code'] ) ) {
+			if ( -1 == $settings['matching_rule'] && 'ZZ' !== $validate['code'] ) {
 				$settings['matching_rule'] = 0; // white list
 				if ( FALSE === strpos( $settings['white_list'], $validate['code'] ) )
 					$settings['white_list'] .= ( $settings['white_list'] ? ',' : '' ) . $validate['code'];

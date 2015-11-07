@@ -13,12 +13,6 @@ var ip_geo_block_time = new Date();
 (function ($) {
 	'use strict';
 
-	function str_rot13(str) {
-		return (str + '').replace(/[a-z]/gi, function(s) {
-			return String.fromCharCode(s.charCodeAt(0) + ('n' > s.toLowerCase() ? 13 : -13));
-		});
-	}
-
 	function sanitize(str) {
 		return str ? str.toString().replace(/[&<>"']/g, function (match) {
 			return {
@@ -161,6 +155,7 @@ var ip_geo_block_time = new Date();
 		// Make form style with fieldset and legend
 		var fieldset = $('<fieldset class="ip-geo-block-field"></fieldset>'),
 		    legend = $('<legend></legend>');
+
 		$('.form-table').each(function (index) {
 			var $this = $(this),
 			    title = $this.prevAll('h2,h3:first'),
@@ -251,14 +246,6 @@ var ip_geo_block_time = new Date();
 				$('#ip_geo_block_settings_black_list').closest('tr').toggle(this.value !== '0');
 				return false;
 			}).trigger('change');
-
-			$('form').on('submit', function () {
-				if ($(this).find('#submit').length) {
-					var signature = $('#ip_geo_block_settings_signature');
-					signature.val(str_rot13(signature.val()));
-				}
-				return true;
-			});
 
 			// Update MaxMind database
 			$('#update').on('click', function (event) {

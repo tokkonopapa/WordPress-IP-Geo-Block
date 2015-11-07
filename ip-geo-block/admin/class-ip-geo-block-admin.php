@@ -616,10 +616,6 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
-		// malicious signatures
-		$output['signature'] = str_rot13( $output['signature'] ); // avoid self blocking
-		$output['signature'] = implode( ',', array_map( 'trim', explode( ',', $output['signature'] ) ) );
-
 		// Register a settings error to be displayed to the user
 		$this->setting_notice( $option_name, 'updated',
 			__( 'Successfully updated.', IP_Geo_Block::TEXT_DOMAIN )
