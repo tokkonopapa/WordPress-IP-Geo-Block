@@ -21,11 +21,12 @@ simply hitting
     [wp-admin/admin-ajax.php?action=show&file=../wp-config.php](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
 on their browser.
 
-Against the third cases, this plugin dedicates to block malicious accesses 
-to the backend services for dashboard, while the frontend services for the 
-public facing pages can be served to anyone. In order to achieve this goal, 
-this plugin is carefully designed as combining geolocation based blocking 
-with some other features such as "Zero-day Exploit Prevention".
+For these cases, the protection based on the IP address is not a perfect 
+solution for everyone. But for some site owners or some certain cases such 
+as 'zero-day attack', it can still reduce the risk of infection against the 
+specific attacks.
+
+That's why this plugin is here.
 
 ### Features:
 
@@ -45,25 +46,25 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 * **Guard against login attempts:**  
   In order to prevent the invasion through the login form and XML-RPC against
   the brute-force and the reverse-brute-force attacks, the number of login 
-  attempts even from the permitted countries will be limited per IP address.
+  attempts will be limited per IP address even from the permitted countries.
 
 * **Zero-day Exploit Prevention:**  
-  The original new feature '**Z**ero-day **E**xploit **P**revention for WP' 
-  (WP-ZEP) is now available to block malicious access to `wp-admin/*.php`. 
-  It will protect against certain types of attack such as CSRF, SQLi and so on 
-  even if you have some
+  The original feature "**Z**ero-day **E**xploit **P**revention for WP" (WP-ZEP)
+  will block any malicious accesses to `wp-admin/*.php` even from the permitted
+  countries. It will protect against certain types of attack such as CSRF, SQLi
+  and so on, even if you have some
     [vulnerable plugins](https://wpvulndb.com/ "WPScan Vulnerability Database")
-  in your site. This feature works completely independently blocking by country.
+  in your site.
   Because this is an experimental feature, please open an issue at
     [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles. I'll be profoundly grateful your contribution to
   improve this feature. See more details on
     [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
 
-* **Protection of `wp-config.php`:**  
+* **Protection of wp-config.php:**  
   A malicious request to try to expose `wp-config.php` via vulnerable plugins 
   or themes can be blocked. A numerous such attacks can be found in 
-    [this article]().
+    [this article](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php").
 
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin such that a registered user can login as the
@@ -77,6 +78,19 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 * **Referrer suppressor for external links:**  
   When you click an external hyperlink on admin screen, http referrer will be 
   eliminated to hide a footprint of your site.
+
+* **Multiple source of IP Geolocation databases:**  
+  Free IP Geolocation database and REST APIs are installed into this plugin to
+  get a country code from an IP address. There are two types of API which 
+  support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
+  choose an appropriate API.
+
+* **Database auto updater:**  
+  [MaxMind][MaxMind] 
+  GeoLite free databases and 
+  [IP2Location][IP2Loc] 
+  LITE databases can be incorporated with this plugin. Those will be downloaded
+  and updated (once a month) automatically.
 
 * **Cache mechanism:**  
   A cache mechanism with transient API for the fetched IP addresses has been 
@@ -92,22 +106,6 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 * **Validation logs:**  
   Logs will be recorded into MySQL data table to audit posting pattern under 
   the specified condition.
-
-* **Multi source of IP Geolocation database:**  
-  Free IP Geolocation database and REST APIs are installed into this plugin to
-  get a country code from an IP address. There are two types of API which 
-  support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
-  choose an appropriate API.
-
-* **Database auto updater:**  
-  [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
-  GeoLite free database for IPv4 and IPv6 will be downloaded and updated (once
-  a month) automatically. And if you have correctly installed one of the
-  IP2Location plugins (
-    [IP2Location Tags][IP2Tag],
-    [IP2Location Variables][IP2Var],
-    [IP2Location Country Blocker][IP2Blk]
-  ), this plugin uses its local database prior to the REST APIs.
 
 * **Cooperation with full spec security plugin:**  
   This plugin is simple and lite enough to be able to cooperate with other full
@@ -231,7 +229,7 @@ Also thanks for providing the following great services and REST APIs for free.
   to get a free API key and set it into the textfield. And `ip-api.com` and 
   `Smart-IP.net` require non-commercial use.
 
-#### Maxmind GeoLite settings
+#### Local database settings settings
 
 * **Auto updating (once a month)**  
   If `Enable`, Maxmind GeoLite database will be downloaded automatically by 
@@ -251,6 +249,10 @@ Also thanks for providing the following great services and REST APIs for free.
   some of interested keys into this textfield, you can see the value of key 
   like `key=value`.
 
+* **Anonymize IP address**  
+  It will mask the last three digits of IP address when it is recorded into 
+  the log.
+
 #### Cache settings
 
 * **Number of entries**  
@@ -263,8 +265,8 @@ Also thanks for providing the following great services and REST APIs for free.
 
 * **Text position on comment form**  
   If you want to put some text message on your comment form, please choose
-  `Top` or `Bottom` and put text into the **Text message on comment form**
-  textfield.
+  `Top` or `Bottom` and put text with some tags into the **Text message on 
+  comment form** textfield.
 
 #### Plugin settings
 
@@ -283,7 +285,7 @@ via FTP.
 /**
  * Invalidate blocking behavior in case yourself is locked out.
  * @note: activate the following code and upload this file via FTP.
- */ //* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTION --
+ */ /* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTION -- */
 function ip_geo_block_emergency( $validate ) {
     $validate['result'] = 'passed';
     return $validate;
@@ -306,35 +308,9 @@ You can add an IP address to the `X-Forwarded-For` header to emulate the
 access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` 
 into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
 
-You can also add the following code into your `functions.php` to replace your 
-IP using 
-  [User Agent Switcher][UserAgent] 
-on your browser (Chrome or Firefox) with "Your unique user agent".
+= Are there any filter hooks? =
 
-```php
-/**
- * Example: Usage of 'ip-geo-block-ip-addr'
- * Use case: Replace ip address for test purpose
- *
- * @param  string $ip original ip address
- * @return string $ip replaced ip address
- */
-function my_replace_ip( $ip ) {
-    if ( FALSE !== stripos( $_SERVER['HTTP_USER_AGENT'], 'Your unique user agent' ) )
-        $ip = '98.139.183.24'; // yahoo.com
-
-    return $ip;
-}
-add_filter( 'ip-geo-block-ip-addr', 'my_replace_ip' );
-```
-
-The last one is to use 
-  [this tool][WPEmulator]
-to test verious post patterns.
-
-#### Are there any other filter hooks? ####
-
-Yes, here is the list of all hooks.
+Yes, here is the list of all hooks to extend the feature of this plugin.
 
 * `ip-geo-block-ip-addr`          : IP address of accessor.
 * `ip-geo-block-headers`          : compose http request headers.
@@ -349,10 +325,12 @@ Yes, here is the list of all hooks.
 * `ip-geo-block-bypass-plugins`   : array of plugin name which should bypass WP-ZEP.
 * `ip-geo-block-bypass-themes`    : array of theme name which should bypass WP-ZEP.
 * `ip-geo-block-backup-dir`       : full path where log files should be saved.
+* `ip-geo-block-api-dir`          : full path to the API class libraries and local DB files.
 * `ip-geo-block-maxmind-dir`      : full path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
-* `ip-geo-block-ip2location-path` : full path to IP2Location LITE DB file.
+* `ip-geo-block-ip2location-dir`  : full path where IP2Location LITE DB files should be saved.
+* `ip-geo-block-ip2location-path` : full path to IP2Location LITE DB file (IPv4).
 
 For more details, see 
     [samples.php][sample]
@@ -409,18 +387,6 @@ filter hook `ip-geo-block-bypass-admins`.
 
 If you can not figure out your troubles, please let me know about the plugin 
 you are using at the support forum.
-
-### Other Notes:
-
-After installing these IP2Location plugins, you should be once deactivated 
-and then activated in order to set the path to `database.bin`.
-
-If you do not want to keep the IP2Location plugins (
-    [IP2Location Tags][IP2Tag],
-    [IP2Location Variables][IP2Var],
-    [IP2Location Country Blocker][IP2Blk]
-) in `wp-content/plugins/` directory but just want to use its database, 
-you can rename it to `ip2location` and upload it to `wp-content/`.
 
 ### License:
 
