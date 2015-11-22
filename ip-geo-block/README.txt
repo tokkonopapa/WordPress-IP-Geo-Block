@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.3.1
-Stable tag: 2.2.0.1
+Stable tag: 2.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,19 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   When you click an external hyperlink on admin screen, http referrer will be 
   eliminated to hide a footprint of your site.
 
+* **Multiple source of IP Geolocation databases:**  
+  Free IP Geolocation database and REST APIs are installed into this plugin to
+  get a country code from an IP address. There are two types of API which 
+  support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
+  choose an appropriate API.
+
+* **Database auto updater:**  
+  [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+  GeoLite free databases and 
+  [IP2Location](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") 
+  LITE databases can be incorporated with this plugin. Those will be downloaded
+  and updated (once a month) automatically.
+
 * **Cache mechanism:**  
   A cache mechanism with transient API for the fetched IP addresses has been 
   equipped to reduce load on the server against the burst accesses with a short
@@ -102,12 +115,6 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 * **Validation logs:**  
   Logs will be recorded into MySQL data table to audit posting pattern under 
   the specified condition.
-
-* **Multiple source of IP Geolocation database:**  
-  Free IP Geolocation database and REST APIs are installed into this plugin to
-  get a country code from an IP address. There are two types of API which 
-  support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
-  choose an appropriate API.
 
 * **Cooperation with full spec security plugin:**  
   This plugin is simple and lite enough to be able to cooperate with other full
@@ -234,7 +241,7 @@ All contributions will always be welcome. Or visit my
   to get a free API key and set it into the textfield. And `ip-api.com` and 
   `Smart-IP.net` require non-commercial use.
 
-= Maxmind GeoLite settings =
+= Local database settings settings =
 
 * **Auto updating (once a month)**  
   If `Enable`, Maxmind GeoLite database will be downloaded automatically by 
@@ -254,6 +261,10 @@ All contributions will always be welcome. Or visit my
   some of interested keys into this textfield, you can see the value of key 
   like `key=value`.
 
+* **Anonymize IP address**  
+  It will mask the last three digits of IP address when it is recorded into 
+  the log.
+
 = Cache settings =
 
 * **Number of entries**  
@@ -266,8 +277,8 @@ All contributions will always be welcome. Or visit my
 
 * **Text position on comment form**  
   If you want to put some text message on your comment form, please choose
-  `Top` or `Bottom` and put text into the **Text message on comment form**
-  textfield.
+  `Top` or `Bottom` and put text with some tags into the **Text message on 
+  comment form** textfield.
 
 = Plugin settings =
 
@@ -324,10 +335,12 @@ Yes, here is the list of all hooks to extend the feature of this plugin.
 * `ip-geo-block-bypass-plugins`   : array of plugin name which should bypass WP-ZEP.
 * `ip-geo-block-bypass-themes`    : array of theme name which should bypass WP-ZEP.
 * `ip-geo-block-backup-dir`       : full path where log files should be saved.
+* `ip-geo-block-api-dir`          : full path to the API class libraries and local DB files.
 * `ip-geo-block-maxmind-dir`      : full path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
-* `ip-geo-block-ip2location-path` : full path to IP2Location LITE DB file.
+* `ip-geo-block-ip2location-dir`  : full path where IP2Location LITE DB files should be saved.
+* `ip-geo-block-ip2location-path` : full path to IP2Location LITE DB file (IPv4).
 
 For more details, see 
     [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
@@ -387,16 +400,6 @@ you are using at the support forum.
 
 == Other Notes ==
 
-After installing these IP2Location plugins, you should be once deactivated 
-and then activated in order to set the path to `database.bin`.
-
-If you do not want to keep the IP2Location plugins (
-    [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
-    [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
-    [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
-) in `wp-content/plugins/` directory but just want to use its database, 
-you can rename it to `ip2location` and upload it to `wp-content/`.
-
 == Screenshots ==
 
 1. **IP Geo Plugin** - Settings.
@@ -406,6 +409,32 @@ you can rename it to `ip2location` and upload it to `wp-content/`.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.2.1 =
+* **Enhancement:** In previous version, local geolocation databases will always
+  be removed and downloaded again at every upgrading. Now, the class library 
+  for Maxmind and IP2Location have become independent of this plugin and you 
+  can put them outside this plugin in order to cut the above useless process.
+  The library can be available from 
+  [WordPress-IP-Geo-API](https://github.com/tokkonopapa/WordPress-IP-Geo-API).
+* **Deprecated:** Cooperation with IP2Location plugins such as 
+  [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"),
+  [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"),
+  [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins")
+  is out of use. Instead of it, free [IP2Location LITE databases for IPv4 and 
+  IPv6](http://lite.ip2location.com/ "Free IP Geolocation Database") will be 
+  downloaded.
+* **Improvement:** Improved connectivity with Jetpack.
+* **Improvement:** Improved immediacy of downloading databases at upgrading.
+* **Improvement:** Replaced a terminated RESTful API service with a new stuff.
+* **Bug fix:** Fixed issue that clicking a link tag without href always 
+  refreshed the page. Thanks to 
+  [wyclef](https://wordpress.org/support/topic/conflict-with-menu-editor-plugin "WordPress › Support » Conflict with Menu Editor plugin?").
+* **Bug fix:** Fixed issue that deactivating and activating repeatedly caused 
+  to show the welcome message.
+* **Bug fix:** Fixed issue that a misaligned argument in the function caused 
+  500 internal server error when a request to the php files in plugins/themes 
+  area was rewrited to `rewrite.php`.
 
 = 2.2.0.1 =
 Sorry for frequent update.
@@ -428,7 +457,7 @@ Sorry for frequent update.
   `wp-config.php` or `passwd` can be blocked.
 * **New feature:** Add privacy considerations related to IP address. Add 
   **Anonymize IP address** at **Record settings**.
-* Buf fix:** Fix the issue that spaces in **Text message on comment form** 
+* Bug fix:** Fix the issue that spaces in **Text message on comment form** 
   are deleted.
 * See details at [2.2.0 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.2.0.html "2.2.0 Release Note").
 

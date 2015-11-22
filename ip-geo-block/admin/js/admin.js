@@ -247,21 +247,25 @@ var ip_geo_block_time = new Date();
 				return false;
 			}).trigger('change');
 
-			// Update MaxMind database
+			// Update local database
 			$('#update').on('click', function (event) {
 				ajax_post('download', {
-					cmd: 'download',
-					which: 'maxmind'
-				}, function (data) {
-					var key;
-					for (key in data) { // key: ipv4, ipv6
-						if (data.hasOwnProperty(key)) {
-							key = sanitize(key);
-							if (data[key].filename) {
-								$('#ip_geo_block_settings_maxmind_' + key + '_path').val(sanitize(data[key].filename));
-							}
-							if (data[key].message) {
-								$('#ip_geo_block_' + key).text(sanitize(data[key].message));
+					cmd: 'download'
+				}, function (res) {
+					var api, key, data;
+					for (api in res) {
+						if (res.hasOwnProperty(api)) {
+							data = res[api];
+							for (key in data) { // key: ipv4, ipv6
+								if (data.hasOwnProperty(key)) {
+									key = sanitize(key);
+									if (data[key].filename) {
+										$('#ip_geo_block_settings_' + api + '_' + key + '_path').val(sanitize(data[key].filename));
+									}
+									if (data[key].message) {
+										$('#ip_geo_block_' + api + '_' + key).text(sanitize(data[key].message));
+									}
+								}
 							}
 						}
 					}

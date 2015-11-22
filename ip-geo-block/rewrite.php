@@ -53,7 +53,7 @@ class IP_Geo_Block_Rewrite {
 
 		// update statistics
 		if ( $settings['save_statistics'] )
-			$context->update_statistics( $validate );
+			$context->update_statistics( 'admin', $validate );
 
 		// send response code to refuse
 		$context->send_response( 'admin', $exist ? $settings['response_code'] : 404 );
@@ -76,8 +76,8 @@ class IP_Geo_Block_Rewrite {
 		// @link http://community.sitepoint.com/t/-server-document-root-injection-vulnerability/5274
 		// @link http://www.securityfocus.com/archive/1/476274/100/0/threaded
 		// @link http://www.securityfocus.com/archive/1/476437/100/0/threaded
-		if ( ! ( $root = $_SERVER['DOCUMENT_ROOT'] ) )
-			$root = substr( $_SERVER['SCRIPT_FILENAME'], 0, -strlen( $_SERVER['SCRIPT_NAME'] ) );
+		$root = ! empty( $_SERVER['DOCUMENT_ROOT'] ) ? $_SERVER['DOCUMENT_ROOT'] :
+			substr( $_SERVER['SCRIPT_FILENAME'], 0, -strlen( $_SERVER['SCRIPT_NAME'] ) );
 
 		// get absolute path of requested uri
 		// @link http://davidwalsh.name/iis-php-server-request_uri

@@ -220,10 +220,12 @@ ul.ip-geo-block-statistics-countries li {
     width: 20%;
 }
 .ip-geo-block-log > thead > tr > th:first-child,
-.ip-geo-block-log > tbody > tr > td:first-child,
+.ip-geo-block-log > tbody > tr > td:first-child {
+    width: 25%;
+}
 .ip-geo-block-log > thead > tr > th:first-child + th,
 .ip-geo-block-log > tbody > tr > td:first-child + td {
-    width: 30%;
+    width: 35%;
 }
 .ip-geo-block-log > thead > tr > th:nth-child(5),
 .ip-geo-block-log > tbody > tr > td:nth-child(5),

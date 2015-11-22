@@ -357,3 +357,4 @@ function my_geolocation() {
 }
 
 endif; /* class_exists( 'IP_Geo_Block' ) */
+?>

@@ -318,15 +318,23 @@ class IP_Geo_Block_Admin {
 	</form>
 <?php if ( 2 === $tab ) { ?>
 	<div id="ip-geo-block-map"></div>
-<?php } elseif ( 3 === $tab ) { ?>
-	<p><?php echo __( 'Thanks for providing these great services for free.', IP_Geo_Block::TEXT_DOMAIN ); ?><br />
-	<?php echo __( '(Most browsers will redirect you to each site <a href="http://tokkonopapa.github.io/WordPress-IP-Geo-Block/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', IP_Geo_Block::TEXT_DOMAIN ); ?></p>
-	<p>This product includes GeoLite data created by MaxMind, available from <a class="ip-geo-block-link" href="http://www.maxmind.com" rel=noreferrer target=_blank>http://www.maxmind.com</a>.<br />
-	This product includes IP2Location open source libraries available from <a class="ip-geo-block-link" href="http://www.ip2location.com" rel=noreferrer target=_blank>http://www.ip2location.com</a>.</p>
-<?php } ?>
-<?php if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) { ?>
-	<p><?php echo get_num_queries(); ?> queries. <?php timer_stop(1); ?> seconds. <?php echo memory_get_usage(); ?> bytes.</p>
-<?php } ?>
+<?php } elseif ( 3 === $tab ) {
+	echo '<p>', __( 'Thanks for providing these great services for free.', IP_Geo_Block::TEXT_DOMAIN ), '<br />';
+	echo __( '(Most browsers will redirect you to each site <a href="http://tokkonopapa.github.io/WordPress-IP-Geo-Block/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', IP_Geo_Block::TEXT_DOMAIN ), '</p>';
+
+	// show attribution (higher priority order)
+	$providers = IP_Geo_Block_Provider::get_addons();
+	$tab = array();
+	foreach ( $providers as $provider ) {
+		if ( $geo = IP_Geo_Block_API::get_instance( $provider, NULL ) ) {
+			$tab[] = $geo->get_attribution();
+		}
+	}
+	echo '<p>', implode( '<br />', $tab ), "</p>\n";
+} ?>
+<?php if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
+	echo '<p>', get_num_queries(), ' queries. ', timer_stop(0), ' seconds. ', memory_get_usage(), " bytes.</p>\n";
+} ?>
 </div>
 <?php
 	}
@@ -436,7 +444,9 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'checkbox': ?>
-<input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="1"<?php checked( esc_attr( $args['value'] ) ); ?> />
+<input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="1"<?php
+	checked( esc_attr( $args['value'] ) );
+	disabled( ! empty( $args['disabled'] ), TRUE ); ?> />
 <label for="<?php echo $id, $sub_id; ?>"><?php echo esc_attr( isset( $args['text'] ) ? $args['text'] : __( 'Enable', IP_Geo_Block::TEXT_DOMAIN ) ); ?></label>
 <?php
 			break;
@@ -459,14 +469,14 @@ class IP_Geo_Block_Admin {
 			$args['value'] = $args['text'];
 
 		  case 'text': ?>
-<input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php
-	disabled( ! empty( $args['disabled'] ), TRUE );
-?> />
+<input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"
+<?php disabled( ! empty( $args['disabled'] ), TRUE ); ?> />
 <?php
 			break; // disabled @since 3.0
 
 		  case 'button': ?>
-<input type="button" class="button-secondary" id="<?php echo esc_attr( $args['field'] ); ?>" value="<?php echo esc_attr( $args['value'] ); ?>" />
+<input type="button" class="button-secondary" id="<?php echo esc_attr( $args['field'] ); ?>" value="<?php echo esc_attr( $args['value'] ); ?>"
+<?php disabled( ! empty( $args['disabled'] ), TRUE ); ?>/>
 <?php
 			break;
 
@@ -495,7 +505,10 @@ class IP_Geo_Block_Admin {
 		$output = IP_Geo_Block::get_option( $option_name );
 		$default = IP_Geo_Block::get_default( $option_name );
 
-		// checkboxes
+		// checkboxes not on the form
+		foreach ( array( 'anonymize' ) as $key ) {
+			$output[ $key ] = 0;
+		}
 		foreach ( array( 'admin', 'ajax', 'plugins', 'themes' ) as $key ) {
 			$output['validation'][ $key ] = 0;
 		}
@@ -650,8 +663,7 @@ class IP_Geo_Block_Admin {
 		$which = isset( $_POST['which'] ) ? $_POST['which'] : NULL;
 		switch ( isset( $_POST['cmd'  ] ) ? $_POST['cmd'  ] : NULL ) {
 		  case 'download':
-			if ( 'maxmind' === $which )
-				$res = IP_Geo_Block::download_database();
+			$res = IP_Geo_Block::download_database();
 			break;
 
 		  case 'search':
@@ -659,16 +671,14 @@ class IP_Geo_Block_Admin {
 
 			// check format
 			if ( filter_var( $ip = $_POST['ip'], FILTER_VALIDATE_IP ) ) {
-				if ( $name = IP_Geo_Block_API::get_class_name( $which ) ) {
-					// get option settings and compose request headers
-					$options = IP_Geo_Block::get_option( 'settings' );
-					$args    = IP_Geo_Block::get_request_headers( $options );
+				// get option settings and compose request headers
+				$options = IP_Geo_Block::get_option( 'settings' );
+				$args    = IP_Geo_Block::get_request_headers( $options );
 
-					// create object for provider and get location
-					$geo = new $name( IP_Geo_Block_API::get_api_key( $which, $options ) );
+				// create object for provider and get location
+				if ( $geo = IP_Geo_Block_API::get_instance( $which, $options ) ) {
 					$res = $geo->get_location( $ip, $args );
-				}
-				else {
+				} else {
 					$res = array( 'errorMessage' => 'Unknown service.' );
 				}
 			}
@@ -687,12 +697,10 @@ class IP_Geo_Block_Admin {
 			$type      = IP_Geo_Block_Provider::get_providers( 'type', FALSE, FALSE );
 			$providers = IP_Geo_Block_Provider::get_valid_providers( $options['providers'], FALSE, FALSE );
 
-			$res = array();
 			$res['IP address'] = esc_html( $ip );
 
 			foreach ( $providers as $provider ) {
-				if ( $name = IP_Geo_Block_API::get_class_name( $provider ) ) {
-					$geo = new $name( IP_Geo_Block_API::get_api_key( $provider, $options ) );
+				if ( $geo = IP_Geo_Block_API::get_instance( $provider, $options ) ) {
 					$ret = $geo->get_location( $ip, $args );
 					$res[ $provider ] = array(
 						'type' => $type[ $provider ],
@@ -784,8 +792,7 @@ class IP_Geo_Block_Admin {
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0
 			wp_send_json( $res ); // @since 3.5.0
 
-		// End of ajax
-		die();
+		die(); // End of ajax
 	}
 
 }

@@ -9,18 +9,13 @@
  * @copyright 2013-2015 tokkonopapa
  */
 
-/**
- * Default path to the database file
- */
-define( 'IP_GEO_BLOCK_DB_DIR', IP_GEO_BLOCK_PATH . 'database/' );
-
 class IP_Geo_Block {
 
 	/**
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.0.1';
+	const VERSION = '2.2.1';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -133,27 +128,27 @@ class IP_Geo_Block {
 	 * Register options into database table when the plugin is activated.
 	 *
 	 */
-	public static function activate( $network_wide = NULL ) {
+	public static function activate( $network_wide = FALSE ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 
-		// kick off a cron job to download database immediately
-		add_action( 'activated_plugin', array( __CLASS__, 'exec_download' ), 10, 2 );
-
-		// create log
+		// create log & upgrade and return new options
 		IP_Geo_Block_Logs::create_log();
+		$settings = IP_Geo_Block_Options::upgrade();
 
-		// upgrade and return new options
-		return IP_Geo_Block_Options::upgrade();
+		// kick off a cron job to download database immediately
+		self::exec_download( IP_GEO_BLOCK_BASE );
+
+		return $settings;
 	}
 
 	/**
 	 * Fired when the plugin is deactivated.
 	 *
 	 */
-	public static function deactivate( $network_wide = NULL ) {
+	public static function deactivate( $network_wide = FALSE ) {
 		// cancel schedule
-		wp_clear_scheduled_hook( self::CRON_NAME ); // @since 2.1.0
+		wp_clear_scheduled_hook( self::CRON_NAME, array( FALSE ) ); // @since 2.1.0
 	}
 
 	/**
@@ -271,7 +266,7 @@ class IP_Geo_Block {
 		$ip = $ip ? $ip : self::get_ip_address();
 		$result = self::_get_geolocation( $ip, self::get_option( 'settings' ), $providers, $callback );
 
-		if ( isset( $result['countryCode'] ) )
+		if ( ! empty( $result['countryCode'] ) )
 			$result['code'] = $result['countryCode'];
 
 		return $result;
@@ -291,13 +286,12 @@ class IP_Geo_Block {
 
 		foreach ( $providers as $provider ) {
 			$time = microtime( TRUE );
-			if ( $name = IP_Geo_Block_API::get_class_name( $provider ) ) {
-				$geo = new $name( IP_Geo_Block_API::get_api_key( $provider, $settings ) );
-				if ( $code = $geo->$callback( $ip, $args ) )
-					return self::make_validation( $ip, array(
-						'time' => microtime( TRUE ) - $time,
-						'provider' => $provider,
-					) + ( is_array( $code ) ? $code : array( 'code' => $code ) ) );
+			if ( ( $geo = IP_Geo_Block_API::get_instance( $provider, $settings ) ) &&
+			     ( $code = $geo->$callback( $ip, $args ) ) ) {
+				return self::make_validation( $ip, array(
+					'time' => microtime( TRUE ) - $time,
+					'provider' => $provider,
+				) + ( is_array( $code ) ? $code : array( 'code' => $code ) ) );
 			}
 		}
 
@@ -537,12 +531,12 @@ class IP_Geo_Block {
 
 		  default:
 			// if the request has no page and no action, skip WP-ZEP
-			$zep = ($page || $action) ? TRUE : FALSE;
+			$zep = ( $page || $action ) ? TRUE : FALSE;
 			$type = 'admin';
 		}
 
 		// setup WP-ZEP (2: WP-ZEP)
-		if ( $zep && 2 & $settings['validation'][ $type ] ) {
+		if ( ( 2 & $settings['validation'][ $type ] ) && $zep ) {
 			// redirect if valid nonce in referer
 			$this->trace_nonce();
 
@@ -550,12 +544,14 @@ class IP_Geo_Block {
 			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
 				'wp-compression-test', // wp-admin/includes/template.php
 				'upload-attachment', 'imgedit-preview', 'bp_avatar_upload', // pluploader won't fire an event in "Media Library"
-				'jetpack_modules', 'atd_settings', // jetpack: multiple redirect for modules, cross domain ajax for proofreading
+				'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', // jetpack: multiple redirect for modules, cross domain ajax for proofreading
 			) );
 
-			// combination of vulnerable keys should be prevented not to bypass WP-ZEP
-			if ( ( $page   || ! in_array( $action, $list, TRUE ) ) &&
-			     ( $action || ! in_array( $page,   $list, TRUE ) ) )
+			// combination with vulnerable keys should be prevented to bypass WP-ZEP
+			$in_action = in_array( $action, $list, TRUE );
+			$in_page   = in_array( $page,   $list, TRUE );
+			if ( ( ( $action xor $page ) && ( ! $in_action and ! $in_page ) ) ||
+			     ( ( $action and $page ) && ( ! $in_action or  ! $in_page ) ) )
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 		}
 
@@ -577,18 +573,17 @@ class IP_Geo_Block {
 		$request = preg_replace( '!(//+|/\.+/)!', '/', $_SERVER['REQUEST_URI'] );
 
 		if ( preg_match( "/(?:($plugins)|($themes))([^\/]*)\//", $request, $matches ) ) {
+			// list of plugins/themes to bypass WP-ZEP
 			$settings = self::get_option( 'settings' );
 			$type = empty( $matches[2] ) ? 'plugins' : 'themes';
-
-			// list of plugins/themes to bypass WP-ZEP
-			$list = array(
-				'plugins' => array(),
-				'themes'  => array(),
+			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}",
+				'plugins' === $type ?
+					/* list of plugins */ array() :
+					/* list of themes  */ array()
 			);
-			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $list[ $type ] );
 
 			// register validation by nonce (2: WP-ZEP)
-			if ( 2 & $settings['validation'][ $type ] && ! in_array( $matches[3], $list, TRUE ) )
+			if ( ( 2 & $settings['validation'][ $type ] ) && ! in_array( $matches[3], $list, TRUE ) )
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 
 			// register validation by malicious signature
@@ -747,13 +742,13 @@ class IP_Geo_Block {
 	 *
 	 */
 	private static function schedule_cron_job( &$update, $db, $immediate = FALSE ) {
-		wp_clear_scheduled_hook( self::CRON_NAME ); // @since 2.1.0
+		wp_clear_scheduled_hook( self::CRON_NAME, array( $immediate ) ); // @since 2.1.0
 
 		if ( $update['auto'] ) {
 			$now = time();
 			$cycle = DAY_IN_SECONDS * (int)$update['cycle'];
 
-			if ( ! $immediate &&
+			if ( FALSE === $immediate &&
 				$now - (int)$db['ipv4_last'] < $cycle &&
 				$now - (int)$db['ipv6_last'] < $cycle ) {
 				$update['retry'] = 0;
@@ -773,22 +768,26 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function download_database( $immediate = FALSE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'includes/download.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
-		// download database files
 		$settings = self::get_option( 'settings' );
-		$res = ip_geo_block_download(
-			$settings['maxmind'], IP_GEO_BLOCK_DB_DIR, self::get_request_headers( $settings )
-		);
+		$args = self::get_request_headers( $settings );
+
+		// download database files (higher priority order)
+		foreach ( $providers = IP_Geo_Block_Provider::get_addons() as $provider ) {
+			if ( $geo = IP_Geo_Block_API::get_instance( $provider, $settings ) )
+				$res[ $provider ] = $geo->download( $settings[ $provider ], $args );
+		}
 
 		// re-schedule cron job
-		self::schedule_cron_job( $settings['update'], $settings['maxmind'], FALSE );
+		if ( ! empty( $providers ) )
+			self::schedule_cron_job( $settings['update'], $settings[ $providers[0] ], FALSE );
 
 		// update option settings
 		update_option( self::$option_keys['settings'], $settings );
 
 		if ( $immediate ) {
-			$validate = self::get_geolocation( NULL, array( 'maxmind' ) );
+			$validate = self::get_geolocation( NULL, $providers );
 			$validate = self::validate_country( $validate, $settings );
 
 			// if blocking may happen then disable validation
@@ -798,6 +797,7 @@ class IP_Geo_Block {
 			// setup country code if it needs to be initialized
 			if ( -1 == $settings['matching_rule'] && 'ZZ' !== $validate['code'] ) {
 				$settings['matching_rule'] = 0; // white list
+
 				if ( FALSE === strpos( $settings['white_list'], $validate['code'] ) )
 					$settings['white_list'] .= ( $settings['white_list'] ? ',' : '' ) . $validate['code'];
 			}
@@ -805,15 +805,15 @@ class IP_Geo_Block {
 			update_option( self::$option_keys['settings'], $settings );
 		}
 
-		return $res;
+		return isset( $res ) ? $res : NULL;
 	}
 
 	// Kick off a cron job to download database immediately
-	public static function exec_download( $plugin, $network_activation ) {
+	public static function exec_download( $plugin, $network_wide = FALSE ) {
 		if ( $plugin === IP_GEO_BLOCK_BASE && current_user_can( 'manage_options' ) ) {
-			$settings = self::get_option( 'settings' );
 			add_action( self::CRON_NAME, array( __CLASS__, 'download_database' ), 10, 1 );
-			self::schedule_cron_job( $settings['update'], $settings['maxmind'], TRUE );
+			$settings = self::get_option( 'settings' );
+			self::schedule_cron_job( $settings['update'], NULL, TRUE );
 		}
 	}
 

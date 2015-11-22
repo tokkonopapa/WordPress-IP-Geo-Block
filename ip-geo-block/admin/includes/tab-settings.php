@@ -430,58 +430,33 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	/*----------------------------------------*
-	 * Maxmind settings
+	 * Local database settings
 	 *----------------------------------------*/
-	$section = "${plugin_slug}-maxmind";
+	// higher priority order
+	$providers = IP_Geo_Block_Provider::get_addons(); 
+
+	$section = "${plugin_slug}-database";
 	add_settings_section(
 		$section,
-		__( 'Maxmind GeoLite settings', IP_Geo_Block::TEXT_DOMAIN ),
-		NULL,
+		__( 'Local database settings', IP_Geo_Block::TEXT_DOMAIN ),
+		empty( $providers ) ? 'ip_geo_block_note_database' : NULL,
 		$option_slug
 	);
 
-	$field = 'maxmind';
-	add_settings_field(
-		$option_name . "_${field}_ipv4",
-		__( 'Path to database', IP_Geo_Block::TEXT_DOMAIN ) . ' (IPv4)',
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'text',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'ipv4_path',
-			'value' => $options[ $field ]['ipv4_path'],
-			'disabled' => TRUE,
-			'after' => '<br /><p id="ip_geo_block_ipv4" style="margin-left: 0.2em">' .
-			sprintf(
-				__( 'Last update: %s', IP_Geo_Block::TEXT_DOMAIN ),
-				ip_geo_block_localdate( $options[ $field ]['ipv4_last'] )
-			) . '</p>',
-		)
-	);
-
-	add_settings_field(
-		$option_name . "_${field}_ipv6",
-		__( 'Path to database', IP_Geo_Block::TEXT_DOMAIN ) . ' (IPv6)',
-		array( $context, 'callback_field' ),
-		$option_slug,
-		$section,
-		array(
-			'type' => 'text',
-			'option' => $option_name,
-			'field' => $field,
-			'sub-field' => 'ipv6_path',
-			'value' => $options[ $field ]['ipv6_path'],
-			'disabled' => TRUE,
-			'after' => '<br /><p id="ip_geo_block_ipv6" style="margin-left: 0.2em">' .
-			sprintf(
-				__( 'Last update: %s', IP_Geo_Block::TEXT_DOMAIN ),
-				ip_geo_block_localdate( $options[ $field ]['ipv6_last'] )
-			) . '</p>',
-		)
-	);
+	foreach ( $providers as $provider ) {
+		if ( $geo = IP_Geo_Block_API::get_instance( $provider, NULL ) ) {
+			$geo->add_settings_field(
+				$provider,
+				$section,
+				$option_slug,
+				$option_name,
+				$options,
+				array( $context, 'callback_field' ),
+				__( 'database', IP_Geo_Block::TEXT_DOMAIN ),
+				__( 'Last update: %s', IP_Geo_Block::TEXT_DOMAIN )
+			);
+		}
+	}
 
 	$field = 'update';
 	add_settings_field(
@@ -496,6 +471,7 @@ function ip_geo_block_tab_settings( $context ) {
 			'field' => $field,
 			'sub-field' => 'auto',
 			'value' => $options[ $field ]['auto'],
+			'disabled' => empty( $providers ),
 		)
 	);
 
@@ -510,6 +486,7 @@ function ip_geo_block_tab_settings( $context ) {
 			'option' => $option_name,
 			'field' => $field,
 			'value' => __( 'Download now', IP_Geo_Block::TEXT_DOMAIN ),
+			'disabled' => empty( $providers ),
 			'after' => "<div id=\"${plugin_slug}-download\"></div>",
 		)
 	);
@@ -591,7 +568,7 @@ function ip_geo_block_tab_settings( $context ) {
 			'type' => 'checkbox',
 			'option' => $option_name,
 			'field' => $field,
-			'value' => $options[ $field ],
+			'value' => ! empty( $options[ $field ] ) ? TRUE : FALSE,
 		)
 	);
 
@@ -737,19 +714,27 @@ endif;
 
 /**
  * Subsidiary note
+ *
  */
 function ip_geo_block_note_target() {
 	echo
-		'<ul class="ip-geo-block-note">',
-			'<li>', __( 'To enhance the protection ability, please consider to apply a rewrite rule to &#8220;<strong>Plugins area</strong>&#8221; and &#8220;<strong>Themes area</strong>&#8221;. See <a href="http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/exposure-of-wp-config-php.html" title="Prevent exposure of wp-config.php">more details here</a>.', IP_Geo_Block::TEXT_DOMAIN ), '</li>',
-			'<li>', __( 'Please open an issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with these.', IP_Geo_Block::TEXT_DOMAIN ), '</li>',
-		'</ul>';
+		"<ul class=\"ip-geo-block-note\">\n",
+			'<li>', __( 'To enhance the protection ability, please consider to apply a rewrite rule to &#8220;<strong>Plugins area</strong>&#8221; and &#8220;<strong>Themes area</strong>&#8221;. See <a href="http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/exposure-of-wp-config-php.html" title="Prevent exposure of wp-config.php">more details here</a>.', IP_Geo_Block::TEXT_DOMAIN ), "</li>\n",
+			'<li>', __( 'Please open an issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with these.', IP_Geo_Block::TEXT_DOMAIN ), "</li>\n",
+		"</ul>\n";
 }
 
 function ip_geo_block_note_services() {
 	echo
-		'<ul class="ip-geo-block-note">',
-			'<li>', __('While Maxmind and IP2Location will fetch the local database, others will pass a IP address to thier API via HTTP.', IP_Geo_Block::TEXT_DOMAIN ), '</li>',
-			'<li>', __('Please select the appropriate APIs to fit the privacy law in your country.', IP_Geo_Block::TEXT_DOMAIN ), '</li>',
-		'</ul>';
+		"<ul class=\"ip-geo-block-note\">\n",
+			'<li>', __('While Maxmind and IP2Location will fetch the local database, others will pass a IP address to thier API via HTTP.', IP_Geo_Block::TEXT_DOMAIN ), "</li>\n",
+			'<li>', __('Please select the appropriate APIs to fit the privacy law in your country.', IP_Geo_Block::TEXT_DOMAIN ), "</li>\n",
+		"</ul>\n";
+}
+
+function ip_geo_block_note_database() {
+	echo
+		"<ul class=\"ip-geo-block-note\">\n",
+			'<li>', __( 'Please download <a href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a> and upload <code>ip-geo-api</code> to your <code>wp-content</code>.', IP_Geo_Block::TEXT_DOMAIN ), "</li>\n",
+		"</ul>\n";
 }

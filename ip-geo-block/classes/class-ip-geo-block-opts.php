@@ -19,7 +19,7 @@ class IP_Geo_Block_Options {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
-			'version'         => '2.2.0', // This table version (not package)
+			'version'         => '2.2.1', // This table version (not package)
 			// since version 1.0
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
@@ -62,14 +62,14 @@ class IP_Geo_Block_Options {
 			'maxmind'         => array(   // Maxmind
 			    'ipv4_path'   => NULL,    // Path to IPv4 DB file
 			    'ipv6_path'   => NULL,    // Path to IPv6 DB file
-			    'ipv4_last'   => NULL,    // Last-Modified of DB file
-			    'ipv6_last'   => NULL,    // Last-Modified of DB file
+			    'ipv4_last'   => 0,       // Last-Modified of DB file
+			    'ipv6_last'   => 0,       // Last-Modified of DB file
 			),
 			'ip2location'     => array(   // IP2Location
 			    'ipv4_path'   => NULL,    // Path to IPv4 DB file
 			    'ipv6_path'   => NULL,    // Path to IPv6 DB file
-			    'ipv4_last'   => NULL,    // Last-Modified of DB file
-			    'ipv6_last'   => NULL,    // Last-Modified of DB file
+			    'ipv4_last'   => 0,       // Last-Modified of DB file
+			    'ipv6_last'   => 0,       // Last-Modified of DB file
 			),
 			// since version 2.0.8
 			'priority'        => 0,       // Action priority for WP-ZEP
@@ -83,6 +83,15 @@ class IP_Geo_Block_Options {
 			'rewrite'         => array(   // Backup of rewrite rule
 			    'plugins'     => NULL,    // for wp-content/plugins
 			    'themes'      => NULL,    // for wp-content/themes
+			),
+			// since version 2.2.1
+			'Maxmind'         => array(   // Maxmind
+			    'ipv4_last'   => 0,       // Last-Modified of DB file
+			    'ipv6_last'   => 0,       // Last-Modified of DB file
+			),
+			'IP2Location'     => array(   // IP2Location
+			    'ipv4_last'   => 0,       // Last-Modified of DB file
+			    'ipv6_last'   => 0,       // Last-Modified of DB file
 			),
 		),
 
@@ -112,29 +121,10 @@ class IP_Geo_Block_Options {
 	 *
 	 */
 	public static function upgrade() {
-		// find IP2Location DB
-		$ip2 = NULL;
-		$tmp = array(
-			WP_CONTENT_DIR . '/ip2location/database.bin',
-			WP_CONTENT_DIR . '/plugins/ip2location-tags/database.bin',
-			WP_CONTENT_DIR . '/plugins/ip2location-variables/database.bin',
-			WP_CONTENT_DIR . '/plugins/ip2location-blocker/database.bin',
-		);
-
-		foreach ( $tmp as $name ) {
-			if ( is_readable( $name ) ) {
-				$ip2 = $name;
-				break;
-			}
-		}
-
 		$default = self::get_table();
 		$key = array_keys( $default );
 
 		if ( FALSE === ( $settings = get_option( $key[0] ) ) ) {
-			// update local goelocation database files
-			$default[ $key[0] ]['ip2location']['ipv4_path'] = $ip2;
-
 			// save package version number
 			$default[ $key[0] ]['version'] = IP_Geo_Block::VERSION;
 
@@ -145,20 +135,20 @@ class IP_Geo_Block_Options {
 		}
 
 		else {
-			// update local goelocation database files
-			$settings['ip2location']['ipv4_path'] = $ip2;
-
 			if ( version_compare( $settings['version'], '1.1' ) < 0 ) {
-				foreach ( array( 'cache_hold', 'cache_time' ) as $tmp )
+				foreach ( array( 'cache_hold', 'cache_time' ) as $tmp ) {
 					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
+				}
 			}
 
 			if ( version_compare( $settings['version'], '1.2' ) < 0 ) {
-				foreach ( array( 'order', 'ip2location' ) as $tmp )
+				foreach ( array( 'order', 'ip2location' ) as $tmp ) {
 					unset( $settings[ $tmp ] );
+				}
 
-				foreach ( explode( ' ', 'login_fails update maxmind ip2location' ) as $tmp )
+				foreach ( explode( ' ', 'login_fails update maxmind ip2location' ) as $tmp ) {
 					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
+				}
 			}
 
 			if ( version_compare( $settings['version'], '1.2.1' ) < 0 ) {
@@ -175,25 +165,35 @@ class IP_Geo_Block_Options {
 			if ( version_compare( $settings['version'], '1.3.1' ) < 0 ) {
 				$settings['validation']['proxy'] =
 				$settings['validation']['proxy'] ? 'HTTP_X_FORWARDED_FOR' : NULL;
-				foreach ( array( 'maxlogs', 'backup' ) as $tmp )
+				foreach ( array( 'maxlogs', 'backup' ) as $tmp ) {
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
+				}
 			}
 
 			if ( version_compare( $settings['version'], '2.0.8' ) < 0 )
 				$settings['priority'] = $default[ $key[0] ]['priority'];
 
 			if ( version_compare( $settings['version'], '2.1.0' ) < 0 ) {
-				foreach ( array( 'plugins', 'themes' ) as $tmp )
+				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
+				}
 			}
 
 			if ( version_compare( $settings['version'], '2.2.0' ) < 0 ) {
-				foreach ( array( 'anonymize', 'signature', 'extra_ips', 'rewrite' ) as $tmp )
+				foreach ( array( 'anonymize', 'signature', 'extra_ips', 'rewrite' ) as $tmp ) {
 					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
+				}
 
-				foreach ( array( 'admin', 'ajax' ) as $tmp )
+				foreach ( array( 'admin', 'ajax' ) as $tmp ) {
 					if ( $settings['validation'][ $tmp ] == 2 )
 						$settings['validation'][ $tmp ] = 3; // WP-ZEP + Block by country
+				}
+			}
+
+			if ( version_compare( $settings['version'], '2.2.1' ) < 0 ) {
+				foreach ( array( 'maxmind', 'ip2location', 'Maxmind', 'IP2Location' ) as $tmp ) {
+					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
+				}
 			}
 
 			// save package version number
@@ -203,8 +203,28 @@ class IP_Geo_Block_Options {
 			update_option( $key[0], $settings );
 		}
 
+		// put addons for IP Geolocation database API to wp-content/
+		if ( ! file_exists( WP_CONTENT_DIR . '/ip-geo-api' ) )
+			self::recurse_copy( IP_GEO_BLOCK_PATH . 'ip-geo-api', WP_CONTENT_DIR . '/ip-geo-api' );
+
 		// return upgraded settings
 		return $settings;
 	}
 
+	// http://php.net/manual/en/function.copy.php#91010
+	// permission in mkdir() will be masked by umask()
+	private static function recurse_copy( $src, $dst ) {
+		if ( @mkdir( $dst ) and $dir = @opendir( $src ) ) {
+			while( false !== ( $file = readdir( $dir ) ) ) {
+				if ( '.' !== $file && '..' !== $file ) {
+					if ( is_dir( "${src}/${file}" ) ) {
+						self::recurse_copy( "${src}/${file}", "${dst}/${file}" );
+					} else {
+						copy( "${src}/${file}", "${dst}/${file}" );
+					}
+				}
+			}
+			closedir( $dir );
+		}
+	}
 }

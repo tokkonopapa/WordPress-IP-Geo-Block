@@ -269,7 +269,7 @@ var IP_GEO_BLOCK_ZEP = {
 				    admin = is_admin(href);
 
 				// if admin area (except in comment) then add a nonce
-				if (admin === 1) {
+				if (admin === 1 && "undefined" !== typeof href) {
 					$this.attr('href', add_query_nonce(
 						href, (!rel || rel.indexOf('nofollow') < 0 ? nonce : 'nofollow')
 					));
@@ -290,7 +290,7 @@ var IP_GEO_BLOCK_ZEP = {
 
 			$body.bindFirst('submit', 'form', function (event) {
 				var $this = $(this),
-				    action = $this.attr('action');
+				    action = $this.attr('action'); // possibly 'undefined'
 
 				// if admin area then add the nonce
 				if (is_admin(action) === 1) {
