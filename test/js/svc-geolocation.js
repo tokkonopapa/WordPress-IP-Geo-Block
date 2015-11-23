@@ -10,14 +10,28 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 	 */
 	this.apis = [
 		{
-			api: 'Telize',
-			url: 'http://www.telize.com/geoip/%API_IP%',
-			fmt: 'jsonp',
+			api: 'freegeoip.net',
+			url: 'http://freegeoip.net/%API_FMT%/%API_IP%',
+			fmt: 'json',
+			type: 'IPv4, IPv6',
+			get: function (data, type) {
+				switch (type) {
+					case 'name':  return data.country_name || null;
+					case 'code':  return data.country_code || null;
+					case 'error': return 'not found';
+				}
+				return null;
+			}
+		},
+		{
+			api: 'ipinfo.io',
+			url: 'http://ipinfo.io/%API_IP%/%API_FMT%',
+			fmt: 'json',
 			type: 'IPv4, IPv6',
 			get: function (data, type) {
 				switch (type) {
 					case 'name':  return data.country || null;
-					case 'code':  return data.country_code || null;
+					case 'code':  return data.country || null;
 					case 'error': return 'not found';
 				}
 				return null;
@@ -27,7 +41,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 			api: 'ip-api',
 			url: 'http://ip-api.com/%API_FMT%/%API_IP%',
 			fmt: 'json',
-			type: 'IPv4',
+			type: 'IPv4, IPv6',
 			get: function (data, type) {
 				switch (type) {
 					case 'name':  return data.country || null;
