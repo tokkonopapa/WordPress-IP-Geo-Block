@@ -738,11 +738,12 @@ if ( ! is_dir( $path ) )
 	$path = IP_GEO_BLOCK_PATH . IP_GEO_BLOCK_API_DIR;
 
 // List addons (heigher priority order)
-$plugins = @scandir( $path, 1 /* SCANDIR_SORT_DESCENDING @since 5.4.0 */ );
+$plugins = @scandir( ( $path = trailingslashit( $path ) ), 1 /* SCANDIR_SORT_DESCENDING @since 5.4.0 */ );
 
 // Load addons
 foreach ( FALSE !== $plugins ? $plugins : array() as $plugin ) {
-	if ( file_exists( $plugin = "${path}/${plugin}/class-${plugin}.php" ) )
+	if ( ! in_array( $plugin, array( '.', '..', 'index.php' ) ) &&
+	     file_exists( $plugin = "${path}${plugin}/class-${plugin}.php" ) )
 		include_once( $plugin );
 }
 
