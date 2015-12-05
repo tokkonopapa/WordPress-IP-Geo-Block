@@ -12,8 +12,11 @@ email: tokkonopapa@yahoo.com
 # the subpath of your site, e.g. /blog
 # baseurl: "/WordPress-IP-Geo-Block"
 # url: "http://tokkonopapa.github.io/WordPress-IP-Geo-Block"
+
+# for local: jekyll serve --drafts --baseurl
 baseurl: "http://www.ipgeoblock.com"
 url: ""
+
 permalink: none
 
 # Paginate
