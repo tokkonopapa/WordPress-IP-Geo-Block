@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force
 Requires at least: 3.7
 Tested up to: 4.3.1
-Stable tag: 2.2.1
+Stable tag: 2.2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -409,6 +409,9 @@ you are using at the support forum.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.2.1.1 =
+* **Bug fix:** Fixed `open_basedir` issue.
 
 = 2.2.1 =
 * **Enhancement:** In previous version, local geolocation databases will always
