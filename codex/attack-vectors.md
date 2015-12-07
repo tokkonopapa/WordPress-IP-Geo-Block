@@ -23,7 +23,7 @@ inline: <script>
 ### Analysis Conditions ###
 
 - **IP Geo Block:**  
-  2.2.0
+  2.2.0 and later
 
 - **Server settings:**  
   According to [this article][PREVENT-EXPOSURE], `.htaccess` is applied to 
@@ -532,5 +532,12 @@ inline: <script>
     </tbody>
   </table>
 </div>
+
+### Total Protection Performance ###
+
+| Blocking Method  | True Positive  | False Negative |
+|:-----------------|---------------:|---------------:|
+| Block by country |    41/50 (82%) |     9/50 (18%) |
+| WP-ZEP           |    38/50 (76%) |    12/50 (24%) |
 
 [PREVENT-EXPOSURE]: {{ "/article/exposure-of-wp-config-php.html" | prepend: site.baseurl }} "Prevent exposure of wp-config.php"

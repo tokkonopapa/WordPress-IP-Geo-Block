@@ -8,25 +8,26 @@ script: []
 inline:
 ---
 
-From July to September, 33 types of malicious requests to attempt exposing the 
-`wp-config.php` via vulnerable plugins and themes had been observed on my site.
-I analyzed all of them to identify if [IP Geo Block][IP-Geo-Block] can block 
-these or not.
+From July to September in 2015, 33 types of malicious requests to attempt 
+exposing the `wp-config.php` via vulnerable plugins and themes had been 
+observed on my site. I analyzed all of them to identify if 
+[IP Geo Block][IP-Geo-Block] can block them or not.
 
 <!--more-->
 
 Unfortunately, I could not find all the causes of exposure because most of 
 them were already removed from the WordPress repository. So I can't say the 
 right thing with confidence, but the only 2 of these could be blocked by 
-[IP Geo Block][IP-Geo-Block] even if they were from the forbidden countries.
+[IP Geo Block 2.1.5 and under][IP-Geo-Block] even if they were from the 
+forbidden countries.
 
 In this article, I should clarify how to prevent exposure of `wp-config.php` 
 against such malicous requests.
 
 ### <span id="sec1">Analysis of Attack Vectors</span> ###
 
-Before showing the results, I'll show you the description of the terms same as 
-in [this article][Analysis].
+Before showing the results, I should explain about the description of the 
+terms same as in [the previous article][Analysis].
 
 ```text
 Attack Vector = Type x Path
@@ -42,18 +43,36 @@ where:
 
 The "**Path**" can be categorized into following : 
 
-| Abbreviation of **Path** | Description           |
-|:------------------------:|:----------------------|
-| PD                       | **P**lugin **D**irect |
-| WP                       | **W**ord **P**ress    |
-| N/A                      | **N**ot **A**vailable |
+<table>
+  <thead>
+    <tr>
+      <th>Abbreviation of Path</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="label label-success">WP</span></td>
+      <td><strong>W</strong>ord<strong>P</strong>ress</td>
+    </tr>
+    <tr>
+      <td><span class="label label-danger">PD</span></td>
+      <td><strong>P</strong>lugin <strong>D</strong>irect</td>
+    </tr>
+    <tr>
+      <td><span class="label label-warning">N/A</span></td>
+      <td><strong>N</strong>ot <strong>A</strong>vailable</td>
+    </tr>
+  </tbody>
+</table>
 
-Here's the table of 33 requests attempted to expose my `wp-config.php`. Most 
-of them were disclosed recently. [IP Geo Block 2.1.5 and under][IP-Geo-Block] 
-can protect the **Path** of <span class="label label-success">WP</span> while 
-the <span class="label label-danger">PD</span> (and probably 
-<span class="label label-warning">N/A</span>) are not because those never load 
-the WordPress core.
+Here's the table of 33 requests that were attempted to expose `wp-config.php` 
+in my site. Most of them were disclosed recently.
+[IP Geo Block 2.1.5 and under][IP-Geo-Block] can only protect the **Path** of 
+<span class="label label-success">WP</span>, while the 
+<span class="label label-danger">PD</span> (and probably 
+<span class="label label-warning">N/A</span>) can not because those plugins 
+and themes never load the WordPress core.
 
 <div class="table-responsive">
   <table id="my-table" class="table">
@@ -291,11 +310,12 @@ This kind of vulnerability is caused by [Directory Traversal][OWASP] attack.
 First and foremost, we should consider to make the **Path** transformed from 
 <span class="label label-danger">PD</span> and 
 <span class="label label-warning">N/A</span> to
-<span class="label label-success">WP</span>. If those code have a chance to 
-load `wp-load.php` before they were excuted, [IP Geo Block][IP-Geo-Block] can 
-block the attacks.
+<span class="label label-success">WP</span>. If those plugins and themes have 
+a chance to load WordPres core before they were excuted, 
+[IP Geo Block][IP-Geo-Block] can block the attacks.
 
-To achieve this, please consider to put the following directives into the 
+To achieve this, those plugins and themes should load the `wp-load.php`.
+To do this, please consider to put the following directives into the 
 `.htaccess` in your plugins directory for example :
 
 {% highlight text %}
