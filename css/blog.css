@@ -25,6 +25,14 @@ h6, .h6 {
   }
 }
 
+.container {
+  word-wrap: break-word;
+  word-break: normal;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto
+}
 
 /*
  * Masthead for nav
