@@ -147,6 +147,9 @@ h6, .h6 {
   text-align: center;
   border-radius: 30px;
 }
+.pagination * {
+  margin: auto 0.1em;
+}
 
 /*
  * Blog posts
