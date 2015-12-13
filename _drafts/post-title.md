@@ -46,14 +46,14 @@ code
 	<table class="table">
 		<thead>
 			<tr>
-				<th>title1</th>
-				<th>title2</th>
+				<th class="text-right">title1</th>
+				<th class="text-right">title2</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td>content1</td>
-				<td>content2</td>
+				<td class="text-right">content1</td>
+				<td class="text-right">content2</td>
 			</tr>
 		</tbody>
 		<caption>caption</caption>
