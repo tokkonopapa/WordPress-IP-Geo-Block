@@ -28,7 +28,7 @@ It gives an emulation of spam comment, pingback spam, login attempt and
 malicious access to the admin ajax with 5 multiple requests at a time 
 throughout 60 seconds.
 
-### <span id="sec2">Test environments</span> ###
+### <span id="sec2">Test environment</span> ###
 
 I setup the testbed in my local PC which specifications are followings:
 
