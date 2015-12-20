@@ -4,7 +4,7 @@ layout: default
 
 <!-- This loops through the paginated posts -->
 <div class="blog-post">
-  {% for post in paginator.posts %}
+  {% for post in paginator.posts %}{% if post.layout == "post" %}
   <h2 class="blog-post-title">
     <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">
       {{ post.title }}
@@ -15,7 +15,7 @@ layout: default
   <p class="blog-post-more">
     <a href="{{ post.url | prepend: site.baseurl }}"> &#8250; Read this&hellip;</a>
   </p>
-  {% endfor %}
+  {% endif %}{% endfor %}
 </div>
 
 <!-- Pagination links -->

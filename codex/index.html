@@ -6,15 +6,15 @@ title: Category &raquo; codex
     <a href="{{ "/" | prepend: site.baseurl }}" title="Blog Home">Home</a> &raquo; codex
 </nav>
 <section id="archive">
-    <div class="catbloc" id="{{ category | first | remove:' ' }}">
+    <div class="catbloc" id="codex">
         <h2 class="blog-post-title">{{ category | first }}</h2>
         <ul>
-        {% for post in site.categories.codex %}{% if post.url %}
+{% for post in site.codex %}{% if post.url %}
              <li>
                  <time class="blog-post-meta">{{ post.date | date: "%b %-d, %Y" }}</time>
                  <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
              </li>
-        {% endif %}{% endfor %}
+{% endif %}{% endfor %}
         </ul>
     </div>
 </section>

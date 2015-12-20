@@ -58,3 +58,8 @@ google_analytics_tracking_id: UA-42366765-2
 
 twitter_username: tokkonoPapa
 github_username:  tokkonopapa
+
+# Codex
+collections:
+  codex:
+    output: true
