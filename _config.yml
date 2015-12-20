@@ -52,6 +52,8 @@ redcarpet:
 kramdown:
   input: GFM
 
+gems: [jekyll-paginate]
+
 # Google Analytics
 # tokkonopapa@gmail.com
 google_analytics_tracking_id: UA-42366765-2 
