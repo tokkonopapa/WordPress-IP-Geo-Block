@@ -13,7 +13,8 @@ email: tokkonopapa@yahoo.com
 # baseurl: "/WordPress-IP-Geo-Block"
 # url: "http://tokkonopapa.github.io/WordPress-IP-Geo-Block"
 
-# for local: jekyll serve --drafts --baseurl
+# for local: 
+# $ jekyll serve --drafts --baseurl --incremental
 baseurl: "http://www.ipgeoblock.com"
 url: ""
 
@@ -52,7 +53,13 @@ redcarpet:
 kramdown:
   input: GFM
 
+# for jekyll 3
 gems: [jekyll-paginate]
+
+# Codex
+collections:
+  codex:
+    output: true
 
 # Google Analytics
 # tokkonopapa@gmail.com
@@ -60,8 +67,3 @@ google_analytics_tracking_id: UA-42366765-2
 
 twitter_username: tokkonoPapa
 github_username:  tokkonopapa
-
-# Codex
-collections:
-  codex:
-    output: true
