@@ -310,13 +310,13 @@ This kind of vulnerability is caused by [Directory Traversal][OWASP] attack.
 First and foremost, we should consider to make the **Path** transformed from 
 <span class="label label-danger">PD</span> and 
 <span class="label label-warning">N/A</span> to
-<span class="label label-success">WP</span>. If those plugins and themes have 
-a chance to load WordPres core before they were excuted, 
-[IP Geo Block][IP-Geo-Block] can block the attacks.
+<span class="label label-success">WP</span>. If those plugins and themes would 
+load WordPres core before they were excuted, [IP Geo Block][IP-Geo-Block] can 
+have a chance to block the attacks.
 
-To achieve this, those plugins and themes should load the `wp-load.php`.
-To do this, please consider to put the following directives into the 
-`.htaccess` in your plugins directory for example :
+So we should force those plugins and themes to load the `wp-load.php`. To 
+achieve this, we can configure our `.htaccess` in the plugins directory to 
+rewrite the request using following directives :
 
 {% highlight text %}
 # BEGIN IP Geo Block
