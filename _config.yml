@@ -31,9 +31,6 @@ project:
 
 excerpt_separator: "<!--more-->"
 
-twitter_username: tokkonoPapa
-github_username:  tokkonopapa
-
 # Build settings
 highlight: pygments
 markdown: redcarpet # kramdown
@@ -54,3 +51,10 @@ redcarpet:
 
 kramdown:
   input: GFM
+
+# Google Analytics
+# tokkonopapa@gmail.com
+google_analytics_tracking_id: UA-42366765-2 
+
+twitter_username: tokkonoPapa
+github_username:  tokkonopapa

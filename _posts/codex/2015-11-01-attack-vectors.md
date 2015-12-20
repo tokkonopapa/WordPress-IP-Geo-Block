@@ -2,6 +2,7 @@
 layout: page
 title: "Analysis of Attack Vectors"
 date: 2015-11-01 09:00:00
+categories: codex
 script: [/js/jquery-1.11.2.min.js, /js/tablesort.min.js]
 inline: <script>
   var table = document.getElementById('my-table');
