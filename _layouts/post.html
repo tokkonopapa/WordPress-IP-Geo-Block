@@ -1,15 +1,23 @@
 ---
 layout: default
+
 ---
-<article class="blog-post">
+<div class="container">
+  <div class="section">
 
-  <header class="post-header">
-    <h2 class="blog-post-title">{{ page.title }}</h2>
-    <p class="blog-post-meta">{{ page.date | date: "%b %-d, %Y" }}{% if page.author %}{{ page.author }}{% endif %}{% if page.meta %}{{ page.meta }}{% endif %}</p>
-  </header>
+    <div class="breadcrumb">
+      <a href="{{ "/"      | prepend: site.baseurl }}" title="Top">Top</a> &raquo;
+      <a href="{{ "/blog/" | prepend: site.baseurl }}" title="Blog">Blog</a> &raquo;
+    </div>
 
-  {{ content }}
+    <header class="post-header">
+      <h2 class="blog-post-title">{{ page.title }}</h2>
+      <p class="blog-post-meta">{{ page.date | date: "%b %-d, %Y" }}{% if page.author %}{{ page.author }}{% endif %}{% if page.meta %}{{ page.meta }}{% endif %}</p>
+    </header>
 
-</article><!-- /.blog-post -->
+{{ content }}
+
+  </div>
+</div>
 
 <div id="disqus_thread"></div>

@@ -6,20 +6,22 @@ description: A WordPress Geo-blocking plugin with Zero-day Exploit Prevention
 # And it will also protect against malicious access to the login form, admin 
 # area and XML-RPC from undesired countries with zero-day exploit prevention.
 
+# https://jekyllrb.com/docs/configuration/
+future: true
+
 author: tokkonopapa
 email: tokkonopapa@yahoo.com
 
 # base url and sub path
 # for local: jekyll serve --drafts --baseurl --incremental
 baseurl: "http://www.ipgeoblock.com"
-url: ""
 
 permalink: none
 
 # Paginate
 recent_post: 5
 paginate: 5
-paginate_path: "/:num/"
+paginate_path: "/blog/:num/"
 
 exclude: [README.md]
 
@@ -32,9 +34,14 @@ excerpt_separator: "<!--more-->"
 # make sure https://github.com/github/pages-gem
 gems: [jekyll-paginate]
 
-# Build settings
-highlight: pygments
-markdown: redcarpet # kramdown
+# Build settings (jekyll 2.5.3: pygments, jekyll 3.0: rouge)
+# highlighter: rouge # pygments
+# markdown: redcarpet
+
+# markdown: kramdown
+# kramdown:
+#   syntax_highlighter: rouge
+#   input: GFM
 
 # extensions for GitHub Flavored Markdown
 # pygments:
@@ -49,9 +56,6 @@ redcarpet:
     "strikethrough",                # del tag with ~~
     "superscript"                   # use sup ex: 2^n
   ]
-
-kramdown:
-  input: GFM
 
 # Codex
 collections:

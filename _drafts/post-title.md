@@ -23,7 +23,7 @@ code
 
 <!-- success, info, warning, danger -->
 <div class="alert alert-info" role="alert">
-	Information
+    Information
 </div>
 
 [![title]({{ "/img/2015-xx/sample.png" | prepend: site.baseurl }}

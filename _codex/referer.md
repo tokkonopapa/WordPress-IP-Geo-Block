@@ -1,7 +1,8 @@
 ---
 layout: page
 title: Referer Checker
-canonical: /codex/referer.html
+excerpt: Check your HTTP referer
+categories: codex
 script: [/js/referer.js]
 ---
 <div class="table-responsive">
@@ -25,6 +26,5 @@ script: [/js/referer.js]
   </table>
 </div>
 
-<p>Back to the article:
+Back to the article:
   <q><a href="{{ '/article/referer-suppressor.html' | prepend: site.baseurl }}">Referer Suppressor for external link</a></q>
-</p>

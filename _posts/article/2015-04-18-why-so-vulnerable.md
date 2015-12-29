@@ -141,7 +141,8 @@ On August 2014, Sucuri reported about
 The following snippet from CCF (<= 5.1.0.3) dumps the set of SQL queries and 
 downloads the previous one.
 
-{% highlight php startinline %}
+{% highlight php %}
+<?php
 if (!is_admin()) { /* is front */
     ...
     $custom_contact_front = new CustomContactFormsFront();
@@ -158,6 +159,7 @@ function adminInit() {
     $this->downloadCSVExportFile();
     $this->runImport();
 }
+?>
 {% endhighlight %}
 
 The function `adminInit()` was no doubt for the administrators. But this 
@@ -200,20 +202,20 @@ On February 3 2015, Sucuri disclosed
 
 Suppose a registered user hit a button on the dashboard to do something.
 
-```html+php
+{% highlight php %}
 <form action="<?php echo admin_url( 'admin.php' ); ?>">
     <?php wp_nonce_field( 'foo-secret-nonce' ); ?>
     <input type="hidden" name="action" value="foo" />
     <input type="submit" value="Something to do" />
 </form>
-```
+{% endhighlight %}
 
 When `wp-admin/?action=foo` is requested, the function `foo_handler` will be 
 triggered via the action hook `admin_action_foo` by following code:
 
-```php
+{% highlight php %}
 <?php add_action( 'admin_action_foo', 'foo_handler' ); ?>
-```
+{% endhighlight %}
 
 If the `foo-secret-nonce` is also used in a function for an administrator to 
 do an important job and only `check_admin_referer('foo-secret-nonce')` is 
@@ -251,9 +253,9 @@ On September 2014,
 became a big topic. For certain functions for the administrators, an attacker 
 could download any files via a request to `admin-ajax.php` like this:
 
-```html
+{% highlight html %}
 http://example.com/wp-admin/admin-ajax.php?action=show-me&file=../wp-config.php
-```
+{% endhighlight %}
 
 This request was handled with:
 

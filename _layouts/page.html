@@ -1,16 +1,20 @@
 ---
 layout: default
+
 ---
-<nav>
-    <a href="{{ "/"       | prepend: site.baseurl }}" title="Blog Home">Home</a> &raquo;
-    <a href="{{ "/codex/" | prepend: site.baseurl }}" title="Codex">codex</a> &raquo;
-</nav>
-<article class="blog-post">
+<div class="container">
+  <div class="section">
 
-  <header class="post-header">
-    <h2 class="blog-post-title">{{ page.title }}</h2>
-  </header>
+    <div class="breadcrumb">
+      <a href="{{ "/"       | prepend: site.baseurl }}" title="Top">Top</a> &raquo;
+      <a href="{{ "/codex/" | prepend: site.baseurl }}" title="Codex">Codex</a> &raquo;
+    </div>
 
-  {{ content }}
+    <header class="post-header">
+      <h2 class="blog-post-title">{{ page.title }}</h2>
+    </header>
 
-</article><!-- /.blog-post -->
+{{ content }}
+
+  </div>
+</div>

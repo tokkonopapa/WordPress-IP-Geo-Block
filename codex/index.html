@@ -1,19 +1,21 @@
 ---
 layout: default
-title: Category &raquo; codex
+title: Codex
 ---
-<nav>
-    <a href="{{ "/" | prepend: site.baseurl }}" title="Blog Home">Home</a> &raquo; codex
-</nav>
-<section id="archive">
-    <div class="catbloc" id="codex">
-        <h2 class="blog-post-title">{{ category | first }}</h2>
-        <ul>
-{% for post in site.codex %}{% if post.url %}
-             <li>
-                 <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-             </li>
-{% endif %}{% endfor %}
-        </ul>
+<div class="container">
+  <div class="section">
+
+    <div class="breadcrumb">
+      <a href="{{ "/" | prepend: site.baseurl }}" title="Top">Top</a> &raquo; {{ page.title }}
     </div>
-</section>
+
+    <ul>
+{% for post in site.codex %}
+      <li>
+        <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+      </li>
+{% endfor %}
+    </ul>
+
+  </div>
+</div>

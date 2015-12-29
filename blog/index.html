@@ -1,0 +1,52 @@
+---
+layout: default
+---
+<!-- This loops through the paginated posts -->
+<div class="container">
+  <div class="section">
+
+    <div class="breadcrumb">
+      <a href="{{ "/" | prepend: site.baseurl }}" title="Top">Top</a> &raquo; Blog
+    </div>
+
+{% for post in paginator.posts %}{% if post.layout == "post" %}
+    <h2 class="blog-post-title">
+      <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">
+        {{ post.title }}
+      </a>
+    </h2>
+    <p class="blog-post-meta">{{ post.date | date: "%b %-d, %Y" }}</p>
+    {{ post.excerpt }}
+    <p class="blog-post-more">
+      <a href="{{ post.url | prepend: site.baseurl }}"> &#8250; Read this&hellip;</a>
+    </p>
+{% endif %}{% endfor %}
+  </div>
+
+<!-- Pagination links -->
+{% if paginator.total_pages > 1 %}
+  <div class="pagination">
+{% if paginator.previous_page %}
+    <a href="{{ paginator.previous_page_path | replace: '//', '/' }}">&laquo; Newer</a>
+{% else %}
+    <span>&laquo; Newer</span>
+{% endif %}
+
+{% for page in (1..paginator.total_pages) %}
+  {% if page == paginator.page %}
+    <em>{{ page }}</em>
+  {% elsif page == 1 %}
+    <a href="{{ paginator.previous_page_path | replace: '//', '/' }}">{{ page }}</a>
+  {% else %}
+    <a href="{{ site.paginate_path | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a>
+  {% endif %}
+{% endfor %}
+
+{% if paginator.next_page %}
+    <a href="{{ paginator.next_page_path | replace: '//', '/' }}">Older &raquo;</a>
+  {% else %}
+    <span>Older &raquo;</span>
+  {% endif %}
+  </div>
+{% endif %}
+</div>

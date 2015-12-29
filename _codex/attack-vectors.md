@@ -1,7 +1,6 @@
 ---
 layout: page
-title: "Analysis of Attack Vectors"
-date: 2015-11-01 09:00:00
+title: Analysis of Attack Vectors
 categories: codex
 script: [/js/jquery-1.11.2.min.js, /js/tablesort.min.js]
 inline: <script>
@@ -21,7 +20,7 @@ inline: <script>
   </script>
 ---
 
-### Analysis Conditions ###
+### Conditions ###
 
 - **IP Geo Block:**  
   2.2.0 and later

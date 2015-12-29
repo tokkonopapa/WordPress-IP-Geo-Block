@@ -78,13 +78,13 @@ The keywords `never`, `default`, `always` are [obsolete][WHATWG-Wiki].
 
 Please try the following links:
 
-- <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" target="_blank">Simple link</a>
-- <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" data-meta-referrer="false">Meta refresh</a>
-- <a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" data-meta-referrer="true">Meta refresh + Meta referrer</a>
+- <a href="{{ "/codex/referer.html" | prepend: site.baseurl }}" target="_blank">Simple link</a>
+- <a href="{{ "/codex/referer.html" | prepend: site.baseurl }}" data-meta-referrer="false">Meta refresh</a>
+- <a href="{{ "/codex/referer.html" | prepend: site.baseurl }}" data-meta-referrer="true">Meta refresh + Meta referrer</a>
 
 If you find any browsers that take referer strings to the redirected page when 
 you click 
-<q><a href="{{ "/etc/referer.html" | prepend: site.baseurl }}" data-meta-referrer="true">Meta refresh + Meta referrer</a></q>
+<q><a href="{{ "/codex/referer.html" | prepend: site.baseurl }}" data-meta-referrer="true">Meta refresh + Meta referrer</a></q>
 please let me know. Thanks <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f340.png)
 </span>

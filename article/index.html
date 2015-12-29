@@ -1,20 +1,22 @@
 ---
 layout: default
-title: Category &raquo; article
+title: Article
 ---
-<nav>
-    <a href="{{ "/" | prepend: site.baseurl }}" title="Blog Home">Home</a> &raquo; article
-</nav>
-<section id="archive">
-    <div class="catbloc" id="{{ category | first | remove:' ' }}">
-        <h2 class="blog-post-title">{{ category | first }}</h2>
-        <ul>
-        {% for post in site.categories.article %}{% if post.url %}
-             <li>
-                 <time class="blog-post-meta">{{ post.date | date: "%b %-d, %Y" }}</time>
-                 <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-             </li>
-        {% endif %}{% endfor %}
-        </ul>
+<div class="container">
+  <div class="section">
+
+    <div class="breadcrumb">
+      <a href="{{ "/" | prepend: site.baseurl }}" title="Top">Top</a> &raquo; {{ page.title }}
     </div>
-</section>
+
+    <ul>
+{% for post in site.categories.article %}{% if post.url %}
+      <li>
+        <time class="blog-post-meta">{{ post.date | date: "%b %-d, %Y" }}</time>
+        <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+      </li>
+{% endif %}{% endfor %}
+    </ul>
+
+  </div>
+</div>

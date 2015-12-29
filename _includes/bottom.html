@@ -23,11 +23,10 @@ if (location.hostname.indexOf('ipgeoblock') >= 0) {
   ga('send', 'pageview');
 }
 </script>
-<!-- Bootstrap core JavaScript -->
-<!--
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
--->
+<!-- scripts -->
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="/js/materialize.custom.min.js"></script>
+<script src="/js/init.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="{{ "/js/ie10-viewport-bug-workaround.js" | prepend: site.baseurl }}"></script>
 {% if page.script %}{% for script in page.script %}
