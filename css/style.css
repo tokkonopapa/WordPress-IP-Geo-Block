@@ -11,7 +11,9 @@ html {
   font-size: 1.1em;
   line-height: 1.6;
 }
-
+strong {
+  font-weight: 700;
+}
 h1 { font-size: 2.00em; }
 h2 { font-size: 1.80em; }
 h3 { font-size: 1.62em; }
