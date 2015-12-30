@@ -55,7 +55,7 @@ gems: [jekyll-paginate]
 collections:
   codex:
     output: true
-    permalink: /codex/:slug.html
+    permalink: /codex/:title.html
 
 # Google Analytics (tokkonopapa@gmail.com)
 google_analytics_tracking_id: UA-42366765-2 
