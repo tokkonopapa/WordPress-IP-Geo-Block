@@ -10,7 +10,7 @@ inline:
 
 <!--more-->
 
-### <span id="1">Title</span> ###
+### Title ###
 
 {% highlight php linenos %}
 code

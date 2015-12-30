@@ -24,7 +24,7 @@ forbidden countries.
 In this article, I should clarify how to prevent exposure of `wp-config.php` 
 against such malicous requests.
 
-### <span id="1">Analysis of Attack Vectors</span> ###
+### Analysis of Attack Vectors ###
 
 Before showing the results, I should explain about the description of the 
 terms same as in [the previous article][Analysis].
@@ -287,7 +287,7 @@ and themes never load the WordPress core.
   </table>
 </div>
 
-### <span id="2">What's the cause?</span> ###
+### What's the cause? ###
 
 As you can see, most of them had their own download function like 
 `download.php`. Typical OMG <span class="emoji">
@@ -306,7 +306,7 @@ if (file_exists('../../uploads/xxxx/'.$file)) {
 
 This kind of vulnerability is caused by [Directory Traversal][OWASP] attack.
 
-### <span id="3">How to protect my site against such OMG code?</span> ###
+### How to protect my site against such OMG code? ###
 
 First and foremost, we should consider to make the **Path** transformed from 
 <span class="label label-danger">PD</span> and 

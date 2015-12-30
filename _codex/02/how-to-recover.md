@@ -4,7 +4,7 @@ title: What should I do when I'm locked out?
 excerpt: How to recover when I'm locked out?
 ---
 
-### <span id="1">Emergent Functionality</span> ###
+### Emergent Functionality ###
 
 When you are locked out by misfortune, this feature inhibits the blocking 
 behavior of this plugin.
@@ -61,7 +61,7 @@ After reconfiguring "**Maching rule**" and "**Country code for matching rule**"
 at "**Validation rule settings**" properly, do not forget to restore the 
 `ip-geo-block.php` on your server to the original.
 
-### <span id="1">Another solution at emergency</span> ###
+### Another solution at emergency ###
 
 Although the above process is strongly recommended at your emergency, some 
 users are not familiar with editing PHP file.

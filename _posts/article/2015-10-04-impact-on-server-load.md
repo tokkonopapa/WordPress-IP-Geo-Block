@@ -13,7 +13,7 @@ using [IP Geo Block][IP-Geo-Block]. I report the result in this article.
 
 <!--more-->
 
-### <span id="1">A shell program</span> ###
+### A shell program ###
 
 The [`attack.sh`][attack-sh] is a shell program which mesures load of malicious
 burst accesses to WordPress back-end such as `wp-comments-post.php`, 
@@ -28,7 +28,7 @@ It gives an emulation of spam comment, pingback spam, login attempt and
 malicious access to the admin ajax with 5 multiple requests at a time 
 throughout 60 seconds.
 
-### <span id="2">Test environment</span> ###
+### Test environment ###
 
 I setup the testbed in my local PC which specifications are followings:
 
@@ -49,7 +49,7 @@ requesting and responding because those have an influence on each other.
 But unfortunately I don't have any such rich environments. So please take it 
 into consideration when you see the results.
 
-### <span id="3">Plugins configuration</span> ###
+### Plugins configuration ###
 
 [Wordfence][Wordfence] has a lot of options. So I leave them as just after 
 installation.
@@ -61,7 +61,7 @@ as follows:
  "Validation target settings"
 )
 
-### <span id="4">The results</span> ###
+### The results ###
 
 At the begining of each test, the DB was optimized using 
 [Optimize Database after Deleting Revisions][OptimizeDB].
@@ -122,7 +122,7 @@ Wordfence is higher than IP Geo Block.
 | ON  | ON  |         5.53 |       180.822 |
 | ON  | OFF |         6.03 |       165.840 |
 
-### <span id="5">Conclusion</span> ###
+### Conclusion ###
 
 Speaking about the site performance, more plugins leads to less speed. The 
 results shows that the performance of load reduction by IP Geo Block against 
