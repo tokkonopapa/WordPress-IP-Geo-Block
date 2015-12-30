@@ -2,7 +2,7 @@
 layout: page
 title: Analysis of Attack Vectors
 categories: codex
-script: [/js/jquery-1.11.2.min.js, /js/tablesort.min.js]
+script: [/js/tablesort.min.js]
 inline: <script>
   var table = document.getElementById('my-table');
   var sort = new Tablesort(table);
@@ -29,9 +29,8 @@ inline: <script>
   According to [this article][PREVENT-EXPOSURE], `.htaccess` is applied to 
   `wp-content/plugins/` and `wp-content/themes/`.
 
-- **Abbreviation:**  {% highlight text %}
-  Attack Vector = Type x Path
-  {% endhighlight %} <table>
+- **Abbreviation:**  
+  {% highlight text %}Attack Vector = Type x Path{% endhighlight %} <table>
     <thead>
       <tr>
         <th>Type</th>

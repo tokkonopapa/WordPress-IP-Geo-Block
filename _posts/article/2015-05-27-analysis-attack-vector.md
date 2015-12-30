@@ -4,7 +4,7 @@ title:  "Analysis of Attack Vector against WP Plugins"
 date:   2015-05-27 00:00:01
 categories: article
 published: true
-script: [/js/jquery-1.11.2.min.js, /js/tablesort.min.js]
+script: [/js/tablesort.min.js]
 inline: <script>
   var table = document.getElementById('my-table');
   var sort = new Tablesort(table);
@@ -51,9 +51,9 @@ a direct attack onto the plugin files, and some of them are classified in an
 indirect attack via WordPress core files. So at first I must make clarify the 
 definition of "Attack Vector" itself. My definition here is:
 
-```text
+{% highlight text %}
 Attack Vector = Type x Path
-```
+{% endhighlight %}
 
 where:
 
@@ -551,9 +551,9 @@ But "PD" (without *) is still in red.
 There was [an vulnerability][MainWP-Child] that allowed anyone to login as an 
 administrator without any fences by following access:
 
-```html
+{% highlight html %}
 http://example.com/?login_required=1&user=admin&...
-```
+{% endhighlight %}
 
 In this type of vulnerability, the `init` action, which is always triggered by 
 anybody who visits the public facing pages, is hooked to some functions to 

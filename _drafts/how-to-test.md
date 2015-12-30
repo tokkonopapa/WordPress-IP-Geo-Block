@@ -8,12 +8,8 @@ published: false
 
 <!--more-->
 
-{% highlight php startinline linenos %}
+{% highlight php linenos %}
 {% endhighlight %}
-
-<!-- html+php, css+php, js+php -->
-```html
-```
 
 <!-- success, info, warning, danger -->
 <div class="alert alert-info" role="alert">
