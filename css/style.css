@@ -8,7 +8,7 @@
 html {
   color: #546e7a !important;
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 1.1em;
+  font-size: 1.0em;
   line-height: 1.6;
 }
 strong {
@@ -130,6 +130,9 @@ div.breadcrumb {
 /**
  * Section
  */
+p#intro {
+  margin-top: 0;
+}
 .features h2 {
   line-height: 1.5;
 }
