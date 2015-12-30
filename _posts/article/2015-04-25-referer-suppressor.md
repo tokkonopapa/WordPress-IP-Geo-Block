@@ -82,7 +82,7 @@ Please try the following links:
 - <a href="{{ "/codex/referer.html" | prepend: site.baseurl }}" data-meta-referrer="false">Meta refresh</a>
 - <a href="{{ "/codex/referer.html" | prepend: site.baseurl }}" data-meta-referrer="true">Meta refresh + Meta referrer</a>
 
-If you find any browsers that take referer strings to the redirected page when 
+If you find a browser that takes referer strings to the redirected page when 
 you click 
 <q><a href="{{ "/codex/referer.html" | prepend: site.baseurl }}" data-meta-referrer="true">Meta refresh + Meta referrer</a></q>
 please let me know. Thanks <span class="emoji">

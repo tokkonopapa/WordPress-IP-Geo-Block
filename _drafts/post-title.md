@@ -10,27 +10,17 @@ inline:
 
 <!--more-->
 
-### <span id="sec">Title</span> ###
+### <span id="1">Title</span> ###
 
-{% highlight php startinline linenos %}
+{% highlight php linenos %}
 code
 {% endhighlight %}
-
-<!-- html+php, css+php, js+php -->
-```html
-code
-```
-
-<!-- success, info, warning, danger -->
-<div class="alert alert-info" role="alert">
-    Information
-</div>
 
 [![title]({{ "/img/2015-xx/sample.png" | prepend: site.baseurl }}
   "title"
 )][link]
 
-<!-- http://www.emoji-cheat-sheet.com/ -->
+{% comment %} http://www.emoji-cheat-sheet.com/ {% endcomment %}
 <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span>

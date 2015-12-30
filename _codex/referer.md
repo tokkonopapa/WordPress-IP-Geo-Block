@@ -2,7 +2,6 @@
 layout: page
 title: Referer Checker
 excerpt: Check your HTTP referer
-categories: codex
 script: [/js/referer.js]
 ---
 <div class="table-responsive">

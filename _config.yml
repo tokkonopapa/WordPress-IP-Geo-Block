@@ -7,7 +7,7 @@ description: A WordPress Geo-blocking plugin with Zero-day Exploit Prevention
 # area and XML-RPC from undesired countries with zero-day exploit prevention.
 
 # base url and sub path
-# for local: jekyll serve --drafts --baseurl --incremental
+# for local: jekyll serve --drafts --baseurl --incremental --watch
 baseurl: "http://www.ipgeoblock.com"
 
 permalink: none
@@ -55,6 +55,7 @@ gems: [jekyll-paginate]
 collections:
   codex:
     output: true
+    permalink: /codex/:slug.html
 
 # Google Analytics (tokkonopapa@gmail.com)
 google_analytics_tracking_id: UA-42366765-2 

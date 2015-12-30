@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Analysis of Attack Vectors
-categories: codex
+excerpt: The latest result of analyzing the protection performance of IP Geo Block
 script: [/js/tablesort.min.js]
 inline: <script>
   var table = document.getElementById('my-table');
