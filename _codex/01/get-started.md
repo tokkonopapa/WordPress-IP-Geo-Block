@@ -44,4 +44,4 @@ country code.
 Well, you can find the solution [on the next codex][HowToRecover].
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[HowToRecover]: {{ "/codex/how-to-recover.html" | prepend: site.baseurl }} "What should I do when I'm locked out?"
+[HowToRecover]: {{ "/codex/what-should-i-do-when-i-m-locked-out.html" | prepend: site.baseurl }} "What should I do when I'm locked out?"
