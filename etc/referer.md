@@ -26,6 +26,5 @@ script: [/js/referer.js]
   </table>
 </div>
 
-<p>Back to the article:
+Back to the article:
   <q><a href="{{ '/article/referer-suppressor.html' | prepend: site.baseurl }}">Referer Suppressor for external link</a></q>
-</p>
