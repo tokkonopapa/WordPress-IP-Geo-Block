@@ -4,7 +4,7 @@ title:  "Referer Suppressor for external link"
 date:   2015-04-25 00:00:00
 categories: article
 published: true
-script: [/js/jquery-1.11.2.min.js, /js/meta-redirect.js]
+script: [/js/meta-redirect.js]
 ---
 
 "Referer Suppressor" which eliminate the browser's referer is one of my 
@@ -42,31 +42,31 @@ some extra meta tags.
 "[Meta refresh][meta-refresh]" is an old school which is not a part of HTTP 
 standard, but every browser redirects to the specified url.
 
-```html
+{% highlight html %}
 <meta http-equiv="refresh" content="0; url=http://example.com/">
-```
+{% endhighlight %}
 
 On a page including this tag, [IE or Firefox does not send the referer to the 
 redirected url, but Chrome, Safari or Opera does][stackoverflow]. So we need 
 a new school, i.e. "[Meta referrer][meta-referrer]":
 
-```html
+{% highlight html %}
 <meta name="referrer" content="no-referrer">
-```
+{% endhighlight %}
 
 or
 
-```html
+{% highlight html %}
 <a href="http://example.com" referrer="no-referrer">
-```
+{% endhighlight %}
 
 Then the final solution bocomes as follows.
 
-```html
+{% highlight html %}
 <meta name="referrer" content="never" />
 <meta name="referrer" content="no-referrer" />
 <meta http-equiv="refresh" content="0; url=http://example.com/" />
-```
+{% endhighlight %}
 
 You can find this in [authenticate.js][authenticate].
 
