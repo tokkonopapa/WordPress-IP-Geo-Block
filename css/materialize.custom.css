@@ -3,6 +3,36 @@
  * Copyright 2014-2015 Materialize
  * MIT License (https://raw.githubusercontent.com/Dogfalo/materialize/master/LICENSE)
  */
+
+.blue-grey-text.text-darken-1 {
+  color: #546e7a !important;
+}
+.light-blue-text {
+  color: #03a9f4 !important;
+}
+.cyan.darken-3 {
+  background-color: #00838f !important;
+}
+.orange {
+  background-color: #ff9800 !important;
+}
+.orange-text.text-lighten-3 {
+  color: #ffcc80 !important;
+}
+.light-blue.lighten-5 {
+  background-color: #e1f5fe !important;
+}
+.light-blue-text {
+  color: #03a9f4 !important;
+}
+.green.lighten-5 {
+  background-color: #E8F5E9 !important;
+}
+.lime.lighten-5 {
+  background-color: #f9fbe7 !important;
+}
+
+/************************************************************
 .materialize-red.lighten-5 {
   background-color: #fdeaeb !important;
 }
@@ -2162,6 +2192,7 @@
 .transparent-text {
   color: transparent !important;
 }
+************************************************************/
 
 /*** Colors ***/
 /*** Buttons ***/
@@ -6429,6 +6460,7 @@ td, th {
   padding: 0 0.75rem;
 }
 
+/************************************************************
 .row .col[class*="push-"], .row .col[class*="pull-"] {
   position: relative;
 }
@@ -6509,6 +6541,7 @@ td, th {
   left: auto;
   right: auto;
 }
+************************************************************/
 
 .row .col.s12 {
   width: 100%;
@@ -6517,6 +6550,7 @@ td, th {
   right: auto;
 }
 
+/************************************************************
 .row .col.offset-s1 {
   margin-left: 8.3333333333%;
 }
@@ -6660,8 +6694,10 @@ td, th {
 .row .col.push-s12 {
   left: 100%;
 }
+************************************************************/
 
 @media only screen and (min-width: 601px) {
+/************************************************************
   .row .col.m1 {
     width: 8.3333333333%;
     margin-left: auto;
@@ -6680,12 +6716,14 @@ td, th {
     left: auto;
     right: auto;
   }
+************************************************************/
   .row .col.m4 {
     width: 33.3333333333%;
     margin-left: auto;
     left: auto;
     right: auto;
   }
+/************************************************************
   .row .col.m5 {
     width: 41.6666666667%;
     margin-left: auto;
@@ -6842,9 +6880,11 @@ td, th {
   .row .col.push-m12 {
     left: 100%;
   }
+************************************************************/
 }
 
 @media only screen and (min-width: 993px) {
+/************************************************************
   .row .col.l1 {
     width: 8.3333333333%;
     margin-left: auto;
@@ -6863,12 +6903,14 @@ td, th {
     left: auto;
     right: auto;
   }
+************************************************************/
   .row .col.l4 {
     width: 33.3333333333%;
     margin-left: auto;
     left: auto;
     right: auto;
   }
+/************************************************************
   .row .col.l5 {
     width: 41.6666666667%;
     margin-left: auto;
@@ -7025,6 +7067,7 @@ td, th {
   .row .col.push-l12 {
     left: 100%;
   }
+************************************************************/
 }
 
 nav {
@@ -7251,7 +7294,7 @@ h1 {
 h2 {
   font-size: 3.56rem;
   line-height: 110%;
-  margin: 1.78rem 0 1.424rem 0;
+  margin: 1.424rem 0;
 }
 
 h3 {
@@ -7298,6 +7341,7 @@ small {
   font-weight: 200;
 }
 
+/************************************************************
 .flow-text {
   font-weight: 300;
 }
@@ -7563,6 +7607,7 @@ small {
   cursor: pointer;
   display: block;
 }
+************************************************************/
 
 .btn, .btn-large, .btn-flat {
   border: none;
@@ -7659,6 +7704,7 @@ button.btn-floating {
   border: none;
 }
 
+/************************************************************
 .fixed-action-btn {
   position: fixed;
   right: 23px;
@@ -7685,7 +7731,6 @@ button.btn-floating {
   height: 100%;
   left: initial;
   width: 500px;
-  /*width 100% only goes to width of button container */
 }
 
 .fixed-action-btn.horizontal ul li {
@@ -7722,6 +7767,7 @@ button.btn-floating {
   color: #b3b3b3;
   cursor: default;
 }
+************************************************************/
 
 .btn-large {
   height: 54px;
@@ -7736,6 +7782,7 @@ button.btn-floating {
   display: block;
 }
 
+/************************************************************
 .dropdown-content {
   background-color: #fff;
   margin: 0;
@@ -7791,7 +7838,9 @@ button.btn-floating {
   height: inherit;
   line-height: inherit;
 }
+************************************************************/
 
+/************************************************************
 /*!
  * Waves v0.6.0
  * http://fian.my.id/Waves
@@ -7909,7 +7958,9 @@ button.btn-floating {
 a.waves-effect .waves-ripple {
   z-index: -1;
 }
+************************************************************/
 
+/************************************************************
 .collapsible {
   border-top: 1px solid #ddd;
   border-right: 1px solid #ddd;
@@ -8021,6 +8072,7 @@ a.waves-effect .waves-ripple {
   line-height: 32px;
   padding-left: 8px;
 }
+************************************************************/
 
 .materialboxed {
   display: block;
@@ -8196,6 +8248,7 @@ label {
   }
 }
 
+/************************************************************
 .side-nav .collapsible-body li.active,
 .side-nav.fixed .collapsible-body li.active {
   background-color: #ee6e73;
@@ -8205,6 +8258,7 @@ label {
 .side-nav.fixed .collapsible-body li.active a {
   color: #fff;
 }
+************************************************************/
 
 #sidenav-overlay {
   position: fixed;
@@ -8235,6 +8289,7 @@ label {
   }
 }
 
+/************************************************************
 .slider {
   position: relative;
   height: 400px;
@@ -8363,3 +8418,4 @@ label {
   top: 0;
   left: 0;
 }
+************************************************************/
