@@ -78,13 +78,13 @@ The keywords `never`, `default`, `always` are [obsolete][WHATWG-Wiki].
 
 Please try the following links:
 
-- <a href="/codex/referer-suppressor.html" target="_blank">Simple link</a>
-- <a href="/codex/referer-suppressor.html" data-meta-referrer="false">Meta refresh</a>
-- <a href="/codex/referer-suppressor.html" data-meta-referrer="true">Meta refresh + Meta referrer</a>
+- <a href="/codex/referer-checker.html" target="_blank">Simple link</a>
+- <a href="/codex/referer-checker.html" data-meta-referrer="false">Meta refresh</a>
+- <a href="/codex/referer-checker.html" data-meta-referrer="true">Meta refresh + Meta referrer</a>
 
 If you find a browser that takes referer strings to the redirected page when 
 you click 
-<q><a href="/codex/referer-suppressor.html" data-meta-referrer="true">Meta refresh + Meta referrer</a></q>
+<q><a href="/codex/referer-checker.html" data-meta-referrer="true">Meta refresh + Meta referrer</a></q>
 please let me know. Thanks <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f340.png)
 </span>
