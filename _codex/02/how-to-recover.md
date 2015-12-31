@@ -70,7 +70,7 @@ In that case, you can just remove `ip-geo-block` in your plugin's directory
 forcibly by using FTP or something, you'll see the following message on your 
 plugin's dashboard.
 
-![Force to delete]({{ "/img/2015-08/ForceDelete.png" | prepend: site.baseurl }}
+![Force to delete]({{ "/img/2015-08/ForceDelete.png" }}
  "Force to delete"
 )
 
@@ -85,7 +85,7 @@ rescue you. After pausing for breath, you can visit your admin dashboard again!
 If you're familiar with the use of phpMyAdmin, you can change the value of 
 `matching_rule` to `-1` which means `Disable`. Please do it at your own risk.
 
-![Change matching_rule via phpMyAdmin]({{ "/img/2016-01/MatchingRule.png" | prepend: site.baseurl }}
+![Change matching_rule via phpMyAdmin]({{ "/img/2016-01/MatchingRule.png" }}
  "Change matching_rule via phpMyAdmin"
 )
 

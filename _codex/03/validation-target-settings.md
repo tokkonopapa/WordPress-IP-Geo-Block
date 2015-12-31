@@ -17,7 +17,7 @@ see the following configuration at "**Validation target settings**". This is a
 set of minimum configuration for a user who are interested in Geo-blocking by 
 IP address.
 
-![Initial settings]({{ "/img/2016-01/InitialSettings.png" | prepend: site.baseurl }}
+![Initial settings]({{ "/img/2016-01/InitialSettings.png" }}
  "Initial settings"
 )
 
@@ -42,9 +42,9 @@ can protect your site against such attacks.
 Unfortunately, this plugin doesn't provide you the UI to change the number of 
 login attempts which is 5 by default. But if you're familiar with phpMyAdmin, 
 you can find the value at "**`login_failes`**" in "**`ip_geo_block_settings`**"
-typically in the "**`wp_options`**" and can change it.
+in the options table and can change it.
 
-![login failed in phpMyAdmin]({{ "/img/2016-01/LoginAttempts.png" | prepend: site.baseurl }}
+![login failed in phpMyAdmin]({{ "/img/2016-01/LoginAttempts.png" }}
  "login failed in phpMyAdmin"
 )
 
@@ -55,7 +55,7 @@ accessed only by the admin. So the best practice for this target is enabling
 both "**Block by country**" and "**Prevent Zero-day Exploit**" 
 (e.g. [WP-ZEP][WP-ZEP]).
 
-![Best setting for Admin area]({{ "/img/2016-01/AdminArea.png" | prepend: site.baseurl }}
+![Best setting for Admin area]({{ "/img/2016-01/AdminArea.png" }}
  "Best setting for Admin area"
 )
 
@@ -70,7 +70,7 @@ public facing pages. But sometimes it can be used as an entrance to exploit
 because of vulnerable plugins or themes. So the configuration for this target 
 is slightly delicate than other targets.
 
-![Best setting for Admin ajax/post]({{ "/img/2016-01/AdminAjaxPost.png" | prepend: site.baseurl }}
+![Best setting for Admin ajax/post]({{ "/img/2016-01/AdminAjaxPost.png" }}
  "Best setting for Admin ajax/post"
 )
 
@@ -99,7 +99,7 @@ difference is that WP-ZEP can't distinguish between a request for visitors
 and one for admin. It means that WP-ZEP will block all the request except 
 from the admin dashboard.
 
-![Best setting for Plugins/Themes area]({{ "/img/2016-01/PluginsThemesArea.png" | prepend: site.baseurl }}
+![Best setting for Plugins/Themes area]({{ "/img/2016-01/PluginsThemesArea.png" }}
  "Best setting for Plugins/Themes area"
 )
 
