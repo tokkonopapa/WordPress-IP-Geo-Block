@@ -80,5 +80,14 @@ you're blocked again because your settings still remains in your database.
 Don't worry about that. A background process kicked by the activation will 
 rescue you. After pausing for breath, you can visit your admin dashboard again!
 
+### For power users ###
+
+If you're familiar with the use of phpMyAdmin, you can change the value of 
+`matching_rule` to `-1` which means `Disable`. Please do it at your own risk.
+
+![Change matching_rule via phpMyAdmin]({{ "/img/2016-01/MatchingRule.png" | prepend: site.baseurl }}
+ "Change matching_rule via phpMyAdmin"
+)
+
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [editors]: https://codex.wordpress.org/Editing_Files#Using_Text_Editors "Editing Files « WordPress Codex"
