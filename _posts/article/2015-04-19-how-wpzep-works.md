@@ -22,7 +22,7 @@ describe a little in detail.
 
 #### Showing plugin page ####
 
-A url to the plugin dashboard can be specified depending on 
+An url to the plugin dashboard can be specified depending on 
 [its parent category][Sub-Level-Menu] as follows:
 
 * `wp-admin/admin.php?page=my-plugin`
@@ -62,7 +62,7 @@ $link = add_query_arg(
 #### Requesting to <samp>wp-admin/admin-ajax.php</samp> ####
 
 We can also do the same thing via `admin-ajax.php` by `GET` or `POST` method 
-using jQuery. This request can be handled via `wp_ajax_xxxx` action hook.
+using jQuery. This request can be handled by the `wp_ajax_xxxx` action hook.
 
 {% highlight php %}
 <?php add_action( 'wp_ajax_' . 'do-my-action', 'my_action' ); ?>
@@ -90,7 +90,7 @@ function my_action() {
     }
 
     // do my action
-    ...
+    $result = ...;
 
     // show result in case of Ajax
     if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
@@ -113,8 +113,9 @@ function my_action() {
         }
 
         wp_safe_redirect( $redirect_to );
-        exit;
     }
+
+    die();
 }
 ?>
 {% endhighlight %}
@@ -129,19 +130,21 @@ In `my_action()`, the most important processes before **doing my action** are:
 
 When a plugin developer loses one of those, the result becomes serious.
 
-So WP-ZEP will make up 1. and 2. by embedding a nonce into the request.
+So WP-ZEP will make up 1. and 2. by embedding a [nonce][WordPressNonces] into 
+the request.
 
 ### The limitations of WP-ZEP ###
 
 One big challenge for WP-ZEP is to embed a nonce. You already notice that 
 there're countlessly many ways to do their own job besides the best practice.
+For example, one can do the "**job**" without using "action".
 
 {% highlight html %}
 wp-admin/?page=my-plugin&job=do-my-job
 {% endhighlight %}
 
-In this case, the requested job will be distributed into their hander in a 
-plugin side. So WP-ZEP can do nothing about it.
+In this case, the requested "**job**" will be processed directly in their 
+hander without any help of WordPress core. So WP-ZEP can do nothing about it.
 
 Another big challenge is to decide whether the request hander is vulnerable or 
 not if `my_action()` is registered for both authorized and unauthorized users 
@@ -154,9 +157,11 @@ add_action( 'wp_ajax_nopriv_' . 'do-my-action', 'my_action' );
 ?>
 {% endhighlight %}
 
-If WP-ZEP blocks the action `do-my-action`, users on the public facing pages 
-can not get any services via the ajax call. So in this case, all this plugin 
-has to do is validating IP address by county code.
+If WP-ZEP blocks the action `do-my-action`, visitors on the public facing 
+pages can not get any services via the ajax call. So WP-ZEP should carefully 
+identify the action only for the admin. If the action provides its services 
+for both admin and visitors, all this plugin has to do is validating an IP 
+address by its county code.
 
 This causes a serious problem: 
 [vulnerability in Slider Revolution][Slider-Revolution] 
@@ -164,8 +169,8 @@ cannot be blocked when the attack comes from the permitted country. (Because
 it had added the above two actions <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f620.png)
 </span> !!) To prevent this kind of attack, you should add following snippet 
-into your `functions.php`.
-(Should I implement this kind of WAF functionality in this plugin?)
+into your `functions.php`. (This functionality had already been impremented 
+from [version 2.2.0][Release220].)
 
 {% highlight php %}
 <?php
@@ -215,3 +220,5 @@ other plugins while playing a certain degree of role by itself <span class="emoj
 [Sub-Level-Menu]:      https://codex.wordpress.org/Administration_Menus#Sub-Level_Menus "Administration Menus « WordPress Codex"
 [Slider-Revolution]:   https://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog"
 [PrivilegeEscalation]: http://en.wikipedia.org/wiki/Privilege_escalation "Privilege escalation - Wikipedia, the free encyclopedia"
+[WordPressNonces]:     https://codex.wordpress.org/WordPress_Nonces "WordPress Nonces « WordPress Codex"
+[Release220]:          {{ "/changelog/release-2.2.0.html" | prepend: site.baseurl }} "2.2.0 Release Note | IP Geo Block"

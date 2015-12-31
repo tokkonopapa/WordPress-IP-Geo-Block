@@ -2,7 +2,7 @@
 layout: page
 title: Referer Checker
 excerpt: Check your HTTP referer
-canonical: /codex/referer.html
+canonical: /codex/referer-checker.html
 script: [/js/referer.js]
 ---
 <div class="table-responsive">
