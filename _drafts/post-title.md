@@ -25,6 +25,11 @@ code
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span>
 
+{% comment %} alert-{success|info|warning|danger} {% endcomment %}
+<div class="alert alert-info">
+	Information
+</div>
+
 | Left-Aligned  | Center Aligned  | Right Aligned |
 |:--------------|:---------------:|--------------:|
 | col 3 is      | some wordy text |         $1600 |

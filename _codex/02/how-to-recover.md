@@ -77,8 +77,8 @@ plugin's dashboard.
 After that, you can reinstall and reactivate this plugin. But you'll find soon 
 you're blocked again because your settings still remains in your database.
 
-Don't worry about that. After pausing for breath, you can visit your admin 
-dashboard again!!
+Don't worry about that. A background process kicked by the activation will 
+rescue you. After pausing for breath, you can visit your admin dashboard again!
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [editors]: https://codex.wordpress.org/Editing_Files#Using_Text_Editors "Editing Files « WordPress Codex"
