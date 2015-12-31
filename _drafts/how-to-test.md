@@ -15,7 +15,7 @@ published: false
 <div class="alert alert-info" role="alert">
 </div>
 
-[![title]({{ "/img/2015-xx/sample.png" | prepend: site.baseurl }}
+[![title](/img/2015-xx/sample.png
   "title"
 )][link]
 

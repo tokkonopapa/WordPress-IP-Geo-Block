@@ -20,14 +20,14 @@ In this article, I show some notes related to living with
 When IP Geo Block inhibits accessing to the `xmlrpc.php` by country code, 
 connecting to WordPress.com will fail at the activation process.
 
-![Connect to WordPress.com]({{ "/img/2015-08/Jetpack-connect.png" | prepend: site.baseurl }}
+![Connect to WordPress.com](/img/2015-08/Jetpack-connect.png
  "Connect to WordPress.com"
 )
 
 And also accessing to the `Admin area` should not be `Prevent Zero-day exploit` 
 to lead the activation process to success.
 
-![Validation Settings]({{ "/img/2015-08/ValidationSettings.png" | prepend: site.baseurl }}
+![Validation Settings](/img/2015-08/ValidationSettings.png
  "Validation Settings"
 )
 

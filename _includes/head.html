@@ -6,7 +6,7 @@
 
   <title>{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
   <link rel="canonical" href="{{ page.url | replace: 'index.html', '' | prepend: site.baseurl | prepend: site.url }}">
-  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ '/feed.xml' | prepend: site.baseurl | prepend: site.url }}">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="/feed.xml">
 
   <!-- CSS https://design.google.com/icons/ -->
   <link rel="stylesheet" href="/css/style.min.css" type="text/css">
@@ -21,6 +21,6 @@
   <![endif]-->
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   <!--[if IE 10]>
-    <script src="{{ '/js/ie10-viewport-bug-workaround.js' | prepend: site.baseurl }}"></script>
+    <script src="/js/ie10-viewport-bug-workaround.js"></script>
   <![endif]-->
 </head>

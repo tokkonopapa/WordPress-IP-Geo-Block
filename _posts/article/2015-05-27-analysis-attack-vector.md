@@ -82,9 +82,8 @@ based on the type of validation method, that are:
 
 For example, 2. is available on "Validation Settings" as follows:
 
-![Validation Settings in IP Geo Block in 2.1.0](
-  {{ "/img/2015-05/validation-settings.png" | prepend: site.baseurl }}
-  "Validation Settings in IP Geo Block in 2.1.0"
+![Validation Settings in IP Geo Block in 2.1.0](/img/2015-05/validation-settings.png
+ "Validation Settings in IP Geo Block in 2.1.0"
 )
 
 Well then, let's take a look at the results:
@@ -579,7 +578,7 @@ So I'd like to make WP-ZEP have an ability to prevent the "Plugin Direct"
 
 [wpvulndb]:     https://wpvulndb.com/plugins "WordPress Plugin Vulnerabilities"
 [Sucuri]:       https://sucuri.net/ "Sucuri Security — Website Protection, Malware Removal, and Blacklist Prevention"
-[WP-ZEP]:       {{ "/article/how-wpzep-works.html" | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
+[WP-ZEP]:       /article/how-wpzep-works.html "How does WP-ZEP prevent zero-day attack?"
 [Packet-Storm]: http://packetstormsecurity.com/ "Packet Storm"
 [Tom-McFarlin]: https://tommcfarlin.com/wordpress-and-mvc/ "WordPress and MVC (Gloves Aren't Made for Feet) | Tom McFarlin"
 [MainWP-Child]: https://blog.sucuri.net/2015/03/security-advisory-mainwp-child-wordpress-plugin.html "Security Advisory: MainWP-Child WordPress Plugin | Sucuri Blog"

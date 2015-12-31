@@ -6,7 +6,7 @@ title: Article
   <div class="section">
 
     <div class="breadcrumb">
-      <a href="{{ "/" | prepend: site.baseurl }}" title="Top">Top</a> &raquo; {{ page.title }}
+      <a href="/" title="Top">Top</a> &raquo; {{ page.title }}
     </div>
 
     <ul>

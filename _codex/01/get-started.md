@@ -13,7 +13,7 @@ you'll see the "Welcome" message and will be prompt to confirm the
 But it's better to keep yourself in a relaxed state for a several seconds, 
 becase a background process of downloading Geo-IP databases may be running.
 
-![After activation of IP Geo Block]({{ "/img/2016-01/AfterActivation.png" | prepend: site.baseurl }}
+![After activation of IP Geo Block](/img/2016-01/AfterActivation.png
  "After activation of IP Geo Block"
 )
 
@@ -23,7 +23,7 @@ When you still see the "Welcome" message on the IP Geo Block dashboard, please
 select either "**white list**" or "**black list**" at "**Matching rule**" and 
 put a proper country code into the "**Country code for matching rule**".
 
-![Still see the welcome message]({{ "/img/2016-01/WelcomeMessage.png" | prepend: site.baseurl }}
+![Still see the welcome message](/img/2016-01/WelcomeMessage.png
  "Still see the welcome message"
 )
 
@@ -35,7 +35,7 @@ logged in as an administrator.
 Please click the "**Scan your country code**" button to find your proper 
 country code.
 
-![Lock out warning message]({{ "/img/2016-01/LockoutWarning.png" | prepend: site.baseurl }}
+![Lock out warning message](/img/2016-01/LockoutWarning.png
  "Lock out warning message"
 )
 
@@ -44,4 +44,4 @@ country code.
 Well, you can find the solution [on the next codex][HowToRecover].
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[HowToRecover]: {{ "/codex/what-should-i-do-when-i-m-locked-out.html" | prepend: site.baseurl }} "What should I do when I'm locked out?"
+[HowToRecover]: /codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out?"

@@ -539,4 +539,4 @@ inline: <script>
 | Block by country |    41/50 (82%) |     9/50 (18%) |
 | WP-ZEP           |    38/50 (76%) |    12/50 (24%) |
 
-[PREVENT-EXPOSURE]: {{ "/article/exposure-of-wp-config-php.html" | prepend: site.baseurl }} "Prevent exposure of wp-config.php"
+[PREVENT-EXPOSURE]: /article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php"

@@ -11,24 +11,24 @@
             <a href="https://wordpress.org/plugins/ip-geo-block/" title="WordPress &#8250; IP Geo Block &laquo; WordPress Plugins">IP Geo Block &laquo; WordPress.org</a>
           </li>
           <li>
-            <a href="{{ '/blog/' | prepend: site.baseurl }}">Blog</a>
+            <a href="/blog">Blog</a>
           </li>
           <li>
-            <a href="{{ '/codex/' | prepend: site.baseurl }}">Codex</a>
+            <a href="/codex/">Codex</a>
           </li>
           <li>
-            <a href="{{ '/archives.html' | prepend: site.baseurl }}">Arvhives</a>
+            <a href="/archives.html">Archives</a>
           </li>
           <li class="rss-subscribe">
-            <a href="{{ '/feed.xml' | prepend: site.baseurl }}">Subscribe via RSS</a>
+            <a href="/feed.xml">Subscribe via RSS</a>
           </li>
         </ul>
       </div>
 
       <div class="col s12 m4 l4">
         <h5>Recent Posts</h5>
-        <ul>
-          {% for post in site.posts limit: site.recent_post %}<li>
+        <ul>{% for post in site.posts limit: site.recent_post %}
+          <li>
             <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
           </li>{% endfor %}
         </ul>
@@ -36,7 +36,7 @@
 
       <div class="col s12 m4 l4">
         <a href="#" title="Scroll to top">
-          <!--<img class="img-responsive center-block" src="{{ "/img/wp-medal.png" | prepend: site.baseurl }}" alt="WordPress Logo" />-->
+          <!--<img class="img-responsive center-block" src="/img/wp-medal.png" alt="WordPress Logo" />-->
           <img class="site-logo img-responsive center-block" src="https://cloud.githubusercontent.com/assets/828814/7332953/37465664-eb96-11e4-9aa0-15acf48a6cbd.png" alt="WordPress Logo" />
         </a>
       </div>
