@@ -131,6 +131,17 @@ the load. <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2728.png)
 </span>
 
+{% comment %}
+<div class="alert alert-info">
+  <strong>UPDATED:</strong>
+  The result in this article was base on 
+  <a href="/changelog/release-2.1.5.html" title="2.1.5 Release Note">2.1.5</a>.
+  When it comes to 
+  <a href="/changelog/release-2.2.2.html" title="2.2.2 Release Note">2.2.2</a>,
+  the performace had been improved by 25% at the maximum.
+</div>
+{% endcomment %}
+
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [repository]:   https://github.com/tokkonopapa/WordPress-IP-Geo-Block/tree/master/test/bin "WordPress-IP-Geo-Block/test/bin at master"
 [attack-sh]:    https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/test/bin/attack.sh "WordPress-IP-Geo-Block/attack.sh at master"

@@ -24,12 +24,12 @@ accesses a certain page at a certain moment. It's one of basic and important
 factors to prevent <abbr title="Cross Site Request Forgeries">CSRF</abbr> or 
 other vulnerability.
 
-Instead of vulnerable plugins, WP-ZEP embed a nonce into hyperlinks and forms 
-that have requests to somewhere in the admin area. To keep it secret, WP-ZEP 
-must kill the possibility of disclosing nonce.
+Instead of vulnerable plugins, WP-ZEP embed a nonce into hyperlinks, forms 
+and ajax calls that have requests to somewhere in the admin area. To keep it 
+secret, WP-ZEP must kill the possibility of disclosing a nonce.
 
-One possibility lies in referer strings that was left on the external page as 
-a footprint you visited via hyperlinks.
+One possibility lies in referer strings that was left on the page as a 
+footprint you visited via an external hyperlink.
 
 That's why "Referer Suppressor" is needed.
 
