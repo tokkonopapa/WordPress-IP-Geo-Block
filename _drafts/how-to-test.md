@@ -11,15 +11,15 @@ published: false
 {% highlight php linenos %}
 {% endhighlight %}
 
-<!-- success, info, warning, danger -->
+{% comment %} alert-{success|info|warning|danger} {% endcomment %}
 <div class="alert alert-info" role="alert">
 </div>
 
-[![title](/img/2015-xx/sample.png
+[![title]({{ '/img/2015-xx/sample.png' | prepend: site.baseurl }}
   "title"
 )][link]
 
-<!-- http://www.emoji-cheat-sheet.com/ -->
+{% comment %} http://www.emoji-cheat-sheet.com/ {% endcomment %}
 <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span>

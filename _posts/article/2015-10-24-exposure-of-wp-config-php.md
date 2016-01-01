@@ -362,6 +362,6 @@ I'll provide you this functionarity in the next release (may be 2.2.0) !!
 </span>
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[Analysis]:     /article/analysis-attack-vector.html "Analysis of Attack Vector against WP Plugins"
 [OWASP]:        https://www.owasp.org/index.php/Path_Traversal "Path Traversal - OWASP"
 [WritePHP]:     https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/rewrite.php "WordPress-IP-Geo-Block/rewrite.php at master - tokkonopapa/WordPress-IP-Geo-Block"
+[Analysis]:     {{ '/article/analysis-attack-vector.html' | prepend: site.baseurl }} "Analysis of Attack Vector against WP Plugins"

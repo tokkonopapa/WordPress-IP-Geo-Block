@@ -26,7 +26,7 @@ if (location.hostname.indexOf('ipgeoblock') >= 0) {
 </script>
 <!-- scripts -->
 <!--<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>-->
-<script src="/js/script.min.js"></script>
+<script src="{{ '/js/script.min.js' | prepend: site.baseurl }}"></script>
 {% if page.script %}{% for script in page.script %}
-<script src="{{ script }}"></script>
+<script src="{{ script | prepend: site.baseurl }}"></script>
 {% endfor %}{% endif %}{% if page.inline %}{{ page.inline }}{% endif %}

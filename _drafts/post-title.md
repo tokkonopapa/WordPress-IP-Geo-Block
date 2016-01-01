@@ -16,7 +16,7 @@ inline:
 code
 {% endhighlight %}
 
-[![title](/img/2015-xx/sample.png
+[![title]({{ '/img/2015-xx/sample.png' | prepend: site.baseurl }}
   "title"
 )][link]
 
@@ -56,4 +56,4 @@ code
 </div>
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[WP-ZEP]: {{ "/article/how-wpzep-works.html" | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
+[WP-ZEP]: {{ '/article/how-wpzep-works.html' | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"

@@ -5,7 +5,7 @@ date:   2015-04-18 00:00:00
 categories: article
 ---
 
-[![WordPress Vulnerability Statistics](/img/2015-04/vurlerability-statistics.png
+[![WordPress Vulnerability Statistics]({{ '/img/2015-04/vurlerability-statistics.png' | prepend: site.baseurl }}
   "WordPress Vulnerability Statistics by WPScan Vulnerability Database"
 ) <small>Source: &copy; The WPScan Team</small>][WPScan]
 
@@ -175,7 +175,7 @@ As a result, an attacker could easyly know the DB prefix defined in the
 `wp-config.php` with a certain attack vector and could inject some malicious 
 SQL to exploit the site.
 
-[![Vulnerability of Custom Contact Form](/img/2015-04/custom-contact-form.png
+[![Vulnerability of Custom Contact Form]({{ '/img/2015-04/custom-contact-form.png' | prepend: site.baseurl }}
   "Vulnerability of Custom Contact Form"
 )][Custom-Contact-Forms]
 
@@ -266,7 +266,7 @@ This request was handled with:
 As a result, the attacker could easily download `wp-config.php` without knowing
 the user name and password.
 
-[![Vulnerability of Slider Revolution](/img/2015-04/revslider.png
+[![Vulnerability of Slider Revolution]({{ '/img/2015-04/revslider.png' | prepend: site.baseurl }}
   "Vulnerability of Slider Revolution"
 )][Slider-Revolution]
 

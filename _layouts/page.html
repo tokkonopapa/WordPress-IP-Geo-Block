@@ -5,9 +5,9 @@ layout: default
   <div class="section">
 
     <div class="breadcrumb">
-      <a href="/" title="Top">Top</a> &raquo;
+      <a href="{{ '/' | prepend: site.baseurl }}" title="Top">Top</a> &raquo;
 {% for category in page.category %}
-      <a href="/{{ category }}/" title="{{ category | capitalize }}">{{ category | capitalize }}</a> &raquo;
+      <a href="/{{ category | append: '/' | prepend: site.baseurl }}" title="{{ category | capitalize }}">{{ category | capitalize }}</a> &raquo;
 {% endfor %}
     </div>
 

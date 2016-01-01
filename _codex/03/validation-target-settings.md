@@ -18,7 +18,7 @@ see the following configuration at "**Validation target settings**". This is a
 set of minimum configuration for a user who are interested in Geo-blocking by 
 IP address.
 
-![Initial settings]({{ "/img/2016-01/InitialSettings.png" }}
+![Initial settings]({{ '/img/2016-01/InitialSettings.png' | prepend: site.baseurl }}
  "Initial settings"
 )
 
@@ -45,7 +45,7 @@ login attempts which is 5 by default. But if you're familiar with phpMyAdmin,
 you can find the value at "**`login_failes`**" in "**`ip_geo_block_settings`**"
 in the options table and can change it.
 
-![login failed in phpMyAdmin]({{ "/img/2016-01/LoginAttempts.png" }}
+![login failed in phpMyAdmin]({{ '/img/2016-01/LoginAttempts.png' | prepend: site.baseurl }}
  "login failed in phpMyAdmin"
 )
 
@@ -56,7 +56,7 @@ accessed only by the admin. So the best practice for this target is enabling
 both "**Block by country**" and "**Prevent Zero-day Exploit**" 
 (e.g. [WP-ZEP][WP-ZEP]).
 
-![Best setting for Admin area]({{ "/img/2016-01/AdminArea.png" }}
+![Best setting for Admin area]({{ '/img/2016-01/AdminArea.png' | prepend: site.baseurl }}
  "Best setting for Admin area"
 )
 
@@ -71,7 +71,7 @@ public facing pages. But sometimes it can be used as an entrance to exploit
 leading to the vulnerable plugins or themes. So the configuration for this 
 target is slightly delicate than others.
 
-![Best setting for Admin ajax/post]({{ "/img/2016-01/AdminAjaxPost.png" }}
+![Best setting for Admin ajax/post]({{ '/img/2016-01/AdminAjaxPost.png' | prepend: site.baseurl }}
  "Best setting for Admin ajax/post"
 )
 
@@ -104,14 +104,14 @@ pages for example, and the download link is directly pointed to the php file
 in that plugin's directory, you should **uncheck** the 
 "**Prevent Zero-day Exploit**"
 
-![Best setting for Plugins/Themes area]({{ "/img/2016-01/PluginsThemesArea.png" }}
+![Best setting for Plugins/Themes area]({{ '/img/2016-01/PluginsThemesArea.png' | prepend: site.baseurl }}
  "Best setting for Plugins/Themes area"
 )
 
 <div class="alert alert-warning">
   <strong>WARNING:</strong>
   You should put a specific <code>.htaccess</code> to those areas. Please refer
-  to <a href="/article/exposure-of-wp-config-php.html" title="Prevent exposure 
+  to <a href="http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html" title="Prevent exposure 
   of wp-config.php | IP Geo Block">this article</a> for more details.
 </div>
 
@@ -124,4 +124,4 @@ If you have something to ask, please feel free to open your issue at the
 [SupportForum]: https://wordpress.org/support/plugin/ip-geo-block "WordPress › Support » IP Geo Block"
 [SucuriNews]:   https://blog.sucuri.net/ "Sucuri Blog - Website Security News"
 [BruteXMLRPC]:  https://blog.sucuri.net/2015/10/brute-force-amplification-attacks-against-wordpress-xmlrpc.html "Brute Force Amplification Attacks Against WordPress XMLRPC - Sucuri Blog"
-[WP-ZEP]:       /article/how-wpzep-works.html "How does WP-ZEP prevent zero-day attack? | IP Geo Block"
+[WP-ZEP]:       {{ '/article/how-wpzep-works.html' | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack? | IP Geo Block"

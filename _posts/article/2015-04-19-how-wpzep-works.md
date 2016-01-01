@@ -221,4 +221,4 @@ other plugins while playing a certain degree of role by itself <span class="emoj
 [Slider-Revolution]:   https://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog"
 [PrivilegeEscalation]: http://en.wikipedia.org/wiki/Privilege_escalation "Privilege escalation - Wikipedia, the free encyclopedia"
 [WordPressNonces]:     https://codex.wordpress.org/WordPress_Nonces "WordPress Nonces « WordPress Codex"
-[Release220]:          /changelog/release-2.2.0.html "2.2.0 Release Note | IP Geo Block"
+[Release220]:          {{ '/changelog/release-2.2.0.html' | prepend: site.baseurl }} "2.2.0 Release Note | IP Geo Block"

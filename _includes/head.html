@@ -6,13 +6,13 @@
 
   <title>{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
   <link rel="canonical" href="{{ page.url | replace: 'index.html', '' | prepend: site.baseurl | prepend: site.url }}">
-  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ '/feed.xml' | prepend: site.baseurl }}">
 
   <!-- CSS https://design.google.com/icons/ -->
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,700">
   <link rel="stylesheet" href="http://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="/css/style.min.css" type="text/css">
-  <link rel="icon" href="/img/favicon.ico">
+  <link rel="stylesheet" href="{{ '/css/style.min.css' | prepend: site.baseurl }}" type="text/css">
+  <link rel="icon" href="{{ '/img/favicon.ico' | prepend: site.baseurl }}">
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
@@ -21,6 +21,6 @@
   <![endif]-->
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   <!--[if IE 10]>
-    <script src="/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="{{ '/js/ie10-viewport-bug-workaround.js' | prepend: site.baseurl }}"></script>
   <![endif]-->
 </head>

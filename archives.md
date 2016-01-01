@@ -7,7 +7,7 @@ categories: archives
   <div class="section">
 
     <div class="breadcrumb">
-      <a href="/" title="Top">Top</a> &raquo; 
+      <a href="{{ '/' | prepend: site.baseurl }}" title="Top">Top</a> &raquo; 
 {% for category in site.categories %}
       <a href="#{{ category | first | remove:' ' }}">{{ category | first | capitalize }}</a>{% if forloop.last %}{% else %}, {% endif %}
 {% endfor %}

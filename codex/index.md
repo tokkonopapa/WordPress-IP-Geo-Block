@@ -6,15 +6,13 @@ title: Codex
   <div class="section">
 
     <div class="breadcrumb">
-      <a href="/" title="Top">Top</a> &raquo; {{ page.title }}
+      <a href="{{ '/' | prepend: site.baseurl }}" title="Top">Top</a> &raquo; {{ page.title }}
     </div>
 
-    <ul>
-{% for post in site.codex %}
+    <ul>{% for post in site.codex %}
       <li>
         <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-      </li>
-{% endfor %}
+      </li>{% endfor %}
     </ul>
 
   </div>

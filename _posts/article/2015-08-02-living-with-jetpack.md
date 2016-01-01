@@ -20,14 +20,14 @@ In this article, I show some notes related to living with
 When IP Geo Block inhibits accessing to the `xmlrpc.php` by country code, 
 connecting to WordPress.com will fail at the activation process.
 
-![Connect to WordPress.com](/img/2015-08/Jetpack-connect.png
+![Connect to WordPress.com]({{ '/img/2015-08/Jetpack-connect.png' | prepend: site.baseurl }}
  "Connect to WordPress.com"
 )
 
 And also accessing to the `Admin area` should not be `Prevent Zero-day exploit` 
 to lead the activation process to success.
 
-![Validation Settings](/img/2015-08/ValidationSettings.png
+![Validation Settings]({{ '/img/2015-08/ValidationSettings.png' | prepend: site.baseurl }}
  "Validation Settings"
 )
 
@@ -54,8 +54,8 @@ So the conflict never happnes <span class="emoji">
 </span>.
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[Jetpack.me]: http://jetpack.me/ "Jetpack for WordPress"
-[Jetpack.wp]: https://wordpress.org/plugins/jetpack/ "WordPress › Jetpack by WordPress.com « WordPress Plugins"
+[Jetpack.me]:   http://jetpack.me/ "Jetpack for WordPress"
+[Jetpack.wp]:   https://wordpress.org/plugins/jetpack/ "WordPress › Jetpack by WordPress.com « WordPress Plugins"
 [JPP]: http://jetpack.me/support/security-features/ "Security Features - Jetpack for WordPress"
 [LLA]: https://wordpress.org/plugins/limit-login-attempts/ "WordPress › Limit Login Attempts « WordPress Plugins"
 [WFS]: https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins"
