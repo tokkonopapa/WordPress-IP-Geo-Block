@@ -68,37 +68,41 @@ uncheck it.
 
 The `wp-admin/admin-ajax.php` can provide some services to the visitors on the 
 public facing pages. But sometimes it can be used as an entrance to exploit 
-because of vulnerable plugins or themes. So the configuration for this target 
-is slightly delicate than other targets.
+leading to the vulnerable plugins or themes. So the configuration for this 
+target is slightly delicate than others.
 
 ![Best setting for Admin ajax/post]({{ "/img/2016-01/AdminAjaxPost.png" }}
  "Best setting for Admin ajax/post"
 )
 
-If you use some plugins or themes which provide ajax services to visitors on 
-the public facing pages, and want to give them to every one (even requested 
-from forbidden countries), you should **uncheck** the "**Block by country**".
+If you use some plugins or themes which provide an ajax service to the 
+visitors on the public facing pages, and want to give it to every one 
+(even if requested from forbidden countries), you should **uncheck** the 
+"**Block by country**".
 
-On the other hand, WP-ZEP will block any services provided only for admin 
-regardless of the country code. But still there's a possibility to block some 
-of admin actions because of the same reason as the "**Admin area**". So unless 
-you find such a service, **enabling** the "**Prevent Zero-day Exploit**" is 
-recommended.
+On the other hand, WP-ZEP validates services only for admin regardless of the 
+country code. But still there's a possibility to block some of admin actions 
+because of the same reason as the "**Admin area**". So unless you find such a 
+service, **enabling** the "**Prevent Zero-day Exploit**" is always recommended.
 
 <div class="alert alert-info">
   <strong>NOTE:</strong>
-  WP-ZEP will carefully identify the action which provides some service only 
-  to admin. It means that if an action provides some services to both a 
-  visitor on the public facing pages and an admin on the dashboard (e.g. back 
-  end), WP-ZEP will not block it.
+  WP-ZEP will carefully identify the action which provides services only to 
+  admin. It means that if an action serves both visitors on the public facing 
+  pages and admins on the dashboard (e.g. back end), WP-ZEP will not block it.
 </div>
 
 ### Setting for "Plugins / Themes area" ###
 
 Setting for this area is almost the same as "**Admin ajax/post**". The only 
-difference is that WP-ZEP can't distinguish between a request for visitors 
-and one for admin. It means that WP-ZEP will block all the request except 
-from the admin dashboard.
+difference is that WP-ZEP can't distinguish the services whether for visitors 
+or for admin. It means that WP-ZEP will block all the request except from the 
+admin dashboard.
+
+So if you use a plugin which provides download services on the public facing 
+pages for example, and the download link is directly pointed to the php file 
+in that plugin's directory, you should **uncheck** the 
+"**Prevent Zero-day Exploit**"
 
 ![Best setting for Plugins/Themes area]({{ "/img/2016-01/PluginsThemesArea.png" }}
  "Best setting for Plugins/Themes area"
@@ -111,7 +115,13 @@ from the admin dashboard.
   of wp-config.php | IP Geo Block">this article</a> for more details.
 </div>
 
+### Any questions? ###
+
+If you have something to ask, please feel free to open your issue at the 
+[support forum][SupportForum].
+
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
+[SupportForum]: https://wordpress.org/support/plugin/ip-geo-block "WordPress › Support » IP Geo Block"
 [SucuriNews]:   https://blog.sucuri.net/ "Sucuri Blog - Website Security News"
 [BruteXMLRPC]:  https://blog.sucuri.net/2015/10/brute-force-amplification-attacks-against-wordpress-xmlrpc.html "Brute Force Amplification Attacks Against WordPress XMLRPC - Sucuri Blog"
-[WP-ZEP]:       {{ "/article/how-wpzep-works.html" }} "How does WP-ZEP prevent zero-day attack? | IP Geo Block"
+[WP-ZEP]:       /article/how-wpzep-works.html "How does WP-ZEP prevent zero-day attack? | IP Geo Block"
