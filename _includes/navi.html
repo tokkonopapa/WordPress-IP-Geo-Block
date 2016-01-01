@@ -1,7 +1,9 @@
   <!-- navigation -->
   <nav class="cyan darken-3">
     <div class="nav-wrapper container">
-      <h1 id="logo"><a id="logo-container" href="/" class="brand-logo">IP Geo Block</a></h1>
+      <h1 id="logo">
+        <a id="logo-container" href="{{ '/' | prepend: site.baseurl }}" class="brand-logo">IP Geo Block</a>
+      </h1>
       <ul class="right hide-on-med-and-down">
         <li><a href="{{ '/blog/'         | prepend: site.baseurl }}">Blog</a></li>
         <li><a href="{{ '/codex/'        | prepend: site.baseurl }}">Codex</a></li>
