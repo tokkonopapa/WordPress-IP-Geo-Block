@@ -1,6 +1,7 @@
 ---
 layout: default
-title: Category archives
+title: Archives
+categories: archives
 ---
 <div class="container">
   <div class="section">
@@ -17,10 +18,10 @@ title: Category archives
       <ul>{% for posts in category %}{% for post in posts %}{% if post.url %}
         <li>
           <time class="blog-post-meta">{{ post.date | date: "%b %-d, %Y" }}</time>
-            <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+          <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
         </li>{% endif %}{% endfor %}{% endfor %}
       </ul>
-  </div>
+    </div>
 {% endfor %}
   </div>
 </div>

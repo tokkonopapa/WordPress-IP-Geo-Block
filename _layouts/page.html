@@ -1,13 +1,14 @@
 ---
 layout: default
-
 ---
 <div class="container">
   <div class="section">
 
     <div class="breadcrumb">
       <a href="/" title="Top">Top</a> &raquo;
-      <a href="/codex/" title="Codex">Codex</a> &raquo;
+{% for category in page.category %}
+      <a href="/{{ category }}/" title="{{ category | capitalize }}">{{ category | capitalize }}</a> &raquo;
+{% endfor %}
     </div>
 
     <header class="post-header">

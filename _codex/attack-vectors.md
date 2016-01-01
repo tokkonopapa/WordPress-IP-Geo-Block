@@ -1,5 +1,6 @@
 ---
 layout: page
+category: codex
 title: Analysis of Attack Vectors
 excerpt: The latest result of analyzing the protection performance of IP Geo Block
 script: [/js/tablesort.min.js]

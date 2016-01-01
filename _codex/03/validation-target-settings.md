@@ -1,5 +1,6 @@
 ---
 layout: page
+category: codex
 title: The best practice of "Validation target settings"
 ---
 

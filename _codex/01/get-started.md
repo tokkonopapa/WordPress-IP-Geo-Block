@@ -1,5 +1,6 @@
 ---
 layout: page
+category: codex
 title: Get Started
 excerpt: Get started with IP Geo Block
 ---
