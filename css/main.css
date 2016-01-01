@@ -121,6 +121,15 @@ nav ul {
 }
 
 /**
+ * Icon font
+ */
+i.material-icons.medium {
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+}
+
+/**
  * Breadcrumb
  */
 div.breadcrumb {
