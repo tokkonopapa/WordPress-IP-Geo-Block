@@ -85,6 +85,7 @@ span.emoji img {
 
 ul {
   margin-left: 1em;
+  list-style-type: disc;
 }
 nav ul {
   list-style-type: none;
