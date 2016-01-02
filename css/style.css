@@ -1,5 +1,5 @@
 ---
 ---
-{% comment %}{% include_relative font.css %}{% endcomment %}
+{% include_relative icomoon.css %}
 {% include_relative materialize.custom.css %}
 {% include_relative main.css %}

@@ -3110,7 +3110,8 @@ td, th {
   padding: 0 !important;
 }
 
-/* This is needed for some mobile phones to display the Google Icon font properly */
+/************************************************************
+// This is needed for some mobile phones to display the Google Icon font properly //
 .material-icons {
   text-rendering: optimizeLegibility;
   -webkit-font-feature-settings: 'liga';
@@ -3133,7 +3134,7 @@ td, th {
   font-weight: normal;
   font-variant: normal;
   text-rendering: auto;
-  /* Better Font Rendering =========== */
+  // Better Font Rendering =========== //
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-transform: translate(0, 0);
@@ -3358,12 +3359,6 @@ td, th {
   color: #ffffff;
 }
 
-/* Start Icons */
-.mdi-navigation-close:before {
-  content: "\e8aa";
-}
-
-/************************************************************
 .mdi-action-3d-rotation:before {
   content: "\e600";
 }

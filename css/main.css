@@ -83,6 +83,11 @@ span.emoji img {
   top: 4px;
 }
 
+time.blog-post-meta {
+  display: inline-block;
+  width: 7em;
+}
+
 ul {
   margin-left: 1em;
   list-style-type: disc;
@@ -91,7 +96,8 @@ nav ul {
   list-style-type: none;
 }
 
-.icon-block {
+.feature-block {
+  margin-top: 2.5em;
   padding: 0 15px;
 }
 
@@ -119,15 +125,6 @@ nav ul {
     height: 56px;
     line-height: 56px;
   }
-}
-
-/**
- * Icon font
- */
-i.material-icons.medium {
-  width: 64px;
-  height: 64px;
-  overflow: hidden;
 }
 
 /**
