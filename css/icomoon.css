@@ -191,6 +191,7 @@ ul.icon {
 }
 ul.icon li {
   list-style-type: none;
+  margin-bottom: 0.25em;
   padding-left: 1.5em;
 }
 ul.icon li:before {
@@ -202,4 +203,8 @@ ul.icon li:before {
 ul.icon li * {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin-left: -0.5em;
+  vertical-align: top;
+}
+ul.icon li ul {
+  margin-left: 0.4em;
 }

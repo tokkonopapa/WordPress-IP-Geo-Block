@@ -8,11 +8,21 @@ title: Codex
     <div class="breadcrumb">
       <a href="{{ '/' | prepend: site.baseurl }}" title="Top">Top</a> &raquo; {{ page.title }}
     </div>
-
-    <ul class="icon">{% for post in site.codex %}
+{% assign section = false %}
+    <ul class="icon">
+{% for post in site.codex %}
+  {% if post.section and post.section != section %}
+    {% assign section = post.section %}
+      <li class="icon-folder-open">{{ post.section | capitalize }}<ul class="icon">
+  {% endif %}
       <li class="icon-circle-right">
         <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-      </li>{% endfor %}
+      </li>
+  {% if section and section != site.codex[forloop.index].section %}
+      </ul></li>
+    {% assign section = false %}
+  {% endif %}
+{% endfor %}
     </ul>
 
   </div>
