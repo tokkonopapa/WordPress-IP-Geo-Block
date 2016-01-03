@@ -61,22 +61,6 @@ with [BuddyPress][BuddyPress].
  "403 error page"
 )
 
-<ul class="icon">
-  <li class="icon-folder-open"><span>icon-folder-open</span></li>
-  <li class="icon-folder-open">icon-folder-open</li>
-  <li class="icon-circle-right">icon-circle-right</li>
-  <li class="icon-checkmark">icon-checkmark</li>
-  <li class="icon-twitter">icon-twitter</li>
-  <li class="icon-rss2">icon-rss2</li>
-  <li class="icon-github">icon-github</li>
-  <li class="icon-wordpress">icon-wordpress</li>
-</ul>
-<ul class="icon icon-circle-right">
-  <li>abc</li>
-  <li>def</li>
-</ul>
-
-
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [StatusCode]:   http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
 [Refresh]:      http://stackoverflow.com/questions/283752/refresh-http-header "'Refresh' HTTP header - Stack Overflow"
