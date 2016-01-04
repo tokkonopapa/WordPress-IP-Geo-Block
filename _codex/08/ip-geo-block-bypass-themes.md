@@ -6,10 +6,54 @@ title: ip-geo-block-bypass-themes
 file: [class-ip-geo-block.php]
 ---
 
-This document is still under construction.
+The list of themes which WP-ZEP should bypass.
 
 <!--more-->
 
-### Title ###
+### Description ###
 
-[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
+The filter hook "**ip-geo-block-bypass-themes**" assigns the array of query 
+strings in the request to the `/wp-content/themes/my-theme/…/*.php` which 
+WP-ZEP should bypass.
+
+In some cases, WP-ZEP (Zero-day Exploit Prevention for WordPress) blocks the 
+valid request. This filter hook is used to prevent such an unexpected blocking.
+
+### Default value ###
+
+array( `…` )
+
+### Use case ###
+
+The following code snippet in your theme's `functions.php` can bypass WP-ZEP 
+validation against the direct request to 
+`/wp-content/themes/my-theme/…/*.php`.
+
+{% highlight php startinline %}
+function my_bypass_themes( $themes ) {
+    $whitelist = array(
+        'my-theme',
+    );
+    return $themes + $whitelist;
+}
+add_filter( 'ip-geo-block-bypass-themes', 'my_bypass_themes' );
+{% endhighlight %}
+
+### Since ###
+
+2.1.1
+
+### See also ###
+
+- [The best practice of "Validation target settings"][BestPractice]
+- [Record settings and logs][RecordingLogs]
+- [Prevent exposure of wp-config.php][PreventExpose]
+- [ip-geo-block-bypass-admins][BypassAdmins]
+- [ip-geo-block-bypass-plugins][BypassPlugins]
+
+[IP-Geo-Block]:  https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
+[BestPractice]:  {{ '/codex/the-best-practice-of-validation-target-settings.html' | prepend: site.baseurl }} 'The best practice of "Validation target settings" | IP Geo Block'
+[RecordingLogs]: {{ '/codex/record-settings-and-logs.html'    | prepend: site.baseurl }} 'Record settings and logs | IP Geo Block'
+[PreventExpose]: {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} 'Prevent exposure of wp-config.php | IP Geo Block'
+[BypassAdmins]:  {{ '/codex/ip-geo-block-bypass-admins.html'  | prepend: site.baseurl }} 'ip-geo-block-bypass-admins | IP Geo Block'
+[BypassPlugins]: {{ '/codex/ip-geo-block-bypass-plugins.html' | prepend: site.baseurl }} 'ip-geo-block-bypass-plugins | IP Geo Block'
