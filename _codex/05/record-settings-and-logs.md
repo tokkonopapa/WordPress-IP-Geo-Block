@@ -59,5 +59,24 @@ The default keys are as follows :
  "Log of Login form"
 )
 
+### Description of "Result" ###
+
+The following picutre shows the validation result at "**Result**" column on 
+"**Logs**" tab.
+
+![Validation Logs]({{ '/img/2015-11/validation-logs.png' | prepend: site.baseurl }}
+ "Validation Logs"
+)
+
+Here are the descriptions :
+
+| Result        | Description                   |
+|:--------------|:------------------------------|
+| passed        | validation succeeded          |
+| blocked       | blocked by country            |
+| wp-zep        | blocked by WP-ZEP             |
+| badsig        | blocked by Bad Signature      |
+| extra         | blocked by Extra IP addresses |
+
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [RFC2616-SEC9]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html "HTTP/1.1: Method Definitions"
