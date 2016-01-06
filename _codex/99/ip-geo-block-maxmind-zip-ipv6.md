@@ -18,7 +18,9 @@ downloaded by GZIP format.
 
 ### Default value ###
 
-`http://geolite.maxmind.com/download/geoip/database/GeoIPv6.dat.gz`
+{% highlight text %}
+http://geolite.maxmind.com/download/geoip/database/GeoIPv6.dat.gz
+{% endhighlight %}
 
 ### Use case ###
 

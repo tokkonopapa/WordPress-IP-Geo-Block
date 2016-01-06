@@ -18,7 +18,9 @@ downloaded by ZIP format.
 
 ### Default value ###
 
-`http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.BIN.ZIP`
+{% highlight text %}
+http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.BIN.ZIP
+{% endhighlight %}
 
 ### Use case ###
 
