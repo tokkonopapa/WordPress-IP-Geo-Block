@@ -36,9 +36,9 @@ reducing the risk of exploiting your site from forbidden countries.
 
 <div class="alert alert-info">
   <strong>NOTE:</strong>
-  If you give permission to the specific servers, put IP addresses with
+  If you want to give permission to the specific IP address, put it (with 
   <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia, the free encyclopedia">CIDR notation</a>
-  into the
+  if you need) into the
   "<strong>White list of extra IP addresses prior to country code</strong>"
   at "<strong>Validation rule settings</strong>".
 </div>
@@ -66,8 +66,8 @@ can also effectively protect your site against such attacks.
 #### Changing the number of login attempts ####
 
 Unfortunately, this plugin doesn't provide you the UI to change the number of 
-login attempts which is 5 by default. But if you're familiar with phpMyAdmin, 
-you can change the value of "**`login_failes`**" at 
+possible login attempts which is 5 by default. But if you're familiar with 
+phpMyAdmin, you can change the value of "**`login_failes`**" at 
 "**`ip_geo_block_settings`**" in the options table.
 
 ![login failed in phpMyAdmin]({{ '/img/2016-01/LoginAttempts.png' | prepend: site.baseurl }}
@@ -113,7 +113,7 @@ action, **enabling** the "**Prevent Zero-day Exploit**" is always recommended.
   <strong>NOTE:</strong>
   WP-ZEP will carefully identify the action which provides services only for 
   admin. It means that if an action serves both visitors on the public facing 
-  pages and admins on the dashboard (e.g. back end), WP-ZEP will not block it.
+  pages and admins on the dashboard, WP-ZEP will not block it.
 </div>
 
 ### Setting for "Plugins / Themes area" ###

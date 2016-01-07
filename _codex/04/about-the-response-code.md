@@ -30,7 +30,7 @@ This plugin behaves differently according to the code you selected as follows :
   actually redirect to that URL, they never get the result.
 
 - Client Error 4xx / Server Error 5xx  
-  Returns a simple message given by [`get_status_header_desc()`][GetStatus] and 
+  Returns a simple html given by [`get_status_header_desc()`][GetStatus] and 
   [`wp_die()`][WP_DIE].
   ![403 error page]({{ '/img/2016-01/Simple403.png' | prepend: site.baseurl }}
    "403 error page"
