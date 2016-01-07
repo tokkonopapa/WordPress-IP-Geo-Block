@@ -33,16 +33,16 @@ Anyway, we'd better take care about what's being done by a malicious request.
 
 ### $_POST keys ###
 
-If a request submitted by POST method is blocked, keys in PHP environment 
-variable `$_POST` are recorded into the log. And a corresponded key in the 
-"**$_POST keys to be recorded with their values in logs**" is expanded in 
-order to take a look at its value.
+If a request submitted by POST method is blocked, keys in `$_POST` environment 
+variable are recorded into the log. The corresponded keys in "**$_POST keys to 
+be recorded with their values in logs**" are deployed to their values in order 
+to take a look at them.
 
 ![Record settings]({{ '/img/2016-01/RecordSettings.png' | prepend: site.baseurl }}
  "Record settings"
 )
 
-The default keys are as follows :
+The recommended keys are as follows :
 
 - `action`  
   This key is very popular in WordPress. It usually shows the process of doing 
@@ -61,7 +61,7 @@ The default keys are as follows :
 
 ### Description of "Result" ###
 
-The following picutre shows the validation result at "**Result**" column on 
+The following picutre shows the reason of blocking at "**Result**" column on 
 "**Logs**" tab.
 
 ![Validation Logs]({{ '/img/2015-11/validation-logs.png' | prepend: site.baseurl }}
