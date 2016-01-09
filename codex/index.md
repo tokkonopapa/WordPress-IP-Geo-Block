@@ -11,7 +11,7 @@ title: Codex
 {% assign section = false %}
     <ul class="icon">
 {% for post in site.codex %}
-  {% if post.published != false and post.section and post.section != section %}
+  {% if post.section and post.section != section %}
     {% assign section = post.section %}
       <li class="icon-folder-open">{{ post.section | capitalize }}<ul class="icon">
   {% endif %}

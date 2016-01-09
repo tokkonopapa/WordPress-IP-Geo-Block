@@ -2,7 +2,6 @@
 layout: page
 category: codex
 title: How to test the functionality
-published: false
 ---
 
 You may want to test the blocking behavior of this plugin. This document 
