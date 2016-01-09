@@ -16,6 +16,21 @@ layout: default
 
 {{ content }}
 
+    <footer class="post-footer">
+      <ul class="row">
+{% if page.previous.url %}
+        <li class="col s6 left">
+          <a class="prev" href="{{ page.previous.url }}">&laquo; {{ page.previous.title }}</a>
+        </li>
+{% endif %}
+{% if page.next.url %}
+        <li class="col s6 right">
+          <a class="next" href="{{ page.next.url }}">{{ page.next.title }} &raquo;</a>
+        </li>
+{% endif %}
+      </ul>
+    </footer>
+
   </div>
 </div>
 
