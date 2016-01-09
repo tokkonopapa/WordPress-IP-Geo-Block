@@ -1,7 +1,7 @@
 ---
 layout: page
 category: codex
-title: The best practice of "Validation target settings"
+title: The best practice of target settings
 ---
 
 At the "**Validation target settings**", you should select the options, 
@@ -36,7 +36,7 @@ reducing the risk of exploiting your site from forbidden countries.
 
 <div class="alert alert-info">
   <strong>NOTE:</strong>
-  If you want to give permission to the specific IP address, put it (with 
+  If you want to accept the specific IP addresses, put them (with 
   <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia, the free encyclopedia">CIDR notation</a>
   if you need) into the
   "<strong>White list of extra IP addresses prior to country code</strong>"
@@ -63,7 +63,7 @@ For example, [Sucuri News][SucuriNews] had already unvailed the
 authentication attempts only by one HTTP request. In this case, this plugin 
 can also effectively protect your site against such attacks.
 
-#### Changing the number of login attempts ####
+#### Limit login attempts ####
 
 Unfortunately, this plugin doesn't provide you the UI to change the number of 
 possible login attempts which is 5 by default. But if you're familiar with 
@@ -90,31 +90,28 @@ multiple redirections. If you find such a case, you shall uncheck it.
 
 ### Setting for "Admin ajax/post" ###
 
-The `wp-admin/admin-ajax.php` can provide some services to the visitors on the 
-public facing pages. But sometimes it can be used as an entrance to exploit 
-leading to the vulnerable plugins or themes. So the configuration for this 
-target is slightly delicate than others.
+The `wp-admin/admin-(ajax|post).php` can provide services for both visitors 
+and admins, and those can be abused as an entrance to exploit aiming at the 
+vulnerable plugins or themes. So the configuration for those is slightly 
+delicate than others.
+
+The corresponding set of validation can be shown as follows :
+
+![Validation set by service]({{ '/img/2016-01/CoveredAdminAjaxPost.png' | prepend: site.baseurl }}
+ "Validation set by service"
+)
+
+If you want to serve ajax to every one (even if requested from forbidden 
+countries), you should uncheck the “**Block by country**”.
+ 
+Note that WP-ZEP will carefully identify the request which provides services 
+only for admin regardless of the country code. Although there's a possibility 
+to block something because of the same reason as the "**Admin area**", 
+enabling the "**Prevent Zero-day Exploit**" is always recommended.
 
 ![Best setting for Admin ajax/post]({{ '/img/2016-01/AdminAjaxPost.png' | prepend: site.baseurl }}
  "Best setting for Admin ajax/post"
 )
-
-If you use some plugins or themes which provide an ajax service to the 
-visitors on the public facing pages, and want to give it to every one 
-(even if requested from forbidden countries), you should **uncheck** the 
-"**Block by country**".
-
-On the other hand, WP-ZEP validates services only for admin regardless of the 
-country code. But still there's a possibility to block some of admin actions 
-because of the same reason as the "**Admin area**". Unless you find such an 
-action, **enabling** the "**Prevent Zero-day Exploit**" is always recommended.
-
-<div class="alert alert-info">
-  <strong>NOTE:</strong>
-  WP-ZEP will carefully identify the action which provides services only for 
-  admin. It means that if an action serves both visitors on the public facing 
-  pages and admins on the dashboard, WP-ZEP will not block it.
-</div>
 
 ### Setting for "Plugins / Themes area" ###
 
@@ -122,6 +119,10 @@ Setting for this area is almost the same as "**Admin ajax/post**". The only
 difference is that WP-ZEP can't distinguish the services whether for visitors 
 or for admin. It means that WP-ZEP will block all the request except from the 
 admin dashboard.
+
+![Validation set by request]({{ '/img/2016-01/CoveredPluginsThemes.png' | prepend: site.baseurl }}
+ "Validation set by request"
+)
 
 So if you use a plugin which provides download services on the public facing 
 pages for example, and the download link is directly pointed to the php file 
