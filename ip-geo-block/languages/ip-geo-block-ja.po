@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 2.2.3\n"
+"Project-Id-Version: IP Geo Block 2.2.2\n"
 "Report-Msgid-Bugs-To: http://www.ipgeoblock.com/\n"
-"POT-Creation-Date: 2016-01-09 10:57+0900\n"
-"PO-Revision-Date: 2016-01-09 11:08+0900\n"
+"POT-Creation-Date: 2016-01-09 10:18+0900\n"
+"PO-Revision-Date: 2016-01-09 10:48+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -125,8 +125,8 @@ msgstr "検証のログ"
 msgid "Clear logs"
 msgstr "ログのクリア"
 
-#: admin/includes/tab-accesslog.php:40 admin/includes/tab-statistics.php:171
-#: admin/includes/tab-statistics.php:270
+#: admin/includes/tab-accesslog.php:40 admin/includes/tab-statistics.php:132
+#: admin/includes/tab-statistics.php:231
 msgid "Clear now"
 msgstr "今すぐクリア"
 
@@ -156,7 +156,7 @@ msgid "Date"
 msgstr "日時"
 
 #: admin/includes/tab-accesslog.php:92 admin/includes/tab-geolocation.php:57
-#: admin/includes/tab-statistics.php:217
+#: admin/includes/tab-statistics.php:178
 msgid "IP address"
 msgstr "IPアドレス"
 
@@ -397,7 +397,7 @@ msgstr "ローカル・データベースの設定"
 msgid "database"
 msgstr "ファイル"
 
-#: admin/includes/tab-settings.php:456 classes/class-ip-geo-block-util.php:164
+#: admin/includes/tab-settings.php:456 classes/class-ip-geo-block-util.php:159
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
@@ -576,7 +576,7 @@ msgstr ""
 "zip file\">ZIPファイル</a>をダウンロードし、<code>ip-geo-api</code>を"
 "<code>wp-content</code>にアップロードして下さい。"
 
-#: admin/includes/tab-statistics.php:24 admin/includes/tab-statistics.php:184
+#: admin/includes/tab-statistics.php:24 admin/includes/tab-statistics.php:145
 msgid "Statistics of validation"
 msgstr "検証の統計"
 
@@ -588,55 +588,55 @@ msgstr "全遮断数"
 msgid "Blocked by countries"
 msgstr "国別遮断数"
 
-#: admin/includes/tab-statistics.php:97
-msgid "Blocked per day"
-msgstr "1日あたりの遮断数"
+#: admin/includes/tab-statistics.php:59
+msgid "Show/Hide details"
+msgstr "詳細を表示/非表示"
 
-#: admin/includes/tab-statistics.php:113
+#: admin/includes/tab-statistics.php:74
 msgid "Blocked by type of IP address"
 msgstr "遮断したIPアドレスのタイプ"
 
-#: admin/includes/tab-statistics.php:131
+#: admin/includes/tab-statistics.php:92
 msgid "Name of API"
 msgstr "API名"
 
-#: admin/includes/tab-statistics.php:132
+#: admin/includes/tab-statistics.php:93
 msgid "Calls"
 msgstr "リクエスト回数"
 
-#: admin/includes/tab-statistics.php:133
+#: admin/includes/tab-statistics.php:94
 msgid "Response [msec]"
 msgstr "応答時間 [msec]"
 
-#: admin/includes/tab-statistics.php:147
+#: admin/includes/tab-statistics.php:108
 msgid "Average response time of each API"
 msgstr "API毎の平均応答時間"
 
-#: admin/includes/tab-statistics.php:163
+#: admin/includes/tab-statistics.php:124
 msgid "Clear statistics"
 msgstr "統計のクリア"
 
-#: admin/includes/tab-statistics.php:210
+#: admin/includes/tab-statistics.php:171
 msgid "Statistics of cache"
 msgstr "キャッシュの統計"
 
-#: admin/includes/tab-statistics.php:218
+#: admin/includes/tab-statistics.php:179
 msgid "Country code / Access"
 msgstr "国コード / アクセス先"
 
-#: admin/includes/tab-statistics.php:219
+#: admin/includes/tab-statistics.php:180
 msgid "Elapsed [sec] / Calls"
 msgstr "経過時間 [sec] / 回数"
 
-#: admin/includes/tab-statistics.php:247
+#: admin/includes/tab-statistics.php:208
 msgid "IP address in cache"
 msgstr "キャッシュ中のIPアドレス"
 
-#: admin/includes/tab-statistics.php:262
+#: admin/includes/tab-statistics.php:223
 msgid "Clear cache"
 msgstr "キャッシュのクリア"
 
-#: admin/includes/tab-statistics.php:281
+#: admin/includes/tab-statistics.php:242
 msgid ""
 "Current setting of [<strong>Record validation statistics</strong>] on "
 "[<strong>Settings</strong>] tab is not selected [<strong>Enable</strong>]."
@@ -644,7 +644,7 @@ msgstr ""
 "現在［<strong>設定</strong>］タブの［<strong>検証の統計を記録</strong>］は"
 "［<strong>有効</strong>］が選択されていません。"
 
-#: admin/includes/tab-statistics.php:282
+#: admin/includes/tab-statistics.php:243
 msgid ""
 "Please set the proper condition to record and analyze the validation "
 "statistics."
