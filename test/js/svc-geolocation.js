@@ -56,22 +56,22 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 		 * These are accessed through https://developer.yahoo.com/yql/
 		 */
 		{
-			api: 'Pycox',
-			url: 'https://query.yahooapis.com/v1/public/yql?q=select * from %API_FMT% where url="http://ip.pycox.com/%API_FMT%/%API_IP%"&format=%API_FMT%&jsonCompat=new',
+			api: 'geoPlugin',
+			url: 'https://query.yahooapis.com/v1/public/yql?q=select * from %API_FMT% where url="http://www.geoplugin.net/%API_FMT%.gp?ip=%API_IP%"&format=%API_FMT%&jsonCompat=new',
 			fmt: 'json',
-			type: 'IPv4',
+			type: 'IPv4, IPv6',
 			get: function (data, type) {
 				switch (type) {
 					case 'name':
 						if (typeof data.query.results.json !== 'undefined')
-							return data.query.results.json.country_name;
+							return data.query.results.json.geoplugin_countryName;
 						break;
 					case 'code':
 						if (typeof data.query.results.json !== 'undefined')
-							return data.query.results.json.country_code
+							return data.query.results.json.geoplugin_countryCode;
 						break;
 					case 'error':
-						return data.query.results.error;
+						return 'not found';
 				}
 				return null;
 			}

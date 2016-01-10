@@ -1,5 +1,5 @@
 <?php
-require_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 function ip_geo_block_tab_settings( $context ) {
@@ -41,7 +41,7 @@ function ip_geo_block_tab_settings( $context ) {
 	/*----------------------------------------*
 	 * Validation rule settings
 	 *----------------------------------------*/
-	$section = "${plugin_slug}-validation-rule";
+	$section = $plugin_slug . '-validation-rule';
 	add_settings_section(
 		$section,
 		__( 'Validation rule settings', IP_Geo_Block::TEXT_DOMAIN ),
@@ -63,7 +63,7 @@ function ip_geo_block_tab_settings( $context ) {
 	 */
 	$field = 'ip_country';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( '<dfn title="You can confirm the appropriate Geolocation APIs and country code by referring &#8220;Scan your country code&#8221;.">Your IP address / Country</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -73,7 +73,7 @@ function ip_geo_block_tab_settings( $context ) {
 			'option' => $option_name,
 			'field' => $field,
 			'value' => esc_html( $key['ip'] . ' / ' . ( $key['code'] ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', IP_Geo_Block::TEXT_DOMAIN ) ) ),
-			'after' => "&nbsp;<a id=\"${plugin_slug}-scan-code\" class=\"button button-secondary\" href=\"javascript:void(0)\" title=\"" . __( 'Scan all the APIs you selected at Geolocation API settings', IP_Geo_Block::TEXT_DOMAIN ) . '">' . __( 'Scan your country code', IP_Geo_Block::TEXT_DOMAIN ) . "</a><div id=\"${plugin_slug}-scanning\"></div>",
+			'after' => '&nbsp;<a id="'.$plugin_slug.'-scan-code" class="button button-secondary" href="javascript:void(0)" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', IP_Geo_Block::TEXT_DOMAIN ) . '">' . __( 'Scan your country code', IP_Geo_Block::TEXT_DOMAIN ) . '</a><div id="'.$plugin_slug.'-scanning"></div>',
 		)
 	);
 
@@ -92,7 +92,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'matching_rule';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( '<dfn title="Please select either &#8220;White list&#8221; or &#8220;Black list&#8221;.">Matching rule</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -108,7 +108,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'white_list';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		$dfn,
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -125,7 +125,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'black_list';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		$dfn,
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -143,7 +143,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'extra_ips';
 	$key = 'white_list';
 	add_settings_field(
-		$option_name . "_${field}_${key}",
+		$option_name.'_'.$field.'_'.$key,
 		__( '<dfn title="e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, &#8220;69.46.36.0/27&#8221; for WordFence server">White list of extra IP addresses prior to country code</dfn>', IP_Geo_Block::TEXT_DOMAIN ) .
 		' (<a class="ip-geo-block-link" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia, the free encyclopedia" target=_blank>CIDR</a>)',
 		array( $context, 'callback_field' ),
@@ -161,8 +161,8 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$key = 'black_list';
 	add_settings_field(
-		$option_name . "_${field}_${key}",
-		__( '<dfn title="Server level access control (e.g. .htaccess) is recommended.">Black list of extra IP addresses prior to country code</dfn>', IP_Geo_Block::TEXT_DOMAIN ) .
+		$option_name.'_'.$field.'_'.$key,
+		__( '<dfn title="Server level access control is recommended (e.g. .htaccess).">Black list of extra IP addresses prior to country code</dfn>', IP_Geo_Block::TEXT_DOMAIN ) .
 		' (<a class="ip-geo-block-link" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia, the free encyclopedia" target=_blank>CIDR</a>)',
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -180,7 +180,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'validation';
 	$key = 'proxy';
 	add_settings_field(
-		$option_name . "_${field}_${key}",
+		$option_name.'_'.$field.'_'.$key,
 		__( '<dfn title="e.g. HTTP_X_FORWARDED_FOR">$_SERVER keys to retrieve extra IP addresses</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -197,8 +197,8 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'response_code';
 	add_settings_field(
-		$option_name . "_$field",
-		sprintf( __( 'Response code %s', IP_Geo_Block::TEXT_DOMAIN ), "(<a class=\"${plugin_slug}-link\" href=\"http://tools.ietf.org/html/rfc2616#section-10\" title=\"RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1\" target=_blank>RFC 2616</a>)" ),
+		$option_name.'_'.$field,
+		sprintf( __( 'Response code %s', IP_Geo_Block::TEXT_DOMAIN ), '(<a class="'.$plugin_slug.'-link" href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1" target=_blank>RFC 2616</a>)' ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -227,7 +227,7 @@ function ip_geo_block_tab_settings( $context ) {
 	/*----------------------------------------*
 	 * Validation target settings
 	 *----------------------------------------*/
-	$section = "${plugin_slug}-validation-target";
+	$section = $plugin_slug . '-validation-target';
 	add_settings_section(
 		$section,
 		__( 'Validation target settings', IP_Geo_Block::TEXT_DOMAIN ),
@@ -250,7 +250,7 @@ function ip_geo_block_tab_settings( $context ) {
 	$field = 'validation';
 	foreach ( $list as $key => $val ) {
 		add_settings_field(
-			$option_name . "_${field}_${key}",
+			$option_name.'_'.$field.'_'.$key,
 			$list[ $key ],
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -268,7 +268,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$key = 'login';
 	add_settings_field(
-		$option_name . "_${field}_${key}",
+		$option_name.'_'.$field.'_'.$key,
 		$login,
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -303,7 +303,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$key = 'admin';
 	add_settings_field(
-		$option_name . "_${field}_${key}",
+		$option_name.'_'.$field.'_'.$key,
 		$admin,
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -322,8 +322,8 @@ function ip_geo_block_tab_settings( $context ) {
 	$key = 'ajax';
 	$val = esc_html( substr( IP_Geo_Block::$content_dir['admin'], 1 ) );
 	add_settings_field(
-		$option_name . "_${field}_${key}",
-		sprintf( $dfn, "{$val}admin-(ajax|post).php", __( 'Admin ajax/post', IP_Geo_Block::TEXT_DOMAIN ) ),
+		$option_name.'_'.$field.'_'.$key,
+		sprintf( $dfn, $val.'admin-(ajax|post).php', __( 'Admin ajax/post', IP_Geo_Block::TEXT_DOMAIN ) ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -344,8 +344,8 @@ function ip_geo_block_tab_settings( $context ) {
 	$key = 'plugins';
 	$val = esc_html( substr( IP_Geo_Block::$content_dir['plugins'], 1 ) );
 	add_settings_field(
-		$option_name . "_${field}_${key}",
-		sprintf( $dfn, "{$val}&hellip;/*.php", __( 'Plugins area', IP_Geo_Block::TEXT_DOMAIN ) ),
+		$option_name.'_'.$field.'_'.$key,
+		sprintf( $dfn, $val.'&hellip;/*.php', __( 'Plugins area', IP_Geo_Block::TEXT_DOMAIN ) ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -366,8 +366,8 @@ function ip_geo_block_tab_settings( $context ) {
 	$key = 'themes';
 	$val = esc_html( substr( IP_Geo_Block::$content_dir['themes'], 1 ) );
 	add_settings_field(
-		$option_name . "_${field}_${key}",
-		sprintf( $dfn, "{$val}&hellip;/*.php", __( 'Themes area', IP_Geo_Block::TEXT_DOMAIN ) ),
+		$option_name.'_'.$field.'_'.$key,
+		sprintf( $dfn, $val.'&hellip;/*.php', __( 'Themes area', IP_Geo_Block::TEXT_DOMAIN ) ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -387,7 +387,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'signature';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( '<dfn title="This works independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221;, and validates malicious signature to prevent disclosing the important files via vulnerable plugins or themes.">Important files</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -404,7 +404,7 @@ function ip_geo_block_tab_settings( $context ) {
 	/*----------------------------------------*
 	 * Geolocation service settings
 	 *----------------------------------------*/
-	$section = "${plugin_slug}-provider";
+	$section = $plugin_slug . '-provider';
 	add_settings_section(
 		$section,
 		__( 'Geolocation API settings', IP_Geo_Block::TEXT_DOMAIN ),
@@ -414,7 +414,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'providers';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( '<dfn title="Cache and local database are scaned at the top priority.">API selection and key settings</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -435,7 +435,7 @@ function ip_geo_block_tab_settings( $context ) {
 	// higher priority order
 	$providers = IP_Geo_Block_Provider::get_addons(); 
 
-	$section = "${plugin_slug}-database";
+	$section = $plugin_slug . '-database';
 	add_settings_section(
 		$section,
 		__( 'Local database settings', IP_Geo_Block::TEXT_DOMAIN ),
@@ -460,7 +460,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'update';
 	add_settings_field(
-		$option_name . "_${field}_auto",
+		$option_name.'_'.$field.'_auto',
 		__( 'Auto updating (once a month)', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -476,7 +476,7 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	add_settings_field(
-		$option_name . "_${field}_download",
+		$option_name.'_'.$field.'_download',
 		__( 'Download database', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -487,14 +487,14 @@ function ip_geo_block_tab_settings( $context ) {
 			'field' => $field,
 			'value' => __( 'Download now', IP_Geo_Block::TEXT_DOMAIN ),
 			'disabled' => empty( $providers ),
-			'after' => "<div id=\"${plugin_slug}-download\"></div>",
+			'after' => '<div id="'.$plugin_slug.'-download"></div>',
 		)
 	);
 
 	/*----------------------------------------*
 	 * Record settings
 	 *----------------------------------------*/
-	$section = "${plugin_slug}-recording";
+	$section = $plugin_slug . '-recording';
 	add_settings_section(
 		$section,
 		__( 'Record settings', IP_Geo_Block::TEXT_DOMAIN ),
@@ -504,7 +504,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'save_statistics';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( 'Record validation statistics', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -519,7 +519,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'validation';
 	add_settings_field(
-		$option_name . "_${field}_reclogs",
+		$option_name.'_'.$field.'_reclogs',
 		__( 'Record validation logs', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -542,7 +542,7 @@ function ip_geo_block_tab_settings( $context ) {
 	);
 
 	add_settings_field(
-		$option_name . "_${field}_postkey",
+		$option_name.'_'.$field.'_postkey',
 		__( '<dfn title="e.g. action, comment, log, pwd">$_POST keys to be recorded with their values in logs</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -559,7 +559,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'anonymize';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( '<dfn title="e.g. 123.456.789.***">Anonymize IP address</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -575,7 +575,7 @@ function ip_geo_block_tab_settings( $context ) {
 	/*----------------------------------------*
 	 * Cache settings
 	 *----------------------------------------*/
-	$section = "${plugin_slug}-cache";
+	$section = $plugin_slug . '-cache';
 	add_settings_section(
 		$section,
 		__( 'Cache settings', IP_Geo_Block::TEXT_DOMAIN ),
@@ -585,7 +585,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'cache_hold';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( 'Number of entries', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -600,7 +600,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'cache_time';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this period.">Expiration time [sec]</dfn>', IP_Geo_Block::TEXT_DOMAIN ), (int)$options['login_fails'] ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -616,7 +616,7 @@ function ip_geo_block_tab_settings( $context ) {
 	/*----------------------------------------*
 	 * Submission settings
 	 *----------------------------------------*/
-	$section = "${plugin_slug}-submission";
+	$section = $plugin_slug . '-submission';
 	add_settings_section(
 		$section,
 		__( 'Submission settings', IP_Geo_Block::TEXT_DOMAIN ),
@@ -629,7 +629,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'comment';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		'<dfn title="' . __( 'The whole will be wrapped by &lt;p&gt; tag. Allowed tags: ', IP_Geo_Block::TEXT_DOMAIN ) . implode( ', ', array_keys( $val ) ) . '">' . __( 'Message on comment form', IP_Geo_Block::TEXT_DOMAIN ) . '</dfn>',
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -653,7 +653,7 @@ function ip_geo_block_tab_settings( $context ) {
 	/*----------------------------------------*
 	 * Plugin settings
 	 *----------------------------------------*/
-	$section = "${plugin_slug}-others";
+	$section = $plugin_slug . '-others';
 	add_settings_section(
 		$section,
 		__( 'Plugin settings', IP_Geo_Block::TEXT_DOMAIN ),
@@ -663,7 +663,7 @@ function ip_geo_block_tab_settings( $context ) {
 
 	$field = 'clean_uninstall';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( 'Remove all settings at uninstallation', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -680,7 +680,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 	// Manipulate DB table for validation logs
 	$field = 'delete_table';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( 'Delete DB table for validation logs', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -690,13 +690,13 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			'option' => $option_name,
 			'field' => $field,
 			'value' => __( 'Delete now', IP_Geo_Block::TEXT_DOMAIN ),
-			'after' => "<div id=\"${plugin_slug}-delete_table\"></div>",
+			'after' => '<div id="'.$plugin_slug.'-delete_table"></div>',
 		)
 	);
 
 	$field = 'create_table';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( 'Create DB table for validation logs', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -706,7 +706,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			'option' => $option_name,
 			'field' => $field,
 			'value' => __( 'Create now', IP_Geo_Block::TEXT_DOMAIN ),
-			'after' => "<div id=\"${plugin_slug}-create_table\"></div>",
+			'after' => '<div id="'.$plugin_slug.'-create_table"></div>',
 		)
 	);
 endif;
@@ -718,23 +718,23 @@ endif;
  */
 function ip_geo_block_note_target() {
 	echo
-		"<ul class=\"ip-geo-block-note\">\n",
-			'<li>', __( 'To enhance the protection ability, please consider to apply a rewrite rule to &#8220;<strong>Plugins area</strong>&#8221; and &#8220;<strong>Themes area</strong>&#8221;. See <a href="http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/exposure-of-wp-config-php.html" title="Prevent exposure of wp-config.php">more details here</a>.', IP_Geo_Block::TEXT_DOMAIN ), "</li>\n",
-			'<li>', __( 'Please open an issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a> if you have any troubles with these.', IP_Geo_Block::TEXT_DOMAIN ), "</li>\n",
-		"</ul>\n";
+		'<ul class="ip-geo-block-note">', "\n",
+			'<li>', __( 'To enhance the protection ability, please refer to &#8220;<a href="http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html" title="Prevent exposure of wp-config.php | IP Geo Block">The best practice of target settings</a>&#8220;.', IP_Geo_Block::TEXT_DOMAIN ), '</li>', "\n",
+			'<li>', __( 'If you have any troubles with these, please open an issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a>.', IP_Geo_Block::TEXT_DOMAIN ), '</li>', "\n",
+		'</ul>', "\n";
 }
 
 function ip_geo_block_note_services() {
 	echo
-		"<ul class=\"ip-geo-block-note\">\n",
-			'<li>', __('While Maxmind and IP2Location will fetch the local database, others will pass a IP address to thier API via HTTP.', IP_Geo_Block::TEXT_DOMAIN ), "</li>\n",
-			'<li>', __('Please select the appropriate APIs to fit the privacy law in your country.', IP_Geo_Block::TEXT_DOMAIN ), "</li>\n",
-		"</ul>\n";
+		'<ul class="ip-geo-block-note">', "\n",
+			'<li>', __('While Maxmind and IP2Location will fetch the local database, others will pass an IP address to the APIs via HTTP.', IP_Geo_Block::TEXT_DOMAIN ), '</li>', "\n",
+			'<li>', __('Please select the appropriate APIs to fit the privacy law in your country.', IP_Geo_Block::TEXT_DOMAIN ), '</li>', "\n",
+		'</ul>', "\n";
 }
 
 function ip_geo_block_note_database() {
 	echo
-		"<ul class=\"ip-geo-block-note\">\n",
-			'<li>', __( 'Please download <a href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a> and upload <code>ip-geo-api</code> to your <code>wp-content</code>.', IP_Geo_Block::TEXT_DOMAIN ), "</li>\n",
-		"</ul>\n";
+		'<ul class="ip-geo-block-note">', "\n",
+			'<li>', __( 'Please download <a href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a> and upload <code>ip-geo-api</code> to your <code>wp-content</code>.', IP_Geo_Block::TEXT_DOMAIN ), '</li>', "\n",
+		'</ul>', "\n";
 }

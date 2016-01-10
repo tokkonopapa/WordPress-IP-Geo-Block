@@ -36,8 +36,9 @@ dwsync.xml
 .CVS
 intermediate
 .idea
-cache
+#cache
 
 # jekyll
 _site
+.jekyll-*
 

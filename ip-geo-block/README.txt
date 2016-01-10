@@ -1,10 +1,10 @@
 === IP Geo Block ===
 Contributors: tokkonopapa
 Donate link:
-Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force
+Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
-Tested up to: 4.3.1
-Stable tag: 2.2.1.1
+Tested up to: 4.4.1
+Stable tag: 2.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,8 +32,8 @@ on their browser.
 
 For these cases, the protection based on the IP address is not a perfect 
 solution for everyone. But for some site owners or some certain cases such 
-as 'zero-day attack', it can still reduce the risk of infection against the 
-specific attacks.
+as 'zero-day attack', combination with WP-ZEP can still reduce the risk of 
+infection against the specific attacks.
 
 That's why this plugin is here.
 
@@ -68,12 +68,12 @@ and reverse-brute-force attacks to the login form and XML-RPC.
     [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles. I'll be profoundly grateful your contribution to
   improve this feature. See more details on
-    [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
+    [this plugin's blog](http://www.ipgeoblock.com/ "Blog of IP Geo Block").
 
 * **Protection of wp-config.php:**  
   A malicious request to try to expose `wp-config.php` via vulnerable plugins 
   or themes can be blocked. A numerous such attacks can be found in 
-    [this article](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php").
+    [this article](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php").
 
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin such that a registered user can login as the
@@ -124,16 +124,16 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 
 * **Extensibility:**  
   You can customize the basic behavior of this plugin via `add_filter()` with
-  pre-defined filter hook. See various use cases in
-    [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
-  bundled within this package.
+  pre-defined filter hook. See 
+    [the documents](http://www.ipgeoblock.com/codex/ "Codex | IP Geo Block")
+  for various use cases.
 
 * **Self blocking prevention and easy rescue:**  
   Most of users do not prefer themselves to be blocked. This plugin prevents 
   such thing unless you force it.
-    ([release 2.1.4](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.4.html "2.1.4 Release Note"))
+    ([release 2.1.4](http://www.ipgeoblock.com/changelog/release-2.1.4.html "2.1.4 Release Note"))
   And futhermore, if such a situation occurs, you can rescue yourself easily.
-    ([release 2.1.3](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.3.html "2.1.3 Release Note"))
+    ([release 2.1.3](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note"))
 
 * **Clean uninstallation:**  
   Nothing is left in your precious mySQL database after uninstallation. So you
@@ -152,7 +152,7 @@ Also thanks for providing the following great services and REST APIs for free.
 
 * [http://freegeoip.net/](http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service") (IPv4 / free)
 * [http://ipinfo.io/](http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details") (IPv4, IPv6 / free)
-* [http://www.telize.com/](http://www.telize.com/ "Telize - JSON IP and GeoIP REST API") (IPv4, IPv6 / free)
+* [http://geoip.nekudo.com/](http://geoip.nekudo.com/ "Free IP GeoLocation/GeoIp API - geoip.nekudo.com") (IPv4, IPv6 / free)
 * [http://ip-json.rhcloud.com/](http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service") (IPv4, IPv6 / free)
 * [http://xhanch.com/](http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API &#8211; IP Get Detail | Xhanch Studio") (IPv4 / free)
 * [http://www.geoplugin.com/](http://www.geoplugin.com/ "geoPlugin to geolocate your visitors") (IPv4, IPv6 / free, need an attribution link)
@@ -164,7 +164,7 @@ Also thanks for providing the following great services and REST APIs for free.
 Development of this plugin is promoted on 
     [GitHub](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub").
 All contributions will always be welcome. Or visit my 
-    [development blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "IP Geo Block").
+    [development blog](http://www.ipgeoblock.com/ "IP Geo Block").
 
 == Installation ==
 
@@ -178,8 +178,8 @@ All contributions will always be welcome. Or visit my
 = Validation rule settings =
 
 * **Matching rule**  
-  Choose `White list` (recommended) or `Black list` to specify the countries
-  from which you want to pass or block.
+  Choose either `White list` (recommended) or `Black list` to specify the 
+  countries from which you want to pass or block.
 
 * **Country code for matching rule**  
   Specify the country code with two letters (see 
@@ -308,6 +308,9 @@ add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
 Then "**Clear cache**" at "**Statistics**" tab on your dashborad. Remember 
 that you should upload the original one to deactivate above feature.
 
+[This release note](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note")
+can also help you.
+
 = How can I test that this plugin works? =
 
 The easiest way is to use 
@@ -343,8 +346,7 @@ Yes, here is the list of all hooks to extend the feature of this plugin.
 * `ip-geo-block-ip2location-path` : full path to IP2Location LITE DB file (IPv4).
 
 For more details, see 
-    [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
-bundled within this package.
+[the documents](http://www.ipgeoblock.com/codex/ "Codex | IP Geo Block").
 
 = How does WP-ZEP prevent zero-day attack? =
 
@@ -362,7 +364,7 @@ example, it's incapable of preventing Privilege Escalation (PE) because it
 can't be decided which capabilities does the request need.
 
 See more details on 
-[this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
+[this plugin's blog](http://www.ipgeoblock.com/ "Blog of IP Geo Block").
 
 = How can I use "Block by country" and "WP-ZEP" properly? =
 
@@ -410,8 +412,20 @@ you are using at the support forum.
 
 == Changelog ==
 
+= 2.2.2 =
+* **Enhancement:** Refactored some codes and components. The number of attacks 
+  that can be proccessed per second has been improved by 25% at the maximum.
+* **Improvement:** In the previous version, the statistical data was recorded 
+  into `wp_options`. It caused the uncertainty of recording especially in case 
+  of burst attacks. Now the data will be recorded in an independent table to 
+  improve this issue.
+* **Bug fix:** Fixed conflict with NextGEN Gallary Pro.
+  Thanks to [bodowewer](https://wordpress.org/support/profile/bodowewer).
+* **Bug fix:** Fixed some filter hooks that did not work as intended.
+* See more details at [2.2.2 release note](http://www.ipgeoblock.com/changelog/release-2.2.2.html "2.2.2 Release Note").
+
 = 2.2.1.1 =
-* **Bug fix:** Fixed `open_basedir` issue.
+* **Bug fix:** Fixed "open_basedir restriction" issue caused by `file_exists()`.
 
 = 2.2.1 =
 * **Enhancement:** In previous version, local geolocation databases will always
@@ -462,7 +476,7 @@ Sorry for frequent update.
   **Anonymize IP address** at **Record settings**.
 * Bug fix:** Fix the issue that spaces in **Text message on comment form** 
   are deleted.
-* See details at [2.2.0 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.2.0.html "2.2.0 Release Note").
+* See details at [2.2.0 release note](http://www.ipgeoblock.com/changelog/release-2.2.0.html "2.2.0 Release Note").
 
 = 2.1.5.1 =
 * **Bug fix:** Fixed the issue that the Blacklist did not work properly. Thanks
@@ -477,7 +491,7 @@ Sorry for frequent update.
 * **New feature:** Add pie chart to display statistics of "Blocked by country".
 * **Enhancement:** WP-ZEP is reinforced against CSRF.
 * **Bug fix:** Fix illegal handling of the fragment in a link.
-* See details at [2.1.5 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.5.html "2.1.5 Release Note").
+* See details at [2.1.5 release note](http://www.ipgeoblock.com/changelog/release-2.1.5.html "2.1.5 Release Note").
 
 = 2.1.4 =
 * **Bug fix:** Fix the issue that this plugin broke functionality of a certain 
@@ -488,7 +502,7 @@ Sorry for frequent update.
   [support forum](https://wordpress.org/support/topic/locked-out-due-to-eu-vs-country "WordPress › Support » Locked out due to EU vs. Country")
 * **Improvement:** Arrage the order of setting sections to focus the goal of 
   this plugin.
-* See details at [2.1.4 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.4.html "2.1.4 Release Note").
+* See details at [2.1.4 release note](http://www.ipgeoblock.com/changelog/release-2.1.4.html "2.1.4 Release Note").
 
 = 2.1.3 =
 * **New feature:** Add "show" / "hide" at each section on the "Settings" tab.
@@ -500,7 +514,7 @@ Sorry for frequent update.
 * **Improvement:** Improved the compatibility with Autoptimize.
 * **Bug fix:** Fix the issue related to showing featured themes on dashboard.
 * **Bug fix:** Fix minor bug in `rewrite.php` for the advanced use case.
-* See details at [2.1.3 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.3.html "2.1.3 Release Note").
+* See details at [2.1.3 release note](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note").
 
 = 2.1.2 =
 This is a maintenance release.
@@ -520,7 +534,7 @@ This is a maintenance release.
   IPv6 is specified.
 * **Improvement:** Use MaxMind database at the activating process not to be 
   locked out by means of inconsistency of database at the activation and after.
-* See more details at [2.1.2 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.2.html "2.1.2 Release Note").
+* See more details at [2.1.2 release note](http://www.ipgeoblock.com/changelog/release-2.1.2.html "2.1.2 Release Note").
 
 = 2.1.1 =
 * **New feature:** Added `Block by country (register, lost password)` at 
@@ -536,14 +550,14 @@ This is a maintenance release.
   `ip-geo-block-(admin-actions|admin-pages|wp-content)`. Alternatively new 
   filter hooks `ip-geo-block-bypass-(admins|plugins|themes)` are added to 
   bypass WP-ZEP.
-* Find out more details in the [2.1.1 release note](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.1.html "2.1.1 Release Note").
+* Find out more details in the [2.1.1 release note](http://www.ipgeoblock.com/changelog/release-2.1.1.html "2.1.1 Release Note").
 
 = 2.1.0 =
 * **New feature:** Expanded the operating range of ZP-ZEP, that includes admin 
   area, plugins area, themes area. Now it can prevent a direct malicios attack 
   to the file in plugins and themes area. Please go to the "Validation Settings"
   on "Settings" tab and check it. Also check my article in 
-  "[Analysis of Attack Vector against WP Plugins](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/analysis-attack-vector.html)".
+  "[Analysis of Attack Vector against WP Plugins](http://www.ipgeoblock.com/article/analysis-attack-vector.html)".
 * **Bug fix:** Fixed the issue that action hook `ip-geo-block-backup-dir` did 
   not work correctly because the order of argument was mismatched.
 * **Bug fix:** Fixed the issue that a record including utf8 4 bytes character 
@@ -562,7 +576,7 @@ This is a maintenance release.
 * The time of day is shown with local time by adding GMT offset based on 
   the time zone setting.
 * Optimized resource loading and settings to avoid redundancy.
-* See details at [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.0.8.html "2.0.8 Release Note").
+* See details at [this plugin's blog](http://www.ipgeoblock.com/changelog/release-2.0.8.html "2.0.8 Release Note").
 
 = 2.0.7 =
 * Avoid JavaScript error which occurs if an anchor link has no `href`.

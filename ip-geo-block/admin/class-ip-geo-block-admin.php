@@ -72,14 +72,20 @@ class IP_Geo_Block_Admin {
 	 */
 	public function add_admin_nonce( $location, $status ) {
 		$key = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce';
+
 		if ( $nonce = IP_Geo_Block::retrieve_nonce( $key ) ) { // must be sanitized
-			$location = esc_url_raw( add_query_arg(
-				array(
-					$key => false, // delete onece
-					$key => $nonce // add again
-				),
-				$location
-			) );
+			$host = parse_url( $location, PHP_URL_HOST );
+
+			// check if the location is internal
+			if ( ! $host || $host === parse_url( home_url(), PHP_URL_HOST ) ) {
+				$location = esc_url_raw( add_query_arg(
+					array(
+						$key => false, // delete onece
+						$key => $nonce // add again
+					),
+					$location
+				) );
+			}
 		}
 
 		return $location;
@@ -129,7 +135,7 @@ class IP_Geo_Block_Admin {
 
 		// css for option page
 		wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-admin-styles',
-			plugins_url( 'css/admin.css', __FILE__ ),
+			plugins_url( 'css/admin.min.css', __FILE__ ),
 			array(), IP_Geo_Block::VERSION
 		);
 
@@ -145,6 +151,10 @@ class IP_Geo_Block_Admin {
 			// js for google map
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
 				'//maps.google.com/maps/api/js?sensor=false',
+				$dependency, IP_Geo_Block::VERSION, $footer
+			);
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-gmap-js',
+				plugins_url( 'js/gmap.min.js', __FILE__ ),
 				$dependency, IP_Geo_Block::VERSION, $footer
 			);
 			break;
@@ -163,7 +173,7 @@ class IP_Geo_Block_Admin {
 
 		// js for IP Geo Block admin page
 		wp_enqueue_script( $handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script',
-			plugins_url( 'js/admin.js', __FILE__ ),
+			plugins_url( 'js/admin.min.js', __FILE__ ),
 			$dependency + ( isset( $addon ) ? array( $addon ) : array() ),
 			IP_Geo_Block::VERSION, $footer
 		);
@@ -201,7 +211,7 @@ class IP_Geo_Block_Admin {
 			$title = __( 'Contribute at GitHub', IP_Geo_Block::TEXT_DOMAIN );
 			array_push(
 				$links,
-				"<a href=\"https://github.com/tokkonopapa/WordPress-IP-Geo-Block\" title=\"$title\" target=_blank>$title</a>"
+				"<a href=\"http://www.ipgeoblock.com\" title=\"$title\" target=_blank>$title</a>"
 			);
 		}
 
@@ -250,6 +260,7 @@ class IP_Geo_Block_Admin {
 		elseif ( 1 == $settings['validation']['login'] ) {
 			$validate = IP_Geo_Block::get_geolocation();
 			$validate = IP_Geo_Block::validate_country( $validate, $settings );
+
 			if ( 'passed' !== $validate['result'] ) {
 				$url = admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG . '#' . IP_Geo_Block::PLUGIN_SLUG );
 				$this->add_admin_notice( 'error', sprintf(
@@ -264,8 +275,8 @@ class IP_Geo_Block_Admin {
 			if ( $settings['validation']['reclogs'] ) {
 				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
-				if ( ( $warn = IP_Geo_Block_Logs::diag_table() ) &&
-				     FALSE === IP_Geo_Block_Logs::create_log() )
+				if ( ( $warn = IP_Geo_Block_Logs::diag_tables() ) &&
+				     FALSE === IP_Geo_Block_Logs::create_tables() )
 					$this->add_admin_notice( 'notice-warning', $warn );
 			}
 		}
@@ -320,7 +331,7 @@ class IP_Geo_Block_Admin {
 	<div id="ip-geo-block-map"></div>
 <?php } elseif ( 3 === $tab ) {
 	echo '<p>', __( 'Thanks for providing these great services for free.', IP_Geo_Block::TEXT_DOMAIN ), '<br />';
-	echo __( '(Most browsers will redirect you to each site <a href="http://tokkonopapa.github.io/WordPress-IP-Geo-Block/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', IP_Geo_Block::TEXT_DOMAIN ), '</p>';
+	echo __( '(Most browsers will redirect you to each site <a href="http://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', IP_Geo_Block::TEXT_DOMAIN ), '</p>';
 
 	// show attribution (higher priority order)
 	$providers = IP_Geo_Block_Provider::get_addons();
@@ -658,12 +669,13 @@ class IP_Geo_Block_Admin {
 		if ( ! check_admin_referer( $this->get_ajax_action(), 'nonce' ) || // @since 2.5
 		     ! current_user_can( 'manage_options' ) || empty( $_POST ) ) { // @since 2.0
 			status_header( 403 ); // Forbidden @since 2.0.0
+			die(); // never reached unless the nonce has leaked
 		}
 
 		$which = isset( $_POST['which'] ) ? $_POST['which'] : NULL;
 		switch ( isset( $_POST['cmd'  ] ) ? $_POST['cmd'  ] : NULL ) {
 		  case 'download':
-			$res = IP_Geo_Block::download_database();
+			$res = IP_Geo_Block::update_database();
 			break;
 
 		  case 'search':
@@ -717,10 +729,8 @@ class IP_Geo_Block_Admin {
 
 		  case 'clear-statistics':
 			// set default values
-			update_option(
-				$this->option_name['statistics'],
-				IP_Geo_Block::get_default( 'statistics' )
-			);
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			IP_Geo_Block_Logs::clear_stat();
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
 				'tab' => 'tab=1'
@@ -741,7 +751,7 @@ class IP_Geo_Block_Admin {
 
 			$hook = array( 'comment', 'login', 'admin', 'xmlrpc' );
 			$which = in_array( $which, $hook ) ? $which : NULL;
-			IP_Geo_Block_Logs::clean_log( $which );
+			IP_Geo_Block_Logs::clear_logs( $which );
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
 				'tab' => 'tab=4'
@@ -749,21 +759,21 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'restore':
-			require_once( IP_GEO_BLOCK_PATH . 'includes/localdate.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 			// if js is slow then limit the number of rows
 			$limit = IP_Geo_Block_Logs::limit_rows( @$_POST['time'] );
 
 			// compose html with sanitization
-			$which = IP_Geo_Block_Logs::restore_log( $which );
+			$which = IP_Geo_Block_Logs::restore_logs( $which );
 			foreach ( $which as $hook => $rows ) {
 				$html = '';
 				$n = 0;
 				foreach ( $rows as $logs ) {
 					$log = (int)array_shift( $logs );
-					$html .= "<tr><td data-value=$log>";
-					$html .= ip_geo_block_localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
+					$html .= '<tr><td data-value='.$log.'>';
+					$html .= IP_Geo_Block_Util::localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
 					foreach ( $logs as $log ) {
 						$log = esc_html( $log );
 						$html .= "<td>$log</td>";
@@ -780,9 +790,9 @@ class IP_Geo_Block_Admin {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 			if ( 'create_table' === $_POST['cmd'] )
-				IP_Geo_Block_Logs::create_log();
+				IP_Geo_Block_Logs::create_tables();
 			else
-				IP_Geo_Block_Logs::delete_log();
+				IP_Geo_Block_Logs::delete_tables();
 
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,

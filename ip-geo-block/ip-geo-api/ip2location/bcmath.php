@@ -5,24 +5,33 @@
  */
 if ( extension_loaded('gmp') ):
 
+if ( ! function_exists('bcadd') ):
 function bcadd( $Num1 = '0', $Num2 = '0', $Scale = null ) {
-    return gmp_strval( gmp_add( $Num1, $Num2 ), 10 );
+	return gmp_strval( gmp_add( $Num1, $Num2 ), 10 );
 }
+endif;
 
+if ( ! function_exists('bcsub') ):
 function bcsub( $Num1 = '0', $Num2 = '0', $Scale = null ) {
-    return gmp_strval( gmp_sub( $Num1, $Num2 ), 10 );
+	return gmp_strval( gmp_sub( $Num1, $Num2 ), 10 );
 }
+endif;
 
+if ( ! function_exists('bcmul') ):
 function bcmul( $Num1 = '0', $Num2 = '0' ) {
-    return gmp_strval( gmp_mul( $Num1, $Num2 ), 10 );
+	return gmp_strval( gmp_mul( $Num1, $Num2 ), 10 );
 }
+endif;
 
+if ( ! function_exists('bcpow') ):
 function bcpow( $num, $power ) {
-    return gmp_strval( gmp_pow( $num, $power ), 10 );
+	return gmp_strval( gmp_pow( $num, $power ), 10 );
 }
+endif;
 
 else: // extension_loaded('gmp')
 
+if ( ! function_exists('bcadd') ):
 /**
  * bcadd — Add two arbitrary precision numbers.
  * @link http://php.net/manual/en/function.bcadd.php
@@ -76,7 +85,9 @@ function bcadd($Num1='0',$Num2='0',$Scale=null) {
 //  return($Output);
   return( $Output ? $Output : '0' );
 }
+endif; // ! function_exists('bcadd')
 
+if ( ! function_exists('bcsub') ):
 /**
  * bcsub — Subtract one arbitrary precision number from another.
  * @link http://php.net/manual/en/function.bcsub.php
@@ -130,7 +141,9 @@ function bcsub($Num1='0',$Num2='0',$Scale=null) {
 //  return($Output);
   return( $Output ? $Output : '0' );
 }
+endif;  // ! function_exists('bcsub')
 
+if ( ! function_exists('bcmul') ):
 /**
  * bcmul — Multiply two arbitrary precision numbers.
  * @link http://php.net/manual/en/function.bcmul.php
@@ -182,7 +195,9 @@ function bcmul($Num1='0',$Num2='0') {
 
   return($Rema2);
 }
+endif; // ! function_exists('bcmul')
 
+if ( ! function_exists('bcpow') ):
 /**
  * bcpow — Raise an arbitrary precision number to another.
  * @link http://php.net/manual/en/function.bcmul.php
@@ -195,6 +210,7 @@ function bcpow($num, $power) {
     }
     return rtrim($awnser, '0.');
 }
+endif; // ! function_exists('bcpow')
 
 endif; // extension_loaded('gmp')
 ?>

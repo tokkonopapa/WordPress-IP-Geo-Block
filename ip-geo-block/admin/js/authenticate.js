@@ -266,10 +266,10 @@ var IP_GEO_BLOCK_ZEP = {
 				// attr() returns 'string' or 'undefined'
 				var href = $this.attr('href'),
 				    rel = $this.attr('rel'),
-				    admin = is_admin(href);
+				    admin = "undefined" !== typeof href ? is_admin(href) : 0;
 
 				// if admin area (except in comment) then add a nonce
-				if (admin === 1 && "undefined" !== typeof href) {
+				if (admin === 1) {
 					$this.attr('href', add_query_nonce(
 						href, (!rel || rel.indexOf('nofollow') < 0 ? nonce : 'nofollow')
 					));

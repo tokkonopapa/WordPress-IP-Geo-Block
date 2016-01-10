@@ -1,14 +1,23 @@
 <?php
 /**
+ * This block is for test purpose.
+ *
+ */
+if ( ! empty( $_GET['wp-load'] ) )
+	include_once substr( __FILE__, 0, strpos( __FILE__, '/wp-content/' ) ) . '/wp-load.php';
+
+// Status same as admin-ajax.php
+die( '0' );
+
+/**
  * Samples/Snippets to extend functionality of IP Geo Block
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
- * @link      https://github.com/tokkonopapa
- * @copyright 2014-2015 tokkonopapa
+ * @link      http://www.ipgeoblock.com/
+ * @copyright 2014-2016 tokkonopapa
  */
-
 if ( class_exists( 'IP_Geo_Block' ) ):
 
 define( 'IP_GEO_BLOCK_DEBUG', false );
@@ -161,14 +170,14 @@ function my_extra_ips_get() {
 	return $list;
 }
 function my_extra_ips_hook( $extra_ips, $hook ) {
+	// if the list does not exist, then update
+	$list = get_transient( MY_EXTRA_IPS_LIST );
+
+	if ( ! $list )
+		wp_schedule_single_event( time(), MY_EXTRA_IPS_CRON );
+
 	// restrict the target hook
 	if ( in_array( $hook, array( 'xmlrpc', 'login' ) ) ) {
-		$list = get_transient( MY_EXTRA_IPS_LIST );
-
-		// if the list does not exist, then update
-		if ( ! $list )
-			$list = my_extra_ips_get();
-
 		$extra_ips['black_list'] .= ( $extra_ips['black_list'] ? ',' : '' ) . $list;
 	}
 
@@ -179,7 +188,7 @@ add_filter( 'ip-geo-block-extra-ips', 'my_extra_ips_hook', 10, 2 );
 
 
 /**
- * Example 8: Usage of `ip-geo-block-xxxxxx-(response|message)`
+ * Example 8: Usage of `ip-geo-block-xxxxxx-(status|reason)`
  * Use case: Customize the http response status code and message at blocking
  *
  * @param  int $code or string $msg

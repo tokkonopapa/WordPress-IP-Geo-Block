@@ -23,8 +23,8 @@ on their browser.
 
 For these cases, the protection based on the IP address is not a perfect 
 solution for everyone. But for some site owners or some certain cases such 
-as 'zero-day attack', it can still reduce the risk of infection against the 
-specific attacks.
+as 'zero-day attack', combination with WP-ZEP can still reduce the risk of 
+infection against the specific attacks.
 
 That's why this plugin is here.
 
@@ -59,12 +59,12 @@ and reverse-brute-force attacks to the login form and XML-RPC.
     [support forum](https://wordpress.org/support/plugin/ip-geo-block "WordPress &#8250; Support &raquo; IP Geo Block")
   if you have any troubles. I'll be profoundly grateful your contribution to
   improve this feature. See more details on
-    [this plugin's blog](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block").
+    [this plugin's blog](http://www.ipgeoblock.com/ "Blog of IP Geo Block").
 
 * **Protection of wp-config.php:**  
   A malicious request to try to expose `wp-config.php` via vulnerable plugins 
   or themes can be blocked. A numerous such attacks can be found in 
-    [this article](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php").
+    [this article](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php").
 
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin such that a registered user can login as the
@@ -116,15 +116,15 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 * **Extensibility:**  
   You can customize the basic behavior of this plugin via `add_filter()` with
   pre-defined filter hook. See various use cases in
-    [samples.php][sample]
+    [samples.php][samples]
   bundled within this package.
 
 * **Self blocking prevention and easy rescue:**  
   Most of users do not prefer themselves to be blocked. This plugin prevents 
   such thing unless you force it.
-    ([release 2.1.4](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.4.html "2.1.4 Release Note"))
+    ([release 2.1.4](http://www.ipgeoblock.com/changelog/release-2.1.4.html "2.1.4 Release Note"))
   And futhermore, if such a situation occurs, you can rescue yourself easily.
-    ([release 2.1.3](http://tokkonopapa.github.io/WordPress-IP-Geo-Block/changelog/release-2.1.3.html "2.1.3 Release Note"))
+    ([release 2.1.3](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note"))
 
 * **Clean uninstallation:**  
   Nothing is left in your precious mySQL database after uninstallation. So you
@@ -149,11 +149,11 @@ Also thanks for providing the following great services and REST APIs for free.
     ---------------------------------------|----------------|--------
     [http://freegeoip.net/]    [freegeoip] | IPv4, IPv6     | free
     [http://ipinfo.io/]           [ipinfo] | IPv4, IPv6     | free
-    [http://www.telize.com/]      [Telize] | IPv4, IPv6     | free
-    [http://ip-json.rhcloud.com/] [IPJson] | IPv4, IPv6     | free
-    [http://ip.pycox.com/]         [Pycox] | IPv4, IPv6     | free
     [http://geoip.nekudo.com/]    [Nekudo] | IPv4, IPv6     | free
+    [http://ip-json.rhcloud.com/] [IPJson] | IPv4, IPv6     | free
     [http://xhanch.com/]          [Xhanch] | IPv4           | free
+    [http://ip.pycox.com/]         [Pycox] | IPv4, IPv6     | free
+    [http://www.telize.com/]      [Telize] | IPv4, IPv6     | free
     [http://www.geoplugin.com/][geoplugin] | IPv4, IPv6     | free, need an attribution link
     [http://ip-api.com/]           [ipapi] | IPv4, IPv6     | free for non-commercial use
     [http://ipinfodb.com/]      [IPInfoDB] | IPv4, IPv6     | free for registered user
@@ -166,8 +166,8 @@ Also thanks for providing the following great services and REST APIs for free.
 #### Validation rule settings
 
 * **Matching rule**  
-  Choose `White list` (recommended) or `Black list` to specify the countries
-  from which you want to pass or block.
+  Choose either `White list` (recommended) or `Black list` to specify the 
+  countries from which you want to pass or block.
 
 * **Country code for matching rule**  
   Specify the country code with two letters (see 
@@ -298,6 +298,9 @@ add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
 Then "**Clear cache**" at "**Statistics**" tab on your dashborad. Remember 
 that you should upload the original one to deactivate above feature.
 
+[This release note][Release213]
+can also help you.
+
 #### How can I test that this plugin works? ####
 
 The easiest way is to use 
@@ -308,32 +311,32 @@ You can add an IP address to the `X-Forwarded-For` header to emulate the
 access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` 
 into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
 
-= Are there any filter hooks? =
+#### Are there any filter hooks? ####
 
 Yes, here is the list of all hooks to extend the feature of this plugin.
 
-* `ip-geo-block-ip-addr`          : IP address of accessor.
-* `ip-geo-block-headers`          : compose http request headers.
-* `ip-geo-block-comment`          : validate IP address at `wp-comments-post.php`.
-* `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
-* `ip-geo-block-login`            : validate IP address at `wp-login.php`.
-* `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
-* `ip-geo-block-extra-ips`        : white/black list of extra IPs for prior validation.
-* `ip-geo-block-xxxxxx-status`    : http response status code for comment|xmlrpc|login|admin.
-* `ip-geo-block-xxxxxx-reason`    : http response reason      for comment|xmlrpc|login|admin.
+* `ip-geo-block-api-dir`          : full path to the API class libraries and local DB files.
+* `ip-geo-block-backup-dir`       : full path where log files should be saved.
 * `ip-geo-block-bypass-admins`    : array of admin queries which should bypass WP-ZEP.
 * `ip-geo-block-bypass-plugins`   : array of plugin name which should bypass WP-ZEP.
 * `ip-geo-block-bypass-themes`    : array of theme name which should bypass WP-ZEP.
-* `ip-geo-block-backup-dir`       : full path where log files should be saved.
-* `ip-geo-block-api-dir`          : full path to the API class libraries and local DB files.
+* `ip-geo-block-extra-ips`        : white/black list of extra IPs for prior validation.
+* `ip-geo-block-headers`          : compose http request headers.
+* `ip-geo-block-ip-addr`          : IP address of accessor.
+* `ip-geo-block-ip2location-dir`  : full path where IP2Location LITE DB files should be saved.
+* `ip-geo-block-ip2location-path` : full path to IP2Location LITE DB file (IPv4).
 * `ip-geo-block-maxmind-dir`      : full path where Maxmind GeoLite DB files should be saved.
 * `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
-* `ip-geo-block-ip2location-dir`  : full path where IP2Location LITE DB files should be saved.
-* `ip-geo-block-ip2location-path` : full path to IP2Location LITE DB file (IPv4).
+* `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
+* `ip-geo-block-comment`          : validate IP address at `wp-comments-post.php`.
+* `ip-geo-block-login`            : validate IP address at `wp-login.php`.
+* `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
+* `ip-geo-block-xxxxxx-reason`    : http response reason      for comment|xmlrpc|login|admin.
+* `ip-geo-block-xxxxxx-status`    : http response status code for comment|xmlrpc|login|admin.
 
 For more details, see 
-    [samples.php][sample]
+    [samples.php][samples]
 bundled within this package.
 
 #### How does WP-ZEP prevent zero-day attack? ####
@@ -410,11 +413,12 @@ This plugin is licensed under the GPL v2 or later.
 [BHS]:        http://blackhole.webpagetest.org/
 [ISO]:        http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia"
 [RFC]:        http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
-[sample]:     https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
+[samples]:    https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
 [wordfence]:  https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins"
 [BuddyPress]: https://wordpress.org/plugins/buddypress/ "WordPress › BuddyPress « WordPress Plugins"
 [bbPress]:    https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins"
-[MyBlog]:     http://tokkonopapa.github.io/WordPress-IP-Geo-Block/ "Blog of IP Geo Block"
+[MyBlog]:     http://www.ipgeoblock.com/ "Blog of IP Geo Block"
+[Release213]: http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note"
 [ProxyAddon]: https://www.google.com/search?q=free+proxy+browser+addon "free proxy browser addon - Google Search"
 [HttpAddon]:  https://www.google.com/search?q=browser+add+on+modify+http+header "browser add on modify http header - Google Search"
 [UserAgent]:  https://www.google.com/search?q=User%20Agent%20Switcher

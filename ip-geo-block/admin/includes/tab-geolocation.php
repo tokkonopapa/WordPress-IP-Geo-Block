@@ -15,7 +15,7 @@ function ip_geo_block_tab_geolocation( $context ) {
 	/*----------------------------------------*
 	 * Geolocation
 	 *----------------------------------------*/
-	$section = "${plugin_slug}-search";
+	$section = $plugin_slug . '-search';
 	add_settings_section(
 		$section,
 		__( 'Search IP address geolocation', IP_Geo_Block::TEXT_DOMAIN ),
@@ -37,7 +37,7 @@ function ip_geo_block_tab_geolocation( $context ) {
 	$field = 'service';
 	$provider = array_keys( $providers );
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( 'Geolocation service', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -53,7 +53,7 @@ function ip_geo_block_tab_geolocation( $context ) {
 
 	$field = 'ip_address';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( 'IP address', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -68,7 +68,7 @@ function ip_geo_block_tab_geolocation( $context ) {
 
 	$field = 'get_location';
 	add_settings_field(
-		$option_name . "_$field",
+		$option_name.'_'.$field,
 		__( 'Find geolocation', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
@@ -78,7 +78,7 @@ function ip_geo_block_tab_geolocation( $context ) {
 			'option' => $option_name,
 			'field' => $field,
 			'value' => __( 'Search now', IP_Geo_Block::TEXT_DOMAIN ),
-			'after' => "<div id=\"${plugin_slug}-loading\"></div>",
+			'after' => '<div id="'.$plugin_slug.'-loading"></div>',
 		)
 	);
 }

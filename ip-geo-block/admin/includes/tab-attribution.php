@@ -11,7 +11,7 @@ function ip_geo_block_tab_attribution( $context ) {
 		$option_name
 	);
 
-	$section = "${plugin_slug}-attribution";
+	$section = $plugin_slug . '-attribution';
 	add_settings_section(
 		$section,
 		__( 'Attribution links', IP_Geo_Block::TEXT_DOMAIN ),
@@ -24,7 +24,7 @@ function ip_geo_block_tab_attribution( $context ) {
 
 	foreach ( $providers as $provider => $key ) {
 		add_settings_field(
-			$option_name . "_${field}_${provider}",
+			$option_name.'_'.$field.'_'.$provider,
 			$provider,
 			array( $context, 'callback_field' ),
 			$option_slug,

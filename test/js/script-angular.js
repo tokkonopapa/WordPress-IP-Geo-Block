@@ -29,7 +29,7 @@ app.config(['$httpProvider', function ($httpProvider) {
  */
 app.factory('$exceptionHandler', ['$window', function ($window) {
 	return function (exception, cause) {
-		console.log(exception.message);
+		console.log(exception ? exception.message : '');
 	};
 }]);
 
@@ -106,6 +106,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			signup_password: '0123abcd',
 			signup_password_confirm: '',
 			signup_profile_field_ids: 1,
+			signup_submit: 'Complete Sign Up',
 			field_1: '',
 			_wpnonce: 'abcde01234',
 			_wp_http_referer: ''
@@ -125,10 +126,10 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		pingback: {
 			xml:
 "<?xml version='1.0' encoding='utf-8'?>\n" +
-"<methodcall>\n" +
-"    <methodname>\n" +
+"<methodCall>\n" +
+"    <methodName>\n" +
 "        pingback.ping\n" +
-"    </methodname>\n" +
+"    </methodName>\n" +
 "    <params>\n" +
 "        <param>\n" +
 "            <value>\n" +
@@ -145,15 +146,15 @@ angular.module('WPApp').controller('WPAppCtrl', [
 "            </value>\n" +
 "        </param>\n" +
 "    </params>\n" +
-"</methodcall>"
+"</methodCall>"
 		},
 		xmlrpc: {
 			xml:
 "<?xml version='1.0' encoding='utf-8'?>\n" +
-"<methodcall>\n" +
-"    <methodname>\n" +
+"<methodCall>\n" +
+"    <methodName>\n" +
 "        wp.getUsers\n" +
-"    </methodname>\n" +
+"    </methodName>\n" +
 "    <params>\n" +
 "        <param>\n" +
 "            <value>\n" +
@@ -177,16 +178,16 @@ angular.module('WPApp').controller('WPAppCtrl', [
 "            </value>\n" +
 "        </param>\n" +
 "    </params>\n" +
-"</methodcall>"
+"</methodCall>"
 		},
 		xmlrpc_demo: {
 			xml:
 "<?xml version='1.0' encoding='utf-8'?>\n" +
-"<methodcall>\n" +
-"    <methodname>\n" +
+"<methodCall>\n" +
+"    <methodName>\n" +
 "        demo.sayHello\n" +
-"    </methodname>\n" +
-"</methodcall>"
+"    </methodName>\n" +
+"</methodCall>"
 		}
 	};
 
@@ -386,7 +387,10 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		// Trackback
 		if ($scope.checkbox.trackback) {
 			$scope.validate_page(false).then(function () {
-				post_trackback(page + 'trackback/', proxy);
+				var url = trailingslashit($scope.home_url) +
+				    'wp-trackback.php/' + $scope.form.comment.comment_post_ID;
+				post_trackback(url, proxy);
+//				post_trackback(page + 'trackback/', proxy); // doesn't work in WordPress 4.4
 			});
 		}
 

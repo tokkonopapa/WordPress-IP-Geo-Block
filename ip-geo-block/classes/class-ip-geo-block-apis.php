@@ -5,8 +5,8 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
- * @link      https://github.com/tokkonopapa
- * @copyright 2013-2015 tokkonopapa
+ * @link      http://www.ipgeoblock.com/
+ * @copyright 2013-2016 tokkonopapa
  */
 
 /**
@@ -97,8 +97,8 @@ abstract class IP_Geo_Block_API {
 		// extract content type
 		// ex: "Content-type: text/plain; charset=utf-8"
 		if ( $tmp ) {
-			$tmp = explode( "/", $tmp, 2 );
-			$tmp = explode( ";", $tmp[1], 2 );
+			$tmp = explode( '/', $tmp,    2 );
+			$tmp = explode( ';', $tmp[1], 2 );
 			$tmp = trim( $tmp[0] );
 		}
 
@@ -115,7 +115,7 @@ abstract class IP_Geo_Block_API {
 
 		  // decode xml
 		  case 'xml':
-			$tmp = "/\<(.+?)\>(?:\<\!\[CDATA\[)?(.*?)(?:\]\]\>)?\<\/\\1\>/i";
+			$tmp = '/\<(.+?)\>(?:\<\!\[CDATA\[)?(.*?)(?:\]\]\>)?\<\/\\1\>/i';
 			if ( preg_match_all( $tmp, $res, $matches ) !== FALSE ) {
 				if ( is_array( $matches[1] ) && ! empty( $matches[1] ) ) {
 					foreach ( $matches[1] as $key => $val ) {
@@ -732,19 +732,28 @@ if ( class_exists( 'IP_Geo_Block' ) ) :
 // Default path to the database file
 define( 'IP_GEO_BLOCK_API_DIR', 'ip-geo-api' );
 
-// Get absolute path of wp-content without using WP_CONTENT_DIR
-$path = apply_filters( self::PLUGIN_SLUG . '-api-dir', WP_CONTENT_DIR . '/' . IP_GEO_BLOCK_API_DIR );
-if ( ! is_dir( $path ) )
-	$path = IP_GEO_BLOCK_PATH . IP_GEO_BLOCK_API_DIR;
+// Get absolute path of wp-content using WP_CONTENT_DIR
+$dir = apply_filters(
+	IP_Geo_Block::PLUGIN_SLUG . '-api-dir',
+	WP_CONTENT_DIR . '/' . IP_GEO_BLOCK_API_DIR
+);
 
-// List addons (heigher priority order)
-$plugins = @scandir( ( $path = trailingslashit( $path ) ), 1 /* SCANDIR_SORT_DESCENDING @since 5.4.0 */ );
+// If not exists then use bundled API
+if ( ! is_dir( $dir ) )
+	$dir = IP_GEO_BLOCK_PATH . IP_GEO_BLOCK_API_DIR;
 
-// Load addons
-foreach ( FALSE !== $plugins ? $plugins : array() as $plugin ) {
-	if ( ! in_array( $plugin, array( '.', '..', 'index.php' ) ) &&
-	     file_exists( $plugin = "${path}${plugin}/class-${plugin}.php" ) )
-		include_once( $plugin );
+// Scan API directory
+$dir = trailingslashit( $dir );
+$plugins = @scandir( $dir, 1 ); // SCANDIR_SORT_DESCENDING @since 5.4.0
+
+// Load addons by heigher priority order
+if ( FALSE !== $plugins ) {
+	$exclude = array( '.', '..', 'index.php' );
+	foreach ( $plugins as $plugin ) {
+		if ( ! in_array( $plugin, $exclude ) && is_dir( $dir.$plugin ) ) {
+			@include_once( $dir.$plugin.'/class-'.$plugin.'.php' );
+		}
+	}
 }
 
 endif; /* class_exists( 'IP_Geo_Block' ) */

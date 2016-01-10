@@ -1,13 +1,9 @@
 /*jslint white: true */
 /*
- * Project: GmapRS - google map for WordPress IP Geo Block
- * Description: A really simple google map plugin based on jQuery-boilerplate.
- * Version: 0.2.3
- * Copyright (c) 2013 tokkonopapa (tokkonopapa@yahoo.com)
+ * Project: WordPress IP Geo Block
+ * Copyright (c) 2015 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
-if(typeof google==="object")(function(c,f,g,a){var e="GmapRS",d="plugin_"+e,b={zoom:2,latitude:0,longitude:0},i=google.maps,h=function(j){this.o=c.extend({},b);this.q=[]};h.prototype={init:function(j){c.extend(this.o,j);this.c=new i.LatLng(this.o.latitude,this.o.longitude);this.m=new i.Map(this.e.get(0),{zoom:this.o.zoom,center:this.c,mapTypeId:i.MapTypeId.ROADMAP})},destroy:function(){this.deleteMarkers();this.e.data(d,null)},setCenter:function(){if(arguments.length>=2){var j=new i.LatLng((this.o.latitude=arguments[0]),(this.o.longitude=arguments[1]));delete this.c;this.c=j}this.m.setCenter(this.c);return this.e},setZoom:function(j){this.m.setZoom(j||this.o.zoom);return this.e},showMarker:function(l,k){var j=this.q[l];if(j&&j.w){false===k?j.w.close():j.w.open(this.m,j.m)}},addMarker:function(l){var m,j,k;m=new i.LatLng(l.latitude||this.o.latitude,l.longitude||this.o.longitude);j=new i.Marker({position:m,map:this.m,title:l.title||""});if(l.content){k=new i.InfoWindow({content:l.content});i.event.addListener(j,"click",function(){k.open(j.getMap(),j)})}this.q.push({p:m,w:k,m:j});this.m.setCenter(m);this.m.setZoom(l.zoom);if(l.show){this.showMarker(this.q.length-1)}return this.e},deleteMarkers:function(){var j,k;for(j in this.q){k=this.q[j];k.m.setMap(null)}this.q.length=0;return this.e}};c.fn[e]=function(k){var l,j;if(!(this.data(d) instanceof h)){this.data(d,new h(this))}j=this.data(d);j.e=this;if(typeof k==="undefined"||typeof k==="object"){if(typeof j.init==="function"){j.init(k)}}else{if(typeof k==="string"&&typeof j[k]==="function"){l=Array.prototype.slice.call(arguments,1);return j[k].apply(j,l)}else{c.error("Method "+k+" does not exist."+e)}}}}(jQuery,window,document));
-
 var ip_geo_block_time = new Date();
 
 (function ($) {
@@ -111,25 +107,31 @@ var ip_geo_block_time = new Date();
 	// google chart
 	var chart = {
 		self: this,
-		data: null,
-		view: null,
-		draw: function () {
-			if (!self.data) {
-				self.data = new google.visualization.DataTable();
-				self.data.addColumn('string', 'Country');
-				self.data.addColumn('number', 'Requests');
+		drawChart: function () {
+			this.drawPie();
+		},
+
+		// Pie Chart
+		dataPie: null,
+		viewPie: null,
+		drawPie: function () {
+			if (!self.dataPie) {
+				self.dataPie = new google.visualization.DataTable();
+				self.dataPie.addColumn('string', 'Country');
+				self.dataPie.addColumn('number', 'Requests');
+				var value;
 				$('#ip-geo-block-countries li').each(function () {
-					var value = $(this).text().split(':');
-					self.data.addRow([value[0] || '', Number(value[1])]);
+					value = $(this).text().split(':');
+					self.dataPie.addRow([value[0] || '', Number(value[1])]);
 				});
 			}
-			if (!self.view) {
-				self.view = new google.visualization.PieChart(
+			if (!self.viewPie) {
+				self.viewPie = new google.visualization.PieChart(
 					document.getElementById('ip-geo-block-chart-countries')
 				);
 			}
 			if ($('#ip-geo-block-chart-countries').width()) {
-				self.view.draw(self.data, {
+				self.viewPie.draw(self.dataPie, {
 					backgroundColor: '#f1f1f1',
 					chartArea: {
 						left: 0,
@@ -195,7 +197,7 @@ var ip_geo_block_time = new Date();
 
 				// redraw google chart
 				if ($('#ip-geo-block-chart-countries').length) {
-					chart.draw();
+					chart.drawChart();
 				}
 
 				return false;
@@ -299,9 +301,11 @@ var ip_geo_block_time = new Date();
 		  case 1:
 			// https://developers.google.com/loader/#Dynamic
 			if ($('#ip-geo-block-chart-countries').length && 'object' === typeof google) {
-				google.load("visualization", "1", {
-					packages: ["corechart"],
-					callback: function () { chart.draw(); }
+				google.load('visualization', '1', {
+					packages: ['corechart'],
+					callback: function () {
+						chart.drawChart();
+					}
 				});
 			}
 
