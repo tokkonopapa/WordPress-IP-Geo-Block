@@ -538,8 +538,10 @@ class IP_Geo_Block_Logs {
 			$statistics['providers'][ $provider ]['time'] += (float)@$validate['time'];
 
 			@$statistics['daystats'][ mktime( 0, 0, 0 ) ][ $hook ]++;
-			if ( count( $statistics['daystats'] ) > 30 )
-				array_shift( $statistics['daystats'] );
+			if ( count( $statistics['daystats'] ) > 30 ) {
+				reset( $statistics['daystats'] );
+				unset( $statistics['daystats'][ key( $statistics['daystats'] ) ] );
+			}
 
 			// Record statistics.
 			self::record_stat( $statistics );

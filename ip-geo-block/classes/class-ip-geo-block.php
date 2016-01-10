@@ -539,7 +539,7 @@ class IP_Geo_Block {
 		}
 
 		// register validation by malicious signature
-		if ( ! in_array( $GLOBALS['pagenow'], array( 'comment.php', 'post.php' ) ) )
+		if ( ! is_admin() || ! in_array( $GLOBALS['pagenow'], array( 'comment.php', 'post.php' ) ) )
 			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)

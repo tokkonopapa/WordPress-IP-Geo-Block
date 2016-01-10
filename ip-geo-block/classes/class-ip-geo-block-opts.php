@@ -173,7 +173,9 @@ class IP_Geo_Block_Opts {
 			}
 
 			if ( version_compare( $settings['version'], '2.2.2' ) < 0 ) {
-				IP_Geo_Block_Logs::record_stat( get_option( 'ip_geo_block_statistics' ) );
+				$tmp = get_option( 'ip_geo_block_statistics' );
+				$tmp['daystats'] = array();
+				IP_Geo_Block_Logs::record_stat( $tmp );
 				delete_option( 'ip_geo_block_statistics' ); // @since 1.2.0
 				foreach ( array( 'maxmind', 'ip2location' ) as $tmp ) {
 					unset( $settings[ $tmp ] );

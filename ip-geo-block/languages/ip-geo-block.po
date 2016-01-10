@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 2.2.2\n"
+"Project-Id-Version: IP Geo Block 2.2.3\n"
 "Report-Msgid-Bugs-To: http://www.ipgeoblock.com/\n"
-"POT-Creation-Date: 2016-01-09 10:18+0900\n"
-"PO-Revision-Date: 2016-01-09 10:28+0900\n"
+"POT-Creation-Date: 2016-01-09 10:57+0900\n"
+"PO-Revision-Date: 2016-01-09 11:00+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -113,8 +113,8 @@ msgstr ""
 msgid "Clear logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:40 admin/includes/tab-statistics.php:132
-#: admin/includes/tab-statistics.php:231
+#: admin/includes/tab-accesslog.php:40 admin/includes/tab-statistics.php:171
+#: admin/includes/tab-statistics.php:270
 msgid "Clear now"
 msgstr ""
 
@@ -144,7 +144,7 @@ msgid "Date"
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:92 admin/includes/tab-geolocation.php:57
-#: admin/includes/tab-statistics.php:178
+#: admin/includes/tab-statistics.php:217
 msgid "IP address"
 msgstr ""
 
@@ -516,7 +516,7 @@ msgid ""
 "code> to your <code>wp-content</code>."
 msgstr ""
 
-#: admin/includes/tab-statistics.php:24 admin/includes/tab-statistics.php:145
+#: admin/includes/tab-statistics.php:24 admin/includes/tab-statistics.php:184
 msgid "Statistics of validation"
 msgstr ""
 
@@ -528,61 +528,61 @@ msgstr ""
 msgid "Blocked by countries"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:59
-msgid "Show/Hide details"
+#: admin/includes/tab-statistics.php:97
+msgid "Blocked per day"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:74
+#: admin/includes/tab-statistics.php:113
 msgid "Blocked by type of IP address"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:92
+#: admin/includes/tab-statistics.php:131
 msgid "Name of API"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:93
+#: admin/includes/tab-statistics.php:132
 msgid "Calls"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:94
+#: admin/includes/tab-statistics.php:133
 msgid "Response [msec]"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:108
+#: admin/includes/tab-statistics.php:147
 msgid "Average response time of each API"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:124
+#: admin/includes/tab-statistics.php:163
 msgid "Clear statistics"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:171
+#: admin/includes/tab-statistics.php:210
 msgid "Statistics of cache"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:179
+#: admin/includes/tab-statistics.php:218
 msgid "Country code / Access"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:180
+#: admin/includes/tab-statistics.php:219
 msgid "Elapsed [sec] / Calls"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:208
+#: admin/includes/tab-statistics.php:247
 msgid "IP address in cache"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:223
+#: admin/includes/tab-statistics.php:262
 msgid "Clear cache"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:242
+#: admin/includes/tab-statistics.php:281
 msgid ""
 "Current setting of [<strong>Record validation statistics</strong>] on "
 "[<strong>Settings</strong>] tab is not selected [<strong>Enable</strong>]."
 msgstr ""
 
-#: admin/includes/tab-statistics.php:243
+#: admin/includes/tab-statistics.php:282
 msgid ""
 "Please set the proper condition to record and analyze the validation "
 "statistics."
