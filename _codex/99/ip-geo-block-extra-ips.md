@@ -58,15 +58,15 @@ function my_extra_ips_get() {
 }
 
 function my_extra_ips_hook( $extra_ips, $hook ) {
-    // if the list does not exist, then update
     $list = get_transient( MY_EXTRA_IPS_LIST );
 
+    // if the list does not exist, then update
     if ( ! $list ) {
         wp_schedule_single_event( time(), MY_EXTRA_IPS_CRON );
     }
 
     // restrict the target hook
-    if ( in_array( $hook, array( 'xmlrpc', 'login' ) ) ) {
+    if ( $list && in_array( $hook, array( 'xmlrpc', 'login' ) ) ) {
         $extra_ips['black_list'] .= ( $extra_ips['black_list'] ? ',' : '' ) . $list;
     }
 
