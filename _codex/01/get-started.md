@@ -40,9 +40,11 @@ country code.
  "Lock out warning message"
 )
 
-### What should I do when being locked out? ###
+### See also ###
 
-Well, you can find the solution [on the next codex][HowToRecover].
+- [What should I do when I'm locked out?][HowToRecover]
+- [The best practice of target settings][BestPractice]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[HowToRecover]: {{ '/codex/what-should-i-do-when-i-m-locked-out.html' | prepend: site.baseurl }} "What should I do when I'm locked out?"
+[HowToRecover]: {{ '/codex/what-should-i-do-when-i-m-locked-out.html' | prepend: site.baseurl }} "What should I do when I'm locked out? | IP Geo Block"
+[BestPractice]: {{ '/codex/the-best-practice-of-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"

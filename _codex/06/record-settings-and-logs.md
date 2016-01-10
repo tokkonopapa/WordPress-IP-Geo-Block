@@ -78,5 +78,12 @@ Here are the descriptions :
 | badsig        | blocked by Bad Signature      |
 | extra         | blocked by Extra IP addresses |
 
+### See also ###
+
+- [ip-geo-block-backup-dir][BackupDir]
+- [ip-geo-block-xxxxx][Validation]
+
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [RFC2616-SEC9]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html "HTTP/1.1: Method Definitions"
+[BackupDir]:    {{ '/codex/ip-geo-block-backup-dir.html' | prepend: site.baseurl }} 'ip-geo-block-backup-dir | IP Geo Block'
+[Validation]:   {{ '/codex/ip-geo-block-xxxxx.html'      | prepend: site.baseurl }} 'ip-geo-block-xxxxx | IP Geo Block'

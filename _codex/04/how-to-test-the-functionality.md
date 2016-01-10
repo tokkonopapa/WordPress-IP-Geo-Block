@@ -127,7 +127,13 @@ admin, all the links at odd lines will not be blocked.
   title="Cross-site request forgery - Wikipedia, the free encyclopedia">CSRF</a>.
 </div>
 
+### See also ###
+
+- [The best practice of target settings][BestPractice]
+- [Prevent exposure of wp-config.php][ExposeWPConf]
+
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [VPN-ADDON]:    https://www.google.co.jp/search?q=browser+addon+vpn+service "browser addon vpn service - Google search"
 [Ver2.2.2]:     {{ '/changelog/release-2.2.2.html' | prepend: site.baseurl }} "2.2.1 Release Note | IP Geo Block"
+[BestPractice]: {{ '/codex/the-best-practice-of-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"

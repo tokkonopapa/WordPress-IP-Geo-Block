@@ -145,6 +145,12 @@ in that plugin's directory, you should **uncheck** the
 If you have something to ask, please feel free to open your issue at the 
 [support forum][SupportForum].
 
+### See also ###
+
+- [How does WP-ZEP prevent zero-day attack?][WP-ZEP]
+- [Prevent exposure of wp-config.php][ExposeWPConf]
+- [Analysis of Attack Vectors][AnalysisVec]
+
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [XML-RPC]:      https://en.wikipedia.org/wiki/XML-RPC "XML-RPC - Wikipedia, the free encyclopedia"
 [pingbacks]:    http://codex.wordpress.org/Introduction_to_Blogging#Pingbacks "Introduction to Blogging « WordPress Codex"
@@ -154,3 +160,5 @@ If you have something to ask, please feel free to open your issue at the
 [SucuriNews]:   https://blog.sucuri.net/ "Sucuri Blog - Website Security News"
 [BruteXMLRPC]:  https://blog.sucuri.net/2015/10/brute-force-amplification-attacks-against-wordpress-xmlrpc.html "Brute Force Amplification Attacks Against WordPress XMLRPC - Sucuri Blog"
 [WP-ZEP]:       {{ '/article/how-wpzep-works.html' | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack? | IP Geo Block"
+[ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
+[AnalysisVec]:  {{ '/codex/analysis-of-attack-vectors.html' | prepend: site.baseurl }} "Analysis of Attack Vectors | IP Geo Block"
