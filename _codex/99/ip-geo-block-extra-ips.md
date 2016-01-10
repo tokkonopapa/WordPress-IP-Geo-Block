@@ -81,6 +81,11 @@ add_filter( 'ip-geo-block-extra-ips', 'my_extra_ips_hook', 10, 2 );
 
 2.2.0
 
+### See also ###
+
+- [2.2.0 Release Note][Release2.2.0]
+
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [CIDR]:         https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia, the free encyclopedia"
 [TorExitNodes]: https://www.torproject.org/ "Tor Project: Anonymity Online"
+[Release2.2.0]: {{ '/changelog/release-2.2.0.html' | prepend: site.baseurl }} "2.2.0 Release Note | IP Geo Block"
