@@ -1,7 +1,7 @@
 ---
 layout: page
 category: codex
-section: customizing
+section: Filter Hooks
 title: ip-geo-block-ip2location-path
 file: [class-ip2location.php]
 ---

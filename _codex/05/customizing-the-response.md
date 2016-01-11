@@ -1,7 +1,7 @@
 ---
 layout: page
 category: codex
-title: About the response code
+title: Customizing the response
 ---
 
 When this plugin blocks a request, it behaves differently depending on the 

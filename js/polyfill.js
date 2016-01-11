@@ -1,4 +1,5 @@
 // Polyfill
+
 if (!Object.create) {
 	Object.create = function (o) {
 		if (arguments.length > 1) {
@@ -7,5 +8,11 @@ if (!Object.create) {
 		function F() {}
 		F.prototype = o;
 		return new F();
+	};
+}
+
+if (typeof String.prototype.trim !== 'function') {
+	String.prototype.trim = function() {
+		return this.replace(/^\s+|\s+$/g, ''); 
 	};
 }

@@ -1,7 +1,7 @@
 ---
 layout: page
 category: codex
-section: customizing
+section: Filter Hooks
 title: ip-geo-block-api-dir
 file: [class-ip-geo-block-apis.php, class-ip-geo-block-opts.php]
 ---

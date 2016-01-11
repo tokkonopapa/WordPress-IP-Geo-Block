@@ -1,7 +1,7 @@
 ---
 layout: page
 category: codex
-section: customizing
+section: Filter Hooks
 title: ip-geo-block-backup-dir
 file: [class-ip-geo-block-logs.php]
 ---

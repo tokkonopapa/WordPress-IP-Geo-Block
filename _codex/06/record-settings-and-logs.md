@@ -77,6 +77,7 @@ Here are the descriptions :
 | wp-zep        | blocked by WP-ZEP             |
 | badsig        | blocked by Bad Signature      |
 | extra         | blocked by Extra IP addresses |
+| failed        | failed to login attempt       |
 
 ### See also ###
 

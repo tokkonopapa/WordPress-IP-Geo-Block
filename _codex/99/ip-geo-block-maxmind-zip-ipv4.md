@@ -1,7 +1,7 @@
 ---
 layout: page
 category: codex
-section: customizing
+section: Filter Hooks
 title: ip-geo-block-maxmind-zip-ipv4
 file: [class-maxmind.php]
 ---

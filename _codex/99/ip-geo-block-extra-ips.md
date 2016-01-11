@@ -1,7 +1,7 @@
 ---
 layout: page
 category: codex
-section: customizing
+section: Filter Hooks
 title: ip-geo-block-extra-ips
 file: [class-ip-geo-block.php]
 ---
