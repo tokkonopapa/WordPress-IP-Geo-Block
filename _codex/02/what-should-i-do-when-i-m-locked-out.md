@@ -67,8 +67,9 @@ at "**Validation rule settings**" properly, do not forget to restore the
 Although the above process is strongly recommended at your emergency, some 
 users are not familiar with editing PHP file.
 
-In that case, you can just remove `ip-geo-block` in your plugin's directory 
-forcibly by using FTP or something, you'll see the following message on your 
+In that case, you can just forcibly remove `ip-geo-block` in your plugin's 
+directory (typically `wp-content/plugins`) by using FTP or 
+[cPanel File Manager][cPanel-FM], you'll see the following message on your 
 plugin's dashboard.
 
 ![Force to delete]({{ '/img/2015-08/ForceDelete.png' | prepend: site.baseurl }}
@@ -91,4 +92,5 @@ If you're familiar with the use of phpMyAdmin, you can change the value of
 )
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[editors]: https://codex.wordpress.org/Editing_Files#Using_Text_Editors "Editing Files « WordPress Codex"
+[editors]:      https://codex.wordpress.org/Editing_Files#Using_Text_Editors "Editing Files « WordPress Codex"
+[cPanel-FM]:    https://documentation.cpanel.net/display/ALD/File+Manager "File Manager - Documentation - cPanel Documentation"

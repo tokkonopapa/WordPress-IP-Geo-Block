@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Post Title"
-date:   2015-01-01 00:00:00
+title: "Post Title"
+date: 2015-01-01 00:00:00
 categories: article changelog
 published: false
 script: []
