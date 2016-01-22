@@ -98,18 +98,17 @@ Yeah, the last one is "**Prevent Zero-day Exploit**".
  "Prevent Zero-day Exploit"
 )
 
-All the links except the 1st will be blocked. It is because the 1st link is a 
-service for the visitors. If you change the action hook for the admin as 
+All the links except the 1st one will be blocked. It is because the 1st link 
+is a service for the visitors. If you add the action hook for the admin as 
 follows, then the 1st link is also blocked.
-
 
 {% highlight php startinline %}
 /**
  * Ajax for admin
  *
  */
-add_action( 'wp_ajax_my-ajax', 'my_ajax_handler' );
-function my_ajax_handler() {
+add_action( 'wp_ajax_my-ajax', 'my_ajax_admin_handler' );
+function my_ajax_admin_handler() {
     ;
 }
 {% endhighlight %}

@@ -20,12 +20,12 @@ layout: default
       <ul class="row">
 {% if page.previous.url %}
         <li class="col s6 left">
-          <a class="prev" href="{{ page.previous.url }}">&laquo; {{ page.previous.title }}</a>
+          <a class="prev" href="{{ page.previous.url }}" title="Older post">&laquo; {{ page.previous.title }}</a>
         </li>
 {% endif %}
 {% if page.next.url %}
         <li class="col s6 right">
-          <a class="next" href="{{ page.next.url }}">{{ page.next.title }} &raquo;</a>
+          <a class="next" href="{{ page.next.url }}" title="Newer post">{{ page.next.title }} &raquo;</a>
         </li>
 {% endif %}
       </ul>
