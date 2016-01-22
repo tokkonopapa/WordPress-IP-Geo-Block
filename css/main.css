@@ -249,7 +249,7 @@ footer.page-footer .footer-copyright {
 
 /********** from bootstrap.css **********/
 table {
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 table > tbody > tr:nth-child(odd) {
   background-color: #f8f8f8;

@@ -3061,15 +3061,15 @@ td, th {
   display: none !important;
 }
 
-.left-align {
+.left-align, .text-left {
   text-align: left;
 }
 
-.right-align {
+.right-align, .text-right {
   text-align: right;
 }
 
-.center, .center-align {
+.center, .center-align, .text-center {
   text-align: center;
 }
 
