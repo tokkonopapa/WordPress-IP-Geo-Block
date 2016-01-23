@@ -8,7 +8,9 @@ layout: default
       <a href="{{ '/' | prepend: site.baseurl }}" title="Top">Top</a> &raquo;
 {% for category in page.category %}
       <a href="{{ category | prepend: '/' | prepend: site.baseurl }}/" title="{{ category | capitalize }}">{{ category | capitalize }}</a> &raquo;
-{% endfor %}
+{% endfor %}{% if page.section %}
+      {{ page.section | capitalize }}
+{% endif %}
     </div>
 
     <header class="post-header">

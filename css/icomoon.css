@@ -1,8 +1,8 @@
 /*! icomoon */
 @font-face {
     font-family: 'icomoon';
-    src:    url('fonts/icomoon/icomoon.eot?spuy3l');
-    src:    url('fonts/icomoon/icomoon.eot?spuy3l#iefix') format('embedded-opentype'),
+    src:url('fonts/icomoon/icomoon.eot?spuy3l');
+    src:url('fonts/icomoon/icomoon.eot?spuy3l#iefix') format('embedded-opentype'),
         url('fonts/icomoon/icomoon.ttf?spuy3l') format('truetype'),
         url('fonts/icomoon/icomoon.woff?spuy3l') format('woff'),
         url('fonts/icomoon/icomoon.svg?spuy3l#icomoon') format('svg');
@@ -19,10 +19,16 @@
     font-variant: normal;
     text-transform: none;
 
-    /* Better Font Rendering ===========
+    /* Better Font Rendering ===========*/
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-     */
+}
+[class^="icon-"] a,    [class*=" icon-"] a,
+[class^="icon-"] span, [class*=" icon-"] span {
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin-left: 0;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
 }
 
 .icon-dashboard:before {
@@ -135,9 +141,6 @@
 }
 .icon-folder-open:before {
     content: "\e901";
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 .icon-price-tag:before {
     content: "\e904";
@@ -162,9 +165,6 @@
 }
 .icon-circle-right:before {
     content: "\e907";
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 .icon-facebook2:before {
     content: "\e90e";
@@ -177,15 +177,9 @@
 }
 .icon-github:before {
     content: "\e90a";
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 .icon-wordpress:before {
     content: "\e90b";
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 /* http://stackoverflow.com/questions/13354578/custom-li-list-style-with-font-awesome-icon */
@@ -203,11 +197,11 @@ ul.icon li:before {
   width: 1.5em; /* same as padding-left set on li */
   margin-left: -1.5em; /* same as padding-left set on li */
 }​
-ul.icon li * {
+ul.icon li a {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin-left: -0.5em;
   vertical-align: top;
 }
 ul.icon li ul {
-  margin-left: 0.4em;
+  margin-left: -0.5em;
 }

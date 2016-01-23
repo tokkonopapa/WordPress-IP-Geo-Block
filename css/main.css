@@ -249,7 +249,7 @@ footer.page-footer .footer-copyright {
 
 /********** from bootstrap.css **********/
 table {
-  margin-bottom: 1em;
+  margin-bottom: 2em;
 }
 table > tbody > tr:nth-child(odd) {
   background-color: #f8f8f8;
@@ -531,6 +531,111 @@ table th.sort-down:hover:after {
 table th.sort-up:after {
   border-bottom:none;
   border-width:4px 4px 0;
+}
+
+/**
+ * Google Webmaster Fix URL on 404 page
+ *
+ */
+/* .container .row */
+#goog-fixurl {
+  max-width: 1280px;
+  width: 90%;
+}
+@media only screen and (min-width: 601px) {
+  #goog-fixurl {
+    width: 85%;
+  }
+}
+@media only screen and (min-width: 993px) {
+  #goog-fixurl {
+    width: 70%;
+  }
+}
+#goog-fixurl:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+/* .row .col */
+#goog-fixurl form {
+  width: 100%;
+  margin-left: auto;
+  left: auto;
+  right: auto;
+  float: left;
+  box-sizing: border-box;
+}
+/* .col.s12 .col.m8 */
+/* .col.s12 .col.m4 */
+#goog-wm-qt,
+#goog-wm-sb {
+  width: 100%;
+  margin-top: 0.5em;
+  margin-left: auto;
+  margin-right: 0.5em;
+  left: auto;
+  right: auto;
+}
+@media only screen and (min-width: 601px) {
+  #goog-wm-qt {
+    width: 65%;
+  }
+  #goog-wm-sb {
+    width: 30%;
+  }
+}
+#goog-wm-qt {
+  height: 36px;
+  vertical-align: middle;
+}
+#goog-wm-sb {
+  /**
+   * .btn
+   *
+   */
+  text-decoration: none;
+  color: #fff;
+  background-color: #00838f !important;
+  text-align: center;
+  letter-spacing: .5px;
+  font-style: normal;
+  font-size: inherit;
+  border: none;
+  border-radius: 2px;
+  height: 36px;
+  line-height: 36px;
+  outline: 0;
+  text-transform: uppercase;
+  -webkit-tap-highlight-color: transparent;
+
+  /**
+   * Waves v0.6.0
+   * http://fian.my.id/Waves
+   *
+   * Copyright 2014 Alfiana E. Sibuea and other contributors
+   * Released under the MIT license
+   * https://github.com/fians/Waves/blob/master/LICENSE
+   */
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  vertical-align: middle;
+  z-index: 1;
+  will-change: opacity, transform;
+  transition: all .3s ease-out;
+}
+#goog-wm-sb {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+#goog-wm-sb:hover {
+  box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
 }
 
 /**

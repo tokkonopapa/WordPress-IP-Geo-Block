@@ -45,14 +45,14 @@ add_filter( 'ip-geo-block-bypass-themes', 'my_bypass_themes' );
 
 ### See also ###
 
-- [The best practice of "Validation target settings"][BestPractice]
+- [The best practice of target settings][BestPractice]
 - [Record settings and logs][RecordingLogs]
 - [Prevent exposure of wp-config.php][PreventExpose]
 - [ip-geo-block-bypass-admins][BypassAdmins]
 - [ip-geo-block-bypass-plugins][BypassPlugins]
 
 [IP-Geo-Block]:  https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[BestPractice]:  {{ '/codex/the-best-practice-of-validation-target-settings.html' | prepend: site.baseurl }} 'The best practice of "Validation target settings" | IP Geo Block'
+[BestPractice]:  {{ '/codex/the-best-practice-of-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [RecordingLogs]: {{ '/codex/record-settings-and-logs.html'    | prepend: site.baseurl }} 'Record settings and logs | IP Geo Block'
 [PreventExpose]: {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} 'Prevent exposure of wp-config.php | IP Geo Block'
 [BypassAdmins]:  {{ '/codex/ip-geo-block-bypass-admins.html'  | prepend: site.baseurl }} 'ip-geo-block-bypass-admins | IP Geo Block'
