@@ -9,7 +9,7 @@ layout: default
 {% for category in page.category %}
       <a href="{{ category | prepend: '/' | prepend: site.baseurl }}/" title="{{ category | capitalize }}">{{ category | capitalize }}</a> &raquo;
 {% endfor %}{% if page.section %}
-      {{ page.section | capitalize }}
+      {{ page.section | capitalize }} &raquo;
 {% endif %}
     </div>
 
