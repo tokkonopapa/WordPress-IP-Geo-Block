@@ -23,12 +23,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-[class^="icon-"] > *, [class*=" icon-"] > * {
-    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    margin-left: 0;
-    -webkit-font-smoothing: auto;
-    -moz-osx-font-smoothing: auto;
-}
 
 .icon-dashboard:before {
     content: "\e620";
@@ -197,6 +191,14 @@ ul.icon li:before {
   margin-left: -1.5em; /* same as padding-left set on li */
 }​
 ul.icon li > * {
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin-left: 0;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+}
+ul.icon li ul,
+ul.icon li a,
+ul.icon li time {
   margin-left: -0.5em;
   vertical-align: top;
 }
