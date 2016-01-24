@@ -7,7 +7,7 @@ title: Using WordPress post simulator
 
 You may want to test the blocking behavior of this plugin. This document 
 shows you how to use [WordPress Post Simulator][Simulator] which simulate 
-various requests to the WordPress site such as comment spam, trackback, 
+various attacks to the WordPress site through the comment spam, trackback, 
 pingback, ajax and so on.
 
 <!--more-->
@@ -64,8 +64,8 @@ the attack vectors as follows :
 
 #### Submission ####
 
-The last thing you should do is to submit the requests. Then you can check the 
-responses against each request.
+The last thing you should do is to submit the requests. Then you can get the 
+responses against each request in the text area.
 
 ![Submitting and results]({{ '/img/2016-02/PostSimulatorSubmit.png' | prepend: site.baseurl }}
  "Submitting and results"

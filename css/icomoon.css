@@ -24,7 +24,8 @@
     -moz-osx-font-smoothing: grayscale;
 }
 [class^="icon-"] a,    [class*=" icon-"] a,
-[class^="icon-"] span, [class*=" icon-"] span {
+[class^="icon-"] span, [class*=" icon-"] span,
+[class^="icon-"] time, [class*=" icon-"] time {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin-left: 0;
     -webkit-font-smoothing: auto;
@@ -197,11 +198,9 @@ ul.icon li:before {
   width: 1.5em; /* same as padding-left set on li */
   margin-left: -1.5em; /* same as padding-left set on li */
 }​
-ul.icon li a {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+ul.icon li ul,
+ul.icon li a,
+ul.icon li time {
   margin-left: -0.5em;
   vertical-align: top;
-}
-ul.icon li ul {
-  margin-left: -0.5em;
 }
