@@ -76,7 +76,6 @@ img {
   }
 }
 img.site-logo {
-  display: inline-block;
   box-shadow: none;
 }
 span.emoji img {
