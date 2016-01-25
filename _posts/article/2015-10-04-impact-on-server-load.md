@@ -71,36 +71,131 @@ concurrent requests)" from the results of [ApacheBench][ApacheBench] which
 indicate the performace of load reduction. The higher in "**Requests/sec**" 
 and the lower in "**Time/req [ms]**" are better.
 
-The "**IBG**" means "IP Geo Block", "**WFS**" means "Wordfence Security", "ON" 
-indicates "Activate" and "OFF" indicates "Deactivate".
+The "**IGB**" means "IP Geo Block", "**WFS**" means "Wordfence Security". And 
+"ON" indicates "Activate" and "OFF" indicates "Deactivate".
 
 #### `wp-comments-post.php` ####
 
-| IGB | WFS | Requests/sec | Time/req [ms] |
-|:----|:----|-------------:|--------------:|
-| OFF | OFF |         4.54 |       220.073 |
-| OFF | ON  |         4.02 |       248.843 |
-| ON  | ON  |         5.98 |       167.262 |
-| ON  | OFF |         6.33 |       157.940 |
-
+<div class="table-responsive">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>IGB</th>
+				<th>WFS</th>
+				<th class="text-right">Requests/sec</th>
+				<th class="text-right">Time/req [ms]</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>OFF</td>
+				<td>OFF</td>
+				<td class="text-right">4.54</td>
+				<td class="text-right">220.073</td>
+			</tr>
+			<tr>
+				<td>OFF</td>
+				<td>ON</td>
+				<td class="text-right">4.02</td>
+				<td class="text-right">248.843</td>
+			</tr>
+			<tr>
+				<td>ON</td>
+				<td>ON</td>
+				<td class="text-right">5.98</td>
+				<td class="text-right">167.262</td>
+			</tr>
+			<tr>
+				<td>ON</td>
+				<td>OFF</td>
+				<td class="text-right">6.33</td>
+				<td class="text-right">157.940</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 
 #### `xmlrpc.php` ####
 
-| IGB | WFS | Requests/sec | Time/req [ms] |
-|:----|:----|-------------:|--------------:|
-| OFF | OFF |         6.13 |       163.065 |
-| OFF | ON  |         5.49 |       182.308 |
-| ON  | ON  |         5.33 |       187.570 |
-| ON  | OFF |         5.81 |       172.120 |
+<div class="table-responsive">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>IGB</th>
+				<th>WFS</th>
+				<th class="text-right">Requests/sec</th>
+				<th class="text-right">Time/req [ms]</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>OFF</td>
+				<td>OFF</td>
+				<td class="text-right">6.13</td>
+				<td class="text-right">163.065</td>
+			</tr>
+			<tr>
+				<td>OFF</td>
+				<td>ON</td>
+				<td class="text-right">5.49</td>
+				<td class="text-right">182.308</td>
+			</tr>
+			<tr>
+				<td>ON</td>
+				<td>ON</td>
+				<td class="text-right">5.33</td>
+				<td class="text-right">187.570</td>
+			</tr>
+			<tr>
+				<td>ON</td>
+				<td>OFF</td>
+				<td class="text-right">5.81</td>
+				<td class="text-right">172.120</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 
 #### `wp-login.php` ####
 
-| IGB | WFS | Requests/sec | Time/req [ms] |
-|:----|:----|-------------:|--------------:|
-| OFF | OFF |         6.43 |       155.479 |
-| OFF | ON  |         4.97 |       201.078 |
-| ON  | ON  |         5.98 |       167.145 |
-| ON  | OFF |         6.23 |       160.487 |
+<div class="table-responsive">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>IGB</th>
+				<th>WFS</th>
+				<th class="text-right">Requests/sec</th>
+				<th class="text-right">Time/req [ms]</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>OFF</td>
+				<td>OFF</td>
+				<td class="text-right">6.43</td>
+				<td class="text-right">155.479</td>
+			</tr>
+			<tr>
+				<td>OFF</td>
+				<td>ON</td>
+				<td class="text-right">4.97</td>
+				<td class="text-right">201.078</td>
+			</tr>
+			<tr>
+				<td>ON</td>
+				<td>ON</td>
+				<td class="text-right">5.98</td>
+				<td class="text-right">167.145</td>
+			</tr>
+			<tr>
+				<td>ON</td>
+				<td>OFF</td>
+				<td class="text-right">6.23</td>
+				<td class="text-right">160.487</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 
 When both "**IGB**" and "**WFS**" are "ON", I got the following email:
 
@@ -115,12 +210,44 @@ Wordfence is higher than IP Geo Block.
 
 #### `wp-admin/admin-ajax.php` ####
 
-| IGB | WFS | Requests/sec | Time/req [ms] |
-|:----|:----|-------------:|--------------:|
-| OFF | OFF |         5.51 |       181.351 |
-| OFF | ON  |         5.00 |       200.071 |
-| ON  | ON  |         5.53 |       180.822 |
-| ON  | OFF |         6.03 |       165.840 |
+<div class="table-responsive">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>IGB</th>
+				<th>WFS</th>
+				<th class="text-right">Requests/sec</th>
+				<th class="text-right">Time/req [ms]</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>OFF</td>
+				<td>OFF</td>
+				<td class="text-right">5.51</td>
+				<td class="text-right">181.351</td>
+			</tr>
+			<tr>
+				<td>OFF</td>
+				<td>ON</td>
+				<td class="text-right">5.00</td>
+				<td class="text-right">200.071</td>
+			</tr>
+			<tr>
+				<td>ON</td>
+				<td>ON</td>
+				<td class="text-right">5.53</td>
+				<td class="text-right">180.822</td>
+			</tr>
+			<tr>
+				<td>ON</td>
+				<td>OFF</td>
+				<td class="text-right">6.03</td>
+				<td class="text-right">165.840</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 
 ### Conclusion ###
 
@@ -131,7 +258,6 @@ the load. <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2728.png)
 </span>
 
-{% comment %}
 <div class="alert alert-info">
   <strong>UPDATED:</strong>
   The result in this article was base on 
@@ -140,7 +266,6 @@ the load. <span class="emoji">
   <a href="/changelog/release-2.2.2.html" title="2.2.2 Release Note">2.2.2</a>,
   the performace had been improved by 25% at the maximum.
 </div>
-{% endcomment %}
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [repository]:   https://github.com/tokkonopapa/WordPress-IP-Geo-Block/tree/master/test/bin "WordPress-IP-Geo-Block/test/bin at master"
