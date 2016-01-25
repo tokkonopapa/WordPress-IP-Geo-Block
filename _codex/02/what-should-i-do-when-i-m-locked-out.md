@@ -23,7 +23,7 @@ using [appropriate editor][editors]. Then activate the code block in
 /**
  * Invalidate blocking behavior in case yourself is locked out.
  * @note: activate the following code and upload this file via FTP.
- */ /* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTION --
+ */ /* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTION -- *
 function ip_geo_block_emergency( $validate ) {
 	$validate['result'] = 'passed';
 	return $validate;
@@ -47,7 +47,7 @@ on your server via FTP.
 /**
  * Invalidate blocking behavior in case yourself is locked out.
  * @note: activate the following code and upload this file via FTP.
- */ //* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTION --
+ */ // -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTION -- *
 function ip_geo_block_emergency( $validate ) {
 	$validate['result'] = 'passed';
 	return $validate;

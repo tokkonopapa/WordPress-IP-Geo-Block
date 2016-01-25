@@ -28,7 +28,7 @@
       <div class="col s12 m4 l4">
         <h5>Recent Posts</h5>
         <ul class="icon">{% for post in site.posts limit: site.recent_post %}
-          <li class="icon-circle-right">
+          <li class="icon-description">
             <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
           </li>{% endfor %}
         </ul>

@@ -15,7 +15,7 @@ title: Codex
     {% assign section = post.section %}
       <li class="icon-folder-open"><span class="list-title">{{ post.section | capitalize }}</span><ul class="icon">
   {% endif %}
-      <li class="icon-circle-right">
+      <li class="icon-description">
         <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
       </li>
   {% if section and section != site.codex[forloop.index].section %}
