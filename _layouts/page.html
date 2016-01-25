@@ -21,24 +21,14 @@ layout: default
 
     <footer class="post-footer">
       <ul class="row">
-{% if page.collection == 'codex' %}
-  {% for codex in site.codex %}
-    {% if codex.title == page.title %}{% if codex.previous.url %}
-        <li class="col s6 left">
-          <a class="prev" href="{{ codex.previous.url }}" title="Previous page">&laquo; {{ codex.previous.title }}</a>
-        </li>{% endif %}{% if codex.next.url %}
-        <li class="col s6 right">
-          <a class="next" href="{{ codex.next.url }}" title="Next page">{{ codex.next.title }} &raquo;</a>
-        </li>{% endif %}{% break %}
-    {% endif %}
-  {% endfor %}
-{% else %}{% if page.previous.url %}
+{% if page.previous.url %}
         <li class="col s6 left">
           <a class="prev" href="{{ page.previous.url }}" title="Previous page">&laquo; {{ page.previous.title }}</a>
-        </li>{% endif %}{% if page.next.url %}
+        </li>
+{% endif %}{% if page.next.url %}
         <li class="col s6 right">
           <a class="next" href="{{ page.next.url }}" title="Next page">{{ page.next..title }} &raquo;</a>
-        </li>{% endif %}
+        </li>
 {% endif %}
       </ul>
     </footer>
