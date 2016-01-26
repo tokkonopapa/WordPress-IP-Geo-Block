@@ -512,6 +512,11 @@ class IP_Geo_Block_Admin {
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
 	private function validate_options( $option_name, $input ) {
+		// must check that the user has the required capability 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+		}
+
 		// setup base options
 		$output = IP_Geo_Block::get_option( $option_name );
 		$default = IP_Geo_Block::get_default( $option_name );
