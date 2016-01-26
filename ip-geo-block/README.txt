@@ -412,6 +412,10 @@ you are using at the support forum.
 
 == Changelog ==
 
+= 2.2.2.1 =
+* **Urgent security update:** Killed the possibility of the options being 
+  altered.
+
 = 2.2.2 =
 * **Enhancement:** Refactored some codes and components. The number of attacks 
   that can be proccessed per second has been improved by 25% at the maximum.
