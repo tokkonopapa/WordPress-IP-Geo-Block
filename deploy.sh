@@ -127,10 +127,10 @@ cd $SVNPATH
 #	trunk/admin/js/footable.all.min.js \
 #	trunk/admin/js/auth-nonce.js \
 #	trunc/includes/Net/PEAR.php
-svn delete --force \
-	trunk/includes/venders/ \
-	trunk/includes/download.php \
-	trunk/includes/localdate.php
+#svn delete --force \
+#	trunk/includes/venders/ \
+#	trunk/includes/download.php \
+#	trunk/includes/localdate.php
 
 # Copy all files to tags
 svn copy trunk/ tags/$NEWVERSION1/
