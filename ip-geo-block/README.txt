@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.4.1
-Stable tag: 2.2.2.1
+Stable tag: 2.2.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -411,6 +411,16 @@ you are using at the support forum.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.2.2.2 =
+Sorry for frequent update.
+
+* **Bug fix:** Fixed the issue of race condition at activation. This fix is 
+  related to the urgent security update at 2.2.2.1 which was not actually the 
+  security issue but a bug.
+  See [this thread](https://wordpress.org/support/topic/white-list-hack "white list hack")
+  about little more details.
+* **Improvement:** Improved the compatibility with Jetpack.
 
 = 2.2.2.1 =
 * **Urgent security update:** Killed the possibility of the options being 

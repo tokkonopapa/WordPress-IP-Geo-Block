@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.2.1';
+	const VERSION = '2.2.2.2';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -141,7 +141,8 @@ class IP_Geo_Block {
 		$settings = IP_Geo_Block_Opts::upgrade();
 
 		// kick off a cron job to download database immediately
-		self::exec_download();
+		if ( ! current_user_can( 'manage_options' ) )
+			self::exec_download();
 
 		return $settings;
 	}
@@ -307,13 +308,13 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function validate_country( $validate, $settings, $block = TRUE ) {
-		if ( $block && 0 == $settings['matching_rule'] ) {
+		if ( $block && 0 === (int)$settings['matching_rule'] ) {
 			// 'ZZ' will be blocked if it's not in the $list.
 			if ( ( $list = $settings['white_list'] ) && FALSE === strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'blocked' ); // can't overwrite existing result
 		}
 
-		elseif( $block && 1 == $settings['matching_rule'] ) {
+		elseif( $block && 1 === (int)$settings['matching_rule'] ) {
 			// 'ZZ' will NOT be blocked if it's not in the $list.
 			if ( ( $list = $settings['black_list'] ) && FALSE !== strpos( $list, $validate['code'] ) )
 				return $validate + array( 'result' => 'blocked' ); // can't overwrite existing result
@@ -483,7 +484,7 @@ class IP_Geo_Block {
 		$settings = self::get_option( 'settings' );
 
 		// enables to skip validation by country at login/out except BuddyPress signup
-		$block = ( 1 == $settings['validation']['login'] ) ||
+		$block = ( 1 === (int)$settings['validation']['login'] ) ||
 			( 'bp_' === substr( current_filter(), 0, 3 ) ) ||
 			( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout' ) ) );
 
@@ -519,7 +520,7 @@ class IP_Geo_Block {
 		}
 
 		// setup WP-ZEP (2: WP-ZEP)
-		if ( ( 2 & $settings['validation'][ $type ] ) && $zep ) {
+		if ( ( 2 & (int)$settings['validation'][ $type ] ) && $zep ) {
 			// redirect if valid nonce in referer
 			$this->trace_nonce();
 
@@ -527,7 +528,7 @@ class IP_Geo_Block {
 			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
 				'wp-compression-test', // wp-admin/includes/template.php
 				'upload-attachment', 'imgedit-preview', 'bp_avatar_upload', // pluploader won't fire an event in "Media Library"
-				'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', // jetpack: multiple redirect for modules, cross domain ajax for proofreading
+				'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', // jetpack page & action
 			) );
 
 			// combination with vulnerable keys should be prevented to bypass WP-ZEP
@@ -543,7 +544,7 @@ class IP_Geo_Block {
 			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
-		$this->validate_ip( 'admin', $settings, 1 & $settings['validation'][ $type ] );
+		$this->validate_ip( 'admin', $settings, 1 & (int)$settings['validation'][ $type ] );
 	}
 
 	/**
@@ -567,14 +568,14 @@ class IP_Geo_Block {
 			);
 
 			// register validation by nonce (2: WP-ZEP)
-			if ( ( 2 & $settings['validation'][ $type ] ) && ! in_array( $matches[3], $list, TRUE ) )
+			if ( ( 2 & (int)$settings['validation'][ $type ] ) && ! in_array( $matches[3], $list, TRUE ) )
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 
 			// register validation by malicious signature
 			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 			// validate country by IP address (1: Block by country)
-			$validate = $this->validate_ip( 'admin', $settings, 1 & $settings['validation'][ $type ] );
+			$validate = $this->validate_ip( 'admin', $settings, 1 & (int)$settings['validation'][ $type ] );
 
 			// if the validation is successful, execute the requested uri via rewrite.php
 			if ( class_exists( 'IP_Geo_Block_Rewrite' ) )
@@ -595,13 +596,14 @@ class IP_Geo_Block {
 				'code' => $cache['code'],
 				'fail' => TRUE,
 				'result' => 'failed',
+				'provider' => 'Cache',
 			) );
 
 			$settings = self::get_option( 'settings' );
 			IP_Geo_Block_API_Cache::update_cache( $cache['hook'], $validate, $settings );
 
 			// (1) blocked, (3) unauthenticated, (5) all
-			if ( (int)$settings['validation']['reclogs'] & 1 ) {
+			if ( 1 & (int)$settings['validation']['reclogs'] ) {
 				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 				IP_Geo_Block_Logs::record_logs( $cache['hook'], $validate, $settings );
 			}
