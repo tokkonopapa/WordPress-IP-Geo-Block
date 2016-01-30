@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.4.1
-Stable tag: 2.2.2.2
+Stable tag: 2.2.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -412,6 +412,11 @@ you are using at the support forum.
 
 == Changelog ==
 
+= 2.2.2.3 =
+Sorry for frequent update again.
+
+* **Bug fix:** Fixed the issue of not initializing country code at activation.
+
 = 2.2.2.2 =
 Sorry for frequent update.
 
@@ -488,7 +493,7 @@ Sorry for frequent update.
   `wp-config.php` or `passwd` can be blocked.
 * **New feature:** Add privacy considerations related to IP address. Add 
   **Anonymize IP address** at **Record settings**.
-* Bug fix:** Fix the issue that spaces in **Text message on comment form** 
+* **Bug fix:** Fix the issue that spaces in **Text message on comment form** 
   are deleted.
 * See details at [2.2.0 release note](http://www.ipgeoblock.com/changelog/release-2.2.0.html "2.2.0 Release Note").
 

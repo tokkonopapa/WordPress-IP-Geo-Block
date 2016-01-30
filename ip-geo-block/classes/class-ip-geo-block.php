@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.2.2';
+	const VERSION = '2.2.2.3';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -141,7 +141,7 @@ class IP_Geo_Block {
 		$settings = IP_Geo_Block_Opts::upgrade();
 
 		// kick off a cron job to download database immediately
-		if ( ! current_user_can( 'manage_options' ) )
+		if ( current_user_can( 'manage_options' ) )
 			self::exec_download();
 
 		return $settings;
