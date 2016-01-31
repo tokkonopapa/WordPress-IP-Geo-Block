@@ -70,14 +70,14 @@ The following picutre shows the reason of blocking at "**Result**" column on
 
 Here are the descriptions :
 
-| Result        | Description                   |
-|:--------------|:------------------------------|
-| passed        | validation succeeded          |
-| blocked       | blocked by country            |
-| wp-zep        | blocked by WP-ZEP             |
-| badsig        | blocked by Bad Signature      |
-| extra         | blocked by Extra IP addresses |
-| failed        | failed to login attempt       |
+| Result        | Description                     |
+|:--------------|:--------------------------------|
+| passed        | validation succeeded            |
+| blocked       | blocked by country              |
+| wp-zep        | blocked by WP-ZEP               |
+| badsig        | blocked by Bad Signature        |
+| extra         | blocked by Extra IP addresses   |
+| failed        | blocked by failed login attempt |
 
 ### See also ###
 
