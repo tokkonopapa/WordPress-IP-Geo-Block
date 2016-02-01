@@ -40,23 +40,24 @@ var IP_GEO_BLOCK_ZEP = {
 
 		var m = uri.match(
 			// https://tools.ietf.org/html/rfc3986#appendix-B
-			/^(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/
+			/^(?:([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/
 		);
 
 		// scheme :// authority path ? query # fragment
 		return {
 			scheme:    m[1] || '',
-			authority: m[2] || '',
-			path:      m[3] || '',
-			query:     m[4] || '',
-			fragment:  m[5] || ''
+			absolute:  m[2] || '',
+			authority: m[3] || '',
+			path:      m[4] || '',
+			query:     m[5] || '',
+			fragment:  m[6] || ''
 		};
 	}
 
 	function compose_uri(uri) {
-		return (uri.scheme ? uri.scheme + '://' : '') +
-		       (uri.authority + uri.path ) +
-		       (uri.query ? '?' + uri.query : '' ) +
+		return (uri.scheme   ? uri.scheme + ':'   : '') +
+		       (uri.absolute + uri.path)  +
+		       (uri.query    ? '?' + uri.query    : '') +
 		       (uri.fragment ? '#' + uri.fragment : '');
 	}
 
