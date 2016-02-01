@@ -413,9 +413,11 @@ you are using at the support forum.
 == Changelog ==
 
 = 2.2.2.3 =
-Sorry for frequent update again.
+Sorry for frequent update again but I have to fixed the following issues.
 
 * **Bug fix:** Fixed the issue of not initializing country code at activation.
+* **Bug fix:** Fixed the issue that scheme less notation like '//example.com' 
+  could not be handled correctly.
 
 = 2.2.2.2 =
 Sorry for frequent update.
