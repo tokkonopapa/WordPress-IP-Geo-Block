@@ -190,9 +190,11 @@ ul.icon li:before {
   width: 1.5em; /* same as padding-left set on li */
   margin-left: -1.5em; /* same as padding-left set on li */
 }​
+ul.icon li:after {
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
 ul.icon li > * {
-    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    margin-left: 0;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
     -webkit-font-smoothing: auto;
     -moz-osx-font-smoothing: auto;
 }
