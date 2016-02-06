@@ -26,7 +26,7 @@ The following code snippet in your theme's `functions.php` can automatically
 fetch the IP addresses from [Tor exit nodes][TorExitNodes] on background and 
 add them to the black list when login attempt is captured.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 define( 'MY_EXTRA_IPS_LIST', 'my_extra_ips_list' );
 define( 'MY_EXTRA_IPS_CRON', 'my_extra_ips_cron' );
 

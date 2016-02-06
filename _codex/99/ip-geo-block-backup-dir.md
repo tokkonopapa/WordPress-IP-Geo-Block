@@ -28,7 +28,7 @@ backups, use this hook.
 The following code snippet in your theme's `functions.php` selectively saves 
 the CSV formatted text files which will be named as `ip-geo-block-YYYY-MM.log`.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_backup_dir( $dir, $hook ) {
     if ( 'login' === $hook )
         return '/absolute/path/to/';

@@ -27,7 +27,7 @@ http://geolite.maxmind.com/download/geoip/database/GeoIPv6.dat.gz
 The following code snippet in your theme's `functions.php` can download the 
 city database for IPv6.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_maxmind_ipv6( $url ) {
     return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCityv6-beta/GeoLiteCityv6.dat.gz';
 }

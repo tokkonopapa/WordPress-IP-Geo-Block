@@ -25,7 +25,7 @@ It depends on your setting at "**Response code**" on
 
 The following code in your `functions.php` can hide your login page.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_login_status ( $code ) {
     return 404;
 }

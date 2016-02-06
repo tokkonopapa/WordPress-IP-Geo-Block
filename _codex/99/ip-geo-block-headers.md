@@ -24,7 +24,7 @@ array( `'timeout' => 5, 'user-agent' => 'WordPress/4.4, ip-geo-block 2.2.2'` )
 The following code snippet in your theme's `functions.php` can set timeout to 
 3 seconds.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_http_headers( $args ) {
     $args['timeout'] = 3;
     return $args;

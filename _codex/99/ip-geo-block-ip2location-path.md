@@ -25,7 +25,7 @@ If you'd like to share the database file with the WordPress plugin
 [IP2Location Tags][IP2Tag] (or [other free plugins][IP2Free]), the following 
 code snippet in your theme's `functions.php` may help you.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_ip2location_path( $path ) {
     return WP_PLUGIN_DIR . '/ip2location-tags/IP2LOCATION-LITE-DB1.BIN';
 }

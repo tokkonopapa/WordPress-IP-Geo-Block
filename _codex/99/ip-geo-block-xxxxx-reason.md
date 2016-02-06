@@ -31,7 +31,7 @@ The following picture shows a human readble message when a blocking occurs.
 
 You can change the message "Forbidden" as follows :
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_comment_reason ( $msg  ) {
     return "Sorry, this service is unavailable.";
 }

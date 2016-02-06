@@ -29,7 +29,7 @@ The following code snippet in your theme's `functions.php` can bypass WP-ZEP
 validation against the direct request to 
 `/wp-content/plugins/my-plugin/…/*.php`.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_bypass_plugins( $plugins ) {
     $whitelist = array(
         'my-plugin',

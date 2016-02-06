@@ -48,7 +48,7 @@ As you can see, an even line is a malicious request to attempt to expose
 Also to handle a ajax request properly, put the following code into your 
 `functions.php`.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 /**
  * Ajax for non privileged user
  *
@@ -103,7 +103,7 @@ All the links except the 1st one will be blocked. It is because the 1st link
 is a service for the visitors. If you add the action hook for the admin as 
 follows, then the 1st link is also blocked.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 /**
  * Ajax for admin
  *

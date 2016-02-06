@@ -30,7 +30,7 @@ Here are the keys and values in this associative array.
 
 ### Use case ###
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_whitelist( $validate ) {
     $whitelist = array(
         'JP', // should be upper case

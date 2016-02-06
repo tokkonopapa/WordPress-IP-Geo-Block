@@ -19,7 +19,7 @@ downloaded by GZIP format.
 ### Default value ###
 
 {% highlight text %}
-http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz`
+http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz
 {% endhighlight %}
 
 ### Use case ###
@@ -27,7 +27,7 @@ http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz`
 The following code snippet in your theme's `functions.php` can download the 
 city database for IPv4.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_maxmind_ipv4( $url ) {
     return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
 }

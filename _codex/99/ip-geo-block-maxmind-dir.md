@@ -24,7 +24,7 @@ the directory where the [MaxMind][MaxMind] geolocation database is installed.
 If you want change it to your `/wp-content/uploads/` directory, put the 
 following code snippet into the `functions.php` in your theme.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_maxmind_dir( $dir ) {
     $upload = wp_upload_dir();
     return $upload['basedir'];

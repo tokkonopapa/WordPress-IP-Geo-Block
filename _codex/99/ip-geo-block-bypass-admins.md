@@ -29,7 +29,7 @@ The following code snippet in your theme's `functions.php` can bypass WP-ZEP
 validation against some admin requests with query strings `action=do-my-action`
 and `page=my-plugin-page`.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_bypass_admins( $queries ) {
     $whitelist = array(
         'do-my-action',

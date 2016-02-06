@@ -27,7 +27,7 @@ address according to your browser's user agent string. It's useful to test
 this plugin's functionality using [browser's addon][UA-SWITCHER] which can be 
 change the user agent string.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_replace_ip( $ip ) {
     if ( FALSE !== stripos( $_SERVER['HTTP_USER_AGENT'], 'your unique string' ) )
         return '98.139.183.24'; // yahoo.com

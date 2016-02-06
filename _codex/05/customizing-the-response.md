@@ -43,7 +43,7 @@ is one of `comment`, `xmlrpc`, `login` and `admin`, you can customize the
 status code and reason. For example, the following code in your `functions.php`
 can hide your login page.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_login_status ( $code ) {
     return 404;
 }

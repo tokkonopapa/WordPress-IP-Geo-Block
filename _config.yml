@@ -32,11 +32,6 @@ gems: [jekyll-paginate]
 # highlighter: pygments # rouge
 # markdown: redcarpet
 
-# markdown: kramdown
-# kramdown:
-#   syntax_highlighter: rouge
-#   input: GFM
-
 # extensions for GitHub Flavored Markdown
 # pygments:
 #   options: ["startinline"]
@@ -50,6 +45,11 @@ gems: [jekyll-paginate]
 #     "strikethrough",                # del tag with ~~
 #     "superscript"                   # use sup ex: 2^n
 #   ]
+
+# markdown: kramdown
+# kramdown:
+#   input: GFM
+#   syntax_highlighter: rouge
 
 # Codex
 collections:

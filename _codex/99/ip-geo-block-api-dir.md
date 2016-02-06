@@ -23,14 +23,14 @@ The class libraries can be available from [WordPress-IP-Geo-API][IP-Geo-API].
 
 ### Default value ###
 
-`/absolute/path/to/wp-content/ip-geo-api`
+`/absolute/path/to/wp-content/(ip-geo-api|ip-geo-block/ip-geo-api|uploads/ip-geo-api)`
 
 ### Use case ###
 
 If you want change it to your `/wp-content/uploads/` directory, put the 
 following code snippet into the `functions.php` in your theme.
 
-{% highlight php startinline %}
+{% highlight ruby startinline %}
 function my_api_dir( $dir ) {
     $upload = wp_upload_dir();
     return $upload['basedir'];
