@@ -190,11 +190,11 @@ ul.icon li:before {
   width: 1.5em; /* same as padding-left set on li */
   margin-left: -1.5em; /* same as padding-left set on li */
 }​
-ul.icon li:after {
+ul.icon li:after,
+ul.icon li > * {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 ul.icon li > * {
-    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
     -webkit-font-smoothing: auto;
     -moz-osx-font-smoothing: auto;
 }
@@ -203,4 +203,14 @@ ul.icon li a,
 ul.icon li time {
   margin-left: -0.5em;
   vertical-align: top;
+}
+#article ul li:before,
+#changelog ul li:before,
+ul#codex li:before {
+  color: #00838f;
+}
+#article ul li:after,
+#changelog ul li:after,
+ul#codex li:after {
+  color: #546e7a;
 }

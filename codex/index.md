@@ -9,7 +9,7 @@ title: Codex
       <a href="{{ '/' | prepend: site.baseurl }}" title="Top">Top</a> &raquo; {{ page.title }}
     </div>
 {% assign section = false %}
-    <ul class="icon">
+    <ul id="codex" class="icon">
 {% for post in site.codex %}
   {% if post.section and post.section != section %}
     {% assign section = post.section %}
