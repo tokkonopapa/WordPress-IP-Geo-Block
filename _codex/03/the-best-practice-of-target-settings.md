@@ -14,25 +14,25 @@ At the "**Validation target settings**", you should select the options,
 
 At the time of your first installation and activation of this plugin, you can 
 see the following configuration at "**Validation target settings**". This is a 
-set of minimum configuration for a user who are interested in Geo-blocking by 
-IP address.
+set of minimum configuration which doesn't protect your site against the 
+attacks targeted at the vulnerble plugins and themes in your site.
 
 ![Initial settings]({{ '/img/2016-01/InitialSettings.png' | prepend: site.baseurl }}
  "Initial settings"
 )
 
-Note that this minimum configuration doesn't protect your site against the 
-attacks targeted at the vulnerble plugins and themes in your site.
-
 ### Setting for "XML-RPC" ###
 
-The WordPress core file `xmlrpc.php` is used as a reciever of both 
-[pingbacks][pingbacks] and [**R**emote **P**rocedure **C**all][XML-RPC].
-Speaking about RPC, it's useful for [mobile apps][WP-Mobile] and 
-[Jetpack][Jetpack]. But it also can be abused as login attempts by attackers.
+The WordPress core file `xmlrpc.php` is an endpoint for not only 
+[**R**emote **P**rocedure **C**all][XML-RPC] but also [pingbacks][pingbacks].
+As for the RPC, it's used by [Jetpack][Jetpack] and [mobile apps][MobileApp].
+But it's also abused as login attempts by the attackers.
 
-"**Block by country**" for this target can accept those useful requests while 
-reducing the risk of exploiting your site from forbidden countries.
+"**Block by country**" for this target can accept the useful requests while 
+reducing the risk of exploiting your site from forbidden countries. And 
+"**Completely close**" works more effectively than [WordPress 4.4 and later]
+[Core#34336] or [Disable XML-RPC][DIS-XMLRPC] especially against the [brute 
+force amplification attacks][BruteXMLRPC] by `system.multicall`.
 
 <div class="alert alert-info">
   <strong>NOTE:</strong>
@@ -58,20 +58,25 @@ enable this target (e.g. not "**Disable**"), the "limiting login attempts"
 will work for you. It also affects the target "**XML-RPC**" which can be used 
 for login attempts.
 
-For example, [Sucuri News][SucuriNews] had already unvailed the 
-[brute-force attempts using xmlrpc][BruteXMLRPC] which requires hundreds of 
-authentication attempts only by one HTTP request. In this case, this plugin 
-can also effectively protect your site against such attacks.
+For example, [Sucuri News][SucuriNews] had already unvailed the [brute-force 
+attempts using xmlrpc][BruteXMLRPC] which requires hundreds of authentication 
+attempts only by one HTTP request. This plugin can also effectively protect 
+your site against this kind of attacks.
 
 #### Limit login attempts ####
 
-Unfortunately, this plugin doesn't provide you the UI to change the number of 
-possible login attempts which is 5 by default. But if you're familiar with 
-phpMyAdmin, you can change the value of "**`login_failes`**" at 
-"**`ip_geo_block_settings`**" in the options table.
+You can change "**Max number of failed login attempts per IP address**" which 
+is 5 by default at the bottom of "**Validation rule settings**". If you select 
+"0" as for it, then users can't fail to login.
 
 ![login failed in phpMyAdmin]({{ '/img/2016-01/LoginAttempts.png' | prepend: site.baseurl }}
  "login failed in phpMyAdmin"
+)
+
+Note that the lockout time is same as the expiration time of cache.
+
+![Expiration time at Cache settings]({{ '/img/2016-01/CacheSettings.png' | prepend: site.baseurl }}
+ "Expiration time at Cache settings"
 )
 
 ### Setting for "Admin area" ###
@@ -154,8 +159,10 @@ If you have something to ask, please feel free to open your issue at the
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [XML-RPC]:      https://en.wikipedia.org/wiki/XML-RPC "XML-RPC - Wikipedia, the free encyclopedia"
 [pingbacks]:    http://codex.wordpress.org/Introduction_to_Blogging#Pingbacks "Introduction to Blogging « WordPress Codex"
-[WP-Mobile]:    https://apps.wordpress.org/ "WordPress.org Mobile Apps"
+[MobileApp]:    https://apps.wordpress.org/ "WordPress.org Mobile Apps"
 [Jetpack]:      https://wordpress.org/support/topic/disabling-xml-rpc-may-damage-jetpack "WordPress › Support » Disabling XML-RPC may damage JetPack?"
+[DIS-XMLRPC]:   https://wordpress.org/plugins/disable-xml-rpc/ "WordPress › Disable XML-RPC « WordPress Plugins"
+[Core#34336]:   https://core.trac.wordpress.org/ticket/34336 "#34336 (Disable XML-RPC system.multicall authenticated requests on the first auth failure) – WordPress Trac"
 [SupportForum]: https://wordpress.org/support/plugin/ip-geo-block "WordPress › Support » IP Geo Block"
 [SucuriNews]:   https://blog.sucuri.net/ "Sucuri Blog - Website Security News"
 [BruteXMLRPC]:  https://blog.sucuri.net/2015/10/brute-force-amplification-attacks-against-wordpress-xmlrpc.html "Brute Force Amplification Attacks Against WordPress XMLRPC - Sucuri Blog"
