@@ -23,7 +23,7 @@ The class libraries can be available from [WordPress-IP-Geo-API][IP-Geo-API].
 
 ### Default value ###
 
-`/absolute/path/to/wp-content`
+`/absolute/path/to/wp-content/`
 
 ### Use case ###
 
