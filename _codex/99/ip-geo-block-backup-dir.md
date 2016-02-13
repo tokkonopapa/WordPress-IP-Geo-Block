@@ -33,7 +33,7 @@ function my_backup_dir( $dir, $hook ) {
     if ( 'login' === $hook )
         return '/absolute/path/to/';
     else
-        return null; // don't keep backups
+        return null; // do not keep backups
 }
 add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
 {% endhighlight %}
