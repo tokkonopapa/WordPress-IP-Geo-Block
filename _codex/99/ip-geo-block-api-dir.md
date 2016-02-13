@@ -38,6 +38,9 @@ function my_api_dir( $dir ) {
 add_filter( 'ip-geo-block-api-dir', 'my_api_dir' );
 {% endhighlight %}
 
+You should download [Addons for IP Geo Block][IP-GEO-API] and upload 
+`ip-geo-api` to `/absolute/path/to/wp-content/uploads/` with write permission.
+
 ### Since ###
 2.2.1
 
@@ -45,3 +48,4 @@ add_filter( 'ip-geo-block-api-dir', 'my_api_dir' );
 [IP-Geo-API]:   https://github.com/tokkonopapa/WordPress-IP-Geo-API "tokkonopapa/WordPress-IP-Geo-API - GitHub"
 [MaxMind]:      https://www.maxmind.com/ "IP Geolocation and Online Fraud Prevention | MaxMind"
 [IP2Location]:  http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location"
+[IP-GEO-API]:   https://github.com/tokkonopapa/WordPress-IP-Geo-API "GitHub - tokkonopapa/WordPress-IP-Geo-API: A class library combined with WordPress plugin IP Geo Block to handle geo-location database of Maxmind and IP2Location."
