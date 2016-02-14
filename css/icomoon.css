@@ -204,13 +204,9 @@ ul.icon li time {
   margin-left: -0.5em;
   vertical-align: top;
 }
-#article ul li:before,
-#changelog ul li:before,
-ul#codex li:before {
+ul.icon-fore li:before {
   color: #00838f;
 }
-#article ul li:after,
-#changelog ul li:after,
-ul#codex li:after {
+ul.icon-fore li:after {
   color: #546e7a;
 }
