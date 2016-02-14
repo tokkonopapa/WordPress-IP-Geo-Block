@@ -18,14 +18,21 @@ becase a background process of downloading Geo-IP databases may be running.
  "After activation of IP Geo Block"
 )
 
-### Still see the "Welcome" message? ###
+### If download fails... ###
 
-When you still see the "Welcome" message on the IP Geo Block dashboard, please 
-select either "**white list**" or "**black list**" at "**Matching rule**" and 
-put a proper country code into the "**Country code for matching rule**".
+You'll find the error message and the "**Matching rule**" is still `Disable`.
 
-![Still see the welcome message]({{ '/img/2016-01/WelcomeMessage.png' | prepend: site.baseurl }}
- "Still see the welcome message"
+![Download fail]({{ '/img/2016-01/DownloadFail.png' | prepend: site.baseurl }}
+ "Download fail"
+)
+
+In this case, please go to "**Local database settings**" and execute to 
+download databases manually. And then, select either "**white list**" or 
+"**black list**" and put a proper country code into the "**Country code for 
+matching rule**".
+
+![Download DBs]({{ '/img/2016-01/DownloadDBs.png' | prepend: site.baseurl }}
+ "Download DBs"
 )
 
 ### In case of the "Lock out" warning ###
