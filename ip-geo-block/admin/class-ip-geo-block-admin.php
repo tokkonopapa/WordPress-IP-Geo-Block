@@ -246,18 +246,35 @@ class IP_Geo_Block_Admin {
 		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 )
 			$this->add_admin_notice( 'error', __( 'You need WordPress 3.7+.', IP_Geo_Block::TEXT_DOMAIN ) );
 
-		// Check consistency of matching rule
 		$settings = IP_Geo_Block::get_option( 'settings' );
-		if ( -1 == $settings['matching_rule'] ) {
-			$this->add_admin_notice( 'notice-warning', sprintf(
-				__( 'Welcome to %s!! At first, please confirm &#8220;<strong>Matching rule</strong>&#8221; at <a href="%s">Validation rule settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
-				__( 'IP Geo Block', IP_Geo_Block::TEXT_DOMAIN ),
+
+		// Check consistency of matching rule
+		if ( -1 === (int)$settings['matching_rule'] ) {
+			if ( FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
+				$this->add_admin_notice( 'notice-warning', sprintf(
+					__( 'Now downloading geolocation databases in background. After a little while, please check your country code and &#8220;<strong>Matching rule</strong>&#8221; at <a href="%s">Validation rule settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
+					admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG )
+				) );
+			}
+			else {
+				$this->add_admin_notice( 'error', sprintf(
+					__( 'The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please confirm it at <a href="%s">Validation rule settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
+					admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG )
+				) );
+			}
+		}
+
+		// Check to finish downloading
+		elseif ( 'done' === get_transient( IP_Geo_Block::CRON_NAME ) ) {
+			delete_transient( IP_Geo_Block::CRON_NAME );
+			$this->add_admin_notice( 'updated', sprintf(
+				__( 'Downloading geolocation databases was successfully done.', IP_Geo_Block::TEXT_DOMAIN ),
 				admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG )
 			) );
 		}
 
-		// check force to save
-		elseif ( 1 == $settings['validation']['login'] ) {
+		// Check self blocking
+		if ( 1 === (int)$settings['validation']['login'] ) {
 			$validate = IP_Geo_Block::get_geolocation();
 			$validate = IP_Geo_Block::validate_country( $validate, $settings );
 
@@ -513,9 +530,8 @@ class IP_Geo_Block_Admin {
 	 */
 	private function validate_options( $option_name, $input ) {
 		// must check that the user has the required capability 
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( 'manage_options' ) )
 			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
-		}
 
 		// setup base options
 		$output = IP_Geo_Block::get_option( $option_name );
@@ -644,6 +660,19 @@ class IP_Geo_Block_Admin {
 				break;
 			}
 		}
+
+		// Force to finish update matching rule
+		delete_transient( IP_Geo_Block::CRON_NAME );
+
+		// Reject invalid signature which potentially blocks itself
+		$key = array();
+		foreach ( explode( ',', $output['signature'] ) as $value ) {
+			$value = trim( $value );
+			if ( FALSE === strpos( IP_Geo_Block::$content_dir['admin'], "/$value" ) ) {
+				$key[] = $value;
+			}
+		}
+		$output['signature'] = implode( ',', $key );
 
 		// Register a settings error to be displayed to the user
 		$this->setting_notice( $option_name, 'updated',

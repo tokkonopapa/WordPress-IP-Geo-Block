@@ -194,6 +194,29 @@
 		</form>
 	</div>
 
+	<!-- XML-RPC Multi -->
+	<div class="setting">
+		<h3 class="collapse" ng-bind="lang.xmlrpc_multi" ng-click="toggle('xmlrpc_multi')"></h3>
+		<input type="checkbox" ng-model="checkbox.xmlrpc_multi" />
+		<form class="post-form animate-show-hide" ng-show="show.xmlrpc_multi">
+			<!-- Number of repetitions -->
+			<p>
+				<label for="repetition">
+					<span ng-bind="lang.xmlrpc_repetition"></span>
+					<span class="required">*</span>
+				</label>
+				<input type="text" name="title" ng-model="form.xmlrpc_multi.repeat" />
+			</p>
+			<p>
+				<textarea class="fullsize" rows="17" ng-model="form.xmlrpc_multi.xml"></textarea>
+			</p>
+			<p>%METHODS%: <span ng-bind-html="lang.xmlrpc_readme"></span></p>
+			<p>
+				<textarea class="fullsize" rows="26" ng-model="form.xmlrpc_multi.method"></textarea>
+			</p>
+		</form>
+	</div>
+
 	<!-- Login Form -->
 	<div class="setting">
 		<h3 class="collapse" ng-bind="lang.login" ng-click="toggle('login')"></h3>

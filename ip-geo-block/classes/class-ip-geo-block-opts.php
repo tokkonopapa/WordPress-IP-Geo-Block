@@ -19,7 +19,7 @@ class IP_Geo_Block_Opts {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
-			'version'         => '2.2.2', // This table version (not package)
+			'version'         => '2.2.3', // This table version (not package)
 			// since version 1.0
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
@@ -43,9 +43,9 @@ class IP_Geo_Block_Opts {
 			    'login'       => 1,       // Validate on login
 			    'admin'       => 1,       // Validate on admin (1:country 2:ZEP)
 			    'ajax'        => 0,       // Validate on ajax/post (1:country 2:ZEP)
-			    'xmlrpc'      => TRUE,    // Validate on xmlrpc
+			    'xmlrpc'      => 1,       // Validate on xmlrpc (1:country 2:close)
 			    'proxy'       => NULL,    // $_SERVER variables for IPs
-			    'reclogs'     => 1,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
+			    'reclogs'     => 3,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
 			    'postkey'     => '',      // Keys in $_POST
 			    // since version 1.3.1
 			    'maxlogs'     => 100,     // Max number of rows of log
@@ -88,6 +88,8 @@ class IP_Geo_Block_Opts {
 			    'ipv4_last'   => 0,       // Last-Modified of DB file
 			    'ipv6_last'   => 0,       // Last-Modified of DB file
 			),
+			// since version 2.2.3
+			'api_dir'         => NULL,    // Path to geo-location API
 		),
 	);
 
@@ -117,33 +119,9 @@ class IP_Geo_Block_Opts {
 		}
 
 		else {
-			if ( version_compare( $settings['version'], '1.1' ) < 0 ) {
-				foreach ( array( 'cache_hold', 'cache_time' ) as $tmp ) {
-					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
-				}
-			}
-
-			if ( version_compare( $settings['version'], '1.2' ) < 0 ) {
-				foreach ( array( 'order' ) as $tmp ) {
-					unset( $settings[ $tmp ] );
-				}
-
-				foreach ( array( 'login_fails', 'update' ) as $tmp ) {
-					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
-				}
-			}
-
-			if ( version_compare( $settings['version'], '1.3.0' ) < 0 ) {
-				unset( $settings['validation'] );
-				$settings['validation'] = $default[ $key[0] ]['validation'];
-			}
-
-			if ( version_compare( $settings['version'], '1.3.1' ) < 0 ) {
-				$settings['validation']['proxy'] =
-				$settings['validation']['proxy'] ? 'HTTP_X_FORWARDED_FOR' : NULL;
-				foreach ( array( 'maxlogs', 'backup' ) as $tmp ) {
-					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
-				}
+			// refresh if it's too old
+			if ( version_compare( $settings['version'], '2.0' ) < 0 ) {
+				$settings = $default[ $key[0] ];
 			}
 
 			if ( version_compare( $settings['version'], '2.0.8' ) < 0 )
@@ -182,15 +160,18 @@ class IP_Geo_Block_Opts {
 				}
 			}
 
+			if ( version_compare( $settings['version'], '2.2.3' ) < 0 )
+				$settings['api_dir'] = $default[ $key[0] ]['api_dir'];
+
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
-
-			// update option table
-			update_option( $key[0], $settings );
 		}
 
-		// put addons for IP Geolocation database API to wp-content/
-		self::install_api();
+		// install addons for IP Geolocation database API
+		$settings['api_dir'] = self::install_api( $settings );
+
+		// update option table
+		update_option( $key[0], $settings );
 
 		// return upgraded settings
 		return $settings;
@@ -200,21 +181,40 @@ class IP_Geo_Block_Opts {
 	 * Install / Uninstall APIs
 	 *
 	 */
-	public static function install_api() {
-		$dir = self::get_api_dir();
-		self::recurse_copy( IP_GEO_BLOCK_PATH . 'ip-geo-api', $dir );
+	public static function install_api( $settings ) {
+		$src = IP_GEO_BLOCK_PATH . IP_Geo_Block::GEOAPI_NAME;
+		$dst = self::get_api_dir( $settings );
+
+		if ( $src !== $dst )
+			self::recurse_copy( $src, $dst );
+
+		return $dst;
 	}
 
-	public static function delete_api() {
-		if ( file_exists( $dir = self::get_api_dir() ) )
+	public static function delete_api( $settings ) {
+		if ( @is_writable( $dir = self::get_api_dir( $settings ) ) )
 			self::recurse_rmdir( $dir );
 	}
 
-	private static function get_api_dir() {
-		return apply_filters(
-			IP_Geo_Block::PLUGIN_SLUG . '-api-dir',
-			WP_CONTENT_DIR . '/ip-geo-api/'
-		);
+	private static function get_api_dir( $settings ) {
+		// wp-content
+		$dir = $settings['api_dir'] ? dirname( $settings['api_dir'] ) : WP_CONTENT_DIR;
+
+		if ( ! @is_writable( $dir ) ) {
+			// wp-content/plugins/ip-geo-block
+			$dir = IP_GEO_BLOCK_PATH;
+
+			if ( ! @is_writable( $dir ) ) {
+				// wp-content/uploads
+				$dir = wp_upload_dir();
+				$dir = $dir['basedir'];
+			}
+		}
+
+		// filter hook in `functions.php` doesn't work at activation
+		return trailingslashit(
+			apply_filters( IP_Geo_Block::PLUGIN_SLUG . '-api-dir', $dir )
+		) . IP_Geo_Block::GEOAPI_NAME; // must add `ip-geo-api` for basename
 	}
 
 	// http://php.net/manual/function.copy.php#91010
@@ -223,12 +223,12 @@ class IP_Geo_Block_Opts {
 		$dst = trailingslashit( $dst );
 		@mkdir( $dst );
 		if ( $dir = @opendir( $src ) ) {
-			while( false !== ( $file = readdir( $dir ) ) ) {
+			while( FALSE !== ( $file = readdir( $dir ) ) ) {
 				if ( '.' !== $file && '..' !== $file ) {
-					if ( is_dir( $src.$file ) )
+					if ( @is_dir( $src.$file ) )
 						self::recurse_copy( $src.$file, $dst.$file );
 					else
-						copy( $src.$file, $dst.$file );
+						@copy( $src.$file, $dst.$file );
 				}
 			}
 			closedir( $dir );

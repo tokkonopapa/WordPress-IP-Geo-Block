@@ -96,7 +96,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			val: ['12345abcde', 'download', '../wp-config.php']
 		},
 		wp_content: {
-			path:   'wp-content/plugins/ip-geo-block/test/rewrite-test.php',
+			path:   'wp-content/plugins/ip-geo-block/samples.php',
 			query:  'wp-load=1'
 		},
 		BuddyPress: {
@@ -188,6 +188,54 @@ angular.module('WPApp').controller('WPAppCtrl', [
 "        demo.sayHello\n" +
 "    </methodName>\n" +
 "</methodCall>"
+		},
+		xmlrpc_multi: {
+			xml:
+"<?xml version='1.0' encoding='UTF-8'?>\n" +
+"<methodCall>\n" +
+"    <methodName>system.multicall</methodName>\n" +
+"    <params>\n" +
+"        <param>\n" +
+"            <value>\n" +
+"                <array>\n" +
+"                    <data>\n" +
+"                        <value>\n" +
+"                            %METHODS%\n" +
+"                        </value>\n" +
+"                    </data>\n" +
+"                </array>\n" +
+"            </value>\n" +
+"        </param>\n" +
+"    </params>\n" +
+"</methodCall>",
+			repeat: 10,
+			method:
+"<struct>\n" +
+"    <member>\n" +
+"        <name>methodName</name>\n" +
+"        <value>\n" +
+"            <string>wp.getAuthors</string>\n" +
+"        </value>\n" +
+"    </member>\n" +
+"    <member>\n" +
+"        <name>params</name>\n" +
+"        <value>\n" +
+"            <array>\n" +
+"                <data>\n" +
+"                    <value>\n" +
+"                        <string>1</string>\n" +
+"                    </value>\n" +
+"                    <value>\n" +
+"                        <string>%USER_NAME%</string>\n" +
+"                    </value>\n" +
+"                    <value>\n" +
+"                        <string>%PASSWORD%</string>\n" +
+"                    </value>\n" +
+"                </data>\n" +
+"            </array>\n" +
+"        </value>\n" +
+"    </member>\n" +
+"</struct>"
 		}
 	};
 
@@ -207,7 +255,8 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		bbPress: true,
 		pingback: true,
 		xmlrpc: true,
-		xmlrpc_demo: true
+		xmlrpc_demo: true,
+		xmlrpc_multi: true
 	};
 	$scope.selectAll = function () {
 		for (var item in $scope.checkbox) {
@@ -307,17 +356,18 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	 *
 	 */
 	var post_trackback = function (url, proxy) {
-		// Normalize trackback url
-		var trackback = parse_uri($scope.form.trackback.url);
-		trackback = trackback['scheme'] + '://' + trackback['authority'] + '/'
-
-		// Every time trackback url should be changed
-		$scope.form.trackback.url = trackback + '#' + get_random_int(1000, 9999);
+		// Normalize trackback url, randomize post contents
+		var uri = parse_uri($scope.form.trackback.url),
+		    excerpt = $scope.form.trackback.excerpt;
+		$scope.form.trackback.url = uri['scheme'] + '://' + uri['authority'] + '/';
+		$scope.form.trackback.excerpt += ' #' + get_random_int(1000, 9999);
 
 		var form = serialize_plain($scope.form.trackback);
+		$scope.form.trackback.excerpt = excerpt;
+
 		svcProxy.post_form(url, form, proxy, 'POST').then(function (res) {
 			messageOut('Trackback', res.stat.replace(
-				/^(\d{3}\s+?\w+).*<message>(.*?)<\/message>.*$/, "$1 $2"
+				/<("[^"]*"|'[^']*'|[^'">])*>/g, ''
 			));
 		});
 	}
@@ -364,7 +414,27 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	var post_xmlrpc_demo = function (url, proxy) {
 		var xml = $scope.form.xmlrpc_demo.xml;
 		svcProxy.post_xml(url, xml, proxy).then(function (res) {
-			messageOut('XML-RPC demo', res.stat);
+			messageOut('XML-RPC Demo', res.stat);
+		});
+	};
+
+	/**
+	 * Post a remote multiple command to XML-RPC server
+	 *
+	 */
+	var post_xmlrpc_multi = function (url, proxy) {
+		var i, j, r = '',
+		    n = $scope.form.xmlrpc_multi.repeat,
+		    xml = $scope.form.xmlrpc_multi.xml;
+		for (i = 0; i < n; i++) {
+			j = $scope.form.xmlrpc_multi.method;
+			j = j.replace(/%USER_NAME%/, $scope.form.login.log);
+			j = j.replace(/%PASSWORD%/, $scope.form.login.pwd);
+			r += j + "\n";
+		}
+		xml = xml.replace(/%METHODS%/, r);
+		svcProxy.post_xml(url, xml, proxy).then(function (res) {
+			messageOut('XML-RPC Multi', res.stat);
 		});
 	};
 
@@ -405,6 +475,10 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		// XML-RPC Demo
 		if ($scope.checkbox.xmlrpc_demo)
 			post_xmlrpc_demo(home + 'xmlrpc.php', proxy);
+
+		// XML-RPC Multi
+		if ($scope.checkbox.xmlrpc_multi)
+			post_xmlrpc_multi(home + 'xmlrpc.php', proxy);
 
 		// Login Form
 		if ($scope.checkbox.login) {

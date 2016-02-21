@@ -1,4 +1,4 @@
-WordPress Access Emulator
+WordPress Post Simulator
 =========================
 
 This tool is for testing blocking functionality of [IP Geo Block][IP-Geo-Block]
@@ -8,7 +8,7 @@ on.
 It emulates the specific requests from various countries, and shows the HTTP 
 response codes and messages.
 
-![Access Emulator][Emulator]
+![WordPress Post Simulator][Simulator]
 
 ### Limitation: ###
 
@@ -18,4 +18,4 @@ This tool is built up with [AngularJS][AngularJS]. So the
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [AngularJS]:    https://angularjs.org/ "AngularJS — Superheroic JavaScript MVW Framework"
 [SameOrigin]:   https://en.wikipedia.org/wiki/Same-origin_policy "Same-origin policy - Wikipedia, the free encyclopedia"
-[Emulator]:     http://tokkonopapa.github.io/WordPress-IP-Geo-Block/img/2015-09/Emulator.png "Access Emulator"
+[Simulator]:    http://www.ipgeoblock/img/2016-02/PostSimulatorHead.png "WordPress Post Simulator"

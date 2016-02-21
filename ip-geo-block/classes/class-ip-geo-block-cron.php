@@ -62,7 +62,7 @@ class IP_Geo_Block_Cron {
 		update_option( IP_Geo_Block::$option_keys['settings'], $settings );
 
 		// update matching rule immediately
-		if ( $immediate ) {
+		if ( $immediate && FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
 			$validate = IP_Geo_Block::get_geolocation( NULL, $providers );
 			$validate = IP_Geo_Block::validate_country( $validate, $settings );
 
@@ -79,6 +79,9 @@ class IP_Geo_Block_Cron {
 			}
 
 			update_option( IP_Geo_Block::$option_keys['settings'], $settings );
+
+			// finished to update matching rule
+			set_transient( IP_Geo_Block::CRON_NAME, 'done', 2 * MINUTE_IN_SECONDS );
 		}
 
 		return isset( $res ) ? $res : NULL;
@@ -89,6 +92,7 @@ class IP_Geo_Block_Cron {
 	 *
 	 */
 	public static function spawn_job( $immediate = TRUE ) {
+		set_transient( IP_Geo_Block::CRON_NAME, 'start', 2 * MINUTE_IN_SECONDS );
 		$settings = IP_Geo_Block::get_option( 'settings' );
 		self::schedule_cron_job( $settings['update'], NULL, $immediate );
 	}

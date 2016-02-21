@@ -273,6 +273,13 @@ ul.ip-geo-block-statistics-countries li {
 }
 
 /* for google chart */
-#ip-geo-block-countries {
+#ip-geo-block-countries,
+#ip-geo-block-targets {
     display: none;
+}
+#ip-geo-block-chart-countries {
+    height: 200px;
+}
+#ip-geo-block-chart-daily {
+    height: 240px;
 }

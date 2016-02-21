@@ -1,6 +1,7 @@
 <?php
 function ip_geo_block_tab_statistics( $context ) {
 	require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+	require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
 
 	$plugin_slug = IP_Geo_Block::PLUGIN_SLUG;
 	$option_slug = $context->option_slug['statistics'];
@@ -56,7 +57,7 @@ if ( $options['save_statistics'] ) :
 
 	add_settings_field(
 		$option_name.'_'.$field,
-		__( 'Blocked by countries', IP_Geo_Block::TEXT_DOMAIN ) . '<br>(<a id="show-hide-details" href="javascript:void(0)" title="Show/Hide details">' . __( 'Show/Hide details', IP_Geo_Block::TEXT_DOMAIN ) . '</a>)',
+		__( 'Blocked by countries', IP_Geo_Block::TEXT_DOMAIN ),
 		array( $context, 'callback_field' ),
 		$option_slug,
 		$section,
@@ -68,6 +69,45 @@ if ( $options['save_statistics'] ) :
 		)
 	);
 
+	// Blocked on a daily basis
+	$field = 'daily';
+	$html = '<div id="'.$plugin_slug.'-chart-daily"><table id="'.$plugin_slug.'-targets">';
+
+	$prev = 0;
+	$targets = array( 'comment', 'xmlrpc', 'login', 'admin' );
+	foreach ( $statistics['daystats'] as $key => $val ) {
+		while( $prev && $key - $prev > DAY_IN_SECONDS ) {
+			$prev += DAY_IN_SECONDS;
+			$html .= '<tr><td>' . IP_Geo_Block_Util::localdate( $prev, 'Y-m-d' ) . '</td>'; // must be ISO 8601 or RFC 2822
+			foreach ( $targets as $target ) {
+				$html .= '<td>0</td>';
+			}
+		}
+		$prev = $key;
+		$html .= '<tr><td>' . date( 'Y-m-d', $key ) . '</td>'; // must be ISO 8601 or RFC 2822
+		foreach ( $targets as $target ) {
+			$html .= '<td>' . (isset( $val[ $target ] ) ? (int)$val[ $target ] : 0) . '</td>';
+		}
+		$html .= '</tr>';
+	}
+
+	$html .= '</table></div>';
+
+	add_settings_field(
+		$option_name.'_'.$field,
+		__( 'Blocked per day', IP_Geo_Block::TEXT_DOMAIN ),
+		array( $context, 'callback_field' ),
+		$option_slug,
+		$section,
+		array(
+			'type' => 'html',
+			'option' => $option_name,
+			'field' => $field,
+			'value' => $html,
+		)
+	);
+
+	// Blocked by type of IP address
 	$field = 'type';
 	add_settings_field(
 		$option_name.'_'.$field,

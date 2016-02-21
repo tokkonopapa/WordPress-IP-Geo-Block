@@ -6,13 +6,13 @@ angular.module('language', []);
 angular.module('language').factory('LanguageSvc', ['$window', function ($window) {
 	var language = {
 		'en': {
-			main_title: 'WordPress Access Emulator',
+			main_title: 'WordPress Post Simulator',
 			page_settings: 'Page Settings',
 			page_readme: 'After setting the followings, click <span class="highlight">Validate</span> to validate the pages.',
 			home_url: 'WordPress Home',
 			single_page: 'Single Page',
 			ip_address: 'Proxy IP Address',
-			note_ip_address: 'You should add <span class="highlight"><code>HTTP_X_FORWARDED_FOR</code></span> into <span class="highlight"><code>$_SERVER</code> keys for extra IPs</span> on <span class="highlight">Settings</span> tab of IP Geo Block in order to emulate the post from outside your nation.',
+			note_ip_address: 'You should add <span class="highlight"><code>HTTP_X_FORWARDED_FOR</code></span> into <span class="highlight"><code>$_SERVER</code> keys for extra IPs</span> on <span class="highlight">Settings</span> tab of IP Geo Block in order to simulate the requests from outside your nation.',
 			submit_post: 'Submission',
 			post_settings: 'Submission Settings',
 			required: 'Required',
@@ -48,11 +48,13 @@ angular.module('language').factory('LanguageSvc', ['$window', function ($window)
 			xmlrpc: 'XML-RPC',
 			xmlrpc_readme: '<span class="highlight"><code>%USER_NAME%</code></span> and <span class="highlight"><code>%PASSWORD%</code></span> will be replaced with settings in <span class="highlight">Login Form</span>.',
 			xmlrpc_demo: 'XML-RPC Demo',
+			xmlrpc_multi: 'XML-RPC Multi',
+			xmlrpc_repetition: 'Number of methods',
 			end: ''
 		},
 
 		'ja': {
-			main_title: 'WordPress投稿エミュレータ',
+			main_title: 'WordPress投稿シミュレータ',
 			page_settings: 'ページ設定',
 			page_readme: '以下を適切に設定した後、<span class="highlight">Validate</span> を実行し、正当性を確認して下さい。',
 			home_url: 'WordPressホーム',
@@ -94,6 +96,8 @@ angular.module('language').factory('LanguageSvc', ['$window', function ($window)
 			xmlrpc: 'XML-RPC',
 			xmlrpc_readme: '<span class="highlight"><code>%USER_NAME%</code></span>、<span class="highlight"><code>%PASSWORD%</code></span> は <span class="highlight">ログインフォーム</span> の設定値に置き換えられます。',
 			xmlrpc_demo: 'XML-RPC デモ',
+			xmlrpc_multi: 'XML-RPC マルチ',
+			xmlrpc_repetition: 'メソッド数',
 			end: ''
 		}
 	};

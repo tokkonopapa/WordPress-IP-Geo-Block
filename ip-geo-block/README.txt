@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.4.1
-Stable tag: 2.2.2.3
+Stable tag: 2.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -411,6 +411,28 @@ you are using at the support forum.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.2.3 =
+* **Improvement:** Since WordPress 4.4, XML-RPC system.multicall is disabled 
+  when the authentication fails, but still processed all the methods to the 
+  end. Now this plugin immediately blocks the request when the authentication 
+  fails without processing the rest of the methods.
+* **Improvement:** Add UI to change the maximum number of login attempts.
+* **Improvement:** Add a fallback process of setting up the directory where 
+  the geo location database APIs should be installed. It will be set as 
+  `wp-content/uploads/` instead of `wp-content/plugins/ip-geo-block/` or 
+  `wp-content/` in case of being unable to obtain proper permission.
+  ([@](https://wordpress.org/support/topic/deactivated-after-updte-why "[resolved] Deactivated after update - why?"),
+   [@](https://wordpress.org/support/topic/the-plugin-caused-an-error-message "[resolved] The plugin caused an error message"))
+* **Improvement:** Moderate the conditions of redirection after logout.
+  ([@](https://wordpress.org/support/topic/logout-redirect-doesnt-work-when-plugin-is-active "[resolved] Logout redirect doesn't work when plugin is active"))
+* **Improvement:** Prevent self blocking caused by irrelevant signature.
+  ([@](https://wordpress.org/support/topic/works-too-well-blocked-my-wp-admin-myself "[resolved] Works too well - Blocked my wp-admin myself"))
+* **Bug fix:** Fixed the issue of conflicting with certain plugins due to the 
+  irrelevant handling of js event.
+  ([@](https://wordpress.org/support/topic/cannot-edit-pages-when-ip-geo-block-is-enabled "[resolved] Cannot edit pages when ip-geo-block is enabled."))
+* **New feature:** Add "Blocked per day" graph for the daily statistics.
+* See some details at [2.2.3 release note](http://www.ipgeoblock.com/changelog/release-2.2.3.html "2.2.3 Release Note").
 
 = 2.2.2.3 =
 Sorry for frequent update again but the following obvious bugs should be fixed.

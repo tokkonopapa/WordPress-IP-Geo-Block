@@ -1,7 +1,7 @@
 /*jslint white: true */
-/*
+/*!
  * Project: WordPress IP Geo Block
- * Copyright (c) 2015 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2015-2016 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
 var ip_geo_block_time = new Date();
@@ -109,6 +109,7 @@ var ip_geo_block_time = new Date();
 		self: this,
 		drawChart: function () {
 			this.drawPie();
+			this.drawLine();
 		},
 
 		// Pie Chart
@@ -140,6 +141,52 @@ var ip_geo_block_time = new Date();
 						height: '90%'
 					},
 					sliceVisibilityThreshold: 0.015
+				});
+			}
+		},
+
+		// Line Chart
+		dataLine: null,
+		viewLine: null,
+		drawLine: function () {
+			if (!self.dataLine) {
+				self.dataLine = new google.visualization.DataTable();
+				self.dataLine.addColumn('date', 'Date');
+				self.dataLine.addColumn('number', 'comment');
+				self.dataLine.addColumn('number', 'xmlrpc');
+				self.dataLine.addColumn('number', 'login');
+				self.dataLine.addColumn('number', 'admin');
+				var i, j, k, m, n, cells, arr = [],
+				    tr = $('#ip-geo-block-targets tr');
+				for (i = 0, m = tr.length; i < m; i++) {
+					arr[i] = [];
+					cells = tr.eq(i).children();
+					for (j = 0, n = cells.length; j < n; j++) {
+						k = cells.eq(j).text();
+						arr[i].push(j ? Number(k) : new Date(k));
+					}
+				}
+				self.dataLine.addRows(arr);
+			}
+			if (!self.viewLine) {
+				self.viewLine = new google.visualization.LineChart(
+					document.getElementById('ip-geo-block-chart-daily')
+				);
+			}
+			var w = $('#ip-geo-block-chart-daily').width();
+			if (w) {
+				w = w > 320 ? true : false;
+				self.viewLine.draw(self.dataLine, {
+					backgroundColor: '#f1f1f1',
+					legend: { position: 'bottom' },
+					hAxis: { format: 'MM/dd' },
+					vAxis: { textPosition: (w ? 'out' : 'in') },
+					chartArea: {
+						left: (w ? '10%' : 0),
+						top: '5%',
+						width: '100%',
+						height: '75%'
+					},
 				});
 			}
 		}
@@ -308,12 +355,6 @@ var ip_geo_block_time = new Date();
 					}
 				});
 			}
-
-			// Show/Hide the details of Block by country
-			$('#show-hide-details').on('click', function (event) {
-				$('#ip-geo-block-countries').toggle();
-				return false;
-			});
 
 			// Statistics
 			$('#clear_statistics').on('click', function (event) {

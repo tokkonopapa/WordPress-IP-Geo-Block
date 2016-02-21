@@ -15,7 +15,8 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.2.3';
+	const VERSION = '2.2.3';
+	const GEOAPI_NAME = 'ip-geo-api';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -42,41 +43,16 @@ class IP_Geo_Block {
 	 * 
 	 */
 	private function __construct() {
-		// the action hook which will be fired by cron job
 		$settings = self::get_option( 'settings' );
+		$priority = $settings['priority'];
+
+		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
 			add_action( self::CRON_NAME, array( __CLASS__, 'update_database' ) );
 
 		// check the package version and upgrade if needed
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 )
-			$settings = self::activate();
-
-		$validate = $settings['validation'];
-		$priority = $settings['priority'];
-
-		if ( $validate['comment'] ) {
-			// message text on comment form
-			if ( $settings['comment']['pos'] ) {
-				$tmp = 'comment_form' . ( $settings['comment']['pos'] == 1 ? '_top' : '' );
-				add_action( $tmp, array( $this, 'comment_form_message' ) );
-			}
-
-			// wp-trackback.php @since 1.5.0
-			add_filter( 'preprocess_comment', array( $this, 'validate_comment' ), $priority );
-
-			// bbPress: prevent creating topic/relpy and rendering form
-			add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
-			add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
-			add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
-			add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
-		}
-
-		// wp-login.php @since 2.1.0, BuddyPress: prevent registration and rendering form
-		if ( $validate['login'] ) {
-			add_action( 'login_init', array( $this, 'validate_login' ), $priority );
-			add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
-			add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
-		}
+			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
 
 		// get content folders (with/without trailing slash)
 		self::$content_dir = array(
@@ -90,26 +66,43 @@ class IP_Geo_Block {
 		$uri = preg_replace( '!(//+|/\.+/)!', '/', $_SERVER['REQUEST_URI'] );
 		$uri = substr( parse_url( $uri, PHP_URL_PATH ), strlen( self::$content_dir['root'] ) );
 
-		// validation at init
+		// comment, xmlrpc, login
 		$tmp = array(
 			'/wp-comments-post.php' => 'comment',
 			'/xmlrpc.php'           => 'xmlrpc',
 			'/wp-login.php'         => 'login',
 		);
 
-		if ( isset( $tmp[ $uri ] ) && $validate[ $tmp[ $uri ] ] )
+		if ( isset( $tmp[ $uri ] ) )
 			add_action( 'init', array( $this, 'validate_' . $tmp[ $uri ] ), $priority );
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
-		elseif ( is_admin() && ( $validate['admin'] || $validate['ajax'] || $settings['signature'] ) )
+		elseif ( is_admin() )
 			add_action( 'init', array( $this, 'validate_admin' ), $priority );
 
+		// wp-content/(plugins|themes)/.../*.php
+		elseif ( FALSE !== strpos( $uri, self::$content_dir['plugins'] ) ||
+		         FALSE !== strpos( $uri, self::$content_dir['themes' ] ) )
+			add_action( 'init', array( $this, 'validate_direct' ), $priority );
+
 		else {
-			// wp-content/(plugins|themes)/.../*.php
-			$tmp = FALSE !== strpos( $uri, self::$content_dir['plugins'] ) ||
-			       FALSE !== strpos( $uri, self::$content_dir['themes' ] );
-			if ( $tmp && ( $validate['plugins'] || $validate['themes'] || $settings['signature'] ) )
-				add_action( 'init', array( $this, 'validate_direct' ), $priority );
+			// message text on comment form
+			if ( $settings['comment']['pos'] ) {
+				$tmp = 'comment_form' . ( $settings['comment']['pos'] == 1 ? '_top' : '' );
+				add_action( $tmp, array( $this, 'comment_form_message' ) );
+			}
+
+			// wp-trackback.php @since 1.5.0, bbPress: prevent creating topic/relpy and rendering form
+			add_filter( 'preprocess_comment', array( $this, 'validate_comment' ), $priority );
+			add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
+			add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
+			add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
+			add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
+
+			// wp-login.php @since 2.1.0, BuddyPress: prevent registration and rendering form
+			add_action( 'login_init', array( $this, 'validate_login' ), $priority );
+			add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
+			add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
 		}
 
 		// force to change the redirect URL at logout to remove nonce, embed a nonce into pages
@@ -133,18 +126,17 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function activate( $network_wide = FALSE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		if ( current_user_can( 'manage_options' ) ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 
-		// initialize logs then upgrade and return new options
-		IP_Geo_Block_Logs::create_tables();
-		$settings = IP_Geo_Block_Opts::upgrade();
+			// initialize logs then upgrade and return new options
+			IP_Geo_Block_Logs::create_tables();
+			IP_Geo_Block_Opts::upgrade();
 
-		// kick off a cron job to download database immediately
-		if ( current_user_can( 'manage_options' ) )
+			// kick off a cron job to download database immediately
 			self::exec_download();
-
-		return $settings;
+		}
 	}
 
 	/**
@@ -171,7 +163,7 @@ class IP_Geo_Block {
 			delete_option( self::$option_keys['settings'] ); // @since 1.2.0
 			delete_transient( self::CACHE_KEY ); // @since 2.8
 			IP_Geo_Block_Logs::delete_tables();
-			IP_Geo_Block_Opts::delete_api();
+			IP_Geo_Block_Opts::delete_api( $settings );
 		}
 	}
 
@@ -211,7 +203,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function logout_redirect( $uri ) {
-		return isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] ? 'wp-login.php?loggedout=true' : $uri;
+		return FALSE !== strpos( $uri, self::$content_dir['admin'] ) && isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] ? 'wp-login.php?loggedout=true' : $uri;
 	}
 
 	/**
@@ -220,12 +212,10 @@ class IP_Geo_Block {
 	 * @see http://codex.wordpress.org/Function_Reference/wp_remote_get
 	 */
 	public static function get_request_headers( $settings ) {
-		return apply_filters( self::PLUGIN_SLUG . '-headers',
-			array(
-				'timeout' => (int)$settings['timeout'],
-				'user-agent' => 'WordPress/' . $GLOBALS['wp_version'] . ', ' . self::PLUGIN_SLUG . ' ' . self::VERSION,
-			)
-		);
+		return apply_filters( self::PLUGIN_SLUG . '-headers', array(
+			'timeout' => (int)$settings['timeout'],
+			'user-agent' => 'WordPress/' . $GLOBALS['wp_version'] . ', ' . self::PLUGIN_SLUG . ' ' . self::VERSION,
+		) );
 	}
 
 	/**
@@ -465,12 +455,21 @@ class IP_Geo_Block {
 	 * Validate at xmlrpc.
 	 *
 	 */
-	public function validate_xmlrpc( $something ) {
-		// wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
-		add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ) );
+	public function validate_xmlrpc() {
+		$settings = self::get_option( 'settings' );
 
-		$this->validate_ip( 'xmlrpc', self::get_option( 'settings' ) );
-		return $something;
+		// Completely close
+		if ( 2 === (int)$settings['validation']['xmlrpc'] )
+			add_filter( self::PLUGIN_SLUG . '-xmlrpc', array( $this, 'close_xmlrpc' ), 6, 2 );
+		// wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
+		else
+			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ), $settings['priority'] );
+
+		$this->validate_ip( 'xmlrpc', $settings );
+	}
+
+	public function close_xmlrpc( $validate, $settings ) {
+		return $validate + array( 'result' => 'closed' ); // can't overwrite existing result
 	}
 
 	/**
@@ -478,10 +477,10 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_login() {
-		// wp-includes/pluggable.php @since 2.5.0
-		add_action( 'wp_login_failed', array( $this, 'auth_fail' ) );
-
 		$settings = self::get_option( 'settings' );
+
+		// wp-includes/pluggable.php @since 2.5.0
+		add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
 
 		// enables to skip validation by country at login/out except BuddyPress signup
 		$block = ( 1 === (int)$settings['validation']['login'] ) ||
@@ -588,7 +587,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function auth_fail( $something = NULL ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// Count up a number of fails when authentication is failed
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $this->remote_addr ) ) {
@@ -600,12 +599,21 @@ class IP_Geo_Block {
 			) );
 
 			$settings = self::get_option( 'settings' );
-			IP_Geo_Block_API_Cache::update_cache( $cache['hook'], $validate, $settings );
+			$cache = IP_Geo_Block_API_Cache::update_cache( $cache['hook'], $validate, $settings );
+
+			// validate xmlrpc system.multicall (HTTP_RAW_POST_DATA has already populated in xmlrpc.php)
+			if ( defined( 'XMLRPC_REQUEST' ) && FALSE !== strpos( $GLOBALS['HTTP_RAW_POST_DATA'], 'system.multicall' ) )
+				$validate['result'] = 'multi';
 
 			// (1) blocked, (3) unauthenticated, (5) all
-			if ( 1 & (int)$settings['validation']['reclogs'] ) {
-				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			if ( 1 & (int)$settings['validation']['reclogs'] )
 				IP_Geo_Block_Logs::record_logs( $cache['hook'], $validate, $settings );
+
+			// send response code to refuse immediately
+			if ( $cache['fail'] > max( 0, $settings['login_fails'] ) || 'multi' === $validate['result'] ) {
+				if ( $settings['save_statistics'] )
+					IP_Geo_Block_Logs::update_stat( $cache['hook'], $validate, $settings );
+				$this->send_response( $cache['hook'], $settings['response_code'] );
 			}
 		}
 
@@ -616,7 +624,7 @@ class IP_Geo_Block {
 		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
 
 		// if a number of fails is exceeded, then fail
-		if ( $cache && $cache['fail'] >= $settings['login_fails'] )
+		if ( $cache && $cache['fail'] > max( 0, $settings['login_fails'] ) )
 			if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
 				$validate['result'] = 'failed'; // can't overwrite existing result
 
@@ -668,7 +676,7 @@ class IP_Geo_Block {
 		if ( isset( $_REQUEST[ $key ] ) )
 			return sanitize_text_field( $_REQUEST[ $key ] );
 
-		if ( preg_match( "/$key=([\w]+)/", wp_get_referer(), $matches ) )
+		if ( preg_match( "/$key(?:=|%3D)([\w]+)/", wp_get_referer(), $matches ) )
 			return sanitize_text_field( $matches[1] );
 
 		return NULL;

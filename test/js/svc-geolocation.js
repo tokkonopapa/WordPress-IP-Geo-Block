@@ -76,6 +76,31 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				return null;
 			}
 		},
+		/**
+		 * APIs that doesn't support CORS.
+		 * These are accessed through https://developer.yahoo.com/yql/
+		 */
+		{
+			api: 'Pycox',
+			url: 'https://query.yahooapis.com/v1/public/yql?q=select * from %API_FMT% where url="http://ip.pycox.com/%API_FMT%/%API_IP%"&format=%API_FMT%&jsonCompat=new',
+			fmt: 'json',
+			type: 'IPv4',
+			get: function (data, type) {
+				switch (type) {
+					case 'name':
+						if (typeof data.query.results.json !== 'undefined')
+							return data.query.results.json.country_name;
+						break;
+					case 'code':
+						if (typeof data.query.results.json !== 'undefined')
+							return data.query.results.json.country_code
+						break;
+					case 'error':
+						return data.query.results.error;
+				}
+				return null;
+			}
+		},
 		{
 			api: 'Nekudo',
 			url: 'https://query.yahooapis.com/v1/public/yql?q=select * from %API_FMT% where url="http://geoip.nekudo.com/api/%API_IP%"&format=%API_FMT%&jsonCompat=new',

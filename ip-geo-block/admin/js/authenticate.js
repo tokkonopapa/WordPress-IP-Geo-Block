@@ -1,7 +1,8 @@
 /*jslint white: true */
-/**
- * WP-ZEP - Zero-day exploit Prevention for wp-admin
- *
+/*!
+ * Project: WP-ZEP - Zero-day exploit Prevention for wp-admin
+ * Copyright (c) 2015-2016 tokkonopapa (tokkonopapa@yahoo.com)
+ * This software is released under the MIT License.
  */
 // utility object
 var IP_GEO_BLOCK_ZEP = {
@@ -46,7 +47,7 @@ var IP_GEO_BLOCK_ZEP = {
 		// scheme :// authority path ? query # fragment
 		return {
 			scheme:    m[1] || '',
-			absolute:  m[2] || '',
+			relative:  m[2] || '',
 			authority: m[3] || '',
 			path:      m[4] || '',
 			query:     m[5] || '',
@@ -56,7 +57,7 @@ var IP_GEO_BLOCK_ZEP = {
 
 	function compose_uri(uri) {
 		return (uri.scheme   ? uri.scheme + ':'   : '') +
-		       (uri.absolute + uri.path)  +
+		       (uri.relative + uri.path)  +
 		       (uri.query    ? '?' + uri.query    : '') +
 		       (uri.fragment ? '#' + uri.fragment : '');
 	}
@@ -234,18 +235,54 @@ var IP_GEO_BLOCK_ZEP = {
 		}
 	});
 
-	/**
-	 * Set the event priority to the first (jQuery 1.8+, WP 3.5+)
+	/*
+	 * jQuery.bind-first library v0.2.3 (jquery >= 1.7)
+	 * Copyright (c) 2013 Vladimir Zhuravlev
 	 *
-	 * http://stackoverflow.com/questions/2360655/jquery-event-handlers-always-execute-in-order-they-were-bound-any-way-around-t
+	 * Released under MIT License
+	 * @license https://github.com/private-face/jquery.bind-first
+	 *
+	 * Date: Thu Feb  6 10:13:59 ICT 2014
 	 */
-	$.fn.bindFirst = function (event, selector, fn) {
-		this.on(event, selector, fn).each(function () {
-			var handlers = $._data(this, 'events')[event.split('.')[0]],
-			    handler = handlers.pop();
-			handlers.unshift(handler);
+	function moveHandlerToTop($el, eventName, isDelegated) {
+		var data = $._data($el[0]).events;
+		var events = data[eventName];
+
+		var handler = isDelegated ? events.splice(events.delegateCount - 1, 1)[0] : events.pop();
+		events.splice(isDelegated ? 0 : (events.delegateCount || 0), 0, handler);
+	}
+
+	function moveEventHandlers($elems, eventsString, isDelegate) {
+		var events = eventsString.split(/\s+/);
+		$elems.each(function() {
+			for (var i = 0; i < events.length; ++i) {
+				var pureEventName = $.trim(events[i]).match(/[^\.]+/i)[0];
+				moveHandlerToTop($(this), pureEventName, isDelegate);
+			}
 		});
-	};
+	}
+
+	if (typeof $.fn.onFirst === 'undefined') {
+		$.fn.onFirst = function(types, selector) {
+			var type, $el = $(this);
+			var isDelegated = typeof selector === 'string';
+
+			$.fn.on.apply($el, arguments);
+
+			// events map
+			if (typeof types === 'object') {
+				for (type in types) {
+					if (types.hasOwnProperty(type)) {
+						moveEventHandlers($el, type, isDelegated);
+					}
+				}
+			} else if (typeof types === 'string') {
+				moveEventHandlers($el, types, isDelegated);
+			}
+
+			return $el;
+		};
+	}
 
 	$(function () {
 		var nonce = IP_GEO_BLOCK_ZEP.nonce;
@@ -261,7 +298,7 @@ var IP_GEO_BLOCK_ZEP = {
 				}
 			});
 
-			$body.bindFirst('click', 'a', function (event) {
+			$body.onFirst('click', 'a', function (event) {
 				var $this = $(this);
 
 				// attr() returns 'string' or 'undefined'
@@ -289,7 +326,7 @@ var IP_GEO_BLOCK_ZEP = {
 				}
 			});
 
-			$body.bindFirst('submit', 'form', function (event) {
+			$body.onFirst('submit', 'form', function (event) {
 				var $this = $(this),
 				    action = $this.attr('action'); // possibly 'undefined'
 

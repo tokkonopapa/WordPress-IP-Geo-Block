@@ -78,14 +78,14 @@ endif;
 function ip_geo_block_list_accesslog() {
 	// same as in tab-settings.php
 	$dfn = __( '<dfn title="Validate access to %s.">%s</dfn>', IP_Geo_Block::TEXT_DOMAIN );
-	$title = array(
+	$target = array(
 		'comment' => sprintf( $dfn, 'wp-comments-post.php', __( 'Comment post', IP_Geo_Block::TEXT_DOMAIN ) ),
 		'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',      IP_Geo_Block::TEXT_DOMAIN ) ),
 		'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',   IP_Geo_Block::TEXT_DOMAIN ) ),
 		'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',   IP_Geo_Block::TEXT_DOMAIN ) ),
 	);
 
-	foreach ( $title as $key => $val ) {
+	foreach ( $target as $key => $val ) {
 		echo '<h4>', $val, '</h4>', "\n";
 		echo '<table class="fixed ', IP_Geo_Block::PLUGIN_SLUG, '-log" data-page-size="10" data-limit-navigation="5"><thead><tr>', "\n";
 		echo '<th data-type="numeric">', __( 'Date', IP_Geo_Block::TEXT_DOMAIN ), '</th>', "\n";

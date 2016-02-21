@@ -6,14 +6,15 @@ caused by malicious burst access using [apache bench][ApacheBench].
 
 ### Usage: ###
 
-    ./attack.sh [-a "attacker IP address"] [-h "Home URL of WordPress"] [1-4]
+    ./attack.sh [-i "IP address of attacker"] [-w "WordPress Home URL"] [1-4]
 
-where `[1-4]` should be specified as a target PHP file as follows:
+where `[1-5]` should be specified as a target PHP file as follows:
 
 1. `wp-comments-post.php`
 2. `xmlrpc.php`
-3. `wp-login.php`
-4. `wp-admin/admin-ajax.php`
+3. `xmlrpc.php by sys.multicall`
+4. `wp-login.php`
+5. `wp-admin/admin-ajax.php`
 
 or edit the following lines in `attack.sh`.
 
@@ -32,6 +33,7 @@ The following files are used to request by POST method.
 
 * `wp-comments-post.txt`
 * `xmlrpc.txt`
+* `multicall.txt`
 * `wp-login.txt`
 
 ### Settings for ab: ###
@@ -46,5 +48,5 @@ The following files are used to request by POST method.
 Do not abuse.
 
 [ApacheBench]:  http://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool"
-[X-Forwarded]:  http://tokkonopapa.github.io/WordPress-IP-Geo-Block/img/2015-09/X-Forwarded-For.png "$_SERVER keys for extra IPs"
+[X-Forwarded]:  http://www.ipgeoblock.com/img/2015-09/X-Forwarded-For.png "$_SERVER keys for extra IPs"
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"

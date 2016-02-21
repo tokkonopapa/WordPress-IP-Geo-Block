@@ -103,15 +103,15 @@ class IP_Geo_Block_Util {
 				if ( FALSE === ( $gz = gzopen( $res, 'r' ) ) )
 					throw new Exception(
 						sprintf(
-							__( 'Cannot open %s to read. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
+							__( 'Unable to read %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
 							$res
 						)
 					);
 
-				if ( FALSE === ( $fp = fopen( $filename, 'wb' ) ) )
+				if ( FALSE === ( $fp = @fopen( $filename, 'wb' ) ) )
 					throw new Exception(
 						sprintf(
-							__( 'Cannot open %s to write. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
+							__( 'Unable to write %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
 							$filename
 						)
 					);
@@ -126,18 +126,25 @@ class IP_Geo_Block_Util {
 
 			elseif ( 'zip' === $args && class_exists( 'ZipArchive' ) ) {
 				$zip = new ZipArchive;
-				if ( TRUE === $zip->open( $res ) ) {
-					$zip->extractTo( dirname( $filename ) );
-					$zip->close();
-				}
-				else {
+				if ( TRUE !== $zip->open( $res ) )
 					throw new Exception(
 						sprintf(
-							__( 'Failed to open %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
+							__( 'Unable to read %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
 							$res
 						)
 					);
+
+				if ( FALSE === @$zip->extractTo( dirname( $filename ) ) ) {
+					$zip->close();
+					throw new Exception(
+						sprintf(
+							__( 'Unable to write %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
+							$filename
+						)
+					);
 				}
+
+				$zip->close();
 			}
 
 			@unlink( $res );

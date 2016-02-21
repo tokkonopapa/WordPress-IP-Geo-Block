@@ -538,6 +538,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		}
 
 		set_transient( IP_Geo_Block::CACHE_KEY, $cache, $exp ); // @since 2.8
+		return $cache[ $ip ];
 	}
 
 	public static function delete_cache() {
@@ -667,9 +668,8 @@ class IP_Geo_Block_Provider {
 		if ( $rand )
 			shuffle( $tmp );
 
-		foreach ( $tmp as $name ) {
+		foreach ( $tmp as $name )
 			$list[ $name ] = self::$providers[ $name ][ $key ];
-		}
 
 		return $list;
 	}
@@ -729,18 +729,15 @@ if ( class_exists( 'IP_Geo_Block' ) ) :
  *
  */
 
-// Default path to the database file
-define( 'IP_GEO_BLOCK_API_DIR', 'ip-geo-api' );
-
-// Get absolute path of wp-content using WP_CONTENT_DIR
-$dir = apply_filters(
-	IP_Geo_Block::PLUGIN_SLUG . '-api-dir',
-	WP_CONTENT_DIR . '/' . IP_GEO_BLOCK_API_DIR
-);
+// Get absolute path to the geo-location API
+$dir = IP_Geo_Block::get_option( 'settings' );
+$dir = trailingslashit(
+	apply_filters( IP_Geo_Block::PLUGIN_SLUG . '-api-dir', dirname( $dir['api_dir'] ) )
+) . IP_Geo_Block::GEOAPI_NAME;
 
 // If not exists then use bundled API
-if ( ! is_dir( $dir ) )
-	$dir = IP_GEO_BLOCK_PATH . IP_GEO_BLOCK_API_DIR;
+if ( ! @is_dir( $dir ) )
+	$dir = IP_GEO_BLOCK_PATH . IP_Geo_Block::GEOAPI_NAME;
 
 // Scan API directory
 $dir = trailingslashit( $dir );
