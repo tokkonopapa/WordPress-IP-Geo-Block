@@ -178,7 +178,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 
 		.error(function (data, status, headers, config) {
 			var msg = data ? ' ' + strip_tags(data) : '';
-			callback(status + ' ' + statusText + msg);
+			callback(status + ' ' + msg);
 		});//*/
 	};
 }]);
