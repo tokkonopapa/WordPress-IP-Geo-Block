@@ -73,7 +73,7 @@ class IP_Geo_Block {
 			'/wp-login.php'         => 'login',
 		);
 
-		if ( isset( $tmp[ $uri ] ) )
+		if ( isset( $tmp[ $uri ] ) && $settings['validation'][ $tmp[ $uri ] ] )
 			add_action( 'init', array( $this, 'validate_' . $tmp[ $uri ] ), $priority );
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
