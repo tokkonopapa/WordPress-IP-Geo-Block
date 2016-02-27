@@ -45,6 +45,7 @@ class IP_Geo_Block {
 	private function __construct() {
 		$settings = self::get_option( 'settings' );
 		$priority = $settings['priority'];
+		$validate = $settings['validation'];
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
@@ -73,8 +74,10 @@ class IP_Geo_Block {
 			'/wp-login.php'         => 'login',
 		);
 
-		if ( isset( $tmp[ $uri ] ) )
-			add_action( 'init', array( $this, 'validate_' . $tmp[ $uri ] ), $priority );
+		if ( isset( $tmp[ $uri ] ) ) {
+			if ( $validate[ $tmp[ $uri ] ] )
+				add_action( 'init', array( $this, 'validate_' . $tmp[ $uri ] ), $priority );
+		}
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
 		elseif ( is_admin() )
@@ -92,17 +95,21 @@ class IP_Geo_Block {
 				add_action( $tmp, array( $this, 'comment_form_message' ) );
 			}
 
-			// wp-trackback.php @since 1.5.0, bbPress: prevent creating topic/relpy and rendering form
-			add_filter( 'preprocess_comment', array( $this, 'validate_comment' ), $priority );
-			add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
-			add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
-			add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
-			add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
+			if ( $validate['comment'] ) {
+				// wp-trackback.php @since 1.5.0, bbPress: prevent creating topic/relpy and rendering form
+				add_filter( 'preprocess_comment', array( $this, 'validate_comment' ), $priority );
+				add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
+				add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
+				add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
+				add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
+			}
 
-			// wp-login.php @since 2.1.0, BuddyPress: prevent registration and rendering form
-			add_action( 'login_init', array( $this, 'validate_login' ), $priority );
-			add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
-			add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
+			if ( $validate['login'] ) {
+				// wp-login.php @since 2.1.0, BuddyPress: prevent registration and rendering form
+				add_action( 'login_init', array( $this, 'validate_login' ), $priority );
+				add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
+				add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
+			}
 		}
 
 		// force to change the redirect URL at logout to remove nonce, embed a nonce into pages
@@ -435,14 +442,8 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_front( $can_access = TRUE ) {
-		$settings = self::get_option( 'settings' );
-
-		if ( $settings['validation']['comment'] ) {
-			$validate = $this->validate_ip( 'comment', $settings, TRUE, FALSE );
-			return ( 'passed' === $validate['result'] ? $can_access : FALSE );
-		} else {
-			return TRUE;
-		}
+		$validate = $this->validate_ip( 'comment', self::get_option( 'settings' ), TRUE, FALSE );
+		return ( 'passed' === $validate['result'] ? $can_access : FALSE );
 	}
 
 	/**
@@ -450,13 +451,9 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_comment( $comment = NULL ) {
-		$settings = self::get_option( 'settings' );
-
-		if ( $settings['validation']['comment'] ) {
-			// check comment type if it comes form wp-includes/wp_new_comment()
-			if ( ! is_array( $comment ) || in_array( $comment['comment_type'], array( 'trackback', 'pingback' ) ) )
-				$this->validate_ip( 'comment', $settings );
-		}
+		// check comment type if it comes form wp-includes/wp_new_comment()
+		if ( ! is_array( $comment ) || in_array( $comment['comment_type'], array( 'trackback', 'pingback' ) ) )
+			$this->validate_ip( 'comment', self::get_option( 'settings' ) );
 
 		return $comment;
 	}
@@ -468,14 +465,13 @@ class IP_Geo_Block {
 	public function validate_xmlrpc() {
 		$settings = self::get_option( 'settings' );
 
-		if ( $settings['validation']['xmlrpc'] ) {
-			if ( 2 === (int)$settings['validation']['xmlrpc'] ) // Completely close
-				add_filter( self::PLUGIN_SLUG . '-xmlrpc', array( $this, 'close_xmlrpc' ), 6, 2 );
-			else // wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
-				add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ), $settings['priority'] );
+		if ( 2 === (int)$settings['validation']['xmlrpc'] ) // Completely close
+			add_filter( self::PLUGIN_SLUG . '-xmlrpc', array( $this, 'close_xmlrpc' ), 6, 2 );
 
-			$this->validate_ip( 'xmlrpc', $settings );
-		}
+		else // wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
+			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ), $settings['priority'] );
+
+		$this->validate_ip( 'xmlrpc', $settings );
 	}
 
 	public function close_xmlrpc( $validate, $settings ) {
@@ -489,17 +485,15 @@ class IP_Geo_Block {
 	public function validate_login() {
 		$settings = self::get_option( 'settings' );
 
-		if ( $settings['validation']['login'] ) {
-			// wp-includes/pluggable.php @since 2.5.0
-			add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
+		// wp-includes/pluggable.php @since 2.5.0
+		add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
 
-			// enables to skip validation by country at login/out except BuddyPress signup
-			$block = ( 1 === (int)$settings['validation']['login'] ) ||
-				( 'bp_' === substr( current_filter(), 0, 3 ) ) ||
-				( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout' ) ) );
+		// enables to skip validation by country at login/out except BuddyPress signup
+		$block = ( 1 === (int)$settings['validation']['login'] ) ||
+			( 'bp_' === substr( current_filter(), 0, 3 ) ) ||
+			( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout' ) ) );
 
-			$this->validate_ip( 'login', $settings, $block );
-		}
+		$this->validate_ip( 'login', $settings, $block );
 	}
 
 	/**
