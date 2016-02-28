@@ -118,9 +118,11 @@ class IP_Geo_Block_Admin {
 		switch ( $tab ) {
 		  case 1:
 			// js for google chart
-			wp_enqueue_script( $addon = IP_Geo_Block::PLUGIN_SLUG . '-google-chart',
+			wp_register_script(
+				$addon = IP_Geo_Block::PLUGIN_SLUG . '-google-chart',
 				'https://www.google.com/jsapi', array(), NULL, $footer
 			);
+			wp_enqueue_script( $addon );
 			break;
 
 		  case 2:
@@ -148,13 +150,13 @@ class IP_Geo_Block_Admin {
 		}
 
 		// js for IP Geo Block admin page
-		wp_enqueue_script( $handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script',
+		wp_register_script(
+			$handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script',
 			plugins_url( 'js/admin.min.js', __FILE__ ),
 			$dependency + ( isset( $addon ) ? array( $addon ) : array() ),
-			IP_Geo_Block::VERSION, $footer
+			IP_Geo_Block::VERSION,
+			$footer
 		);
-
-		// global value for ajax @since r16
 		wp_localize_script( $handle,
 			'IP_GEO_BLOCK',
 			array(
@@ -163,6 +165,7 @@ class IP_Geo_Block_Admin {
 				'nonce' => wp_create_nonce( $this->get_ajax_action() ),
 			)
 		);
+		wp_enqueue_script( $handle );
 	}
 
 	/**
@@ -176,6 +179,7 @@ class IP_Geo_Block_Admin {
 			foreach ( $notices as $notice ) {
 				echo "\n<div class=\"notice is-dismissible ", key( $notice ), "\"><p><strong>IP Geo Block:</strong> ", current( $notice ), "</p></div>\n";
 			}
+
 			delete_transient( $key );
 		}
 	}
@@ -185,7 +189,9 @@ class IP_Geo_Block_Admin {
 		if ( FALSE === ( $err = get_transient( $key ) ) )
 			$err = array();
 
-		$err[] = array( $type => $msg );
+		if ( FALSE === in_array( $msg, array_keys( $err ), TRUE ) )
+			$err[] = array( $type => $msg );
+
 		set_transient( $key, $err, MINUTE_IN_SECONDS );
 	}
 
