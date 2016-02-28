@@ -98,12 +98,12 @@ class IP_Geo_Block_Admin {
 	 */
 	public function show_admin_notices() {
 		$key = IP_Geo_Block::PLUGIN_SLUG . '-notice';
-		if ( FALSE !== ( $notices = get_transient( $key ) ) )
+		if ( FALSE !== ( $notices = get_transient( $key ) ) ) {
 			foreach ( $notices as $notice ) {
 				echo "\n<div class=\"notice is-dismissible ", key( $notice ), "\"><p><strong>IP Geo Block:</strong> ", current( $notice ), "</p></div>\n";
 			}
-
-		delete_transient( $key );
+			delete_transient( $key );
+		}
 	}
 
 	public static function add_admin_notice( $type, $msg ) {
