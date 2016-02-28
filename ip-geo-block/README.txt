@@ -416,7 +416,8 @@ you are using at the support forum.
 * **Bug fix:** Fixed the issue that disabled validation target was still 
   blocked by country.
   ([@](https://wordpress.org/support/topic/logs-whitelist-comments-still-blocked "[resolved] logs whitelist comments still blocked?"))
-* **Improvement:** Better handling of error and charset for MySQL.
+* **Improvement:** Better handling of charset and errors for MySQL.
+  ([@](https://wordpress.org/support/topic/whitelist-log "Whitelist + Log"))
 
 = 2.2.3 =
 * **Improvement:** Since WordPress 4.4, XML-RPC system.multicall is disabled 

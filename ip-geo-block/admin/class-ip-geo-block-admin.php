@@ -92,39 +92,6 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Display global notice
-	 *
-	 * @notice: Sanitization should be done at the caller
-	 */
-	public function show_admin_notices() {
-		$key = IP_Geo_Block::PLUGIN_SLUG . '-notice';
-		if ( FALSE !== ( $notices = get_transient( $key ) ) ) {
-			foreach ( $notices as $notice ) {
-				echo "\n<div class=\"notice is-dismissible ", key( $notice ), "\"><p><strong>IP Geo Block:</strong> ", current( $notice ), "</p></div>\n";
-			}
-			delete_transient( $key );
-		}
-	}
-
-	public static function add_admin_notice( $type, $msg ) {
-		$key = IP_Geo_Block::PLUGIN_SLUG . '-notice';
-		if ( FALSE === ( $err = get_transient( $key ) ) )
-			$err = array();
-
-		$err[] = array( $type => $msg );
-		set_transient( $key, $err, MINUTE_IN_SECONDS );
-	}
-
-	/**
-	 * Display local notice
-	 *
-	 * @notice: Sanitization should be done at the caller
-	 */
-	public function setting_notice( $name, $type, $msg ) {
-		add_settings_error( $this->option_slug, $this->option_name[ $name ], $msg, $type );
-	}
-
-	/**
 	 * Get the action name of ajax for nonce
 	 *
 	 */
@@ -199,32 +166,36 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Add settings action link to the plugins page.
+	 * Display global notice
 	 *
+	 * @notice: Sanitization should be done at the caller
 	 */
-	public function add_action_links( $links ) {
-		return array_merge(
-			array(
-				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG ) . '">' . __( 'Settings' ) . '</a>'
-			),
-			$links
-		);
+	public function show_admin_notices() {
+		$key = IP_Geo_Block::PLUGIN_SLUG . '-notice';
+		if ( FALSE !== ( $notices = get_transient( $key ) ) ) {
+			foreach ( $notices as $notice ) {
+				echo "\n<div class=\"notice is-dismissible ", key( $notice ), "\"><p><strong>IP Geo Block:</strong> ", current( $notice ), "</p></div>\n";
+			}
+			delete_transient( $key );
+		}
+	}
+
+	public static function add_admin_notice( $type, $msg ) {
+		$key = IP_Geo_Block::PLUGIN_SLUG . '-notice';
+		if ( FALSE === ( $err = get_transient( $key ) ) )
+			$err = array();
+
+		$err[] = array( $type => $msg );
+		set_transient( $key, $err, MINUTE_IN_SECONDS );
 	}
 
 	/**
-	 * Add plugin meta links
+	 * Display local notice
 	 *
+	 * @notice: Sanitization should be done at the caller
 	 */
-	public function add_plugin_meta_links( $links, $file ) {
-		if ( $file === IP_GEO_BLOCK_BASE ) {
-			$title = __( 'Contribute at GitHub', IP_Geo_Block::TEXT_DOMAIN );
-			array_push(
-				$links,
-				"<a href=\"http://www.ipgeoblock.com\" title=\"$title\" target=_blank>$title</a>"
-			);
-		}
-
-		return $links;
+	public function show_setting_notice( $name, $type, $msg ) {
+		add_settings_error( $this->option_slug, $this->option_name[ $name ], $msg, $type );
 	}
 
 	/**
@@ -306,6 +277,35 @@ class IP_Geo_Block_Admin {
 					self::add_admin_notice( 'notice-warning', $warn );
 			}
 		}
+	}
+
+	/**
+	 * Add plugin meta links
+	 *
+	 */
+	public function add_plugin_meta_links( $links, $file ) {
+		if ( $file === IP_GEO_BLOCK_BASE ) {
+			$title = __( 'Contribute at GitHub', IP_Geo_Block::TEXT_DOMAIN );
+			array_push(
+				$links,
+				"<a href=\"http://www.ipgeoblock.com\" title=\"$title\" target=_blank>$title</a>"
+			);
+		}
+
+		return $links;
+	}
+
+	/**
+	 * Add settings action link to the plugins page.
+	 *
+	 */
+	public function add_action_links( $links ) {
+		return array_merge(
+			array(
+				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG ) . '">' . __( 'Settings' ) . '</a>'
+			),
+			$links
+		);
 	}
 
 	/**
@@ -593,7 +593,7 @@ class IP_Geo_Block_Admin {
 
 				// Check providers setting
 				if ( $error = IP_Geo_Block_Provider::diag_providers( $output[ $key ] ) ) {
-					$this->setting_notice( $option_name, 'error', $error );
+					$this->show_setting_notice( $option_name, 'error', $error );
 				}
 				break;
 
@@ -683,7 +683,7 @@ class IP_Geo_Block_Admin {
 		$output['signature'] = implode( ',', $key );
 
 		// Register a settings error to be displayed to the user
-		$this->setting_notice( $option_name, 'updated',
+		$this->show_setting_notice( $option_name, 'updated',
 			__( 'Successfully updated.', IP_Geo_Block::TEXT_DOMAIN )
 		);
 

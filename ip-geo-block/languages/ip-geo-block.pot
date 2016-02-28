@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.2.3.1\n"
 "Report-Msgid-Bugs-To: http://www.ipgeoblock.com/\n"
-"POT-Creation-Date: 2016-02-28 14:54+0900\n"
-"PO-Revision-Date: 2016-02-28 14:54+0900\n"
+"POT-Creation-Date: 2016-02-28 16:49+0900\n"
+"PO-Revision-Date: 2016-02-28 16:49+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,24 +26,15 @@ msgid ""
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:208
-#: admin/class-ip-geo-block-admin.php:341
-msgid "Settings"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:220
-msgid "Contribute at GitHub"
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:237
-#: admin/class-ip-geo-block-admin.php:238
+#: admin/class-ip-geo-block-admin.php:209
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:256
+#: admin/class-ip-geo-block-admin.php:227
 msgid "You need WordPress 3.7+."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:264
+#: admin/class-ip-geo-block-admin.php:235
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -51,18 +42,18 @@ msgid ""
 "strong>&#8221; at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:270
+#: admin/class-ip-geo-block-admin.php:241
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
 "confirm it at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:280
+#: admin/class-ip-geo-block-admin.php:251
 msgid "Downloading geolocation databases was successfully done."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:293
+#: admin/class-ip-geo-block-admin.php:264
 #, php-format
 msgid ""
 "You'll be blocked after you log out. Please confirm &#8220;<strong>Matching "
@@ -71,6 +62,15 @@ msgid ""
 "select &#8220;<strong>Block by country (register, lost password)</"
 "strong>&#8221; for &#8220;<strong>Login form</strong>&#8221; at <a href=\"%s"
 "\">Validation target settings</a>."
+msgstr ""
+
+#: admin/class-ip-geo-block-admin.php:288
+msgid "Contribute at GitHub"
+msgstr ""
+
+#: admin/class-ip-geo-block-admin.php:305
+#: admin/class-ip-geo-block-admin.php:341
+msgid "Settings"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:342
