@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.2.3.1\n"
 "Report-Msgid-Bugs-To: http://www.ipgeoblock.com/\n"
-"POT-Creation-Date: 2016-02-28 22:37+0900\n"
-"PO-Revision-Date: 2016-02-28 22:37+0900\n"
+"POT-Creation-Date: 2016-02-28 23:54+0900\n"
+"PO-Revision-Date: 2016-02-28 23:54+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,16 +25,16 @@ msgid ""
 "posted from outside your nation, and also prevents zero-day exploit."
 msgstr ""
 
+#: admin/class-ip-geo-block-admin.php:213
 #: admin/class-ip-geo-block-admin.php:214
-#: admin/class-ip-geo-block-admin.php:215
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:233
+#: admin/class-ip-geo-block-admin.php:232
 msgid "You need WordPress 3.7+."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:241
+#: admin/class-ip-geo-block-admin.php:240
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -42,18 +42,18 @@ msgid ""
 "strong>&#8221; at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:247
+#: admin/class-ip-geo-block-admin.php:246
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
 "confirm it at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:257
+#: admin/class-ip-geo-block-admin.php:256
 msgid "Downloading geolocation databases was successfully done."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:270
+#: admin/class-ip-geo-block-admin.php:269
 #, php-format
 msgid ""
 "You'll be blocked after you log out. Please confirm &#8220;<strong>Matching "
@@ -64,59 +64,59 @@ msgid ""
 "\">Validation target settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:294
+#: admin/class-ip-geo-block-admin.php:293
 msgid "Contribute at GitHub"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:311
-#: admin/class-ip-geo-block-admin.php:347
+#: admin/class-ip-geo-block-admin.php:310
+#: admin/class-ip-geo-block-admin.php:346
 msgid "Settings"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:348
+#: admin/class-ip-geo-block-admin.php:347
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:349
+#: admin/class-ip-geo-block-admin.php:348
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:350
+#: admin/class-ip-geo-block-admin.php:349
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:351
+#: admin/class-ip-geo-block-admin.php:350
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:364
+#: admin/class-ip-geo-block-admin.php:363
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:365
+#: admin/class-ip-geo-block-admin.php:364
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:492
+#: admin/class-ip-geo-block-admin.php:491
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:548
+#: admin/class-ip-geo-block-admin.php:547
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:693
+#: admin/class-ip-geo-block-admin.php:692
 msgid "Successfully updated."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:768
+#: admin/class-ip-geo-block-admin.php:767
 msgid "n/a"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:771 admin/includes/tab-settings.php:75
+#: admin/class-ip-geo-block-admin.php:770 admin/includes/tab-settings.php:75
 msgid "UNKNOWN"
 msgstr ""
 

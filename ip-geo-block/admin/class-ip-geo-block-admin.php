@@ -176,8 +176,8 @@ class IP_Geo_Block_Admin {
 	public function show_admin_notices() {
 		$key = IP_Geo_Block::PLUGIN_SLUG . '-notice';
 		if ( FALSE !== ( $notices = get_transient( $key ) ) ) {
-			foreach ( $notices as $notice ) {
-				echo "\n<div class=\"notice is-dismissible ", key( $notice ), "\"><p><strong>IP Geo Block:</strong> ", current( $notice ), "</p></div>\n";
+			foreach ( $notices as $msg => $type ) {
+				echo "\n<div class=\"notice is-dismissible ", $type, "\"><p><strong>IP Geo Block:</strong> ", $msg, "</p></div>\n";
 			}
 
 			delete_transient( $key );
@@ -186,13 +186,12 @@ class IP_Geo_Block_Admin {
 
 	public static function add_admin_notice( $type, $msg ) {
 		$key = IP_Geo_Block::PLUGIN_SLUG . '-notice';
-		if ( FALSE === ( $err = get_transient( $key ) ) )
-			$err = array();
+		if ( FALSE === ( $notices = get_transient( $key ) ) )
+			$notices = array();
 
-		if ( FALSE === in_array( $msg, array_keys( $err ), TRUE ) )
-			$err[] = array( $type => $msg );
+		$notices[ $msg ] = $type;
 
-		set_transient( $key, $err, MINUTE_IN_SECONDS );
+		set_transient( $key, $notices, MINUTE_IN_SECONDS );
 	}
 
 	/**
