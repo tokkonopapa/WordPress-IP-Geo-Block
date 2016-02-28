@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.4.1
-Stable tag: 2.2.3
+Stable tag: 2.2.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -411,6 +411,12 @@ you are using at the support forum.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.2.3.1 =
+* **Bug fix:** Fixed the issue that disabled validation target was still 
+  blocked by country.
+  ([@](https://wordpress.org/support/topic/logs-whitelist-comments-still-blocked "[resolved] logs whitelist comments still blocked?"))
+* **Improvement:** Better handling of error and charset for MySQL.
 
 = 2.2.3 =
 * **Improvement:** Since WordPress 4.4, XML-RPC system.multicall is disabled 

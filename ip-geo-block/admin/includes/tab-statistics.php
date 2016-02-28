@@ -7,7 +7,7 @@ function ip_geo_block_tab_statistics( $context ) {
 	$option_slug = $context->option_slug['statistics'];
 	$option_name = $context->option_name['statistics'];
 	$options = IP_Geo_Block::get_option( 'settings' );
-	$statistics = IP_Geo_Block_Logs::restore_stat();
+	$statistics = IP_Geo_Block_Logs::restore_stat( TRUE );
 
 	register_setting(
 		$option_slug,

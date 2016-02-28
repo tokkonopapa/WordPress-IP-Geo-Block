@@ -37,6 +37,12 @@ class IP_Geo_Block_Logs {
 	public static function create_tables() {
 		global $wpdb;
 
+		// Default charset
+		$charset = 'utf8'; // MySQL 5.0+
+		if ( preg_match( '/CHARACTER SET (\w+)/i', $wpdb->get_charset_collate(), $table ) &&
+		     FALSE !== strpos( $table[1], 'utf8' ) )
+			$charset = $table[1]; // ex) utf8mb4 MySQL 5.5+
+
 		// for logs
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 		$logs = $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
@@ -54,7 +60,7 @@ class IP_Geo_Block_Logs {
 			PRIMARY KEY (`No`),
 			KEY `time` (`time`),
 			KEY `hook` (`hook`)
-			) CHARACTER SET utf8"
+			) CHARACTER SET " . $charset
 		); // utf8mb4 ENGINE=InnoDB or MyISAM
 
 		// for statistics
@@ -63,7 +69,7 @@ class IP_Geo_Block_Logs {
 			`No` tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
 			`data` longtext NULL,
 			PRIMARY KEY (`No`)
-			) CHARACTER SET utf8"
+			) CHARACTER SET " . $charset
 		); // utf8mb4 ENGINE=InnoDB or MyISAM
 
 		// Create 1 record if not exists
@@ -117,12 +123,12 @@ class IP_Geo_Block_Logs {
 	 * Restore statistics data.
 	 *
 	 */
-	public static function restore_stat() {
+	public static function restore_stat( $ret = FALSE ) {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_STAT;
 
 		$data = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A );
-		return empty( $data ) ? NULL : unserialize( $data[0]['data'] );
+		return empty( $data ) ? ( $ret ? self::$default : FALSE ) : unserialize( $data[0]['data'] );
 	}
 
 	/**
