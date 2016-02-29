@@ -92,30 +92,6 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Display global notice
-	 *
-	 * @notice: Sanitization should be done at the caller
-	 */
-	public function admin_notices() {
-		foreach ( $this->notice as $notice ) {
-			echo "\n<div class=\"notice is-dismissible ", key( $notice ), "\"><p><strong>IP Geo Block:</strong> ", current( $notice ), "</p></div>\n";
-		}
-	}
-
-	public function add_admin_notice( $type, $msg ) {
-		$this->notice[] = array( $type => $msg );
-	}
-
-	/**
-	 * Display local notice
-	 *
-	 * @notice: Sanitization should be done at the caller
-	 */
-	public function setting_notice( $name, $type, $msg ) {
-		add_settings_error( $this->option_slug, $this->option_name[ $name ], $msg, $type );
-	}
-
-	/**
 	 * Get the action name of ajax for nonce
 	 *
 	 */
@@ -142,9 +118,11 @@ class IP_Geo_Block_Admin {
 		switch ( $tab ) {
 		  case 1:
 			// js for google chart
-			wp_enqueue_script( $addon = IP_Geo_Block::PLUGIN_SLUG . '-google-chart',
+			wp_register_script(
+				$addon = IP_Geo_Block::PLUGIN_SLUG . '-google-chart',
 				'https://www.google.com/jsapi', array(), NULL, $footer
 			);
+			wp_enqueue_script( $addon );
 			break;
 
 		  case 2:
@@ -172,13 +150,13 @@ class IP_Geo_Block_Admin {
 		}
 
 		// js for IP Geo Block admin page
-		wp_enqueue_script( $handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script',
+		wp_register_script(
+			$handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script',
 			plugins_url( 'js/admin.min.js', __FILE__ ),
 			$dependency + ( isset( $addon ) ? array( $addon ) : array() ),
-			IP_Geo_Block::VERSION, $footer
+			IP_Geo_Block::VERSION,
+			$footer
 		);
-
-		// global value for ajax @since r16
 		wp_localize_script( $handle,
 			'IP_GEO_BLOCK',
 			array(
@@ -187,35 +165,42 @@ class IP_Geo_Block_Admin {
 				'nonce' => wp_create_nonce( $this->get_ajax_action() ),
 			)
 		);
+		wp_enqueue_script( $handle );
 	}
 
 	/**
-	 * Add settings action link to the plugins page.
+	 * Display global notice
 	 *
+	 * @notice: Sanitization should be done at the caller
 	 */
-	public function add_action_links( $links ) {
-		return array_merge(
-			array(
-				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG ) . '">' . __( 'Settings' ) . '</a>'
-			),
-			$links
-		);
-	}
+	public function show_admin_notices() {
+		$key = IP_Geo_Block::PLUGIN_SLUG . '-notice';
+		if ( FALSE !== ( $notices = get_transient( $key ) ) ) {
+			foreach ( $notices as $msg => $type ) {
+				echo "\n<div class=\"notice is-dismissible ", $type, "\"><p><strong>IP Geo Block:</strong> ", $msg, "</p></div>\n";
+			}
 
-	/**
-	 * Add plugin meta links
-	 *
-	 */
-	public function add_plugin_meta_links( $links, $file ) {
-		if ( $file === IP_GEO_BLOCK_BASE ) {
-			$title = __( 'Contribute at GitHub', IP_Geo_Block::TEXT_DOMAIN );
-			array_push(
-				$links,
-				"<a href=\"http://www.ipgeoblock.com\" title=\"$title\" target=_blank>$title</a>"
-			);
+			delete_transient( $key );
 		}
+	}
 
-		return $links;
+	public static function add_admin_notice( $type, $msg ) {
+		$key = IP_Geo_Block::PLUGIN_SLUG . '-notice';
+		if ( FALSE === ( $notices = get_transient( $key ) ) )
+			$notices = array();
+
+		$notices[ $msg ] = $type;
+
+		set_transient( $key, $notices, MINUTE_IN_SECONDS );
+	}
+
+	/**
+	 * Display local notice
+	 *
+	 * @notice: Sanitization should be done at the caller
+	 */
+	public function show_setting_notice( $name, $type, $msg ) {
+		add_settings_error( $this->option_slug, $this->option_name[ $name ], $msg, $type );
 	}
 
 	/**
@@ -244,20 +229,20 @@ class IP_Geo_Block_Admin {
 	private function diagnose_admin_screen() {
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 )
-			$this->add_admin_notice( 'error', __( 'You need WordPress 3.7+.', IP_Geo_Block::TEXT_DOMAIN ) );
+			self::add_admin_notice( 'error', __( 'You need WordPress 3.7+.', IP_Geo_Block::TEXT_DOMAIN ) );
 
 		$settings = IP_Geo_Block::get_option( 'settings' );
 
 		// Check consistency of matching rule
 		if ( -1 === (int)$settings['matching_rule'] ) {
 			if ( FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
-				$this->add_admin_notice( 'notice-warning', sprintf(
+				self::add_admin_notice( 'notice-warning', sprintf(
 					__( 'Now downloading geolocation databases in background. After a little while, please check your country code and &#8220;<strong>Matching rule</strong>&#8221; at <a href="%s">Validation rule settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
 					admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG )
 				) );
 			}
 			else {
-				$this->add_admin_notice( 'error', sprintf(
+				self::add_admin_notice( 'error', sprintf(
 					__( 'The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please confirm it at <a href="%s">Validation rule settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
 					admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG )
 				) );
@@ -267,7 +252,7 @@ class IP_Geo_Block_Admin {
 		// Check to finish downloading
 		elseif ( 'done' === get_transient( IP_Geo_Block::CRON_NAME ) ) {
 			delete_transient( IP_Geo_Block::CRON_NAME );
-			$this->add_admin_notice( 'updated', sprintf(
+			self::add_admin_notice( 'updated', sprintf(
 				__( 'Downloading geolocation databases was successfully done.', IP_Geo_Block::TEXT_DOMAIN ),
 				admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG )
 			) );
@@ -280,7 +265,7 @@ class IP_Geo_Block_Admin {
 
 			if ( 'passed' !== $validate['result'] ) {
 				$url = admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG . '#' . IP_Geo_Block::PLUGIN_SLUG );
-				$this->add_admin_notice( 'error', sprintf(
+				self::add_admin_notice( 'error', sprintf(
 					__( 'You\'ll be blocked after you log out. Please confirm &#8220;<strong>Matching rule</strong>&#8221; and &#8220;<strong>Country code for matching rule</strong>&#8221; at <a href="%s">Validation rule settings</a>. Otherwise select &#8220;<strong>Block by country (register, lost password)</strong>&#8221; for &#8220;<strong>Login form</strong>&#8221; at <a href="%s">Validation target settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
 					"${url}-settings-0", "${url}-settings-1"
 				) );
@@ -294,9 +279,38 @@ class IP_Geo_Block_Admin {
 
 				if ( ( $warn = IP_Geo_Block_Logs::diag_tables() ) &&
 				     FALSE === IP_Geo_Block_Logs::create_tables() )
-					$this->add_admin_notice( 'notice-warning', $warn );
+					self::add_admin_notice( 'notice-warning', $warn );
 			}
 		}
+	}
+
+	/**
+	 * Add plugin meta links
+	 *
+	 */
+	public function add_plugin_meta_links( $links, $file ) {
+		if ( $file === IP_GEO_BLOCK_BASE ) {
+			$title = __( 'Contribute at GitHub', IP_Geo_Block::TEXT_DOMAIN );
+			array_push(
+				$links,
+				"<a href=\"http://www.ipgeoblock.com\" title=\"$title\" target=_blank>$title</a>"
+			);
+		}
+
+		return $links;
+	}
+
+	/**
+	 * Add settings action link to the plugins page.
+	 *
+	 */
+	public function add_action_links( $links ) {
+		return array_merge(
+			array(
+				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG ) . '">' . __( 'Settings' ) . '</a>'
+			),
+			$links
+		);
 	}
 
 	/**
@@ -314,8 +328,7 @@ class IP_Geo_Block_Admin {
 		add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
 
 		// Register admin notice
-		if ( isset( $this->notice ) )
-			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+		add_action( 'admin_notices', array( $this, 'show_admin_notices' ) );
 	}
 
 	/**
@@ -585,7 +598,7 @@ class IP_Geo_Block_Admin {
 
 				// Check providers setting
 				if ( $error = IP_Geo_Block_Provider::diag_providers( $output[ $key ] ) ) {
-					$this->setting_notice( $option_name, 'error', $error );
+					$this->show_setting_notice( $option_name, 'error', $error );
 				}
 				break;
 
@@ -675,7 +688,7 @@ class IP_Geo_Block_Admin {
 		$output['signature'] = implode( ',', $key );
 
 		// Register a settings error to be displayed to the user
-		$this->setting_notice( $option_name, 'updated',
+		$this->show_setting_notice( $option_name, 'updated',
 			__( 'Successfully updated.', IP_Geo_Block::TEXT_DOMAIN )
 		);
 

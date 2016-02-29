@@ -37,6 +37,12 @@ class IP_Geo_Block_Logs {
 	public static function create_tables() {
 		global $wpdb;
 
+		// Default charset
+		$charset = 'utf8'; // MySQL 5.0+
+		if ( preg_match( '/CHARACTER SET (\w+)/i', $wpdb->get_charset_collate(), $table ) &&
+		     FALSE !== strpos( $table[1], 'utf8' ) )
+			$charset = $table[1]; // ex) utf8mb4 MySQL 5.5+
+
 		// for logs
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 		$logs = $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
@@ -54,8 +60,8 @@ class IP_Geo_Block_Logs {
 			PRIMARY KEY (`No`),
 			KEY `time` (`time`),
 			KEY `hook` (`hook`)
-			) CHARACTER SET utf8"
-		); // utf8mb4 ENGINE=InnoDB or MyISAM
+			) CHARACTER SET " . $charset
+		) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
 
 		// for statistics
 		$table = $wpdb->prefix . self::TABLE_STAT;
@@ -63,8 +69,8 @@ class IP_Geo_Block_Logs {
 			`No` tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
 			`data` longtext NULL,
 			PRIMARY KEY (`No`)
-			) CHARACTER SET utf8"
-		); // utf8mb4 ENGINE=InnoDB or MyISAM
+			) CHARACTER SET " . $charset
+		) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
 
 		// Create 1 record if not exists
 		$sql = $wpdb->prepare(
@@ -83,10 +89,10 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 
 		$table = $wpdb->prefix . self::TABLE_LOGS;
-		$wpdb->query( "DROP TABLE IF EXISTS `$table`" );
+		$wpdb->query( "DROP TABLE IF EXISTS `$table`" ) or self::error( __LINE__ );
 
 		$table = $wpdb->prefix . self::TABLE_STAT;
-		$wpdb->query( "DROP TABLE IF EXISTS `$table`" );
+		$wpdb->query( "DROP TABLE IF EXISTS `$table`" ) or self::error( __LINE__ );
 	}
 
 	/**
@@ -100,9 +106,9 @@ class IP_Geo_Block_Logs {
 		if ( $hook )
 			$sql = $wpdb->prepare(
 				"DELETE FROM `$table` WHERE `hook` = '%s'", $hook
-			) and $wpdb->query( $sql );
+			) and $wpdb->query( $sql ) or self::error( __LINE__ );
 		else
-			$wpdb->query( "TRUNCATE TABLE `$table`" );
+			$wpdb->query( "TRUNCATE TABLE `$table`" ) or self::error( __LINE__ );
 	}
 
 	/**
@@ -117,12 +123,12 @@ class IP_Geo_Block_Logs {
 	 * Restore statistics data.
 	 *
 	 */
-	public static function restore_stat() {
+	public static function restore_stat( $ret = FALSE ) {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_STAT;
 
-		$data = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A );
-		return empty( $data ) ? NULL : unserialize( $data[0]['data'] );
+		$data = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A ) or self::error( __LINE__ );
+		return empty( $data ) ? ( $ret ? self::$default : FALSE ) : unserialize( $data[0]['data'] );
 	}
 
 	/**
@@ -140,7 +146,7 @@ class IP_Geo_Block_Logs {
 		$sql = $wpdb->prepare(
 			"UPDATE `$table` SET `data` = '%s'", serialize( $statistics )
 //			"REPLACE INTO `$table` (`No`, `data`) VALUES (%d, %s)", 1, serialize( $statistics )
-		) and $data = $wpdb->query( $sql );
+		) and $data = $wpdb->query( $sql ) or self::error( __LINE__ );
 
 		return empty( $data ) ? FALSE : TRUE;
 	}
@@ -453,7 +459,7 @@ class IP_Geo_Block_Logs {
 			$sql = $wpdb->prepare(
 				"DELETE FROM `$table` WHERE `hook` = '%s' ORDER BY `No` ASC LIMIT %d",
 				$hook, $count - $rows + 1
-			) and $wpdb->query( $sql );
+			) and $wpdb->query( $sql ) or self::error( __LINE__ );
 		}
 
 		// insert into DB
@@ -471,7 +477,7 @@ class IP_Geo_Block_Logs {
 			$agent,
 			$heads,
 			$posts
-		) and $wpdb->query( $sql );
+		) and $wpdb->query( $sql ) or self::error( __LINE__ );
 
 		// backup logs to text files
 		if ( $dir = apply_filters(
@@ -545,6 +551,18 @@ class IP_Geo_Block_Logs {
 
 			// Record statistics.
 			self::record_stat( $statistics );
+		}
+	}
+
+	/**
+	 * SQL Error handling
+	 *
+	 */
+	private static function error( $line ) {
+		if ( class_exists( 'IP_Geo_Block_Admin' ) ) {
+			global $wpdb;
+			if ( $wpdb->last_error )
+				IP_Geo_Block_Admin::add_admin_notice( 'error', __FILE__ . ' (' . $line . ') ' . $wpdb->last_error );
 		}
 	}
 }

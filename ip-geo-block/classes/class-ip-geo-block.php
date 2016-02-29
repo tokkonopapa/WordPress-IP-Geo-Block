@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.3';
+	const VERSION = '2.2.3.1';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
@@ -45,6 +45,7 @@ class IP_Geo_Block {
 	private function __construct() {
 		$settings = self::get_option( 'settings' );
 		$priority = $settings['priority'];
+		$validate = $settings['validation'];
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
@@ -73,8 +74,10 @@ class IP_Geo_Block {
 			'/wp-login.php'         => 'login',
 		);
 
-		if ( isset( $tmp[ $uri ] ) )
-			add_action( 'init', array( $this, 'validate_' . $tmp[ $uri ] ), $priority );
+		if ( isset( $tmp[ $uri ] ) ) {
+			if ( $validate[ $tmp[ $uri ] ] )
+				add_action( 'init', array( $this, 'validate_' . $tmp[ $uri ] ), $priority );
+		}
 
 		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
 		elseif ( is_admin() )
@@ -92,17 +95,21 @@ class IP_Geo_Block {
 				add_action( $tmp, array( $this, 'comment_form_message' ) );
 			}
 
-			// wp-trackback.php @since 1.5.0, bbPress: prevent creating topic/relpy and rendering form
-			add_filter( 'preprocess_comment', array( $this, 'validate_comment' ), $priority );
-			add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
-			add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
-			add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
-			add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
+			if ( $validate['comment'] ) {
+				// wp-trackback.php @since 1.5.0, bbPress: prevent creating topic/relpy and rendering form
+				add_filter( 'preprocess_comment', array( $this, 'validate_comment' ), $priority );
+				add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
+				add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
+				add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
+				add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
+			}
 
-			// wp-login.php @since 2.1.0, BuddyPress: prevent registration and rendering form
-			add_action( 'login_init', array( $this, 'validate_login' ), $priority );
-			add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
-			add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
+			if ( $validate['login'] ) {
+				// wp-login.php @since 2.1.0, BuddyPress: prevent registration and rendering form
+				add_action( 'login_init', array( $this, 'validate_login' ), $priority );
+				add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
+				add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
+			}
 		}
 
 		// force to change the redirect URL at logout to remove nonce, embed a nonce into pages
@@ -458,11 +465,10 @@ class IP_Geo_Block {
 	public function validate_xmlrpc() {
 		$settings = self::get_option( 'settings' );
 
-		// Completely close
-		if ( 2 === (int)$settings['validation']['xmlrpc'] )
+		if ( 2 === (int)$settings['validation']['xmlrpc'] ) // Completely close
 			add_filter( self::PLUGIN_SLUG . '-xmlrpc', array( $this, 'close_xmlrpc' ), 6, 2 );
-		// wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
-		else
+
+		else // wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
 			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ), $settings['priority'] );
 
 		$this->validate_ip( 'xmlrpc', $settings );

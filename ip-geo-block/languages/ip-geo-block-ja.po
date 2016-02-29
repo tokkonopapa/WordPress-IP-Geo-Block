@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 2.2.3\n"
+"Project-Id-Version: IP Geo Block 2.2.3.1\n"
 "Report-Msgid-Bugs-To: http://www.ipgeoblock.com/\n"
-"POT-Creation-Date: 2016-02-14 08:38+0900\n"
-"PO-Revision-Date: 2016-02-14 20:16+0900\n"
+"POT-Creation-Date: 2016-02-28 23:54+0900\n"
+"PO-Revision-Date: 2016-02-28 23:59+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -27,25 +27,16 @@ msgstr ""
 "自国以外から投稿されるスパム、ログインフォーム、さらにゼロデイ攻撃を含む管理"
 "領域への悪意あるアクセスからサイトを守ります。"
 
-#: admin/class-ip-geo-block-admin.php:199
-#: admin/class-ip-geo-block-admin.php:333
-msgid "Settings"
-msgstr "設定"
-
-#: admin/class-ip-geo-block-admin.php:211
-msgid "Contribute at GitHub"
-msgstr "開発に参加"
-
-#: admin/class-ip-geo-block-admin.php:228
-#: admin/class-ip-geo-block-admin.php:229
+#: admin/class-ip-geo-block-admin.php:213
+#: admin/class-ip-geo-block-admin.php:214
 msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
-#: admin/class-ip-geo-block-admin.php:247
+#: admin/class-ip-geo-block-admin.php:232
 msgid "You need WordPress 3.7+."
 msgstr "WordPress 3.7&thinsp;以上が必要です。"
 
-#: admin/class-ip-geo-block-admin.php:255
+#: admin/class-ip-geo-block-admin.php:240
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -56,7 +47,7 @@ msgstr ""
 "いた後、あなたの国コードと「<strong>マッチング規則</strong>」を「<a href=\"%s"
 "\">検証ルールの設定</a>」で確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:261
+#: admin/class-ip-geo-block-admin.php:246
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
@@ -65,11 +56,11 @@ msgstr ""
 "「<strong>マッチング規則</strong>」が正しく設定されていません。「<a href=\"%s"
 "\">検証ルールの設定</a>」を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:271
+#: admin/class-ip-geo-block-admin.php:256
 msgid "Downloading geolocation databases was successfully done."
 msgstr "位置情報データベースは正常にダウンロードされました。"
 
-#: admin/class-ip-geo-block-admin.php:284
+#: admin/class-ip-geo-block-admin.php:269
 #, php-format
 msgid ""
 "You'll be blocked after you log out. Please confirm &#8220;<strong>Matching "
@@ -85,27 +76,36 @@ msgstr ""
 "設定</a>」で「<strong>ログイン・フォーム</strong>」に「<strong>国コードで遮断"
 "（ユーザー登録、パスワード再発行）</strong>」を選択して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:334
+#: admin/class-ip-geo-block-admin.php:293
+msgid "Contribute at GitHub"
+msgstr "開発に参加"
+
+#: admin/class-ip-geo-block-admin.php:310
+#: admin/class-ip-geo-block-admin.php:346
+msgid "Settings"
+msgstr "設定"
+
+#: admin/class-ip-geo-block-admin.php:347
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:335
+#: admin/class-ip-geo-block-admin.php:348
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:336
+#: admin/class-ip-geo-block-admin.php:349
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:337
+#: admin/class-ip-geo-block-admin.php:350
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:350
+#: admin/class-ip-geo-block-admin.php:363
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:351
+#: admin/class-ip-geo-block-admin.php:364
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -115,23 +115,23 @@ msgstr ""
 "html\" title=\"Referer Checker\">参照元を残さずにリンク先にリダイレクトできま"
 "す</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:478
+#: admin/class-ip-geo-block-admin.php:491
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:534
+#: admin/class-ip-geo-block-admin.php:547
 msgid "You do not have sufficient permissions to access this page."
 msgstr "You do not have sufficient permissions to access this page."
 
-#: admin/class-ip-geo-block-admin.php:666
+#: admin/class-ip-geo-block-admin.php:692
 msgid "Successfully updated."
 msgstr "更新に成功しました。"
 
-#: admin/class-ip-geo-block-admin.php:744
+#: admin/class-ip-geo-block-admin.php:767
 msgid "n/a"
 msgstr "n/a"
 
-#: admin/class-ip-geo-block-admin.php:747 admin/includes/tab-settings.php:75
+#: admin/class-ip-geo-block-admin.php:770 admin/includes/tab-settings.php:75
 msgid "UNKNOWN"
 msgstr "不明"
 
@@ -632,7 +632,7 @@ msgstr "遮断したIPアドレスのタイプ"
 
 #: admin/includes/tab-statistics.php:132
 msgid "Name of API"
-msgstr "API名"
+msgstr "Name of API"
 
 #: admin/includes/tab-statistics.php:133
 msgid "Calls"
@@ -692,7 +692,7 @@ msgstr ""
 "少なくとも1つ以上の位置情報サービスを選択して下さい。未選択の場合、キャッシュ"
 "の有効期限切れと共に<strong>ロックアウトされます</strong>。"
 
-#: classes/class-ip-geo-block-logs.php:158
+#: classes/class-ip-geo-block-logs.php:164
 msgid ""
 "Creating a DB table for validation logs had failed. Once de-activate this "
 "plugin, and then activate again."
@@ -700,7 +700,7 @@ msgstr ""
 "検証のログ用データベース・テーブルが作成されていません。一旦このプラグインを"
 "無効化してから、再度有効化して下さい。"
 
-#: classes/class-ip-geo-block-logs.php:165
+#: classes/class-ip-geo-block-logs.php:171
 msgid ""
 "Creating a DB table for statistics had failed. Once de-activate this plugin, "
 "and then activate again."
