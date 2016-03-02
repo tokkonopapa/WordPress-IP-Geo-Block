@@ -16,11 +16,11 @@ script: [/js/referer.js]
     <tbody>
       <tr>
         <td>HTTP_USER_AGENT</td>
-        <td id="user-agent"></td>
+        <td class="left-align" id="user-agent"></td>
       </tr>
       <tr>
         <td>HTTP_REFERER</td>
-        <td id="referer"></td>
+        <td class="left-align" id="referer"></td>
       </tr>
     </tbody>
   </table>
