@@ -41,8 +41,8 @@ code
 	<table class="table">
 		<thead>
 			<tr>
-				<th class="text-right">title1</th>
-				<th class="text-right">title2</th>
+				<th class="left-align">title1</th>
+				<th class="left-align">title2</th>
 			</tr>
 		</thead>
 		<tbody>
