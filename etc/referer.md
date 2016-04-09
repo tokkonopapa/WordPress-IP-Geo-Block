@@ -15,12 +15,12 @@ script: [/js/referer.js]
     </thead>
     <tbody>
       <tr>
-        <td>HTTP_USER_AGENT</td>
-        <td id="user-agent"></td>
+        <td class="left-align">HTTP_USER_AGENT</td>
+        <td id="user-agent" class="left-align"></td>
       </tr>
       <tr>
-        <td>HTTP_REFERER</td>
-        <td id="referer"></td>
+        <td class="left-align">HTTP_REFERER</td>
+        <td id="referer" class="left-align"></td>
       </tr>
     </tbody>
   </table>
