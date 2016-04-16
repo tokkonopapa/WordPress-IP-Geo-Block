@@ -19,15 +19,18 @@ Before that, I'll mention about the best practice of plugin actions.
 
 There are three methods to prevent zero-day attacks. The first one is to 
 inspect bad queries with the blacklisted signatures. And the second one is 
-to filter out only the legitimate requests with the whitelist. Those methods 
-are focused to the **patterns of attacks**.
+to filter out only the legitimate requests using the whitelist. Those methods 
+are focused to the **patterns of request**.
 
 The last one, which WP-ZEP adopts, is to close a hole of vulnerability with a 
-certain way which is focused to the **patterns of vulnerability**. [A 
-considerable number of vulnerable plugins and themes that were out there]
-[WhySoMany] are lacking in validating either the [nonce][CryptNonce] and 
-privilege or both. So WP-ZEP will make up both of them embedding a nonce into 
-the link, form and ajax request from jQuery on every admin screen.
+certain way which is focused to the **patterns of vulnerability**.
+  [A considerable number of vulnerable plugins and themes that were out there]
+  [WhySoMany]
+are lacking in validating either the 
+  [nonce][CryptNonce]
+and privilege or both. So WP-ZEP will make up both of them embedding a 
+  [nonce][WordPressNonces]
+into the link, form and ajax request from jQuery on every admin screen.
 
 ### What's the best practice of plugin actions? ###
 
