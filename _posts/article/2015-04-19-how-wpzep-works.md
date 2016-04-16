@@ -8,12 +8,26 @@ categories: article
 [IP Geo Block][IP-Geo-Block] is the only plugin which has an ability to 
 prevent zero-day attack even if some of plugins in a WordPress site have 
 unveiled vulnerability. I call it "**Z**ero-day **E**xploit **P**revention 
-for wp-admin" (WP-ZEP).
+for WordPress" (WP-ZEP).
 
 In this article, I'll explain about its mechanism and also its limitations.
 Before that, I'll mention about the best practice of plugin actions.
 
 <!--more-->
+
+### Overview ###
+
+There are three methods to prevent zero-day attacks. The first one is to 
+inspect bad queries with the blacklisted signatures. And the second one is 
+to filter out only the legitimate requests with the whitelist. Those methods 
+are focused to the **patterns of attacks**.
+
+The last one, which WP-ZEP adopts, is to close a hole of vulnerability with a 
+certain way which is focused to the **patterns of vulnerability**. [A 
+considerable number of vulnerable plugins and themes that were out there]
+[WhySoMany] are lacking in validating either the [nonce][CryptNonce] and 
+privilege or both. So WP-ZEP will make up both of them embedding a nonce into 
+the link, form and ajax request from jQuery on every admin screen.
 
 ### What's the best practice of plugin actions? ###
 
@@ -169,8 +183,8 @@ cannot be blocked when the attack comes from the permitted country. (Because
 it had added the above two actions <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f620.png)
 </span> !!) To prevent this kind of attack, you should add following snippet 
-into your `functions.php`. (This functionality had already been impremented 
-from [version 2.2.0][Release220].)
+into your `functions.php` to filter out the malicious signatures. (This 
+functionality had already been impremented from [version 2.2.0][Release220].)
 
 {% highlight php %}
 <?php
@@ -215,6 +229,8 @@ other plugins while playing a certain degree of role by itself <span class="emoj
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f47b.png)
 </span>.
 
+[WhySoMany]:           http://www.ipgeoblock.com/article/why-so-vulnerable.html "Why so many WordPress plugins vulnerable? | IP Geo Block"
+[CryptNonce]:          https://en.wikipedia.org/wiki/Cryptographic_nonce "Cryptographic nonce - Wikipedia, the free encyclopedia"
 [IP-Geo-Block]:        https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [Stack-Exchange]:      http://wordpress.stackexchange.com/questions/10500/how-do-i-best-handle-custom-plugin-page-actions "wp admin - How do i best handle custom plugin page actions? - WordPress Development Stack Exchange"
 [Sub-Level-Menu]:      https://codex.wordpress.org/Administration_Menus#Sub-Level_Menus "Administration Menus « WordPress Codex"

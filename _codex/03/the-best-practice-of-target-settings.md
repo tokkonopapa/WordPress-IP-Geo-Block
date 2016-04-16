@@ -6,7 +6,7 @@ title: The best practice of target settings
 
 At the "**Validation target settings**", you should select the options, 
 "**Block by country**" and "**Prevent Zero-day Exploit**" on each target.
- This document helps you how to configure those options to fit for your site.
+This document helps you how to configure those options to fit for your site.
 
 <!--more-->
 
@@ -138,12 +138,11 @@ in that plugin's directory, you should **uncheck** the
  "Best setting for Plugins/Themes area"
 )
 
-<div class="alert alert-warning">
-  <strong>WARNING:</strong>
-  You should put a specific <code>.htaccess</code> to those areas. Please refer
-  to <a href="http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html" title="Prevent exposure 
-  of wp-config.php | IP Geo Block">this article</a> for more details.
-</div>
+#### Force to load WP core ####
+
+You should setup a specific `.htaccess` into those areas for both "**Block by 
+coutnry**" and "**Prevent Zero-day Exploit**". Please refer to [this article]
+[PreventExp] for more details.
 
 ### Any questions? ###
 
@@ -168,4 +167,5 @@ If you have something to ask, please feel free to open your issue at the
 [BruteXMLRPC]:  https://blog.sucuri.net/2015/10/brute-force-amplification-attacks-against-wordpress-xmlrpc.html "Brute Force Amplification Attacks Against WordPress XMLRPC - Sucuri Blog"
 [WP-ZEP]:       {{ '/article/how-wpzep-works.html' | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack? | IP Geo Block"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
-[AnalysisVec]:  {{ '/codex/analysis-of-attack-vectors.html' | prepend: site.baseurl }} "Analysis of Attack Vectors | IP Geo Block"
+[AnalysisVec]:  {{ '/codex/analysis-of-attack-vectors.html'  | prepend: site.baseurl }} "Analysis of Attack Vectors | IP Geo Block"
+[PreventExp]:   {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
