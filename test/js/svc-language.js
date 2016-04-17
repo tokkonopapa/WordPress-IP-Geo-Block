@@ -1,9 +1,12 @@
+/*jslint white: true */
 /**
  * Service: Language
  *
  */
 angular.module('language', []);
 angular.module('language').factory('LanguageSvc', ['$window', function ($window) {
+	'use strict';
+
 	var language = {
 		'en': {
 			main_title: 'WordPress Post Simulator',

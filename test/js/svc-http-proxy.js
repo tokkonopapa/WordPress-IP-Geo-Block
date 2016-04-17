@@ -1,9 +1,12 @@
+/*jslint white: true */
 /**
  * Service: Post data with X-Forwarded-For
  *
  */
 angular.module('http-proxy', []);
 angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) {
+	'use strict';
+
 	/**
 	 * Post form data
 	 *

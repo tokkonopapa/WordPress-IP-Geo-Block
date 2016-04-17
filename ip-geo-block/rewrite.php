@@ -6,14 +6,15 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      https://github.com/tokkonopapa
- * @copyright 2013-2015 tokkonopapa
+ * @copyright 2013-2016 tokkonopapa
  *
  * THIS IS FOR THE ADVANCED USERS:
- * This file is for WP-ZEP. If a plugin/theme accept direct malicious requests
- * to the php files under the plugin/theme directory, WP-ZEP will be bypassed.
- * To avoid such a bypassing, those requests should be redirected to this file
- * and be validated by WP-ZEP. The `.htaccess` in the plugin/theme directory
- * will help this redirection if it configured as follows (for apache):
+ * This file is for WP-ZEP. If a php file in the plugin/theme directory accepts
+ * some malicious requests directly without loading WP core, then validation by
+ * WP-ZEP will be bypassed. To avoid such a bypassing, those requests should be
+ * redirected to this file in order to load WP core. The `.htaccess` in the
+ * plugin/theme directory will help this redirection if it will be configured
+ * as follows (for apache):
  *
  * # BEGIN IP Geo Block
  * <IfModule mod_rewrite.c>
@@ -24,10 +25,10 @@
  * </IfModule>
  * # END IP Geo Block
  *
- * The redirected requests will be validated on a case according to the attack
- * pattern such as null byte attack or directory traversal, and then load the
- * WordPress core module through wp-load.php to triger WP-ZEP. If it ends up
- * successfully, this includes the originally requested php file to excute it.
+ * The redirected requests will be verified against the certain attack patterns
+ * such as null byte attack or directory traversal, and then load the WordPress
+ * core module through wp-load.php to triger WP-ZEP. If it ends up successfully,
+ * this includes the originally requested php file to excute it.
  */
 
 if ( ! class_exists( 'IP_Geo_Block_Rewrite' ) ):

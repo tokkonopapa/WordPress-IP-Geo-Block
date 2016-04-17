@@ -1,3 +1,4 @@
+/*jslint white: true */
 /**
  * Creating Application Module
  *
@@ -17,9 +18,11 @@ var app = angular.module('WPApp', [
  *
  */
 app.config(['$httpProvider', function ($httpProvider) {
+	'use strict';
 	$httpProvider.defaults.timeout = 10000;
 }])
 .run(function () {
+	'use strict';
 	console.log('run');
 });
 
@@ -28,6 +31,7 @@ app.config(['$httpProvider', function ($httpProvider) {
  *
  */
 app.factory('$exceptionHandler', ['$window', function ($window) {
+	'use strict';
 	return function (exception, cause) {
 		console.log(exception ? exception.message : '');
 	};
@@ -56,14 +60,16 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		svcWP,
 		svcProxy
 	) {
+	'use strict';
+
 	// Language
 	$scope.lang = svcLang();
 
 	// Message
 	var messageOut = function (title, msg) {
 		$scope.message += title + ': ' + msg + "\n";
-	};
-	var messageClear = function () {
+	},
+	messageClear = function () {
 		$scope.message = '';
 	};
 	messageClear();
@@ -259,7 +265,8 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		xmlrpc_multi: true
 	};
 	$scope.selectAll = function () {
-		for (var item in $scope.checkbox) {
+		var item;
+		for (item in $scope.checkbox) {
 			if ($scope.checkbox.hasOwnProperty(item)) {
 				$scope.checkbox[item] = $scope.checkbox.post_items;
 			}
@@ -274,7 +281,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	var url = $cookies.get('home-url');
 	if (!url) {
 		url = parse_uri(location.href);
-		url = url['scheme'] + '://' + url['authority'] + '/';
+		url = url.scheme + '://' + url.authority + '/';
 	}
 	$scope.home_url = url;
 
@@ -295,15 +302,15 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			$cookies.put('home-url', $scope.home_url);
 
 			// Update Single Page
-			var home = parse_uri($scope.home_url);
-			var page = parse_uri($scope.single_page);
-			home['path'] = untrailingslashit(home['path']);
-			page['path'] = page['path'].replace(home['path'], '');
+			var home = parse_uri($scope.home_url),
+			    page = parse_uri($scope.single_page);
+			home.path = untrailingslashit(home.path);
+			page.path = page.path.replace(home.path, '');
 			$scope.single_page =
-				(home['scheme'] + '://' + home['authority'] + home['path']) +
-				(page['path'    ] ?       page['path'    ] : '') +
-				(page['query'   ] ? '?' + page['query'   ] : '') +
-				(page['fragment'] ? '#' + page['fragment'] : '');
+				(home.scheme + '://' + home.authority + home.path) +
+				(page.path     ?       page.path     : '') +
+				(page.query    ? '?' + page.query    : '') +
+				(page.fragment ? '#' + page.fragment : '');
 
 			// Update BuddyPress
 			$scope.form.BuddyPress._wp_http_referer = $scope.home_url + $scope.form.BuddyPress.path;
@@ -349,20 +356,22 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		svcProxy.post_form(url, form, proxy, 'POST').then(function (res) {
 			messageOut('Comment', res.stat);
 		});
-	};
+	},
 
 	/**
 	 * Post a trackback message
 	 *
 	 */
-	var post_trackback = function (url, proxy) {
+	post_trackback = function (url, proxy) {
+		var uri, form, excerpt;
+
 		// Normalize trackback url, randomize post contents
-		var uri = parse_uri($scope.form.trackback.url),
-		    excerpt = $scope.form.trackback.excerpt;
-		$scope.form.trackback.url = uri['scheme'] + '://' + uri['authority'] + '/';
+		uri = parse_uri($scope.form.trackback.url);
+		excerpt = $scope.form.trackback.excerpt;
+		$scope.form.trackback.url = uri.scheme + '://' + uri.authority + '/';
 		$scope.form.trackback.excerpt += ' #' + get_random_int(1000, 9999);
 
-		var form = serialize_plain($scope.form.trackback);
+		form = serialize_plain($scope.form.trackback);
 		$scope.form.trackback.excerpt = excerpt;
 
 		svcProxy.post_form(url, form, proxy, 'POST').then(function (res) {
@@ -370,59 +379,59 @@ angular.module('WPApp').controller('WPAppCtrl', [
 				/<("[^"]*"|'[^']*'|[^'">])*>/g, ''
 			));
 		});
-	}
+	},
 
 	/**
 	 * Post form
 	 *
 	 */
-	var post_form = function (url, form, proxy, method, message) {
+	post_form = function (url, form, proxy, method, message) {
 		svcProxy.post_form(url, form, proxy, method).then(function (res) {
 			messageOut(message, res.stat);
 		});
-	};
+	},
 
 	/**
 	 * Post a pingback to XML-RPC server
 	 *
 	 */
-	var post_pingback = function (url, page, proxy) {
+	post_pingback = function (url, page, proxy) {
 		var xml = $scope.form.pingback.xml;
 		xml = xml.replace(/%WP_HOME%/, page);
 		svcProxy.post_xml(url, xml, proxy).then(function (res) {
 			messageOut('Pingback', res.stat);
 		});
-	};
+	},
 
 	/**
 	 * Post a remote command to XML-RPC server
 	 *
 	 */
-	var post_xmlrpc = function (url, proxy) {
+	post_xmlrpc = function (url, proxy) {
 		var xml = $scope.form.xmlrpc.xml;
 		xml = xml.replace(/%USER_NAME%/, $scope.form.login.log);
 		xml = xml.replace(/%PASSWORD%/, $scope.form.login.pwd);
 		svcProxy.post_xml(url, xml, proxy).then(function (res) {
 			messageOut('XML-RPC', res.stat); 
 		});
-	};
+	},
 
 	/**
 	 * Post a remote command to XML-RPC server
 	 *
 	 */
-	var post_xmlrpc_demo = function (url, proxy) {
+	post_xmlrpc_demo = function (url, proxy) {
 		var xml = $scope.form.xmlrpc_demo.xml;
 		svcProxy.post_xml(url, xml, proxy).then(function (res) {
 			messageOut('XML-RPC Demo', res.stat);
 		});
-	};
+	},
 
 	/**
 	 * Post a remote multiple command to XML-RPC server
 	 *
 	 */
-	var post_xmlrpc_multi = function (url, proxy) {
+	post_xmlrpc_multi = function (url, proxy) {
 		var i, j, r = '',
 		    n = $scope.form.xmlrpc_multi.repeat,
 		    xml = $scope.form.xmlrpc_multi.xml;
@@ -443,9 +452,10 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	 *
 	 */
 	$scope.submit = function () {
-		var home = trailingslashit($scope.home_url);
-		var page = trailingslashit($scope.single_page);
-		var proxy = retrieve_ip($scope.ip_address);
+		var url, form,
+		    home = trailingslashit($scope.home_url),
+		    page = trailingslashit($scope.single_page),
+		    proxy = retrieve_ip($scope.ip_address);
 
 		// Post Comment
 		if ($scope.checkbox.comment) {
@@ -457,60 +467,68 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		// Trackback
 		if ($scope.checkbox.trackback) {
 			$scope.validate_page(false).then(function () {
-				var url = trailingslashit($scope.home_url) +
-				    'wp-trackback.php/' + $scope.form.comment.comment_post_ID;
+				url = trailingslashit($scope.home_url) +
+				    'wp-trackback.php?p=' + $scope.form.comment.comment_post_ID;
+//				    'wp-trackback.php/' + $scope.form.comment.comment_post_ID;
 				post_trackback(url, proxy);
 //				post_trackback(page + 'trackback/', proxy); // doesn't work in WordPress 4.4
 			});
 		}
 
 		// Pingback
-		if ($scope.checkbox.pingback)
+		if ($scope.checkbox.pingback) {
 			post_pingback(home + 'xmlrpc.php', page, proxy);
+		}
 
 		// XML-RPC
-		if ($scope.checkbox.xmlrpc)
+		if ($scope.checkbox.xmlrpc) {
 			post_xmlrpc(home + 'xmlrpc.php', proxy);
+		}
 
 		// XML-RPC Demo
-		if ($scope.checkbox.xmlrpc_demo)
+		if ($scope.checkbox.xmlrpc_demo) {
 			post_xmlrpc_demo(home + 'xmlrpc.php', proxy);
+		}
 
 		// XML-RPC Multi
-		if ($scope.checkbox.xmlrpc_multi)
+		if ($scope.checkbox.xmlrpc_multi) {
 			post_xmlrpc_multi(home + 'xmlrpc.php', proxy);
+		}
 
 		// Login Form
 		if ($scope.checkbox.login) {
-			var form = serialize_plain($scope.form.login);
+			form = serialize_plain($scope.form.login);
 			post_form(home + 'wp-login.php', form, proxy, 'POST', 'Login Form');
 		}
 
 		// Admin Area
 		if ($scope.checkbox.admin_area) {
-			var form = serialize_plain($scope.form.admin);
+			form = serialize_plain($scope.form.admin);
 			post_form(home + 'wp-admin/', form, proxy, 'POST', 'Admin Area');
 		}
 
 		// Admin Ajax and post
 		if ($scope.checkbox.admin_ajax) {
-			var url = home + 'wp-admin/admin-';
-			var form = serialize_array($scope.form.ajax);
+			url = home + 'wp-admin/admin-';
+			form = serialize_array($scope.form.ajax);
 
-			if ($scope.checkbox.admin_ajax_get)
+			if ($scope.checkbox.admin_ajax_get) {
 				post_form(url + 'ajax.php', form, proxy, 'GET',  'Admin Ajax (GET)');
+			}
 
-			if ($scope.checkbox.admin_ajax_post)
+			if ($scope.checkbox.admin_ajax_post) {
 				post_form(url + 'ajax.php', form, proxy, 'POST', 'Admin Ajax (POST)');
+			}
 	
-			if ($scope.checkbox.admin_post)
+			if ($scope.checkbox.admin_post) {
 				post_form(url + 'post.php', form, proxy, 'POST', 'Admin Post');
+			}
 		}
 
 		// Plugins / Themes
 		if ($scope.checkbox.wp_content) {
-			var url = home + $scope.form.wp_content.path;
-			var form = $scope.form.wp_content.query;
+			url = home + $scope.form.wp_content.path;
+			form = $scope.form.wp_content.query;
 			post_form(url, form, proxy, 'GET', 'Plugins / Themes (GET)');
 		}
 
@@ -521,8 +539,8 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			$scope.form.BuddyPress.signup_password_confirm = $scope.form.BuddyPress.signup_password;
 			$scope.form.BuddyPress.field_1 = $scope.form.BuddyPress.signup_username;
 
-			var url = home + $scope.form.BuddyPress.path;
-			var form = serialize_plain($scope.form.BuddyPress);
+			url = home + $scope.form.BuddyPress.path;
+			form = serialize_plain($scope.form.BuddyPress);
 			post_form(url, form, proxy, 'POST', 'BuddyPress');
 //			var form = new FormData(document.getElementById('BuddyPress'));
 //			post_form(url, form, proxy, 'MULTI', 'BuddyPress');
@@ -537,8 +555,8 @@ angular.module('WPApp').controller('WPAppCtrl', [
 				// hidden parameters
 				$scope.form.bbPress._wp_http_referer = home + $scope.form.bbPress.path;
 
-				var url = home + $scope.form.bbPress.path;
-				var form = serialize_plain($scope.form.bbPress);
+				url = home + $scope.form.bbPress.path;
+				form = serialize_plain($scope.form.bbPress);
 				post_form(url, form, proxy, 'POST', 'bbPress');
 			});
 		}

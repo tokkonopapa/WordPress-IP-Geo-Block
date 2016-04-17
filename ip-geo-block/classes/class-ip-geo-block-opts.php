@@ -31,7 +31,7 @@ class IP_Geo_Block_Opts {
 			'black_list'      => 'ZZ',    // Comma separeted country code
 			'timeout'         => 5,       // Timeout in second
 			'response_code'   => 403,     // Response code
-			'save_statistics' => TRUE,    // Save statistics
+			'save_statistics' => TRUE,    // The number of days to save statistics
 			'clean_uninstall' => FALSE,   // Remove all savings from DB
 			// since version 1.1
 			'cache_hold'      => 10,      // Max entries in cache
@@ -46,7 +46,7 @@ class IP_Geo_Block_Opts {
 			    'xmlrpc'      => 1,       // Validate on xmlrpc (1:country 2:close)
 			    'proxy'       => NULL,    // $_SERVER variables for IPs
 			    'reclogs'     => 3,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
-			    'postkey'     => '',      // Keys in $_POST
+			    'postkey'     => NULL,    // Keys in $_POST
 			    // since version 1.3.1
 			    'maxlogs'     => 100,     // Max number of rows of log
 			    'backup'      => NULL,    // Absolute path to directory for backup
@@ -68,9 +68,9 @@ class IP_Geo_Block_Opts {
 			    'white_list'  => NULL,    // White list of IP addresses
 			    'black_list'  => NULL,    // Black list of IP addresses
 			),
-			'rewrite'         => array(   // Backup of rewrite rule
-			    'plugins'     => NULL,    // for wp-content/plugins
-			    'themes'      => NULL,    // for wp-content/themes
+			'rewrite'         => array(   // Apply rewrite rule
+			    'plugins'     => FALSE,   // for wp-content/plugins
+			    'themes'      => FALSE,   // for wp-content/themes
 			),
 			'Maxmind'         => array(   // Maxmind
 			    // since version 2.2.2
@@ -221,7 +221,7 @@ class IP_Geo_Block_Opts {
 	private static function recurse_copy( $src, $dst ) {
 		$src = trailingslashit( $src );
 		$dst = trailingslashit( $dst );
-		@mkdir( $dst );
+		! @is_dir( $dst ) and @mkdir( $dst );
 		if ( $dir = @opendir( $src ) ) {
 			while( FALSE !== ( $file = readdir( $dir ) ) ) {
 				if ( '.' !== $file && '..' !== $file ) {

@@ -9,6 +9,16 @@ var ip_geo_block_time = new Date();
 (function ($) {
 	'use strict';
 
+	function ID(selector, id) {
+		var keys = {
+			'.': 'ip-geo-block-',
+			'#': 'ip-geo-block-',
+			'@': 'ip_geo_block_settings_',
+			'%': 'ip_geo_block_statistics_'
+		};
+		return id ? ('.' === selector ? '.' : '#') + keys[selector] + id : keys['#'] + selector;
+	}
+
 	function sanitize(str) {
 		return str ? str.toString().replace(/[&<>"']/g, function (match) {
 			return {
@@ -23,9 +33,9 @@ var ip_geo_block_time = new Date();
 
 	function loading(id, flag) {
 		if (flag) {
-			$('#ip-geo-block-' + id).addClass('ip-geo-block-loading');
+			$(ID('#', id)).addClass(ID('loading'));
 		} else {
-			$('#ip-geo-block-' + id).removeClass('ip-geo-block-loading');
+			$(ID('#', id)).removeClass(ID('loading'));
 		}
 	}
 
@@ -37,6 +47,10 @@ var ip_geo_block_time = new Date();
 
 	function warning(status, msg) {
 		window.alert(sanitize(status + ' ' + msg));
+	}
+
+	function notice_html5() {
+		warning('Notice:', 'This feature is available with HTML5 compliant browsers.');
 	}
 
 	function redirect(page, tab) {
@@ -96,11 +110,85 @@ var ip_geo_block_time = new Date();
 
 	// Show/Hide description of WP-ZEP
 	function show_description(select) {
-		var data, desc = '.ip_geo_block_settings_desc';
+		var data, desc = ID('.', 'desc');
 		select = $(select);
 		select.next(desc).empty();
-		if (data = select.children('option:selected').data('desc')) {
+		data = select.children('option:selected').data('desc');
+		if (data) {
 			select.next(desc).html($.parseHTML(data)); // jQuery 1.8+
+		}
+	}
+
+	// Equivalent for PHP’s str_rot13
+	// discuss at: http://phpjs.org/functions/str_rot13/
+	function str_rot13 (str) {
+		return String(str).replace(/[a-z]/gi, function (s) {
+			return String.fromCharCode(s.charCodeAt(0) + (s.toLowerCase() < 'n' ? 13 : -13)); //'
+		});
+	}
+
+	// File Reader
+	function readfile(file, callback) {
+		var reader = new FileReader();
+		reader.onload = function (event) {
+			if (callback) {
+				callback(event.target.result);
+			}
+		};
+		reader.onerror = function (event) {
+			warning('Error: ', event.target.error.code);
+		};
+		reader.readAsText(file);
+	}
+
+	/**
+	 * jQuery deserialize plugin based on https://gist.github.com/nissuk/835256
+	 *
+	 * usage: $('form').deserialize({'name':'value', ...});
+	 */
+	$.fn.deserialize = function (json, options) {
+		return this.each(function () {
+			var key, name, value,
+			    self = this,
+			    data = {};
+
+			for (key in json) {
+				if(json.hasOwnProperty(key)) {
+					name = decodeURIComponent(key);
+					value = decodeURIComponent(json[key]);
+
+					if (!(name in data)) {
+						data[name] = [];
+					}
+
+					data[name].push(value);
+				}
+			}
+
+			$.each(data, function (name, val) {
+				$('[name="' + name + '"]:input', self).val(val);
+			});
+		});
+	};
+
+	function deserialize_json(json) {
+		if (json) {
+			// Set fields on form
+			if ('string' === typeof json) {
+				json = JSON.parse(json);
+			}
+
+			// deserialize to the form
+			$(ID('#', 'import')).closest('form').deserialize(json);
+
+			// Help text
+			$.each(['matching_rule', 'validation_login', 'validation_plugins', 'validation_themes'], function (i, key) {
+				$(ID('@', key)).trigger('change');
+			});
+
+			// Additional edge case
+			var i = 'ip_geo_block_settings[providers][IPInfoDB]';
+			$(ID('@', 'providers_IPInfoDB')).prop('checked', json[i] ? true : false);
 		}
 	}
 
@@ -121,17 +209,17 @@ var ip_geo_block_time = new Date();
 				self.dataPie.addColumn('string', 'Country');
 				self.dataPie.addColumn('number', 'Requests');
 				var value;
-				$('#ip-geo-block-countries li').each(function () {
+				$(ID('#', 'countries li')).each(function () {
 					value = $(this).text().split(':');
 					self.dataPie.addRow([value[0] || '', Number(value[1])]);
 				});
 			}
 			if (!self.viewPie) {
 				self.viewPie = new google.visualization.PieChart(
-					document.getElementById('ip-geo-block-chart-countries')
+					document.getElementById(ID('chart-countries'))
 				);
 			}
-			if ($('#ip-geo-block-chart-countries').width()) {
+			if ($(ID('#', 'chart-countries')).width()) {
 				self.viewPie.draw(self.dataPie, {
 					backgroundColor: '#f1f1f1',
 					chartArea: {
@@ -157,11 +245,11 @@ var ip_geo_block_time = new Date();
 				self.dataLine.addColumn('number', 'login');
 				self.dataLine.addColumn('number', 'admin');
 				var i, j, k, m, n, cells, arr = [],
-				    tr = $('#ip-geo-block-targets tr');
-				for (i = 0, m = tr.length; i < m; i++) {
+				    tr = $(ID('#', 'targets tr'));
+				for (m = tr.length, i = 0; i < m; i++) {
 					arr[i] = [];
 					cells = tr.eq(i).children();
-					for (j = 0, n = cells.length; j < n; j++) {
+					for (n = cells.length, j = 0; j < n; j++) {
 						k = cells.eq(j).text();
 						arr[i].push(j ? Number(k) : new Date(k));
 					}
@@ -170,10 +258,10 @@ var ip_geo_block_time = new Date();
 			}
 			if (!self.viewLine) {
 				self.viewLine = new google.visualization.LineChart(
-					document.getElementById('ip-geo-block-chart-daily')
+					document.getElementById(ID('chart-daily'))
 				);
 			}
-			var w = $('#ip-geo-block-chart-daily').width();
+			var w = $(ID('#', 'chart-daily')).width();
 			if (w) {
 				w = w > 320 ? true : false;
 				self.viewLine.draw(self.dataLine, {
@@ -186,7 +274,7 @@ var ip_geo_block_time = new Date();
 						top: '5%',
 						width: '100%',
 						height: '75%'
-					},
+					}
 				});
 			}
 		}
@@ -197,12 +285,12 @@ var ip_geo_block_time = new Date();
 		ip_geo_block_time = new Date() - ip_geo_block_time;
 
 		// Get tab number and check wpCookies in wp-includes/js/utils.js
-		var cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash('ip-geo-block-admin')) || {},
+		var cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('admin'))) || {},
 		    tabNum = /&tab=(\d)/.exec(window.location.href);
 		tabNum = Number(tabNum && tabNum[1]);
 
 		// Make form style with fieldset and legend
-		var fieldset = $('<fieldset class="ip-geo-block-field"></fieldset>'),
+		var fieldset = $('<fieldset class="' + ID('field') + '"></fieldset>'),
 		    legend = $('<legend></legend>');
 
 		$('.form-table').each(function (index) {
@@ -212,7 +300,7 @@ var ip_geo_block_time = new Date();
 
 			// Move title into the fieldset and wrap with legend
 			$this.wrap(fieldset).parent() // fieldset itself
-			     .attr('id', 'ip-geo-block-settings-' + index)
+			     .attr('id', ID('settings-' + index))
 			     .data('ip-geo-block', index)
 			     .prepend(title.wrap(legend).parent());
 			notes.insertBefore($this);
@@ -221,9 +309,9 @@ var ip_geo_block_time = new Date();
 			if (tabNum <= 1) {
 				index += (tabNum ? 8 : 0);
 				if ('undefined' === typeof cookie[index] || cookie[index]) { // 'undefined' or 'o'
-					title.addClass('ip-geo-block-dropdown').parent().nextAll().show();
+					title.addClass(ID('dropdown')).parent().nextAll().show();
 				} else {
-					title.addClass('ip-geo-block-dropup').parent().nextAll().hide();
+					title.addClass(ID('dropup')).parent().nextAll().hide();
 				}
 			}
 		});
@@ -236,14 +324,16 @@ var ip_geo_block_time = new Date();
 
 				// Show/Hide
 				title.parent().nextAll().toggle();
-				title.toggleClass('ip-geo-block-dropup').toggleClass('ip-geo-block-dropdown');
+				title.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
 
 				// Save cookie
-				cookie[index + (tabNum ? 8: 0)] = title.hasClass('ip-geo-block-dropdown') ? 'o' : '';
-				wpCookies.setHash('ip-geo-block-admin', cookie);
+				if ('undefined' !== typeof wpCookies) {
+					cookie[index + (tabNum ? 8: 0)] = title.hasClass(ID('dropdown')) ? 'o' : '';
+					wpCookies.setHash(ID('admin'), cookie, new Date(Date.now() + 2592000000));
+				}
 
 				// redraw google chart
-				if ($('#ip-geo-block-chart-countries').length) {
+				if ($(ID('#', 'chart-countries')).length) {
 					chart.drawChart();
 				}
 
@@ -252,7 +342,7 @@ var ip_geo_block_time = new Date();
 		}
 
 		// Inhibit to submit by return key
-		$('#ip-geo-block-inhibit').on('submit', function () {
+		$(ID('#', 'inhibit')).on('submit', function () {
 			return false;
 		});
 
@@ -260,13 +350,13 @@ var ip_geo_block_time = new Date();
 		switch (tabNum) {
 		  case 0:
 			// Scan your country code
-			$('#ip-geo-block-scan-code').on('click', function (event) {
+			$(ID('#', 'scan-code')).on('click', function (event) {
 				var parent = $(this).parent();
 				ajax_post('scanning', {
 					cmd: 'scan-code'
 				}, function (data) {
 					if (!parent.children('ul').length) {
-						parent.append('<ul id="ip-geo-block-code-list"></ul>');
+						parent.append('<ul id="' + ID('code-list') + '"></ul>');
 					}
 					parent = parent.children('ul').empty();
 
@@ -280,7 +370,7 @@ var ip_geo_block_time = new Date();
 								val = sanitize(data[key].code);
 								key = '<abbr title="' + sanitize(data[key].type) + '">' + key + '</abbr>';
 							}
-							parent.append('<li>' + key + ' : <span class="ip-geo-block-notice">' + val + '</span></li>');
+							parent.append('<li>' + key + ' : <span class="' + ID('notice') + '">' + val + '</span></li>');
 						}
 					}
 					parent.show('slow');
@@ -290,14 +380,14 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Matching rule
-			$('#ip_geo_block_settings_matching_rule').on('change', function () {
-				$('#ip_geo_block_settings_white_list').closest('tr').toggle(this.value !== '1');
-				$('#ip_geo_block_settings_black_list').closest('tr').toggle(this.value !== '0');
+			$(ID('@', 'matching_rule')).on('change', function () {
+				$(ID('@', 'white_list')).closest('tr').toggle(this.value !== '1');
+				$(ID('@', 'black_list')).closest('tr').toggle(this.value !== '0');
 				return false;
 			}).trigger('change');
 
 			// Update local database
-			$('#update').on('click', function (event) {
+			$(ID('@', 'update')).on('click', function (event) {
 				ajax_post('download', {
 					cmd: 'download'
 				}, function (res) {
@@ -309,7 +399,7 @@ var ip_geo_block_time = new Date();
 								if (data.hasOwnProperty(key)) {
 									key = sanitize(key);
 									if (data[key].filename) {
-										$('#ip_geo_block_settings_' + api + '_' + key + '_path').val(sanitize(data[key].filename));
+										$(ID('@', api + '_' + key + '_path')).val(sanitize(data[key].filename));
 									}
 									if (data[key].message) {
 										$('#ip_geo_block_' + api + '_' + key).text(sanitize(data[key].message));
@@ -323,31 +413,124 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 
-			// Show/Hide description of WP-ZEP
-			$('select[name^="ip_geo_block_settings[validation]"]').on('change', function (event) {
+			// Show/Hide description
+			$('select[name^="ip_geo_block_settings"]').on('change', function (event) {
 				show_description(this);
 				return false;
 			}).trigger('change');
 
-			// Manipulate DB table for validation logs
-			$('#create_table').on('click', function (event) {
-				confirm('Create table ?', function () {
-					ajax_table('create_table');
+			// Export / Import settings
+			$('body').append(
+				'<div style="display:none">' +
+					'<form method="POST" id="' + ID('export-form') + '" action="' + IP_GEO_BLOCK.url.replace('ajax.php', 'post.php') + '">' +
+						'<input type="hidden" name="action" value="' + IP_GEO_BLOCK.action + '" />' +
+						'<input type="hidden" name="nonce" value="' + IP_GEO_BLOCK.nonce + '" />' +
+						'<input type="hidden" name="cmd" value="validate" />' +
+						'<input type="hidden" name="data" value="" id="' + ID('export-data') + '"/>' +
+						'<input type="submit" value="submit" />' +
+					'</form>' +
+					'<input type="file" name="settings" id="' + ID('file-dialog') + '" />' +
+				'</div>'
+			);
+
+			// Export settings
+			$(ID('#', 'export')).on('click', function (event) {
+				if ('undefined' === typeof JSON) {
+					notice_html5();
+					return false;
+				}
+
+				var id = 'ip_geo_block_settings', json = {};
+				$.each($(this).closest('form').serializeArray(), function (i, obj) {
+					if (-1 !== obj.name.indexOf(id)) {
+						json[obj.name] = obj.value;
+					}
+				});
+
+				json[id += '[signature]'] = str_rot13(json[id]);
+				$(ID('#', 'export-data')).val(JSON.stringify(json));
+				$(ID('#', 'export-form')).trigger('submit');
+
+				return false;
+			});
+
+			// Import settings
+			$(ID('#', 'file-dialog')).on('change', function (event) {
+				if ('undefined' === typeof FileReader) {
+					notice_html5();
+					return false;
+				}
+
+				var file = event.target.files[0];
+				if (file) {
+					readfile(file, function (data) {
+						var id = 'ip_geo_block_settings[signature]';
+						data = JSON.parse(data);
+						data[id] = str_rot13(data[id]);
+						ajax_post('export-import', {
+							cmd: 'validate',
+							data: JSON.stringify(data)
+						}, deserialize_json);
+					});
+				}
+
+				return false;
+			});
+
+			$(ID('#', 'import')).on('click', function (event) {
+				$(ID('#', 'file-dialog')).trigger('click');
+				return false;
+			});
+
+			// Import pre-defined settings
+			$(ID('#', 'default')).on('click', function (event) {
+				confirm('Import settings ?', function () {
+					ajax_post('pre-defined', {
+						cmd: 'import-default'
+					}, deserialize_json);
+					/*}, function (json) {
+						deserialize_json(json);
+						$('#submit').trigger('click');
+					});*/
 				});
 				return false;
 			});
 
-			$('#delete_table').on('click', function (event) {
-				confirm('Delete table ?', function () {
-					ajax_table('delete_table');
+			$(ID('#', 'preferred')).on('click', function (event) {
+				confirm('Import settings ?', function () {
+					ajax_post('pre-defined', {
+						cmd: 'import-preferred'
+					}, deserialize_json);
 				});
 				return false;
+			});
+
+			// Manipulate DB table for validation logs
+			$(ID('@', 'create_table')).on('click', function (event) {
+				confirm('Create table ?', function () {
+					ajax_table('create-table');
+				});
+				return false;
+			});
+
+			$(ID('@', 'delete_table')).on('click', function (event) {
+				confirm('Delete table ?', function () {
+					ajax_table('delete-table');
+				});
+				return false;
+			});
+
+			// Submit
+			$('#submit').on('click', function (event) {
+				var elm = $(ID('@', 'signature'));
+				elm.val(str_rot13(elm.val()));
+				return true;
 			});
 			break;
 
 		  case 1:
 			// https://developers.google.com/loader/#Dynamic
-			if ($('#ip-geo-block-chart-countries').length && 'object' === typeof google) {
+			if ($(ID('#', 'chart-countries')).length && 'object' === typeof google) {
 				google.load('visualization', '1', {
 					packages: ['corechart'],
 					callback: function () {
@@ -357,7 +540,7 @@ var ip_geo_block_time = new Date();
 			}
 
 			// Statistics
-			$('#clear_statistics').on('click', function (event) {
+			$(ID('%', 'clear_statistics')).on('click', function (event) {
 				confirm('Clear statistics ?', function () {
 					ajax_clear('statistics', null);
 				});
@@ -365,7 +548,7 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Statistics
-			$('#clear_cache').on('click', function (event) {
+			$(ID('%', 'clear_cache')).on('click', function (event) {
 				confirm('Clear cache ?', function () {
 					ajax_clear('cache', null);
 				});
@@ -375,18 +558,18 @@ var ip_geo_block_time = new Date();
 
 		  case 2:
 			// Initialize map if exists
-			$('#ip-geo-block-map').each(function () {
+			$(ID('#', 'map')).each(function () {
 				$(this).GmapRS();
 			});
 
 			// Search Geolocation
-			$('#get_location').on('click', function (event) {
-				var ip = $('#ip_geo_block_settings_ip_address').val();
+			$(ID('@', 'get_location')).on('click', function (event) {
+				var ip = $(ID('@', 'ip_address')).val();
 				if (ip) {
 					ajax_post('loading', {
 						cmd: 'search',
 						ip: ip,
-						which: $('#ip_geo_block_settings_service').val()
+						which: $(ID('@', 'service')).val()
 					}, function (data) {
 						var key, info = '';
 						for (key in data) {
@@ -394,13 +577,13 @@ var ip_geo_block_time = new Date();
 								key = sanitize(key);
 								info +=
 									'<li>' +
-										'<span class="ip-geo-block-title">' + key + ' : </span>' +
-										'<span class="ip-geo-block-result">' + sanitize(data[key]) + '</span>' +
+										'<span class="' + ID('title' ) + '">' + key + ' : </span>' +
+										'<span class="' + ID('result') + '">' + sanitize(data[key]) + '</span>' +
 									'</li>';
 							}
 						}
 
-						$('#ip-geo-block-map').GmapRS('addMarker', {
+						$(ID('#', 'map')).GmapRS('addMarker', {
 							latitude: data.latitude || 0,
 							longitude: data.longitude || 0,
 							title: ip,
@@ -417,7 +600,7 @@ var ip_geo_block_time = new Date();
 
 		  case 4:
 			// Kick-off footable
-			if ($('.ip-geo-block-log').hide().length) {
+			if ($(ID('.', 'log')).hide().length) {
 				ajax_post('logs', {
 					cmd: 'restore',
 					which: null,
@@ -427,19 +610,19 @@ var ip_geo_block_time = new Date();
 					for (key in data) {
 						if (data.hasOwnProperty(key)) {
 							key = sanitize(key); // data has been already sanitized
-//							$('#ip-geo-block-log-' + key).html($.parseHTML(data[key])); // jQuery 1.8+
-							$('#ip-geo-block-log-' + key).html(data[key]);
+//							$(ID('#', 'log-' + key)).html($.parseHTML(data[key])); // jQuery 1.8+
+							$(ID('#', 'log-' + key)).html(data[key]);
 						}
 					}
 
 					if (typeof $.fn.footable === 'function') {
-						$('.ip-geo-block-log').fadeIn('slow').footable();
+						$(ID('.', 'log')).fadeIn('slow').footable();
 					}
 				});
 			}
 
 			// Validation logs
-			$('#clear_logs').on('click', function (event) {
+			$(ID('@', 'clear_logs')).on('click', function (event) {
 				confirm('Clear logs ?', function () {
 					ajax_clear('logs', null);
 				});

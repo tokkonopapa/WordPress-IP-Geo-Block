@@ -1,9 +1,12 @@
+/*jslint white: true */
 /**
  * Service: Generate random IP and get geolocation
  *
  */
 angular.module('geolocation', []);
 angular.module('geolocation').service('GeolocationSvc', ['$http', function ($http) {
+	'use strict';
+
 	/**
 	 * Geolocation API
 	 * These APIs need to respond `Access-Control-Allow-Origin` in header.
@@ -18,7 +21,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				switch (type) {
 					case 'name':  return data.country_name || null;
 					case 'code':  return data.country_code || null;
-					case 'error': return 'not found';
+					case 'error': return this.error('not found');
 				}
 				return null;
 			}
@@ -32,7 +35,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				switch (type) {
 					case 'name':  return data.country || null;
 					case 'code':  return data.country || null;
-					case 'error': return 'not found';
+					case 'error': return this.error('not found');
 				}
 				return null;
 			}
@@ -46,7 +49,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				switch (type) {
 					case 'name':  return data.country || null;
 					case 'code':  return data.countryCode || null;
-					case 'error': return data.message || null;
+					case 'error': return this.error(data.message || null);
 				}
 				return null;
 			}
@@ -63,15 +66,17 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 			get: function (data, type) {
 				switch (type) {
 					case 'name':
-						if (typeof data.query.results.json !== 'undefined')
+						if (typeof data.query.results.json !== 'undefined') {
 							return data.query.results.json.geoplugin_countryName;
+						}
 						break;
 					case 'code':
-						if (typeof data.query.results.json !== 'undefined')
+						if (typeof data.query.results.json !== 'undefined') {
 							return data.query.results.json.geoplugin_countryCode;
+						}
 						break;
 					case 'error':
-						return 'not found';
+						return this.error('not found');
 				}
 				return null;
 			}
@@ -88,15 +93,17 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 			get: function (data, type) {
 				switch (type) {
 					case 'name':
-						if (typeof data.query.results.json !== 'undefined')
+						if (typeof data.query.results.json !== 'undefined') {
 							return data.query.results.json.country_name;
+						}
 						break;
 					case 'code':
-						if (typeof data.query.results.json !== 'undefined')
-							return data.query.results.json.country_code
+						if (typeof data.query.results.json !== 'undefined') {
+							return data.query.results.json.country_code;
+						}
 						break;
 					case 'error':
-						return data.query.results.error;
+						return this.error(data.query.results.error);
 				}
 				return null;
 			}
@@ -110,30 +117,37 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				switch (type) {
 					case 'name' :
 						if (data.query.results &&
-							typeof data.query.results.json.msg === 'undefined')
+							typeof data.query.results.json.msg === 'undefined') {
 							return data.query.results.json.country.name;
+						}
 						break;
 					case 'code' :
 						if (data.query.results &&
-							typeof data.query.results.json.msg === 'undefined')
+							typeof data.query.results.json.msg === 'undefined') {
 							return data.query.results.json.country.code;
+						}
 						break;
 					case 'error':
-						if (data.query.results)
+						if (data.query.results) {
 							return data.query.results.json.msg;
-						else
-							return 'error';
+						} else {
+							return this.error('error');
+						}
 				}
 				return null;
 			}
 		}
 	];
 
+	this.error = function (errmsg) {
+		return errmsg;
+	};
+
 	this.get_geolocation = function (ip, callback) {
-		var api = this.apis[get_random_int(0, this.apis.length-1)];
-		var url = api.url
+		var api = this.apis[get_random_int(0, this.apis.length-1)],
+		    url = api.url
 			.replace('%API_IP%', ip)
-			.replace(/%API_FMT%/g, api['fmt']);
+			.replace(/%API_FMT%/g, api.fmt);
 
 		return $http({
 			url: url,

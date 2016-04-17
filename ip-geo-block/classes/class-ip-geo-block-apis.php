@@ -722,36 +722,37 @@ class IP_Geo_Block_Provider {
 
 }
 
-if ( class_exists( 'IP_Geo_Block' ) ) :
-
 /**
  * Load additional plugins
  *
  */
+if ( class_exists( 'IP_Geo_Block' ) ) {
 
-// Get absolute path to the geo-location API
-$dir = IP_Geo_Block::get_option( 'settings' );
-$dir = trailingslashit(
-	apply_filters( IP_Geo_Block::PLUGIN_SLUG . '-api-dir', dirname( $dir['api_dir'] ) )
-) . IP_Geo_Block::GEOAPI_NAME;
+	// Get absolute path to the geo-location API
+	$dir = IP_Geo_Block::get_option( 'settings' );
+	$dir = trailingslashit(
+		apply_filters(
+			IP_Geo_Block::PLUGIN_SLUG . '-api-dir',
+			dirname( $dir['api_dir'] )
+		)
+	) . IP_Geo_Block::GEOAPI_NAME;
 
-// If not exists then use bundled API
-if ( ! @is_dir( $dir ) )
-	$dir = IP_GEO_BLOCK_PATH . IP_Geo_Block::GEOAPI_NAME;
+	// If not exists then use bundled API
+	if ( ! is_dir( $dir ) )
+		$dir = IP_GEO_BLOCK_PATH . IP_Geo_Block::GEOAPI_NAME;
 
-// Scan API directory
-$dir = trailingslashit( $dir );
-$plugins = @scandir( $dir, 1 ); // SCANDIR_SORT_DESCENDING @since 5.4.0
+	// Scan API directory
+	$dir = trailingslashit( $dir );
+	$plugins = is_dir( $dir ) ? scandir( $dir, 1 ) : FALSE; // SCANDIR_SORT_DESCENDING @since 5.4.0
 
-// Load addons by heigher priority order
-if ( FALSE !== $plugins ) {
-	$exclude = array( '.', '..', 'index.php' );
-	foreach ( $plugins as $plugin ) {
-		if ( ! in_array( $plugin, $exclude ) && is_dir( $dir.$plugin ) ) {
-			@include_once( $dir.$plugin.'/class-'.$plugin.'.php' );
+	// Load addons by heigher priority order
+	if ( FALSE !== $plugins ) {
+		$exclude = array( '.', '..', 'index.php' );
+		foreach ( $plugins as $plugin ) {
+			if ( ! in_array( $plugin, $exclude ) && is_dir( $dir.$plugin ) ) {
+				@include_once( $dir.$plugin.'/class-'.$plugin.'.php' );
+			}
 		}
 	}
-}
 
-endif; /* class_exists( 'IP_Geo_Block' ) */
-?>
+}

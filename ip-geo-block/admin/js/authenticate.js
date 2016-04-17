@@ -80,8 +80,8 @@ var IP_GEO_BLOCK_ZEP = {
 
 		// if it's not absolute, add root path
 		if ('/' !== path.charAt(0)) {
-			var p = window.location.pathname;
-			path = p.substring(0, p.lastIndexOf('/') + 1) + path;
+			i = window.location.pathname;
+			path = i.substring(0, i.lastIndexOf('/') + 1) + path;
 		}
 
 		// explode the given path into it's parts
@@ -152,9 +152,9 @@ var IP_GEO_BLOCK_ZEP = {
 
 	// regular expression to find target for is_admin()
 	var regexp = new RegExp(
-		'^(?:' + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.admin
-		+ '|'  + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.plugins
-		+ '|'  + IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.themes
+		'^(?:' + IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin
+		+ '|'  + IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.plugins
+		+ '|'  + IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.themes
 		+ ')(?:.*\.php|.*\/)?$'
 	);
 
@@ -186,7 +186,7 @@ var IP_GEO_BLOCK_ZEP = {
 	var ajax_links = {};
 
 	// `theme-install.php` eats the query and set it to `request[browse]` as a parameter
-	ajax_links[IP_GEO_BLOCK_AUTH.root + IP_GEO_BLOCK_AUTH.admin + 'theme-install.php'] = function (data) {
+	ajax_links[IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin + 'theme-install.php'] = function (data) {
 		var i = data.length;
 		while (i-- > 0) {
 			if (data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth') === 0) {

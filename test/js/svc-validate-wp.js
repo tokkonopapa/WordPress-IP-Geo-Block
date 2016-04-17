@@ -1,9 +1,12 @@
+/*jslint white: true */
 /**
  * Service: Validate wordpress pages
  *
  */
 angular.module('validate-wp', []);
 angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http) {
+	'use strict';
+
 	/**
 	 * Validate if the page is WordPress
 	 *
@@ -47,7 +50,8 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 		.then(
 			function (res) {
 				// Extract canonical URL
-				var regexp = /<link[^>]+?rel=(['"]?)canonical\1.+/i,
+				var id = 0,
+				    regexp = /<link[^>]+?rel=(['"]?)canonical\1.+/i,
 				    match = res.data.match(regexp);
 				if (match && match.length) {
 					url = match[0].replace(/.*href=(['"]?)(.+?)\1.+/, '$2');
@@ -56,7 +60,6 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 				// Extract ID of the post
 				regexp = /<input[^>]+?comment_post_ID.+?>/i;
 				match = res.data.match(regexp);
-				var id = 0;
 				if (match && match.length) {
 					// if found then get post comment ID
 					id = match[0].replace(/[\D]/g, '');

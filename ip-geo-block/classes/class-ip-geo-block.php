@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.3.1';
+	const VERSION = '2.2.4';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
@@ -26,7 +26,7 @@ class IP_Geo_Block {
 	 * Instance of this class.
 	 *
 	 */
-	protected static $instance = null;
+	protected static $instance = NULL;
 
 	// option table accessor by name
 	public static $option_keys = array(
@@ -35,7 +35,8 @@ class IP_Geo_Block {
 	);
 
 	// Globals in this class
-	public static $content_dir;
+	public static $wp_dirs;
+	private $request_uri = NULL;
 	private $remote_addr = NULL;
 
 	/**
@@ -56,48 +57,52 @@ class IP_Geo_Block {
 			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
 
 		// get content folders (with/without trailing slash)
-		self::$content_dir = array(
-			'root'    => untrailingslashit( parse_url( $uri = home_url(), PHP_URL_PATH ) ),
+		self::$wp_dirs = array(
+			'home'    => untrailingslashit( parse_url( $uri = home_url(), PHP_URL_PATH ) ),
 			'admin'   =>   trailingslashit( substr( admin_url(),          $tmp = strlen( $uri ) ) ),
 			'plugins' =>   trailingslashit( substr( plugins_url(),        $tmp ) ),
 			'themes'  =>   trailingslashit( substr( get_theme_root_uri(), $tmp ) ),
 		);
 
-		// requested path
-		$uri = preg_replace( '!(//+|/\.+/)!', '/', $_SERVER['REQUEST_URI'] );
-		$uri = substr( parse_url( $uri, PHP_URL_PATH ), strlen( self::$content_dir['root'] ) );
+		// normalize requested uri (RFC 2616 has been obsoleted by RFC 7230-7237)
+		// `parse_url()` is not suitable becase of https://bugs.php.net/bug.php?id=55511
+		// REQUEST_URI starts with path or scheme (https://tools.ietf.org/html/rfc2616#section-5.1.2)
+		$uri = preg_replace( '!(?://+|/\.+/)!', '/', $_SERVER['REQUEST_URI'] );
+		$uri = $this->request_uri = substr( $uri, strpos( $uri, $tmp = self::$wp_dirs['home'] ) + strlen( $tmp ) );
 
-		// comment, xmlrpc, login
+		// WordPress core files directly under the home
 		$tmp = array(
-			'/wp-comments-post.php' => 'comment',
-			'/xmlrpc.php'           => 'xmlrpc',
-			'/wp-login.php'         => 'login',
+			'wp-comments-post.php' => 'comment',
+			'wp-trackback.php'     => 'comment',
+			'xmlrpc.php'           => 'xmlrpc',
+			'wp-login.php'         => 'login',
+			'wp-signup.php'        => 'login',
 		);
 
-		if ( isset( $tmp[ $uri ] ) ) {
-			if ( $validate[ $tmp[ $uri ] ] )
-				add_action( 'init', array( $this, 'validate_' . $tmp[ $uri ] ), $priority );
+		global $pagenow; // it can handle the path like '/wp-trackback.php/1'
+		if ( isset( $tmp[ $pagenow ] ) && 0 === strpos( $uri, "/$pagenow" ) ) {
+			if ( $validate[ $tmp[ $pagenow ] ] )
+				add_action( 'init', array( $this, 'validate_' . $tmp[ $pagenow ] ), $priority );
 		}
 
-		// wp-admin/(admin.php|admin-apax.php|admin-post.php) @since 2.5.0
-		elseif ( is_admin() )
+		// wp-admin/*.php
+		elseif ( FALSE !== strpos( $uri, self::$wp_dirs['admin'] ) )
 			add_action( 'init', array( $this, 'validate_admin' ), $priority );
 
 		// wp-content/(plugins|themes)/.../*.php
-		elseif ( FALSE !== strpos( $uri, self::$content_dir['plugins'] ) ||
-		         FALSE !== strpos( $uri, self::$content_dir['themes' ] ) )
+		elseif ( FALSE !== strpos( $uri, self::$wp_dirs['plugins'] ) ||
+		         FALSE !== strpos( $uri, self::$wp_dirs['themes' ] ) )
 			add_action( 'init', array( $this, 'validate_direct' ), $priority );
 
 		else {
 			// message text on comment form
 			if ( $settings['comment']['pos'] ) {
-				$tmp = 'comment_form' . ( $settings['comment']['pos'] == 1 ? '_top' : '' );
-				add_action( $tmp, array( $this, 'comment_form_message' ) );
+				$tmp = ( 1 == $settings['comment']['pos'] ? '_top' : '' );
+				add_action( 'comment_form' . $tmp, array( $this, 'comment_form_message' ) );
 			}
 
 			if ( $validate['comment'] ) {
-				// wp-trackback.php @since 1.5.0, bbPress: prevent creating topic/relpy and rendering form
-				add_filter( 'preprocess_comment', array( $this, 'validate_comment' ), $priority );
+				// bbPress: prevent creating topic/relpy and rendering form
 				add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
 				add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
 				add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
@@ -105,7 +110,7 @@ class IP_Geo_Block {
 			}
 
 			if ( $validate['login'] ) {
-				// wp-login.php @since 2.1.0, BuddyPress: prevent registration and rendering form
+				// for hide/rename wp-login.php, BuddyPress: prevent registration and rendering form
 				add_action( 'login_init', array( $this, 'validate_login' ), $priority );
 				add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
 				add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
@@ -122,10 +127,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function get_instance() {
-		if ( null == self::$instance )
-			self::$instance = new self;
-
-		return self::$instance;
+		return self::$instance ? self::$instance : ( self::$instance = new self );
 	}
 
 	/**
@@ -199,7 +201,7 @@ class IP_Geo_Block {
 		if ( is_user_logged_in() ) {
 			$handle = self::PLUGIN_SLUG . '-auth-nonce';
 			$script = plugins_url( 'admin/js/authenticate.min.js', IP_GEO_BLOCK_BASE );
-			$nonce = array( 'nonce' => wp_create_nonce( $handle ) ) + self::$content_dir;
+			$nonce = array( 'nonce' => wp_create_nonce( $handle ) ) + self::$wp_dirs;
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
 			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $nonce );
 		}
@@ -210,7 +212,11 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function logout_redirect( $uri ) {
-		return FALSE !== strpos( $uri, self::$content_dir['admin'] ) && isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] ? 'wp-login.php?loggedout=true' : $uri;
+		if ( FALSE !== strpos( $uri, self::$wp_dirs['admin'] ) &&
+		     isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] )
+			return esc_url_raw( add_query_arg( array( 'loggedout' => 'true' ), wp_login_url() ) );
+		else
+			return $uri;
 	}
 
 	/**
@@ -359,7 +365,7 @@ class IP_Geo_Block {
 	 * @param array $settings option settings
 	 * @param boolean $die send http response and die if validation fails
 	 */
-	private function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE ) {
+	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $auth = TRUE ) {
 		// set IP address to be validated
 		$ips = array( self::get_ip_address() );
 
@@ -376,9 +382,8 @@ class IP_Geo_Block {
 
 		// register auxiliary validation functions
 		$var = self::PLUGIN_SLUG . '-' . $hook;
-		add_filter( $var, array( $this, 'check_auth' ), 9, 2 );
-		add_filter( $var, array( $this, 'check_fail' ), 8, 2 );
-
+		$auth and add_filter( $var, array( $this, 'check_auth' ), 9, 2 );
+		$auth and add_filter( $var, array( $this, 'check_fail' ), 8, 2 );
 		$settings['extra_ips'] = apply_filters( self::PLUGIN_SLUG . '-extra-ips', $settings['extra_ips'], $hook );
 		$settings['extra_ips']['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
 		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
@@ -558,11 +563,10 @@ class IP_Geo_Block {
 	 */
 	public function validate_direct() {
 		// retrieve the name of plugins/themes
-		$plugins = preg_quote( self::$content_dir['plugins'], '/' );
-		$themes  = preg_quote( self::$content_dir['themes' ], '/' );
-		$request = preg_replace( '!(//+|/\.+/)!', '/', $_SERVER['REQUEST_URI'] );
+		$plugins = preg_quote( self::$wp_dirs['plugins'], '/' );
+		$themes  = preg_quote( self::$wp_dirs['themes' ], '/' );
 
-		if ( preg_match( '/(?:('.$plugins.')|('.$themes.'))([^\/]*)\//', $request, $matches ) ) {
+		if ( preg_match( "/(?:($plugins)|($themes))([^\/]*)\//", $this->request_uri, $matches ) ) {
 			// list of plugins/themes to bypass WP-ZEP
 			$settings = self::get_option( 'settings' );
 			$type = empty( $matches[2] ) ? 'plugins' : 'themes';
@@ -646,7 +650,7 @@ class IP_Geo_Block {
 		$request = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
 		foreach ( explode( ',', $settings['signature'] ) as $signature ) {
-			if ( ( $signature = trim( $signature ) ) && FALSE !== strpos( $request, "/$signature" ) )
+			if ( ( $signature = trim( $signature ) ) && FALSE !== strpos( $request, $signature ) )
 				return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
 		}
 
@@ -700,6 +704,10 @@ class IP_Geo_Block {
 		return $this->check_ips( $validate, $settings, 1 );
 	}
 
+	private function multiexplode ( $delimiters, $string ) {
+		return array_filter( explode( $delimiters[0], str_replace( $delimiters, $delimiters[0], $string ) ) );
+	}
+
 	private function check_ips( $validate, $settings, $which ) {
 		$ip = $validate['ip'];
 		$ips = $settings['extra_ips'][ $which ? 'black_list' : 'white_list' ];
@@ -712,8 +720,8 @@ class IP_Geo_Block {
 
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
-			foreach ( explode( ',', $ips ) as $i ) {
-				$j = explode( '/', $i = trim( $i ), 2 );
+			foreach ( $this->multiexplode( array( ',', ' ' ), $ips ) as $i ) {
+				$j = explode( '/', $i, 2 );
 				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) &&
 				     Net_IPv4::ipInNetwork( $ip, isset( $j[1] ) ? $i : $i.'/32' ) )
 					// can't overwrite existing result
@@ -723,8 +731,8 @@ class IP_Geo_Block {
 
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv6.php' );
-			foreach ( explode( ',', $ips ) as $i ) {
-				$j = explode( '/', $i = trim( $i ), 2 );
+			foreach ( $this->multiexplode( array( ',', ' ' ), $ips ) as $i ) {
+				$j = explode( '/', $i, 2 );
 				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) &&
 				     Net_IPv6::isInNetmask( $ip, isset( $j[1] ) ? $i : $i.'/128' ) )
 					// can't overwrite existing result

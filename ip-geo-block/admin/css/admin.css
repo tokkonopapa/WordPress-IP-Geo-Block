@@ -46,6 +46,15 @@ fieldset.ip-geo-block-field .form-table {
     margin: 0.5em 0 0;
 }
 
+textarea.regular-text {
+    width: 25em;
+}
+
+.ip-geo-block-sup {
+    margin-left: 0.2em;
+    display: inline-block;
+}
+
 ul.ip-geo-block-note {
     list-style: disc outside;
     margin-left: 1em;
@@ -57,8 +66,9 @@ ul.ip-geo-block-list {
 ul.ip-geo-block-list label {
     display: inline-block;
 }
-.ip_geo_block_settings_desc {
+.ip-geo-block-desc {
     display: inline-block;
+    margin-top: 0.25em;
 }
 @media screen and (min-width:782px) {
     ul.ip-geo-block-list .code {
@@ -66,25 +76,17 @@ ul.ip-geo-block-list label {
     }
 }
 
-#ip-geo-block-loading,
-#ip-geo-block-download,
-#ip-geo-block-scanning,
-#ip-geo-block-delete_table,
-#ip-geo-block-create_table,
-#ip-geo-block-statistics,
-#ip-geo-block-cache,
-#ip-geo-block-logs {
-    height: 16px;
-    width: 16px;
-    margin-left: 1em;
-    display: inline-block;
-    vertical-align: middle;
-}
 .ip-geo-block-loading {
     background-size: 16px 16px;
     background-position: center center;
     background-repeat: no-repeat;
     background-image: url(data:image/gif;base64,R0lGODlhEAAQAPIGAAAAAMLCwkJCQpKSkmJiYoKCgv///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAGACwAAAAAEAAQAAADM2i63P4wyklrC0IEKgAQnAdOmGYFBLExwboQWcG2rlHEwTDQLUsUOd2mBxkUCgNKa+dIAAAh+QQJCgAGACwAAAIACgAOAAADLWgWIqHQCABEVLPe1R4MBOFFRFNsRUNsYDFewTC8iixvQ1EMyxjEvyBLODQkAAAh+QQJCgAGACwAAAAACgAOAAADLWi6IRJrCQCECoU0ag1xxeBARuEQ0UUU5DUM7fK+qTEUYR0EcM3Ev51uB7wAEwAh+QQJCgAGACwAAAAADgAKAAADLWi6URQrLiJEkSaM0eqrkLFtAVEEAgAIylAUQ5SuSqCFNZjhWG3zmB8wOJQkAAAh+QQJCgAGACwCAAAADgAKAAADK2hqMRMrLuekCnCU8gqBDCZ2glBcYkSUxIJJgQdaUVDOtAAAAr3oPN/llgAAIfkECQoABgAsBgAAAAoADgAAAytoEdauiz0Yx5BQFTvN2EMXWNgUFETZFIJQdERLiGgZtKohAIDQ7T0RrpEAACH5BAkKAAYALAYAAgAKAA4AAAMqaKoR+609Fie1K4zhZiibNRSg1XAQUXQPIQgE835voQgAIARqh+ummSUBACH5BAUKAAYALAIABgAOAAoAAAMsaLpsES2+F9mEddEgBFbBMGACAAiMOCrlGRBFWBQD2L0dYYjfUuQZEKynSAAAOw==);
+    height: 16px;
+    width: 16px;
+    margin-left: 1em;
+    margin-top: 0.2em;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .ip-geo-block-notice {
@@ -282,4 +284,8 @@ ul.ip-geo-block-statistics-countries li {
 }
 #ip-geo-block-chart-daily {
     height: 240px;
+}
+#ip_geo_block_settings_validation_plugins,
+#ip_geo_block_settings_validation_themes {
+    margin-top: 0.5em;
 }
