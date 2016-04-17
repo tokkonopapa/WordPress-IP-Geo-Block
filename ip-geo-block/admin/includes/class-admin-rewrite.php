@@ -4,6 +4,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	// private values
 	private $doc_root = NULL;
 	private $base_uri = NULL;
+	private $wp_dirs;
 
 	// template of rewrite rule in wp-content/(plugins|themes)/
 	private $rewrite_rule = array(
@@ -51,6 +52,12 @@ class IP_Geo_Block_Admin_Rewrite {
 		// http://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
 		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
+
+		$len = strlen( home_url() );
+		$this->wp_dirs = array(
+			'plugins' =>   trailingslashit( substr( plugins_url(),        $len ) ),
+			'themes'  =>   trailingslashit( substr( get_theme_root_uri(), $len ) ),
+		);
 	}
 
 	/**
@@ -148,7 +155,7 @@ class IP_Geo_Block_Admin_Rewrite {
 		if ( $is_apache ) {
 			return $this->doc_root
 				. parse_url( network_site_url(), PHP_URL_PATH )
-				. IP_Geo_Block::$wp_dirs[ $which ] . '.htaccess';
+				. $this->wp_dirs[ $which ] . '.htaccess';
 		}
 		elseif ( $is_nginx ) {
 			return NULL; /* MUST FIX */

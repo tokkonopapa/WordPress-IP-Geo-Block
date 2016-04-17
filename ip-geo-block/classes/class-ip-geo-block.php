@@ -138,10 +138,18 @@ class IP_Geo_Block {
 		if ( current_user_can( 'manage_options' ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 
 			// initialize logs then upgrade and return new options
 			IP_Geo_Block_Logs::create_tables();
-			IP_Geo_Block_Opts::upgrade();
+			$settings = IP_Geo_Block_Opts::upgrade();
+
+			$rewrite = new IP_Geo_Block_Admin_Rewrite;
+			foreach ( array( 'plugins', 'themes' ) as $key ) {
+				empty( $settings['rewrite'][ $key ] ) ?
+					$rewrite->deactivate_rewrite_rule( $key ) :
+					$rewrite->activate_rewrite_rule( $key );
+			}
 
 			// kick off a cron job to download database immediately
 			self::exec_download();
@@ -153,14 +161,16 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function deactivate( $network_wide = FALSE ) {
-		// cancel schedule
-		wp_clear_scheduled_hook( self::CRON_NAME, array( FALSE ) ); // @since 2.1.0
+		if ( current_user_can( 'manage_options' ) ) {
+			// cancel schedule
+			wp_clear_scheduled_hook( self::CRON_NAME, array( FALSE ) ); // @since 2.1.0
 
-		// deactivate rewrite rule
-		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
-		$rewrite = new IP_Geo_Block_Admin_Rewrite;
-		$rewrite->deactivate_rewrite_rule( 'plugins' );
-		$rewrite->deactivate_rewrite_rule( 'themes'  );
+			// deactivate rewrite rule
+			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+			$rewrite = new IP_Geo_Block_Admin_Rewrite;
+			$rewrite->deactivate_rewrite_rule( 'plugins' );
+			$rewrite->deactivate_rewrite_rule( 'themes'  );
+		}
 	}
 
 	/**

@@ -408,14 +408,18 @@ class IP_Geo_Block_Admin_Tab {
 			__( 'Regardless of the country code, it will block a malicious request to <code>%s&hellip;/*.php</code>.', IP_Geo_Block::TEXT_DOMAIN ),
 			__( 'It configures &#8220%s&#8221 to validate a request to the PHP file which does not load WordPress core.', IP_Geo_Block::TEXT_DOMAIN ),
 		);
+
+		// Set rewrite condition
 		$rewrite = new IP_Geo_Block_Admin_Rewrite;
 		$server = 'apache' === $rewrite->get_server_type();
+		foreach ( array( 'plugins', 'themes' ) as $key )
+			$options['rewrite'][ $key ] = $rewrite->check_rewrite_rule( $key );
 
 		// Plugins area
 		$key = 'plugins';
 		$val = esc_html( substr( IP_Geo_Block::$wp_dirs[ $key ], 1 ) );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
-			. '" value="1"' . checked( $rewrite->check_rewrite_rule( $key ), TRUE, FALSE )
+			. '" value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
 			. ' name="ip_geo_block_settings[rewrite]['.$key.']" '
 			. disabled( $server, FALSE, FALSE ) . ' />'
 			. '<label for="ip_geo_block_settings_rewrite_'.$key.'"><dfn title="'
@@ -448,7 +452,7 @@ class IP_Geo_Block_Admin_Tab {
 		$key = 'themes';
 		$val = esc_html( substr( IP_Geo_Block::$wp_dirs[ $key ], 1 ) );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
-			. '" value="1"' . checked( $rewrite->check_rewrite_rule( $key ), TRUE, FALSE )
+			. '" value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
 			. ' name="ip_geo_block_settings[rewrite]['.$key.']" '
 			. disabled( $server, FALSE, FALSE ) . ' />'
 			. '<label for="ip_geo_block_settings_rewrite_'.$key.'"><dfn title="'
