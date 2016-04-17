@@ -155,6 +155,12 @@ class IP_Geo_Block {
 	public static function deactivate( $network_wide = FALSE ) {
 		// cancel schedule
 		wp_clear_scheduled_hook( self::CRON_NAME, array( FALSE ) ); // @since 2.1.0
+
+		// deactivate rewrite rule
+		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+		$rewrite = new IP_Geo_Block_Admin_Rewrite;
+		$rewrite->deactivate_rewrite_rule( 'plugins' );
+		$rewrite->deactivate_rewrite_rule( 'themes'  );
 	}
 
 	/**

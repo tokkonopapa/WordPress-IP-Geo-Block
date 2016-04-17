@@ -196,7 +196,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 *
 	 * @param string 'plugins' or 'themes'
 	 */
-	public function add_rewrite_rule( $which ) {
+	public function activate_rewrite_rule( $which ) {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
 		if ( $is_apache ) {
 			$content = $this->get_rewrite_rule( $which );
@@ -214,7 +214,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 *
 	 * @param string 'plugins' or 'themes'
 	 */
-	public function remove_rewrite_rule( $which ) {
+	public function deactivate_rewrite_rule( $which ) {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
 		if ( $is_apache ) {
 			$content = $this->get_rewrite_rule( $which );

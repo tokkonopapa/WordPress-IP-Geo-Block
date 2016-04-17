@@ -685,9 +685,9 @@ class IP_Geo_Block_Admin {
 		$rewrite = new IP_Geo_Block_Admin_Rewrite;
 		foreach ( array( 'plugins', 'themes' ) as $key ) {
 			if ( empty( $output['rewrite'][ $key ] ) )
-				$rewrite->remove_rewrite_rule( $key );
+				$rewrite->deactivate_rewrite_rule( $key );
 			else
-				$rewrite->add_rewrite_rule( $key );
+				$rewrite->activate_rewrite_rule( $key );
 		}
 
 		// reject invalid signature which potentially blocks itself
