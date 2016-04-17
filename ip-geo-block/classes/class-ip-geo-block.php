@@ -68,7 +68,7 @@ class IP_Geo_Block {
 		// `parse_url()` is not suitable becase of https://bugs.php.net/bug.php?id=55511
 		// REQUEST_URI starts with path or scheme (https://tools.ietf.org/html/rfc2616#section-5.1.2)
 		$uri = preg_replace( '!(?://+|/\.+/)!', '/', $_SERVER['REQUEST_URI'] );
-		$uri = $this->request_uri = substr( $uri, strpos( $uri, $tmp = self::$wp_dirs['home'] ) + strlen( $tmp ) );
+		$uri = $this->request_uri = substr( $uri, strpos( $uri, self::$wp_dirs['home'] ) + strlen( self::$wp_dirs['home'] ) );
 
 		// WordPress core files directly under the home
 		$tmp = array(
