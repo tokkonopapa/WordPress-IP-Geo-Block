@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.2.4\n"
 "Report-Msgid-Bugs-To: http://www.ipgeoblock.com/\n"
-"POT-Creation-Date: 2016-04-18 19:31+0900\n"
-"PO-Revision-Date: 2016-04-18 19:31+0900\n"
+"POT-Creation-Date: 2016-04-18 23:00+0900\n"
+"PO-Revision-Date: 2016-04-18 23:00+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -110,7 +110,14 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:718
+#: admin/class-ip-geo-block-admin.php:714
+#: classes/class-ip-geo-block-util.php:114
+#: classes/class-ip-geo-block-util.php:141
+#, php-format
+msgid "Unable to write %s. Please check permission."
+msgstr ""
+
+#: admin/class-ip-geo-block-admin.php:724
 msgid "Successfully updated."
 msgstr ""
 
@@ -727,12 +734,6 @@ msgstr ""
 #: classes/class-ip-geo-block-util.php:132
 #, php-format
 msgid "Unable to read %s. Please check permission."
-msgstr ""
-
-#: classes/class-ip-geo-block-util.php:114
-#: classes/class-ip-geo-block-util.php:141
-#, php-format
-msgid "Unable to write %s. Please check permission."
 msgstr ""
 
 #: ip-geo-api/ip2location/class-ip2location.php:143

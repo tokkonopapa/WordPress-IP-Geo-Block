@@ -95,14 +95,19 @@ class IP_Geo_Block_Rewrite {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
 
 		if ( $is_apache ) {
-			$block = $this->find_rewrite_block( $this->get_rewrite_rule( $which ) );
+			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
+				return FALSE;
+
+			$block = $this->find_rewrite_block( $content );
 			return empty( $block ) ? FALSE : TRUE;
 		}
+
 		elseif ( $is_nginx ) {
 			return -1; /* CURRENTLY NOT SUPPORTED */
 		}
+
 		else {
-			return -1; /* CURRENTLY NOT SUPPORTED */
+			return -1; /* NOT SUPPORTED */
 		}
 	}
 
@@ -173,11 +178,13 @@ class IP_Geo_Block_Rewrite {
 		if ( $is_apache ) {
 			return $this->doc_root . $this->site_uri . $this->wp_dirs[ $which ] . '.htaccess';
 		}
+
 		elseif ( $is_nginx ) {
 			return NULL; /* MUST FIX */
 		}
+
 		else {
-			return NULL;
+			return NULL; /* NOT SUPPORTED */
 		}
 	}
 
@@ -188,16 +195,23 @@ class IP_Geo_Block_Rewrite {
 	 * @return array contents of configuration file
 	 */
 	private function get_rewrite_rule( $which ) {
-		if ( @file_exists( $file = $this->get_rewrite_file( $which ) ) ) {
-			// http://php.net/manual/en/function.file.php#refsect1-function.file-returnvalues
-			@ini_set( 'auto_detect_line_endings', TRUE );
+		$file = $this->get_rewrite_file( $which );
+		$exist = @file_exists( $file );
 
-			// get file contents as an array
-			if ( FALSE !== ( $content = @file( $file, FILE_IGNORE_NEW_LINES ) ) )
-				return $content;
+		// check permission
+		if ( $exist ) {
+			if ( ! @is_writable( $file ) )
+				return FALSE;
+		} else {
+			if ( ! @is_writable( dirname( $file ) ) )
+				return FALSE;
 		}
 
-		return array();
+		// http://php.net/manual/en/function.file.php#refsect1-function.file-returnvalues
+		@ini_set( 'auto_detect_line_endings', TRUE );
+
+		// get file contents as an array
+		return $exist ? @file( $file, FILE_IGNORE_NEW_LINES ) : array();
 	}
 
 	/**
@@ -225,7 +239,9 @@ class IP_Geo_Block_Rewrite {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
 
 		if ( $is_apache ) {
-			$content = $this->get_rewrite_rule( $which );
+			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
+				return FALSE;
+
 			$block = $this->find_rewrite_block( $content );
 
 			if ( empty( $block ) ) {
@@ -234,6 +250,8 @@ class IP_Geo_Block_Rewrite {
 				$this->put_rewrite_rule( $which, $content );
 			}
 		}
+
+		return TRUE;
 	}
 
 	/**
@@ -245,7 +263,9 @@ class IP_Geo_Block_Rewrite {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
 
 		if ( $is_apache ) {
-			$content = $this->get_rewrite_rule( $which );
+			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
+				return FALSE;
+
 			$block = $this->find_rewrite_block( $content );
 
 			if ( ! empty( $block ) ) {
@@ -253,6 +273,8 @@ class IP_Geo_Block_Rewrite {
 				$this->put_rewrite_rule( $which, $content );
 			}
 		}
+
+		return TRUE;
 	}
 
 	/**
@@ -261,8 +283,8 @@ class IP_Geo_Block_Rewrite {
 	 */
 	public static function check_rewrite_all() {
 		$status = array();
-
 		$rewrite = self::get_instance();
+
 		foreach ( array( 'plugins', 'themes' ) as $key ) {
 			$status[ $key ] = $rewrite->check_rewrite_rule( $key );
 		}
@@ -279,10 +301,15 @@ class IP_Geo_Block_Rewrite {
 
 		foreach ( array( 'plugins', 'themes' ) as $key ) {
 			if ( empty( $options[ $key ] ) )
-				$rewrite->del_rewrite_rule( $key );
+				$ret = $rewrite->del_rewrite_rule( $key ) || TRUE;
 			else
-				$rewrite->add_rewrite_rule( $key );
+				$ret = $rewrite->add_rewrite_rule( $key );
+
+			if ( FALSE === $ret )
+				return FALSE;
 		}
+
+		return TRUE;
 	}
 
 	/**
@@ -293,8 +320,11 @@ class IP_Geo_Block_Rewrite {
 		$rewrite = self::get_instance();
 
 		foreach ( array( 'plugins', 'themes' ) as $key ) {
-			$rewrite->del_rewrite_rule( $key );
+			if ( FALSE === $rewrite->del_rewrite_rule( $key ) )
+				return FALSE;
 		}
+
+		return TRUE;
 	}
 
 }

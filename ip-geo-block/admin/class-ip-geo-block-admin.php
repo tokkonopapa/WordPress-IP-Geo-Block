@@ -690,9 +690,6 @@ class IP_Geo_Block_Admin {
 		}
 		$output['signature'] = implode( ',', $key );
 
-		// activate rewrite rules
-		IP_Geo_Block_Rewrite::activate_rewrite_all( $output['rewrite'] );
-
 		return $output;
 	}
 
@@ -708,7 +705,16 @@ class IP_Geo_Block_Admin {
 		}
 
 		// validate setting options
-		$ret = $this->validate_options( 'settings', $input );
+		$options = $this->validate_options( 'settings', $input );
+
+		// activate rewrite rules
+		if ( FALSE === IP_Geo_Block_Rewrite::activate_rewrite_all( $options['rewrite'] ) ) {
+			$options['rewrite'] = array( 'plugins' => FALSE, 'themes' => FALSE );
+			$this->show_setting_notice( 'settings', 'error', sprintf(
+				__( 'Unable to write %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
+				'<code>.htaccess</code>'
+			) );
+		}
 
 		// Force to finish update matching rule
 		delete_transient( IP_Geo_Block::CRON_NAME );
@@ -718,7 +724,7 @@ class IP_Geo_Block_Admin {
 			__( 'Successfully updated.', IP_Geo_Block::TEXT_DOMAIN )
 		);
 
-		return $ret;
+		return $options;
 	}
 
 	/**
