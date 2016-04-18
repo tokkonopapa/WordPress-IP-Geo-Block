@@ -140,9 +140,10 @@ in that plugin's directory, you should **uncheck** the
 
 #### Force to load WP core ####
 
-You should setup a specific `.htaccess` into those areas for both "**Block by 
-coutnry**" and "**Prevent Zero-day Exploit**". Please refer to [this article]
-[PreventExp] for more details.
+It's better to configure rewrite rules for both "**Block by coutnry**" and 
+"**Prevent Zero-day Exploit**" to block certain types of attack. Currently 
+this plugin supports to setup a specific `.htaccess` into those areas for 
+[Apache][Apache]. Please refer to [this article][PreventExp] for more details.
 
 ### Any questions? ###
 
@@ -169,3 +170,4 @@ If you have something to ask, please feel free to open your issue at the
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
 [AnalysisVec]:  {{ '/codex/analysis-of-attack-vectors.html'  | prepend: site.baseurl }} "Analysis of Attack Vectors | IP Geo Block"
 [PreventExp]:   {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
+[Apache]:       https://httpd.apache.org/ "Welcome! - The Apache HTTP Server Project"
