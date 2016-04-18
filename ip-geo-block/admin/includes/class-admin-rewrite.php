@@ -1,10 +1,16 @@
 <?php
-class IP_Geo_Block_Admin_Rewrite {
+class IP_Geo_Block_Rewrite {
+
+	/**
+	 * Instance of this class.
+	 */
+	protected static $instance = NULL;
 
 	// private values
-	private $doc_root = NULL;
-	private $base_uri = NULL;
-	private $wp_dirs;
+	private $doc_root = NULL; // document root
+	private $site_uri = NULL; // network site uri
+	private $base_uri = NULL; // plugins base uri
+	private $wp_dirs = array();
 
 	// template of rewrite rule in wp-content/(plugins|themes)/
 	private $rewrite_rule = array(
@@ -52,12 +58,21 @@ class IP_Geo_Block_Admin_Rewrite {
 		// http://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
 		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
+		$this->site_uri = parse_url( network_site_url(), PHP_URL_PATH );
 
 		$len = strlen( home_url() );
 		$this->wp_dirs = array(
-			'plugins' =>   trailingslashit( substr( plugins_url(),        $len ) ),
-			'themes'  =>   trailingslashit( substr( get_theme_root_uri(), $len ) ),
+			'plugins' => trailingslashit( substr( plugins_url(),        $len ) ),
+			'themes'  => trailingslashit( substr( get_theme_root_uri(), $len ) ),
 		);
+	}
+
+	/**
+	 * Return an instance of this class.
+	 *
+	 */
+	private static function get_instance() {
+		return self::$instance ? self::$instance : ( self::$instance = new self );
 	}
 
 	/**
@@ -65,7 +80,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 *
 	 * @return string 'apache', 'nginx' or NULL
 	 */
-	public function get_server_type() {
+	private function get_server_type() {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
 		return $is_apache ? 'apache' : ( $is_nginx ? 'nginx' : NULL );
 	}
@@ -76,17 +91,18 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * @param string 'plugins' or 'themes'
 	 * @return bool TRUE or FALSE
 	 */
-	public function check_rewrite_rule( $which ) {
+	private function check_rewrite_rule( $which ) {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
+
 		if ( $is_apache ) {
 			$block = $this->find_rewrite_block( $this->get_rewrite_rule( $which ) );
 			return empty( $block ) ? FALSE : TRUE;
 		}
 		elseif ( $is_nginx ) {
-			return FALSE; /* CURRENTLY NOT SUPPORTED */
+			return -1; /* CURRENTLY NOT SUPPORTED */
 		}
 		else {
-			return FALSE; /* CURRENTLY NOT SUPPORTED */
+			return -1; /* CURRENTLY NOT SUPPORTED */
 		}
 	}
 
@@ -134,6 +150,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private function append_rewrite_block( $which, $content ) {
 		$server_type = $this->get_server_type();
+
 		return $server_type ? array_merge(
 			$content,
 			str_replace(
@@ -152,10 +169,9 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private function get_rewrite_file( $which ) {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
+
 		if ( $is_apache ) {
-			return $this->doc_root
-				. parse_url( network_site_url(), PHP_URL_PATH )
-				. $this->wp_dirs[ $which ] . '.htaccess';
+			return $this->doc_root . $this->site_uri . $this->wp_dirs[ $which ] . '.htaccess';
 		}
 		elseif ( $is_nginx ) {
 			return NULL; /* MUST FIX */
@@ -193,6 +209,8 @@ class IP_Geo_Block_Admin_Rewrite {
 	private function put_rewrite_rule( $which, $content ) {
 		if ( $file = $this->get_rewrite_file( $which ) ) {
 			file_put_contents( $file, implode( PHP_EOL, $content ), LOCK_EX );
+
+			// if content is empty then remove file
 			if ( empty( $content ) )
 				unlink( $file );
 		}
@@ -203,11 +221,13 @@ class IP_Geo_Block_Admin_Rewrite {
 	 *
 	 * @param string 'plugins' or 'themes'
 	 */
-	public function activate_rewrite_rule( $which ) {
+	private function add_rewrite_rule( $which ) {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
+
 		if ( $is_apache ) {
 			$content = $this->get_rewrite_rule( $which );
 			$block = $this->find_rewrite_block( $content );
+
 			if ( empty( $block ) ) {
 				$content = $this->remove_rewrite_block( $content, $block );
 				$content = $this->append_rewrite_block( $which, $content );
@@ -221,15 +241,60 @@ class IP_Geo_Block_Admin_Rewrite {
 	 *
 	 * @param string 'plugins' or 'themes'
 	 */
-	public function deactivate_rewrite_rule( $which ) {
+	private function del_rewrite_rule( $which ) {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
+
 		if ( $is_apache ) {
 			$content = $this->get_rewrite_rule( $which );
 			$block = $this->find_rewrite_block( $content );
+
 			if ( ! empty( $block ) ) {
 				$content = $this->remove_rewrite_block( $content, $block );
 				$this->put_rewrite_rule( $which, $content );
 			}
 		}
 	}
+
+	/**
+	 * Check rewrite rules
+	 *
+	 */
+	public static function check_rewrite_all() {
+		$status = array();
+
+		$rewrite = self::get_instance();
+		foreach ( array( 'plugins', 'themes' ) as $key ) {
+			$status[ $key ] = $rewrite->check_rewrite_rule( $key );
+		}
+
+		return $status;
+	}
+
+	/**
+	 * Activate all rewrite rules according to the settings
+	 *
+	 */
+	public static function activate_rewrite_all( $options ) {
+		$rewrite = self::get_instance();
+
+		foreach ( array( 'plugins', 'themes' ) as $key ) {
+			if ( empty( $options[ $key ] ) )
+				$rewrite->del_rewrite_rule( $key );
+			else
+				$rewrite->add_rewrite_rule( $key );
+		}
+	}
+
+	/**
+	 * Deactivate all rewrite rules
+	 *
+	 */
+	public static function deactivate_rewrite_all() {
+		$rewrite = self::get_instance();
+
+		foreach ( array( 'plugins', 'themes' ) as $key ) {
+			$rewrite->del_rewrite_rule( $key );
+		}
+	}
+
 }

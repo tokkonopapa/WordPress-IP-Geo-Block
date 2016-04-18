@@ -56,12 +56,12 @@ class IP_Geo_Block {
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 )
 			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
 
-		// get content folders (with/without trailing slash)
+		// get content folders (with/without trailing slash) @since 3.0.0
 		self::$wp_dirs = array(
 			'home'    => untrailingslashit( parse_url( $uri = home_url(), PHP_URL_PATH ) ),
 			'admin'   =>   trailingslashit( substr( admin_url(),          $tmp = strlen( $uri ) ) ),
-			'plugins' =>   trailingslashit( substr( plugins_url(),        $tmp ) ),
-			'themes'  =>   trailingslashit( substr( get_theme_root_uri(), $tmp ) ),
+			'plugins' =>   trailingslashit( substr( plugins_url(),        $tmp ) ), // @since 2.6.0
+			'themes'  =>   trailingslashit( substr( get_theme_root_uri(), $tmp ) ), // @since 1.5.0
 		);
 
 		// normalize requested uri (RFC 2616 has been obsoleted by RFC 7230-7237)
@@ -135,24 +135,21 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function activate( $network_wide = FALSE ) {
-		if ( current_user_can( 'manage_options' ) ) {
+		if ( current_user_can( 'manage_options' ) ) { // might be called via public context
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
 
 			// initialize logs then upgrade and return new options
 			IP_Geo_Block_Logs::create_tables();
 			$settings = IP_Geo_Block_Opts::upgrade();
 
-			$rewrite = new IP_Geo_Block_Admin_Rewrite;
-			foreach ( array( 'plugins', 'themes' ) as $key ) {
-				empty( $settings['rewrite'][ $key ] ) ?
-					$rewrite->deactivate_rewrite_rule( $key ) :
-					$rewrite->activate_rewrite_rule( $key );
-			}
-
 			// kick off a cron job to download database immediately
-			self::exec_download();
+			IP_Geo_Block_Cron::spawn_job( TRUE );
+
+			// activate rewrite rules
+			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+			IP_Geo_Block_Rewrite::activate_rewrite_all( $settings['rewrite'] );
 		}
 	}
 
@@ -161,16 +158,12 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function deactivate( $network_wide = FALSE ) {
-		if ( current_user_can( 'manage_options' ) ) {
-			// cancel schedule
-			wp_clear_scheduled_hook( self::CRON_NAME, array( FALSE ) ); // @since 2.1.0
+		// cancel schedule
+		wp_clear_scheduled_hook( self::CRON_NAME, array( FALSE ) ); // @since 2.1.0
 
-			// deactivate rewrite rule
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
-			$rewrite = new IP_Geo_Block_Admin_Rewrite;
-			$rewrite->deactivate_rewrite_rule( 'plugins' );
-			$rewrite->deactivate_rewrite_rule( 'themes'  );
-		}
+		// deactivate rewrite rules
+		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+		IP_Geo_Block_Rewrite::deactivate_rewrite_all();
 	}
 
 	/**
@@ -203,10 +196,8 @@ class IP_Geo_Block {
 
 	// get optional values from wp options
 	public static function get_option( $name = 'settings' ) {
-		if ( FALSE === ( $option = get_option( self::$option_keys[ $name ] ) ) )
-			$option = self::get_default( $name );
-
-		return $option;
+		$option = get_option( self::$option_keys[ $name ] );
+		return FALSE !== $option ? $option : self::get_default( $name );
 	}
 
 	/**
@@ -592,11 +583,11 @@ class IP_Geo_Block {
 					/* list of themes  */ array()
 			);
 
-			// register validation by nonce (2: WP-ZEP)
+			// register validation of nonce (2: WP-ZEP)
 			if ( ( 2 & (int)$settings['validation'][ $type ] ) && ! in_array( $matches[3], $list, TRUE ) )
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 
-			// register validation by malicious signature
+			// register validation of malicious signature
 			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 			// validate country by IP address (1: Block by country)
@@ -766,15 +757,6 @@ class IP_Geo_Block {
 	public static function update_database( $immediate = FALSE ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
 		return IP_Geo_Block_Cron::exec_job( $immediate );
-	}
-
-	/**
-	 * Kick off a cron job to download database immediately.
-	 *
-	 */
-	private static function exec_download( $immediate = TRUE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
-		IP_Geo_Block_Cron::spawn_job( $immediate );
 	}
 
 }

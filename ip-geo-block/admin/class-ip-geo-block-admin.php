@@ -681,15 +681,6 @@ class IP_Geo_Block_Admin {
 		$output['extra_ips']['white_list'] = preg_replace( $key, $val, $output['extra_ips']['white_list'] );
 		$output['extra_ips']['black_list'] = preg_replace( $key, $val, $output['extra_ips']['black_list'] );
 
-		// set rewrite condition
-		$rewrite = new IP_Geo_Block_Admin_Rewrite;
-		foreach ( array( 'plugins', 'themes' ) as $key ) {
-			if ( empty( $output['rewrite'][ $key ] ) )
-				$rewrite->deactivate_rewrite_rule( $key );
-			else
-				$rewrite->activate_rewrite_rule( $key );
-		}
-
 		// reject invalid signature which potentially blocks itself
 		$key = array();
 		foreach ( explode( ',', $output['signature'] ) as $val ) {
@@ -698,6 +689,9 @@ class IP_Geo_Block_Admin {
 				$key[] = $val;
 		}
 		$output['signature'] = implode( ',', $key );
+
+		// activate rewrite rules
+		IP_Geo_Block_Rewrite::activate_rewrite_all( $output['rewrite'] );
 
 		return $output;
 	}
