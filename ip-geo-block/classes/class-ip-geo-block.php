@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.4';
+	const VERSION = '2.2.4.1';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
@@ -64,11 +64,9 @@ class IP_Geo_Block {
 			'themes'  =>   trailingslashit( substr( get_theme_root_uri(), $tmp ) ), // @since 1.5.0
 		);
 
-		// normalize requested uri (RFC 2616 has been obsoleted by RFC 7230-7237)
-		// `parse_url()` is not suitable becase of https://bugs.php.net/bug.php?id=55511
-		// REQUEST_URI starts with path or scheme (https://tools.ietf.org/html/rfc2616#section-5.1.2)
-		$uri = preg_replace( '!(?://+|/\.+/)!', '/', $_SERVER['REQUEST_URI'] );
-		$uri = $this->request_uri = substr( $uri, strpos( $uri, self::$wp_dirs['home'] ) + strlen( self::$wp_dirs['home'] ) );
+		// normalize requested path
+		$uri = preg_replace( '!(//+|/\.+/)!', '/', $_SERVER['REQUEST_URI'] );
+		$uri = substr( parse_url( $uri, PHP_URL_PATH ), strlen( self::$wp_dirs['home'] ) );
 
 		// WordPress core files directly under the home
 		$tmp = array(

@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.5
-Stable tag: 2.2.4
+Stable tag: 2.2.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -433,6 +433,14 @@ For more details, see
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.2.4.1 =
+Sorry for frequent updating.
+* **Bug fix:** Fixed the issue of `Warning: strpos(): Empty needle in...` that 
+  was reported in 
+    [@](https://wordpress.org/support/topic/version-224-produces-warning-message "WordPress › Support » Version 2.2.4 Produces Warning Message")
+  and
+    [@](https://wordpress.org/support/topic/error-after-update-to-newest-version "WordPress › Support » Error after Update to newest version").
 
 = 2.2.4 =
 * **Bug fix:** Fixed the issue that some links on network admin of multisite 
