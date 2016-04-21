@@ -675,11 +675,16 @@ class IP_Geo_Block_Admin {
 			strtoupper( $output['validation']['proxy'] )
 		);
 
-		// sanitize ip address
+		// sanitize and format ip address
 		$key = array( '/[^\d\.\/ ,]/', '/([ ,])+/', '/(?:^,|,$)/' );
 		$val = array( '',              '$1',        ''            );
 		$output['extra_ips']['white_list'] = preg_replace( $key, $val, $output['extra_ips']['white_list'] );
 		$output['extra_ips']['black_list'] = preg_replace( $key, $val, $output['extra_ips']['black_list'] );
+
+		// format signature
+		array_shift( $key );
+		array_shift( $val );
+		$output['signature'] = preg_replace( $key, $val, $output['signature'] );
 
 		// reject invalid signature which potentially blocks itself
 		$key = array();
@@ -708,8 +713,10 @@ class IP_Geo_Block_Admin {
 		$options = $this->validate_options( 'settings', $input );
 
 		// activate rewrite rules
-		if ( FALSE === IP_Geo_Block_Rewrite::activate_rewrite_all( $options['rewrite'] ) ) {
-			$options['rewrite'] = array( 'plugins' => FALSE, 'themes' => FALSE );
+		$stat = IP_Geo_Block_Rewrite::activate_rewrite_all( $options['rewrite'] );
+		$diff = array_diff( $options['rewrite'], $stat );
+		if ( ! empty( $diff ) ) {
+			$options['rewrite'] = $stat;
 			$this->show_setting_notice( 'settings', 'error', sprintf(
 				__( 'Unable to write %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
 				'<code>.htaccess</code>'

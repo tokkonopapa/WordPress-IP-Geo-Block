@@ -103,6 +103,7 @@ class IP_Geo_Block_Rewrite {
 		}
 
 		elseif ( $is_nginx ) {
+			// https://www.wordfence.com/blog/2014/05/nginx-wordfence-falcon-engine-php-fpm-fastcgi-fast-cgi/
 			return -1; /* CURRENTLY NOT SUPPORTED */
 		}
 
@@ -301,15 +302,13 @@ class IP_Geo_Block_Rewrite {
 
 		foreach ( array( 'plugins', 'themes' ) as $key ) {
 			if ( empty( $options[ $key ] ) )
-				$ret = $rewrite->del_rewrite_rule( $key ) || TRUE;
+				$options[ $key ] = $rewrite->del_rewrite_rule( $key ) ? FALSE : TRUE;
 			else
-				$ret = $rewrite->add_rewrite_rule( $key );
+				$options[ $key ] = $rewrite->add_rewrite_rule( $key ) ? TRUE : FALSE;
 
-			if ( FALSE === $ret )
-				return FALSE;
 		}
 
-		return TRUE;
+		return $options;
 	}
 
 	/**

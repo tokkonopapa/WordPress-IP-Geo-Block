@@ -436,6 +436,7 @@ For more details, see
 
 = 2.2.4.1 =
 Sorry for frequent updating.
+
 * **Bug fix:** Fixed the issue of `Warning: strpos(): Empty needle in...` that 
   was reported in 
     [@](https://wordpress.org/support/topic/version-224-produces-warning-message "WordPress › Support » Version 2.2.4 Produces Warning Message")
@@ -452,10 +453,10 @@ Sorry for frequent updating.
   [Rename wp-login.php](https://wordpress.org/plugins/rename-wp-login/).
 * **Improvement:** Made condition of validation more strictly at admin 
   diagnosis to prevent unnecessary notice of self blocking.
-  ([@](https://wordpress.org/support/topic/youll-be-blocked-after-you-log-out-notice-doesnt-disappear "[resolved] \"You'll be blocked after you log\" out notice doesn't disappear")
+  ([@](https://wordpress.org/support/topic/youll-be-blocked-after-you-log-out-notice-doesnt-disappear "[resolved] &quot;You'll be blocked after you log out&quot; notice doesn't disappear"))
 * **Improvement:** Improved some of UI.
   ([@](https://wordpress.org/support/topic/possible-to-select-which-countries-are-blocked "[resolved] Possible to select which countries are blocked?"),
-   [@](https://wordpress.org/support/topic/ip-geo-block-black-list "IP Geo Block Black List")
+   [@](https://wordpress.org/support/topic/ip-geo-block-black-list "IP Geo Block Black List"))
 * See some details at [release 2.2.4](http://www.ipgeoblock.com/changelog/release-2.2.4.html "2.2.4 Release Note").
 
 = 2.2.3.1 =

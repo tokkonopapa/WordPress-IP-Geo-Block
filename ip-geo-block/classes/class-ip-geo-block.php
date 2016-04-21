@@ -53,7 +53,7 @@ class IP_Geo_Block {
 			add_action( self::CRON_NAME, array( __CLASS__, 'update_database' ) );
 
 		// check the package version and upgrade if needed
-		if ( version_compare( $settings['version'], self::VERSION ) < 0 )
+		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
 			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
 
 		// get content folders (with/without trailing slash) @since 3.0.0
@@ -64,9 +64,13 @@ class IP_Geo_Block {
 			'themes'  =>   trailingslashit( substr( get_theme_root_uri(), $tmp ) ), // @since 1.5.0
 		);
 
-		// normalize requested path
-		$uri = preg_replace( '!(//+|/\.+/)!', '/', $_SERVER['REQUEST_URI'] );
-		$uri = substr( parse_url( $uri, PHP_URL_PATH ), strlen( self::$wp_dirs['home'] ) );
+		// normalize requested uri
+		// `parse_url()` is not perfect becase of https://bugs.php.net/bug.php?id=55511
+		// if it fails, try regular expression in https://tools.ietf.org/html/rfc3986#appendix-B
+		if ( FALSE === ( $uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) ) )
+			$uri = preg_replace( '!^(?:[^:/?#]+:)?(?://[^/?#]*)?([^?#]*)(?:.*)?!', '$1', $_SERVER['REQUEST_URI'] );
+		$uri = substr( $uri, strlen( self::$wp_dirs['home'] ) ); // remove home
+		$uri = $this->request_uri = preg_replace( '!(//+|/\.+/)!', '/', $uri );
 
 		// WordPress core files directly under the home
 		$tmp = array(
@@ -84,7 +88,7 @@ class IP_Geo_Block {
 		}
 
 		// wp-admin/*.php
-		elseif ( FALSE !== strpos( $uri, self::$wp_dirs['admin'] ) )
+		elseif ( is_admin() || FALSE !== strpos( $uri, self::$wp_dirs['admin'] ) )
 			add_action( 'init', array( $this, 'validate_admin' ), $priority );
 
 		// wp-content/(plugins|themes)/.../*.php
@@ -653,10 +657,16 @@ class IP_Geo_Block {
 
 	public function check_signature( $validate, $settings ) {
 		$request = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
+		$score = 0.0;
 
-		foreach ( explode( ',', $settings['signature'] ) as $signature ) {
-			if ( ( $signature = trim( $signature ) ) && FALSE !== strpos( $request, $signature ) )
-				return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
+		foreach ( $this->multiexplode( array( ',', ' ' ), $settings['signature'] ) as $sig ) {
+			$val = explode( ':', $sig, 2 );
+
+			if ( ( $sig = trim( $val[0] ) ) && FALSE !== strpos( $request, $sig ) ) {
+				$score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] );
+				if ( $score > 0.9 )
+					return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
+			}
 		}
 
 		return $validate;

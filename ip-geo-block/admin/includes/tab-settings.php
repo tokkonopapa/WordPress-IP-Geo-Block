@@ -194,6 +194,23 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+		// Bad signatures
+		$field = 'signature';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'textarea',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+				'after' => $desc,
+			)
+		);
+
 		// $_SERVER keys to retrieve extra IP addresses
 		$field = 'validation';
 		$key = 'proxy';
@@ -475,23 +492,6 @@ class IP_Geo_Block_Admin_Tab {
 				),
 				'before' => $tmp,
 				'after' => '<div class="ip-geo-block-desc"></div>',
-			)
-		);
-
-		// Important files
-		$field = 'signature';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( '<dfn title="This works independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221;, and validates malicious signature to prevent disclosing the important files via vulnerable plugins or themes.">Important files</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
-				'after' => $comma,
 			)
 		);
 
