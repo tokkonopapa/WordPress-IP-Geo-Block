@@ -313,8 +313,9 @@ class IP_Geo_Block_Admin {
 				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 				if ( ( $warn = IP_Geo_Block_Logs::diag_tables() ) &&
-				     FALSE === IP_Geo_Block_Logs::create_tables() )
+				     FALSE === IP_Geo_Block_Logs::create_tables() ) {
 					self::add_admin_notice( 'notice-warning', $warn );
+				}
 			}
 		}
 	}
@@ -343,11 +344,11 @@ class IP_Geo_Block_Admin {
 	 */
 	public function display_plugin_admin_page() {
 		$tabs = array(
-			__( 'Settings',    IP_Geo_Block::TEXT_DOMAIN ),
-			__( 'Statistics',  IP_Geo_Block::TEXT_DOMAIN ),
-			__( 'Logs',        IP_Geo_Block::TEXT_DOMAIN ),
-			__( 'Search',      IP_Geo_Block::TEXT_DOMAIN ),
-			__( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ),
+			0 => __( 'Settings',    IP_Geo_Block::TEXT_DOMAIN ),
+			1 => __( 'Statistics',  IP_Geo_Block::TEXT_DOMAIN ),
+			4 => __( 'Logs',        IP_Geo_Block::TEXT_DOMAIN ),
+			2 => __( 'Search',      IP_Geo_Block::TEXT_DOMAIN ),
+			3 => __( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ),
 		);
 		$tab = $this->admin_tab;
 		$option_slug = $this->option_slug[ 1 === $tab ? 'statistics': 'settings' ];
@@ -396,11 +397,11 @@ class IP_Geo_Block_Admin {
 	 */
 	private function register_settings_tab() {
 		$files = array(
-			'admin/includes/tab-settings.php',
-			'admin/includes/tab-statistics.php',
-			'admin/includes/tab-geolocation.php',
-			'admin/includes/tab-attribution.php',
-			'admin/includes/tab-accesslog.php',
+			0 => 'admin/includes/tab-settings.php',
+			1 => 'admin/includes/tab-statistics.php',
+			4 => 'admin/includes/tab-accesslog.php',
+			2 => 'admin/includes/tab-geolocation.php',
+			3 => 'admin/includes/tab-attribution.php',
 		);
 
 		include_once( IP_GEO_BLOCK_PATH . $files[ $this->admin_tab ] );
@@ -518,6 +519,7 @@ class IP_Geo_Block_Admin {
 
 		  case 'html':
 			echo "\n", $args['value'], "\n"; // must be sanitized at caller
+			break;
 		}
 
 		if ( ! empty( $args['after'] ) )
@@ -662,7 +664,6 @@ class IP_Geo_Block_Admin {
 						}
 					}
 				}
-				break;
 			}
 		}
 
@@ -696,15 +697,32 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
+	 * Check admin post
+	 *
+	 */
+	private function check_admin_post( $ajax ) {
+		if ( $ajax ) {
+			$nonce = $this->get_ajax_action();
+			$nonce = wp_verify_nonce( IP_Geo_Block::retrieve_nonce( 'nonce' ), $nonce );
+//			$nonce = check_admin_referer( $this->get_ajax_action(), 'nonce' );
+		} else {
+			$nonce = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce';
+			$nonce = wp_verify_nonce( IP_Geo_Block::retrieve_nonce( $nonce ), $nonce );
+		}
+
+		if ( ! current_user_can( 'manage_options' ) || empty( $_POST ) || ! $nonce ) {
+			status_header( 403 ); // Forbidden @since 2.0.0
+			die();
+		}
+	}
+
+	/**
 	 * Sanitize options.
 	 *
 	 */
 	public function validate_settings( $input = array() ) {
-		// must check that the user has the required capability 
-		if ( ! current_user_can( 'manage_options' ) ) {
-			status_header( 403 ); // Forbidden @since 2.0.0
-			die( 'forbidden' );
-		}
+		// must check that the user has the required capability
+		$this->check_admin_post( FALSE );
 
 		// validate setting options
 		$options = $this->validate_options( 'settings', $input );
@@ -741,11 +759,7 @@ class IP_Geo_Block_Admin {
 	 */
 	public function admin_ajax_callback() {
 		// Check request origin, nonce, capability.
-		if ( ! check_admin_referer( $this->get_ajax_action(), 'nonce' ) || // @since 2.5
-		     ! current_user_can( 'manage_options' ) || empty( $_POST ) ) { // @since 2.0
-			status_header( 403 ); // Forbidden @since 2.0.0
-			die( 'forbidden' ); // never reached unless the nonce has leaked
-		}
+		$this->check_admin_post( TRUE );
 
 		$which = isset( $_POST['which'] ) ? $_POST['which'] : NULL;
 		switch ( isset( $_POST['cmd'  ] ) ? $_POST['cmd'  ] : NULL ) {
@@ -834,6 +848,7 @@ class IP_Geo_Block_Admin {
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
 			);
+			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0
