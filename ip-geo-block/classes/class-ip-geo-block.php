@@ -65,12 +65,11 @@ class IP_Geo_Block {
 		);
 
 		// normalize requested uri
-		// `parse_url()` is not perfect becase of https://bugs.php.net/bug.php?id=55511
-		// if it fails, try regular expression in https://tools.ietf.org/html/rfc3986#appendix-B
 		if ( FALSE === ( $uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) ) )
-			$uri = preg_replace( '!^(?:[^:/?#]+:)?(?://[^/?#]*)?([^?#]*)(?:.*)?!', '$1', $_SERVER['REQUEST_URI'] );
-		$uri = substr( $uri, strlen( self::$wp_dirs['home'] ) ); // remove home
-		$uri = $this->request_uri = preg_replace( '!(//+|/\.+/)!', '/', $uri );
+			$uri = @$_SERVER['SCRIPT_NAME'];
+		$uri = $this->request_uri = substr( preg_replace(
+			array( '!^[^/]!', '!//+!', '!\.+/!' ), array( '/', '/', '' ), $uri
+		), strlen( self::$wp_dirs['home'] ) );
 
 		// WordPress core files directly under the home
 		$tmp = array(
@@ -363,7 +362,6 @@ class IP_Geo_Block {
 				FALSE !== ( @include( TEMPLATEPATH   . '/'.$code.'.php' ) ) or // parent theme
 				wp_die( $mesg, '', array( 'response' => $code, 'back_link' => TRUE ) );
 			}
-			exit;
 		}
 	}
 

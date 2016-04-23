@@ -120,13 +120,6 @@ var IP_GEO_BLOCK_ZEP = {
 		return real.join('/').replace(/\/\//g, '/');
 	}
 
-	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
-	function encodeURIComponentRFC3986(str) {
-		return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
-			return '%' + c.charCodeAt(0).toString(16);
-		});
-	}
-
 	// append the nonce as query strings to the uri
 	function add_query_nonce(uri, nonce) {
 		if (typeof uri !== 'object') { // `string` or `undefined`
@@ -144,7 +137,7 @@ var IP_GEO_BLOCK_ZEP = {
 			}
 		}
 
-		data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
+		data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponent(nonce));
 		uri.query = data.join('&');
 
 		return compose_uri(uri);
@@ -228,7 +221,7 @@ var IP_GEO_BLOCK_ZEP = {
 					if (callback) {
 						data = callback(data);
 					}
-					data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
+					data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponent(nonce));
 					settings.data = data.join('&');
 				}
 			}
@@ -254,8 +247,8 @@ var IP_GEO_BLOCK_ZEP = {
 
 	function moveEventHandlers($elems, eventsString, isDelegate) {
 		var events = eventsString.split(/\s+/);
-		$elems.each(function() {
-			for (var i = 0; i < events.length; ++i) {
+		$elems.each(function(i) {
+			for (i = 0; i < events.length; ++i) {
 				var pureEventName = $.trim(events[i]).match(/[^\.]+/i)[0];
 				moveHandlerToTop($(this), pureEventName, isDelegate);
 			}

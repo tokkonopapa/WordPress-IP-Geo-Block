@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>test of parse url</title>
+</head>
+<body>
+
+<script>
+	// Parse a URL and return its components
+	function parse_uri(uri) {
+		uri = decodeURIComponent(uri ? uri.toString() : '');
+
+		var m = uri.match(
+			// https://tools.ietf.org/html/rfc3986#appendix-B
+			/^(?:([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/
+		);
+
+		// scheme :// authority path ? query # fragment
+		return {
+			scheme:    m[1] || '',
+			relative:  m[2] || '',
+			authority: m[3] || '',
+			path:      m[4] || '',
+			query:     m[5] || '',
+			fragment:  m[6] || ''
+		};
+	}
+
+	function compose_uri(uri) {
+		return (uri.scheme   ? uri.scheme + ':'   : '') +
+		       (uri.relative + uri.path)  +
+		       (uri.query    ? '?' + uri.query    : '') +
+		       (uri.fragment ? '#' + uri.fragment : '');
+	}
+
+	var i, m, list = [
+		'http://example.com/path?value=1#fragment',
+		'//example.com/path?value=1#fragment'
+	];
+
+	for (i = 0; i < list.length; i++) {
+		m = parse_uri(list[i]);
+		console.log(m);
+		console.log(compose_uri(m));
+	}
+</script>
+
+</body>
+</html>

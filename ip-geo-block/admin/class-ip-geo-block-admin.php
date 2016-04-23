@@ -60,11 +60,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public static function get_instance() {
-		// If the single instance hasn't been set, set it now.
-		if ( null == self::$instance )
-			self::$instance = new self;
-
-		return self::$instance;
+		return self::$instance ? self::$instance : ( self::$instance = new self );
 	}
 
 	/**
@@ -104,7 +100,7 @@ class IP_Geo_Block_Admin {
 	 * Get the action name of ajax for nonce
 	 *
 	 */
-	public function get_ajax_action() {
+	private function get_ajax_action() {
 		return IP_Geo_Block::PLUGIN_SLUG . '-ajax-action';
 	}
 
@@ -215,8 +211,6 @@ class IP_Geo_Block_Admin {
 			foreach ( $notices as $msg => $type ) {
 				echo "\n<div class=\"notice is-dismissible ", $type, "\"><p><strong>IP Geo Block:</strong> ", $msg, "</p></div>\n";
 			}
-
-			delete_transient( $key );
 		}
 	}
 
@@ -348,17 +342,22 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function display_plugin_admin_page() {
+		$tabs = array(
+			__( 'Settings',    IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Statistics',  IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Logs',        IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Search',      IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ),
+		);
 		$tab = $this->admin_tab;
 		$option_slug = $this->option_slug[ 1 === $tab ? 'statistics': 'settings' ];
 ?>
 <div class="wrap">
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 	<h2 class="nav-tab-wrapper">
-		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=0" class="nav-tab <?php echo $tab === 0 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings',    IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=1" class="nav-tab <?php echo $tab === 1 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Statistics',  IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=4" class="nav-tab <?php echo $tab === 4 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs',        IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=2" class="nav-tab <?php echo $tab === 2 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Search',      IP_Geo_Block::TEXT_DOMAIN ); ?></a>
-		<a href="?page=<?php echo IP_Geo_Block::PLUGIN_SLUG; ?>&amp;tab=3" class="nav-tab <?php echo $tab === 3 ? 'nav-tab-active' : ''; ?>"><?php _e( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ); ?></a>
+<?php foreach ( $tabs as $key => $val ) {
+	echo '<a href="?page=', IP_Geo_Block::PLUGIN_SLUG, '&amp;tab=', $key, '" class="nav-tab', ($tab === $key ? ' nav-tab-active' : ''), '">', $val, '</a>';
+} ?>
 	</h2>
 	<form method="post" action="options.php"<?php if ( 0 !== $tab ) echo " id=\"", IP_Geo_Block::PLUGIN_SLUG, "-inhibit\""; ?>>
 <?php
@@ -538,9 +537,6 @@ class IP_Geo_Block_Admin {
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
 	public function validate_options( $option_name, $input ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
-
 		// setup base options
 		$output = IP_Geo_Block::get_option( $option_name );
 		$default = IP_Geo_Block::get_default( $option_name );
@@ -567,6 +563,7 @@ class IP_Geo_Block_Admin {
 
 			switch( $key ) {
 			  case 'providers':
+				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 				foreach ( IP_Geo_Block_Provider::get_providers() as $provider => $api ) {
 					// need no key
 					if ( NULL === $api ) {
@@ -713,6 +710,7 @@ class IP_Geo_Block_Admin {
 		$options = $this->validate_options( 'settings', $input );
 
 		// activate rewrite rules
+		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 		$stat = IP_Geo_Block_Rewrite::activate_rewrite_all( $options['rewrite'] );
 		$diff = array_diff( $options['rewrite'], $stat );
 		if ( ! empty( $diff ) ) {

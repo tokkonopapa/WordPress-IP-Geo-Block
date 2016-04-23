@@ -12,7 +12,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 	 * These APIs need to respond `Access-Control-Allow-Origin` in header.
 	 */
 	this.apis = [
-		{
+		/*{
 			api: 'freegeoip.net',
 			url: 'http://freegeoip.net/%API_FMT%/%API_IP%',
 			fmt: 'json',
@@ -25,7 +25,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				}
 				return null;
 			}
-		},
+		},*/
 		{
 			api: 'ipinfo.io',
 			url: 'http://ipinfo.io/%API_IP%/%API_FMT%',
@@ -85,7 +85,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 		 * APIs that doesn't support CORS.
 		 * These are accessed through https://developer.yahoo.com/yql/
 		 */
-		{
+		/*{
 			api: 'Pycox',
 			url: 'https://query.yahooapis.com/v1/public/yql?q=select * from %API_FMT% where url="http://ip.pycox.com/%API_FMT%/%API_IP%"&format=%API_FMT%&jsonCompat=new',
 			fmt: 'json',
@@ -107,7 +107,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				}
 				return null;
 			}
-		},
+		},*/
 		{
 			api: 'Nekudo',
 			url: 'https://query.yahooapis.com/v1/public/yql?q=select * from %API_FMT% where url="http://geoip.nekudo.com/api/%API_IP%"&format=%API_FMT%&jsonCompat=new',
@@ -177,22 +177,23 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				var msg = res.data ? ' ' + strip_tags(res.data) : '';
 				return res.status + ' ' + res.statusText + msg;
 			}
-		);//*/
+		);*/
 
 		// callback version (just `return` makes no effects) 
 		.success(function (data, status, headers, config) {
 			var geo = api.get(data, 'name');
-			if (geo)
+			if (geo) {
 				geo += ' (' + api.get(data, 'code') + ')';
-			else
+			} else {
 				geo = api.get(data, 'error') + ' (' + api.api + ')';
+			}
 
 			callback(combine_ip(ip, geo));
 		})
 
 		.error(function (data, status, headers, config) {
 			var msg = data ? ' ' + strip_tags(data) : '';
-			callback(status + ' ' + msg);
-		});//*/
+			callback(combine_ip(ip, api.api + ': ' + status + msg));
+		});
 	};
 }]);
