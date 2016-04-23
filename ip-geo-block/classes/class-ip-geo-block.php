@@ -68,7 +68,7 @@ class IP_Geo_Block {
 		if ( FALSE === ( $uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) ) )
 			$uri = @$_SERVER['SCRIPT_NAME'];
 		$uri = $this->request_uri = substr( preg_replace(
-			array( '!^[^/]!', '!//+!', '!\.+/!' ), array( '/', '/', '' ), $uri
+			array( '!\.+/!', '!//+!' ), array( '/', '/' ), $uri
 		), strlen( self::$wp_dirs['home'] ) );
 
 		// WordPress core files directly under the home
