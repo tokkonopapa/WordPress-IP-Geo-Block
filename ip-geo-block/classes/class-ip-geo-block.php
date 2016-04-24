@@ -131,9 +131,10 @@ class IP_Geo_Block {
 
 	/**
 	 * Register options into database table when the plugin is activated.
-	 * @note: This might be called via public context
+	 *
 	 */
 	public static function activate( $network_wide = FALSE ) {
+		// it might be called via public context
 		if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
@@ -360,6 +361,7 @@ class IP_Geo_Block {
 				FALSE !== ( @include( TEMPLATEPATH   . '/'.$code.'.php' ) ) or // parent theme
 				wp_die( $mesg, '', array( 'response' => $code, 'back_link' => TRUE ) );
 			}
+			exit;
 		}
 	}
 
@@ -639,9 +641,10 @@ class IP_Geo_Block {
 		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
 
 		// if a number of fails is exceeded, then fail
-		if ( $cache && $cache['fail'] > max( 0, $settings['login_fails'] ) )
+		if ( $cache && $cache['fail'] > max( 0, $settings['login_fails'] ) ) {
 			if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
 				$validate['result'] = 'failed'; // can't overwrite existing result
+		}
 
 		return $validate;
 	}
@@ -675,9 +678,10 @@ class IP_Geo_Block {
 	public function check_nonce( $validate, $settings ) {
 		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
 
-		if ( ! wp_verify_nonce( self::retrieve_nonce( $nonce ), $nonce ) )
+		if ( ! wp_verify_nonce( self::retrieve_nonce( $nonce ), $nonce ) ) {
 			if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
 				$validate['result'] = 'wp-zep'; // can't overwrite existing result
+		}
 
 		return $validate;
 	}
