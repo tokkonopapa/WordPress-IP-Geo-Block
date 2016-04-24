@@ -65,11 +65,9 @@ class IP_Geo_Block {
 		);
 
 		// normalize requested uri
-		if ( FALSE === ( $uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) ) )
-			$uri = @$_SERVER['SCRIPT_NAME'];
-		$uri = $this->request_uri = substr( preg_replace(
-			array( '!\.+/!', '!//+!' ), array( '/', '/' ), $uri
-		), strlen( self::$wp_dirs['home'] ) );
+		$uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
+		$uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $uri ? $uri : $_SERVER['SCRIPT_NAME'] );
+		$uri = $this->request_uri = substr( $uri, strlen( self::$wp_dirs['home'] ) );
 
 		// WordPress core files directly under the home
 		$tmp = array(
@@ -133,10 +131,10 @@ class IP_Geo_Block {
 
 	/**
 	 * Register options into database table when the plugin is activated.
-	 *
+	 * @note: This might be called via public context
 	 */
 	public static function activate( $network_wide = FALSE ) {
-		if ( current_user_can( 'manage_options' ) ) { // might be called via public context
+		if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );

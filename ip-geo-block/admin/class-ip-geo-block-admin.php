@@ -701,14 +701,16 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	private function check_admin_post( $ajax ) {
+		$nonce = TRUE;
+
 		if ( $ajax ) {
-			$nonce = $this->get_ajax_action();
-			$nonce = wp_verify_nonce( IP_Geo_Block::retrieve_nonce( 'nonce' ), $nonce );
-//			$nonce = check_admin_referer( $this->get_ajax_action(), 'nonce' );
-		} else {
-			$nonce = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce';
-			$nonce = wp_verify_nonce( IP_Geo_Block::retrieve_nonce( $nonce ), $nonce );
+			$action = $this->get_ajax_action();
+			$nonce &= wp_verify_nonce( IP_Geo_Block::retrieve_nonce( 'nonce' ), $action );
+//			$nonce &= check_admin_referer( $this->get_ajax_action(), 'nonce' );
 		}
+
+		$action = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce';
+		$nonce &= wp_verify_nonce( IP_Geo_Block::retrieve_nonce( $action ), $action );
 
 		if ( ! current_user_can( 'manage_options' ) || empty( $_POST ) || ! $nonce ) {
 			status_header( 403 ); // Forbidden @since 2.0.0
