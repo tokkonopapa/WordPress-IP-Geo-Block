@@ -712,10 +712,8 @@ class IP_Geo_Block_Admin {
 		$action = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce';
 		$nonce &= wp_verify_nonce( IP_Geo_Block::retrieve_nonce( $action ), $action );
 
-		if ( ! current_user_can( 'manage_options' ) || empty( $_POST ) || ! $nonce ) {
-			status_header( 403 ); // Forbidden @since 2.0.0
-			die();
-		}
+		if ( ! current_user_can( 'manage_options' ) || empty( $_POST ) || ! $nonce )
+			wp_die( 'Forbidden', 'Permission Denied', 403 );
 	}
 
 	/**
