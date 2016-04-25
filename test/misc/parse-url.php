@@ -33,6 +33,7 @@ $list = array(
 	'//path?value:1#fragment',
 	'/path/../?value:1#fragment',
 	'/path/..//.///?value:1#fragment',
+	'....path/..//./cmd.php?value:1#fragment',
 	'..../path/..//./cmd.php?value:1#fragment',
 	'/..../path/..//./cmd.php?value:1#fragment',
 );
@@ -149,7 +150,7 @@ if (1) {
 			if ( FALSE === ( $ret = parse_url( $uri, PHP_URL_PATH ) ) )
 				$ret = $_SERVER['SCRIPT_NAME'];
 			$ret = substr( preg_replace(
-				array( '!^[^/]!', '!//+!', '!\.+/!' ), array( '/', '/', '' ), $ret
+				array( '!\.+/!', '!//+!' ), array( '/', '/' ), $ret
 			), strlen( HOME ) );
 		}
 } else {
@@ -157,8 +158,8 @@ if (1) {
 			$ret = preg_replace(
 //				array( '!^(?:[^:/?#]+:)?(?://.*\.[a-zA-Z]{2,3})?([^?#]*).*$!' ),
 //				array( '$1' ),
-				array( '!^(?:[^:/?#]+:)?(?://.*\.[\w]*)?([^?#]*).*$!', '!^[^/]!', '!//+!', '!\.+/!' ),
-				array( '$1', '/', '/', '' ),
+				array( '!^(?:[^:/?#]+:)?(?://.*\.[\w]*)?([^?#]*).*$!', '!\.+/!', '!//+!' ),
+				array( '$1', '/', '/' ),
 				$uri
 			);
 		}

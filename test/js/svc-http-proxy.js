@@ -53,7 +53,7 @@ angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) 
 
 			// In case of the comment being denied
 			function (res) {
-				var msg = res.data ? ' ' + strip_tags(res.data) : '';
+				var msg = ''; // res.data ? ' ' + strip_tags(res.data) : '';
 				return {stat: res.status + ' ' + res.statusText + msg};
 			}
 		);
@@ -84,7 +84,7 @@ angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) 
 
 			// In case of the comment being denied
 			function (res) {
-				var msg = res.data ? ' ' + strip_tags(res.data) : '';
+				var msg = ''; // res.data ? ' ' + strip_tags(res.data) : '';
 				return {stat: res.status + ' ' + res.statusText + msg};
 			}
 		);

@@ -65,11 +65,10 @@ class IP_Geo_Block {
 		);
 
 		// normalize requested uri
-		$uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
-		$uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $uri ? $uri : $_SERVER['SCRIPT_NAME'] );
-		$uri = $this->request_uri = substr( $uri, strlen( self::$wp_dirs['home'] ) );
+		$uri = $this->request_uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['SCRIPT_NAME'] );
 
 		// WordPress core files directly under the home
+		global $pagenow; // it can handle the path like '/wp-trackback.php/1'
 		$tmp = array(
 			'wp-comments-post.php' => 'comment',
 			'wp-trackback.php'     => 'comment',
@@ -78,20 +77,19 @@ class IP_Geo_Block {
 			'wp-signup.php'        => 'login',
 		);
 
-		global $pagenow; // it can handle the path like '/wp-trackback.php/1'
-		if ( isset( $tmp[ $pagenow ] ) && 0 === strpos( $uri, "/$pagenow" ) ) {
-			if ( $validate[ $tmp[ $pagenow ] ] )
-				add_action( 'init', array( $this, 'validate_' . $tmp[ $pagenow ] ), $priority );
-		}
-
 		// wp-admin/*.php
-		elseif ( is_admin() || FALSE !== strpos( $uri, self::$wp_dirs['admin'] ) )
+		if ( FALSE !== strpos( $uri, self::$wp_dirs['admin'] ) )
 			add_action( 'init', array( $this, 'validate_admin' ), $priority );
 
 		// wp-content/(plugins|themes)/.../*.php
 		elseif ( FALSE !== strpos( $uri, self::$wp_dirs['plugins'] ) ||
 		         FALSE !== strpos( $uri, self::$wp_dirs['themes' ] ) )
 			add_action( 'init', array( $this, 'validate_direct' ), $priority );
+
+		elseif ( isset( $tmp[ $pagenow ] ) ) {
+			if ( $validate[ $tmp[ $pagenow ] ] )
+				add_action( 'init', array( $this, 'validate_' . $tmp[ $pagenow ] ), $priority );
+		}
 
 		else {
 			// message text on comment form
