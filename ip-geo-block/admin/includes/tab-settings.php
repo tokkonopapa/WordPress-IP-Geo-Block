@@ -194,23 +194,6 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-		// Bad signatures
-		$field = 'signature';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'textarea',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
-				'after' => $desc,
-			)
-		);
-
 		// $_SERVER keys to retrieve extra IP addresses
 		$field = 'validation';
 		$key = 'proxy';
@@ -227,6 +210,23 @@ class IP_Geo_Block_Admin_Tab {
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'after' => $comma,
+			)
+		);
+
+		// Bad signatures
+		$field = 'signature';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'textarea',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+				'after' => $desc,
 			)
 		);
 
@@ -772,7 +772,7 @@ class IP_Geo_Block_Admin_Tab {
 			NULL,
 			$option_slug
 		);
-// インポートされた設定を有効にするには、「変更を保存」ボタンをクリックする必要があります。
+
 		$desc = __( 'You need to click the &#8220;Save Changes&#8221; button for imported settings to take effect.', IP_Geo_Block::TEXT_DOMAIN );
 
 		// Export / Import settings

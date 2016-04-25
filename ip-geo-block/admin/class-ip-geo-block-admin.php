@@ -716,7 +716,7 @@ class IP_Geo_Block_Admin {
 			send_header( 403 );
 			wp_die(
 				__( 'You do not have sufficient permissions to access this page.' ),
-				__( 'WordPress Failure Notice' ),
+				'',
 				array( 'response' => 403, 'back_link' => true )
 			);
 		}

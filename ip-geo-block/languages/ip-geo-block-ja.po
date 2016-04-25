@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 2.2.4\n"
+"Project-Id-Version: IP Geo Block 2.3.0\n"
 "Report-Msgid-Bugs-To: http://www.ipgeoblock.com/\n"
-"POT-Creation-Date: 2016-04-18 23:00+0900\n"
-"PO-Revision-Date: 2016-04-18 23:05+0900\n"
+"POT-Creation-Date: 2016-04-26 00:10+0900\n"
+"PO-Revision-Date: 2016-04-26 00:19+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -27,25 +27,25 @@ msgstr ""
 "自国以外から投稿されるスパム、ログインフォーム、さらにゼロデイ攻撃を含む管理"
 "領域への悪意あるアクセスからサイトを守ります。"
 
-#: admin/class-ip-geo-block-admin.php:184
+#: admin/class-ip-geo-block-admin.php:180
 msgid "Contribute at GitHub"
 msgstr "開発に参加"
 
-#: admin/class-ip-geo-block-admin.php:201
-#: admin/class-ip-geo-block-admin.php:357
+#: admin/class-ip-geo-block-admin.php:197
+#: admin/class-ip-geo-block-admin.php:347
 msgid "Settings"
 msgstr "設定"
 
-#: admin/class-ip-geo-block-admin.php:249
-#: admin/class-ip-geo-block-admin.php:250
+#: admin/class-ip-geo-block-admin.php:243
+#: admin/class-ip-geo-block-admin.php:244
 msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
-#: admin/class-ip-geo-block-admin.php:271
+#: admin/class-ip-geo-block-admin.php:265
 msgid "You need WordPress 3.7+."
 msgstr "WordPress 3.7&thinsp;以上が必要です。"
 
-#: admin/class-ip-geo-block-admin.php:279
+#: admin/class-ip-geo-block-admin.php:273
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -56,7 +56,7 @@ msgstr ""
 "いた後、あなたの国コードと「<strong>マッチング規則</strong>」を「<a href=\"%s"
 "\">検証ルールの設定</a>」で確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:285
+#: admin/class-ip-geo-block-admin.php:279
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
@@ -65,11 +65,11 @@ msgstr ""
 "「<strong>マッチング規則</strong>」が正しく設定されていません。「<a href=\"%s"
 "\">検証ルールの設定</a>」を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:294
+#: admin/class-ip-geo-block-admin.php:288
 msgid "Downloading geolocation databases was successfully done."
 msgstr "位置情報データベースは正常にダウンロードされました。"
 
-#: admin/class-ip-geo-block-admin.php:305
+#: admin/class-ip-geo-block-admin.php:299
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is in the blacklist."
@@ -77,7 +77,7 @@ msgstr ""
 "あなたの国コードまたはIPアドレスがブラックリストに含まれているため、ログアウ"
 "トすると再びログインする事が出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:306
+#: admin/class-ip-geo-block-admin.php:300
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is not in the whitelist."
@@ -85,24 +85,24 @@ msgstr ""
 "あなたの国コードまたはIPアドレスがホワイトリストに含まれていないため、ログア"
 "ウトすると再びログインする事が出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:309
+#: admin/class-ip-geo-block-admin.php:303
 #, php-format
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr "「<a href=\"%s\">検証ルールの設定</a>」を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:358
+#: admin/class-ip-geo-block-admin.php:348
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:359
+#: admin/class-ip-geo-block-admin.php:349
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:360
+#: admin/class-ip-geo-block-admin.php:350
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:361
+#: admin/class-ip-geo-block-admin.php:351
 msgid "Attribution"
 msgstr "リンク"
 
@@ -124,16 +124,12 @@ msgstr ""
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:714
+#: admin/class-ip-geo-block-admin.php:743
 #: classes/class-ip-geo-block-util.php:114
 #: classes/class-ip-geo-block-util.php:141
 #, php-format
 msgid "Unable to write %s. Please check permission."
 msgstr "%s に書き込めません。パーミッションを確認して下さい。"
-
-#: admin/class-ip-geo-block-admin.php:724
-msgid "Successfully updated."
-msgstr "更新に成功しました。"
 
 #: admin/includes/class-admin-ajax.php:53
 msgid "n/a"
@@ -156,24 +152,24 @@ msgstr "ログのクリア"
 msgid "Clear now"
 msgstr "今すぐクリア"
 
-#: admin/includes/tab-accesslog.php:82 admin/includes/tab-settings.php:282
+#: admin/includes/tab-accesslog.php:82 admin/includes/tab-settings.php:299
 #, php-format
 msgid "<dfn title=\"Validate request to %s.\">%s</dfn>"
 msgstr "<dfn title=\"%sへのリクエストを検証します。\">%s</dfn>"
 
-#: admin/includes/tab-accesslog.php:84 admin/includes/tab-settings.php:284
+#: admin/includes/tab-accesslog.php:84 admin/includes/tab-settings.php:301
 msgid "Comment post"
 msgstr "コメント投稿"
 
-#: admin/includes/tab-accesslog.php:85 admin/includes/tab-settings.php:285
+#: admin/includes/tab-accesslog.php:85 admin/includes/tab-settings.php:302
 msgid "XML-RPC"
 msgstr "XML-RPC"
 
-#: admin/includes/tab-accesslog.php:86 admin/includes/tab-settings.php:286
+#: admin/includes/tab-accesslog.php:86 admin/includes/tab-settings.php:303
 msgid "Login form"
 msgstr "ログイン・フォーム"
 
-#: admin/includes/tab-accesslog.php:87 admin/includes/tab-settings.php:287
+#: admin/includes/tab-accesslog.php:87 admin/includes/tab-settings.php:304
 msgid "Admin area"
 msgstr "管理領域"
 
@@ -350,11 +346,22 @@ msgstr ""
 "$_SERVER&thinsp;のキー</dfn>"
 
 #: admin/includes/tab-settings.php:220
+msgid ""
+"<dfn title=\"It validates malicious signatures independently of &#8220;Block "
+"by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target "
+"&#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins "
+"area&#8221; and &#8220;Themes area&#8221;.\">Bad signatures</dfn>"
+msgstr ""
+"<dfn title=\"「国コードで遮断」および「ゼロデイ攻撃を遮断」とは独立に、「管理"
+"領域」、「管理領域 ajax/post」、「プラグイン領域」、「テーマ領域」をターゲッ"
+"トとした悪意のあるシグネチャを検証します。\">悪意のあるシグネチャ</dfn>"
+
+#: admin/includes/tab-settings.php:237
 #, php-format
 msgid "Response code %s"
 msgstr "レスポンスコード %s"
 
-#: admin/includes/tab-settings.php:250
+#: admin/includes/tab-settings.php:267
 msgid ""
 "<dfn title=\"Applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221;. "
 "Lockout period is defined as expiration time at &#8220;Cache settings&#8221;."
@@ -364,29 +371,29 @@ msgstr ""
 "時間は「キャッシュの設定」の「有効時間」で定義されます。\">IPアドレス当たりの"
 "ログイン試行可能回数</dfn>"
 
-#: admin/includes/tab-settings.php:276
+#: admin/includes/tab-settings.php:293
 msgid "Validation target settings"
 msgstr "検証対象の設定"
 
-#: admin/includes/tab-settings.php:305 admin/includes/tab-settings.php:325
-#: admin/includes/tab-settings.php:348 admin/includes/tab-settings.php:358
+#: admin/includes/tab-settings.php:322 admin/includes/tab-settings.php:342
+#: admin/includes/tab-settings.php:365 admin/includes/tab-settings.php:375
 msgid "Block by country"
 msgstr "国コードで遮断"
 
-#: admin/includes/tab-settings.php:324 admin/includes/tab-settings.php:346
-#: admin/includes/tab-settings.php:406 admin/includes/tab-settings.php:641
+#: admin/includes/tab-settings.php:341 admin/includes/tab-settings.php:363
+#: admin/includes/tab-settings.php:423 admin/includes/tab-settings.php:641
 msgid "Disable"
 msgstr "無効"
 
-#: admin/includes/tab-settings.php:326
+#: admin/includes/tab-settings.php:343
 msgid "Completely close"
 msgstr "完全に閉鎖"
 
-#: admin/includes/tab-settings.php:347
+#: admin/includes/tab-settings.php:364
 msgid "Block by country (register, lost password)"
 msgstr "国コードで遮断（ユーザー登録、パスワード再発行）"
 
-#: admin/includes/tab-settings.php:351
+#: admin/includes/tab-settings.php:368
 msgid ""
 "Registered users can login as membership from anywhere, but the request of "
 "new user registration and lost password is blocked by the country code."
@@ -394,18 +401,18 @@ msgstr ""
 "登録済みのユーザーはどこからでもログインできますが、新規ユーザの登録要求やパ"
 "スワードのリセット要求は国コードで遮断されます。"
 
-#: admin/includes/tab-settings.php:359
+#: admin/includes/tab-settings.php:376
 msgid "Prevent Zero-day Exploit"
 msgstr "ゼロデイ攻撃を遮断"
 
-#: admin/includes/tab-settings.php:363
+#: admin/includes/tab-settings.php:380
 msgid ""
 "It will block a request related to the services for both public facing pages "
 "and the dashboard."
 msgstr ""
 "一般公開ページとダッシュボード向けサービスに関連するリクエストを遮断します。"
 
-#: admin/includes/tab-settings.php:364
+#: admin/includes/tab-settings.php:381
 msgid ""
 "Regardless of the country code, it will block a malicious request related to "
 "the services only for the dashboard."
@@ -413,11 +420,11 @@ msgstr ""
 "国コードに拘らず、ダッシュボード向けサービスだけに関連する悪意のあるリクエス"
 "トを遮断します。"
 
-#: admin/includes/tab-settings.php:391
+#: admin/includes/tab-settings.php:408
 msgid "Admin ajax/post"
 msgstr "管理領域&thinsp;ajax/post"
 
-#: admin/includes/tab-settings.php:408
+#: admin/includes/tab-settings.php:425
 #, php-format
 msgid ""
 "Regardless of the country code, it will block a malicious request to <code>"
@@ -426,7 +433,7 @@ msgstr ""
 "国コードに拘らず、<code>%s&hellip;/*.php</code>への悪意のあるリクエストを遮断"
 "します。"
 
-#: admin/includes/tab-settings.php:409
+#: admin/includes/tab-settings.php:426
 #, php-format
 msgid ""
 "It configures &#8220%s&#8221 to validate a request to the PHP file which "
@@ -435,29 +442,17 @@ msgstr ""
 "WordPressコアを読み込まないPHPファイルへのリクエストを検証対象とするため"
 "に、%s を設定します。"
 
-#: admin/includes/tab-settings.php:424 admin/includes/tab-settings.php:457
+#: admin/includes/tab-settings.php:441 admin/includes/tab-settings.php:474
 msgid "Force to load WP core"
 msgstr "WPコアの読み込みを強制"
 
-#: admin/includes/tab-settings.php:429
+#: admin/includes/tab-settings.php:446
 msgid "Plugins area"
 msgstr "プラグイン領域"
 
-#: admin/includes/tab-settings.php:462
+#: admin/includes/tab-settings.php:479
 msgid "Themes area"
 msgstr "テーマ領域"
-
-#: admin/includes/tab-settings.php:485
-msgid ""
-"<dfn title=\"This works independently of &#8220;Block by country&#8221; and "
-"&#8220;Prevent Zero-day Exploit&#8221;, and validates malicious signature to "
-"prevent disclosing the important files via vulnerable plugins or themes."
-"\">Important files</dfn>"
-msgstr ""
-"<dfn title=\"「国コードで遮断」や「ゼロデイ攻撃を遮断」とは独立に悪意のあるシ"
-"グネチャを検証し、脆弱性のあるプラグインやテーマを介した&thinsp;wp-config."
-"php&thinsp;や&thinsp;passwd&thinsp;などの重要ファイルの漏洩を防ぎます。\">重"
-"要ファイル</dfn>"
 
 #: admin/includes/tab-settings.php:504
 msgid "Geolocation API settings"
@@ -603,8 +598,12 @@ msgid "Plugin settings"
 msgstr "プラグインの設定"
 
 #: admin/includes/tab-settings.php:776
-msgid "You need to &#8220;Save Changes&#8221; after you import settings."
-msgstr "インポート後に「変更を保存」する必要があります。"
+msgid ""
+"You need to click the &#8220;Save Changes&#8221; button for imported "
+"settings to take effect."
+msgstr ""
+"インポートされた設定を有効にするには、「変更を保存」ボタンをクリックする必要"
+"があります。"
 
 #: admin/includes/tab-settings.php:782
 msgid "Export / Import settings"
