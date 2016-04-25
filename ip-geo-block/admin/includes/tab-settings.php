@@ -772,8 +772,8 @@ class IP_Geo_Block_Admin_Tab {
 			NULL,
 			$option_slug
 		);
-
-		$desc = __( 'You need to &#8220;Save Changes&#8221; after you import settings.', IP_Geo_Block::TEXT_DOMAIN );
+// インポートされた設定を有効にするには、「変更を保存」ボタンをクリックする必要があります。
+		$desc = __( 'You need to click the &#8220;Save Changes&#8221; button for imported settings to take effect.', IP_Geo_Block::TEXT_DOMAIN );
 
 		// Export / Import settings
 		$field = 'export-import';

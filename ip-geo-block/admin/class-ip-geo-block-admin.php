@@ -712,8 +712,14 @@ class IP_Geo_Block_Admin {
 		$action = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce';
 		$nonce &= wp_verify_nonce( IP_Geo_Block::retrieve_nonce( $action ), $action );
 
-		if ( ! current_user_can( 'manage_options' ) || empty( $_POST ) || ! $nonce )
-			wp_die( 'Forbidden', 'Permission Denied', 403 );
+		if ( ! current_user_can( 'manage_options' ) || empty( $_POST ) || ! $nonce ) {
+			send_header( 403 );
+			wp_die(
+				__( 'You do not have sufficient permissions to access this page.' ),
+				__( 'WordPress Failure Notice' ),
+				array( 'response' => 403, 'back_link' => true )
+			);
+		}
 	}
 
 	/**
@@ -743,9 +749,7 @@ class IP_Geo_Block_Admin {
 		delete_transient( IP_Geo_Block::CRON_NAME );
 
 		// register a settings error to be displayed to the user
-		$this->show_setting_notice( 'settings', 'updated',
-			__( 'Successfully updated.', IP_Geo_Block::TEXT_DOMAIN )
-		);
+		$this->show_setting_notice( 'settings', 'updated', __( 'Settings saved.' ) );
 
 		return $options;
 	}

@@ -64,11 +64,8 @@ class IP_Geo_Block {
 			'themes'  =>   trailingslashit( substr( get_theme_root_uri(), $tmp ) ), // @since 1.5.0
 		);
 
-		// normalize requested uri
-		$uri = $this->request_uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['SCRIPT_NAME'] );
-
-		// WordPress core files directly under the home
-		global $pagenow; // it can handle the path like '/wp-trackback.php/1'
+		// WordPress core files
+		global $pagenow;
 		$tmp = array(
 			'wp-comments-post.php' => 'comment',
 			'wp-trackback.php'     => 'comment',
@@ -76,6 +73,9 @@ class IP_Geo_Block {
 			'wp-login.php'         => 'login',
 			'wp-signup.php'        => 'login',
 		);
+
+		// normalize requested uri
+		$uri = $this->request_uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
 
 		// wp-admin/*.php
 		if ( FALSE !== strpos( $uri, self::$wp_dirs['admin'] ) )
