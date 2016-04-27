@@ -175,11 +175,21 @@ class IP_Geo_Block {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 
-			// delete settings options, IP address cache, log
-			delete_option( self::$option_keys['settings'] ); // @since 1.2.0
-			delete_transient( self::CACHE_KEY ); // @since 2.8
-			IP_Geo_Block_Logs::delete_tables();
-			IP_Geo_Block_Opts::delete_api( $settings );
+			global $wpdb;
+			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+			$current_blog_id = get_current_blog_id();
+
+			foreach ( $blog_ids as $id ) {
+				switch_to_blog( $id );
+
+				// delete settings options, IP address cache, log
+				delete_option( self::$option_keys['settings'] ); // @since 1.2.0
+				delete_transient( self::CACHE_KEY ); // @since 2.8
+				IP_Geo_Block_Logs::delete_tables();
+				IP_Geo_Block_Opts::delete_api( $settings );
+			}
+
+			switch_to_blog( $current_blog_id );
 		}
 	}
 
