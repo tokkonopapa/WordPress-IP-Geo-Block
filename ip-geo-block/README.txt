@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.5
-Stable tag: 2.2.4.2
+Stable tag: 2.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -434,8 +434,14 @@ For more details, see
 
 == Changelog ==
 
-= 2.2.4.2 =
-* **Improvement:** Make verification for "**activate**" and "**Save Changes**" 
+= 2.2.5 =
+* **Improvement:** Multisite support in uninstall function which removes all 
+  the option tables on clean uninstallation.
+* **Improvement:** Stop to use `parse_url()` because of 
+  [this bug](https://bugs.php.net/bug.php?id=55511).
+* **Improvement:** Change the name of option "Important files" to 
+  "Bad signatures in query" to avoid misuse.
+* **Bug fix:** Make verification for "**activate**" and "**Save Changes**" 
   strictly to solve the issue 
   [@](https://wordpress.org/support/topic/gb-added-to-whitelist "WordPress › Support » GB added to whitelist")
   that might be caused by some race condition.
