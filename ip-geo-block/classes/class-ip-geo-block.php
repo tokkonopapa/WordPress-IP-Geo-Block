@@ -56,9 +56,9 @@ class IP_Geo_Block {
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
 			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
 
-		// get content folders (with/without trailing slash) @since 3.0.0
+		// get content folders (with/without trailing slash @since 3.0.0)
 		self::$wp_dirs = array(
-			'home'    => untrailingslashit( parse_url( $uri = home_url(), PHP_URL_PATH ) ),
+			'home'    => untrailingslashit( parse_url( $uri = site_url(), PHP_URL_PATH ) ),
 			'admin'   =>   trailingslashit( substr( admin_url(),          $tmp = strlen( $uri ) ) ),
 			'plugins' =>   trailingslashit( substr( plugins_url(),        $tmp ) ), // @since 2.6.0
 			'themes'  =>   trailingslashit( substr( get_theme_root_uri(), $tmp ) ), // @since 1.5.0

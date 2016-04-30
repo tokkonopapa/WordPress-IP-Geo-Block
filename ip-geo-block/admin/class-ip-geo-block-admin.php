@@ -713,7 +713,7 @@ class IP_Geo_Block_Admin {
 		$nonce &= wp_verify_nonce( IP_Geo_Block::retrieve_nonce( $action ), $action );
 
 		if ( ! current_user_can( 'manage_options' ) || empty( $_POST ) || ! $nonce ) {
-			send_header( 403 );
+			status_header( 403 );
 			wp_die(
 				__( 'You do not have sufficient permissions to access this page.' ),
 				'',
