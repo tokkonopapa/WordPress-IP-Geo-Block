@@ -435,16 +435,17 @@ For more details, see
 == Changelog ==
 
 = 2.2.5 =
-* **Improvement:** Multisite support in uninstall function which removes all 
-  the option tables on clean uninstallation.
-* **Improvement:** Stop to use `parse_url()` because of 
-  [this bug](https://bugs.php.net/bug.php?id=55511).
 * **Improvement:** Change the name of option "Important files" to 
   "Bad signatures in query" to avoid misuse.
-* **Bug fix:** Make verification for "**activate**" and "**Save Changes**" 
-  strictly to solve the issue 
+* **Improvement:** Multisite support in uninstall function which removes all 
+  the option tables on clean uninstallation.
+* **Bug fix:** Stop to use `parse_url()` because of 
+  [this bug](https://bugs.php.net/bug.php?id=55511).
+* **Bug fix:** FORCE_SSL_ADMIN support.
+* **Bug fix:** Multiple verification before saving settings into datbase to 
+  solve the issue
   [@](https://wordpress.org/support/topic/gb-added-to-whitelist "WordPress › Support » GB added to whitelist")
-  that might be caused by some race condition.
+  which might be caused by some race condition.
 
 = 2.2.4.1 =
 Sorry for frequent updating.
