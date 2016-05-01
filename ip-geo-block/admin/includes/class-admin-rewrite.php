@@ -59,11 +59,10 @@ class IP_Geo_Block_Rewrite {
 		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
 		$this->site_uri = parse_url( network_site_url(), PHP_URL_PATH );
-
-		$len = strlen( home_url() );
+		$tmp = untrailingslashit( parse_url( site_url(), PHP_URL_PATH ) );
 		$this->wp_dirs = array(
-			'plugins' => trailingslashit( substr( plugins_url(),        $len ) ),
-			'themes'  => trailingslashit( substr( get_theme_root_uri(), $len ) ),
+			'plugins' => trailingslashit( substr( parse_url( plugins_url(),        PHP_URL_PATH ), $tmp = strlen( $tmp ) ) ),
+			'themes'  => trailingslashit( substr( parse_url( get_theme_root_uri(), PHP_URL_PATH ), $tmp ) ),
 		);
 	}
 
@@ -83,6 +82,85 @@ class IP_Geo_Block_Rewrite {
 	private function get_server_type() {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
 		return $is_apache ? 'apache' : ( $is_nginx ? 'nginx' : NULL );
+	}
+
+	/**
+	 * Extract the block of rewrite rule
+	 *
+	 * @param array contents of configuration file
+	 * @return array list of begin and end
+	 */
+	private function find_rewrite_block( $content ) {
+		return preg_grep(
+			'/^\s*?#\s*?(BEGIN|END)?\s*?IP Geo Block\s*?(BEGIN|END)?\s*?$/i',
+			$content
+		);
+	}
+
+	/**
+	 * Get the path of .htaccess in wp-content/plugins/themes/
+	 *
+	 * @param string 'plugins' or 'themes'
+	 * @return string absolute path to the .htaccess
+	 */
+	private function get_rewrite_file( $which ) {
+		global $is_apache, $is_nginx; // wp-includes/vars.php
+
+		if ( $is_apache ) {
+			return $this->doc_root . $this->site_uri . $this->wp_dirs[ $which ] . '.htaccess';
+		}
+
+		elseif ( $is_nginx ) {
+			return NULL; /* MUST FIX */
+		}
+
+		else {
+			return NULL; /* NOT SUPPORTED */
+		}
+	}
+
+	/**
+	 * Get contents in .htaccess in wp-content/(plugins|themes)/
+	 *
+	 * @param string 'plugins' or 'themes'
+	 * @return array contents of configuration file
+	 */
+	private function get_rewrite_rule( $which ) {
+		$file = $this->get_rewrite_file( $which );
+		$exist = @file_exists( $file );
+
+		// check permission
+		if ( $exist ) {
+			if ( ! @is_readable( $file ) )
+				return FALSE;
+		} else {
+			if ( ! @is_readable( dirname( $file ) ) )
+				return FALSE;
+		}
+
+		// http://php.net/manual/en/function.file.php#refsect1-function.file-returnvalues
+		@ini_set( 'auto_detect_line_endings', TRUE );
+
+		// get file contents as an array
+		return $exist ? @file( $file, FILE_IGNORE_NEW_LINES ) : array();
+	}
+
+	/**
+	 * Put contents to .htaccess in wp-content/(plugins|themes)/
+	 *
+	 * @param string 'plugins' or 'themes'
+	 * @param array contents of configuration file
+	 */
+	private function put_rewrite_rule( $which, $content ) {
+		$file = $this->get_rewrite_file( $which );
+		if ( ! $file || FALSE === file_put_contents( $file, implode( PHP_EOL, $content ), LOCK_EX ) )
+			return FALSE;
+
+		// if content is empty then remove file
+		if ( empty( $content ) )
+			unlink( $file );
+
+		return TRUE;
 	}
 
 	/**
@@ -110,19 +188,6 @@ class IP_Geo_Block_Rewrite {
 		else {
 			return -1; /* NOT SUPPORTED */
 		}
-	}
-
-	/**
-	 * Extract the block of rewrite rule
-	 *
-	 * @param array contents of configuration file
-	 * @return array list of begin and end
-	 */
-	private function find_rewrite_block( $content ) {
-		return preg_grep(
-			'/^\s*?#\s*?(BEGIN|END)?\s*?IP Geo Block\s*?(BEGIN|END)?\s*?$/i',
-			$content
-		);
 	}
 
 	/**
@@ -168,70 +233,6 @@ class IP_Geo_Block_Rewrite {
 	}
 
 	/**
-	 * Get the path of .htaccess in wp-content/plugins/themes/
-	 *
-	 * @param string 'plugins' or 'themes'
-	 * @return string absolute path to the .htaccess
-	 */
-	private function get_rewrite_file( $which ) {
-		global $is_apache, $is_nginx; // wp-includes/vars.php
-
-		if ( $is_apache ) {
-			return $this->doc_root . $this->site_uri . $this->wp_dirs[ $which ] . '.htaccess';
-		}
-
-		elseif ( $is_nginx ) {
-			return NULL; /* MUST FIX */
-		}
-
-		else {
-			return NULL; /* NOT SUPPORTED */
-		}
-	}
-
-	/**
-	 * Get contents in .htaccess in wp-content/(plugins|themes)/
-	 *
-	 * @param string 'plugins' or 'themes'
-	 * @return array contents of configuration file
-	 */
-	private function get_rewrite_rule( $which ) {
-		$file = $this->get_rewrite_file( $which );
-		$exist = @file_exists( $file );
-
-		// check permission
-		if ( $exist ) {
-			if ( ! @is_writable( $file ) )
-				return FALSE;
-		} else {
-			if ( ! @is_writable( dirname( $file ) ) )
-				return FALSE;
-		}
-
-		// http://php.net/manual/en/function.file.php#refsect1-function.file-returnvalues
-		@ini_set( 'auto_detect_line_endings', TRUE );
-
-		// get file contents as an array
-		return $exist ? @file( $file, FILE_IGNORE_NEW_LINES ) : array();
-	}
-
-	/**
-	 * Put contents to .htaccess in wp-content/(plugins|themes)/
-	 *
-	 * @param string 'plugins' or 'themes'
-	 * @param array contents of configuration file
-	 */
-	private function put_rewrite_rule( $which, $content ) {
-		if ( $file = $this->get_rewrite_file( $which ) ) {
-			file_put_contents( $file, implode( PHP_EOL, $content ), LOCK_EX );
-
-			// if content is empty then remove file
-			if ( empty( $content ) )
-				unlink( $file );
-		}
-	}
-
-	/**
 	 * Add rewrite rule to server configration
 	 *
 	 * @param string 'plugins' or 'themes'
@@ -248,11 +249,11 @@ class IP_Geo_Block_Rewrite {
 			if ( empty( $block ) ) {
 				$content = $this->remove_rewrite_block( $content, $block );
 				$content = $this->append_rewrite_block( $which, $content );
-				$this->put_rewrite_rule( $which, $content );
+				return $this->put_rewrite_rule( $which, $content );
 			}
 		}
 
-		return TRUE;
+		return FALSE;
 	}
 
 	/**
@@ -271,11 +272,11 @@ class IP_Geo_Block_Rewrite {
 
 			if ( ! empty( $block ) ) {
 				$content = $this->remove_rewrite_block( $content, $block );
-				$this->put_rewrite_rule( $which, $content );
+				return $this->put_rewrite_rule( $which, $content );
 			}
 		}
 
-		return TRUE;
+		return FALSE;
 	}
 
 	/**
