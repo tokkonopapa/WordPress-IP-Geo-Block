@@ -735,7 +735,7 @@ class IP_Geo_Block_Admin {
 
 		// activate rewrite rules
 		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
-		$stat = IP_Geo_Block_Rewrite::activate_rewrite_all( $options['rewrite'] );
+		$stat = IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $options['rewrite'] );
 		$diff = array_diff( $options['rewrite'], $stat );
 		if ( ! empty( $diff ) ) {
 			$options['rewrite'] = $stat;

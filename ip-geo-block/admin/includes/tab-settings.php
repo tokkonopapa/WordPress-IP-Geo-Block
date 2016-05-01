@@ -427,7 +427,7 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 		// Set rewrite condition
-		$options['rewrite'] = IP_Geo_Block_Rewrite::check_rewrite_all();
+		$options['rewrite'] = IP_Geo_Block_Admin_Rewrite::check_rewrite_all();
 
 		// Plugins area
 		$key = 'plugins';

@@ -147,7 +147,7 @@ class IP_Geo_Block {
 
 			// activate rewrite rules
 			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
-			IP_Geo_Block_Rewrite::activate_rewrite_all( $settings['rewrite'] );
+			IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
 		}
 	}
 
@@ -161,7 +161,7 @@ class IP_Geo_Block {
 
 		// deactivate rewrite rules
 		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
-		IP_Geo_Block_Rewrite::deactivate_rewrite_all();
+		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
 	}
 
 	/**

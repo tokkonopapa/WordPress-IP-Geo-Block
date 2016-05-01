@@ -1,5 +1,5 @@
 <?php
-class IP_Geo_Block_Rewrite {
+class IP_Geo_Block_Admin_Rewrite {
 
 	/**
 	 * Instance of this class.
@@ -58,8 +58,8 @@ class IP_Geo_Block_Rewrite {
 		// http://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
 		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
-		$this->site_uri = parse_url( network_site_url(), PHP_URL_PATH );
-		$tmp = untrailingslashit( parse_url( site_url(), PHP_URL_PATH ) );
+		$this->site_uri = untrailingslashit( parse_url( network_site_url(), PHP_URL_PATH ) );
+		$tmp =            untrailingslashit( parse_url( site_url(),         PHP_URL_PATH ) );
 		$this->wp_dirs = array(
 			'plugins' => trailingslashit( substr( parse_url( plugins_url(),        PHP_URL_PATH ), $tmp = strlen( $tmp ) ) ),
 			'themes'  => trailingslashit( substr( parse_url( get_theme_root_uri(), PHP_URL_PATH ), $tmp ) ),
@@ -253,7 +253,7 @@ class IP_Geo_Block_Rewrite {
 			}
 		}
 
-		return FALSE;
+		return TRUE;
 	}
 
 	/**
@@ -276,7 +276,7 @@ class IP_Geo_Block_Rewrite {
 			}
 		}
 
-		return FALSE;
+		return TRUE;
 	}
 
 	/**
