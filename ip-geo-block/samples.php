@@ -110,7 +110,7 @@ function my_whitelist( $validate ) {
 
 	$validate['result'] = 'blocked';
 
-	if ( in_array( $validate['code'], $whitelist ) ) {
+	if ( in_array( $validate['code'], $whitelist, true ) ) {
 		$validate['result'] = 'passed';
 	}
 
@@ -133,7 +133,7 @@ function my_permitted_ajax( $validate ) {
 		'permitted_action',
 	);
 
-	if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], $whitelist ) )
+	if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], $whitelist, true ) )
 		$validate['result'] = 'passed';
 
 	return $validate; // should not set 'passed' to validate by country code
@@ -177,7 +177,7 @@ function my_extra_ips_hook( $extra_ips, $hook ) {
 		wp_schedule_single_event( time(), MY_EXTRA_IPS_CRON );
 
 	// restrict the target hook
-	if ( in_array( $hook, array( 'xmlrpc', 'login' ) ) ) {
+	if ( in_array( $hook, array( 'xmlrpc', 'login' ), true ) ) {
 		$extra_ips['black_list'] .= ( $extra_ips['black_list'] ? ',' : '' ) . $list;
 	}
 

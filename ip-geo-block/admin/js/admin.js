@@ -111,7 +111,6 @@ var ip_geo_block_time = new Date();
 	// Show/Hide description of WP-ZEP
 	function show_description(select) {
 		var data, desc = ID('.', 'desc');
-		select = $(select);
 		select.next(desc).empty();
 		data = select.children('option:selected').data('desc');
 		if (data) {
@@ -119,12 +118,9 @@ var ip_geo_block_time = new Date();
 		}
 	}
 
-	// Equivalent for PHP’s str_rot13
-	// discuss at: http://phpjs.org/functions/str_rot13/
-	function str_rot13 (str) {
-		return String(str).replace(/[a-z]/gi, function (s) {
-			return String.fromCharCode(s.charCodeAt(0) + (s.toLowerCase() < 'n' ? 13 : -13)); //'
-		});
+	// Encode to prevent blocking before post ajax
+	function base64_encode(str) {
+		return window.btoa(str);
 	}
 
 	// File Reader
@@ -413,9 +409,26 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 
+			// Name of base class
+			var name = 'ip_geo_block_settings';
+
 			// Show/Hide description
-			$('select[name^="ip_geo_block_settings"]').on('change', function (event) {
-				show_description(this);
+			$('select[name^="' + name + '"]').on('change', function (event) {
+				var $this = $(this);
+				show_description($this);
+
+				// List of exceptions
+				$this.nextAll('.' + name + '_exception').each(function (i, obj) {
+					obj = $(obj);
+					if ('0' !== $this.val()) {
+						obj.removeClass('disable-events');
+					} else {
+						obj.children('li').hide();
+						obj.addClass('disable-events');
+						obj.removeClass(ID('dropdown')).addClass(ID('dropup'));
+					}
+				});
+
 				return false;
 			}).trigger('change');
 
@@ -440,14 +453,14 @@ var ip_geo_block_time = new Date();
 					return false;
 				}
 
-				var id = 'ip_geo_block_settings', json = {};
+				var id = name, json = {};
 				$.each($(this).closest('form').serializeArray(), function (i, obj) {
 					if (-1 !== obj.name.indexOf(id)) {
 						json[obj.name] = obj.value;
 					}
 				});
 
-				json[id += '[signature]'] = str_rot13(json[id]);
+				json[id += '[signature]'] = base64_encode(json[id]);
 				$(ID('#', 'export-data')).val(JSON.stringify(json));
 				$(ID('#', 'export-form')).trigger('submit');
 
@@ -464,9 +477,9 @@ var ip_geo_block_time = new Date();
 				var file = event.target.files[0];
 				if (file) {
 					readfile(file, function (data) {
-						var id = 'ip_geo_block_settings[signature]';
+						var id = name + '[signature]';
 						data = JSON.parse(data);
-						data[id] = str_rot13(data[id]);
+						data[id] = base64_encode(data[id]);
 						ajax_post('export-import', {
 							cmd: 'validate',
 							data: JSON.stringify(data)
@@ -523,9 +536,18 @@ var ip_geo_block_time = new Date();
 			// Submit
 			$('#submit').on('click', function (event) {
 				var elm = $(ID('@', 'signature'));
-				elm.val(str_rot13(elm.val()));
+				elm.val(base64_encode(elm.val()));
 				return true;
 			});
+
+			// Exceptions
+			$('ul.' + name + '_exception dfn').on('click', function (event) {
+				var $this = $(this).parent();
+				$this.children('li').toggle();
+				$this.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
+				return false;
+			});
+
 			break;
 
 		  case 1:

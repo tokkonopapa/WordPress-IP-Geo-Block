@@ -1,0 +1,29 @@
+--------------------------------------------------------------------------------
+PHP/5.6.10
+IP Geo Block 2.2.5
+
+./attack.sh -w http://localhost/ 1
+Document Path:          /wp-comments-post.php
+Requests per second:    12.58 [#/sec] (mean)
+Time per request:       79.471 [ms] (mean, across all concurrent requests)
+
+./attack.sh -w http://localhost/ 2
+Document Path:          /xmlrpc.php
+Requests per second:    12.17 [#/sec] (mean)
+Time per request:       82.136 [ms] (mean, across all concurrent requests)
+
+./attack.sh -w http://localhost/ 3
+Document Path:          /xmlrpc.php
+Requests per second:    11.70 [#/sec] (mean)
+Time per request:       85.490 [ms] (mean, across all concurrent requests)
+
+./attack.sh -w http://localhost/ 4
+Document Path:          /wp-login.php
+Requests per second:    12.36 [#/sec] (mean)
+Time per request:       80.896 [ms] (mean, across all concurrent requests)
+
+./attack.sh -w http://localhost/ 5
+Document Path:          /wp-admin/admin-ajax.php?action=donwload&file=../wp-config.php
+Requests per second:    12.30 [#/sec] (mean)
+Time per request:       81.332 [ms] (mean, across all concurrent requests)
+--------------------------------------------------------------------------------

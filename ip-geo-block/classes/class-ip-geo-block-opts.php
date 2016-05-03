@@ -63,7 +63,7 @@ class IP_Geo_Block_Opts {
 			'priority'        => 0,       // Action priority for WP-ZEP
 			// since version 2.2.0
 			'anonymize'       => FALSE,   // Anonymize IP address to hide privacy
-			'signature'       => 'wp-config.php,passwd', // malicious signature
+			'signature'       => '..,/wp-config.php,/passwd,/tmp,wget', // malicious signature
 			'extra_ips'       => array(   // Additional IP validation
 			    'white_list'  => NULL,    // White list of IP addresses
 			    'black_list'  => NULL,    // Black list of IP addresses
@@ -90,6 +90,11 @@ class IP_Geo_Block_Opts {
 			),
 			// since version 2.2.3
 			'api_dir'         => NULL,    // Path to geo-location API
+			// since version 2.2.5
+			'exception'       => array(
+			    'plugins'     => array(), // list of exceptional pliugins
+			    'themes'      => array(), // list of exceptional themes
+			),
 		),
 	);
 
@@ -162,6 +167,28 @@ class IP_Geo_Block_Opts {
 
 			if ( version_compare( $settings['version'], '2.2.3' ) < 0 )
 				$settings['api_dir'] = $default[ $key[0] ]['api_dir'];
+
+			if ( version_compare( $settings['version'], '2.2.6' ) < 0 ) {
+				$settings['exception'] = $default[ $key[0] ]['exception'];
+
+				// https://wordpress.org/support/topic/compatibility-with-ag-custom-admin
+				$sig = array();
+				foreach ( explode( ',', $settings['signature'] ) as $tmp ) {
+					$tmp = trim( $tmp );
+
+					if ( 0 === strpos( $tmp, 'wp-config.php' ) ||
+					     0 === strpos( $tmp, 'passwd'        ) )
+						$tmp = '/' . $tmp;
+
+					array_push( $sig, $tmp );
+				}
+
+				// add others
+				array_unshift( $sig, '..' ); // directory traversal
+				array_push( $sig, array( '/tmp', 'wget' ) );
+
+				$settings['signature'] = implode( ',', $sig );
+			}
 
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;

@@ -749,7 +749,7 @@ if ( class_exists( 'IP_Geo_Block' ) ) {
 	if ( FALSE !== $plugins ) {
 		$exclude = array( '.', '..', 'index.php' );
 		foreach ( $plugins as $plugin ) {
-			if ( ! in_array( $plugin, $exclude ) && is_dir( $dir.$plugin ) ) {
+			if ( ! in_array( $plugin, $exclude, TRUE ) && is_dir( $dir.$plugin ) ) {
 				@include_once( $dir.$plugin.'/class-'.$plugin.'.php' );
 			}
 		}

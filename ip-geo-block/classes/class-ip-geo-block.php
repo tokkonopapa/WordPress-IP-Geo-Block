@@ -388,7 +388,7 @@ class IP_Geo_Block {
 		foreach ( explode( ',', $settings['validation']['proxy'] ) as $var ) {
 			if ( isset( $_SERVER[ $var ] ) ) {
 				foreach ( explode( ',', $_SERVER[ $var ] ) as $ip ) {
-					if ( ! in_array( $ip = trim( $ip ), $ips ) && filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+					if ( ! in_array( $ip = trim( $ip ), $ips, TRUE ) && filter_var( $ip, FILTER_VALIDATE_IP ) ) {
 						array_unshift( $ips, $ip );
 					}
 				}
@@ -472,7 +472,7 @@ class IP_Geo_Block {
 	 */
 	public function validate_comment( $comment = NULL ) {
 		// check comment type if it comes form wp-includes/wp_new_comment()
-		if ( ! is_array( $comment ) || in_array( $comment['comment_type'], array( 'trackback', 'pingback' ) ) )
+		if ( ! is_array( $comment ) || in_array( $comment['comment_type'], array( 'trackback', 'pingback' ), TRUE ) )
 			$this->validate_ip( 'comment', self::get_option( 'settings' ) );
 
 		return $comment;
@@ -511,7 +511,7 @@ class IP_Geo_Block {
 		// enables to skip validation by country at login/out except BuddyPress signup
 		$block = ( 1 === (int)$settings['validation']['login'] ) ||
 			( 'bp_' === substr( current_filter(), 0, 3 ) ) ||
-			( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout' ) ) );
+			( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout' ), TRUE ) );
 
 		$this->validate_ip( 'login', $settings, $block );
 	}
@@ -565,7 +565,7 @@ class IP_Geo_Block {
 		}
 
 		// register validation by malicious signature
-		if ( ! is_user_logged_in() || ! in_array( $GLOBALS['pagenow'], array( 'comment.php', 'post.php' ) ) )
+		if ( ! is_user_logged_in() || ! in_array( $GLOBALS['pagenow'], array( 'comment.php', 'post.php' ), TRUE ) )
 			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
@@ -585,25 +585,23 @@ class IP_Geo_Block {
 			// list of plugins/themes to bypass WP-ZEP
 			$settings = self::get_option( 'settings' );
 			$type = empty( $matches[2] ) ? 'plugins' : 'themes';
-			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-'.$type,
-				'plugins' === $type ?
-					/* list of plugins */ array() :
-					/* list of themes  */ array()
-			);
+			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-${type}", $settings['exception'][ $type ] );
 
-			// register validation of nonce (2: WP-ZEP)
-			if ( ( 2 & (int)$settings['validation'][ $type ] ) && ! in_array( $matches[3], $list, TRUE ) )
-				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
+			if ( ! in_array( $matches[3], $list, TRUE ) ) {
+				// register validation of nonce (2: WP-ZEP)
+				if ( 2 & (int)$settings['validation'][ $type ] )
+					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 
-			// register validation of malicious signature
-			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
+				// register validation of malicious signature
+				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
-			// validate country by IP address (1: Block by country)
-			$validate = $this->validate_ip( 'admin', $settings, 1 & (int)$settings['validation'][ $type ] );
+				// validate country by IP address (1: Block by country)
+				$validate = $this->validate_ip( 'admin', $settings, 1 & (int)$settings['validation'][ $type ] );
 
-			// if the validation is successful, execute the requested uri via rewrite.php
-			if ( class_exists( 'IP_Geo_Block_Rewrite' ) )
-				IP_Geo_Block_Rewrite::exec( $validate, $settings );
+				// if the validation is successful, execute the requested uri via rewrite.php
+				if ( class_exists( 'IP_Geo_Block_Rewrite' ) )
+					IP_Geo_Block_Rewrite::exec( $validate, $settings );
+			}
 		}
 	}
 

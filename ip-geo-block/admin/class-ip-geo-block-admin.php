@@ -551,7 +551,7 @@ class IP_Geo_Block_Admin {
 			$output['validation'][ $key ] = 0;
 
 		// restore the 'signature' that might be transformed to avoid self blocking
-		$input['signature'] = str_rot13( $input['signature'] );
+		$input['signature'] = base64_decode( $input['signature'] ); //str_rot13()
 
 		/**
 		 * Sanitize a string from user input
@@ -647,6 +647,12 @@ class IP_Geo_Block_Admin {
 						$output[ $key ][ $sub ] = ! empty( $input[ $key ][ $sub ] );
 					}
 
+					// for array
+					elseif ( is_array( $default[ $key ][ $sub ] ) ) {
+						$output[ $key ][ $sub ] = empty( $input[ $key ][ $sub ] ) ?
+							array() : $input[ $key ][ $sub ];
+					}
+
 					// otherwise if implicit
 					elseif ( isset( $input[ $key ][ $sub ] ) ) {
 						// for checkboxes
@@ -688,7 +694,7 @@ class IP_Geo_Block_Admin {
 		$key = array();
 		foreach ( explode( ',', $output['signature'] ) as $val ) {
 			$val = trim( $val );
-			if ( FALSE === strpos( IP_Geo_Block::$wp_dirs['admin'], $val ) )
+			if ( $val && FALSE === strpos( IP_Geo_Block::$wp_dirs['admin'], $val ) )
 				$key[] = $val;
 		}
 		$output['signature'] = implode( ',', $key );

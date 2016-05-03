@@ -2,6 +2,9 @@
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+if ( ! function_exists( 'get_plugins' ) ) {
+	require_once ABSPATH . 'wp-admin/includes/plugin.php';
+}
 
 class IP_Geo_Block_Admin_Tab {
 
@@ -429,6 +432,22 @@ class IP_Geo_Block_Admin_Tab {
 		// Set rewrite condition
 		$options['rewrite'] = IP_Geo_Block_Admin_Rewrite::check_rewrite_all();
 
+		// List of installed plugins
+		$exception = "\n<ul class='ip_geo_block_settings_exception ip-geo-block-dropup'>" . __( '<dfn title="xxx">Exceptions</dfn>', IP_Geo_Block::TEXT_DOMAIN ) . "<li style='display:none'><ul>\n";
+		$installed = get_plugins();
+		unset( $installed['hello.php'] );
+		unset( $installed['ip-geo-block/ip-geo-block.php'] );
+		foreach ( $installed as $key => $val ) {
+			$key = esc_attr( dirname( $key ) );
+			if ( $key ) {
+				$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_plugins_' . $key . '"'
+				           .  ' name="ip_geo_block_settings[exception][plugins][' . $key . ']"'
+				           .  ' value="1" ' . checked( isset( $options['exception']['plugins'][ $key ] ), TRUE, FALSE ) . ' />'
+				           .  '<label for="ip_geo_block_settings_exception_plugins_' . $key . '">' . esc_attr( $val['Name'] ) . "</label></li>\n";
+			}
+		}
+		$exception .= "</ul>\n";
+
 		// Plugins area
 		$key = 'plugins';
 		$val = esc_html( substr( IP_Geo_Block::$wp_dirs[ $key ], 1 ) );
@@ -458,9 +477,21 @@ class IP_Geo_Block_Admin_Tab {
 					2 => sprintf( $desc[0], $val ),
 				),
 				'before' => $tmp,
-				'after' => '<div class="ip-geo-block-desc"></div>',
+				'after' => '<div class="ip-geo-block-desc"></div>' . $exception,
 			)
 		);
+
+		// List of installed themes
+		$exception = "\n<ul class='ip_geo_block_settings_exception ip-geo-block-dropup'>" . __( '<dfn title="xxx">Exceptions</dfn>', IP_Geo_Block::TEXT_DOMAIN ) . "<li style='display:none'><ul>\n";
+		$installed = wp_get_themes( NULL );
+		foreach ( $installed as $key => $val ) {
+			$key = esc_attr( $key );
+			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_themes_' . $key . '"'
+			           .  ' name="ip_geo_block_settings[exception][themes][' . $key . ']"'
+			           .  ' value="1" ' . checked( isset( $options['exception']['themes'][ $key ] ), TRUE, FALSE ) . ' />'
+			           .  '<label for="ip_geo_block_settings_exception_themes_' . $key . '">' . esc_attr( (string)$val ) . "</label></li>\n";
+		}
+		$exception .= "</ul></li></ul>\n";
 
 		// Themes area
 		$key = 'themes';
@@ -491,7 +522,7 @@ class IP_Geo_Block_Admin_Tab {
 					2 => sprintf( $desc[0], $val ),
 				),
 				'before' => $tmp,
-				'after' => '<div class="ip-geo-block-desc"></div>',
+				'after' => '<div class="ip-geo-block-desc"></div>' . $exception,
 			)
 		);
 

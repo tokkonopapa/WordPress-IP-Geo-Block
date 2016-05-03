@@ -59,9 +59,10 @@ class IP_Geo_Block_Admin_Rewrite {
 		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
 		$this->site_uri = untrailingslashit( parse_url( network_site_url(), PHP_URL_PATH ) );
-		$tmp =            untrailingslashit( parse_url( site_url(),         PHP_URL_PATH ) );
+		$tmp = strlen(    untrailingslashit( parse_url( site_url(),         PHP_URL_PATH ) ) );
+
 		$this->wp_dirs = array(
-			'plugins' => trailingslashit( substr( parse_url( plugins_url(),        PHP_URL_PATH ), $tmp = strlen( $tmp ) ) ),
+			'plugins' => trailingslashit( substr( parse_url( plugins_url(),        PHP_URL_PATH ), $tmp ) ),
 			'themes'  => trailingslashit( substr( parse_url( get_theme_root_uri(), PHP_URL_PATH ), $tmp ) ),
 		);
 	}
@@ -169,7 +170,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * @param string 'plugins' or 'themes'
 	 * @return bool TRUE or FALSE
 	 */
-	private function check_rewrite_rule( $which ) {
+	private function get_rewrite_stat( $which ) {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
 
 		if ( $is_apache ) {
@@ -288,7 +289,7 @@ class IP_Geo_Block_Admin_Rewrite {
 		$rewrite = self::get_instance();
 
 		foreach ( array( 'plugins', 'themes' ) as $key ) {
-			$status[ $key ] = $rewrite->check_rewrite_rule( $key );
+			$status[ $key ] = $rewrite->get_rewrite_stat( $key );
 		}
 
 		return $status;
@@ -306,7 +307,6 @@ class IP_Geo_Block_Admin_Rewrite {
 				$options[ $key ] = $rewrite->del_rewrite_rule( $key ) ? FALSE : TRUE;
 			else
 				$options[ $key ] = $rewrite->add_rewrite_rule( $key ) ? TRUE : FALSE;
-
 		}
 
 		return $options;

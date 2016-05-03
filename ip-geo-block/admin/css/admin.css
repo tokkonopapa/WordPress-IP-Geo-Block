@@ -34,13 +34,19 @@ fieldset.ip-geo-block-field .ip-geo-block-dropdown:before {
 }
 fieldset.ip-geo-block-field .ip-geo-block-dropup:before {
     border-left: 0.4em solid #555;
-    top: 15%;
     left: 3px;
+    top: 15%;
 }
 fieldset.ip-geo-block-field .ip-geo-block-dropdown:before {
     border-top: 0.4em solid #555;
-    top: 35%;
     left: 0;
+    top: 35%;
+}
+fieldset.ip-geo-block-field ul.ip-geo-block-dropup:before {
+    top: 0.25em;
+}
+fieldset.ip-geo-block-field ul.ip-geo-block-dropdown:before {
+    top: 0.45em;
 }
 fieldset.ip-geo-block-field .form-table {
     margin: 0.5em 0 0;
@@ -48,6 +54,21 @@ fieldset.ip-geo-block-field .form-table {
 
 textarea.regular-text {
     width: 25em;
+}
+
+ul.ip_geo_block_settings_exception {
+    margin-top: 0.5em;
+}
+ul.ip_geo_block_settings_exception,
+ul.ip_geo_block_settings_exception ul {
+    margin-bottom: 0;
+}
+ul.ip_geo_block_settings_exception li:first-child {
+    margin-top: 0.4em;
+}
+.disable-events {
+    pointer-events: none;
+    opacity: 0.4;
 }
 
 .ip-geo-block-sup {
