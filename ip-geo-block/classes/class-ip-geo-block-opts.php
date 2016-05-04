@@ -168,26 +168,27 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $settings['version'], '2.2.3' ) < 0 )
 				$settings['api_dir'] = $default[ $key[0] ]['api_dir'];
 
-			if ( version_compare( $settings['version'], '2.2.6' ) < 0 ) {
+			if ( version_compare( $settings['version'], '2.2.5' ) < 0 ) {
 				$settings['exception'] = $default[ $key[0] ]['exception'];
 
-				// https://wordpress.org/support/topic/compatibility-with-ag-custom-admin
-				$sig = array();
+				$arr = array();
 				foreach ( explode( ',', $settings['signature'] ) as $tmp ) {
 					$tmp = trim( $tmp );
 
+					// https://wordpress.org/support/topic/compatibility-with-ag-custom-admin
 					if ( 0 === strpos( $tmp, 'wp-config.php' ) ||
 					     0 === strpos( $tmp, 'passwd'        ) )
 						$tmp = '/' . $tmp;
 
-					array_push( $sig, $tmp );
+					array_push( $arr, $tmp );
 				}
 
 				// add others
-				array_unshift( $sig, '..' ); // directory traversal
-				array_push( $sig, '/tmp', 'wget' );
+				! in_array( '..',   $arr, TRUE ) and array_unshift( $arr, '..' ); // directory traversal
+				! in_array( '/tmp', $arr, TRUE ) and array_push( $arr, '/tmp'  ); // cd( '/tmp' )
+				! in_array( 'wget', $arr, TRUE ) and array_push( $arr, 'wget'  ); // wget http://...
 
-				$settings['signature'] = implode( ',', $sig );
+				$settings['signature'] = implode( ',', $arr );
 			}
 
 			// save package version number

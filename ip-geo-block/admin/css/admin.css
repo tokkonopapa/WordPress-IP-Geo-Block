@@ -64,7 +64,7 @@ ul.ip_geo_block_settings_exception ul {
     margin-bottom: 0;
 }
 ul.ip_geo_block_settings_exception li:first-child {
-    margin-top: 0.5em;
+    margin-top: 0.6em;
 }
 .disable-events {
     pointer-events: none;

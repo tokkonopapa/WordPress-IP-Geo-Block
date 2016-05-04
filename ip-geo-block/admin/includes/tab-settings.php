@@ -437,10 +437,10 @@ class IP_Geo_Block_Admin_Tab {
 		$exception = "\n<ul class='ip_geo_block_settings_exception ip-geo-block-dropup'>" . $desc[2] . "<li style='display:none'><ul>\n";
 		$installed = get_plugins(); // @since 1.5.0
 		$activated = get_site_option( 'active_sitewide_plugins' ); // @since 2.8.0
-		$activated = is_array( $activated ) ? $activated : array();
+		! is_array( $activated ) and $activated = array();
 		$activated = array_keys( $activated );
 		$activated = array_merge( $activated, get_option( 'active_plugins' ) );
-		unset( $installed[ IP_GEO_BLOCK_BASE ] );
+		unset( $installed[ IP_GEO_BLOCK_BASE ] ); // exclude myself
 
 		// Make a list of installed plugins
 		foreach ( $installed as $key => $val ) {
@@ -451,7 +451,7 @@ class IP_Geo_Block_Admin_Tab {
 				. ' name="ip_geo_block_settings[exception][plugins][' . $key . ']"'
 				. ' value="1" ' . checked( isset( $options['exception']['plugins'][ $key ] ), TRUE, FALSE ) . ' />'
 				. '<label for="ip_geo_block_settings_exception_plugins_' . $key . '">'
-				. ($active ? '* ' : '') . esc_attr( $val['Name'] ) . "</label></li>\n";
+				. ($active ? '* ' : '') . esc_html( $val['Name'] ) . "</label></li>\n";
 		}
 		$exception .= "</ul>\n";
 
@@ -502,7 +502,7 @@ class IP_Geo_Block_Admin_Tab {
 				. ' name="ip_geo_block_settings[exception][themes][' . $key . ']"'
 				. ' value="1" ' . checked( isset( $options['exception']['themes'][ $key ] ), TRUE, FALSE ) . ' />'
 				. '<label for="ip_geo_block_settings_exception_themes_' . $key . '">'
-				. ($active ? '* ' : '') . esc_attr( $val ) . "</label></li>\n";
+				. ($active ? '* ' : '') . esc_html( $val ) . "</label></li>\n";
 		}
 		$exception .= "</ul></li></ul>\n";
 

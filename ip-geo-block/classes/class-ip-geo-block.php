@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.5';
+	const VERSION = '2.2.5b';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
@@ -581,11 +581,11 @@ class IP_Geo_Block {
 		$plugins = preg_quote( self::$wp_dirs['plugins'], '/' );
 		$themes  = preg_quote( self::$wp_dirs['themes' ], '/' );
 
-		if ( preg_match( "/(?:($plugins)|($themes))([^\/]*)\//", $this->request_uri, $matches ) ) {
+		if ( preg_match( "/(?:($plugins)|($themes))([^\/]*)\/?/", $this->request_uri, $matches ) ) {
 			// list of plugins/themes to bypass WP-ZEP
 			$settings = self::get_option( 'settings' );
 			$type = empty( $matches[2] ) ? 'plugins' : 'themes';
-			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-${type}", $settings['exception'][ $type ] );
+			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-${type}", array_keys( $settings['exception'][ $type ] ) );
 
 			if ( ! in_array( $matches[3], $list, TRUE ) ) {
 				// register validation of nonce (2: WP-ZEP)

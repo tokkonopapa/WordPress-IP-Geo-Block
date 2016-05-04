@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.5
-Stable tag: 2.2.5
+Stable tag: 2.2.5b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -434,16 +434,21 @@ For more details, see
 
 == Changelog ==
 
-= 2.2.5 =
-* **Improvement:** Change the name of option "Important files" to 
-  "Bad signatures in query" to avoid misuse.
-* **Improvement:** Multisite support in uninstall function which removes all 
-  the option tables on clean uninstallation.
-* **Bug fix:** Stop to use `parse_url()` because of 
+= 2.2.5b =
+* **New feature:** Now you can specify pliugins/themes on the settings page 
+  without embedding any codes into `functions.php` in order to exclude from 
+  the validation target.
+* **Improvement:** Optimize resource loading on admin dashboard.
+* **Bug fix:** Fixed the issue of 
+  [@](https://wordpress.org/support/topic/compatibility-with-ag-custom-admin "WordPress › Support » Compatibility with AG Custom Admin")
+  and change the name of option "Important files" to "Bad signatures in query" 
+  to avoid misuse.
+* **Bug fix:** Support network / multisite.
+* **Bug fix:** Support FORCE_SSL_ADMIN.
+* **Bug fix:** Stop using `parse_url()` to analyze requested uri because of 
   [this bug](https://bugs.php.net/bug.php?id=55511).
-* **Bug fix:** FORCE_SSL_ADMIN support.
 * **Bug fix:** Multiple verification before saving settings into datbase to 
-  solve the issue
+  solve the issue of 
   [@](https://wordpress.org/support/topic/gb-added-to-whitelist "WordPress › Support » GB added to whitelist")
   which might be caused by some race condition.
 
