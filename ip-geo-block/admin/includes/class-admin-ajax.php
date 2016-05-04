@@ -259,7 +259,7 @@ class IP_Geo_Block_Admin_Ajax {
 				    'plugins'     => 2,       // Validate on wp-content/plugins
 				    'themes'      => 2,       // Validate on wp-content/themes
 				),
-				'signature'       => 'wp-config.php,passwd', // malicious signature
+				'signature'       => '..,/wp-config.php,/passwd,/tmp,wget select:0.5,where:0.5,insert:0.5,update:0.5,union:0.5', // malicious signature
 				'rewrite'         => array(   // Apply rewrite rule
 				    'plugins'     => TRUE,    // for wp-content/plugins
 				    'themes'      => TRUE,    // for wp-content/themes

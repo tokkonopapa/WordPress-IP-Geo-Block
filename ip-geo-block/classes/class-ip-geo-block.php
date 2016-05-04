@@ -164,32 +164,36 @@ class IP_Geo_Block {
 		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
 	}
 
+	// Delete settings options, IP address cache, log
+	private static function delete_all_options( $settings ) {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+
+		delete_option( self::$option_keys['settings'] ); // @since 1.2.0
+		delete_transient( self::CACHE_KEY ); // @since 2.8
+		IP_Geo_Block_Logs::delete_tables();
+		IP_Geo_Block_Opts::delete_api( $settings );
+	}
+
 	/**
 	 * Delete options from database when the plugin is uninstalled.
 	 *
 	 */
 	public static function uninstall() {
 		$settings = self::get_option( 'settings' );
-
 		if ( $settings['clean_uninstall'] ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-
-			global $wpdb;
-			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
-			$current_blog_id = get_current_blog_id();
-
-			foreach ( $blog_ids as $id ) {
-				switch_to_blog( $id );
-
-				// delete settings options, IP address cache, log
-				delete_option( self::$option_keys['settings'] ); // @since 1.2.0
-				delete_transient( self::CACHE_KEY ); // @since 2.8
-				IP_Geo_Block_Logs::delete_tables();
-				IP_Geo_Block_Opts::delete_api( $settings );
+			if ( ! is_multisite() ) {
+				IP_Geo_Block::delete_all_options( $settings );
+			} else {
+				global $wpdb;
+				$blog_ids = $wpdb->get_col( "SELECT blog_id FROM " . $wpdb->blogs );
+				$current_blog_id = get_current_blog_id();
+				foreach ( $blog_ids as $id ) {
+					switch_to_blog( $id );
+					IP_Geo_Block::delete_all_options( $settings );
+				}
+				switch_to_blog( $current_blog_id );
 			}
-
-			switch_to_blog( $current_blog_id );
 		}
 	}
 

@@ -439,12 +439,12 @@ For more details, see
   without embedding any codes into `functions.php` in order to exclude from 
   the validation target.
 * **Improvement:** Optimize resource loading on admin dashboard.
+* **Improvement:** Support clean uninstall for network / multisite.
+* **Bug fix:** Support FORCE_SSL_ADMIN.
 * **Bug fix:** Fixed the issue of 
   [@](https://wordpress.org/support/topic/compatibility-with-ag-custom-admin "WordPress › Support » Compatibility with AG Custom Admin")
   and change the name of option "Important files" to "Bad signatures in query" 
   to avoid misuse.
-* **Bug fix:** Support network / multisite.
-* **Bug fix:** Support FORCE_SSL_ADMIN.
 * **Bug fix:** Stop using `parse_url()` to analyze requested uri because of 
   [this bug](https://bugs.php.net/bug.php?id=55511).
 * **Bug fix:** Multiple verification before saving settings into datbase to 

@@ -434,26 +434,25 @@ class IP_Geo_Block_Admin_Tab {
 		$options['rewrite'] = IP_Geo_Block_Admin_Rewrite::check_rewrite_all();
 
 		// Get all the plugins
-		$exception = "\n<ul class='ip_geo_block_settings_exception ip-geo-block-dropup'>" . $desc[2] . "<li style='display:none'><ul>\n";
+		$exception = '<ul class="ip_geo_block_settings_exception ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n";
 		$installed = get_plugins(); // @since 1.5.0
+		unset( $installed[ IP_GEO_BLOCK_BASE ] ); // exclude myself
+
 		$activated = get_site_option( 'active_sitewide_plugins' ); // @since 2.8.0
 		! is_array( $activated ) and $activated = array();
-		$activated = array_keys( $activated );
-		$activated = array_merge( $activated, get_option( 'active_plugins' ) );
-		unset( $installed[ IP_GEO_BLOCK_BASE ] ); // exclude myself
+		$activated = array_merge( $activated, array_fill_keys( get_option( 'active_plugins' ), TRUE ) );
 
 		// Make a list of installed plugins
 		foreach ( $installed as $key => $val ) {
-			$active = in_array( $key, $activated, TRUE );
+			$active = isset( $activated[ $key ] );
 			$key = explode( '/', $key, 2 );
 			$key = esc_attr( $key[0] );
-			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_plugins_' . $key . '"'
-				. ' name="ip_geo_block_settings[exception][plugins][' . $key . ']"'
-				. ' value="1" ' . checked( isset( $options['exception']['plugins'][ $key ] ), TRUE, FALSE ) . ' />'
-				. '<label for="ip_geo_block_settings_exception_plugins_' . $key . '">'
+			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_plugins_' . $key
+				. '" name="ip_geo_block_settings[exception][plugins][' . $key
+				. ']" value="1"' . checked( isset( $options['exception']['plugins'][ $key ] ), TRUE, FALSE )
+				. ' /><label for="ip_geo_block_settings_exception_plugins_' . $key . '">'
 				. ($active ? '* ' : '') . esc_html( $val['Name'] ) . "</label></li>\n";
 		}
-		$exception .= "</ul>\n";
 
 		// Plugins area
 		$key = 'plugins';
@@ -484,27 +483,26 @@ class IP_Geo_Block_Admin_Tab {
 					2 => sprintf( $desc[0], $val ),
 				),
 				'before' => $tmp,
-				'after' => '<div class="ip-geo-block-desc"></div>' . $exception,
+				'after' => '<div class="ip-geo-block-desc"></div>' . "\n" . $exception . "</ul></li></ul>\n",
 			)
 		);
 
 		// Get all the themes
-		$exception = "\n<ul class='ip_geo_block_settings_exception ip-geo-block-dropup'>" . $desc[2] . "<li style='display:none'><ul>\n";
+		$exception = '<ul class="ip_geo_block_settings_exception ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n";
 		$installed = wp_get_themes( NULL ); // @since 3.4.0
 		$activated = wp_get_theme(); // @since 3.4.0
+		$activated = $activated->get( 'Name' );
 
 		// List of installed themes
 		foreach ( $installed as $key => $val ) {
 			$key = esc_attr( $key );
-			$val = $val->get( 'Name' );
-			$active = ( $val === $activated->get( 'Name' ) );
-			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_themes_' . $key . '"'
-				. ' name="ip_geo_block_settings[exception][themes][' . $key . ']"'
-				. ' value="1" ' . checked( isset( $options['exception']['themes'][ $key ] ), TRUE, FALSE ) . ' />'
-				. '<label for="ip_geo_block_settings_exception_themes_' . $key . '">'
+			$active = ( ( $val = $val->get( 'Name' ) ) === $activated );
+			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_themes_' . $key
+				. '" name="ip_geo_block_settings[exception][themes][' . $key
+				. ']" value="1"' . checked( isset( $options['exception']['themes'][ $key ] ), TRUE, FALSE )
+				. ' /><label for="ip_geo_block_settings_exception_themes_' . $key . '">'
 				. ($active ? '* ' : '') . esc_html( $val ) . "</label></li>\n";
 		}
-		$exception .= "</ul></li></ul>\n";
 
 		// Themes area
 		$key = 'themes';
@@ -535,7 +533,7 @@ class IP_Geo_Block_Admin_Tab {
 					2 => sprintf( $desc[0], $val ),
 				),
 				'before' => $tmp,
-				'after' => '<div class="ip-geo-block-desc"></div>' . $exception,
+				'after' => '<div class="ip-geo-block-desc"></div>' . "\n" . $exception . "</ul></li></ul>\n",
 			)
 		);
 
