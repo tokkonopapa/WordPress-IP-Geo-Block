@@ -427,24 +427,31 @@ class IP_Geo_Block_Admin_Tab {
 		$desc = array(
 			__( 'Regardless of the country code, it will block a malicious request to <code>%s&hellip;/*.php</code>.', IP_Geo_Block::TEXT_DOMAIN ),
 			__( 'It configures &#8220%s&#8221 to validate a request to the PHP file which does not load WordPress core.', IP_Geo_Block::TEXT_DOMAIN ),
+			__( '<dfn title="Select the item which would cause undesired blocking in order to exclude it from the validation target. The &#8220;*&#8221; indicates &#8220;active&#8221;.">Exceptions</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		);
 
 		// Set rewrite condition
 		$options['rewrite'] = IP_Geo_Block_Admin_Rewrite::check_rewrite_all();
 
-		// List of installed plugins
-		$exception = "\n<ul class='ip_geo_block_settings_exception ip-geo-block-dropup'>" . __( '<dfn title="xxx">Exceptions</dfn>', IP_Geo_Block::TEXT_DOMAIN ) . "<li style='display:none'><ul>\n";
-		$installed = get_plugins();
-		unset( $installed['hello.php'] );
-		unset( $installed['ip-geo-block/ip-geo-block.php'] );
+		// Get all the plugins
+		$exception = "\n<ul class='ip_geo_block_settings_exception ip-geo-block-dropup'>" . $desc[2] . "<li style='display:none'><ul>\n";
+		$installed = get_plugins(); // @since 1.5.0
+		$activated = get_site_option( 'active_sitewide_plugins' ); // @since 2.8.0
+		$activated = is_array( $activated ) ? $activated : array();
+		$activated = array_keys( $activated );
+		$activated = array_merge( $activated, get_option( 'active_plugins' ) );
+		unset( $installed[ IP_GEO_BLOCK_BASE ] );
+
+		// Make a list of installed plugins
 		foreach ( $installed as $key => $val ) {
-			$key = esc_attr( dirname( $key ) );
-			if ( $key ) {
-				$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_plugins_' . $key . '"'
-				           .  ' name="ip_geo_block_settings[exception][plugins][' . $key . ']"'
-				           .  ' value="1" ' . checked( isset( $options['exception']['plugins'][ $key ] ), TRUE, FALSE ) . ' />'
-				           .  '<label for="ip_geo_block_settings_exception_plugins_' . $key . '">' . esc_attr( $val['Name'] ) . "</label></li>\n";
-			}
+			$active = in_array( $key, $activated, TRUE );
+			$key = explode( '/', $key, 2 );
+			$key = esc_attr( $key[0] );
+			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_plugins_' . $key . '"'
+				. ' name="ip_geo_block_settings[exception][plugins][' . $key . ']"'
+				. ' value="1" ' . checked( isset( $options['exception']['plugins'][ $key ] ), TRUE, FALSE ) . ' />'
+				. '<label for="ip_geo_block_settings_exception_plugins_' . $key . '">'
+				. ($active ? '* ' : '') . esc_attr( $val['Name'] ) . "</label></li>\n";
 		}
 		$exception .= "</ul>\n";
 
@@ -481,15 +488,21 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+		// Get all the themes
+		$exception = "\n<ul class='ip_geo_block_settings_exception ip-geo-block-dropup'>" . $desc[2] . "<li style='display:none'><ul>\n";
+		$installed = wp_get_themes( NULL ); // @since 3.4.0
+		$activated = wp_get_theme(); // @since 3.4.0
+
 		// List of installed themes
-		$exception = "\n<ul class='ip_geo_block_settings_exception ip-geo-block-dropup'>" . __( '<dfn title="xxx">Exceptions</dfn>', IP_Geo_Block::TEXT_DOMAIN ) . "<li style='display:none'><ul>\n";
-		$installed = wp_get_themes( NULL );
 		foreach ( $installed as $key => $val ) {
 			$key = esc_attr( $key );
+			$val = $val->get( 'Name' );
+			$active = ( $val === $activated->get( 'Name' ) );
 			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_themes_' . $key . '"'
-			           .  ' name="ip_geo_block_settings[exception][themes][' . $key . ']"'
-			           .  ' value="1" ' . checked( isset( $options['exception']['themes'][ $key ] ), TRUE, FALSE ) . ' />'
-			           .  '<label for="ip_geo_block_settings_exception_themes_' . $key . '">' . esc_attr( (string)$val ) . "</label></li>\n";
+				. ' name="ip_geo_block_settings[exception][themes][' . $key . ']"'
+				. ' value="1" ' . checked( isset( $options['exception']['themes'][ $key ] ), TRUE, FALSE ) . ' />'
+				. '<label for="ip_geo_block_settings_exception_themes_' . $key . '">'
+				. ($active ? '* ' : '') . esc_attr( $val ) . "</label></li>\n";
 		}
 		$exception .= "</ul></li></ul>\n";
 
@@ -577,6 +590,7 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug
 		);
 
+		// Local DBs for each API
 		foreach ( $providers as $provider ) {
 			if ( $geo = IP_Geo_Block_API::get_instance( $provider, NULL ) ) {
 				$geo->add_settings_field(

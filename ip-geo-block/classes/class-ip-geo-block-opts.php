@@ -185,7 +185,7 @@ class IP_Geo_Block_Opts {
 
 				// add others
 				array_unshift( $sig, '..' ); // directory traversal
-				array_push( $sig, array( '/tmp', 'wget' ) );
+				array_push( $sig, '/tmp', 'wget' );
 
 				$settings['signature'] = implode( ',', $sig );
 			}

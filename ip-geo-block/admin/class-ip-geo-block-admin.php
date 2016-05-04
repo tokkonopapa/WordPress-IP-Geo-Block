@@ -46,7 +46,7 @@ class IP_Geo_Block_Admin {
 		add_filter( 'wp_redirect', array( $this, 'add_admin_nonce' ), 10, 2 );
 
 		// Add the options page and menu item.
-		add_action( 'admin_menu', array( $this, 'setup_admin_screen' ) );
+		add_action( 'admin_menu', array( $this, 'setup_admin_page' ) );
 		add_action( 'wp_ajax_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
 		add_action( 'admin_post_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
 
@@ -237,7 +237,7 @@ class IP_Geo_Block_Admin {
 	 * Register the administration menu into the WordPress Dashboard menu.
 	 *
 	 */
-	private function add_plugin_admin_menu() {
+	private function add_plugin_admin_page() {
 		// Add a settings page for this plugin to the Settings menu.
 		$hook = add_options_page(
 			__( 'IP Geo Block', IP_Geo_Block::TEXT_DOMAIN ),
@@ -321,20 +321,26 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Setup the options page and menu item.
+	 * Setup menu and option page for this plugin
 	 *
 	 */
-	public function setup_admin_screen() {
+	public function setup_admin_page() {
 		$this->diagnose_admin_screen();
-		$this->add_plugin_admin_menu();
-		$this->register_settings_tab();
+		$this->add_plugin_admin_page();
+
+		// Register settings page only if it is needed
+		if ( ( isset( $_GET['page'] ) && IP_Geo_Block::PLUGIN_SLUG === $_GET['page'] ) ||
+		     ( isset( $GLOBALS['pagenow'] ) && 'options.php' === $GLOBALS['pagenow'] ) )
+			$this->register_settings_tab();
 
 		// Add an action link pointing to the options page. @since 2.7
-		add_action( 'admin_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ) );
-		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
-		add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
+		else {
+			add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
+			add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
+		}
 
-		// Register admin notice
+		// Register scripts and admin notice
+		add_action( 'admin_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ) );
 		add_action( 'admin_notices', array( $this, 'show_admin_notices' ) );
 	}
 
