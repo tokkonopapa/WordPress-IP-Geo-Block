@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.5
-Stable tag: 2.2.5b
+Stable tag: 2.2.5b1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -434,21 +434,18 @@ For more details, see
 
 == Changelog ==
 
-= 2.2.5b =
+= 2.2.5b1 =
 * **New feature:** Now you can specify pliugins/themes on the settings page 
   without embedding any codes into `functions.php` in order to exclude from 
   the validation target.
 * **Improvement:** Optimize resource loading on admin dashboard.
 * **Improvement:** Support clean uninstall for network / multisite.
 * **Bug fix:** Support FORCE_SSL_ADMIN.
-* **Bug fix:** Fixed the issue of 
+* **Bug fix:** Fix the issue of 
   [@](https://wordpress.org/support/topic/compatibility-with-ag-custom-admin "WordPress › Support » Compatibility with AG Custom Admin")
   and change the name of option "Important files" to "Bad signatures in query" 
   to avoid misuse.
-* **Bug fix:** Stop using `parse_url()` to analyze requested uri because of 
-  [this bug](https://bugs.php.net/bug.php?id=55511).
-* **Bug fix:** Multiple verification before saving settings into datbase to 
-  solve the issue of 
+* **Bug fix:** Completely fix the issue of 
   [@](https://wordpress.org/support/topic/gb-added-to-whitelist "WordPress › Support » GB added to whitelist")
   which might be caused by some race condition.
 

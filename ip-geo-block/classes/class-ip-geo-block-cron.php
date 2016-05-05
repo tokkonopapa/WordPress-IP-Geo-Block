@@ -63,6 +63,8 @@ class IP_Geo_Block_Cron {
 
 		// update matching rule immediately
 		if ( $immediate && FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
+			add_filter( IP_Geo_Block::PLUGIN_SLUG . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
+
 			$validate = IP_Geo_Block::get_geolocation( NULL, $providers );
 			$validate = IP_Geo_Block::validate_country( $validate, $settings );
 
@@ -88,11 +90,21 @@ class IP_Geo_Block_Cron {
 	}
 
 	/**
+	 * Extract ip address from transient API.
+	 *
+	 */
+	public static function extract_ip() {
+		return filter_var(
+			$ip_adrs = get_transient( IP_Geo_Block::CRON_NAME ), FILTER_VALIDATE_IP
+		) ? $ip_adrs : $_SERVER['REMOTE_ADDR'];
+	}
+
+	/**
 	 * Kick off a cron job to download database immediately
 	 *
 	 */
-	public static function spawn_job( $immediate = TRUE ) {
-		set_transient( IP_Geo_Block::CRON_NAME, 'start', 2 * MINUTE_IN_SECONDS );
+	public static function spawn_job( $immediate = TRUE, $ip_adrs ) {
+		set_transient( IP_Geo_Block::CRON_NAME, $ip_adrs, 2 * MINUTE_IN_SECONDS );
 		$settings = IP_Geo_Block::get_option( 'settings' );
 		self::schedule_cron_job( $settings['update'], NULL, $immediate );
 	}

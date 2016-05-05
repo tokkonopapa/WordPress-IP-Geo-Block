@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.5b';
+	const VERSION = '2.2.5b1';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
@@ -143,7 +143,7 @@ class IP_Geo_Block {
 			$settings = IP_Geo_Block_Opts::upgrade();
 
 			// kick off a cron job to download database immediately
-			IP_Geo_Block_Cron::spawn_job( TRUE );
+			IP_Geo_Block_Cron::spawn_job( TRUE, self::get_ip_address() );
 
 			// activate rewrite rules
 			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
@@ -673,7 +673,7 @@ class IP_Geo_Block {
 
 			if ( ( $sig = trim( $val[0] ) ) && FALSE !== strpos( $request, $sig ) ) {
 				$score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] );
-				if ( $score > 0.9 )
+				if ( $score > 0.99 )
 					return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
 			}
 		}
@@ -737,13 +737,7 @@ class IP_Geo_Block {
 		$ip = $validate['ip'];
 		$ips = $settings['extra_ips'][ $which ? 'black_list' : 'white_list' ];
 
-		if ( FALSE === strpos( $ips, '/' ) ) {
-			if ( FALSE !== strpos( $ips, $ip ) )
-				// can't overwrite existing result
-				return $validate + array( 'result' => $which ? 'extra' : 'passed' );
-		}
-
-		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
 			foreach ( $this->multiexplode( array( ',', ' ' ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
