@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "WP-ZEP blocked out backdoor scan"
+title: "WP-ZEP blocks out backdoor scan"
 date: 2016-04-20 00:00:00
 categories: article
 published: true
