@@ -533,23 +533,23 @@ class IP_Geo_Block {
 		  case 'admin-ajax.php':
 			// if the request has an action for no privilege user, skip WP-ZEP
 			$zep = ! has_action( 'wp_ajax_nopriv_'.$action );
-			$type = 'ajax';
+			$type = (int)$settings['validation']['ajax'];
 			break;
 
 		  case 'admin-post.php':
 			// if the request has an action for no privilege user, skip WP-ZEP
 			$zep = ! has_action( 'admin_post_nopriv' . ($action ? '_'.$action : '') );
-			$type = 'ajax';
+			$type = (int)$settings['validation']['ajax'];
 			break;
 
 		  default:
 			// if the request has no page and no action, skip WP-ZEP
 			$zep = ( $page || $action ) ? TRUE : FALSE;
-			$type = 'admin';
+			$type = (int)$settings['validation']['admin'];
 		}
 
 		// setup WP-ZEP (2: WP-ZEP)
-		if ( ( 2 & (int)$settings['validation'][ $type ] ) && $zep ) {
+		if ( ( 2 & $type ) && $zep ) {
 			// redirect if valid nonce in referer
 			$this->trace_nonce();
 
@@ -573,7 +573,7 @@ class IP_Geo_Block {
 			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
-		$this->validate_ip( 'admin', $settings, 1 & (int)$settings['validation'][ $type ] );
+		$this->validate_ip( 'admin', $settings, 1 & $type );
 	}
 
 	/**
@@ -581,31 +581,34 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_direct() {
+		$settings = self::get_option( 'settings' );
+		$type = 3; // default (1: Block by country, 2: WP-ZEP)
+
 		// retrieve the name of plugins/themes
 		$plugins = preg_quote( self::$wp_dirs['plugins'], '/' );
 		$themes  = preg_quote( self::$wp_dirs['themes' ], '/' );
 
 		if ( preg_match( "/(?:($plugins)|($themes))([^\/]*)\/?/", $this->request_uri, $matches ) ) {
 			// list of plugins/themes to bypass WP-ZEP
-			$settings = self::get_option( 'settings' );
 			$type = empty( $matches[2] ) ? 'plugins' : 'themes';
-			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-${type}", array_keys( $settings['exception'][ $type ] ) );
+			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", array_keys( $settings['exception'][ $type ] ) );
+			$type = in_array( $matches[3], $list, TRUE ) ? 0 : (int)$settings['validation'][ $type ];
+		}
 
-			if ( ! in_array( $matches[3], $list, TRUE ) ) {
-				// register validation of nonce (2: WP-ZEP)
-				if ( 2 & (int)$settings['validation'][ $type ] )
-					add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
+		if ( $type ) {
+			// register validation of nonce (2: WP-ZEP)
+			if ( 2 & $type )
+				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 
-				// register validation of malicious signature
-				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
+			// register validation of malicious signature
+			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
-				// validate country by IP address (1: Block by country)
-				$validate = $this->validate_ip( 'admin', $settings, 1 & (int)$settings['validation'][ $type ] );
+			// validate country by IP address (1: Block by country)
+			$validate = $this->validate_ip( 'admin', $settings, 1 & $type );
 
-				// if the validation is successful, execute the requested uri via rewrite.php
-				if ( class_exists( 'IP_Geo_Block_Rewrite' ) )
-					IP_Geo_Block_Rewrite::exec( $validate, $settings );
-			}
+			// if the validation is successful, execute the requested uri via rewrite.php
+			if ( class_exists( 'IP_Geo_Block_Rewrite' ) )
+				IP_Geo_Block_Rewrite::exec( $validate, $settings );
 		}
 	}
 
@@ -672,8 +675,7 @@ class IP_Geo_Block {
 			$val = explode( ':', $sig, 2 );
 
 			if ( ( $sig = trim( $val[0] ) ) && FALSE !== strpos( $request, $sig ) ) {
-				$score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] );
-				if ( $score > 0.99 )
+				if ( ( $score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] ) ) > 0.99 )
 					return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
 			}
 		}
