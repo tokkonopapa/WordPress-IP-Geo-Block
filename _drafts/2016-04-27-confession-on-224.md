@@ -105,7 +105,7 @@ development environment on my local PC as follows:
 
 In order to make those setup easy, I purchased [MAMP Pro][MAMP-PRO] license.
 
-![Sub-domain type of multisite]({{ '/img/2016-04/multisite.png' | prepend: site.baseurl }}
+![Sub-domain type of multisite]({{ '/img/2016-05/multisite.png' | prepend: site.baseurl }}
  "Sub-domain type of multisite"
 )
 
