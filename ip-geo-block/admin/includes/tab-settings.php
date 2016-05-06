@@ -427,7 +427,7 @@ class IP_Geo_Block_Admin_Tab {
 		$desc = array(
 			__( 'Regardless of the country code, it will block a malicious request to <code>%s&hellip;/*.php</code>.', IP_Geo_Block::TEXT_DOMAIN ),
 			__( 'It configures &#8220%s&#8221 to validate a request to the PHP file which does not load WordPress core.', IP_Geo_Block::TEXT_DOMAIN ),
-			__( '<dfn title="Select the item which would cause undesired blocking in order to exclude it from the validation target. The &#8220;*&#8221; indicates &#8220;active&#8221;.">Exceptions</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
+			__( '<dfn title="Select the item which causes undesired blocking in order to exclude it from the validation target. Oblique font indicates &#8220;INACTIVE&#8221;.">Exceptions</dfn>', IP_Geo_Block::TEXT_DOMAIN ),
 		);
 
 		// Set rewrite condition
@@ -450,8 +450,8 @@ class IP_Geo_Block_Admin_Tab {
 			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_plugins_' . $key
 				. '" name="ip_geo_block_settings[exception][plugins][' . $key
 				. ']" value="1"' . checked( isset( $options['exception']['plugins'][ $key ] ), TRUE, FALSE )
-				. ' /><label for="ip_geo_block_settings_exception_plugins_' . $key . '">'
-				. ($active ? '* ' : '') . esc_html( $val['Name'] ) . "</label></li>\n";
+				. ' /><label for="ip_geo_block_settings_exception_plugins_' . $key
+				. ($active ? '">' : '" class="exceptions-inactive">') . esc_html( $val['Name'] ) . "</label></li>\n";
 		}
 
 		// Plugins area
@@ -500,8 +500,8 @@ class IP_Geo_Block_Admin_Tab {
 			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_themes_' . $key
 				. '" name="ip_geo_block_settings[exception][themes][' . $key
 				. ']" value="1"' . checked( isset( $options['exception']['themes'][ $key ] ), TRUE, FALSE )
-				. ' /><label for="ip_geo_block_settings_exception_themes_' . $key . '">'
-				. ($active ? '* ' : '') . esc_html( $val ) . "</label></li>\n";
+				. ' /><label for="ip_geo_block_settings_exception_themes_' . $key
+				. ($active ? '">' : '" class="exceptions-inactive">') . esc_html( $val ) . "</label></li>\n";
 		}
 
 		// Themes area

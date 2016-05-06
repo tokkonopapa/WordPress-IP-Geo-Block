@@ -66,9 +66,13 @@ ul.ip_geo_block_settings_exception ul {
 ul.ip_geo_block_settings_exception li:first-child {
     margin-top: 0.6em;
 }
-.disable-events {
+.exceptions-disable {
     pointer-events: none;
-    opacity: 0.4;
+    opacity: 0.5;
+}
+.exceptions-inactive {
+    opacity: 0.5;
+    font-style:oblique !important;
 }
 
 .ip-geo-block-sup {

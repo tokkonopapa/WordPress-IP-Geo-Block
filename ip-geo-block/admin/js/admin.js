@@ -421,10 +421,10 @@ var ip_geo_block_time = new Date();
 				$this.nextAll('.' + name + '_exception').each(function (i, obj) {
 					obj = $(obj);
 					if ('0' !== $this.val()) {
-						obj.removeClass('disable-events');
+						obj.removeClass('exceptions-disable');
 					} else {
 						obj.children('li').hide();
-						obj.addClass('disable-events');
+						obj.addClass('exceptions-disable');
 						obj.removeClass(ID('dropdown')).addClass(ID('dropup'));
 					}
 				});
