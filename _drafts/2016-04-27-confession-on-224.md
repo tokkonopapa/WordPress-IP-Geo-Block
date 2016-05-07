@@ -46,7 +46,7 @@ immediately. And even [the license][LICENSE] declares "NO WARRANTY" loudly,
 I will apologize sincerely to my all users.
 {% endcomment %}
 
-### How was it caused? ###
+### The how ###
 
 The code in problem was as follows:
 
@@ -69,7 +69,7 @@ which just says:
 > If **needle** is not a string, it is converted to an integer and applied as 
 > the ordinal value of a character.
 
-### Why was it caused? ###
+### The why ###
 
 Whenever I release a new version, I follow the procedure as listed below:
 
@@ -91,7 +91,7 @@ verious versions of PHP and the libraries, adopting SSL certificate, etc...
 
 And to make matters worse, both my local and real site are "sub-directories" 
 type of WordPress. So as for the problem in 2.2.4, I had never tested 
-"top-directory" type that caused a serious error.
+"top-directory" type that caused this trouble.
 
 ### What should I do? ###
 
@@ -99,7 +99,7 @@ In order to see that it never happens again, I've built up the application
 development environment on my local PC as follows:
 
 - Multisite of both "top-directory" and "sub-directories"
-- Multisite of "sub-domain" by Virtual Host
+- Multisite of "sub-domain" with Virtual Host configuration
 - SSL by [self-signed certificate][SELF-SSL]
 - Verious versions of PHP
 
