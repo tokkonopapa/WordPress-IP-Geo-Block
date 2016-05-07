@@ -176,17 +176,11 @@ class IP_Geo_Block_Opts {
 					$tmp = trim( $tmp );
 
 					// https://wordpress.org/support/topic/compatibility-with-ag-custom-admin
-					if ( 0 === strpos( $tmp, 'wp-config.php' ) ||
-					     0 === strpos( $tmp, 'passwd'        ) )
+					if ( 'wp-config.php' === $tmp || 'passwd' === $tmp )
 						$tmp = '/' . $tmp;
 
 					array_push( $arr, $tmp );
 				}
-
-				// add others
-				! in_array( '..',   $arr, TRUE ) and array_unshift( $arr, '..' ); // directory traversal
-				! in_array( '/tmp', $arr, TRUE ) and array_push( $arr, '/tmp'  ); // cd( '/tmp' )
-				! in_array( 'wget', $arr, TRUE ) and array_push( $arr, 'wget'  ); // wget http://...
 
 				$settings['signature'] = implode( ',', $arr );
 			}

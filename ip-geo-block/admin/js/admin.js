@@ -276,6 +276,21 @@ var ip_geo_block_time = new Date();
 		}
 	};
 
+	function add_hidden_form(cmd) {
+		$('body').append(
+			'<div style="display:none">' +
+				'<form method="POST" id="' + ID('export-form') + '" action="' + IP_GEO_BLOCK.url.replace('ajax.php', 'post.php') + '">' +
+					'<input type="hidden" name="action" value="' + IP_GEO_BLOCK.action + '" />' +
+					'<input type="hidden" name="nonce" value="' + IP_GEO_BLOCK.nonce + '" />' +
+					'<input type="hidden" name="cmd" value="' + cmd + '" />' +
+					'<input type="hidden" name="data" value="" id="' + ID('export-data') + '"/>' +
+					'<input type="submit" value="submit" />' +
+				'</form>' +
+				'<input type="file" name="settings" id="' + ID('file-dialog') + '" />' +
+			'</div>'
+		);
+	}
+
 	$(function () {
 		// processing time for the browser's performance
 		ip_geo_block_time = new Date() - ip_geo_block_time;
@@ -433,18 +448,7 @@ var ip_geo_block_time = new Date();
 			}).trigger('change');
 
 			// Export / Import settings
-			$('body').append(
-				'<div style="display:none">' +
-					'<form method="POST" id="' + ID('export-form') + '" action="' + IP_GEO_BLOCK.url.replace('ajax.php', 'post.php') + '">' +
-						'<input type="hidden" name="action" value="' + IP_GEO_BLOCK.action + '" />' +
-						'<input type="hidden" name="nonce" value="' + IP_GEO_BLOCK.nonce + '" />' +
-						'<input type="hidden" name="cmd" value="validate" />' +
-						'<input type="hidden" name="data" value="" id="' + ID('export-data') + '"/>' +
-						'<input type="submit" value="submit" />' +
-					'</form>' +
-					'<input type="file" name="settings" id="' + ID('file-dialog') + '" />' +
-				'</div>'
-			);
+			add_hidden_form('validate');
 
 			// Export settings
 			$(ID('#', 'export')).on('click', function (event) {

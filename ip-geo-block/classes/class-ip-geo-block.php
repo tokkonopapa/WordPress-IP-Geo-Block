@@ -186,7 +186,7 @@ class IP_Geo_Block {
 				IP_Geo_Block::delete_all_options( $settings );
 			} else {
 				global $wpdb;
-				$blog_ids = $wpdb->get_col( "SELECT blog_id FROM " . $wpdb->blogs );
+				$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
 				$current_blog_id = get_current_blog_id();
 				foreach ( $blog_ids as $id ) {
 					switch_to_blog( $id );
@@ -582,12 +582,10 @@ class IP_Geo_Block {
 	 */
 	public function validate_direct() {
 		$settings = self::get_option( 'settings' );
-		$type = 3; // default (1: Block by country, 2: WP-ZEP)
-
-		// retrieve the name of plugins/themes
 		$plugins = preg_quote( self::$wp_dirs['plugins'], '/' );
 		$themes  = preg_quote( self::$wp_dirs['themes' ], '/' );
 
+		// retrieve the name of plugins/themes
 		if ( preg_match( "/(?:($plugins)|($themes))([^\/]*)\/?/", $this->request_uri, $matches ) ) {
 			// list of plugins/themes to bypass WP-ZEP
 			$type = empty( $matches[2] ) ? 'plugins' : 'themes';
@@ -595,21 +593,25 @@ class IP_Geo_Block {
 			$type = in_array( $matches[3], $list, TRUE ) ? 0 : (int)$settings['validation'][ $type ];
 		}
 
-		if ( $type ) {
-			// register validation of nonce (2: WP-ZEP)
-			if ( 2 & $type )
-				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
-
-			// register validation of malicious signature
-			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
-
-			// validate country by IP address (1: Block by country)
-			$validate = $this->validate_ip( 'admin', $settings, 1 & $type );
-
-			// if the validation is successful, execute the requested uri via rewrite.php
-			if ( class_exists( 'IP_Geo_Block_Rewrite' ) )
-				IP_Geo_Block_Rewrite::exec( $validate, $settings );
+		// fallback (1: Block by country, 2: WP-ZEP)
+		else {
+			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-others', array( 'ms-files.php' ) ); // @before 3.5
+			$type = in_array( isset( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : '', $list, TRUE ) ? 0 : 3;
 		}
+
+		// register validation of nonce (2: WP-ZEP)
+		if ( 2 & $type )
+			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
+
+		// register validation of malicious signature
+		add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
+
+		// validate country by IP address (1: Block by country)
+		$validate = $this->validate_ip( 'admin', $settings, 1 & $type );
+
+		// if the validation is successful, execute the requested uri via rewrite.php
+		if ( class_exists( 'IP_Geo_Block_Rewrite' ) )
+			IP_Geo_Block_Rewrite::exec( $validate, $settings );
 	}
 
 	/**
