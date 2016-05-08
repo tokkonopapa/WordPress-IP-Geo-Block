@@ -435,17 +435,17 @@ For more details, see
 == Changelog ==
 
 = 2.2.5b1 =
-* **New feature:** Now you can specify pliugins/themes on the settings page 
-  without embedding any codes into `functions.php` in order to exclude from 
-  the validation target.
+* **New feature:** On the settings page, you can specify the pliugin or theme 
+  which would cause undesired blocking in order to exclude it from the 
+  validation target without embedding any codes into `functions.php`.
 * **Improvement:** Optimize resource loading on admin dashboard.
 * **Improvement:** Support clean uninstall for network / multisite.
-* **Bug fix:** Support FORCE_SSL_ADMIN.
+* **Bug fix:** Support `FORCE_SSL_ADMIN`.
 * **Bug fix:** Fix the issue of 
   [@](https://wordpress.org/support/topic/compatibility-with-ag-custom-admin "WordPress › Support » Compatibility with AG Custom Admin")
-  and change the name of option "Important files" to "Bad signatures in query" 
-  to avoid misuse.
-* **Bug fix:** Completely fix the issue of 
+  and change the option name 
+  "**Important files**" to "**Bad signatures in query**" to avoid misuse.
+* **Bug fix:** Fix the issue of 
   [@](https://wordpress.org/support/topic/gb-added-to-whitelist "WordPress › Support » GB added to whitelist")
   which might be caused by some race condition.
 
