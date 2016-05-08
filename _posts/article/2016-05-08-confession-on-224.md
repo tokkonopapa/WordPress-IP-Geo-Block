@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Confession of the problem in 2.2.4"
-date: 2016-04-27 00:00:00
+date: 2016-05-08 00:00:00
 categories: article
 published: true
 script: []
@@ -17,8 +17,8 @@ in order to prevent this kind of undesired accident again.
 
 ### The problem ###
 
-When you upgraded to 2.2.4 of [IP Geo Block][IP-Geo-Block], you encountered 
-the following error:
+When you installed (or upgraded) 2.2.4 of [IP Geo Block][IP-Geo-Block], you encountered 
+the following error :
 
 {% highlight text %}
 Warning: strpos(): Empty needle in /public_html/wp-content/plugins/ip-geo-block/classes/class-ip-geo-block.php on line 71.
@@ -86,7 +86,7 @@ and check if no error happens.
 
 You can easily point out that those are not enough. One thing is that a variety
 of servers will never be tested. For example, the type of HTTP server (apache 
-and nginx are not enough?), the type of multisite (sub-domain/sub-directories),
+and nginx are not enough?), the type of multisite (sub-domains/sub-directories),
 verious versions of PHP and the libraries, adopting SSL certificate, etc...
 
 And to make matters worse, both my local and real site are "sub-directories" 
@@ -99,14 +99,14 @@ In order to see that it never happens again, I've built up the application
 development environment on my local PC as follows:
 
 - Multisite of both "top-directory" and "sub-directories"
-- Multisite of "sub-domain" with Virtual Host configuration
+- Multisite of "sub-domains" with Virtual Host configuration
 - SSL by [self-signed certificate][SELF-SSL]
 - Verious versions of PHP
 
 In order to make those setup easy, I purchased [MAMP Pro][MAMP-PRO] license.
 
-![Sub-domain type of multisite]({{ '/img/2016-05/multisite.png' | prepend: site.baseurl }}
- "Sub-domain type of multisite"
+![Different type of multisite]({{ '/img/2016-05/multisite.png' | prepend: site.baseurl }}
+ "Different type of multisite"
 )
 
 And my future plans are:
