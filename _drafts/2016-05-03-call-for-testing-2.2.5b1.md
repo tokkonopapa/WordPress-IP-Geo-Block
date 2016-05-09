@@ -9,9 +9,9 @@ inline:
 ---
 
 I've almost done with devoloping the next release 2.2.5 of [IP Geo Block]
-[IP-Geo-Block]. Before releasing this version, I'd ask you to test and see 
-if the [beta1][2.2.5Beta1] works for you. You can download it from [here]
-[2.2.5Beta1-ZIP].
+[IP-Geo-Block]. Before releasing this version in public, I'd ask you to test 
+and see if the [beta1][2.2.5Beta1] works for you. You can download it from 
+[here][2.2.5Beta1-ZIP].
 
 <!--more-->
 
@@ -23,11 +23,6 @@ if the [beta1][2.2.5Beta1] works for you. You can download it from [here]
    directory on your server. It can be overwritten.
 4. Activate IP Geo Block again.
 
-Although I've made sure that it would not break anything in an obvious way, 
-please keep in mind that this is a developing version. It might still contain 
-undiscovered issues. If you find or notice something, please let me know about 
-them in the comment of this post.
-
 ### What's new in 2.2.5 beta1 ###
 
 Comparing changes between the last release 2.2.4.1 and 2.2.5 Beta1 is available
@@ -37,19 +32,20 @@ Comparing changes between the last release 2.2.4.1 and 2.2.5 Beta1 is available
 
 Before this release, clean uninstallation of this plugin would remove settings,
 statistics and logs only for main site in multisite environment. Now you can 
-remove all the data with "**Remove all settings at uninstallation**" checked at
-"**Plugin settings**" of main site, and just execute "**Delete**" from the 
-plugin dashboard.
+remove those for all sites by just enabling "**Remove all settings at 
+uninstallation**" at "**Plugin settings**" of main site, and execute 
+"**Delete**" from the plugin dashboard.
 
 #### Improvement: Analyzing requested URI ####
 
-It's very important for this plugin to apply the proper filter to validate the 
-malicious requests. So analyzing a requested URI depending on its type is the 
-core process of IP Geo Block.
+It's very important for IP Geo Block to apply the proper filter to validate 
+the malicious requests. So analyzing a requested URI depending on its type is 
+the core process of this plugin.
 
-In the previous version 2.2.4, I tried to improve to perform well which result
-caused the [fatal error][FatalError] and broke the site. The main reason of
-this trouble was the lack of testing patterns of server configurations.
+In the previous version 2.2.4, I tried to improve to perform this analysis 
+well which result caused the [fatal error][FatalError] and broke the site.
+The main reason of this trouble was the lack of testing patterns of server 
+configurations.
 
 In this release, I've tested the following patterns :
 
@@ -58,8 +54,8 @@ In this release, I've tested the following patterns :
 3. `http://domain.example.com/` ... Sub domain type of multisite
 4. [`FORCE_SSL_ADMIN`][SSL_ADMIN] ... Admin dashboard over SSL
 
-In the last version 2.2.4.1, `FORCE_SSL_ADMIN` did not work properly, but the 
-issue might be fixed in this release.
+In the last version 2.2.4.1, `FORCE_SSL_ADMIN` did not work properly. But in 
+this release, that issue might be fixed.
 
 Additionally, [`parse_url()`][PARSE_URL] was discarded in analyzing requested 
 URI to avoid unexpected behavior because the document says :
@@ -79,7 +75,7 @@ During the execution of this process, there was slight possibility that the
 cron would be kicked by the visitor. In this case, the country code derived 
 from that vistor's ip address would be added with comma like `JP,US`.
 
-Thanks to [BartTheMan][BartTheMan], this issue is completely fixed in this 
+Thanks to [BartTheMan][BartTheMan], this issue was completely fixed in this 
 release <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span> .
@@ -110,8 +106,8 @@ In this release, `wp-config.php` and `passwd` will be replaced to
 
 Now "**Important files**" has been renamed "**Bad signatures in query**".
 
-Well then, how should we validate malicious signatures against such as SQLi, 
-XSS.
+Well then, how should this plugin validate malicious signatures against such 
+as SQLi, XSS.
 
 The bast way to achieve this is to equip a kind of parser to analyze command 
 and syntax of MySQL and JavaScript. But implementation in PHP is not suitable 
@@ -140,19 +136,19 @@ score becomes 1.0. As a result, it reaches at the threshold of "malicious"
 )
 
 My recommended definition can be available from "**Import best practice**" 
-button. But I can't decide the best settings. For example, the following valid 
+button. But I can't decide its best settings. For example, the following valid 
 request would be blocked because it includes `select` and `where` in its query.
 
 {% highlight text %}
 http://example.com/wp-admin/admin-ajax.php?action=my_selection&where=my_page
 {% endhighlight %}
 
-So I should continue to improve the parser and terms from now. Note that the 
+So I should continue to improve the parser and words from now. Note that the 
 current limitation is that you can't include ***space*** inside each signature.
 
 #### New feature: Exceptions in plugins/themes area ####
 
-Some of plugins and themes need to access their php files directly on the 
+Some of plugins and themes need to access their own php files directly on the 
 public facing pages. For example, [Shield WordPress Security][SimpleFW] 
 (formerly the WordPress Simple Firewall) requires `xxx` on the login page.
 
@@ -166,8 +162,17 @@ Now you can specify them at "**Plugins area**" and "**Themes area**".
  "title"
 )
 
-Note that you should still use [this filter hook][BypassAdmin] to bypass a 
-certain action for `admin-ajax.php` and `admin-post.php`.
+Note that you should still use [`ip-geo-block-bypass-admin`][BypassAdmin] to 
+bypass a certain action for `admin-ajax.php` and `admin-post.php`.
+
+### Hope for your cooperation ###
+
+It's nothing special but I'm hoping for your ordinary job.
+
+Although I've made sure that it would not break anything in an obvious way, 
+please keep in mind that this is a developing version. It might still contain 
+undiscovered issues. When you find or notice something, please let me know 
+about them in the comment of this post.
 
 [IP-Geo-Block]:   https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [2.2.5Beta1]:     https://github.com/tokkonopapa/WordPress-IP-Geo-Block/tree/2.2.5b1 "GitHub - tokkonopapa/WordPress-IP-Geo-Block at 2.2.5b1"
