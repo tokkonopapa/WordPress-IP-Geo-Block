@@ -38,6 +38,7 @@ class IP_Geo_Block {
 	public static $wp_dirs;
 	private $request_uri = NULL;
 	private $remote_addr = NULL;
+	private $validation_target = NULL;
 
 	/**
 	 * Initialize the plugin
@@ -56,17 +57,25 @@ class IP_Geo_Block {
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
 			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
 
-		// get content folders (with/without trailing slash @since 3.0.0)
-		self::$wp_dirs = array(
-			'home'    => $uri = untrailingslashit( parse_url( site_url(),           PHP_URL_PATH ) ), // @since 2.6.0
-			'admin'   =>  trailingslashit( substr( parse_url( admin_url(),          PHP_URL_PATH ), $tmp = strlen( $uri ) ) ),
-			'plugins' =>  trailingslashit( substr( parse_url( plugins_url(),        PHP_URL_PATH ), $tmp ) ), // @since 2.6.0
-			'themes'  =>  trailingslashit( substr( parse_url( get_theme_root_uri(), PHP_URL_PATH ), $tmp ) ), // @since 1.5.0
-		);
+		// normalize requested uri
+		$this->request_uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
+
+		// setup the content folders and analize the validation target
+		self::$wp_dirs = array( 'home' => untrailingslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since 2.6.0
+		$len = strlen( self::$wp_dirs['home'] );
+		foreach ( array(
+			'admin'    => 'admin_url',          // @since 2.6.0
+			'plugins'  => 'plugins_url',        // @since 2.6.0
+			'themes'   => 'get_theme_root_uri', // @since 1.5.0
+		) as $key => $val ) {
+			self::$wp_dirs[ $key ] = trailingslashit( substr( parse_url( call_user_func( $val ), PHP_URL_PATH ), $len ) );
+			if ( ! $this->validation_target && FALSE !== strpos( $this->request_uri, self::$wp_dirs[ $key ] ) )
+				$this->validation_target = $key;
+		}
 
 		// WordPress core files
 		global $pagenow;
-		$tmp = array(
+		$key = array(
 			'wp-comments-post.php' => 'comment',
 			'wp-trackback.php'     => 'comment',
 			'xmlrpc.php'           => 'xmlrpc',
@@ -74,28 +83,23 @@ class IP_Geo_Block {
 			'wp-signup.php'        => 'login',
 		);
 
-		// normalize requested uri
-		$uri = $this->request_uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
-
 		// wp-admin/*.php
-		if ( FALSE !== strpos( $uri, self::$wp_dirs['admin'] ) )
+		if ( FALSE !== strpos( $this->request_uri, self::$wp_dirs['admin'] ) )
 			add_action( 'init', array( $this, 'validate_admin' ), $priority );
 
-		// wp-content/(plugins|themes)/.../*.php
-		elseif ( FALSE !== strpos( $uri, self::$wp_dirs['plugins'] ) ||
-		         FALSE !== strpos( $uri, self::$wp_dirs['themes' ] ) )
+		elseif ( $this->validation_target )
 			add_action( 'init', array( $this, 'validate_direct' ), $priority );
 
-		elseif ( isset( $tmp[ $pagenow ] ) ) {
-			if ( $validate[ $tmp[ $pagenow ] ] )
-				add_action( 'init', array( $this, 'validate_' . $tmp[ $pagenow ] ), $priority );
+		elseif ( isset( $key[ $pagenow ] ) ) {
+			if ( $validate[ $key[ $pagenow ] ] )
+				add_action( 'init', array( $this, 'validate_' . $key[ $pagenow ] ), $priority );
 		}
 
 		else {
 			// message text on comment form
 			if ( $settings['comment']['pos'] ) {
-				$tmp = ( 1 == $settings['comment']['pos'] ? '_top' : '' );
-				add_action( 'comment_form' . $tmp, array( $this, 'comment_form_message' ) );
+				$key = ( 1 == $settings['comment']['pos'] ? '_top' : '' );
+				add_action( 'comment_form' . $key, array( $this, 'comment_form_message' ) );
 			}
 
 			if ( $validate['comment'] ) {
@@ -132,21 +136,21 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function activate( $network_wide = FALSE ) {
-		// it might be called via public context
-		if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 
-			// initialize logs then upgrade and return new options
-			IP_Geo_Block_Logs::create_tables();
-			$settings = IP_Geo_Block_Opts::upgrade();
+		// initialize logs then upgrade and return new options
+		IP_Geo_Block_Logs::create_tables();
+		$settings = IP_Geo_Block_Opts::upgrade();
+
+		if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 
 			// kick off a cron job to download database immediately
 			IP_Geo_Block_Cron::spawn_job( TRUE, self::get_ip_address() );
 
 			// activate rewrite rules
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 			IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
 		}
 	}
@@ -166,9 +170,6 @@ class IP_Geo_Block {
 
 	// Delete settings options, IP address cache, log
 	private static function delete_all_options( $settings ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-
 		delete_option( self::$option_keys['settings'] ); // @since 1.2.0
 		delete_transient( self::CACHE_KEY ); // @since 2.8
 		IP_Geo_Block_Logs::delete_tables();
@@ -180,6 +181,9 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function uninstall() {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+
 		$settings = self::get_option( 'settings' );
 		if ( $settings['clean_uninstall'] ) {
 			if ( ! is_multisite() ) {
@@ -582,22 +586,14 @@ class IP_Geo_Block {
 	 */
 	public function validate_direct() {
 		$settings = self::get_option( 'settings' );
-		$plugins = preg_quote( self::$wp_dirs['plugins'], '/' );
-		$themes  = preg_quote( self::$wp_dirs['themes' ], '/' );
+		$request = preg_quote( self::$wp_dirs[ $type = $this->validation_target ], '/' );
 
-		// retrieve the name of plugins/themes
-		if ( preg_match( "/(?:($plugins)|($themes))([^\/]*)\/?/", $this->request_uri, $matches ) ) {
-			// list of plugins/themes to bypass WP-ZEP
-			$type = empty( $matches[2] ) ? 'plugins' : 'themes';
-			$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", array_keys( $settings['exception'][ $type ] ) );
-			$type = in_array( $matches[3], $list, TRUE ) ? 0 : (int)$settings['validation'][ $type ];
-		}
+		// wp-includes, wp-content/(plugins|themes|language|uploads)
+		preg_match( "/($request)([^\/\?\&]*)\/?/", $this->request_uri, $matches );
 
-		// fallback (1: Block by country, 2: WP-ZEP)
-		else {
-			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-others', array( 'ms-files.php' ) ); // @before 3.5
-			$type = in_array( isset( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : '', $list, TRUE ) ? 0 : 3;
-		}
+		// set validation type (1: Block by country, 2: WP-ZEP)
+		$list = apply_filters( self::PLUGIN_SLUG . '-bypass-' . $type, array_keys( $settings['exception'][ $type ] ) );
+		$type = isset( $matches[2] ) && in_array( $matches[2], $list, TRUE ) ? 0 : $settings['validation'][ $type ];
 
 		// register validation of nonce (2: WP-ZEP)
 		if ( 2 & $type )

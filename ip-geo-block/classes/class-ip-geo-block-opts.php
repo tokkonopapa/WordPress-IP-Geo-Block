@@ -19,7 +19,7 @@ class IP_Geo_Block_Opts {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
-			'version'         => '2.2.3', // This table version (not package)
+			'version'         => '2.2.5', // This table version (not package)
 			// since version 1.0
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
@@ -169,20 +169,19 @@ class IP_Geo_Block_Opts {
 				$settings['api_dir'] = $default[ $key[0] ]['api_dir'];
 
 			if ( version_compare( $settings['version'], '2.2.5' ) < 0 ) {
-				$settings['exception'] = $default[ $key[0] ]['exception'];
-
+				// https://wordpress.org/support/topic/compatibility-with-ag-custom-admin
 				$arr = array();
 				foreach ( explode( ',', $settings['signature'] ) as $tmp ) {
 					$tmp = trim( $tmp );
-
-					// https://wordpress.org/support/topic/compatibility-with-ag-custom-admin
 					if ( 'wp-config.php' === $tmp || 'passwd' === $tmp )
 						$tmp = '/' . $tmp;
-
 					array_push( $arr, $tmp );
 				}
-
 				$settings['signature'] = implode( ',', $arr );
+
+				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
+					$settings['exception'][ $tmp ] = $default[ $key[0] ]['exception'][ $tmp ];
+				}
 			}
 
 			// save package version number
