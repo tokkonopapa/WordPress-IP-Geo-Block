@@ -149,8 +149,8 @@ current limitation is that you can't include ***space*** inside each signature.
 #### New feature: Exceptions in plugins/themes area ####
 
 Some of plugins and themes need to access their own php files directly on the 
-public facing pages. For example, [Shield WordPress Security][SimpleFW] 
-(formerly the WordPress Simple Firewall) requires `xxx` on the login page.
+public facing pages. For example, [WP-SpamShield Anti-Spam][WpSpamShield] 
+requires `wp-content/plugins/wp-spamshield/js/jscripts.php` on the pages.
 
 Previously, you need to add some snippets into your `functions.php` to specify
 the [plugin][BypassPlugin] or [theme][BypassTheme] that you want to exclude 
@@ -187,7 +187,7 @@ about them in the comment of this post.
 [WORDFENCE]:      https://wordpress.org/plugins/wordfence/ "Wordfence Security - WordPress Plugins"
 [ISSUE-AGC]:      https://wordpress.org/support/topic/compatibility-with-ag-custom-admin "WordPress › Support » Compatibility with AG Custom Admin"
 [AGCustomAdmin]:  https://wordpress.org/plugins/ag-custom-admin/ "AG Custom Admin - WordPress Plugins"
-[SimpleFW]:       https://wordpress.org/plugins/wp-simple-firewall/ "Shield WordPress Security - WordPress Plugins"
+[WpSpamShield]:   https://wordpress.org/plugins/wp-spamshield/ "WP-SpamShield Anti-Spam - WordPress Plugins"
 [BypassPlugin]:   http://www.ipgeoblock.com/codex/ip-geo-block-bypass-plugins.html "ip-geo-block-bypass-plugins | IP Geo Block"
 [BypassTheme]:    http://www.ipgeoblock.com/codex/ip-geo-block-bypass-themes.html "ip-geo-block-bypass-themes | IP Geo Block"
 [BypassAdmin]:    http://www.ipgeoblock.com/codex/ip-geo-block-bypass-admins.html "ip-geo-block-bypass-admins | IP Geo Block"
