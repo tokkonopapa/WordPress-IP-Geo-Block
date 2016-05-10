@@ -145,9 +145,9 @@ var IP_GEO_BLOCK_ZEP = {
 
 	// regular expression to find target for is_admin()
 	var regexp = new RegExp(
-		'^(?:' + IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin
-		+ '|'  + IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.plugins
-		+ '|'  + IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.themes
+		'^(?:' + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.admin
+		+ '|'  + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.plugins
+		+ '|'  + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.themes
 		+ ')(?:.*\.php|.*\/)?$'
 	);
 
