@@ -229,8 +229,8 @@ class IP_Geo_Block_Admin {
 	 * Display local notice
 	 *
 	 */
-	public function show_setting_notice( $name, $type, $msg ) {
-		add_settings_error( $this->option_slug, $this->option_name[ $name ], $msg, $type );
+	private function show_setting_notice( $name, $type, $msg ) {
+		add_settings_error( $this->option_slug['settings'], $this->option_name[ $name ], $msg, $type );
 	}
 
 	/**
@@ -329,8 +329,8 @@ class IP_Geo_Block_Admin {
 		$this->add_plugin_admin_page();
 
 		// Register settings page only if it is needed
-		if ( ( isset( $_GET['page'] ) && IP_Geo_Block::PLUGIN_SLUG === $_GET['page'] ) ||
-		     ( isset( $GLOBALS['pagenow'] ) && 'options.php' === $GLOBALS['pagenow'] ) )
+		if ( ( isset( $_GET ['page'       ] ) && IP_Geo_Block::PLUGIN_SLUG      === $_GET ['page'       ] ) ||
+		     ( isset( $_POST['option_page'] ) && $this->option_slug['settings'] === $_POST['option_page'] ) )
 			$this->register_settings_tab();
 
 		// Add an action link pointing to the options page. @since 2.7
