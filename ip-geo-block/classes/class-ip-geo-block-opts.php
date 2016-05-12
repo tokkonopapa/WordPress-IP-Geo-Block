@@ -169,7 +169,6 @@ class IP_Geo_Block_Opts {
 				$settings['api_dir'] = $default[ $key[0] ]['api_dir'];
 
 			if ( version_compare( $settings['version'], '2.2.5' ) < 0 ) {
-				// https://wordpress.org/support/topic/compatibility-with-ag-custom-admin
 				$arr = array();
 				foreach ( explode( ',', $settings['signature'] ) as $tmp ) {
 					$tmp = trim( $tmp );

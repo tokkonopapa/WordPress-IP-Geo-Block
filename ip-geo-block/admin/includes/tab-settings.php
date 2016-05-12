@@ -458,10 +458,10 @@ class IP_Geo_Block_Admin_Tab {
 		$key = 'plugins';
 		$val = esc_html( substr( IP_Geo_Block::$wp_dirs[ $key ], 1 ) );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
-			. '" value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
-			. ' name="ip_geo_block_settings[rewrite]['.$key.']" '
+			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
+			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
 			. disabled( $options['rewrite'][ $key ], -1, FALSE ) . ' />'
-			. '<label for="ip_geo_block_settings_rewrite_'.$key.'"><dfn title="'
+			. '<label for="ip_geo_block_settings_rewrite_' . $key . '"><dfn title="'
 			. sprintf( $desc[1], $val . '.htaccess' )
 			. '">' . __( 'Force to load WP core', IP_Geo_Block::TEXT_DOMAIN )
 			. '</dfn></label><br />';
@@ -508,10 +508,10 @@ class IP_Geo_Block_Admin_Tab {
 		$key = 'themes';
 		$val = esc_html( substr( IP_Geo_Block::$wp_dirs[ $key ], 1 ) );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
-			. '" value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
-			. ' name="ip_geo_block_settings[rewrite]['.$key.']" '
+			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
+			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
 			. disabled( $options['rewrite'][ $key ], -1, FALSE ) . ' />'
-			. '<label for="ip_geo_block_settings_rewrite_'.$key.'"><dfn title="'
+			. '<label for="ip_geo_block_settings_rewrite_' . $key . '"><dfn title="'
 			. sprintf( $desc[1], $val . '.htaccess' )
 			. '">' . __( 'Force to load WP core', IP_Geo_Block::TEXT_DOMAIN )
 			. '</dfn></label><br />';

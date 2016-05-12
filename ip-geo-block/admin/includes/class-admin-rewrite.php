@@ -10,7 +10,6 @@ class IP_Geo_Block_Admin_Rewrite {
 	private $doc_root = NULL; // document root
 	private $site_uri = NULL; // network site uri
 	private $base_uri = NULL; // plugins base uri
-	private $wp_dirs = array();
 
 	// template of rewrite rule in wp-content/(plugins|themes)/
 	private $rewrite_rule = array(
@@ -57,14 +56,8 @@ class IP_Geo_Block_Admin_Rewrite {
 	public function __construct() {
 		// http://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
 		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
-		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
 		$this->site_uri = untrailingslashit( parse_url( network_site_url(), PHP_URL_PATH ) );
-		$tmp = strlen(    untrailingslashit( parse_url( site_url(),         PHP_URL_PATH ) ) );
-
-		$this->wp_dirs = array(
-			'plugins' => trailingslashit( substr( parse_url( plugins_url(),        PHP_URL_PATH ), $tmp ) ),
-			'themes'  => trailingslashit( substr( parse_url( get_theme_root_uri(), PHP_URL_PATH ), $tmp ) ),
-		);
+		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
 	}
 
 	/**
@@ -108,7 +101,7 @@ class IP_Geo_Block_Admin_Rewrite {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
 
 		if ( $is_apache ) {
-			return $this->doc_root . $this->site_uri . $this->wp_dirs[ $which ] . '.htaccess';
+			return $this->doc_root . $this->site_uri . IP_Geo_Block::$wp_dirs[ $which ] . '.htaccess';
 		}
 
 		elseif ( $is_nginx ) {
@@ -288,7 +281,7 @@ class IP_Geo_Block_Admin_Rewrite {
 		$status = array();
 		$rewrite = self::get_instance();
 
-		foreach ( array( 'plugins', 'themes' ) as $key ) {
+		foreach ( array_keys( $rewrite->rewrite_rule['apache'] ) as $key ) {
 			$status[ $key ] = $rewrite->get_rewrite_stat( $key );
 		}
 
@@ -302,7 +295,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	public static function activate_rewrite_all( $options ) {
 		$rewrite = self::get_instance();
 
-		foreach ( array( 'plugins', 'themes' ) as $key ) {
+		foreach ( array_keys( $rewrite->rewrite_rule['apache'] ) as $key ) {
 			if ( empty( $options[ $key ] ) )
 				$options[ $key ] = $rewrite->del_rewrite_rule( $key ) ? FALSE : TRUE;
 			else
@@ -319,7 +312,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	public static function deactivate_rewrite_all() {
 		$rewrite = self::get_instance();
 
-		foreach ( array( 'plugins', 'themes' ) as $key ) {
+		foreach ( array_keys( $rewrite->rewrite_rule['apache'] ) as $key ) {
 			if ( FALSE === $rewrite->del_rewrite_rule( $key ) )
 				return FALSE;
 		}
