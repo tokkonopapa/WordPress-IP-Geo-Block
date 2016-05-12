@@ -83,12 +83,11 @@ class IP_Geo_Block {
 			'wp-signup.php'        => 'login',
 		);
 
-		// wp-admin/*.php
-		if ( FALSE !== strpos( $this->request_uri, self::$wp_dirs['admin'] ) )
-			add_action( 'init', array( $this, 'validate_admin' ), $priority );
-
-		elseif ( $this->validation_target )
-			add_action( 'init', array( $this, 'validate_direct' ), $priority );
+		// wp-admin/*.php, wp-includes, wp-content/(plugins|themes|language|uploads)
+		if ( $this->validation_target ) {
+			$val = ( 'admin' === $this->validation_target ? 'admin' : 'direct' );
+			add_action( 'init', array( $this, 'validate_' . $val ), $priority );
+		}
 
 		elseif ( isset( $key[ $pagenow ] ) ) {
 			if ( $validate[ $key[ $pagenow ] ] )
@@ -98,7 +97,7 @@ class IP_Geo_Block {
 		else {
 			// message text on comment form
 			if ( $settings['comment']['pos'] ) {
-				$key = ( 1 == $settings['comment']['pos'] ? '_top' : '' );
+				$key = ( 1 === (int)$settings['comment']['pos'] ? '_top' : '' );
 				add_action( 'comment_form' . $key, array( $this, 'comment_form_message' ) );
 			}
 

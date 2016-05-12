@@ -62,6 +62,20 @@
 	</div>
 </div>
 
+<!-- POST Access -->
+<div class="content">
+	<div class="setting">
+		<h2 ng-bind="lang.submit_post"></h2>
+		<p>
+			<input type="button" name="submit" ng-click="submit()" value="Submit" />
+			<input type="button" name="reset" ng-click="reset()" value="Reset" />
+		</p>
+		<p>
+			<textarea class="fullsize" id="message" rows="8" ng-model="message"></textarea>
+		</p>
+	</div>
+</div>
+
 <!-- Post Settings -->
 <div class="content">
 	<h2 ng-bind="lang.post_settings"></h2>
@@ -477,20 +491,6 @@
 			<input type="hidden" name="bbp_forum_id" ng-model="form.bbPress.bbp_forum_id" />
 			<input type="hidden" name="action" value="form.bbPress.action" />
 		</form>
-	</div>
-</div>
-
-<!-- POST Access -->
-<div class="content">
-	<div class="setting">
-		<h2 ng-bind="lang.submit_post"></h2>
-		<p>
-			<input type="button" name="submit" ng-click="submit()" value="Submit" />
-			<input type="button" name="reset" ng-click="reset()" value="Reset" />
-		</p>
-		<p>
-			<textarea class="fullsize" id="message" rows="8" ng-model="message"></textarea>
-		</p>
 	</div>
 </div>
 

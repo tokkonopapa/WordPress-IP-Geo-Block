@@ -221,17 +221,19 @@ function retrieve_ip(ip) {
 function serialize_plain(obj) {
 	var data = [];
 	for (var key in obj) {
-		if (obj.hasOwnProperty(key)) {
+		if (key && obj.hasOwnProperty(key)) {
 			data.push(key + '=' + encodeURIComponent(obj[key]));
 		}
 	}
-	return data.join('&');
+	return data.length ? data.join('&') : '';
 }
 
 function serialize_array(obj) {
 	var data = [];
 	for (var i = 0; i < obj.key.length; i++) {
-		data.push(obj.key[i] + '=' + encodeURIComponent(obj.val[i]));
+		if (obj.key[i]) {
+			data.push(obj.key[i] + '=' + encodeURIComponent(obj.val[i]));
+		}
 	}
-	return data.join('&');
+	return data.length ? data.join('&') : '';
 }
