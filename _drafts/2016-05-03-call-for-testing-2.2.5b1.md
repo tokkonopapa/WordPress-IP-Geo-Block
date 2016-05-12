@@ -23,6 +23,11 @@ and see if the [beta1][2.2.5Beta1] works for you. You can download it from
    directory on your server. It can be overwritten.
 4. Activate IP Geo Block again.
 
+Although I've made sure that it would not break anything in an obvious way, 
+please keep in mind that this is a developing version. It might still contain 
+undiscovered issues. When you find or notice something, please let me know 
+about them in the comment of this post.
+
 ### What's new in 2.2.5 beta1 ###
 
 Comparing changes between the last release 2.2.4.1 and 2.2.5 Beta1 is available
@@ -169,10 +174,14 @@ bypass a certain action for `admin-ajax.php` and `admin-post.php`.
 
 It's nothing special but I'm hoping for your ordinary job.
 
-Although I've made sure that it would not break anything in an obvious way, 
-please keep in mind that this is a developing version. It might still contain 
-undiscovered issues. When you find or notice something, please let me know 
-about them in the comment of this post.
+For me and [IP Geo Block][IP-Geo-Block], the next formal release 2.2.5 is a 
+very important milestone, because I'd like to give it the potential ability 
+for a new protection functionality in the future release which may be 2.3.0 
+and later.
+
+So I would deeply appreciate for your kind cooperation <span class="emoji">
+![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
+</span> .
 
 [IP-Geo-Block]:   https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [2.2.5Beta1]:     https://github.com/tokkonopapa/WordPress-IP-Geo-Block/tree/2.2.5b1 "GitHub - tokkonopapa/WordPress-IP-Geo-Block at 2.2.5b1"
