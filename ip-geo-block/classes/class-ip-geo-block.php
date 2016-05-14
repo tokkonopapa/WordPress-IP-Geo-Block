@@ -35,10 +35,10 @@ class IP_Geo_Block {
 	);
 
 	// Globals in this class
-	public static $wp_dirs;
+	public static $wp_path;
 	private $request_uri = NULL;
+	private $target_type = NULL;
 	private $remote_addr = NULL;
-	private $validation_target = NULL;
 
 	/**
 	 * Initialize the plugin
@@ -60,17 +60,21 @@ class IP_Geo_Block {
 		// normalize requested uri
 		$this->request_uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
 
-		// setup the content folders and analize the validation target
-		self::$wp_dirs = array( 'home' => untrailingslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since 2.6.0
-		$len = strlen( self::$wp_dirs['home'] );
-		foreach ( array(
-			'admin'    => 'admin_url',          // @since 2.6.0
-			'plugins'  => 'plugins_url',        // @since 2.6.0
-			'themes'   => 'get_theme_root_uri', // @since 1.5.0
-		) as $key => $val ) {
-			self::$wp_dirs[ $key ] = trailingslashit( substr( parse_url( call_user_func( $val ), PHP_URL_PATH ), $len ) );
-			if ( ! $this->validation_target && FALSE !== strpos( $this->request_uri, self::$wp_dirs[ $key ] ) )
-				$this->validation_target = $key;
+		// setup the content folders
+		self::$wp_path = array( 'home' => untrailingslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since 2.6.0
+		$list = array(
+			'admin'     => 'admin_url',          // @since 2.6.0
+			'plugins'   => 'plugins_url',        // @since 2.6.0
+			'themes'    => 'get_theme_root_uri', // @since 1.5.0
+		);
+
+		// analize the validation target
+		$len = strlen( self::$wp_path['home'] );
+		foreach ( $list as $key => $val ) {
+			self::$wp_path[ $key ] = trailingslashit( substr( parse_url( call_user_func( $val ), PHP_URL_PATH ), $len ) );
+			if ( ! $this->target_type && FALSE !== strpos( $this->request_uri, self::$wp_path[ $key ] ) ) {
+				$this->target_type = $key;
+			}
 		}
 
 		// WordPress core files
@@ -84,8 +88,8 @@ class IP_Geo_Block {
 		);
 
 		// wp-admin/*.php, wp-includes, wp-content/(plugins|themes|language|uploads)
-		if ( $this->validation_target ) {
-			$val = ( 'admin' === $this->validation_target ? 'admin' : 'direct' );
+		if ( $this->target_type ) {
+			$val = ( 'admin' === $this->target_type ? 'admin' : 'direct' );
 			add_action( 'init', array( $this, 'validate_' . $val ), $priority );
 		}
 
@@ -190,7 +194,7 @@ class IP_Geo_Block {
 		if ( is_user_logged_in() ) {
 			$handle = self::PLUGIN_SLUG . '-auth-nonce';
 			$script = plugins_url( 'admin/js/authenticate.min.js', IP_GEO_BLOCK_BASE );
-			$nonce = array( 'nonce' => wp_create_nonce( $handle ) ) + self::$wp_dirs;
+			$nonce = array( 'nonce' => wp_create_nonce( $handle ) ) + self::$wp_path;
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
 			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $nonce );
 		}
@@ -201,7 +205,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function logout_redirect( $uri ) {
-		if ( FALSE !== strpos( $uri, self::$wp_dirs['admin'] ) &&
+		if ( FALSE !== strpos( $uri, self::$wp_path['admin'] ) &&
 		     isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] )
 			return esc_url_raw( add_query_arg( array( 'loggedout' => 'true' ), wp_login_url() ) );
 		else
@@ -552,13 +556,13 @@ class IP_Geo_Block {
 	 */
 	public function validate_direct() {
 		$settings = self::get_option( 'settings' );
-		$request = preg_quote( self::$wp_dirs[ $type = $this->validation_target ], '/' );
+		$request = preg_quote( self::$wp_path[ $type = $this->target_type ], '/' );
 
 		// wp-includes, wp-content/(plugins|themes|language|uploads)
 		preg_match( "/($request)([^\/\?\&]*)\/?/", $this->request_uri, $matches );
 
 		// set validation type (1: Block by country, 2: WP-ZEP)
-		$list = apply_filters( self::PLUGIN_SLUG . '-bypass-' . $type, array_keys( $settings['exception'][ $type ] ) );
+		$list = apply_filters( self::PLUGIN_SLUG . '-bypass-' . $type, array_keys( $settings['exception' ][ $type ] ) );
 		$type = isset( $matches[2] ) && in_array( $matches[2], $list, TRUE ) ? 0 : $settings['validation'][ $type ];
 
 		// register validation of nonce (2: WP-ZEP)

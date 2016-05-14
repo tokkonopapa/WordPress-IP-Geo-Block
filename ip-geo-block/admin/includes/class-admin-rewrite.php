@@ -10,6 +10,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	private $doc_root = NULL; // document root
 	private $site_uri = NULL; // network site uri
 	private $base_uri = NULL; // plugins base uri
+	private $wp_dirs;
 
 	// template of rewrite rule in wp-content/(plugins|themes)/
 	private $rewrite_rule = array(
@@ -58,6 +59,14 @@ class IP_Geo_Block_Admin_Rewrite {
 		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
 		$this->site_uri = untrailingslashit( parse_url( network_site_url(), PHP_URL_PATH ) );
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
+
+		$condir = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
+
+		// target directories
+		$this->wp_dirs = array(
+			'plugins'   => $condir . '/plugins/',
+			'themes'    => $condir . '/themes/',
+		);
 	}
 
 	/**
@@ -101,7 +110,7 @@ class IP_Geo_Block_Admin_Rewrite {
 		global $is_apache, $is_nginx; // wp-includes/vars.php
 
 		if ( $is_apache ) {
-			return $this->doc_root . $this->site_uri . IP_Geo_Block::$wp_dirs[ $which ] . '.htaccess';
+			return $this->doc_root . $this->wp_dirs[ $which ] . '.htaccess';
 		}
 
 		elseif ( $is_nginx ) {
@@ -220,7 +229,7 @@ class IP_Geo_Block_Admin_Rewrite {
 			$content,
 			str_replace(
 				array( '%REWRITE_BASE%', '%WP_CONTENT_DIR%' ),
-				array( $this->base_uri, WP_CONTENT_DIR ),
+				array( $this->base_uri,    WP_CONTENT_DIR   ),
 				$this->rewrite_rule[ $server_type ][ $which ]
 			)
 		) : array();
@@ -296,10 +305,10 @@ class IP_Geo_Block_Admin_Rewrite {
 		$rewrite = self::get_instance();
 
 		foreach ( array_keys( $rewrite->rewrite_rule['apache'] ) as $key ) {
-			if ( empty( $options[ $key ] ) )
-				$options[ $key ] = $rewrite->del_rewrite_rule( $key ) ? FALSE : TRUE;
-			else
+			if ( $options[ $key ] )
 				$options[ $key ] = $rewrite->add_rewrite_rule( $key ) ? TRUE : FALSE;
+			else
+				$options[ $key ] = $rewrite->del_rewrite_rule( $key ) ? FALSE : TRUE;
 		}
 
 		return $options;

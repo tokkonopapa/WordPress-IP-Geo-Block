@@ -19,7 +19,7 @@ class IP_Geo_Block_Opts {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
-			'version'         => '2.2.5', // This table version (not package)
+			'version'         => '2.2.5b1', // This table version (not package)
 			// since version 1.0
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
@@ -91,9 +91,9 @@ class IP_Geo_Block_Opts {
 			// since version 2.2.3
 			'api_dir'         => NULL,    // Path to geo-location API
 			// since version 2.2.5
-			'exception'       => array(
-			    'plugins'     => array(), // list of exceptional pliugins
-			    'themes'      => array(), // list of exceptional themes
+			'exception'       => array(   // list of exceptional
+			    'plugins'     => array(), // for pliugins
+			    'themes'      => array(), // for themes
 			),
 		),
 	);

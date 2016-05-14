@@ -700,7 +700,7 @@ class IP_Geo_Block_Admin {
 		$key = array();
 		foreach ( explode( ',', $output['signature'] ) as $val ) {
 			$val = trim( $val );
-			if ( $val && FALSE === strpos( IP_Geo_Block::$wp_dirs['admin'], $val ) )
+			if ( $val && FALSE === strpos( IP_Geo_Block::$wp_path['admin'], $val ) )
 				$key[] = $val;
 		}
 		$output['signature'] = implode( ',', $key );

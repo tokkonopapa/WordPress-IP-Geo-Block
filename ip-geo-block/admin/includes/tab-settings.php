@@ -405,7 +405,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		// Admin ajax/post
 		$key = 'ajax';
-		$val = esc_html( substr( IP_Geo_Block::$wp_dirs['admin'], 1 ) );
+		$val = esc_html( substr( IP_Geo_Block::$wp_path['admin'], 1 ) );
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
 			sprintf( $dfn, $val.'admin-(ajax|post).php', __( 'Admin ajax/post', IP_Geo_Block::TEXT_DOMAIN ) ),
@@ -456,7 +456,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		// Plugins area
 		$key = 'plugins';
-		$val = esc_html( substr( IP_Geo_Block::$wp_dirs[ $key ], 1 ) );
+		$val = esc_html( substr( IP_Geo_Block::$wp_path[ $key ], 1 ) );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
 			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
@@ -506,7 +506,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		// Themes area
 		$key = 'themes';
-		$val = esc_html( substr( IP_Geo_Block::$wp_dirs[ $key ], 1 ) );
+		$val = esc_html( substr( IP_Geo_Block::$wp_path[ $key ], 1 ) );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
 			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
