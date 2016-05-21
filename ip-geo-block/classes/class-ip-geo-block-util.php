@@ -126,11 +126,11 @@ class IP_Geo_Block_Util {
 
 			elseif ( 'zip' === $args && class_exists( 'ZipArchive' ) ) {
 				$zip = new ZipArchive;
-				if ( TRUE !== $zip->open( $res ) )
+				if ( TRUE !== ( $code = $zip->open( $res ) ) )
 					throw new Exception(
 						sprintf(
-							__( 'Unable to read %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
-							$res
+							__( 'ZipArchive error: %d for %s.', IP_Geo_Block::TEXT_DOMAIN ),
+							$code, $res
 						)
 					);
 
@@ -138,7 +138,7 @@ class IP_Geo_Block_Util {
 					$zip->close();
 					throw new Exception(
 						sprintf(
-							__( 'Unable to write %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
+							__( 'ZipArchive error: fails to extract from %s.', IP_Geo_Block::TEXT_DOMAIN ),
 							$filename
 						)
 					);
