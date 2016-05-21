@@ -434,7 +434,7 @@ class IP_Geo_Block_Admin_Tab {
 		$options['rewrite'] = IP_Geo_Block_Admin_Rewrite::check_rewrite_all();
 
 		// Get all the plugins
-		$exception = '<ul class="ip_geo_block_settings_exception ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n";
+		$exception = '';
 		$installed = get_plugins(); // @since 1.5.0
 		unset( $installed[ IP_GEO_BLOCK_BASE ] ); // exclude myself
 
@@ -483,12 +483,15 @@ class IP_Geo_Block_Admin_Tab {
 					2 => sprintf( $desc[0], $val ),
 				),
 				'before' => $tmp,
-				'after' => '<div class="ip-geo-block-desc"></div>' . "\n" . $exception . "</ul></li></ul>\n",
+				'after' => '<div class="ip-geo-block-desc"></div>' . "\n"
+					. '<ul class="ip_geo_block_settings_exception ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
+					. $exception
+					. "</ul></li></ul>\n",
 			)
 		);
 
 		// Get all the themes
-		$exception = '<ul class="ip_geo_block_settings_exception ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n";
+		$exception = '';
 		$installed = wp_get_themes( NULL ); // @since 3.4.0
 		$activated = wp_get_theme(); // @since 3.4.0
 		$activated = $activated->get( 'Name' );
@@ -533,7 +536,10 @@ class IP_Geo_Block_Admin_Tab {
 					2 => sprintf( $desc[0], $val ),
 				),
 				'before' => $tmp,
-				'after' => '<div class="ip-geo-block-desc"></div>' . "\n" . $exception . "</ul></li></ul>\n",
+				'after' => '<div class="ip-geo-block-desc"></div>' . "\n"
+					. '<ul class="ip_geo_block_settings_exception ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
+					. $exception
+					. "</ul></li></ul>\n",
 			)
 		);
 

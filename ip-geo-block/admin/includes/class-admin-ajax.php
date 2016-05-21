@@ -149,9 +149,13 @@ class IP_Geo_Block_Admin_Ajax {
 					$settings[ $m[1] ][ $m[2] ] = $val;
 					break;
 				  case 4:
-					if ( empty( $settings[ $m[1] ][ $m[2] ] ) )
-						$settings[ $m[1] ][ $m[2] ] = 0;
-					$settings[ $m[1] ][ $m[2] ] |= $val;
+					if ( is_numeric( $m[3] ) ) {
+						if ( empty( $settings[ $m[1] ][ $m[2] ] ) )
+							$settings[ $m[1] ][ $m[2] ] = 0;
+						$settings[ $m[1] ][ $m[2] ] |= $val;
+					} else {
+						$settings[ $m[1] ][ $m[2] ][] = $m[3];
+					}
 					break;
 				}
 			}
@@ -187,6 +191,8 @@ class IP_Geo_Block_Admin_Ajax {
 			'[validation][themes]',
 			'[rewrite][plugins]',
 			'[rewrite][themes]',
+			'[exception][plugins][*]',   // 2.2.5
+			'[exception][themes][*]',    // 2.2.5
 			'[providers][Maxmind]',
 			'[providers][IP2Location]',
 			'[providers][freegeoip.net]',
@@ -229,9 +235,14 @@ class IP_Geo_Block_Admin_Ajax {
 					}
 					break;
 				  case 4:
-					if ( isset( $input[  $m[1]  ][  $m[2]  ] ) ) {
-						$json[ $prfx.'['.$m[1].']['.$m[2].']'.'['.$m[3].']' ] =
-						strval( $input[  $m[1]  ][  $m[2]  ] &    $m[3] );
+					if ( is_numeric( $m[3] ) ) {
+						if ( isset( $input[  $m[1]  ][  $m[2]  ] ) )
+							$json[ $prfx.'['.$m[1].']['.$m[2].']'.'['.$m[3].']' ] =
+							strval( $input[  $m[1]  ][  $m[2]  ] ) & (int)$m[3];
+					} else {
+						foreach ( $input[ $m[1] ][ $m[2] ] as $val ) {
+							$json[ $prfx.'['.$m[1].']['.$m[2].']'.'['.$val.']' ] = 1;
+						}
 					}
 					break;
 				}

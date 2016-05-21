@@ -40,6 +40,12 @@ class IP_Geo_Block_Cron {
 	/**
 	 * Database auto downloader.
 	 *
+	 * This function is called when:
+	 *   1. Plugin is activated
+	 *   2. WP Cron is kicked
+	 * under the following condition:
+	 *   A. Onece per site when this plugin is activated by network
+	 *   B. Multiple time for each blog when this plugin is individually activated
 	 */
 	public static function exec_job( $immediate = FALSE ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
@@ -80,6 +86,7 @@ class IP_Geo_Block_Cron {
 					$settings['white_list'] .= ( $settings['white_list'] ? ',' : '' ) . $validate['code'];
 			}
 
+			// update option settings
 			update_option( IP_Geo_Block::$option_keys['settings'], $settings );
 
 			// finished to update matching rule
@@ -100,7 +107,7 @@ class IP_Geo_Block_Cron {
 	}
 
 	/**
-	 * Kick off a cron job to download database immediately
+	 * Kick off a cron job to download database immediately on background.
 	 *
 	 */
 	public static function spawn_job( $immediate = TRUE, $ip_adrs ) {
