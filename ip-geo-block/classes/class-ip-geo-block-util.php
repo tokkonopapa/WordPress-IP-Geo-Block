@@ -126,11 +126,11 @@ class IP_Geo_Block_Util {
 
 			elseif ( 'zip' === $args && class_exists( 'ZipArchive' ) ) {
 				$zip = new ZipArchive;
-				if ( TRUE !== ( $code = $zip->open( $res ) ) )
+				if ( TRUE !== $zip->open( $res ) )
 					throw new Exception(
 						sprintf(
-							__( 'ZipArchive error: %d for %s.', IP_Geo_Block::TEXT_DOMAIN ),
-							$code, $res
+							__( 'ZipArchive error: %s (%s).', IP_Geo_Block::TEXT_DOMAIN ),
+							$zip->getStatusString(), $res // PHP 5 >= 5.2.7
 						)
 					);
 
@@ -138,8 +138,8 @@ class IP_Geo_Block_Util {
 					$zip->close();
 					throw new Exception(
 						sprintf(
-							__( 'ZipArchive error: fails to extract from %s.', IP_Geo_Block::TEXT_DOMAIN ),
-							$filename
+							__( 'ZipArchive error: %s (%s).', IP_Geo_Block::TEXT_DOMAIN ),
+							$zip->getStatusString(), $filename // PHP 5 >= 5.2.7
 						)
 					);
 				}
