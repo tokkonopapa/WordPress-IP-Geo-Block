@@ -920,7 +920,7 @@ endif;
 	public static function note_target() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'To enhance the protection ability, please refer to &#8220;<a href="http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html" title="Prevent exposure of wp-config.php | IP Geo Block">The best practice of target settings</a>&#8221;.', IP_Geo_Block::TEXT_DOMAIN ), '</li>', "\n",
+				'<li>', __( 'To enhance the protection ability, please refer to &#8220;<a href="http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html" title="The best practice of target settings | IP Geo Block">The best practice of target settings</a>&#8221;.', IP_Geo_Block::TEXT_DOMAIN ), '</li>', "\n",
 				'<li>', __( 'If you have any troubles with these, please open an issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a>.', IP_Geo_Block::TEXT_DOMAIN ), '</li>', "\n",
 			'</ul>', "\n";
 	}
