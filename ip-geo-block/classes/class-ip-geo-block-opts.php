@@ -116,7 +116,7 @@ class IP_Geo_Block_Opts {
 
 		if ( FALSE === ( $settings = get_option( $key[0] ) ) ) {
 			// save package version number
-			$default[ $key[0] ]['version'] = IP_Geo_Block::VERSION;
+			$version = $default[ $key[0] ]['version'] = IP_Geo_Block::VERSION;
 
 			// create new option table
 			$settings = $default[ $key[0] ];
@@ -124,21 +124,23 @@ class IP_Geo_Block_Opts {
 		}
 
 		else {
+			$version = $settings['version'];
+
 			// refresh if it's too old
-			if ( version_compare( $settings['version'], '2.0' ) < 0 ) {
+			if ( version_compare( $version, '2.0' ) < 0 ) {
 				$settings = $default[ $key[0] ];
 			}
 
-			if ( version_compare( $settings['version'], '2.0.8' ) < 0 )
+			if ( version_compare( $version, '2.0.8' ) < 0 )
 				$settings['priority'] = $default[ $key[0] ]['priority'];
 
-			if ( version_compare( $settings['version'], '2.1.0' ) < 0 ) {
+			if ( version_compare( $version, '2.1.0' ) < 0 ) {
 				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
 				}
 			}
 
-			if ( version_compare( $settings['version'], '2.2.0' ) < 0 ) {
+			if ( version_compare( $version, '2.2.0' ) < 0 ) {
 				foreach ( array( 'anonymize', 'signature', 'extra_ips', 'rewrite' ) as $tmp ) {
 					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
 				}
@@ -149,13 +151,13 @@ class IP_Geo_Block_Opts {
 				}
 			}
 
-			if ( version_compare( $settings['version'], '2.2.1' ) < 0 ) {
+			if ( version_compare( $version, '2.2.1' ) < 0 ) {
 				foreach ( array( 'Maxmind', 'IP2Location' ) as $tmp ) {
 					$settings[ $tmp ] = $default[ $key[0] ][ $tmp ];
 				}
 			}
 
-			if ( version_compare( $settings['version'], '2.2.2' ) < 0 ) {
+			if ( version_compare( $version, '2.2.2' ) < 0 ) {
 				$tmp = get_option( 'ip_geo_block_statistics' );
 				$tmp['daystats'] = array();
 				IP_Geo_Block_Logs::record_stat( $tmp );
@@ -165,10 +167,11 @@ class IP_Geo_Block_Opts {
 				}
 			}
 
-			if ( version_compare( $settings['version'], '2.2.3' ) < 0 )
+			if ( version_compare( $version, '2.2.3' ) < 0 )
 				$settings['api_dir'] = $default[ $key[0] ]['api_dir'];
 
-			if ( version_compare( $settings['version'], '2.2.5' ) < 0 ) {
+			if ( version_compare( $version, '2.2.5' ) < 0 ) {
+				// https://wordpress.org/support/topic/compatibility-with-ag-custom-admin
 				$arr = array();
 				foreach ( explode( ',', $settings['signature'] ) as $tmp ) {
 					$tmp = trim( $tmp );
@@ -188,7 +191,8 @@ class IP_Geo_Block_Opts {
 		}
 
 		// install addons for IP Geolocation database API
-		$settings['api_dir'] = self::install_api( $settings );
+		if ( ! $settings['api_dir'] || version_compare( $version, '2.2.2' ) < 0 )
+			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table
 		update_option( $key[0], $settings );
