@@ -125,30 +125,14 @@ class IP_Geo_Block_Util {
 			}
 
 			elseif ( 'zip' === $args && class_exists( 'ZipArchive' ) ) {
-				$zip = new ZipArchive;
+				// https://codex.wordpress.org/Function_Reference/unzip_file
+				WP_Filesystem();
+				$ret = unzip_file( $res, dirname( $filename ) ); // @since 2.5
 
-				if ( strtoupper( substr( PHP_OS, 0, 3 ) ) === 'WIN' )
-					$res = str_replace( '/', '\\', $res );
-
-				if ( TRUE !== $zip->open( $res ) )
+				if ( is_wp_error( $ret ) )
 					throw new Exception(
-						sprintf(
-							__( 'ZipArchive error: %s (%s).', IP_Geo_Block::TEXT_DOMAIN ),
-							$zip->getStatusString(), $res // PHP 5 >= 5.2.7
-						)
+						$ret->get_error_code() . ' ' . $ret->get_error_message()
 					);
-
-				if ( FALSE === @$zip->extractTo( dirname( $filename ) ) ) {
-					$zip->close();
-					throw new Exception(
-						sprintf(
-							__( 'ZipArchive error: %s (%s).', IP_Geo_Block::TEXT_DOMAIN ),
-							$zip->getStatusString(), $filename // PHP 5 >= 5.2.7
-						)
-					);
-				}
-
-				$zip->close();
 			}
 
 			@unlink( $res );
@@ -157,11 +141,11 @@ class IP_Geo_Block_Util {
 		// error handler
 		catch ( Exception $e ) {
 			if ( 'gz' === $args && function_exists( 'gzopen' ) ) {
-				! empty( $gz ) && gzclose( $gz );
-				! empty( $fp ) && fclose ( $fp );
+				! empty( $gz ) and gzclose( $gz );
+				! empty( $fp ) and fclose ( $fp );
 			}
 
-			! is_wp_error( $res ) && @unlink( $res );
+			! is_wp_error( $res ) and @unlink( $res );
 
 			return array(
 				'code' => $e->getCode(),
