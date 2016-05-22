@@ -94,6 +94,7 @@ ul.ip-geo-block-list label {
 .ip-geo-block-desc {
     display: inline-block;
     margin-top: 0.25em;
+    margin-bottom: 0.25em;
 }
 @media screen and (min-width:782px) {
     ul.ip-geo-block-list .code {
