@@ -126,6 +126,10 @@ class IP_Geo_Block_Util {
 
 			elseif ( 'zip' === $args && class_exists( 'ZipArchive' ) ) {
 				$zip = new ZipArchive;
+
+				if ( strtoupper( substr( PHP_OS, 0, 3 ) ) === 'WIN' )
+					$res = str_replace( '/', '\\', $res );
+
 				if ( TRUE !== $zip->open( $res ) )
 					throw new Exception(
 						sprintf(
