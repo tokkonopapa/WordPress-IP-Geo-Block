@@ -44,7 +44,7 @@ class IP_Geo_Block_Cron {
 	 *   1. Plugin is activated
 	 *   2. WP Cron is kicked
 	 * under the following condition:
-	 *   A. Onece per site when this plugin is activated by network
+	 *   A. Onece per site when this plugin is activated by network admin
 	 *   B. Multiple time for each blog when this plugin is individually activated
 	 */
 	public static function exec_job( $immediate = FALSE ) {

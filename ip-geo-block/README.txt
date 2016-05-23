@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
-Tested up to: 4.5
-Stable tag: 2.2.5b2
+Tested up to: 4.5.2
+Stable tag: 2.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -122,9 +122,10 @@ and reverse-brute-force attacks to the login form and XML-RPC.
     [Wordfence Security](https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins")
   (because the function of country bloking is available only for premium users).
 
-* **Extensibility:**  
-  You can customize the basic behavior of this plugin via `add_filter()` with
-  pre-defined filter hook. See various use cases in 
+* **Extendability:**  
+  "Settings minimum, Customizability maximum" is the basic concept of this 
+  plugin. You can customize the behavior of this plugin via `add_filter()`
+  with pre-defined filter hook. See various use cases in 
     [the documents](http://www.ipgeoblock.com/codex/ "Codex | IP Geo Block")
   and 
     [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub")
@@ -197,6 +198,12 @@ All contributions will always be welcome. Or visit my
   Additional IP addresses will be validated if some of keys in `$_SERVER` 
   variable are specified in this textfield. Typically `HTTP_X_FORWARDED_FOR`.
 
+* **Bad signatures in query**
+  It validates malicious signatures independently of **Block by country** and 
+  **Prevent Zero-day Exploit** for the target **Admin area**, 
+  **Admin ajax/post**, **Plugins area** and **Themes area**.
+  Typically, `/wp-config.php` and `/passwd`.
+
 * **Response code**  
   Choose one of the 
     [response code](http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1")
@@ -230,10 +237,6 @@ All contributions will always be welcome. Or visit my
 
 * **Themes area**  
   Validate direct access to themes. Typically `wp-content/themes/…/*.php`.
-
-* **Important files**  
-  Validate malicious signatures to disclose important files such as 
-  `wp-config.php` or `passwd`.
 
 = Geolocation API settings =
 
@@ -313,39 +316,26 @@ that you should upload the original one to deactivate above feature.
 [This release note](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note")
 can also help you.
 
-= How does WP-ZEP prevent zero-day attacks? =
+= Do I have to turn on all the selection to enhance security? =
 
-There are three methods to prevent zero-day attacks. The first one is to 
-inspect bad queries using the blacklist of signatures. And the second one is 
-to filter out only the legitimate requests using the whitelist. Those methods 
-are focused to the **patterns of request**.
+Yes. Roughly speaking, the strategy of this plugin has been constructed as 
+follows:
 
-The last one, which WP-ZEP adopts, is to close a hole of vulnerability with a 
-certain way which is focused to the **patterns of vulnerability**.
-  [A considerable number of vulnerable plugins and themes that were out there](http://www.ipgeoblock.com/article/why-so-vulnerable.html "Why so many WordPress plugins vulnerable? | IP Geo Block")
-are lacking in validating either the 
-  [nonce](https://en.wikipedia.org/wiki/Cryptographic_nonce "Cryptographic nonce - Wikipedia, the free encyclopedia")
-and privilege or both. So WP-ZEP will make up both of them embedding a 
-  [nonce](https://codex.wordpress.org/WordPress_Nonces "WordPress Nonces « WordPress Codex")
-into the link, form and ajax request from jQuery on every admin screen.
+- **Block by country**  
+  It blocks malicious requests from outside your country.
 
-This simple system will validate both of them on behalf of vulnerable plugins 
-and themes in your site and will block a request with query parameter `action` 
-through `wp-admin/(admin|admin-ajax|admin-post).php` if it has no nonce and 
-privilege. Moreover, this plugin is desinged carefully not to affect a request 
-from non-logged-in user.
+- **Prevent Zero-day Exploit**  
+  It blocks malicious requests from your country.
 
-Of course this method has some limitation. For example, it's incapable of 
-preventing Privilege Escalation (PE) because it can't be decided which 
-capabilities does the request need. So this plugin also adopts the first 
-method whose blacklist includes `wp-config.php` and `passwd` for the bad 
-queries.
+- **Force to load WP core**  
+  It blocks the request which has not been covered in the above two.
 
-So those method combined with geo blocking can dramatically reduce the risk 
-of infection.
+- **Bad signatures in query**  
+  It blocks the request which has not been covered in the above three.
 
-Find some details on 
-[this plugin's blog](http://www.ipgeoblock.com/ "Blog of IP Geo Block").
+See more details in "
+[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html 'The best practice of target settings | IP Geo Block')
+".
 
 = How can I test that this plugin works? =
 
@@ -357,23 +347,10 @@ You can add an IP address to the `X-Forwarded-For` header to emulate the
 access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` 
 into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
 
-= How can I use "Block by country" and "WP-ZEP" properly? =
-
-The basic concept is that the "**Block by country**" is for blocking malicious 
-accesses from undesired countries and "**WP-ZEP**" is for blocking from 
-permitted contries.
-
-So using both of them is the best.
-
-Speaking about Ajax, the "**Block by country**" will block both front-end and 
-back-end services while "**WP-ZEP**" will block only back-end services.
-
-So if you have some plugins providing Ajax services for front-end and prefer 
-to serve them for everyone, using only "**WP-ZEP**" for "**Admin ajax/post**" 
-may be your choise.
-
 See more details in "
-[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html 'The best practice of target settings | IP Geo Block')
+[Using VPN browser addon](http://www.ipgeoblock.com/codex/using-vpn-browser-addon.html 'Using VPN browser addon | IP Geo Block')
+" and "
+[Using WordPress post simulator](http://www.ipgeoblock.com/codex/using-post-simulator.html 'Using WordPress post simulator | IP Geo Block')
 ".
 
 = Some admin function doesn't work when WP-ZEP is enabled. =
@@ -434,12 +411,14 @@ For more details, see
 
 == Changelog ==
 
-= 2.2.5b1 =
+= 2.2.5 =
 * **New feature:** On the settings page, you can specify the pliugin or theme 
   which would cause undesired blocking in order to exclude it from the 
   validation target without embedding any codes into `functions.php`.
 * **Improvement:** Optimize resource loading on admin dashboard.
 * **Improvement:** Support clean uninstall for network / multisite.
+* **Improvement:** Improve the compatibility of downloading IP address 
+  databases for Microsoft IIS.
 * **Bug fix:** Support `FORCE_SSL_ADMIN`.
 * **Bug fix:** Fix the issue of 
   [@](https://wordpress.org/support/topic/compatibility-with-ag-custom-admin "WordPress › Support » Compatibility with AG Custom Admin")

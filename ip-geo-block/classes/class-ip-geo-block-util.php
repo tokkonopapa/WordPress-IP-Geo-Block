@@ -58,17 +58,17 @@ class IP_Geo_Block_Util {
 		);
 
 		// fetch file and get response code & message
-		$res = wp_remote_head( ( $url = esc_url_raw( $url ) ), $args );
+		$src = wp_remote_head( ( $url = esc_url_raw( $url ) ), $args );
 
-		if ( is_wp_error( $res ) )
+		if ( is_wp_error( $src ) )
 			return array(
-				'code' => $res->get_error_code(),
-				'message' => $res->get_error_message(),
+				'code' => $src->get_error_code(),
+				'message' => $src->get_error_message(),
 			);
 
-		$code = wp_remote_retrieve_response_code   ( $res );
-		$mssg = wp_remote_retrieve_response_message( $res );
-		$data = wp_remote_retrieve_header( $res, 'last-modified' );
+		$code = wp_remote_retrieve_response_code   ( $src );
+		$mssg = wp_remote_retrieve_response_message( $src );
+		$data = wp_remote_retrieve_header( $src, 'last-modified' );
 		$modified = $data ? strtotime( $data ) : $modified;
 
 		if ( 304 == $code )
@@ -88,11 +88,11 @@ class IP_Geo_Block_Util {
 		// downloaded and unzip
 		try {
 			// download file
-			$res = download_url( $url );
+			$src = download_url( $url );
 
-			if ( is_wp_error( $res ) )
+			if ( is_wp_error( $src ) )
 				throw new Exception(
-					$res->get_error_code() . ' ' . $res->get_error_message()
+					$src->get_error_code() . ' ' . $src->get_error_message()
 				);
 
 			// get extension
@@ -100,11 +100,11 @@ class IP_Geo_Block_Util {
 
 			// unzip file
 			if ( 'gz' === $args && function_exists( 'gzopen' ) ) {
-				if ( FALSE === ( $gz = gzopen( $res, 'r' ) ) )
+				if ( FALSE === ( $gz = gzopen( $src, 'r' ) ) )
 					throw new Exception(
 						sprintf(
 							__( 'Unable to read %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
-							$res
+							$src
 						)
 					);
 
@@ -127,7 +127,7 @@ class IP_Geo_Block_Util {
 			elseif ( 'zip' === $args && class_exists( 'ZipArchive' ) ) {
 				// https://codex.wordpress.org/Function_Reference/unzip_file
 				WP_Filesystem();
-				$ret = unzip_file( $res, dirname( $filename ) ); // @since 2.5
+				$ret = unzip_file( $src, dirname( $filename ) ); // @since 2.5
 
 				if ( is_wp_error( $ret ) )
 					throw new Exception(
@@ -135,7 +135,7 @@ class IP_Geo_Block_Util {
 					);
 			}
 
-			@unlink( $res );
+			@unlink( $src );
 		}
 
 		// error handler
@@ -145,7 +145,7 @@ class IP_Geo_Block_Util {
 				! empty( $fp ) and fclose ( $fp );
 			}
 
-			! is_wp_error( $res ) and @unlink( $res );
+			! is_wp_error( $src ) and @unlink( $src );
 
 			return array(
 				'code' => $e->getCode(),
