@@ -116,8 +116,8 @@ as SQLi, XSS.
 
 The bast way to achieve this is to equip a kind of parser to analyze command 
 and syntax of MySQL and JavaScript. But implementation in PHP is not suitable 
-because of its cost. So I've implemented "**A weighted score for combination**"
-with only a few lines of additional code.
+because of its cost. So I've implemented "**Sum of weighted scores**" with 
+only a few lines of additional code.
 
 Let's think about SQLi. Usually, several sql commands are combined as below :
 
