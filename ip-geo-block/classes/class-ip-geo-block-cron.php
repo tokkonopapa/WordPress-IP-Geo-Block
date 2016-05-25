@@ -65,7 +65,8 @@ class IP_Geo_Block_Cron {
 			self::schedule_cron_job( $settings['update'], $settings[ $providers[0] ], FALSE );
 
 		// update option settings
-		update_option( IP_Geo_Block::$option_keys['settings'], $settings );
+//		update_option( IP_Geo_Block::$option_keys['settings'], $settings );
+		self::update_settings( $settings, array( 'update' ) + $providers );
 
 		// update matching rule immediately
 		if ( $immediate && FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
@@ -87,13 +88,51 @@ class IP_Geo_Block_Cron {
 			}
 
 			// update option settings
-			update_option( IP_Geo_Block::$option_keys['settings'], $settings );
+//			update_option( IP_Geo_Block::$option_keys['settings'], $settings );
+			self::update_settings( $settings, array( 'matching_rule', 'white_list', 'black_list' ) );
 
 			// finished to update matching rule
 			set_transient( IP_Geo_Block::CRON_NAME, 'done', 2 * MINUTE_IN_SECONDS );
 		}
 
 		return isset( $res ) ? $res : NULL;
+	}
+
+	/**
+	 * Update setting data according to the site type.
+	 *
+	 */
+	private static function update_settings( $src, $keys = array() ) {
+		if ( ! function_exists( 'is_plugin_active_for_network' ) )
+			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+
+		$slug = IP_Geo_Block::$option_keys['settings'];
+
+		// for multisite
+		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
+
+			global $wpdb;
+			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+			$current_blog_id = get_current_blog_id();
+
+			foreach ( $blog_ids as $id ) {
+				switch_to_blog( $id );
+				$dst = IP_Geo_Block::get_option( 'settings' );
+
+				foreach ( $keys as $key ) {
+					$dst[ $key ] = $src[ $key ];
+				}
+
+				update_option( $slug, $dst );
+			}
+
+			switch_to_blog( $current_blog_id );
+		}
+
+		// for single site
+		else {
+			update_option( $slug, $src );
+		}
 	}
 
 	/**
