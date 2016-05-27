@@ -636,8 +636,8 @@ class IP_Geo_Block {
 	}
 
 	public function check_signature( $validate, $settings ) {
-		$request = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 		$score = 0.0;
+		$request = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
 		foreach ( $this->multiexplode( array( ',', ' ' ), $settings['signature'] ) as $sig ) {
 			$val = explode( ':', $sig, 2 );
@@ -709,8 +709,10 @@ class IP_Geo_Block {
 
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
+
 			foreach ( $this->multiexplode( array( ',', ' ' ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
+
 				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) &&
 				     Net_IPv4::ipInNetwork( $ip, isset( $j[1] ) ? $i : $i.'/32' ) )
 					// can't overwrite existing result
@@ -720,8 +722,10 @@ class IP_Geo_Block {
 
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv6.php' );
+
 			foreach ( $this->multiexplode( array( ',', ' ' ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
+
 				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) &&
 				     Net_IPv6::isInNetmask( $ip, isset( $j[1] ) ? $i : $i.'/128' ) )
 					// can't overwrite existing result
