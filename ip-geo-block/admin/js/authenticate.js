@@ -328,6 +328,16 @@ var IP_GEO_BLOCK_ZEP = {
 					$this.attr('action', add_query_nonce(action, nonce));
 				}
 			});
+
+			// Restore post revisions (wp-admin/revisions.php)
+			if ("undefined" !== typeof _wpRevisionsSettings) {
+				var i, n = _wpRevisionsSettings.revisionData.length;
+				for (i = 0; i < n; i++) {
+					_wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(
+						_wpRevisionsSettings.revisionData[i].restoreUrl, nonce
+					);
+				}
+			}
 		}
 	});
 }(jQuery, document));
