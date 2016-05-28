@@ -427,6 +427,7 @@ For more details, see
 * **Bug fix:** Fix the issue of 
   [@](https://wordpress.org/support/topic/gb-added-to-whitelist "WordPress › Support » GB added to whitelist")
   which might be caused by some race condition.
+* **Bug fix:** Fix the issue of restoring post revisions which was blocked.
 
 = 2.2.4.1 =
 Sorry for frequent updating.
