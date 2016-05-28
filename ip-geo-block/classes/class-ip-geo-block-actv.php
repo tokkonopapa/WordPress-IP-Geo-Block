@@ -28,17 +28,19 @@ class IP_Geo_Block_Activate {
 		if ( $network_wide ) {
 			global $wpdb;
 			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+			$current_blog_id = get_current_blog_id();
 
 			foreach ( $blog_ids as $id ) {
 				switch_to_blog( $id );
 				self::activate_blog();
 			}
 
-			restore_current_blog();
+			switch_to_blog( $current_blog_id );
 		} else {
 			self::activate_blog();
 		}
 
+		// only for main blog
 		if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
 			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
