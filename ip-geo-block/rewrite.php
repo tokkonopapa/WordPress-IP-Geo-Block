@@ -36,12 +36,19 @@ if ( ! class_exists( 'IP_Geo_Block_Rewrite' ) ):
 class IP_Geo_Block_Rewrite {
 
 	/**
+	 * Virtual site path to network real path for multisite
+	 *
+	 */
+	private static function realpath( $path ) {
+		$site = str_replace( network_site_url(), '', site_url() );
+		return realpath( str_replace( $site, '', $path ) );
+	}
+
+	/**
 	 * Post process (never return)
 	 *
 	 */
-	private static function abort( $validate, $settings, $exist ) {
-
-		$context = IP_Geo_Block::get_instance();
+	private static function abort( $context, $validate, $settings, $exist ) {debug_log('abort');
 
 		// mark as malicious
 		$validate['result'] = 'blocked'; //'malice';
@@ -67,7 +74,7 @@ class IP_Geo_Block_Rewrite {
 	 *
 	 * @note: This function doesn't care about malicious query string.
 	 */
-	public static function exec( $validate, $settings ) {
+	public static function exec( $context, $validate, $settings ) {
 
 		// get document root
 		// @note: super global can not be infected even when `register_globals` is on.
@@ -91,13 +98,13 @@ class IP_Geo_Block_Rewrite {
 		// @note: is_file(), is_readable(), file_exists() need a valid path.
 		// @link: http://php.net/releases/5_3_4.php, https://bugs.php.net/bug.php?id=39863
 		// ex) $path = "/etc/passwd\0.php"; is_file( $path ) === true (5.2.14), false (5.4.4)
-		$path = realpath( str_replace( "\0", '', $path ) );
+		$path = self::realpath( str_replace( "\0", '', $path ) );
 
 		// check path if under the document root
 		// This may be meaningless because the HTTP request is always inside the document root.
 		// The only possibility is a symbolic link pointed to outside of the document root.
 		if ( 0 !== strpos( $path, "$root/" ) )
-			self::abort( $validate, $settings, file_exists( $path ) );
+			self::abort( $context, $validate, $settings, file_exists( $path ) );
 
 		// check default index
 		if ( 0 === preg_match( "/\/([^\/]+)$/", $path, $matches ) )
@@ -106,11 +113,11 @@ class IP_Geo_Block_Rewrite {
 		// check file extention
 		// @note: if it fails, rewrite rule may be misconfigured
 		if ( FALSE === strripos( strtolower( $path ), '.php', -4 ) )
-			self::abort( $validate, $settings, file_exists( $path ) );
+			self::abort( $context, $validate, $settings, file_exists( $path ) );
 
 		// reconfirm permission for the requested URI
 		if ( ! @chdir( dirname( $path ) ) || FALSE === ( @include basename( $path ) ) )
-			self::abort( $validate, $settings, file_exists( $path ) );
+			self::abort( $context, $validate, $settings, file_exists( $path ) );
 
 		exit;
 	}
@@ -118,7 +125,7 @@ class IP_Geo_Block_Rewrite {
 }
 
 // this will trigger `init` action hook
-include_once '../../../wp-load.php';
+require_once '../../../wp-load.php';
 
 /**
  * Fallback execution
@@ -127,12 +134,14 @@ include_once '../../../wp-load.php';
  * is enable. But in case of disable, the requested uri should be executed indirectly
  * as a fallback.
  */
-if ( class_exists( 'IP_Geo_Block' ) ) {
-	IP_Geo_Block_Rewrite::exec(
-		IP_Geo_Block::get_geolocation(),
-		IP_Geo_Block::get_option( 'settings' )
-	);
-}
+if ( ! class_exists( 'IP_Geo_Block' ) )
+	require_once dirname( __FILE__ ) . '/ip-geo-block.php';
+
+IP_Geo_Block_Rewrite::exec(
+	IP_Geo_Block::get_instance(),
+	IP_Geo_Block::get_geolocation(),
+	IP_Geo_Block::get_option( 'settings' )
+);
 
 endif; /* ! class_exists( 'IP_Geo_Block_Rewrite' ) */
 
