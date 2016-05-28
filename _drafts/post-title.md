@@ -12,7 +12,7 @@ inline:
 
 ### Title ###
 
-{% highlight php starinline linenos %}
+{% highlight ruby startinline linenos %}
 code
 {% endhighlight %}
 
