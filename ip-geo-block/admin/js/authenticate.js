@@ -120,6 +120,13 @@ var IP_GEO_BLOCK_ZEP = {
 		return real.join('/').replace(/\/\//g, '/');
 	}
 
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
+	function encodeURIComponentRFC3986(str) {
+		return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+			return '%' + c.charCodeAt(0).toString(16);
+		});
+	}
+
 	// append the nonce as query strings to the uri
 	function add_query_nonce(uri, nonce) {
 		if (typeof uri !== 'object') { // `string` or `undefined`
@@ -137,7 +144,7 @@ var IP_GEO_BLOCK_ZEP = {
 			}
 		}
 
-		data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponent(nonce));
+		data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
 		uri.query = data.join('&');
 
 		return compose_uri(uri);
@@ -221,7 +228,7 @@ var IP_GEO_BLOCK_ZEP = {
 					if (callback) {
 						data = callback(data);
 					}
-					data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponent(nonce));
+					data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
 					settings.data = data.join('&');
 				}
 			}
@@ -329,13 +336,13 @@ var IP_GEO_BLOCK_ZEP = {
 				}
 			});
 
-			// Restore post revisions (wp-admin/revisions.php)
+			// Restore post revisions (wp-admin/revisions.php @since 2.6.0)
 			if ("undefined" !== typeof _wpRevisionsSettings) {
-				var i, n = _wpRevisionsSettings.revisionData.length;
+				var i, data = _wpRevisionsSettings.revisionData, n = data.length;
 				for (i = 0; i < n; i++) {
-					_wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(
-						_wpRevisionsSettings.revisionData[i].restoreUrl, nonce
-					);
+					if (-1 === data[i].restoreUrl.indexOf(IP_GEO_BLOCK_ZEP.auth)) {
+						_wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(data[i].restoreUrl, nonce);
+					}
 				}
 			}
 		}

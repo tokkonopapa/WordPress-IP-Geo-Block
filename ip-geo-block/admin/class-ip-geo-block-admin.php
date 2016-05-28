@@ -49,6 +49,7 @@ class IP_Geo_Block_Admin {
 		add_action( 'admin_menu', array( $this, 'setup_admin_page' ) );
 		add_action( 'wp_ajax_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
 		add_action( 'admin_post_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
+		add_filter( 'wp_prepare_revision_for_js', array( $this, 'add_revision_nonce' ), 10, 3 );
 
 		// If multisite, then enque the authentication script for network admin
 		if ( is_multisite() )
@@ -169,6 +170,20 @@ class IP_Geo_Block_Admin {
 			)
 		);
 		wp_enqueue_script( $handle );
+	}
+
+	/**
+	 * Add nonce to revision @since 4.4.0
+	 *
+	 */
+	public function add_revision_nonce( $revisions_data, $revision, $post ) {
+		$revisions_data['restoreUrl'] = add_query_arg(
+			$nonce = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce',
+			wp_create_nonce( $nonce ),
+			$revisions_data['restoreUrl']
+		);
+
+		return $revisions_data;
 	}
 
 	/**
@@ -619,10 +634,6 @@ class IP_Geo_Block_Admin {
 					sanitize_text_field(
 						preg_replace( '/[^A-Z,]/', '', strtoupper( $input[ $key ] ) )
 					) : '';
-				break;
-
-			  // for arrays not on the form
-			  case 'ip2location':
 				break;
 
 			  default: // checkbox, select, text
