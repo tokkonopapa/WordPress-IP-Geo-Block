@@ -402,9 +402,12 @@ class IP_Geo_Block {
 				$validate = self::validate_country( $validate, $settings, $block );
 
 			// if one of IPs is blocked then stop
-			if ( $result = ( 'passed' !== $validate['result'] ) )
+			if ( 'passed' !== $validate['result'] )
 				break;
 		}
+
+		// Post process
+		$validate = apply_filters( self::PLUGIN_SLUG . "-post-$hook", $validate, $settings );
 
 		// update cache
 		IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
@@ -414,6 +417,7 @@ class IP_Geo_Block {
 
 			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
 			$var = (int)$settings['validation']['reclogs'];
+			$result = ( 'passed' !== $validate['result'] );
 			if ( ( 1 === $var &&   $result ) || // blocked
 			     ( 2 === $var && ! $result ) || // passed
 			     ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
