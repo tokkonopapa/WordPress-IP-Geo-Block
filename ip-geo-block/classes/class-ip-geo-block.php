@@ -563,10 +563,10 @@ class IP_Geo_Block {
 		$request = preg_quote( self::$wp_path[ $type = $this->target_type ], '/' );
 
 		// wp-includes, wp-content/(plugins|themes|language|uploads)
-		preg_match( "/($request)([^\/\?\&]*)\/?/", $this->request_uri, $matches );
+		preg_match( "/($request)([^\?\&]*)/", $this->request_uri, $matches );
 
 		// set validation type (1: Block by country, 2: WP-ZEP)
-		$list = apply_filters( self::PLUGIN_SLUG . '-bypass-' . $type, array_keys( $settings['exception' ][ $type ] ) );
+		$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $settings['exception'][ $type ] );
 		$type = isset( $matches[2] ) && in_array( $matches[2], $list, TRUE ) ? 0 : $settings['validation'][ $type ];
 
 		// register validation of nonce (2: WP-ZEP)
@@ -581,7 +581,7 @@ class IP_Geo_Block {
 
 		// if the validation is successful, execute the requested uri via rewrite.php
 		if ( class_exists( 'IP_Geo_Block_Rewrite' ) )
-			IP_Geo_Block_Rewrite::exec( $validate, $settings );
+			IP_Geo_Block_Rewrite::exec( $this, $validate, $settings );
 	}
 
 	/**
