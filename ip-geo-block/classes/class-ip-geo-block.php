@@ -94,8 +94,9 @@ class IP_Geo_Block {
 		}
 
 		elseif ( isset( $key[ $pagenow ] ) ) {
-			if ( $validate[ $key[ $pagenow ] ] )
+			if ( $validate[ $key[ $pagenow ] ] ) {
 				add_action( 'init', array( $this, 'validate_' . $key[ $pagenow ] ), $priority );
+			}
 		}
 
 		else {
@@ -135,40 +136,17 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Register options into database table when the plugin is activated.
+	 * Activate / Deactivate plugin
 	 *
 	 */
 	public static function activate( $network_wide = FALSE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-
-		// initialize logs then upgrade and return new options
-		IP_Geo_Block_Logs::create_tables();
-		$settings = IP_Geo_Block_Opts::upgrade();
-
-		if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
-
-			// kick off a cron job to download database immediately
-			IP_Geo_Block_Cron::spawn_job( TRUE, self::get_ip_address() );
-
-			// activate rewrite rules
-			IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
-		}
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
+		IP_Geo_Block_Activate::activate( $network_wide );
 	}
 
-	/**
-	 * Fired when the plugin is deactivated.
-	 *
-	 */
 	public static function deactivate( $network_wide = FALSE ) {
-		// cancel schedule
-		wp_clear_scheduled_hook( self::CRON_NAME, array( FALSE ) ); // @since 2.1.0
-
-		// deactivate rewrite rules
-		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
-		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
+		IP_Geo_Block_Activate::deactivate( $network_wide );
 	}
 
 	/**

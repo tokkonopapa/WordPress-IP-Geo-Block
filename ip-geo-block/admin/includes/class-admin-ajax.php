@@ -225,6 +225,7 @@ class IP_Geo_Block_Admin_Ajax {
 						$json[ $prfx.'['.$m[1].']' ] = strval( $input[ $m[1] ] );
 					}
 					break;
+
 				  case 3:
 					if ( !@is_null( $input[ $m[1] ][ $m[2] ] ) || $overwrite ) {
 						$json[ $prfx.'['.$m[1].']['.$m[2].']' ] = (
@@ -234,12 +235,14 @@ class IP_Geo_Block_Admin_Ajax {
 						);
 					}
 					break;
+
 				  case 4:
 					if ( is_numeric( $m[3] ) ) {
 						if ( isset( $input[  $m[1]  ][  $m[2]  ] ) )
 							$json[ $prfx.'['.$m[1].']['.$m[2].']'.'['.$m[3].']' ] =
 							strval( $input[  $m[1]  ][  $m[2]  ] ) & (int)$m[3];
-					} else {
+					}
+					elseif ( isset( $input[ $m[1] ][ $m[2] ] ) ) {
 						foreach ( $input[ $m[1] ][ $m[2] ] as $val ) {
 							$json[ $prfx.'['.$m[1].']['.$m[2].']'.'['.$val.']' ] = 1;
 						}
