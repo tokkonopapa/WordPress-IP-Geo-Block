@@ -36,19 +36,27 @@ if ( ! class_exists( 'IP_Geo_Block_Rewrite' ) ):
 class IP_Geo_Block_Rewrite {
 
 	/**
-	 * Virtual site path to network real path for multisite
+	 * Virtual requested uri to real path for multisite
 	 *
 	 */
 	private static function realpath( $path ) {
-		$site = str_replace( network_site_url(), '', site_url() );
-		return realpath( str_replace( $site, '', $path ) );
+
+		if ( is_multisite() ) {
+			$site = str_replace(
+				parse_url( network_site_url(), PHP_URL_PATH ), '',
+				parse_url( site_url(),         PHP_URL_PATH )
+			);
+			$path = str_replace( $site, '', $path );
+		}
+
+		return realpath( $path );
 	}
 
 	/**
 	 * Post process (never return)
 	 *
 	 */
-	private static function abort( $context, $validate, $settings, $exist ) {debug_log('abort');
+	private static function abort( $context, $validate, $settings, $exist ) {
 
 		// mark as malicious
 		$validate['result'] = 'blocked'; //'malice';

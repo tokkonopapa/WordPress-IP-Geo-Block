@@ -68,7 +68,7 @@ class IP_Geo_Block {
 			'themes'    => 'get_theme_root_uri', // @since 1.5.0
 		);
 
-		// analize the validation target
+		// analize the validation target (admin|plugins|themes|includes)
 		$len = strlen( self::$wp_path['home'] );
 		foreach ( $list as $key => $val ) {
 			self::$wp_path[ $key ] = trailingslashit( substr( parse_url( call_user_func( $val ), PHP_URL_PATH ), $len ) );
@@ -93,10 +93,10 @@ class IP_Geo_Block {
 			add_action( 'init', array( $this, 'validate_' . $val ), $priority );
 		}
 
+		// analize core validation target (comment|xmlrpc|login|public)
 		elseif ( isset( $key[ $pagenow ] ) ) {
-			if ( $validate[ $key[ $pagenow ] ] ) {
+			if ( $validate[ $key[ $pagenow ] ] )
 				add_action( 'init', array( $this, 'validate_' . $key[ $pagenow ] ), $priority );
-			}
 		}
 
 		else {
