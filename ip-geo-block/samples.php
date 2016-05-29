@@ -218,7 +218,7 @@ function my_bypass_admins( $queries ) {
 		'do-my-action',
 		'my-plugin-page',
 	);
-	return $queries + $whitelist;
+	return array_merge( $queries, $whitelist );
 }
 add_filter( 'ip-geo-block-bypass-admins', 'my_bypass_admins' );
 
@@ -235,7 +235,7 @@ function my_bypass_plugins( $plugins ) {
 	$whitelist = array(
 		'my-plugin',
 	);
-	return $plugins + $whitelist;
+	return array_merge( $plugins, $whitelist );
 }
 add_filter( 'ip-geo-block-bypass-plugins', 'my_bypass_plugins' );
 
@@ -252,7 +252,7 @@ function my_bypass_themes( $themes ) {
 	$whitelist = array(
 		'my-theme',
 	);
-	return $themes + $whitelist;
+	return array_merge( $themes, $whitelist );
 }
 add_filter( 'ip-geo-block-bypass-themes', 'my_bypass_themes' );
 
