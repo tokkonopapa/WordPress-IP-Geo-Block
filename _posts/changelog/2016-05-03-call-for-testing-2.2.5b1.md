@@ -185,7 +185,7 @@ So I would deeply appreciate for your kind cooperation <span class="emoji">
 
 [IP-Geo-Block]:   https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [2.2.5Beta1]:     https://github.com/tokkonopapa/WordPress-IP-Geo-Block/tree/2.2.5 "GitHub - tokkonopapa/WordPress-IP-Geo-Block at 2.2.5"
-[2.2.5Beta1-ZIP]: https://github.com/tokkonopapa/WordPress-IP-Geo-Block/releases/tag/v2.2.5 "Release v2.2.5 - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
+[2.2.5Beta1-ZIP]: https://github.com/tokkonopapa/WordPress-IP-Geo-Block/releases/tag/2.2.5 "Release 2.2.5 - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
 [2.2.5Beta1Diff]: https://github.com/tokkonopapa/WordPress-IP-Geo-Block/compare/2.2.4.1...2.2.5 "Comparing 2.2.4.1...2.2.5 - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
 [FatalError]:     {{ '/article/confession-on-224.html' | prepend: site.baseurl }} "Confession of the problem in 2.2.4"
 [SSL_ADMIN]:      https://codex.wordpress.org/Administration_Over_SSL "Administration Over SSL « WordPress Codex"
