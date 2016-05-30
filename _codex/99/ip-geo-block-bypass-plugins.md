@@ -34,7 +34,7 @@ function my_bypass_plugins( $plugins ) {
     $whitelist = array(
         'my-plugin',
     );
-    return $plugins + $whitelist;
+    return array_merge( $plugins, $whitelist );
 }
 add_filter( 'ip-geo-block-bypass-plugins', 'my_bypass_plugins' );
 {% endhighlight %}

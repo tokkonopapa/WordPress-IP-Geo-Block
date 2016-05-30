@@ -16,7 +16,7 @@ inline:
 code
 {% endhighlight %}
 
-[![title]({{ '/img/2015-xx/sample.png' | prepend: site.baseurl }}
+[![title]({{ '/img/2016-xx/sample.png' | prepend: site.baseurl }}
   "title"
 )][link]
 

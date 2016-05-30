@@ -35,7 +35,7 @@ function my_bypass_admins( $queries ) {
         'do-my-action',
         'my-plugin-page',
     );
-    return $queries + $whitelist;
+    return array_merge( $queries, $whitelist );
 }
 add_filter( 'ip-geo-block-bypass-admins', 'my_bypass_admins' );
 {% endhighlight %}

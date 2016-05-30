@@ -34,7 +34,7 @@ function my_bypass_themes( $themes ) {
     $whitelist = array(
         'my-theme',
     );
-    return $themes + $whitelist;
+    return array_merge( $themes, $whitelist );
 }
 add_filter( 'ip-geo-block-bypass-themes', 'my_bypass_themes' );
 {% endhighlight %}
