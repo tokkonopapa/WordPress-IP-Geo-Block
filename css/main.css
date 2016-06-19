@@ -273,6 +273,8 @@ footer.page-footer .footer-copyright {
 
 /********** from bootstrap.css **********/
 table {
+/*margin-left: auto;
+  margin-right: auto;*/
   margin-bottom: 2em;
 }
 table thead tr th, table tbody tr td {
