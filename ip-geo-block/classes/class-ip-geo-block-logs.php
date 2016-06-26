@@ -36,16 +36,18 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function create_tables() {
 		global $wpdb;
+		$result = TRUE;
 
 		// Default charset
 		$charset = 'utf8'; // MySQL 5.0+
 		if ( preg_match( '/CHARACTER SET (\w+)/i', $wpdb->get_charset_collate(), $table ) &&
-		     FALSE !== strpos( $table[1], 'utf8' ) )
+		     FALSE !== strpos( $table[1], 'utf8' ) ) {
 			$charset = $table[1]; // ex) utf8mb4 MySQL 5.5+
+		}
 
 		// for logs
 		$table = $wpdb->prefix . self::TABLE_LOGS;
-		$logs = $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
+		$result &= ( FALSE !== $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
 			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			`time` int(10) unsigned NOT NULL DEFAULT 0,
 			`ip` varchar(40) NOT NULL,
@@ -61,16 +63,16 @@ class IP_Geo_Block_Logs {
 			KEY `time` (`time`),
 			KEY `hook` (`hook`)
 			) CHARACTER SET " . $charset
-		) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
+		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
 
 		// for statistics
 		$table = $wpdb->prefix . self::TABLE_STAT;
-		$stat = $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
+		$result &= ( FALSE !== $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
 			`No` tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
 			`data` longtext NULL,
 			PRIMARY KEY (`No`)
 			) CHARACTER SET " . $charset
-		) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
+		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
 
 		// Create 1 record if not exists
 		$sql = $wpdb->prepare(
@@ -78,7 +80,7 @@ class IP_Geo_Block_Logs {
 			ON DUPLICATE KEY UPDATE No = No", 1, serialize( self::$default )
 		) and $wpdb->query( $sql );
 
-		return (FALSE !== $logs) && (FALSE !== $stat);
+		return $result;
 	}
 
 	/**
@@ -87,12 +89,33 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function delete_tables() {
 		global $wpdb;
+		$tables = array( self::TABLE_LOGS, self::TABLE_STAT, IP_Geo_Block::CACHE_KEY );
 
-		$table = $wpdb->prefix . self::TABLE_LOGS;
-		$wpdb->query( "DROP TABLE IF EXISTS `$table`" ) or self::error( __LINE__ );
+		foreach ( $tables as $table ) {
+			$table = $wpdb->prefix . $table;
+			$wpdb->query( "DROP TABLE IF EXISTS `$table`" ) or self::error( __LINE__ );
+		}
+	}
 
-		$table = $wpdb->prefix . self::TABLE_STAT;
-		$wpdb->query( "DROP TABLE IF EXISTS `$table`" ) or self::error( __LINE__ );
+	/**
+	 * Diagnose tables
+	 *
+	 */
+	public static function diag_tables() {
+		global $wpdb;
+		$tables = array( self::TABLE_LOGS, self::TABLE_STAT, IP_Geo_Block::CACHE_KEY );
+
+		foreach ( $tables as $table ) {
+			$table = $wpdb->prefix . $table;
+			if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
+				return  sprintf(
+					__( 'Creating a DB table %s had failed. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ),
+					$table
+				);
+			}
+		}
+
+		return NULL;
 	}
 
 	/**
@@ -117,6 +140,16 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function clear_stat() {
 		self::record_stat( self::$default );
+	}
+
+	/**
+	 * Clear IP address cache.
+	 *
+	 */
+	public static function clear_cache() {
+		global $wpdb;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
+		$wpdb->query( "TRUNCATE TABLE `$table`" ) or self::error( __LINE__ );
 	}
 
 	/**
@@ -149,30 +182,6 @@ class IP_Geo_Block_Logs {
 		) and $data = $wpdb->query( $sql ) or self::error( __LINE__ );
 
 		return empty( $data ) ? FALSE : TRUE;
-	}
-
-	/**
-	 * Diagnose tables
-	 *
-	 */
-	public static function diag_tables() {
-		global $wpdb;
-
-		$table = $wpdb->prefix . self::TABLE_LOGS;
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table )
-			return  __(
-				'Creating a DB table for validation logs had failed. Once de-activate this plugin, and then activate again.',
-				IP_Geo_Block::TEXT_DOMAIN
-			);
-
-		$table = $wpdb->prefix . self::TABLE_STAT;
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table )
-			return  __(
-				'Creating a DB table for statistics had failed. Once de-activate this plugin, and then activate again.',
-				IP_Geo_Block::TEXT_DOMAIN
-			);
-
-		return NULL;
 	}
 
 	/**
@@ -440,6 +449,7 @@ class IP_Geo_Block_Logs {
 		$posts = self::get_post_data( $hook, $validate, $settings );
 		$method = $_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . $_SERVER['REQUEST_URI'];
 
+		// anonymize ip address
 		if ( ! empty( $settings['anonymize'] ) )
 			$validate['ip'] = preg_replace( '/\d{1,3}$/', '***', $validate['ip'] );
 
@@ -510,15 +520,7 @@ class IP_Geo_Block_Logs {
 		else
 			$sql .= $wpdb->prepare( " WHERE `hook` = '%s' ORDER BY `No` DESC", $hook );
 
-		$list = $sql ? $wpdb->get_results( $sql, ARRAY_N ) : array();
-
-		foreach ( $list as $row ) {
-			$hook = array_shift( $row );
-			$result[ $hook ][] = $row; // array_map( 'IP_Geo_Block_Logs::validate_utf8', $row );
-		}
-
-		// must be sanitized just before sending to UA.
-		return isset( $result ) ? $result : array();
+		return $sql ? $wpdb->get_results( $sql, ARRAY_N ) : array();
 	}
 
 	/**

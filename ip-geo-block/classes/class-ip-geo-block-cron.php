@@ -48,8 +48,8 @@ class IP_Geo_Block_Cron {
 	 *   B. Multiple time for each blog when this plugin is individually activated
 	 */
 	public static function exec_job( $immediate = FALSE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		$settings = IP_Geo_Block::get_option( 'settings' );
 		$args = IP_Geo_Block::get_request_headers( $settings );
@@ -65,15 +65,14 @@ class IP_Geo_Block_Cron {
 			self::schedule_cron_job( $settings['update'], $settings[ $providers[0] ], FALSE );
 
 		// update option settings
-//		update_option( IP_Geo_Block::$option_keys['settings'], $settings );
-		self::update_settings( $settings, array( 'update' ) + $providers );
+		self::update_settings( $settings, array_merge( array( 'update' ), $providers ) );
 
 		// update matching rule immediately
 		if ( $immediate && FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
 			add_filter( IP_Geo_Block::PLUGIN_SLUG . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
 
 			$validate = IP_Geo_Block::get_geolocation( NULL, $providers );
-			$validate = IP_Geo_Block::validate_country( $validate, $settings );
+			$validate = IP_Geo_Block::validate_country( NULL, $validate, $settings );
 
 			// if blocking may happen then disable validation
 			if ( -1 !== (int)$settings['matching_rule'] && 'passed' !== $validate['result'] )
@@ -88,7 +87,6 @@ class IP_Geo_Block_Cron {
 			}
 
 			// update option settings
-//			update_option( IP_Geo_Block::$option_keys['settings'], $settings );
 			self::update_settings( $settings, array( 'matching_rule', 'white_list', 'black_list' ) );
 
 			// finished to update matching rule
@@ -104,7 +102,7 @@ class IP_Geo_Block_Cron {
 	 */
 	private static function update_settings( $src, $keys = array() ) {
 		if ( ! function_exists( 'is_plugin_active_for_network' ) )
-			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+			include_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 
 		$slug = IP_Geo_Block::$option_keys['settings'];
 
@@ -149,10 +147,14 @@ class IP_Geo_Block_Cron {
 	 * Kick off a cron job to download database immediately on background.
 	 *
 	 */
-	public static function spawn_job( $immediate = TRUE, $ip_adrs ) {
+	public static function start_update_db( $immediate = TRUE, $ip_adrs ) {
 		set_transient( IP_Geo_Block::CRON_NAME, $ip_adrs, 2 * MINUTE_IN_SECONDS );
 		$settings = IP_Geo_Block::get_option( 'settings' );
 		self::schedule_cron_job( $settings['update'], NULL, $immediate );
+	}
+
+	public static function stop_update_db() {
+		wp_clear_scheduled_hook( IP_Geo_Block::CRON_NAME, array( FALSE ) ); // @since 2.1.0
 	}
 
 }

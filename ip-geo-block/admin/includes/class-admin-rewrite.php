@@ -10,7 +10,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	private $doc_root = NULL; // document root
 	private $site_uri = NULL; // network site uri
 	private $base_uri = NULL; // plugins base uri
-	private $wp_dirs;
+	private $wp_dirs  = array();
 
 	// template of rewrite rule in wp-content/(plugins|themes)/
 	private $rewrite_rule = array(
@@ -60,9 +60,8 @@ class IP_Geo_Block_Admin_Rewrite {
 		$this->site_uri = untrailingslashit( parse_url( network_site_url(), PHP_URL_PATH ) );
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
 
-		$condir = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
-
 		// target directories
+		$condir = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
 		$this->wp_dirs = array(
 			'plugins'   => $condir . '/plugins/',
 			'themes'    => $condir . '/themes/',
@@ -327,6 +326,15 @@ class IP_Geo_Block_Admin_Rewrite {
 		}
 
 		return TRUE;
+	}
+
+	/**
+	 * Return list of target directories.
+	 *
+	 */
+	public static function get_dirs() {
+		$rewrite = self::get_instance();
+		return $rewrite->wp_dirs;
 	}
 
 }

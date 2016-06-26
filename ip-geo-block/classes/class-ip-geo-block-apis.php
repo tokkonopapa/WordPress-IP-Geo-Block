@@ -492,7 +492,7 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
 class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 	public static function update_cache( $hook, $validate, $settings ) {
-		$time = time();
+		$time = $_SERVER['REQUEST_TIME']; // time();
 		$num = ! empty( $settings['cache_hold'] ) ? $settings['cache_hold'] : 10;
 		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;
 
@@ -521,6 +521,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			'auth' => $validate['auth'], // get_current_user_id() > 0
 			'fail' => $validate['auth'] ? 0 : $fail,
 			'call' => $settings['save_statistics'] ? $call : 0,
+			'host' => isset( $validate['host'] ) ? $validate['host'] : NULL,
 		);
 
 		// sort by 'time'
@@ -541,27 +542,28 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		return $cache[ $ip ];
 	}
 
-	public static function delete_cache() {
+	public static function clear_cache() {
 		delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
+	}
+
+	public static function get_cache_all() {
+		return get_transient( IP_Geo_Block::CACHE_KEY );
 	}
 
 	public static function get_cache( $ip ) {
 		$cache = get_transient( IP_Geo_Block::CACHE_KEY );
-		if ( $cache && isset( $cache[ $ip ] ) )
-			return $cache[ $ip ];
-		else
-			return NULL;
+		return $cache && isset( $cache[ $ip ] ) ? $cache[ $ip ] : NULL;
 	}
 
 	public function get_location( $ip, $args = array() ) {
-		if ( $cache = $this->get_cache( $ip ) )
+		if ( $cache = self::get_cache( $ip ) )
 			return array( 'countryCode' => $cache['code'] );
 		else
 			return array( 'errorMessage' => 'not in the cache' );
 	}
 
 	public function get_country( $ip, $args = array() ) {
-		return ( $cache = $this->get_cache( $ip ) ) ? $cache['code'] : NULL;
+		return ( $cache = self::get_cache( $ip ) ) ? $cache['code'] : NULL;
 	}
 }
 
@@ -714,7 +716,7 @@ class IP_Geo_Block_Provider {
 		if ( 0 === $field )
 			return __(
 				'You need to select at least one IP geolocation service. Otherwise <strong>you\'ll be blocked</strong> after the cache expires.',
-				IP_Geo_Block::TEXT_DOMAIN
+				'ip-geo-block'
 			);
 
 		return NULL;

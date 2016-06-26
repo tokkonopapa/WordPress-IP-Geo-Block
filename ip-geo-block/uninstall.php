@@ -19,6 +19,7 @@ define( 'IP_GEO_BLOCK_PATH', plugin_dir_path( __FILE__ ) ); // @since 2.8
 include( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php' );
 include( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 include( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+include( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 class IP_Geo_Block_Uninstall {
 
@@ -28,8 +29,7 @@ class IP_Geo_Block_Uninstall {
 	 */
 	private static function delete_all_options( $settings ) {
 		delete_option( IP_Geo_Block::$option_keys['settings'] ); // @since 1.2.0
-		delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
-
+		IP_Geo_Block_API_Cache::clear_cache();
 		IP_Geo_Block_Logs::delete_tables();
 		IP_Geo_Block_Opts::delete_api( $settings );
 	}
@@ -39,8 +39,8 @@ class IP_Geo_Block_Uninstall {
 	 *
 	 */
 	public static function uninstall() {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 
 		$settings = IP_Geo_Block::get_option( 'settings' );
 

@@ -153,7 +153,7 @@ var ip_geo_block_time = new Date();
 					name = decodeURIComponent(key);
 					value = decodeURIComponent(json[key]);
 
-					if (!(name in data)) {
+					if (!(name in data)) { // !data.hasOwnProperty(name)
 						data[name] = [];
 					}
 
@@ -297,8 +297,8 @@ var ip_geo_block_time = new Date();
 
 		// Get tab number and check wpCookies in wp-includes/js/utils.js
 		var cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('admin'))) || {},
-		    tabNum = /&tab=(\d)/.exec(window.location.href);
-		tabNum = Number(tabNum && tabNum[1]);
+		    maxTabs = 8, tabNo = /&tab=(\d)/.exec(window.location.href);
+		tabNo = Number(tabNo && tabNo[1]);
 
 		// Make form style with fieldset and legend
 		var fieldset = $('<fieldset class="' + ID('field') + '"></fieldset>'),
@@ -317,8 +317,8 @@ var ip_geo_block_time = new Date();
 			notes.insertBefore($this);
 
 			// Initialize show/hide form-table on tab 0, 1
-			if (tabNum <= 1) {
-				index += (tabNum ? 8 : 0);
+			if (tabNo <= 1) {
+				index += (tabNo ? maxTabs : 0);
 				if ('undefined' === typeof cookie[index] || cookie[index]) { // 'undefined' or 'o'
 					title.addClass(ID('dropdown')).parent().nextAll().show();
 				} else {
@@ -328,7 +328,7 @@ var ip_geo_block_time = new Date();
 		});
 
 		// Click event handler to show/hide form-table
-		if (tabNum <= 1) {
+		if (tabNo <= 1) {
 			$('form').on('click', 'h2,h3', function (event) {
 				var title = $(this),
 				    index = title.closest('fieldset').data('ip-geo-block');
@@ -339,7 +339,7 @@ var ip_geo_block_time = new Date();
 
 				// Save cookie
 				if ('undefined' !== typeof wpCookies) {
-					cookie[index + (tabNum ? 8: 0)] = title.hasClass(ID('dropdown')) ? 'o' : '';
+					cookie[index + (tabNo ? maxTabs : 0)] = title.hasClass(ID('dropdown')) ? 'o' : '';
 					wpCookies.setHash(ID('admin'), cookie, new Date(Date.now() + 2592000000));
 				}
 
@@ -358,7 +358,10 @@ var ip_geo_block_time = new Date();
 		});
 
 		// Register event handler at specific tab
-		switch (tabNum) {
+		switch (tabNo) {
+		  /*----------------------------------------
+		   * Settings
+		   *----------------------------------------*/
 		  case 0:
 			// Scan your country code
 			$(ID('#', 'scan-code')).on('click', function (event) {
@@ -394,6 +397,12 @@ var ip_geo_block_time = new Date();
 			$(ID('@', 'matching_rule')).on('change', function () {
 				$(ID('@', 'white_list')).closest('tr').toggle(this.value !== '1');
 				$(ID('@', 'black_list')).closest('tr').toggle(this.value !== '0');
+				return false;
+			}).trigger('change');
+
+			$(ID('@', 'public_matching_rule')).on('change', function () {
+				$(ID('@', 'public_white_list')).closest('tr').toggle(this.value !== '1');
+				$(ID('@', 'public_black_list')).closest('tr').toggle(this.value !== '0');
 				return false;
 			}).trigger('change');
 
@@ -554,6 +563,9 @@ var ip_geo_block_time = new Date();
 
 			break;
 
+		  /*----------------------------------------
+		   * Statistics
+		   *----------------------------------------*/
 		  case 1:
 			// https://developers.google.com/loader/#Dynamic
 			if ($(ID('#', 'chart-countries')).length && 'object' === typeof google) {
@@ -582,6 +594,9 @@ var ip_geo_block_time = new Date();
 			});
 			break;
 
+		  /*----------------------------------------
+		   * Search
+		   *----------------------------------------*/
 		  case 2:
 			// Initialize map if exists
 			$(ID('#', 'map')).each(function () {
@@ -624,6 +639,9 @@ var ip_geo_block_time = new Date();
 			});
 			break;
 
+		  /*----------------------------------------
+		   * Logs
+		   *----------------------------------------*/
 		  case 4:
 			// Kick-off footable
 			if ($(ID('.', 'log')).hide().length) {
@@ -652,6 +670,15 @@ var ip_geo_block_time = new Date();
 				confirm('Clear logs ?', function () {
 					ajax_clear('logs', null);
 				});
+				return false;
+			});
+
+			// Export / Import settings
+			add_hidden_form('export-logs');
+
+			// Export settings
+			$(ID('#', 'export-logs')).on('click', function (event) {
+				$(ID('#', 'export-form')).trigger('submit');
 				return false;
 			});
 			break;

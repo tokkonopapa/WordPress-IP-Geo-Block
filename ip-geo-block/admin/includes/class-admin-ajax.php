@@ -6,7 +6,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function search_ip( $which ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		// check format
 		if ( filter_var( $ip = $_POST['ip'], FILTER_VALIDATE_IP ) ) {
@@ -33,7 +33,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function scan_country() {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		// scan all the country code using selected APIs
 		$ip        = IP_Geo_Block::get_ip_address();
@@ -50,10 +50,10 @@ class IP_Geo_Block_Admin_Ajax {
 				$res[ $provider ] = array(
 					'type' => $type[ $provider ],
 					'code' => esc_html(
-						FALSE === $ret ? __( 'n/a', IP_Geo_Block::TEXT_DOMAIN ) : (
+						FALSE === $ret ? __( 'n/a', 'ip-geo-block' ) : (
 						! empty( $ret['errorMessage'] ) ? $ret['errorMessage'] : (
 						! empty( $ret['countryCode' ] ) ? $ret['countryCode' ] :
-						__( 'UNKNOWN', IP_Geo_Block::TEXT_DOMAIN ) ) )
+						__( 'UNKNOWN', 'ip-geo-block' ) ) )
 					),
 				);
 			}
@@ -63,26 +63,78 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	/**
+	 * Insert array
+	 *
+	 */
+	static private function array_insert( &$base_array, $insert_value, $position = null ) {
+		if ( ! is_array( $insert_value ) )
+			$insert_value = array( $insert_value );
+
+		$position = is_null( $position ) ? count( $base_array ) : intval( $position );
+
+		$base_array = array_merge(
+			array_splice( $base_array, 0, $position ),
+			$insert_value, $base_array
+		);
+	}
+
+	/**
+	 * Export logs from MySQL DB
+	 *
+	 */
+	static public function export_logs( $which ) {
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+
+		$csv = '';
+		$which = IP_Geo_Block_Logs::restore_logs( $which );
+		$date = isset( $which[0] ) ? $which[0][1] : $_SERVER['REQUEST_TIME'];
+		$date = IP_Geo_Block_Util::localdate( $date, 'Y-m-d_H-i-s' );
+
+		foreach ( $which as $data ) {
+			$hook = array_shift( $data );
+			self::array_insert( $data, $hook, 3 );
+			$data[0] = IP_Geo_Block_Util::localdate( $data[0], 'Y-m-d H:i:s' );
+			$csv .= implode( ',', $data ) . PHP_EOL;
+		}
+
+		// Send as file
+		header( 'Content-Description: File Transfer' );
+		header( 'Content-Type: application/octet-stream' );
+		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_SLUG . '_' . $date . '.csv"' );
+		header( 'Pragma: public' );
+		header( 'Expires: 0' );
+		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
+		header( 'Content-Length: ' . strlen( $csv ) );
+		echo $csv;
+	}
+
+	/**
 	 * Restore logs from MySQL DB
 	 *
 	 */
 	static public function restore_logs( $which ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// if js is slow then limit the number of rows
+		$list = array();
 		$limit = IP_Geo_Block_Logs::limit_rows( @$_POST['time'] );
-		$which = IP_Geo_Block_Logs::restore_logs( $which );
+
+		foreach ( IP_Geo_Block_Logs::restore_logs( $which ) as $row ) {
+			$hook = array_shift( $row );
+			$list[ $hook ][] = $row; // array_map( 'IP_Geo_Block_Logs::validate_utf8', $row );
+		}
 
 		// compose html with sanitization
-		foreach ( $which as $hook => $rows ) {
+		foreach ( $list as $hook => $rows ) {
 			$html = '';
 			$n = 0;
-			foreach ( $rows as $logs ) {
-				$log = (int)array_shift( $logs );
+			foreach ( $rows as $row ) {
+				$log = (int)array_shift( $row );
 				$html .= '<tr><td data-value='.$log.'>';
 				$html .= IP_Geo_Block_Util::localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
-				foreach ( $logs as $log ) {
+				foreach ( $row as $log ) {
 					$log = esc_html( $log );
 					$html .= "<td>$log</td>";
 				}
@@ -106,9 +158,8 @@ class IP_Geo_Block_Admin_Ajax {
 			isset( $_POST['data'] ) ? $_POST['data'] : ''
 		);
 
-		if ( NULL === ( $data = json_decode( $json, TRUE ) ) ) {
+		if ( NULL === ( $data = json_decode( $json, TRUE ) ) )
 			wp_die( 'Illegal JSON format.', '', array( 'response' => 500, 'back_link' => TRUE ) ); // @Since 2.0.4
-		}
 
 		// Sanitize to fit the type of each field
 		$temp = self::json_to_settings( $data );
@@ -145,16 +196,18 @@ class IP_Geo_Block_Admin_Ajax {
 				  case 2:
 					$settings[ $m[1] ] = $val;
 					break;
+
 				  case 3:
 					$settings[ $m[1] ][ $m[2] ] = $val;
 					break;
+
 				  case 4:
 					if ( is_numeric( $m[3] ) ) {
 						if ( empty( $settings[ $m[1] ][ $m[2] ] ) )
 							$settings[ $m[1] ][ $m[2] ] = 0;
 						$settings[ $m[1] ][ $m[2] ] |= $val;
 					} else {
-						$settings[ $m[1] ][ $m[2] ][] = $m[3];
+						$settings[ $m[1] ][ $m[2] ][ $m[3] ] = $val;
 					}
 					break;
 				}
@@ -268,12 +321,11 @@ class IP_Geo_Block_Admin_Ajax {
 				    'admin'       => 3,       // Validate on admin (1:country 2:ZEP)
 				    'ajax'        => 3,       // Validate on ajax/post (1:country 2:ZEP)
 				    'xmlrpc'      => 1,       // Validate on xmlrpc (1:country 2:close)
-				    'reclogs'     => 3,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
 				    'postkey'     => 'action,comment,log,pwd', // Keys in $_POST
 				    'plugins'     => 2,       // Validate on wp-content/plugins
 				    'themes'      => 2,       // Validate on wp-content/themes
 				),
-				'signature'       => '..,/wp-config.php,/passwd,curl,wget select:.5,create:.6,load_file:.5,where:.5,union:.5,password:.4',
+				'signature'       => "..,/wp-config.php,/passwd,curl,wget\nselect:.5,where:.5,union:.5\ncreate:.6,password:.4,load_file:.5",
 				'rewrite'         => array(   // Apply rewrite rule
 				    'plugins'     => TRUE,    // for wp-content/plugins
 				    'themes'      => TRUE,    // for wp-content/themes

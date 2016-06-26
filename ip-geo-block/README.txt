@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.5.2
-Stable tag: 2.2.5
+Stable tag: 2.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -395,6 +395,7 @@ Yes, here is the list of all hooks to extend the feature of this plugin.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
 * `ip-geo-block-ip2location-dir`  : full path where IP2Location LITE DB files should be saved.
 * `ip-geo-block-ip2location-path` : full path to IP2Location LITE DB file (IPv4).
+* `ip-geo-block-record-logs`      : change the condition of recording logs
 
 For more details, see 
 [the documents](http://www.ipgeoblock.com/codex/ "Codex | IP Geo Block").
@@ -410,6 +411,14 @@ For more details, see
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.2.6 =
+* **New feature:** Add saving csv file of logs in "Logs" tab.
+* **New feature:** Add filter hook `ip-geo-block-record-log` to control over 
+  the conditions of recording in more detail.
+* **Bug fix:** Fixed the issue that "Exceptions" for Plugins/Themes area does 
+  not work properly. Please confirm your settings again.
+* See details at [release 2.2.6](http://www.ipgeoblock.com/changelog/release-2.2.6.html "2.2.6 Release Note").
 
 = 2.2.5 =
 * **New feature:** On the settings page, you can specify the pliugin or theme 

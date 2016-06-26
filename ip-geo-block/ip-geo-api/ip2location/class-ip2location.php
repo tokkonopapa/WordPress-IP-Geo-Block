@@ -11,7 +11,7 @@ define( 'IP_GEO_BLOCK_IP2LOC_IPV4_ZIP', 'http://download.ip2location.com/lite/IP
 define( 'IP_GEO_BLOCK_IP2LOC_IPV6_ZIP', 'http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.IPV6.BIN.ZIP' );
 
 /**
- * Class for IP2Location (ver. 1.1.2)
+ * Class for IP2Location (ver. 1.1.3)
  *
  * URL         : http://www.ip2location.com/
  * Term of use : http://www.ip2location.com/terms
@@ -140,7 +140,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 
 		$date = empty( $options['IP2Location']['ipv4_path'] ) ||
 			! @file_exists( $options['IP2Location']['ipv4_path'] ) ?
-			__( 'Database file does not exist.', IP_Geo_Block::TEXT_DOMAIN ) :
+			__( 'Database file does not exist.', 'ip-geo-block' ) :
 			sprintf(
 				$str_last,
 				IP_Geo_Block_Util::localdate( $options[ $field ]['ipv4_last'] )
@@ -169,7 +169,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 
 		$date = empty( $options['IP2Location']['ipv6_path'] ) ||
 			! @file_exists( $options['IP2Location']['ipv6_path'] ) ?
-			__( 'Database file does not exist.', IP_Geo_Block::TEXT_DOMAIN ) :
+			__( 'Database file does not exist.', 'ip-geo-block' ) :
 			sprintf(
 				$str_last,
 				IP_Geo_Block_Util::localdate( $options[ $field ]['ipv6_last'] )

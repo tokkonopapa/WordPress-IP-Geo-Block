@@ -22,10 +22,13 @@ class IP_Geo_Block_Activate {
 	 *
 	 */
 	public static function activate( $network_wide = FALSE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		if ( ! function_exists( 'is_plugin_active_for_network' ) )
+			include_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 
-		if ( $network_wide ) {
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+
+		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			global $wpdb;
 			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
 			$current_blog_id = get_current_blog_id();
@@ -42,14 +45,15 @@ class IP_Geo_Block_Activate {
 
 		// only for main blog
 		if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+
+			$settings = IP_Geo_Block::get_option( 'settings' );
 
 			// kick off a cron job to download database immediately
-			IP_Geo_Block_Cron::spawn_job( TRUE, IP_Geo_Block::get_ip_address() );
+			IP_Geo_Block_Cron::start_update_db( TRUE, IP_Geo_Block::get_ip_address() );
 
 			// activate rewrite rules
-			$settings = IP_Geo_Block::get_option( 'settings' );
 			IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
 		}
 	}
@@ -59,11 +63,13 @@ class IP_Geo_Block_Activate {
 	 *
 	 */
 	public static function deactivate( $network_wide = FALSE ) {
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+
 		// cancel schedule
-		wp_clear_scheduled_hook( IP_Geo_Block::CRON_NAME, array( FALSE ) ); // @since 2.1.0
+		IP_Geo_Block_Cron::stop_update_db();
 
 		// deactivate rewrite rules
-		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
 	}
 

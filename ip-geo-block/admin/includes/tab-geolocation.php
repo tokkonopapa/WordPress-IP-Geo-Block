@@ -1,5 +1,5 @@
 <?php
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 class IP_Geo_Block_Admin_Tab {
 
@@ -20,7 +20,7 @@ class IP_Geo_Block_Admin_Tab {
 		$section = $plugin_slug . '-search';
 		add_settings_section(
 			$section,
-			__( 'Search IP address geolocation', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Search IP address geolocation', 'ip-geo-block' ),
 			NULL,
 			$option_slug
 		);
@@ -40,7 +40,7 @@ class IP_Geo_Block_Admin_Tab {
 		$provider = array_keys( $providers );
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Geolocation service', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Geolocation service', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -56,7 +56,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'ip_address';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'IP address', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'IP address', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -71,7 +71,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'get_location';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Find geolocation', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Find geolocation', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -79,7 +79,7 @@ class IP_Geo_Block_Admin_Tab {
 				'type' => 'button',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => __( 'Search now', IP_Geo_Block::TEXT_DOMAIN ),
+				'value' => __( 'Search now', 'ip-geo-block' ),
 				'after' => '<div id="ip-geo-block-loading"></div>',
 			)
 		);

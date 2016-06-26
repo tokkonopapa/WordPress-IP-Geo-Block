@@ -32,6 +32,7 @@ define( 'IP_GEO_BLOCK_DEBUG', false );
 function my_replace_ip( $ip ) {
 	return '98.139.183.24'; // yahoo.com
 }
+
 add_filter( 'ip-geo-block-ip-addr', 'my_replace_ip' );
 
 
@@ -53,6 +54,7 @@ function my_retrieve_ip( $ip ) {
 
 	return $ip;
 }
+
 add_filter( 'ip-geo-block-ip-addr', 'my_retrieve_ip' );
 
 
@@ -66,6 +68,7 @@ function my_emergency( $validate ) {
 	$validate['result'] = 'passed';
 	return $validate;
 }
+
 add_filter( 'ip-geo-block-login', 'my_emergency' );
 add_filter( 'ip-geo-block-admin', 'my_emergency' );
 
@@ -92,6 +95,7 @@ function my_blacklist( $validate ) {
 
 	return $validate;
 }
+
 add_filter( 'ip-geo-block-comment', 'my_blacklist' );
 
 
@@ -116,6 +120,7 @@ function my_whitelist( $validate ) {
 
 	return $validate;
 }
+
 add_filter( 'ip-geo-block-login', 'my_whitelist' );
 add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
 
@@ -125,7 +130,7 @@ add_filter( 'ip-geo-block-xmlrpc', 'my_whitelist' );
  * Use case: Give permission to ajax with specific action at public facing page
  *
  * @global array $_GET and $_POST requested queries
- * @param  array $validate
+ * @param  array $validate validation results
  * @return array $validate add 'result' as 'passed' when 'action' is OK
  */
 function my_permitted_ajax( $validate ) {
@@ -138,6 +143,7 @@ function my_permitted_ajax( $validate ) {
 
 	return $validate; // should not set 'passed' to validate by country code
 }
+
 if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
 	add_filter( 'ip-geo-block-admin', 'my_permitted_ajax' );
 
@@ -147,11 +153,12 @@ if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
  * Use case: Get IPs with CIDR from Amazon AWS and set them to the black list
  *
  * @param  array $extra_ips array of white list and black list
- * @param  string $hook 'comment', 'login', 'admin' or 'xmlrpc'
+ * @param  string $hook 'comment', 'xmlrpc', 'login', 'admin'
  * @return array $extra_ips updated array
  */
 define( 'MY_EXTRA_IPS_LIST', 'my_extra_ips_list' );
 define( 'MY_EXTRA_IPS_CRON', 'my_extra_ips_cron' );
+
 function my_extra_ips_get() {
 	$list = json_decode(
 		@file_get_contents( 'https://ip-ranges.amazonaws.com/ip-ranges.json' ),
@@ -169,6 +176,7 @@ function my_extra_ips_get() {
 
 	return $list;
 }
+
 function my_extra_ips_hook( $extra_ips, $hook ) {
 	// if the list does not exist, then update
 	$list = get_transient( MY_EXTRA_IPS_LIST );
@@ -183,6 +191,7 @@ function my_extra_ips_hook( $extra_ips, $hook ) {
 
 	return $extra_ips;
 }
+
 add_action( MY_EXTRA_IPS_CRON, 'my_extra_ips_get' );
 add_filter( 'ip-geo-block-extra-ips', 'my_extra_ips_hook', 10, 2 );
 
@@ -197,6 +206,7 @@ add_filter( 'ip-geo-block-extra-ips', 'my_extra_ips_hook', 10, 2 );
 function my_xmlrpc_status( $code ) { return 403; }
 function my_login_status ( $code ) { return 503; }
 function my_login_reason ( $msg  ) { return "Sorry, this service is unavailable."; }
+
 add_filter( 'ip-geo-block-xmlrpc-status', 'my_xmlrpc_status' );
 add_filter( 'ip-geo-block-login-status',  'my_login_status'  );
 add_filter( 'ip-geo-block-login-reason',  'my_login_reason'  );
@@ -220,6 +230,7 @@ function my_bypass_admins( $queries ) {
 	);
 	return array_merge( $queries, $whitelist );
 }
+
 add_filter( 'ip-geo-block-bypass-admins', 'my_bypass_admins' );
 
 
@@ -237,6 +248,7 @@ function my_bypass_plugins( $plugins ) {
 	);
 	return array_merge( $plugins, $whitelist );
 }
+
 add_filter( 'ip-geo-block-bypass-plugins', 'my_bypass_plugins' );
 
 
@@ -254,6 +266,7 @@ function my_bypass_themes( $themes ) {
 	);
 	return array_merge( $themes, $whitelist );
 }
+
 add_filter( 'ip-geo-block-bypass-themes', 'my_bypass_themes' );
 
 
@@ -269,6 +282,7 @@ function my_user_agent( $args ) {
     $args['user-agent'] = 'my user agent strings';
     return $args;
 }
+
 add_filter( 'ip-geo-block-headers', 'my_user_agent' );
 
 
@@ -283,6 +297,7 @@ function my_maxmind_dir( $dir ) {
 	$upload = wp_upload_dir();
 	return $upload['basedir'];
 }
+
 add_filter( 'ip-geo-block-maxmind-dir', 'my_maxmind_dir' );
 
 
@@ -296,9 +311,11 @@ add_filter( 'ip-geo-block-maxmind-dir', 'my_maxmind_dir' );
 function my_maxmind_ipv4( $url ) {
 	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
 }
+
 function my_maxmind_ipv6( $url ) {
 	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCityv6-beta/GeoLiteCityv6.dat.gz';
 }
+
 add_filter( 'ip-geo-block-maxmind-zip-ipv4', 'my_maxmind_ipv4' );
 add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
 
@@ -313,6 +330,7 @@ add_filter( 'ip-geo-block-maxmind-zip-ipv6', 'my_maxmind_ipv6' );
 function my_ip2location_path( $path ) {
 	return WP_PLUGIN_DIR . '/ip2location-tags/IP2LOCATION-LITE-DB1.IPV6.BIN';
 }
+
 add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
 
 
@@ -320,16 +338,17 @@ add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
  * Example 16: Backup validation logs to text files
  * Use case: Keep verification logs selectively to text files
  *
- * @param  string $hook 'comment', 'login', 'admin' or 'xmlrpc'
+ * @param  string $hook 'comment', 'xmlrpc', 'login', 'admin'
  * @param  string $dir default path where text files should be saved
  * @return string should be absolute path out of the public_html.
  */
 function my_backup_dir( $dir, $hook ) {
-	if ( 'login' === $hook )
+	if ( in_array( $hook, array( 'login', 'admin' ) ) )
 		return '/absolute/path/to/';
 	else
 		return null;
 }
+
 add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
 
 
@@ -352,11 +371,11 @@ function my_geolocation() {
 	$geolocation = IP_Geo_Block::get_geolocation();
 
 	/**
-	 * 'ip'       => validated ip address
-	 * 'auth'     => authenticated or not
-	 * 'time'     => processing time
-	 * 'code'     => country code
-	 * 'provider' => IP geolocation service provider
+	 * 'ip'       => string   validated ip address
+	 * 'auth'     => int      authenticated or not
+	 * 'code'     => string   country code
+	 * 'time'     => unsinged int processing time
+	 * 'provider' => string   IP geolocation service provider
 	 */
 	var_dump( $geolocation );
 
@@ -365,5 +384,32 @@ function my_geolocation() {
 	}
 }
 
+
+/**
+ * Example 18: Usage of 'ip-geo-block-record-logs'
+ * Use case: Prevent recording logs when it requested from own country
+ *
+ * @param  int    $record   0:none 1:blocked 2:passed 3:unauth 4:auth 5:all
+ * @param  string $hook     'comment', 'xmlrpc', 'login' or 'admin'
+ * @param  array  $validate the result of validation which contains:
+ *  'ip'       => string    ip address
+ *  'auth'     => int       authenticated (>= 1) or not (0)
+ *  'code'     => string    country code
+ *  'time'     => unsinged  processing time for examining the country code
+ *  'provider' => string    IP geolocation service provider
+ *  'result'   => string    'passed' or the reason of blocking
+ * @return int    $record   modified condition
+ */
+function my_record_logs( $record, $hook, $validate ) {
+	/* if request is from my country and passed, then no record */
+	if ( 'JP' === $validate['code'] && 'passed' === $validate['result'] )
+		$record = 0;
+
+	return $record;
+}
+
+add_filter( 'ip-geo-block-record-logs', 'my_record_logs', 10, 3 );
+
 endif; /* class_exists( 'IP_Geo_Block' ) */
+
 ?>
