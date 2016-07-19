@@ -75,12 +75,13 @@ Using cookie cache can be enabled at "**Cache settings**" (default is
 	<a href="https://wordpress.org/plugins/wp-super-cache/" title="WP Super Cache - WordPress Plugins">WP Super Cache</a>
 	or
 	<a href="https://wordpress.org/plugins/w3-total-cache/" title="W3 Total Cache - WordPress Plugins">W3 Total Cache</a>,
-	you should configure these plugins to use "**PHP mode**" (in case of W3TC, 
-	"**Disk: Basic**") and turn on "<strong>late initialization</strong>" 
-	option. If your caching plugin doesn't support similar options, that's the 
-	case of redirecting by <code>mod_rewrite</code> in <code>.htaccess</code> 
+	you should configure these plugins to use "<strong>PHP mode</strong>" (in 
+	case of W3TC, "<strong>Disk: Basic</strong>") and turn on "<strong>late 
+	initialization</strong>" option. If your caching plugin doesn't support 
+	similar options, i.e. in case of redirecting by <code>mod_rewrite</code> 
+	in <code>.htaccess</code> 
 	(<a href="https://wordpress.org/plugins/wp-fastest-cache/" title="WP Fastest Cache - WordPress Plugins">WP Fastest Cache</a>)
-	or <code>advanced-cache.php</code>
+	or <code>advanced-cache.php</code> drop-in 
 	(<a href="https://wordpress.org/plugins/comet-cache/" title="Comet Cache - WordPress Plugins">Comet Cache</a>)
 	, "<strong>Blocking on front-end</strong>" feature might lead to generate 
 	inconsistent pages.
