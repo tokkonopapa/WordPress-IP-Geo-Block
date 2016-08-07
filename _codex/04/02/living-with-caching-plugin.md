@@ -29,12 +29,19 @@ with the following configuration.
 | W3 Total Cache     | "**Disk: Basic**" and "**Late initialization**" for page cache |
 | Wordfence Security | "**Basic Caching**" and `ip-geo-block-mu.php` in `mu-plugins`  |
 
-#### Installing `ip-geo-block-mu.php` ####
+### Installing MU-Plugins ###
 
-You can find `wp-content/mu-plugis/ip-geo-block-mu.php` in this plugin's 
-package. This PHP file will be loaded prior to other plugins when you install 
-it into your `wp-content/mu-plugins` directory which is known as 
-[Must-use plugins][MU-Plugins].
+A [Must-use plugin][MU-Plugins] is a plugin that will always be activated by 
+default and be loaded prior to other regular plugins when you install it into 
+your `wp-content/mu-plugins` directory.
+
+You can install the PHP file `ip-geo-block-mu.php` in 
+`ip-geo-block/wp-content/mu-plugins` into the MU-Plugins directory in order to 
+run it at the early stage of WordPress core process.
+
+![MU-Plugins]({{ '/img/2016-08/MU-Plugins.png' | prepend: site.baseurl }}
+ "MU-Plugins"
+)
 
 This is recommended for WP Super Cache and W3 Total Cache. And it must be 
 installed for Wordfence which doesn't support "**Late init**".
@@ -47,6 +54,15 @@ installed for Wordfence which doesn't support "**Late init**".
 	processes.
 </div>
 
+#### Restrictions ####
+
+Installing into MU-Plugins has some restrictions :
+
+- You can't use [custom filter hooks][FilterHooks] of this plugin in your 
+  theme's `functions.php`.
+- Every activity will be saved into logs when you select "**Unauthenticated 
+  user**" for "**Record validation logs**" at "**Record settings**" even if 
+  you're logged in user.
 
 ### See also ###
 
@@ -56,6 +72,7 @@ installed for Wordfence which doesn't support "**Late init**".
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [BestPractice]: {{ '/codex/the-best-practice-of-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [PermitUA]:     {{ '/codex/permitted-ua-and-qualification.html'       | prepend: site.baseurl }} "Permitted UA string and qualification | IP Geo Block"
+[FilterHooks]:  {{ '/codex/#filter-hooks'                             | prepend: site.baseurl }} "Permitted UA string and qualification | IP Geo Block"
 [WPSuperCache]: https://wordpress.org/plugins/wp-super-cache/ "WP Super Cache &mdash; WordPress Plugins"
 [W3TotalCache]: https://wordpress.org/plugins/w3-total-cache/ "W3 Total Cache &mdash; WordPress Plugins"
 [Wordfence]:    https://wordpress.org/plugins/wordfence/ "Wordfence Security &mdash; WordPress Plugins"
