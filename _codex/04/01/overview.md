@@ -32,7 +32,7 @@ of country code from "Validation rule settings".
 
 ### Permitted UA string and qualification ###
 
-In addition to the maching rule, You must be sure to grant permission to search 
+In addition to the maching rule, you must be sure to grant permission to search 
 engine bots or crawlers such as google, yahoo and being. This feature is 
 possible to fulfill your wishes by giving a pair of "**UA string**" and 
 "**qualification**" separated by a colon "`:`".
