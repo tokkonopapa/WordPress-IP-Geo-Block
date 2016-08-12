@@ -52,6 +52,15 @@ useful to check which pages would be blocked or passed.
  "Logs at public faicing pages"
 )
 
+### Important Note ###
+
+<div class="alert alert-danger">
+	You can't select <code>200 OK</code> as a 
+	<a href="/codex/customizing-the-response.html#response-code-and-behavior" title="Customizing the response | IP Geo Block">HTTP response code</a>
+	because it redirects a visitor to your top page and will cause multiple 
+	redirectins.
+</div>
+
 ### See also ###
 
 - [The best practice of target settings][BestPractice]
@@ -62,4 +71,5 @@ useful to check which pages would be blocked or passed.
 [BestPractice]: {{ '/codex/the-best-practice-of-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [LivingCache]:  {{ '/codex/living-with-caching-plugin.html'           | prepend: site.baseurl }} "Living with caching plugin | IP Geo Block"
 [UA-Qualify]:   {{ '/codex/ua-string-and-qualification.html'          | prepend: site.baseurl }} "UA string and qualification | IP Geo Block"
-[Ver3.0.0]:     {{ '/changelog/release-3.0.0.html'                    | prepend: site.baseurl }}
+[Ver3.0.0]:     {{ '/changelog/release-3.0.0.html'                    | prepend: site.baseurl }} "3.0.0 Release Note | IP Geo Block"
+[ResponseCode]: {{ '/codex/customizing-the-response.html#response-code-and-behavior' | prepend: site.baseurl }} "Customizing the response | IP Geo Block"

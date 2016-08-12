@@ -34,6 +34,11 @@ invert the meaning of qualification.
 
 ### Examples ###
 
+| Sample      | Description                                                         |
+|:------------|:--------------------------------------------------------------------|
+| Google:DNS  | pass  if UA includes "Google" and reverse DNS lookup is available   |
+| Google#!DNS | block if UA includes "Google" and reverse DNS lookup is unavailable |
+
 ![UA string and qualification]({{ '/img/2016-08/UA-Qualify.png' | prepend: site.baseurl }}
  "UA string and qualification"
 )

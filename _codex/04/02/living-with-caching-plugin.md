@@ -46,12 +46,12 @@ run at the early stage of WordPress core process.
 This is recommended for WP Super Cache and W3 Total Cache, and indispensable 
 for Wordfence which doesn't support "**Late init**".
 
-<div class="alert alert-warning">
+<div class="alert alert-danger">
 	<strong>Warning</strong>: If you use WP Super Cache or W3 Total Cache 
 	without enabling "<strong>Late init</strong>", blocking on front-end 
 	nerver works because those plugins use <code>advanced-cache.php</code> as 
 	"drop-in" which will be executed at the very bigining of WordPress core 
-	processes.
+	process.
 </div>
 
 #### Restrictions ####
