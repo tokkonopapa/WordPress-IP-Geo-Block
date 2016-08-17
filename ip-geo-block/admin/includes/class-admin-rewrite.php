@@ -8,7 +8,6 @@ class IP_Geo_Block_Admin_Rewrite {
 
 	// private values
 	private $doc_root = NULL; // document root
-	private $site_uri = NULL; // network site uri
 	private $base_uri = NULL; // plugins base uri
 	private $wp_dirs  = array();
 

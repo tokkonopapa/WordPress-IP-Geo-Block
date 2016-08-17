@@ -5,7 +5,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
- * @link      https://github.com/tokkonopapa
+ * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2016 tokkonopapa
  *
  * THIS IS FOR THE ADVANCED USERS:
