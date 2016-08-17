@@ -912,10 +912,10 @@ class IP_Geo_Block_Admin {
 
 		  case 'gmap_error':
 			// Reset Google Maps API key
-			$res = IP_Geo_Block::get_option( 'settings' );
-			if ( $res['api_key']['GoogleMap'] === 'default' ) {
-				$res['api_key']['GoogleMap'] = NULL;
-				update_option( $this->option_name['settings'], $res );
+			$which = IP_Geo_Block::get_option( 'settings' );
+			if ( $which['api_key']['GoogleMap'] === 'default' ) {
+				$which['api_key']['GoogleMap'] = NULL;
+				update_option( $this->option_name['settings'], $which );
 				$res = array(
 					'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
 					'tab' => 'tab=2'

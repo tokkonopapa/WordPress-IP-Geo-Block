@@ -422,6 +422,7 @@ For more details, see
   and corruption of "Bad signatures"
   ([@](https://wordpress.org/support/topic/226-problem-with-bad-signatures-in-query "WordPress &#8250; Support &raquo; [2.2.6] Problem with &quot;Bad signatures in query&quot;")).
 * **Update:** Update geolocation service api.
+* Find details about Google Maps API in [2.2.7 Release Note](http://www.ipgeoblock.com/changelog/release-2.2.7.html "2.2.7 Release Note").
 
 = 2.2.6 =
 * **New feature:** Add saving csv file of logs in "Logs" tab.
