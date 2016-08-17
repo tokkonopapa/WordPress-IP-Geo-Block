@@ -5,8 +5,8 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
- * @link      https://github.com/tokkonopapa
- * @copyright 2013-2015 tokkonopapa
+ * @link      http://www.ipgeoblock.com/
+ * @copyright 2013-2016 tokkonopapa
  */
 
 class IP_Geo_Block_Admin {
@@ -115,7 +115,9 @@ class IP_Geo_Block_Admin {
 
 		// css for option page
 		wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-admin-styles',
-			plugins_url( 'css/admin.min.css', __FILE__ ),
+			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+				'css/admin.min.css' : 'css/admin.css', __FILE__
+			),
 			array(), IP_Geo_Block::VERSION
 		);
 
@@ -131,14 +133,19 @@ class IP_Geo_Block_Admin {
 
 		  case 2:
 			// js for google map
-			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
-				'//maps.google.com/maps/api/js?sensor=false',
-				$dependency, IP_Geo_Block::VERSION, $footer
-			);
-			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-gmap-js',
-				plugins_url( 'js/gmap.min.js', __FILE__ ),
-				$dependency, IP_Geo_Block::VERSION, $footer
-			);
+			$settings = IP_Geo_Block::get_option();
+			if ( $key = $settings['api_key']['GoogleMap'] ) {
+				wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-gmap-js',
+					plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+						'js/gmap.min.js' : 'js/gmap.js', __FILE__
+					),
+					$dependency, IP_Geo_Block::VERSION, $footer
+				);
+				wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
+					'//maps.googleapis.com/maps/api/js' . ( ! $key || 'default' === $key ? '' : "?key=$key" ),
+					$dependency, IP_Geo_Block::VERSION, $footer
+				);
+			}
 			break;
 
 		  case 4:
@@ -226,7 +233,7 @@ class IP_Geo_Block_Admin {
 		$key = IP_Geo_Block::PLUGIN_SLUG . '-notice';
 		if ( FALSE !== ( $notices = get_transient( $key ) ) ) {
 			foreach ( $notices as $msg => $type ) {
-				echo "\n<div class=\"notice is-dismissible ", $type, "\"><p><strong>IP Geo Block:</strong> ", $msg, "</p></div>\n";
+				echo "\n<div class=\"notice is-dismissible ", esc_attr( $type ), "\"><p><strong>IP Geo Block:</strong> ", $msg, "</p></div>\n";
 			}
 		}
 	}
@@ -383,6 +390,9 @@ class IP_Geo_Block_Admin {
 	echo '<a href="?page=', IP_Geo_Block::PLUGIN_SLUG, '&amp;tab=', $key, '" class="nav-tab', ($tab === $key ? ' nav-tab-active' : ''), '">', $val, '</a>';
 } ?>
 	</h2>
+<?php if ( 0 <= $tab && $tab <= 1 ) { ?>
+	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="javascript:void(0)"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]</p>
+<?php } ?>
 	<form method="post" action="options.php"<?php if ( 0 !== $tab ) echo " id=\"", IP_Geo_Block::PLUGIN_SLUG, "-inhibit\""; ?>>
 <?php
 		settings_fields( $option_slug );
@@ -394,9 +404,6 @@ class IP_Geo_Block_Admin {
 <?php if ( 2 === $tab ) { ?>
 	<div id="ip-geo-block-map"></div>
 <?php } elseif ( 3 === $tab ) {
-	echo '<p>', __( 'Thanks for providing these great services for free.', 'ip-geo-block' ), '<br />';
-	echo __( '(Most browsers will redirect you to each site <a href="http://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', 'ip-geo-block' ), '</p>';
-
 	// show attribution (higher priority order)
 	$providers = IP_Geo_Block_Provider::get_addons();
 	$tab = array();
@@ -406,11 +413,14 @@ class IP_Geo_Block_Admin {
 		}
 	}
 	echo '<p>', implode( '<br />', $tab ), "</p>\n";
+
+	echo "<p>", __( 'Thanks for providing these great services for free.', 'ip-geo-block' ), "<br />\n";
+	echo __( '(Most browsers will redirect you to each site <a href="http://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', 'ip-geo-block' ), "</p>\n";
 } ?>
 <?php if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 	echo '<p>', get_num_queries(), ' queries. ', timer_stop(0), ' seconds. ', memory_get_usage(), " bytes.</p>\n";
 } ?>
-	<p style="text-align:right">[ <a href="#"><?php _e( 'Back to top', 'ip-geo-block' ); ?></a> ]</p>
+	<p style="margin:0; text-align:right">[ <a id="ip-geo-block-back-to-top" href="#"><?php _e( 'Back to top', 'ip-geo-block' ); ?></a> ]</p>
 </div>
 <?php
 	}
@@ -575,7 +585,7 @@ class IP_Geo_Block_Admin {
 			$output['validation'][ $key ] = 0;
 
 		// restore the 'signature' that might be transformed to avoid self blocking
-		$input['signature'] = base64_decode( $input['signature'] ); //str_rot13()
+		$input['signature'] = str_rot13( base64_decode( $input['signature'] ) );
 
 		/**
 		 * Sanitize a string from user input
@@ -658,7 +668,7 @@ class IP_Geo_Block_Admin {
 				}
 
 				// sub field
-				else foreach ( array_keys( $val ) as $sub ) {
+				else foreach ( array_keys( (array)$val ) as $sub ) {
 					// delete old key
 					if ( ! array_key_exists( $sub, $default[ $key ] ) ) {
 						unset( $output[ $key ][ $sub ] );
@@ -898,6 +908,19 @@ class IP_Geo_Block_Admin {
 			// Import preference
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			$res = IP_Geo_Block_Admin_Ajax::preferred_to_json();
+			break;
+
+		  case 'gmap_error':
+			// Reset Google Maps API key
+			$res = IP_Geo_Block::get_option( 'settings' );
+			if ( $res['api_key']['GoogleMap'] === 'default' ) {
+				$res['api_key']['GoogleMap'] = NULL;
+				update_option( $this->option_name['settings'], $res );
+				$res = array(
+					'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
+					'tab' => 'tab=2'
+				);
+			}
 			break;
 
 		  case 'create-table':

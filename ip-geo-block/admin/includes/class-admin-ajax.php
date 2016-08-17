@@ -266,6 +266,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[comment][pos]',
 			'[comment][msg]',
 			'[clean_uninstall]',
+			'[api_key][GoogleMap]',      // 2.2.7
 		);
 		$json = array();
 		$prfx = 'ip_geo_block_settings';

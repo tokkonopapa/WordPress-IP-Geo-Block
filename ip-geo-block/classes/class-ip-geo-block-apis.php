@@ -276,43 +276,6 @@ class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
 }
 
 /**
- * Class for IP-Json
- *
- * URL         : http://ip-json.rhcloud.com/
- * Term of use : 
- * Licence fee : free
- * Rate limit  : 
- * Sample URL  : http://ip-json.rhcloud.com/xml/124.83.187.140
- * Sample URL  : http://ip-json.rhcloud.com/v6/2a00:1210:fffe:200::1
- * Input type  : IP address (IPv4, IPv6) / domain name
- * Output type : json, xml, csv
- */
-class IP_Geo_Block_API_IPJson extends IP_Geo_Block_API {
-	protected $template = array(
-		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'http://ip-json.rhcloud.com/%API_FORMAT%/%API_IP%',
-		'api' => array(
-			'%API_FORMAT%' => 'json',
-		),
-		'transform' => array(
-			'errorMessage' => 'error',
-			'countryCode'  => 'country_code',
-			'countryName'  => 'country_name',
-			'regionName'   => 'region_name',
-			'cityName'     => 'city',
-			'latitude'     => 'latitude',
-			'longitude'    => 'longitude',
-		)
-	);
-
-	public function get_location( $ip, $args = array() ) {
-		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-			$this->template['api']['%API_FORMAT%'] = 'v6';
-		return parent::get_location( $ip, $args );
-	}
-}
-
-/**
  * Class for Nekudo
  *
  * URL         : http://geoip.nekudo.com/
@@ -585,12 +548,6 @@ class IP_Geo_Block_Provider {
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
 			'link' => '<a class="ip-geo-block-link" href="http://ipinfo.io/" title="ip address information including geolocation, hostname and network details" rel=noreferrer target=_blank>http://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free)',
-		),
-
-		'IP-Json' => array(
-			'key'  => NULL,
-			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a class="ip-geo-block-link" href="http://ip-json.rhcloud.com/" title="Free IP Geolocation Web Service" rel=noreferrer target=_blank>http://ip-json.rhcloud.com/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'Nekudo' => array(

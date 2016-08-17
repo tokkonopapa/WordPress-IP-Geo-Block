@@ -220,7 +220,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'signature';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a href="javascript:void(0);" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span id="ip-geo-block-cycle"></span></a>)</nobr>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -237,7 +237,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'response_code';
 		add_settings_field(
 			$option_name.'_'.$field,
-			sprintf( __( 'Response code %s', 'ip-geo-block' ), '(<a class="ip-geo-block-link" href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1" target=_blank>RFC 2616</a>)' ),
+			sprintf( __( '<dfn title="You can put your original 403.php and so on into your theme directory.">Response code</dfn> %s', 'ip-geo-block' ), '(<a class="ip-geo-block-link" href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1" target=_blank>RFC 2616</a>)' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -821,6 +821,43 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug
 		);
 
+		// Remove all settings at uninstallation
+		$field = 'clean_uninstall';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Remove all settings at uninstallation', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+			)
+		);
+
+		// Google Maps API key
+		$field = 'api_key';
+		$key = 'GoogleMap';
+		if ( 'default' !== $options[ $field ][ $key ] or
+		     defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
+			add_settings_field(
+				$option_name.'_'.$field,
+				__( '<dfn title="Valid key for Google Maps JavaScript API">Google Maps API key</dfn>', 'ip-geo-block' ),
+				array( $context, 'callback_field' ),
+				$option_slug,
+				$section,
+				array(
+					'type' => 'text',
+					'option' => $option_name,
+					'field' => $field,
+					'sub-field' => $key,
+					'value' => $options[ $field ][ $key ],
+				)
+			);
+		}
+
 		$desc = __( 'You need to click the &#8220;Save Changes&#8221; button for imported settings to take effect.', 'ip-geo-block' );
 
 		// Export / Import settings
@@ -854,22 +891,6 @@ class IP_Geo_Block_Admin_Tab {
 					'<a class="button button-secondary" id="ip-geo-block-default"   title="' . __( 'Import the default settings to revert to the &#8220;Right after installing&#8221; state', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Default settings', 'ip-geo-block' ) . '</a>&nbsp;' .
 					'<a class="button button-secondary" id="ip-geo-block-preferred" title="' . __( 'Import the preferred settings mainly for the &#8220;Validation target settings&#8221;',   'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Best practice',    'ip-geo-block' ) . '</a>',
 				'after' => '<div id="ip-geo-block-pre-defined"></div>',
-			)
-		);
-
-		// Remove all settings at uninstallation
-		$field = 'clean_uninstall';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( 'Remove all settings at uninstallation', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
 			)
 		);
 
@@ -927,8 +948,8 @@ endif;
 	public static function note_services() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __('While Maxmind and IP2Location will fetch the local database, others will pass an IP address to the APIs via HTTP.', 'ip-geo-block' ), '</li>', "\n",
-				'<li>', __('Please select the appropriate APIs to fit the privacy law in your country.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'While Maxmind and IP2Location will fetch the local database, others will pass an IP address to the APIs via HTTP.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'Please select the appropriate APIs to fit the privacy law in your country.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 
