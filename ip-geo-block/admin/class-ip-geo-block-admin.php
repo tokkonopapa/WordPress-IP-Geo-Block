@@ -766,7 +766,7 @@ class IP_Geo_Block_Admin {
 		$action = IP_Geo_Block::PLUGIN_SLUG . '-auth-nonce';
 		$nonce &= wp_verify_nonce( IP_Geo_Block::retrieve_nonce( $action ), $action );
 
-		if ( ! current_user_can( 'manage_options' ) || empty( $_POST ) || ! $nonce ) {
+		if ( ! current_user_can( 'manage_options' ) || ! $nonce ) {
 			status_header( 403 );
 			wp_die(
 				__( 'You do not have sufficient permissions to access this page.' ), '',
@@ -786,11 +786,14 @@ class IP_Geo_Block_Admin {
 		// validate setting options
 		$options = $this->validate_options( 'settings', $input );
 
+		//----------------------------------------
 		// activate rewrite rules
+		//----------------------------------------
 		include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 		$stat = IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $options['rewrite'] );
-		$diff = array_diff( $options['rewrite'], $stat );
 
+		// check the status of rewrite rules
+		$diff = array_diff_assoc( $options['rewrite'], $stat );
 		if ( ! empty( $diff ) ) {
 			$options['rewrite'] = $stat;
 
