@@ -20,24 +20,25 @@ matches all user agents.
 
 Currently, you can obtain four types of qualification listed bellow :
 
-| Qualification     | Description                                            |
-|:------------------|:-------------------------------------------------------|
-| "DNS"             | True if the result of reverse DNS lookup is available. |
-| "FEED"            | True if the request is feed url.                       |
-| Country code      | True if the request comes from the specified country.  |
-| IP address (CIDR) | True if the IP address is within the specific range.   |
+| Qualification     | Description                                                      |
+|:------------------|:-----------------------------------------------------------------|
+| FEED              | True if the request is the feed url.                             |
+| HOST              | True if the result of reverse DNS lookup is available.           |
+| HOST=__string__   | True if the host name by reverse DNS lookup includes __string__. |
+| Country code      | True if the request comes from the specified country.            |
+| IP address (CIDR) | True if the IP address is within the specific range.             |
 
 ### Negative operation ###
 
-A negative operation "`!`" can be placed just before a qualification. It would 
-invert the meaning of qualification.
+A negative operation "`!`" can be placed just before a qualification. It inverts
+the meaning of qualification.
 
 ### Examples ###
 
-| Sample      | Description                                                         |
-|:------------|:--------------------------------------------------------------------|
-| Google:DNS  | pass  if UA includes "Google" and reverse DNS lookup is available   |
-| Google#!DNS | block if UA includes "Google" and reverse DNS lookup is unavailable |
+| Sample       | Description                                                         |
+|:-------------|:--------------------------------------------------------------------|
+| Google:HOST  | Pass  if UA includes "Google" and reverse DNS lookup is available   |
+| Google#!HOST | Block if UA includes "Google" and reverse DNS lookup is unavailable |
 
 ![UA string and qualification]({{ '/img/2016-08/UA-Qualify.png' | prepend: site.baseurl }}
  "UA string and qualification"
