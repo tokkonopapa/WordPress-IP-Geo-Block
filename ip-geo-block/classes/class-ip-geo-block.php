@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.6';
+	const VERSION = '2.2.7';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -628,7 +628,7 @@ class IP_Geo_Block {
 		$score = 0.0;
 		$request = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
-		foreach ( $this->multiexplode( array( ',', ' ' ), $settings['signature'] ) as $sig ) {
+		foreach ( $this->multiexplode( array( ",", "\n" ), $settings['signature'] ) as $sig ) {
 			$val = explode( ':', $sig, 2 );
 
 			if ( ( $sig = trim( $val[0] ) ) && FALSE !== strpos( $request, $sig ) ) {

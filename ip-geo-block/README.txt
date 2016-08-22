@@ -1,10 +1,10 @@
 === IP Geo Block ===
 Contributors: tokkonopapa
 Donate link:
-Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
+Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geo, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
-Tested up to: 4.5.2
-Stable tag: 2.2.6
+Tested up to: 4.6
+Stable tag: 2.2.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,11 +39,11 @@ That's why this plugin is here.
 
 = Features =
 
-This plugin will examine a country code based on the IP address. If a comment, 
+This plugin will examine a country code based on the IP address. If a comment,
 pingback or trackback comes from the specific country, it will be blocked 
 before Akismet validate it.
 
-With the same mechanism, it will fight against burst access of brute-force 
+With the same mechanism, it will fight against burst accesses by brute-force 
 and reverse-brute-force attacks to the login form and XML-RPC.
 
 * **Immigration control:**  
@@ -156,7 +156,6 @@ Also thanks for providing the following great services and REST APIs for free.
 * [http://freegeoip.net/](http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service") (IPv4 / free)
 * [http://ipinfo.io/](http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details") (IPv4, IPv6 / free)
 * [http://geoip.nekudo.com/](http://geoip.nekudo.com/ "Free IP GeoLocation/GeoIp API - geoip.nekudo.com") (IPv4, IPv6 / free)
-* [http://ip-json.rhcloud.com/](http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service") (IPv4, IPv6 / free)
 * [http://xhanch.com/](http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API &#8211; IP Get Detail | Xhanch Studio") (IPv4 / free)
 * [http://www.geoplugin.com/](http://www.geoplugin.com/ "geoPlugin to geolocate your visitors") (IPv4, IPv6 / free, need an attribution link)
 * [http://ip-api.com/](http://ip-api.com/ "IP-API.com - Free Geolocation API") (IPv4, IPv6 / free for non-commercial use)
@@ -333,11 +332,10 @@ follows:
 - **Bad signatures in query**  
   It blocks the request which has not been covered in the above three.
 
-See more details in "
-[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html 'The best practice of target settings | IP Geo Block')
-".
+See more details in 
+"[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html 'The best practice of target settings | IP Geo Block')".
 
-= How can I test that this plugin works? =
+= How can I test this plugin works? =
 
 The easiest way is to use 
   [free proxy browser addon](https://www.google.com/search?q=free+proxy+browser+addon "free proxy browser addon - Google Search").
@@ -347,16 +345,15 @@ You can add an IP address to the `X-Forwarded-For` header to emulate the
 access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` 
 into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
 
-See more details in "
-[Using VPN browser addon](http://www.ipgeoblock.com/codex/using-vpn-browser-addon.html 'Using VPN browser addon | IP Geo Block')
-" and "
-[Using WordPress post simulator](http://www.ipgeoblock.com/codex/using-post-simulator.html 'Using WordPress post simulator | IP Geo Block')
-".
+See more details in 
+"[Using VPN browser addon](http://www.ipgeoblock.com/codex/using-vpn-browser-addon.html 'Using VPN browser addon | IP Geo Block')"
+and
+"[Using WordPress post simulator](http://www.ipgeoblock.com/codex/using-post-simulator.html 'Using WordPress post simulator | IP Geo Block')".
 
 = Some admin function doesn't work when WP-ZEP is enabled. =
 
 There are a few cases that WP-ZEP would not work. One is redirection at server 
-side (caused by PHP or `.htaccess`) and client side (by caused JavaScript 
+side (caused by PHP or `.htaccess`) and client side (caused by JavaScript 
 location object or meta tag for refresh).
 
 Another is the case related to the content type. This plugin will only support 
@@ -402,6 +399,12 @@ For more details, see
 
 == Other Notes ==
 
+= Known issues =
+
+* No image is shown after drag & drop a image in grid view at "Media Library".
+  For more details, please refer to 
+  [this ticket at Github](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/issues/2 "No image is shown after drag & drop a image in grid view at "Media Library". - Issue #2 - tokkonopapa/WordPress-IP-Geo-Block - GitHub").
+
 == Screenshots ==
 
 1. **IP Geo Plugin** - Settings.
@@ -411,6 +414,15 @@ For more details, see
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.2.7 =
+* **Bug fix:** Fix inadequate validation of "**Bad signatures in query**".
+* **Improvement:** Add fallback for Google Maps API key 
+  ([@](https://wordpress.org/support/topic/226-problem-with-search-resp-google-maps "WordPress &#8250; Support &raquo; [2.2.6] Problem with SEARCH resp. Google Maps"))
+  and corruption of "Bad signatures"
+  ([@](https://wordpress.org/support/topic/226-problem-with-bad-signatures-in-query "WordPress &#8250; Support &raquo; [2.2.6] Problem with &quot;Bad signatures in query&quot;")).
+* **Update:** Update geolocation service api.
+* Find details about Google Maps API in [2.2.7 Release Note](http://www.ipgeoblock.com/changelog/release-2.2.7.html "2.2.7 Release Note").
 
 = 2.2.6 =
 * **New feature:** Add saving csv file of logs in "Logs" tab.

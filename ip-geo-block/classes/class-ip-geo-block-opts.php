@@ -19,7 +19,7 @@ class IP_Geo_Block_Opts {
 
 		// settings (should be read on every page that has comment form)
 		'ip_geo_block_settings' => array(
-			'version'         => '2.2.6', // This table version (not package)
+			'version'         => '2.2.7', // This table version (not package)
 			// since version 1.0
 			'providers'       => array(), // List of providers and API keys
 			'comment'         => array(   // Message on the comment form
@@ -98,6 +98,10 @@ class IP_Geo_Block_Opts {
 			'exception'       => array(   // list of exceptional
 			    'plugins'     => array(), // for pliugins
 			    'themes'      => array(), // for themes
+			),
+			// since version 2.2.7
+			'api_key'         => array(   // API key
+				'GoogleMap'   => 'default',
 			),
 		),
 	);
@@ -205,6 +209,9 @@ class IP_Geo_Block_Opts {
 					}
 				}
 			}
+
+			if ( version_compare( $version, '2.2.7' ) < 0 )
+				$settings['api_key'] = $default[ $key[0] ]['api_key'];
 
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
