@@ -142,10 +142,16 @@ class IP_Geo_Block_Admin {
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 				wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-google-map',
-					'//maps.googleapis.com/maps/api/js' . ( ! $key || 'default' === $key ? '' : "?key=$key" ),
+					'//maps.googleapis.com/maps/api/js' . ( 'default' !== $key ? "?key=$key" : '' ),
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 			}
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_SLUG . '-whois-js',
+				plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+					'js/whois.min.js' : 'js/whois.js', __FILE__
+				),
+				$dependency, IP_Geo_Block::VERSION, $footer
+			);
 			break;
 
 		  case 4:
@@ -233,7 +239,7 @@ class IP_Geo_Block_Admin {
 		$key = IP_Geo_Block::PLUGIN_SLUG . '-notice';
 		if ( FALSE !== ( $notices = get_transient( $key ) ) ) {
 			foreach ( $notices as $msg => $type ) {
-				echo "\n<div class=\"notice is-dismissible ", esc_attr( $type ), "\"><p><strong>IP Geo Block:</strong> ", $msg, "</p></div>\n";
+				echo "\n<div class=\"notice is-dismissible ", esc_attr( $type ), "\"><p><strong>IP Geo Block:</strong> ", IP_Geo_Block_Util::kses( $msg ), "</p></div>\n";
 			}
 		}
 	}
@@ -285,7 +291,7 @@ class IP_Geo_Block_Admin {
 		delete_transient( IP_Geo_Block::PLUGIN_SLUG . '-notice' );
 
 		// Check version and compatibility
-		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 )
+		if ( version_compare( get_bloginfo( 'version' ), '3.7.0' ) < 0 )
 			self::add_admin_notice( 'error', __( 'You need WordPress 3.7+.', 'ip-geo-block' ) );
 
 		$settings = IP_Geo_Block::get_option( 'settings' );
@@ -403,6 +409,7 @@ class IP_Geo_Block_Admin {
 	</form>
 <?php if ( 2 === $tab ) { ?>
 	<div id="ip-geo-block-map"></div>
+	<div id="ip-geo-block-whois"></div>
 <?php } elseif ( 3 === $tab ) {
 	// show attribution (higher priority order)
 	$providers = IP_Geo_Block_Provider::get_addons();
@@ -529,9 +536,9 @@ class IP_Geo_Block_Admin {
 			if ( 'select' === $args['type'] )
 				break;
 			echo "<br />\n";
-			$sub_id   = '_' . $args['txt-field'];
+			$sub_id   = '_' . $args['txt-field']; // possible value of 'txt-field' is 'msg'
 			$sub_name = '[' . $args['txt-field'] . ']';
-			$args['value'] = $args['text'];
+			$args['value']  = $args['text']; // should be escaped because it can contain allowed tags
 
 		  case 'text': ?>
 <input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"
@@ -585,7 +592,8 @@ class IP_Geo_Block_Admin {
 			$output['validation'][ $key ] = 0;
 
 		// restore the 'signature' that might be transformed to avoid self blocking
-		$input['signature'] = str_rot13( base64_decode( $input['signature'] ) );
+		if ( isset( $input['signature'] ) && FALSE === strpos( $input['signature'], ',' ) )
+			$input['signature'] = str_rot13( base64_decode( $input['signature'] ) );
 
 		/**
 		 * Sanitize a string from user input
@@ -638,8 +646,7 @@ class IP_Geo_Block_Admin {
 					$output[ $key ]['pos'] = (int)$input[ $key ]['pos'];
 				}
 				if ( isset( $input[ $key ]['msg'] ) ) {
-					global $allowedtags;
-					$output[ $key ]['msg'] = wp_kses( $input[ $key ]['msg'], $allowedtags );
+					$output[ $key ]['msg'] = IP_Geo_Block_Util::kses( $input[ $key ]['msg'] );
 				}
 				break;
 
@@ -663,7 +670,7 @@ class IP_Geo_Block_Admin {
 					elseif ( isset( $input[ $key ] ) ) {
 						$output[ $key ] = is_int( $default[ $key ] ) ?
 							(int)$input[ $key ] :
-							wp_kses( trim( $input[ $key ] ), array() );
+							IP_Geo_Block_Util::kses( trim( $input[ $key ] ), FALSE );
 					}
 				}
 
@@ -697,7 +704,7 @@ class IP_Geo_Block_Admin {
 						else {
 							$output[ $key ][ $sub ] = ( is_int( $default[ $key ][ $sub ] ) ?
 								(int)$input[ $key ][ $sub ] :
-								wp_kses( preg_replace( '/[^\w\s\.\/,:!]/', '', $input[ $key ][ $sub ] ), array() )
+								IP_Geo_Block_Util::kses( preg_replace( '/[^-,:!*#+=\.\/\w\s]/', '', $input[ $key ][ $sub ] ), FALSE )
 							);
 						}
 					}
@@ -806,8 +813,7 @@ class IP_Geo_Block_Admin {
 			}
 
 			$this->show_setting_notice( 'settings', 'error', sprintf(
-				__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ),
-				implode( ', ', $file )
+				__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ), implode( ', ', $file )
 			) );
 		}
 
@@ -913,7 +919,7 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Admin_Ajax::preferred_to_json();
 			break;
 
-		  case 'gmap_error':
+		  case 'gmap-error':
 			// Reset Google Maps API key
 			$which = IP_Geo_Block::get_option( 'settings' );
 			if ( $which['api_key']['GoogleMap'] === 'default' ) {

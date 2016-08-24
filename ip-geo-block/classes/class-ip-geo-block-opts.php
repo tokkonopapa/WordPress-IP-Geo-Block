@@ -236,8 +236,17 @@ class IP_Geo_Block_Opts {
 		$src = IP_GEO_BLOCK_PATH . IP_Geo_Block::GEOAPI_NAME;
 		$dst = self::get_api_dir( $settings );
 
-		if ( $src !== $dst )
-			self::recurse_copy( $src, $dst );
+		try {
+			if ( $src !== $dst )
+				self::recurse_copy( $src, $dst );
+
+		} catch ( Exception $e ) {
+
+			if ( class_exists( 'IP_Geo_Block_Admin' ) )
+				IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write %s. Please check permission.', 'ip-geo-block' ), $dst ) );
+
+			return NULL;
+		}
 
 		return $dst;
 	}
@@ -272,7 +281,9 @@ class IP_Geo_Block_Opts {
 	private static function recurse_copy( $src, $dst ) {
 		$src = trailingslashit( $src );
 		$dst = trailingslashit( $dst );
+
 		! @is_dir( $dst ) and @mkdir( $dst );
+
 		if ( $dir = @opendir( $src ) ) {
 			while( FALSE !== ( $file = readdir( $dir ) ) ) {
 				if ( '.' !== $file && '..' !== $file ) {
@@ -282,6 +293,7 @@ class IP_Geo_Block_Opts {
 						@copy( $src.$file, $dst.$file );
 				}
 			}
+
 			closedir( $dir );
 		}
 	}
@@ -290,12 +302,14 @@ class IP_Geo_Block_Opts {
 	private static function recurse_rmdir( $dir ) {
 		$dir = trailingslashit( $dir );
 		$files = array_diff( @scandir( $dir ), array( '.', '..' ) );
+
 		foreach ( $files as $file ) {
 			if ( is_dir( $dir.$file ) )
 				self::recurse_rmdir( $dir.$file );
 			else
 				@unlink( $dir.$file );
 		}
+
 		return @rmdir( $dir );
 	} 
 }

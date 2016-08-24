@@ -6,7 +6,7 @@
  */
 var ip_geo_block_time = new Date();
 
-(function ($) {
+(function ($, window, document) {
 	'use strict';
 
 	function ID(selector, id) {
@@ -545,12 +545,14 @@ var ip_geo_block_time = new Date();
 					return false;
 				}
 
-				var file = event.target.files[0];
+				var id, file = event.target.files[0];
 				if (file) {
 					readfile(file, function (data) {
-						var id = name + '[signature]';
 						data = JSON.parse(data);
-						data[id] = encode_str(data[id]);
+						id = name + '[signature]';
+						if ('undefined' !== typeof data[id]) {
+							data[id] = encode_str(data[id]);
+						}
 						ajax_post('export-import', {
 							cmd: 'validate',
 							data: JSON.stringify(data)
@@ -672,8 +674,8 @@ var ip_geo_block_time = new Date();
 		   *----------------------------------------*/
 		  case 2:
 			// Google Maps API error
-			$(window).on('ip_geo_block_gmap_error', function () {
-				ajax_post(null, { cmd: 'gmap_error' }, function (data) {
+			$(window).on('ip-geo-block-gmap-error', function () {
+				ajax_post(null, { cmd: 'gmap-error' }, function (data) {
 					redirect(data.page, data.tab);
 				});
 			});
@@ -696,7 +698,22 @@ var ip_geo_block_time = new Date();
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (event) {
 				var ip = $(ID('@', 'ip_address')).val();
+
 				if (ip) {
+					// Get whois data
+					$.whois(ip, function (data) {
+						var i, str = '';
+						for (i = 0; i < data.length; i++) {
+							str +=
+							'<tr>' +
+								'<td>' + data[i].name  + '</td>' +
+								'<td>' + data[i].value + '</td>' +
+							'</tr>';
+						}
+						$(ID('#', 'whois')).empty().html('<table>' + str + '</table>');
+					});
+
+					// Show map
 					ajax_post('loading', {
 						cmd: 'search',
 						ip: ip,
@@ -799,4 +816,4 @@ var ip_geo_block_time = new Date();
 			break;
 		}
 	});
-}(jQuery));
+}(jQuery, window, document));

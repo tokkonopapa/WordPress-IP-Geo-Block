@@ -164,4 +164,32 @@ class IP_Geo_Block_Util {
 		);
 	}
 
+	/**
+	 * Add / Remove slash at the end of string.
+	 *
+	 *//*
+	public static function unslashit( $string ) {
+		return rtrim( $string, '/\\' );
+	}
+
+	public static function slashit( $string ) {
+		return self::unslashit( $string ) . '/';
+	}*/
+
+	/**
+	 * Explod with multiple delimiter.
+	 *
+	 */
+	public static function multiexplode ( $delimiters, $string ) {
+		return array_filter( explode( $delimiters[0], str_replace( $delimiters, $delimiters[0], $string ) ) );
+	}
+
+	/**
+	 * HTML/XHTML filter that only allows some elements and attributes
+	 *
+	 */
+	public static function kses( $str, $allow_tags = TRUE ) {
+		return wp_kses( $str, $allow_tags ? $GLOBALS['allowedtags'] : array() );
+	}
+
 }

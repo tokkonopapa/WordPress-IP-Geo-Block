@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.7';
+	const VERSION = '2.2.8';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -45,6 +45,9 @@ class IP_Geo_Block {
 	 * 
 	 */
 	private function __construct() {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php';
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php';
+
 		$settings = self::get_option( 'settings' );
 		$priority = $settings['priority'];
 		$validate = $settings['validation'];
@@ -78,8 +81,8 @@ class IP_Geo_Block {
 				$this->target_type = $key;
 		}
 
-		// WordPress core files
-		$key = array(
+		// validate request to WordPress core files
+		$list = array(
 			'wp-comments-post.php' => 'comment',
 			'wp-trackback.php'     => 'comment',
 			'xmlrpc.php'           => 'xmlrpc',
@@ -96,9 +99,9 @@ class IP_Geo_Block {
 		}
 
 		// analize core validation target (comment|xmlrpc|login|public)
-		elseif ( isset( $key[ $this->pagenow ] ) ) {
-			if ( $validate[ $key[ $this->pagenow ] ] )
-				add_action( 'init', array( $this, 'validate_' . $key[ $this->pagenow ] ), $priority );
+		elseif ( isset( $list[ $this->pagenow ] ) ) {
+			if ( $validate[ $list[ $this->pagenow ] ] )
+				add_action( 'init', array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority );
 		}
 
 		else {
@@ -221,7 +224,7 @@ class IP_Geo_Block {
 	 */
 	public function comment_form_message() {
 		$settings = self::get_option( 'settings' );
-		echo '<p id="', self::PLUGIN_SLUG, '-msg">', wp_kses( $settings['comment']['msg'], $GLOBALS['allowedtags'] ), '</p>', "\n";
+		echo '<p id="', self::PLUGIN_SLUG, '-msg">', IP_Geo_Block_Util::kses( $settings['comment']['msg'] ), '</p>', "\n";
 	}
 
 	/**
@@ -245,10 +248,7 @@ class IP_Geo_Block {
 	 * @return array $result country code and so on
 	 */
 	public static function get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_country' ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-
-		$ip = $ip ? $ip : self::get_ip_address();
-		$result = self::_get_geolocation( $ip, self::get_option( 'settings' ), $providers, $callback );
+		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address(), self::get_option( 'settings' ), $providers, $callback );
 
 		if ( ! empty( $result['countryCode'] ) )
 			$result['code'] = $result['countryCode'];
@@ -307,6 +307,10 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function send_response( $hook, $code ) {
+		// prevent caching (WP Super Cache, W3TC, Wordfence, Comet Cache)
+		if ( ! defined( 'DONOTCACHEPAGE' ) )
+			define( 'DONOTCACHEPAGE', TRUE );
+
 		$code = (int   )apply_filters( self::PLUGIN_SLUG . '-'.$hook.'-status', (int)$code );
 		$mesg = (string)apply_filters( self::PLUGIN_SLUG . '-'.$hook.'-reason', get_status_header_desc( $code ) );
 
@@ -324,11 +328,11 @@ class IP_Geo_Block {
 		  default: // 4xx Client Error, 5xx Server Error
 			status_header( $code ); // @since 2.0.0
 			if ( function_exists( 'trackback_response' ) )
-				trackback_response( $code, $mesg ); // @since 0.71
+				trackback_response( $code, IP_Geo_Block_Util::kses( $mesg ) ); // @since 0.71
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
-				FALSE !== ( @include( STYLESHEETPATH . '/'.$code.'.php' ) ) or // child  theme
-				FALSE !== ( @include( TEMPLATEPATH   . '/'.$code.'.php' ) ) or // parent theme
-				wp_die( $mesg, '', array( 'response' => $code, 'back_link' => TRUE ) );
+				defined( 'STYLESHEETPATH' ) && FALSE !== ( @include( get_stylesheet_directory() .'/'.$code.'.php' ) ) or // child  theme
+				defined( 'TEMPLATEPATH'   ) && FALSE !== ( @include( get_template_directory()   .'/'.$code.'.php' ) ) or // parent theme
+				wp_die( IP_Geo_Block_Util::kses( $mesg ), '', array( 'response' => $code, 'back_link' => TRUE ) );
 			}
 			exit;
 		}
@@ -367,11 +371,10 @@ class IP_Geo_Block {
 		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
 
 		// make valid provider name list
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
 
 		// apply custom filter for validation
-		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
+		// @usage add_filter( 'ip-geo-block-$hook', 'my_validation', 10, 2 );
 		// @param $validate = array(
 		//     'ip'       => $ip,       /* validated ip address                */
 		//     'auth'     => $auth,     /* authenticated or not                */
@@ -472,7 +475,7 @@ class IP_Geo_Block {
 		// wp-includes/pluggable.php @since 2.5.0
 		add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
 
-		// enables to skip validation by country at login/out except BuddyPress signup
+		// enables to skip validation of country at login/out except BuddyPress signup
 		$block = ( 1 === (int)$settings['validation']['login'] ) ||
 			( 'bp_' === substr( current_filter(), 0, 3 ) ) ||
 			( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout' ), TRUE ) );
@@ -528,7 +531,7 @@ class IP_Geo_Block {
 				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 		}
 
-		// register validation by malicious signature
+		// register validation of malicious signature
 		if ( ! is_user_logged_in() || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
 			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
@@ -587,7 +590,7 @@ class IP_Geo_Block {
 			$settings = self::get_option( 'settings' );
 			$cache = IP_Geo_Block_API_Cache::update_cache( $cache['hook'], $validate, $settings );
 
-			// validate xmlrpc system.multicall (HTTP_RAW_POST_DATA has already populated in xmlrpc.php)
+			// validate xmlrpc system.multicall ($HTTP_RAW_POST_DATA has already populated in xmlrpc.php)
 			if ( defined( 'XMLRPC_REQUEST' ) && FALSE !== stripos( $GLOBALS['HTTP_RAW_POST_DATA'], 'system.multicall' ) )
 				$validate['result'] = 'multi';
 
@@ -620,7 +623,7 @@ class IP_Geo_Block {
 	}
 
 	public function check_auth( $validate, $settings ) {
-		// authentication should be prior to validation by country (can't overwrite existing result)
+		// authentication should be prior to validation of country (can't overwrite existing result)
 		return $validate['auth'] ? $validate + array( 'result' => 'passed' ) : $validate;
 	}
 
@@ -628,7 +631,7 @@ class IP_Geo_Block {
 		$score = 0.0;
 		$request = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
-		foreach ( $this->multiexplode( array( ",", "\n" ), $settings['signature'] ) as $sig ) {
+		foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $settings['signature'] ) as $sig ) {
 			$val = explode( ':', $sig, 2 );
 
 			if ( ( $sig = trim( $val[0] ) ) && FALSE !== strpos( $request, $sig ) ) {
@@ -688,17 +691,13 @@ class IP_Geo_Block {
 		return $this->check_ips( $validate, $settings['extra_ips']['black_list'], 1 );
 	}
 
-	private function multiexplode ( $delimiters, $string ) {
-		return array_filter( explode( $delimiters[0], str_replace( $delimiters, $delimiters[0], $string ) ) );
-	}
-
 	private function check_ips( $validate, $ips, $which ) {
 		$ip = $validate['ip'];
 
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
 
-			foreach ( $this->multiexplode( array( ",", "\n" ), $ips ) as $i ) {
+			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
 
 				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) &&
@@ -711,7 +710,7 @@ class IP_Geo_Block {
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv6.php' );
 
-			foreach ( $this->multiexplode( array( ",", "\n" ), $ips ) as $i ) {
+			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
 
 				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) &&

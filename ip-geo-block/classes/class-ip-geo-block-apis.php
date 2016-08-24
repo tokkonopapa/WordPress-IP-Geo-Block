@@ -639,9 +639,8 @@ class IP_Geo_Block_Provider {
 	 */
 	public static function get_valid_providers( $settings, $rand = TRUE, $cache = TRUE ) {
 		$list = array();
-		$geo = self::get_providers( 'key', $rand, $cache );
 
-		foreach ( $geo as $provider => $key ) {
+		foreach ( self::get_providers( 'key', $rand, $cache ) as $provider => $key ) {
 			if ( ! empty( $settings[ $provider ] ) || (
 			     ! isset( $settings[ $provider ] ) && NULL === $key ) ) {
 				$list[] = $provider;

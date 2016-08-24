@@ -7,12 +7,13 @@
  */
 // https://developers.google.com/maps/documentation/javascript/events?hl=en#auth-errors
 function gm_authFailure() {
-	jQuery(window).trigger('ip_geo_block_gmap_error');
-};
-
-(function($, window, document) {
 	'use strict';
-	$(function($) {
+	jQuery(window).trigger('ip-geo-block-gmap-error');
+}
+
+(function ($) {
+	'use strict';
+	$(function ($) {
 		var e = "GmapRS",
 			d = "plugin_" + e,
 			b = {
@@ -21,44 +22,44 @@ function gm_authFailure() {
 				longitude: 0
 			},
 			i = google.maps,
-			h = function(j) {
+			h = function (j) {
 				this.o = $.extend({}, b);
-				this.q = []
+				this.q = [];
 			};
 		h.prototype = {
-			init: function(j) {
+			init: function (j) {
 				$.extend(this.o, j);
 				this.c = new i.LatLng(this.o.latitude, this.o.longitude);
 				this.m = new i.Map(this.e.get(0), {
 					zoom: this.o.zoom,
 					center: this.c,
 					mapTypeId: i.MapTypeId.ROADMAP
-				})
+				});
 			},
-			destroy: function() {
+			destroy: function () {
 				this.deleteMarkers();
-				this.e.data(d, null)
+				this.e.data(d, null);
 			},
-			setCenter: function() {
+			setCenter: function () {
 				if (arguments.length >= 2) {
 					var j = new i.LatLng((this.o.latitude = arguments[0]), (this.o.longitude = arguments[1]));
 					delete this.c;
-					this.c = j
+					this.c = j;
 				}
 				this.m.setCenter(this.c);
-				return this.e
+				return this.e;
 			},
-			setZoom: function(j) {
+			setZoom: function (j) {
 				this.m.setZoom(j || this.o.zoom);
-				return this.e
+				return this.e;
 			},
-			showMarker: function(l, k) {
+			showMarker: function (l, k) {
 				var j = this.q[l];
 				if (j && j.w) {
-					false === k ? j.w.close() : j.w.open(this.m, j.m)
+					(false === k) ? j.w.close() : j.w.open(this.m, j.m);
 				}
 			},
-			addMarker: function(l) {
+			addMarker: function (l) {
 				var m, j, k;
 				m = new i.LatLng(l.latitude || this.o.latitude, l.longitude || this.o.longitude);
 				j = new i.Marker({
@@ -70,9 +71,9 @@ function gm_authFailure() {
 					k = new i.InfoWindow({
 						content: l.content
 					});
-					i.event.addListener(j, "click", function() {
-						k.open(j.getMap(), j)
-					})
+					i.event.addListener(j, "click", function () {
+						k.open(j.getMap(), j);
+					});
 				}
 				this.q.push({
 					p: m,
@@ -82,39 +83,41 @@ function gm_authFailure() {
 				this.m.setCenter(m);
 				this.m.setZoom(l.zoom);
 				if (l.show) {
-					this.showMarker(this.q.length - 1)
+					this.showMarker(this.q.length - 1);
 				}
-				return this.e
+				return this.e;
 			},
-			deleteMarkers: function() {
+			deleteMarkers: function () {
 				var j, k;
 				for (j in this.q) {
-					k = this.q[j];
-					k.m.setMap(null)
+					if (this.q.hasOwnProperty(j)) {
+						k = this.q[j];
+						k.m.setMap(null);
+					}
 				}
 				this.q.length = 0;
-				return this.e
+				return this.e;
 			}
 		};
-		$.fn[e] = function(k) {
+		$.fn[e] = function (k) {
 			var l, j;
 			if (!(this.data(d) instanceof h)) {
-				this.data(d, new h(this))
+				this.data(d, new h(this));
 			}
 			j = this.data(d);
 			j.e = this;
 			if (typeof k === "undefined" || typeof k === "object") {
 				if (typeof j.init === "function") {
-					j.init(k)
+					j.init(k);
 				}
 			} else {
 				if (typeof k === "string" && typeof j[k] === "function") {
 					l = Array.prototype.slice.call(arguments, 1);
-					return j[k].apply(j, l)
+					return j[k].apply(j, l);
 				} else {
-					$.error("Method " + k + " does not exist." + e)
+					$.error("Method " + k + " does not exist." + e);
 				}
 			}
-		}
+		};
 	});
-}(jQuery, window, document));
+}(jQuery));
