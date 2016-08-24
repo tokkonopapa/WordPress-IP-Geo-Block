@@ -418,7 +418,7 @@ For more details, see
 = 2.2.8 =
 * **Bug fix:** Fixed a issue of stripping some required characters for Google 
   maps API key.
-* **New feature:** Lookup whois database for IP address on search tab.
+* **New feature:** Whois database Lookup for IP address on search tab.
 
 = 2.2.7 =
 * **Bug fix:** Fix inadequate validation of "**Bad signatures in query**".
