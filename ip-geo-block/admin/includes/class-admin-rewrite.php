@@ -334,7 +334,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	public static function get_dirs() {
 		$rewrite = self::get_instance();
-		return $rewrite->wp_dirs;
+		return str_replace( $rewrite->doc_root, '', $rewrite->wp_dirs );
 	}
 
 }

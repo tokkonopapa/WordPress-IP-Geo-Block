@@ -135,8 +135,7 @@ class IP_Geo_Block_Admin_Ajax {
 				$html .= '<tr><td data-value='.$log.'>';
 				$html .= IP_Geo_Block_Util::localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
 				foreach ( $row as $log ) {
-					$log = esc_html( $log );
-					$html .= "<td>$log</td>";
+					$html .= '<td>' . esc_html( $log ) . '</td>';
 				}
 				$html .= "</tr>";
 				if ( ++$n >= $limit ) break;
@@ -152,6 +151,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function validate_settings( $parent ) {
+		// restore escaped characters
 		$json = str_replace(
 			array( '\\"', '\\\\', "'"  ),
 			array( '"',   '\\',   '\"' ),

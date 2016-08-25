@@ -455,7 +455,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		// Plugins area
 		$key = 'plugins';
-		$val = esc_html( substr( IP_Geo_Block::$wp_path[ $key ], 1 ) );
+		$val = esc_html( IP_Geo_Block::$wp_path[ $key ] );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
 			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
@@ -508,7 +508,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		// Themes area
 		$key = 'themes';
-		$val = esc_html( substr( IP_Geo_Block::$wp_path[ $key ], 1 ) );
+		$val = esc_html( IP_Geo_Block::$wp_path[ $key ] );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
 			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
@@ -806,7 +806,7 @@ class IP_Geo_Block_Admin_Tab {
 					1 => __( 'Top',    'ip-geo-block' ),
 					2 => __( 'Bottom', 'ip-geo-block' ),
 				),
-				'text' => $options[ $field ]['msg'], // sanitized at 'select-text'
+				'text' => $options[ $field ]['msg'], // escaped by esc_attr() at 'text'
 			)
 		);
 

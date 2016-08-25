@@ -103,7 +103,7 @@ class IP_Geo_Block_Util {
 				if ( FALSE === ( $gz = gzopen( $src, 'r' ) ) )
 					throw new Exception(
 						sprintf(
-							__( 'Unable to read %s. Please check permission.', 'ip-geo-block' ),
+							__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ),
 							$src
 						)
 					);
@@ -111,7 +111,7 @@ class IP_Geo_Block_Util {
 				if ( FALSE === ( $fp = @fopen( $filename, 'wb' ) ) )
 					throw new Exception(
 						sprintf(
-							__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ),
+							__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ),
 							$filename
 						)
 					);

@@ -812,9 +812,10 @@ class IP_Geo_Block_Admin {
 				$file[] = '<code>' . $dirs[ $key ] . '.htaccess</code>';
 			}
 
-			$this->show_setting_notice( 'settings', 'error', sprintf(
-				__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ), implode( ', ', $file )
-			) );
+			$this->show_setting_notice( 'error',
+				sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), implode( ', ', $file ) ) . '&nbsp;' .
+				sprintf( _n( 'Or please refer to %s to set it manually.', 'Or please refer to %s to set them manually.', count( $file ), 'ip-geo-block' ), '<a href="http://ipgeoblock.com/codex/manual-configuration.html" title="How to manually configure settings | IP Geo Block">How to manually configure settings</a>' )
+			);
 		}
 
 		// Force to finish update matching rule
