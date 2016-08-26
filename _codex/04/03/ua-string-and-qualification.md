@@ -18,7 +18,7 @@ matches all user agents.
 
 ### Qualification ###
 
-Currently, you can obtain four types of qualification listed bellow :
+Currently, you can obtain five types of qualification listed bellow :
 
 | Qualification     | Description                                                      |
 |:------------------|:-----------------------------------------------------------------|

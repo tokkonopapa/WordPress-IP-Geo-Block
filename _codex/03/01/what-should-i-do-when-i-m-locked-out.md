@@ -1,6 +1,7 @@
 ---
 layout: page
 category: codex
+section: FAQ
 title: What should I do when I'm locked out?
 excerpt: How to recover when I'm locked out?
 ---

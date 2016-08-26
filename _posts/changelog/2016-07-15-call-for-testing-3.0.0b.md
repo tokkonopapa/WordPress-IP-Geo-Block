@@ -44,13 +44,14 @@ google, yahoo and being. This feature is possible to fulfill your wishes by
 giving a particle pair of "**user agent string**" and "**qualification**" 
 separated by a colon "**:**". These are described as follows:
 
-| Particle          | Description                                                                  |
-|:------------------|:-----------------------------------------------------------------------------|
+| Particle          | Description                                                      |
+|:------------------|:-----------------------------------------------------------------|
 | user agent string | A part of user agent string. Uppercase and lowercase letters are distinguished. An asterisk "*" matches all strings. |
-| qualification     | **DNS**               : Permit if its reverse DNS lookup is available.       |
-|                   | **FEED**              : Permit if it requests the feed url.                  |
-|                   | **Country code**      : Permit if it comes from the specified country.       |
-|                   | **IP address (CIDR)** : Permit if it's in the range of specified IP address. |
+| FEED              | True if the request is the feed url.                             |
+| HOST              | True if the result of reverse DNS lookup is available.           |
+| HOST=__string__   | True if the host name by reverse DNS lookup includes __string__. |
+| Country code      | True if the request comes from the specified country.            |
+| IP address (CIDR) | True if the IP address is within the specific range.             |
 
 ### New feature: IP address cache by cookie ###
 
