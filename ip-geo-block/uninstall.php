@@ -10,13 +10,15 @@
  */
 
 // If uninstall not called from WordPress, then exit
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) )
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
+}
 
 define( 'IP_GEO_BLOCK_PATH', plugin_dir_path( __FILE__ ) ); // @since 2.8
-require( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-require( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-require( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php' );
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php' );
 
 class IP_Geo_Block_Uninstall {
 
@@ -36,9 +38,6 @@ class IP_Geo_Block_Uninstall {
 	 *
 	 */
 	public static function uninstall() {
-		if ( ! current_user_can( 'activate_plugins' ) )
-			return;
-
 		$settings = IP_Geo_Block::get_option( 'settings' );
 
 		if ( $settings['clean_uninstall'] ) {
