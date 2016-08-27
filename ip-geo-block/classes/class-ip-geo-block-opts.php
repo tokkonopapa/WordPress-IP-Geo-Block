@@ -267,7 +267,7 @@ class IP_Geo_Block_Opts {
 
 			// wp-content/plugins/ip-geo-block
 			if ( ! @is_writable( $dir ) )
-				$dir = IP_GEO_BLOCK_PATH . 'wp-content';
+				$dir = IP_GEO_BLOCK_PATH;
 		}
 
 		// filter hook in `functions.php` doesn't work at activation

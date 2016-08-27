@@ -814,7 +814,7 @@ class IP_Geo_Block_Admin {
 
 			$this->show_setting_notice( 'settings', 'error',
 				sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), implode( ', ', $file ) ) . '&nbsp;' .
-				sprintf( _n( 'Or please refer to %s to set it manually.', 'Or please refer to %s to set them manually.', count( $file ), 'ip-geo-block' ), '<a href="http://ipgeoblock.com/codex/manual-configuration.html" title="How to manually configure settings | IP Geo Block">How to manually configure settings</a>' )
+				sprintf( _n( 'Or please refer to %s to set it manually.', 'Or please refer to %s to set them manually.', count( $file ), 'ip-geo-block' ), '<a href="http://ipgeoblock.com/codex/how-to-fix-permission-trouble.html" title="How to fix permission trouble? | IP Geo Block">How to fix permission trouble?</a>' )
 			);
 		}
 
