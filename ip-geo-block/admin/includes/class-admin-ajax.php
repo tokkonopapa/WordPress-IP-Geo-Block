@@ -6,7 +6,6 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function search_ip( $which ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
 
 		// check format
@@ -37,8 +36,6 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function scan_country() {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-
 		// scan all the country code using selected APIs
 		$ip        = IP_Geo_Block::get_ip_address();
 		$options   = IP_Geo_Block::get_option( 'settings' );
@@ -87,8 +84,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function export_logs( $which ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		$csv = '';
 		$which = IP_Geo_Block_Logs::restore_logs( $which );
@@ -118,8 +114,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function restore_logs( $which ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// if js is slow then limit the number of rows
 		$list = array();
@@ -134,16 +129,23 @@ class IP_Geo_Block_Admin_Ajax {
 		foreach ( $list as $hook => $rows ) {
 			$html = '';
 			$n = 0;
+
 			foreach ( $rows as $row ) {
 				$log = (int)array_shift( $row );
 				$html .= '<tr><td data-value='.$log.'>';
 				$html .= IP_Geo_Block_Util::localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
+
+				$log = array_shift( $row );
+				$html .= '<td><a href="javascript:" onclick="ip_geo_block_geoip(this)">' . $log . '</td>';
+
 				foreach ( $row as $log ) {
 					$html .= '<td>' . esc_html( $log ) . '</td>';
 				}
+
 				$html .= "</tr>";
 				if ( ++$n >= $limit ) break;
 			}
+
 			$res[ $hook ] = $html;
 		}
 

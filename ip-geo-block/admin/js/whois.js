@@ -65,6 +65,10 @@
 							value.value = '<a href="' + value.link.href + '.json" target=_blank>' + value.value + '</a>';
 						}
 
+						else if ('remarks' === value.name) {
+							value.value = value.value.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target=_blank>$1</a>');
+						}
+
 						results.push({
 							name : value.name,
 							value: value.value

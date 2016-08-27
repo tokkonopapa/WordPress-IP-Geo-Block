@@ -261,14 +261,13 @@ class IP_Geo_Block_Opts {
 		$dir = $settings['api_dir'] ? dirname( $settings['api_dir'] ) : WP_CONTENT_DIR;
 
 		if ( ! @is_writable( $dir ) ) {
-			// wp-content/plugins/ip-geo-block
-			$dir = IP_GEO_BLOCK_PATH;
+			// wp-content/uploads
+			$dir = wp_upload_dir();
+			$dir = $dir['basedir'];
 
-			if ( ! @is_writable( $dir ) ) {
-				// wp-content/uploads
-				$dir = wp_upload_dir();
-				$dir = $dir['basedir'];
-			}
+			// wp-content/plugins/ip-geo-block
+			if ( ! @is_writable( $dir ) )
+				$dir = IP_GEO_BLOCK_PATH . 'wp-content';
 		}
 
 		// filter hook in `functions.php` doesn't work at activation

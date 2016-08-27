@@ -1,6 +1,4 @@
 <?php
-include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context ) {
@@ -53,6 +51,9 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+		// preset IP address
+		$list = isset( $_GET['ip'] ) && filter_var( $_GET['ip'], FILTER_VALIDATE_IP ) ? $_GET['ip'] : '';
+
 		$field = 'ip_address';
 		add_settings_field(
 			$option_name.'_'.$field,
@@ -64,7 +65,7 @@ class IP_Geo_Block_Admin_Tab {
 				'type' => 'text',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => '',
+				'value' => $list,
 			)
 		);
 

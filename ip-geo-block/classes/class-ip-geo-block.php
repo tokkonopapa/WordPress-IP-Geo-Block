@@ -159,7 +159,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function get_default( $name = 'settings' ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 		return IP_Geo_Block_Opts::get_table( self::$option_keys[ $name ] );
 	}
 
@@ -576,7 +576,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function auth_fail( $something = NULL ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// Count up a number of fails when authentication is failed
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $this->remote_addr ) ) {
@@ -695,7 +695,7 @@ class IP_Geo_Block {
 		$ip = $validate['ip'];
 
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
-			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
 
 			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
@@ -708,7 +708,7 @@ class IP_Geo_Block {
 		}
 
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
-			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv6.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv6.php' );
 
 			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
@@ -728,7 +728,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function update_database( $immediate = FALSE ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
 		return IP_Geo_Block_Cron::exec_job( $immediate );
 	}
 

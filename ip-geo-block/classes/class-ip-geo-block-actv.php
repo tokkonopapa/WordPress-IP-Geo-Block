@@ -23,10 +23,10 @@ class IP_Geo_Block_Activate {
 	 */
 	public static function activate( $network_wide = FALSE ) {
 		if ( ! function_exists( 'is_plugin_active_for_network' ) )
-			include_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			global $wpdb;
@@ -63,8 +63,8 @@ class IP_Geo_Block_Activate {
 	 *
 	 */
 	public static function deactivate( $network_wide = FALSE ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
-		include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 
 		// cancel schedule
 		IP_Geo_Block_Cron::stop_update_db();

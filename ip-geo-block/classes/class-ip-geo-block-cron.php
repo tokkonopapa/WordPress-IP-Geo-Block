@@ -48,9 +48,6 @@ class IP_Geo_Block_Cron {
 	 *   B. Multiple time for each blog when this plugin is individually activated
 	 */
 	public static function exec_job( $immediate = FALSE ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-
 		$settings = IP_Geo_Block::get_option( 'settings' );
 		$args = IP_Geo_Block::get_request_headers( $settings );
 
@@ -102,7 +99,7 @@ class IP_Geo_Block_Cron {
 	 */
 	private static function update_settings( $src, $keys = array() ) {
 		if ( ! function_exists( 'is_plugin_active_for_network' ) )
-			include_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 
 		$slug = IP_Geo_Block::$option_keys['settings'];
 

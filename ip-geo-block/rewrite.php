@@ -63,13 +63,13 @@ class IP_Geo_Block_Rewrite {
 
 		// (1) blocked, unknown, (3) unauthenticated, (5) all
 		if ( (int)$settings['validation']['reclogs'] & 1 ) {
-			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			IP_Geo_Block_Logs::record_logs( 'admin', $validate, $settings );
 		}
 
 		// update statistics
 		if ( $settings['save_statistics'] ) {
-			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			IP_Geo_Block_Logs::update_stat( 'admin', $validate, $settings );
 		}
 
@@ -133,7 +133,7 @@ class IP_Geo_Block_Rewrite {
 }
 
 // this will trigger `init` action hook
-include_once '../../../wp-load.php';
+require_once '../../../wp-load.php';
 
 /**
  * Fallback execution
@@ -143,7 +143,7 @@ include_once '../../../wp-load.php';
  * as a fallback.
  */
 if ( ! class_exists( 'IP_Geo_Block' ) )
-	include_once dirname( __FILE__ ) . '/ip-geo-block.php';
+	require_once dirname( __FILE__ ) . '/ip-geo-block.php';
 
 IP_Geo_Block_Rewrite::exec(
 	IP_Geo_Block::get_instance(),

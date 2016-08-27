@@ -318,7 +318,9 @@ var ip_geo_block_time = new Date();
 
 		// Get tab number and check wpCookies in wp-includes/js/utils.js
 		var cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('admin'))) || {},
-		    maxTabs = 8, tabNo = /&tab=(\d)/.exec(window.location.href);
+		    tabIndex = [0, 8],
+		    tabNo = /&tab=(\d)/.exec(window.location.href);
+
 		tabNo = Number(tabNo && tabNo[1]);
 
 		// Make form style with fieldset and legend
@@ -339,7 +341,7 @@ var ip_geo_block_time = new Date();
 
 			// Initialize show/hide form-table on tab 0, 1
 			if (tabNo <= 1) {
-				index += (tabNo ? maxTabs : 0);
+				index += tabIndex[tabNo];
 				if ('undefined' === typeof cookie[index] || cookie[index]) { // 'undefined' or 'o'
 					title.addClass(ID('dropdown')).parent().nextAll().show();
 				} else {
@@ -364,7 +366,7 @@ var ip_geo_block_time = new Date();
 
 			// Save cookie
 			if ('undefined' !== typeof wpCookies) {
-				cookie[index + (tabNo ? maxTabs : 0)] = title.hasClass(ID('dropdown')) ? 'o' : '';
+				cookie[index + tabIndex[tabNo]] = title.hasClass(ID('dropdown')) ? 'o' : '';
 				wpCookies.setHash(ID('admin'), cookie, new Date(Date.now() + 2592000000));
 			}
 
@@ -395,7 +397,7 @@ var ip_geo_block_time = new Date();
 					$this.parent().nextAll().toggle(n ? false : true);
 					$this.removeClass(id.join(' '))
 					     .addClass(n ? id[1] : id[0]);
-					cookie[i + (tabNo ? maxTabs : 0)] = n ? '' : 'o';
+					cookie[i + tabIndex[tabNo]] = n ? '' : 'o';
 				});
 
 				// Save cookie
@@ -453,14 +455,14 @@ var ip_geo_block_time = new Date();
 
 			// Matching rule
 			$(ID('@', 'matching_rule')).on('change', function () {
-				$(ID('@', 'white_list')).closest('tr').toggle(this.value !== '1');
-				$(ID('@', 'black_list')).closest('tr').toggle(this.value !== '0');
+				$(ID('@', 'white_list')).closest('tr').toggle(this.value === '0');
+				$(ID('@', 'black_list')).closest('tr').toggle(this.value === '1');
 				return false;
 			}).trigger('change');
 
 			$(ID('@', 'public_matching_rule')).on('change', function () {
-				$(ID('@', 'public_white_list')).closest('tr').toggle(this.value !== '1');
-				$(ID('@', 'public_black_list')).closest('tr').toggle(this.value !== '0');
+				$(ID('@', 'public_white_list')).closest('tr').toggle(this.value === '0');
+				$(ID('@', 'public_black_list')).closest('tr').toggle(this.value === '1');
 				return false;
 			}).trigger('change');
 
@@ -697,9 +699,12 @@ var ip_geo_block_time = new Date();
 
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (event) {
-				var ip = $(ID('@', 'ip_address')).val();
+				var whois = $(ID('#', 'whois')),
+				    ip = $(ID('@', 'ip_address')).val();
 
 				if (ip) {
+					whois.hide().empty();
+
 					// Get whois data
 					$.whois(ip, function (data) {
 						var i, str = '';
@@ -710,7 +715,20 @@ var ip_geo_block_time = new Date();
 								'<td>' + data[i].value + '</td>' +
 							'</tr>';
 						}
-						$(ID('#', 'whois')).empty().html('<table>' + str + '</table>');
+
+						whois.html(
+							'<fieldset class="' + ID('field') + '">' +
+							'<legend><h2 id="' + ID('whois-title') + '" class="' + ID('dropdown') + '">Whois</h2></legend>' +
+							'<table class="' + ID('table') + '">' + str + '</table>' +
+							'<fieldset>'
+						).fadeIn('slow');
+
+						$(ID('#', 'whois-title')).on('click', function (event) {
+							var $this = $(this);
+							$this.parent().nextAll().toggle();
+							$this.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
+							return false;
+						});
 					});
 
 					// Show map
@@ -769,6 +787,11 @@ var ip_geo_block_time = new Date();
 
 				return false;
 			});
+
+			// Preset IP address
+			if ($(ID('@', 'ip_address')).val()) {
+				$(ID('@', 'get_location')).trigger('click');
+			}
 			break;
 
 		  /*----------------------------------------
@@ -817,3 +840,11 @@ var ip_geo_block_time = new Date();
 		}
 	});
 }(jQuery, window, document));
+
+/**
+ * Jump to search tab with opening new window.
+ */
+function ip_geo_block_geoip(elm) {
+	'use strict';
+	window.open(window.location.href.replace(/tab=\d/, 'tab=2') + '&ip=' + elm.text);
+}

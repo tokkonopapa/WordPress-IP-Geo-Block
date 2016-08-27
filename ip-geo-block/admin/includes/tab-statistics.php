@@ -1,7 +1,5 @@
 <?php
-include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 class IP_Geo_Block_Admin_Tab {
 
@@ -122,7 +120,7 @@ if ( $options['save_statistics'] ) :
 				'type' => 'html',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => '<table class="'.$option_slug.'-'.$field.'">' .
+				'value' => '<table class="'.$option_slug.'-table">' .
 					'<thead><tr><th>IPv4</th><th>IPv6</th></tr></thead><tbody><tr>' .
 					'<td>' . esc_html( $statistics['IPv4'] ) . '</td>' .
 					'<td>' . esc_html( $statistics['IPv6'] ) . '</td>' .
@@ -131,7 +129,7 @@ if ( $options['save_statistics'] ) :
 		);
 
 		$field = 'service';
-		$html  = '<table class="'.$option_slug.'-'.$field.'"><thead><tr>';
+		$html  = '<table class="'.$option_slug.'-table"><thead><tr>';
 		$html .= '<th>' . __( 'Name of API',     'ip-geo-block' ) . '</th>';
 		$html .= '<th>' . __( 'Calls',           'ip-geo-block' ) . '</th>';
 		$html .= '<th>' . __( 'Response [msec]', 'ip-geo-block' ) . '</th>';
@@ -217,7 +215,7 @@ endif;
 		);
 
 		$field = 'cache';
-		$html  = '<table class="'.$option_slug.'-'.$field.'"><thead><tr>';
+		$html  = '<table class="'.$option_slug.'-table"><thead><tr>';
 		$html .= '<th>' . __( 'IP address',            'ip-geo-block' ) . '</th>';
 		$html .= '<th>' . __( 'Country code / Access', 'ip-geo-block' ) . '</th>';
 		$html .= '<th>' . __( 'Elapsed [sec] / Calls', 'ip-geo-block' ) . '</th>';
@@ -244,6 +242,7 @@ endif;
 				}
 			}
 		}
+
 		$html .= '</tbody></table>';
 
 		add_settings_field(
