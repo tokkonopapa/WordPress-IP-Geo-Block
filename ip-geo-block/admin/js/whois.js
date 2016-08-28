@@ -9,6 +9,8 @@
  * RIPE NCC
  * @link https://apps.db.ripe.net/search/query.html
  * @link https://labs.ripe.net/ripe-database/database-api/api-documentation
+ * @link https://www.ripe.net/manage-ips-and-asns/db/support/documentation/ripe-database-documentation
+ * @link https://www.ripe.net/manage-ips-and-asns/db/support/documentation/ripe-database-documentation/how-to-query-the-ripe-database/14-3-restful-api-queries/14-3-2-api-search
  * @link https://github.com/RIPE-NCC/whois/wiki/WHOIS-REST-API-search
  */
 (function ($) {

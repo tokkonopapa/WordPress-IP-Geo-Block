@@ -573,12 +573,12 @@ class IP_Geo_Block_Admin_Tab {
 		 * Local database settings
 		 *----------------------------------------*/
 		// higher priority order
-		$providers = IP_Geo_Block_Provider::get_addons(); 
+		$providers = IP_Geo_Block_Provider::get_addons();
 		if ( empty( $providers ) ) {
 			$context->add_admin_notice( 'error',
 				sprintf(
 					__( 'Please download <a href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a> and upload <code>ip-geo-api</code> to <code>%s</code> with write permission.', 'ip-geo-block' ),
-					apply_filters( 'ip-geo-block-api-dir', dirname( $options['api_dir'] ) )
+					apply_filters( 'ip-geo-block-api-dir', basename( WP_CONTENT_DIR ) )
 				)
 			);
 		}

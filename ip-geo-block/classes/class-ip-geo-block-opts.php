@@ -241,7 +241,6 @@ class IP_Geo_Block_Opts {
 				self::recurse_copy( $src, $dst );
 
 		} catch ( Exception $e ) {
-
 			if ( class_exists( 'IP_Geo_Block_Admin' ) )
 				IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $dst ) );
 
@@ -265,9 +264,11 @@ class IP_Geo_Block_Opts {
 			$dir = wp_upload_dir();
 			$dir = $dir['basedir'];
 
-			// wp-content/plugins/ip-geo-block
-			if ( ! @is_writable( $dir ) )
-				$dir = IP_GEO_BLOCK_PATH;
+			if ( ! @is_writable( $dir ) ) {
+				// wp-content/plugins/ip-geo-block
+				if ( ! @is_writable( $dir = IP_GEO_BLOCK_PATH ) )
+					$dir = NULL;
+			}
 		}
 
 		// filter hook in `functions.php` doesn't work at activation
