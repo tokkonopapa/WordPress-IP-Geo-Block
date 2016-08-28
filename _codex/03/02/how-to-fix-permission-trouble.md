@@ -6,14 +6,18 @@ title: How to fix permission trouble?
 excerpt: How to fix permission trouble?
 ---
 
+This plugin must have read/write permission at two places outside of the plugin
+directory which is typically `/wp-content/plugins/`. But in some cases, you 
+might find the error message related to the permission because of your server's
+security setting.
 
-This plugin must have read/write permission in two places outside of the plugin
-directory which is typically `/wp-content/plugins/`. If you found the message 
-like below, you have to configure these places by your own hand.
-
-> Unable to write `.htaccess`. Please check the permission.
+In this case, you have to configure these places by your own hand.
 
 ### Geolocation database ###
+
+![Error of IP Geo API]({{ '/img/2016-09/ErrorGeoAPI.png' | prepend: site.baseurl }}
+ "Error of IP Geo API"
+)
 
 This plugin needs the IP address geolocation databases of [Maxmind][Maxmind] 
 and [IP2Location][IP2Location]. Those databases would be downloaded using class
@@ -31,6 +35,10 @@ message or find your dabase directory is the 3rd of the above, you should
 download `ip-geo-api` from [Github][GitGeoAPI] and upload it to 1. and 2.
 
 ### .htaccess ###
+
+![Error of .htaccess]({{ '/img/2016-09/ErrorHtaccess.png' | prepend: site.baseurl }}
+ "Error of .htaccess"
+)
 
 When you enable "**Force to load WP core**" options, this plugin will try to 
 configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` 
