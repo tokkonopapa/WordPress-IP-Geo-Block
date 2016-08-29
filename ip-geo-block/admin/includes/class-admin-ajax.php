@@ -136,7 +136,7 @@ class IP_Geo_Block_Admin_Ajax {
 				$html .= IP_Geo_Block_Util::localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
 
 				$log = array_shift( $row );
-				$html .= '<td><a href="javascript:" onclick="ip_geo(this)">' . $log . '</td>';
+				$html .= '<td><a href="javascript:">' . $log . '</td>';
 
 				foreach ( $row as $log ) {
 					$html .= '<td>' . esc_html( $log ) . '</td>';
