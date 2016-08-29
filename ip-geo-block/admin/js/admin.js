@@ -844,7 +844,7 @@ var ip_geo_block_time = new Date();
 /**
  * Jump to search tab with opening new window.
  */
-function ip_geo_block_geoip(elm) {
+function ip_geo(elm) {
 	'use strict';
 	window.open(window.location.href.replace(/tab=\d/, 'tab=2') + '&ip=' + elm.text);
 }
