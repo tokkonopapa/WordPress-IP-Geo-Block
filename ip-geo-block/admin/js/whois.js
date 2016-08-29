@@ -46,7 +46,7 @@
 						});
 					}
 
-					else if ('link' === key || 'terms-and-conditions' === key) {
+					else if (value.href) {
 						results.push({
 							name : key,
 							value: '<a href="' + value.href + '.json" target=_blank>' + value.href + '</a>'
