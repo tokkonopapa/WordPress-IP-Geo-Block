@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>whois test</title>
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+	<script src="../../admin/js/whois.js"></script>
+</head>
+<body>
+	<!-- http://json2html.com/ -->
+	<!-- http://visualizer.json2html.com/ -->
+
+	IP Address:&nbsp;
+	<input type="text" />
+	<input type="button" value="submit" />
+
+	<div id="result"></div>
+
+	<script>
+		$('input[type^=button]').on('click', function (event) {
+			
+			$.whois($('input[type^=text]').val(), function (res) {
+				var i, str = '';
+
+				for (i = 0; i < res.length; i++) {
+					str +=
+					'<tr>' +
+						'<td>' + res[i].name  + '</td>' +
+						'<td>' + res[i].value + '</td>' +
+					'</tr>';
+				}
+
+				$('#result').empty().html('<table>' + str + '</table>');
+			});
+		});
+	</script>
+</body>
+</html>
