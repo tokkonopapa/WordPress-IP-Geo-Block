@@ -14,7 +14,10 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 	this.validate_home = function (url) {
 		return $http({
 			method: 'GET',
-			url: url
+			url: url,
+			headers: {
+				'X-UA-Compatible': 'WordPress Post Simulator'
+			}
 		})
 
 		.then(
@@ -39,7 +42,10 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 	this.validate_page = function (url) {
 		return $http({
 			method: 'GET',
-			url: url
+			url: url,
+			headers: {
+				'X-UA-Compatible': 'WordPress Post Simulator'
+			}
 		})
 
 		// data       – {string|Object} The response body.
@@ -88,7 +94,10 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 	this.get_forum = function (url) {
 		return $http({
 			method: 'GET',
-			url: url
+			url: url,
+			headers: {
+				'X-UA-Compatible': 'WordPress Post Simulator'
+			}
 		})
 		.then(
 			function (res) {

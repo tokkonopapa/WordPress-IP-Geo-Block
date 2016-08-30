@@ -12,7 +12,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 	 * These APIs need to respond `Access-Control-Allow-Origin` in header.
 	 */
 	this.apis = [
-		/*{
+		{
 			api: 'freegeoip.net',
 			url: 'http://freegeoip.net/%API_FMT%/%API_IP%',
 			fmt: 'json',
@@ -21,11 +21,11 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				switch (type) {
 					case 'name':  return data.country_name || null;
 					case 'code':  return data.country_code || null;
-					case 'error': return this.error('not found');
+					case 'error': return 'not found';
 				}
 				return null;
 			}
-		},*/
+		},
 		{
 			api: 'ipinfo.io',
 			url: 'http://ipinfo.io/%API_IP%/%API_FMT%',
@@ -35,7 +35,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				switch (type) {
 					case 'name':  return data.country || null;
 					case 'code':  return data.country || null;
-					case 'error': return this.error('not found');
+					case 'error': return 'not found';
 				}
 				return null;
 			}
@@ -49,7 +49,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				switch (type) {
 					case 'name':  return data.country || null;
 					case 'code':  return data.countryCode || null;
-					case 'error': return this.error(data.message || null);
+					case 'error': return data.message || null;
 				}
 				return null;
 			}
@@ -76,7 +76,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 						}
 						break;
 					case 'error':
-						return this.error('not found');
+						return 'not found';
 				}
 				return null;
 			}
@@ -103,7 +103,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 						}
 						break;
 					case 'error':
-						return this.error(data.query.results.error);
+						return data.query.results.error;
 				}
 				return null;
 			}
@@ -131,17 +131,13 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 						if (data.query.results) {
 							return data.query.results.json.msg;
 						} else {
-							return this.error('error');
+							return 'error';
 						}
 				}
 				return null;
 			}
 		}
 	];
-
-	this.error = function (errmsg) {
-		return errmsg;
-	};
 
 	this.get_geolocation = function (ip, callback) {
 		var api = this.apis[get_random_int(0, this.apis.length-1)],
