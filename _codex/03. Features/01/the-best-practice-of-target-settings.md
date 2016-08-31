@@ -1,7 +1,9 @@
 ---
 layout: page
 category: codex
+section: Features and performance
 title: The best practice of target settings
+excerpt: The best practice of target settings
 ---
 
 At the "**Validation target settings**", you should select the options, 

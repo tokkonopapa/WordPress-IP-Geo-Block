@@ -1,6 +1,7 @@
 ---
 layout: page
 category: codex
+section: Features and performance
 title: Referer Checker
 excerpt: Check your HTTP referer
 script: [/js/referer.js]

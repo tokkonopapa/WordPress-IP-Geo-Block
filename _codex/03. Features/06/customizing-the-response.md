@@ -1,7 +1,9 @@
 ---
 layout: page
 category: codex
+section: Features and performance
 title: Customizing the response
+excerpt: Customizing the response
 ---
 
 When this plugin blocks a request, it behaves differently depending on the 

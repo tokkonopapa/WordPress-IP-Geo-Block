@@ -1,7 +1,9 @@
 ---
 layout: page
 category: codex
+section: Features and performance
 title: Record settings and logs
+excerpt: Record settings and logs
 ---
 
 "**$_POST keys to be recorded with their values in logs**" at 
