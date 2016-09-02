@@ -14,7 +14,7 @@ looks in multiple locations.
 
 [WebPageTest][WebPageTest] is a tool for measuring and analyzing the 
 performance of web pages. There are many options that may seem complicated 
-at first but you can use it just putting the URL of your site into the text 
+at first, but you can use it just putting the URL of your site into the text 
 box and simply hitting the "START TEST" button. You can choose the server's 
 location among several regions such as North/South America, Europe, Africa, 
 Asia and Oceania.
@@ -52,7 +52,8 @@ And here is a result from GeoScreenshot :
  "Captured results"
 )
 
-You can check if IP Geo Block and your caching plugin does conflict or not.
+You can also check whether IP Geo Block and your caching plugin does conflict 
+or not.
 
 [IP-Geo-Block]:  https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [WebPageTest]:   https://www.webpagetest.org/ "WebPagetest - Website Performance and Optimization Test"

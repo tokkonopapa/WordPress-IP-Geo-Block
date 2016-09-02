@@ -47,6 +47,15 @@ country code.
  "Lock out warning message"
 )
 
+There're cases that each geolocation dabase has a 
+[different country code][DifferentCC] especially in 
+[Euro region][Euroregion]. This issue was reported at [support forum][Forum].
+In this case, you had better to prioritize the country code by Maxmind.
+
+![Different country code]({{ '/img/2015-09/ScanCountry.png' | prepend: site.baseurl }}
+ "Different country code"
+)
+
 ### See also ###
 
 - [What should I do when I'm locked out?][HowToRecover]
@@ -55,3 +64,6 @@ country code.
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [HowToRecover]: {{ '/codex/what-should-i-do-when-i-m-locked-out.html' | prepend: site.baseurl }} "What should I do when I'm locked out? | IP Geo Block"
 [BestPractice]: {{ '/codex/the-best-practice-of-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
+[DifferentCC]:  http://www.ipgeoblock.com/changelog/release-2.1.5.html "2.1.5 Release Note | IP Geo Block"
+[Euroregion]:   https://en.wikipedia.org/wiki/Euroregion "Euroregion - Wikipedia, the free encyclopedia"
+[Forum]:        https://wordpress.org/support/topic/locked-out-due-to-eu-vs-country "WordPress &#8250; Support &raquo; [resolved] Locked out due to EU vs. Country"

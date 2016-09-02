@@ -13,8 +13,8 @@ area based on [version 2.2.2][Ver2.2.2] and later.
 
 ### Preparation ###
 
-The most easy way to simulate submitting a request from outside of your nation 
-is using [the browser addon of VPN service][VPN-ADDON].
+The most easy way to simulate submitting a request from outside of your 
+country is using [the browser addon of VPN service][VPN-ADDON].
 
 ![VPN addon]({{ '/img/2016-01/VPN-Addon.png' | prepend: site.baseurl }}
  "VPN addon"

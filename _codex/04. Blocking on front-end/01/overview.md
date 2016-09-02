@@ -28,7 +28,7 @@ You can select one of these:
 - **Blacklist**  
 
 If you select **Whitelist** or **Blacklist**, you can configure a different set
-of country code from "Validation rule settings".
+of country code from "**Validation rule settings**".
 
 ### UA string and qualification ###
 
@@ -45,7 +45,7 @@ or "`#`" (block).
 ### Simulation mode ###
 
 This feature enables to simulate validation without deployment of blocking on 
-front-end. The results can be found at "Pubic facing pages" in Logs. It's 
+front-end. The results can be found at "**Pubic facing pages**" in Logs. It's 
 useful to check which pages would be blocked or passed.
 
 ![Logs at public faicing pages]({{ '/img/2016-08/PublicLogs.png' | prepend: site.baseurl }}

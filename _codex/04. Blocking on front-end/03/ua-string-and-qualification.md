@@ -6,10 +6,9 @@ title: UA string and qualification
 ---
 
 You must be sure to grant permission to search engine bots or crawlers such as 
-google, yahoo and being. Of course, bad bot should be blocked. This feature is 
-possible to fulfill your wishes by giving a pair of "**UA string**" and 
-"**Qualification**" separated by an applicable rule which can be "`:`" (pass) 
-or "`#`" (block).
+google, yahoo and being while bad bots are blocked. This feature is possible to
+fulfill your wishes by giving a pair of "**UA string**" and "**Qualification**"
+separated by an applicable rule which can be "`:`" (pass) or "`#`" (block).
 
 ### UA string ###
 
@@ -35,10 +34,10 @@ the meaning of qualification.
 
 ### Examples ###
 
-| Sample       | Description                                                         |
-|:-------------|:--------------------------------------------------------------------|
-| Google:HOST  | Pass  if UA includes "Google" and reverse DNS lookup is available   |
-| Google#!HOST | Block if UA includes "Google" and reverse DNS lookup is unavailable |
+| Sample       | Description                                                          |
+|:-------------|:---------------------------------------------------------------------|
+| Google:HOST  | Pass  if UA includes "Google" and reverse DNS lookup is available.   |
+| Google#!HOST | Block if UA includes "Google" and reverse DNS lookup is unavailable. |
 
 ![UA string and qualification]({{ '/img/2016-08/UA-Qualify.png' | prepend: site.baseurl }}
  "UA string and qualification"

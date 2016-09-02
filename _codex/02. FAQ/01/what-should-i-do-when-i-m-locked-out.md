@@ -35,9 +35,9 @@ add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
 ?>
 {% endhighlight %}
 
-It can be activated by replacing `/*` (opening multi-line comment) to `//` 
-(single line comment). Then save it and upload it to this plugin's directory 
-on your server via FTP.
+This code block can be activated by replacing `/*` (opening multi-line comment)
+to `//` (single line comment). Then save it and upload it to this plugin's 
+directory on your server via FTP.
 
 {% highlight php %}
 <?php
@@ -61,7 +61,7 @@ add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
 
 After reconfiguring "**Maching rule**" and "**Country code for matching rule**"
 at "**Validation rule settings**" properly, do not forget to restore the 
-`ip-geo-block.php` on your server to the original.
+`ip-geo-block.php` on your server to the original one.
 
 ### Another solution at emergency ###
 
@@ -70,8 +70,8 @@ users are not familiar with editing PHP file.
 
 In that case, you can just forcibly remove `ip-geo-block` in your plugin's 
 directory (typically `wp-content/plugins`) by using FTP or 
-[cPanel File Manager][cPanel-FM], you'll see the following message on your 
-plugin's dashboard.
+[cPanel File Manager][cPanel-FM]. Then you'll see the following message on 
+your plugin's dashboard.
 
 ![Force to delete]({{ '/img/2015-08/ForceDelete.png' | prepend: site.baseurl }}
  "Force to delete"
@@ -80,7 +80,7 @@ plugin's dashboard.
 After that, you can reinstall and reactivate this plugin. But you'll find soon 
 you're blocked again because your settings still remains in your database.
 
-Don't worry about that. A background process kicked by the activation will 
+But don't worry about that. A background process kicked by the activation will 
 rescue you. After pausing for breath, you can visit your admin dashboard again!
 
 ### For power users ###

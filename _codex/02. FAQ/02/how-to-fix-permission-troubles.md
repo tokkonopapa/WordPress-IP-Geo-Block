@@ -9,7 +9,7 @@ excerpt: How to fix permission troubles?
 This plugin must have read/write permission at two places outside of the plugin
 directory which is typically `/wp-content/plugins/`. But in some cases, you 
 might find the error message related to the permission because of your server's
-security setting.
+security configurations.
 
 In this case, you have to configure these places by your own hand.
 
@@ -20,10 +20,10 @@ In this case, you have to configure these places by your own hand.
 )
 
 This plugin needs the IP address geolocation databases of [Maxmind][Maxmind] 
-and [IP2Location][IP2Location]. Those databases would be downloaded using class
-libraries for each. When you install this plugin at the first time, one of the 
-following directories will be selected as the place where the class libraries 
-and databases are stored.
+and [IP2Location][IP2Location] on your server. Those databases would be 
+downloaded via the dedicated class libraries for each. When you install this 
+plugin at the first time, one of the following directories will be selected 
+as the place where the class libraries and databases are stored.
 
 1. `/wp-content/ip-geo-api/`
 2. `/wp-content/uploads/ip-geo-api/`
@@ -32,9 +32,9 @@ and databases are stored.
 The 3rd one is not recommended because at every time this plugin updates, 
 files in its directory will be removed. So when you meet "Unable to write" 
 message or find your dabase directory is the 3rd of the above, you should 
-download `ip-geo-api` from [Github][GitGeoAPI] and upload it to 1. and 2.
+download `ip-geo-api` from [Github][GitGeoAPI] and upload it to 1. or 2.
 
-### .htaccess ###
+### Force to load WP core ###
 
 ![Error of .htaccess]({{ '/img/2016-09/ErrorHtaccess.png' | prepend: site.baseurl }}
  "Error of .htaccess"
@@ -42,11 +42,12 @@ download `ip-geo-api` from [Github][GitGeoAPI] and upload it to 1. and 2.
 
 When you enable "**Force to load WP core**" options, this plugin will try to 
 configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` 
-directory in order to protect your site against the malicous attacks to the 
-[OMG plugins and shemes][PreventExp].
+directory in order to protect your site against the malicous attacks targeted 
+at the [OMG plugins and shemes][PreventExp].
 
 If you encounter an "Unable to write" message for plugins, you should put the 
-following directives into your `/wp-content/plugins/.htaccess` :
+following directives into your `/wp-content/plugins/.htaccess` manually 
+instead of enabling this option :
 
 {% highlight text %}
 # BEGIN IP Geo Block
@@ -61,7 +62,7 @@ RewriteRule ^.*\.php$ rewrite.php [L]
 
 The absolute path `/wp-content/plugins/` should be changed according to your 
 site configuration.
-And here's the example directives in `/wp-content/themes/.htaccess` :
+And here's an example directives in `/wp-content/themes/.htaccess` :
 
 {% highlight text %}
 # BEGIN IP Geo Block

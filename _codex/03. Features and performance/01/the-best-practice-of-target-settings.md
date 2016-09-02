@@ -6,8 +6,9 @@ title: The best practice of target settings
 excerpt: The best practice of target settings
 ---
 
-At the "**Validation target settings**", you should select the options, 
-"**Block by country**" and "**Prevent Zero-day Exploit**" on each target.
+At the "**Validation target settings**", you can enable the option, "**Block 
+by country**" for each target as a basic configuration. Additionally, 
+"**Prevent Zero-day Exploit**" can be enabled as a extended option.
 This document helps you how to configure those options to fit for your site.
 
 <!--more-->
@@ -27,20 +28,22 @@ attacks targeted at the vulnerble plugins and themes in your site.
 
 The WordPress core file `xmlrpc.php` is an endpoint for not only 
 [**R**emote **P**rocedure **C**all][XML-RPC] but also [pingbacks][pingbacks].
-As for the RPC, it's used by [Jetpack][Jetpack] and [mobile apps][MobileApp].
-But it's also abused as login attempts by the attackers.
+As for the RPC, it's used by [Jetpack][Jetpack] and [mobile apps][MobileApp] 
+to provide their services. But it's also abused as login attempts by the 
+attackers.
 
 "**Block by country**" for this target can accept the useful requests while 
 reducing the risk of exploiting your site from forbidden countries. And 
-"**Completely close**" works more effectively than [WordPress 4.4 and later]
-[Core#34336] or [Disable XML-RPC][DIS-XMLRPC] especially against the [brute 
-force amplification attacks][BruteXMLRPC] by `system.multicall`.
+"**Completely close**" [works more effectively][Release223] than 
+[WordPress 4.4 and later][Core#34336] or [Disable XML-RPC][DIS-XMLRPC] 
+especially against the [brute force amplification attacks][BruteXMLRPC] 
+by `system.multicall`.
 
 <div class="alert alert-info">
   <strong>NOTE:</strong>
   If you want to accept the specific IP addresses, put them (with 
   <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia, the free encyclopedia">CIDR notation</a>
-  if you need) into the
+  to specify the range of IP addresses) into the
   "<strong>White list of extra IP addresses prior to country code</strong>"
   at "<strong>Validation rule settings</strong>".
 </div>
@@ -69,7 +72,7 @@ your site against this kind of attacks.
 
 You can change "**Max number of failed login attempts per IP address**" which 
 is 5 by default at the bottom of "**Validation rule settings**". If you select 
-"0" as for it, then users can't fail to login.
+"0" as for it, then users can not fail to login.
 
 ![login failed in phpMyAdmin]({{ '/img/2016-01/LoginAttempts.png' | prepend: site.baseurl }}
  "login failed in phpMyAdmin"
@@ -83,9 +86,9 @@ Note that the lockout time is same as the expiration time of cache.
 
 ### Setting for "Admin area" ###
 
-Normally, php files under the `wp-admin/` directory should be accessed only by 
-the admin except Ajax call. So the best practice for this target is enabling 
-both "**Block by country**" and "**Prevent Zero-day Exploit**" 
+Normally, php files under the `wp-admin/` should be accessed only by the 
+administrator except Ajax call. So the best practice for this target is 
+enabling both "**Block by country**" and "**Prevent Zero-day Exploit**" 
 (e.g. [WP-ZEP][WP-ZEP]).
 
 ![Best setting for Admin area]({{ '/img/2016-01/AdminArea.png' | prepend: site.baseurl }}
@@ -173,3 +176,4 @@ If you have something to ask, please feel free to open your issue at the
 [AnalysisVec]:  {{ '/codex/analysis-of-attack-vectors.html'  | prepend: site.baseurl }} "Analysis of Attack Vectors | IP Geo Block"
 [PreventExp]:   {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
 [Apache]:       https://httpd.apache.org/ "Welcome! - The Apache HTTP Server Project"
+[Release223]:   http://www.ipgeoblock.com/changelog/release-2.2.3.html "The best practice of target settings | IP Geo Block"
