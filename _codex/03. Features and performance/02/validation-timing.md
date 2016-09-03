@@ -36,12 +36,15 @@ mu-plugins are processed prior to theme setup. Consequently, the following
 two issues would be raised.
 
 1. **[Custom filter hooks][FilterHooks] in `functions.php` does not work**  
-   It is bacause the `functions.php` in the theme directory would not be parsed
-   when this plugin do its jobs.
+   It is bacause the `functions.php` in the theme directory would not have been
+   parsed when this plugin do its jobs. In this case, you **must** put your own
+   code into `drop-in.php` which is placed as `drop-in-sample.php` in the 
+   [geolocation database directory][GeoDBDir]. Please rename it to `drop-in.php`
+   when you use it.
 
 2. **[Human friendly error page][ErrorPage] is unavailable**  
-   It is because the theme setup would not be finished when this plugin do its 
-   jobs. In this case, you should save your human friendly error page as a 
+   It is because the theme setup would not have finished when this plugin do 
+   its jobs. In this case, you should save your human friendly error page as a 
    static file. Taking `403.php` as an example, once you configure 
    "**init action hook**" as "**Validation timing**" and visit that page, then 
    save its source code (actually, it's HTML!) as `403.php`.
@@ -107,7 +110,8 @@ against the each target using [ApacheBench].
 [ApacheBench]:  http://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool - Apache HTTP Server Version 2.4"
 [MU-plugins]:   https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex"
 [ActionHook]:   https://codex.wordpress.org/Plugin_API/Action_Reference "Plugin API/Action Reference &laquo; WordPress Codex"
-[WP-ZEP]:       {{ '/article/how-wpzep-works.html'                                  | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
-[FilterHooks]:  {{ '/codex/#filter-hooks'                                           | prepend: site.baseurl }} "Filter hooks | IP Geo Block"
-[ErrorPage]:    {{ '/codex/customizing-the-response.html#human-friendly-error-page' | prepend: site.baseurl }} "Customizing the response | IP Geo Block"
-[LoadOnServer]: {{ '/article/impact-on-server-load.html'                            | prepend: site.baseurl }} "Impact on server load caused by brute-force attacks | IP Geo Block"
+[WP-ZEP]:       {{ '/article/how-wpzep-works.html'                                   | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
+[GeoDBDir]:     {{ '/codex/how-to-fix-permission-troubles.html#geolocation-database' | prepend: site.baseurl }} "How to fix permission troubles? | IP Geo Block"
+[FilterHooks]:  {{ '/codex/#filter-hooks'                                            | prepend: site.baseurl }} "Filter hooks | IP Geo Block"
+[ErrorPage]:    {{ '/codex/customizing-the-response.html#human-friendly-error-page'  | prepend: site.baseurl }} "Customizing the response | IP Geo Block"
+[LoadOnServer]: {{ '/article/impact-on-server-load.html'                             | prepend: site.baseurl }} "Impact on server load caused by brute-force attacks | IP Geo Block"
