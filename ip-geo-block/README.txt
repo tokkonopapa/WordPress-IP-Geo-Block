@@ -315,6 +315,21 @@ that you should upload the original one to deactivate above feature.
 [This release note](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note")
 can also help you.
 
+= How can I fix "Unable to write" error?
+
+When you enable "**Force to load WP core**" options, this plugin will try to 
+configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` 
+directory in order to protect your site against the malicous attacks to the 
+[OMG plugins and shemes](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php | IP Geo Block").
+
+But some servers doesn't give reading / writing permission against `.htaccess` 
+to WordPress. In this case, you can configure these `.htaccess` files by your 
+own hand instead of enabling "**Force to load WP core**" options.
+
+Please refer to 
+"[How to fix permission troubles?](http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html 'How to fix permission troubles? | IP Geo Block')"
+in order to fix this error.
+
 = Do I have to turn on all the selection to enhance security? =
 
 Yes. Roughly speaking, the strategy of this plugin has been constructed as 

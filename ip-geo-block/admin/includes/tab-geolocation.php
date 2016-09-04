@@ -52,7 +52,13 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 		// preset IP address
-		$list = isset( $_GET['ip'] ) && filter_var( $_GET['ip'], FILTER_VALIDATE_IP ) ? $_GET['ip'] : '';
+		if ( isset( $_GET['ip'] ) ) {
+			$list = str_replace( '***', '0', $_GET['ip'] ); // Anonymize IP address
+			$list = filter_var( $list, FILTER_VALIDATE_IP ) ? $list : '';
+		}
+		else {
+			$list = '';
+		}
 
 		$field = 'ip_address';
 		add_settings_field(

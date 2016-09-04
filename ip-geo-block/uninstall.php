@@ -15,7 +15,6 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 define( 'IP_GEO_BLOCK_PATH', plugin_dir_path( __FILE__ ) ); // @since 2.8
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php' );
