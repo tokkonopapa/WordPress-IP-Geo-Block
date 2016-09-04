@@ -330,9 +330,13 @@ class IP_Geo_Block {
 			if ( function_exists( 'trackback_response' ) )
 				trackback_response( $code, IP_Geo_Block_Util::kses( $mesg ) ); // @since 0.71
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
+				$hook = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
 				defined( 'STYLESHEETPATH' ) && FALSE !== ( @include( get_stylesheet_directory() .'/'.$code.'.php' ) ) or // child  theme
 				defined( 'TEMPLATEPATH'   ) && FALSE !== ( @include( get_template_directory()   .'/'.$code.'.php' ) ) or // parent theme
-				wp_die( IP_Geo_Block_Util::kses( $mesg ), '', array( 'response' => $code, 'back_link' => TRUE ) );
+				wp_die(
+					IP_Geo_Block_Util::kses( $mesg ) . ( $hook ? "\n<p><a href='" . admin_url() . "'>" . __( '&laquo; Dashboard' ) . "</a></p>" : '' ),
+					'', array( 'response' => $code, 'back_link' => ! $hook )
+				);
 			}
 			exit;
 		}
