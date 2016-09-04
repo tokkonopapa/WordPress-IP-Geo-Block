@@ -67,6 +67,7 @@ with [BuddyPress][BuddyPress].
 
 - [ip-geo-block-xxxxx-reason][CodexReason]
 - [ip-geo-block-xxxxx-status][CodexStatus]
+- [Validation timing][CodexTiming]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [StatusCode]:   http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
@@ -79,3 +80,4 @@ with [BuddyPress][BuddyPress].
 [BuddyPress]:   https://buddypress.org/ "BuddyPress.org"
 [CodexReason]:  {{ '/codex/ip-geo-block-xxxxx-reason.html' | prepend: site.baseurl }} 'ip-geo-block-xxxxx-reason | IP Geo Block'
 [CodexStatus]:  {{ '/codex/ip-geo-block-xxxxx-status.html' | prepend: site.baseurl }} 'ip-geo-block-xxxxx-status | IP Geo Block'
+[CodexTiming]:  {{ '/codex/validation-timing.html'         | prepend: site.baseurl }} 'Validation timing | IP Geo Block'

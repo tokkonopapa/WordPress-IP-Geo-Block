@@ -11,7 +11,7 @@ process and will typically do its jobs after `init` action hook. It means
 that a plugin will be kept waiting until almost all plugins have finished to 
 be loaded.
 
-But it's wasteful to give resources of your server to spams and attackers.
+But it's wasteful to give spams and attackers those resources of your server.
 
 The "**Validation timing**" at "**Validation rule settings**" can help to 
 drastically reduce load on server especially against brute-force attacks.
@@ -44,10 +44,10 @@ two issues would be raised.
 
 2. **[Human friendly error page][ErrorPage] is unavailable**  
    It is because the theme setup would not have finished when this plugin do 
-   its jobs. In this case, you should save your human friendly error page as a 
-   static file. Taking `403.php` as an example, once you configure 
-   "**init action hook**" as "**Validation timing**" and visit that page, then 
-   save its source code (actually, it's HTML!) as `403.php`.
+   its jobs. In this case, you **must** save your human friendly error page as 
+   a static file when you want to use it. Taking `403.php` as an example, once 
+   you configure "**init action hook**" as "**Validation timing**" and visit 
+   that page, then save its source code (actually, it's HTML!) as `403.php`.
 
 ![Human friendly error page]({{ '/img/2016-09/HumanFriendly.png' | prepend: site.baseurl }}
  "Human friendly error page"
@@ -71,8 +71,10 @@ plugins are showen blow :
  "Plugins Dashboard"
 )
 
-The following shows a comparison between the two of "**Validation timing**" 
-against the each target using [ApacheBench].
+The following shows comparisons between the two mode of "**Validation timing**"
+against the each target using [ApacheBench] for 60 seconds. As you can see, 
+the requests have become to be handled more than twice with `"mu-plugins" 
+(ip-geo-block-mu.php)`.
 
 ##### xmlrpc.php #####
 
@@ -106,12 +108,17 @@ against the each target using [ApacheBench].
 | Reqs/sec [#/sec]  |             3.81 |       9.17 |
 | Time/req [msec]   |          262.588 |    109.039 |
 
-[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[ApacheBench]:  http://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool - Apache HTTP Server Version 2.4"
-[MU-plugins]:   https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex"
-[ActionHook]:   https://codex.wordpress.org/Plugin_API/Action_Reference "Plugin API/Action Reference &laquo; WordPress Codex"
-[WP-ZEP]:       {{ '/article/how-wpzep-works.html'                                   | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
-[GeoDBDir]:     {{ '/codex/how-to-fix-permission-troubles.html#geolocation-database' | prepend: site.baseurl }} "How to fix permission troubles? | IP Geo Block"
-[FilterHooks]:  {{ '/codex/#filter-hooks'                                            | prepend: site.baseurl }} "Filter hooks | IP Geo Block"
-[ErrorPage]:    {{ '/codex/customizing-the-response.html#human-friendly-error-page'  | prepend: site.baseurl }} "Customizing the response | IP Geo Block"
-[LoadOnServer]: {{ '/article/impact-on-server-load.html'                             | prepend: site.baseurl }} "Impact on server load caused by brute-force attacks | IP Geo Block"
+### See also ###
+
+- [Customizing the response][CodexResponse]
+
+[IP-Geo-Block]:  https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
+[ApacheBench]:   http://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool - Apache HTTP Server Version 2.4"
+[MU-plugins]:    https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex"
+[ActionHook]:    https://codex.wordpress.org/Plugin_API/Action_Reference "Plugin API/Action Reference &laquo; WordPress Codex"
+[WP-ZEP]:        {{ '/article/how-wpzep-works.html'                                   | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
+[GeoDBDir]:      {{ '/codex/how-to-fix-permission-troubles.html#geolocation-database' | prepend: site.baseurl }} "How to fix permission troubles? | IP Geo Block"
+[FilterHooks]:   {{ '/codex/#filter-hooks'                                            | prepend: site.baseurl }} "Filter hooks | IP Geo Block"
+[ErrorPage]:     {{ '/codex/customizing-the-response.html#human-friendly-error-page'  | prepend: site.baseurl }} "Customizing the response | IP Geo Block"
+[LoadOnServer]:  {{ '/article/impact-on-server-load.html'                             | prepend: site.baseurl }} "Impact on server load caused by brute-force attacks | IP Geo Block"
+[CodexResponse]: {{ '/codex/customizing-the-response.html'                            | prepend: site.baseurl }} "Customizing the response | IP Geo Block"
