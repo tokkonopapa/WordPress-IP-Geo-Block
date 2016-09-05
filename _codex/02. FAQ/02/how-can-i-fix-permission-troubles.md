@@ -2,8 +2,8 @@
 layout: page
 category: codex
 section: FAQ
-title: How to fix permission troubles?
-excerpt: How to fix permission troubles?
+title: How can I fix permission troubles?
+excerpt: How can I fix permission troubles?
 ---
 
 This plugin must have read/write permission at two places outside of the plugin
