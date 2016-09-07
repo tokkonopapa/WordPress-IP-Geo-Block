@@ -345,30 +345,28 @@ class IP_Geo_Block_API_Xhanch extends IP_Geo_Block_API {
 }
 
 /**
- * Class for geoPlugin
+ * Class for GeoIPLookup.net
  *
- * URL         : http://www.geoplugin.com/
- * Term of use : http://www.geoplugin.com/whyregister
- * Licence fee : free (need an attribution link)
- * Rate limit  : 120 lookups per minute
- * Sample URL  : http://www.geoplugin.net/json.gp?ip=2a00:1210:fffe:200::1
+ * URL         : http://geoiplookup.net/
+ * Term of use : http://geoiplookup.net/terms-of-use.php
+ * Licence fee : free
+ * Rate limit  : none
+ * Sample URL  : http://api.geoiplookup.net/?query=2a00:1210:fffe:200::1
  * Input type  : IP address (IPv4, IPv6)
- * Output type : json, xml, php, etc
+ * Output type : xml
  */
-class IP_Geo_Block_API_geoPlugin extends IP_Geo_Block_API {
+class IP_Geo_Block_API_GeoIPLookup extends IP_Geo_Block_API {
 	protected $template = array(
 		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'http://www.geoplugin.net/%API_FORMAT%.gp?ip=%API_IP%',
-		'api' => array(
-			'%API_FORMAT%' => 'json',
-		),
+		'url' => 'http://api.geoiplookup.net/?query=%API_IP%',
+		'api' => array(),
 		'transform' => array(
-			'countryCode' => 'geoplugin_countryCode',
-			'countryName' => 'geoplugin_countryName',
-			'regionName'  => 'geoplugin_region',
-			'cityName'    => 'geoplugin_city',
-			'latitude'    => 'geoplugin_latitude',
-			'longitude'   => 'geoplugin_longitude',
+			'countryCode' => 'countrycode',
+			'countryName' => 'countryname',
+			'regionName'  => 'countryname',
+			'cityName'    => 'city',
+			'latitude'    => 'latitude',
+			'longitude'   => 'longitude',
 		)
 	);
 }
@@ -562,10 +560,10 @@ class IP_Geo_Block_Provider {
 			'link' => '<a class="ip-geo-block-link" href="http://xhanch.com/xhanch-api-ip-get-detail/" title="Xhanch API &#8211; IP Get Detail | Xhanch Studio" rel=noreferrer target=_blank>http://xhanch.com/</a>&nbsp;(IPv4 / free)',
 		),
 
-		'geoPlugin' => array(
+		'GeoIPLookup' => array(
 			'key'  => NULL,
-			'type' => 'IPv4, IPv6 / free, need an attribution link',
-			'link' => '<a class="ip-geo-block-link" href="http://www.geoplugin.com/geolocation/" title="geoPlugin to geolocate your visitors" target="_new">IP Geolocation</a> by <a href="http://www.geoplugin.com/" title="plugin to geo-targeting and unleash your site\' potential." rel=noreferrer target=_blank>geoPlugin</a>&nbsp;(IPv4, IPv6 / free, need an attribution link)',
+			'type' => 'IPv4, IPv6 / free',
+			'link' => '<a class="ip-geo-block-link" href="http://geoiplookup.net/" title="What Is My IP Address | GeoIP Lookup" rel=noreferrer target=_blank>GeoIPLookup.net</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'ip-api.com' => array(
@@ -656,7 +654,7 @@ class IP_Geo_Block_Provider {
 	 */
 	public static function diag_providers( $settings = NULL ) {
 		if ( ! $settings ) {
-			$settings = IP_Geo_Block::get_option( 'settings' );
+			$settings = IP_Geo_Block::get_option();
 			$settings = $settings['providers'];
 		}
 
@@ -687,12 +685,9 @@ class IP_Geo_Block_Provider {
 if ( class_exists( 'IP_Geo_Block' ) ) {
 
 	// Get absolute path to the geo-location API
-	$dir = IP_Geo_Block::get_option( 'settings' );
+	$dir = IP_Geo_Block::get_option();
 	$dir = trailingslashit(
-		apply_filters(
-			IP_Geo_Block::PLUGIN_SLUG . '-api-dir',
-			dirname( $dir['api_dir'] )
-		)
+		apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', dirname( $dir['api_dir'] ) )
 	) . IP_Geo_Block::GEOAPI_NAME;
 
 	// If not exists then use bundled API
@@ -705,7 +700,7 @@ if ( class_exists( 'IP_Geo_Block' ) ) {
 
 	// Load addons by heigher priority order
 	if ( FALSE !== $plugins ) {
-		$exclude = array( '.', '..', 'index.php' );
+		$exclude = array( '.', '..' );
 		foreach ( $plugins as $plugin ) {
 			if ( ! in_array( $plugin, $exclude, TRUE ) && is_dir( $dir.$plugin ) ) {
 				@include_once( $dir.$plugin.'/class-'.$plugin.'.php' );

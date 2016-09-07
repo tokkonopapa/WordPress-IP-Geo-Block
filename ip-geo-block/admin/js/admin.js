@@ -11,12 +11,13 @@ var ip_geo_block_time = new Date();
 
 	function ID(selector, id) {
 		var keys = {
-			'.': 'ip-geo-block-',
-			'#': 'ip-geo-block-',
-			'@': 'ip_geo_block_settings_',
-			'%': 'ip_geo_block_statistics_'
+			'.': '.ip-geo-block-',
+			'#': '#ip-geo-block-',
+			'@': '#ip_geo_block_settings_',
+			'$': 'ip-geo-block-',
+			'%': 'ip_geo_block_'
 		};
-		return id ? ('.' === selector ? '.' : '#') + keys[selector] + id : keys['#'] + selector;
+		return id ? keys[selector] + id : keys.$ + selector;
 	}
 
 	function sanitize(str) {
@@ -204,7 +205,7 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Additional edge case
-			var i = 'ip_geo_block_settings[providers][IPInfoDB]';
+			var i = ID('%', 'settings[providers][IPInfoDB]');
 			$(ID('@', 'providers_IPInfoDB')).prop('checked', json[i] ? true : false);
 		}
 	}
@@ -317,8 +318,8 @@ var ip_geo_block_time = new Date();
 		ip_geo_block_time = new Date() - ip_geo_block_time;
 
 		// Get tab number and check wpCookies in wp-includes/js/utils.js
-		var cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('admin'))) || {},
-		    tabIndex = [0, 8],
+		var cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('%', 'admin'))) || {},
+		    tabIndex = [0, 8, 9],
 		    tabNo = /&tab=(\d)/.exec(window.location.href);
 
 		tabNo = Number(tabNo && tabNo[1]);
@@ -367,7 +368,7 @@ var ip_geo_block_time = new Date();
 			// Save cookie
 			if ('undefined' !== typeof wpCookies) {
 				cookie[index + tabIndex[tabNo]] = title.hasClass(ID('dropdown')) ? 'o' : '';
-				wpCookies.setHash(ID('admin'), cookie, new Date(Date.now() + 2592000000));
+				wpCookies.setHash(ID('%', 'admin'), cookie, new Date(Date.now() + 2592000000));
 			}
 
 			// redraw google chart
@@ -402,7 +403,7 @@ var ip_geo_block_time = new Date();
 
 				// Save cookie
 				if ('undefined' !== typeof wpCookies) {
-					wpCookies.setHash(ID('admin'), cookie, new Date(Date.now() + 2592000000));
+					wpCookies.setHash(ID('%', 'admin'), cookie, new Date(Date.now() + 2592000000));
 				}
 
 				// redraw google chart
@@ -482,7 +483,7 @@ var ip_geo_block_time = new Date();
 										$(ID('@', api + '_' + key + '_path')).val(sanitize(data[key].filename));
 									}
 									if (data[key].message) {
-										$('#ip_geo_block_' + api + '_' + key).text(sanitize(data[key].message));
+										$(ID('#', api + '-' + key)).text(sanitize(data[key].message));
 									}
 								}
 							}
@@ -494,7 +495,7 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Name of base class
-			var name = 'ip_geo_block_settings';
+			var name = ID('%', 'settings');
 
 			// Show/Hide description
 			$('select[name^="' + name + '"]').on('change', function (event) {
@@ -655,7 +656,7 @@ var ip_geo_block_time = new Date();
 			}
 
 			// Statistics
-			$(ID('%', 'clear_statistics')).on('click', function (event) {
+			$(ID('@', 'clear_statistics')).on('click', function (event) {
 				confirm('Clear statistics ?', function () {
 					ajax_clear('statistics', null);
 				});
@@ -663,7 +664,7 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Statistics
-			$(ID('%', 'clear_cache')).on('click', function (event) {
+			$(ID('@', 'clear_cache')).on('click', function (event) {
 				confirm('Clear cache ?', function () {
 					ajax_clear('cache', null);
 				});
@@ -819,8 +820,9 @@ var ip_geo_block_time = new Date();
 					}
 
 					// Jump to search tab with opening new window
-					$('tbody[id^="' + ID('log-') + '"]').on('click', 'a', function (event) {
-						window.open(window.location.href.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text());
+					$('tbody[id^="' + ID('$', 'log-') + '"]').on('click', 'a', function (event) {
+						window.open(window.location.href.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''));
+						return false;
 					});
 				});
 			}

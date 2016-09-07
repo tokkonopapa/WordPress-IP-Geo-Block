@@ -148,7 +148,7 @@ if ( ! class_exists( 'IP_Geo_Block' ) )
 IP_Geo_Block_Rewrite::exec(
 	IP_Geo_Block::get_instance(),
 	IP_Geo_Block::get_geolocation(),
-	IP_Geo_Block::get_option( 'settings' )
+	IP_Geo_Block::get_option()
 );
 
 endif; /* ! class_exists( 'IP_Geo_Block_Rewrite' ) */

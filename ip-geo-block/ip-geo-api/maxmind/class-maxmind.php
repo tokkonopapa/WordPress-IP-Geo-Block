@@ -11,7 +11,7 @@ define( 'IP_GEO_BLOCK_MAXMIND_IPV4_ZIP', 'http://geolite.maxmind.com/download/ge
 define( 'IP_GEO_BLOCK_MAXMIND_IPV6_ZIP', 'http://geolite.maxmind.com/download/geoip/database/GeoIPv6.dat.gz' );
 
 /**
- * Class for Maxmind (ver. 1.1.3)
+ * Class for Maxmind (ver. 1.1.4)
  *
  * URL         : http://dev.maxmind.com/geoip/legacy/geolite/
  * Term of use : http://dev.maxmind.com/geoip/legacy/geolite/#License
@@ -35,7 +35,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 	}
 
 	public function get_location( $ip, $args = array() ) {
-		$settings = IP_Geo_Block::get_option( 'settings' );
+		$settings = IP_Geo_Block::get_option();
 
 		if ( ! function_exists( 'geoip_open' ) )
 			require_once( 'geoip.inc' );
@@ -46,11 +46,13 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 				$this->get_db_dir() . IP_GEO_BLOCK_MAXMIND_IPV4_DAT :
 				$settings['Maxmind']['ipv4_path'];
 		}
+
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			$file = empty( $settings['Maxmind']['ipv6_path'] ) ?
 				$this->get_db_dir() . IP_GEO_BLOCK_MAXMIND_IPV6_DAT :
 				$settings['Maxmind']['ipv6_path'];
 		}
+
 		else {
 			return array( 'errorMessage' => 'illegal format' );
 		}
@@ -63,19 +65,23 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 		  case GEOIP_COUNTRY_EDITION:
 			$res = $this->location_country( geoip_country_code_by_addr( $geo, $ip ) );
 			break;
+
 		  case GEOIP_COUNTRY_EDITION_V6:
 			$res = $this->location_country( geoip_country_code_by_addr_v6( $geo, $ip ) );
 			break;
+
 		  case GEOIP_CITY_EDITION_REV1:
 			if ( ! class_exists( 'geoiprecord' ) )
 				require_once( 'geoipcity.inc' );
 			$res = $this->location_city( geoip_record_by_addr( $geo, $ip ) );
 			break;
+
 		  case GEOIP_CITY_EDITION_REV1_V6:
 			if ( ! class_exists( 'geoiprecord' ) )
 				require_once( 'geoipcity.inc' );
 			$res = $this->location_city( geoip_record_by_addr_v6( $geo, $ip ) );
 			break;
+
 		  default:
 			$res = array( 'errorMessage' => 'unknown database type' );
 		}
@@ -86,7 +92,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 
 	private function get_db_dir() {
 		return trailingslashit( apply_filters(
-			IP_Geo_Block::PLUGIN_SLUG . '-maxmind-dir', dirname( __FILE__ )
+			IP_Geo_Block::PLUGIN_NAME . '-maxmind-dir', dirname( __FILE__ )
 		) );
 	}
 
@@ -98,7 +104,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 
 		$res['ipv4'] = IP_Geo_Block_Util::download_zip(
 			apply_filters(
-				IP_Geo_Block::PLUGIN_SLUG . '-maxmind-zip-ipv4',
+				IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-ipv4',
 				IP_GEO_BLOCK_MAXMIND_IPV4_ZIP
 			),
 			$args,
@@ -111,7 +117,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 
 		$res['ipv6'] = IP_Geo_Block_Util::download_zip(
 			apply_filters(
-				IP_Geo_Block::PLUGIN_SLUG . '-maxmind-zip-ipv6',
+				IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-ipv6',
 				IP_GEO_BLOCK_MAXMIND_IPV6_ZIP
 			),
 			$args,
@@ -128,7 +134,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 	}
 
 	public function get_attribution() {
-		return 'This product includes GeoLite data created by MaxMind, available from <a class="ip-geo-block-link" href="http://www.maxmind.com" rel=noreferrer target=_blank>http://www.maxmind.com</a>.';
+		return 'This product includes GeoLite data created by MaxMind, available from <a class="ip-geo-block-link" href="http://www.maxmind.com" rel=noreferrer target=_blank>http://www.maxmind.com</a>. (CC BY-SA 3.0)';
 	}
 
 	public function add_settings_field( $field, $section, $option_slug, $option_name, $options, $callback, $str_path, $str_last ) {
@@ -159,7 +165,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 				'sub-field' => 'ipv4_path',
 				'value' => $path,
 				'disabled' => TRUE,
-				'after' => '<br /><p id="ip_geo_block_' . $field . '_ipv4" style="margin-left: 0.2em">' . $date . '</p>',
+				'after' => '<br /><p id="ip-geo-block-' . $field . '-ipv4" style="margin-left: 0.2em">' . $date . '</p>',
 			)
 		);
 
@@ -188,7 +194,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 				'sub-field' => 'ipv6_path',
 				'value' => $path,
 				'disabled' => TRUE,
-				'after' => '<br /><p id="ip_geo_block_' . $field . '_ipv6" style="margin-left: 0.2em">' . $date . '</p>',
+				'after' => '<br /><p id="ip-geo-block-' . $field . '-ipv6" style="margin-left: 0.2em">' . $date . '</p>',
 			)
 		);
 	}
@@ -201,8 +207,8 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 IP_Geo_Block_Provider::register_addon( array(
 	'Maxmind' => array(
 		'key'  => NULL,
-		'type' => 'IPv4, IPv6 / CC BY-SA 3.0',
-		'link' => '<a class="ip-geo-block-link" href="http://dev.maxmind.com/geoip/" title="GeoIP Products &laquo; Maxmind Developer Site" rel=noreferrer target=_blank>http://dev.maxmind.com/geoip/</a>&nbsp;(IPv4, IPv6 / CC BY-SA 3.0)',
+		'type' => 'IPv4, IPv6 / LGPLv2',
+		'link' => '<a class="ip-geo-block-link" href="http://dev.maxmind.com/geoip/" title="GeoIP Products &laquo; Maxmind Developer Site" rel=noreferrer target=_blank>http://dev.maxmind.com/geoip/</a>&nbsp;(IPv4, IPv6 / LGPLv2)',
 	),
 ) );
 

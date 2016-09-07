@@ -13,37 +13,35 @@ posted from the specific countries, and also prevents zero-day exploit.
 
 == Description ==
 
-There are some cases of a site being infected. The first one is the case 
-that contaminated files are uploaded via FTP or some kind of uploaders. 
-In this case, scaning and verifing integrity of files in your site is useful 
-to detect the infection.
+There're some cases of a site being infected. The first one is the case that 
+contaminated files are uploaded via FTP or something. In this case, scaning 
+and verifing integrity of files in the site is needed to detect the infection.
 
 The second one is cracking of the login username and password. In this case, 
 the rule of right is to strengthen the password.
 
-The third one is caused by malicious access to the core files. The major issue 
-in this case is that a plugin or theme in your site can potentially has some 
-vulnerability such as XSS, CSRF, SQLi, LFI and so on. For example, if a plugin 
-has vulnerability of Local File Inclusion (LFI), the attackers can easily 
-download the `wp-config.php` without knowing the username and password by 
-simply hitting 
+The third one may be caused by malicious accesses to the core files. The major 
+issue in this case is that a plugin or theme in your site can potentially has 
+some vulnerability such as XSS, CSRF, SQLi, LFI and so on. For example, if a 
+plugin has Local File Inclusion (LFI) vulnerability, the attackers can easily 
+download the `wp-config.php` by simply hitting 
     [wp-admin/admin-ajax.php?action=show&file=../wp-config.php](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
-on their browser.
+on their browser instead of cracking username and password.
 
 For these cases, the protection based on the IP address is not a perfect 
 solution for everyone. But for some site owners or some certain cases such 
-as 'zero-day attack', combination with WP-ZEP can still reduce the risk of 
-infection against the specific attacks.
+as 'zero-day attack', combination with the original feature 'Zero-day Exploit 
+Prevention' can reduce the risk of infection against the specific attacks.
 
 That's why this plugin is here.
 
 = Features =
 
-This plugin will examine a country code based on the IP address. If a comment,
-pingback or trackback comes from the specific country, it will be blocked 
-before Akismet validate it.
+This plugin will examine a country code based on the IP address. If a 
+comment, pingback or trackback comes from the specific country, it can be 
+blocked before Akismet validate it.
 
-With the same mechanism, it will fight against burst accesses by brute-force 
+With the same mechanism, it fights against burst accesses by brute-force 
 and reverse-brute-force attacks to the login form and XML-RPC.
 
 * **Immigration control:**  
@@ -51,14 +49,14 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-signup.php`, 
   `wp-admin/admin.php`, `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` 
   will be validated by means of a country code based on IP address. It allows 
-  you to configure either whitelisting or blacklisting to specify the countires.
+  you to configure either whitelist or blacklist to specify the countires.
 
 * **Zero-day Exploit Prevention:**  
-  The original feature "**Z**ero-day **E**xploit **P**revention for WP" (WP-ZEP)
-  is simple but still smart and strong enough to block any malicious accesses 
-  to `wp-admin/*.php`, `plugins/*.php` and `themes/*.php` even from the permitted 
-  countries. It will protect your site against certain types of attack such as 
-  CSRF, LFI, SQLi, XSS and so on, **even if you have some 
+  The original feature "**Z**ero-day **E**xploit **P**revention for WP" 
+  (WP-ZEP) is simple but still smart and strong enough to block any malicious 
+  accesses to `wp-admin/*.php`, `plugins/*.php` and `themes/*.php` even from 
+  the permitted countries. It will protect your site against certain types of 
+  attack such as CSRF, LFI, SQLi, XSS and so on, **even if you have some 
     [vulnerable plugins or themes](https://wpvulndb.com/ "WPScan Vulnerability Database")
   in your site**. Find more details in 
     [FAQ](https://wordpress.org/plugins/ip-geo-block/faq/ "IP Geo Block - WordPress Plugins")
@@ -66,7 +64,7 @@ and reverse-brute-force attacks to the login form and XML-RPC.
     [this plugin's blog](http://www.ipgeoblock.com/article/how-wpzep-works.html "How does WP-ZEP prevent zero-day attack? | IP Geo Block").
 
 * **Guard against login attempts:**  
-  In order to prevent the invasion through the login form and XML-RPC against
+  In order to prevent the invasion through the login form and XML-RPC by 
   the brute-force and the reverse-brute-force attacks, the number of login 
   attempts will be limited per IP address even from the permitted countries.
 
@@ -102,12 +100,12 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   and updated (once a month) automatically.
 
 * **Cache mechanism:**  
-  A cache mechanism with transient API for the fetched IP addresses has been 
-  equipped to reduce load on the server against the burst accesses with a short
-  period of time.
+  A cache mechanism for the fetched IP addresses and country code has been 
+  equipped to reduce load on the server against the burst accesses with a 
+  short period of time.
 
 * **Customizing response:**  
-  HTTP Response code can be selectable as `403 Forbidden` to deny access pages,
+  HTTP response code can be selectable as `403 Forbidden` to deny access pages,
   `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
   You can also have the custom error page (for example `403.php`) in your theme
   template directory or child theme directory to fit your theme.
@@ -117,8 +115,8 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   the specified condition.
 
 * **Cooperation with full spec security plugin:**  
-  This plugin is simple and lite enough to be able to cooperate with other full
-  spec security plugin such as 
+  This plugin is simple and lite enough to be able to cooperate with other 
+  full spec security plugin such as 
     [Wordfence Security](https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins")
   (because the function of country bloking is available only for premium users).
 
@@ -133,7 +131,7 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 
 * **Self blocking prevention and easy rescue:**  
   Most of users do not prefer themselves to be blocked. This plugin prevents 
-  such thing unless you force it.
+  such a sad thing unless you force it.
     ([release 2.1.4](http://www.ipgeoblock.com/changelog/release-2.1.4.html "2.1.4 Release Note"))
   And futhermore, if such a situation occurs, you can rescue yourself easily.
     ([release 2.1.3](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note"))
@@ -157,7 +155,7 @@ Also thanks for providing the following great services and REST APIs for free.
 * [http://ipinfo.io/](http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details") (IPv4, IPv6 / free)
 * [http://geoip.nekudo.com/](http://geoip.nekudo.com/ "Free IP GeoLocation/GeoIp API - geoip.nekudo.com") (IPv4, IPv6 / free)
 * [http://xhanch.com/](http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API &#8211; IP Get Detail | Xhanch Studio") (IPv4 / free)
-* [http://www.geoplugin.com/](http://www.geoplugin.com/ "geoPlugin to geolocate your visitors") (IPv4, IPv6 / free, need an attribution link)
+* [http://geoiplookup.net/](http://geoiplookup.net/ "What Is My IP Address | GeoIP Lookup") (IPv4, IPv6 / free)
 * [http://ip-api.com/](http://ip-api.com/ "IP-API.com - Free Geolocation API") (IPv4, IPv6 / free for non-commercial use)
 * [http://ipinfodb.com/](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") (IPv4, IPv6 / free for registered user, need API key)
 
@@ -294,8 +292,8 @@ All contributions will always be welcome. Or visit my
 
 = I was locked down. What shall I do? =
 
-Activate the following codes at the bottom of `ip-geo-block.php` and upload it 
-via FTP.
+Activate the following codes at the bottom of `ip-geo-block.php` and upload 
+it via FTP.
 
 `/**
  * Invalidate blocking behavior in case yourself is locked out.
@@ -315,7 +313,7 @@ that you should upload the original one to deactivate above feature.
 [This release note](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note")
 can also help you.
 
-= How can I fix "Unable to write" error?
+= How can I fix "Unable to write" error? =
 
 When you enable "**Force to load WP core**" options, this plugin will try to 
 configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` 
@@ -327,7 +325,7 @@ to WordPress. In this case, you can configure these `.htaccess` files by your
 own hand instead of enabling "**Force to load WP core**" options.
 
 Please refer to 
-"[How to fix permission troubles?](http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html 'How to fix permission troubles? | IP Geo Block')"
+"[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')"
 in order to fix this error.
 
 = Do I have to turn on all the selection to enhance security? =
@@ -349,6 +347,18 @@ follows:
 
 See more details in 
 "[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html 'The best practice of target settings | IP Geo Block')".
+
+= Does this plugin validate all the requests to the server? =
+
+Unfortunately, no. This plugin can't handle the requests that are not 
+parsed by WordPress. In other words, a standalone file (PHP, CGI or 
+something excutable) that is unrelated to WordPress can't be validated 
+by this plugin even if it is is in the WordPress install directory.
+
+But there're exceptions: When you enable "**Force to load WP core**" for 
+**Plugins area** or **Themes area**, a standalone PHP file becomes to be 
+able to be blocked. Sometimes this kind of file in a plugin or theme has 
+vulnerability. This function is provided against such a case.
 
 = How can I test this plugin works? =
 
@@ -434,6 +444,7 @@ For more details, see
 * **Bug fix:** Fixed a issue of stripping some required characters for Google 
   maps API key.
 * **New feature:** Whois database Lookup for IP address on search tab.
+* **Update:** Updated geolocation services.
 
 = 2.2.7 =
 * **Bug fix:** Fix inadequate validation of "**Bad signatures in query**".

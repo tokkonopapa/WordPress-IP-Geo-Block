@@ -17,8 +17,10 @@ class IP_Geo_Block {
 	 */
 	const VERSION = '2.2.8';
 	const GEOAPI_NAME = 'ip-geo-api';
-	const PLUGIN_SLUG = 'ip-geo-block';
-	const CACHE_KEY   = 'ip_geo_block_cache';
+	const PLUGIN_NAME = 'ip-geo-block';
+	const PLUGIN_SLUG = 'ip-geo-block'; // fallback for ip-geo-api 1.1.3
+	const OPTION_NAME = 'ip_geo_block_settings';
+	const CACHE_NAME  = 'ip_geo_block_cache';
 	const CRON_NAME   = 'ip_geo_block_cron';
 
 	/**
@@ -26,12 +28,6 @@ class IP_Geo_Block {
 	 *
 	 */
 	protected static $instance = NULL;
-
-	// option table accessor by name
-	public static $option_keys = array(
-		'settings'   => 'ip_geo_block_settings',
-		'statistics' => 'ip_geo_block_statistics',
-	);
 
 	// Globals in this class
 	public static $wp_path;
@@ -48,7 +44,7 @@ class IP_Geo_Block {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php';
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php';
 
-		$settings = self::get_option( 'settings' );
+		$settings = self::get_option();
 		$priority = $settings['priority'];
 		$validate = $settings['validation'];
 
@@ -58,12 +54,12 @@ class IP_Geo_Block {
 
 		// check the package version and upgrade if needed
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
-			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
+			add_action( 'init', 'ip_geo_block_activate', $priority );
 
-		// normalize requested uri
-		$this->request_uri = strtolower( preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] ) );
-		if ( substr( $this->pagenow = basename( parse_url( $this->request_uri, PHP_URL_PATH ) ), -4 ) !== '.php' )
-			$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : 'index.php';
+		// normalize requested uri and page
+		$this->request_uri = strtolower( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) );
+		$this->request_uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $this->request_uri );
+		$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : basename( $_SERVER['SCRIPT_NAME'] );
 
 		// setup the content folders
 		self::$wp_path = array( 'home' => untrailingslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since 2.6.0
@@ -141,32 +137,17 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Activate / Deactivate plugin
-	 *
-	 */
-	public static function activate( $network_wide = FALSE ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
-		IP_Geo_Block_Activate::activate( $network_wide );
-	}
-
-	public static function deactivate( $network_wide = FALSE ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
-		IP_Geo_Block_Activate::deactivate( $network_wide );
-	}
-
-	/**
 	 * Optional values handlings.
 	 *
 	 */
-	public static function get_default( $name = 'settings' ) {
+	public static function get_default() {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-		return IP_Geo_Block_Opts::get_table( self::$option_keys[ $name ] );
+		return IP_Geo_Block_Opts::get_default();
 	}
 
 	// get optional values from wp options
-	public static function get_option( $name = 'settings' ) {
-		$option = get_option( self::$option_keys[ $name ] );
-		return FALSE !== $option ? $option : self::get_default( $name );
+	public static function get_option() {
+		return FALSE !== ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
 	}
 
 	/**
@@ -175,12 +156,12 @@ class IP_Geo_Block {
 	 */
 	public static function enqueue_nonce() {
 		if ( is_user_logged_in() ) {
-			$handle = self::PLUGIN_SLUG . '-auth-nonce';
+			$handle = self::PLUGIN_NAME . '-auth-nonce';
 			$script = plugins_url(
 				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_GEO_BLOCK_BASE
 			);
-			$nonce = array( 'nonce' => wp_create_nonce( $handle ) ) + self::$wp_path;
+			$nonce = array( 'nonce' => IP_Geo_Block_Util::create_nonce( $handle ) ) + self::$wp_path;
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
 			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $nonce );
 		}
@@ -204,9 +185,9 @@ class IP_Geo_Block {
 	 * @see http://codex.wordpress.org/Function_Reference/wp_remote_get
 	 */
 	public static function get_request_headers( $settings ) {
-		return apply_filters( self::PLUGIN_SLUG . '-headers', array(
+		return apply_filters( self::PLUGIN_NAME . '-headers', array(
 			'timeout' => (int)$settings['timeout'],
-			'user-agent' => 'WordPress/' . $GLOBALS['wp_version'] . ', ' . self::PLUGIN_SLUG . ' ' . self::VERSION,
+			'user-agent' => ! empty( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : 'WordPress/' . $GLOBALS['wp_version'] . ', ' . self::PLUGIN_NAME . ' ' . self::VERSION,
 		) );
 	}
 
@@ -215,7 +196,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function get_ip_address() {
-		return apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] );
+		return apply_filters( self::PLUGIN_NAME . '-ip-addr', $_SERVER['REMOTE_ADDR'] );
 	}
 
 	/**
@@ -223,8 +204,8 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function comment_form_message() {
-		$settings = self::get_option( 'settings' );
-		echo '<p id="', self::PLUGIN_SLUG, '-msg">', IP_Geo_Block_Util::kses( $settings['comment']['msg'] ), '</p>', "\n";
+		$settings = self::get_option();
+		echo '<p id="', self::PLUGIN_NAME, '-msg">', IP_Geo_Block_Util::kses( $settings['comment']['msg'] ), '</p>', "\n";
 	}
 
 	/**
@@ -248,7 +229,7 @@ class IP_Geo_Block {
 	 * @return array $result country code and so on
 	 */
 	public static function get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_country' ) {
-		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address(), self::get_option( 'settings' ), $providers, $callback );
+		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address(), self::get_option(), $providers, $callback );
 
 		if ( ! empty( $result['countryCode'] ) )
 			$result['code'] = $result['countryCode'];
@@ -311,8 +292,8 @@ class IP_Geo_Block {
 		if ( ! defined( 'DONOTCACHEPAGE' ) )
 			define( 'DONOTCACHEPAGE', TRUE );
 
-		$code = (int   )apply_filters( self::PLUGIN_SLUG . '-'.$hook.'-status', (int)$code );
-		$mesg = (string)apply_filters( self::PLUGIN_SLUG . '-'.$hook.'-reason', get_status_header_desc( $code ) );
+		$code = (int   )apply_filters( self::PLUGIN_NAME . '-'.$hook.'-status', (int)$code );
+		$mesg = (string)apply_filters( self::PLUGIN_NAME . '-'.$hook.'-reason', get_status_header_desc( $code ) );
 
 		nocache_headers(); // nocache and response code
 
@@ -322,19 +303,21 @@ class IP_Geo_Block {
 			exit;
 
 		  case 3: // 3xx Redirection
-			wp_redirect( 'http://blackhole.webpagetest.org/', $code );
+			IP_Geo_Block_Util::redirect( 'http://blackhole.webpagetest.org/', $code );
 			exit;
 
 		  default: // 4xx Client Error, 5xx Server Error
 			status_header( $code ); // @since 2.0.0
+
 			if ( function_exists( 'trackback_response' ) )
 				trackback_response( $code, IP_Geo_Block_Util::kses( $mesg ) ); // @since 0.71
+
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
 				$hook = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
-				defined( 'STYLESHEETPATH' ) && FALSE !== ( @include( get_stylesheet_directory() .'/'.$code.'.php' ) ) or // child  theme
-				defined( 'TEMPLATEPATH'   ) && FALSE !== ( @include( get_template_directory()   .'/'.$code.'.php' ) ) or // parent theme
-				wp_die(
-					IP_Geo_Block_Util::kses( $mesg ) . ( $hook ? "\n<p><a href='" . admin_url() . "'>" . __( '&laquo; Dashboard' ) . "</a></p>" : '' ),
+				FALSE !== ( @include( get_stylesheet_directory() .'/'.$code.'.php' ) ) or // child  theme
+				FALSE !== ( @include( get_template_directory()   .'/'.$code.'.php' ) ) or // parent theme
+				wp_die( // get_dashboard_url() @since 3.1.0
+					IP_Geo_Block_Util::kses( $mesg ) . ( $hook ? "\n<p><a href='" . esc_url( get_dashboard_url() ) . "'>&laquo; " . __( 'Dashboard' ) . "</a></p>" : '' ),
 					'', array( 'response' => $code, 'back_link' => ! $hook )
 				);
 			}
@@ -350,6 +333,8 @@ class IP_Geo_Block {
 	 * @param boolean $die send http response and die if validation fails
 	 */
 	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $auth = TRUE ) {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+
 		// set IP address to be validated
 		$ips = array( self::get_ip_address() );
 
@@ -365,12 +350,10 @@ class IP_Geo_Block {
 		}
 
 		// register auxiliary validation functions
-		$var = self::PLUGIN_SLUG . '-' . $hook;
-		if ( $auth ) {
-			add_filter( $var, array( $this, 'check_auth' ), 9, 2 );
-			add_filter( $var, array( $this, 'check_fail' ), 8, 2 );
-		}
-		$settings['extra_ips'] = apply_filters( self::PLUGIN_SLUG . '-extra-ips', $settings['extra_ips'], $hook );
+		$var = self::PLUGIN_NAME . '-' . $hook;
+		$auth and add_filter( $var, array( $this, 'check_auth' ), 9, 2 );
+		$auth and add_filter( $var, array( $this, 'check_fail' ), 8, 2 );
+		$settings['extra_ips'] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
 		$settings['extra_ips']['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
 		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
 
@@ -401,29 +384,24 @@ class IP_Geo_Block {
 		// update cache
 		IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
-		if ( $die ) {
-			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		// update statistics
+		if ( $settings['save_statistics'] )
+			IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 
-			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
-			$var = (int)apply_filters( self::PLUGIN_SLUG . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
-			$result = ( 'passed' !== $validate['result'] );
-			if ( ( 1 === $var &&   $result ) || // blocked
-			     ( 2 === $var && ! $result ) || // passed
-			     ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
-			     ( 4 === $var &&   $validate['auth'] ) || // authenticated
-			     ( 5 === $var ) ) { // all
-				IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings );
-			}
-
-			if ( $result ) {
-				// update statistics
-				if ( $settings['save_statistics'] )
-					IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
-
-				// send response code to refuse
-				$this->send_response( $hook, $settings['response_code'] );
-			}
+		// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
+		$var = (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
+		$block = ( 'passed' !== $validate['result'] );
+		if ( ( 1 === $var &&   $block ) || // blocked
+		     ( 2 === $var && ! $block ) || // passed
+		     ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
+		     ( 4 === $var &&   $validate['auth'] ) || // authenticated
+		     ( 5 === $var ) ) { // all
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings );
 		}
+
+		// send response code to refuse
+		if ( $block && $die )
+			$this->send_response( $hook, $settings['response_code'] );
 
 		return $validate;
 	}
@@ -433,7 +411,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_front( $can_access = TRUE ) {
-		$validate = $this->validate_ip( 'comment', self::get_option( 'settings' ), TRUE, FALSE );
+		$validate = $this->validate_ip( 'comment', self::get_option(), TRUE, FALSE );
 		return ( 'passed' === $validate['result'] ? $can_access : FALSE );
 	}
 
@@ -444,7 +422,7 @@ class IP_Geo_Block {
 	public function validate_comment( $comment = NULL ) {
 		// check comment type if it comes form wp-includes/wp_new_comment()
 		if ( ! is_array( $comment ) || in_array( $comment['comment_type'], array( 'trackback', 'pingback' ), TRUE ) )
-			$this->validate_ip( 'comment', self::get_option( 'settings' ) );
+			$this->validate_ip( 'comment', self::get_option() );
 
 		return $comment;
 	}
@@ -454,10 +432,10 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_xmlrpc() {
-		$settings = self::get_option( 'settings' );
+		$settings = self::get_option();
 
 		if ( 2 === (int)$settings['validation']['xmlrpc'] ) // Completely close
-			add_filter( self::PLUGIN_SLUG . '-xmlrpc', array( $this, 'close_xmlrpc' ), 6, 2 );
+			add_filter( self::PLUGIN_NAME . '-xmlrpc', array( $this, 'close_xmlrpc' ), 6, 2 );
 
 		else // wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
 			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ), $settings['priority'] );
@@ -474,7 +452,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_login() {
-		$settings = self::get_option( 'settings' );
+		$settings = self::get_option();
 
 		// wp-includes/pluggable.php @since 2.5.0
 		add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
@@ -492,7 +470,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_admin() {
-		$settings = self::get_option( 'settings' );
+		$settings = self::get_option();
 		$page   = isset( $_REQUEST['page'  ] ) ? $_REQUEST['page'  ] : NULL;
 		$action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : NULL;
 
@@ -521,7 +499,7 @@ class IP_Geo_Block {
 			$this->trace_nonce();
 
 			// list of request with a specific query to bypass WP-ZEP
-			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
+			$list = apply_filters( self::PLUGIN_NAME . '-bypass-admins', array(
 				'wp-compression-test', // wp-admin/includes/template.php
 				'upload-attachment', 'imgedit-preview', 'bp_avatar_upload', // pluploader won't fire an event in "Media Library"
 				'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', // jetpack page & action
@@ -532,12 +510,12 @@ class IP_Geo_Block {
 			$in_page   = in_array( $page,   $list, TRUE );
 			if ( ( ( $action xor $page ) && ( ! $in_action and ! $in_page ) ) ||
 			     ( ( $action and $page ) && ( ! $in_action or  ! $in_page ) ) )
-				add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
+				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 		}
 
-		// register validation of malicious signature
-		if ( ! is_user_logged_in() || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
-			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
+		// register validation of malicious signature (except in the comment and post)
+		if ( ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
+			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
 		$this->validate_ip( 'admin', $settings, 1 & $type );
@@ -548,7 +526,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_direct() {
-		$settings = self::get_option( 'settings' );
+		$settings = self::get_option();
 		$request = preg_quote( self::$wp_path[ $type = $this->target_type ], '/' );
 		$module = in_array( $type, array( 'plugins', 'themes' ) ) ? '[^\?\&\/]*' : '[^\?\&]*';
 
@@ -557,15 +535,15 @@ class IP_Geo_Block {
 		$request = empty( $module[2] ) ? $module[1] : $module[2];
 
 		// set validation type (0: Bypass, 1: Block by country, 2: WP-ZEP)
-		$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $settings['exception'][ $type ] );
+		$list = apply_filters( self::PLUGIN_NAME . "-bypass-{$type}", $settings['exception'][ $type ] );
 		$type = in_array( $request, $list, TRUE ) ? 0 : $settings['validation'][ $type ];
 
 		// register validation of nonce (2: WP-ZEP)
 		if ( 2 & $type )
-			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_nonce' ), 5, 2 );
+			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 
 		// register validation of malicious signature
-		add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
+		add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
 		$validate = $this->validate_ip( 'admin', $settings, 1 & $type );
@@ -591,7 +569,7 @@ class IP_Geo_Block {
 				'provider' => 'Cache',
 			) );
 
-			$settings = self::get_option( 'settings' );
+			$settings = self::get_option();
 			$cache = IP_Geo_Block_API_Cache::update_cache( $cache['hook'], $validate, $settings );
 
 			// validate xmlrpc system.multicall ($HTTP_RAW_POST_DATA has already populated in xmlrpc.php)
@@ -652,9 +630,9 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_nonce( $validate, $settings ) {
-		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
+		$action = self::PLUGIN_NAME . '-auth-nonce';
 
-		if ( ! wp_verify_nonce( self::retrieve_nonce( $nonce ), $nonce ) ) {
+		if ( ! IP_Geo_Block_Util::verify_nonce( self::retrieve_nonce( $action ), $action ) ) {
 			if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
 				$validate['result'] = 'wp-zep'; // can't overwrite existing result
 		}
@@ -663,12 +641,11 @@ class IP_Geo_Block {
 	}
 
 	private function trace_nonce() {
-		$nonce = self::PLUGIN_SLUG . '-auth-nonce';
+		$nonce = self::PLUGIN_NAME . '-auth-nonce';
 
-		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) &&
-		     is_user_logged_in() && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
+		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
 			// add nonce at add_admin_nonce() to handle the client side redirection.
-			wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
+			IP_Geo_Block_Util::redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
 			exit;
 		}
 	}
@@ -677,7 +654,7 @@ class IP_Geo_Block {
 		if ( isset( $_REQUEST[ $key ] ) )
 			return sanitize_text_field( $_REQUEST[ $key ] );
 
-		if ( preg_match( "/$key(?:=|%3D)([\w]+)/", wp_get_referer(), $matches ) )
+		if ( preg_match( "/$key(?:=|%3D)([\w]+)/", IP_Geo_Block_Util::get_referer(), $matches ) )
 			return sanitize_text_field( $matches[1] );
 
 		return NULL;

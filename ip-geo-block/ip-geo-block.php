@@ -49,8 +49,18 @@ require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php' );
  * Register hooks that are fired when the plugin is activated or deactivated.
  * When the plugin is deleted, the uninstall.php file is loaded.
  */
-register_activation_hook( __FILE__, array( 'IP_Geo_Block', 'activate' ) );
-register_deactivation_hook( __FILE__, array( 'IP_Geo_Block', 'deactivate' ) );
+function ip_geo_block_activate( $network_wide = FALSE ) {
+	require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
+	IP_Geo_Block_Activate::activate( $network_wide );
+}
+
+function ip_geo_block_deactivate( $network_wide = FALSE ) {
+	require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
+	IP_Geo_Block_Activate::deactivate( $network_wide );
+}
+
+register_activation_hook( __FILE__, 'ip_geo_block_activate' );
+register_deactivation_hook( __FILE__, 'ip_geo_block_deactivate' );
 
 /**
  * Instantiate class

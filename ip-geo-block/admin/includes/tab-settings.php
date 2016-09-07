@@ -7,10 +7,10 @@ if ( ! function_exists( 'get_plugins' ) )
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context ) {
-		$plugin_slug = IP_Geo_Block::PLUGIN_SLUG;         // 'ip-geo-block'
-		$option_slug = $context->option_slug['settings']; // 'ip-geo-block-settings'
-		$option_name = $context->option_name['settings']; // 'ip_geo_block_settings'
-		$options = IP_Geo_Block::get_option( 'settings' );
+		$plugin_slug = IP_Geo_Block::PLUGIN_NAME; // 'ip-geo-block'
+		$option_slug = IP_Geo_Block::PLUGIN_NAME; // 'ip-geo-block'
+		$option_name = IP_Geo_Block::OPTION_NAME; // 'ip_geo_block_settings'
+		$options = IP_Geo_Block::get_option();
 
 		// Get the country code
 		$key = IP_Geo_Block::get_geolocation();
@@ -218,7 +218,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'signature';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a href="javascript:void(0);" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span id="ip-geo-block-cycle"></span></a>)</nobr>', 'ip-geo-block' ),
+			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a href="javascript:void(0)" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span id="ip-geo-block-cycle"></span></a>)</nobr>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -738,11 +738,11 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug
 		);
 
-		// Number of entries
-		$field = 'cache_hold';
+		// Expiration time [sec]
+		$field = 'cache_time';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Number of entries', 'ip-geo-block' ),
+			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this and garbage collection period.">Expiration time [sec]</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -754,11 +754,27 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-		// Expiration time [sec]
-		$field = 'cache_time';
+		// Garbage collection period [sec]
+		$field = 'cache_time_gc';
 		add_settings_field(
 			$option_name.'_'.$field,
-			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this period.">Expiration time [sec]</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
+			__( 'Garbage collection period [sec]', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+			)
+		);
+
+		// Number of entries
+		$field = 'cache_hold';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Number of entries to be displayed in cache', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

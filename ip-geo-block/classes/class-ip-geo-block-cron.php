@@ -48,7 +48,7 @@ class IP_Geo_Block_Cron {
 	 *   B. Multiple time for each blog when this plugin is individually activated
 	 */
 	public static function exec_job( $immediate = FALSE ) {
-		$settings = IP_Geo_Block::get_option( 'settings' );
+		$settings = IP_Geo_Block::get_option();
 		$args = IP_Geo_Block::get_request_headers( $settings );
 
 		// download database files (higher priority order)
@@ -66,7 +66,7 @@ class IP_Geo_Block_Cron {
 
 		// update matching rule immediately
 		if ( $immediate && FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
-			add_filter( IP_Geo_Block::PLUGIN_SLUG . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
+			add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
 
 			$validate = IP_Geo_Block::get_geolocation( NULL, $providers );
 			$validate = IP_Geo_Block::validate_country( NULL, $validate, $settings );
@@ -101,24 +101,21 @@ class IP_Geo_Block_Cron {
 		if ( ! function_exists( 'is_plugin_active_for_network' ) )
 			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 
-		$slug = IP_Geo_Block::$option_keys['settings'];
-
 		// for multisite
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
-
 			global $wpdb;
 			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
 			$current_blog_id = get_current_blog_id();
 
 			foreach ( $blog_ids as $id ) {
 				switch_to_blog( $id );
-				$dst = IP_Geo_Block::get_option( 'settings' );
+				$dst = IP_Geo_Block::get_option();
 
 				foreach ( $keys as $key ) {
 					$dst[ $key ] = $src[ $key ];
 				}
 
-				update_option( $slug, $dst );
+				update_option( IP_Geo_Block::OPTION_NAME, $dst );
 			}
 
 			switch_to_blog( $current_blog_id );
@@ -126,7 +123,7 @@ class IP_Geo_Block_Cron {
 
 		// for single site
 		else {
-			update_option( $slug, $src );
+			update_option( IP_Geo_Block::OPTION_NAME, $src );
 		}
 	}
 
@@ -144,9 +141,11 @@ class IP_Geo_Block_Cron {
 	 * Kick off a cron job to download database immediately on background.
 	 *
 	 */
-	public static function start_update_db( $immediate = TRUE, $ip_adrs ) {
-		set_transient( IP_Geo_Block::CRON_NAME, $ip_adrs, 2 * MINUTE_IN_SECONDS );
-		$settings = IP_Geo_Block::get_option( 'settings' );
+	public static function start_update_db( $immediate = TRUE ) {
+		if ( $immediate )
+			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address(), 2 * MINUTE_IN_SECONDS );
+
+		$settings = IP_Geo_Block::get_option();
 		self::schedule_cron_job( $settings['update'], NULL, $immediate );
 	}
 

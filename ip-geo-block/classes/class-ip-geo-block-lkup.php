@@ -114,14 +114,4 @@ class IP_Geo_Block_Lkup {
 		return isset( $host ) ? $host : $ip;
 	}
 
-	/**
-	 * https://codex.wordpress.org/WordPress_Feeds
-	 *
-	 */
-	public static function is_feed( $request_uri ) {
-		return isset( $_GET['feed'] ) ?
-			( preg_match( '!(?:comments-)?(?:feed|rss|rss2|rdf|atom)$!', $_GET['feed'] ) ? TRUE : FALSE ) :
-			( preg_match( '!(?:comments/)?(?:feed|rss|rss2|rdf|atom)/?$!', $request_uri ) ? TRUE : FALSE );
-	}
-
 }

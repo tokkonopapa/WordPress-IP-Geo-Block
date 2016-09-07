@@ -17,6 +17,22 @@ class IP_Geo_Block_Activate {
 		IP_Geo_Block_Opts::upgrade();
 	}
 
+	// initialize main blog
+	public static function init_main_blog() {
+		if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+
+			$settings = IP_Geo_Block::get_option();
+
+			// kick off a cron job to download database immediately
+			IP_Geo_Block_Cron::start_update_db( TRUE );
+
+			// activate rewrite rules
+			IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
+		}
+	}
+
 	/**
 	 * Register options into database table when the plugin is activated.
 	 *
@@ -39,23 +55,12 @@ class IP_Geo_Block_Activate {
 			}
 
 			switch_to_blog( $current_blog_id );
-		} else {
+		}
+		else {
 			self::activate_blog();
 		}
 
-		// only for main blog
-		if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
-			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
-			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
-
-			$settings = IP_Geo_Block::get_option( 'settings' );
-
-			// kick off a cron job to download database immediately
-			IP_Geo_Block_Cron::start_update_db( TRUE, IP_Geo_Block::get_ip_address() );
-
-			// activate rewrite rules
-			IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
-		}
+		self::init_main_blog(); // should be called after 'init' action hook with high priority
 	}
 
 	/**
@@ -64,6 +69,7 @@ class IP_Geo_Block_Activate {
 	 */
 	public static function deactivate( $network_wide = FALSE ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 
 		// cancel schedule
