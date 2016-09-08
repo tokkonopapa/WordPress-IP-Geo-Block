@@ -199,7 +199,7 @@ class IP_Geo_Block_Admin {
 	public function add_action_links( $links ) {
 		return array_merge(
 			array(
-				'settings' => '<a href="' . admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME ) . '">' . __( 'Settings' ) . '</a>'
+				'settings' => '<a href="' . esc_url( admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME ) ) . '">' . __( 'Settings' ) . '</a>'
 			),
 			$links
 		);
@@ -276,13 +276,13 @@ class IP_Geo_Block_Admin {
 			if ( FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
 				self::add_admin_notice( 'notice-warning', sprintf(
 					__( 'Now downloading geolocation databases in background. After a little while, please check your country code and &#8220;<strong>Matching rule</strong>&#8221; at <a href="%s">Validation rule settings</a>.', 'ip-geo-block' ),
-					admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME )
+					esc_url( admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME ) )
 				) );
 			}
 			else {
 				self::add_admin_notice( 'error', sprintf(
 					__( 'The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please confirm it at <a href="%s">Validation rule settings</a>.', 'ip-geo-block' ),
-					admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME )
+					esc_url( admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME ) )
 				) );
 			}
 		}
@@ -306,7 +306,7 @@ class IP_Geo_Block_Admin {
 					) .
 					sprintf(
 						__( 'Please check your <a href="%s">Validation rule settings</a>.', 'ip-geo-block' ),
-						admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME . '#' . IP_Geo_Block::PLUGIN_NAME . '-settings-0' )
+						esc_url( admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME . '#' . IP_Geo_Block::PLUGIN_NAME . '-settings-0' ) )
 					)
 				);
 			}

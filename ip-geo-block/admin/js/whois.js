@@ -27,6 +27,18 @@
 				url = 'https://rest.db.ripe.net/search%3fflags=no-filtering%26flags=resource%26query-string=';
 //				app = 'https://apps.db.ripe.net/search/lookup.html?source=%SRC%&key=%KEY%&type=%TYPE%';
 
+			function sanitize(str) {
+				return str ? str.toString().replace(/[&<>"']/g, function (match) {
+					return {
+						'&': '&amp;',
+						'<': '&lt;',
+						'>': '&gt;',
+						'"': '&quot;',
+						"'": '&#39;'
+					}[match];
+				}) : '';
+			}
+
 			$.ajax({
 				url: yql.replace(/%URL%/, url + query),
 				method: 'GET',
@@ -42,14 +54,15 @@
 								msg = err.text.split(/\n+/);
 
 							results.push({
-								name : err.severity,
-								value: msg[1].replace(/%s/, err.args.value)
+								name : sanitize(err.severity),
+								value: sanitize(msg[1].replace(/%s/, err.args.value))
 							});
 						}
 
 						else if (value.href) {
+							value.href = sanitize(value.href);
 							results.push({
-								name : key,
+								name : sanitize(key),
 								value: '<a href="' + value.href + '.json" target=_blank>' + value.href + '</a>'
 							});
 						}
@@ -65,15 +78,16 @@
 							}*/
 
 							if (value.link) {
-								value.value = '<a href="' + value.link.href + '.json" target=_blank>' + value.value + '</a>';
+								value.value = '<a href="' + sanitize(value.link.href) + '.json" target=_blank>' + sanitize(value.value) + '</a>';
 							}
 
 							else if ('remarks' === value.name) {
+								value.value = sanitize(value.value);
 								value.value = value.value.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target=_blank>$1</a>');
 							}
 
 							results.push({
-								name : value.name,
+								name : sanitize(value.name),
 								value: value.value
 							});
 						}
@@ -101,8 +115,8 @@
 
 			.fail(function (jqXHR, textStatus, errorThrown) {
 				results.push({
-					name : textStatus,
-					value: errorThrown
+					name : sanitize(textStatus),
+					value: sanitize(errorThrown)
 				});
 			})
 
