@@ -266,16 +266,20 @@ class IP_Geo_Block_Util {
 	}
 
 	private static function parse_auth_cookie( $scheme ) {
-		foreach ( array_keys( $_COOKIE ) as $key ) {
-			if ( FALSE !== strpos( $key, $scheme ) ) {
-				if ( count( $elements = explode( '|', $_COOKIE[ $key ] ) ) === 4 ) {
-					list( $username, $expiration, $token, $hmac ) = $elements;
-					return compact( 'username', 'expiration', 'token', 'hmac' );
+		static $cookie = NULL;
+
+		if ( NULL === $cookie ) {
+			foreach ( array_keys( $_COOKIE ) as $key ) {
+				if ( FALSE !== strpos( $key, $scheme ) ) {
+					if ( count( $elements = explode( '|', $_COOKIE[ $key ] ) ) === 4 ) {
+						@list( $username, $expiration, $token, $hmac ) = $elements;
+						return $cookie = compact( 'username', 'expiration', 'token', 'hmac' );
+					}
 				}
 			}
 		}
 
-		return FALSE;
+		return $cookie = FALSE;
 	}
 
 	/**
@@ -511,6 +515,18 @@ class IP_Geo_Block_Util {
 			return self::validate_redirect( $ref, false );
 
 		return false;
+	}
+
+	/**
+	 * Checks if the current visitor is a logged in user.
+	 *
+	 *
+	 */
+	public static function is_user_logged_in() {
+		if ( function_exists( 'is_user_logged_in' ) )
+			return is_user_logged_in();
+
+		return self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE; // possibly logged in but should be verified after is_user_logged_in() is available
 	}
 
 }

@@ -171,6 +171,7 @@ class IP_Geo_Block_Admin_Ajax {
 		$temp = self::json_to_settings( $data );
 
 		// Integrate posted data into current settings because if can be a part of hole data
+		unset( $temp['version'] );
 		$temp = array_replace_recursive( IP_Geo_Block::get_option(), $temp );
 
 		// Validate options and convert to json
@@ -356,10 +357,11 @@ class IP_Geo_Block_Admin_Ajax {
 			else
 				$json = json_encode( $data, $opts );
 		}
+
 		else { // JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES are not supported in PHP 5.3 and under
 			$json = self::json_unescaped_unicode( $data );
 			$json = preg_replace(
-				array( '!{"!',              '!":!', '!(")?,"!',            '!"}!',          '!\\\\/!' ),
+				array( '!{"!',              '!":!', '!("?),"!',            '!"}!',          '!\\\\/!' ),
 				array( '{'.PHP_EOL.'    "', '": ',  '$1,'.PHP_EOL.'    "', '"'.PHP_EOL.'}', '/'       ),
 				$json
 			);

@@ -313,7 +313,7 @@ class IP_Geo_Block {
 				trackback_response( $code, IP_Geo_Block_Util::kses( $mesg ) ); // @since 0.71
 
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
-				$hook = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
+				$hook = IP_Geo_Block_Util::is_user_logged_in();
 				FALSE !== ( @include( get_stylesheet_directory() .'/'.$code.'.php' ) ) or // child  theme
 				FALSE !== ( @include( get_template_directory()   .'/'.$code.'.php' ) ) or // parent theme
 				wp_die( // get_dashboard_url() @since 3.1.0
@@ -514,7 +514,7 @@ class IP_Geo_Block {
 		}
 
 		// register validation of malicious signature (except in the comment and post)
-		if ( ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
+		if ( ! IP_Geo_Block_Util::is_user_logged_in() || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
 			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
@@ -643,7 +643,7 @@ class IP_Geo_Block {
 	private function trace_nonce() {
 		$nonce = self::PLUGIN_NAME . '-auth-nonce';
 
-		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
+		if ( IP_Geo_Block_Util::is_user_logged_in() && empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
 			// add nonce at add_admin_nonce() to handle the client side redirection.
 			IP_Geo_Block_Util::redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
 			exit;
