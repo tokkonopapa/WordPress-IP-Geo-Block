@@ -43,6 +43,14 @@ the meaning of qualification.
  "UA string and qualification"
 )
 
+### References ###
+
+- [Verifying Googlebot](https://support.google.com/webmasters/answer/80553?hl=en "Verifying Googlebot - Search Console Help")
+- [Verifying Bingbot](https://www.bing.com/webmaster/help/how-to-verify-bingbot-3905dc26 "How to Verify Bingbot - Bing Webmaster Tools")
+- [Why is Slurp crawling my page?](https://help.yahoo.com/kb/SLN22600.html "Why is Slurp crawling my page? | Yahoo Help - SLN22600")
+- [How to check that a robot belongs to Yandex](https://yandex.com/support/webmaster/robot-workings/check-yandex-robots.xml "How to check that a robot belongs to Yandex — Webmaster — Yandex.Support")
+- [FAQs of Baiduspider](http://help.baidu.com/question?prod_en=master&class=Baiduspider#title_2 "Baidu customer service center - Master platform")
+
 ### See also ###
 
 - [The best practice of target settings][BestPractice]
