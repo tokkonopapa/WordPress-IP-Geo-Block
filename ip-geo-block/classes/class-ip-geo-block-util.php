@@ -167,14 +167,14 @@ class IP_Geo_Block_Util {
 	/**
 	 * Add / Remove slash at the end of string.
 	 *
-	 *//*
+	 */
 	public static function unslashit( $string ) {
 		return rtrim( $string, '/\\' );
 	}
 
 	public static function slashit( $string ) {
 		return self::unslashit( $string ) . '/';
-	}*/
+	}
 
 	/**
 	 * Explod with multiple delimiter.

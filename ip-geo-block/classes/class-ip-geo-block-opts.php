@@ -261,15 +261,15 @@ class IP_Geo_Block_Opts {
 		}
 
 		// filter hook in `functions.php` doesn't work at activation
-		return trailingslashit(
+		return IP_Geo_Block_Util::slashit(
 			apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', $dir )
 		) . IP_Geo_Block::GEOAPI_NAME; // must add `ip-geo-api` for basename
 	}
 
 	// http://php.net/manual/function.copy.php#91010
 	private static function recurse_copy( $src, $dst ) {
-		$src = trailingslashit( $src );
-		$dst = trailingslashit( $dst );
+		$src = IP_Geo_Block_Util::slashit( $src );
+		$dst = IP_Geo_Block_Util::slashit( $dst );
 
 		! @is_dir( $dst ) and wp_mkdir_p( $dst ); // @since 2.0.1 @mkdir( $dst );
 
@@ -289,7 +289,7 @@ class IP_Geo_Block_Opts {
 
 	// http://php.net/manual/function.rmdir.php#110489
 	private static function recurse_rmdir( $dir ) {
-		$dir = trailingslashit( $dir );
+		$dir = IP_Geo_Block_Util::slashit( $dir );
 		$files = array_diff( @scandir( $dir ), array( '.', '..' ) );
 
 		foreach ( $files as $file ) {
