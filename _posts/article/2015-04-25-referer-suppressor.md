@@ -1,13 +1,13 @@
 ---
 layout: post
-title:  "Referer Suppressor for external link"
+title:  "Referrer Suppressor for external link"
 date:   2015-04-25 00:00:00
 categories: article
 published: true
 script: [/js/meta-redirect.js]
 ---
 
-"Referer Suppressor" which eliminate the browser's referer is one of my 
+"Referrer Suppressor" which eliminate the browser's referer is one of my 
 favorite feature in [IP Geo Block][IP-Geo-Block] <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png)
 </span>.
@@ -31,7 +31,7 @@ secret, WP-ZEP must kill the possibility of disclosing a nonce.
 One possibility lies in referer strings that was left on the page as a 
 footprint you visited via an external hyperlink.
 
-That's why "Referer Suppressor" is needed.
+That's why "Referrer Suppressor" is needed.
 
 ### How to suppress a referer? ###
 

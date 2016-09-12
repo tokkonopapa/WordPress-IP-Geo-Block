@@ -28,4 +28,4 @@ script: [/js/referer.js]
 </div>
 
 Back to the article:
-  <q><a href="/article/referer-suppressor.html">Referer Suppressor for external link</a></q>
+  <q><a href="/article/referer-suppressor.html">Referrer Suppressor for external link</a></q>
