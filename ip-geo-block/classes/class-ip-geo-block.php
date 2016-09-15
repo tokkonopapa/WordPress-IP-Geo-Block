@@ -453,16 +453,26 @@ class IP_Geo_Block {
 	 */
 	public function validate_login() {
 		$settings = self::get_option();
+		$action = isset( $_GET['key'] ) ? 'resetpass' : (
+			isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'login'
+		);
+
+		if ( 'retrievepassword' === $action )
+			$action = 'lostpassword';
+		elseif ( 'rp' === $action )
+			$action = 'resetpass';
+
+		$actions = $settings['login_action'];
+		if ( ! empty( $actions['login'] ) )
+			$actions += array( 'logout' => 1 );
 
 		// wp-includes/pluggable.php @since 2.5.0
 		add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
 
 		// enables to skip validation of country at login/out except BuddyPress signup
-		$block = ( 1 === (int)$settings['validation']['login'] ) ||
-			( 'bp_' === substr( current_filter(), 0, 3 ) ) ||
-			( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout' ), TRUE ) );
-
-		$this->validate_ip( 'login', $settings, $block );
+		$this->validate_ip( 'login', $settings,
+			! empty( $actions[ $action ] ) || 'bp_' === substr( current_filter(), 0, 3 )
+		);
 	}
 
 	/**

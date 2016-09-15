@@ -346,6 +346,19 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+		$desc = array(
+			'login'        => __( 'Log in' ),
+			'register'     => __( 'Register' ),
+			'resetpasss'   => __( 'Password Reset' ),
+			'lostpassword' => __( 'Lost Password' ),
+			'postpass'     => __( 'Password protected' ),
+		);
+
+		$list = '';
+		foreach ( $desc as $key => $val ) {
+			$list .= '<li><input type="checkbox" id="ip_geo_block_settings_login_action_' . $key . '" name="ip_geo_block_settings[login_action][' . $key . ']"' . checked( ! empty( $options['login_action'][ $key ] ), TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_login_action_' . $key . '">' . $val . "</label></li>\n";
+		}
+
 		// Login form
 		$key = 'login';
 		add_settings_field(
@@ -355,20 +368,13 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug,
 			$section,
 			array(
-				'type' => 'select',
+				'type' => 'checkbox',
 				'option' => $option_name,
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'list' => array(
-					0 => __( 'Disable', 'ip-geo-block' ),
-					2 => __( 'Block by country (register, lost password)', 'ip-geo-block' ),
-					1 => __( 'Block by country', 'ip-geo-block' ),
-				),
-				'desc' => array(
-					2 => __( 'Registered users can login as membership from anywhere, but the request of new user registration and lost password is blocked by the country code.', 'ip-geo-block' ),
-				),
-				'after' => '<div class="ip-geo-block-desc"></div>',
+				'text' => __( 'Block by country', 'ip-geo-block' ),
+				'after' => '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup"><dfn title="">' . __( 'Target actions', 'ip-geo-block' ) . "</dfn><li style='display:none'><ul>\n". $list . "</ul></li></ul>\n",
 			)
 		);
 
@@ -448,7 +454,7 @@ class IP_Geo_Block_Admin_Tab {
 				. '" name="ip_geo_block_settings[exception][plugins][' . $key
 				. ']" value="1"' . checked( in_array( $key, $options['exception']['plugins'] ), TRUE, FALSE )
 				. ' /><label for="ip_geo_block_settings_exception_plugins_' . $key
-				. ($active ? '">' : '" class="exceptions-inactive">') . esc_html( $val['Name'] ) . "</label></li>\n";
+				. ($active ? '">' : '" class="folding-inactive">') . esc_html( $val['Name'] ) . "</label></li>\n";
 		}
 
 		// Plugins area
@@ -481,7 +487,7 @@ class IP_Geo_Block_Admin_Tab {
 				),
 				'before' => $tmp,
 				'after' => '<div class="ip-geo-block-desc"></div>' . "\n"
-					. '<ul class="ip_geo_block_settings_exception ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
+					. '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
 					. $exception
 					. "</ul></li></ul>\n",
 			)
@@ -501,7 +507,7 @@ class IP_Geo_Block_Admin_Tab {
 				. '" name="ip_geo_block_settings[exception][themes][' . $key
 				. ']" value="1"' . checked( in_array( $key, $options['exception']['themes'] ), TRUE, FALSE )
 				. ' /><label for="ip_geo_block_settings_exception_themes_' . $key
-				. ($active ? '">' : '" class="exceptions-inactive">') . esc_html( $val ) . "</label></li>\n";
+				. ($active ? '">' : '" class="folding-inactive">') . esc_html( $val ) . "</label></li>\n";
 		}
 
 		// Themes area
@@ -534,7 +540,7 @@ class IP_Geo_Block_Admin_Tab {
 				),
 				'before' => $tmp,
 				'after' => '<div class="ip-geo-block-desc"></div>' . "\n"
-					. '<ul class="ip_geo_block_settings_exception ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
+					. '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
 					. $exception
 					. "</ul></li></ul>\n",
 			)

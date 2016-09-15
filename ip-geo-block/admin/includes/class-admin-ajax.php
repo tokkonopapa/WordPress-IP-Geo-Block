@@ -248,6 +248,11 @@ class IP_Geo_Block_Admin_Ajax {
 			'[validation][comment]',
 			'[validation][xmlrpc]',
 			'[validation][login]',
+			'[login_action][login]',        // 2.2.8
+			'[login_action][register]',     // 2.2.8
+			'[login_action][resetpasss]',   // 2.2.8
+			'[login_action][lostpassword]', // 2.2.8
+			'[login_action][postpass]',     // 2.2.8
 			'[validation][admin][1]',
 			'[validation][admin][2]',
 			'[validation][ajax][1]',

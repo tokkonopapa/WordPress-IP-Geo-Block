@@ -502,14 +502,14 @@ var ip_geo_block_time = new Date();
 				var $this = $(this);
 				show_description($this);
 
-				// List of exceptions
-				$this.nextAll('.' + name + '_exception').each(function (i, obj) {
+				// Folding list
+				$this.nextAll('.' + name + '_folding').each(function (i, obj) {
 					obj = $(obj);
 					if ('0' !== $this.val()) {
-						obj.removeClass('exceptions-disable');
+						obj.removeClass('folding-disable');
 					} else {
 						obj.children('li').hide();
-						obj.addClass('exceptions-disable');
+						obj.addClass('folding-disable');
 						obj.removeClass(ID('dropdown')).addClass(ID('dropup'));
 					}
 				});
@@ -609,8 +609,8 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 
-			// Exceptions
-			$('ul.' + name + '_exception dfn').on('click', function (event) {
+			// Folding list
+			$('ul.' + name + '_folding dfn').on('click', function (event) {
 				var $this = $(this).parent();
 				$this.children('li').toggle();
 				$this.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));

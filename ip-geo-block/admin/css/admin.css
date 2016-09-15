@@ -56,21 +56,21 @@ textarea.regular-text {
     width: 25em;
 }
 
-ul.ip_geo_block_settings_exception {
+ul.ip_geo_block_settings_folding {
     margin-top: 0.5em;
 }
-ul.ip_geo_block_settings_exception,
-ul.ip_geo_block_settings_exception ul {
+ul.ip_geo_block_settings_folding,
+ul.ip_geo_block_settings_folding ul {
     margin-bottom: 0;
 }
-ul.ip_geo_block_settings_exception li:first-child {
+ul.ip_geo_block_settings_folding li:first-child {
     margin-top: 0.6em;
 }
-.exceptions-disable {
+.folding-disable {
     pointer-events: none;
     opacity: 0.5;
 }
-.exceptions-inactive {
+.folding-inactive {
     opacity: 0.5;
     font-style:oblique !important;
 }

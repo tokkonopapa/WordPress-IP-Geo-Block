@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '2.2.7', // Version of this table (not package)
+		'version'         => '2.2.8', // Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -95,6 +95,14 @@ class IP_Geo_Block_Opts {
 		// since version 2.2.7
 		'api_key'         => array(   // API key
 			'GoogleMap'   => 'default',
+		),
+		// since version 2.2.8
+		'login_action' => array(      // Actions for wp-login.php
+			'login'        => TRUE,
+			'register'     => TRUE,
+			'resetpasss'   => TRUE,
+			'lostpassword' => TRUE,
+			'postpass'     => TRUE,
 		),
 	);
 
@@ -202,6 +210,13 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '2.2.7' ) < 0 )
 				$settings['api_key'] = $default['api_key'];
 
+			if ( version_compare( $version, '2.2.8' ) < 0 ) {
+				$settings['login_action'] = $default['login_action'];
+				// Block by country (register, lost password)
+				if ( 2 === (int)$settings['validation']['login'] )
+					$settings['login_action']['login'] = 0;
+			}
+
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
@@ -260,16 +275,15 @@ class IP_Geo_Block_Opts {
 			}
 		}
 
-		// filter hook in `functions.php` doesn't work at activation
-		return IP_Geo_Block_Util::slashit(
+		return trailingslashit(
 			apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', $dir )
 		) . IP_Geo_Block::GEOAPI_NAME; // must add `ip-geo-api` for basename
 	}
 
 	// http://php.net/manual/function.copy.php#91010
 	private static function recurse_copy( $src, $dst ) {
-		$src = IP_Geo_Block_Util::slashit( $src );
-		$dst = IP_Geo_Block_Util::slashit( $dst );
+		$src = trailingslashit( $src );
+		$dst = trailingslashit( $dst );
 
 		! @is_dir( $dst ) and wp_mkdir_p( $dst ); // @since 2.0.1 @mkdir( $dst );
 
