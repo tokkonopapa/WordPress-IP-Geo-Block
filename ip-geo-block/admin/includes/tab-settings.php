@@ -356,7 +356,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		$list = '';
 		foreach ( $desc as $key => $val ) {
-			$list .= '<li><input type="checkbox" id="ip_geo_block_settings_login_action_' . $key . '" name="ip_geo_block_settings[login_action][' . $key . ']"' . checked( ! empty( $options['login_action'][ $key ] ), TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_login_action_' . $key . '">' . $val . "</label></li>\n";
+			$list .= '<li><input type="checkbox" id="ip_geo_block_settings_login_action_' . $key . '" name="ip_geo_block_settings[login_action][' . $key . ']" value="1"' . checked( ! empty( $options['login_action'][ $key ] ), TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_login_action_' . $key . '">' . $val . "</label></li>\n";
 		}
 
 		// Login form
@@ -749,22 +749,6 @@ class IP_Geo_Block_Admin_Tab {
 		add_settings_field(
 			$option_name.'_'.$field,
 			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this and garbage collection period.">Expiration time [sec]</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
-			)
-		);
-
-		// Garbage collection period [sec]
-		$field = 'cache_time_gc';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( 'Garbage collection period [sec]', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

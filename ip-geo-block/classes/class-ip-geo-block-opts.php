@@ -214,7 +214,7 @@ class IP_Geo_Block_Opts {
 				$settings['login_action'] = $default['login_action'];
 				// Block by country (register, lost password)
 				if ( 2 === (int)$settings['validation']['login'] )
-					$settings['login_action']['login'] = 0;
+					$settings['login_action']['login'] = FALSE;
 			}
 
 			// save package version number
@@ -303,7 +303,7 @@ class IP_Geo_Block_Opts {
 
 	// http://php.net/manual/function.rmdir.php#110489
 	private static function recurse_rmdir( $dir ) {
-		$dir = IP_Geo_Block_Util::slashit( $dir );
+		$dir = trailingslashit( $dir );
 		$files = array_diff( @scandir( $dir ), array( '.', '..' ) );
 
 		foreach ( $files as $file ) {

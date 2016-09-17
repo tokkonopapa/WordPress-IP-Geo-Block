@@ -115,7 +115,7 @@ abstract class IP_Geo_Block_API {
 
 		  // decode xml
 		  case 'xml':
-			$tmp = '/\<(.+?)\>(?:\<\!\[CDATA\[)?(.*?)(?:\]\]\>)?\<\/\\1\>/i';
+			$tmp = '/\<(.+?)\>(?:\<\!\[CDATA\[)?([^\>]*?)(?:\]\]\>)?\<\/\\1\>/i';
 			if ( preg_match_all( $tmp, $res, $matches ) !== FALSE ) {
 				if ( is_array( $matches[1] ) && ! empty( $matches[1] ) ) {
 					foreach ( $matches[1] as $key => $val ) {
@@ -458,7 +458,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;
 
 		// unset expired elements
-		if ( FALSE !== ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) ) {
+		if ( FALSE !== ( $cache = get_transient( IP_Geo_Block::CACHE_NAME ) ) ) {
 			foreach ( $cache as $key => $val ) {
 				if ( $time - $val['time'] > $exp )
 					unset( $cache[ $key ] );
@@ -499,20 +499,20 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			}
 		}
 
-		set_transient( IP_Geo_Block::CACHE_KEY, $cache, $exp ); // @since 2.8
+		set_transient( IP_Geo_Block::CACHE_NAME, $cache, $exp ); // @since 2.8
 		return $cache[ $ip ];
 	}
 
 	public static function clear_cache() {
-		delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
+		delete_transient( IP_Geo_Block::CACHE_NAME ); // @since 2.8
 	}
 
 	public static function get_cache_all() {
-		return get_transient( IP_Geo_Block::CACHE_KEY );
+		return get_transient( IP_Geo_Block::CACHE_NAME );
 	}
 
 	public static function get_cache( $ip ) {
-		$cache = get_transient( IP_Geo_Block::CACHE_KEY );
+		$cache = get_transient( IP_Geo_Block::CACHE_NAME );
 		return $cache && isset( $cache[ $ip ] ) ? $cache[ $ip ] : NULL;
 	}
 

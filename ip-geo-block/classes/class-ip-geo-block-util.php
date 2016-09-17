@@ -264,6 +264,9 @@ class IP_Geo_Block_Util {
 		if ( self::hash_equals( $expected, (string)$nonce ) ) {
 			return 2;
 		}
+
+		// Invalid nonce
+		return false;
 	}
 
 	/**
@@ -308,7 +311,7 @@ class IP_Geo_Block_Util {
 			}
 		}
 
-		return $cookie = FALSE;
+		return $cookie;
 	}
 
 	/**
