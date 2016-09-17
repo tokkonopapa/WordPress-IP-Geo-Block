@@ -119,6 +119,24 @@ var ip_geo_block_time = new Date();
 		}
 	}
 
+	// Show/Hide folding list
+	function show_folding_list(element, name) {
+		var stat = false;
+		stat |= 0 === element.prop('type').indexOf('checkbox') && element.is(':checked');
+		stat |= 0 === element.prop('type').indexOf('select'  ) && '0' !== element.val();
+
+		element.nextAll('.' + name + '_folding').each(function (i, obj) {
+			obj = $(obj);
+			if (stat) {
+				obj.removeClass('folding-disable');
+			} else {
+				obj.children('li').hide();
+				obj.addClass('folding-disable');
+				obj.removeClass(ID('dropdown')).addClass(ID('dropup'));
+			}
+		});
+	}
+
 	// Encode/Decode to prevent blocking before post ajax
 	function base64_encode(str) {
 		return window.btoa(str);
@@ -497,23 +515,17 @@ var ip_geo_block_time = new Date();
 			// Name of base class
 			var name = ID('%', 'settings');
 
+			// Show/Hide folding list at Login form
+			$(ID('@', 'validation_login')).on('change', function (event) {
+				show_folding_list($(this), name);
+				return false;
+			}).trigger('change');
+
 			// Show/Hide description
 			$('select[name^="' + name + '"]').on('change', function (event) {
 				var $this = $(this);
 				show_description($this);
-
-				// Folding list
-				$this.nextAll('.' + name + '_folding').each(function (i, obj) {
-					obj = $(obj);
-					if ('0' !== $this.val()) {
-						obj.removeClass('folding-disable');
-					} else {
-						obj.children('li').hide();
-						obj.addClass('folding-disable');
-						obj.removeClass(ID('dropdown')).addClass(ID('dropup'));
-					}
-				});
-
+				show_folding_list($this, name);
 				return false;
 			}).trigger('change');
 

@@ -739,12 +739,12 @@ class IP_Geo_Block_Admin {
 
 		if ( $ajax ) {
 			$action = $this->get_ajax_action();
-			$nonce &= IP_Geo_Block_Util::verify_nonce( IP_Geo_Block::retrieve_nonce( 'nonce' ), $action );
+			$nonce &= IP_Geo_Block_Util::verify_nonce( IP_Geo_Block_Util::retrieve_nonce( 'nonce' ), $action );
 //			$nonce &= check_admin_referer( $this->get_ajax_action(), 'nonce' );
 		}
 
 		$action = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
-		$nonce &= IP_Geo_Block_Util::verify_nonce( IP_Geo_Block::retrieve_nonce( $action ), $action );
+		$nonce &= IP_Geo_Block_Util::verify_nonce( IP_Geo_Block_Util::retrieve_nonce( $action ), $action );
 
 		if ( ! current_user_can( 'manage_options' ) || ! $nonce ) {
 			status_header( 403 );

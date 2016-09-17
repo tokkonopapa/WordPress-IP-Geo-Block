@@ -452,7 +452,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_login() {
-		$settings = self::get_option();
+		// parse action
 		$action = isset( $_GET['key'] ) ? 'resetpass' : (
 			isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'login'
 		);
@@ -462,7 +462,10 @@ class IP_Geo_Block {
 		elseif ( 'rp' === $action )
 			$action = 'resetpass';
 
+		$settings = self::get_option();
 		$actions = $settings['login_action'];
+
+		// the same rule is applied to login / logout
 		if ( ! empty( $actions['login'] ) )
 			$actions += array( 'logout' => 1 );
 
@@ -506,7 +509,7 @@ class IP_Geo_Block {
 		// setup WP-ZEP (2: WP-ZEP)
 		if ( ( 2 & $type ) && $zep ) {
 			// redirect if valid nonce in referer
-			$this->trace_nonce();
+			IP_Geo_Block_Util::trace_nonce( self::PLUGIN_NAME . '-auth-nonce' );
 
 			// list of request with a specific query to bypass WP-ZEP
 			$list = apply_filters( self::PLUGIN_NAME . '-bypass-admins', array(
@@ -615,8 +618,8 @@ class IP_Geo_Block {
 	}
 
 	public function check_auth( $validate, $settings ) {
-		// authentication should be prior to validation of country (can't overwrite existing result)
-		return $validate['auth'] ? $validate + array( 'result' => 'passed' ) : $validate;
+		// authentication should be prior to validation of country
+		return $validate['auth'] ? $validate + array( 'result' => 'passed' ) : $validate; // can't overwrite existing result
 	}
 
 	public function check_signature( $validate, $settings ) {
@@ -635,39 +638,16 @@ class IP_Geo_Block {
 		return $validate;
 	}
 
-	/**
-	 * Validate nonce.
-	 *
-	 */
 	public function check_nonce( $validate, $settings ) {
 		$action = self::PLUGIN_NAME . '-auth-nonce';
+		$nonce = IP_Geo_Block_Util::retrieve_nonce( $action );
 
-		if ( ! IP_Geo_Block_Util::verify_nonce( self::retrieve_nonce( $action ), $action ) ) {
+		if ( ! IP_Geo_Block_Util::verify_nonce( $nonce, $action ) ) {
 			if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
 				$validate['result'] = 'wp-zep'; // can't overwrite existing result
 		}
 
 		return $validate;
-	}
-
-	private function trace_nonce() {
-		$nonce = self::PLUGIN_NAME . '-auth-nonce';
-
-		if ( IP_Geo_Block_Util::is_user_logged_in() && empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
-			// add nonce at add_admin_nonce() to handle the client side redirection.
-			IP_Geo_Block_Util::redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
-			exit;
-		}
-	}
-
-	public static function retrieve_nonce( $key ) {
-		if ( isset( $_REQUEST[ $key ] ) )
-			return sanitize_text_field( $_REQUEST[ $key ] );
-
-		if ( preg_match( "/$key(?:=|%3D)([\w]+)/", IP_Geo_Block_Util::get_referer(), $matches ) )
-			return sanitize_text_field( $matches[1] );
-
-		return NULL;
 	}
 
 	/**
