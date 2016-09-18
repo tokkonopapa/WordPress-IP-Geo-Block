@@ -41,7 +41,7 @@ $list = array(
 $test = array(
 	array( 'version' => '2.2.3.1', 'function' => 'parse_url_1' ),
 //	array( 'version' => '2.2.4',   'function' => 'parse_url_2' ), // strpos(): Empty needle
-	array( 'version' => '2.3.0',   'function' => 'parse_url_3' ),
+	array( 'version' => '3.0.0',   'function' => 'parse_url_3' ),
 );
 
 $result = array();
@@ -139,7 +139,7 @@ function parse_url_2( $list ) {
 }
 
 /**
- * 2.3.0
+ * 3.0.0
  *
  */
 function parse_url_3( $list ) {

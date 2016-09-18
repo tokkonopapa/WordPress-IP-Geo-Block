@@ -1,19 +1,16 @@
 <?php
-include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context ) {
-		$plugin_slug = IP_Geo_Block::PLUGIN_SLUG;
-		$option_slug = $context->option_slug['settings'];
-		$option_name = $context->option_name['settings'];
+		$option_slug = IP_Geo_Block::PLUGIN_NAME;
+		$option_name = IP_Geo_Block::OPTION_NAME;
 
 		register_setting(
 			$option_slug,
 			$option_name
 		);
 
-		$section = $plugin_slug . '-attribution';
+		$section = IP_Geo_Block::PLUGIN_NAME . '-attribution';
 		add_settings_section(
 			$section,
 			__( 'Attribution links', 'ip-geo-block' ),

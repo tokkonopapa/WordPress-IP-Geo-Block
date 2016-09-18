@@ -89,7 +89,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function delete_tables() {
 		global $wpdb;
-		$tables = array( self::TABLE_LOGS, self::TABLE_STAT, IP_Geo_Block::CACHE_KEY );
+		$tables = array( self::TABLE_LOGS, self::TABLE_STAT );
 
 		foreach ( $tables as $table ) {
 			$table = $wpdb->prefix . $table;
@@ -103,7 +103,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function diag_tables() {
 		global $wpdb;
-		$tables = array( self::TABLE_LOGS, self::TABLE_STAT, IP_Geo_Block::CACHE_KEY );
+		$tables = array( self::TABLE_LOGS, self::TABLE_STAT );
 
 		foreach ( $tables as $table ) {
 			$table = $wpdb->prefix . $table;
@@ -140,16 +140,6 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function clear_stat() {
 		self::record_stat( self::$default );
-	}
-
-	/**
-	 * Clear IP address cache.
-	 *
-	 */
-	public static function clear_cache() {
-		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
-		$wpdb->query( "TRUNCATE TABLE `$table`" ) or self::error( __LINE__ );
 	}
 
 	/**
@@ -190,9 +180,9 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function limit_rows( $time ) {
 		$time = intval( $time );
-		$options = IP_Geo_Block::get_option( 'settings' );
+		$options = IP_Geo_Block::get_option();
 
-		if ( $time < 100 /* msec */ )
+		if ( $time < 80 /* msec */ )
 			return (int)$options['validation']['maxlogs'];
 
 		elseif ( $time < 200 /* msec */ )
@@ -407,7 +397,7 @@ class IP_Geo_Block_Logs {
 			return;
 
 		$path = trailingslashit( $path ) .
-			IP_Geo_Block::PLUGIN_SLUG . date('-Y-m') . '.log';
+			IP_Geo_Block::PLUGIN_NAME . date('-Y-m') . '.log';
 
 		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )
 			return;
@@ -491,7 +481,7 @@ class IP_Geo_Block_Logs {
 
 		// backup logs to text files
 		if ( $dir = apply_filters(
-			IP_Geo_Block::PLUGIN_SLUG . '-backup-dir',
+			IP_Geo_Block::PLUGIN_NAME . '-backup-dir',
 			$settings['validation']['backup'], $hook
 		) ) {
 			self::backup_logs(
@@ -530,22 +520,26 @@ class IP_Geo_Block_Logs {
 	public static function update_stat( $hook, $validate, $settings ) {
 		// Restore statistics.
 		if ( $statistics = self::restore_stat() ) {
-			if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
-				$statistics['IPv4']++;
-			elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-				$statistics['IPv6']++;
-
-			@$statistics[ 'passed' !== $validate['result'] ? 'blocked' : 'passed' ]++;
-			@$statistics['countries'][ $validate['code'] ]++;
 
 			$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'ZZ';
 			if ( empty( $statistics['providers'][ $provider ] ) )
 				$statistics['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
 
-			$statistics['providers'][ $provider ]['count']++;
+			$statistics['providers'][ $provider ]['count']++; // undefined in auth_fail()
 			$statistics['providers'][ $provider ]['time'] += (float)@$validate['time'];
 
-			@$statistics['daystats'][ mktime( 0, 0, 0 ) ][ $hook ]++;
+			if ( 'passed' !== $validate['result'] ) {
+				// Blocked by type of IP address
+				if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
+					$statistics['IPv4']++;
+				elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
+					$statistics['IPv6']++;
+
+				@$statistics['blocked'  ]++;
+				@$statistics['countries'][ $validate['code'] ]++;
+				@$statistics['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ]++;
+			}
+
 			if ( count( $statistics['daystats'] ) > 30 ) {
 				reset( $statistics['daystats'] );
 				unset( $statistics['daystats'][ key( $statistics['daystats'] ) ] );

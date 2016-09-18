@@ -274,7 +274,8 @@ class Net_IPv4
     {
         $validNM = $GLOBALS['Net_IPv4_Netmask_Map'];
 
-        if (! is_a($this, "net_ipv4")) {
+//      if (! is_a($this, "net_ipv4")) { // avoid E_STRICT in PHP 5.2 and under
+        if (! ($this instanceof net_ipv4)) {
             $myself = new Net_IPv4;
             return myPEAR::raiseError("cannot calculate on uninstantiated Net_IPv4 class");
         }

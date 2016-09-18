@@ -46,7 +46,6 @@ app.factory('$exceptionHandler', ['$window', function ($window) {
 angular.module('WPApp').controller('WPAppCtrl', [
 	'$scope',
 	'$cookies',
-	'$cookieStore',
 	'LanguageSvc',
 	'GeolocationSvc',
 	'WPValidateSvc',
@@ -54,7 +53,6 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	function (
 		$scope,
 		$cookies,
-		$cookieStore,
 		svcLang,
 		svcGeoloc,
 		svcWP,
@@ -327,6 +325,9 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			if (echo) {
 				messageOut('Single Page', res.stat);
 			}
+
+			// Delete cookie of cache
+			$cookies.put('ip_geo_block_cache', '');
 		});
 	};
 

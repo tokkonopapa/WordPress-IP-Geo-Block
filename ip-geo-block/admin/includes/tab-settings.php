@@ -1,18 +1,16 @@
 <?php
-include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
-if ( ! function_exists( 'get_plugins' ) ) {
-	include_once ABSPATH . 'wp-admin/includes/plugin.php';
-}
+require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+
+if ( ! function_exists( 'get_plugins' ) )
+	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context ) {
-		$plugin_slug = IP_Geo_Block::PLUGIN_SLUG;         // 'ip-geo-block'
-		$option_slug = $context->option_slug['settings']; // 'ip-geo-block-settings'
-		$option_name = $context->option_name['settings']; // 'ip_geo_block_settings'
-		$options = IP_Geo_Block::get_option( 'settings' );
+		$plugin_slug = IP_Geo_Block::PLUGIN_NAME; // 'ip-geo-block'
+		$option_slug = IP_Geo_Block::PLUGIN_NAME; // 'ip-geo-block'
+		$option_name = IP_Geo_Block::OPTION_NAME; // 'ip_geo_block_settings'
+		$options = IP_Geo_Block::get_option();
 
 		// Get the country code
 		$key = IP_Geo_Block::get_geolocation();
@@ -220,7 +218,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'signature';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a href="javascript:void(0);" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span id="ip-geo-block-cycle"></span></a>)</nobr>', 'ip-geo-block' ),
+			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a href="javascript:void(0)" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span id="ip-geo-block-cycle"></span></a>)</nobr>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -348,6 +346,19 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+		$desc = array(
+			'login'        => __( 'Log in' ),
+			'register'     => __( 'Register' ),
+			'resetpasss'   => __( 'Password Reset' ),
+			'lostpassword' => __( 'Lost Password' ),
+			'postpass'     => __( 'Password protected' ),
+		);
+
+		$list = '';
+		foreach ( $desc as $key => $val ) {
+			$list .= '<li><input type="checkbox" id="ip_geo_block_settings_login_action_' . $key . '" name="ip_geo_block_settings[login_action][' . $key . ']" value="1"' . checked( ! empty( $options['login_action'][ $key ] ), TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_login_action_' . $key . '">' . $val . "</label></li>\n";
+		}
+
 		// Login form
 		$key = 'login';
 		add_settings_field(
@@ -357,20 +368,13 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug,
 			$section,
 			array(
-				'type' => 'select',
+				'type' => 'checkbox',
 				'option' => $option_name,
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'list' => array(
-					0 => __( 'Disable', 'ip-geo-block' ),
-					2 => __( 'Block by country (register, lost password)', 'ip-geo-block' ),
-					1 => __( 'Block by country', 'ip-geo-block' ),
-				),
-				'desc' => array(
-					2 => __( 'Registered users can login as membership from anywhere, but the request of new user registration and lost password is blocked by the country code.', 'ip-geo-block' ),
-				),
-				'after' => '<div class="ip-geo-block-desc"></div>',
+				'text' => __( 'Block by country', 'ip-geo-block' ),
+				'after' => '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual action as a blocking target.">Target actions</dfn>', 'ip-geo-block' ) . "<li style='display:none'><ul>\n". $list . "</ul></li></ul>\n",
 			)
 		);
 
@@ -450,12 +454,12 @@ class IP_Geo_Block_Admin_Tab {
 				. '" name="ip_geo_block_settings[exception][plugins][' . $key
 				. ']" value="1"' . checked( in_array( $key, $options['exception']['plugins'] ), TRUE, FALSE )
 				. ' /><label for="ip_geo_block_settings_exception_plugins_' . $key
-				. ($active ? '">' : '" class="exceptions-inactive">') . esc_html( $val['Name'] ) . "</label></li>\n";
+				. ($active ? '">' : '" class="folding-inactive">') . esc_html( $val['Name'] ) . "</label></li>\n";
 		}
 
 		// Plugins area
 		$key = 'plugins';
-		$val = esc_html( substr( IP_Geo_Block::$wp_path[ $key ], 1 ) );
+		$val = esc_html( IP_Geo_Block::$wp_path[ $key ] );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
 			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
@@ -483,7 +487,7 @@ class IP_Geo_Block_Admin_Tab {
 				),
 				'before' => $tmp,
 				'after' => '<div class="ip-geo-block-desc"></div>' . "\n"
-					. '<ul class="ip_geo_block_settings_exception ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
+					. '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
 					. $exception
 					. "</ul></li></ul>\n",
 			)
@@ -503,12 +507,12 @@ class IP_Geo_Block_Admin_Tab {
 				. '" name="ip_geo_block_settings[exception][themes][' . $key
 				. ']" value="1"' . checked( in_array( $key, $options['exception']['themes'] ), TRUE, FALSE )
 				. ' /><label for="ip_geo_block_settings_exception_themes_' . $key
-				. ($active ? '">' : '" class="exceptions-inactive">') . esc_html( $val ) . "</label></li>\n";
+				. ($active ? '">' : '" class="folding-inactive">') . esc_html( $val ) . "</label></li>\n";
 		}
 
 		// Themes area
 		$key = 'themes';
-		$val = esc_html( substr( IP_Geo_Block::$wp_path[ $key ], 1 ) );
+		$val = esc_html( IP_Geo_Block::$wp_path[ $key ] );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
 			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
@@ -536,7 +540,7 @@ class IP_Geo_Block_Admin_Tab {
 				),
 				'before' => $tmp,
 				'after' => '<div class="ip-geo-block-desc"></div>' . "\n"
-					. '<ul class="ip_geo_block_settings_exception ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
+					. '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
 					. $exception
 					. "</ul></li></ul>\n",
 			)
@@ -575,12 +579,12 @@ class IP_Geo_Block_Admin_Tab {
 		 * Local database settings
 		 *----------------------------------------*/
 		// higher priority order
-		$providers = IP_Geo_Block_Provider::get_addons(); 
+		$providers = IP_Geo_Block_Provider::get_addons();
 		if ( empty( $providers ) ) {
 			$context->add_admin_notice( 'error',
 				sprintf(
 					__( 'Please download <a href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a> and upload <code>ip-geo-api</code> to <code>%s</code> with write permission.', 'ip-geo-block' ),
-					apply_filters( 'ip-geo-block-api-dir', dirname( $options['api_dir'] ) )
+					apply_filters( 'ip-geo-block-api-dir', basename( WP_CONTENT_DIR ) )
 				)
 			);
 		}
@@ -740,11 +744,11 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug
 		);
 
-		// Number of entries
-		$field = 'cache_hold';
+		// Expiration time [sec]
+		$field = 'cache_time';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Number of entries', 'ip-geo-block' ),
+			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this and garbage collection period.">Expiration time [sec]</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -756,11 +760,11 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-		// Expiration time [sec]
-		$field = 'cache_time';
+		// Number of entries
+		$field = 'cache_hold';
 		add_settings_field(
 			$option_name.'_'.$field,
-			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this period.">Expiration time [sec]</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
+			__( 'Number of entries to be displayed in cache', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -806,7 +810,7 @@ class IP_Geo_Block_Admin_Tab {
 					1 => __( 'Top',    'ip-geo-block' ),
 					2 => __( 'Bottom', 'ip-geo-block' ),
 				),
-				'text' => $options[ $field ]['msg'], // sanitized at 'select-text'
+				'text' => $options[ $field ]['msg'], // escaped by esc_attr() at 'text'
 			)
 		);
 

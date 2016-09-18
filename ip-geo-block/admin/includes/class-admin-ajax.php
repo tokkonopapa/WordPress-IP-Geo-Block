@@ -6,12 +6,12 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function search_ip( $which ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
 
 		// check format
 		if ( filter_var( $ip = $_POST['ip'], FILTER_VALIDATE_IP ) ) {
 			// get option settings and compose request headers
-			$options = IP_Geo_Block::get_option( 'settings' );
+			$options = IP_Geo_Block::get_option();
 			$args    = IP_Geo_Block::get_request_headers( $options );
 
 			// create object for provider and get location
@@ -25,6 +25,9 @@ class IP_Geo_Block_Admin_Ajax {
 			$res = array( 'errorMessage' => 'Invalid IP address.' );
 		}
 
+		if ( empty( $res['errorMessage'] ) )
+			$res['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $ip );
+
 		return $res;
 	}
 
@@ -33,11 +36,9 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function scan_country() {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-
 		// scan all the country code using selected APIs
 		$ip        = IP_Geo_Block::get_ip_address();
-		$options   = IP_Geo_Block::get_option( 'settings' );
+		$options   = IP_Geo_Block::get_option();
 		$args      = IP_Geo_Block::get_request_headers( $options );
 		$type      = IP_Geo_Block_Provider::get_providers( 'type', FALSE, FALSE );
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $options['providers'], FALSE, FALSE );
@@ -83,8 +84,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function export_logs( $which ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		$csv = '';
 		$which = IP_Geo_Block_Logs::restore_logs( $which );
@@ -101,7 +101,7 @@ class IP_Geo_Block_Admin_Ajax {
 		// Send as file
 		header( 'Content-Description: File Transfer' );
 		header( 'Content-Type: application/octet-stream' );
-		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_SLUG . '_' . $date . '.csv"' );
+		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_NAME . '_' . $date . '.csv"' );
 		header( 'Pragma: public' );
 		header( 'Expires: 0' );
 		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
@@ -114,8 +114,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function restore_logs( $which ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// if js is slow then limit the number of rows
 		$list = array();
@@ -130,17 +129,23 @@ class IP_Geo_Block_Admin_Ajax {
 		foreach ( $list as $hook => $rows ) {
 			$html = '';
 			$n = 0;
+
 			foreach ( $rows as $row ) {
 				$log = (int)array_shift( $row );
 				$html .= '<tr><td data-value='.$log.'>';
 				$html .= IP_Geo_Block_Util::localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
+
+				$log = array_shift( $row );
+				$html .= '<td><a href="#!">' . esc_html( $log ) . '</a></td>';
+
 				foreach ( $row as $log ) {
-					$log = esc_html( $log );
-					$html .= "<td>$log</td>";
+					$html .= '<td>' . esc_html( $log ) . '</td>';
 				}
+
 				$html .= "</tr>";
 				if ( ++$n >= $limit ) break;
 			}
+
 			$res[ $hook ] = $html;
 		}
 
@@ -152,6 +157,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function validate_settings( $parent ) {
+		// restore escaped characters
 		$json = str_replace(
 			array( '\\"', '\\\\', "'"  ),
 			array( '"',   '\\',   '\"' ),
@@ -163,7 +169,13 @@ class IP_Geo_Block_Admin_Ajax {
 
 		// Sanitize to fit the type of each field
 		$temp = self::json_to_settings( $data );
-		$temp = $parent->validate_options( 'settings', $temp );
+
+		// Integrate posted data into current settings because if can be a part of hole data
+		unset( $temp['version'] );
+		$temp = array_replace_recursive( IP_Geo_Block::get_option(), $temp );
+
+		// Validate options and convert to json
+		$temp = $parent->validate_options( $temp );
 		$data = self::settings_to_json( $temp );
 		$json = self::json_unsafe_encode( $data );
 
@@ -174,7 +186,7 @@ class IP_Geo_Block_Admin_Ajax {
 		// Send json as file
 		header( 'Content-Description: File Transfer' );
 		header( 'Content-Type: application/octet-stream' );
-		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_SLUG . '-settings.json"' );
+		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_NAME . '-settings.json"' );
 		header( 'Pragma: public' );
 		header( 'Expires: 0' );
 		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
@@ -188,7 +200,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 */
 	static private function json_to_settings( $input ) {
 		$settings = array();
-		$prfx = 'ip_geo_block_settings';
+		$prfx = IP_Geo_Block::OPTION_NAME;
 
 		foreach ( $input as $key => $val ) {
 			if ( preg_match( "/${prfx}\[(.+?)\](?:\[(.+?)\](?:\[(.+?)\])?)?/", $key, $m ) ) {
@@ -236,6 +248,11 @@ class IP_Geo_Block_Admin_Ajax {
 			'[validation][comment]',
 			'[validation][xmlrpc]',
 			'[validation][login]',
+			'[login_action][login]',        // 2.2.8
+			'[login_action][register]',     // 2.2.8
+			'[login_action][resetpasss]',   // 2.2.8
+			'[login_action][lostpassword]', // 2.2.8
+			'[login_action][postpass]',     // 2.2.8
 			'[validation][admin][1]',
 			'[validation][admin][2]',
 			'[validation][ajax][1]',
@@ -253,7 +270,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[providers][IP-Json]',
 			'[providers][Nekudo]',
 			'[providers][Xhanch]',
-			'[providers][geoPlugin]',
+			'[providers][GeoIPLookup]',
 			'[providers][ip-api.com]',
 			'[providers][IPInfoDB]',
 			'[save_statistics]',
@@ -269,7 +286,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[api_key][GoogleMap]',      // 2.2.7
 		);
 		$json = array();
-		$prfx = 'ip_geo_block_settings';
+		$prfx = IP_Geo_Block::OPTION_NAME;
 
 		foreach ( $keys as $key ) {
 			if ( preg_match( "/\[(.+?)\](?:\[(.+?)\](?:\[(.+?)\])?)?/", $key, $m ) ) {
@@ -326,7 +343,7 @@ class IP_Geo_Block_Admin_Ajax {
 				    'plugins'     => 2,       // Validate on wp-content/plugins
 				    'themes'      => 2,       // Validate on wp-content/themes
 				),
-				'signature'       => "..,/wp-config.php,/passwd,curl,wget\nselect:.5,where:.5,union:.5\ncreate:.6,password:.4,load_file:.5",
+				'signature'       => "..,/wp-config.php,/passwd,curl,wget,eval\nselect:.5,where:.5,union:.5\ncreate:.6,password:.4,load_file:.5",
 				'rewrite'         => array(   // Apply rewrite rule
 				    'plugins'     => TRUE,    // for wp-content/plugins
 				    'themes'      => TRUE,    // for wp-content/themes
@@ -345,11 +362,12 @@ class IP_Geo_Block_Admin_Ajax {
 			else
 				$json = json_encode( $data, $opts );
 		}
-		else { // Some options are not supported in PHP 5.3 and under
+
+		else { // JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES are not supported in PHP 5.3 and under
 			$json = self::json_unescaped_unicode( $data );
-			$json = str_replace(
-				array( '{"', '","', '"}', '\\/' ), // JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
-				array( '{'.PHP_EOL.'    "', '",'.PHP_EOL.'    "', '"'.PHP_EOL.'}', '/' ),
+			$json = preg_replace(
+				array( '!{"!',              '!":!', '!("?),"!',            '!"}!',          '!\\\\/!' ),
+				array( '{'.PHP_EOL.'    "', '": ',  '$1,'.PHP_EOL.'    "', '"'.PHP_EOL.'}', '/'       ),
 				$json
 			);
 		}

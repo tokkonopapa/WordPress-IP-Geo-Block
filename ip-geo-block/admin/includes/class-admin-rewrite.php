@@ -303,9 +303,11 @@ class IP_Geo_Block_Admin_Rewrite {
 
 		foreach ( array_keys( $rewrite->rewrite_rule['apache'] ) as $key ) {
 			if ( $options[ $key ] )
+				// if it fails to write, then return FALSE
 				$options[ $key ] = $rewrite->add_rewrite_rule( $key ) ? TRUE : FALSE;
 			else
-				$options[ $key ] = $rewrite->del_rewrite_rule( $key ) ? FALSE : TRUE;
+				// regardless of the result, return FALSE
+				$options[ $key ] = $rewrite->del_rewrite_rule( $key ) ? FALSE : FALSE;
 		}
 
 		return $options;
@@ -332,7 +334,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	public static function get_dirs() {
 		$rewrite = self::get_instance();
-		return $rewrite->wp_dirs;
+		return str_replace( $rewrite->doc_root, '', $rewrite->wp_dirs );
 	}
 
 }
