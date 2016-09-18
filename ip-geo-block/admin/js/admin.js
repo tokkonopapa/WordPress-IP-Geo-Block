@@ -65,7 +65,7 @@ var ip_geo_block_time = new Date();
 		}
 	}
 
-	function ajax_post(id, request, callback) {
+	function ajax_post(id, request, callback, obj) {
 		if (id) {
 			loading(id, true);
 		}
@@ -85,7 +85,13 @@ var ip_geo_block_time = new Date();
 
 		.always(function () {
 			if (id) {
-				loading(id, false);
+				if (obj) {
+					obj.then(function () {
+						loading(id, false);
+					});
+				} else {
+					loading(id, false);
+				}
 			}
 		});
 	}
@@ -719,7 +725,7 @@ var ip_geo_block_time = new Date();
 					whois.hide().empty();
 
 					// Get whois data
-					$.whois(ip, function (data) {
+					var obj = $.whois(ip, function (data) {
 						var i, str = '';
 						for (i = 0; i < data.length; i++) {
 							str +=
@@ -795,7 +801,7 @@ var ip_geo_block_time = new Date();
 								/*+ '<iframe src="//www.google.com/maps/embed/v1/place?key=...&q=%20&center=' + latitude + ',' + longitude + '&zoom=' + zoom + '" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'*/
 							);
 						}
-					});
+					}, obj);
 				}
 
 				return false;

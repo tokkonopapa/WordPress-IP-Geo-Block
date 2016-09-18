@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.2.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-09-15 23:05+0900\n"
-"PO-Revision-Date: 2016-09-15 23:15+0900\n"
+"POT-Creation-Date: 2016-09-18 10:13+0900\n"
+"PO-Revision-Date: 2016-09-18 10:24+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -171,7 +171,7 @@ msgstr "今すぐクリア"
 msgid "Export logs"
 msgstr "ログをエクスポート"
 
-#: admin/includes/tab-accesslog.php:54 admin/includes/tab-settings.php:894
+#: admin/includes/tab-accesslog.php:54 admin/includes/tab-settings.php:878
 msgid "Export to the local file"
 msgstr "ローカル・ファイルにエクスポートする"
 
@@ -427,8 +427,11 @@ msgid "Completely close"
 msgstr "完全に閉鎖"
 
 #: admin/includes/tab-settings.php:377
-msgid "Target actions"
-msgstr "対象アクション"
+msgid ""
+"<dfn title=\"Specify the individual action as a blocking target.\">Target "
+"actions</dfn>"
+msgstr ""
+"<dfn title=\"遮断対象とするアクションを指定します。\">対象アクション</dfn>"
 
 #: admin/includes/tab-settings.php:383
 msgid "Prevent Zero-day Exploit"
@@ -606,46 +609,42 @@ msgstr ""
 "（ガベージコレクション周期を含む）禁止されます。\">有効時間 [sec]</dfn>"
 
 #: admin/includes/tab-settings.php:767
-msgid "Garbage collection period [sec]"
-msgstr "ガベージコレクション周期 [秒]"
-
-#: admin/includes/tab-settings.php:783
 msgid "Number of entries to be displayed in cache"
 msgstr "「キャッシュ中のIPアドレス」に表示する最大数"
 
-#: admin/includes/tab-settings.php:801
+#: admin/includes/tab-settings.php:785
 msgid "Submission settings"
 msgstr "投稿時の設定"
 
-#: admin/includes/tab-settings.php:813
+#: admin/includes/tab-settings.php:797
 msgid "The whole will be wrapped by &lt;p&gt; tag. Allowed tags: "
 msgstr "全体が&lt;p&gt;タグで囲われます。使用可能タグ："
 
-#: admin/includes/tab-settings.php:813
+#: admin/includes/tab-settings.php:797
 msgid "Message on comment form"
 msgstr "投稿フォーム上のメッセージ"
 
-#: admin/includes/tab-settings.php:825
+#: admin/includes/tab-settings.php:809
 msgid "None"
 msgstr "なし"
 
-#: admin/includes/tab-settings.php:826
+#: admin/includes/tab-settings.php:810
 msgid "Top"
 msgstr "上部"
 
-#: admin/includes/tab-settings.php:827
+#: admin/includes/tab-settings.php:811
 msgid "Bottom"
 msgstr "下部"
 
-#: admin/includes/tab-settings.php:839
+#: admin/includes/tab-settings.php:823
 msgid "Plugin settings"
 msgstr "プラグインの設定"
 
-#: admin/includes/tab-settings.php:848
+#: admin/includes/tab-settings.php:832
 msgid "Remove all settings at uninstallation"
 msgstr "アンインストール時に全設定を削除"
 
-#: admin/includes/tab-settings.php:867
+#: admin/includes/tab-settings.php:851
 msgid ""
 "<dfn title=\"Valid key for Google Maps JavaScript API\">Google Maps API key</"
 "dfn>"
@@ -653,7 +652,7 @@ msgstr ""
 "<dfn title=\"Google Maps JavaScript API に有効なキー\">Google Maps API キー</"
 "dfn>"
 
-#: admin/includes/tab-settings.php:881
+#: admin/includes/tab-settings.php:865
 msgid ""
 "You need to click the &#8220;Save Changes&#8221; button for imported "
 "settings to take effect."
@@ -661,63 +660,63 @@ msgstr ""
 "インポートされた設定を有効にするには、「変更を保存」ボタンをクリックする必要"
 "があります。"
 
-#: admin/includes/tab-settings.php:887
+#: admin/includes/tab-settings.php:871
 msgid "Export / Import settings"
 msgstr "設定のエクスポート、インポート"
 
-#: admin/includes/tab-settings.php:894
+#: admin/includes/tab-settings.php:878
 msgid "Export settings"
 msgstr "エクスポート"
 
-#: admin/includes/tab-settings.php:895
+#: admin/includes/tab-settings.php:879
 msgid "Import from the local file"
 msgstr "ローカル・ファイルからインポートします"
 
-#: admin/includes/tab-settings.php:895
+#: admin/includes/tab-settings.php:879
 msgid "Import settings"
 msgstr "インポート"
 
-#: admin/includes/tab-settings.php:904
+#: admin/includes/tab-settings.php:888
 msgid "Import pre-defined settings"
 msgstr "プリセットのインポート"
 
-#: admin/includes/tab-settings.php:911
+#: admin/includes/tab-settings.php:895
 msgid ""
 "Import the default settings to revert to the &#8220;Right after "
 "installing&#8221; state"
 msgstr "インストール直後の状態に戻すための設定値をインポートします"
 
-#: admin/includes/tab-settings.php:911
+#: admin/includes/tab-settings.php:895
 msgid "Default settings"
 msgstr "初期設定"
 
-#: admin/includes/tab-settings.php:912
+#: admin/includes/tab-settings.php:896
 msgid ""
 "Import the preferred settings mainly for the &#8220;Validation target "
 "settings&#8221;"
 msgstr "主に「検証対象の設定」に関する推奨の設定値をインポートします"
 
-#: admin/includes/tab-settings.php:912
+#: admin/includes/tab-settings.php:896
 msgid "Best practice"
 msgstr "ベスト・プラクティス"
 
-#: admin/includes/tab-settings.php:923
+#: admin/includes/tab-settings.php:907
 msgid "Delete DB table for validation logs"
 msgstr "検証のログ用データベース・テーブルの削除"
 
-#: admin/includes/tab-settings.php:931
+#: admin/includes/tab-settings.php:915
 msgid "Delete now"
 msgstr "今すぐ削除"
 
-#: admin/includes/tab-settings.php:939
+#: admin/includes/tab-settings.php:923
 msgid "Create DB table for validation logs"
 msgstr "検証のログ用データベース・テーブルの作成"
 
-#: admin/includes/tab-settings.php:947
+#: admin/includes/tab-settings.php:931
 msgid "Create now"
 msgstr "今すぐ作成"
 
-#: admin/includes/tab-settings.php:963
+#: admin/includes/tab-settings.php:947
 msgid ""
 "To enhance the protection ability, please refer to &#8220;<a href=\"http://"
 "www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html\" title="
@@ -729,7 +728,7 @@ msgstr ""
 "best practice of target settings | IP Geo Block\">The best practice of "
 "target settings</a>&#8220;&thinsp;を参照してください。"
 
-#: admin/includes/tab-settings.php:964
+#: admin/includes/tab-settings.php:948
 msgid ""
 "If you have any troubles with these, please open an issue at <a class=\"ip-"
 "geo-block-link\" href=\"http://wordpress.org/support/plugin/ip-geo-block\" "
@@ -741,7 +740,7 @@ msgstr ""
 "Support &raquo; IP Geo Block\" target=_blank>サポート・フォーラム</a>へご報告"
 "ください。"
 
-#: admin/includes/tab-settings.php:971
+#: admin/includes/tab-settings.php:955
 msgid ""
 "While Maxmind and IP2Location will fetch the local database, others will "
 "pass an IP address to the APIs via HTTP."
@@ -749,7 +748,7 @@ msgstr ""
 "MaxmindとIP2Locationはローカルのデータベースを検索しますが、他はHTTPを介して"
 "APIにIPアドレスを渡します。"
 
-#: admin/includes/tab-settings.php:972
+#: admin/includes/tab-settings.php:956
 msgid ""
 "Please select the appropriate APIs to fit the privacy law in your country."
 msgstr "自国のプライバシー関連法規に合わせ、適切なAPIを選択して下さい。"

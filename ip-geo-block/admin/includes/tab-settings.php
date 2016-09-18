@@ -374,7 +374,7 @@ class IP_Geo_Block_Admin_Tab {
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'text' => __( 'Block by country', 'ip-geo-block' ),
-				'after' => '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup"><dfn title="">' . __( 'Target actions', 'ip-geo-block' ) . "</dfn><li style='display:none'><ul>\n". $list . "</ul></li></ul>\n",
+				'after' => '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual action as a blocking target.">Target actions</dfn>', 'ip-geo-block' ) . "<li style='display:none'><ul>\n". $list . "</ul></li></ul>\n",
 			)
 		);
 

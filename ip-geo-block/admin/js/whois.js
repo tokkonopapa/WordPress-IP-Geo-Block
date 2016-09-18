@@ -39,7 +39,7 @@
 				}) : '';
 			}
 
-			$.ajax({
+			return $.ajax({
 				url: yql.replace(/%URL%/, url + query),
 				method: 'GET',
 				dataType: 'json'
