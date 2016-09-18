@@ -430,6 +430,12 @@ For more details, see
   For more details, please refer to 
   [this ticket at Github](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/issues/2 "No image is shown after drag & drop a image in grid view at "Media Library". - Issue #2 - tokkonopapa/WordPress-IP-Geo-Block - GitHub").
 
+* From [WordPress 4.5](https://make.wordpress.org/core/2016/03/09/comment-changes-in-wordpress-4-5/ "Comment Changes in WordPress 4.5 &#8211; Make WordPress Core"),
+  `rel=nofollow` attribute and value pair had no longer be added to relative 
+  or same domain links within `comment_content`. This change prevents to block 
+  "Self Site Request Forgeries" (not Cross Site but a malicious link in the 
+  comment field of own site).
+
 == Screenshots ==
 
 1. **IP Geo Plugin** - Settings.
@@ -444,7 +450,8 @@ For more details, see
 * **Bug fix:** Fixed a issue of stripping some required characters for Google 
   maps API key.
 * **New feature:** Whois database Lookup for IP address on search tab.
-* **Update:** Updated geolocation services.
+* **Update:** Updated geolocation API libraries and services.
+* Find more details in [2.2.8 Release Note](http://www.ipgeoblock.com/changelog/release-2.2.8.html "2.2.8 Release Note").
 
 = 2.2.7 =
 * **Bug fix:** Fix inadequate validation of "**Bad signatures in query**".
