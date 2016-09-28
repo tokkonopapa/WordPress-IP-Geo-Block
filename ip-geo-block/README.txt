@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geo, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
-Tested up to: 4.6
-Stable tag: 2.2.8
+Tested up to: 4.6.1
+Stable tag: 2.2.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -446,8 +446,17 @@ For more details, see
 
 == Changelog ==
 
+= 2.2.8.1 =
+* **Bug fix:** Fixed the issue of undefined function `wp_get_raw_referer()` 
+  error under certain condition. See
+  [the issue](https://wordpress.org/support/topic/since-php-update-fatal-error-everytime-i-want-to-edit-a-post/ "Since PHP update Fatal error everytime I want to edit a post")
+  at forum.
+* **Improved:** Avoid resetting country code on update. See
+  [the issue](https://wordpress.org/support/topic/whitelist-resets-on-update/ "Whitelist resets on update")
+  at forum.
+
 = 2.2.8 =
-* **Bug fix:** Fixed a issue of stripping some required characters for Google 
+* **Bug fix:** Fixed the issue of stripping some required characters for Google
   maps API key.
 * **New feature:** Whois database Lookup for IP address on search tab.
 * **Update:** Updated geolocation API libraries and services.

@@ -26,7 +26,7 @@ class IP_Geo_Block_Activate {
 			$settings = IP_Geo_Block::get_option();
 
 			// kick off a cron job to download database immediately
-			IP_Geo_Block_Cron::start_update_db( TRUE );
+			IP_Geo_Block_Cron::start_update_db( $settings );
 
 			// activate rewrite rules
 			IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
