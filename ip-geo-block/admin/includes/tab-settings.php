@@ -899,6 +899,7 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+
 		// Manipulate DB table for validation logs
 		$field = 'delete_table';
 		add_settings_field(
@@ -931,6 +932,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'after' => '<div id="ip-geo-block-create-table"></div>',
 			)
 		);
+
 endif;
 
 	}

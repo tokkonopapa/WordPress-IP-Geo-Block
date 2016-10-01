@@ -448,7 +448,7 @@ For more details, see
 
 = 2.2.8.1 =
 * **Bug fix:** Fixed the issue of undefined function `wp_get_raw_referer()` 
-  error under certain condition. See
+  error that happened under certain condition. See
   [the issue](https://wordpress.org/support/topic/since-php-update-fatal-error-everytime-i-want-to-edit-a-post/ "Since PHP update Fatal error everytime I want to edit a post")
   at forum.
 * **Improved:** Avoid resetting country code on update. See
