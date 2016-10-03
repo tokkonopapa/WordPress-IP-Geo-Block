@@ -570,11 +570,13 @@ class IP_Geo_Block_Util {
 	 * @source: wp-includes/pluggable.php
 	 */
 	public static function is_user_logged_in() {
-		if ( function_exists( 'is_user_logged_in' ) )
-			return is_user_logged_in();
+		// possibly logged in but should be verified after 'init' hook is fired.
+		return did_action( 'init' ) ? is_user_logged_in() : ( self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE );
+	}
 
-		// possibly logged in but should be verified after is_user_logged_in() is available
-		return self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE;
+	public static function get_current_user_id() {
+		// unavailale before 'init' hook.
+		return did_action( 'init' ) ? get_current_user_id() : 0;
 	}
 
 	/**

@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geo, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.6.1
-Stable tag: 2.2.8.1
+Stable tag: 2.2.8.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -445,6 +445,9 @@ For more details, see
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.2.8.2 =
+* **Bug fix:** Fixed the mismatched internal version number.
 
 = 2.2.8.1 =
 * **Bug fix:** Fixed the issue of undefined function `wp_get_raw_referer()` 

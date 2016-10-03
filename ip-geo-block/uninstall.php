@@ -25,11 +25,10 @@ class IP_Geo_Block_Uninstall {
 	 * Delete settings options, IP address cache, log.
 	 *
 	 */
-	private static function delete_blog_options( $settings ) {
+	private static function delete_blog_options() {
 		delete_option( IP_Geo_Block::OPTION_NAME ); // @since 1.2.0
 		delete_transient( IP_Geo_Block::CACHE_NAME ); // @since 2.8
 		IP_Geo_Block_Logs::delete_tables();
-		IP_Geo_Block_Opts::delete_api( $settings );
 	}
 
 	/**
@@ -51,12 +50,14 @@ class IP_Geo_Block_Uninstall {
 
 				foreach ( $blog_ids as $id ) {
 					switch_to_blog( $id );
-					self::delete_blog_options( $settings );
+					self::delete_blog_options();
 				}
 
 				switch_to_blog( $current_blog_id );
 			}
 		}
+
+		IP_Geo_Block_Opts::delete_api( $settings );
 	}
 
 }
