@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.8.1';
+	const VERSION = '2.2.8.2';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block'; // fallback for ip-geo-api 1.1.3
@@ -214,8 +214,8 @@ class IP_Geo_Block {
 	 */
 	private static function make_validation( $ip, $result ) {
 		return array_merge( array(
-			'ip' => $ip,
-			'auth' => get_current_user_id(), // unavailale before 'init' hook
+			'ip'   => $ip,
+			'auth' => IP_Geo_Block_Util::get_current_user_id(),
 			'code' => 'ZZ', // may be overwritten with $result
 		), $result );
 	}
