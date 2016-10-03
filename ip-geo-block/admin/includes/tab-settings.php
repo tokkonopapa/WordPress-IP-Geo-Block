@@ -561,7 +561,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'providers';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="Cache and local database are scaned at the top priority.">API selection and key settings</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="Cache and local database are scanned at the top priority.">API selection and key settings</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

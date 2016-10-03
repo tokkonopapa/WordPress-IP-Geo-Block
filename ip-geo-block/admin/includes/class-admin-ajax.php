@@ -270,7 +270,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[providers][IP-Json]',
 			'[providers][Nekudo]',
 			'[providers][Xhanch]',
-			'[providers][GeoIPLookup]',
+			'[providers][GeoIPLookup]',  // 2.2.8
 			'[providers][ip-api.com]',
 			'[providers][IPInfoDB]',
 			'[save_statistics]',

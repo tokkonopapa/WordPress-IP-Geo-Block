@@ -290,7 +290,7 @@ class IP_Geo_Block_Admin {
 		// Check to finish updating matching rule
 		elseif ( 'done' === get_transient( IP_Geo_Block::CRON_NAME ) ) {
 			delete_transient( IP_Geo_Block::CRON_NAME );
-			self::add_admin_notice( 'updated', __( 'Matching rule has been updated.', 'ip-geo-block' ) );
+			self::add_admin_notice( 'updated', __( 'Local database and matching rule have been updated.', 'ip-geo-block' ) );
 		}
 
 		// Check self blocking

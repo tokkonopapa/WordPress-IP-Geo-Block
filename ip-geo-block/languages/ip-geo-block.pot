@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 2.2.8\n"
+"Project-Id-Version: IP Geo Block 2.2.8.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-09-18 10:13+0900\n"
-"PO-Revision-Date: 2016-09-18 10:13+0900\n"
+"POT-Creation-Date: 2016-09-29 00:14+0900\n"
+"PO-Revision-Date: 2016-09-29 00:14+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -59,7 +59,7 @@ msgid ""
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:293
-msgid "Matching rule has been updated."
+msgid "Local database and matching rule have been updated."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:304
@@ -447,7 +447,7 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:564
 msgid ""
-"<dfn title=\"Cache and local database are scaned at the top priority.\">API "
+"<dfn title=\"Cache and local database are scanned at the top priority.\">API "
 "selection and key settings</dfn>"
 msgstr ""
 
@@ -629,23 +629,23 @@ msgstr ""
 msgid "Best practice"
 msgstr ""
 
-#: admin/includes/tab-settings.php:907
+#: admin/includes/tab-settings.php:906
 msgid "Delete DB table for validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:915
+#: admin/includes/tab-settings.php:914
 msgid "Delete now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:923
+#: admin/includes/tab-settings.php:922
 msgid "Create DB table for validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:931
+#: admin/includes/tab-settings.php:930
 msgid "Create now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:947
+#: admin/includes/tab-settings.php:945
 msgid ""
 "To enhance the protection ability, please refer to &#8220;<a href=\"http://"
 "www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html\" title="
@@ -653,7 +653,7 @@ msgid ""
 "target settings</a>&#8221;."
 msgstr ""
 
-#: admin/includes/tab-settings.php:948
+#: admin/includes/tab-settings.php:946
 msgid ""
 "If you have any troubles with these, please open an issue at <a class=\"ip-"
 "geo-block-link\" href=\"http://wordpress.org/support/plugin/ip-geo-block\" "
@@ -661,13 +661,13 @@ msgid ""
 "target=_blank>support forum</a>."
 msgstr ""
 
-#: admin/includes/tab-settings.php:955
+#: admin/includes/tab-settings.php:953
 msgid ""
 "While Maxmind and IP2Location will fetch the local database, others will "
 "pass an IP address to the APIs via HTTP."
 msgstr ""
 
-#: admin/includes/tab-settings.php:956
+#: admin/includes/tab-settings.php:954
 msgid ""
 "Please select the appropriate APIs to fit the privacy law in your country."
 msgstr ""
