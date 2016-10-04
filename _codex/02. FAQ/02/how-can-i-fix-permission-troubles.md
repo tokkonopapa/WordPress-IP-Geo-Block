@@ -43,7 +43,7 @@ download `ip-geo-api` from [Github][GitGeoAPI] and upload it to 1. or 2.
 When you enable "**Force to load WP core**" options, this plugin will try to 
 configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` 
 directory in order to protect your site against the malicous attacks targeted 
-at the [OMG plugins and shemes][PreventExp].
+at the [OMG plugins and themes][PreventExp].
 
 If you encounter an "Unable to write" message for plugins, you should put the 
 following directives into your `/wp-content/plugins/.htaccess` manually 
