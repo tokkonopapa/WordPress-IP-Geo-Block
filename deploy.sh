@@ -63,12 +63,12 @@ echo ".........................................."
 echo 
 
 # Check version in readme.txt is the same as plugin file
-NEWVERSION1=`grep "^Stable tag" $GITPATH/README.txt | awk '{print $NF}'`
+NEWVERSION1=`grep "^Stable tag:" $GITPATH/README.txt | awk '{print $NF}'`
 echo "readme version: $NEWVERSION1"
-NEWVERSION2=`grep "^Version" $GITPATH/$MAINFILE | awk '{print $NF}'`
+NEWVERSION2=`grep "Version:" $GITPATH/$MAINFILE | awk '{print $NF}'`
 echo "$MAINFILE version: $NEWVERSION2"
 
-#if [ "$NEWVERSION1" != "$NEWVERSION2" ]; then echo "Versions don't match. Exiting...."; exit 1; fi
+if [ "$NEWVERSION1" != "$NEWVERSION2" ]; then echo "Versions don't match. Exiting...."; exit 1; fi
 
 echo "Versions match in README.txt and PHP file. Let's proceed..."
 
