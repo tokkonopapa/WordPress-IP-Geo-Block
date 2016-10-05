@@ -57,13 +57,14 @@ for Wordfence which doesn't support [deferred initialization][LazyInit].
 
 #### Restrictions ####
 
-The combination of installing into MU-Plugins (which causes the first two) and 
-caching plugin (which causes the last one) has some restrictions :
+The installing `ip-geo-block-mu.php` into MU-Plugins has some restrictions :
 
 - You can't use some of [custom filter hooks][FilterHooks] of this plugin in 
   your theme's `functions.php`.
 - [Human friendly error page][ErrorPage] does not work because [MU-Plugins are 
   loaded][Action-Ref] before `after_setup_theme` action hook.
+
+Please refer to "[Validation timing][Validation]" to get the solutions.
 
 ### See also ###
 
