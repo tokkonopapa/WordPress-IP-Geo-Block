@@ -48,8 +48,9 @@ for Wordfence which doesn't support [deferred initialization][LazyInit].
 
 <div class="alert alert-danger">
 	<strong>Warning</strong>: If you use WP Super Cache or W3 Total Cache 
-	without enabling "<strong>Late init</strong>", blocking on front-end 
-	nerver works because these plugins use <code>advanced-cache.php</code> as 
+	without enabling "<strong>Late init</strong>" or 
+	"<strong>Late initialization</strong>", blocking on front-end nerver 
+	works because these plugins use <code>advanced-cache.php</code> as 
 	"drop-in" which will be executed at the very bigining of WordPress core 
 	process.
 </div>
@@ -63,9 +64,6 @@ caching plugin (which causes the last one) has some restrictions :
   your theme's `functions.php`.
 - [Human friendly error page][ErrorPage] does not work because [MU-Plugins are 
   loaded][Action-Ref] before `after_setup_theme` action hook.
-- Every activity will be recorded in logs when you select "**Unauthenticated 
-  user**" for "**Record validation logs**" at "**Record settings**" even if 
-  you're logged in.
 
 ### See also ###
 
