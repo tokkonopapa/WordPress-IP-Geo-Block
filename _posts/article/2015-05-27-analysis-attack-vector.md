@@ -576,6 +576,11 @@ So I'd like to make WP-ZEP have an ability to prevent the "Plugin Direct"
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2693.png "anchor")
 </span>
 
+<div class="alert alert-info">
+	Update: This had been acheived from 
+	<a href="/changelog/release-2.2.0.html" title="2.2.0 Release Note | IP Geo Block">release 2.2.0</a>.
+</div>
+
 [wpvulndb]:     https://wpvulndb.com/plugins "WordPress Plugin Vulnerabilities"
 [Sucuri]:       https://sucuri.net/ "Sucuri Security — Website Protection, Malware Removal, and Blacklist Prevention"
 [WP-ZEP]:       {{ '/article/how-wpzep-works.html' | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
