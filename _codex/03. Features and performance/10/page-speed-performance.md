@@ -10,8 +10,8 @@ inline:
 
 ### Conditions ###
 - **Server:**  
-  Apache on the [shared hosting server](http://homepage.nifty.com/ "LaCoocan").  
-  PHP: PHP-5.2.14 (it's too old!!) / MySQL-5.5.21
+  Apache on a [shared hosting server](http://homepage.nifty.com/ "LaCoocan").  
+  WordPress 4.6.1-ja / PHP: PHP-5.2.14 (it's too old!!) / MySQL-5.5.21
 
 - **IP Geo Block:**  
   3.0.0 and later
