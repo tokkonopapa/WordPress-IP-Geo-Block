@@ -11,7 +11,8 @@ inline:
 ### Conditions ###
 - **Server:**  
   Apache on a [shared hosting server](http://homepage.nifty.com/ "LaCoocan").  
-  WordPress 4.6.1-ja / PHP: PHP-5.2.14 (it's too old!!) / MySQL-5.5.21
+  WordPress 4.6.1-ja / Theme: Twenty Twelve  
+  PHP: PHP-5.2.14 (it's too old!!) / MySQL-5.5.21
 
 - **IP Geo Block:**  
   3.0.0 and later
@@ -46,4 +47,13 @@ inline:
 
 ![The result of P3 (manual)]({{ '/img/2016-10/P3-manual.png' | prepend: site.baseurl }}
  "The result of P3 (manual)"
+)
+
+IP Geo Block spends only 0.5 [msec] !?
+
+It may be incorrect because of **"mu-plugins" (ip-geo-block-mu.php)** mode.
+Here is the result with **"init" action hook** mode.
+
+![The result of P3 (init action hook)]({{ '/img/2016-10/P3-manual-init.png' | prepend: site.baseurl }}
+ "The result of P3 (init action hook)"
 )
