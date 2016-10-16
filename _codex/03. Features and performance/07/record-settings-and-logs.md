@@ -74,7 +74,7 @@ Here are the descriptions :
 
 | Result        | Description                     |
 |:--------------|:--------------------------------|
-| passed        | validation succeeded            |
+| passed        | passed through the validation   |
 | blocked       | blocked by country              |
 | wp-zep        | blocked by WP-ZEP               |
 | badsig        | blocked by Bad Signature        |

@@ -50,6 +50,8 @@ the meaning of qualification.
 - [Why is Slurp crawling my page?](https://help.yahoo.com/kb/SLN22600.html "Why is Slurp crawling my page? - Yahoo Help - SLN22600")
 - [How to check that a robot belongs to Yandex](https://yandex.com/support/webmaster/robot-workings/check-yandex-robots.xml "How to check that a robot belongs to Yandex — Webmaster — Yandex.Support")
 - [FAQs of Baiduspider](http://help.baidu.com/question?prod_en=master&class=Baiduspider#title_2 "Baidu customer service center - Master platform")
+- [The Facebook Crawler](https://developers.facebook.com/docs/sharing/webmasters/crawler "Facebook Crawler - Sharing - Documentation - Facebook for Developers")
+- [URL Crawling & Caching | Twitter Developers](https://dev.twitter.com/cards/getting-started#crawling "Getting Started Guide | Twitter Developers")
 
 ### See also ###
 

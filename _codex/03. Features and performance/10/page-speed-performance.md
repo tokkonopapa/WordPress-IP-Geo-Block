@@ -14,46 +14,51 @@ inline:
   WordPress 4.6.1-ja / Theme: Twenty Twelve  
   PHP: PHP-5.2.14 (it's too old!!) / MySQL-5.5.21
 
+- **Plugins:**  
+  Here's the list of activated plugins.  
+  
+  ![Activated Plugins]({{ '/img/2016-10/P3-plugins.png' | prepend: site.baseurl }}
+   "Activated Plugins"
+  )
+
 - **IP Geo Block:**  
   3.0.0 and later
 
 - **IP Geo Block settings:**  
-  [ip-geo-block-settings.json](https://gist.github.com/tokkonopapa/a6805c53b32e0fb1dc49c19434e81591 "IP Geo Block settings for performance measure.")
-
-- **Plugins:**  
-  Here's the list of activated plugins and [Must-use plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex").
-
-![Activated Plugins]({{ '/img/2016-10/P3-plugins.png' | prepend: site.baseurl }}
- "Activated Plugins"
-)
-
-![Must-use Plugins]({{ '/img/2016-10/P3-mu-plugins.png' | prepend: site.baseurl }}
- "Must-use Plugins"
-)
+  Settings:
+  [ip-geo-block-settings.json](https://gist.github.com/tokkonopapa/a6805c53b32e0fb1dc49c19434e81591 "IP Geo Block settings for performance measure.")  
 
 ### Results ###
 
-- **Auto:**  
-  This includes accesses on both admin area and public facing pages under the 
-  confition of logged in as an admin.
+[P3 (Plugin Performance Profiler)](https://wordpress.org/plugins/p3-profiler/ "P3 (Plugin Performance Profiler) &mdash; WordPress Plugins")
+can investigate WordPress plugins' performance by measuring their impact on 
+your site's load time.
 
-![The result of P3 (auto)]({{ '/img/2016-10/P3-auto.png' | prepend: site.baseurl }}
- "The result of P3 (auto)"
-)
+<div class="alert alert-info">
+    The <strong>Validation timing</strong> shoule be set as 
+    <strong>"init" action hook</strong>. If you set it as 
+    <strong>"mu-plugins" (ip-geo-block-mu.php)</strong>, P3 would fail to 
+    measure the performance of this plugin because 
+    <a href="https://codex.wordpress.org/Must_Use_Plugins" title="Must Use Plugins &laquo; WordPress Codex">Must-use plugins</a>
+    would be into the race condition.  
+    <img src="/img/2016-10/P3-mu-plugins.png" title="Must-use Plugins" />
+</div>
 
-- **Manual:**  
-  This includes accesses only on public facing pages under the condition of 
-  logged off as an anonymous visitor with another browser.
+This awesome tool has two mode to measure the performance. One is "**Auto**" 
+which will access to both admin area and public facing pages under the 
+confition of logged in as an admin. On the other hand, "**Manual**" mode can 
+make it possible to freely access.
 
-![The result of P3 (manual)]({{ '/img/2016-10/P3-manual.png' | prepend: site.baseurl }}
- "The result of P3 (manual)"
-)
+In this report, the point of interest should be the impact on accessing public 
+facing pages as an anonymous visitor. So the following results were measured 
+with a [private window](https://support.mozilla.org/en-US/kb/private-browsing-use-firefox-without-history "Private Browsing - Use Firefox without saving history | Firefox Help").
 
-IP Geo Block spends only 0.5 [msec] !?
-
-It may be incorrect because of **"mu-plugins" (ip-geo-block-mu.php)** mode.
-Here is the result with **"init" action hook** mode.
-
-![The result of P3 (init action hook)]({{ '/img/2016-10/P3-manual-init.png' | prepend: site.baseurl }}
- "The result of P3 (init action hook)"
-)
+- **Use case 1:** - enables only "**Back-end target settings**"  
+  ![The result of P3 (back-end)]({{ '/img/2016-10/P3-manual-backend.png' | prepend: site.baseurl }}
+   "The result of P3 (back-end)"
+  )
+  
+- **Use case 2:** - enables both "**Back-end target settings**" and "**Front-end target settings**"  
+  ![The result of P3 (front-end)]({{ '/img/2016-10/P3-manual-frontend.png' | prepend: site.baseurl }}
+   "The result of P3 (front-end)"
+  )
