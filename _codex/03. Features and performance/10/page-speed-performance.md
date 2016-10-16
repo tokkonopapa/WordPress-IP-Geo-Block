@@ -62,3 +62,18 @@ with a [private window](https://support.mozilla.org/en-US/kb/private-browsing-us
   ![The result of P3 (front-end)]({{ '/img/2016-10/P3-manual-frontend.png' | prepend: site.baseurl }}
    "The result of P3 (front-end)"
   )
+
+### Conclusion ###
+
+If you prefer to serve your contents to all visitors from the world, it's good 
+to leave "**Front-end target settings**" disable for the performance reason.
+
+Once you enable it, please consider to reduce the number of "**UA string and 
+qualification**". Especially, if it includes `HOST`, reverse DNS lookup is 
+fetched which takes relatively high cost.
+
+![Front-end target settings]({{ '/img/2016-10/FrontendTarget.png' | prepend: site.baseurl }}
+ "Front-end target settings"
+)
+
+
