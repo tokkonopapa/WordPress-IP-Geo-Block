@@ -22,17 +22,9 @@ inline:
   )
 
 - **IP Geo Block:**  
-  3.0.0 and later
-
-- **IP Geo Block settings:**  
+  Version: 3.0.0 and later.  
   Settings:
   [ip-geo-block-settings.json](https://gist.github.com/tokkonopapa/a6805c53b32e0fb1dc49c19434e81591 "IP Geo Block settings for performance measure.")  
-
-### Results ###
-
-[P3 (Plugin Performance Profiler)](https://wordpress.org/plugins/p3-profiler/ "P3 (Plugin Performance Profiler) &mdash; WordPress Plugins")
-can investigate WordPress plugins' performance by measuring their impact on 
-your site's load time.
 
 <div class="alert alert-info">
     The <strong>Validation timing</strong> shoule be set as 
@@ -43,6 +35,12 @@ your site's load time.
     would be into the race condition.  
     <img src="/img/2016-10/P3-mu-plugins.png" title="Must-use Plugins" />
 </div>
+
+### Results ###
+
+[P3 (Plugin Performance Profiler)](https://wordpress.org/plugins/p3-profiler/ "P3 (Plugin Performance Profiler) &mdash; WordPress Plugins")
+can investigate WordPress plugins' performance by measuring their impact on 
+your site's load time.
 
 This awesome tool has two mode to measure the performance. One is "**Auto**" 
 which will access to both admin area and public facing pages under the 
@@ -70,10 +68,15 @@ to leave "**Front-end target settings**" disable for the performance reason.
 
 Once you enable it, please consider to reduce the number of "**UA string and 
 qualification**". Especially, if it includes `HOST`, reverse DNS lookup is 
-fetched which takes relatively high cost.
+fetched when it isn't in the internal cache.
 
 ![Front-end target settings]({{ '/img/2016-10/FrontendTarget.png' | prepend: site.baseurl }}
  "Front-end target settings"
 )
 
+Here's the result in case that "**UA string and qualification**" is empty.
+
+![Empty UA string and aualification]({{ '/img/2016-10/P3-manual-front-empty.png' | prepend: site.baseurl }}
+ "Empty UA string and aualification"
+)
 
