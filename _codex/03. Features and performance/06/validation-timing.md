@@ -29,6 +29,9 @@ When you select this mode as "**Validation timing**", this plugin will install
 [must-use plugins][MU-plugins]. It means that this plugin will be loaded and 
 execute validation prior to other typical plugins.
 
+Note that in case of multisite, `ip-geo-block-mu.php` will be called on every 
+site but doesn't affect a site where IP Geo Block is not activated.
+
 #### Restrictions ####
 
 As you can find the order of execution in [action reference][ActionHook], 
