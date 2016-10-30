@@ -53,6 +53,22 @@ class IP_Geo_Block_Rewrite {
 	}
 
 	/**
+	 * WP alternative function for advanced-cache.php
+	 *
+	 * Normalize a filesystem path.
+	 * @source: wp-includes/functions.php
+	 */
+	private static function normalize_path( $path ) {
+		$path = str_replace( '\\', '/', $path );
+		$path = preg_replace( '|(?<=.)/+|', '/', $path );
+
+		if ( ':' === substr( $path, 1, 1 ) )
+			$path = ucfirst( $path );
+
+		return $path;
+	}
+
+	/**
 	 * Post process (never return)
 	 *
 	 */
@@ -62,16 +78,12 @@ class IP_Geo_Block_Rewrite {
 		$validate['result'] = 'blocked'; //'malice';
 
 		// (1) blocked, unknown, (3) unauthenticated, (5) all
-		if ( (int)$settings['validation']['reclogs'] & 1 ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		if ( (int)$settings['validation']['reclogs'] & 1 )
 			IP_Geo_Block_Logs::record_logs( 'admin', $validate, $settings );
-		}
 
 		// update statistics
-		if ( $settings['save_statistics'] ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		if ( $settings['save_statistics'] )
 			IP_Geo_Block_Logs::update_stat( 'admin', $validate, $settings );
-		}
 
 		// send response code to refuse
 		$context->send_response( 'admin', $exist ? $settings['response_code'] : 404 );
@@ -99,7 +111,7 @@ class IP_Geo_Block_Rewrite {
 
 		// get absolute path of requested uri
 		// @link http://davidwalsh.name/iis-php-server-request_uri
-		$path = ( $root = wp_normalize_path( $root ) ) . parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
+		$path = ( $root = self::normalize_path( $root ) ) . parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
 
 		// while malicios URI may be intercepted by the server,
 		// null byte attack should be invalidated just in case.

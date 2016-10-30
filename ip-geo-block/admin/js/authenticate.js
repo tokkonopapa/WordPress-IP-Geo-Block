@@ -6,6 +6,7 @@
  */
 // utility object
 var IP_GEO_BLOCK_ZEP = {
+	init: false,
 	auth: 'ip-geo-block-auth-nonce',
 	nonce: IP_GEO_BLOCK_AUTH.nonce || '',
 	redirect: function (url) {
@@ -245,17 +246,17 @@ var IP_GEO_BLOCK_ZEP = {
 	 * Date: Thu Feb  6 10:13:59 ICT 2014
 	 */
 	function moveHandlerToTop($el, eventName, isDelegated) {
-		var data = $._data($el[0]).events;
-		var events = data[eventName];
+		var data = $._data($el[0]).events,
+		    events = data[eventName],
+		    handler = isDelegated ? events.splice(events.delegateCount - 1, 1)[0] : events.pop();
 
-		var handler = isDelegated ? events.splice(events.delegateCount - 1, 1)[0] : events.pop();
 		events.splice(isDelegated ? 0 : (events.delegateCount || 0), 0, handler);
 	}
 
 	function moveEventHandlers($elems, eventsString, isDelegate) {
 		var events = eventsString.split(/\s+/);
 		$elems.each(function(i) {
-			for (i = 0; i < events.length; ++i) {
+			for (i = 0; i < events.length; i++) {
 				var pureEventName = $.trim(events[i]).match(/[^\.]+/i)[0];
 				moveHandlerToTop($(this), pureEventName, isDelegate);
 			}
@@ -264,8 +265,8 @@ var IP_GEO_BLOCK_ZEP = {
 
 	if (typeof $.fn.onFirst === 'undefined') {
 		$.fn.onFirst = function(types, selector) {
-			var type, $el = $(this);
-			var isDelegated = typeof selector === 'string';
+			var type, $el = $(this),
+			    isDelegated = typeof selector === 'string';
 
 			$.fn.on.apply($el, arguments);
 
@@ -284,7 +285,7 @@ var IP_GEO_BLOCK_ZEP = {
 		};
 	}
 
-	$(function () {
+	function attach_nonce() {
 		var nonce = IP_GEO_BLOCK_ZEP.nonce;
 		if (nonce) {
 			var $body = $('body');
@@ -299,10 +300,9 @@ var IP_GEO_BLOCK_ZEP = {
 			});
 
 			$body.onFirst('click', 'a', function (event) {
-				var $this = $(this);
-
 				// attr() returns 'string' or 'undefined'
-				var href = $this.attr('href'),
+				var $this = $(this),
+				    href = $this.attr('href'),
 				    rel = $this.attr('rel'),
 				    admin = "undefined" !== typeof href ? is_admin(href) : 0;
 
@@ -345,6 +345,18 @@ var IP_GEO_BLOCK_ZEP = {
 					}
 				}
 			}
+		}
+	}
+
+	$(function () {
+		attach_nonce();
+		IP_GEO_BLOCK_ZEP.init = true;
+	});
+
+	// fallback on error
+	$(window).on('error', function () {
+		if (!IP_GEO_BLOCK_ZEP.init) {
+			attach_nonce();
 		}
 	});
 }(jQuery, document));

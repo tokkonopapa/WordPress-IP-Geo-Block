@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geo, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.6.1
-Stable tag: 2.2.8.2
+Stable tag: 2.2.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,6 +73,16 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   or themes can be blocked. A numerous such attacks can be found in 
     [this article](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php").
 
+* ** Minimize server load against brute-force attacks:**  
+  You can configure this plugin as a 
+  [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex")
+  which would be loaded prior to regular plugins and can massively 
+  [reduce the load on server](http://www.ipgeoblock.com/codex/validation-timing.html "Validation timing | IP Geo Block")
+  especially against brute-force attacks.  
+  And furthermore, a cache mechanism for the fetched IP addresses and country 
+  code has been equipped to reduce load on the server against the burst 
+  accesses with a short period of time.
+
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin such that a registered user can login as the
   membership from anywhere, but a request such as a new user registration,
@@ -98,11 +108,6 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   [IP2Location](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") 
   LITE databases can be incorporated with this plugin. Those will be downloaded
   and updated (once a month) automatically.
-
-* **Cache mechanism:**  
-  A cache mechanism for the fetched IP addresses and country code has been 
-  equipped to reduce load on the server against the burst accesses with a 
-  short period of time.
 
 * **Customizing response:**  
   HTTP response code can be selectable as `403 Forbidden` to deny access pages,
@@ -144,7 +149,7 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 
 = Attribution =
 
-This package includes GeoLite data created by MaxMind, available from 
+This package includes GeoLite library distributed by MaxMind, available from 
     [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"),
 and also includes IP2Location open source libraries available from 
     [IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
@@ -161,8 +166,11 @@ Also thanks for providing the following great services and REST APIs for free.
 
 = Development =
 
-Development of this plugin is promoted on 
-    [GitHub](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub").
+Development of this plugin is promoted at 
+    [WordPress-IP-Geo-Block](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub")
+and class libraries to handle geo-location database for Maxmind and IP2Location
+are developed separately as "add-in"s at 
+    [WordPress-IP-Geo-API](https://github.com/tokkonopapa/WordPress-IP-Geo-API "tokkonopapa/WordPress-IP-Geo-API - GitHub").
 All contributions will always be welcome. Or visit my 
     [development blog](http://www.ipgeoblock.com/ "IP Geo Block").
 
@@ -209,6 +217,10 @@ All contributions will always be welcome. Or visit my
     [Black Hole Server](http://blackhole.webpagetest.org/),
   the 4xx code will lead to WordPress error page, and the 5xx will pretend 
   an server error.
+
+* **Validation timing**  
+  Choose **"init" action hook** or **"mu-plugins" (ip-geo-block-mu.php)** to 
+  specify the timing of validation.
 
 = Validation target settings =
 
@@ -436,6 +448,12 @@ For more details, see
   "Self Site Request Forgeries" (not Cross Site but a malicious link in the 
   comment field of own site).
 
+* Wordfence makes an ajax request whose action is `wordfence_testAjax` using 
+  `wp_remote_post()` and would receive 403 forbidden (it depends on your 
+  configuration) when you enable "**Prevent Zero-day Exploit**" at "**Admin 
+  ajax/post**". It does't affect its functionality because the response code 
+  never be verified.
+
 == Screenshots ==
 
 1. **IP Geo Plugin** - Settings.
@@ -445,6 +463,17 @@ For more details, see
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.2.9 =
+* **New feature:** A new option that makes this plugin configured as a 
+  "Must-use plugin". It can massively reduce the server load especially 
+  against brute-force attacks because it initiates this plugin prior to 
+  other typical plugins.
+* **Improvement:** Validation of a certain signature against XSS is internally 
+  added to "Bad signature in query" by default.
+* **Improvement:** Improved compatibility with PHP 7 
+  (Thanks to [FireMyst](https://wordpress.org/support/topic/plans-for-php-7-compatiblity/ "Topic: Plans for PHP 7 compatiblity? &laquo; WordPress.org Forums").
+* Find details in [2.2.9 Release Note](http://www.ipgeoblock.com/changelog/release-2.2.9.html "2.2.9 Release Note").
 
 = 2.2.8.2 =
 * **Bug fix:** Fixed the mismatched internal version number.

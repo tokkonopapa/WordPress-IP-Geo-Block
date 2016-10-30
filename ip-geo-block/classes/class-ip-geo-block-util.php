@@ -195,7 +195,7 @@ class IP_Geo_Block_Util {
 	}
 
 	public static function trace_nonce( $nonce ) {
-		if ( self::is_user_logged_in() && empty( $_REQUEST[ $nonce ] ) &&
+		if ( self::may_be_logged_in() && empty( $_REQUEST[ $nonce ] ) &&
 		     self::retrieve_nonce( $nonce ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
 			// add nonce at add_admin_nonce() to handle the client side redirection.
 			self::redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
@@ -443,11 +443,11 @@ class IP_Geo_Block_Util {
 			)/x';
 		$location = preg_replace_callback( $regex, array( __CLASS__, 'sanitize_utf8_in_redirect' ), $location );
 		$location = preg_replace( '|[^a-z0-9-~+_.?#=&;,/:%!*\[\]()@]|i', '', $location );
-		$location = wp_kses_no_null( $location ); // wp-includes/kses.php
+		$location = self::kses_no_null( $location ); // wp-includes/kses.php
 	 
 		// remove %0d and %0a from location
 		$strip = array( '%0d', '%0a', '%0D', '%0A' );
-		return _deep_replace( $strip, $location ); // wp-includes/formatting.php
+		return self::deep_replace( $strip, $location ); // wp-includes/formatting.php
 	}
 
 	/**
@@ -485,9 +485,8 @@ class IP_Geo_Block_Util {
 	 * @source: wp-includes/pluggable.php
 	 */
 	private static function validate_redirect( $location, $default = '' ) {
-		$location = trim( $location );
 		// browsers will assume 'http' is your protocol, and will obey a redirect to a URL starting with '//'
-		if ( substr( $location, 0, 2 ) == '//' )
+		if ( substr( $location = trim( $location ), 0, 2 ) == '//' )
 			$location = 'http:' . $location;
 
 		// In php 5 parse_url may fail if the URL query part contains http://, bug #38143
@@ -537,13 +536,14 @@ class IP_Geo_Block_Util {
 	 *
 	 * Retrieves unvalidated referer from '_wp_http_referer' or HTTP referer.
 	 * @source: wp-includes/functions.php
+	 * @note: wp_unslash() can be replaced with stripslashes() in this context because the target value is 'string'.
 	 */
 	private static function get_raw_referer() {
 		if ( ! empty( $_REQUEST['_wp_http_referer'] ) )
-			return wp_unslash( $_REQUEST['_wp_http_referer'] ); // wp-includes/formatting.php
+			return /*wp_unslash*/ stripslashes( $_REQUEST['_wp_http_referer'] ); // wp-includes/formatting.php
 
 		elseif ( ! empty( $_SERVER['HTTP_REFERER'] ) )
-			return wp_unslash( $_SERVER['HTTP_REFERER'] ); // wp-includes/formatting.php
+			return /*wp_unslash*/ stripslashes( $_SERVER['HTTP_REFERER'] ); // wp-includes/formatting.php
 
 		return false;
 	}
@@ -556,8 +556,9 @@ class IP_Geo_Block_Util {
 	 */
 	public static function get_referer() {
 		$ref = self::get_raw_referer(); // wp-includes/functions.php
+		$req = /*wp_unslash*/ stripslashes( $_SERVER['REQUEST_URI'] );
 
-		if ( $ref && $ref !== wp_unslash( $_SERVER['REQUEST_URI'] ) && $ref !== home_url() . wp_unslash( $_SERVER['REQUEST_URI'] ) )
+		if ( $ref && $ref !== $req && $ref !== home_url() . $req )
 			return self::validate_redirect( $ref, false );
 
 		return false;
@@ -569,12 +570,12 @@ class IP_Geo_Block_Util {
 	 * Checks if the current visitor is a logged in user.
 	 * @source: wp-includes/pluggable.php
 	 */
-	public static function is_user_logged_in() {
+	public static function may_be_logged_in() {
 		// possibly logged in but should be verified after 'init' hook is fired.
 		return did_action( 'init' ) ? is_user_logged_in() : ( self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE );
 	}
 
-	public static function get_current_user_id() {
+	public static function guess_current_user_id() {
 		// unavailale before 'init' hook.
 		return did_action( 'init' ) ? get_current_user_id() : 0;
 	}
@@ -590,7 +591,38 @@ class IP_Geo_Block_Util {
 	}
 
 	public static function slashit( $string ) {
-		return self::unslashit( $string ) . '/';
+		return rtrim( $string, '/\\' ) . '/';
+	}
+
+	/**
+	 * WP alternative function for advanced-cache.php
+	 *
+	 * Removes any NULL characters in $string.
+	 * @source: wp-includes/kses.php
+	 */
+	private static function kses_no_null( $string ) {
+		$string = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $string );
+		$string = preg_replace( '/\\\\+0+/', '', $string );
+
+		return $string;
+	}
+
+	/**
+	 * WP alternative function for advanced-cache.php
+	 *
+	 * Perform a deep string replace operation to ensure the values in $search are no longer present.
+	 * e.g. $subject = '%0%0%0DDD', $search ='%0D', $result ='' rather than the '%0%0DD' that str_replace would return
+	 * @source: wp-includes/formatting.php
+	 */
+	private static function deep_replace( $search, $subject ) {
+		$subject = (string) $subject;
+
+		$count = 1;
+		while ( $count ) {
+			$subject = str_replace( $search, '', $subject, $count );
+		}
+
+		return $subject;
 	}
 
 }

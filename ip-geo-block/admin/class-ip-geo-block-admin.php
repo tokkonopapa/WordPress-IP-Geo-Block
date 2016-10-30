@@ -315,8 +315,6 @@ class IP_Geo_Block_Admin {
 		if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 			// Check creation of database table
 			if ( $settings['validation']['reclogs'] ) {
-				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-
 				if ( ( $warn = IP_Geo_Block_Logs::diag_tables() ) &&
 				     FALSE === IP_Geo_Block_Logs::create_tables() ) {
 					self::add_admin_notice( 'notice-warning', $warn );
@@ -690,10 +688,9 @@ class IP_Geo_Block_Admin {
 		//----------------------------------------
 
 		// sanitize proxy
-		$output['validation']['proxy'] = preg_replace(
-			'/[^\w,]/', '',
-			strtoupper( $output['validation']['proxy'] )
-		);
+		$output['validation']['proxy'] = implode( ',', $this->trim(
+			preg_replace( '/[^\w,]/', '', strtoupper( $output['validation']['proxy'] ) )
+		) );
 
 		// sanitize and format ip address
 		$key = array( '/[^\d\n\.\/,]/', '/([\s,])+/', '/(?:^,|,$)/' );
@@ -707,13 +704,7 @@ class IP_Geo_Block_Admin {
 		$output['signature'] = preg_replace( $key, $val, trim( $output['signature'] ) );
 
 		// reject invalid signature which potentially blocks itself
-		$key = array();
-		foreach ( explode( ',', $output['signature'] ) as $val ) {
-			$val = trim( $val );
-			if ( $val && FALSE === stripos( IP_Geo_Block::$wp_path['admin'], $val ) )
-				$key[] = $val;
-		}
-		$output['signature'] = implode( ',', $key );
+		$output['signature'] = implode( ',', $this->trim( $output['signature'] ) );
 
 		// 2.2.5 exception : convert associative array to simple array
 		foreach ( array( 'plugins', 'themes' ) as $key )
@@ -722,12 +713,21 @@ class IP_Geo_Block_Admin {
 		return $output;
 	}
 
-	/**
-	 * For preg_replace_callback()
-	 *
-	 */
+	// Callback for preg_replace_callback()
 	public function strtoupper( $matches ) {
 		return strtoupper( $matches[0] );
+	}
+
+	// Trim extra space and comma avoiding invalid signature which potentially blocks itself
+	private function trim( $text ) {
+		$ret = array();
+		foreach ( explode( ',', $text ) as $val ) {
+			$val = trim( $val );
+			if ( $val && FALSE === stripos( IP_Geo_Block::$wp_path['admin'], $val ) ) {
+				$ret[] = $val;
+			}
+		}
+		return $ret;
 	}
 
 	/**
@@ -791,6 +791,18 @@ class IP_Geo_Block_Admin {
 			);
 		}
 
+		//----------------------------------------
+		// additional installation
+		//----------------------------------------
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		$file = IP_Geo_Block_Opts::setup_validation_timing( $options );
+		if ( TRUE !== $file ) {
+			$options['validation']['timing'] = 0;
+			$this->show_setting_notice( 'error', sprintf(
+				__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $file
+			) );
+		}
+
 		// Force to finish update matching rule
 		delete_transient( IP_Geo_Block::CRON_NAME );
 
@@ -832,7 +844,6 @@ class IP_Geo_Block_Admin {
 
 		  case 'clear-statistics':
 			// Set default values
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			IP_Geo_Block_Logs::clear_stat();
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
@@ -851,8 +862,6 @@ class IP_Geo_Block_Admin {
 
 		  case 'clear-logs':
 			// Delete logs in MySQL DB
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-
 			$hook = array( 'comment', 'login', 'admin', 'xmlrpc' );
 			$which = in_array( $which, $hook ) ? $which : NULL;
 			IP_Geo_Block_Logs::clear_logs( $which );
@@ -908,8 +917,6 @@ class IP_Geo_Block_Admin {
 		  case 'create-table':
 		  case 'delete-table':
 			// Need to define `IP_GEO_BLOCK_DEBUG` to true
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-
 			if ( 'create-table' === $_POST['cmd'] )
 				IP_Geo_Block_Logs::create_tables();
 			else

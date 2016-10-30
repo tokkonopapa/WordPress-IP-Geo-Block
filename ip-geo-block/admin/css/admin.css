@@ -347,3 +347,18 @@ table.ip-geo-block-table {
     background-repeat: no-repeat;
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAh1BMVEUAda2otLp+rsSHprWHr8IBd7EpfKRGhaNajqeUqrRymKuKoq5yo7prlKgAcqoVe6w8gqQmgq5Tj6wIdqsVdKIshrEMea1Uhp+Anqw0hawDdq4gfKhljqE7hqoLdKYbgbM4jLQygKUGeK8CdawQd6gVeKcad6NKkrSerrZAj7UAc6sAc6rc3NySrVGQAAAALXRSTlP//////////////////////////////////////////////////////////wCl7wv9AAACOklEQVR4Ae2W15rzKgxF9xTZzhTX9B7S/gN6/9ebYqzzGZsw/S7LV3FZgCSIwD/kQ8FVcBU8xatZUczy8luC/ABNOn0DSHEsvyZ4PgLatNCYR3efFxyhTQ8g+qQgJxgv2JefERzJXATRh4LHOUwAHD4S7OGEztRJaN86hAUxtaNWDUf/bRdDBbQMWVDAO8jn89WUhag1MeyCAh6hHofyrliLgZKggDMYgzF3eVAwFq0uCZq5KY0TezjIHDDzC0qqmkwe2ctGDOQVLMkgu+F3/rGXwb4xIPcJ6P3JgkM8wFjmfcFAWfeKQywaAz33BJVuHsUcAt09gVbuLDThAJkdR687ggLmf4gDJLIGV7BydtB8yn3u+fbtuj/LS7G9wZAd1AKK+yxJ1x+aBmibTtgCcEHGHsh0wdbOgNLek4L7lI5BigY8nWuZUQ3qGEXes9JzOKGJztPaGtLslu3lIXJirdxCWkASHGDTMqg7V1DKPplygDG61YJukLHjEErGSXqCSos6xNSOgzP3BDmsQBcchNwkoV8oiNnPA78zIefUgCdJeGIfE7LmFWXsFTCFdzTJ/RlfEMRiSGnFXXbkC7AIeqcKDu4ynseozeouKJiSEYBDwkJyIC1nRUjgblkNWp/e/1vXc2gjoAoLksYgjrrFMi0oDgjEEIDij1scBXMJSH6DAj6RNl7o8MkuLak8Co15/Pk+MRmT0xilQJV/sdWNKg2kTaeroudvNNsDjmejYjSL+e6v2/2r4Cp4BXNajr0H7hRfAAAAAElFTkSuQmCC);
 }
+/* https://developer.wordpress.org/resource/dashicons/ for WordPress 3.8
+#ip-geo-block-cycle:before {
+    background: none;
+    content: "\f463";
+    display: inline-block;
+    font: normal 16px/20px dashicons;
+    speak: none;
+    height: 1em;
+    width: 1em;
+    text-align: center;
+    vertical-align: text-top;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+*/

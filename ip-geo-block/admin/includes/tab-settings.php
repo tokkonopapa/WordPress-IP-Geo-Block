@@ -1,4 +1,5 @@
 <?php
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 
 if ( ! function_exists( 'get_plugins' ) )
@@ -76,7 +77,7 @@ class IP_Geo_Block_Admin_Tab {
 				'type' => 'html',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => esc_html( $key['ip'] . ' / ' . ( $key['code'] ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ),
+				'value' => esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ),
 				'after' => '&nbsp;<a class="button button-secondary" id="ip-geo-block-scan-code" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Scan your country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning"></div>',
 			)
 		);
@@ -282,6 +283,35 @@ class IP_Geo_Block_Admin_Tab {
 					 7 =>  7,
 					10 => 10,
 				),
+			)
+		);
+
+		// Validation timing
+		$field = 'validation';
+		$key = 'timing';
+		$options[ $field ][ $key ] = IP_Geo_Block_Opts::get_validation_timing();
+
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			'<dfn title="' . __( 'Select when to run the validation.', 'ip-geo-block' ) . '">' . __( 'Validation timing', 'ip-geo-block' ) . '</dfn>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'list' => array(
+					 0 => __( '&#8220;init&#8221; action hook',                 'ip-geo-block' ),
+					 1 => __( '&#8220;mu-plugins&#8221; (ip-geo-block-mu.php)', 'ip-geo-block' ),
+				),
+				'desc' => array(
+					 0 => __( 'Validate at &#8220;init&#8221; action hook in the same manner as typical plugins.', 'ip-geo-block' ),
+					 1 => __( 'Validate at an earlier phase than other typical plugins. It can reduce load on server but has <a href=\'http://www.ipgeoblock.com/codex/validation-timing.html\' title=\'Validation timing | IP Geo Block\'>some restrictions</a>.', 'ip-geo-block' ),
+				),
+				'after' => '<div class="ip-geo-block-desc"></div>',
 			)
 		);
 
@@ -700,6 +730,24 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		$key = 'recdays';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( 'Recording period of the logs (days)', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+			)
+		);
+endif;
+
 		// $_POST keys to be recorded with their values in logs
 		add_settings_field(
 			$option_name.'_'.$field.'_postkey',
@@ -899,7 +947,6 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-
 		// Manipulate DB table for validation logs
 		$field = 'delete_table';
 		add_settings_field(
@@ -932,7 +979,6 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'after' => '<div id="ip-geo-block-create-table"></div>',
 			)
 		);
-
 endif;
 
 	}

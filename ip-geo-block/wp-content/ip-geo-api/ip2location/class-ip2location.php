@@ -11,7 +11,7 @@ define( 'IP_GEO_BLOCK_IP2LOC_IPV4_ZIP', 'http://download.ip2location.com/lite/IP
 define( 'IP_GEO_BLOCK_IP2LOC_IPV6_ZIP', 'http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.IPV6.BIN.ZIP' );
 
 /**
- * Class for IP2Location (ver. 1.1.4)
+ * Class for IP2Location (ver. 1.1.5)
  *
  * URL         : http://www.ip2location.com/
  * Term of use : http://www.ip2location.com/terms
@@ -84,7 +84,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	}
 
 	private function get_db_dir() {
-		return trailingslashit( apply_filters(
+		return IP_Geo_Block_Util::slashit( apply_filters(
 			IP_Geo_Block::PLUGIN_NAME . '-ip2location-dir', dirname( __FILE__ )
 		) );
 	}

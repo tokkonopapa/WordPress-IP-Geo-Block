@@ -65,7 +65,7 @@ var ip_geo_block_time = new Date();
 		}
 	}
 
-	function ajax_post(id, request, callback, obj) {
+	function ajax_post(id, request, callback, objs) {
 		if (id) {
 			loading(id, true);
 		}
@@ -85,8 +85,8 @@ var ip_geo_block_time = new Date();
 
 		.always(function () {
 			if (id) {
-				if (obj) {
-					obj.then(function () {
+				if (objs) {
+					$.when.apply($, objs).then(function () {
 						loading(id, false);
 					});
 				} else {
@@ -801,7 +801,7 @@ var ip_geo_block_time = new Date();
 								/*+ '<iframe src="//www.google.com/maps/embed/v1/place?key=...&q=%20&center=' + latitude + ',' + longitude + '&zoom=' + zoom + '" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'*/
 							);
 						}
-					}, obj);
+					}, [obj]);
 				}
 
 				return false;

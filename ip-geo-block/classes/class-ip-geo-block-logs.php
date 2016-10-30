@@ -146,12 +146,12 @@ class IP_Geo_Block_Logs {
 	 * Restore statistics data.
 	 *
 	 */
-	public static function restore_stat( $ret = FALSE ) {
+	public static function restore_stat( $default = FALSE ) {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_STAT;
 
 		$data = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A ) or self::error( __LINE__ );
-		return empty( $data ) ? ( $ret ? self::$default : FALSE ) : unserialize( $data[0]['data'] );
+		return empty( $data ) ? ( $default ? self::$default : FALSE ) : unserialize( $data[0]['data'] );
 	}
 
 	/**
@@ -396,7 +396,7 @@ class IP_Geo_Block_Logs {
 		if ( validate_file( $path ) !== 0 )
 			return;
 
-		$path = trailingslashit( $path ) .
+		$path = IP_Geo_Block_Util::slashit( $path ) .
 			IP_Geo_Block::PLUGIN_NAME . date('-Y-m') . '.log';
 
 		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )
@@ -444,11 +444,11 @@ class IP_Geo_Block_Logs {
 			$validate['ip'] = preg_replace( '/\d{1,3}$/', '***', $validate['ip'] );
 
 		// limit the maximum number of rows
-		global $wpdb;
-		$table = $wpdb->prefix . self::TABLE_LOGS;
-		$rows = $settings['validation']['maxlogs'];
+		$rows = (int)$settings['validation']['maxlogs'];
 
 		// count the number of rows for each hook
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_LOGS;
 		$sql = $wpdb->prepare(
 			"SELECT count(*) FROM `$table` WHERE `hook` = '%s'", $hook
 		) and $count = (int)$wpdb->get_var( $sql );
@@ -540,7 +540,7 @@ class IP_Geo_Block_Logs {
 				@$statistics['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ]++;
 			}
 
-			if ( count( $statistics['daystats'] ) > 30 ) {
+			if ( count( $statistics['daystats'] ) > max( 30, min( 365, (int)@$settings['validation']['recdays'] ) ) ) {
 				reset( $statistics['daystats'] );
 				unset( $statistics['daystats'][ key( $statistics['daystats'] ) ] );
 			}

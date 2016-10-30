@@ -11,7 +11,7 @@ define( 'IP_GEO_BLOCK_MAXMIND_IPV4_ZIP', 'http://geolite.maxmind.com/download/ge
 define( 'IP_GEO_BLOCK_MAXMIND_IPV6_ZIP', 'http://geolite.maxmind.com/download/geoip/database/GeoIPv6.dat.gz' );
 
 /**
- * Class for Maxmind (ver. 1.1.4)
+ * Class for Maxmind (ver. 1.1.5)
  *
  * URL         : http://dev.maxmind.com/geoip/legacy/geolite/
  * Term of use : http://dev.maxmind.com/geoip/legacy/geolite/#License
@@ -91,7 +91,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 	}
 
 	private function get_db_dir() {
-		return trailingslashit( apply_filters(
+		return IP_Geo_Block_Util::slashit( apply_filters(
 			IP_Geo_Block::PLUGIN_NAME . '-maxmind-dir', dirname( __FILE__ )
 		) );
 	}

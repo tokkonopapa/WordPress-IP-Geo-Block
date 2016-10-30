@@ -440,7 +440,7 @@ else:
         $subLoc--;
 
         if($ipSub == '') continue;
-        $ipv6No = bcadd( $ipv6No, bcmul(hexdec($ipSub), bcpow(hexdec('0x10000'), $subLoc)));
+        $ipv6No = bcadd( $ipv6No, bcmul(hexdec($ipSub), bcpow('65536', $subLoc))); // hexdec('0x10000')
     }
     return $ipv6No;
 

@@ -84,8 +84,6 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function export_logs( $which ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-
 		$csv = '';
 		$which = IP_Geo_Block_Logs::restore_logs( $which );
 		$date = isset( $which[0] ) ? $which[0][1] : $_SERVER['REQUEST_TIME'];
@@ -114,8 +112,6 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function restore_logs( $which ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-
 		// if js is slow then limit the number of rows
 		$list = array();
 		$limit = IP_Geo_Block_Logs::limit_rows( @$_POST['time'] );
@@ -244,6 +240,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[signature]',
 			'[response_code]',
 			'[login_fails]',
+			'[validation][timing]',      // 2.2.9
 			'[validation][proxy]',
 			'[validation][comment]',
 			'[validation][xmlrpc]',
@@ -275,6 +272,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[providers][IPInfoDB]',
 			'[save_statistics]',
 			'[validation][reclogs]',
+			'[validation][recdays]',     // 2.2.9
 			'[validation][postkey]',
 			'[update][auto]',
 			'[anonymize]',
@@ -342,8 +340,9 @@ class IP_Geo_Block_Admin_Ajax {
 				    'postkey'     => 'action,comment,log,pwd', // Keys in $_POST
 				    'plugins'     => 2,       // Validate on wp-content/plugins
 				    'themes'      => 2,       // Validate on wp-content/themes
+				    'timing'      => 1,       // 0:init, 1:mu-plugins, 2:drop-in
 				),
-				'signature'       => "..,/wp-config.php,/passwd,curl,wget,eval\nselect:.5,where:.5,union:.5\ncreate:.6,password:.4,load_file:.5",
+				'signature'       => "../,/wp-config.php,/passwd\ncurl,wget,eval,base64\nselect:.5,where:.5,union:.5\nload_file:.5,create:.6,password:.4",
 				'rewrite'         => array(   // Apply rewrite rule
 				    'plugins'     => TRUE,    // for wp-content/plugins
 				    'themes'      => TRUE,    // for wp-content/themes
