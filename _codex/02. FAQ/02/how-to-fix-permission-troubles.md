@@ -19,7 +19,7 @@ In this case, you have to configure these places by your own hand.
  "Error of IP Geo API"
 )
 
-This plugin needs the IP address geolocation databases of [Maxmind][Maxmind] 
+This plugin can use the IP address geolocation databases of [Maxmind][Maxmind] 
 and [IP2Location][IP2Location] on your server. Those databases would be 
 downloaded via the dedicated class libraries for each. When you install this 
 plugin at the first time, one of the following directories will be selected 
@@ -32,7 +32,8 @@ as the place where the class libraries and databases are stored.
 The 3rd one is not recommended because at every time this plugin updates, 
 files in its directory will be removed. So when you meet "Unable to write" 
 message or find your dabase directory is the 3rd of the above, you should 
-download `ip-geo-api` from [Github][GitGeoAPI] and upload it to 1. or 2.
+download `ip-geo-api` from [Github][GitGeoAPI] and upload it to 1. or 2 with 
+proper permission.
 
 ### Force to load WP core ###
 

@@ -53,15 +53,15 @@ The "**Path**" can be categorized into below :
   <tbody>
     <tr>
       <td><span class="label label-success">WP</span></td>
-      <td><strong>W</strong>ord<strong>P</strong>ress</td>
+      <td style="text-align:left">It loads <strong>W</strong>ord<strong>P</strong>ress Core through <code>wp-load.php</code>.</td>
     </tr>
     <tr>
       <td><span class="label label-danger">PD</span></td>
-      <td><strong>P</strong>lugin <strong>D</strong>irect</td>
+      <td style="text-align:left">It is called <strong>P</strong>lugin <strong>D</strong>irectly without loading WP Core.</td>
     </tr>
     <tr>
       <td><span class="label label-warning">N/A</span></td>
-      <td><strong>N</strong>ot <strong>A</strong>vailable</td>
+      <td style="text-align:left">Unknown because the source code is <strong>N</strong>ot <strong>A</strong>vailable.</td>
     </tr>
   </tbody>
 </table>
@@ -306,6 +306,11 @@ if (file_exists('../../uploads/xxxx/'.$file)) {
 
 This kind of vulnerability is caused by [Directory Traversal][OWASP] attack.
 
+I'm not sure why some authers tend to such a direct requesting without loading 
+WordPress core (do they mind speed?), but they should know [why so many 
+WordPress plugins vulnerable][WhyVulerable] and absolutely use some of 
+WordPress framework unless they can't keep their products secure by their own.
+
 ### How to protect my site against such OMG code? ###
 
 First and foremost, we should consider to make the **Path** transformed from 
@@ -366,3 +371,4 @@ I'll provide you this functionarity in the next release (may be 2.2.0) !!
 [OWASP]:        https://www.owasp.org/index.php/Path_Traversal "Path Traversal - OWASP"
 [WritePHP]:     https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/rewrite.php "WordPress-IP-Geo-Block/rewrite.php at master - tokkonopapa/WordPress-IP-Geo-Block"
 [Analysis]:     {{ '/article/analysis-attack-vector.html' | prepend: site.baseurl }} "Analysis of Attack Vector against WP Plugins"
+[WhyVulerable]: {{ '/article/why-so-vulnerable.html'      | prepend: site.baseurl }} "Why so many WordPress plugins vulnerable? | IP Geo Block"

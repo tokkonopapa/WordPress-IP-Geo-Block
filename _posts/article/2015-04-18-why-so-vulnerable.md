@@ -245,13 +245,14 @@ Such disuse of nonce
 ### File Inclusion ###
 
 <abbr title="File Inclusion">FI</abbr> (or Arbitrary File Download) is a 
-vulnerability that occurs by giving the user supplied input without proper 
-validation to some file system functions such as `file_get_contents()`.
+vulnerability that occurs by giving the user supplied input to some file 
+system functions such as `file_get_contents()`without proper validation.
 
 On September 2014, 
 [a vulnerability of Slider Revolution][Slider-Revolution]
-became a big topic. For certain functions for the administrators, an attacker 
-could download any files via a request to `admin-ajax.php` like this:
+became a big topic. By requesting a certain functionality for an administrator, 
+an attacker could download any files via a request to `admin-ajax.php` 
+like this:
 
 {% highlight html %}
 http://example.com/wp-admin/admin-ajax.php?action=show-me&file=../wp-config.php

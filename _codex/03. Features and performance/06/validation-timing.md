@@ -41,8 +41,10 @@ two restrictions would be raised.
 1. **[Custom filter hooks][FilterHooks] in `functions.php` does not work**  
    It is bacause the `functions.php` in the theme directory would not have been
    parsed when this plugin do its jobs. In this case, you **must** put your own
-   code into `drop-in.php` which is placed as `drop-in-sample.php` in the 
-   [geolocation database directory][GeoDBDir]. Please rename it to `drop-in.php`
+   code into `drop-in.php` which should be placed in the geolocation database 
+   directory. You can find `drop-in-sample.php` as a sample in this plugin's 
+   directory, i.e. `ip-geo-block/wp-content/ip-geo-api/`. Please rename it to 
+   `drop-in.php` and put it into your [geolocation database directory][GeoDBDir]
    when you use it.
 
 2. **[Human friendly error page][ErrorPage] is unavailable**  
