@@ -136,7 +136,8 @@ cd $SVNPATH
 svn copy trunk/ tags/$NEWVERSION1/
 cd $SVNPATH/tags/$NEWVERSION1
 svn delete --force \
-	trunk/
+	trunk/ \
+	ip-geo-api/
 svn commit --username=$SVNUSER -m "Tagging version $NEWVERSION1"
 
 # for assets
