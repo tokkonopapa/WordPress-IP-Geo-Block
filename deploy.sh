@@ -121,7 +121,7 @@ echo "Creating new SVN tag & committing it"
 cd $SVNPATH
 
 # Delete unused files
-svn delete --force \
+#svn delete --force \
 #	trunk/classes/class-ip-geo-block-api.php \
 #	trunk/includes/upgrade.php \
 #	trunk/admin/js/footable.all.min.js \
@@ -131,6 +131,7 @@ svn delete --force \
 #	trunk/includes/venders/ \
 #	trunk/includes/download.php \
 #	trunk/includes/localdate.php
+svn delete --force \
 	tags/2.2.9/trunk/ \
 	tags/2.2.9/ip-geo-api/
 
