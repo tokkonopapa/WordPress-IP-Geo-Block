@@ -135,9 +135,12 @@ cd $SVNPATH
 # Copy all files to tags
 svn copy trunk/ tags/$NEWVERSION1/
 cd $SVNPATH/tags/$NEWVERSION1
-svn delete --force \
-	trunk/ \
-	ip-geo-api/
+
+# Delete unused files
+#svn delete --force \
+#	trunk/ \
+#	ip-geo-api/
+
 svn commit --username=$SVNUSER -m "Tagging version $NEWVERSION1"
 
 # for assets
