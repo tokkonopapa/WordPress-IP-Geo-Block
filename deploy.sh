@@ -131,13 +131,12 @@ cd $SVNPATH
 #	trunk/includes/venders/ \
 #	trunk/includes/download.php \
 #	trunk/includes/localdate.php
-svn delete --force \
-	tags/2.2.9/trunk/ \
-	tags/2.2.9/ip-geo-api/
 
 # Copy all files to tags
 svn copy trunk/ tags/$NEWVERSION1/
 cd $SVNPATH/tags/$NEWVERSION1
+svn delete --force \
+	trunk/ \
 svn commit --username=$SVNUSER -m "Tagging version $NEWVERSION1"
 
 # for assets
