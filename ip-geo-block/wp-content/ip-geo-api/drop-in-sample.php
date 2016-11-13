@@ -14,6 +14,12 @@ if ( ! class_exists( 'IP_Geo_Block' ) ) {
 }
 
 /**
+ * Enables some debug features on dashboard
+ *
+ */
+// define( 'IP_GEO_BLOCK_DEBUG', true );
+
+/**
  * Example: Returns "404 Not found" to hide login page.
  * Note: Use IP_Geo_Block::add_filter() instead of add_filter()
  */

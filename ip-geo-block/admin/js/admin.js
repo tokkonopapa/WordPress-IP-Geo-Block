@@ -126,14 +126,19 @@ var ip_geo_block_time = new Date();
 	}
 
 	// Show/Hide folding list
-	function show_folding_list(element, name) {
+	function show_folding_list($this, element, field, mask) {
 		var stat = false;
-		stat |= 0 === element.prop('type').indexOf('checkbox') && element.is(':checked');
-		stat |= 0 === element.prop('type').indexOf('select'  ) && '0' !== element.val();
+		stat |= (0 === $this.prop('type').indexOf('checkbox') && $this.is(':checked'));
+		stat |= (0 === $this.prop('type').indexOf('select'  ) && '0' !== $this.val());
 
-		element.nextAll('.' + name + '_folding').each(function (i, obj) {
+		element.nextAll('.' + field + '_folding').each(function (i, obj) {
 			obj = $(obj);
-			if (stat) {
+
+			// completely hide
+			// obj.css('display', mask ? 'block' : 'none');
+
+			// fold the contents
+			if (stat && mask) {
 				obj.removeClass('folding-disable');
 			} else {
 				obj.children('li').hide();
@@ -523,7 +528,8 @@ var ip_geo_block_time = new Date();
 
 			// Show/Hide folding list at Login form
 			$(ID('@', 'validation_login')).on('change', function (event) {
-				show_folding_list($(this), name);
+				var $this = $(this);
+				show_folding_list($this, $this, name, true);
 				return false;
 			}).trigger('change');
 
@@ -531,7 +537,7 @@ var ip_geo_block_time = new Date();
 			$('select[name^="' + name + '"]').on('change', function (event) {
 				var $this = $(this);
 				show_description($this);
-				show_folding_list($this, name);
+				show_folding_list($this, $this, name, true);
 				return false;
 			}).trigger('change');
 

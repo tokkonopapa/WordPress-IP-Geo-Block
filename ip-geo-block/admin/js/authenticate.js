@@ -56,6 +56,7 @@ var IP_GEO_BLOCK_ZEP = {
 		};
 	}
 
+	// Compose a URL from components
 	function compose_uri(uri) {
 		return (uri.scheme   ? uri.scheme + ':'   : '') +
 		       (uri.relative + uri.path)  +
@@ -183,11 +184,8 @@ var IP_GEO_BLOCK_ZEP = {
 		return 0; // internal not admin
 	}
 
-	// list of excluded links
-	var ajax_links = {};
-
 	// `theme-install.php` eats the query and set it to `request[browse]` as a parameter
-	ajax_links[IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin + 'theme-install.php'] = function (data) {
+	var theme_featured = function (data) {
 		var i = data.length;
 		while (i-- > 0) {
 			if (data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth') === 0) {
@@ -198,8 +196,28 @@ var IP_GEO_BLOCK_ZEP = {
 		return data;
 	};
 
+	// `upload.php` eats the query and set it to `query[ip-geo-block-auth-nonce]` as a parameter
+	var media_library = function (data) {
+		var i = data.length;
+		while (i-- > 0) {
+			if (data[i].indexOf('query%5Bip-geo-block-auth-nonce%5D=' + IP_GEO_BLOCK_AUTH.nonce) === 0) {
+				delete data[i];
+				break;
+			}
+		}
+		return data;
+	};
+
+	// list of excluded links
+	var ajax_links = {
+		'upload.php': media_library,
+		'theme-install.php': theme_featured,
+		'network/theme-install.php': theme_featured
+	};
+
 	// check excluded path
 	function check_ajax(path) {
+		path = path.replace(IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin, '');
 		return ajax_links.hasOwnProperty(path) ? ajax_links[path] : null;
 	}
 

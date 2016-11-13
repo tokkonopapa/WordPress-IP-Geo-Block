@@ -87,6 +87,7 @@ class IP_Geo_Block_Lkup {
 		// For compatibility with versions before PHP 5.3.0
 		// on some operating systems, try the PEAR class Net_DNS
 		if ( empty( $host ) ) {
+			set_include_path( IP_GEO_BLOCK_PATH . 'includes' . PATH_SEPARATOR . get_include_path() );
 			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/DNS2.php' );
 
 			// use google public dns

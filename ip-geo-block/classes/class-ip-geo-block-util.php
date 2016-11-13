@@ -266,7 +266,7 @@ class IP_Geo_Block_Util {
 		}
 
 		// Invalid nonce
-		return false;
+		return FALSE;
 	}
 
 	/**
@@ -348,7 +348,7 @@ class IP_Geo_Block_Util {
 		elseif ( isset( $_COOKIE ) ) {
 			 foreach ( array_keys( $_COOKIE ) as $key ) {
 				if ( 0 === strpos( $key, 'wp-settings-' ) ) {
-					$num = preg_replace( '/\D/', '', $key ); // get numerical characters
+					$num = substr( $key, 12 ); // get numerical characters
 					break;
 				}
 			}
@@ -368,13 +368,14 @@ class IP_Geo_Block_Util {
 	 * WP alternative function for mu-plugins
 	 *
 	 * Timing attack safe string comparison.
+	 * @source: http://php.net/manual/en/function.hash-equals.php#115635
+	 * @reference: wp-includes/compat.php
 	 */
 	private static function hash_equals( $a, $b ) {
 		// PHP 5 >= 5.6.0 or wp-includes/compat.php
 		if ( function_exists( 'hash_equals' ) )
 			return hash_equals( $a, $b );
 
-		// http://php.net/manual/en/function.hash-equals.php#115635
 		if( ( $i = strlen( $a ) ) !== strlen( $b ) )
 			return FALSE;
 
@@ -384,20 +385,20 @@ class IP_Geo_Block_Util {
 		while ( --$i >= 0 )
 			$ret |= ord( $exp[ $i ] );
 
-		return 0 === $ret;
+		return ! $ret;
 	}
 
 	/**
 	 * WP alternative function for mu-plugins
 	 *
 	 * Generate a keyed hash value using the HMAC method.
+	 * @source: http://php.net/manual/en/function.hash-hmac.php#93440
 	 */
 	private static function hash_hmac( $algo, $data, $key, $raw_output = FALSE ) {
 		// PHP 5 >= 5.1.2, PECL hash >= 1.1 or wp-includes/compat.php
 		if ( function_exists( 'hash_hmac' ) )
 			return hash_hmac( $algo, $data, $key, $raw_output );
 
-		// http://php.net/manual/en/function.hash-hmac.php#93440
 		$packs = array( 'md5' => 'H32', 'sha1' => 'H40' );
 
 		if ( ! isset( $packs[ $algo ] ) )
@@ -410,8 +411,8 @@ class IP_Geo_Block_Util {
 
 		$key = str_pad( $key, 64, chr(0) );
 
-		$ipad = substr( $key, 0, 64 ) ^ str_repeat( chr(0x36), 64 );
-		$opad = substr( $key, 0, 64 ) ^ str_repeat( chr(0x5C), 64 );
+		$ipad = ( substr( $key, 0, 64 ) ^ str_repeat( chr(0x36), 64 ) );
+		$opad = ( substr( $key, 0, 64 ) ^ str_repeat( chr(0x5C), 64 ) );
 
 		$hmac = $algo( $opad . pack( $pack, $algo( $ipad . $data ) ) );
 
@@ -515,14 +516,7 @@ class IP_Geo_Block_Util {
 
 		$wpp = parse_url( home_url() );
 
-		/**
-		 * Filters the whitelist of hosts to redirect to.
-		 *
-		 * @since 2.3.0
-		 *
-		 * @param array       $hosts An array of allowed hosts.
-		 * @param bool|string $host  The parsed host; empty if not isset.
-		 */
+		// Filters the whitelist of hosts to redirect to.
 		$allowed_hosts = (array) apply_filters( 'allowed_redirect_hosts', array( $wpp['host'] ), isset( $lp['host'] ) ? $lp['host'] : '' );
 
 		if ( isset( $lp['host'] ) && ( ! in_array( $lp['host'], $allowed_hosts ) && $lp['host'] != strtolower( $wpp['host'] ) ) )
@@ -575,7 +569,7 @@ class IP_Geo_Block_Util {
 		return did_action( 'init' ) ? is_user_logged_in() : ( self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE );
 	}
 
-	public static function guess_current_user_id() {
+	public static function get_current_user_id() {
 		// unavailale before 'init' hook.
 		return did_action( 'init' ) ? get_current_user_id() : 0;
 	}

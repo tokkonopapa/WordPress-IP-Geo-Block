@@ -4,7 +4,7 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geo, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.6.1
-Stable tag: 2.2.9
+Stable tag: 2.2.9.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,8 +80,8 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   [reduce the load on server](http://www.ipgeoblock.com/codex/validation-timing.html "Validation timing | IP Geo Block")
   especially against brute-force attacks.  
   And furthermore, a cache mechanism for the fetched IP addresses and country 
-  code has been equipped to reduce load on the server against the burst 
-  accesses with a short period of time.
+  code can help to reduce load on the server against the burst accesses with 
+  a short period of time.
 
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin such that a registered user can login as the
@@ -463,6 +463,19 @@ For more details, see
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 2.2.9.1 =
+* **Bug fix:** Blocking Wordfence scanning.
+  ([@](https://wordpress.org/support/topic/wordfence-conflict-2/ "WordFence Conflict"))
+* **Bug fix:** Illegal elimination of colon in text field for IP address.
+  ([@](https://wordpress.org/support/topic/adding-ipv6-to-white-list/ "Adding IPv6 to white list"))
+* **Improved:** Compatibility with PHP 7 that cause to feel relaxed.
+  ([@](https://wordpress.org/support/topic/plans-for-php-7-compatiblity/ "Plans for PHP 7 compatiblity?"))
+* **Improved:** Avoid resetting whitelist on update by InfiniteWP.
+  ([@](https://wordpress.org/support/topic/whitelist-resets-on-update/ "[Resolved] Whitelist resets on update"))
+* **Trial feature:** `X-Robots-Tag` HTTP header with `noindex, nofollow` 
+  for login page.
+  ([@](https://wordpress.org/support/topic/ip-geo-block-and-searchmachines/ "IP GEo-block and searchmachines"))
 
 = 2.2.9 =
 * **New feature:** A new option that makes this plugin configured as a 

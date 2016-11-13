@@ -341,11 +341,9 @@ class IP_Geo_Block_Logs {
 
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {
-			global $HTTP_RAW_POST_DATA; // already populated in xmlrpc.php
-
 			// mask the password
 			$posts = self::truncate_utf8(
-				$HTTP_RAW_POST_DATA, '!\s*([<>])\s*!', '$1', IP_GEO_BLOCK_MAX_STR_LEN
+				file_get_contents( 'php://input' ), '!\s*([<>])\s*!', '$1', IP_GEO_BLOCK_MAX_STR_LEN
 			);
 			if ( $mask_pwd &&
 			     preg_match_all( '/<string>(\S*?)<\/string>/', $posts, $matches ) >= 2 &&

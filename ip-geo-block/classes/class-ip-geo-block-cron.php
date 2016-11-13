@@ -72,8 +72,10 @@ class IP_Geo_Block_Cron {
 			$validate = IP_Geo_Block::validate_country( NULL, $validate, $settings );
 
 			// if blocking may happen then disable validation
-			if ( -1 !== (int)$settings['matching_rule'] && 'passed' !== $validate['result'] )
+			if ( -1 !== (int)$settings['matching_rule'] && 'passed' !== $validate['result'] &&
+			     FALSE === strpos( $_SERVER['HTTP_X_REQUESTED_FROM'], 'InfiniteWP' ) ) {
 				$settings['matching_rule'] = -1;
+			}
 
 			// setup country code if it needs to be initialized
 			if ( -1 === (int)$settings['matching_rule'] && 'ZZ' !== $validate['code'] ) {
