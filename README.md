@@ -10,7 +10,7 @@ See more detail at [WordPress.org][IPGB].
 
 ### Dependency:
 
-[IP Geo API 1.1.4][IPGeoAPI]
+[IP Geo API 1.1.5][IPGeoAPI]
 
 ### Requirement:
 
