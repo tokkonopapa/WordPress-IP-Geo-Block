@@ -460,7 +460,7 @@ class IP_Geo_Block_Admin_Tab {
 		$desc = array(
 			__( 'Regardless of the country code, it will block a malicious request to <code>%s&hellip;/*.php</code>.', 'ip-geo-block' ),
 			__( 'It configures &#8220%s&#8221 to validate a request to the PHP file which does not load WordPress core.', 'ip-geo-block' ),
-			__( '<dfn title="Select the item which causes undesired blocking in order to exclude it from the validation target. Oblique font indicates &#8220;INACTIVE&#8221;.">Exceptions</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="Select the item which causes undesired blocking in order to exclude from the validation target. Grayed item indicates &#8220;INACTIVE&#8221;.">Exceptions</dfn>', 'ip-geo-block' ),
 		);
 
 		// Set rewrite condition
@@ -735,6 +735,22 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
 			__( 'Recording period of the logs (days)', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+			)
+		);
+
+		$key = 'maxlogs';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( 'Maximum length of logs for each target', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

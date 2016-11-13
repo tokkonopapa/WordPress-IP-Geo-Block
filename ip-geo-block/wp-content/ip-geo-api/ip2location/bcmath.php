@@ -153,8 +153,8 @@ function bcmul($Num1='0',$Num2='0') {
   if(!preg_match("/^\d+$/",$Num1)||!preg_match("/^\d+$/",$Num2)) return(0);
 
   // remove zeroes from beginning of numbers
-  for($i=0;$i<strlen($Num1);$i++) if(@$Num1{$i}!='0') {$Num1=substr($Num1,$i);break;}
-  for($i=0;$i<strlen($Num2);$i++) if(@$Num2{$i}!='0') {$Num2=substr($Num2,$i);break;}
+  for($i=0;$i<strlen($Num1);$i++) {if(@$Num1{$i}!='0') {$Num1=substr($Num1,$i);break;}}
+  for($i=0;$i<strlen($Num2);$i++) {if(@$Num2{$i}!='0') {$Num2=substr($Num2,$i);break;}}
 
   // get both number lengths
   $Len1=strlen($Num1);

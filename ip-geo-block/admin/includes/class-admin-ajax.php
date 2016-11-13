@@ -153,7 +153,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function validate_settings( $parent ) {
-		// restore escaped characters
+		// restore escaped characters (see wp_magic_quotes() in wp-includes/load.php)
 		$json = str_replace(
 			array( '\\"', '\\\\', "'"  ),
 			array( '"',   '\\',   '\"' ),
@@ -273,6 +273,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[save_statistics]',
 			'[validation][reclogs]',
 			'[validation][recdays]',     // 2.2.9
+			'[validation][maxlogs]',
 			'[validation][postkey]',
 			'[update][auto]',
 			'[anonymize]',
@@ -312,8 +313,12 @@ class IP_Geo_Block_Admin_Ajax {
 							strval( $input[  $m[1]  ][  $m[2]  ] ) & (int)$m[3];
 					}
 					elseif ( isset( $input[ $m[1] ][ $m[2] ] ) ) {
-						foreach ( $input[ $m[1] ][ $m[2] ] as $val ) {
-							$json[ $prfx.'['.$m[1].']['.$m[2].']'.'['.$val.']' ] = 1;
+						if ( '*' === $m[3] ) {
+							foreach ( $input[ $m[1] ][ $m[2] ] as $val ) {
+								$json[ $prfx.'['.$m[1].']['.$m[2].']'.'['.$val.']' ] = 1;
+							}
+						} else {
+							$json[ $prfx.'['.$m[1].']['.$m[2].']' ] = implode( ',', $input[ $m[1] ][ $m[2] ] );
 						}
 					}
 					break;
@@ -347,7 +352,8 @@ class IP_Geo_Block_Admin_Ajax {
 				    'plugins'     => TRUE,    // for wp-content/plugins
 				    'themes'      => TRUE,    // for wp-content/themes
 				),
-			), FALSE // should not overwrite the existing parameters
+			),
+			FALSE // should not overwrite the existing parameters
 		);
 	}
 

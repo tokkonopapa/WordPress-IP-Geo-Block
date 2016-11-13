@@ -57,9 +57,8 @@ textarea.regular-text {
 }
 
 ul.ip_geo_block_settings_folding {
-    margin-top: 0.5em;
+    margin: 0.3em 0;
 }
-ul.ip_geo_block_settings_folding,
 ul.ip_geo_block_settings_folding ul {
     margin-bottom: 0;
 }

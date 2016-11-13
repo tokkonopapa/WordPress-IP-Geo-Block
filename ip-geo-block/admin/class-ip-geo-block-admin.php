@@ -693,8 +693,8 @@ class IP_Geo_Block_Admin {
 		) );
 
 		// sanitize and format ip address
-		$key = array( '/[^\d\n\.\/,]/', '/([\s,])+/', '/(?:^,|,$)/' );
-		$val = array( '',               '$1',         ''            );
+		$key = array( '/[^\d\n\.\/,:]/', '/([\s,])+/', '/(?:^,|,$)/' );
+		$val = array( '',                '$1',         ''            );
 		$output['extra_ips']['white_list'] = preg_replace( $key, $val, trim( $output['extra_ips']['white_list'] ) );
 		$output['extra_ips']['black_list'] = preg_replace( $key, $val, trim( $output['extra_ips']['black_list'] ) );
 
