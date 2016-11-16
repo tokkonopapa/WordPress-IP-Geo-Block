@@ -31,7 +31,8 @@ secret, WP-ZEP must kill the possibility of disclosing a nonce.
 One possibility lies in referer strings that was left on the page as a 
 footprint you visited via an external hyperlink.
 
-That's why "Referrer Suppressor" is needed.
+That's why "Referrer Suppressor" is needed. And as a result, this functionality
+keeps your admin url (with some queries) secret when you are in the admin area.
 
 ### How to suppress a referer? ###
 
