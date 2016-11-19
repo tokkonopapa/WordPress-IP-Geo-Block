@@ -17,7 +17,7 @@ inline:
 - **Plugins:**  
   Here's the list of activated plugins.  
   
-  ![Activated Plugins]({{ '/img/2016-10/P3-plugins.png' | prepend: site.baseurl }}
+  ![Activated Plugins]({{ '/img/2016-11/P3-plugins.png' | prepend: site.baseurl }}
    "Activated Plugins"
   )
 
@@ -33,7 +33,7 @@ inline:
     measure the performance of this plugin because 
     <a href="https://codex.wordpress.org/Must_Use_Plugins" title="Must Use Plugins &laquo; WordPress Codex">Must-use plugins</a>
     would be into the race condition.  
-    <img src="/img/2016-10/P3-mu-plugins.png" title="Must-use Plugins" />
+    <img src="/img/2016-11/P3-mu-plugins.png" title="Must-use Plugins" />
 </div>
 
 ### Results ###
@@ -51,12 +51,12 @@ report, "**Manual scan**" had performed only by accessing front-end pages.
 The following results were measured with a 
 [private window](https://support.mozilla.org/en-US/kb/private-browsing-use-firefox-without-history "Private Browsing - Use Firefox without saving history | Firefox Help").
 
-- **Use case 1:** - "**Auto scan**"  
+- **Use case 1:** - "**Auto scan**" (admin area + public facing pages)  
   ![The result of P3 (front-end and back-end)]({{ '/img/2016-11/P3-auto-scan.png' | prepend: site.baseurl }}
    "The result of P3 (front-end and back-end)"
   )
   
-- **Use case 2:** - "**Manual scan**"  
+- **Use case 2:** - "**Manual scan**" (only public facing pages)  
   ![The result of P3 (only front-end)]({{ '/img/2016-11/P3-manual-scan.png' | prepend: site.baseurl }}
    "The result of P3 (only front-end)"
   )
