@@ -42,41 +42,21 @@ inline:
 can investigate WordPress plugins' performance by measuring their impact on 
 your site's load time.
 
-This awesome tool has two mode to measure the performance. One is "**Auto**" 
-which will access to both admin area and public facing pages under the 
-confition of logged in as an admin. On the other hand, "**Manual**" mode can 
-make it possible to freely access.
+This awesome tool has two mode to measure the performance. One is 
+"**Auto scan**" which will access to both admin area and public facing pages 
+under the confition of logged in as an admin. On the other hand, 
+"**Manual scan**" mode can make it possible to freely access. So in this 
+report, "**Manual scan**" had performed only by accessing front-end pages.
 
-In this report, the point of interest should be the impact on accessing public 
-facing pages as an anonymous visitor. So the following results were measured 
-with a [private window](https://support.mozilla.org/en-US/kb/private-browsing-use-firefox-without-history "Private Browsing - Use Firefox without saving history | Firefox Help").
+The following results were measured with a 
+[private window](https://support.mozilla.org/en-US/kb/private-browsing-use-firefox-without-history "Private Browsing - Use Firefox without saving history | Firefox Help").
 
-- **Use case 1:** - enables only "**Back-end target settings**"  
-  ![The result of P3 (back-end)]({{ '/img/2016-10/P3-manual-backend.png' | prepend: site.baseurl }}
-   "The result of P3 (back-end)"
+- **Use case 1:** - "**Auto scan**"  
+  ![The result of P3 (front-end and back-end)]({{ '/img/2016-11/P3-auto-scan.png' | prepend: site.baseurl }}
+   "The result of P3 (front-end and back-end)"
   )
   
-- **Use case 2:** - enables both "**Back-end target settings**" and "**Front-end target settings**"  
-  ![The result of P3 (front-end)]({{ '/img/2016-10/P3-manual-frontend.png' | prepend: site.baseurl }}
-   "The result of P3 (front-end)"
+- **Use case 2:** - "**Manual scan**"  
+  ![The result of P3 (only front-end)]({{ '/img/2016-11/P3-manual-scan.png' | prepend: site.baseurl }}
+   "The result of P3 (only front-end)"
   )
-
-### Conclusion ###
-
-If you prefer to serve your contents to all visitors from the world, it's good 
-to leave "**Front-end target settings**" disable for the performance reason.
-
-Once you enable it, please consider to reduce the number of "**UA string and 
-qualification**". Especially, if it includes `HOST`, reverse DNS lookup is 
-fetched when it isn't in the internal cache.
-
-![Front-end target settings]({{ '/img/2016-10/FrontendTarget.png' | prepend: site.baseurl }}
- "Front-end target settings"
-)
-
-Here's the result in case that "**UA string and qualification**" is empty.
-
-![Empty UA string and aualification]({{ '/img/2016-10/P3-manual-front-empty.png' | prepend: site.baseurl }}
- "Empty UA string and aualification"
-)
-
