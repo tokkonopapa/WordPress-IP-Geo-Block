@@ -29,11 +29,25 @@ Currently, this plugin supports
   [Wordfence][Wordfence]
 with the following configurations.
 
-| Plugin Name        | Configuration                                                     |
-|:-------------------|:------------------------------------------------------------------|
-| WP Super Cache     | "**Use PHP to serve cache files**" and "**Late init**"            |
-| W3 Total Cache     | "**Disk: Enhanced**" and "**Late initialization**" for page cache |
-| Wordfence Security | "**Basic Caching**" + `"mu-plugins" (ip-geo-block-mu.php)`        |
+| Plugin Name        | Configuration                                                  |
+|:-------------------|:---------------------------------------------------------------|
+| WP Super Cache     | "**Use PHP to serve cache files**" and "**Late init**"         |
+| W3 Total Cache     | "**Disk: Basic**" and "**Late initialization**" for page cache |
+| Wordfence Security | "**Basic Caching**" + `"mu-plugins" (ip-geo-block-mu.php)`     |
+
+<div class="alert alert-warning">
+	If you configure WP Super Cache or W3 Total Cache without enabling 
+	"<strong>Late init</strong>" (WPSC) or "<strong>Late initialization</strong>"
+	(W3TC), blocking on front-end would not work properly because these plugins 
+	respond the contents at the very bigining of WordPress core process 
+	without execution of any plugins.
+</div>
+
+<div class="alert alert-info">
+	Concerning W3 Total Cache 0.9.5.1, "<strong>Disk: Enhanced</strong>" 
+	(where "<strong>Late initialization</strong>" is not available) seems to 
+	work good without any imcompatibility with this plugin.
+</div>
 
 ### Installing MU-Plugins ###
 
@@ -42,7 +56,7 @@ default and be loaded prior to other typical plugins when you install it into
 your `wp-content/mu-plugins/` directory.
 
 You can install the PHP file `ip-geo-block/wp-content/mu-plugins/ip-geo-block-mu.php`
-into the MU-Plugins directory in order to run at the early phase of WordPress 
+into your MU-Plugins directory in order to run at the early phase of WordPress 
 core process.
 
 ![Validation Timing]({{ '/img/2016-08/ValidationRuleSettings.png' | prepend: site.baseurl }}
@@ -52,23 +66,15 @@ core process.
 This is recommended for WP Super Cache and W3 Total Cache, and indispensable 
 for Wordfence which doesn't support [deferred initialization][LazyInit].
 
-<div class="alert alert-warning">
-	If you configure WP Super Cache or W3 Total Cache without enabling 
-	"<strong>Late init</strong>" or "<strong>Late initialization</strong>", 
-	blocking on front-end doesn't work properly because these plugins provide 
-	the requested contents at the very bigining of WordPress core process 
-	without execution of other plugins.
-</div>
-
 #### Restrictions ####
 
-The installing `ip-geo-block-mu.php` into MU-Plugins has some restrictions 
-mainly because of its timing that is before `after_setup_theme` action hook :
+Installing `ip-geo-block-mu.php` into MU-Plugins has following restrictions 
+mainly because of its execution timing which is before `after_setup_theme` 
+action hook :
 
 - You should write your own code for [custom filter hooks][FilterHooks] not 
   in your theme's `functions.php` but `drop-in.php` in your [geolocation 
   database directory][GeoDB-Dir].
-
 - [Human friendly error page][ErrorPage] should be saved as a static file.
 
 Please refer to "[Validation timing][Validation]" for more details.
