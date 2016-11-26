@@ -17,13 +17,14 @@ matches all user agents.
 
 ### Qualification ###
 
-Currently, you can obtain five types of qualification listed bellow :
+Currently, you can obtain six types of qualification listed bellow :
 
 | Qualification     | Description                                                      |
 |:------------------|:-----------------------------------------------------------------|
 | FEED              | True if the request is the feed url.                             |
 | HOST              | True if the result of reverse DNS lookup is available.           |
 | HOST=__string__   | True if the host name by reverse DNS lookup includes __string__. |
+| REF=__string__    | True if the HTTP referer includes __string__.                    |
 | Country code      | True if the request comes from the specified country.            |
 | IP address (CIDR) | True if the IP address is within the specific range.             |
 
