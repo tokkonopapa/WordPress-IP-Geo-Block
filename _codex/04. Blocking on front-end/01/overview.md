@@ -47,6 +47,10 @@ You can select one of the followings :
   action hook fires. So note that this would lose the compatibility with page 
   caching.  
   
+  ![Validation target]({{ '/img/2016-11/ValidationTarget.png' | prepend: site.baseurl }}
+   "Validation target"
+  )  
+  
   Note that even when you enable all the targets, attackers still can access 
   to your top page because those are not a single or archive page. So if you 
   want to block any requests from undesired country including your top page, 

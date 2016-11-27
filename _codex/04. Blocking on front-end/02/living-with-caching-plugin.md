@@ -40,7 +40,7 @@ with the following configurations.
 	"<strong>Late init</strong>" (WPSC) or "<strong>Late initialization</strong>"
 	(W3TC), blocking on front-end would not work properly because these plugins 
 	respond the contents at the very bigining of WordPress core process 
-	without execution of any plugins.
+	without execution of any other plugins.
 </div>
 
 <div class="alert alert-info">
@@ -63,8 +63,12 @@ core process.
  "Validation Timing"
 )
 
-This is recommended for WP Super Cache and W3 Total Cache, and indispensable 
-for Wordfence which doesn't support [deferred initialization][LazyInit].
+<div class="alert alert-warning">
+	This is recommended for <strong>WP Super Cache</strong> and 
+	<strong>W3 Total Cache</strong>, and indispensable for 
+	<strong>Wordfence (Vendi Cache)</strong> which doesn't support
+	<a href="https://en.wikipedia.org/wiki/Lazy_initialization" title="Lazy initialization - Wikipedia, the free encyclopedia">deferred initialization</a>.
+</div>
 
 #### Restrictions ####
 
@@ -98,4 +102,3 @@ Please refer to "[Validation timing][Validation]" for more details.
 [FalconEngine]: https://docs.wordfence.com/en/Falcon_Cache "Falcon Cache - Wordfence Documentation"
 [MU-Plugins]:   https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex"
 [Action-Ref]:   https://codex.wordpress.org/Plugin_API/Action_Reference "Plugin API/Action Reference « WordPress Codex"
-[LazyInit]:     https://en.wikipedia.org/wiki/Lazy_initialization "Lazy initialization - Wikipedia, the free encyclopedia"

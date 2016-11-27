@@ -2,33 +2,39 @@
 layout: page
 category: codex
 section: blocking on front-end
-title: UA string and qualification
+title: UA string and Qualification
 ---
 
-You must be sure to grant permission to search engine bots or crawlers such as 
-google, yahoo and being while bad bots are blocked. This feature is possible to
-fulfill your wishes by giving a pair of "**UA string**" and "**Qualification**"
-separated by an applicable rule which can be "`:`" (pass) or "`#`" (block).
+For [SEO][SEO-WIKI], you must be sure to grant permission against search engine 
+bots or crawlers such as google, yahoo and being while bad bots are blocked. 
+This feature is possible to fulfill your wishes by giving a pair of 
+"**UA string**" and "**Qualification**" separated by an applicable rule which 
+can be "`:`" (pass) or "`#`" (block).
 
-### UA string ###
+### Syntax and Synopsis ###
+
+* _UA string_ : [ ! ] _Qualification_
+* _UA string_ # [ ! ] _Qualification_
+
+#### UA string ####
 
 You can specify a part of user agent string (case sensitive). An asterisk "`*`"
 matches all user agents.
 
-### Qualification ###
+#### Qualification ####
 
 Currently, you can obtain six types of qualification listed bellow :
 
-| Qualification     | Description                                                      |
-|:------------------|:-----------------------------------------------------------------|
-| FEED              | True if the request is the feed url.                             |
-| HOST              | True if the result of reverse DNS lookup is available.           |
-| HOST=__string__   | True if the host name by reverse DNS lookup includes __string__. |
-| REF=__string__    | True if the HTTP referer includes __string__.                    |
-| Country code      | True if the request comes from the specified country.            |
-| IP address (CIDR) | True if the IP address is within the specific range.             |
+| Qualification       | Description                                                    |
+|:--------------------|:---------------------------------------------------------------|
+| FEED                | True if the request is the feed url.                           |
+| HOST                | True if the result of reverse DNS lookup is available.         |
+| HOST=_string_       | True if the host name by reverse DNS lookup includes _string_. |
+| REF=_string_        | True if the HTTP referer includes _string_.                    |
+| _Country code_      | True if the request comes from the specified country.          |
+| _IP address (CIDR)_ | True if the IP address is within the specific range.           |
 
-### Negative operation ###
+#### Negative operation ####
 
 A negative operation "`!`" can be placed just before a qualification. It inverts
 the meaning of qualification.
@@ -61,6 +67,7 @@ the meaning of qualification.
 - [Living with caching plugin][LivingCache]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
+[SEO-WIKI]:     https://en.wikipedia.org/wiki/Search_engine_optimization "Search engine optimization - Wikipedia"
 [BestPractice]: {{ '/codex/the-best-practice-of-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [Overview]:     {{ '/codex/overview.html'                             | prepend: site.baseurl }} "Overview | IP Geo Block"
 [LivingCache]:  {{ '/codex/living-with-caching-plugin.html'           | prepend: site.baseurl }} "Living with caching plugin | IP Geo Block"
