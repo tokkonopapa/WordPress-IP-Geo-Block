@@ -29,7 +29,7 @@ The following picture shows a human readble message when a blocking occurs.
  "403 error page"
 )
 
-You can change the message "Forbidden" as follows :
+You can change the message "Forbidden" as follows:
 
 {% highlight ruby startinline %}
 function my_comment_reason ( $msg  ) {

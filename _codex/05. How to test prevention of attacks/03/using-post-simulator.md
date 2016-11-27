@@ -56,7 +56,7 @@ The first step is to set up the WordPress related URL and proxy IP address.
 #### Submission Settings ####
 
 Currently, you can test 13 methods for submission. In each method, you can set 
-the attack vectors as follows :
+the attack vectors as follows:
 
 ![Request parameter settings]({{ '/img/2016-02/PostSimulatorRequests.png' | prepend: site.baseurl }}
  "Request parameter settings"

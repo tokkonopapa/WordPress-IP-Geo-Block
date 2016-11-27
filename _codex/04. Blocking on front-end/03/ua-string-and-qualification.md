@@ -23,7 +23,7 @@ matches all user agents.
 
 #### Qualification ####
 
-Currently, you can obtain six types of qualification listed bellow :
+Currently, you can obtain six types of qualification listed bellow:
 
 | Qualification       | Description                                                    |
 |:--------------------|:---------------------------------------------------------------|

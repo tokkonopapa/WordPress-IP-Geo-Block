@@ -105,7 +105,7 @@ and admins, and those can be abused as an entrance to exploit aiming at the
 vulnerable plugins or themes. So the configuration for those is slightly 
 delicate than others.
 
-The corresponding set of validation can be shown as follows :
+The corresponding set of validation can be shown as follows:
 
 ![Validation set by service]({{ '/img/2016-01/CoveredAdminAjaxPost.png' | prepend: site.baseurl }}
  "Validation set by service"

@@ -43,7 +43,7 @@ add_filter( 'ip-geo-block-backup-dir', 'my_backup_dir', 10, 2 );
   public area.
 </div>
 
-The CSV format is as follows :
+The CSV format is as follows:
 
 | Entry      | Description                                                    |
 |:-----------|:---------------------------------------------------------------|

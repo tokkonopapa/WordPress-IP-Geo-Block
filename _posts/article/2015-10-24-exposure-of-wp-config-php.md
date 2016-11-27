@@ -41,7 +41,7 @@ where:
 - **Path**: The path to the entrance into WordPress where an attacker can 
   deliver the certain type of vulnerability.
 
-The "**Path**" can be categorized into below : 
+The "**Path**" can be categorized into below:
 
 <table>
   <thead>
@@ -292,7 +292,7 @@ and themes never load the WordPress core**.
 As you can see, most of them had their own download function like 
 `download.php`. Typical OMG <span class="emoji">
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f631.png)
-</span> code in there are like this :
+</span> code in there are like this:
 
 {% highlight php %}
 <?php
@@ -322,7 +322,7 @@ have a chance to block the attacks.
 
 So we should force those plugins and themes to load the `wp-load.php`. To 
 achieve this, `.htaccess` in the plugins directory can be configured to 
-rewrite a request to `rewrite.php` by following directives :
+rewrite a request to `rewrite.php` by following directives:
 
 {% highlight text %}
 # BEGIN IP Geo Block
@@ -337,7 +337,7 @@ RewriteRule ^.*\.php$ rewrite.php [L]
 
 The absolute path `/wp-content/plugins/` should be changed according to your 
 site configuration. And here's the example of `.htaccess` in the themes 
-directory :
+directory:
 
 {% highlight text %}
 # BEGIN IP Geo Block

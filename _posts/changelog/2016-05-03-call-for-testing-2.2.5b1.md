@@ -52,7 +52,7 @@ well which result caused the [fatal error][FatalError] and broke the site.
 The main reason of this trouble was the lack of testing patterns of server 
 configurations.
 
-In this release, I've tested the following patterns :
+In this release, I've tested the following patterns:
 
 1. `http://example.com/` ... Top directory type of single and multisite
 2. `http://example.com/sub/` ... Sub directory type of single and multisite
@@ -63,7 +63,7 @@ In the last version 2.2.4.1, `FORCE_SSL_ADMIN` did not work properly. But in
 this release, that issue might be fixed.
 
 Additionally, [`parse_url()`][PARSE_URL] was discarded in analyzing requested 
-URI to avoid unexpected behavior because the document says :
+URI to avoid unexpected behavior because the document says:
 
 > This function is not meant to validate the given URL, it only breaks it up 
 > into the above listed parts.
@@ -93,7 +93,7 @@ malicious signatures in the requested query that works independently of
 "**Block by country**" and "[**Prevent Zero-day Exploit**][WP-ZEP]".
 
 For example, the following [Local File Inclusion][LFI-OWASP] attack can be 
-detected :
+detected:
 
 {% highlight text %}
 http://example.com/wp-content/plugins/vulnerable/download.php?file=../../../etc/passwd
@@ -119,7 +119,7 @@ and syntax of MySQL and JavaScript. But implementation in PHP is not suitable
 because of its cost. So I've implemented "**Sum of weighted scores**" with 
 only a few lines of additional code.
 
-Let's think about SQLi. Usually, several sql commands are combined as below :
+Let's think about SQLi. Usually, several sql commands are combined as below:
 
 {% highlight sql %}
 CREATE USER 'user'@'attacker.com' IDENTIFIED BY 'password';
@@ -134,7 +134,7 @@ SELECT LOAD_FILE(0x2F6574632F706173737764); # /etc/passwd
 If `SELECT` and `LOAD_FILE` are weighted by 0.5 as their score, the total 
 score becomes 1.0. As a result, it reaches at the threshold of "malicious" 
 (actually its value is 0.99). Now you can define a signature as 
-"***signature*** : ***weight***" like following :
+"***signature*** : ***weight***" like following:
 
 ![Bad signature in query]({{ '/img/2016-05/BadSignatures.png' | prepend: site.baseurl }}
  "Bad signature in query"

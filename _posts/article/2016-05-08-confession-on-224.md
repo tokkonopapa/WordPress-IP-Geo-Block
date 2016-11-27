@@ -18,7 +18,7 @@ in order to prevent this kind of undesired accident again.
 ### The problem ###
 
 When you installed (or upgraded) 2.2.4 of [IP Geo Block][IP-Geo-Block], you encountered 
-the following error :
+the following error:
 
 {% highlight text %}
 Warning: strpos(): Empty needle in /public_html/wp-content/plugins/ip-geo-block/classes/class-ip-geo-block.php on line 71.

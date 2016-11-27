@@ -40,13 +40,13 @@ three countries and get the screen shots in those.
   "GeoScreenshot"
 )](https://www.geoscreenshot.com/ "GeoScreenshot - Easy GeoIP, SEO, Local Ad and CDN Testing from Multiple Locations")
 
-For example, my site looks as follows in Japan :
+For example, my site looks as follows in Japan:
 
 ![My Site]({{ '/img/2016-08/MySite.png' | prepend: site.baseurl }}
  "My Site"
 )
 
-And here is a result from GeoScreenshot :
+And here is a result from GeoScreenshot:
 
 ![Captured results]({{ '/img/2016-08/GeoScreenCaptured.png' | prepend: site.baseurl }}
  "Captured results"

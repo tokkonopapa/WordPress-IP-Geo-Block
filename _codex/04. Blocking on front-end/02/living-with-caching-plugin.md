@@ -74,7 +74,7 @@ core process.
 
 Installing `ip-geo-block-mu.php` into MU-Plugins has following restrictions 
 mainly because of its execution timing which is before `after_setup_theme` 
-action hook :
+action hook:
 
 - You should write your own code for [custom filter hooks][FilterHooks] not 
   in your theme's `functions.php` but `drop-in.php` in your [geolocation 

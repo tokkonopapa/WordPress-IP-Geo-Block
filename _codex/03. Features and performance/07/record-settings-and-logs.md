@@ -15,7 +15,7 @@ blocked by this plugin.
 ### HTTP Method ###
 
 [RFC2616][RFC2616-SEC9] defines 8 method, i.e. GET, POST, PUT, DELETE, HEAD, 
-OPTIONS, TRACE, CONNECT. The definitions says :
+OPTIONS, TRACE, CONNECT. The definitions says:
 
 > In particular, the convention has been established that the GET and HEAD 
 > methods SHOULD NOT have the significance of taking an action other than 
@@ -44,7 +44,7 @@ to take a look at them.
  "Record settings"
 )
 
-The recommended keys are as follows :
+The recommended keys are as follows:
 
 - `action`  
   This key is very popular in WordPress. It usually shows the process of doing 
@@ -70,7 +70,7 @@ The following picutre shows the reason of blocking at "**Result**" column on
  "Validation Logs"
 )
 
-Here are the descriptions :
+Here are the descriptions:
 
 | Result        | Description                     |
 |:--------------|:--------------------------------|

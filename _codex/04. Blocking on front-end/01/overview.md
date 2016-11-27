@@ -22,7 +22,7 @@ Turn on **Block by country** if you want to use this function.
 
 ### Matching rule ###
 
-You can select one of these :
+You can select one of these:
 
 - **Follow "Validation rule settings"**
 - **Whitelist**
@@ -33,7 +33,7 @@ set of country code from "**Validation rule settings**".
 
 ### Validation target ###
 
-You can select one of the followings :
+You can select one of the followings:
 
 - **All requests**  
   Every request to the front-end will be validated as a blocking target.

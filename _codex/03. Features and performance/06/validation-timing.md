@@ -65,7 +65,7 @@ The more plugins you have, the lower site speed you get.
 
 You may be interested in the benchmark of the two "**Validation timing**".
 As with [the previous report][LoadOnServer], the test environment and sample 
-plugins are showen blow :
+plugins are showen blow:
 
 | Category  | Description                                          |
 |:----------|:-----------------------------------------------------|

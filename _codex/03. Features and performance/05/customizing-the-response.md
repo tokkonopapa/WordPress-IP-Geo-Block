@@ -21,7 +21,7 @@ requester when blocking occurs.
  "Response code"
 )
 
-This plugin behaves differently according to the code you selected as follows :
+This plugin behaves differently according to the code you selected as follows:
 
 - Successful 2xx  
   Returns [refresh Meta tag][Refresh] which encourages a browser to jump to 
@@ -50,7 +50,7 @@ if the attackers actually redirect to that URL, they never get the result.
 #### Response message ####
 
 You can specify the message for response code 4xx and 5xx. The default value 
-is :
+is:
 
 > Sorry, your request cannot be accepted.
 

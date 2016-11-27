@@ -48,7 +48,7 @@ at the [OMG plugins and themes][PreventExp].
 
 If you encounter an "Unable to write" message for plugins, you should put the 
 following directives into your `/wp-content/plugins/.htaccess` manually 
-instead of enabling this option :
+instead of enabling this option:
 
 {% highlight text %}
 # BEGIN IP Geo Block
@@ -63,7 +63,7 @@ RewriteRule ^.*\.php$ rewrite.php [L]
 
 The absolute path `/wp-content/plugins/` should be changed according to your 
 site configuration.
-And here's an example directives in `/wp-content/themes/.htaccess` :
+And here's an example directives in `/wp-content/themes/.htaccess`:
 
 {% highlight text %}
 # BEGIN IP Geo Block
