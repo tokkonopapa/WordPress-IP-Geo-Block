@@ -25,7 +25,7 @@ inline: <script>
 ### Conditions ###
 
 - **IP Geo Block:**  
-  2.2.0 and later
+  3.0.0 and later
 
 - **Server settings:**  
   According to [this article][PREVENT-EXPOSURE], `.htaccess` is applied to 
@@ -108,6 +108,28 @@ inline: <script>
       </tr>
     </tbody>
   </table>
+  <table>
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="label label-warning">OK</span></td>
+        <td>Success when enables blocking on front-end.</td>
+      </tr>
+      <tr>
+        <td><span class="label label-success">OK</span></td>
+        <td>Success when enables blocking on back-end.</td>
+      </tr>
+      <tr>
+        <td><span class="label label-danger">NG</span></td>
+        <td>Fail to block.</td>
+      </tr>
+    </tbody>
+  </table>
 
 ### Results ###
 
@@ -138,7 +160,7 @@ inline: <script>
         <td class="left-align">&lt;= 1.0.1</td>
         <td><abbr title="Cross Site Scripting">XSS</abbr></td>
         <td><abbr title="Front End"><a href="https://wpvulndb.com/vulnerabilities/7873">FE</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-warning">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 3. ajax/post | for admin -->
@@ -226,7 +248,7 @@ inline: <script>
         <td class="left-align">&lt;= 1.5.4</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
         <td><abbr title="Front End"><a href="http://packetstormsecurity.com/files/131558/">FE</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-warning">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 14. /wp-admin/options-general.php?page=redirection-page... -->
@@ -250,7 +272,7 @@ inline: <script>
         <td class="left-align">&lt;= 1.4.1</td>
         <td><abbr title="Cross-Site Scripting">XSS</abbr></td>
         <td><abbr title="Front End">FE</abbr></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-warning">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 17. /wp-admin/options-general.php?page=mobile-domain... -->
@@ -282,7 +304,7 @@ inline: <script>
         <td class="left-align">&lt;= 3.42</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
         <td><abbr title="Front End"><a href="https://research.g0blin.co.uk/g0blin-00037/">FE</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-warning">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 21. /wp-content/plugins/inboundio-marketing/admin/partials/csv_uploader.php | for admin -->
@@ -410,7 +432,7 @@ inline: <script>
         <td class="left-align">&lt;= 3.1.2</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
         <td><abbr title="Front End"><a href="https://www.exploit-db.com/exploits/36824/">FE</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-warning">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 37. /wp-admin/options-general.php?page=tinymce-advanced&... | for admin -->
@@ -442,7 +464,7 @@ inline: <script>
         <td class="left-align">&lt;= 1.8.1</td>
         <td><abbr title="Cross-Site Scripting">XSS</abbr></td>
         <td><abbr title="Front End">FE</abbr></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-warning">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 41. /wp-admin/admin-ajax.php?page=ajax-search-lite/backend/settings.php&action=wpdreams-ajaxinput... | for admin -->
@@ -490,7 +512,7 @@ inline: <script>
         <td class="left-align">&lt;= 1.0.4</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
         <td><abbr title="Front End"><a href="https://research.g0blin.co.uk/g0blin-00038/">FE</a></abbr></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-warning">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 47. /wp-admin/admin.php?page=miwoftp&action=edit... -->
@@ -506,7 +528,7 @@ inline: <script>
         <td class="left-align">&lt;= 2.0.9.1</td>
         <td><abbr title="Authentication Bypass">AB</abbr></td>
         <td><abbr title="Front End">FE</abbr></td>
-        <td><span class="label label-danger">NG</span></td>
+        <td><span class="label label-warning">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
       <tr><!-- 49. /wp-admin/admin-ajax.php?action=-&mashsb-action=tools_tab_system_info | for admin -->
@@ -536,9 +558,10 @@ inline: <script>
 
 ### Total Protection Performance ###
 
-| Blocking Method  | True Positive  | False Negative |
-|:-----------------|---------------:|---------------:|
-| Block by country |    41/50 (82%) |     9/50 (18%) |
-| WP-ZEP           |    38/50 (76%) |    12/50 (24%) |
+| Blocking Method                         | True Positive | False Negative |
+|:----------------------------------------|--------------:|---------------:|
+| Block by country on both front/back-end |  50/50 (100%) |     0/50 ( 0%) |
+| Block by country only on back-end       |  41/50 ( 82%) |     9/50 (18%) |
+| WP-ZEP                                  |  38/50 ( 76%) |    12/50 (24%) |
 
 [PREVENT-EXPOSURE]: {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} "Prevent exposure of wp-config.php"
