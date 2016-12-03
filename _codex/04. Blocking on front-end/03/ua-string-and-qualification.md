@@ -6,7 +6,7 @@ title: UA string and Qualification
 ---
 
 For [SEO][SEO-WIKI], you must be sure to grant permission against search engine 
-bots or crawlers such as google, yahoo and being while bad bots are blocked. 
+bots or crawlers such as google, yahoo and being while shut out the bad bots.
 This feature is possible to fulfill your wishes by giving a pair of 
 "**UA string**" and "**Qualification**" separated by an applicable rule which 
 can be "`:`" (pass) or "`#`" (block).
@@ -25,14 +25,16 @@ matches all user agents.
 
 Currently, you can obtain six types of qualification listed bellow:
 
-| Qualification       | Description                                                    |
-|:--------------------|:---------------------------------------------------------------|
-| FEED                | True if the request is the feed url.                           |
-| HOST                | True if the result of reverse DNS lookup is available.         |
-| HOST=_string_       | True if the host name by reverse DNS lookup includes _string_. |
-| REF=_string_        | True if the HTTP referer includes _string_.                    |
-| _Country code_      | True if the request comes from the specified country.          |
-| _IP address (CIDR)_ | True if the IP address is within the specific range.           |
+| Qualification       | Description                                           |
+|:--------------------|:------------------------------------------------------|
+| FEED                | True if the request is the feed url.                  |
+| HOST                | True if the result of host name is available.         |
+| HOST=_string_       | True if the host name by host name includes _string_. |
+| REF=_string_        | True if the HTTP referer includes _string_.           |
+| _Country code_      | True if the request comes from the specified country. |
+| _IP address (CIDR)_ | True if the IP address is within the specific range.  |
+
+The host name corresponding IP address will be retrieved via reverse DNS lookup.
 
 #### Negative operation ####
 
@@ -41,10 +43,11 @@ the meaning of qualification.
 
 ### Examples ###
 
-| Sample       | Description                                                          |
-|:-------------|:---------------------------------------------------------------------|
-| Google:HOST  | Pass  if UA includes "Google" and reverse DNS lookup is available.   |
-| Google#!HOST | Block if UA includes "Google" and reverse DNS lookup is unavailable. |
+| Sample           | Description                                                          |
+|:-----------------|:------------------------------------------------------------|
+| Google:HOST      | Pass  if UA includes "Google" and host name is available.   |
+| Google#!HOST     | Block if UA includes "Google" and host name is unavailable. |
+| *#HOST=amazonaws | Block all UA if host name includes "amazonaws".             |
 
 ![UA string and qualification]({{ '/img/2016-08/UA-Qualify.png' | prepend: site.baseurl }}
  "UA string and qualification"
