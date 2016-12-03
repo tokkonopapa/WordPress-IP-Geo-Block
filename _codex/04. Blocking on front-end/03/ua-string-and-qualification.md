@@ -13,8 +13,8 @@ can be "`:`" (pass) or "`#`" (block).
 
 ### Syntax and Synopsis ###
 
-* _UA string_ : [ ! ] _Qualification_
-* _UA string_ # [ ! ] _Qualification_
+* <code><em>UA string</em> : [ ! ] <em>Qualification</em></code>
+* <code><em>UA string</em> # [ ! ] <em>Qualification</em></code>
 
 #### UA string ####
 
