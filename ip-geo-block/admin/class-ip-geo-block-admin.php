@@ -157,6 +157,15 @@ class IP_Geo_Block_Admin {
 				'action' => 'ip_geo_block',
 				'url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => IP_Geo_Block_Util::create_nonce( $this->get_ajax_action() ),
+				'msg' => array(
+					__( 'Import settings ?',  'ip-geo-block' ),
+					__( 'Create table ?',     'ip-geo-block' ),
+					__( 'Delete table ?',     'ip-geo-block' ),
+					__( 'Clear statistics ?', 'ip-geo-block' ),
+					__( 'Clear cache ?',      'ip-geo-block' ),
+					__( 'Clear logs ?',       'ip-geo-block' ),
+					__( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
+				),
 			)
 		);
 		wp_enqueue_script( $handle );
@@ -208,7 +217,7 @@ class IP_Geo_Block_Admin {
 	/**
 	 * Display global notice
 	 *
-	 * @notice: Sanitization should be done at the caller
+	 * Note: Sanitization should be done at the caller
 	 */
 	public function show_admin_notices() {
 		$key = IP_Geo_Block::PLUGIN_NAME . '-notice';
@@ -556,11 +565,11 @@ class IP_Geo_Block_Admin {
 		$default = IP_Geo_Block::get_default();
 
 		// checkboxes not on the form (added after 2.0.0, just in case)
-		foreach ( array( 'anonymize' ) as $key )
+		foreach ( array( 'anonymize', 'network_wide' ) as $key )
 			$output[ $key ] = 0;
 
 		// checkboxes not on the form
-		foreach ( array( 'admin', 'ajax', 'plugins', 'themes' ) as $key )
+		foreach ( array( 'admin', 'ajax', 'plugins', 'themes', 'public' ) as $key )
 			$output['validation'][ $key ] = 0;
 
 		// restore the 'signature' that might be transformed to avoid self blocking
@@ -675,7 +684,7 @@ class IP_Geo_Block_Admin {
 						else {
 							$output[ $key ][ $sub ] = ( is_int( $default[ $key ][ $sub ] ) ?
 								(int)$input[ $key ][ $sub ] :
-								IP_Geo_Block_Util::kses( preg_replace( '/[^-,:!*#+=\.\/\w\s]/', '', $input[ $key ][ $sub ] ), FALSE )
+								IP_Geo_Block_Util::kses( trim( $input[ $key ][ $sub ] ), FALSE )
 							);
 						}
 					}
@@ -703,12 +712,33 @@ class IP_Geo_Block_Admin {
 		array_shift( $val );
 		$output['signature'] = preg_replace( $key, $val, trim( $output['signature'] ) );
 
+		// 3.0.0 convert country code to upper case, remove redundant spaces
+		$output['public']['ua_list'] = preg_replace( $key, $val, trim( $output['public']['ua_list'] ) );
+		$output['public']['ua_list'] = preg_replace( '/([:#]) *([!]+) *([^ ]+) *([,\n]+)/', '$1$2$3$4', $output['public']['ua_list'] );
+		$output['public']['ua_list'] = preg_replace_callback( '/[:#]\w+/', array( $this, 'strtoupper' ), $output['public']['ua_list'] );
+
 		// reject invalid signature which potentially blocks itself
 		$output['signature'] = implode( ',', $this->trim( $output['signature'] ) );
 
 		// 2.2.5 exception : convert associative array to simple array
-		foreach ( array( 'plugins', 'themes' ) as $key )
+		foreach ( array( 'plugins', 'themes' ) as $key ) {
 			$output['exception'][ $key ] = array_keys( $output['exception'][ $key ] );
+		}
+
+		// 3.0.0 public : convert country code to upper case
+		foreach ( array( 'white_list', 'black_list' ) as $key ) {
+			$output['public'][ $key ] = strtoupper( preg_replace( '/\s/', '', $output['public'][ $key ] ) );
+		}
+
+		// 3.0.0 exception : trim extra space and comma
+		foreach ( array( 'admin', 'public', 'includes', 'uploads', 'languages' ) as $key ) {
+			if ( empty( $output['exception'][ $key ] ) ) {
+				$output['exception'][ $key ] = $default['exception'][ $key ];
+			} else {
+				$output['exception'][ $key ] = (  is_array( $output['exception'][ $key ] ) ?
+				$output['exception'][ $key ] : $this->trim( $output['exception'][ $key ] ) );
+			}
+		}
 
 		return $output;
 	}
@@ -862,7 +892,7 @@ class IP_Geo_Block_Admin {
 
 		  case 'clear-logs':
 			// Delete logs in MySQL DB
-			$hook = array( 'comment', 'login', 'admin', 'xmlrpc' );
+			$hook = array( 'comment', 'login', 'admin', 'xmlrpc', 'public' );
 			$which = in_array( $which, $hook ) ? $which : NULL;
 			IP_Geo_Block_Logs::clear_logs( $which );
 			$res = array(

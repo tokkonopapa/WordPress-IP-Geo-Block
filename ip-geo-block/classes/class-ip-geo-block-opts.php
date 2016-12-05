@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '2.2.9', // Version of this table (not package)
+		'version'         => '3.0.0', // Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -33,6 +33,8 @@ class IP_Geo_Block_Opts {
 		// since version 1.1
 		'cache_hold'      => 10,      // Max entries in cache
 		'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
+		// since version 3.0.0
+		'cache_time_gc'   => 900,     // Cache garbage collection time
 		// since version 1.2, 1.3
 		'login_fails'     => 5,       // Limited number of login attempts
 		'validation'      => array(   // Action hook for validation
@@ -53,6 +55,11 @@ class IP_Geo_Block_Opts {
 			// since version 2.2.9
 			'timing'      => 0,       // 0:init, 1:mu-plugins, 2:drop-in
 			'recdays'     => 30,      // Number of days for recording logs
+			// since version 3.0.0
+			'includes'    => 3,       // for wp-includes/
+			'uploads'     => 3,       // for UPLOADS/uploads
+			'languages'   => 3,       // for WP_CONTENT_DIR/language
+			'public'      => 0,       // Validate on public facing pages
 		),
 		'update'          => array(   // Updating IP address DB
 			'auto'        => TRUE,    // Auto updating of DB file
@@ -71,6 +78,11 @@ class IP_Geo_Block_Opts {
 		'rewrite'         => array(   // Apply rewrite rule
 			'plugins'     => FALSE,   // for wp-content/plugins
 			'themes'      => FALSE,   // for wp-content/themes
+			// since version 3.0.0
+			'public'      => FALSE,   // for public facing pages
+			'includes'    => FALSE,   // for wp-includes/
+			'uploads'     => FALSE,   // for UPLOADS/uploads
+			'languages'   => FALSE,   // for wp-content/language
 		),
 		'Maxmind'         => array(   // Maxmind
 			// since version 2.2.2
@@ -94,6 +106,17 @@ class IP_Geo_Block_Opts {
 		'exception'       => array(   // list of exceptional
 			'plugins'     => array(), // for pliugins
 			'themes'      => array(), // for themes
+			// since version 3.0.0
+			'admin'       => array(), // for wp-admin
+			'public'      => array(   // for public facing pages
+				'bbp-new-topic', 'bbp-edit-topic',
+				'bbp-new-reply', 'bbp-edit-reply',
+			),
+			'includes'    => array(   // for wp-includes/
+				'ms-files.php', 'js/tinymce/wp-tinymce.php'
+			 ),
+			'uploads'     => array(), // for UPLOADS/uploads
+			'languages'   => array(), // for wp-content/language
 		),
 		// since version 2.2.7
 		'api_key'         => array(   // API key
@@ -106,6 +129,22 @@ class IP_Geo_Block_Opts {
 			'resetpasss'   => TRUE,
 			'lostpassword' => TRUE,
 			'postpass'     => TRUE,
+		),
+		// since version 3.0.0
+		'response_msg'    => 'Sorry, your request cannot be accepted.', // message on blocking
+		'redirect_uri'    => 'http://blackhole.webpagetest.org/',   // redirection on blocking
+		'network_wide'    => FALSE,   // settings page on network dashboard
+		'public'          => array(
+			'matching_rule'  => -1,   // -1:follow, 0:white list, 1:black list
+			'white_list'     => NULL, // Comma separeted country code
+			'black_list'     => 'ZZ', // Comma separeted country code
+			'target_rule'    => 0,    // 0:all requests, 1:specify the target
+			'target_pages'   => array(), // blocking target of pages
+			'target_posts'   => array(), // blocking target of post types
+			'target_cates'   => array(), // blocking target of categories
+			'target_tags'    => array(), // blocking target of tags
+			'ua_list'        => "Google:HOST,bot:HOST,slurp:HOST\nspider:HOST,archive:HOST,*:FEED\n*:HOST=embed.ly,Twitterbot:US,Facebot:US",
+			'simulate'       => FALSE,// just simulate, never block
 		),
 	);
 
@@ -223,6 +262,20 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '2.2.9' ) < 0 ) {
 				$settings['validation']['timing' ] = $default['validation']['timing' ];
 				$settings['validation']['recdays'] = $default['validation']['recdays'];
+			}
+
+			if ( version_compare( $version, '3.0.0' ) < 0 ) {
+				foreach ( array( 'cache_time_gc', 'response_msg', 'redirect_uri', 'network_wide', 'public' ) as $tmp ) {
+					$settings[ $tmp ] = $default[ $tmp ];
+				}
+
+				foreach ( array( 'public', 'includes', 'uploads', 'languages' ) as $tmp ) {
+					$settings['validation'][ $tmp ] = $default['validation'][ $tmp ];
+					$settings['rewrite'   ][ $tmp ] = $default['rewrite'   ][ $tmp ];
+					$settings['exception' ][ $tmp ] = $default['exception' ][ $tmp ];
+				}
+
+				$settings['exception']['admin'] = $default['exception']['admin'];
 			}
 
 			// save package version number

@@ -446,74 +446,53 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
 /**
  * Class for Cache
  *
- * URL         : http://codex.wordpress.org/Transients_API
  * Input type  : IP address (IPv4, IPv6)
  * Output type : array
  */
 class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
+	// memory cache
+	protected static $memcache = array();
+
 	public static function update_cache( $hook, $validate, $settings ) {
-		$time = $_SERVER['REQUEST_TIME']; // time();
-		$num = ! empty( $settings['cache_hold'] ) ? $settings['cache_hold'] : 10;
-		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;
+		$cache = self::get_cache( $ip = $validate['ip'] );
 
-		// unset expired elements
-		if ( FALSE !== ( $cache = get_transient( IP_Geo_Block::CACHE_NAME ) ) ) {
-			foreach ( $cache as $key => $val ) {
-				if ( $time - $val['time'] > $exp )
-					unset( $cache[ $key ] );
-			}
-		}
-
-		// $validate['fail'] is set in auth_fail()
-		if ( isset( $cache[ $ip = $validate['ip'] ] ) ) {
-			$fail = $cache[ $ip ]['fail'] + (int)isset( $validate['fail'] );
-			$call = $cache[ $ip ]['call'] + (int)empty( $validate['fail'] );
+		if ( $cache ) {
+			$fail = $cache['fail'] + (int)isset( $validate['fail'] );
+			$call = $cache['call'] + (int)empty( $validate['fail'] );
 		} else { // if new cache then reset these values
 			$call = 1;
 			$fail = 0;
 		}
 
 		// update elements
-		$cache[ $ip ] = array(
-			'time' => $time,
+		IP_Geo_Block_Logs::update_cache( $cache = array(
+			'time' => $_SERVER['REQUEST_TIME'],
+			'ip'   => $ip,
 			'hook' => $hook,
 			'code' => $validate['code'],
 			'auth' => $validate['auth'], // get_current_user_id() > 0
 			'fail' => $validate['auth'] ? 0 : $fail,
 			'call' => $settings['save_statistics'] ? $call : 0,
 			'host' => isset( $validate['host'] ) ? $validate['host'] : NULL,
-		);
+		) );
 
-		// sort by 'time'
-		foreach ( $cache as $key => $val )
-			$hash[ $key ] = $val['time'];
-		array_multisort( $hash, SORT_DESC, $cache );
-
-		// keep the maximum number of entries, except for hidden elements
-		$time = 0;
-		foreach ( $cache as $key => $val ) {
-			if ( ! $val['auth'] && ++$time > $num ) {
-				--$time;
-				unset( $cache[ $key ] );
-			}
-		}
-
-		set_transient( IP_Geo_Block::CACHE_NAME, $cache, $exp ); // @since 2.8
-		return $cache[ $ip ];
+		return self::$memcache[ $ip ] = $cache;
 	}
 
 	public static function clear_cache() {
-		delete_transient( IP_Geo_Block::CACHE_NAME ); // @since 2.8
+		IP_Geo_Block_Logs::clear_cache();
 	}
 
 	public static function get_cache_all() {
-		return get_transient( IP_Geo_Block::CACHE_NAME );
+		return IP_Geo_Block_Logs::restore_cache();
 	}
 
 	public static function get_cache( $ip ) {
-		$cache = get_transient( IP_Geo_Block::CACHE_NAME );
-		return $cache && isset( $cache[ $ip ] ) ? $cache[ $ip ] : NULL;
+		if ( ! empty( self::$memcache[ $ip ] ) )
+			return self::$memcache[ $ip ];
+		else
+			return self::$memcache[ $ip ] = IP_Geo_Block_Logs::search_cache( $ip );
 	}
 
 	public function get_location( $ip, $args = array() ) {
@@ -703,7 +682,7 @@ if ( class_exists( 'IP_Geo_Block' ) ) {
 		$exclude = array( '.', '..' );
 		foreach ( $plugins as $plugin ) {
 			if ( ! in_array( $plugin, $exclude, TRUE ) && is_dir( $dir.$plugin ) ) {
-				@include( $dir.$plugin.'/class-'.$plugin.'.php' );
+				@include $dir.$plugin.'/class-'.$plugin.'.php';
 			}
 		}
 	}

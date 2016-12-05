@@ -15,10 +15,11 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 define( 'IP_GEO_BLOCK_PATH', plugin_dir_path( __FILE__ ) ); // @since 2.8
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php' );
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+
+require IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php';
+require IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php';
+require IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php';
+require IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php';
 
 class IP_Geo_Block_Uninstall {
 
@@ -28,7 +29,6 @@ class IP_Geo_Block_Uninstall {
 	 */
 	private static function delete_blog_options() {
 		delete_option( IP_Geo_Block::OPTION_NAME ); // @since 1.2.0
-		delete_transient( IP_Geo_Block::CACHE_NAME ); // @since 2.8
 		IP_Geo_Block_Logs::delete_tables();
 	}
 

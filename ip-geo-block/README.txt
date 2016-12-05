@@ -4,45 +4,37 @@ Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geo, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.6.1
-Stable tag: 2.2.9.1
+Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-It blocks any spams, login attempts and malicious access to the admin area 
-posted from the specific countries, and also prevents zero-day exploit.
+It blocks spam posts, login attempts and malicious access to the back-end 
+requested from the specific countries, and also prevents zero-day exploit.
 
 == Description ==
 
-There're some cases of a site being infected. The first one is the case that 
-contaminated files are uploaded via FTP or something. In this case, scaning 
-and verifing integrity of files in the site is needed to detect the infection.
+A considerable number of WordPress vulnerabilities in plugins and themes have 
+been disclosed every month. You can easily find them at 
+  [WPScan Vulnerability Database](https://wpvulndb.com/ "WPScan Vulnerability Database") 
+and 
+  [Exploits Database](https://www.exploit-db.com/ "Exploits Database by Offensive Security")
+for example. It means that many WordPress sites can be always exposed to the 
+threats of being exploited caused by those vulnerabilities.
 
-The second one is cracking of the login username and password. In this case, 
-the rule of right is to strengthen the password.
+This plugin protects your site against such threats of attack to the back-end 
+of your site not only by blocking requests from undesired countries but also 
+with the original feature 'Zero-day Exploit Prevention' (WP-ZEP).
 
-The third one may be caused by malicious accesses to the core files. The major 
-issue in this case is that a plugin or theme in your site can potentially has 
-some vulnerability such as XSS, CSRF, SQLi, LFI and so on. For example, if a 
-plugin has Local File Inclusion (LFI) vulnerability, the attackers can easily 
-download the `wp-config.php` by simply hitting 
-    [wp-admin/admin-ajax.php?action=show&file=../wp-config.php](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
-on their browser instead of cracking username and password.
+And it also blocks undesired requests to the login form (login attempt), 
+comment form (spam and trackback) and XML-RPC (login attempt and pingback).
 
-For these cases, the protection based on the IP address is not a perfect 
-solution for everyone. But for some site owners or some certain cases such 
-as 'zero-day attack', combination with the original feature 'Zero-day Exploit 
-Prevention' can reduce the risk of infection against the specific attacks.
-
-That's why this plugin is here.
+Up to version 2.x, this plugin had been dedicated to protect the back-end of 
+your site. From version 3.x, it becomes to be able to block access to your 
+public facing pages, aka front-end. See 
+  [this analysis](http://www.ipgeoblock.com/codex/analysis-of-attack-vectors.html "Analysis of Attack Vectors | IP Geo Block")
+about protection performance against 50 samples of vulnerable plugins.
 
 = Features =
-
-This plugin will examine a country code based on the IP address. If a 
-comment, pingback or trackback comes from the specific country, it can be 
-blocked before Akismet validate it.
-
-With the same mechanism, it fights against burst accesses by brute-force 
-and reverse-brute-force attacks to the login form and XML-RPC.
 
 * **Immigration control:**  
   Access to the basic and important entrances into the back-end such as 
@@ -56,16 +48,15 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   (WP-ZEP) is simple but still smart and strong enough to block any malicious 
   accesses to `wp-admin/*.php`, `plugins/*.php` and `themes/*.php` even from 
   the permitted countries. It will protect your site against certain types of 
-  attack such as CSRF, LFI, SQLi, XSS and so on, **even if you have some 
-    [vulnerable plugins or themes](https://wpvulndb.com/ "WPScan Vulnerability Database")
-  in your site**. Find more details in 
+  attack such as CSRF, LFI, SQLi, XSS and so on, **even if you have some in 
+  your site**. Find more details in 
     [FAQ](https://wordpress.org/plugins/ip-geo-block/faq/ "IP Geo Block - WordPress Plugins")
   and 
     [this plugin's blog](http://www.ipgeoblock.com/article/how-wpzep-works.html "How does WP-ZEP prevent zero-day attack? | IP Geo Block").
 
 * **Guard against login attempts:**  
-  In order to prevent the invasion through the login form and XML-RPC by 
-  the brute-force and the reverse-brute-force attacks, the number of login 
+  In order to prevent hacking through the login form and XML-RPC by 
+  brute-force and the reverse-brute-force attacks, the number of login 
   attempts will be limited per IP address even from the permitted countries.
 
 * **Protection of wp-config.php:**  
@@ -75,10 +66,9 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 
 * ** Minimize server load against brute-force attacks:**  
   You can configure this plugin as a 
-  [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex")
+    [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex")
   which would be loaded prior to regular plugins and can massively 
-  [reduce the load on server](http://www.ipgeoblock.com/codex/validation-timing.html "Validation timing | IP Geo Block")
-  especially against brute-force attacks.  
+    [reduce the load on server](http://www.ipgeoblock.com/codex/validation-timing.html "Validation timing | IP Geo Block").
   And furthermore, a cache mechanism for the fetched IP addresses and country 
   code can help to reduce load on the server against the burst accesses with 
   a short period of time.
@@ -98,15 +88,11 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 
 * **Multiple source of IP Geolocation databases:**  
   Free IP Geolocation database and REST APIs are installed into this plugin to
-  get a country code from an IP address. There are two types of API which 
-  support only IPv4 or both IPv4 and IPv6. This plugin will automatically 
-  choose an appropriate API.
-
-* **Database auto updater:**  
-  [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
+  get a country code from an IP address.
+    [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") 
   GeoLite free databases and 
-  [IP2Location](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") 
-  LITE databases can be incorporated with this plugin. Those will be downloaded
+    [IP2Location](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") 
+  LITE databases can be available in this plugin. Those will be downloaded 
   and updated (once a month) automatically.
 
 * **Customizing response:**  
@@ -123,7 +109,9 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   This plugin is simple and lite enough to be able to cooperate with other 
   full spec security plugin such as 
     [Wordfence Security](https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins")
-  (because the function of country bloking is available only for premium users).
+  (because country bloking is available only for premium users). See 
+    [this report](http://www.ipgeoblock.com/codex/page-speed-performance.html "Page speed performance | IP Geo Block")
+  about page speed performance.
 
 * **Extendability:**  
   "Settings minimum, Customizability maximum" is the basic concept of this 
@@ -136,10 +124,10 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 
 * **Self blocking prevention and easy rescue:**  
   Most of users do not prefer themselves to be blocked. This plugin prevents 
-  such a sad thing unless you force it.
-    ([release 2.1.4](http://www.ipgeoblock.com/changelog/release-2.1.4.html "2.1.4 Release Note"))
-  And futhermore, if such a situation occurs, you can rescue yourself easily.
-    ([release 2.1.3](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note"))
+  such a sad thing unless you force it. And futhermore, if such a situation 
+  occurs, you can 
+    [rescue yourself](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block")
+  easily.
 
 * **Clean uninstallation:**  
   Nothing is left in your precious mySQL database after uninstallation. So you
@@ -150,9 +138,9 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 = Attribution =
 
 This package includes GeoLite library distributed by MaxMind, available from 
-    [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"),
+  [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"),
 and also includes IP2Location open source libraries available from 
-    [IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
+  [IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
 
 Also thanks for providing the following great services and REST APIs for free.
 
@@ -167,12 +155,12 @@ Also thanks for providing the following great services and REST APIs for free.
 = Development =
 
 Development of this plugin is promoted at 
-    [WordPress-IP-Geo-Block](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub")
-and class libraries to handle geo-location database for Maxmind and IP2Location
-are developed separately as "add-in"s at 
-    [WordPress-IP-Geo-API](https://github.com/tokkonopapa/WordPress-IP-Geo-API "tokkonopapa/WordPress-IP-Geo-API - GitHub").
+  [WordPress-IP-Geo-Block](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub")
+and class libraries to handle geo-location database are developed separately 
+as "add-in"s at 
+  [WordPress-IP-Geo-API](https://github.com/tokkonopapa/WordPress-IP-Geo-API "tokkonopapa/WordPress-IP-Geo-API - GitHub").
 All contributions will always be welcome. Or visit my 
-    [development blog](http://www.ipgeoblock.com/ "IP Geo Block").
+  [development blog](http://www.ipgeoblock.com/ "IP Geo Block").
 
 == Installation ==
 
@@ -182,6 +170,12 @@ All contributions will always be welcome. Or visit my
 2. Search for 'IP Geo Block'
 3. Click 'Install Now'
 4. Activate the plugin on the Plugin dashboard
+5. Try 'Best practice' button for easy setup at the bottom of this plugin's 
+   setting page.
+
+Please refer to 
+  [the document](http://www.ipgeoblock.com/codex/ "Codex | IP Geo Block") 
+or following descriptions for your best setup.
 
 = Validation rule settings =
 
@@ -222,7 +216,7 @@ All contributions will always be welcome. Or visit my
   Choose **"init" action hook** or **"mu-plugins" (ip-geo-block-mu.php)** to 
   specify the timing of validation.
 
-= Validation target settings =
+= Back-end target settings =
 
 * **Comment post**  
   Validate post to `wp-comment-post.php`. Comment post and trackback will be 
@@ -246,6 +240,25 @@ All contributions will always be welcome. Or visit my
 
 * **Themes area**  
   Validate direct access to themes. Typically `wp-content/themes/…/*.php`.
+
+= Front-end target settings =
+
+* **Block by country**  
+  Enables validation of country code on public facing pages.
+
+* **Matching rule**  
+  Same as **Validation target settings** but can be set independently.
+
+* **Validation target**  
+  Specify the single and archive page by post type, category and tag as 
+  blocking target.
+
+* **UA string and qualification**  
+  Additional rules targeted at SEO which can specify acceptable requests 
+  based on user agent.
+
+* **Simulation mode**  
+  You can simulate the 'blocking on front-end' functionality before deploying.
 
 = Geolocation API settings =
 
@@ -281,11 +294,11 @@ All contributions will always be welcome. Or visit my
 
 = Cache settings =
 
-* **Number of entries**  
-  Maximum number of IPs to be cached.
-
 * **Expiration time [sec]**  
   Maximum time in sec to keep cache.
+
+* **Garbage collection period [sec]**  
+  Period of garbage collection to clean cache.
 
 = Submission settings =
 
@@ -309,8 +322,10 @@ it via FTP.
 
 `/**
  * Invalidate blocking behavior in case yourself is locked out.
- * @note: activate the following code and upload this file via FTP.
- */ /* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTION -- */
+ *
+ * How to use: Activate the following code and upload this file via FTP.
+ */
+/* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTION -- */
 function ip_geo_block_emergency( $validate ) {
     $validate['result'] = 'passed';
     return $validate;
@@ -322,7 +337,7 @@ add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
 Then "**Clear cache**" at "**Statistics**" tab on your dashborad. Remember 
 that you should upload the original one to deactivate above feature.
 
-[This release note](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note")
+[This document](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block")
 can also help you.
 
 = How can I fix "Unable to write" error? =
@@ -339,6 +354,48 @@ own hand instead of enabling "**Force to load WP core**" options.
 Please refer to 
 "[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')"
 in order to fix this error.
+
+= Does this plugin works well with caching? =
+
+For the back-end protection, the answer is YES if you disable caching on 
+back-end. But for the front-end, the answer depends on the caching method 
+you are employing.
+
+Currently, the following cache plugins and configurations can be supported:
+
+- [WP Super Cache](https://wordpress.org/plugins/wp-super-cache/ "WP Super Cache &mdash; WordPress Plugins")  
+  Select "**Use PHP to serve cache files**" and enable "**Late init**".
+
+- [W3 Total Cache](https://wordpress.org/plugins/w3-total-cache/ "W3 Total Cache &mdash; WordPress Plugins")  
+  Select "**Disk: Basic**" and enable "**Late initialization**" for page cache.
+  "**Disk: Enhanced**" (where "**Late initialization**" is not available) in 
+  W3TC 0.9.5.1 seems to work good without any imcompatibility with this plugin.
+
+- [Vendi Cache](https://wordpress.org/plugins/vendi-cache/ "Vendi Cache &mdash; WordPress Plugins")  
+  This was formerly built in Wordfence. Select "**basic caching**" for 
+  Vendi Cache and **"mu-plugin" (ip-geo-block-mu.php)** for IP Geo Block.
+
+If your plugin serves page caching by `mod_rewrite` via `.htaccess` 
+(e.g. WP Fastest Cache) or caching by `advanced-cache.php` drop-in 
+(e.g. Comet Cache) or your hosting provider serves page caching at 
+server side, "**Blocking on front-end**" might lead to generate 
+inconsistent pages.
+
+For more details, please refer to some documents at 
+"[Blocking on front-end](http://www.ipgeoblock.com/codex/#blocking-on-front-end 'Codex | IP Geo Block')".
+
+= How can I test this plugin works? =
+
+The easiest way is to use 
+  [free proxy browser addon](https://www.google.com/search?q=free+proxy+browser+addon "free proxy browser addon - Google Search").
+Another one is to use 
+  [http header browser addon](https://www.google.com/search?q=browser+add+on+modify+http+header "browser add on modify http header - Google Search").
+You can add an IP address to the `X-Forwarded-For` header to emulate the 
+access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` 
+into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
+
+See more details at 
+"[How to test prevention of attacks](http://www.ipgeoblock.com/codex/#how-to-test-prevention-of-attacks 'Codex | IP Geo Block')".
 
 = Do I have to turn on all the selection to enhance security? =
 
@@ -357,35 +414,21 @@ follows:
 - **Bad signatures in query**  
   It blocks the request which has not been covered in the above three.
 
-See more details in 
+Please try "**Best practice**" button at the bottom of this plugin's setting 
+page for easy setup. And also see more details in 
 "[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html 'The best practice of target settings | IP Geo Block')".
 
-= Does this plugin validate all the requests to the server? =
+= Does this plugin validate all the requests? =
 
 Unfortunately, no. This plugin can't handle the requests that are not 
 parsed by WordPress. In other words, a standalone file (PHP, CGI or 
 something excutable) that is unrelated to WordPress can't be validated 
-by this plugin even if it is is in the WordPress install directory.
+by this plugin even if it is in the WordPress install directory.
 
 But there're exceptions: When you enable "**Force to load WP core**" for 
 **Plugins area** or **Themes area**, a standalone PHP file becomes to be 
-able to be blocked. Sometimes this kind of file in a plugin or theme has 
-vulnerability. This function is provided against such a case.
-
-= How can I test this plugin works? =
-
-The easiest way is to use 
-  [free proxy browser addon](https://www.google.com/search?q=free+proxy+browser+addon "free proxy browser addon - Google Search").
-Another one is to use 
-  [http header browser addon](https://www.google.com/search?q=browser+add+on+modify+http+header "browser add on modify http header - Google Search").
-You can add an IP address to the `X-Forwarded-For` header to emulate the 
-access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` 
-into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
-
-See more details in 
-"[Using VPN browser addon](http://www.ipgeoblock.com/codex/using-vpn-browser-addon.html 'Using VPN browser addon | IP Geo Block')"
-and
-"[Using WordPress post simulator](http://www.ipgeoblock.com/codex/using-post-simulator.html 'Using WordPress post simulator | IP Geo Block')".
+able to be blocked. Sometimes this kind of file has some vulnerabilities.
+This function protects your site against such a case.
 
 = Some admin function doesn't work when WP-ZEP is enabled. =
 
@@ -396,43 +439,20 @@ location object or meta tag for refresh).
 Another is the case related to the content type. This plugin will only support 
  `application/x-www-form-urlencoded` and `multipart/form-data`.
 
-The other case is that a ajax/post request comes from not jQuery but flash or 
+The last case is that a ajax/post request comes from not jQuery but flash or 
 something.
 
 In those cases, this plugin should bypass WP-ZEP. So please find the unique 
 strings in the requested queries and add it into the safe query list via the 
 filter hook `ip-geo-block-bypass-admins`.
 
-If you can not figure out your troubles, please let me know about the plugin 
-you are using at the support forum.
+If you can not figure out your troubles, please let me know your issues and 
+the name of plugins you are using at support forum.
 
 = Are there any other useful filter hooks? =
 
-Yes, here is the list of all hooks to extend the feature of this plugin.
-
-* `ip-geo-block-ip-addr`          : IP address of accessor.
-* `ip-geo-block-headers`          : compose http request headers.
-* `ip-geo-block-comment`          : validate IP address at `wp-comments-post.php`.
-* `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
-* `ip-geo-block-login`            : validate IP address at `wp-login.php`.
-* `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
-* `ip-geo-block-extra-ips`        : white/black list of extra IPs for prior validation.
-* `ip-geo-block-xxxxxx-status`    : http response status code for comment|xmlrpc|login|admin.
-* `ip-geo-block-xxxxxx-reason`    : http response reason      for comment|xmlrpc|login|admin.
-* `ip-geo-block-bypass-admins`    : array of admin queries which should bypass WP-ZEP.
-* `ip-geo-block-bypass-plugins`   : array of plugin name which should bypass WP-ZEP.
-* `ip-geo-block-bypass-themes`    : array of theme name which should bypass WP-ZEP.
-* `ip-geo-block-backup-dir`       : full path where log files should be saved.
-* `ip-geo-block-api-dir`          : full path to the API class libraries and local DB files.
-* `ip-geo-block-maxmind-dir`      : full path where Maxmind GeoLite DB files should be saved.
-* `ip-geo-block-maxmind-zip-ipv4` : url to Maxmind GeoLite DB zip file for IPv4.
-* `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
-* `ip-geo-block-ip2location-dir`  : full path where IP2Location LITE DB files should be saved.
-* `ip-geo-block-ip2location-path` : full path to IP2Location LITE DB file (IPv4).
-* `ip-geo-block-record-logs`      : change the condition of recording logs
-
-For more details, see 
-[the documents](http://www.ipgeoblock.com/codex/ "Codex | IP Geo Block").
+Yes, you can find the list of all hooks and useful samples 
+[here](http://www.ipgeoblock.com/codex/#filter-hooks "Codex | IP Geo Block").
 
 == Other Notes ==
 
@@ -445,14 +465,8 @@ For more details, see
 * From [WordPress 4.5](https://make.wordpress.org/core/2016/03/09/comment-changes-in-wordpress-4-5/ "Comment Changes in WordPress 4.5 &#8211; Make WordPress Core"),
   `rel=nofollow` attribute and value pair had no longer be added to relative 
   or same domain links within `comment_content`. This change prevents to block 
-  "Self Site Request Forgeries" (not Cross Site but a malicious link in the 
+  "Server Side Request Forgeries" (not Cross Site but a malicious link in the 
   comment field of own site).
-
-* Wordfence makes an ajax request whose action is `wordfence_testAjax` using 
-  `wp_remote_post()` and would receive 403 forbidden (it depends on your 
-  configuration) when you enable "**Prevent Zero-day Exploit**" at "**Admin 
-  ajax/post**". It does't affect its functionality because the response code 
-  never be verified.
 
 == Screenshots ==
 
@@ -463,6 +477,21 @@ For more details, see
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 3.0.0 =
+* **New feature:** Add the function of blocking on front-end.
+* **New filter hook:** Add `ip-geo-block-public` to extend validation on 
+  front-end.
+* **Improvement:** Avoid conflict with "Open external links in a new window" 
+  plugin and some other reason to prevent duplicated window open. For more 
+  detail, see 
+  [this discussion at support forum](https://wordpress.org/support/topic/ip-geoblock-opens-2-windows-on-link-clicks-when-user-is-logged-in/ "Topic: IP Geoblock opens 2 windows on link clicks when user is logged in &laquo; WordPress.org Forums").
+* **Improvement:** Better compatibility with some plugins, themes and widgets.
+* **Improvement:** Deferred execution of SQL command to improve the response.
+* **Improvement:** Make the response compatible with WP original when it is 
+  requested by GET method.
+* See some details at
+  [release 3.0.0](http://www.ipgeoblock.com/changelog/release-3.0.0.html "3.0.0 Release Note | IP Geo Block").
 
 = 2.2.9.1 =
 * **Bug fix:** Blocking Wordfence scanning.
@@ -834,68 +863,6 @@ This is a maintenance release.
   This is an experimental function and can be enabled on `Settings` tab.
   Malicious access can try to login only 5 times per IP address. This retry 
   counter can be reset to zero by `Clear statistics` on `Statistics` tab.
-
-= 1.4.0 =
-* **New feature:** Added a new class for recording the validation logs to 
-  analyze posting pattern.
-* Fixed an issue of not being set the own country code at first installation.
-* Fixed an error which occurs when ip address is unknown.
-
-= 1.3.1 =
-* **New feature:** Added validation of trackback spam.
-* Added `$_SERVER keys for extra IPs` into options to validate additional 
-  IP addresses.
-* Removed some redundant codes and corrected all PHP notices and warnings 
-  which had been suppressed by WordPress.
-
-= 1.3.0 =
-* **New feature:** Added validation of pingback.ping through `xmlrpc.php` and
-  new option to validate all the IP addresses in HTTP_X_FORWARDED_FOR.
-* **Fixed an issue:** Maxmind database file may be downloaded automatically
-  without deactivate/re-activate when upgrade is finished.
-* This is the final version on 1.x. On next release, accesses to `login.php`
-  and admin area will be also validated for security purpose.
-
-= 1.2.1 =
-* **Fixed an issue:** Option table will be updated automatically without
-  deactivate/re-activate when this plugin is upgraded.
-* **A little bit performance improvement:**
-  Less memory footprint at the time of downloading Maxmind database file.
-  Less sql queries when `Save statistics` is enabled.
-
-= 1.2.0 =
-* **New feature:** Added Maxmind GeoLite database auto downloader and updater.
-* The filter hook `ip-geo-block-validate` was discontinued.
-  Instead of it, the new filter hook `ip-geo-block-comment` is introduced.
-* **Performance improvement:** IP address is verified at an earlier stage 
-  than before.
-* **Others:** Fix a bug of handling cache, update status of some REST APIs.
-
-= 1.1.1 =
-* Fixed issue of default country code.
-  When activating this plugin for the first time, get the country code 
-  from admin's IP address and set it into white list.
-* Add number of calls in cache of IP address.
-
-= 1.1.0 =
-* Implement the cache mechanism to reduce load on the server.
-* Better handling of errors on the search tab so as to facilitate the 
-  analysis of the service problems.
-* Fixed a bug of setting user agent strings in 1.0.2.
-  Now the user agent strings (`WordPress/3.9.2; http://example.com/`) 
-  becomes to its own (`WordPress/3.9.2; ip-geo-block 1.1.0`).
-
-= 1.0.3 =
-* Temporarily stop setting user agent strings to supress a bug in 1.0.2.
-
-= 1.0.2 =
-* Update provider settings. Smart-IP.net was terminated, ipinfo.io is now
-  available for IPv6.
-* Set the own user agent strings for `WP_Http`.
-
-= 1.0.1 =
-* Modify Plugin URL.
-* Add `apply_filters()` to be able to change headers.
 
 = 1.0.0 =
 * Ready to release.

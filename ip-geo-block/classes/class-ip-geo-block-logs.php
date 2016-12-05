@@ -29,10 +29,12 @@ class IP_Geo_Block_Logs {
 		'daystats'  => array(),
 	);
 
+	private static $sqlist = array();
+
 	/**
 	 * Create
 	 *
-	 * @note creating mixed storage engine may cause troubles with some plugins.
+	 * @internal creating mixed storage engine may cause troubles with some plugins.
 	 */
 	public static function create_tables() {
 		global $wpdb;
@@ -80,6 +82,23 @@ class IP_Geo_Block_Logs {
 			ON DUPLICATE KEY UPDATE No = No", 1, serialize( self::$default )
 		) and $wpdb->query( $sql );
 
+		// for IP address cache
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
+		$result &= ( FALSE !== $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
+			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			`time` int(10) unsigned NOT NULL DEFAULT 0,
+			`ip` varchar(40) NOT NULL,
+			`hook` varchar(8) NOT NULL,
+			`auth` int(10) unsigned NOT NULL DEFAULT 0,
+			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
+			`fail` int(10) unsigned NOT NULL DEFAULT 0,
+			`call` int(10) unsigned NOT NULL DEFAULT 0,
+			`host` tinytext NOT NULL,
+			PRIMARY KEY (`No`),
+			UNIQUE (`ip`)
+			) CHARACTER SET " . $charset
+		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
+
 		return $result;
 	}
 
@@ -89,7 +108,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function delete_tables() {
 		global $wpdb;
-		$tables = array( self::TABLE_LOGS, self::TABLE_STAT );
+		$tables = array( self::TABLE_LOGS, self::TABLE_STAT, IP_Geo_Block::CACHE_NAME );
 
 		foreach ( $tables as $table ) {
 			$table = $wpdb->prefix . $table;
@@ -103,7 +122,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function diag_tables() {
 		global $wpdb;
-		$tables = array( self::TABLE_LOGS, self::TABLE_STAT );
+		$tables = array( self::TABLE_LOGS, self::TABLE_STAT, IP_Geo_Block::CACHE_NAME );
 
 		foreach ( $tables as $table ) {
 			$table = $wpdb->prefix . $table;
@@ -169,9 +188,7 @@ class IP_Geo_Block_Logs {
 		$sql = $wpdb->prepare(
 			"UPDATE `$table` SET `data` = '%s'", serialize( $statistics )
 //			"REPLACE INTO `$table` (`No`, `data`) VALUES (%d, %s)", 1, serialize( $statistics )
-		) and $data = $wpdb->query( $sql ) or self::error( __LINE__ );
-
-		return empty( $data ) ? FALSE : TRUE;
+		) and self::add_sql( 'stat', $sql ); // $data = $wpdb->query( $sql ) or self::error( __LINE__ );
 	}
 
 	/**
@@ -182,7 +199,7 @@ class IP_Geo_Block_Logs {
 		$time = intval( $time );
 		$options = IP_Geo_Block::get_option();
 
-		if ( $time < 80 /* msec */ )
+		if ( $time < 90 /* msec */ )
 			return (int)$options['validation']['maxlogs'];
 
 		elseif ( $time < 200 /* msec */ )
@@ -194,7 +211,7 @@ class IP_Geo_Block_Logs {
 	/**
 	 * Validate string whether utf8
 	 *
-	 * @note code from wp_check_invalid_utf8() in wp-includes/formatting.php
+	 * @see  wp_check_invalid_utf8() in wp-includes/formatting.php
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
 	private static function validate_utf8( $str ) {
@@ -387,7 +404,7 @@ class IP_Geo_Block_Logs {
 	/**
 	 * Backup the validation log to text files
 	 *
-	 * @notice $path should not be in the public_html.
+	 * Note: $path should not be within the public_html.
 	 */
 	private static function backup_logs( $hook, $validate, $method, $agent, $heads, $posts, $path ) {
 		// $path should be absolute path to the directory
@@ -457,7 +474,7 @@ class IP_Geo_Block_Logs {
 			$sql = $wpdb->prepare(
 				"DELETE FROM `$table` WHERE `hook` = '%s' ORDER BY `No` ASC LIMIT %d",
 				$hook, $count - $rows + 1
-			) and $wpdb->query( $sql ) or self::error( __LINE__ );
+			) and self::add_sql( 'logs', $sql ); // $wpdb->query( $sql ) or self::error( __LINE__ );
 		}
 
 		// insert into DB
@@ -475,7 +492,7 @@ class IP_Geo_Block_Logs {
 			$agent,
 			$heads,
 			$posts
-		) and $wpdb->query( $sql ) or self::error( __LINE__ );
+		) and self::add_sql( 'logs', $sql ); // $wpdb->query( $sql ) or self::error( __LINE__ );
 
 		// backup logs to text files
 		if ( $dir = apply_filters(
@@ -492,7 +509,7 @@ class IP_Geo_Block_Logs {
 	 * Restore the validation log
 	 *
 	 * @param string $hook type of log name
-	 * return array log data
+	 * @return array log data
 	 */
 	public static function restore_logs( $hook = NULL ) {
 		global $wpdb;
@@ -549,6 +566,104 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
+	 * Clear IP address cache.
+	 *
+	 */
+	public static function clear_cache() {
+		global $wpdb;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
+		$wpdb->query( "TRUNCATE TABLE `$table`" ) or self::error( __LINE__ );
+	}
+
+	/**
+	 * Search cache
+	 *
+	 */
+	public static function search_cache( $ip ) {
+		global $wpdb;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
+
+		$sql = $wpdb->prepare(
+			"SELECT * FROM `$table` WHERE `ip` = '%s'", $ip
+		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
+
+		return ! empty( $result[0] ) ? $result[0] : NULL;
+	}
+
+	/**
+	 * Restore cache
+	 *
+	 */
+	public static function restore_cache() {
+		global $wpdb;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
+		$result = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A ) or self::error( __LINE__ );
+
+		// transform DB to cache format
+		$cache = array();
+		foreach ( $result as $key => $val ) {
+			$ip = $val['ip'];
+			unset( $val['ip'] );
+			$cache[ $ip ] = $val;
+		}
+
+		// sort by 'time'
+		foreach ( $cache as $key => $val )
+			$hash[ $key ] = $val['time'];
+
+		array_multisort( $hash, SORT_DESC, $cache );
+
+		return $cache;
+	}
+
+	/**
+	 * Update cache
+	 *
+	 */
+	public static function update_cache( $cache ) {
+		global $wpdb;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
+
+		$sql = $wpdb->prepare(
+			"INSERT INTO `$table`
+			(`time`, `ip`, `hook`, `auth`, `code`, `fail`, `call`, `host`)
+			VALUES (%d, %s, %s, %d, %s, %d, %d, %s)
+			ON DUPLICATE KEY UPDATE 
+			`time` = VALUES(`time`),
+			`hook` = VALUES(`hook`),
+			`auth` = VALUES(`auth`),
+			`code` = VALUES(`code`),
+			`fail` = VALUES(`fail`),
+			`call` = VALUES(`call`),
+			`host` = VALUES(`host`)",
+			$cache['time'],
+			$cache['ip'  ],
+			$cache['hook'],
+			$cache['auth'],
+			$cache['code'],
+			$cache['fail'],
+			$cache['call'],
+			$cache['host']
+		) and self::add_sql( 'cache', $sql ); // $wpdb->query( $sql ) or self::error( __LINE__ );
+	}
+
+	/**
+	 * Delete expired cache
+	 *
+	 */
+	public static function delete_expired_cache( $cache_time ) {
+		global $wpdb;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
+
+		$sql = $wpdb->prepare(
+			"DELETE FROM `$table` WHERE `time` < %d",
+			$_SERVER['REQUEST_TIME'] - $cache_time
+		) and $result = $wpdb->query( $sql ) or self::error( __LINE__ );
+
+		return $result;
+	}
+
+	/**
 	 * SQL Error handling
 	 *
 	 */
@@ -557,6 +672,29 @@ class IP_Geo_Block_Logs {
 			global $wpdb;
 			if ( $wpdb->last_error )
 				IP_Geo_Block_Admin::add_admin_notice( 'error', __FILE__ . ' (' . $line . ') ' . $wpdb->last_error );
+		}
+	}
+
+	/**
+	 * Stock SQL command for deferred execution.
+	 *
+	 */
+	private static function add_sql( $hook, $sql ) {
+//		global $wpdb; $wpdb->query( $sql ) or self::error( $hook );
+		self::$sqlist[ $hook ][] = $sql;
+	}
+
+	/**
+	 * Deferred execution of SQL command at shutdown process.
+	 *
+	 */
+	public static function exec_sql() {
+		global $wpdb;
+
+		foreach ( self::$sqlist as $key => $val ) {
+			foreach ( $val as $sql ) {
+				$wpdb->query( $sql ) or self::error( $key );
+			}
 		}
 	}
 }

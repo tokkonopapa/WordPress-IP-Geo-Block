@@ -88,7 +88,7 @@ class IP_Geo_Block_Lkup {
 		// on some operating systems, try the PEAR class Net_DNS
 		if ( empty( $host ) ) {
 			set_include_path( IP_GEO_BLOCK_PATH . 'includes' . PATH_SEPARATOR . get_include_path() );
-			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/DNS2.php' );
+			require_once IP_GEO_BLOCK_PATH . 'includes/Net/DNS2.php';
 
 			// use google public dns
 			$r = new Net_DNS2_Resolver(
@@ -113,6 +113,16 @@ class IP_Geo_Block_Lkup {
 		}
 
 		return isset( $host ) ? $host : $ip;
+	}
+
+	/**
+	 * https://codex.wordpress.org/WordPress_Feeds
+	 *
+	 */
+	public static function is_feed( $request_uri ) {
+		return isset( $_GET['feed'] ) ?
+			( preg_match( '!(?:comments-)?(?:feed|rss|rss2|rdf|atom)$!', $_GET['feed'] ) ? TRUE : FALSE ) :
+			( preg_match( '!(?:comments/)?(?:feed|rss|rss2|rdf|atom)/?$!', $request_uri ) ? TRUE : FALSE );
 	}
 
 }

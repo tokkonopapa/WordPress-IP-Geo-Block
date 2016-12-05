@@ -24,6 +24,23 @@ if ( $settings['validation']['reclogs'] ) :
 			$option_slug
 		);
 
+		// footable filter
+		$field = 'filter_logs';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Filter logs', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => '',
+				'after' => '<a class="button button-secondary" id="ip-geo-block-reset-filter" title="' . __( 'Reset', 'ip-geo-block' ) . '" href="javascript:void(0)">'. __( 'Reset', 'ip-geo-block' ) . '</a>',
+			)
+		);
+
 		$field = 'clear_logs';
 		add_settings_field(
 			$option_name.'_'.$field,
@@ -95,11 +112,12 @@ endif;
 			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',            'ip-geo-block' ) ),
 			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',         'ip-geo-block' ) ),
 			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',         'ip-geo-block' ) ),
+			'public'  => sprintf( $dfn, 'public facing pages',  __( 'Pubic facing pages', 'ip-geo-block' ) ),
 		);
 
 		foreach ( $target as $key => $val ) {
 			echo '<h4>', $val, '</h4>', "\n";
-			echo '<table class="fixed ', IP_Geo_Block::PLUGIN_NAME, '-log" data-page-size="10" data-limit-navigation="5"><thead><tr>', "\n";
+			echo '<table class="fixed ', IP_Geo_Block::PLUGIN_NAME, '-log" data-page-size="10" data-limit-navigation="5" data-filter="#', IP_Geo_Block::OPTION_NAME, '_filter_logs" data-filter-text-only="true"><thead><tr>', "\n";
 			echo '<th data-type="numeric">', __( 'Date', 'ip-geo-block' ), '</th>', "\n";
 			echo '<th>', __( 'IP address', 'ip-geo-block' ), '</th>', "\n";
 			echo '<th>', __( 'Code',       'ip-geo-block' ), '</th>', "\n";

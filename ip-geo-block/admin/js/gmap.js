@@ -1,4 +1,4 @@
-/**
+/*!
  * Project: GmapRS - google map for WordPress IP Geo Block
  * Description: A really simple google map plugin based on jQuery-boilerplate.
  * Version: 0.2.4

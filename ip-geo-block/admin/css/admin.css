@@ -57,13 +57,13 @@ textarea.regular-text {
 }
 
 ul.ip_geo_block_settings_folding {
-    margin: 0.3em 0;
+    margin: 0.5em 0;
 }
 ul.ip_geo_block_settings_folding ul {
     margin-bottom: 0;
 }
 ul.ip_geo_block_settings_folding li:first-child {
-    margin-top: 0.6em;
+    margin-top: 0.5em;
 }
 .folding-disable {
     pointer-events: none;
@@ -72,6 +72,10 @@ ul.ip_geo_block_settings_folding li:first-child {
 .folding-inactive {
     opacity: 0.5;
     font-style:oblique !important;
+}
+
+.ip-geo-block-hide {
+    display: none;
 }
 
 .ip-geo-block-sup {
@@ -296,6 +300,10 @@ table.ip-geo-block-table {
     white-space: normal;
     word-wrap: break-word;
     word-break: break-all;
+}
+input#ip_geo_block_settings_filter_logs {
+    width: 16em;
+    padding-top: 3px;
 }
 
 /* Scan the country code */

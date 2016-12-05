@@ -188,7 +188,7 @@ var IP_GEO_BLOCK_ZEP = {
 	var theme_featured = function (data) {
 		var i = data.length;
 		while (i-- > 0) {
-			if (data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth') === 0) {
+			if (data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth') !== -1) {
 				data[i] = 'request%5Bbrowse%5D=featured'; // correct the parameter
 				break;
 			}
@@ -200,7 +200,7 @@ var IP_GEO_BLOCK_ZEP = {
 	var media_library = function (data) {
 		var i = data.length;
 		while (i-- > 0) {
-			if (data[i].indexOf('query%5Bip-geo-block-auth-nonce%5D=' + IP_GEO_BLOCK_AUTH.nonce) === 0) {
+			if (data[i].indexOf('query%5Bip-geo-block-auth-nonce%5D=') !== -1) {
 				delete data[i];
 				break;
 			}
@@ -340,6 +340,13 @@ var IP_GEO_BLOCK_ZEP = {
 						'<meta http-equiv="refresh" content="0; url=' + sanitize(this.href) + '" />'
 					);
 					w.document.close();
+
+					// stop event propagation
+					$this.removeAttr('target');
+					$this.off('click');
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
 					return false;
 				}
 			});
@@ -367,6 +374,14 @@ var IP_GEO_BLOCK_ZEP = {
 	}
 
 	$(function () {
+		// avoid conflict with "Open external links in a new window"
+		$('a').each(function () {
+			if(!this.hasAttribute('onClick')) {
+				this.setAttribute('onClick', 'javascript:void(0);');
+			}
+		});
+
+		// attach event to add nonce
 		attach_nonce();
 		IP_GEO_BLOCK_ZEP.init = true;
 	});

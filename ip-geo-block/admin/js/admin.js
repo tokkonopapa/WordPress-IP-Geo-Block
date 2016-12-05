@@ -47,11 +47,11 @@ var ip_geo_block_time = new Date();
 	}
 
 	function warning(status, msg) {
-		window.alert(sanitize(status + ' ' + msg));
+		window.alert(status ? sanitize(status + ': ' + msg) : msg);
 	}
 
 	function notice_html5() {
-		warning('Notice:', 'This feature is available with HTML5 compliant browsers.');
+		warning(null, IP_GEO_BLOCK.msg[6]);
 	}
 
 	function redirect(page, tab) {
@@ -183,9 +183,26 @@ var ip_geo_block_time = new Date();
 			}
 		};
 		reader.onerror = function (event) {
-			warning('Error: ', event.target.error.code);
+			warning('Error', event.target.error.code);
 		};
 		reader.readAsText(file);
+	}
+
+	// Enable / Disable at front-end target settings
+	function set_front_end($this) {
+		var field   = ID('%', 'settings'),
+		    checked = $this.is(':checked'),
+		    select  = $(ID('@', 'public_target_rule')),
+		    parent  = $this.closest('tr').nextAll('tr');
+
+		// Enable / Disable descendent items
+		parent.find('[name^="' + field + '"]').prop('disabled', !checked);
+
+		// Enable / Disable description
+		parent.find(ID('.', 'desc')).css('opacity', checked ? 1.0 : 0.5);
+
+		// Show / Hide validation target
+		show_folding_list($this, select, field, '1' === select.val() ? true : false);
 	}
 
 	/**
@@ -232,6 +249,9 @@ var ip_geo_block_time = new Date();
 			$.each(['matching_rule', 'validation_login', 'validation_plugins', 'validation_themes'], function (i, key) {
 				$(ID('@', key)).trigger('change');
 			});
+
+			// Public facing pages
+			set_front_end($(ID('@', 'validation_public')));
 
 			// Additional edge case
 			var i = ID('%', 'settings[providers][IPInfoDB]');
@@ -291,6 +311,7 @@ var ip_geo_block_time = new Date();
 				self.dataLine.addColumn('number', 'xmlrpc');
 				self.dataLine.addColumn('number', 'login');
 				self.dataLine.addColumn('number', 'admin');
+				self.dataLine.addColumn('number', 'public');
 				var i, j, k, m, n, cells, arr = [],
 				    tr = $(ID('#', 'targets tr'));
 				for (m = tr.length, i = 0; i < m; i++) {
@@ -348,7 +369,7 @@ var ip_geo_block_time = new Date();
 
 		// Get tab number and check wpCookies in wp-includes/js/utils.js
 		var cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('%', 'admin'))) || {},
-		    tabIndex = [0, 8, 9],
+		    tabIndex = [0, 9, 10],
 		    tabNo = /&tab=(\d)/.exec(window.location.href);
 
 		tabNo = Number(tabNo && tabNo[1]);
@@ -541,6 +562,12 @@ var ip_geo_block_time = new Date();
 				return false;
 			}).trigger('change');
 
+			// Enable / Disable for Public facing pages
+			$(ID('@', 'validation_public')).on('change', function (event) {
+				set_front_end($(this));
+				return false;
+			}).trigger('change');
+
 			// Export / Import settings
 			add_hidden_form('validate');
 
@@ -597,7 +624,7 @@ var ip_geo_block_time = new Date();
 
 			// Import pre-defined settings
 			$(ID('#', 'default')).on('click', function (event) {
-				confirm('Import settings ?', function () {
+				confirm(IP_GEO_BLOCK.msg[0], function () {
 					ajax_post('pre-defined', {
 						cmd: 'import-default'
 					}, deserialize_json);
@@ -610,7 +637,7 @@ var ip_geo_block_time = new Date();
 			});
 
 			$(ID('#', 'preferred')).on('click', function (event) {
-				confirm('Import settings ?', function () {
+				confirm(IP_GEO_BLOCK.msg[0], function () {
 					ajax_post('pre-defined', {
 						cmd: 'import-preferred'
 					}, deserialize_json);
@@ -620,14 +647,14 @@ var ip_geo_block_time = new Date();
 
 			// Manipulate DB table for validation logs
 			$(ID('@', 'create_table')).on('click', function (event) {
-				confirm('Create table ?', function () {
+				confirm(IP_GEO_BLOCK.msg[1], function () {
 					ajax_table('create-table');
 				});
 				return false;
 			});
 
 			$(ID('@', 'delete_table')).on('click', function (event) {
-				confirm('Delete table ?', function () {
+				confirm(IP_GEO_BLOCK.msg[2], function () {
 					ajax_table('delete-table');
 				});
 				return false;
@@ -653,6 +680,24 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 
+			// Response message and Redirect URL
+			$(ID('@', 'response_code')).on('change', function (event) {
+				var res = parseInt($(this).val() / 100, 10),
+				    elm = $(this).closest('tr').nextAll('tr');
+				if (res <= 3) { // 2xx, 3xx
+					elm.each(function (index) {
+						if      (0 === index) { $(this).show(); } // redirect_uri
+						else if (1 === index) { $(this).hide(); } // response_msg
+					});
+				}
+				else { // 4xx, 5xx
+					elm.each(function (index) {
+						if      (0 === index) { $(this).hide(); } // redirect_uri
+						else if (1 === index) { $(this).show(); } // response_msg
+					});
+				}
+			}).trigger('change');
+
 			// Submit
 			$('#submit').on('click', function (event) {
 				var elm = $(ID('@', 'signature')),
@@ -662,7 +707,6 @@ var ip_geo_block_time = new Date();
 				}
 				return true;
 			});
-
 			break;
 
 		  /*----------------------------------------
@@ -681,7 +725,7 @@ var ip_geo_block_time = new Date();
 
 			// Statistics
 			$(ID('@', 'clear_statistics')).on('click', function (event) {
-				confirm('Clear statistics ?', function () {
+				confirm(IP_GEO_BLOCK.msg[3], function () {
 					ajax_clear('statistics', null);
 				});
 				return false;
@@ -689,7 +733,7 @@ var ip_geo_block_time = new Date();
 
 			// Statistics
 			$(ID('@', 'clear_cache')).on('click', function (event) {
-				confirm('Clear cache ?', function () {
+				confirm(IP_GEO_BLOCK.msg[4], function () {
 					ajax_clear('cache', null);
 				});
 				return false;
@@ -851,9 +895,15 @@ var ip_geo_block_time = new Date();
 				});
 			}
 
+			// Clear filter logs
+			$(ID('#', 'reset-filter')).on('click', function (event) {
+				$('.footable').trigger('footable_clear_filter');
+				return false;
+			});
+
 			// Validation logs
 			$(ID('@', 'clear_logs')).on('click', function (event) {
-				confirm('Clear logs ?', function () {
+				confirm(IP_GEO_BLOCK.msg[5], function () {
 					ajax_clear('logs', null);
 				});
 				return false;

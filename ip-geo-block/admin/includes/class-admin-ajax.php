@@ -238,8 +238,10 @@ class IP_Geo_Block_Admin_Ajax {
 			'[extra_ips][white_list]',
 			'[extra_ips][black_list]',
 			'[signature]',
-			'[response_code]',
 			'[login_fails]',
+			'[response_code]',
+			'[response_msg]',            // 3.0.0
+			'[redirect_uri]',            // 3.0.0
 			'[validation][timing]',      // 2.2.9
 			'[validation][proxy]',
 			'[validation][comment]',
@@ -256,10 +258,32 @@ class IP_Geo_Block_Admin_Ajax {
 			'[validation][ajax][2]',
 			'[validation][plugins]',
 			'[validation][themes]',
+			'[validation][includes]',    // 3.0.0
+			'[validation][uploads]',     // 3.0.0
+			'[validation][languages]',   // 3.0.0
+			'[validation][public]',      // 3.0.0
 			'[rewrite][plugins]',
 			'[rewrite][themes]',
+			'[rewrite][includes]',       // 3.0.0
+			'[rewrite][uploads]',        // 3.0.0
+			'[rewrite][languages]',      // 3.0.0
 			'[exception][plugins][*]',   // 2.2.5
 			'[exception][themes][*]',    // 2.2.5
+			'[exception][admin][$]',     // 3.0.0
+			'[exception][public][$]',    // 3.0.0
+			'[exception][includes][$]',  // 3.0.0
+			'[exception][uploads][$]',   // 3.0.0
+			'[exception][languages][$]', // 3.0.0
+			'[public][matching_rule]',   // 3.0.0
+			'[public][white_list]',      // 3.0.0
+			'[public][black_list]',      // 3.0.0
+			'[public][target_rule]',     // 3.0.0
+			'[public][target_pages][$]', // 3.0.0
+			'[public][target_posts][$]', // 3.0.0
+			'[public][target_cates][$]', // 3.0.0
+			'[public][target_tags][$]',  // 3.0.0
+			'[public][ua_list]',         // 3.0.0
+			'[public][simulate]',        // 3.0.0
 			'[providers][Maxmind]',
 			'[providers][IP2Location]',
 			'[providers][freegeoip.net]',
@@ -277,12 +301,14 @@ class IP_Geo_Block_Admin_Ajax {
 			'[validation][postkey]',
 			'[update][auto]',
 			'[anonymize]',
+			'[cache_time_gc]',           // 3.0.0
 			'[cache_hold]',
 			'[cache_time]',
 			'[comment][pos]',
 			'[comment][msg]',
 			'[clean_uninstall]',
 			'[api_key][GoogleMap]',      // 2.2.7
+			'[network_wide]',            // 3.0.0
 		);
 		$json = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;
@@ -317,7 +343,7 @@ class IP_Geo_Block_Admin_Ajax {
 							foreach ( $input[ $m[1] ][ $m[2] ] as $val ) {
 								$json[ $prfx.'['.$m[1].']['.$m[2].']'.'['.$val.']' ] = 1;
 							}
-						} else {
+						} elseif ( is_array( $input[ $m[1] ][ $m[2] ] ) ) {
 							$json[ $prfx.'['.$m[1].']['.$m[2].']' ] = implode( ',', $input[ $m[1] ][ $m[2] ] );
 						}
 					}

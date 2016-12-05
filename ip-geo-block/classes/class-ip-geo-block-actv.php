@@ -10,11 +10,11 @@
  */
 
 // Stuff for resources
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
-require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php';
+require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php';
+require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php';
+require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
+require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
 
 class IP_Geo_Block_Activate {
 
@@ -31,6 +31,7 @@ class IP_Geo_Block_Activate {
 
 			// kick off a cron job to download database immediately
 			IP_Geo_Block_Cron::start_update_db( $settings );
+			IP_Geo_Block_Cron::start_cache_gc( $settings );
 
 			// activate rewrite rules
 			IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
@@ -46,7 +47,7 @@ class IP_Geo_Block_Activate {
 	 */
 	public static function activate( $network_wide = FALSE ) {
 		if ( ! function_exists( 'is_plugin_active_for_network' ) )
-			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+			require_once ABSPATH . '/wp-admin/includes/plugin.php';
 
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			global $wpdb;
@@ -75,6 +76,7 @@ class IP_Geo_Block_Activate {
 	public static function deactivate( $network_wide = FALSE ) {
 		// cancel schedule
 		IP_Geo_Block_Cron::stop_update_db();
+		IP_Geo_Block_Cron::stop_cache_gc();
 
 		// deactivate rewrite rules
 		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
