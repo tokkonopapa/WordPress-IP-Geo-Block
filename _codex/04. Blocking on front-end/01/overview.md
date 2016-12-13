@@ -87,7 +87,7 @@ useful to check which pages would be blocked or passed.
 - [UA string and qualification][UA-Qualify]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[BestPractice]: {{ '/codex/the-best-practice-of-target-settings.html'  | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
+[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [LivingCache]:  {{ '/codex/living-with-caching-plugin.html'            | prepend: site.baseurl }} "Living with caching plugin | IP Geo Block"
 [UA-Qualify]:   {{ '/codex/ua-string-and-qualification.html'           | prepend: site.baseurl }} "UA string and qualification | IP Geo Block"
 [Ver3.0.0]:     {{ '/changelog/release-3.0.0.html'                     | prepend: site.baseurl }} "3.0.0 Release Note | IP Geo Block"

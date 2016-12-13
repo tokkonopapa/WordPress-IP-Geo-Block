@@ -82,5 +82,5 @@ responses against each request in the text area.
 [MASTER-ZIP]:   https://github.com/tokkonopapa/WordPress-IP-Geo-Block/archive/master.zip "WordPress-IP-Geo-Block-master.zip"
 [SecretKeyAPI]: https://codex.wordpress.org/WordPress.org_API#Secret_Key "WordPress.org API « WordPress Codex"
 [RFC3986-2.3]:  https://tools.ietf.org/html/rfc3986#section-2.3 "2.3. Unreserved Characters / RFC 3986 - Uniform Resource Identifier (URI): Generic Syntax"
-[BestPractice]: {{ '/codex/the-best-practice-of-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
-[ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
+[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
+[ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"

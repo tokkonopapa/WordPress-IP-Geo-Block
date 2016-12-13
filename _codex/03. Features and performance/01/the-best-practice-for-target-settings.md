@@ -2,8 +2,8 @@
 layout: page
 category: codex
 section: Features and performance
-title: The best practice of target settings
-excerpt: The best practice of target settings
+title: The best practice for target settings
+excerpt: The best practice for target settings
 ---
 
 At the "**Validation target settings**", you can enable the option, "**Block 

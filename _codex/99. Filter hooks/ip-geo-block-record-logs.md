@@ -65,8 +65,8 @@ add_filter( 'ip-geo-block-record-logs', 'my_record_logs', 10, 3 );
 - [ip-geo-block-bypass-themes][BypassThemes]
 
 [IP-Geo-Block]:  https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[BestPractice]:  {{ '/codex/the-best-practice-of-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
-[RecordingLogs]: {{ '/codex/record-settings-and-logs.html'    | prepend: site.baseurl }} 'Record settings and logs | IP Geo Block'
-[PreventExpose]: {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} 'Prevent exposure of wp-config.php | IP Geo Block'
-[BypassAdmins]:  {{ '/codex/ip-geo-block-bypass-admins.html'  | prepend: site.baseurl }} 'ip-geo-block-bypass-admins | IP Geo Block'
-[BypassThemes]:  {{ '/codex/ip-geo-block-bypass-themes.html'  | prepend: site.baseurl }} 'ip-geo-block-bypass-themes | IP Geo Block'
+[BestPractice]:  {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
+[RecordingLogs]: {{ '/codex/record-settings-and-logs.html'              | prepend: site.baseurl }} 'Record settings and logs | IP Geo Block'
+[PreventExpose]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} 'Prevent exposure of wp-config.php | IP Geo Block'
+[BypassAdmins]:  {{ '/codex/ip-geo-block-bypass-admins.html'            | prepend: site.baseurl }} 'ip-geo-block-bypass-admins | IP Geo Block'
+[BypassThemes]:  {{ '/codex/ip-geo-block-bypass-themes.html'            | prepend: site.baseurl }} 'ip-geo-block-bypass-themes | IP Geo Block'
