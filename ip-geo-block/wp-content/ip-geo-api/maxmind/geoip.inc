@@ -255,7 +255,8 @@ function geoip_open($filename, $flags)
     if ($gi->flags & GEOIP_SHARED_MEMORY) {
         $gi->shmid = @shmop_open(GEOIP_SHM_KEY, "a", 0, 0);
     } else {
-        $gi->filehandle = fopen($filename, "rb") or die("Can not open $filename\n");
+        $gi->filehandle = fopen($filename, "rb"); if (!$gi->filehandle) return FALSE; // or die("Can not open $filename\n");
+        flock($gi->filehandle, LOCK_SH); // @since 1.1.6
         if ($gi->flags & GEOIP_MEMORY_CACHE) {
             $s_array = fstat($gi->filehandle);
             $gi->memory_buffer = fread($gi->filehandle, $s_array['size']);
@@ -272,7 +273,7 @@ function geoip_close($gi)
         return true;
     }
 
-    return fclose($gi->filehandle);
+    return flock($gi->filehandle, LOCK_UN) and fclose($gi->filehandle); // @since 1.1.6
 }
 
 function geoip_country_id_by_addr_v6($gi, $addr)

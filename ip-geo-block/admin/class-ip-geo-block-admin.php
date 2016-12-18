@@ -305,9 +305,21 @@ class IP_Geo_Block_Admin {
 		// Check self blocking
 		if ( 1 === (int)$settings['validation']['login'] ) {
 			$instance = IP_Geo_Block::get_instance();
-			$validate = $instance->validate_ip( 'login', $settings, TRUE, FALSE, FALSE );
+			$validate = $instance->validate_ip( 'login', $settings, TRUE, FALSE, FALSE ); // skip authentication check
 
-			if ( 'passed' !== $validate['result'] ) {
+			switch( $validate['result'] ) {
+			  case 'limited':
+				self::add_admin_notice( 'error',
+					__( 'Once you logout, you will be unable to login again because the number of login attempts reaches the limit.', 'ip-geo-block' ) . ' ' .
+					sprintf(
+						__( 'Please execute "<strong>Clear cache</strong>" on <a href="%s">Statistics tab</a> to prevent locking yourself out.', 'ip-geo-block' ),
+						esc_url( admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME . '&tab=1' ) )
+					)
+				);
+				break;
+
+			  case 'blocked':
+			  case 'extra':
 				self::add_admin_notice( 'error',
 					( $settings['matching_rule'] ?
 						__( 'Once you logout, you will be unable to login again because your country code or IP address is in the blacklist.', 'ip-geo-block' ) :
@@ -426,7 +438,7 @@ class IP_Geo_Block_Admin {
 			3 => 'admin/includes/tab-attribution.php',
 		);
 
-		require_once( IP_GEO_BLOCK_PATH . $files[ $this->admin_tab ] );
+		require_once IP_GEO_BLOCK_PATH . $files[ $this->admin_tab ];
 		IP_Geo_Block_Admin_Tab::tab_setup( $this );
 	}
 
@@ -799,7 +811,7 @@ class IP_Geo_Block_Admin {
 		//----------------------------------------
 		// activate rewrite rules
 		//----------------------------------------
-		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+		require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
 		$stat = IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $options['rewrite'] );
 
 		// check the status of rewrite rules
@@ -824,7 +836,7 @@ class IP_Geo_Block_Admin {
 		//----------------------------------------
 		// additional installation
 		//----------------------------------------
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php';
 		$file = IP_Geo_Block_Opts::setup_validation_timing( $options );
 		if ( TRUE !== $file ) {
 			$options['validation']['timing'] = 0;
@@ -853,6 +865,8 @@ class IP_Geo_Block_Admin {
 		// Check request origin, nonce, capability.
 		$this->check_admin_post( TRUE );
 
+		require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php';
+
 		$which = isset( $_POST['which'] ) ? $_POST['which'] : NULL;
 		switch ( isset( $_POST['cmd'  ] ) ? $_POST['cmd'  ] : NULL ) {
 		  case 'download':
@@ -862,13 +876,11 @@ class IP_Geo_Block_Admin {
 
 		  case 'search':
 			// Get geolocation by IP
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			$res = IP_Geo_Block_Admin_Ajax::search_ip( $which );
 			break;
 
 		  case 'scan-code':
 			// Fetch providers to get country code
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			$res = IP_Geo_Block_Admin_Ajax::scan_country();
 			break;
 
@@ -903,31 +915,26 @@ class IP_Geo_Block_Admin {
 
 		  case 'export-logs':
 			// Export logs from MySQL DB
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			IP_Geo_Block_Admin_Ajax::export_logs( $which );
 			break;
 
 		  case 'restore':
 			// Get logs from MySQL DB
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which );
 			break;
 
 		  case 'validate':
 			// Validate settings
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			IP_Geo_Block_Admin_Ajax::validate_settings( $this );
 			break;
 
 		  case 'import-default':
 			// Import initial settings
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			$res = IP_Geo_Block_Admin_Ajax::settings_to_json( IP_Geo_Block::get_default() );
 			break;
 
 		  case 'import-preferred':
 			// Import preference
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			$res = IP_Geo_Block_Admin_Ajax::preferred_to_json();
 			break;
 
@@ -944,6 +951,10 @@ class IP_Geo_Block_Admin {
 			}
 			break;
 
+		  case 'show-info':
+			$res = IP_Geo_Block_Admin_Ajax::get_wp_info();
+			break;
+
 		  case 'create-table':
 		  case 'delete-table':
 			// Need to define `IP_GEO_BLOCK_DEBUG` to true
@@ -955,6 +966,7 @@ class IP_Geo_Block_Admin {
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 			);
+			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

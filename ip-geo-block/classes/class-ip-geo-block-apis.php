@@ -458,11 +458,11 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		$cache = self::get_cache( $ip = $validate['ip'] );
 
 		if ( $cache ) {
-			$fail = $cache['fail'] + (int)isset( $validate['fail'] );
-			$call = $cache['call'] + (int)empty( $validate['fail'] );
+			$fail = $cache['fail'] + ( empty( $validate['fail'] ) ? 0 : 1 );
+			$call = $cache['call'] + ( empty( $validate['fail'] ) ? 1 : 0 );
 		} else { // if new cache then reset these values
-			$call = 1;
 			$fail = 0;
+			$call = 1;
 		}
 
 		// update elements
@@ -472,7 +472,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			'hook' => $hook,
 			'code' => $validate['code'],
 			'auth' => $validate['auth'], // get_current_user_id() > 0
-			'fail' => $validate['auth'] ? 0 : $fail,
+			'fail' => $fail, // $validate['auth'] ? 0 : $fail,
 			'call' => $settings['save_statistics'] ? $call : 0,
 			'host' => isset( $validate['host'] ) ? $validate['host'] : NULL,
 		) );
@@ -482,6 +482,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 	public static function clear_cache() {
 		IP_Geo_Block_Logs::clear_cache();
+		self::$memcache = array();
 	}
 
 	public static function get_cache_all() {
@@ -518,43 +519,43 @@ class IP_Geo_Block_Provider {
 		'freegeoip.net' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a class="ip-geo-block-link" href="http://freegeoip.net/" title="freegeoip.net: FREE IP Geolocation Web Service" rel=noreferrer target=_blank>http://freegeoip.net/</a>&nbsp;(IPv4, IPv6 / free)',
+			'link' => '<a rel="noreferrer" href="http://freegeoip.net/" title="freegeoip.net: FREE IP Geolocation Web Service">http://freegeoip.net/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'ipinfo.io' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a class="ip-geo-block-link" href="http://ipinfo.io/" title="ip address information including geolocation, hostname and network details" rel=noreferrer target=_blank>http://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free)',
+			'link' => '<a rel="noreferrer" href="http://ipinfo.io/" title="ip address information including geolocation, hostname and network details">http://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'Nekudo' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a class="ip-geo-block-link" href="http://geoip.nekudo.com/" title="geoip.nekudo.com | Free IP to geolocation API" rel=noreferrer target=_blank>http://geoip.nekudo.com/</a>&nbsp;(IPv4, IPv6 / free)',
+			'link' => '<a rel="noreferrer" href="http://geoip.nekudo.com/" title="geoip.nekudo.com | Free IP to geolocation API">http://geoip.nekudo.com/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'Xhanch' => array(
 			'key'  => NULL,
 			'type' => 'IPv4 / free',
-			'link' => '<a class="ip-geo-block-link" href="http://xhanch.com/xhanch-api-ip-get-detail/" title="Xhanch API &#8211; IP Get Detail | Xhanch Studio" rel=noreferrer target=_blank>http://xhanch.com/</a>&nbsp;(IPv4 / free)',
+			'link' => '<a rel="noreferrer" href="http://xhanch.com/xhanch-api-ip-get-detail/" title="Xhanch API &#8211; IP Get Detail | Xhanch Studio">http://xhanch.com/</a>&nbsp;(IPv4 / free)',
 		),
 
 		'GeoIPLookup' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a class="ip-geo-block-link" href="http://geoiplookup.net/" title="What Is My IP Address | GeoIP Lookup" rel=noreferrer target=_blank>GeoIPLookup.net</a>&nbsp;(IPv4, IPv6 / free)',
+			'link' => '<a rel="noreferrer" href="http://geoiplookup.net/" title="What Is My IP Address | GeoIP Lookup">GeoIPLookup.net</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'ip-api.com' => array(
 			'key'  => FALSE,
 			'type' => 'IPv4, IPv6 / free for non-commercial use',
-			'link' => '<a class="ip-geo-block-link" href="http://ip-api.com/" title="IP-API.com - Free Geolocation API" rel=noreferrer target=_blank>http://ip-api.com/</a>&nbsp;(IPv4, IPv6 / free for non-commercial use)',
+			'link' => '<a rel="noreferrer" href="http://ip-api.com/" title="IP-API.com - Free Geolocation API">http://ip-api.com/</a>&nbsp;(IPv4, IPv6 / free for non-commercial use)',
 		),
 
 		'IPInfoDB' => array(
 			'key'  => '',
 			'type' => 'IPv4, IPv6 / free for registered user',
-			'link' => '<a class="ip-geo-block-link" href="http://ipinfodb.com/" title="IPInfoDB | Free IP Address Geolocation Tools" rel=noreferrer target=_blank>http://ipinfodb.com/</a>&nbsp;(IPv4, IPv6 / free for registered user)',
+			'link' => '<a rel="noreferrer" href="http://ipinfodb.com/" title="IPInfoDB | Free IP Address Geolocation Tools">http://ipinfodb.com/</a>&nbsp;(IPv4, IPv6 / free for registered user)',
 		),
 	);
 
@@ -648,8 +649,7 @@ class IP_Geo_Block_Provider {
 
 		if ( 0 === $field )
 			return __(
-				'You need to select at least one IP geolocation service. Otherwise <strong>you\'ll be blocked</strong> after the cache expires.',
-				'ip-geo-block'
+				'You need to select at least one IP geolocation service. Otherwise <strong>you\'ll be blocked</strong> after the cache expires.', 'ip-geo-block'
 			);
 
 		return NULL;

@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.0\n"
+"Project-Id-Version: IP Geo Block 3.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-12-05 21:17+0900\n"
-"PO-Revision-Date: 2016-12-05 21:17+0900\n"
+"POT-Creation-Date: 2016-12-18 17:29+0900\n"
+"PO-Revision-Date: 2016-12-18 17:29+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgid "Contribute at GitHub"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:211
-#: admin/class-ip-geo-block-admin.php:365
+#: admin/class-ip-geo-block-admin.php:377
 msgid "Settings"
 msgstr ""
 
@@ -92,69 +92,83 @@ msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:313
 msgid ""
+"Once you logout, you will be unable to login again because the number of "
+"login attempts reaches the limit."
+msgstr ""
+
+#: admin/class-ip-geo-block-admin.php:315
+#, php-format
+msgid ""
+"Please execute \"<strong>Clear cache</strong>\" on <a href=\"%s\">Statistics "
+"tab</a> to prevent locking yourself out."
+msgstr ""
+
+#: admin/class-ip-geo-block-admin.php:325
+msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is in the blacklist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:314
+#: admin/class-ip-geo-block-admin.php:326
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is not in the whitelist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:317
+#: admin/class-ip-geo-block-admin.php:329
 #, php-format
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:366
+#: admin/class-ip-geo-block-admin.php:378
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:367
+#: admin/class-ip-geo-block-admin.php:379
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:368
+#: admin/class-ip-geo-block-admin.php:380
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:369
+#: admin/class-ip-geo-block-admin.php:381
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:381
+#: admin/class-ip-geo-block-admin.php:393
 msgid "Toggle all"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:405
+#: admin/class-ip-geo-block-admin.php:417
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:406
+#: admin/class-ip-geo-block-admin.php:418
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:411
+#: admin/class-ip-geo-block-admin.php:423
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:503
+#: admin/class-ip-geo-block-admin.php:515
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:819
-#: admin/class-ip-geo-block-admin.php:832
-#: classes/class-ip-geo-block-cron.php:261
-#: classes/class-ip-geo-block-opts.php:310
+#: admin/class-ip-geo-block-admin.php:831
+#: admin/class-ip-geo-block-admin.php:844
+#: classes/class-ip-geo-block-cron.php:260
+#: classes/class-ip-geo-block-cron.php:302
+#: classes/class-ip-geo-block-opts.php:313
 #, php-format
 msgid "Unable to write %s. Please check the permission."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:820
+#: admin/class-ip-geo-block-admin.php:832
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
@@ -202,9 +216,9 @@ msgstr ""
 msgid "Export csv"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:109 admin/includes/tab-settings.php:363
+#: admin/includes/tab-accesslog.php:109
 #, php-format
-msgid "<dfn title=\"Validate request to %s.\">%s</dfn>"
+msgid "<dfn title=\"Validation log of request to %s.\">%s</dfn>"
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:111 admin/includes/tab-settings.php:365
@@ -224,7 +238,11 @@ msgid "Admin area"
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:115 admin/includes/tab-settings.php:370
-msgid "Pubic facing pages"
+msgid "public facing pages"
+msgstr ""
+
+#: admin/includes/tab-accesslog.php:115 admin/includes/tab-settings.php:370
+msgid "Public facing pages"
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:121
@@ -444,12 +462,18 @@ msgstr ""
 #: admin/includes/tab-settings.php:345
 msgid ""
 "Validate at an earlier phase than other typical plugins. It can reduce load "
-"on server but has <a href='http://www.ipgeoblock.com/codex/validation-timing."
-"html' title='Validation timing | IP Geo Block'>some restrictions</a>."
+"on server but has <a rel='noreferrer' href='http://www.ipgeoblock.com/codex/"
+"validation-timing.html' title='Validation timing | IP Geo Block'>some "
+"restrictions</a>."
 msgstr ""
 
 #: admin/includes/tab-settings.php:357
 msgid "Back-end target settings"
+msgstr ""
+
+#: admin/includes/tab-settings.php:363
+#, php-format
+msgid "<dfn title=\"Validate request to %s.\">%s</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:369
@@ -613,7 +637,7 @@ msgstr ""
 #: admin/includes/tab-settings.php:835
 msgid ""
 "It enables to simulate validation without deployment. The results can be "
-"found at &#8220;Pubic facing pages&#8221; in Logs."
+"found at &#8220;Public facing pages&#8221; in Logs."
 msgstr ""
 
 #: admin/includes/tab-settings.php:835
@@ -633,12 +657,12 @@ msgstr ""
 #: admin/includes/tab-settings.php:885
 #, php-format
 msgid ""
-"Please download <a href=\"https://github.com/tokkonopapa/WordPress-IP-Geo-"
-"API/archive/master.zip\" title=\"Download the contents of tokkonopapa/"
-"WordPress-IP-Geo-API as a zip file\">ZIP file</a> from <a href=\"https://"
-"github.com/tokkonopapa/WordPress-IP-Geo-API\" title=\"tokkonopapa/WordPress-"
-"IP-Geo-API - GitHub\">WordPress-IP-Geo-API</a> and upload <code>ip-geo-api</"
-"code> to <code>%s</code> with write permission."
+"Please download <a rel=\"noreferrer\" href=\"https://github.com/tokkonopapa/"
+"WordPress-IP-Geo-API/archive/master.zip\" title=\"Download the contents of "
+"tokkonopapa/WordPress-IP-Geo-API as a zip file\">ZIP file</a> from <a rel="
+"\"noreferrer\" href=\"https://github.com/tokkonopapa/WordPress-IP-Geo-API\" "
+"title=\"tokkonopapa/WordPress-IP-Geo-API - GitHub\">WordPress-IP-Geo-API</a> "
+"and upload <code>ip-geo-api</code> to <code>%s</code> with write permission."
 msgstr ""
 
 #: admin/includes/tab-settings.php:894
@@ -649,7 +673,7 @@ msgstr ""
 msgid "database"
 msgstr ""
 
-#: admin/includes/tab-settings.php:910 classes/class-ip-geo-block-cron.php:306
+#: admin/includes/tab-settings.php:910 classes/class-ip-geo-block-cron.php:352
 #, php-format
 msgid "Last update: %s"
 msgstr ""
@@ -817,66 +841,83 @@ msgid ""
 msgstr ""
 
 #: admin/includes/tab-settings.php:1246
-msgid "Best practice"
+msgid "Best settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1256
-msgid "Delete DB table for validation logs"
+#: admin/includes/tab-settings.php:1255
+msgid ""
+"<dfn title=\"Please copy &amp; paste when submitting your issue to support "
+"forum.\">Installation information</dfn><br />[ <a rel=\"noreferrer\" href="
+"\"https://wordpress.org/support/plugin/ip-geo-block\" title=\"WordPress "
+"&#8250; Support &raquo; IP Geo Block\">support forum</a> ]"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1264
-msgid "Delete now"
+#: admin/includes/tab-settings.php:1262
+msgid "Show PHP, WordPress, theme and plugins information."
+msgstr ""
+
+#: admin/includes/tab-settings.php:1262
+msgid "Show information"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1272
-msgid "Create DB table for validation logs"
+msgid "Delete DB table for validation logs"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1280
-msgid "Create now"
+msgid "Delete now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1295
-msgid ""
-"To enhance the protection ability, please refer to &#8220;<a href=\"http://"
-"www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html\" title="
-"\"The best practice of target settings | IP Geo Block\">The best practice of "
-"target settings</a>&#8221;."
+#: admin/includes/tab-settings.php:1288
+msgid "Create DB table for validation logs"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1296
-msgid ""
-"If you have any troubles with these, please open an issue at <a class=\"ip-"
-"geo-block-link\" href=\"http://wordpress.org/support/plugin/ip-geo-block\" "
-"title=\"WordPress &#8250; Support &raquo; IP Geo Block\" "
-"target=_blank>support forum</a>."
+msgid "Create now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1303
+#: admin/includes/tab-settings.php:1311
+msgid ""
+"To enhance the protection ability, please refer to &#8220;<a rel=\"noreferrer"
+"\" href=\"http://www.ipgeoblock.com/codex/the-best-practice-for-target-"
+"settings.html\" title=\"The best practice for target settings | IP Geo Block"
+"\">The best practice for target settings</a>&#8221;."
+msgstr ""
+
+#: admin/includes/tab-settings.php:1312
+msgid ""
+"If you have any troubles with these, please check FAQ at <a rel=\"noreferrer"
+"\" href=\"https://wordpress.org/plugins/ip-geo-block/faq/\" title=\"IP Geo "
+"Block &mdash; WordPress Plugins\">WordPress.org</a> and <a rel=\"noreferrer"
+"\" href=\"http://www.ipgeoblock.com/codex/#faq\" title=\"Codex | IP Geo Block"
+"\">Codex</a>."
+msgstr ""
+
+#: admin/includes/tab-settings.php:1319
 msgid ""
 "While Maxmind and IP2Location will fetch the local database, others will "
 "pass an IP address to the APIs via HTTP."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1304
+#: admin/includes/tab-settings.php:1320
 msgid ""
 "Please select the appropriate APIs to fit the privacy law in your country."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1311
+#: admin/includes/tab-settings.php:1327
 msgid ""
-"Please refer to the document &#8220;<a href=\"http://www.ipgeoblock.com/"
-"codex/#blocking-on-front-end\" title=\"Codex | IP Geo Block\" "
-"target=_blank>Blocking on front-end</a>&#8221; for details, including "
-"restrictions on cache plugin."
+"Please refer to the document &#8220;<a rel=\"noreferrer\" href=\"http://www."
+"ipgeoblock.com/codex/#blocking-on-front-end\" title=\"Codex | IP Geo Block"
+"\">Blocking on front-end</a>&#8221; for details, including restrictions on "
+"cache plugin."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1312
+#: admin/includes/tab-settings.php:1328
 msgid ""
 "If you find any issues or have something to suggest, please feel free to "
-"open an issue at <a class=\"ip-geo-block-link\" href=\"http://wordpress.org/"
-"support/plugin/ip-geo-block\" title=\"WordPress &#8250; Support &raquo; IP "
-"Geo Block\" target=_blank>support forum</a>."
+"open an issue at <a rel=\"noreferrer\" href=\"https://wordpress.org/support/"
+"plugin/ip-geo-block\" title=\"WordPress &#8250; Support &raquo; IP Geo Block"
+"\">support forum</a>."
 msgstr ""
 
 #: admin/includes/tab-statistics.php:24 admin/includes/tab-statistics.php:184
@@ -951,30 +992,37 @@ msgid ""
 "statistics."
 msgstr ""
 
-#: classes/class-ip-geo-block-apis.php:651
+#: classes/class-ip-geo-block-apis.php:652
 msgid ""
 "You need to select at least one IP geolocation service. Otherwise "
 "<strong>you'll be blocked</strong> after the cache expires."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:224
+#: classes/class-ip-geo-block-cron.php:223
 msgid "Your database file is up-to-date."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:253
+#: classes/class-ip-geo-block-cron.php:252
+#: classes/class-ip-geo-block-cron.php:294
 #, php-format
 msgid "Unable to read %s. Please check the permission."
 msgstr ""
 
-#: classes/class-ip-geo-block-logs.php:131
+#: classes/class-ip-geo-block-cron.php:268
+#: classes/class-ip-geo-block-cron.php:310
+#, php-format
+msgid "Can't lock %s. Please try again after a while."
+msgstr ""
+
+#: classes/class-ip-geo-block-logs.php:147
 #, php-format
 msgid ""
 "Creating a DB table %s had failed. Once de-activate this plugin, and then "
 "activate again."
 msgstr ""
 
-#: wp-content/ip-geo-api/ip2location/class-ip2location.php:145
-#: wp-content/ip-geo-api/ip2location/class-ip2location.php:174
+#: wp-content/ip-geo-api/ip2location/class-ip2location.php:147
+#: wp-content/ip-geo-api/ip2location/class-ip2location.php:176
 #: wp-content/ip-geo-api/maxmind/class-maxmind.php:149
 #: wp-content/ip-geo-api/maxmind/class-maxmind.php:178
 msgid "Database file does not exist."

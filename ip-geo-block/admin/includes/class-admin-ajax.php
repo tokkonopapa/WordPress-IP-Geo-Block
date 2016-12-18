@@ -6,7 +6,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function search_ip( $which ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 
 		// check format
 		if ( filter_var( $ip = $_POST['ip'], FILTER_VALIDATE_IP ) ) {
@@ -420,9 +420,57 @@ class IP_Geo_Block_Admin_Ajax {
 	// Fallback function for PHP 5.3 and under
 	static private function convert_encoding( $matches ) {
 		return mb_convert_encoding(
-			pack( 'H*', str_replace( '\\u', '', $matches[0] ) ),
-			'UTF-8', 'UTF-16'
+			pack( 'H*', str_replace( '\\u', '', $matches[0] ) ), 'UTF-8', 'UTF-16'
 		);
+	}
+
+	static public function get_wp_info() {
+		// PHP, WordPress
+		$res = array();
+		$res[] = array( 'PHP' => PHP_VERSION );
+		$res[] = array( 'BC Math' => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no') );
+		$res[] = array( 'mb_strcut' => function_exists( 'mb_strcut' ) ? 'yes' : 'no' );
+		$res[] = array( 'WordPress' => $GLOBALS['wp_version'] );
+		$res[] = array( 'Multisite' => is_multisite() ? 'yes' : 'no' );
+
+		// Child and parent themes
+		$activated = wp_get_theme(); // @since 3.4.0
+		$res[] = array( esc_html( $activated->get( 'Name' ) ) => esc_html( $activated->get( 'Version' ) ) );
+
+		if ( $installed = $activated->get( 'Template' ) ) {
+			$activated = wp_get_theme( $installed );
+			$res[] = array( esc_html( $activated->get( 'Name' ) ) => esc_html( $activated->get( 'Version' ) ) );
+		}
+
+		// Plugins
+		$installed = get_plugins(); // @since 1.5.0
+		$activated = get_site_option( 'active_sitewide_plugins' ); // @since 2.8.0
+		! is_array( $activated ) and $activated = array();
+		$activated = array_merge( $activated, array_fill_keys( get_option( 'active_plugins' ), TRUE ) );
+
+		foreach ( $installed as $key => $val ) {
+			if ( isset( $activated[ $key ] ) ) {
+				$res[] = array(
+					esc_html( $val['Name'] ) => esc_html( $val['Version'] )
+				);
+			}
+		}
+
+		// Logs (hook, time, ip, code, result, method, user_agent, headers, data)
+		$installed = IP_Geo_Block_Logs::search_logs( IP_Geo_Block::get_ip_address() );
+
+		foreach ( array_reverse( $installed ) as $val ) {
+			// hide port and nonce
+			$method = preg_replace( '/\[\d+\]/', '', $val['method'] );
+			$method = preg_replace( '/(' . IP_Geo_Block::PLUGIN_NAME . '-auth-nonce)(?:=|%3D)([\w]+)/', '$1=...', $method );
+
+			$res[] = array(
+				esc_html( IP_Geo_Block_Util::localdate( $val['time'], 'Y-m-d H:i:s' ) ) =>
+				esc_html( str_pad( $val['result'], 8 ) . $method )
+			);
+		}
+
+		return $res;
 	}
 
 }

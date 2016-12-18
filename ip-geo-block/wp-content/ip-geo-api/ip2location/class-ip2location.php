@@ -11,7 +11,7 @@ define( 'IP_GEO_BLOCK_IP2LOC_IPV4_ZIP', 'http://download.ip2location.com/lite/IP
 define( 'IP_GEO_BLOCK_IP2LOC_IPV6_ZIP', 'http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.IPV6.BIN.ZIP' );
 
 /**
- * Class for IP2Location (ver. 1.1.5)
+ * Class for IP2Location (ver. 1.1.6)
  *
  * URL         : http://www.ip2location.com/
  * Term of use : http://www.ip2location.com/terms
@@ -63,8 +63,10 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 		try {
 			$geo = new IP2Location( $file );
 			if ( $geo && ( $geo->get_database_type() & $type ) ) {
-				$res = array();
 				$data = $geo->lookup( $ip );
+				$geo->close(); // @since 1.1.6
+
+				$res = array();
 
 				foreach ( $this->transform_table as $key => $val ) {
 					if ( isset( $data->$val ) && IP2Location::FIELD_NOT_SUPPORTED !== $data->$val )

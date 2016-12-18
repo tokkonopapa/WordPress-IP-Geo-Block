@@ -166,9 +166,8 @@ class IP_Geo_Block_Cron {
 	}
 
 	public static function start_cache_gc( $settings ) {
-		if ( ! wp_next_scheduled( IP_Geo_Block::CACHE_NAME ) ) {
+		if ( ! wp_next_scheduled( IP_Geo_Block::CACHE_NAME ) )
 			wp_schedule_single_event( time() + $settings['cache_time_gc'], IP_Geo_Block::CACHE_NAME );
-    	}
 	}
 
 	public static function stop_cache_gc() {
@@ -255,7 +254,7 @@ class IP_Geo_Block_Cron {
 						)
 					);
 
-				if ( FALSE === ( $fp = @fopen( $filename, 'wb' ) ) )
+				if ( FALSE === ( $fp = @fopen( $filename, 'cb' ) ) )
 					throw new Exception(
 						sprintf(
 							__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ),
@@ -263,36 +262,83 @@ class IP_Geo_Block_Cron {
 						)
 					);
 
+				if ( ! flock( $fp, LOCK_EX ) )
+					throw new Exception(
+						sprintf(
+							__( 'Can\'t lock %s. Please try again after a while.', 'ip-geo-block' ),
+							$filename
+						)
+					);
+
+				ftruncate( $fp, 0 ); // truncate file
+
 				// same block size in wp-includes/class-http.php
 				while ( $data = gzread( $gz, 4096 ) )
 					fwrite( $fp, $data, strlen( $data ) );
-
-				gzclose( $gz );
-				fclose ( $fp );
 			}
 
 			elseif ( 'zip' === $args && class_exists( 'ZipArchive' ) ) {
 				// https://codex.wordpress.org/Function_Reference/unzip_file
 				WP_Filesystem();
-				$ret = unzip_file( $src, dirname( $filename ) ); // @since 2.5
+				$tmp = get_temp_dir(); // @since 2.5
+				$ret = unzip_file( $src, $tmp ); // @since 2.5
 
 				if ( is_wp_error( $ret ) )
 					throw new Exception(
 						$ret->get_error_code() . ' ' . $ret->get_error_message()
 					);
+
+				if ( FALSE === ( $gz = @fopen( $tmp .= basename( $filename ), 'r' ) ) )
+					throw new Exception(
+						sprintf(
+							__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ),
+							$src
+						)
+					);
+
+				if ( FALSE === ( $fp = @fopen( $filename, 'cb' ) ) )
+					throw new Exception(
+						sprintf(
+							__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ),
+							$filename
+						)
+					);
+
+				if ( ! flock( $fp, LOCK_EX ) )
+					throw new Exception(
+						sprintf(
+							__( 'Can\'t lock %s. Please try again after a while.', 'ip-geo-block' ),
+							$filename
+						)
+					);
+
+				ftruncate( $fp, 0 ); // truncate file
+
+				// same block size in wp-includes/class-http.php
+				while ( $data = fread( $gz, 4096 ) )
+					fwrite( $fp, $data, strlen( $data ) );
 			}
 
-			@unlink( $src );
+			if ( ! empty( $fp ) ) {
+				fflush( $fp );          // flush output before releasing the lock
+				flock ( $fp, LOCK_UN ); // release the lock
+				fclose( $fp );
+			}
+			! empty( $gz  ) and gzclose( $gz  );
+			! empty( $tmp ) && @is_file( $tmp ) and @unlink( $tmp );
+			! is_wp_error( $src ) && @is_file( $src ) and @unlink( $src );
 		}
 
 		// error handler
 		catch ( Exception $e ) {
-			if ( 'gz' === $args && function_exists( 'gzopen' ) ) {
-				! empty( $gz ) and gzclose( $gz );
-				! empty( $fp ) and fclose ( $fp );
+			if ( ! empty( $fp ) ) {
+				fflush( $fp );          // flush output before releasing the lock
+				flock ( $fp, LOCK_UN ); // release the lock
+				fclose( $fp );
 			}
-
-			! is_wp_error( $src ) and @unlink( $src );
+			! empty( $gz  ) and gzclose( $gz  );
+			! empty( $tmp ) && @is_file( $tmp ) and @unlink( $tmp );
+			! is_wp_error( $src ) && @is_file( $src ) and @unlink( $src );
 
 			return array(
 				'code' => $e->getCode(),

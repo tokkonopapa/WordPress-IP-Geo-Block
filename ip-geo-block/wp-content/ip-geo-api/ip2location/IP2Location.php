@@ -204,6 +204,7 @@ class IP2Location {
             throw new Exception('IP2Location.class.php: Unable to open file "' . $file . '".');
           }
 
+          flock($fp, LOCK_SH); // @since 1.1.6
           $stats = fstat($fp);
 
           if ($shm_id = @shmop_open(self::SHM_KEY, 'w', 0, 0)) {
@@ -220,6 +221,7 @@ class IP2Location {
             }
             shmop_close($shm_id);
           }
+          flock($fp, LOCK_UN); // @since 1.1.6
           fclose($fp);
 
           $this->shmId = @shmop_open(self::SHM_KEY, 'a', 0, 0);
@@ -233,11 +235,13 @@ class IP2Location {
       default:
         $this->mode = self::FILE_IO;
         $this->resource = fopen($file, 'rb');
+        flock($this->resource, LOCK_SH); // @since 1.1.6
 
         if ($mode == self::MEMORY_CACHE) {
           $this->mode = self::MEMORY_CACHE;
           $stats = fstat($this->resource);
           $this->buffer = fread($this->resource, $stats['size']);
+          $this->close(); // @since 1.1.6
         }
     }
 
@@ -252,6 +256,19 @@ class IP2Location {
     $this->database['ipv6_base_address'] = $this->readByte(18, '32');
 
     $this->result = new IP2LocationRecord();
+  }
+
+  /**
+   * Close resource.
+   *
+   * @since 1.1.6
+   */
+  public function close() {
+    if ($this->resource) {
+      flock($this->resource, LOCK_UN);
+      fclose($this->resource);
+      $this->resource = NULL;
+    }
   }
 
   /**

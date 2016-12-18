@@ -70,7 +70,6 @@ register_deactivation_hook( __FILE__, 'ip_geo_block_deactivate' );
  * Instantiate class
  *
  */
-add_action( 'shutdown', array( 'IP_Geo_Block_Logs', 'exec_sql' ) );
 add_action( 'plugins_loaded', array( 'IP_Geo_Block', 'get_instance' ) );
 
 /*----------------------------------------------------------------------------*

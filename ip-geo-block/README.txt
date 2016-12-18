@@ -1,9 +1,9 @@
 === IP Geo Block ===
 Contributors: tokkonopapa
 Donate link:
-Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geo, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
+Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.6.1
+Tested up to: 4.7
 Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -64,7 +64,7 @@ about protection performance against 50 samples of vulnerable plugins.
   or themes can be blocked. A numerous such attacks can be found in 
     [this article](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php").
 
-* ** Minimize server load against brute-force attacks:**  
+* **Minimize server load against brute-force attacks:**  
   You can configure this plugin as a 
     [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex")
   which would be loaded prior to regular plugins and can massively 
@@ -170,7 +170,7 @@ All contributions will always be welcome. Or visit my
 2. Search for 'IP Geo Block'
 3. Click 'Install Now'
 4. Activate the plugin on the Plugin dashboard
-5. Try 'Best practice' button for easy setup at the bottom of this plugin's 
+5. Try 'Best settings' button for easy setup at the bottom of this plugin's 
    setting page.
 
 Please refer to 
@@ -340,6 +340,12 @@ that you should upload the original one to deactivate above feature.
 [This document](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block")
 can also help you.
 
+= How to resolve "You are not allowed to access this page"?
+
+If you encounter this message, please refer to 
+  [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;You are not allowed to access this page&rdquo; ? | IP Geo Block")
+to resolve your blocking issue. 
+
 = How can I fix "Unable to write" error? =
 
 When you enable "**Force to load WP core**" options, this plugin will try to 
@@ -352,7 +358,7 @@ to WordPress. In this case, you can configure these `.htaccess` files by your
 own hand instead of enabling "**Force to load WP core**" options.
 
 Please refer to 
-"[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')"
+  "[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')"
 in order to fix this error.
 
 = Does this plugin works well with caching? =
@@ -416,7 +422,7 @@ follows:
 
 Please try "**Best practice**" button at the bottom of this plugin's setting 
 page for easy setup. And also see more details in 
-"[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html 'The best practice of target settings | IP Geo Block')".
+"[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html 'The best practice of target settings | IP Geo Block')".
 
 = Does this plugin validate all the requests? =
 
@@ -477,6 +483,14 @@ Yes, you can find the list of all hooks and useful samples
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 3.0.1 =
+* **Bug fix:** Add lock mechanism for local geolocation DBs to avoid potential 
+  fatal error.
+* **Improvement:** Add self blocking prevention potentially caused by login 
+  attempts with the same IP address of logged in user.
+* **New feature:** Add "**Installation information**" button to make it easy 
+  to submit an issue at support forum.
 
 = 3.0.0 =
 * **New feature:** Add the function of blocking on front-end.

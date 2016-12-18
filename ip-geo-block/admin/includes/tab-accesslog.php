@@ -106,13 +106,13 @@ endif;
 	 */
 	public static function list_accesslog() {
 		// same as in tab-settings.php
-		$dfn = __( '<dfn title="Validate request to %s.">%s</dfn>', 'ip-geo-block' );
+		$dfn = __( '<dfn title="Validation log of request to %s.">%s</dfn>', 'ip-geo-block' );
 		$target = array(
-			'comment' => sprintf( $dfn, 'wp-comments-post.php', __( 'Comment post',       'ip-geo-block' ) ),
-			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',            'ip-geo-block' ) ),
-			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',         'ip-geo-block' ) ),
-			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',         'ip-geo-block' ) ),
-			'public'  => sprintf( $dfn, 'public facing pages',  __( 'Pubic facing pages', 'ip-geo-block' ) ),
+			'comment' => sprintf( $dfn, 'wp-comments-post.php', __( 'Comment post', 'ip-geo-block' ) ),
+			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',      'ip-geo-block' ) ),
+			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',   'ip-geo-block' ) ),
+			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',   'ip-geo-block' ) ),
+			'public'  => sprintf( $dfn, __( 'public facing pages', 'ip-geo-block' ), __( 'Public facing pages', 'ip-geo-block' ) ),
 		);
 
 		foreach ( $target as $key => $val ) {

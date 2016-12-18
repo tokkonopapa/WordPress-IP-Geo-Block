@@ -278,12 +278,15 @@ class IP_Geo_Block_Opts {
 				$settings['exception']['admin'] = $default['exception']['admin'];
 			}
 
+			if ( version_compare( $version, '3.0.1' ) < 0 )
+				delete_transient( IP_Geo_Block::CACHE_NAME ); // @since 2.8
+
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
 
-		// install addons for IP Geolocation database API
-		if ( ! $settings['api_dir'] || version_compare( $version, '2.2.9' ) < 0 )
+		// install addons for IP Geolocation database API @since 1.1.6
+		if ( ! $settings['api_dir'] || version_compare( $version, '3.0.1' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table

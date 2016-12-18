@@ -29,8 +29,6 @@ class IP_Geo_Block_Logs {
 		'daystats'  => array(),
 	);
 
-	private static $sqlist = array();
-
 	/**
 	 * Create
 	 *
@@ -100,6 +98,24 @@ class IP_Geo_Block_Logs {
 		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
 
 		return $result;
+	}
+
+	/**
+	 * Search table by specific IP address
+	 *
+	 */
+	private static function search_table( $table, $ip, $type = FALSE ) {
+		global $wpdb;
+		$table = $wpdb->prefix . $table;
+
+		$sql = $wpdb->prepare(
+			"SELECT * FROM `$table` WHERE `ip` = '%s'", $ip
+		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
+
+		if ( ! $type )
+			return ! empty( $result[0] ) ? $result[0] : NULL; // for cache
+		else
+			return ! empty( $result ) ? $result : array(); // for logs
 	}
 
 	/**
@@ -177,35 +193,27 @@ class IP_Geo_Block_Logs {
 	 * Record statistics data.
 	 *
 	 */
-	public static function record_stat( $statistics ) {
+	public static function record_stat( $stat ) {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_STAT;
 
-		if ( ! is_array( $statistics ) ) {
-			$statistics = self::$default;
+		if ( ! is_array( $stat ) ) {
+			$stat = self::$default;
 		}
 
 		$sql = $wpdb->prepare(
-			"UPDATE `$table` SET `data` = '%s'", serialize( $statistics )
-//			"REPLACE INTO `$table` (`No`, `data`) VALUES (%d, %s)", 1, serialize( $statistics )
-		) and self::add_sql( 'stat', $sql ); // $data = $wpdb->query( $sql ) or self::error( __LINE__ );
+			"UPDATE `$table` SET `data` = '%s'", serialize( $stat )
+//			"REPLACE INTO `$table` (`No`, `data`) VALUES (%d, %s)", 1, serialize( $stat )
+		) and $wpdb->query( $sql ) or self::error( __LINE__ );
 	}
 
 	/**
-	 * Limit the number of rows to send to the user agent
+	 * Limit the number of rows to send to the user agent according the processing time [msec]
 	 *
 	 */
 	public static function limit_rows( $time ) {
-		$time = intval( $time );
 		$options = IP_Geo_Block::get_option();
-
-		if ( $time < 90 /* msec */ )
-			return (int)$options['validation']['maxlogs'];
-
-		elseif ( $time < 200 /* msec */ )
-			return (int)($options['validation']['maxlogs'] / 2);
-
-		return (int)($options['validation']['maxlogs'] / 5);
+		return (int)( $options['validation']['maxlogs'] / ((int)$time < 50 ? 1 : 2) );
 	}
 
 	/**
@@ -358,10 +366,11 @@ class IP_Geo_Block_Logs {
 
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {
-			// mask the password
 			$posts = self::truncate_utf8(
 				file_get_contents( 'php://input' ), '!\s*([<>])\s*!', '$1', IP_GEO_BLOCK_MAX_STR_LEN
 			);
+
+			// mask the password
 			if ( $mask_pwd &&
 			     preg_match_all( '/<string>(\S*?)<\/string>/', $posts, $matches ) >= 2 &&
 			     strpos( $matches[1][1], home_url() ) !== 0 ) { // except pingback
@@ -474,7 +483,7 @@ class IP_Geo_Block_Logs {
 			$sql = $wpdb->prepare(
 				"DELETE FROM `$table` WHERE `hook` = '%s' ORDER BY `No` ASC LIMIT %d",
 				$hook, $count - $rows + 1
-			) and self::add_sql( 'logs', $sql ); // $wpdb->query( $sql ) or self::error( __LINE__ );
+			) and $wpdb->query( $sql ) or self::error( __LINE__ );
 		}
 
 		// insert into DB
@@ -492,7 +501,7 @@ class IP_Geo_Block_Logs {
 			$agent,
 			$heads,
 			$posts
-		) and self::add_sql( 'logs', $sql ); // $wpdb->query( $sql ) or self::error( __LINE__ );
+		) and $wpdb->query( $sql ) or self::error( __LINE__ );
 
 		// backup logs to text files
 		if ( $dir = apply_filters(
@@ -515,10 +524,7 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 
-		$sql = ( "SELECT
-			`hook`, `time`, `ip`, `code`, `result`, `method`, `user_agent`, `headers`, `data`
-			FROM `$table`"
-		);
+		$sql = "SELECT `hook`, `time`, `ip`, `code`, `result`, `method`, `user_agent`, `headers`, `data` FROM `$table`";
 
 		if ( ! $hook )
 			$sql .= " ORDER BY `hook`, `No` DESC";
@@ -529,39 +535,47 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
+	 * Search logs by specific IP address
+	 *
+	 */
+	public static function search_logs( $ip ) {
+		return self::search_table( self::TABLE_LOGS, $ip, TRUE );
+	}
+
+	/**
 	 * Update statistics.
 	 *
 	 */
 	public static function update_stat( $hook, $validate, $settings ) {
 		// Restore statistics.
-		if ( $statistics = self::restore_stat() ) {
+		if ( $stat = self::restore_stat() ) {
 
 			$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'ZZ';
-			if ( empty( $statistics['providers'][ $provider ] ) )
-				$statistics['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
+			if ( empty( $stat['providers'][ $provider ] ) )
+				$stat['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
 
-			$statistics['providers'][ $provider ]['count']++; // undefined in auth_fail()
-			$statistics['providers'][ $provider ]['time'] += (float)@$validate['time'];
+			$stat['providers'][ $provider ]['count']++; // undefined in auth_fail()
+			$stat['providers'][ $provider ]['time'] += (float)@$validate['time'];
 
 			if ( 'passed' !== $validate['result'] ) {
 				// Blocked by type of IP address
 				if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
-					$statistics['IPv4']++;
+					$stat['IPv4']++;
 				elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-					$statistics['IPv6']++;
+					$stat['IPv6']++;
 
-				@$statistics['blocked'  ]++;
-				@$statistics['countries'][ $validate['code'] ]++;
-				@$statistics['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ]++;
+				@$stat['blocked'  ]++;
+				@$stat['countries'][ $validate['code'] ]++;
+				@$stat['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ]++;
 			}
 
-			if ( count( $statistics['daystats'] ) > max( 30, min( 365, (int)@$settings['validation']['recdays'] ) ) ) {
-				reset( $statistics['daystats'] );
-				unset( $statistics['daystats'][ key( $statistics['daystats'] ) ] );
+			if ( count( $stat['daystats'] ) > max( 30, min( 365, (int)@$settings['validation']['recdays'] ) ) ) {
+				reset( $stat['daystats'] );
+				unset( $stat['daystats'][ key( $stat['daystats'] ) ] );
 			}
 
 			// Record statistics.
-			self::record_stat( $statistics );
+			self::record_stat( $stat );
 		}
 	}
 
@@ -576,18 +590,11 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Search cache
+	 * Search cache by specific IP address
 	 *
 	 */
 	public static function search_cache( $ip ) {
-		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
-
-		$sql = $wpdb->prepare(
-			"SELECT * FROM `$table` WHERE `ip` = '%s'", $ip
-		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
-
-		return ! empty( $result[0] ) ? $result[0] : NULL;
+		return self::search_table( IP_Geo_Block::CACHE_NAME, $ip );
 	}
 
 	/**
@@ -600,7 +607,7 @@ class IP_Geo_Block_Logs {
 		$result = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A ) or self::error( __LINE__ );
 
 		// transform DB to cache format
-		$cache = array();
+		$cache = $hash = array();
 		foreach ( $result as $key => $val ) {
 			$ip = $val['ip'];
 			unset( $val['ip'] );
@@ -644,7 +651,7 @@ class IP_Geo_Block_Logs {
 			$cache['fail'],
 			$cache['call'],
 			$cache['host']
-		) and self::add_sql( 'cache', $sql ); // $wpdb->query( $sql ) or self::error( __LINE__ );
+		) and $wpdb->query( $sql ) or self::error( __LINE__ );
 	}
 
 	/**
@@ -675,26 +682,4 @@ class IP_Geo_Block_Logs {
 		}
 	}
 
-	/**
-	 * Stock SQL command for deferred execution.
-	 *
-	 */
-	private static function add_sql( $hook, $sql ) {
-//		global $wpdb; $wpdb->query( $sql ) or self::error( $hook );
-		self::$sqlist[ $hook ][] = $sql;
-	}
-
-	/**
-	 * Deferred execution of SQL command at shutdown process.
-	 *
-	 */
-	public static function exec_sql() {
-		global $wpdb;
-
-		foreach ( self::$sqlist as $key => $val ) {
-			foreach ( $val as $sql ) {
-				$wpdb->query( $sql ) or self::error( $key );
-			}
-		}
-	}
 }
