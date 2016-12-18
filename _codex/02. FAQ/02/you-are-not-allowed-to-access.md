@@ -18,19 +18,20 @@ pass their requests.
 
 One thing you should know is that **all activities by an administrator are not 
 always permitted** in this plugin in terms of preventing [CSRF][CSRF] and 
-[SSRF][SSRF] those which are usually combined with other vulnerability and 
-attack like [XSS][XSS], [SQLi][SQLi], [LFI][LFI] and so on.
+[SSRF][SSRF] that are usually combined with other vulnerability and attack like
+[XSS][XSS], [SQLi][SQLi], [LFI][LFI] and so on.
 
 ### When you encount blocking&hellip; ###
 
-You will see the following window by default:
+You will see the following window by default unless [human friendly error page]
+[FriendlyPage] is not setup:
 
 ![Blocking message]({{ '/img/2016-12/forbidden-message.png' | prepend: site.baseurl }}
  "Blocking message"
 )
 
 The "**Dashboard**" is a kind of **safe zone** protected by WordPress 
-authentication system, and none of important jobs would be executed but just 
+authentication system. None of important jobs would be executed there but just 
 showing something useful about your site. So when you encounter the above 
 message, following the link is always recommended unless you have something to 
 keep before you leave the last page.
@@ -49,8 +50,8 @@ browser at first.
 
 #### Step 2: Try "Prevent Zero-day Exploit" ####
 
-"Prevent Zero-day Exploit" which I named WP-ZEP is a most powerful feature in 
-this plugin to protect your site against undisclosed vulnerability. It can 
+"Prevent Zero-day Exploit" which I named WP-ZEP is the most powerful feature 
+in this plugin to protect your site against undisclosed vulnerability. It can 
 also distinguish the origin of request by a logged in user from an attacker 
 using a scecret key called [nonce][WPnonce] that should be known only by a 
 logged in user.
@@ -70,8 +71,8 @@ permission to the concerned plugin or theme as exception.
 
 ##### - **Admin area** / **Admin ajax/post** - #####
 
-In the case that the blocked request is related to these, then you can give a 
-permission via a custom filter hook [ip-geo-block-bypass-admins][BypassAdmin].
+In the case when a request related to `wp-admin` is blocked, you can give it 
+permission via the custom filter hook [ip-geo-block-bypass-admins][BypassAdmin].
 
 For example, if the request has a query `action=do-my-action` or 
 `page=my-plugin-page`, then you can add a code snippet into your 
@@ -99,8 +100,9 @@ add_filter( 'ip-geo-block-bypass-admins', 'my_bypass_admins' );
 
 ##### - **Plugins area** / **Themes area** - #####
 
-If your requested URL is directly pointed to the particular plugin or theme, 
-you can resolve the issue via the UI where you can select one you install.
+If the requested URL is directly pointed to the particular plugin or theme, 
+you can resolve its blocking issue by making an exception of that plugin or 
+theme.
 
 ![Exceptions]({{ '/img/2016-12/exceptions.png' | prepend: site.baseurl }}
  "Exceptions"
@@ -120,7 +122,7 @@ issue to the forum, I expect you to get your "**Installation information**" at
  "Installation information"
 )
 
-Please copy and submit them. Those are very helpful to know what happens on 
+Please copy and submit them. Those are very helpful to know what happens to 
 your site.
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
