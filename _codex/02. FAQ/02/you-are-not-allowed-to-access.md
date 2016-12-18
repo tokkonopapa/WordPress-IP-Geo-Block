@@ -23,7 +23,7 @@ always permitted** in this plugin in terms of preventing [CSRF][CSRF] and
 
 ### When you encount blocking&hellip; ###
 
-You will see the following window by default unless you setup [human friendly 
+You will see the following window by default unless you setup a [human friendly
 error page][FriendlyPage]:
 
 ![Blocking message]({{ '/img/2016-12/forbidden-message.png' | prepend: site.baseurl }}
