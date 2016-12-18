@@ -30,7 +30,7 @@ error page][FriendlyPage]:
  "Blocking message"
 )
 
-The "**Dashboard**" is a kind of **safe zone** protected by WordPress 
+The "**Dashboard**" is a kind of **safety zone** protected by WordPress 
 authentication system. None of important jobs would be executed there but just 
 showing something useful about your site. So when you encounter the above 
 message, following the link is always recommended unless you have something to 
