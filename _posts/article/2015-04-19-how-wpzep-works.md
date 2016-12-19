@@ -163,7 +163,7 @@ wp-admin/?page=my-plugin&job=do-my-job
 In this case, the requested "**job**" will be processed directly in their 
 hander without any help of WordPress core. So WP-ZEP can do nothing about it.
 
-Another big challenge is to decide whether the request hander is vulnerable or 
+Another big challenge is to decide whether the request handler is vulnerable or
 not if `my_action()` is registered for both authorized and unauthorized users 
 like this:
 

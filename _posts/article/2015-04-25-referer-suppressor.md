@@ -49,7 +49,7 @@ standard, but every browser redirects to the specified url.
 
 On a page including this tag, [IE or Firefox does not send the referer to the 
 redirected url, but Chrome, Safari or Opera does][stackoverflow]. So we need 
-a new school, i.e. "[Meta referrer][meta-referrer]":
+a new school, i.e. "[Referrer Policy Delivery][meta-referrer]":
 
 {% highlight html %}
 <meta name="referrer" content="no-referrer">
@@ -58,7 +58,7 @@ a new school, i.e. "[Meta referrer][meta-referrer]":
 or
 
 {% highlight html %}
-<a href="http://example.com" referrer="no-referrer">
+<a href="http://example.com" rel="noreferrer">
 {% endhighlight %}
 
 Then the final solution bocomes as follows.
@@ -173,7 +173,7 @@ please let me know. Thanks <span class="emoji">
 
 [IP-Geo-Block]:  https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [meta-refresh]:  http://en.wikipedia.org/wiki/Meta_refresh "Meta refresh - Wikipedia, the free encyclopedia"
-[meta-referrer]: http://w3c.github.io/webappsec/specs/referrer-policy/#referrer-policy-delivery-meta "Referrer Policy - W3C Editor's Draft"
+[meta-referrer]: https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-delivery "Referrer Policy - W3C Editor's Draft"
 [WHATWG-Wiki]:   https://wiki.whatwg.org/wiki/Meta_referrer "Meta referrer - WHATWG Wiki"
 [authenticate]:  https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/admin/js/authenticate.js "WordPress-IP-Geo-Block/auth-nonce.js at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub"
 [stackoverflow]: http://stackoverflow.com/questions/2985579/does-http-equiv-refresh-keep-referrer-info-and-metadata "html - Does http-equiv=&quot;refresh&quot; keep referrer info and metadata? - Stack Overflow"
