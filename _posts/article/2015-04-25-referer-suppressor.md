@@ -28,7 +28,7 @@ Instead of vulnerable plugins, WP-ZEP embed a nonce into hyperlinks, forms
 and ajax calls that have requests to somewhere in the admin area. To keep it 
 secret, WP-ZEP must kill the possibility of disclosing a nonce.
 
-One possibility lies in referer strings that was left on the page as a 
+One possibility lies in referer strings that would be left on the page as a 
 footprint you visited via an external hyperlink.
 
 That's why "Referrer Suppressor" is needed. And as a result, this functionality
