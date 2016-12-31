@@ -37,7 +37,7 @@ keeps your admin url (with some queries) secret while you are in the admin area.
 ### How to suppress a referer? ###
 
 When a click event is triggered on a hyperlink which have an anchor to the 
-external url, this plugin opens a new document to redirect to that url with 
+external url, this plugin opens a new window to redirect to that url with 
 some extra meta tags.
 
 "[Meta refresh][meta-refresh]" is an old school which is not a part of HTTP 
