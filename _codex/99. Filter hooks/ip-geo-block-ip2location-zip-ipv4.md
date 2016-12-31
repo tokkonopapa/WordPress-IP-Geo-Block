@@ -22,6 +22,14 @@ downloaded by ZIP format.
 http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.BIN.ZIP
 {% endhighlight %}
 
+<div class="alert alert-info">
+	<strong>NOTE:</strong>
+	When you select <code>"mu-plugins" (ip-geo-block-mu.php)</code> as 
+	<a href='/codex/validation-timing.html' title='Validation timing | IP Geo Block'><strong>Validation timing</strong></a>,
+	you should put your code snippet into <code>drop-in.php</code> in your 
+	geolocation API directory instead of <code>functions.php</code>.
+</div>
+
 ### Use case ###
 
 Currently, this plugin supports only [DB1.LITE][IP2LocDB1] database.

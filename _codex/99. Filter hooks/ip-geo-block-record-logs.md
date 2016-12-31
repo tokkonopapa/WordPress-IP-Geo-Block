@@ -52,6 +52,14 @@ function my_record_logs( $record, $hook, $validate ) {
 add_filter( 'ip-geo-block-record-logs', 'my_record_logs', 10, 3 );
 {% endhighlight %}
 
+<div class="alert alert-info">
+	<strong>NOTE:</strong>
+	When you select <code>"mu-plugins" (ip-geo-block-mu.php)</code> as 
+	<a href='/codex/validation-timing.html' title='Validation timing | IP Geo Block'><strong>Validation timing</strong></a>,
+	you should put your code snippet into <code>drop-in.php</code> in your 
+	geolocation API directory instead of <code>functions.php</code>.
+</div>
+
 ### Since ###
 
 2.1.1
