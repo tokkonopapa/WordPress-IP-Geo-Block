@@ -64,7 +64,20 @@ The priority of this rule is the highest in this plugin. So please try
 to enable / disable this feature in order to tell this plugin "**The request 
 is not from an attacker but from me!**".
 
-#### Step 3: Give a permission as exception ####
+#### Step 3: Find a blocking reason in logs ####
+
+If the Step 2 can't resolve the issue, please find the blocked request and look
+at the "**Result**". The following is an example of `/wp-admin/admin-ajax.php` 
+blocked by "**Prevent Zero-day Exploit**" that is described as "**wp-zep**":
+
+![Blocking reason in logs]({{ '/img/2016-12/LogsAdminAjax.png' | prepend: site.baseurl }}
+ "Blocking reason in logs"
+)
+
+You can find the full list of "**Result**" at this [document][BlockReason] in 
+codex. Then please go to the next step.
+
+#### Step 4: Give a permission as exception ####
 
 If you can't resolve a blocking issue up to the step 2, please try to give a 
 permission to the concerned plugin or theme as exception.
@@ -111,7 +124,7 @@ theme.
 It's also performed by [ip-geo-block-bypass-plugins][BypassPlugin] and 
 [ip-geo-block-bypass-themes][BypassTheme].
 
-#### Step 4: Installation information ####
+#### Step 5: Installation information ####
 
 In case you can't resove your blocking issue up to this step, I should help 
 you to find a solution at [support forum][SupportForum]. Before submitting your
@@ -136,7 +149,8 @@ your site.
 [WPnonce]:      https://codex.wordpress.org/WordPress_Nonces "WordPress Nonces &laquo; WordPress Codex"
 [BypassAdmin]:  http://www.ipgeoblock.com/codex/ip-geo-block-bypass-admins.html "ip-geo-block-bypass-admins | IP Geo Block"
 [BypassPlugin]: {{ '/codex/ip-geo-block-bypass-plugins.html' | prepend: site.baseurl }} "ip-geo-block-bypass-plugins | IP Geo Block"
-[BypassTheme]:  {{ '/codex/ip-geo-block-bypass-themes.html' | prepend: site.baseurl }} "ip-geo-block-bypass-themes | IP Geo Block"
+[BypassTheme]:  {{ '/codex/ip-geo-block-bypass-themes.html'  | prepend: site.baseurl }} "ip-geo-block-bypass-themes | IP Geo Block"
 [Timing]:       {{ '/codex/validation-timing.html' | prepend: site.baseurl }} "Validation timing | IP Geo Block"
 [FriendlyPage]: {{ '/codex/customizing-the-response.html#human-friendly-error-page' | prepend: site.baseurl }} "Customizing the response | IP Geo Block"
+[BlockReason]:  {{ '/codex/record-settings-and-logs.html#description-of-result'     | prepend: site.baseurl }} "Record settings and logs | IP Geo Block"
 [SupportForum]: https://wordpress.org/support/plugin/ip-geo-block/ "View: Plugin Support &laquo; WordPress.org Forums"
