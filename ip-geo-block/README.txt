@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.7
-Stable tag: 3.0.1
+Stable tag: 3.0.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -346,6 +346,17 @@ If you encounter this message, please refer to
   [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;You are not allowed to access this page&rdquo; ? | IP Geo Block")
 to resolve your blocking issue. 
 
+= Some admin function doesn't work. How to solve it? =
+
+This could be happened because of the same reason as the previous FAQ. Please 
+follow the steps in
+  [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;You are not allowed to access this page&rdquo; ? | IP Geo Block").
+
+If you can't solve your issue, please let me know about it on the
+  [support forum](https://wordpress.org/support/plugin/ip-geo-block/ "View: Plugin Support &laquo;  WordPress.org Forums").
+Your logs in this plugin and "**Installation information**" at "**Plugin 
+settings**" will be a great help to resolve the issue.
+
 = How can I fix "Unable to write" error? =
 
 When you enable "**Force to load WP core**" options, this plugin will try to 
@@ -420,7 +431,7 @@ follows:
 - **Bad signatures in query**  
   It blocks the request which has not been covered in the above three.
 
-Please try "**Best practice**" button at the bottom of this plugin's setting 
+Please try "**Best settings**" button at the bottom of this plugin's setting 
 page for easy setup. And also see more details in 
 "[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html 'The best practice of target settings | IP Geo Block')".
 
@@ -435,30 +446,6 @@ But there're exceptions: When you enable "**Force to load WP core**" for
 **Plugins area** or **Themes area**, a standalone PHP file becomes to be 
 able to be blocked. Sometimes this kind of file has some vulnerabilities.
 This function protects your site against such a case.
-
-= Some admin function doesn't work when WP-ZEP is enabled. =
-
-There are a few cases that WP-ZEP would not work. One is redirection at server 
-side (caused by PHP or `.htaccess`) and client side (caused by JavaScript 
-location object or meta tag for refresh).
-
-Another is the case related to the content type. This plugin will only support 
- `application/x-www-form-urlencoded` and `multipart/form-data`.
-
-The last case is that a ajax/post request comes from not jQuery but flash or 
-something.
-
-In those cases, this plugin should bypass WP-ZEP. So please find the unique 
-strings in the requested queries and add it into the safe query list via the 
-filter hook `ip-geo-block-bypass-admins`.
-
-If you can not figure out your troubles, please let me know your issues and 
-the name of plugins you are using at support forum.
-
-= Are there any other useful filter hooks? =
-
-Yes, you can find the list of all hooks and useful samples 
-[here](http://www.ipgeoblock.com/codex/#filter-hooks "Codex | IP Geo Block").
 
 == Other Notes ==
 
@@ -483,6 +470,19 @@ Yes, you can find the list of all hooks and useful samples
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 3.0.1.1 =
+* **Bug fix:** Fix the issue where **Login form** could not be disabled on 
+  **Back-end target settings**.
+* **Bug fix:** Fix the issue where trackback and pingback could not be blocked 
+  since 2.2.4.
+* **Improved:** Apply the action hook 'pre_trackback_post' that was introduced 
+  in WP 4.7.0.
+* **Improved:** Use 'safe_redirect()' instead of 'redirect()' for secured 
+  internal redirection. If you set an external url for **Redirect URL**, please
+  use the filter hook 'allowed_redirect_hosts'.
+* **Improved:** Better compatibility with the plugin "Anti-Malware Security 
+  and Brute-Force Firewall".
 
 = 3.0.1 =
 * **Bug fix:** Add lock mechanism for local geolocation DBs to avoid potential 

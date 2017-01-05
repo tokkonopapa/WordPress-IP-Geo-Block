@@ -126,10 +126,24 @@ class IP_Geo_Block_Loader {
 	public function run() {
 
 		/**
+		 * This part will be executed after loading this plugin.
+		 * Register all the rest of the action and filter hooks.
+		 */
+		if ( IP_Geo_Block_Util::may_be_logged_in() ) {
+			foreach ( $this->filters as $hook ) {
+				add_filter( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
+			}
+
+			foreach ( $this->actions as $hook ) {
+				add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
+			}
+		}
+
+		/**
 		 * This part will be executed at the very beginning of WordPress core.
 		 * Execute callbacks that are specified by the component with 'init'.
 		 */
-		if ( ! IP_Geo_Block_Util::may_be_logged_in() ) {
+		else {
 			foreach ( $this->actions as $index => $hook ) {
 				if ( in_array( $hook['hook'], array( 'init', 'wp_loaded' ) ) ) {
 					// Execute callback directly
@@ -138,20 +152,6 @@ class IP_Geo_Block_Loader {
 					// To avoid duplicated execution, delete this hook
 					unset( $this->actions[ $index ] );
 				}
-			}
-		}
-
-		/**
-		 * This part will be executed after loading this plugin.
-		 * Register all the rest of the action and filter hooks.
-		 */
-		else {
-			foreach ( $this->filters as $hook ) {
-				add_filter( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
-			}
-
-			foreach ( $this->actions as $hook ) {
-				add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
 			}
 		}
 

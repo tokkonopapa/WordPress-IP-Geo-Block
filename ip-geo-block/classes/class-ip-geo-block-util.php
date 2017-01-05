@@ -94,7 +94,7 @@ class IP_Geo_Block_Util {
 		if ( self::may_be_logged_in() && empty( $_REQUEST[ $nonce ] ) &&
 		     self::retrieve_nonce( $nonce ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
 			// add nonce at add_admin_nonce() to handle the client side redirection.
-			self::redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
+			self::safe_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
 			exit;
 		}
 	}
@@ -104,13 +104,11 @@ class IP_Geo_Block_Util {
 	 *
 	 */
 	public static function rebuild_nonce( $location, $status = 302 ) {
-		$key = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
-
-		if ( $nonce = self::retrieve_nonce( $key ) ) { // must be sanitized
-			$host = parse_url( $location, PHP_URL_HOST );
-
-			// check if the location is internal
-			if ( ! $host || $host === parse_url( home_url(), PHP_URL_HOST ) ) {
+		// check if the location is internal
+		$host = parse_url( $location, PHP_URL_HOST );
+		if ( ! $host || $host === parse_url( home_url(), PHP_URL_HOST ) ) {
+			// it doesn't care about valid nonce or invalid nonce (must be sanitized)
+			if ( $nonce = self::retrieve_nonce( $key = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce' ) ) {
 				$location = esc_url_raw( add_query_arg(
 					array(
 						$key => false, // delete onece
@@ -131,7 +129,7 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/pluggable.php
 	 */
 	public static function create_nonce( $action = -1 ) {
-		$uid = self::get_current_user_id( TRUE );
+		$uid = self::get_current_user_id();
 		$tok = self::get_session_token();
 		$exp = self::nonce_tick();
 
@@ -145,7 +143,7 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/pluggable.php
 	 */
 	public static function verify_nonce( $nonce, $action = -1 ) {
-		$uid = self::get_current_user_id( TRUE );
+		$uid = self::get_current_user_id();
 		$tok = self::get_session_token();
 		$exp = self::nonce_tick();
 
@@ -225,6 +223,7 @@ class IP_Geo_Block_Util {
 	 *
 	 * Timing attack safe string comparison.
 	 * @source http://php.net/manual/en/function.hash-equals.php#115635
+	 * @see http://php.net/manual/en/language.operators.increment.php
 	 * @see wp-includes/compat.php
 	 */
 	private static function hash_equals( $a, $b ) {
@@ -238,8 +237,9 @@ class IP_Geo_Block_Util {
 		$exp = $a ^ $b; // length of both $a and $b are same
 		$ret = 0;
 
-		for ( $i -= 1; $i >= 0; $i-- )
+		while ( --$i >= 0 ) {
 			$ret |= ord( $exp[ $i ] );
+		}
 
 		return ! $ret;
 	}
@@ -313,7 +313,7 @@ class IP_Geo_Block_Util {
 	 * Redirects to another page.
 	 * @source wp-includes/pluggable.php
 	 */
-	public static function redirect( $location, $status = 302 ) {
+	private static function redirect( $location, $status = 302 ) {
 		$_is_apache = ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Apache' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'LiteSpeed' ) !== FALSE );
 		$_is_IIS = ! $_is_apache && ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer' ) !== FALSE );
 
@@ -333,6 +333,22 @@ class IP_Geo_Block_Util {
 		else {
 			return FALSE;
 		}
+	}
+
+	/**
+	 * WP alternative function of wp_redirect() for mu-plugins
+	 *
+	 * Performs a safe (local) redirect, using redirect().
+	 * @source wp-includes/pluggable.php
+	 */
+	public static function safe_redirect( $location, $status = 302 ) {
+		// Need to look at the URL the way it will end up in wp_redirect()
+		$location = self::sanitize_redirect( $location );
+
+		// Filters the redirect fallback URL for when the provided redirect is not safe (local).
+		$location = self::validate_redirect( $location, apply_filters( 'wp_safe_redirect_fallback', admin_url(), $status ) );
+
+		self::redirect( $location, $status );
 	}
 
 	/**
@@ -374,6 +390,7 @@ class IP_Geo_Block_Util {
 
 		// Filters the whitelist of hosts to redirect to.
 		$allowed_hosts = (array) apply_filters( 'allowed_redirect_hosts', array( $wpp['host'] ), isset( $lp['host'] ) ? $lp['host'] : '' );
+		$allowed_hosts[] = 'blackhole.webpagetest.org';
 
 		if ( isset( $lp['host'] ) && ( ! in_array( $lp['host'], $allowed_hosts ) && $lp['host'] != strtolower( $wpp['host'] ) ) )
 			$location = $default;
@@ -425,9 +442,14 @@ class IP_Geo_Block_Util {
 		return did_action( 'init' ) ? is_user_logged_in() : ( self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE );
 	}
 
-	public static function get_current_user_id( $ip_addr = FALSE ) {
-		// unavailale before 'init' hook.
-		return did_action( 'init' ) ? get_current_user_id() : ( $ip_addr ? md5( $_SERVER['REMOTE_ADDR'], FALSE ) : '0' );
+	/**
+	 * WP alternative function of get_current_user_id() for mu-plugins
+	 *
+	 * Get the current user's ID.
+	 * @source wp-includes/user.php
+	 */
+	public static function get_current_user_id() {
+		return did_action( 'init' ) ? get_current_user_id() : 0;
 	}
 
 	/**

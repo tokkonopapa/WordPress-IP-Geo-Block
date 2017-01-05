@@ -38,7 +38,8 @@ var IP_GEO_BLOCK_ZEP = {
 
 	// Parse a URL and return its components
 	function parse_uri(uri) {
-		uri = decodeURIComponent(uri ? uri.toString() : '');
+		// avoid malformed URI error when uri includes '%'
+		uri = /*decodeURIComponent*/(uri ? uri.toString() : '');
 
 		var m = uri.match(
 			// https://tools.ietf.org/html/rfc3986#appendix-B
@@ -121,14 +122,14 @@ var IP_GEO_BLOCK_ZEP = {
 		// returns the absloute path as a string
 		return real.join('/').replace(/\/\//g, '/');
 	}
-
+/*
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
 	function encodeURIComponentRFC3986(str) {
 		return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
 			return '%' + c.charCodeAt(0).toString(16);
 		});
 	}
-
+*/
 	// append the nonce as query strings to the uri
 	function add_query_nonce(uri, nonce) {
 		if (typeof uri !== 'object') { // `string` or `undefined`
@@ -146,7 +147,7 @@ var IP_GEO_BLOCK_ZEP = {
 			}
 		}
 
-		data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
+		data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponent(nonce));//RFC3986
 		uri.query = data.join('&');
 
 		return compose_uri(uri);
@@ -247,7 +248,7 @@ var IP_GEO_BLOCK_ZEP = {
 					if (callback) {
 						data = callback(data);
 					}
-					data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponentRFC3986(nonce));
+					data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponent(nonce));//RFC3986
 					settings.data = data.join('&');
 				}
 			}

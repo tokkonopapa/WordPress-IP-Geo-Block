@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.1';
+	const VERSION = '3.0.1.1';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -30,7 +30,6 @@ class IP_Geo_Block {
 
 	// Globals in this class
 	public static $wp_path;
-	private $query = '';
 	private $pagenow = NULL;
 	private $request_uri = NULL;
 	private $target_type = NULL;
@@ -65,7 +64,6 @@ class IP_Geo_Block {
 		$key = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
 		$this->request_uri = @parse_url( $key, PHP_URL_PATH ) or $this->request_uri = $key;
 		$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : basename( $_SERVER['SCRIPT_NAME'] );
-		$this->query = strtolower( urldecode( serialize( array_values( $_GET + $_POST ) ) ) );
 
 		// setup the content folders
 		self::$wp_path = array( 'home' => IP_Geo_Block_Util::unslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since 2.6.0
@@ -106,6 +104,12 @@ class IP_Geo_Block {
 				$loader->add_action( 'init', array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority );
 		}
 
+		// alternative of trackback
+		elseif ( 'POST' === $_SERVER['REQUEST_METHOD'] && 'trackback' === basename( $this->request_uri ) ) {
+			if ( $validate['comment'] )
+				$loader->add_action( 'init', array( $this, 'validate_comment' ), $priority );
+		}
+
 		else {
 			// public facing pages
 			if ( $validate['public'] /* && 'index.php' === $this->pagenow */ )
@@ -118,6 +122,10 @@ class IP_Geo_Block {
 			}
 
 			if ( $validate['comment'] ) {
+				add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), $priority ); // wp-comments-post.php @since 2.8.0
+				add_action( 'pre_trackback_post',  array( $this, 'validate_comment' ), $priority ); // wp-trackback.php @since 4.7.0
+				add_filter( 'preprocess_comment',  array( $this, 'validate_comment' ), $priority ); // wp-includes/comment.php @since 1.5.0
+
 				// bbPress: prevent creating topic/relpy and rendering form
 				add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
 				add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
@@ -198,8 +206,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function logout_redirect( $uri ) {
-		if ( FALSE !== stripos( $uri, self::$wp_path['admin'] ) &&
-		     isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] )
+		if ( isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] && FALSE !== stripos( $uri, self::$wp_path['admin'] ) )
 			return esc_url_raw( add_query_arg( array( 'loggedout' => 'true' ), wp_login_url() ) );
 		else
 			return $uri;
@@ -326,7 +333,7 @@ class IP_Geo_Block {
 
 		nocache_headers(); // Set the headers to prevent caching for the different browsers.
 
-		if ( defined( 'XMLRPC_REQUEST' ) && isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
+		if ( defined( 'XMLRPC_REQUEST' ) && 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 			status_header( 405 );
 			header( 'Content-Type: text/plain' );
 			die( 'XML-RPC server accepts POST requests only.' );
@@ -338,7 +345,7 @@ class IP_Geo_Block {
 			exit;
 
 		  case 3: // 3xx Redirection (HTTP header injection should be avoided)
-			IP_Geo_Block_Util::redirect( esc_url_raw( $settings['redirect_uri'] ? $settings['redirect_uri'] : home_url( '/' ) ), $code ); // @since 2.8
+			IP_Geo_Block_Util::safe_redirect( esc_url_raw( $settings['redirect_uri'] ? $settings['redirect_uri'] : home_url( '/' ) ), $code ); // @since 2.8
 			exit;
 
 		  default: // 4xx Client Error, 5xx Server Error
@@ -449,8 +456,12 @@ class IP_Geo_Block {
 	 * Validate on comment.
 	 *
 	 */
-	public function validate_comment() {
-		$this->validate_ip( 'comment', self::get_option() );
+	public function validate_comment( $comment = NULL ) {
+		// check comment type if it comes form wp-includes/wp_new_comment()
+		if ( ! is_array( $comment ) || in_array( $comment['comment_type'], array( 'trackback', 'pingback' ) ) )
+			$this->validate_ip( 'comment', self::get_option( 'settings' ) );
+
+		return $comment;
 	}
 
 	public function validate_front( $can_access = TRUE ) {
@@ -538,7 +549,7 @@ class IP_Geo_Block {
 		// list of request for specific action or page to bypass WP-ZEP
 		$list = apply_filters( self::PLUGIN_NAME . '-bypass-admins', $settings['exception']['admin'] ) + array(
 			'save-widget', 'wordfence_testAjax', 'wordfence_doScan', 'wp-compression-test', // wp-admin/includes/template.php
-			'upload-attachment', 'imgedit-preview', 'bp_avatar_upload', // pluploader won't fire an event in "Media Library"
+			'upload-attachment', 'imgedit-preview', 'bp_avatar_upload', 'GOTMLS_logintime', // pluploader won't fire an event in "Media Library"
 			'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', // jetpack page & action
 		);
 
@@ -660,11 +671,12 @@ class IP_Geo_Block {
 
 	public function check_signature( $validate, $settings ) {
 		$score = 0.0;
+		$query = strtolower( urldecode( serialize( array_values( $_GET + $_POST ) ) ) );
 
 		foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $settings['signature'] ) as $sig ) {
 			$val = explode( ':', $sig, 2 );
 
-			if ( ( $sig = trim( $val[0] ) ) && FALSE !== strpos( $this->query, $sig ) ) {
+			if ( ( $sig = trim( $val[0] ) ) && FALSE !== strpos( $query, $sig ) ) {
 				if ( ( $score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] ) ) > 0.99 )
 					return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
 			}

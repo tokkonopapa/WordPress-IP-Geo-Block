@@ -66,7 +66,9 @@ class IP_Geo_Block_Activate {
 			self::activate_blog();
 		}
 
-		self::init_main_blog(); // should be called with high priority
+		// only after 'init' action hook for is_user_logged_in().
+		if ( did_action( 'init' ) )
+			self::init_main_blog(); // should be called with high priority
 	}
 
 	/**

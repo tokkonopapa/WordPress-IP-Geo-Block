@@ -38,7 +38,7 @@ class IP_Geo_Block_Opts {
 		// since version 1.2, 1.3
 		'login_fails'     => 5,       // Limited number of login attempts
 		'validation'      => array(   // Action hook for validation
-			'comment'     => TRUE,    // Validate on comment post
+			'comment'     => FALSE,   // Validate on comment post
 			'login'       => 1,       // Validate on login
 			'admin'       => 1,       // Validate on admin (1:country 2:ZEP)
 			'ajax'        => 0,       // Validate on ajax/post (1:country 2:ZEP)

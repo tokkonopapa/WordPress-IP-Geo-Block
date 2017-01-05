@@ -15,7 +15,7 @@
 			'$': 'ip-geo-block-',
 			'%': 'ip_geo_block_'
 		};
-		return id ? keys[selector] + id : keys.$ + selector;
+		return 'undefined' !== typeof id ? keys[selector] + id : keys.$ + selector;
 	}
 
 	function sanitize(str) {
@@ -346,6 +346,42 @@
 		}
 	};
 
+	// google chart
+	function drawChart() {
+		if ($(ID('#', 'chart-countries')).length) {
+			chart.drawChart();
+		}
+	}
+
+	// Load / Save cookie using wpCookies in wp-includes/js/utils.js
+	function loadCookie(id) {
+		return ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('$', id))) || {};
+	}
+
+	// setHash( name, value, expires, path, domain, secure )
+	function saveCookie(id, cookie) {
+		if ('undefined' !== typeof wpCookies) {
+			var path = 'undefined' !== typeof IP_GEO_BLOCK_AUTH ? IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin : '';
+			wpCookies.setHash(ID('$', id), cookie, new Date(Date.now() + 2592000000), path);
+		}
+	}
+
+	// Click event handler to show/hide form-table
+	function toggleSection(title, id, cookie) {
+		var index = title.closest('fieldset').data('ip-geo-block');
+
+		// Show/Hide
+		title.parent().nextAll().toggle();
+		title.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
+
+		cookie[index] = title.hasClass(ID('dropdown')) ? 'o' : 'x';
+		saveCookie(id, cookie); // Save cookie
+
+		// redraw google chart
+		drawChart();
+	}
+
+	// form for export / import
 	function add_hidden_form(cmd) {
 		$('body').append(
 			'<div style="display:none">' +
@@ -365,16 +401,13 @@
 		// processing time for footable
 		var ip_geo_block_time = new Date(),
 
-		// Get tab number and check wpCookies in wp-includes/js/utils.js
-		cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('%', 'admin'))) || {},
-		tabIndex = [0, 9, 10],
-		tabNo = /&tab=(\d)/.exec(window.location.href),
-
 		// Make form style with fieldset and legend
 		fieldset = $('<fieldset class="' + ID('field') + '"></fieldset>'),
-		legend = $('<legend></legend>');
+		legend = $('<legend></legend>'),
 
-		tabNo = Number(tabNo && tabNo[1]);
+		// Get tab number and cookie
+		tabNo = Number(IP_GEO_BLOCK.tab) || 0,
+		cookie = loadCookie(tabNo);
 
 		$('.form-table').each(function (index) {
 			var $this = $(this),
@@ -390,8 +423,7 @@
 
 			// Initialize show/hide form-table on tab 0, 1
 			if (tabNo <= 1) {
-				index += tabIndex[tabNo];
-				if ('undefined' === typeof cookie[index] || cookie[index]) { // 'undefined' or 'o'
+				if ('undefined' === typeof cookie[index] || 'o' === cookie[index]) { // 'undefined', 'x' or 'o'
 					title.addClass(ID('dropdown')).parent().nextAll().show();
 				} else {
 					title.addClass(ID('dropup')).parent().nextAll().hide();
@@ -399,34 +431,10 @@
 			}
 		});
 
-		var drawChart = function () {
-			if ($(ID('#', 'chart-countries')).length) {
-				chart.drawChart();
-			}
-		},
-
-		// Click event handler to show/hide form-table
-		toggle_section = function (title) {
-			var index = title.closest('fieldset').data('ip-geo-block');
-
-			// Show/Hide
-			title.parent().nextAll().toggle();
-			title.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
-
-			// Save cookie
-			if ('undefined' !== typeof wpCookies) {
-				cookie[index + tabIndex[tabNo]] = title.hasClass(ID('dropdown')) ? 'o' : '';
-				wpCookies.setHash(ID('%', 'admin'), cookie, new Date(Date.now() + 2592000000));
-			}
-
-			// redraw google chart
-			drawChart();
-		};
-
 		// Click event handler to show/hide form-table
 		if (tabNo <= 1) {
 			$('form').on('click', 'h2,h3', function (event) {
-				toggle_section($(this));
+				toggleSection($(this), tabNo, cookie);
 				return false;
 			});
 
@@ -446,13 +454,11 @@
 					$this.parent().nextAll().toggle(n ? false : true);
 					$this.removeClass(id.join(' '))
 					     .addClass(n ? id[1] : id[0]);
-					cookie[i + tabIndex[tabNo]] = n ? '' : 'o';
+					cookie[i] = n ? 'x' : 'o';
 				});
 
 				// Save cookie
-				if ('undefined' !== typeof wpCookies) {
-					wpCookies.setHash(ID('%', 'admin'), cookie, new Date(Date.now() + 2592000000));
-				}
+				saveCookie(tabNo, cookie);
 
 				// redraw google chart
 				drawChart();

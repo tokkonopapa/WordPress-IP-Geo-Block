@@ -21,7 +21,7 @@ textarea, input[type="text"] {
 }
 button, input[type="button"], input[type="reset"], input[type="submit"] {
     line-height: 150%;
-    width: 5em;
+    width: 6em;
 }
 form label {
     width: 10em;
