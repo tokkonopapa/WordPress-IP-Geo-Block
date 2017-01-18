@@ -13,7 +13,7 @@ title: Codex
 {% for post in site.codex %}
   {% if post.section and post.section != section %}
     {% assign section = post.section %}
-      <li class="icon-folder-open"><span class="list-title" id="{{ post.section | | slugify }}">{{ post.section | capitalize }}</span><ul class="icon">
+      <li class="icon-folder-open"><span class="list-title" id="{{ post.section | slugify }}">{{ post.section | capitalize }}</span><ul class="icon">
   {% endif %}
       <li class="icon-description">
         <a class="blog-post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
