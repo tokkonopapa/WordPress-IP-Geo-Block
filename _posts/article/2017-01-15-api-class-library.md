@@ -43,7 +43,7 @@ It's just a matter of convenience of this plugin to give it a highest priority!
 
 CloudFront also provides the client information via [HTTP request headers]
 [AM-Headers]. So the code is almost same as CloudFlare. You can find it at 
-[tokkonopapa/class-zcloudfront.php][CF-ClassLib].
+[tokkonopapa/class-zcloudfront.php][AM-ClassLib].
 
 ### Pros and Cons ###
 
