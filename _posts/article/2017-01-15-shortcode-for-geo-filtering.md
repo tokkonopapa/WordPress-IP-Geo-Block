@@ -30,9 +30,9 @@ for a user who wants to manage contents by [Geo-blocking][GeoBlocking].
 For example, [this discussion][NeedHelp] indicated that not only categories or
 tags but also [custom taxonomies][Taxonomies] are needed to specify the targets.
 
-![WP-Property]({{ 'https://s.w.org/plugins/wp-property/screenshot-1.jpg' | prepend: site.baseurl }}
- "WP-Property"
-)
+[![WP-Property]({{ '/img/2017-01/WP-Property.jpg' | prepend: site.baseurl }}
+  "WP-Property"
+)][WP-Property]
 
 But I don't like to extend the functionality toward this direction because I 
 prefer to keep this plugin simple. Then what't the solution?
@@ -99,5 +99,6 @@ Have fun <span class="emoji">
 [NeedHelp]:     https://wordpress.org/support/topic/i-need-help-because-of-the-settings/ "Topic: I need help because of the settings &laquo; WordPress.org Forums"
 [Taxonomies]:   https://codex.wordpress.org/Taxonomies "Taxonomies &laquo; WordPress Codex"
 [Shortcodes]:   https://codex.wordpress.org/Shortcode "Shortcode &laquo; WordPress Codex"
+[WP-Property]:  https://wordpress.org/plugins/wp-property/ "WP-Property - WordPress Powered Real Estate and Property Management &mdash; WordPress Plugins"
 [GeoBlocking]:  https://en.wikipedia.org/wiki/Geo-blocking "Geo-blocking - Wikipedia"
 [Protection]:   {{ '/codex/analysis-of-attack-vectors.html' | prepend: site.baseurl }} "Analysis of Attack Vectors | IP Geo Block"
