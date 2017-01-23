@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+<base target="_top">
+<style>
+	body, iframe { margin: 0; padding: 0; }
+</style>
+<script>
+function resizeIframe() {
+	var a = document.body,
+		b = document.documentElement,
+		c = Math.max(a.offsetTop, 0),
+		d = Math.max(b.offsetTop, 0),
+		e = a.scrollHeight + c,
+		f = a.offsetHeight + c,
+		g = b.scrollHeight + d,
+		h = b.offsetHeight + d,
+		i = Math.max(e, f, g, h);
+	if (b.clientTop > 0) i += (b.clientTop * 2);
+	var iframe = window.frameElement;
+	var elem = window.parent.document.getElementById(iframe.id);
+	elem.style.height = i + "px";
+//	elem.parentNode.style.height = "auto"; // i + "px";
+//	window.parent.console.log(iframe.id + ":" + i + "px");
+	if (i < iframe.min_height) setTimeout(resizeIframe, 1000);
+}
+</script>
+</head>
+<body onload="resizeIframe()">
+<script>
+// Some scripts need canonical link
+for (var links = window.parent.document.getElementsByTagName('link'), n = links.length; --n >= 0;) {
+	if (links[n].getAttribute('rel') === 'canonical') {
+		var link = document.createElement('link');
+		link.setAttribute('rel', 'canonical');
+		link.setAttribute('href', links[n].getAttribute('href'));
+		document.getElementsByTagName('head')[0].appendChild(link);
+		break;
+	}
+}
+
+// Add stylesheet
+var iframe = window.frameElement;
+if (iframe.stylesheet) {
+	var link = document.createElement('link');
+	link.setAttribute('rel', 'stylesheet');
+	link.setAttribute('type', 'text/css');
+	link.setAttribute('href', iframe.stylesheet);
+	document.getElementsByTagName('head')[0].appendChild(link);
+}
+
+// Load script
+document.write('<scr' + 'ipt src="' + iframe.script_src + '"><\/scr' + 'ipt>');
+</script>
+</body>
+</html>
