@@ -8,9 +8,10 @@ script: []
 inline:
 ---
 
-I had developed this plugin as an security purpose plugin so as to protect the 
-back-end of the site. And since version 3.0.0, I've provided functionality of 
-front-end protection based on [this suggestion at support forum][Suggestion].
+I started to develop [IP Geo Block][IP-Geo-Block] as a security purpose plugin 
+so as to protect the back-end of the site. And since version 3.0.0, it has been
+equipped with the functionality of front-end protection based on [this 
+suggestion at support forum][Suggestion].
 
 This helped to greatly improved [the protection ability][Protection] of this 
 plugin against the attacks via front-end of the site.
@@ -19,9 +20,10 @@ plugin against the attacks via front-end of the site.
 
 ### Need for content filtering by country ###
 
-Meanwhile, this also helped to make the purpose of this plugin unclear. Because
-the function of this plugin to specifing the validation target is not enough 
-for a user who wants to manage contents by [Geo-blocking][GeoBlocking].
+Meanwhile, this also helped to make the purpose of this plugin ambiguous.
+Because the function of this plugin to specifing the validation target with 
+the page, post type, category and tab is not enough for a user who wants to 
+manage contents by [Geo-blocking][GeoBlocking].
 
 ![Front-end validation target settings]({{ '/img/2016-11/ValidationTarget.png' | prepend: site.baseurl }}
  "Front-end validation target settings"
@@ -35,8 +37,9 @@ tags but also [custom taxonomies][Taxonomies] are needed to specify the targets.
 )][WP-Property]
 
 But I don't like to extend the functionality toward this direction because I 
-prefer to keep this plugin simple. Then what't the solution?
+prefer to keep this plugin simple.
 
+Then what't the solution?
 
 ### Shortcode for Geo Filtering ###
 
