@@ -51,22 +51,24 @@ to manage the content:
 <?php
 if ( class_exists( 'IP_Geo_Block' ) ) {
     function my_filter_content( $args, $content = null ) {
-        // set alternative content for not whilelisted countries
-        extract( shortcode_atts( array(
-            'alt' => "<p>Sorry, but you can't access this content.</p>",
-        ), $args ) );
 
-        // get the geolocation of visitor
+        // get settings and the geolocation of visitor
+        $settings = IP_Geo_Block::get_option();
         $geo = IP_Geo_Block::get_geolocation();
 
-        // return content if the contry code matches one in the whitelist
-        $settings = IP_Geo_Block::get_option();
-        if ( FALSE !== strpos( $settings['public']['white_list'], $geo['code'] ) ) {
-            return $content;
+        // return alternative content when the contry code IS NOT in the white list
+        if ( FALSE === strpos( $settings['public']['white_list'], $geo['code'] ) ) {
+
+            // set alternative content for not whilelisted countries
+            extract( shortcode_atts( array(
+                'alt' => "<p>Sorry, but you can't access this content.</p>",
+            ), $args ) );
+
+            return wp_kses_post( $alt );
         }
 
-        // return alternative content for not whilelisted country
-        return wp_kses_post( $alt );
+        // return content when the contry code IS in the white list
+        return $content;
     }
 
     add_shortcode( 'ip-geo-block', 'my_filter_content' );
