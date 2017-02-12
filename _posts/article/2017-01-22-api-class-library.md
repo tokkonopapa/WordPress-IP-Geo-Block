@@ -48,7 +48,7 @@ a highest priority!
 
 ### CloudFront ###
 
-CloudFront also provides the client information via [HTTP request headers]
+CloudFront also provides the client information via [HTTP response headers]
 [AM-Headers]. So the code is almost same as CloudFlare. You can find it at 
 [tokkonopapa/class-zcloudfront.php][AM-ClassLib].
 
