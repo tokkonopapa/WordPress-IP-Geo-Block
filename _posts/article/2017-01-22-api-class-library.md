@@ -18,10 +18,9 @@ published: true
 supports local database provided by only [Maxmind][Maxmind] and 
 [IP2Location][IP2Location].
 
-But when you use a CDN service such as [CloudFlare][CloudFlare] or 
-[CloudFront][CloudFront], you would also have a chance to use their 
-reverse proxy services. In this case, you can retrieve a visitor's 
-country code from them.
+But when you use [CloudFlare][CloudFlare] or [CloudFront][CloudFront] as a 
+reverse proxy service, you can retrieve a visitor's country code from their
+special environment variable.
 
 In this article, I'll show you how to make use of their services.
 
