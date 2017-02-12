@@ -19,8 +19,8 @@ supports local database provided by only [Maxmind][Maxmind] and
 [IP2Location][IP2Location].
 
 But when you use [CloudFlare][CloudFlare] or [CloudFront][CloudFront] as a 
-reverse proxy service, you can retrieve a visitor's country code from their
-special environment variable.
+reverse proxy service, you can retrieve a visitor's IP address and country 
+code from their special offered environment variables.
 
 In this article, I'll show you how to make use of their services.
 
