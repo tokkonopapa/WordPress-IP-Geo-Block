@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.1.1\n"
+"Project-Id-Version: IP Geo Block 3.0.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-01-02 21:16+0900\n"
-"PO-Revision-Date: 2017-01-02 21:23+0900\n"
+"POT-Creation-Date: 2017-02-14 19:49+0900\n"
+"PO-Revision-Date: 2017-02-14 19:58+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -60,7 +60,7 @@ msgid "Contribute at GitHub"
 msgstr "開発に参加"
 
 #: admin/class-ip-geo-block-admin.php:210
-#: admin/class-ip-geo-block-admin.php:388
+#: admin/class-ip-geo-block-admin.php:390
 msgid "Settings"
 msgstr "設定"
 
@@ -135,31 +135,31 @@ msgstr ""
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr "「<a href=\"%s\">検証ルールの設定</a>」を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:389
+#: admin/class-ip-geo-block-admin.php:391
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:390
+#: admin/class-ip-geo-block-admin.php:392
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:391
+#: admin/class-ip-geo-block-admin.php:393
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:392
+#: admin/class-ip-geo-block-admin.php:394
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:403
+#: admin/class-ip-geo-block-admin.php:405
 msgid "Toggle all"
 msgstr "全てを開閉"
 
-#: admin/class-ip-geo-block-admin.php:427
+#: admin/class-ip-geo-block-admin.php:429
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:428
+#: admin/class-ip-geo-block-admin.php:430
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -169,24 +169,24 @@ msgstr ""
 "html\" title=\"Referer Checker\">参照元を残さずにリンク先にリダイレクトできま"
 "す</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:433
+#: admin/class-ip-geo-block-admin.php:435
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: admin/class-ip-geo-block-admin.php:525
+#: admin/class-ip-geo-block-admin.php:527
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:838
-#: admin/class-ip-geo-block-admin.php:849
+#: admin/class-ip-geo-block-admin.php:840
+#: admin/class-ip-geo-block-admin.php:851
 #: classes/class-ip-geo-block-cron.php:260
-#: classes/class-ip-geo-block-cron.php:302
+#: classes/class-ip-geo-block-cron.php:294
 #: classes/class-ip-geo-block-opts.php:313
 #, php-format
 msgid "Unable to write %s. Please check the permission."
 msgstr "%s に書き込めません。パーミッションを確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:839
+#: admin/class-ip-geo-block-admin.php:841
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
@@ -615,7 +615,7 @@ msgid ""
 "INACTIVE&#8221;.\">Exceptions</dfn>"
 msgstr ""
 "<dfn title=\"望ましくない遮断の原因となる項目を選択し、検証対象から除外しま"
-"す。斜体で表示された項目は、「非アクティブ」であることを示しています。\">除外"
+"す。灰色で表示された項目は、「非アクティブ」であることを示しています。\">除外"
 "する項目</dfn>"
 
 #: admin/includes/tab-settings.php:554 admin/includes/tab-settings.php:607
@@ -768,7 +768,7 @@ msgstr "ローカル・データベースの設定"
 msgid "database"
 msgstr "ファイル"
 
-#: admin/includes/tab-settings.php:910 classes/class-ip-geo-block-cron.php:352
+#: admin/includes/tab-settings.php:910 classes/class-ip-geo-block-cron.php:342
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
@@ -1120,7 +1120,7 @@ msgid ""
 "statistics."
 msgstr "検証の統計を記録し分析するためには、適切な条件を設定して下さい。"
 
-#: classes/class-ip-geo-block-apis.php:652
+#: classes/class-ip-geo-block-apis.php:651
 msgid ""
 "You need to select at least one IP geolocation service. Otherwise "
 "<strong>you'll be blocked</strong> after the cache expires."
@@ -1128,18 +1128,18 @@ msgstr ""
 "少なくとも1つ以上の位置情報サービスを選択して下さい。未選択の場合、キャッシュ"
 "の有効期限切れと共にロックアウトされます。"
 
-#: classes/class-ip-geo-block-cron.php:223
+#: classes/class-ip-geo-block-cron.php:227
 msgid "Your database file is up-to-date."
 msgstr "データベース・ファイルは最新です。"
 
-#: classes/class-ip-geo-block-cron.php:252
-#: classes/class-ip-geo-block-cron.php:294
+#: classes/class-ip-geo-block-cron.php:255
+#: classes/class-ip-geo-block-cron.php:289
 #, php-format
 msgid "Unable to read %s. Please check the permission."
 msgstr "%s が読めません。パーミッションを確認して下さい。"
 
-#: classes/class-ip-geo-block-cron.php:268
-#: classes/class-ip-geo-block-cron.php:310
+#: classes/class-ip-geo-block-cron.php:265
+#: classes/class-ip-geo-block-cron.php:299
 #, php-format
 msgid "Can't lock %s. Please try again after a while."
 msgstr "%s をロックできません。パーミッションを確認して下さい。"

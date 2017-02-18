@@ -318,7 +318,7 @@ var IP_GEO_BLOCK_ZEP = {
 				}
 			});
 
-			$body.onFirst('click', 'a', function (event) {
+			$body.onFirst('click contextmenu', 'a', function (event) {
 				// attr() returns 'string' or 'undefined'
 				var $this = $(this),
 				    href = $this.attr('href'),
@@ -344,7 +344,7 @@ var IP_GEO_BLOCK_ZEP = {
 
 					// stop event propagation
 					$this.removeAttr('target');
-					$this.off('click');
+					$this.off('click contextmenu');
 					event.preventDefault();
 					event.stopPropagation();
 					event.stopImmediatePropagation();

@@ -799,7 +799,7 @@ class IP_Geo_Block_Admin {
 		$action = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
 		$nonce &= IP_Geo_Block_Util::verify_nonce( IP_Geo_Block_Util::retrieve_nonce( $action ), $action );
 
-		if ( ! $nonce || ! current_user_can( 'manage_options' ) ) {
+		if ( ! $nonce || ( ! current_user_can( 'manage_options' ) ) ) {
 			status_header( 403 );
 			wp_die(
 				__( 'You do not have sufficient permissions to access this page.' ), '',

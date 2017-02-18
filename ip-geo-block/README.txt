@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.7
-Stable tag: 3.0.1.1
+Tested up to: 4.7.2
+Stable tag: 3.0.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -315,6 +315,10 @@ or following descriptions for your best setup.
 
 == Frequently Asked Questions ==
 
+= Does it support multisite? =
+
+It works on multisite, but there's no network setting at this moment.
+
 = I was locked down. What shall I do? =
 
 Activate the following codes at the bottom of `ip-geo-block.php` and upload 
@@ -340,7 +344,7 @@ that you should upload the original one to deactivate above feature.
 [This document](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block")
 can also help you.
 
-= How to resolve "You are not allowed to access this page"?
+= How to resolve "Sorry, your request cannot be accepted."? =
 
 If you encounter this message, please refer to 
   [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;You are not allowed to access this page&rdquo; ? | IP Geo Block")
@@ -470,6 +474,16 @@ This function protects your site against such a case.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 3.0.1.2 =
+* **Bug fix:** Fix the blocking issue in some environments when upgrading from 
+  2.2.9.1 to 3.0.0.
+* **Bug fix:** Fix the blocking issue at opening a new window via context menu 
+  on dashboard.
+* **Bug fix:** Fix the potential issue of 500 Internal error in cron job.
+* **Improvement:** Revive 410 Gone for response code.
+* **Improvement:** Prevent the issue of resetting matching rule and country 
+  code at upgrading.
 
 = 3.0.1.1 =
 * **Bug fix:** Fix the issue where **Login form** could not be disabled on 

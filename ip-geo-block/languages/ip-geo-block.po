@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.1.1\n"
+"Project-Id-Version: IP Geo Block 3.0.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-01-02 21:16+0900\n"
-"PO-Revision-Date: 2017-01-02 21:18+0900\n"
+"POT-Creation-Date: 2017-02-14 19:49+0900\n"
+"PO-Revision-Date: 2017-02-14 19:52+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgid "Contribute at GitHub"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:210
-#: admin/class-ip-geo-block-admin.php:388
+#: admin/class-ip-geo-block-admin.php:390
 msgid "Settings"
 msgstr ""
 
@@ -120,55 +120,55 @@ msgstr ""
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:389
+#: admin/class-ip-geo-block-admin.php:391
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:390
+#: admin/class-ip-geo-block-admin.php:392
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:391
+#: admin/class-ip-geo-block-admin.php:393
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:392
+#: admin/class-ip-geo-block-admin.php:394
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:403
+#: admin/class-ip-geo-block-admin.php:405
 msgid "Toggle all"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:427
+#: admin/class-ip-geo-block-admin.php:429
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:428
+#: admin/class-ip-geo-block-admin.php:430
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:433
+#: admin/class-ip-geo-block-admin.php:435
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:525
+#: admin/class-ip-geo-block-admin.php:527
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:838
-#: admin/class-ip-geo-block-admin.php:849
+#: admin/class-ip-geo-block-admin.php:840
+#: admin/class-ip-geo-block-admin.php:851
 #: classes/class-ip-geo-block-cron.php:260
-#: classes/class-ip-geo-block-cron.php:302
+#: classes/class-ip-geo-block-cron.php:294
 #: classes/class-ip-geo-block-opts.php:313
 #, php-format
 msgid "Unable to write %s. Please check the permission."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:839
+#: admin/class-ip-geo-block-admin.php:841
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
@@ -673,7 +673,7 @@ msgstr ""
 msgid "database"
 msgstr ""
 
-#: admin/includes/tab-settings.php:910 classes/class-ip-geo-block-cron.php:352
+#: admin/includes/tab-settings.php:910 classes/class-ip-geo-block-cron.php:342
 #, php-format
 msgid "Last update: %s"
 msgstr ""
@@ -992,24 +992,24 @@ msgid ""
 "statistics."
 msgstr ""
 
-#: classes/class-ip-geo-block-apis.php:652
+#: classes/class-ip-geo-block-apis.php:651
 msgid ""
 "You need to select at least one IP geolocation service. Otherwise "
 "<strong>you'll be blocked</strong> after the cache expires."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:223
+#: classes/class-ip-geo-block-cron.php:227
 msgid "Your database file is up-to-date."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:252
-#: classes/class-ip-geo-block-cron.php:294
+#: classes/class-ip-geo-block-cron.php:255
+#: classes/class-ip-geo-block-cron.php:289
 #, php-format
 msgid "Unable to read %s. Please check the permission."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:268
-#: classes/class-ip-geo-block-cron.php:310
+#: classes/class-ip-geo-block-cron.php:265
+#: classes/class-ip-geo-block-cron.php:299
 #, php-format
 msgid "Can't lock %s. Please try again after a while."
 msgstr ""

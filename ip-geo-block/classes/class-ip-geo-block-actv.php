@@ -26,7 +26,7 @@ class IP_Geo_Block_Activate {
 
 	// initialize main blog
 	public static function init_main_blog() {
-		if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
+		if ( current_user_can( 'manage_options' ) ) {
 			$settings = IP_Geo_Block::get_option();
 
 			// kick off a cron job to download database immediately
@@ -67,7 +67,7 @@ class IP_Geo_Block_Activate {
 		}
 
 		// only after 'init' action hook for is_user_logged_in().
-		if ( did_action( 'init' ) )
+		if ( did_action( 'init' ) && is_user_logged_in() )
 			self::init_main_blog(); // should be called with high priority
 	}
 

@@ -94,7 +94,7 @@ class IP_Geo_Block_Util {
 		if ( self::may_be_logged_in() && empty( $_REQUEST[ $nonce ] ) &&
 		     self::retrieve_nonce( $nonce ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
 			// add nonce at add_admin_nonce() to handle the client side redirection.
-			self::safe_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
+			self::redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
 			exit;
 		}
 	}
@@ -182,7 +182,7 @@ class IP_Geo_Block_Util {
 	private static function get_session_token() {
 		// Arrogating logged_in cookie never cause the privilege escalation.
 		$cookie = self::parse_auth_cookie( 'logged_in' );
-		return ! empty( $cookie['token'] ) ? $cookie['token'] : '';
+		return ! empty( $cookie['token'] ) ? $cookie['token'] : AUTH_KEY . AUTH_SALT;
 	}
 
 	/**
@@ -313,7 +313,7 @@ class IP_Geo_Block_Util {
 	 * Redirects to another page.
 	 * @source wp-includes/pluggable.php
 	 */
-	private static function redirect( $location, $status = 302 ) {
+	public static function redirect( $location, $status = 302 ) {
 		$_is_apache = ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Apache' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'LiteSpeed' ) !== FALSE );
 		$_is_IIS = ! $_is_apache && ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer' ) !== FALSE );
 
@@ -449,7 +449,22 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/user.php
 	 */
 	public static function get_current_user_id() {
-		return did_action( 'init' ) ? get_current_user_id() : 0;
+		static $uid = 0;
+
+		if ( ! $uid ) {
+			$uid = did_action( 'init' ) ? get_current_user_id() : 0;
+
+			if ( ! $uid && isset( $_COOKIE ) ) {
+				 foreach ( array_keys( $_COOKIE ) as $key ) {
+					if ( 0 === strpos( $key, 'wp-settings-' ) ) {
+						$uid = substr( $key, strrpos( $key, '-' ) + 1 ); // get numerical characters
+						break;
+					}
+				}
+			}
+		}
+
+		return $uid;
 	}
 
 	/**

@@ -648,9 +648,7 @@ class IP_Geo_Block_Provider {
 		}
 
 		if ( 0 === $field )
-			return __(
-				'You need to select at least one IP geolocation service. Otherwise <strong>you\'ll be blocked</strong> after the cache expires.', 'ip-geo-block'
-			);
+			return __( 'You need to select at least one IP geolocation service. Otherwise <strong>you\'ll be blocked</strong> after the cache expires.', 'ip-geo-block' );
 
 		return NULL;
 	}

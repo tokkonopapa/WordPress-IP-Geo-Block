@@ -73,7 +73,7 @@ class IP_Geo_Block_Cron {
 
 			// if blocking may happen then disable validation
 			if ( -1 !== (int)$settings['matching_rule'] && 'passed' !== $validate['result'] &&
-			     FALSE === strpos( $_SERVER['HTTP_X_REQUESTED_FROM'], 'InfiniteWP' ) ) {
+			     ( empty( $_SERVER['HTTP_X_REQUESTED_FROM'] ) || FALSE === strpos( $_SERVER['HTTP_X_REQUESTED_FROM'], 'InfiniteWP' ) ) ) {
 				$settings['matching_rule'] = -1;
 			}
 
@@ -144,7 +144,11 @@ class IP_Geo_Block_Cron {
 	 *
 	 */
 	public static function start_update_db( $settings ) {
-		if ( has_action( 'activate_' . IP_GEO_BLOCK_BASE ) ) {
+		if ( ! function_exists( 'is_plugin_active' ) )
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+		// the status is still inactive when this plugin is activated on dashboard.
+		if ( ! is_plugin_active( IP_GEO_BLOCK_BASE ) ) {
 			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address(), MINUTE_IN_SECONDS );
 			self::schedule_cron_job( $settings['update'], NULL, TRUE );
 		}
@@ -248,33 +252,25 @@ class IP_Geo_Block_Cron {
 			if ( 'gz' === $args && function_exists( 'gzopen' ) ) {
 				if ( FALSE === ( $gz = gzopen( $src, 'r' ) ) )
 					throw new Exception(
-						sprintf(
-							__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ),
-							$src
-						)
+						sprintf( __( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $src )
 					);
 
 				if ( FALSE === ( $fp = @fopen( $filename, 'cb' ) ) )
 					throw new Exception(
-						sprintf(
-							__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ),
-							$filename
-						)
+						sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $filename )
 					);
 
 				if ( ! flock( $fp, LOCK_EX ) )
 					throw new Exception(
-						sprintf(
-							__( 'Can\'t lock %s. Please try again after a while.', 'ip-geo-block' ),
-							$filename
-						)
+						sprintf( __( 'Can\'t lock %s. Please try again after a while.', 'ip-geo-block' ), $filename )
 					);
 
 				ftruncate( $fp, 0 ); // truncate file
 
 				// same block size in wp-includes/class-http.php
-				while ( $data = gzread( $gz, 4096 ) )
+				while ( $data = gzread( $gz, 4096 ) ) {
 					fwrite( $fp, $data, strlen( $data ) );
+				}
 			}
 
 			elseif ( 'zip' === $args && class_exists( 'ZipArchive' ) ) {
@@ -290,33 +286,25 @@ class IP_Geo_Block_Cron {
 
 				if ( FALSE === ( $gz = @fopen( $tmp .= basename( $filename ), 'r' ) ) )
 					throw new Exception(
-						sprintf(
-							__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ),
-							$src
-						)
+						sprintf( __( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $src )
 					);
 
 				if ( FALSE === ( $fp = @fopen( $filename, 'cb' ) ) )
 					throw new Exception(
-						sprintf(
-							__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ),
-							$filename
-						)
+						sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $filename )
 					);
 
 				if ( ! flock( $fp, LOCK_EX ) )
 					throw new Exception(
-						sprintf(
-							__( 'Can\'t lock %s. Please try again after a while.', 'ip-geo-block' ),
-							$filename
-						)
+						sprintf( __( 'Can\'t lock %s. Please try again after a while.', 'ip-geo-block' ), $filename )
 					);
 
 				ftruncate( $fp, 0 ); // truncate file
 
 				// same block size in wp-includes/class-http.php
-				while ( $data = fread( $gz, 4096 ) )
+				while ( $data = fread( $gz, 4096 ) ) {
 					fwrite( $fp, $data, strlen( $data ) );
+				}
 			}
 
 			if ( ! empty( $fp ) ) {
@@ -324,6 +312,7 @@ class IP_Geo_Block_Cron {
 				flock ( $fp, LOCK_UN ); // release the lock
 				fclose( $fp );
 			}
+
 			! empty( $gz  ) and gzclose( $gz  );
 			! empty( $tmp ) && @is_file( $tmp ) and @unlink( $tmp );
 			! is_wp_error( $src ) && @is_file( $src ) and @unlink( $src );
@@ -336,6 +325,7 @@ class IP_Geo_Block_Cron {
 				flock ( $fp, LOCK_UN ); // release the lock
 				fclose( $fp );
 			}
+
 			! empty( $gz  ) and gzclose( $gz  );
 			! empty( $tmp ) && @is_file( $tmp ) and @unlink( $tmp );
 			! is_wp_error( $src ) && @is_file( $src ) and @unlink( $src );
