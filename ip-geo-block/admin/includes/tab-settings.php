@@ -498,7 +498,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$key = 'admin';
 		add_settings_field(
 			$option_name.'_exception_'.$key,
-			__( 'Exception for admin action and page', 'ip-geo-block' ),
+			__( '<dfn title="Same effect as &#8220;ip-geo-block-bypass-admins&#8221; filter hook.">Exception for admin action and page</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -516,7 +516,7 @@ endif;
 		array_unshift( $list, __( 'Disable', 'ip-geo-block' ) );
 		$desc = array(
 			__( 'Regardless of the country code, it will block a malicious request to <code>%s&hellip;/*.php</code>.', 'ip-geo-block' ),
-			__( 'It configures &#8220%s&#8221 to validate a request to the PHP file which does not load WordPress core.', 'ip-geo-block' ),
+			__( 'It configures &#8220;%s&#8221; to validate a request to the PHP file which does not load WordPress core.', 'ip-geo-block' ),
 			__( '<dfn title="Select the item which causes undesired blocking in order to exclude from the validation target. Grayed item indicates &#8220;INACTIVE&#8221;.">Exceptions</dfn>', 'ip-geo-block' ),
 		);
 
