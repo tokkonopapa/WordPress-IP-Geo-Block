@@ -508,6 +508,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'field' => 'exception',
 				'sub-field' => $key,
 				'value' => implode( ',', $options['exception'][ $key ] ),
+				'after' => $comma[0],
 			)
 		);
 endif;
