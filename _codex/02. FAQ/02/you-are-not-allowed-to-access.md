@@ -2,8 +2,8 @@
 layout: page
 category: codex
 section: FAQ
-title: Why &ldquo;You are not allowed to access this page&rdquo; ?
-excerpt: Why &ldquo;You are not allowed to access this page&rdquo; ?
+title: Why &ldquo;Sorry, your request cannot be accepted&rdquo; ?
+excerpt: Why &ldquo;Sorry, your request cannot be accepted&rdquo; ?
 ---
 
 Even if you encounter blocking, please feel relax. There're some ways to 
@@ -21,7 +21,7 @@ always permitted** in this plugin in terms of preventing [CSRF][CSRF] and
 [SSRF][SSRF] that are usually combined with other vulnerability and attack like
 [XSS][XSS], [SQLi][SQLi], [LFI][LFI] and so on.
 
-### When you encount blocking&hellip; ###
+### When you encounter blocking&hellip; ###
 
 You will see the following window by default unless you setup a [human friendly
 error page][FriendlyPage]:
@@ -43,7 +43,7 @@ keep before you leave the last page.
 A JavaScript file named `authenticate.min.js` has a very important role for 
 this plugin. For example, "[Referrer Suppressor for external link][RefSup]" 
 is done by this script. But once a js error occurs, you might end in seeing 
-"You are not allowed to access this page". So please check js errors in your 
+"Sorry, your request cannot be accepted". So please check js errors in your 
 browser at first.
 
 [This codex document][JSErrors] is very helpful to examine this step.
@@ -74,13 +74,13 @@ blocked by "**Prevent Zero-day Exploit**" that is described as "**wp-zep**":
  "Blocking reason in logs"
 )
 
-You can find the full list of "**Result**" at this [document][BlockReason] in 
+You can find the full list of "**Result**" at [this document][BlockReason] in 
 codex. Then please go to the next step.
 
 #### Step 4: Give a permission as exception ####
 
-If you can't resolve a blocking issue up to the step 2, please try to give a 
-permission to the concerned plugin or theme as exception.
+If you can't resolve the blocking issue up to the step 2, please try to give 
+a permission to the concerned request as an exception.
 
 ##### - **Admin area** / **Admin ajax/post** - #####
 
@@ -89,7 +89,8 @@ permission via the custom filter hook [ip-geo-block-bypass-admins][BypassAdmin].
 
 For example, if the request has a query `action=do-my-action` or 
 `page=my-plugin-page`, then you can add a code snippet into your 
-`/path/to/your/ip-geo-api/drop-in.php` as below:
+theme's `functions.php` or `/path/to/your/ip-geo-api/drop-in.php` 
+(typically `/wp-content/ip-geo-api/drop-in.php`) as below:
 
 {% highlight ruby %}
 function my_bypass_admins( $queries ) {

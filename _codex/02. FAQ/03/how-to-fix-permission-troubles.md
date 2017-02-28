@@ -7,9 +7,9 @@ excerpt: How can I fix permission troubles?
 ---
 
 This plugin must have read/write permission at two places outside of the plugin
-directory which is typically `/wp-content/plugins/`. But in some cases, you 
-might find the error message related to the permission because of your server's
-security configurations.
+directory which is typically `/wp-content/`. But in some cases, you might find 
+the error message related to the permission because of your server's security 
+configurations.
 
 In this case, you have to configure these places by your own hand.
 
@@ -19,7 +19,7 @@ In this case, you have to configure these places by your own hand.
  "Error of IP Geo API"
 )
 
-This plugin can use the IP address geolocation databases of [Maxmind][Maxmind] 
+This plugin handles the IP address geolocation databases of [Maxmind][Maxmind] 
 and [IP2Location][IP2Location] on your server. Those databases would be 
 downloaded via the dedicated class libraries for each. When you install this 
 plugin at the first time, one of the following directories will be selected 

@@ -8,8 +8,8 @@ excerpt: The best practice for target settings
 
 At the "**Validation target settings**", you can enable the option, "**Block 
 by country**" for each target as a basic configuration. Additionally, 
-"**Prevent Zero-day Exploit**" can be enabled as a extended option.
-This document helps you how to configure those options to fit for your site.
+"**Prevent Zero-day Exploit**" can be enabled as an extended option.
+This document helps you to configure those options to fit for your site.
 
 <!--more-->
 

@@ -560,8 +560,8 @@ inline: <script>
 
 | Blocking Method                         | True Positive | False Negative |
 |:----------------------------------------|--------------:|---------------:|
-| Block by country on both front/back-end |  50/50 (100%) |     0/50 ( 0%) |
-| Block by country only on back-end       |  41/50 ( 82%) |     9/50 (18%) |
-| WP-ZEP                                  |  38/50 ( 76%) |    12/50 (24%) |
+| Block by country on both front/back-end |   49/50 (98%) |     1/50 ( 2%) |
+| Block by country only on back-end       |   41/50 (82%) |     9/50 (18%) |
+| WP-ZEP                                  |   38/50 (76%) |    12/50 (24%) |
 
 [PREVENT-EXPOSURE]: {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} "Prevent exposure of wp-config.php"

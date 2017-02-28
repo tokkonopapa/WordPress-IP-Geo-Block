@@ -83,6 +83,23 @@ action hook:
 
 Please refer to "[Validation timing][Validation]" for more details.
 
+### What will become of my site if I use other plugin? ###
+
+Well, it would not be so serious. Let's think about [WP Fastest Cache][WPFC] 
+for example.
+
+If someone requests a page where a cache hit occurs, no PHP code would be 
+executed but static contents in the cache would be responded. In this case, 
+this plugin has no chance to block anything.
+
+If someone requests a page where a cache miss occurs, then WordPress would 
+start to handle the request. In this case, this plugin would have a chance 
+to validate the request.
+
+So a visitor from forbidden countries sometimes gets cached contents and 
+sometimes gets blocked. This means attack from forbedden countires would fail.
+As a consequence, blocking by country can still reduce the risk of infection.
+
 ### See also ###
 
 - [Validation timing][Validation]
@@ -102,3 +119,4 @@ Please refer to "[Validation timing][Validation]" for more details.
 [FalconEngine]: https://docs.wordfence.com/en/Falcon_Cache "Falcon Cache - Wordfence Documentation"
 [MU-Plugins]:   https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex"
 [Action-Ref]:   https://codex.wordpress.org/Plugin_API/Action_Reference "Plugin API/Action Reference « WordPress Codex"
+[WPFC]:         https://wordpress.org/plugins/wp-fastest-cache/ "WP Fastest Cache &mdash; WordPress Plugins"
