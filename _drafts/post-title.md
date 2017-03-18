@@ -18,7 +18,7 @@ code
 
 [![title]({{ '/img/2017-xx/sample.png' | prepend: site.baseurl }}
   "title"
-)][link]
+)](link)
 
 {% comment %} http://www.emoji-cheat-sheet.com/ {% endcomment %}
 <span class="emoji">
