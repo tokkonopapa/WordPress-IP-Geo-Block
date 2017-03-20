@@ -225,7 +225,9 @@ var IP_GEO_BLOCK_ZEP = {
 	// embed a nonce before an Ajax request is sent
 	$(document).ajaxSend(function (event, jqxhr, settings) {
 		var nonce = IP_GEO_BLOCK_ZEP.nonce;
-		if (nonce && is_admin(settings.url) === 1) {
+
+		// POST to async-upload.php causes an error in https://wordpress.org/plugins/mammoth-docx-converter/
+		if (nonce && is_admin(settings.url) === 1 && !settings.url.match(/async-upload\.php$/)) {
 			// multipart/form-data (XMLHttpRequest Level 2)
 			// IE10+, Firefox 4+, Safari 5+, Android 3+
 			if (typeof window.FormData !== 'undefined' && settings.data instanceof FormData) {
@@ -377,7 +379,7 @@ var IP_GEO_BLOCK_ZEP = {
 	$(function () {
 		// avoid conflict with "Open external links in a new window"
 		$('a').each(function () {
-			if(!this.hasAttribute('onClick')) {
+			if(!this.hasAttribute('onClick') && is_admin(this.getAttribute('href')) === -1) {
 				this.setAttribute('onClick', 'javascript:void(0);');
 			}
 		});

@@ -1,26 +1,21 @@
 <?php
 /**
- * This block is for test purpose.
- *
- */
-if ( ! empty( $_GET['wp-load'] ) )
-	include_once substr( __FILE__, 0, strpos( __FILE__, '/wp-content/' ) ) . '/wp-load.php';
-
-// Status same as admin-ajax.php
-die( '0' );
-
-/**
  * Samples/Snippets to extend functionality of IP Geo Block
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2014-2016 tokkonopapa
+ * @copyright 2014-2017 tokkonopapa
  */
-if ( class_exists( 'IP_Geo_Block' ) ):
+/* Start loading wp-load.php */
+if ( ! empty( $_GET['wp-load'] ) ) {
+	include_once substr( __FILE__, 0, strpos( __FILE__, '/wp-content/' ) ) . '/wp-load.php';
+}
+die( '0' );
+/* End of loading wp-load.php */
 
-define( 'IP_GEO_BLOCK_DEBUG', false );
+if ( class_exists( 'IP_Geo_Block' ) ):
 
 /**
  * Example 1: Usage of 'ip-geo-block-ip-addr'

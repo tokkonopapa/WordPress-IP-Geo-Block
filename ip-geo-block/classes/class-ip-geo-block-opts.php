@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2013-2016 tokkonopapa
+ * @copyright 2013-2017 tokkonopapa
  */
 
 class IP_Geo_Block_Opts {
@@ -112,9 +112,7 @@ class IP_Geo_Block_Opts {
 				'bbp-new-topic', 'bbp-edit-topic',
 				'bbp-new-reply', 'bbp-edit-reply',
 			),
-			'includes'    => array(   // for wp-includes/
-				'ms-files.php', 'js/tinymce/wp-tinymce.php'
-			 ),
+			'includes'    => array(), // for wp-includes/
 			'uploads'     => array(), // for UPLOADS/uploads
 			'languages'   => array(), // for wp-content/language
 		),
@@ -144,7 +142,7 @@ class IP_Geo_Block_Opts {
 			'target_cates'   => array(), // blocking target of categories
 			'target_tags'    => array(), // blocking target of tags
 			'ua_list'        => "Google:HOST,bot:HOST,slurp:HOST\nspider:HOST,archive:HOST,*:FEED\n*:HOST=embed.ly,Twitterbot:US,Facebot:US",
-			'simulate'       => FALSE,// just simulate, never block
+			'simulate'       => FALSE,   // just simulate, never block
 		),
 	);
 
@@ -285,8 +283,8 @@ class IP_Geo_Block_Opts {
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
 
-		// install addons for IP Geolocation database API @since 1.1.6
-		if ( ! $settings['api_dir'] || version_compare( $version, '3.0.1' ) < 0 )
+		// install addons for IP Geolocation database API ver. 1.1.7
+		if ( ! $settings['api_dir'] || version_compare( $version, '3.0.2' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table

@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2016 tokkonopapa
+ * @copyright 2016-2017 tokkonopapa
  */
 
 /**

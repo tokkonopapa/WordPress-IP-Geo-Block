@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.7.2
-Stable tag: 3.0.1.2
+Tested up to: 4.7.3
+Stable tag: 3.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -347,14 +347,14 @@ can also help you.
 = How to resolve "Sorry, your request cannot be accepted."? =
 
 If you encounter this message, please refer to 
-  [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;You are not allowed to access this page&rdquo; ? | IP Geo Block")
+  [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;Sorry, your request cannot be accepted&rdquo; ? | IP Geo Block")
 to resolve your blocking issue. 
 
 = Some admin function doesn't work. How to solve it? =
 
 This could be happened because of the same reason as the previous FAQ. Please 
 follow the steps in
-  [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;You are not allowed to access this page&rdquo; ? | IP Geo Block").
+  [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;Sorry, your request cannot be accepted&rdquo; ? | IP Geo Block").
 
 If you can't solve your issue, please let me know about it on the
   [support forum](https://wordpress.org/support/plugin/ip-geo-block/ "View: Plugin Support &laquo;  WordPress.org Forums").
@@ -474,6 +474,22 @@ This function protects your site against such a case.
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 3.0.2 =
+* **New feature:** Add "Exceptions" for "Admin ajax/post" to specify the name 
+  of action which causes undesired blocking (typically on the public facing 
+  pages).
+* **Improvement:** Add "Disable" to "Max number of failed login attempts per 
+  IP address" to avoid conflict with other similar plugin.
+* **Improvement:** Update geolocation database libraries to 1.1.7 for better 
+  compatibility on some platform.
+* **Trial feature:** Add custom action hook `ip-geo-block-send-response`. This 
+  is useful to control firewall via 
+  [fail2ban](http://www.fail2ban.org/ "Fail2ban") 
+  like 
+  [WP fail2ban](https://wordpress.org/plugins/wp-fail2ban/ "WP fail2ban - WordPress Plugins").
+* See some details at
+  [release 3.0.2](http://www.ipgeoblock.com/changelog/release-3.0.2.html "3.0.2 Release Note | IP Geo Block").
 
 = 3.0.1.2 =
 * **Bug fix:** Fix the blocking issue in some environments when upgrading from 

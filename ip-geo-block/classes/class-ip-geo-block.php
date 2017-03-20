@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2013-2016 tokkonopapa
+ * @copyright 2013-2017 tokkonopapa
  */
 
 class IP_Geo_Block {
@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.1.2';
+	const VERSION = '3.0.2';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -41,13 +41,9 @@ class IP_Geo_Block {
 	 */
 	private function __construct() {
 		$settings = self::get_option();
-		$priority = &$settings['priority'];
-		$validate = &$settings['validation'];
-		$loader = new IP_Geo_Block_Loader();
 
 		// include drop in if it exists
-		$key = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php';
-		file_exists( $key ) and include( $key );
+		file_exists( $key = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php' ) and include( $key );
 
 		// Garbage collection for IP address cache
 		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );
@@ -55,6 +51,11 @@ class IP_Geo_Block {
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
 			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
+
+		// setup loader to configure validation function
+		$priority = &$settings['priority'];
+		$validate = &$settings['validation'];
+		$loader = new IP_Geo_Block_Loader();
 
 		// check the package version and upgrade if needed (activation hook never fire on upgrade)
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
@@ -321,7 +322,7 @@ class IP_Geo_Block {
 	 * Send response header with http status code and reason.
 	 *
 	 */
-	public function send_response( $hook, $settings ) {
+	public function send_response( $hook, $validate, $settings ) {
 		require_once ABSPATH . WPINC . '/functions.php'; // for get_status_header_desc() @since 2.3.0
 
 		// prevent caching (WP Super Cache, W3TC, Wordfence, Comet Cache)
@@ -331,7 +332,11 @@ class IP_Geo_Block {
 		$code = (int   )apply_filters( self::PLUGIN_NAME . '-'.$hook.'-status', $settings['response_code'] );
 		$mesg = (string)apply_filters( self::PLUGIN_NAME . '-'.$hook.'-reason', $settings['response_msg' ] ? $settings['response_msg'] : get_status_header_desc( $code ) );
 
-		nocache_headers(); // Set the headers to prevent caching for the different browsers.
+		// custom action (for fail2ban) @since 1.2.0
+		do_action( self::PLUGIN_NAME . '-send-response', $hook, $code, $validate );
+
+		// Set the headers to prevent caching for the different browsers.
+		nocache_headers();
 
 		if ( defined( 'XMLRPC_REQUEST' ) && 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 			status_header( 405 );
@@ -394,12 +399,20 @@ class IP_Geo_Block {
 		}
 
 		// register auxiliary validation functions
+		// priority high 1 check_ips_black
+		//               2 close_xmlrpc
+		//               5 check_nonce
+		//               6 check_signature
+		//               7 check_auth
+		//               8 check_fail
+		//               9 check_ips_white
+		// priority low 10 validate_country
 		$var = self::PLUGIN_NAME . '-' . $hook;
-		          add_filter( $var, array( $this, 'check_fail' ), 9, 2 );
-		$auth and add_filter( $var, array( $this, 'check_auth' ), 8, 2 );
 		$settings['extra_ips'] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
-		$settings['extra_ips']['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
-		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
+		$settings['extra_ips']['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 9, 2 );
+		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 1, 2 );
+		$settings['login_fails'] >= 0 and add_filter( $var, array( $this, 'check_fail' ), 8, 2 );
+		$auth                         and add_filter( $var, array( $this, 'check_auth' ), 7, 2 );
 
 		// make valid provider name list
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
@@ -446,7 +459,7 @@ class IP_Geo_Block {
 
 			// send response code to refuse
 			if ( $block && $die )
-				$this->send_response( $hook, $settings );
+				$this->send_response( $hook, $validate, $settings );
 		}
 
 		return $validate;
@@ -477,7 +490,7 @@ class IP_Geo_Block {
 		$settings = self::get_option();
 
 		if ( 2 === (int)$settings['validation']['xmlrpc'] ) // Completely close
-			add_filter( self::PLUGIN_NAME . '-xmlrpc', array( $this, 'close_xmlrpc' ), 6, 2 );
+			add_filter( self::PLUGIN_NAME . '-xmlrpc', array( $this, 'close_xmlrpc' ), 2, 2 );
 
 		else // wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
 			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ), $settings['priority'] );
@@ -517,6 +530,18 @@ class IP_Geo_Block {
 	}
 
 	/**
+	 * Check exceptions
+	 *
+	 */
+	private function check_exceptions( $action, $page, $exceptions = array() ) {
+		$in_action = in_array( $action, $exceptions, TRUE );
+		$in_page   = in_array( $page,   $exceptions, TRUE );
+
+		return ( ( $action xor $page ) && ( ! $in_action and ! $in_page ) ) ||
+		       ( ( $action and $page ) && ( ! $in_action or  ! $in_page ) ) ? FALSE : TRUE;
+	}
+
+	/**
 	 * Validate in admin area.
 	 *
 	 */
@@ -526,54 +551,55 @@ class IP_Geo_Block {
 		$action = isset( $_REQUEST['task' ] ) ? 'task' : 'action';
 		$action = isset( $_REQUEST[$action] ) ? $_REQUEST[$action] : NULL;
 		$page   = isset( $_REQUEST['page' ] ) ? $_REQUEST['page' ] : NULL;
+		$login  = IP_Geo_Block_Util::may_be_logged_in();
 
 		switch ( $this->pagenow ) {
 		  case 'admin-ajax.php':
 			// if the request has an action for no privilege user, skip WP-ZEP
 			$zep = ! has_action( 'wp_ajax_nopriv_'.$action );
-			$type = (int)$settings['validation']['ajax'];
+			$rule = (int)$settings['validation']['ajax'];
 			break;
 
 		  case 'admin-post.php':
 			// if the request has an action for no privilege user, skip WP-ZEP
 			$zep = ! has_action( 'admin_post_nopriv' . ($action ? '_'.$action : '') );
-			$type = (int)$settings['validation']['ajax'];
+			$rule = (int)$settings['validation']['ajax'];
 			break;
 
 		  default:
-			// if the request has no page and no action, skip WP-ZEP
-			$zep = ( $page || $action ) ? TRUE : FALSE;
-			$type = (int)$settings['validation']['admin'];
+			// if not logged in then WP-ZEP should be skipped
+			$zep = $login;
+			$rule = (int)$settings['validation']['admin'];
 		}
 
 		// list of request for specific action or page to bypass WP-ZEP
 		$list = array_merge(
-			apply_filters( self::PLUGIN_NAME . '-bypass-admins', $settings['exception']['admin'] ),
-			array( 'save-widget', 'wordfence_testAjax', 'wordfence_doScan', 'wp-compression-test', // wp-admin/includes/template.php
-				'upload-attachment', 'imgedit-preview', 'bp_avatar_upload', 'GOTMLS_logintime', // pluploader won't fire an event in "Media Library"
+			apply_filters( self::PLUGIN_NAME . '-bypass-admins', array() ),
+			array( 'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',  // in wp-admin js/widget.js, includes/template.php, async-upload.php
+				'wordfence_testAjax', 'wordfence_doScan', 'bp_avatar_upload', 'GOTMLS_logintime', // Wordfence, bbPress, Anti-Malware Security and Brute-Force Firewall
 				'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', // jetpack page & action
 			)
 		);
 
-		$in_action = in_array( $action, $list, TRUE );
-		$in_page   = in_array( $page,   $list, TRUE );
+		// skip validation of country code and WP-ZEP if exceptions matches action or page
+		if ( ( $page || $action ) && $this->check_exceptions( $action, $page, $settings['exception']['admin'] ) )
+			$rule &= ~ ( $zep ? 2 : 1 ); // 2: WP-ZEP, 1: Block by country (validation of bad signature is still in effective)
 
 		// combination with vulnerable keys should be prevented to bypass WP-ZEP
-		if ( ( ( $action xor $page ) && ( ! $in_action and ! $in_page ) ) ||
-		     ( ( $action and $page ) && ( ! $in_action or  ! $in_page ) ) ) {
-			if ( ( 2 & $type ) && $zep ) {
+		elseif ( ! $this->check_exceptions( $action, $page, $list ) ) {
+			if ( ( 2 & $rule ) && $zep ) {
 				// redirect if valid nonce in referer, otherwise register WP-ZEP (2: WP-ZEP)
 				IP_Geo_Block_Util::trace_nonce( self::PLUGIN_NAME . '-auth-nonce' );
 				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 			}
-
-			// register validation of malicious signature (except in the comment and post)
-			if ( ! IP_Geo_Block_Util::may_be_logged_in() || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
-				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
 		}
 
+		// register validation of malicious signature (except in the comment and post)
+		if ( ! $login || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
+			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
+
 		// validate country by IP address (1: Block by country)
-		$this->validate_ip( 'admin', $settings, 1 & $type );
+		$this->validate_ip( 'admin', $settings, 1 & $rule );
 	}
 
 	/**
@@ -583,30 +609,37 @@ class IP_Geo_Block {
 	public function validate_direct() {
 		// analyze target in wp-includes, wp-content/(plugins|themes|language|uploads)
 		$path = preg_quote( self::$wp_path[ $type = $this->target_type ], '/' );
-		$target = ( 'plugins' === $type || 'themes' === $type ? '[^\?\&\/]*' : '[^\?\&]*' );
+		$name = ( 'plugins' === $type || 'themes' === $type ? '[^\?\&\/]*' : '[^\?\&]*' );
 
-		preg_match( "/($path)($target)/", $this->request_uri, $target );
-		$target = empty( $target[2] ) ? $target[1] : $target[2];
+		preg_match( "/($path)($name)/", $this->request_uri, $name );
+		$name = empty( $name[2] ) ? $name[1] : $name[2];
 
-		// set validation type by target (0: Bypass, 1: Block by country, 2: WP-ZEP)
+		// set validation rule by target (0: Bypass, 1: Block by country, 2: WP-ZEP)
 		$settings = self::get_option();
-		$path = apply_filters( self::PLUGIN_NAME . "-bypass-{$type}", $settings['exception'][ $type ] );
-		$type = (int)$settings['validation'][ $type ];
+		$rule = (int)$settings['validation'][ $type ];
 
-		if ( ! in_array( $target, $path, TRUE ) ) {
-			if ( 2 & $type ) {
+		// list of request for specific action or page to bypass WP-ZEP
+		$path = array( 'includes' => array( 'ms-files.php', 'js/tinymce/wp-tinymce.php', ), /* for wp-includes */ );
+		$path = apply_filters( self::PLUGIN_NAME . "-bypass-{$type}", isset( $path[ $type ] ) ? $path[ $type ] : array() );
+
+		// skip validation of country code if exceptions matches action or page
+		if ( in_array( $name, $settings['exception'][ $type ], TRUE ) )
+			$rule = 0;
+
+		elseif ( ! in_array( $name, $path, TRUE ) ) {
+			if ( 2 & $rule ) {
 				// redirect if valid nonce in referer, otherwise register WP-ZEP (2: WP-ZEP)
 				IP_Geo_Block_Util::trace_nonce( self::PLUGIN_NAME . '-auth-nonce' );
 				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 			}
-
-			// register validation of malicious signature
-			if ( ! IP_Geo_Block_Util::may_be_logged_in() )
-				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
 		}
 
+		// register validation of malicious signature
+		if ( ! IP_Geo_Block_Util::may_be_logged_in() )
+			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
+
 		// validate country by IP address (1: Block by country)
-		$validate = $this->validate_ip( 'admin', $settings, 1 & $type );
+		$validate = $this->validate_ip( 'admin', $settings, 1 & $rule );
 
 		// if the validation is successful, execute the requested uri via rewrite.php
 		if ( class_exists( 'IP_Geo_Block_Rewrite' ) )
@@ -742,8 +775,7 @@ class IP_Geo_Block {
 			return; // do not block
 
 		if ( $public['target_rule'] ) {
-			// postpone validation until 'wp' fires
-			if ( ! did_action( 'wp' ) ) {
+			if ( ! did_action( 'wp' ) ) { // deferred validation on 'wp' when the target is specified
 				add_action( 'wp', array( $this, 'validate_public' ) );
 				return;
 			}

@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2013-2016 tokkonopapa
+ * @copyright 2013-2017 tokkonopapa
  */
 
 class IP_Geo_Block_Admin {
@@ -330,7 +330,7 @@ class IP_Geo_Block_Admin {
 					( $settings['matching_rule'] ?
 						__( 'Once you logout, you will be unable to login again because your country code or IP address is in the blacklist.', 'ip-geo-block' ) :
 						__( 'Once you logout, you will be unable to login again because your country code or IP address is not in the whitelist.', 'ip-geo-block' )
-					) .
+					) . ' ' .
 					sprintf(
 						__( 'Please check your <a href="%s">Validation rule settings</a>.', 'ip-geo-block' ),
 						esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-settings-0'
@@ -885,7 +885,7 @@ class IP_Geo_Block_Admin {
 
 		  case 'scan-code':
 			// Fetch providers to get country code
-			$res = IP_Geo_Block_Admin_Ajax::scan_country();
+			$res = IP_Geo_Block_Admin_Ajax::scan_country( $which );
 			break;
 
 		  case 'clear-statistics':

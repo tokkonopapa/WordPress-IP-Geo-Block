@@ -13,9 +13,6 @@ class IP_Geo_Block_Admin_Tab {
 		$option_name = IP_Geo_Block::OPTION_NAME; // 'ip_geo_block_settings'
 		$options = IP_Geo_Block::get_option();
 
-		// Get the country code
-		$key = IP_Geo_Block::get_geolocation();
-
 		/**
 		 * Register a setting and its sanitization callback.
 		 * @link http://codex.wordpress.org/Function_Reference/register_setting
@@ -66,10 +63,14 @@ class IP_Geo_Block_Admin_Tab {
 		 * @param string $section The section of the settings page in which to show the box.
 		 * @param array $args Additional arguments that are passed to the $callback function.
 		 */
-		$field = 'ip_country';
+
+		// Get the country code
+		$key = IP_Geo_Block::get_geolocation( IP_Geo_Block::get_ip_address() );
+
+		$field = 'ip_client';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="You can confirm the appropriate Geolocation APIs and country code by referring &#8220;Scan your country code&#8221;.">Your IP address / Country</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="You can confirm the appropriate Geolocation APIs and country code by referring &#8220;Scan country code&#8221;.">Your IP address / Country</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -77,8 +78,8 @@ class IP_Geo_Block_Admin_Tab {
 				'type' => 'html',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ),
-				'after' => '&nbsp;<a class="button button-secondary" id="ip-geo-block-scan-code" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Scan your country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning"></div>',
+				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ) . '</span>',
+				'after' => '&nbsp;<a class="button button-secondary" id="ip-geo-block-scan-' . $field . '" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-' . $field . '"></div>',
 			)
 		);
 
@@ -310,6 +311,7 @@ class IP_Geo_Block_Admin_Tab {
 				'field' => $field,
 				'value' => $options[ $field ],
 				'list' => array(
+					-1 => 'Disable',
 					 0 =>  0,
 					 1 =>  1,
 					 3 =>  3,
@@ -473,6 +475,50 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+		// Get all the ajax/post actions
+		$exception = '';
+		$installed = array();
+
+		global $wp_filter;
+		foreach ( $wp_filter as $key => $val ) {
+			if ( FALSE !== strpos( $key, 'wp_ajax_' ) ) {
+				if ( 0 === strpos( $key, 'wp_ajax_nopriv_' ) ) {
+					$key = substr( $key, 15 );
+					$val = 2;
+				} else {
+					$key = substr( $key, 8 );
+					$val = 1;
+				}
+				$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
+			} elseif ( FALSE !== strpos( $key, 'admin_post_' ) ) {
+				if ( 0 === strpos( $key, 'admin_post_nopriv_' ) ) {
+					$key = substr( $key, 18 );
+					$val = 2;
+				} else {
+					$key = substr( $key, 11 );
+					$val = 1;
+				}
+				$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
+			}
+		}
+		unset( $installed['ip_geo_block'] );
+
+		$tmp = array(
+			__( 'for privileged users',     'ip-geo-block' ),
+			__( 'for non-privileged users', 'ip-geo-block' ),
+		);
+
+		foreach ( $installed as $key => $val ) {
+			$val = '';
+			$val .= $installed[ $key ] & 1 ? '<dfn title="' . $tmp[0] . '"><span class="dashicons dashicons-lock"></span></dfn>' : '';
+			$val .= $installed[ $key ] & 2 ? '<dfn title="' . $tmp[1] . '"><span class="dashicons dashicons-unlock"></span></dfn>' : '';
+			$key = esc_attr( $key );
+			$exception .= '<li>'
+				. '<input id="ip_geo_block_' . $key . '" type="checkbox" value="1"' . checked( in_array( $key, $options['exception']['admin'] ), TRUE, FALSE ) . ' />'
+				. '<label for="ip_geo_block_' . $key . '">' . $key . '</label>' . $val
+				. '</li>' . "\n";
+		}
+
 		// Admin ajax/post
 		$key = 'ajax';
 		$val = esc_html( substr( IP_Geo_Block::$wp_path['admin'], 1 ) );
@@ -490,28 +536,17 @@ class IP_Geo_Block_Admin_Tab {
 				'value' => $options[ $field ][ $key ],
 				'list' => $list,
 				'desc' => $desc,
+				'after' => '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">'
+					. __( '<dfn title="Select actions that cause undesired blocking to skip &#8220;Prevent Zero-day Exploit&#8220; for privileged users, &#8220;Block by country&#8221; for non-privileged users. If you can not find the right one in the candidate list, you can put text into the field for certain actions which would be implemented with a non-WordPress standard way.">Exceptions</dfn>', 'ip-geo-block' )
+					. '<li style="display:none"><ul><li>' . "\n"
+					. '<input class="regular-text code" id="ip_geo_block_settings_exception_admin" name="ip_geo_block_settings[exception][admin]" type="text" value="' . esc_attr( implode( ',', $options['exception']['admin'] ) ) . '">' . "\n"
+					. $comma[0]
+					. '</li><li><ul id="ip-geo-block-actions">'
+					. '<h4>' . __( 'Candidate actions', 'ip-geo-block' ) . '</h4>'
+					. $exception
+					. '</ul></li></ul></li></ul>' . "\n",
 			)
 		);
-
-if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		// Excluded request for specific action or page to bypass WP-ZEP
-		$key = 'admin';
-		add_settings_field(
-			$option_name.'_exception_'.$key,
-			__( '<dfn title="Same effect as &#8220;ip-geo-block-bypass-admins&#8221; filter hook.">Exception for admin action and page</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => 'exception',
-				'sub-field' => $key,
-				'value' => implode( ',', $options['exception'][ $key ] ),
-				'after' => $comma[0],
-			)
-		);
-endif;
 
 		array_unshift( $list, __( 'Disable', 'ip-geo-block' ) );
 		$desc = array(
@@ -956,7 +991,7 @@ endif;
 		add_settings_section(
 			$section,
 			__( 'Record settings', 'ip-geo-block' ),
-			NULL,
+			array( __CLASS__, 'note_record' ),
 			$option_slug
 		);
 
@@ -1245,24 +1280,8 @@ endif;
 				'type' => 'none',
 				'before' =>
 					'<a class="button button-secondary" id="ip-geo-block-default"   title="' . __( 'Import the default settings to revert to the &#8220;Right after installing&#8221; state', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Default settings', 'ip-geo-block' ) . '</a>&nbsp;' .
-					'<a class="button button-secondary" id="ip-geo-block-preferred" title="' . __( 'Import the preferred settings mainly for the &#8220;Validation target settings&#8221;',   'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Best settings',    'ip-geo-block' ) . '</a>',
+					'<a class="button button-secondary" id="ip-geo-block-preferred" title="' . __( 'Import the preferred settings mainly for the &#8220;Back-end target settings&#8221;',     'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Best settings',    'ip-geo-block' ) . '</a>',
 				'after' => '<div id="ip-geo-block-pre-defined"></div>',
-			)
-		);
-
-		// Show WordPress installation info
-		$field = 'show-info';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( '<dfn title="Please copy &amp; paste when submitting your issue to support forum.">Installation information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'none',
-				'before' =>
-					'<a class="button button-secondary" id="ip-geo-block-show-info" title="' . __( 'Show PHP, WordPress, theme and plugins information.', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Show information', 'ip-geo-block' ) . '</a>&nbsp;',
-				'after' => '<div id="ip-geo-block-wp-info"></div>',
 			)
 		);
 
@@ -1301,6 +1320,22 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		);
 endif;
 
+		// Show WordPress installation info
+		$field = 'show-info';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="Please copy &amp; paste when submitting your issue to support forum.">Installation information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'none',
+				'before' =>
+					'<a class="button button-secondary" id="ip-geo-block-show-info" title="' . __( 'Show PHP, WordPress, theme and plugins information.', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Show information', 'ip-geo-block' ) . '</a>&nbsp;',
+				'after' => '<div id="ip-geo-block-wp-info"></div>',
+			)
+		);
+
 	}
 
 	/**
@@ -1328,6 +1363,13 @@ endif;
 			'<ul class="ip-geo-block-note">', "\n",
 				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/#blocking-on-front-end" title="Codex | IP Geo Block">Blocking on front-end</a>&#8221; for details, including restrictions on cache plugin.', 'ip-geo-block' ), '</li>', "\n",
 				'<li>', __( 'If you find any issues or have something to suggest, please feel free to open an issue at <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a>.', 'ip-geo-block' ), '</li>', "\n",
+			'</ul>', "\n";
+	}
+
+	public static function note_record() {
+		echo
+			'<ul class="ip-geo-block-note">', "\n",
+				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/record-settings-and-logs.html" title="Codex | IP Geo Block">Record settings and logs</a>&#8221; for details.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 

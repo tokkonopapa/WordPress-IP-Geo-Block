@@ -9,9 +9,10 @@ define( 'IP_GEO_BLOCK_IP2LOC_IPV4_DAT', 'IP2LOCATION-LITE-DB1.BIN' );
 define( 'IP_GEO_BLOCK_IP2LOC_IPV6_DAT', 'IP2LOCATION-LITE-DB1.IPV6.BIN' );
 define( 'IP_GEO_BLOCK_IP2LOC_IPV4_ZIP', 'http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.BIN.ZIP' );
 define( 'IP_GEO_BLOCK_IP2LOC_IPV6_ZIP', 'http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.IPV6.BIN.ZIP' );
+define( 'IP_GEO_BLOCK_IP2LOC_DOWNLOAD', 'http://lite.ip2location.com/database/ip-country' );
 
 /**
- * Class for IP2Location (ver. 1.1.6)
+ * Class for IP2Location (ver. 1.1.7)
  *
  * URL         : http://www.ip2location.com/
  * Term of use : http://www.ip2location.com/terms
@@ -129,7 +130,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	}
 
 	public function get_attribution() {
-		return 'This site or product includes IP2Location LITE data available from <a class="ip-geo-block-link" href="http://www.ip2location.com" rel=noreferrer target=_blank>http://www.ip2location.com</a>. (CC BY-SA 4.0)';
+		return 'This site or product includes IP2Location LITE data available from <a class="ip-geo-block-link" href="http://www.ip2location.com" rel=noreferrer target=_blank>http://www.ip2location.com</a>. (<a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons &mdash; Attribution-ShareAlike 4.0 International &mdash; CC BY-SA 4.0" rel=noreferrer target=_blank>CC BY-SA 4.0</a>)';
 	}
 
 	public function add_settings_field( $field, $section, $option_slug, $option_name, $options, $callback, $str_path, $str_last ) {
@@ -152,7 +153,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 
 		add_settings_field(
 			$option_name . $field . '_ipv4',
-			"$field $str_path (IPv4)",
+			"$field $str_path (<a rel='noreferrer' href='" . IP_GEO_BLOCK_IP2LOC_DOWNLOAD . "' title='" . IP_GEO_BLOCK_IP2LOC_IPV4_ZIP . "'>IPv4</a>)",
 			$callback,
 			$option_slug,
 			$section,
@@ -181,7 +182,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 
 		add_settings_field(
 			$option_name . $field . '_ipv6',
-			"$field $str_path (IPv6)",
+			"$field $str_path (<a rel='noreferrer' href='" . IP_GEO_BLOCK_IP2LOC_DOWNLOAD . "' title='" . IP_GEO_BLOCK_IP2LOC_IPV6_ZIP . "'>IPv6</a>)",
 			$callback,
 			$option_slug,
 			$section,

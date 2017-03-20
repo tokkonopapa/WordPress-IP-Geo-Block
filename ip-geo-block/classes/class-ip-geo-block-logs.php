@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2013-2016 tokkonopapa
+ * @copyright 2013-2017 tokkonopapa
  */
 
 // varchar can not be exceeded over 255 before MySQL-5.0.3.
@@ -215,7 +215,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function limit_rows( $time ) {
 		$options = IP_Geo_Block::get_option();
-		return (int)( $options['validation']['maxlogs'] / ((int)$time < 50 ? 1 : 2) );
+		return (int)( $options['validation']['maxlogs'] / (wp_is_mobile() ? 2 : 1) );
 	}
 
 	/**

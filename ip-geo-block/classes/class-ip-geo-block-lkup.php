@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2016 tokkonopapa
+ * @copyright 2016-2017 tokkonopapa
  */
 
 class IP_Geo_Block_Lkup {
@@ -63,7 +63,7 @@ class IP_Geo_Block_Lkup {
 	public static function gethostbyaddr( $ip ) {
 		// available on Windows platforms after PHP 5.3.0
 		if ( function_exists( 'gethostbyaddr' ) )
-			$host = gethostbyaddr( $ip );
+			$host = @gethostbyaddr( $ip );
 
 		// if not available
 		if ( empty( $host ) ) {

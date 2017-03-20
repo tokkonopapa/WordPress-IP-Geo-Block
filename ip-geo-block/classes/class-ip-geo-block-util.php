@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2013-2016 tokkonopapa
+ * @copyright 2013-2017 tokkonopapa
  */
 
 class IP_Geo_Block_Util {
@@ -314,15 +314,12 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/pluggable.php
 	 */
 	public static function redirect( $location, $status = 302 ) {
-		$_is_apache = ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Apache' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'LiteSpeed' ) !== FALSE );
-		$_is_IIS = ! $_is_apache && ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer' ) !== FALSE );
-
 		// retrieve nonce from referer and add it to the location
 		$location = self::rebuild_nonce( $location, $status );
 		$location = self::sanitize_redirect( $location );
 
 		if ( $location ) {
-			if ( ! $_is_IIS && PHP_SAPI != 'cgi-fcgi' )
+			if ( ! self::is_IIS() && PHP_SAPI != 'cgi-fcgi' )
 				status_header( $status ); // This causes problems on IIS and some FastCGI setups
 
 			header( "Location: $location", true, $status );
@@ -510,6 +507,21 @@ class IP_Geo_Block_Util {
 		}
 
 		return $subject;
+	}
+
+	/**
+	 * Whether the server software is IIS or something else
+	 *
+	 * @source wp-includes/vers.php
+	 */
+	private static function is_IIS() {
+		$_is_apache = ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Apache' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'LiteSpeed' ) !== FALSE );
+		$_is_IIS = ! $_is_apache && ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer' ) !== FALSE );
+
+		if ( $_is_IIS )
+			$_is_IIS = substr( $_SERVER['SERVER_SOFTWARE'], strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS/' ) + 14 );
+
+		return $_is_IIS;
 	}
 
 }

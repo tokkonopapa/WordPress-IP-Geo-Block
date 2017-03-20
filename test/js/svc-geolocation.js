@@ -40,7 +40,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				return null;
 			}
 		},
-		/*{
+		{
 			api: 'ip-api',
 			url: 'http://ip-api.com/%API_FMT%/%API_IP%',
 			fmt: 'json',
@@ -53,7 +53,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				}
 				return null;
 			}
-		},*/
+		},
 		/**
 		 * APIs that doesn't support CORS.
 		 * These are accessed through https://developer.yahoo.com/yql/

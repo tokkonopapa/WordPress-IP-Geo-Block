@@ -1,7 +1,7 @@
 /*jslint white: true */
 /*!
  * Project: WordPress IP Geo Block
- * Copyright (c) 2015-2016 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2015-2017 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
 var ip_geo_block_time = new Date();
@@ -125,6 +125,17 @@ var ip_geo_block_time = new Date();
 		}
 	}
 
+	// Fold the contents
+	function fold_elements(obj, stat) { // obj: ul object
+		if (stat) {
+			obj.removeClass('folding-disable');
+		} else {
+			obj.children('li').hide();
+			obj.addClass('folding-disable');
+			obj.removeClass(ID('dropdown')).addClass(ID('dropup'));
+		}
+	}
+
 	// Show/Hide folding list
 	function show_folding_list($this, element, field, mask) {
 		var stat = false;
@@ -132,20 +143,17 @@ var ip_geo_block_time = new Date();
 		stat |= (0 === $this.prop('type').indexOf('select'  ) && '0' !== $this.val());
 
 		element.nextAll('.' + field + '_folding').each(function (i, obj) {
-			obj = $(obj);
-
-			// completely hide
-			// obj.css('display', mask ? 'block' : 'none');
-
-			// fold the contents
-			if (stat && mask) {
-				obj.removeClass('folding-disable');
-			} else {
-				obj.children('li').hide();
-				obj.addClass('folding-disable');
-				obj.removeClass(ID('dropdown')).addClass(ID('dropup'));
-			}
+			fold_elements($(obj), stat && mask);
 		});
+	}
+
+	// Show / Hide Exceptions
+	function show_folding_ajax(elem) {
+		var id = ID('@', 'validation_ajax_');
+		fold_elements(
+			elem.closest('ul').next(),
+			$(id + '1').is(':checked') || $(id + '2').is(':checked')
+		);
 	}
 
 	// Encode/Decode to prevent blocking before post ajax
@@ -221,7 +229,7 @@ var ip_geo_block_time = new Date();
 					name = decodeURIComponent(key);
 					value = decodeURIComponent(json[key]);
 
-					if (!(name in data)) { // !data.hasOwnProperty(name)
+					if (!data.hasOwnProperty(name)) { // !(name in data)
 						data[name] = [];
 					}
 
@@ -256,6 +264,9 @@ var ip_geo_block_time = new Date();
 			// Additional edge case
 			var i = ID('%', 'settings[providers][IPInfoDB]');
 			$(ID('@', 'providers_IPInfoDB')).prop('checked', json[i] ? true : false);
+
+			// Exceptions
+			$(ID('@', 'exception_admin')).trigger('change');
 		}
 	}
 
@@ -478,10 +489,13 @@ var ip_geo_block_time = new Date();
 		   *----------------------------------------*/
 		  case 0:
 			// Scan your country code
-			$(ID('#', 'scan-code')).on('click', function (event) {
-				var parent = $(this).parent();
-				ajax_post('scanning', {
-					cmd: 'scan-code'
+			$('[id^="' + ID('$', 'scan-') + '"]').on('click', function (event) {
+				var $this = $(this),
+				    id = $this.attr('id'),
+				    parent = $this.parent();
+				ajax_post(id.replace(/^.*(scan)/, 'scanning'), {
+					cmd: 'scan-code',
+					which: id.replace(ID('$', 'scan-'), '')
 				}, function (data) {
 					if (!parent.children('ul').length) {
 						parent.append('<ul id="' + ID('code-list') + '"></ul>');
@@ -664,7 +678,7 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Folding list
-			$('ul.' + name + '_folding dfn').on('click', function (event) {
+			$('ul.' + name + '_folding>dfn').on('click', function (event) {
 				var $this = $(this).parent();
 				$this.children('li').toggle();
 				$this.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
@@ -707,14 +721,10 @@ var ip_geo_block_time = new Date();
 				ajax_post('wp-info', {
 					cmd: 'show-info'
 				}, function (data) {
-					var key, val, res = [];
+					var key, res = [];
 					for (key in data) {
 						if (data.hasOwnProperty(key)) {
-							for (val in data[key]) {
-								if (data[key].hasOwnProperty(val)) {
-									res.push('- ' + val + ' ' + data[key][val]);
-								}
-							}
+							res.push('- ' + key + ' ' + data[key]);
 						}
 					}
 
@@ -724,11 +734,55 @@ var ip_geo_block_time = new Date();
 				});
 			});
 
+			// Exceptions for Admin ajax/post
+			$(ID('@', 'exception_admin')).on('change', function (event) {
+				var actions = $.grep($(this).val().split(','), function (e){
+					return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
+				});
+
+				$(ID('#', 'actions')).find('input').each(function (i, e) {
+					var $this = $(this),
+					    action = $this.attr('id').replace(ID('%', ''), '');
+					if (-1 !== $.inArray(action, actions)) {
+						$this.prop('checked',true);
+					} else {
+						$this.prop('checked',false);
+					}
+				});
+			}).trigger('change');
+
+			// Candidate actions
+			$(ID('#', 'actions')).on('click', 'input', function (event) {
+				var i, $this = $(this),
+				    action = $this.attr('id').replace(ID('%', ''), ''),
+				    $admin = $(ID('@', 'exception_admin')),
+				    actions = $.grep($admin.val().split(','), function (e){
+				    	return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
+				    });
+
+				// find the action
+				i = $.inArray(action, actions);
+
+				if (-1 === i) {
+					actions.push(action);
+				} else {
+					actions.splice(i, 1);
+				}
+
+				$admin.val(actions.join(',')).change();
+			});
+
+			// Enable / Disable Exceptions
+			show_folding_ajax($(ID('@', 'validation_ajax_1')));
+			$('input[id^="' + ID('%', 'settings_validation_ajax_') + '"]').on('click', function (event) {
+				show_folding_ajax($(this));
+			});
+
 			// Submit
 			$('#submit').on('click', function (event) {
 				var elm = $(ID('@', 'signature')),
 				    str = elm.val();
-				if (str.search(/,/) !== -1) {
+				if (str.indexOf(',') !== -1) {
 					elm.val(encode_str(str));
 				}
 				return true;

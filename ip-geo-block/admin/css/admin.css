@@ -74,6 +74,21 @@ ul.ip_geo_block_settings_folding li:first-child {
     font-style:oblique !important;
 }
 
+ul#ip-geo-block-actions dfn {
+    border: none;
+}
+ul#ip-geo-block-actions span.dashicons {
+    font-size: 90%;
+}
+.ip-geo-block-checked {
+    list-style-type: disc;
+}
+
+.ip-geo-block-ip-addr {
+    display: inline-block;
+    padding-top: 5px;
+}
+
 .ip-geo-block-hide {
     display: none;
 }

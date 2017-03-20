@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2013-2016 tokkonopapa
+ * @copyright 2013-2017 tokkonopapa
  */
 
 class IP_Geo_Block_Cron {
@@ -279,10 +279,34 @@ class IP_Geo_Block_Cron {
 				$tmp = get_temp_dir(); // @since 2.5
 				$ret = unzip_file( $src, $tmp ); // @since 2.5
 
-				if ( is_wp_error( $ret ) )
+				if ( is_wp_error( $ret ) ) {
+					/* try fallback instead of throwing error
 					throw new Exception(
 						$ret->get_error_code() . ' ' . $ret->get_error_message()
-					);
+					);*/
+
+					// https://wordpress.org/support/topic/deactivated-after-updte-why/#post-6994655
+					$zip = new ZipArchive;
+					if ( TRUE !== $zip->open( $src ) )
+						throw new Exception(
+							sprintf(
+								__( 'Unable to read %s. Please check permission.', 'ip-geo-block' ),
+								$src
+							)
+						);
+
+					if ( FALSE === @$zip->extractTo( $tmp ) ) {
+						$zip->close();
+						throw new Exception(
+							sprintf(
+								__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ),
+								$tmp . basename( $filename )
+							)
+						);
+					}
+
+					$zip->close();
+				}
 
 				if ( FALSE === ( $gz = @fopen( $tmp .= basename( $filename ), 'r' ) ) )
 					throw new Exception(
@@ -305,6 +329,10 @@ class IP_Geo_Block_Cron {
 				while ( $data = fread( $gz, 4096 ) ) {
 					fwrite( $fp, $data, strlen( $data ) );
 				}
+			}
+
+			else {
+				throw new Exception( __( 'gz or zip is not supported on your system.', 'ip-geo-block' ) );
 			}
 
 			if ( ! empty( $fp ) ) {

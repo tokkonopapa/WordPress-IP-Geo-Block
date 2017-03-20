@@ -35,7 +35,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 * Get country code from providers
 	 *
 	 */
-	static public function scan_country() {
+	static public function scan_country( $which ) {
 		// scan all the country code using selected APIs
 		$ip        = IP_Geo_Block::get_ip_address();
 		$options   = IP_Geo_Block::get_option();
@@ -425,21 +425,27 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	static public function get_wp_info() {
-		// PHP, WordPress
-		$res = array();
-		$res[] = array( 'PHP' => PHP_VERSION );
-		$res[] = array( 'BC Math' => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no') );
-		$res[] = array( 'mb_strcut' => function_exists( 'mb_strcut' ) ? 'yes' : 'no' );
-		$res[] = array( 'WordPress' => $GLOBALS['wp_version'] );
-		$res[] = array( 'Multisite' => is_multisite() ? 'yes' : 'no' );
+		$settings = IP_Geo_Block::get_option();
+
+		// Server, PHP, WordPress
+		$res = array(
+			'Server:'     => $_SERVER['SERVER_SOFTWARE'],
+			'PHP:'        => PHP_VERSION,
+			'WordPress:'  => $GLOBALS['wp_version'],
+			'Multisite:'  => is_multisite() ? 'yes' : 'no',
+			'Zlib:'       => function_exists( 'gzopen' ) ? 'yes' : 'no',
+			'ZipArchive:' => class_exists( 'ZipArchive' ) ? 'yes' : 'no',
+			'BC Math:'    => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
+			'mb_strcut:'  => function_exists( 'mb_strcut' ) ? 'yes' : 'no',
+		);
 
 		// Child and parent themes
 		$activated = wp_get_theme(); // @since 3.4.0
-		$res[] = array( esc_html( $activated->get( 'Name' ) ) => esc_html( $activated->get( 'Version' ) ) );
+		$res += array( esc_html( $activated->get( 'Name' ) ) => esc_html( $activated->get( 'Version' ) ) );
 
 		if ( $installed = $activated->get( 'Template' ) ) {
 			$activated = wp_get_theme( $installed );
-			$res[] = array( esc_html( $activated->get( 'Name' ) ) => esc_html( $activated->get( 'Version' ) ) );
+			$res += array( esc_html( $activated->get( 'Name' ) ) => esc_html( $activated->get( 'Version' ) ) );
 		}
 
 		// Plugins
@@ -450,7 +456,7 @@ class IP_Geo_Block_Admin_Ajax {
 
 		foreach ( $installed as $key => $val ) {
 			if ( isset( $activated[ $key ] ) ) {
-				$res[] = array(
+				$res += array(
 					esc_html( $val['Name'] ) => esc_html( $val['Version'] )
 				);
 			}
@@ -474,7 +480,7 @@ class IP_Geo_Block_Admin_Ajax {
 			if ( ! empty( $query ) )
 				$method .= '(' . implode( ',', $query ) . ')';
 
-			$res[] = array(
+			$res += array(
 				esc_html( IP_Geo_Block_Util::localdate( $val['time'], 'Y-m-d H:i:s' ) ) =>
 				esc_html( str_pad( $val['result'], 8 ) . $method )
 			);

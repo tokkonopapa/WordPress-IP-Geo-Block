@@ -8,7 +8,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2013-2016 tokkonopapa
+ * @copyright 2013-2017 tokkonopapa
  *
  * Plugin Name:       IP Geo Block (mu)
  * Plugin URI:        http://wordpress.org/plugins/ip-geo-block/

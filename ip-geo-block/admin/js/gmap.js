@@ -2,7 +2,7 @@
  * Project: GmapRS - google map for WordPress IP Geo Block
  * Description: A really simple google map plugin based on jQuery-boilerplate.
  * Version: 0.2.4
- * Copyright (c) 2013-2016 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2013-2017 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
 // https://developers.google.com/maps/documentation/javascript/events?hl=en#auth-errors
