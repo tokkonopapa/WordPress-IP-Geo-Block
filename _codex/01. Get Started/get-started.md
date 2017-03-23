@@ -18,7 +18,43 @@ becase a background process of downloading Geo-IP databases may be running.
  "After activation of IP Geo Block"
 )
 
-### If download fails... ###
+### Configure the settings ###
+
+The following picuture shows all the sections to configure this plugin to fit 
+your demmand.
+
+![All sections on Settings tab]({{ '/img/2017-03/TabSettings.png' | prepend: site.baseurl }}
+ "All sections on Settings tab"
+)
+
+The most important sections are placed at the top 3:
+
+- **Validation rule settings**  
+  You can configure the common rules of validation of country code for back-end
+  and front-end. Also you can setup the behavior of this plugin when blocking 
+  happens.  
+  ![Validation rule settings]({{ '/img/2017-03/ValidationRuleSettings.png' | prepend: site.baseurl }}
+   "Validation rule settings"
+  )
+
+- **Back-end target settings**  
+  Initial settings in this section are configured as "minimum" from a security 
+  point of view. The easiest way to "maximize" the protection ability of this 
+  plugin against various attacks is to push "**Best settings**" button in 
+  "**Plugin settings**" section. Please try it!  
+  ![Back-end target settings]({{ '/img/2017-03/BackendTargetSettings.png' | prepend: site.baseurl }}
+   "Back-end target settings"
+  )
+
+- **Front-end target settings**  
+  In this section, you can configure "**Matching rule**" as different from the 
+  "**Validation rule settings**". For some details, please refre to 
+  "[Blocking on front-end][BlockFront]".
+  ![Front-end target settings]({{ '/img/2017-03/FrontendTargetSettings.png' | prepend: site.baseurl }}
+   "Front-end target settings"
+  )
+
+### If initial setup fails... ###
 
 You'll find the error message and the "**Matching rule**" is still `Disable`.
 
@@ -62,7 +98,8 @@ In this case, you had better to prioritize the country code by Maxmind.
 - [The best practice of target settings][BestPractice]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[HowToRecover]: {{ '/codex/what-should-i-do-when-i-m-locked-out.html' | prepend: site.baseurl }} "What should I do when I'm locked out? | IP Geo Block"
+[BlockFront]:   {{ '/codex/#blocking-on-front-end'                     | prepend: site.baseurl }} "Blocking on front-end | IP Geo Block"
+[HowToRecover]: {{ '/codex/what-should-i-do-when-i-m-locked-out.html'  | prepend: site.baseurl }} "What should I do when I'm locked out? | IP Geo Block"
 [BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [DifferentCC]:  http://www.ipgeoblock.com/changelog/release-2.1.5.html "2.1.5 Release Note | IP Geo Block"
 [Euroregion]:   https://en.wikipedia.org/wiki/Euroregion "Euroregion - Wikipedia, the free encyclopedia"
