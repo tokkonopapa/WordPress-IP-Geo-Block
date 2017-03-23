@@ -13,7 +13,7 @@ behavior of this plugin.
 
 Download [IP Geo Block][IP-Geo-Block], unzip and open the `ip-geo-block.php` 
 with an [appropriate editor][editors]. You can find the "**Emergent 
-Functionality**"code section near the bottom of the file as follows:
+Functionality**" code section near the bottom of the file as follows:
 
 {% highlight php %}
 <?php
