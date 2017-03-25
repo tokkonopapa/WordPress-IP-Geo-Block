@@ -33,6 +33,7 @@ Currently, you can obtain six types of qualification listed bellow:
 | REF=_string_        | True if the HTTP referer includes _string_.           |
 | _Country code_      | True if the request comes from the specified country. |
 | _IP address (CIDR)_ | True if the IP address is within the specific range.  |
+| *                   | Always true                                           |
 
 The host name corresponding IP address will be retrieved via reverse DNS lookup.
 
@@ -47,6 +48,7 @@ the meaning of qualification.
 |:-----------------|:------------------------------------------------------------|
 | Google:HOST      | Pass  if UA includes "Google" and host name is available.   |
 | Google#!HOST     | Block if UA includes "Google" and host name is unavailable. |
+| Yandex#*         | Block if UA includes "Yandex".                              |
 | *#HOST=amazonaws | Block all UA if host name includes "amazonaws".             |
 
 ![UA string and qualification]({{ '/img/2016-08/UA-Qualify.png' | prepend: site.baseurl }}

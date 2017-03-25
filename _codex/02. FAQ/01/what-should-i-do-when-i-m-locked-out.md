@@ -95,6 +95,11 @@ in your database.
 But don't worry about that. A background process kicked by the activation will 
 rescue you. After pausing for breath, you can visit your admin dashboard again!
 
+<div class="alert alert-warning">
+	Do not delete `ip-geo-api` directory. If you delete it, this solution 
+	becomes not to work.
+</div>
+
 ### For power users ###
 
 If you're familiar with the use of phpMyAdmin, you can change the value of 
