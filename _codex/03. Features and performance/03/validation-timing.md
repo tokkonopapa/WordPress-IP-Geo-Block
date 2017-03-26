@@ -123,7 +123,7 @@ can see, the number of requests have become to be handled more than twice with
 [MU-plugins]:   https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex"
 [ActionHook]:   https://codex.wordpress.org/Plugin_API/Action_Reference "Plugin API/Action Reference &laquo; WordPress Codex"
 [WP-ZEP]:       {{ '/article/how-wpzep-works.html'                                   | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
-[GeoDBDir]:     {{ '/codex/how-to-fix-permission-troubles.html#geolocation-database' | prepend: site.baseurl }} "How to fix permission troubles? | IP Geo Block"
+[GeoDBDir]:     {{ '/codex/geolocation-api-library.html'                             | prepend: site.baseurl }} "How to fix permission troubles? | IP Geo Block"
 [FilterHooks]:  {{ '/codex/#filter-hooks'                                            | prepend: site.baseurl }} "Filter hooks | IP Geo Block"
 [ErrorPage]:    {{ '/codex/customizing-the-response.html#human-friendly-error-page'  | prepend: site.baseurl }} "Customizing the response | IP Geo Block"
 [LoadOnServer]: {{ '/article/impact-on-server-load.html'                             | prepend: site.baseurl }} "Impact on server load caused by brute-force attacks | IP Geo Block"

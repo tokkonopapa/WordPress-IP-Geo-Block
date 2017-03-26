@@ -96,14 +96,16 @@ But don't worry about that. A background process kicked by the activation will
 rescue you. After pausing for breath, you can visit your admin dashboard again!
 
 <div class="alert alert-warning">
-	Do not delete `ip-geo-api` directory. If you delete it, this solution 
-	becomes not to work.
+	<strong>Warning:</strong>
+	Do not delete <code>ip-geo-api</code> directory.
+	If you do that, this solution becomes never to work.
 </div>
 
 ### For power users ###
 
-If you're familiar with the use of phpMyAdmin, you can change the value of 
-`matching_rule` to `-1` which means `Disable`. Please do it at your own risk.
+If you're familiar with the use of phpMyAdmin and know where the plugin's 
+options are saved, you can change the value of `matching_rule` to `-1` which 
+means `Disable`. Please do it at your own risk.
 
 ![Change matching_rule via phpMyAdmin]({{ '/img/2016-01/MatchingRule.png' | prepend: site.baseurl }}
  "Change matching_rule via phpMyAdmin"
