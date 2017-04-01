@@ -39,12 +39,12 @@ mu-plugins are processed prior to theme setup. Consequently, the following
 two restrictions would be raised.
 
 1. **[Custom filter hooks][FilterHooks] in `functions.php` does not work**  
-   It is bacause the `functions.php` in the theme directory would not have been
+   It is bacause the `functions.php` in the theme folder would not have been
    parsed when this plugin do its jobs. In this case, you **must** put your own
    code into `drop-in.php` which should be placed in the geolocation database 
-   directory. You can find `drop-in-sample.php` as a sample in this plugin's 
-   directory, i.e. `ip-geo-block/wp-content/ip-geo-api/`. Please rename it to 
-   `drop-in.php` and put it into your [geolocation database directory][GeoDBDir]
+   folder. You can find `drop-in-sample.php` as a sample in this plugin's 
+   folder, i.e. `ip-geo-block/wp-content/ip-geo-api/`. Please rename it to 
+   `drop-in.php` and put it into your [Geolocation API folder][GeoAPIFolder]
    when you use it.
 
 2. **[Human friendly error page][ErrorPage] is unavailable**  
@@ -123,7 +123,7 @@ can see, the number of requests have become to be handled more than twice with
 [MU-plugins]:   https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex"
 [ActionHook]:   https://codex.wordpress.org/Plugin_API/Action_Reference "Plugin API/Action Reference &laquo; WordPress Codex"
 [WP-ZEP]:       {{ '/article/how-wpzep-works.html'                                   | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
-[GeoDBDir]:     {{ '/codex/geolocation-api-library.html'                             | prepend: site.baseurl }} "How to fix permission troubles? | IP Geo Block"
+[GeoAPIFolder]: {{ '/codex/geolocation-api-library.html'                             | prepend: site.baseurl }} "How to fix permission troubles? | IP Geo Block"
 [FilterHooks]:  {{ '/codex/#filter-hooks'                                            | prepend: site.baseurl }} "Filter hooks | IP Geo Block"
 [ErrorPage]:    {{ '/codex/customizing-the-response.html#human-friendly-error-page'  | prepend: site.baseurl }} "Customizing the response | IP Geo Block"
 [LoadOnServer]: {{ '/article/impact-on-server-load.html'                             | prepend: site.baseurl }} "Impact on server load caused by brute-force attacks | IP Geo Block"
