@@ -12,8 +12,7 @@ theme folder.
 
 But in case you select **“mu-plugins” (ip-geo-block-mu.php)** as "[**Validation
 timing**][ValidateTime]" in "**Validation rule settings**" section, your code 
-for this plugin among those in `functions.php` would be failed to work as you 
-expected.
+for this plugin in `functions.php` would be failed to work as you expected.
 
 ![Validation timing]({{ '/img/2016-09/ValidationTiming.png' | prepend: site.baseurl }}
  "Validation timing"
