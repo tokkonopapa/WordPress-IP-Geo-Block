@@ -8,11 +8,10 @@ excerpt: How to make your custom functions work in “functions.php”.
 
 Normally, you can add code snippets for your custom functions into
 [`functions.php`][FunctionFile] which is placed in your theme or child 
-theme folder.
-
-But in case you select **“mu-plugins” (ip-geo-block-mu.php)** as "[**Validation
-timing**][ValidateTime]" in "**Validation rule settings**" section, your code 
-for this plugin in `functions.php` would be failed to work as you expected.
+theme folder. But in case you select **“mu-plugins” (ip-geo-block-mu.php)** 
+as "[**Validation timing**][ValidateTime]" in "**Validation rule settings**" 
+section, your code for this plugin in `functions.php` would be failed to work 
+as you expected.
 
 ![Validation timing]({{ '/img/2016-09/ValidationTiming.png' | prepend: site.baseurl }}
  "Validation timing"
