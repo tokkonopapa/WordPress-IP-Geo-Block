@@ -38,7 +38,7 @@ add_filter( 'allowed_redirect_hosts', 'my_allowed_redirect_hosts', 10 );
 
 ### Since ###
 
-1.2.0
+3.0.0
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block &laquo; WordPress Plugins"
 [AllowedHost]:  https://codex.wordpress.org/Plugin_API/Filter_Reference/allowed_redirect_hosts "Plugin API/Filter Reference/allowed redirect hosts &laquo; WordPress Codex"
