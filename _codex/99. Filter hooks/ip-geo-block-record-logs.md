@@ -15,9 +15,16 @@ Specify the condition of recording logs.
 The filter hook "**ip-geo-block-record-logs**" can change the condition of 
 recording logs depending on the situation.
 
-### Default value ###
+### Parameters ###
 
-The value of "**Record validation logs**" at "**Record settings**".
+- $record  
+  (int) Type of recording (0:none 1:blocked 2:passed 3:unauth 4:auth 5:all).
+
+- $hook  
+  (string) `'comment'`, `'xmlrpc'`, `'login'`, `'admin'` or `'public'`.
+
+- $validate  
+  (array) An associative array for validation result.
 
 ### Use case ###
 

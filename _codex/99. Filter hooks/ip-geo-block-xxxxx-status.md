@@ -16,10 +16,10 @@ The filter hook "**ip-geo-block-xxxxx-status**" where `xxxxx` is one of
 `comment`, `xmlrpc`, `login` and `admin` assigns the HTTP status code when 
 the blocking occurs.
 
-### Default value ###
+### Parameters ###
 
-It depends on your setting at "**Response code**" on 
-"**Validation rule settings**".
+- $code  
+  (int) "**Response code**" in "**Validation rule settings**" section.
 
 ### Use case ###
 

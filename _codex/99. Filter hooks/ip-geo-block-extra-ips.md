@@ -16,9 +16,14 @@ The filter hook "**ip-geo-block-extra-ips**" can assign the white and black
 list of extra IP addresses with [CIDR notation][CIDR] which should be 
 validated prior to other validations.
 
-### Default value ###
+### Parameters ###
 
-array( `'white_list' => '', 'black_list' => ''` )
+- $extra_ips  
+  (array) An associative array of `'white_list'` and `'black_list'`. Both are 
+  string of comma separated IP addresses.
+
+- $hook  
+  (string) `'comment'`, `'xmlrpc'`, `'login'`, `'admin'` or `'public'`.
 
 ### Use case ###
 

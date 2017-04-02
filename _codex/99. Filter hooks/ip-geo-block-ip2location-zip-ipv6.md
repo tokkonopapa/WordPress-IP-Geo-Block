@@ -16,11 +16,10 @@ The filter hook "**ip-geo-block-ip2location-zip-ipv6**" assigns the URI to
 [Free IP2Location LITE database file][IP2LocLITE] for IPv6 which can be 
 downloaded by ZIP format.
 
-### Default value ###
+### Parameters ###
 
-{% highlight text %}
-http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.IPV6.BIN.ZIP`
-{% endhighlight %}
+- $url  
+  (string) `http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.IPV6.BIN.ZIP`
 
 ### Use case ###
 

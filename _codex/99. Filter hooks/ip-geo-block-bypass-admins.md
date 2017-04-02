@@ -19,9 +19,10 @@ In some cases, WP-ZEP (Zero-day Exploit Prevention for WordPress) blocks the
 valid request to the `/wp-admin/…/*.php`. This filter hook is used to prevent 
 such an unexpected blocking.
 
-### Default value ###
+### Parameters ###
 
-array( `…` )
+- $queries  
+  (array) An array of allowed action/page.
 
 ### Use case ###
 

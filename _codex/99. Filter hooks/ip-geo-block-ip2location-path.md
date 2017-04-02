@@ -15,9 +15,10 @@ The absolute path to IP2location database file for IPv4.
 The filter hook "**ip-geo-block-ip2location-path**" assigns the absolute path 
 to [IP2Location][IP2Location] database file for IPv4.
 
-### Default value ###
+### Parameters ###
 
-`/absolute/path/to/wp-content/ip-geo-api/ip2location/IP2LOCATION-LITE-DB1.BIN`
+- $path  
+  (string) `/absolute/path/to/wp-content/ip-geo-api/ip2location/IP2LOCATION-LITE-DB1.BIN`
 
 ### Use case ###
 

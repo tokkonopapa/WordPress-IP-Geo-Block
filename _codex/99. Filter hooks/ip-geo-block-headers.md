@@ -15,9 +15,10 @@ HTTP headers which this plugin sends when getting the remote content.
 The filter hook "**ip-geo-block-headers**" assigns the array of HTTP headers 
 which is passed to [`wp_remote_get()`][WpRemoteGet].
 
-### Default value ###
+### Parameters ###
 
-array( `'timeout' => 5, 'user-agent' => 'WordPress/4.4, ip-geo-block 2.2.2'` )
+- $args  
+  array( `'timeout' => 5, 'user-agent' => 'WordPress/4.8, ip-geo-block 3.1'` )
 
 ### Use case ###
 

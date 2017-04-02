@@ -16,11 +16,10 @@ The filter hook "**ip-geo-block-maxmind-zip-ipv4**" assigns the URI to
 [Free GeoLite Legacy database file][MaxMindGeoDB] for IPv4 which can be 
 downloaded by GZIP format.
 
-### Default value ###
+### Parameters ###
 
-{% highlight text %}
-http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz
-{% endhighlight %}
+- $url  
+  (string) `http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz`
 
 ### Use case ###
 

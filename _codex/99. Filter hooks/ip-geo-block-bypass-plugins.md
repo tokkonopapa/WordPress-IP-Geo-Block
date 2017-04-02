@@ -19,15 +19,15 @@ WP-ZEP should bypass.
 In some cases, WP-ZEP (Zero-day Exploit Prevention for WordPress) blocks the 
 valid request. This filter hook is used to prevent such an unexpected blocking.
 
-### Default value ###
+### Parameters ###
 
-array( `…` )
+- $plugins  
+  (array) An array of allowed slug of plugin.
 
 ### Use case ###
 
 The following code snippet in your theme's `functions.php` can bypass WP-ZEP 
-validation against the direct request to 
-`/wp-content/plugins/my-plugin/…/*.php`.
+validation against the direct request to `/wp-content/plugins/my-plugin/…/*.php`.
 
 {% highlight ruby startinline %}
 function my_bypass_plugins( $plugins ) {

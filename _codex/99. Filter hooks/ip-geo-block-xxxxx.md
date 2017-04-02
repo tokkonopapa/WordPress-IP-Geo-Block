@@ -15,7 +15,10 @@ The associative array for validation.
 The filter hook "**ip-geo-block-xxxxx**" where `xxxxx` is one of `comment`, 
 `xmlrpc`, `login` and `admin` can affect the validation of this plugin.
 
-### Default value ###
+### Parameters ###
+
+- $validate  
+  (array) An associative array for validation result.
 
 Here are the keys and values in this associative array.
 

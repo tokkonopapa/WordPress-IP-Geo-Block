@@ -15,9 +15,10 @@ The absolute path to the directory where MaxMind database is installed.
 The filter hook "**ip-geo-block-maxmind-dir**" assigns the absolute path to 
 the directory where the [MaxMind][MaxMind] geolocation database is installed.
 
-### Default value ###
+### Parameters ###
 
-`/absolute/path/to/wp-content/ip-geo-api/maxmind`
+- $dir  
+  (string) `/absolute/path/to/wp-content/ip-geo-api/maxmind`
 
 ### Use case ###
 

@@ -17,9 +17,10 @@ The filter hook "**ip-geo-block-xxxxx-reason**" where `xxxxx` is one of
 according to the "**Response code**" on "**Validation rule settings**" when 
 the blocking occurs.
 
-### Default value ###
+### Parameters ###
 
-[`get_status_header_desc()`][GetStatus]
+- $msg  
+  (string) [`get_status_header_desc()`][GetStatus]
 
 ### Use case ###
 
@@ -32,7 +33,7 @@ The following picture shows a human readble message when a blocking occurs.
 You can change the message "Forbidden" as follows:
 
 {% highlight ruby startinline %}
-function my_comment_reason ( $msg  ) {
+function my_comment_reason ( $msg ) {
     return "Sorry, this service is unavailable.";
 }
 add_filter( 'ip-geo-block-comment-reason',  'my_comment_reason'  );

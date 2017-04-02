@@ -16,9 +16,10 @@ The filter hook "**ip-geo-block-ip2location-dir**" assigns the absolute path
 to the directory where the [IP2Location][IP2Location] geolocation database is 
 installed.
 
-### Default value ###
+### Parameters ###
 
-`/absolute/path/to/wp-content/ip-geo-api/ip2location`
+- $dir  
+  (string) `/absolute/path/to/wp-content/ip-geo-api/ip2location`
 
 ### Use case ###
 

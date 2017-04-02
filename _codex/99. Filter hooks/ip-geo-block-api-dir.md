@@ -21,9 +21,10 @@ The directory is also used as a storage of IP geolocation databases.
 
 The class libraries can be available from [WordPress-IP-Geo-API][IP-Geo-API].
 
-### Default value ###
+### Parameters ###
 
-`/absolute/path/to/wp-content/`
+- $dir  
+  (string) `/absolute/path/to/wp-content/`
 
 ### Use case ###
 

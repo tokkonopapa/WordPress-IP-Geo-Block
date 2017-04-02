@@ -16,9 +16,10 @@ The filter hook "**ip-geo-block-ip-addr**" assigns the IP address from which
 the current request comes. This plugin validate it by means of the country 
 code and black / white list of extra IPs.
 
-### Default value ###
+### Parameters ###
 
-`$_SERVER['REMOTE_ADDR']`
+- $ip  
+  (string) `$_SERVER['REMOTE_ADDR']`
 
 ### Use case ###
 
