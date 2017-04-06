@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Codex
+style: ".other-things { display: none }"
 ---
 <div class="container">
   <div class="section">
@@ -8,6 +9,7 @@ title: Codex
     <div class="breadcrumb">
       <a href="{{ '/' | prepend: site.baseurl }}" title="Top">Top</a> &raquo; {{ page.title }}
     </div>
+
 {% assign section = false %}
     <ul id="codex" class="icon icon-fore">
 {% for post in site.codex %}
@@ -24,6 +26,9 @@ title: Codex
   {% endif %}
 {% endfor %}
     </ul>
+
+<script>var GOOG_FIXURL_LANG = 'en', GOOG_FIXURL_SITE = location.host;</script>
+<script src="http://linkhelp.clients.google.com/tbproxy/lh/wm/fixurl.js"></script>
 
   </div>
 </div>
