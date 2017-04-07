@@ -6,14 +6,14 @@ title: How can I fix permission troubles?
 excerpt: How can I fix permission troubles?
 ---
 
-This plugin must have read/write permission at two places outside of the plugin
-directory which is typically `/wp-content/`. But in some cases, you might find 
-the error message related to the permission because of your server's security 
-configurations.
+This plugin must have read/write permission at the certain places outside of 
+the plugin directory which is typically `/wp-content/`. But in some cases, 
+you might find the error message related to the permission because of your 
+server's security configurations.
 
 In this case, you have to configure these places by your own hand.
 
-### Geolocation database ###
+### Geolocation API libraries and databases ###
 
 ![Error of IP Geo API]({{ '/img/2016-09/ErrorGeoAPI.png' | prepend: site.baseurl }}
  "Error of IP Geo API"
@@ -30,10 +30,14 @@ as the place where the class libraries and databases are stored.
 3. `/wp-content/plugins/ip-geo-block/ip-geo-api/`
 
 The 3rd one is not recommended because at every time this plugin updates, 
-files in its directory will be removed. So when you meet "Unable to write" 
-message or find your dabase directory is the 3rd of the above, you should 
+files in its directory will be removed. So unfortunately when you meet the 
+above error message or find your dabase directory is the 3rd one, you should 
 download `ip-geo-api` from [Github][GitGeoAPI] and upload it to 1. or 2 with 
 proper permission.
+
+Also please refer to the document 
+"<a href='https://codex.wordpress.org/Hardening_WordPress#Core_Directories_.2F_Files' title='Hardening WordPress &laquo; WordPress Codex'>Hardening WordPress</a>"
+to set the proper permission.
 
 ### Force to load WP core ###
 
