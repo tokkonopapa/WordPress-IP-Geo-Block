@@ -17,7 +17,7 @@ In this case, you have to configure these places by your own hand.
 
 This plugin handles the IP address geolocation databases of [Maxmind][Maxmind] 
 and [IP2Location][IP2Location] on your server. But it is also designed to work 
-properly without of these because of the requirement for GNU license.
+properly without of these using REST APIs.
 
 So when you install this plugin for the first time, the geolocation API library
 [IP-Geo-API][GitGeoAPI] for these databases would be installed into one of the 
