@@ -55,11 +55,17 @@ The recommended keys are as follows:
 
 - `log`, `pwd`  
   The login name and password posted to `wp-login.php`. The `pwd` will be 
-  masked with `***` when it comes from a logged in user.
+  masked with `***` when it comes from a logged in user.  
+  ![Log of Login form]({{ '/img/2016-01/LogLoginForm.png' | prepend: site.baseurl }}
+   "Log of Login form"
+  )
 
-![Log of Login form]({{ '/img/2016-01/LogLoginForm.png' | prepend: site.baseurl }}
- "Log of Login form"
-)
+- `FILES`  
+  It shows the contents of HTTP File Upload variables `$_FILES` if 
+  [POST method uploads][PHP-UPLOADS] was requested.  
+  ![Malicious file upload]({{ '/img/2017-04/LogUploadFile.png' | prepend: site.baseurl }}
+   "Malicious file upload"
+  )
 
 ### Description of "Result" ###
 
@@ -77,7 +83,8 @@ Here are the descriptions:
 | passed        | passed through the validation   |
 | blocked       | blocked by country              |
 | wp-zep        | blocked by WP-ZEP               |
-| badsig        | blocked by Bad Signature        |
+| badsig        | blocked by Bad signatures       |
+| upload        | blocked by Bad extensions       |
 | extra         | blocked by Extra IP addresses   |
 | failed        | blocked by failed login attempt |
 
@@ -90,3 +97,4 @@ Here are the descriptions:
 [RFC2616-SEC9]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html "HTTP/1.1: Method Definitions"
 [BackupDir]:    {{ '/codex/ip-geo-block-backup-dir.html' | prepend: site.baseurl }} 'ip-geo-block-backup-dir | IP Geo Block'
 [Validation]:   {{ '/codex/ip-geo-block-xxxxx.html'      | prepend: site.baseurl }} 'ip-geo-block-xxxxx | IP Geo Block'
+[PHP-UPLOADS]:  http://php.net/manual/features.file-upload.post-method.php 'PHP: POST method uploads - Manual'
