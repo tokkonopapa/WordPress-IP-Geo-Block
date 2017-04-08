@@ -62,7 +62,7 @@ The recommended keys are as follows:
 
 - `FILES`  
   It shows the contents of HTTP File Upload variables `$_FILES` if 
-  [POST method uploads][PHP-UPLOADS] was requested.  
+  [POST method uploads][PHP-UPLOADS] was requested. (since 3.0.3)  
   ![Malicious file upload]({{ '/img/2017-04/LogUploadFile.png' | prepend: site.baseurl }}
    "Malicious file upload"
   )
