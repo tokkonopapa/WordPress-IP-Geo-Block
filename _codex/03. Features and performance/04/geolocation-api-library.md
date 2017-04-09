@@ -14,28 +14,31 @@ developed as an another project.
 
 ### Location of IP Geo API ###
 
-IP Geo API can be installed one of the following directories:
+IP Geo API can be installed one of the following folders:
 
 1. `/wp-content/ip-geo-api/`
 2. `/wp-content/uploads/ip-geo-api/`
 3. `/wp-content/plugins/ip-geo-block/ip-geo-api/`
 
-The location depends on the permission of your WordPress tree. Actual location 
+Its location depends on the permission of your WordPress tree. Actual location 
 can be found at "**Local database settings**" section. If you find it to be the
-3rd one, please consider to change to another location. Because at every time 
+3rd one, please consider to change to another location, because at every time 
 this plugin updates, files in it will be removed.
 
 ![Local database settings]({{ '/img/2017-03/LocalDatabaseSettings.png' | prepend: site.baseurl }}
  "Local database settings"
 )
 
-In some cases, you might have [a permission touble][Permission] because of your 
-server's security configurations. In this case, you have to upload the library 
-by your own hand.
+In some cases, you might see the following error message right after your first
+installation. This would be caused by a permission touble due to your server's 
+security configurations.
 
 ![Error of IP Geo API]({{ '/img/2016-09/ErrorGeoAPI.png' | prepend: site.baseurl }}
  "Error of IP Geo API"
 )
+
+In this case, you have to install the library by your own hand. Please find how 
+to do it in the codex "[How can I fix permission troubles?][Permission]".
 
 ### Type of database ###
 
