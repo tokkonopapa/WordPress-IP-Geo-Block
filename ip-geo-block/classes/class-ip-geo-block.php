@@ -406,17 +406,17 @@ class IP_Geo_Block {
 		}
 
 		// register auxiliary validation functions
-		// priority high 1 check_ips_black
-		//               2 close_xmlrpc
+		// priority high 4 close_xmlrpc
 		//               5 check_nonce
 		//               6 check_signature
 		//               7 check_auth
 		//               8 check_fail
+		//               9 check_ips_black
 		//               9 check_ips_white
 		// priority low 10 validate_country
 		$var = self::PLUGIN_NAME . '-' . $hook;
 		$settings['extra_ips'] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
-		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 1, 2 );
+		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 9, 2 );
 		$settings['extra_ips']['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 9, 2 );
 		$settings['login_fails'] >= 0        and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
 		$auth                                and add_filter( $var, array( $this, 'check_auth'      ), 7, 2 );
@@ -497,7 +497,7 @@ class IP_Geo_Block {
 		$settings = self::get_option();
 
 		if ( 2 === (int)$settings['validation']['xmlrpc'] ) // Completely close
-			add_filter( self::PLUGIN_NAME . '-xmlrpc', array( $this, 'close_xmlrpc' ), 2, 2 );
+			add_filter( self::PLUGIN_NAME . '-xmlrpc', array( $this, 'close_xmlrpc' ), 4, 2 );
 
 		else // wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
 			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ), $settings['priority'] );

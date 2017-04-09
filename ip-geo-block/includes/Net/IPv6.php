@@ -23,6 +23,17 @@
  * @link      http://pear.php.net/package/Net_IPv6
  */
 
+if ( ! class_exists( 'myPEAR' ) ):
+	class myPEAR {
+		public static function raiseError( $msg ) {
+			return false;
+		}
+		public static function isError( $data, $msgcode ) {
+			return false === $data;
+		}
+	}
+endif;
+
 // {{{ constants
 
 /**
@@ -305,9 +316,9 @@ class Net_IPv6
 
             } else {
 
-                include_once 'PEAR.php';
+                //include_once 'PEAR.php';
 
-                return PEAR::raiseError(NET_IPV6_NO_NETMASK_MSG,
+                return myPEAR::raiseError(NET_IPV6_NO_NETMASK_MSG,
                                         NET_IPV6_NO_NETMASK);
             }
 
@@ -368,8 +379,8 @@ class Net_IPv6
 
                 if (null == $bits) {
 
-                    include_once 'PEAR.php';
-                    return PEAR::raiseError(NET_IPV6_NO_NETMASK_MSG,
+                    //include_once 'PEAR.php';
+                    return myPEAR::raiseError(NET_IPV6_NO_NETMASK_MSG,
                                             NET_IPV6_NO_NETMASK);
 
                 }
@@ -993,9 +1004,9 @@ class Net_IPv6
 
             } else {
 
-                include_once 'PEAR.php';
+                //include_once 'PEAR.php';
 
-                return PEAR::raiseError(NET_IPV6_NO_NETMASK_MSG,
+                return myPEAR::raiseError(NET_IPV6_NO_NETMASK_MSG,
                                         NET_IPV6_NO_NETMASK);
             }
         } else {
