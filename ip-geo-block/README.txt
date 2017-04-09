@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.7.3
-Stable tag: 3.0.2
+Stable tag: 3.0.2.1a
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -321,15 +321,17 @@ It works on multisite, but there's no network setting at this moment.
 
 = I was locked down. What shall I do? =
 
-Activate the following codes at the bottom of `ip-geo-block.php` and upload 
-it via FTP.
+You can find the "**Emergent Functionality**" code section near the bottom of 
+`ip-geo-block.php`. This code block can be activated by replacing `/*` 
+(opening multi-line comment) at the top of the line to `//` (single line 
+comment), or `*` at the end of the line to `*/` (closing multi-line comment).
 
 `/**
  * Invalidate blocking behavior in case yourself is locked out.
  *
  * How to use: Activate the following code and upload this file via FTP.
  */
-/* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTION -- */
+/* -- ADD `/` TO THE TOP OR END OF THIS LINE TO ACTIVATE THE FOLLOWINGS -- */
 function ip_geo_block_emergency( $validate ) {
     $validate['result'] = 'passed';
     return $validate;
@@ -338,8 +340,14 @@ add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency' );
 add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
 // */`
 
-Then "**Clear cache**" at "**Statistics**" tab on your dashborad. Remember 
-that you should upload the original one to deactivate above feature.
+Please not that you have to use an 
+[appropriate editor](https://codex.wordpress.org/Editing_Files#Using_Text_Editors "Editing Files « WordPress Codex").
+
+After saving and uploading it to `/wp-content/plugins/ip-geo-block/` on your 
+server via FTP, you become to be able to login again as an admin. After 
+
+Remember that you should upload the original one after re-configuration to 
+deactivate this feature.
 
 [This document](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block")
 can also help you.
@@ -349,12 +357,6 @@ can also help you.
 If you encounter this message, please refer to 
   [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;Sorry, your request cannot be accepted&rdquo; ? | IP Geo Block")
 to resolve your blocking issue. 
-
-= Some admin function doesn't work. How to solve it? =
-
-This could be happened because of the same reason as the previous FAQ. Please 
-follow the steps in
-  [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;Sorry, your request cannot be accepted&rdquo; ? | IP Geo Block").
 
 If you can't solve your issue, please let me know about it on the
   [support forum](https://wordpress.org/support/plugin/ip-geo-block/ "View: Plugin Support &laquo;  WordPress.org Forums").
@@ -375,6 +377,28 @@ own hand instead of enabling "**Force to load WP core**" options.
 Please refer to 
   "[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')"
 in order to fix this error.
+
+= I still have access from blacklisted country. Does it work correctly? =
+
+Absolutely, YES. But unfortunately, accuracy of country code depends on the 
+geolocation databases. Actually, there is a case that a same IP address has 
+different country code.
+
+For more detail, please refer to 
+"[I still have access from blacklisted country.](http://www.ipgeoblock.com/codex/access-from-blacklisted-country.html 'I still have access from blacklisted country. | IP Geo Block')".
+
+= How can I test this plugin works? =
+
+The easiest way is to use 
+  [free proxy browser addon](https://www.google.com/search?q=free+proxy+browser+addon "free proxy browser addon - Google Search").
+Another one is to use 
+  [http header browser addon](https://www.google.com/search?q=browser+add+on+modify+http+header "browser add on modify http header - Google Search").
+You can add an IP address to the `X-Forwarded-For` header to emulate the 
+access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` 
+into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
+
+See more details at 
+"[How to test prevention of attacks](http://www.ipgeoblock.com/codex/#how-to-test-prevention-of-attacks 'Codex | IP Geo Block')".
 
 = Does this plugin works well with caching? =
 
@@ -404,19 +428,6 @@ inconsistent pages.
 
 For more details, please refer to some documents at 
 "[Blocking on front-end](http://www.ipgeoblock.com/codex/#blocking-on-front-end 'Codex | IP Geo Block')".
-
-= How can I test this plugin works? =
-
-The easiest way is to use 
-  [free proxy browser addon](https://www.google.com/search?q=free+proxy+browser+addon "free proxy browser addon - Google Search").
-Another one is to use 
-  [http header browser addon](https://www.google.com/search?q=browser+add+on+modify+http+header "browser add on modify http header - Google Search").
-You can add an IP address to the `X-Forwarded-For` header to emulate the 
-access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` 
-into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
-
-See more details at 
-"[How to test prevention of attacks](http://www.ipgeoblock.com/codex/#how-to-test-prevention-of-attacks 'Codex | IP Geo Block')".
 
 = Do I have to turn on all the selection to enhance security? =
 
@@ -467,13 +478,32 @@ This function protects your site against such a case.
 
 == Screenshots ==
 
-1. **IP Geo Plugin** - Settings.
-2. **IP Geo Plugin** - Statistics.
-3. **IP Geo Plugin** - Logs.
-4. **IP Geo Plugin** - Search.
-5. **IP Geo Plugin** - Attribution.
+1. **IP Geo Plugin** - Settings tab
+2. **IP Geo Plugin** - Validation rule settings
+3. **IP Geo Plugin** - Back-end target settings
+4. **IP Geo Plugin** - Front-end target settings
+5. **IP Geo Plugin** - Geolocation API settings
+6. **IP Geo Plugin** - IP address cache settings
+7. **IP Geo Plugin** - Statistics tab
+8. **IP Geo Plugin** - Logs tab
+9. **IP Geo Plugin** - Search tab
+10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.2.1 =
+This is a maintenance release addressing some issues.
+
+* **Update:** Net_DNS2, Net_IPv6, Net_IPv4 to the newest.
+* **Update:** Geolocation database API for Maxmind and IP2Location to 1.1.8.
+* **Update:** Bring back the priority of validation for wp-zep and badsig 
+  as same as 3.0.2 and before.
+* **Improvement:** Handle some of loop back and private IP addresses for 
+  localhost and host inside load balancer.
+* **Improvement:** Update instructions when the geolocation API libraries 
+  fails to install.
+* **Bug fix:** Fix the blocking issue of admin ajax/post on front-end.
+* **Bug fix:** Fix the issue of improper IPv6 handling on setting page.
 
 = 3.0.2 =
 * **New feature:** Add "Exceptions" for "Admin ajax/post" to specify the name 

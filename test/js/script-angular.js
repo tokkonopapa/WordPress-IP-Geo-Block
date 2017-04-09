@@ -240,6 +240,9 @@ angular.module('WPApp').controller('WPAppCtrl', [
 "        </value>\n" +
 "    </member>\n" +
 "</struct>"
+		},
+		upload: {
+			filename: 'test.php'
 		}
 	};
 
@@ -260,7 +263,8 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		pingback: true,
 		xmlrpc: true,
 		xmlrpc_demo: true,
-		xmlrpc_multi: true
+		xmlrpc_multi: true,
+		upload: true,
 	};
 	$scope.selectAll = function () {
 		var item;
@@ -559,6 +563,14 @@ angular.module('WPApp').controller('WPAppCtrl', [
 				form = serialize_plain($scope.form.bbPress);
 				post_form(url, form, proxy, 'POST', 'bbPress');
 			});
+		}
+
+		// File upload
+		if ($scope.checkbox.upload) {
+			var form = new FormData();
+			var file = new File([], $scope.form.upload.filename);
+			form.append('file', file);
+			post_form(home, form, proxy, 'MULTI', 'File upload');
 		}
 	};
 

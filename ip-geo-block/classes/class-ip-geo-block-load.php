@@ -130,12 +130,10 @@ class IP_Geo_Block_Loader {
 		 * Register all the rest of the action and filter hooks.
 		 */
 		if ( IP_Geo_Block_Util::may_be_logged_in() ) {
-			foreach ( $this->filters as $hook ) {
-				add_filter( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
-			}
-
-			foreach ( $this->actions as $hook ) {
+			foreach ( $this->actions as $index => $hook ) {
 				add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
+
+				unset( $this->actions[ $index ] );
 			}
 		}
 
@@ -144,14 +142,16 @@ class IP_Geo_Block_Loader {
 		 * Execute callbacks that are specified by the component with 'init'.
 		 */
 		else {
-			foreach ( $this->actions as $index => $hook ) {
-				if ( in_array( $hook['hook'], array( 'init', 'wp_loaded' ) ) ) {
+			foreach ( $this->actions as $index => $hook ) {  /* admin ajax/post needs to be deferred */
+				if ( 'init' === $hook['hook'] || ( 'wp_loaded' === $hook['hook'] && ( ! defined( 'WP_ADMIN' ) || ! WP_ADMIN ) ) ) {
 					// Execute callback directly
 					call_user_func( $hook['callback'], $hook['accepted_args'] );
-
-					// To avoid duplicated execution, delete this hook
-					unset( $this->actions[ $index ] );
 				}
+				else {
+					add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
+				}
+
+				unset( $this->actions[ $index ] );
 			}
 		}
 

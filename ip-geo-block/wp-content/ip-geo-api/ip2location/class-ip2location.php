@@ -1,4 +1,13 @@
 <?php
+/**
+ * IP Geo Block API class library for IP2Location
+ *
+ * @version   1.1.8
+ * @author    tokkonopapa <tokkonopapa@yahoo.com>
+ * @license   GPL-2.0+
+ * @link      http://www.ipgeoblock.com/
+ * @copyright 2013-2017 tokkonopapa
+ */
 if ( class_exists( 'IP_Geo_Block_API' ) ) :
 
 /**
@@ -12,7 +21,7 @@ define( 'IP_GEO_BLOCK_IP2LOC_IPV6_ZIP', 'http://download.ip2location.com/lite/IP
 define( 'IP_GEO_BLOCK_IP2LOC_DOWNLOAD', 'http://lite.ip2location.com/database/ip-country' );
 
 /**
- * Class for IP2Location (ver. 1.1.7)
+ * Class for IP2Location
  *
  * URL         : http://www.ip2location.com/
  * Term of use : http://www.ip2location.com/terms

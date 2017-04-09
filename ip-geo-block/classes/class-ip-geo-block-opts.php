@@ -283,8 +283,8 @@ class IP_Geo_Block_Opts {
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
 
-		// install addons for IP Geolocation database API ver. 1.1.7
-		if ( ! $settings['api_dir'] || version_compare( $version, '3.0.2' ) < 0 )
+		// install addons for IP Geolocation database API ver. 1.1.8
+		if ( ! $settings['api_dir'] || version_compare( $version, '3.0.3' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table
@@ -390,10 +390,7 @@ class IP_Geo_Block_Opts {
 	}
 
 	public static function get_validation_timing() {
-		if ( file_exists( WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) )
-			return 1; // mu-plugins
-
-		return 0;
+		return file_exists( WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) ? 1 : 0;
 	}
 
 	public static function setup_validation_timing( $settings = NULL ) {

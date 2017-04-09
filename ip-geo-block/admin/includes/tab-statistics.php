@@ -245,7 +245,7 @@ endif;
 		$html .= '</tbody></table>';
 
 		if ( ! empty( $count ) )
-			$html .= '<p style="text-align:right">[ ' . $count . ' / ' . count( $cache ) . ' ]</p>';
+			$html .= '<span style="float:right">[ ' . $count . ' / ' . count( $cache ) . ' ]</span>';
 
 		add_settings_field(
 			$option_name.'_'.$field,

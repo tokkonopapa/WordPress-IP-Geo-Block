@@ -493,7 +493,7 @@ var ip_geo_block_time = new Date();
 				var $this = $(this),
 				    id = $this.attr('id'),
 				    parent = $this.parent();
-				ajax_post(id.replace(/^.*(scan)/, 'scanning'), {
+				ajax_post(id.replace(/^.*(?:scan)/, 'scanning'), {
 					cmd: 'scan-code',
 					which: id.replace(ID('$', 'scan-'), '')
 				}, function (data) {

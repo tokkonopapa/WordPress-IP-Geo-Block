@@ -19,7 +19,7 @@
  * @author    Alexander Merz <alexander.merz@web.de>
  * @copyright 2003-2005 The PHP Group
  * @license   BSD License http://www.opensource.org/licenses/bsd-license.php
- * @version   CVS: $Id: IPv6.php 336941 2015-06-14 13:19:33Z alexmerz $
+ * @version   CVS: $Id: IPv6.php 338818 2016-03-25 12:15:02Z alexmerz $
  * @link      http://pear.php.net/package/Net_IPv6
  */
 
@@ -879,6 +879,10 @@ class Net_IPv6
 
         if (!empty($ipPart[0])) {
             $ipv6 = explode(':', $ipPart[0]);
+
+			if(8 < count($ipv6)) {
+				return false;
+			}
 
             foreach($ipv6 as $element) { // made a validate precheck
                 if(!preg_match('/[0-9a-fA-F]*/', $element)) {

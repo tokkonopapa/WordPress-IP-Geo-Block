@@ -407,6 +407,55 @@ function _geoip_seek_country($gi, $ipnum)
     trigger_error("error traversing database - perhaps it is corrupt?", E_USER_ERROR);
     return false;
 }
+function _common_get_org($gi, $seek_org)
+{
+    $record_pointer = $seek_org + (2 * $gi->record_length - 1) * $gi->databaseSegments;
+    if ($gi->flags & GEOIP_SHARED_MEMORY) {
+        $org_buf = _sharedMemRead($gi, $record_pointer, MAX_ORG_RECORD_LENGTH);
+    } else {
+        fseek($gi->filehandle, $record_pointer, SEEK_SET);
+        $org_buf = fread($gi->filehandle, MAX_ORG_RECORD_LENGTH);
+    }
+    $org_buf = _safe_substr($org_buf, 0, strpos($org_buf, "\0"));
+    return $org_buf;
+}
+
+function _get_org_v6($gi, $ipnum)
+{
+    $seek_org = _geoip_seek_country_v6($gi, $ipnum);
+    if ($seek_org == $gi->databaseSegments) {
+        return null;
+    }
+    return _common_get_org($gi, $seek_org);
+}
+
+function _get_org($gi, $ipnum)
+{
+    $seek_org = _geoip_seek_country($gi, $ipnum);
+    if ($seek_org == $gi->databaseSegments) {
+        return null;
+    }
+    return _common_get_org($gi, $seek_org);
+}
+
+
+function geoip_name_by_addr_v6($gi, $addr)
+{
+    if ($addr == null) {
+        return 0;
+    }
+    $ipnum = inet_pton($addr);
+    return _get_org_v6($gi, $ipnum);
+}
+
+function geoip_name_by_addr($gi, $addr)
+{
+    if ($addr == null) {
+        return 0;
+    }
+    $ipnum = ip2long($addr);
+    return _get_org($gi, $ipnum);
+}
 
 function _safe_substr($string, $start, $length)
 {

@@ -492,6 +492,21 @@
 			<input type="hidden" name="action" value="form.bbPress.action" />
 		</form>
 	</div>
+
+	<!-- File upload -->
+	<div class="setting">
+		<h3 class="collapse" ng-bind="lang.upload" ng-click="toggle('upload')"></h3>
+		<input type="checkbox" ng-model="checkbox.upload" />
+		<form class="post-form animate-show-hide" ng-show="show.upload">
+			<!-- Admin Cookie -->
+			<p>
+				<label for="upload-filename">
+					<span ng-bind="lang.filename"></span>
+				</label>
+				<input type="text" name="upload-filename" ng-model="form.upload.filename" />
+			</p>
+		</form>
+	</div>
 </div>
 
 <div id="footer">

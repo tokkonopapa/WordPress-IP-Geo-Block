@@ -14,43 +14,42 @@ class IP_Geo_Block_Lkup {
 	/**
 	 * Converts IP address to in_addr representation
 	 *
+	 * @link http://stackoverflow.com/questions/14459041/inet-pton-replacement-function-for-php-5-2-17-in-windows
 	 */
-	public static function inet_pton( $ip ) {
-		// available on Windows platforms after PHP 5.3.0
-		if ( function_exists( 'inet_pton' ) )
-			return inet_pton( $ip );
+	private static function inet_pton( $ip ) {
+		// available on Windows platforms after PHP 5.3.0, need IPv6 support by PHP
+		if ( function_exists( 'inet_pton' ) && ( $ip = @inet_pton( $ip ) ) )
+			return $ip;
 
-		// http://stackoverflow.com/questions/14459041/inet-pton-replacement-function-for-php-5-2-17-in-windows
-		else {
-			// ipv4
-			if ( FALSE !== filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
-				if ( FALSE === strpos( $ip, ':' ) ) {
-					$ip = pack( 'N', ip2long( $ip ) );
-				} else {
-					$ip = explode( ':', $ip );
-					$ip = pack( 'N', ip2long( $ip[ count( $ip ) - 1 ] ) );
-				}
-			}
-
-			// ipv6
-			elseif ( FALSE !== filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+		// ipv4
+		elseif ( FALSE !== filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+			if ( FALSE === strpos( $ip, ':' ) ) {
+				$ip = pack( 'N', ip2long( $ip ) );
+			} else {
 				$ip = explode( ':', $ip );
-				$parts = 8 - count( $ip );
-				$res = '';
-				$replaced = 0;
-				foreach ( $ip as $seg ) {
-					if ( $seg != '' ) {
-						$res .= str_pad( $seg, 4, '0', STR_PAD_LEFT );
-					} elseif ( $replaced == 0 ) {
-						for ( $i = 0; $i <= $parts; $i++ )
-							$res .= '0000';
-						$replaced = 1;
-					} elseif ( $replaced == 1 ) {
+				$ip = pack( 'N', ip2long( $ip[ count( $ip ) - 1 ] ) );
+			}
+		}
+
+		// ipv6
+		elseif ( FALSE !== filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+			$ip = explode( ':', $ip );
+			$parts = 8 - count( $ip );
+			$res = '';
+			$replaced = 0;
+			foreach ( $ip as $seg ) {
+				if ( $seg != '' ) {
+					$res .= str_pad( $seg, 4, '0', STR_PAD_LEFT );
+				} elseif ( $replaced == 0 ) {
+					for ( $i = 0; $i <= $parts; $i++ ) {
 						$res .= '0000';
 					}
+					$replaced = 1;
+				} elseif ( $replaced == 1 ) {
+					$res .= '0000';
 				}
-				$ip = pack( 'H' . strlen( $res ), $res );
 			}
+			$ip = pack( 'H' . strlen( $res ), $res );
 		}
 
 		return $ip;

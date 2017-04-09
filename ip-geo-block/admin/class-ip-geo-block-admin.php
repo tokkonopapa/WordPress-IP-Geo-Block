@@ -726,7 +726,7 @@ class IP_Geo_Block_Admin {
 		) );
 
 		// sanitize and format ip address
-		$key = array( '/[^\d\n\.\/,:]/', '/([\s,])+/', '/(?:^,|,$)/' );
+		$key = array( '/[^\w\n\.\/,:]/', '/([\s,])+/', '/(?:^,|,$)/' );
 		$val = array( '',                '$1',         ''            );
 		$output['extra_ips']['white_list'] = preg_replace( $key, $val, trim( $output['extra_ips']['white_list'] ) );
 		$output['extra_ips']['black_list'] = preg_replace( $key, $val, trim( $output['extra_ips']['black_list'] ) );
@@ -739,7 +739,7 @@ class IP_Geo_Block_Admin {
 		// 3.0.0 convert country code to upper case, remove redundant spaces
 		$output['public']['ua_list'] = preg_replace( $key, $val, trim( $output['public']['ua_list'] ) );
 		$output['public']['ua_list'] = preg_replace( '/([:#]) *([!]+) *([^ ]+) *([,\n]+)/', '$1$2$3$4', $output['public']['ua_list'] );
-		$output['public']['ua_list'] = preg_replace_callback( '/[:#]\w+/', array( $this, 'strtoupper' ), $output['public']['ua_list'] );
+		$output['public']['ua_list'] = preg_replace_callback( '/[:#]([\w:]+)/', array( $this, 'strtoupper' ), $output['public']['ua_list'] );
 
 		// reject invalid signature which potentially blocks itself
 		$output['signature'] = implode( ',', $this->trim( $output['signature'] ) );
@@ -769,7 +769,7 @@ class IP_Geo_Block_Admin {
 
 	// Callback for preg_replace_callback()
 	public function strtoupper( $matches ) {
-		return strtoupper( $matches[0] );
+		return filter_var( $matches[1], FILTER_VALIDATE_IP ) ? $matches[0] : strtoupper( $matches[0] );
 	}
 
 	// Trim extra space and comma avoiding invalid signature which potentially blocks itself

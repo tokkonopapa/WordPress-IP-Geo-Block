@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.2\n"
+"Project-Id-Version: IP Geo Block 3.0.2.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-03-18 22:42+0900\n"
-"PO-Revision-Date: 2017-03-19 23:06+0900\n"
+"POT-Creation-Date: 2017-04-08 12:36+0900\n"
+"PO-Revision-Date: 2017-04-09 19:00+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -175,11 +175,11 @@ msgid_plural "Or please refer to %s to set them manually."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/includes/class-admin-ajax.php:54
+#: admin/includes/class-admin-ajax.php:56
 msgid "n/a"
 msgstr ""
 
-#: admin/includes/class-admin-ajax.php:57 admin/includes/tab-settings.php:81
+#: admin/includes/class-admin-ajax.php:59 admin/includes/tab-settings.php:81
 msgid "UNKNOWN"
 msgstr ""
 
@@ -675,12 +675,16 @@ msgstr ""
 #: admin/includes/tab-settings.php:922
 #, php-format
 msgid ""
-"Please download <a rel=\"noreferrer\" href=\"https://github.com/tokkonopapa/"
-"WordPress-IP-Geo-API/archive/master.zip\" title=\"Download the contents of "
-"tokkonopapa/WordPress-IP-Geo-API as a zip file\">ZIP file</a> from <a rel="
-"\"noreferrer\" href=\"https://github.com/tokkonopapa/WordPress-IP-Geo-API\" "
-"title=\"tokkonopapa/WordPress-IP-Geo-API - GitHub\">WordPress-IP-Geo-API</a> "
-"and upload <code>ip-geo-api</code> to <code>%s</code> with write permission."
+"Can not find geolocation API libraries in <code>%s</code>. It seems to have "
+"failed downloading <a rel=\"noreferrer\" href=\"https://github.com/"
+"tokkonopapa/WordPress-IP-Geo-API/archive/master.zip\" title=\"Download the "
+"contents of tokkonopapa/WordPress-IP-Geo-API as a zip file\">ZIP file</a> "
+"from <a rel=\"noreferrer\" href=\"https://github.com/tokkonopapa/WordPress-"
+"IP-Geo-API\" title=\"tokkonopapa/WordPress-IP-Geo-API - GitHub\">WordPress-"
+"IP-Geo-API</a>. Please refer to the <a rel=\"noreferrer\" href=\"http://www."
+"ipgeoblock.com/codex/how-to-fix-permission-troubles.html\" title=\"How can I "
+"fix permission troubles? | IP Geo Block\">FAQ</a> to install <code>ip-geo-"
+"api</code> with write permission."
 msgstr ""
 
 #: admin/includes/tab-settings.php:931
@@ -844,22 +848,22 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:1282
 msgid ""
-"Import the default settings to revert to the &#8220;Right after "
-"installing&#8221; state"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1282
-msgid "Default settings"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1283
-msgid ""
 "Import the preferred settings mainly for the &#8220;Back-end target "
 "settings&#8221;"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1283
+#: admin/includes/tab-settings.php:1282
 msgid "Best settings"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1283
+msgid ""
+"Import the default settings to revert to the &#8220;Right after "
+"installing&#8221; state"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1283
+msgid "Default settings"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1293
@@ -1060,9 +1064,16 @@ msgid ""
 "activate again."
 msgstr ""
 
-#: wp-content/ip-geo-api/ip2location/class-ip2location.php:147
-#: wp-content/ip-geo-api/ip2location/class-ip2location.php:176
-#: wp-content/ip-geo-api/maxmind/class-maxmind.php:149
-#: wp-content/ip-geo-api/maxmind/class-maxmind.php:178
+#: wp-content/ip-geo-api/ip2location/class-ip2location.php:157
+#: wp-content/ip-geo-api/ip2location/class-ip2location.php:186
+#: wp-content/ip-geo-api/maxmind/class-maxmind.php:171
+#: wp-content/ip-geo-api/maxmind/class-maxmind.php:200
 msgid "Database file does not exist."
+msgstr ""
+
+#: wp-content/mu-plugins/ip-geo-block-mu.php:72
+#, php-format
+msgid ""
+"Can't find IP Geo Block in your plugins directory. Please remove <code>%s</"
+"code> or re-install %s."
 msgstr ""

@@ -1,4 +1,13 @@
 <?php
+/**
+ * IP Geo Block API class library for Maxmind
+ *
+ * @version   1.1.8
+ * @author    tokkonopapa <tokkonopapa@yahoo.com>
+ * @license   GPL-2.0+
+ * @link      http://www.ipgeoblock.com/
+ * @copyright 2013-2017 tokkonopapa
+ */
 if ( class_exists( 'IP_Geo_Block_API' ) ) :
 
 /**
@@ -12,7 +21,7 @@ define( 'IP_GEO_BLOCK_MAXMIND_IPV6_ZIP', 'http://geolite.maxmind.com/download/ge
 define( 'IP_GEO_BLOCK_MAXMIND_DOWNLOAD', 'http://dev.maxmind.com/geoip/legacy/geolite/' );
 
 /**
- * Class for Maxmind (ver. 1.1.7)
+ * Class for Maxmind
  *
  * URL         : http://dev.maxmind.com/geoip/legacy/geolite/
  * Term of use : http://dev.maxmind.com/geoip/legacy/geolite/#License
@@ -33,6 +42,10 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 			'latitude'    => $record->latitude,
 			'longitude'   => $record->longitude,
 		);
+	}
+
+	private function location_asnumber( $record ) {
+		return array( 'ASN' => $record );
 	}
 
 	public function get_location( $ip, $args = array() ) {
@@ -81,6 +94,14 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 			if ( ! class_exists( 'geoiprecord' ) )
 				require_once( 'geoipcity.inc' );
 			$res = $this->location_city( geoip_record_by_addr_v6( $geo, $ip ) );
+			break;
+
+		  case GEOIP_ASNUM_EDITION:
+			$res = $this->location_asnumber( geoip_name_by_addr( $geo, $ip ) );
+			break;
+
+		  case GEOIP_ASNUM_EDITION_V6:
+			$res = $this->location_asnumber( geoip_name_by_addr_v6( $geo, $ip ) );
 			break;
 
 		  default:
