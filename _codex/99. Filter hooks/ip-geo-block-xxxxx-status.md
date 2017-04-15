@@ -13,8 +13,8 @@ The HTTP status code when the blocking occurs.
 ### Description ###
 
 The filter hook "**ip-geo-block-xxxxx-status**" where `xxxxx` is one of 
-`comment`, `xmlrpc`, `login` and `admin` assigns the HTTP status code when 
-the blocking occurs.
+`comment`, `xmlrpc`, `login`, `admin` and `public` assigns the HTTP status 
+code when the blocking occurs.
 
 ### Parameters ###
 

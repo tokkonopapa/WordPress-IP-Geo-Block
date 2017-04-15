@@ -13,7 +13,8 @@ The associative array for validation.
 ### Description ###
 
 The filter hook "**ip-geo-block-xxxxx**" where `xxxxx` is one of `comment`, 
-`xmlrpc`, `login` and `admin` can affect the validation of this plugin.
+`xmlrpc`, `login`, `admin` and `public` can affect the validation of this 
+plugin.
 
 ### Parameters ###
 

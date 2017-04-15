@@ -16,8 +16,8 @@ The filter hook "**ip-geo-block-backup-dir**" assigns the absolute path to the
 directory where the backup files of validation logs are saved.
 
 The maximum entries of each validation log for the target (e.g. `comment`, 
-`xmlrpc`, `login` and `admin`) is limited to 100. So if you want to save 
-backups, use this hook.
+`xmlrpc`, `login`, `admin` and `public`) is limited to 100. So if you want to 
+save backups, use this hook.
 
 ### Parameters ###
 

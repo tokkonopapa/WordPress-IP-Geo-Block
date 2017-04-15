@@ -13,9 +13,9 @@ The message of the reason when the blocking occurs.
 ### Description ###
 
 The filter hook "**ip-geo-block-xxxxx-reason**" where `xxxxx` is one of 
-`comment`, `xmlrpc`, `login` and `admin` assigns the human readable message 
-according to the "**Response code**" on "**Validation rule settings**" when 
-the blocking occurs.
+`comment`, `xmlrpc`, `login`, `admin` and `public` assigns the human readable 
+message according to the "**Response code**" on "**Validation rule settings**" 
+when the blocking occurs.
 
 ### Parameters ###
 
