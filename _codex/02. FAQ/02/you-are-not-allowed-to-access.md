@@ -38,7 +38,22 @@ keep before you leave the last page.
 
 ### How to resolve it? ###
 
-#### Step 1: Check JavaScript errors ####
+#### Step 1: Check your validation rule settings ####
+
+If you can go to the admin dashboard and find the following message, please 
+confirm your "**Validation rule settings**" not to block yourself out.
+
+![Check your validation rule settings]({{ '/img/2017-04/CheckYourSettings.png' | prepend: site.baseurl }}
+ "Check your validation rule settings"
+)
+
+You can file some details in [Get started][GetStarted].
+
+![Validation rule settings]({{ '/img/2017-03/ValidationRuleSettings.png' | prepend: site.baseurl }}
+ "Validation rule settings"
+)
+
+#### Step 2: Check JavaScript errors ####
 
 A JavaScript file named `authenticate.min.js` has a very important role for 
 this plugin. For example, "[Referrer Suppressor for external link][RefSup]" 
@@ -48,7 +63,7 @@ browser at first.
 
 [This codex document][JSErrors] is very helpful to examine this step.
 
-#### Step 2: Try "Prevent Zero-day Exploit" ####
+#### Step 3: Try "Prevent Zero-day Exploit" ####
 
 "Prevent Zero-day Exploit" which I named WP-ZEP is the most powerful feature 
 in this plugin to protect your site against undisclosed vulnerability. It can 
@@ -64,9 +79,9 @@ The priority of this rule is the highest in this plugin. So please try
 to enable / disable this feature in order to tell this plugin "**The request 
 is not from an attacker but from me!**".
 
-#### Step 3: Find a blocking reason in logs ####
+#### Step 4: Find a blocking reason in logs ####
 
-If the Step 2 can't resolve the issue, please find the blocked request and look
+If the Step 3 can't resolve the issue, please find the blocked request and look
 at the "**Result**". The following is an example of `/wp-admin/admin-ajax.php` 
 blocked by "**Prevent Zero-day Exploit**" that is described as "**wp-zep**":
 
@@ -77,9 +92,9 @@ blocked by "**Prevent Zero-day Exploit**" that is described as "**wp-zep**":
 You can find the full list of "**Result**" at [this document][BlockReason] in 
 codex. Then please go to the next step.
 
-#### Step 4: Give a permission as exception ####
+#### Step 5: Give a permission as exception ####
 
-If you can't resolve the blocking issue up to the step 2, please try to give 
+If you can't resolve the blocking issue up to the step 3, please try to give 
 a permission to the concerned request as an exception.
 
 ##### - **Admin area** / **Admin ajax/post** - #####
@@ -125,7 +140,7 @@ theme.
 It's also performed by [ip-geo-block-bypass-plugins][BypassPlugin] and 
 [ip-geo-block-bypass-themes][BypassTheme].
 
-#### Step 5: Installation information ####
+#### Final step: Installation information ####
 
 In case you can't resove your blocking issue up to this step, I should help 
 you to find a solution at [support forum][SupportForum]. Before submitting your
@@ -149,6 +164,7 @@ your site.
 [JSErrors]:     https://codex.wordpress.org/Using_Your_Browser_to_Diagnose_JavaScript_Errors "Using Your Browser to Diagnose JavaScript Errors &laquo; WordPress Codex"
 [WPnonce]:      https://codex.wordpress.org/WordPress_Nonces "WordPress Nonces &laquo; WordPress Codex"
 [BypassAdmin]:  http://www.ipgeoblock.com/codex/ip-geo-block-bypass-admins.html "ip-geo-block-bypass-admins | IP Geo Block"
+[GetStarted]:   {{ '/codex/get-started.html#configure-the-settings' | prepend: site.baseurl }} "Get started | IP Geo Block"
 [BypassPlugin]: {{ '/codex/ip-geo-block-bypass-plugins.html' | prepend: site.baseurl }} "ip-geo-block-bypass-plugins | IP Geo Block"
 [BypassTheme]:  {{ '/codex/ip-geo-block-bypass-themes.html'  | prepend: site.baseurl }} "ip-geo-block-bypass-themes | IP Geo Block"
 [Timing]:       {{ '/codex/validation-timing.html' | prepend: site.baseurl }} "Validation timing | IP Geo Block"
