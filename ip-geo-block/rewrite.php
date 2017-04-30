@@ -92,7 +92,7 @@ class IP_Geo_Block_Rewrite {
 		}
 
 		// send response code to refuse
-		$context->send_response( 'admin', $settings );
+		$context->send_response( 'admin', $validate, $settings );
 	}
 
 	/**

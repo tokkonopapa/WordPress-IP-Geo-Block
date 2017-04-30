@@ -588,12 +588,12 @@ class IP_Geo_Block_Admin {
 		$output = IP_Geo_Block::get_option();
 		$default = IP_Geo_Block::get_default();
 
-		// checkboxes not on the form (added after 2.0.0, just in case)
+		// initialize checkboxes not in the form (added after 2.0.0, just in case)
 		foreach ( array( 'anonymize', 'network_wide' ) as $key ) {
 			$output[ $key ] = 0;
 		}
 
-		// checkboxes not on the form
+		// initialize checkboxes not in the form
 		foreach ( array( 'login', 'admin', 'ajax', 'plugins', 'themes', 'public' ) as $key ) {
 			$output['validation'][ $key ] = 0;
 		}
@@ -949,7 +949,7 @@ class IP_Geo_Block_Admin {
 				$which['api_key']['GoogleMap'] = NULL;
 				update_option( IP_Geo_Block::OPTION_NAME, $which );
 				$res = array(
-					'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
+					'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 					'tab' => 'tab=2'
 				);
 			}

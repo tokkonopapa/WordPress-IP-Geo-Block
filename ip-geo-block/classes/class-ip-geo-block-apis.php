@@ -643,7 +643,7 @@ class IP_Geo_Block_Provider {
 			if ( ( NULL   === $val   && ! isset( $settings[ $key ] ) ) ||
 			     ( FALSE  === $val   && ! empty( $settings[ $key ] ) ) ||
 			     ( is_string( $val ) && ! empty( $settings[ $key ] ) ) ) {
-				$field++;
+				++$field;
 			}
 		}
 

@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.2.1\n"
+"Project-Id-Version: IP Geo Block 3.0.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-04-08 12:36+0900\n"
-"PO-Revision-Date: 2017-04-09 19:14+0900\n"
+"POT-Creation-Date: 2017-04-30 12:56+0900\n"
+"PO-Revision-Date: 2017-04-30 13:10+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -175,11 +175,11 @@ msgid_plural "Or please refer to %s to set them manually."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/includes/class-admin-ajax.php:56
+#: admin/includes/class-admin-ajax.php:60
 msgid "n/a"
 msgstr ""
 
-#: admin/includes/class-admin-ajax.php:59 admin/includes/tab-settings.php:81
+#: admin/includes/class-admin-ajax.php:63 admin/includes/tab-settings.php:81
 msgid "UNKNOWN"
 msgstr ""
 
@@ -518,11 +518,11 @@ msgid ""
 msgstr ""
 
 #: admin/includes/tab-settings.php:507
-msgid "for privileged users"
+msgid "for logged-in users"
 msgstr ""
 
 #: admin/includes/tab-settings.php:508
-msgid "for non-privileged users"
+msgid "for non logged-in users"
 msgstr ""
 
 #: admin/includes/tab-settings.php:527
@@ -532,10 +532,12 @@ msgstr ""
 #: admin/includes/tab-settings.php:540
 msgid ""
 "<dfn title=\"Select actions that cause undesired blocking to skip &#8220;"
-"Prevent Zero-day Exploit&#8220; for privileged users, &#8220;Block by "
-"country&#8221; for non-privileged users. If you can not find the right one "
-"in the candidate list, you can put text into the field for certain actions "
-"which would be implemented with a non-WordPress standard way.\">Exceptions</"
+"Prevent Zero-day Exploit&#8221; for logged-in users and &#8220;Block by "
+"country&#8221; for non logged-in users. If you can not find the right one in "
+"the candidate list, you can put a certain page name (&#8220;&hellip;&#8221; "
+"in &#8220;page=&hellip;&#8221;) or action name (&#8220;&hellip;&#8221; in "
+"&#8220;action=&hellip;&#8221;), which would be implemented with a non "
+"WordPress standard way, into the field to specify the request.\">Exceptions</"
 "dfn>"
 msgstr ""
 

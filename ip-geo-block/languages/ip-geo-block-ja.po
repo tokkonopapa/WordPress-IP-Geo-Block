@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.2.1\n"
+"Project-Id-Version: IP Geo Block 3.0.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-04-08 12:36+0900\n"
-"PO-Revision-Date: 2017-04-09 19:15+0900\n"
+"POT-Creation-Date: 2017-04-30 12:56+0900\n"
+"PO-Revision-Date: 2017-04-30 13:27+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -193,11 +193,11 @@ msgid_plural "Or please refer to %s to set them manually."
 msgstr[0] "あるいは %s を参照し、手動で設定して下さい。"
 msgstr[1] "あるいは %s を参照し、手動で設定して下さい。"
 
-#: admin/includes/class-admin-ajax.php:56
+#: admin/includes/class-admin-ajax.php:60
 msgid "n/a"
 msgstr "n/a"
 
-#: admin/includes/class-admin-ajax.php:59 admin/includes/tab-settings.php:81
+#: admin/includes/class-admin-ajax.php:63 admin/includes/tab-settings.php:81
 msgid "UNKNOWN"
 msgstr "不明"
 
@@ -583,12 +583,12 @@ msgstr ""
 "トを遮断します。"
 
 #: admin/includes/tab-settings.php:507
-msgid "for privileged users"
-msgstr "権限を持つユーザー用"
+msgid "for logged-in users"
+msgstr "ログインユーザー用"
 
 #: admin/includes/tab-settings.php:508
-msgid "for non-privileged users"
-msgstr "権限を持たない一般訪問者用"
+msgid "for non logged-in users"
+msgstr "一般訪問者用"
 
 #: admin/includes/tab-settings.php:527
 msgid "Admin ajax/post"
@@ -597,17 +597,21 @@ msgstr "管理領域&thinsp;ajax/post"
 #: admin/includes/tab-settings.php:540
 msgid ""
 "<dfn title=\"Select actions that cause undesired blocking to skip &#8220;"
-"Prevent Zero-day Exploit&#8220; for privileged users, &#8220;Block by "
-"country&#8221; for non-privileged users. If you can not find the right one "
-"in the candidate list, you can put text into the field for certain actions "
-"which would be implemented with a non-WordPress standard way.\">Exceptions</"
+"Prevent Zero-day Exploit&#8221; for logged-in users and &#8220;Block by "
+"country&#8221; for non logged-in users. If you can not find the right one in "
+"the candidate list, you can put a certain page name (&#8220;&hellip;&#8221; "
+"in &#8220;page=&hellip;&#8221;) or action name (&#8220;&hellip;&#8221; in "
+"&#8220;action=&hellip;&#8221;), which would be implemented with a non "
+"WordPress standard way, into the field to specify the request.\">Exceptions</"
 "dfn>"
 msgstr ""
-"<dfn title=\"「ゼロデイ攻撃を遮断（権限を持つユーザー用）」、「国コードで遮断"
-"（権限を持たない一般訪問者用）」をスキップするために、検証対象から除外するア"
-"クションを選択してください。アクションが&thinsp;WordPress&thinsp;非標準の方法"
-"で実装されている場合は候補に現れないため、テキストで指定してください。\">除外"
-"する項目</dfn>"
+"<dfn title=\"検証対象から「ゼロデイ攻撃を遮断（ログインユーザー用）」、「国"
+"コードで遮断（一般訪問者用）」を除外するアクション名を選択してください。"
+"WordPress&thinsp;の標準的な方法で実装されていない場合は「候補アクション」に現"
+"れないため、リクエストを特定するページ名（&#8220;page=&hellip;&#8221; の "
+"&#8220;&hellip;&#8221; 部分）かアクション名（&#8220;action=&hellip;&#8221; "
+"の &#8220;&hellip;&#8221; 部分）をテキストで指定してください。\">除外する項目"
+"</dfn>"
 
 #: admin/includes/tab-settings.php:545
 msgid "Candidate actions"

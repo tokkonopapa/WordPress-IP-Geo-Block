@@ -302,9 +302,9 @@ class IP_Geo_Block_Logs {
 
 				// truncate extra characters
 				$len = min( $length, 6 );
-				for ( $i = 0; $i < $len; $i++ ) {
+				for ( $i = 0; $i < $len; ++$i ) {
 					$c = ord( $str[$length-1 - $i] );
-					for ( $j = $i; $j < 6; $j++ ) {
+					for ( $j = $i; $j < 6; ++$j ) {
 						if ( ( $c & $code[$j][0] ) == $code[$j][1] ) {
 							mbstring_binary_safe_encoding(); // @since 3.7.0
 							$str = substr( $str, 0, $length - (int)($j > 0) - $i );
@@ -557,14 +557,14 @@ class IP_Geo_Block_Logs {
 				$stat['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
 
 			$stat['providers'][ $provider ]['count']++; // undefined in auth_fail()
-			$stat['providers'][ $provider ]['time'] += (float)@$validate['time'];
+			$stat['providers'][ $provider ]['time' ] += (float)@$validate['time'];
 
 			if ( 'passed' !== $validate['result'] ) {
 				// Blocked by type of IP address
 				if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
-					$stat['IPv4']++;
+					++$stat['IPv4'];
 				elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-					$stat['IPv6']++;
+					++$stat['IPv6'];
 
 				@$stat['blocked'  ]++;
 				@$stat['countries'][ $validate['code'] ]++;

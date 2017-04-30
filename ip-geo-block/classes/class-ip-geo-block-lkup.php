@@ -41,7 +41,7 @@ class IP_Geo_Block_Lkup {
 				if ( $seg != '' ) {
 					$res .= str_pad( $seg, 4, '0', STR_PAD_LEFT );
 				} elseif ( $replaced == 0 ) {
-					for ( $i = 0; $i <= $parts; $i++ ) {
+					for ( $i = 0; $i <= $parts; ++$i ) {
 						$res .= '0000';
 					}
 					$replaced = 1;

@@ -27,7 +27,7 @@ if ( ! class_exists( 'IP_Geo_Block' ) ) {
  * @param  int $code HTTP status code.
  * @return int modified HTTP status code.
  */
-/* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTIONS -- *
+/* -- ADD `/` TO THE TOP OR END OF THIS LINE TO ACTIVATE THE FOLLOWINGS -- *
 function my_login_status( $code ) {
 	return 404;
 }
@@ -43,7 +43,7 @@ IP_Geo_Block::add_filter( 'ip-geo-block-login-status', 'my_login_status', 10, 1 
  * @param  array  'ip', 'auth', 'code', 'result'
  * @return int    $mode modefied recording mode.
  */
-/* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTIONS -- *
+/* -- ADD `/` TO THE TOP OR END OF THIS LINE TO ACTIVATE THE FOLLOWINGS -- *
 function my_record_logs( $mode, $hook, $validate ) {
 	// Countries where you want to supress recording logs.
 	$whitelist = array(

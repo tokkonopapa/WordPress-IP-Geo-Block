@@ -1,7 +1,7 @@
 /*jslint white: true */
 /*!
  * Project: WP-ZEP - Zero-day exploit Prevention for wp-admin
- * Copyright (c) 2015-2016 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2015-2017 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
 // utility object
@@ -24,16 +24,17 @@ var IP_GEO_BLOCK_ZEP = {
 	'use strict';
 
 	// produce safe text for HTML
-	function sanitize(str) {
-		return str ? str.toString().replace(/[&<>"']/g, function (match) {
+	function escapeHTML(html) {
+		var elem = document.createElement('div');
+		elem.appendChild(document.createTextNode(html));
+		html = elem.innerHTML.replace(/["']/g, function (match) {
 			return {
-				'&': '&amp;',
-				'<': '&lt;',
-				'>': '&gt;',
 				'"': '&quot;',
 				"'": '&#39;'
 			}[match];
-		}) : '';
+		});
+		elem = '';
+		return html;
 	}
 
 	// Parse a URL and return its components
@@ -164,14 +165,16 @@ var IP_GEO_BLOCK_ZEP = {
 	// check the URI where the nonce is needed
 	function is_admin(uri) {
 		// parse uri and get real path
-		uri = parse_uri(uri ? uri.toString().toLowerCase() : location.pathname);
+		uri = uri || location.pathname;
+		uri = parse_uri(uri.toLowerCase());
 
 		// get absolute path with flattening `./`, `../`, `//`
 		var path = realpath(uri);
 
 		// possibly scheme is `javascript` and path is `void(0);`
-		if (/https?/.test(uri.scheme) || !uri.scheme) {
+		if (!uri.scheme || /^https?$/.test(uri.scheme)) {
 			// external domain (`http://example` or `www.example`)
+			// https://tools.ietf.org/html/rfc6454#section-4
 			if (uri.authority && uri.authority !== location.host.toLowerCase()) {
 				return -1; // external
 			}
@@ -277,7 +280,7 @@ var IP_GEO_BLOCK_ZEP = {
 	function moveEventHandlers($elems, eventsString, isDelegate) {
 		var events = eventsString.split(/\s+/);
 		$elems.each(function(i) {
-			for (i = 0; i < events.length; i++) {
+			for (i = 0; i < events.length; ++i) {
 				var pureEventName = $.trim(events[i]).match(/[^\.]+/i)[0];
 				moveHandlerToTop($(this), pureEventName, isDelegate);
 			}
@@ -306,6 +309,10 @@ var IP_GEO_BLOCK_ZEP = {
 		};
 	}
 
+	function is_back_end() {
+		return (is_admin(location.pathname) === 1 || location.search.indexOf(IP_GEO_BLOCK_ZEP.auth) >= 0);
+	}
+
 	function attach_nonce() {
 		var nonce = IP_GEO_BLOCK_ZEP.nonce;
 		if (nonce) {
@@ -323,33 +330,36 @@ var IP_GEO_BLOCK_ZEP = {
 			$body.onFirst('click contextmenu', 'a', function (event) {
 				// attr() returns 'string' or 'undefined'
 				var $this = $(this),
-				    href = $this.attr('href'),
-				    rel = $this.attr('rel'),
+				    href  = $this.attr('href'),
+				    rel   = $this.attr('rel' ),
 				    admin = "undefined" !== typeof href ? is_admin(href) : 0;
 
-				// if admin area (except in comment) then add a nonce
+				// if admin area (except in comment with nofollow) then add a nonce
 				if (admin === 1) {
 					$this.attr('href', add_query_nonce(
-						href, (!rel || rel.indexOf('nofollow') < 0 ? nonce : 'nofollow')
+						href, (!rel || rel.indexOf('nofollow') < 0) ? nonce : 'nofollow'
 					));
 				}
 
 				// if external then redirect with no referrer not to leak out the nonce
-				else if (admin === -1) {
+				else if (admin === -1 && is_back_end()) {
+					href = escapeHTML(decodeURIComponent(this.href));
+					href = href.split(';', 2).shift(); // avoid `url=...;url=javascript:...`
+
 					var w = window.open();
 					w.document.write(
+						'<!DOCTYPE html><html><head>' +
 						'<meta name="referrer" content="never" />' +
 						'<meta name="referrer" content="no-referrer" />' +
-						'<meta http-equiv="refresh" content="0; url=' + sanitize(this.href) + '" />'
+						'<meta http-equiv="refresh" content="0; url=' + href + '" />' +
+						'<script>window.location.replace("' + href + '")</script></head></html>'
 					);
 					w.document.close();
 
 					// stop event propagation
-					$this.removeAttr('target');
-					$this.off('click contextmenu');
-					event.preventDefault();
-					event.stopPropagation();
 					event.stopImmediatePropagation();
+
+					// automatically call event.stopPropagation() and event.preventDefault()
 					return false;
 				}
 			});
@@ -365,11 +375,11 @@ var IP_GEO_BLOCK_ZEP = {
 			});
 
 			// Restore post revisions (wp-admin/revisions.php @since 2.6.0)
-			if ("undefined" !== typeof _wpRevisionsSettings) {
-				var i, data = _wpRevisionsSettings.revisionData, n = data.length;
-				for (i = 0; i < n; i++) {
+			if ('undefined' !== typeof window._wpRevisionsSettings) {
+				var i, data = window._wpRevisionsSettings.revisionData, n = data.length;
+				for (i = 0; i < n; ++i) {
 					if (-1 === data[i].restoreUrl.indexOf(IP_GEO_BLOCK_ZEP.auth)) {
-						_wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(data[i].restoreUrl, nonce);
+						window._wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(data[i].restoreUrl, nonce);
 					}
 				}
 			}
@@ -378,11 +388,13 @@ var IP_GEO_BLOCK_ZEP = {
 
 	$(function () {
 		// avoid conflict with "Open external links in a new window"
-		$('a').each(function () {
-			if(!this.hasAttribute('onClick') && is_admin(this.getAttribute('href')) === -1) {
-				this.setAttribute('onClick', 'javascript:void(0);');
-			}
-		});
+		if (is_back_end()) {
+			$('a').each(function () {
+				if(!this.hasAttribute('onClick') && is_admin(this.getAttribute('href')) === -1) {
+					this.setAttribute('onClick', 'javascript:void(0);return false;');
+				}
+			});
+		}
 
 		// attach event to add nonce
 		attach_nonce();

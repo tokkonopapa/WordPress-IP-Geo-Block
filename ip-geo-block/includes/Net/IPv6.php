@@ -23,8 +23,8 @@
  * @link      http://pear.php.net/package/Net_IPv6
  */
 
-if ( ! class_exists( 'myPEAR' ) ):
-	class myPEAR {
+if ( ! class_exists( 'IP_Geo_Block_Pear' ) ):
+	class IP_Geo_Block_Pear {
 		public static function raiseError( $msg ) {
 			return false;
 		}
@@ -318,7 +318,7 @@ class Net_IPv6
 
                 //include_once 'PEAR.php';
 
-                return myPEAR::raiseError(NET_IPV6_NO_NETMASK_MSG,
+                return IP_Geo_Block_Pear::raiseError(NET_IPV6_NO_NETMASK_MSG,
                                         NET_IPV6_NO_NETMASK);
             }
 
@@ -380,7 +380,7 @@ class Net_IPv6
                 if (null == $bits) {
 
                     //include_once 'PEAR.php';
-                    return myPEAR::raiseError(NET_IPV6_NO_NETMASK_MSG,
+                    return IP_Geo_Block_Pear::raiseError(NET_IPV6_NO_NETMASK_MSG,
                                             NET_IPV6_NO_NETMASK);
 
                 }
@@ -1006,7 +1006,7 @@ class Net_IPv6
 
                 //include_once 'PEAR.php';
 
-                return myPEAR::raiseError(NET_IPV6_NO_NETMASK_MSG,
+                return IP_Geo_Block_Pear::raiseError(NET_IPV6_NO_NETMASK_MSG,
                                         NET_IPV6_NO_NETMASK);
             }
         } else {

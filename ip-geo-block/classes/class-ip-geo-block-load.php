@@ -129,7 +129,7 @@ class IP_Geo_Block_Loader {
 		 * This part will be executed after loading this plugin.
 		 * Register all the rest of the action and filter hooks.
 		 */
-		if ( IP_Geo_Block_Util::may_be_logged_in() ) {
+		if ( IP_Geo_Block_Util::is_user_logged_in() ) {
 			foreach ( $this->actions as $index => $hook ) {
 				add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
 

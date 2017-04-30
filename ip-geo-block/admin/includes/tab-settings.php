@@ -504,8 +504,8 @@ class IP_Geo_Block_Admin_Tab {
 		unset( $installed['ip_geo_block'] );
 
 		$tmp = array(
-			__( 'for privileged users',     'ip-geo-block' ),
-			__( 'for non-privileged users', 'ip-geo-block' ),
+			__( 'for logged-in users',     'ip-geo-block' ),
+			__( 'for non logged-in users', 'ip-geo-block' ),
 		);
 
 		foreach ( $installed as $key => $val ) {
@@ -537,7 +537,7 @@ class IP_Geo_Block_Admin_Tab {
 				'list' => $list,
 				'desc' => $desc,
 				'after' => '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">'
-					. __( '<dfn title="Select actions that cause undesired blocking to skip &#8220;Prevent Zero-day Exploit&#8220; for privileged users, &#8220;Block by country&#8221; for non-privileged users. If you can not find the right one in the candidate list, you can put text into the field for certain actions which would be implemented with a non-WordPress standard way.">Exceptions</dfn>', 'ip-geo-block' )
+					. __( '<dfn title="Select actions that cause undesired blocking to skip &#8220;Prevent Zero-day Exploit&#8221; for logged-in users and &#8220;Block by country&#8221; for non logged-in users. If you can not find the right one in the candidate list, you can put a certain page name (&#8220;&hellip;&#8221; in &#8220;page=&hellip;&#8221;) or action name (&#8220;&hellip;&#8221; in &#8220;action=&hellip;&#8221;), which would be implemented with a non WordPress standard way, into the field to specify the request.">Exceptions</dfn>', 'ip-geo-block' )
 					. '<li style="display:none"><ul><li>' . "\n"
 					. '<input class="regular-text code" id="ip_geo_block_settings_exception_admin" name="ip_geo_block_settings[exception][admin]" type="text" value="' . esc_attr( implode( ',', $options['exception']['admin'] ) ) . '">' . "\n"
 					. $comma[0]

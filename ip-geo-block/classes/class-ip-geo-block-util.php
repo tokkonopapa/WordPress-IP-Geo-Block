@@ -91,7 +91,7 @@ class IP_Geo_Block_Util {
 	}
 
 	public static function trace_nonce( $nonce ) {
-		if ( self::may_be_logged_in() && empty( $_REQUEST[ $nonce ] ) &&
+		if ( self::is_user_logged_in() && empty( $_REQUEST[ $nonce ] ) &&
 		     self::retrieve_nonce( $nonce ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
 			// add nonce at add_admin_nonce() to handle the client side redirection.
 			self::redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
@@ -434,7 +434,7 @@ class IP_Geo_Block_Util {
 	 * Checks if the current visitor is a logged in user.
 	 * @source wp-includes/pluggable.php
 	 */
-	public static function may_be_logged_in() {
+	public static function is_user_logged_in() {
 		// possibly logged in but should be verified after 'init' hook is fired.
 		return did_action( 'init' ) ? is_user_logged_in() : ( self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE );
 	}

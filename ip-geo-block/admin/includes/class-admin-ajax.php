@@ -13,11 +13,11 @@ class IP_Geo_Block_Admin_Ajax {
 		if ( filter_var( $ip = $_POST['ip'], FILTER_VALIDATE_IP ) ) {
 			// get option settings and compose request headers
 			$options = IP_Geo_Block::get_option();
-			$args    = IP_Geo_Block::get_request_headers( $options );
+			$tmp     = IP_Geo_Block::get_request_headers( $options );
 
 			// create object for provider and get location
 			if ( $geo = IP_Geo_Block_API::get_instance( $which, $options ) )
-				$res = $geo->get_location( $ip, $args );
+				$res = $geo->get_location( $ip, $tmp );
 			else
 				$res = array( 'errorMessage' => 'Unknown service.' );
 		}
@@ -26,8 +26,12 @@ class IP_Geo_Block_Admin_Ajax {
 			$res = array( 'errorMessage' => 'Invalid IP address.' );
 		}
 
-		if ( empty( $res['errorMessage'] ) )
+		if ( empty( $res['errorMessage'] ) ) {
+			$tmp = microtime( TRUE );
 			$res['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $ip );
+			$tmp = microtime( TRUE ) - $tmp;
+			$res['DNS lookup'] = sprintf( '%.1f [msec]', $tmp * 1000.0 );
+		}
 
 		return $res;
 	}
@@ -167,7 +171,7 @@ class IP_Geo_Block_Admin_Ajax {
 		if ( NULL === ( $data = json_decode( $json, TRUE ) ) )
 			wp_die( 'Illegal JSON format.', '', array( 'response' => 500, 'back_link' => TRUE ) ); // @Since 2.0.4
 
-		// Sanitize to fit the type of each field
+		// Convert json to setting data
 		$temp = self::json_to_settings( $data );
 
 		// Integrate posted data into current settings because if can be a part of hole data
@@ -429,7 +433,12 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	static public function get_wp_info() {
-		$settings = IP_Geo_Block::get_option();
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
+
+		// DNS reverse lookup
+		$key = microtime( TRUE );
+		$val = IP_Geo_Block_Lkup::gethostbyaddr( '8.8.8.8' );
+		$key = microtime( TRUE ) - $key;
 
 		// Server, PHP, WordPress
 		$res = array(
@@ -441,6 +450,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'ZipArchive:' => class_exists( 'ZipArchive' ) ? 'yes' : 'no',
 			'BC Math:'    => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
 			'mb_strcut:'  => function_exists( 'mb_strcut' ) ? 'yes' : 'no',
+			'DNS lookup:' => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),
 		);
 
 		// Child and parent themes
