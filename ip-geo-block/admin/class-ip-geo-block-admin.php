@@ -83,7 +83,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function enqueue_admin_assets() {
-		$footer = TRUE;
+		$footer = FALSE;
 		$dependency = array( 'jquery' );
 
 		// css for option page
