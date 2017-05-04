@@ -84,7 +84,7 @@ Here are the descriptions:
 | blocked       | blocked by country              |
 | wp-zep        | blocked by WP-ZEP               |
 | badsig        | blocked by Bad signatures       |
-| upload        | blocked by Bad extensions       |
+| upload        | blocked by forbidden MIME type  |
 | extra         | blocked by Extra IP addresses   |
 | failed        | blocked by failed login attempt |
 
