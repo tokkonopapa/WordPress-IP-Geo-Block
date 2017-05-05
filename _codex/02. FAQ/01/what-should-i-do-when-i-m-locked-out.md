@@ -61,28 +61,37 @@ add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
 // */
 {% endhighlight %}
 
-After saving and uploading it to `/wp-content/plugins/ip-geo-block/` on your 
-server via FTP, you become to be able to login again as an admin. After 
-reconfiguring "**Maching rule**" and "**Country code for matching rule**"
-at "**Validation rule settings**" properly, do not forget to restore the 
-`ip-geo-block.php` on your server to the original one.
+After saving and uploading it into `ip-geo-block` in your plugins folder 
+(typically `/wp-content/plugins/`) via FTP or [cPanel File Manager][cPanel-FM],
+you become to be able to login again as an admin.
+
+Then you can re-configure "**Maching rule**" and "**Country code for matching 
+rule**" at "**Validation rule settings**" properly. After that, do not forget 
+to restore the `ip-geo-block.php` on your server to the original one.
 
 If you have no confidence in editing PHP file, please download ZIP from 
 [here][GIST] and use it that "Emergent Functionality" is already activated.
 
-### Another solution at emergency ###
+### Deactivate by force ###
 
-Although the above process is strongly recommended at your emergency, some 
+Although the above processes is strongly recommended at your emergency, some 
 users are not familiar with this type of jobs.
 
-In that case, you can just forcibly remove `ip-geo-block` in your plugin's 
-directory (typically `/wp-content/plugins/`) by using FTP or 
-[cPanel File Manager][cPanel-FM]. Then you'll see the following message on 
-your plugin's dashboard.
+In that case, you can rename `ip-geo-block` folder to `ip-geo-block.bak` using
+FTP or something. Then you cal login and see the following message on your 
+plugin's dashboard.
 
-![Force to delete]({{ '/img/2015-08/ForceDelete.png' | prepend: site.baseurl }}
- "Force to delete"
+![Force to deactivate]({{ '/img/2015-08/ForceDelete.png' | prepend: site.baseurl }}
+ "Force to deactivate"
 )
+
+After renaming `ip-geo-block.bak` to the original, you can activate this plugin
+again.
+
+### Another solution at emergency ###
+
+You can also just forcibly remove `ip-geo-block` in your plugin's folder. Then 
+you'll see the same message as the above picture on your plugin's dashboard.
 
 After that, you can reinstall through "**Add New**" button and reactivate again.
 But you'll find soon you're blocked again because your settings still remains 
