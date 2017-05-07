@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Analysis of uploading malware"
+title: "Analysis of malicious file upload"
 date: 2017-05-02 00:00:00
 categories: article
 published: true
@@ -23,19 +23,31 @@ inline: <script>
   </script>
 ---
 
-Many attackers attempt to upload malware files to make the targeted site 
-complomized to achieve their goal, typically monetize. They watch for 
-vulnerable plugins and themes 
+Getting your WordPress site hacked is one of a terrible nightmare for every 
+website owner. Attackers often attempt to upload malware or back doors through 
+vulnerabilities in some plugins or themes. One of these types of vulnerability 
+is [Unrestricted File Upload][OWASP-UFU].
 
-[IP Geo Block 3.0.3][IP-Geo-Block] has [a strong shield][Note303] against 
-[Arbitrary File Upload][OWASP-AFU].
+So I picked up 30 plugins that had vulnerabilities [related to file upload]
+[WP-Vulndb] reported from Sep. 2015 to May 2017 to analyze the types of 
+vulnerability and investigate how is the protection performance of 
+[IP Geo Block 3.0.3][Note303].
 
 <!--more-->
 
-### Analysis ###
+### How to analyze ###
 
-I picked up 30 vulnerabilities [related to file upload][WP-Vulndb] reported 
-from Sep. 2015 to May 2017.
+I downloaded the vulnerable version of picked up plugins. In case it was 
+already removed from [WordPress.org plugins directory][WP-Plugins], I got 
+it from [the track of WordPress Plugin Repository][WP-Track].
+
+Some plugins could be easily identified their types of vulnerability with 
+reference to the [POC][Wiki-POC] and their codes. In this case, I decided 
+whether IP Geo Block can block the malicious request or not by desk study.
+In case that I could not decide it, I actually installed the plugin and 
+threw some malicious requests to find out the result.
+
+### Introduction ###
 
 {% highlight text %}
 Attack Vector = Type x Path
@@ -313,7 +325,7 @@ Attack Vector = Type x Path
         <td><span class="label label-success">OK</span></td>
       </tr> -->
       <tr class="no-sort">
-        <th class="text-right" colspan="4">The total amount of <span class="label label-success">OK</span> in (ZEP or MUP)</th>
+        <th class="text-right" colspan="4">The total amount of <span class="label label-success">OK</span> in ZEP + MUP</th>
         <td class="text-center" colspan="2">29 / 30</td>
       </tr>
     </tbody>
@@ -399,8 +411,11 @@ code
 </div>
 {% endcomment %}
 
-[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[OWASP-AFU]:    https://www.owasp.org/index.php/Unrestricted_File_Upload "Unrestricted File Upload - OWASP"
+[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "IP Geo Block &mdash; WordPress Plugins"
+[OWASP-UFU]:    https://www.owasp.org/index.php/Unrestricted_File_Upload "Unrestricted File Upload - OWASP"
+[Wiki-POC]:     https://en.wikipedia.org/wiki/Proof_of_concept#Security "Proof of concept - Wikipedia"
 [WP-Vulndb]:    https://wpvulndb.com/search?utf8=%E2%9C%93&text=file+upload "WPScan Vulnerability Database - Search: file upload"
+[WP-Plugins]:   https://wordpress.org/plugins/ "WordPress Plugins &mdash; Plugins extend and expand the functionality of WordPress."
+[WP-Track]:     https://plugins.trac.wordpress.org/log/ "WordPress Plugin Repository"
 [WP-ZEP]:       {{ '/article/how-wpzep-works.html' | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
 [Note303]:      {{ '/changelog/release-3.0.3.html' | prepend: site.baseurl }} "3.0.3 Release Note | IP Geo Block"

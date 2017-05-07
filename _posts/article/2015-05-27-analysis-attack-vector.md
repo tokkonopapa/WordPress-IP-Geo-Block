@@ -38,7 +38,15 @@ or not by WP-ZEP.
 
 <!--more-->
 
-### Analysis ###
+<div class="alert alert-info">
+ <strong>UPDATE:</strong>
+ The protection performance of latest version of 
+   <a href="https://wordpress.org/plugins/ip-geo-block/" title="IP Geo Block &mdash; WordPress Plugins">IP Geo Block</a>
+ was reported at 
+   <a href="/codex/analysis-of-attack-vectors.html" title="Analysis of Attack Vectors | IP Geo Block">Analysis of Attack Vectors</a>.
+</div>
+
+### Introduction ###
 
 To find out the prevention ability of WP-ZEP, I only picked up the vulnerable 
 plugins which I can download by free. Then I got code differences between 
@@ -579,16 +587,12 @@ So I'd like to make WP-ZEP have an ability to prevent the "Plugin Direct"
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/2693.png "anchor")
 </span>
 
-<div class="alert alert-info">
-	Update: This had been acheived from 
-	<a href="/changelog/release-2.2.0.html" title="2.2.0 Release Note | IP Geo Block">release 2.2.0</a>.
-</div>
-
 [wpvulndb]:     https://wpvulndb.com/plugins "WordPress Plugin Vulnerabilities"
 [Sucuri]:       https://sucuri.net/ "Sucuri Security — Website Protection, Malware Removal, and Blacklist Prevention"
-[WP-ZEP]:       {{ '/article/how-wpzep-works.html' | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
+[WP-ZEP]:       {{ '/article/how-wpzep-works.html'          | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack? | IP Geo Block"
+[AnalysisVec]:  {{ '/codex/analysis-of-attack-vectors.html' | prepend: site.baseurl }} "Analysis of Attack Vectors | IP Geo Block"
 [Packet-Storm]: http://packetstormsecurity.com/ "Packet Storm"
 [Tom-McFarlin]: https://tommcfarlin.com/wordpress-and-mvc/ "WordPress and MVC (Gloves Aren't Made for Feet) | Tom McFarlin"
 [MainWP-Child]: https://blog.sucuri.net/2015/03/security-advisory-mainwp-child-wordpress-plugin.html "Security Advisory: MainWP-Child WordPress Plugin | Sucuri Blog"
 [SimpleAdsMan]: http://packetstormsecurity.com/files/131280/ "WordPress Simple Ads Manager 2.5.94 / 2.5.96 SQL Injection ≈ Packet Storm"
-[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
+[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "IP Geo Block &mdash; WordPress Plugins"
