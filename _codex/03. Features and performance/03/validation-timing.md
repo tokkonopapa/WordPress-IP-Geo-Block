@@ -25,7 +25,7 @@ drastically reduce load on server especially against brute-force attacks.
 )
 
 When you select this mode as "**Validation timing**", this plugin will install 
-`ip-geo-block-mu.php` into your `wp-content/mu-plugins/` which is for 
+`ip-geo-block-mu.php` into your `/wp-content/mu-plugins/` which is for 
 [must-use plugins][MU-plugins]. It means that this plugin will be loaded and 
 execute validation prior to other typical plugins.
 
@@ -43,9 +43,9 @@ two restrictions would be raised.
    parsed when this plugin do its jobs. In this case, you **must** put your own
    code into `drop-in.php` which should be placed in the geolocation database 
    folder. You can find `drop-in-sample.php` as a sample in this plugin's 
-   folder, i.e. `ip-geo-block/wp-content/ip-geo-api/`. Please rename it to 
-   `drop-in.php` and put it into your [Geolocation API folder][GeoAPIFolder]
-   when you use it.
+   folder, i.e. `/wp-content/plugins/ip-geo-block/wp-content/ip-geo-api/`.
+   Please rename it to `drop-in.php` and put it into your 
+   [Geolocation API folder][GeoAPIFolder] when you use it.
 
 2. **[Human friendly error page][ErrorPage] is unavailable**  
    It is because the theme setup would not have finished when this plugin do 

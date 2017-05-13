@@ -83,6 +83,7 @@ Here are the descriptions:
 | passed        | passed through the validation   |
 | blocked       | blocked by country              |
 | wp-zep        | blocked by WP-ZEP               |
+| multi         | blocked by XML-RPC multicall    |
 | badsig        | blocked by Bad signatures       |
 | upload        | blocked by forbidden MIME type  |
 | extra         | blocked by Extra IP addresses   |
