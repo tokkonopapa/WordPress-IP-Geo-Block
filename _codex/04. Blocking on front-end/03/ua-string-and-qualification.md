@@ -35,25 +35,45 @@ Currently, you can obtain 7 types of qualification listed bellow:
 | _IP address (CIDR)_ | True if the IP address is within the specific range.  |
 | *                   | Always true                                           |
 
-The host name corresponding IP address will be retrieved via reverse DNS lookup.
+The host name `HOST` corresponding IP address will be retrieved via DNS reverse
+lookup which is disabled by default.
 
 #### Negative operation ####
 
 A negative operation "`!`" can be placed just before a qualification. It inverts
 the meaning of qualification.
 
-### Examples ###
+### DNS reverse lookup ###
 
-| Sample           | Description                                                          |
-|:-----------------|:------------------------------------------------------------|
-| Google:HOST      | Pass  if UA includes "Google" and host name is available.   |
-| Google#!HOST     | Block if UA includes "Google" and host name is unavailable. |
-| Yandex#*         | Block if UA includes "Yandex".                              |
-| *#HOST=amazonaws | Block all UA if host name includes "amazonaws".             |
+DNS reverse lookup will attempt to fetch a dns PTR record for an IP address.
+Its cost against the server's resources is relatively high. For example, the 
+following picture shows the result of 1st and 2nd time which is available at 
+"**Installation information**" in "**Plugin settings**" section. It means that 
+the fetched result would be cached in your server.
+
+![DNS reverse lookup]({{ '/img/2017-05/DNS-Lookup.png' | prepend: site.baseurl }}
+ "DNS reverse lookup"
+)
+
+If "**DNS reverse lookup**" is **disabled**, then `HOST` and `HOST=...` will 
+always return **true**. For example, `Google:HOST` would be converted to 
+`Google:*`. In this case, only user agent string would be checked. If the 
+converted result is one of `*:*`, `*:!*`, `*#*` and `*#!*`, it would be 
+eliminated.
+
+### Examples ###
 
 ![UA string and qualification]({{ '/img/2016-08/UA-Qualify.png' | prepend: site.baseurl }}
  "UA string and qualification"
 )
+
+| Sample               | Description                                                 |
+|:---------------------|:------------------------------------------------------------|
+| *:2620:101:4000::/42 | Pass  if an IP address is within the range.                 |
+| Google:HOST          | Pass  if UA includes "Google" and host name is available.   |
+| Google#!HOST         | Block if UA includes "Google" and host name is unavailable. |
+| Yandex#*             | Block if UA includes "Yandex".                              |
+| *#HOST=amazonaws     | Block all UA if host name includes "amazonaws".             |
 
 ### References ###
 
