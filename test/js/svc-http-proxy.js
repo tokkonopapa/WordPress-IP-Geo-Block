@@ -11,7 +11,7 @@ angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) 
 	 * Post form data
 	 *
 	 */
-	this.post_form = function (url, form, proxy, method) {
+	this.post_form = function (url, proxy, method, form) {
 		var type;
 		switch (method.toLowerCase()) {
 		  case 'get':
@@ -63,7 +63,7 @@ angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) 
 	 * Post XML data
 	 *
 	 */
-	this.post_xml = function (url, xml, proxy) {
+	this.post_xml = function (url, proxy, xml) {
 		xml = xml.replace(/\s*([<>])\s*/g, '$1');
 
 		return $http({
@@ -88,5 +88,73 @@ angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) 
 				return {stat: res.status + ' ' + res.statusText + msg};
 			}
 		);
+	};
+
+	/**
+	 * Post XMLHttpRequest
+	 *
+	 */
+	this.post_upload = function (url, proxy, content, filename, callback) {
+		var xhr = window.XDomainRequest ? new XDomainRequest() : new XMLHttpRequest(),
+			boundary = '----boundary',
+			request =
+			'--' + boundary + "\r\n"
+			+ 'Content-Disposition: form-data; name="file"; '
+			+ 'filename="' + filename + '"' + "\r\n"
+			+ 'Content-Type: application/octet-stream' + "\r\n\r\n"
+			+ content + "\r\n"
+			+ '--' + boundary + '--';
+
+		xhr.open('POST', url, 'true');
+		xhr.withCredentials = true; // send Cookie
+		xhr.setRequestHeader(
+			'Content-Type', 'multipart/form-data; boundary=' + boundary
+		);
+		xhr.setRequestHeader('X-Forwarded-For', proxy);
+		xhr.onreadystatechange = function () {
+			if (xhr.readyState == 4) {
+				if (callback) {
+					callback(
+						xhr.status + ' ' + strip_tags(xhr.responseText || xhr.statusText)
+					);
+				}
+			}
+		};
+		xhr.send(request);
+	};
+
+	// http://qiita.com/zaburo/items/f03433caa710902d599f
+	this.post_upload2 = function (url, proxy, file, filename) {
+		// formdata
+		var fd = new FormData();
+		fd.append('file', file);
+
+		// post
+		return $http({
+			url: url,
+			method: 'POST',
+			data: fd,
+			transformRequest: null,
+			headers: {
+				'Content-Type': undefined,
+				'X-Forwarded-For': proxy
+			}
+		})
+
+		.then(
+			// In case of the comment being accepted
+			function (res) {
+				return {
+					stat: res.status + ' ' + strip_tags(res.statusText)
+				};
+			},
+
+			// In case of the comment being denied
+			function (res) {
+				return {
+					stat: res.status + ' ' + strip_tags(res.statusText)
+				};
+			}
+		)
 	};
 }]);

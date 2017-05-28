@@ -332,8 +332,7 @@ class IP_Geo_Block_Logs {
 	 * These data must be sanitized before rendering
 	 */
 	private static function get_user_agent() {
-		return isset( $_SERVER['HTTP_USER_AGENT'] ) ?
-			self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'] ) : '';
+		return isset( $_SERVER['HTTP_USER_AGENT'] ) ? self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'] ) : '';
 	}
 
 	private static function get_http_headers() {
@@ -357,9 +356,7 @@ class IP_Geo_Block_Logs {
 				$headers[] = $key . '=' . $_SERVER[ $key ];
 		}
 
-		return self::truncate_utf8(
-			implode( ',', $headers ), NULL, '', IP_GEO_BLOCK_MAX_STR_LEN
-		);
+		return self::truncate_utf8( implode( ',', $headers ) );
 	}
 
 	private static function get_post_data( $hook, $validate, $settings ) {
@@ -369,7 +366,7 @@ class IP_Geo_Block_Logs {
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {
 			$posts = self::truncate_utf8(
-				file_get_contents( 'php://input' ), '!\s*([<>])\s*!', '$1', IP_GEO_BLOCK_MAX_STR_LEN
+				file_get_contents( 'php://input' ), '!\s*([<>])\s*!', '$1'
 			);
 
 			// mask the password
@@ -378,38 +375,38 @@ class IP_Geo_Block_Logs {
 			     strpos( $matches[1][1], home_url() ) !== 0 ) { // except pingback
 				$posts = str_replace( $matches[1][1], '***', $posts );
 			}
-			/*if ( FALSE !== ( $xml = @simplexml_load_string( $HTTP_RAW_POST_DATA ) ) ) {
-				// mask the password
-				if ( $mask_pwd && 'wp.' === substr( $xml->methodName, 0, 3 ) ) {
-					$xml->params->param[1]->value->string = '***';
-				}
-				$posts = self::truncate_utf8( wp_json_encode( $xml ), '/["\\\\]/' );
-			} else {
-				$posts = 'xml parse error: malformed xml';
-			}*/
+
+			return $posts;
 		}
 
 		// post data
 		else {
-			$keys = array_fill_keys( array_keys( $_POST ), NULL );
-			foreach ( explode( ',', $settings['validation']['postkey'] ) as $key ) {
-				if ( array_key_exists( $key, $_POST ) ) {
-					// mask the password
-					$keys[ $key ] = ( 'pwd' === $key && $mask_pwd ) ? '***' : $_POST[ $key ];
-				}
+			$keys  = explode( ',', $settings['validation']['postkey'] );
+			$data  = array();
+			$posts = $_POST;
+
+			// uploading files
+			if ( ! empty( $_FILES ) ) {
+				$posts['FILES'] = str_replace( PHP_EOL, ' ', print_r( $_FILES, TRUE ) );
+				! in_array( 'FILES', $keys, TRUE ) and $keys[] = 'FILES';
 			}
 
-			// Join array elements
-			$posts = array();
-			foreach ( $keys as $key => $val )
-				$posts[] = $val ? $key.'='.$val : $key;
+			// mask the password
+			if ( ! empty( $posts['pwd'] ) && $mask_pwd )
+				$posts['pwd'] = '***';
 
-			$posts = self::truncate_utf8(
-				implode( ',', $posts ), '/\s+/', ' ', IP_GEO_BLOCK_MAX_STR_LEN
-			);
+			// primaly: $_POST keys
+			foreach ( $keys as $key ) {
+				array_key_exists( $key, $posts ) and $data[] = $key . '=' . $posts[ $key ];
+			}
+
+			// secondary: rest of the keys in $_POST
+			foreach ( array_keys( $_POST ) as $key ) {
+				! in_array( $key, $keys, TRUE ) and $data[] = $key;
+			}
+
+			return self::truncate_utf8( implode( ',', $data ), '/\s+/', ' ' );
 		}
-
-		return $posts;
 	}
 
 	/**
@@ -464,6 +461,10 @@ class IP_Geo_Block_Logs {
 		$heads = self::get_http_headers();
 		$posts = self::get_post_data( $hook, $validate, $settings );
 		$method = $_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . $_SERVER['REQUEST_URI'];
+
+		// mark if malicious upload exists
+		if ( isset( $validate['upload'] ) )
+			$validate['result'] .= '*';
 
 		// anonymize ip address
 		if ( ! empty( $settings['anonymize'] ) )
@@ -557,7 +558,7 @@ class IP_Geo_Block_Logs {
 				$stat['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
 
 			$stat['providers'][ $provider ]['count']++; // undefined in auth_fail()
-			$stat['providers'][ $provider ]['time' ] += (float)@$validate['time'];
+			$stat['providers'][ $provider ]['time' ] += (float)( isset( $validate['time'] ) ? $validate['time'] : 0 );
 
 			if ( 'passed' !== $validate['result'] ) {
 				// Blocked by type of IP address
@@ -566,14 +567,14 @@ class IP_Geo_Block_Logs {
 				elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
 					++$stat['IPv6'];
 
-				@$stat['blocked'  ]++;
-				@$stat['countries'][ $validate['code'] ]++;
-				@$stat['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ]++;
+				 ++$stat['blocked'  ];
+				@++$stat['countries'][ $validate['code'] ];
+				@++$stat['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ];
 			}
 
-			if ( count( $stat['daystats'] ) > max( 30, min( 365, (int)@$settings['validation']['recdays'] ) ) ) {
-				reset( $stat['daystats'] );
-				unset( $stat['daystats'][ key( $stat['daystats'] ) ] );
+			if ( count( $stat['daystats'] ) > max( 30, min( 365, (int)$settings['validation']['recdays'] ) ) ) {
+				reset( $stat['daystats'] ); // pointer to the top
+				unset( $stat['daystats'][ key( $stat['daystats'] ) ] ); // unset at the top
 			}
 
 			// Record statistics.
@@ -617,8 +618,9 @@ class IP_Geo_Block_Logs {
 		}
 
 		// sort by 'time'
-		foreach ( $cache as $key => $val )
+		foreach ( $cache as $key => $val ) {
 			$hash[ $key ] = $val['time'];
+		}
 
 		array_multisort( $hash, SORT_DESC, $cache );
 

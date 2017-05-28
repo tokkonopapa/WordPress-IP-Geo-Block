@@ -42,6 +42,9 @@ class IP_Geo_Block_Util {
 	 *
 	 */
 	public static function compare_url( $a, $b ) {
+		if ( 'GET' !== $_SERVER['REQUEST_METHOD'] && 'HEAD' !== $_SERVER['REQUEST_METHOD'] )
+			return FALSE; // POST, PUT, DELETE
+
 		if ( ! ( $a = @parse_url( $a ) ) ) return FALSE;
 		if ( ! ( $b = @parse_url( $b ) ) ) return FALSE;
 
@@ -206,6 +209,56 @@ class IP_Geo_Block_Util {
 		}
 
 		return $cookie;
+	}
+
+	/**
+	 * WP alternative function for mu-plugins
+	 *
+	 * Validates authentication cookie.
+	 * @source wp-includes/pluggable.php (after muplugins_loaded, it would be initialized)
+	 */
+	public static function validate_auth_cookie() {
+		static $user_id = FALSE;
+
+		if ( FALSE === $user_id ) {
+			if ( ! $cookie = self::parse_auth_cookie( 'logged_in' ) )
+				return FALSE;
+
+			$scheme   = $cookie['scheme'];
+			$username = $cookie['username'];
+			$hmac     = $cookie['hmac'];
+			$token    = $cookie['token'];
+			$expired  = $expiration = $cookie['expiration'];
+
+			// Allow a grace period for POST and Ajax requests
+			if ( wp_doing_ajax() || 'POST' === $_SERVER['REQUEST_METHOD'] )
+				$expired += HOUR_IN_SECONDS;
+
+			// Quick check to see if an honest cookie has expired
+			if ( $expired < time() )
+				return false;
+
+			if ( ! $user = get_user_by( 'login', $username ) ) // wp-includes/class-wp-user.php
+				return FALSE;
+
+			$pass_frag = substr( $user->user_pass, 8, 4 );
+			$key = self::hash_nonce( $username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme );
+
+			// If ext/hash is not present, compat.php's hash_hmac() does not support sha256.
+			$algo = function_exists( 'hash' ) ? 'sha256' : 'sha1';
+			$hash = self::hash_hmac( $algo, $username . '|' . $expiration . '|' . $token, $key );
+
+			if ( ! self::hash_equals( $hash, $hmac ) )
+				return FALSE;
+
+			$manager = WP_Session_Tokens::get_instance( $user->ID ); // wp-includes/class-wp-session-tokens.php
+			if ( ! $manager->verify( $token ) )
+				return FALSE;
+
+			$user_id = $user->ID;
+		}
+
+		return $user_id;
 	}
 
 	/**
@@ -465,6 +518,74 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
+	 * WP alternative function current_user_can() for mu-plugins
+	 *
+	 * Whether the current user has a specific capability.
+	 * @source wp-includes/capabilities.php
+	 */
+	public static function current_user_can( $capability ) {
+		// possibly logged in but should be verified after 'init' hook is fired.
+		return did_action( 'init' ) ? current_user_can( $capability ) : ( self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE );
+	}
+
+	/**
+	 * WP alternative function get_allowed_mime_types() for mu-plugins
+	 *
+	 * Retrieve the file type from the file name.
+	 * @source wp-includes/functions.php @since 2.0.4
+	 */
+	public static function get_allowed_mime_types( $user = null ) {
+		$type = wp_get_mime_types();
+
+		unset( $type['swf'], $type['exe'] );
+		if ( ! self::current_user_can( 'unfiltered_html' ) )
+			unset( $type['htm|html'] );
+
+		return apply_filters( 'upload_mimes', $type, $user );
+	}
+
+	/**
+	 * WP alternative function wp_check_filetype_and_ext() for mu-plugins
+	 *
+	 * Attempt to determine the real file type of a file.
+	 * @source wp-includes/functions.php @since 3.0.0
+	 */
+	public static function check_filetype_and_ext( $fileset, $mode, $mimeset ) {
+		$src = @$fileset['tmp_name'];
+		$dst = str_replace( "\0", '', urldecode( @$fileset['name'] ) );
+
+		// We can't do any further validation without a file to work with
+		if ( ! @file_exists( $src ) )
+			return TRUE;
+
+		// check extension at the tail in blacklist
+		if ( 2 === (int)$mode ) {
+			$type = pathinfo( $dst, PATHINFO_EXTENSION );
+			if ( $type && FALSE !== stripos( $mimeset['black_list'], $type ) ) {
+				return FALSE;
+			}
+		}
+
+		// check extension at the tail in whitelist
+		$type = wp_check_filetype( $dst, $mimeset['white_list'] );
+		if ( 1 === (int)$mode ) {
+			if ( ! $type['type'] ) {
+				return FALSE;
+			}
+		}
+
+		// check images using GD (it doesn't care about extension if it's a real image file)
+		if ( 0 === strpos( $type['type'], 'image/' ) && function_exists( 'getimagesize' ) ) {
+			$info = @getimagesize( $src ); // 0:width, 1:height, 2:type, 3:string
+			if ( ! $info || $info[0] > 9000 || $info[1] > 9000 ) { // max: EOS 5Ds
+				return FALSE;
+			}
+		}
+
+		return TRUE;
+	}
+
+	/**
 	 * WP alternative function for advanced-cache.php
 	 *
 	 * Add / Remove slash at the end of string.
@@ -525,13 +646,47 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
+	 * Check the client IP address behind the proxy
+	 *
+	 */
+	public static function get_proxy_ip( $ip ) {
+		// Chrome datasaver
+		if ( isset( $_SERVER['HTTP_VIA'], $_SERVER['HTTP_FORWARDED'] ) && FALSE !== strpos( $_SERVER['HTTP_VIA'], 'Chrome-Compression-Proxy' ) ) {
+			// require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
+			// if ( FALSE !== strpos( 'google', IP_Geo_Block_Lkup::gethostbyaddr( $ip ) ) )
+			$proxy = preg_replace( '/^for=.*?([a-f\d\.:]+).*$/', '$1', $_SERVER['HTTP_FORWARDED'] );
+		}
+
+		// Puffin browser
+		elseif ( isset( $_SERVER['HTTP_X_PUFFIN_UA'], $_SERVER['HTTP_USER_AGENT'] ) && FALSE !== strpos( $_SERVER['HTTP_USER_AGENT'], 'Puffin' ) ) {
+			$proxy = trim( end( $proxy = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) ); // or trim( $proxy[0] )
+		}
+
+		return empty( $proxy ) ? $ip : $proxy;
+	}
+
+	/**
 	 * Check the IP address is private or not
 	 *
 	 * @link https://en.wikipedia.org/wiki/Localhost
 	 * @link https://en.wikipedia.org/wiki/Private_network
+	 * @link https://en.wikipedia.org/wiki/Reserved_IP_addresses
+	 *
+	 * 10.0.0.0/8 reserved for Private-Use Networks [RFC1918]
+	 * 127.0.0.0/8 reserved for Loopback [RFC1122]
+	 * 172.16.0.0/12 reserved for Private-Use Networks [RFC1918]
+	 * 192.168.0.0/16 reserved for Private-Use Networks [RFC1918]
 	 */
 	public static function is_private_ip( $ip ) {
-		return ( 0 === strpos( $ip, '127.0.0.' ) || 0 === strpos( $ip, '10.0.0.' ) || '::1' === $ip );
+		return ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE /*| FILTER_FLAG_NO_RES_RANGE*/ );
+	}
+
+	/**
+	 * Remove `HOST` and `HOST=...` from `UA and qualification`
+	 *
+	 */
+	public static function mask_qualification( $ua_list ) {
+		return preg_replace( array( '/HOST[^,]*?/', '/\*[:#]!?\*,?/' ), array( '*', '' ), $ua_list );
 	}
 
 }

@@ -64,8 +64,8 @@ class IP_Geo_Block_Admin_Tab {
 		 * @param array $args Additional arguments that are passed to the $callback function.
 		 */
 
-		// Get the country code
-		$key = IP_Geo_Block::get_geolocation( IP_Geo_Block::get_ip_address() );
+		// Get the country code of client
+		$key = IP_Geo_Block::get_geolocation( $tmp = IP_Geo_Block::get_ip_address() );
 
 		$field = 'ip_client';
 		add_settings_field(
@@ -82,7 +82,26 @@ class IP_Geo_Block_Admin_Tab {
 				'after' => '&nbsp;<a class="button button-secondary" id="ip-geo-block-scan-' . $field . '" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-' . $field . '"></div>',
 			)
 		);
+if ( isset( $_SERVER['SERVER_ADDR'] ) && $_SERVER['SERVER_ADDR'] !== $tmp ):
+		// Get the country code of server
+		$key = IP_Geo_Block::get_geolocation( $_SERVER['SERVER_ADDR'] );
 
+		$field = 'ip_server';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="You can confirm the appropriate Geolocation APIs and country code by referring &#8220;Scan country code&#8221;.">Server IP address / Country</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'html',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ) . '</span>',
+				'after' => '&nbsp;<a class="button button-secondary" id="ip-geo-block-scan-' . $field . '" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-' . $field . '"></div>',
+			)
+		);
+endif;
 		// If the matching rule is not initialized, then add a caution
 		$rule = array(
 			-1 => NULL,
@@ -121,7 +140,6 @@ class IP_Geo_Block_Admin_Tab {
 					 1 => __( 'A request from which the country code or IP address is in the blacklist will be blocked.', 'ip-geo-block' ),
 				),
 				'before' => '<input type="hidden" name="ip_geo_block_settings[version]" value="' . esc_html( $options['version'] ) . '" />',
-				'after' => '<div class="ip-geo-block-desc"></div>',
 			)
 		);
 
@@ -139,6 +157,7 @@ class IP_Geo_Block_Admin_Tab {
 				'field' => $field,
 				'value' => $options[ $field ],
 				'after' => $comma[0],
+				'class' => $options['matching_rule'] == 0 ? '' : 'ip-geo-block-hide',
 			)
 		);
 
@@ -155,6 +174,7 @@ class IP_Geo_Block_Admin_Tab {
 				'field' => $field,
 				'value' => $options[ $field ],
 				'after' => $comma[0],
+				'class' => $options['matching_rule'] == 1 ? '' : 'ip-geo-block-hide',
 			)
 		);
 
@@ -220,7 +240,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'signature';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a href="javascript:void(0)" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span id="ip-geo-block-cycle"></span></a>)</nobr>', 'ip-geo-block' ),
+			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a class="ip-geo-block-cycle" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span></span></a>)</nobr>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -233,6 +253,69 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+		// Prevent malicious upload - white list of file extention and MIME type
+		$list = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Select allowed MIME type.">Whitelist of allowed MIME type</dfn>', 'ip-geo-block' ) . "<a class=\"ip-geo-block-cycle ip-geo-block-hide\"><span></span></a>\n<li  class=\"ip-geo-block-hide\"><ul class=\"ip-geo-block-float\">\n";
+
+		// get_allowed_mime_types() in wp-includes/functions.php @since 2.8.6
+		foreach ( IP_Geo_Block_Util::get_allowed_mime_types() as $key => $val ) {
+			$key = esc_attr( $key );
+			$val = esc_attr( $val );
+			$list .= '<li><input type="checkbox" id="ip_geo_block_settings_mimetype_white_list' . $key . '" name="ip_geo_block_settings[mimetype][white_list][' . $key . ']" value="' . $val . '"' . checked( isset( $options['mimetype']['white_list'][ $key ] ), TRUE, FALSE ) . '><label for="ip_geo_block_settings_mimetype_white_list' . $key . '"><dfn title="' . $val . '">' . $key . '</dfn></label></li>' . "\n";
+		}
+		$list .= "</ul></li></ul>\n";
+
+		// Prevent malicious upload - black list of file extension
+		$list .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Put forbidden file extensions.">Blacklist of forbidden file extensions</dfn>', 'ip-geo-block' ) . "\n" . '<li class="ip-geo-block-hide"><ul><li><input type="text" class="regular-text code" id="ip_geo_block_settings_mimetype_black_list" name="ip_geo_block_settings[mimetype][black_list]" value="' . esc_attr( $options['mimetype']['black_list'] ) . '"/></li>';
+		$list .= "</ul></li></ul>\n";
+
+		$field = 'validation';
+		$key = 'mimetype';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( '<dfn title="It prevents malicious file uploading on both back-end and front-end. Please consider to select &#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation timing&#8221; so that other staff would not fetch uploaded files before this validation.">Prevent malicious upload</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'list' => array(
+					0 => __( 'Disable',                         'ip-geo-block' ),
+					1 => __( 'Verify capability and MIME type', 'ip-geo-block' ),
+					2 => __( 'Verify only file extension',      'ip-geo-block' ),
+				),
+				'after' => $list,
+			)
+		);
+/*
+		// Create a new user
+		$field = 'others';
+		$key = 'create_user';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="It enables/disables to restrict creation of new user accounts.">Create a newe user</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'list' => array(
+					0 => __( 'Disable',          'ip-geo-block' ),
+					1 => __( 'Block by country', 'ip-geo-block' ),
+					2 => 'Only by admin',
+					3 => 'Prohibit',
+				),
+				'after' => '<br /><input id="ip_geo_block_settings_' . $field . '_' . $key . '" name="ip_geo_block_settings[' . $field . '][' . $key . ']" type="checkbox"' . checked( ! empty( $options[ $field ][ $key ] ), TRUE, FALSE ) . '/><label for="ip_geo_block_settings_' . $field . '_' . $key . '"><dfn title="It enables to send email to administrator when a new user count is created.">Send email</dfn></label>',
+			)
+		);
+*/
 		// Response code (RFC 2616)
 		$field = 'response_code';
 		add_settings_field(
@@ -267,16 +350,16 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'redirect_uri';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="Specify the URL for response code 2xx and 3xx. Front-end URL on your site would not be blocked to prevent loop of redirection even when you enable [Front-end target settings]. Empty URL is altered to your home.">Redirect URL</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="Specify the URL for response code 2xx and 3xx. If it is pointed to a public facing page, visitors would not be blocked on the page to prevent loop of redirection even when you enable [Block by country] in [Front-end target settings] section. Empty URL is altered to your home.">Redirect URL</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
-				'class' => 'ip-geo-block-hide',
 				'type' => 'text',
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
+				'class' => $options['response_code'] < 400 ? '' : 'ip-geo-block-hide',
 			)
 		);
 
@@ -289,11 +372,11 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug,
 			$section,
 			array(
-				'class' => 'ip-geo-block-hide',
 				'type' => 'text',
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
+				'class' => $options['response_code'] >= 400 ? '' : 'ip-geo-block-hide',
 			)
 		);
 
@@ -301,7 +384,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'login_fails';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="Applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221;. Lockout period is defined as expiration time at &#8220;Cache settings&#8221;.">Max number of failed login attempts per IP address</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221;. Lockout period is defined as expiration time at &#8220;Cache settings&#8221;.">Max number of failed login attempts per IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -347,7 +430,6 @@ class IP_Geo_Block_Admin_Tab {
 					 0 => __( 'Validate at &#8220;init&#8221; action hook in the same manner as typical plugins.', 'ip-geo-block' ),
 					 1 => __( 'Validate at an earlier phase than other typical plugins. It can reduce load on server but has <a rel=\'noreferrer\' href=\'http://www.ipgeoblock.com/codex/validation-timing.html\' title=\'Validation timing | IP Geo Block\'>some restrictions</a>.', 'ip-geo-block' ),
 				),
-				'after' => '<div class="ip-geo-block-desc"></div>',
 			)
 		);
 
@@ -417,7 +499,7 @@ class IP_Geo_Block_Admin_Tab {
 		$desc = array(
 			'login'        => __( 'Log in' ),
 			'register'     => __( 'Register' ),
-			'resetpasss'   => __( 'Password Reset' ),
+			'resetpass'    => __( 'Password Reset' ),
 			'lostpassword' => __( 'Lost Password' ),
 			'postpass'     => __( 'Password protected' ),
 		);
@@ -442,7 +524,7 @@ class IP_Geo_Block_Admin_Tab {
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'text' => __( 'Block by country', 'ip-geo-block' ),
-				'after' => '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual action as a blocking target.">Target actions</dfn>', 'ip-geo-block' ) . "<li style='display:none'><ul>\n". $list . "</ul></li></ul>\n",
+				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual action as a blocking target.">Target actions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $list . "</ul></li></ul>\n",
 			)
 		);
 
@@ -504,8 +586,8 @@ class IP_Geo_Block_Admin_Tab {
 		unset( $installed['ip_geo_block'] );
 
 		$tmp = array(
-			__( 'for logged-in users',     'ip-geo-block' ),
-			__( 'for non logged-in users', 'ip-geo-block' ),
+			__( 'for logged-in user',     'ip-geo-block' ),
+			__( 'for non logged-in user', 'ip-geo-block' ),
 		);
 
 		foreach ( $installed as $key => $val ) {
@@ -536,9 +618,9 @@ class IP_Geo_Block_Admin_Tab {
 				'value' => $options[ $field ][ $key ],
 				'list' => $list,
 				'desc' => $desc,
-				'after' => '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">'
-					. __( '<dfn title="Select actions that cause undesired blocking to skip &#8220;Prevent Zero-day Exploit&#8221; for logged-in users and &#8220;Block by country&#8221; for non logged-in users. If you can not find the right one in the candidate list, you can put a certain page name (&#8220;&hellip;&#8221; in &#8220;page=&hellip;&#8221;) or action name (&#8220;&hellip;&#8221; in &#8220;action=&hellip;&#8221;), which would be implemented with a non WordPress standard way, into the field to specify the request.">Exceptions</dfn>', 'ip-geo-block' )
-					. '<li style="display:none"><ul><li>' . "\n"
+				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">'
+					. __( '<dfn title="Specify the page name (&#8220;&hellip;&#8221; in &#8220;page=&hellip;&#8221;) or action name (&#8220;&hellip;&#8221; in &#8220;action=&hellip;&#8221;) to prevent undesired blocking caused by &#8220;Block by country&#8221; for non logged-in user and &#8220;Prevent Zero-day Exploit&#8221; for logged-in user.">Exceptions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>'
+					. "\n<li class=\"ip-geo-block-hide\"><ul><li>\n"
 					. '<input class="regular-text code" id="ip_geo_block_settings_exception_admin" name="ip_geo_block_settings[exception][admin]" type="text" value="' . esc_attr( implode( ',', $options['exception']['admin'] ) ) . '">' . "\n"
 					. $comma[0]
 					. '</li><li><ul id="ip-geo-block-actions">'
@@ -608,10 +690,7 @@ class IP_Geo_Block_Admin_Tab {
 					2 => sprintf( $desc[0], $val ),
 				),
 				'before' => $tmp,
-				'after' => '<div class="ip-geo-block-desc"></div>' . "\n"
-					. '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
-					. $exception
-					. "</ul></li></ul>\n",
+				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . $desc[2] . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $exception . "</ul></li></ul>\n",
 			)
 		);
 
@@ -661,10 +740,7 @@ class IP_Geo_Block_Admin_Tab {
 					2 => sprintf( $desc[0], $val ),
 				),
 				'before' => $tmp,
-				'after' => '<div class="ip-geo-block-desc"></div>' . "\n"
-					. '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
-					. $exception
-					. "</ul></li></ul>\n",
+				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . $desc[2] . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $exception . "</ul></li></ul>\n",
 			)
 		);
 
@@ -734,6 +810,7 @@ class IP_Geo_Block_Admin_Tab {
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'after' => $comma[0],
+				'class' => $options[ $field ]['matching_rule'] == 0 ? '' : 'ip-geo-block-hide',
 			)
 		);
 
@@ -751,11 +828,80 @@ class IP_Geo_Block_Admin_Tab {
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'after' => $comma[0],
+				'class' => $options[ $field ]['matching_rule'] == 1 ? '' : 'ip-geo-block-hide',
+			)
+		);
+
+		// Response code (RFC 2616)
+		$key = 'response_code';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			sprintf( __( '<dfn title="You can configure a different response code from the Back-end. This is useful to prevent violation against your affiliate program.">Response code</dfn> %s', 'ip-geo-block' ), '(<a rel="noreferrer" href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1">RFC 2616</a>)' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'list' => array(
+					200 => '200 OK',
+					301 => '301 Moved Permanently',
+					302 => '302 Found',
+					303 => '303 See Other',
+					307 => '307 Temporary Redirect',
+					400 => '400 Bad Request',
+					403 => '403 Forbidden',
+					404 => '404 Not Found',
+					406 => '406 Not Acceptable',
+					410 => '410 Gone',
+					500 => '500 Internal Server Error',
+					503 => '503 Service Unavailable',
+				),
+				'class' => $options[ $field ]['matching_rule'] == -1 ? 'ip-geo-block-hide' :'',
+			)
+		);
+
+		// Redirect URI
+		$key = 'redirect_uri';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( '<dfn title="Specify the URL for response code 2xx and 3xx. If it is pointed to a public facing page, visitors would not be blocked on the page to prevent loop of redirection even when you enable [Block by country] in [Front-end target settings] section. Empty URL is altered to your home.">Redirect URL</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'class' => $options[ $field ]['matching_rule'] != -1 && $options[ $field ]['response_code'] < 400 ? '' : 'ip-geo-block-hide',
+			)
+		);
+
+		// Response message
+		$key = 'response_msg';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( '<dfn title="Specify the message for response code 4xx and 5xx.">Response message</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'class' => $options[ $field ]['matching_rule'] != -1 && $options[ $field ]['response_code'] >= 400 ? '' : 'ip-geo-block-hide',
 			)
 		);
 
 		// List of page
-		$exception = '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual page as a blocking target.">Page</dfn>', 'ip-geo-block' ) . "<li style='display:none'><ul>\n";
+		$exception = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual page as a blocking target.">Page</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_pages();
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -767,7 +913,7 @@ class IP_Geo_Block_Admin_Tab {
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// List of post type
-		$exception .= '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual post type on a single page as a blocking target.">Post type</dfn>', 'ip-geo-block' ) . "<li style='display:none'><ul>\n";
+		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual post type on a single page as a blocking target.">Post type</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_post_types( array( 'public' => TRUE ) );
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -779,7 +925,7 @@ class IP_Geo_Block_Admin_Tab {
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// List of category
-		$exception .= '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual category on a single page or archive page as a blocking target.">Category</dfn>', 'ip-geo-block' ) . "<li style='display:none'><ul>\n";
+		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual category on a single page or archive page as a blocking target.">Category</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_categories( array( 'hide_empty' => FALSE ) );
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -791,7 +937,7 @@ class IP_Geo_Block_Admin_Tab {
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// List of tag
-		$exception .= '<ul class="ip_geo_block_settings_folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual tag on a single page or archive page as a blocking target.">Tag</dfn>', 'ip-geo-block' ) . "<li style='display:none'><ul>\n";
+		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual tag on a single page or archive page as a blocking target.">Tag</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_tags( array( 'hide_empty' => FALSE ) );
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -823,7 +969,7 @@ class IP_Geo_Block_Admin_Tab {
 				'desc' => array(
 					1 => __( "Notice that &#8220;Validation timing&#8221; is deferred till &#8220;wp&#8221; action hook. It means that this feature would not be compatible with any page caching.", 'ip-geo-block' ),
 				),
-				'after' => '<div class="ip-geo-block-desc"></div>' . "\n" . $exception,
+				'after' => $exception,
 			)
 		);
 
@@ -864,6 +1010,23 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			)
 		);
 endif;
+
+		// DNS reverse lookup
+		$key = 'dnslkup';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			'<dfn title="' . __( 'It enables to verify the host by reverse DNS lookup which would spend some server resources. If it is disabled, &#8220;HOST&#8221; and &#8220;HOST=&hellip;&#8221;in &#8220;UA string and qualification&#8221; will always return &#8220;true&#8221;.', 'ip-geo-block' ) . '">' . __( 'DNS reverse lookup', 'ip-geo-block' ) . '</dfn>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+			)
+		);
 
 		// Simulation mode
 		$key = 'simulate';
@@ -1073,7 +1236,7 @@ endif;
 		// $_POST keys to be recorded with their values in logs
 		add_settings_field(
 			$option_name.'_'.$field.'_postkey',
-			__( '<dfn title="e.g. action, comment, log, pwd">$_POST keys to be recorded with their values in logs</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="e.g. action, comment, log, pwd, FILES">$_POST keys to be recorded with their values in logs</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1279,8 +1442,8 @@ endif;
 			array(
 				'type' => 'none',
 				'before' =>
-					'<a class="button button-secondary" id="ip-geo-block-preferred" title="' . __( 'Import the preferred settings mainly for the &#8220;Back-end target settings&#8221;',     'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Best settings',    'ip-geo-block' ) . '</a>&nbsp;' .
-					'<a class="button button-secondary" id="ip-geo-block-default"   title="' . __( 'Import the default settings to revert to the &#8220;Right after installing&#8221; state', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Default settings', 'ip-geo-block' ) . '</a>',
+					'<a class="button button-secondary" id="ip-geo-block-default" title="' . __( 'Import the default settings to revert to the &#8220;Right after installing&#8221; state', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Default settings', 'ip-geo-block' ) . '</a>&nbsp;' .
+					'<a class="button button-secondary" id="ip-geo-block-preferred" title="' . __( 'Import the preferred settings mainly for the &#8220;Back-end target settings&#8221;', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Best for Back-end', 'ip-geo-block' ) . '</a>',
 				'after' => '<div id="ip-geo-block-pre-defined"></div>',
 			)
 		);
@@ -1339,36 +1502,38 @@ endif;
 	}
 
 	/**
-	 * Subsidiary note
+	 * Subsidiary note for the sections
 	 *
+	 * @param array $section settings of section added to admin pages
+	 * @param bool  $stat    TRUE:open ('o') or FALSE:close ('x')
 	 */
-	public static function note_target() {
+	public static function note_target( $section, $stat ) {
 		echo
-			'<ul class="ip-geo-block-note">', "\n",
+			'<ul class="ip-geo-block-note"', $stat ? '>' : ' style="display:none">', "\n",
 				'<li>', __( 'To enhance the protection ability, please refer to &#8220;<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html" title="The best practice for target settings | IP Geo Block">The best practice for target settings</a>&#8221;.', 'ip-geo-block' ), '</li>', "\n",
 				'<li>', __( 'If you have any troubles with these, please check FAQ at <a rel="noreferrer" href="https://wordpress.org/plugins/ip-geo-block/faq/" title="IP Geo Block &mdash; WordPress Plugins">WordPress.org</a> and <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/#faq" title="Codex | IP Geo Block">Codex</a>.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 
-	public static function note_services() {
+	public static function note_services( $section, $stat ) {
 		echo
-			'<ul class="ip-geo-block-note">', "\n",
+			'<ul class="ip-geo-block-note"', $stat ? '>' : ' style="display:none">', "\n",
 				'<li>', __( 'While Maxmind and IP2Location will fetch the local database, others will pass an IP address to the APIs via HTTP.', 'ip-geo-block' ), '</li>', "\n",
 				'<li>', __( 'Please select the appropriate APIs to fit the privacy law in your country.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 
-	public static function note_public() {
+	public static function note_public( $section, $stat ) {
 		echo
-			'<ul class="ip-geo-block-note">', "\n",
+			'<ul class="ip-geo-block-note"', $stat ? '>' : ' style="display:none">', "\n",
 				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/#blocking-on-front-end" title="Codex | IP Geo Block">Blocking on front-end</a>&#8221; for details, including restrictions on cache plugin.', 'ip-geo-block' ), '</li>', "\n",
 				'<li>', __( 'If you find any issues or have something to suggest, please feel free to open an issue at <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a>.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 
-	public static function note_record() {
+	public static function note_record( $section, $stat ) {
 		echo
-			'<ul class="ip-geo-block-note">', "\n",
+			'<ul class="ip-geo-block-note"', $stat ? '>' : ' style="display:none">', "\n",
 				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/record-settings-and-logs.html" title="Codex | IP Geo Block">Record settings and logs</a>&#8221; for details.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}

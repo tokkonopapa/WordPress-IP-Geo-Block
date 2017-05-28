@@ -83,7 +83,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function enqueue_admin_assets() {
-		$footer = FALSE;
+		$footer = TRUE;
 		$dependency = array( 'jquery' );
 
 		// css for option page
@@ -333,7 +333,7 @@ class IP_Geo_Block_Admin {
 					) . ' ' .
 					sprintf(
 						__( 'Please check your <a href="%s">Validation rule settings</a>.', 'ip-geo-block' ),
-						esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-settings-0'
+						esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-0'
 					)
 				);
 			}
@@ -381,6 +381,56 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
+	 * Prints out all settings sections added to a particular settings page
+	 *
+	 * wp-admin/includes/template.php @since 2.7.0
+	 */
+	public function get_cookie( $element ) {
+		$element = explode( '=', $element );
+		return $element[1];
+	}
+
+	private function do_settings_sections( $page, $tab = 0 ) {
+		global $wp_settings_sections, $wp_settings_fields;
+
+		if ( ! isset( $wp_settings_sections[ $page ] ) )
+			return;
+
+		$index  = IP_Geo_Block::PLUGIN_NAME . '-' . $tab;
+		$cookie = isset( $_COOKIE[ $index ] ) ? array_map( array( $this, 'get_cookie' ), explode( '&', $_COOKIE[ $index ] ) ) : array();
+		$index  = 0; // index of fieldset
+
+		foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
+			// TRUE:open ('o') or FALSE:close ('x')
+			$stat = $tab > 1 || empty( $cookie[ $index ] ) || 'o' === $cookie[ $index ];
+
+			echo '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field">', "\n";
+			echo '<legend><h2';
+
+			// add dropdown or dropup class
+			if ( $tab <= 1 )
+				echo ' class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '"';
+
+			echo '>', $section['title'], '</h2></legend>', "\n";
+
+			if ( $section['callback'] )
+				call_user_func( $section['callback'], $section, $stat );
+
+			if ( ! isset( $wp_settings_fields ) ||
+			     ! isset( $wp_settings_fields[ $page ] ) ||
+			     ! isset( $wp_settings_fields[ $page ][ $section['id'] ] ) ) {
+				continue;
+			}
+
+			echo '<table class="form-table"', $stat ? '>' : ' style="display:none">';
+			do_settings_fields( $page, $section['id'] );
+			echo '</table>';
+			echo '</fieldset>', "\n";
+			++$index;
+		}
+	}
+
+	/**
 	 * Render the settings page for this plugin.
 	 *
 	 */
@@ -407,7 +457,7 @@ class IP_Geo_Block_Admin {
 	<form method="post" action="options.php"<?php if ( 0 !== $tab ) echo " id=\"", IP_Geo_Block::PLUGIN_NAME, "-inhibit\""; ?>>
 <?php
 		settings_fields( IP_Geo_Block::PLUGIN_NAME );
-		do_settings_sections( IP_Geo_Block::PLUGIN_NAME );
+		$this->do_settings_sections( IP_Geo_Block::PLUGIN_NAME, $tab );
 		if ( 0 === $tab )
 			submit_button(); // @since 3.1
 ?>
@@ -432,7 +482,7 @@ class IP_Geo_Block_Admin {
 <?php if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 	echo '<p>', get_num_queries(), ' queries. ', timer_stop(0), ' seconds. ', memory_get_usage(), " bytes.</p>\n";
 } ?>
-	<p style="margin:0; text-align:right">[ <a id="ip-geo-block-back-to-top" href="#"><?php _e( 'Back to top', 'ip-geo-block' ); ?></a> ]</p>
+	<p id="ip-geo-block-back-to-top">[ <a href="#"><?php _e( 'Back to top', 'ip-geo-block' ); ?></a> ]</p>
 </div>
 <?php
 	}
@@ -507,7 +557,7 @@ class IP_Geo_Block_Admin {
 			foreach ( $args['list'] as $key => $val ) { ?>
 	<li>
 		<input type="checkbox" id="<?php echo $id, $sub_id, '_', $key; ?>" name="<?php echo $name, $sub_name, '[', $key, ']'; ?>" value="<?php echo $key; ?>"<?php
-			checked( $key & $args['value'] ? TRUE : FALSE ); ?> />
+			checked( is_array( $args['value'] ) ? ! empty( $args['value'][ $key ] ) : ( $key & $args['value'] ? TRUE : FALSE ) ); ?> />
 		<label for="<?php echo $id, $sub_id, '_', $key; ?>"><?php
 			if ( isset( $args['desc'][ $key ] ) ) 
 				echo '<dfn title="', $args['desc'][ $key ], '">', $val, '</dfn>';
@@ -524,22 +574,34 @@ class IP_Geo_Block_Admin {
 <input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="1"<?php
 	checked( esc_attr( $args['value'] ) );
 	disabled( ! empty( $args['disabled'] ), TRUE ); ?> />
-<label for="<?php echo $id, $sub_id; ?>"><?php echo esc_attr( isset( $args['text'] ) ? $args['text'] : __( 'Enable', 'ip-geo-block' ) ); ?></label>
+<label for="<?php echo $id, $sub_id; ?>"><?php
+	if ( isset( $args['text'] ) ) echo esc_attr( $args['text'] );
+	else if ( isset( $args['html'] ) ) echo $args['html'];
+	else _e( 'Enable', 'ip-geo-block' ); ?>
+</label>
 <?php
 			break;
 
 		  case 'select':
 		  case 'select-text':
+			$desc = '';
 			echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\">\n";
 			foreach ( $args['list'] as $key => $val ) {
 				echo "\t<option value=\"$key\"", ( NULL === $val ? ' selected disabled' : selected( $args['value'], $key, FALSE ) );
-				if ( isset( $args['desc'][ $key ] ) )
-					echo " data-desc=\"", $args['desc'][ $key ], "\"";
+				if ( isset( $args['desc'][ $key ] ) ) {
+					echo ' data-desc="', $args['desc'][ $key ], '"';
+					$key === $args['value'] and $desc = $args['desc'][ $key ];
+				}
 				echo ">$val</option>\n";
 			}
 			echo "</select>\n";
+
+			if ( isset( $args['desc'] ) )
+				echo '<p class="ip-geo-block-desc">', $desc, "</p>\n";
+
 			if ( 'select' === $args['type'] )
 				break;
+
 			echo "<br />\n";
 			$sub_id   = '_' . $args['txt-field']; // possible value of 'txt-field' is 'msg'
 			$sub_name = '[' . $args['txt-field'] . ']';
@@ -588,15 +650,11 @@ class IP_Geo_Block_Admin {
 		$output = IP_Geo_Block::get_option();
 		$default = IP_Geo_Block::get_default();
 
-		// initialize checkboxes not in the form (added after 2.0.0, just in case)
-		foreach ( array( 'anonymize', 'network_wide' ) as $key ) {
-			$output[ $key ] = 0;
-		}
-
-		// initialize checkboxes not in the form
-		foreach ( array( 'login', 'admin', 'ajax', 'plugins', 'themes', 'public' ) as $key ) {
-			$output['validation'][ $key ] = 0;
-		}
+		// Integrate posted data into current settings because if can be a part of hole data
+		$input = array_replace_recursive(
+			$output = $this->preprocess_options( $output ),
+			$input
+		);
 
 		// restore the 'signature' that might be transformed to avoid self blocking
 		if ( isset( $input['signature'] ) && FALSE === strpos( $input['signature'], ',' ) )
@@ -662,6 +720,17 @@ class IP_Geo_Block_Admin {
 					) : '';
 				break;
 
+			  case 'mimetype':
+				if ( isset( $input[ $key ]['white_list'] ) ) { // for json file before 3.0.3
+					foreach ( $input[ $key ]['white_list'] as $k => $v ) {
+						$output[ $key ]['white_list'][ $k ] = sanitize_text_field( $v );
+					}
+				}
+				if ( isset( $input[ $key ]['black_list'] ) ) { // for json file before 3.0.3
+					$output[ $key ]['black_list'] = sanitize_text_field( $input[ $key ]['black_list'] );
+				}
+				break;
+
 			  default: // checkbox, select, text
 				// single field
 				if ( ! is_array( $default[ $key ] ) ) {
@@ -670,11 +739,15 @@ class IP_Geo_Block_Admin {
 						$output[ $key ] = ! empty( $input[ $key ] );
 					}
 
-					// otherwise if implicit
+					// for implicit data
 					elseif ( isset( $input[ $key ] ) ) {
 						$output[ $key ] = is_int( $default[ $key ] ) ?
 							(int)$input[ $key ] :
 							IP_Geo_Block_Util::kses( trim( $input[ $key ] ), FALSE );
+					}
+
+					// otherwise keep as it is
+					else {
 					}
 				}
 
@@ -696,7 +769,7 @@ class IP_Geo_Block_Admin {
 							array() : $input[ $key ][ $sub ];
 					}
 
-					// otherwise if implicit
+					// for implicit data
 					elseif ( isset( $input[ $key ][ $sub ] ) ) {
 						// for checkboxes
 						if ( is_array( $input[ $key ][ $sub ] ) ) {
@@ -712,50 +785,86 @@ class IP_Geo_Block_Admin {
 							);
 						}
 					}
+
+					// otherwise keep as it is
+					else {
+					}
 				}
 			}
 		}
 
-		//----------------------------------------
 		// Check and format each setting data
-		//----------------------------------------
+		return $this->postprocess_options( $output, $default );
+	}
 
+	// Initialize not on the form (mainly unchecked checkbox)
+	public function preprocess_options( $output ) {
+		// initialize checkboxes not in the form (added after 2.0.0, just in case)
+		foreach ( array( 'anonymize', 'network_wide' ) as $key ) {
+			$output[ $key ] = 0;
+		}
+
+		// initialize checkboxes not in the form
+		foreach ( array( 'login', 'admin', 'ajax', 'plugins', 'themes', 'public', 'mimetype' ) as $key ) {
+			$output['validation'][ $key ] = 0;
+		}
+
+		// initialize checkboxes not in the form
+		$output['mimetype']['white_list'] = array();
+
+		// keep disabled checkboxes not in the form
+		foreach ( array( 'admin', 'plugins', 'themes' ) as $key ) {
+			$output['exception'][ $key ] = array();
+		}
+
+		// keep disabled checkboxes not in the form
+		foreach ( array( 'target_pages', 'target_posts', 'target_cates', 'target_tags', 'simulate', 'dnslkup' ) as $key ) {
+			$output['public'][ $key ] = array();
+		}
+
+		return $output;
+	}
+
+	// Check and format each setting data
+	private function postprocess_options( $output, $default ) {
 		// sanitize proxy
 		$output['validation']['proxy'] = implode( ',', $this->trim(
 			preg_replace( '/[^\w,]/', '', strtoupper( $output['validation']['proxy'] ) )
 		) );
 
-		// sanitize and format ip address
+		// sanitize and format ip address (text area)
 		$key = array( '/[^\w\n\.\/,:]/', '/([\s,])+/', '/(?:^,|,$)/' );
 		$val = array( '',                '$1',         ''            );
 		$output['extra_ips']['white_list'] = preg_replace( $key, $val, trim( $output['extra_ips']['white_list'] ) );
 		$output['extra_ips']['black_list'] = preg_replace( $key, $val, trim( $output['extra_ips']['black_list'] ) );
 
-		// format signature, ua_list (text area)
+		// format and reject invalid words which potentially blocks itself (text area)
 		array_shift( $key );
 		array_shift( $val );
 		$output['signature'] = preg_replace( $key, $val, trim( $output['signature'] ) );
+		$output['signature'] = implode     ( ',', $this->trim( $output['signature'] ) );
+
+		// 3.0.3 trim extra space and comma
+		$output['mimetype' ]['black_list'] = preg_replace( $key, $val, trim( $output['mimetype']['black_list'] ) );
+		$output['mimetype' ]['black_list'] = implode     ( ',', $this->trim( $output['mimetype']['black_list'] ) );
 
 		// 3.0.0 convert country code to upper case, remove redundant spaces
 		$output['public']['ua_list'] = preg_replace( $key, $val, trim( $output['public']['ua_list'] ) );
 		$output['public']['ua_list'] = preg_replace( '/([:#]) *([!]+) *([^ ]+) *([,\n]+)/', '$1$2$3$4', $output['public']['ua_list'] );
 		$output['public']['ua_list'] = preg_replace_callback( '/[:#]([\w:]+)/', array( $this, 'strtoupper' ), $output['public']['ua_list'] );
 
-		// reject invalid signature which potentially blocks itself
-		$output['signature'] = implode( ',', $this->trim( $output['signature'] ) );
+		// 3.0.0 public : convert country code to upper case
+		foreach ( array( 'white_list', 'black_list' ) as $key ) {
+			$output['public'][ $key ] = strtoupper( preg_replace( '/\s/', '', $output['public'][ $key ] ) );
+		}
 
 		// 2.2.5 exception : convert associative array to simple array
 		foreach ( array( 'plugins', 'themes' ) as $key ) {
 			$output['exception'][ $key ] = array_keys( $output['exception'][ $key ] );
 		}
 
-		// 3.0.0 public : convert country code to upper case
-		foreach ( array( 'white_list', 'black_list' ) as $key ) {
-			$output['public'][ $key ] = strtoupper( preg_replace( '/\s/', '', $output['public'][ $key ] ) );
-		}
-
-		// 3.0.0 exception : trim extra space and comma
-		foreach ( array( 'admin', 'public', 'includes', 'uploads', 'languages' ) as $key ) {
+		// 3.0.0 - 3.0.3 exception : trim extra space and comma
+		foreach ( array( 'admin', 'public', 'includes', 'uploads', 'languages', 'restapi' ) as $key ) {
 			if ( empty( $output['exception'][ $key ] ) ) {
 				$output['exception'][ $key ] = $default['exception'][ $key ];
 			} else {

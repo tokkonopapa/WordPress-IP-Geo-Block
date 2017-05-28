@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.2.2';
+	const VERSION = '3.0.3';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -112,7 +112,7 @@ class IP_Geo_Block {
 
 		else {
 			// public facing pages
-			if ( $validate['public'] /* && 'index.php' === $this->pagenow */ )
+			if ( $validate['public'] || ( ! empty( $_FILES ) && $validate['mimetype'] ) /* && 'index.php' === $this->pagenow */ )
 				$loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
 
 			// message text on comment form
@@ -147,7 +147,8 @@ class IP_Geo_Block {
 
 		// force to change the redirect URL on logout to remove nonce, embed a nonce into pages
 		add_filter( 'wp_redirect', array( $this, 'logout_redirect' ), 20, 2 ); // logout_redirect @4.2
-		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority );
+		add_filter( 'http_request_args', array( $this, 'add_admin_nonce' ), $priority, 2 ); // @since 2.7.0
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority ); // @since 2.8.0
 
 		// Run the loader to execute all of the hooks with WordPress.
 		$loader->run( $this );
@@ -185,6 +186,28 @@ class IP_Geo_Block {
 	}
 
 	/**
+	 * Remove the redirecting URL on logout not to be blocked by WP-ZEP.
+	 *
+	 */
+	public function logout_redirect( $uri ) {
+		if ( isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] && FALSE !== stripos( $uri, self::$wp_path['admin'] ) )
+			return esc_url_raw( add_query_arg( array( 'loggedout' => 'true' ), wp_login_url() ) );
+		else
+			return $uri;
+	}
+
+	/**
+	 * Add nonce into arguments used in an HTTP request.
+	 *
+	 */
+	public function add_admin_nonce( $args = array(), $url = '' ) {
+		if ( 0 === strpos( $url, admin_url() ) && empty( $args[ $handle = self::PLUGIN_NAME . '-auth-nonce' ] ) )
+			$args += array( $handle => IP_Geo_Block_Util::create_nonce( $handle ) );
+
+		return $args;
+	}
+
+	/**
 	 * Register and enqueue a nonce with a specific JavaScript.
 	 *
 	 */
@@ -199,17 +222,6 @@ class IP_Geo_Block {
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
 			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $nonce );
 		}
-	}
-
-	/**
-	 * Remove the redirecting URL on logout not to be blocked by WP-ZEP.
-	 *
-	 */
-	public function logout_redirect( $uri ) {
-		if ( isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] && FALSE !== stripos( $uri, self::$wp_path['admin'] ) )
-			return esc_url_raw( add_query_arg( array( 'loggedout' => 'true' ), wp_login_url() ) );
-		else
-			return $uri;
 	}
 
 	/**
@@ -282,7 +294,7 @@ class IP_Geo_Block {
 	private static function _get_geolocation( $ip, $settings, $providers, $callback = 'get_country' ) {
 		// check loop back / private address
 		if ( IP_Geo_Block_Util::is_private_ip( $ip ) )
-			return self::make_validation( $ip, array( 'time' => 0, 'provider' => 'Loopback', 'code' => 'XX' ) );
+			return self::make_validation( $ip, array( 'time' => 0, 'provider' => 'Private', 'code' => 'XX' ) );
 
 		// set arguments for wp_remote_get()
 		$args = self::get_request_headers( $settings );
@@ -331,8 +343,7 @@ class IP_Geo_Block {
 		require_once ABSPATH . WPINC . '/functions.php'; // for get_status_header_desc() @since 2.3.0
 
 		// prevent caching (WP Super Cache, W3TC, Wordfence, Comet Cache)
-		if ( ! defined( 'DONOTCACHEPAGE' ) )
-			define( 'DONOTCACHEPAGE', TRUE );
+		defined( 'DONOTCACHEPAGE' ) or define( 'DONOTCACHEPAGE', TRUE );
 
 		$code = (int   )apply_filters( self::PLUGIN_NAME . '-'.$hook.'-status', $settings['response_code'] );
 		$mesg = (string)apply_filters( self::PLUGIN_NAME . '-'.$hook.'-reason', $settings['response_msg' ] ? $settings['response_msg'] : get_status_header_desc( $code ) );
@@ -355,8 +366,12 @@ class IP_Geo_Block {
 			exit;
 
 		  case 3: // 3xx Redirection (HTTP header injection should be avoided)
-			IP_Geo_Block_Util::safe_redirect( esc_url_raw( $settings['redirect_uri'] ? $settings['redirect_uri'] : home_url( '/' ) ), $code ); // @since 2.8
-			exit;
+			if ( 'GET' === $_SERVER['REQUEST_METHOD'] || 'HEAD' === $_SERVER['REQUEST_METHOD'] ) {
+				IP_Geo_Block_Util::safe_redirect( esc_url_raw( $settings['redirect_uri'] ? $settings['redirect_uri'] : home_url( '/' ) ), $code ); // @since 2.8
+				exit;
+			} else {
+				$code = 403; // avoid redirection loop
+			}
 
 		  default: // 4xx Client Error, 5xx Server Error
 			status_header( $code ); // @since 2.0.0
@@ -406,20 +421,20 @@ class IP_Geo_Block {
 		}
 
 		// register auxiliary validation functions
-		// priority high 4 close_xmlrpc
-		//               5 check_nonce
-		//               6 check_signature
+		// priority high 4 close_xmlrpc, close_restapi
+		//               5 check_nonce (high), check_user (low)
+		//               6 check_upload (high), check_signature (low)
 		//               7 check_auth
 		//               8 check_fail
-		//               9 check_ips_black
-		//               9 check_ips_white
+		//               9 check_ips_black (high), check_ips_white (low)
 		// priority low 10 validate_country
 		$var = self::PLUGIN_NAME . '-' . $hook;
+		$settings['validation']['mimetype' ] and add_filter( $var, array( $this, 'check_upload'    ), 6, 2 );
+		$auth                                and add_filter( $var, array( $this, 'check_auth'      ), 7, 2 );
+		$settings['login_fails'] >= 0        and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
 		$settings['extra_ips'] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
 		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 9, 2 );
 		$settings['extra_ips']['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 9, 2 );
-		$settings['login_fails'] >= 0        and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
-		$auth                                and add_filter( $var, array( $this, 'check_auth'      ), 7, 2 );
 
 		// make valid provider name list
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
@@ -727,6 +742,39 @@ class IP_Geo_Block {
 	}
 
 	/**
+	 * Validate malicious file uploading. @since 3.0.3
+	 * @see wp_handle_upload() in wp-admin/includes/file.php
+	 */
+	public function check_upload( $validate, $settings ) {
+		if ( ! empty( $_FILES ) ) {
+			// check capability
+			if ( 1 === (int)$settings['validation']['mimetype'] && ! IP_Geo_Block_Util::current_user_can( 'upload_files' ) )
+				$upload = TRUE;
+
+			else foreach ( $_FILES as $key => $val ) {
+				// check $_FILES corruption attack
+				if ( ! isset( $val['error'] ) || is_array( $val['error'] ) ) {
+					$upload = TRUE;
+					break;
+				}
+
+				// check mime type and extension
+				if ( ! IP_Geo_Block_Util::check_filetype_and_ext( $val, $settings['validation']['mimetype'], $settings['mimetype'] ) ) {
+					$upload = TRUE;
+					break;
+				}
+			}
+
+			if ( isset( $upload ) ) {
+				$validate['upload'] = TRUE; // mark for logs
+				$validate = apply_filters( self::PLUGIN_NAME . '-forbidden-upload', $validate + array( 'result' => 'upload' ) );
+			}
+		}
+
+		return $validate;
+	}
+
+	/**
 	 * Verify specific ip addresses with CIDR.
 	 *
 	 */
@@ -776,6 +824,13 @@ class IP_Geo_Block {
 		$settings = self::get_option();
 		$public = $settings['public'];
 
+		// replace "Validation rule settings"
+		if ( $settings['validation']['public'] && -1 !== (int)$public['matching_rule'] ) {
+			foreach ( array( 'matching_rule', 'white_list', 'black_list', 'response_code', 'response_msg', 'redirect_uri' ) as $key ) {
+				$settings[ $key ] = $public[ $key ];
+			}
+		}
+
 		// avoid redirection loop
 		if ( $settings['response_code'] < 400 && IP_Geo_Block_Util::compare_url( $_SERVER['REQUEST_URI'], $settings['redirect_uri'] ? $settings['redirect_uri'] : home_url( '/' ) ) )
 			return; // do not block
@@ -790,31 +845,14 @@ class IP_Geo_Block {
 			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_page' ), 10, 2 );
 		}
 
-		// replace "Validation rule settings"
-		if ( -1 !== (int)$public['matching_rule'] ) {
-			$settings['matching_rule'] = $public['matching_rule'];
-			$settings['white_list'   ] = $public['white_list'   ];
-			$settings['black_list'   ] = $public['black_list'   ];
-		}
-
 		// retrieve IP address of visitor via proxy services
-		add_filter( self::PLUGIN_NAME . '-ip-addr', array( $this, 'get_proxy_ip' ), 20, 1 );
+		add_filter( self::PLUGIN_NAME . '-ip-addr', array( 'IP_Geo_Block_Util', 'get_proxy_ip' ), 20, 1 );
 
 		// validate undesired user agent
 		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_bots' ), 6, 2 );
 
 		// validate country by IP address (block: true, die: false)
-		$this->validate_ip( 'public', $settings, TRUE, ! $public['simulate'] );
-	}
-
-	public function get_proxy_ip( $ip ) {
-		if ( isset( $_SERVER['HTTP_VIA'] ) && FALSE !== strpos( $_SERVER['HTTP_VIA'], 'Chrome-Compression-Proxy' ) && isset( $_SERVER['HTTP_FORWARDED'] ) ) {
-			// require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
-			// if ( FALSE !== strpos( 'google', IP_Geo_Block_Lkup::gethostbyaddr( $ip ) ) )
-			$proxy = preg_replace( '/^for=.*?([a-f\d\.:]+).*$/', '$1', $_SERVER['HTTP_FORWARDED'] );
-		}
-
-		return empty( $proxy ) ? $ip : $proxy;
+		$this->validate_ip( 'public', $settings, 1 & $settings['validation']['public'], ! $public['simulate'] );
 	}
 
 	public function check_page( $validate, $settings ) {
@@ -847,6 +885,10 @@ class IP_Geo_Block {
 
 	public function check_bots( $validate, $settings ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
+
+		// mask HOST if DNS lookup is false
+		if ( empty( $settings['public']['dnslkup'] ) )
+			$settings['public']['ua_list'] = IP_Geo_Block_Util::mask_qualification( $settings['public']['ua_list'] );
 
 		// get the name of host (from the cache if exists)
 		if ( empty( $validate['host'] ) && FALSE !== strpos( $settings['public']['ua_list'], 'HOST' ) )

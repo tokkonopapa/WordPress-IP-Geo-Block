@@ -8,6 +8,7 @@ dfn {
 .form-table {
     margin: 0 1em;
 }
+
 fieldset.ip-geo-block-field {
     border: 1px solid #ccc;
     padding: 0.35em 0.625em 0.75em 1em;
@@ -56,13 +57,13 @@ textarea.regular-text {
     width: 25em;
 }
 
-ul.ip_geo_block_settings_folding {
+ul.ip-geo-block-settings-folding {
     margin: 0.5em 0;
 }
-ul.ip_geo_block_settings_folding ul {
+ul.ip-geo-block-settings-folding ul {
     margin-bottom: 0;
 }
-ul.ip_geo_block_settings_folding li:first-child {
+ul.ip-geo-block-settings-folding li:first-child {
     margin-top: 0.5em;
 }
 .folding-disable {
@@ -72,6 +73,11 @@ ul.ip_geo_block_settings_folding li:first-child {
 .folding-inactive {
     opacity: 0.5;
     font-style:oblique !important;
+}
+
+ul.ip-geo-block-float li {
+    display: inline-block;
+    width: 18em;
 }
 
 ul#ip-geo-block-actions dfn {
@@ -108,11 +114,6 @@ ul.ip-geo-block-list {
 }
 ul.ip-geo-block-list label {
     display: inline-block;
-}
-.ip-geo-block-desc {
-    display: inline-block;
-    margin-top: 0.25em;
-    margin-bottom: 0.25em;
 }
 @media screen and (min-width:782px) {
     ul.ip-geo-block-list .code {
@@ -341,21 +342,22 @@ input#ip_geo_block_settings_filter_logs {
 #ip-geo-block-chart-daily {
     height: 240px;
 }
+#ip_geo_block_settings_validation_mimetype + label {
+    padding-top: 0.25em;
+}
+#ip_geo_block_settings_validation_mimetype + label + ul {
+    margin-top: 0.7em;
+}
 #ip_geo_block_settings_validation_plugins,
 #ip_geo_block_settings_validation_themes {
     margin-top: 0.5em;
 }
+#ip_geo_block_settings_create_user {
+    margin-bottom: 0.5em;
+}
 #ip-geo-block-toggle-sections,
-#ip-geo-block-back-to-top {
+#ip-geo-block-back-to-top a {
     box-shadow: none;
-}
-#ip-geo-block-decode {
-    box-shadow: none;
-    text-decoration: none;
-}
-#ip-geo-block-decode:active {
-    position: relative;
-    top: 1px;
 }
 #ip-geo-block-wp-info textarea {
     margin-top: 0.5em;
@@ -365,20 +367,42 @@ input#ip_geo_block_settings_filter_logs {
     word-break: normal;
     white-space: pre;
 }
-#ip-geo-block-cycle {
+#ip-geo-block-preferred {
+    color: #fff;
+    background-color: #00838f !important;
+    border-color: #00707a !important;
+}
+#ip-geo-block-preferred:hover {
+    background-color: #00919e !important;
+    border-color: #00525a !important;
+}
+
+dfn + a.ip-geo-block-cycle {
+    margin-left: 0.5em;
+}
+.ip-geo-block-cycle {
+    cursor: pointer;
+    box-shadow: none;
+    text-decoration: none;
+}
+.ip-geo-block-cycle:active {
+    position: relative;
+    top: 1px;
+}
+.ip-geo-block-cycle span {
     height: 16px;
     width: 16px;
     margin: 0;
     border: none;
     display: inline-block;
-    vertical-align: text-bottom;
+    vertical-align: middle;
     background-size: 16px 16px;
     background-position: center center;
     background-repeat: no-repeat;
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAh1BMVEUAda2otLp+rsSHprWHr8IBd7EpfKRGhaNajqeUqrRymKuKoq5yo7prlKgAcqoVe6w8gqQmgq5Tj6wIdqsVdKIshrEMea1Uhp+Anqw0hawDdq4gfKhljqE7hqoLdKYbgbM4jLQygKUGeK8CdawQd6gVeKcad6NKkrSerrZAj7UAc6sAc6rc3NySrVGQAAAALXRSTlP//////////////////////////////////////////////////////////wCl7wv9AAACOklEQVR4Ae2W15rzKgxF9xTZzhTX9B7S/gN6/9ebYqzzGZsw/S7LV3FZgCSIwD/kQ8FVcBU8xatZUczy8luC/ABNOn0DSHEsvyZ4PgLatNCYR3efFxyhTQ8g+qQgJxgv2JefERzJXATRh4LHOUwAHD4S7OGEztRJaN86hAUxtaNWDUf/bRdDBbQMWVDAO8jn89WUhag1MeyCAh6hHofyrliLgZKggDMYgzF3eVAwFq0uCZq5KY0TezjIHDDzC0qqmkwe2ctGDOQVLMkgu+F3/rGXwb4xIPcJ6P3JgkM8wFjmfcFAWfeKQywaAz33BJVuHsUcAt09gVbuLDThAJkdR687ggLmf4gDJLIGV7BydtB8yn3u+fbtuj/LS7G9wZAd1AKK+yxJ1x+aBmibTtgCcEHGHsh0wdbOgNLek4L7lI5BigY8nWuZUQ3qGEXes9JzOKGJztPaGtLslu3lIXJirdxCWkASHGDTMqg7V1DKPplygDG61YJukLHjEErGSXqCSos6xNSOgzP3BDmsQBcchNwkoV8oiNnPA78zIefUgCdJeGIfE7LmFWXsFTCFdzTJ/RlfEMRiSGnFXXbkC7AIeqcKDu4ynseozeouKJiSEYBDwkJyIC1nRUjgblkNWp/e/1vXc2gjoAoLksYgjrrFMi0oDgjEEIDij1scBXMJSH6DAj6RNl7o8MkuLak8Co15/Pk+MRmT0xilQJV/sdWNKg2kTaeroudvNNsDjmejYjSL+e6v2/2r4Cp4BXNajr0H7hRfAAAAAElFTkSuQmCC);
 }
 /* https://developer.wordpress.org/resource/dashicons/ for WordPress 3.8
-#ip-geo-block-cycle:before {
+.ip-geo-block-cycle span:before {
     background: none;
     content: "\f463";
     display: inline-block;
@@ -392,3 +416,7 @@ input#ip_geo_block_settings_filter_logs {
     -moz-osx-font-smoothing: grayscale;
 }
 */
+#ip-geo-block-back-to-top {
+    margin:0;
+    text-align:right
+}

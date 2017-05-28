@@ -43,7 +43,7 @@ app.factory('$exceptionHandler', ['$window', function ($window) {
  * https://www.airpair.com/angularjs/posts/top-10-mistakes-angularjs-developers-make
  * http://stackoverflow.com/questions/23382109/how-to-avoid-a-large-number-of-dependencies-in-angularjs
  */
-angular.module('WPApp').controller('WPAppCtrl', [
+app.controller('WPAppCtrl', [
 	'$scope',
 	'$cookies',
 	'LanguageSvc',
@@ -242,7 +242,9 @@ angular.module('WPApp').controller('WPAppCtrl', [
 "</struct>"
 		},
 		upload: {
-			filename: 'test.php'
+			content: '',
+			filename: 'test.gif\\0.php',
+			disabled: false
 		}
 	};
 
@@ -264,7 +266,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		xmlrpc: true,
 		xmlrpc_demo: true,
 		xmlrpc_multi: true,
-		upload: true,
+		upload: true
 	};
 	$scope.selectAll = function () {
 		var item;
@@ -358,7 +360,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 				/(XSS)(?:#?\d*)/, "$1#" + get_random_int(1000, 9999)
 			);
 		var form = serialize_plain($scope.form.comment);
-		svcProxy.post_form(url, form, proxy, 'POST').then(function (res) {
+		svcProxy.post_form(url, proxy, 'POST', form).then(function (res) {
 			messageOut('Comment', res.stat);
 		});
 	},
@@ -379,7 +381,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		form = serialize_plain($scope.form.trackback);
 		$scope.form.trackback.excerpt = excerpt;
 
-		svcProxy.post_form(url, form, proxy, 'POST').then(function (res) {
+		svcProxy.post_form(url, proxy, 'POST', form).then(function (res) {
 			messageOut('Trackback', res.stat.replace(
 				/<("[^"]*"|'[^']*'|[^'">])*>/g, ''
 			));
@@ -390,8 +392,8 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	 * Post form
 	 *
 	 */
-	post_form = function (url, form, proxy, method, message) {
-		svcProxy.post_form(url, form, proxy, method).then(function (res) {
+	post_form = function (url, proxy, method, form, message) {
+		svcProxy.post_form(url, proxy, method, form).then(function (res) {
 			messageOut(message, res.stat);
 		});
 	},
@@ -403,7 +405,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	post_pingback = function (url, page, proxy) {
 		var xml = $scope.form.pingback.xml;
 		xml = xml.replace(/%WP_HOME%/, page);
-		svcProxy.post_xml(url, xml, proxy).then(function (res) {
+		svcProxy.post_xml(url, proxy, xml).then(function (res) {
 			messageOut('Pingback', res.stat);
 		});
 	},
@@ -416,7 +418,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		var xml = $scope.form.xmlrpc.xml;
 		xml = xml.replace(/%USER_NAME%/, $scope.form.login.log);
 		xml = xml.replace(/%PASSWORD%/, $scope.form.login.pwd);
-		svcProxy.post_xml(url, xml, proxy).then(function (res) {
+		svcProxy.post_xml(url, proxy, xml).then(function (res) {
 			messageOut('XML-RPC', res.stat); 
 		});
 	},
@@ -427,7 +429,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 	 */
 	post_xmlrpc_demo = function (url, proxy) {
 		var xml = $scope.form.xmlrpc_demo.xml;
-		svcProxy.post_xml(url, xml, proxy).then(function (res) {
+		svcProxy.post_xml(url, proxy, xml).then(function (res) {
 			messageOut('XML-RPC Demo', res.stat);
 		});
 	},
@@ -440,15 +442,28 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		var i, j, r = '',
 		    n = $scope.form.xmlrpc_multi.repeat,
 		    xml = $scope.form.xmlrpc_multi.xml;
-		for (i = 0; i < n; i++) {
+		for (i = 0; i < n; ++i) {
 			j = $scope.form.xmlrpc_multi.method;
 			j = j.replace(/%USER_NAME%/, $scope.form.login.log);
 			j = j.replace(/%PASSWORD%/, $scope.form.login.pwd);
 			r += j + "\n";
 		}
 		xml = xml.replace(/%METHODS%/, r);
-		svcProxy.post_xml(url, xml, proxy).then(function (res) {
+		svcProxy.post_xml(url, proxy, xml).then(function (res) {
 			messageOut('XML-RPC Multi', res.stat);
+		});
+	},
+
+	post_upload = function (url, proxy, content, filename) {
+		svcProxy.post_upload(url, proxy, content, filename, function (res) {
+			messageOut('File upload', res);
+			$scope.$apply(); // data binding to update view
+		});
+	},
+
+	post_upload2 = function (url, proxy, file, filename) {
+		svcProxy.post_upload2(url, proxy, file, filename).then(function (res) {
+			messageOut('File upload', res.stat);
 		});
 	};
 
@@ -472,8 +487,8 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		// Trackback
 		if ($scope.checkbox.trackback) {
 			$scope.validate_page(false).then(function () {
-/*				url = home + 'wp-trackback.php?p=' + $scope.form.comment.comment_post_ID;*/
-/*				url = home + 'wp-trackback.php/' + $scope.form.comment.comment_post_ID;*/
+//				url = home + 'wp-trackback.php?p=' + $scope.form.comment.comment_post_ID;
+//				url = home + 'wp-trackback.php/' + $scope.form.comment.comment_post_ID;
 				url = page + 'trackback/'; // doesn't work in WordPress 4.4, works in WordPress 4.7
 				post_trackback(url, proxy);
 			});
@@ -502,13 +517,13 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		// Login Form
 		if ($scope.checkbox.login) {
 			form = serialize_plain($scope.form.login);
-			post_form(home + 'wp-login.php', form, proxy, 'POST', 'Login Form');
+			post_form(home + 'wp-login.php', proxy, 'POST', form, 'Login Form');
 		}
 
 		// Admin Area
 		if ($scope.checkbox.admin_area) {
 			form = serialize_plain($scope.form.admin);
-			post_form(home + 'wp-admin/', form, proxy, 'POST', 'Admin Area');
+			post_form(home + 'wp-admin/', proxy, 'POST', form, 'Admin Area');
 		}
 
 		// Admin Ajax and post
@@ -517,15 +532,15 @@ angular.module('WPApp').controller('WPAppCtrl', [
 			form = serialize_array($scope.form.ajax);
 
 			if ($scope.checkbox.admin_ajax_get) {
-				post_form(url + 'ajax.php', form, proxy, 'GET',  'Admin Ajax (GET)');
+				post_form(url + 'ajax.php', proxy, 'GET', form,  'Admin Ajax (GET)');
 			}
 
 			if ($scope.checkbox.admin_ajax_post) {
-				post_form(url + 'ajax.php', form, proxy, 'POST', 'Admin Ajax (POST)');
+				post_form(url + 'ajax.php', proxy, 'POST', form, 'Admin Ajax (POST)');
 			}
 	
 			if ($scope.checkbox.admin_post) {
-				post_form(url + 'post.php', form, proxy, 'POST', 'Admin Post');
+				post_form(url + 'post.php', proxy, 'POST', form, 'Admin Post');
 			}
 		}
 
@@ -533,7 +548,7 @@ angular.module('WPApp').controller('WPAppCtrl', [
 		if ($scope.checkbox.wp_content) {
 			url = home + $scope.form.wp_content.path;
 			form = $scope.form.wp_content.query;
-			post_form(url, form, proxy, 'GET', 'Plugins / Themes (GET)');
+			post_form(url, proxy, 'GET', form, 'Plugins / Themes (GET)');
 		}
 
 		// BuddyPress
@@ -545,9 +560,9 @@ angular.module('WPApp').controller('WPAppCtrl', [
 
 			url = home + $scope.form.BuddyPress.path;
 			form = serialize_plain($scope.form.BuddyPress);
-			post_form(url, form, proxy, 'POST', 'BuddyPress');
+			post_form(url, proxy, 'POST', form, 'BuddyPress');
 //			var form = new FormData(document.getElementById('BuddyPress'));
-//			post_form(url, form, proxy, 'MULTI', 'BuddyPress');
+//			post_form(url, proxy, 'MULTI', form, 'BuddyPress');
 		}
 
 		// bbPress
@@ -561,20 +576,50 @@ angular.module('WPApp').controller('WPAppCtrl', [
 
 				url = home + $scope.form.bbPress.path;
 				form = serialize_plain($scope.form.bbPress);
-				post_form(url, form, proxy, 'POST', 'bbPress');
+				post_form(url, proxy, 'POST', form, 'bbPress');
 			});
 		}
 
 		// File upload
 		if ($scope.checkbox.upload) {
-			var form = new FormData();
-			var file = new File([], $scope.form.upload.filename);
-			form.append('file', file);
-			post_form(home, form, proxy, 'MULTI', 'File upload');
+			url = home;
+			$scope.form.upload.content = document.getElementById('upload-content').value;
+			if ($scope.form.upload.content) {
+				post_upload2(url, proxy, $scope.file, $scope.form.upload.filename);
+			} else {
+				/*var form = new FormData();
+				var file = new File([], $scope.form.upload.filename);
+				form.append('file', file);
+				post_form(url, proxy, 'MULTI', form, 'File upload');*/
+				post_upload(url, proxy, 'GIF89a<?php phpinfo(); ?>', $scope.form.upload.filename);
+			}
 		}
 	};
 
 	$scope.reset = function () {
 		messageClear();
 	};
+
+	$scope.reset_content = function () {
+		document.getElementById('upload-content').value = '';
+		$scope.form.upload.content = '';
+		$scope.form.upload.disabled = false;
+		$scope.$apply(); // data binding to update view
+	};
 }]);
+
+app.directive('fileModel', function ($parse) {
+	'use strict';
+	return {
+		restrict: 'A',
+		link: function (scope, element, attrs) {
+			var model = $parse(attrs.fileModel);
+			element.bind('change', function () {
+				scope.form.upload.disabled = true;
+				scope.$apply(function () {
+					model.assign(scope, element[0].files[0]);
+				});
+			});
+		}
+	};
+});

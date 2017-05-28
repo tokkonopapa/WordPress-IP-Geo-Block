@@ -174,12 +174,12 @@ endif; /* ! class_exists( 'IP_Geo_Block_Rewrite' ) */
 /**
  * Configuration samples of .htaccess for apache
  *
- * 1. `/wordpress/wp-content/plugins/.htaccess`
+ * 1. `/wp-content/plugins/.htaccess`
  *
  * # BEGIN IP Geo Block
  * <IfModule mod_rewrite.c>
  * RewriteEngine on
- * RewriteBase /wordpress/wp-content/plugins/ip-geo-block/
+ * RewriteBase /wp-content/plugins/ip-geo-block/
  * RewriteCond %{REQUEST_URI} !ip-geo-block/rewrite.php$
  * RewriteRule ^.*\.php$ rewrite.php [L]
  * </IfModule>
@@ -188,40 +188,40 @@ endif; /* ! class_exists( 'IP_Geo_Block_Rewrite' ) */
  * # BEGIN IP Geo Block
  * <IfModule mod_rewrite.c>
  * RewriteEngine on
- * RewriteBase /wordpress/wp-content/plugins/ip-geo-block/
+ * RewriteBase /wp-content/plugins/ip-geo-block/
  * RewriteRule ^ip-geo-block/rewrite.php$ - [L]
  * RewriteRule ^.*\.php$ rewrite.php [L]
  * </IfModule>
  * # END IP Geo Block
  *
  * # BEGIN IP Geo Block
- * # Bypass `my-plugin/somthing.php`
+ * # except `my-plugin/somthing.php`
  * <IfModule mod_rewrite.c>
  * RewriteEngine on
- * RewriteBase /wordpress/wp-content/plugins/ip-geo-block/
- * RewriteCond %{REQUEST_URI} !ip-geo-block/rewrite.php$ [AND]
+ * RewriteBase /wp-content/plugins/ip-geo-block/
+ * RewriteCond %{REQUEST_URI} !ip-geo-block/rewrite.php$
  * RewriteCond %{REQUEST_URI} !my-plugin/somthing.php$
  * RewriteRule ^.*\.php$ rewrite.php [L]
  * </IfModule>
  * # END IP Geo Block
  *
  * # BEGIN IP Geo Block
- * # Bypass `my-plugin/somthing.php`
+ * # except `my-plugin/somthing.php`
  * <IfModule mod_rewrite.c>
  * RewriteEngine on
- * RewriteBase /wordpress/wp-content/plugins/ip-geo-block/
+ * RewriteBase /wp-content/plugins/ip-geo-block/
  * RewriteRule ^ip-geo-block/rewrite.php$ - [L]
  * RewriteRule ^my-plugin/something.php$ - [L]
  * RewriteRule ^.*\.php$ rewrite.php [L]
  * </IfModule>
  * # END IP Geo Block
  *
- * 2. `/wordpress/wp-content/themes/.htaccess`
+ * 2. `/wp-content/themes/.htaccess`
  *
  * # BEGIN IP Geo Block
  * <IfModule mod_rewrite.c>
  * RewriteEngine on
- * RewriteBase /wordpress/wp-content/plugins/ip-geo-block/
+ * RewriteBase /wp-content/plugins/ip-geo-block/
  * RewriteRule ^.*\.php$ rewrite.php [L]
  * </IfModule>
  * # END IP Geo Block

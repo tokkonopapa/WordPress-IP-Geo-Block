@@ -162,26 +162,31 @@ class IP_Geo_Block_Admin_Ajax {
 	 */
 	static public function validate_settings( $parent ) {
 		// restore escaped characters (see wp_magic_quotes() in wp-includes/load.php)
-		$json = str_replace(
-			array( '\\"', '\\\\', "'"  ),
-			array( '"',   '\\',   '\"' ),
-			isset( $_POST['data'] ) ? $_POST['data'] : ''
+		$json = json_decode(
+			str_replace(
+				array( '\\"', '\\\\', "'"  ),
+				array( '"',   '\\',   '\"' ),
+				isset( $_POST['data'] ) ? $_POST['data'] : ''
+			),
+			TRUE
 		);
 
-		if ( NULL === ( $data = json_decode( $json, TRUE ) ) )
+		if ( NULL === $json )
 			wp_die( 'Illegal JSON format.', '', array( 'response' => 500, 'back_link' => TRUE ) ); // @Since 2.0.4
 
 		// Convert json to setting data
-		$temp = self::json_to_settings( $data );
+		$input = self::json_to_settings( $json );
+		unset( $input['version'] );
 
 		// Integrate posted data into current settings because if can be a part of hole data
-		unset( $temp['version'] );
-		$temp = array_replace_recursive( IP_Geo_Block::get_option(), $temp );
+		$input = array_replace_recursive(
+			$parent->preprocess_options( IP_Geo_Block::get_option() ),
+			$input
+		);
 
 		// Validate options and convert to json
-		$temp = $parent->validate_options( $temp );
-		$data = self::settings_to_json( $temp );
-		$json = self::json_unsafe_encode( $data );
+		$output = $parent->validate_options( $input );
+		$json = self::json_unsafe_encode( self::settings_to_json( $output ) );
 
 		mbstring_binary_safe_encoding(); // @since 3.7.0
 		$length = strlen( $json );
@@ -203,31 +208,40 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static private function json_to_settings( $input ) {
-		$settings = array();
+		$settings = $m = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;
 
-		foreach ( $input as $key => $val ) {
-			if ( preg_match( "/${prfx}\[(.+?)\](?:\[(.+?)\](?:\[(.+?)\])?)?/", $key, $m ) ) {
-				switch ( count( $m ) ) {
-				  case 2:
-					$settings[ $m[1] ] = $val;
-					break;
+		try {
+			foreach ( $input as $key => $val ) {
+				if ( preg_match( "/${prfx}\[(.+?)\](?:\[(.+?)\](?:\[(.+?)\])?)?/", $key, $m ) ) {
+					switch ( count( $m ) ) {
+					  case 2:
+						$settings[ $m[1] ] = $val;
+						break;
 
-				  case 3:
-					$settings[ $m[1] ][ $m[2] ] = $val;
-					break;
+					  case 3:
+						$settings[ $m[1] ][ $m[2] ] = $val;
+						break;
 
-				  case 4:
-					if ( is_numeric( $m[3] ) ) {
-						if ( empty( $settings[ $m[1] ][ $m[2] ] ) )
-							$settings[ $m[1] ][ $m[2] ] = 0;
-						$settings[ $m[1] ][ $m[2] ] |= $val;
-					} else {
-						$settings[ $m[1] ][ $m[2] ][ $m[3] ] = $val;
+					  case 4:
+						if ( is_numeric( $m[3] ) ) {
+							if ( empty( $settings[ $m[1] ][ $m[2] ] ) )
+								$settings[ $m[1] ][ $m[2] ] = 0;
+							$settings[ $m[1] ][ $m[2] ] |= $val;
+						} else { // [*]:checkbox
+							$settings[ $m[1] ][ $m[2] ][ $m[3] ] = $val;
+						}
+						break;
+
+					  default:
+						throw new Exception();
 					}
-					break;
 				}
 			}
+		}
+
+		catch ( Exception $e ) { // should be returned as ajax response
+			wp_die( sprintf( __( 'illegal format at %s. Please delete the corresponding line and try again.', 'ip-geo-block' ), print_r( @$m[0], TRUE ) ) );
 		}
 
 		return $settings;
@@ -238,6 +252,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function settings_to_json( $input, $overwrite = TRUE ) {
+		// [*]:checkbox, [$]:comma separated text to array, [%]:associative array
 		$keys = array(
 			'[version]',
 			'[matching_rule]',
@@ -257,7 +272,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[validation][login]',
 			'[login_action][login]',        // 2.2.8
 			'[login_action][register]',     // 2.2.8
-			'[login_action][resetpasss]',   // 2.2.8
+			'[login_action][resetpass]',    // 2.2.8
 			'[login_action][lostpassword]', // 2.2.8
 			'[login_action][postpass]',     // 2.2.8
 			'[validation][admin][1]',
@@ -270,6 +285,8 @@ class IP_Geo_Block_Admin_Ajax {
 			'[validation][uploads]',     // 3.0.0
 			'[validation][languages]',   // 3.0.0
 			'[validation][public]',      // 3.0.0
+			'[validation][restapi]',     // 3.0.3
+			'[validation][mimetype]',    // 3.0.3
 			'[rewrite][plugins]',
 			'[rewrite][themes]',
 			'[rewrite][includes]',       // 3.0.0
@@ -282,6 +299,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[exception][includes][$]',  // 3.0.0
 			'[exception][uploads][$]',   // 3.0.0
 			'[exception][languages][$]', // 3.0.0
+			'[exception][restapi][$]',   // 3.0.3
 			'[public][matching_rule]',   // 3.0.0
 			'[public][white_list]',      // 3.0.0
 			'[public][black_list]',      // 3.0.0
@@ -292,6 +310,9 @@ class IP_Geo_Block_Admin_Ajax {
 			'[public][target_tags][$]',  // 3.0.0
 			'[public][ua_list]',         // 3.0.0
 			'[public][simulate]',        // 3.0.0
+			'[public][dnslkup]',         // 3.0.3
+			'[public][response_code]',   // 3.0.3
+			'[public][redirect_uri]',    // 3.0.3
 			'[providers][Maxmind]',
 			'[providers][IP2Location]',
 			'[providers][freegeoip.net]',
@@ -317,6 +338,9 @@ class IP_Geo_Block_Admin_Ajax {
 			'[clean_uninstall]',
 			'[api_key][GoogleMap]',      // 2.2.7
 			'[network_wide]',            // 3.0.0
+			'[mimetype][white_list][%]', // 3.0.3
+			'[mimetype][black_list]',    // 3.0.3
+			'[others][%]',               // 3.0.3
 		);
 		$json = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;
@@ -331,7 +355,13 @@ class IP_Geo_Block_Admin_Ajax {
 					break;
 
 				  case 3:
-					if ( !@is_null( $input[ $m[1] ][ $m[2] ] ) || $overwrite ) {
+					if ( '%' === $m[2] ) { // [%]:associative array
+						foreach ( isset( $input[ $m[1] ] ) ? $input[ $m[1] ] : array() as $key => $val ) {
+							$json[ $prfx.'['.$m[1].']['.$key.']' ] = $val;
+						}
+						break;
+					}
+					if ( isset( $input[  $m[1]  ][  $m[2]  ] ) || $overwrite ) {
 						$json[ $prfx.'['.$m[1].']['.$m[2].']' ] = (
 							isset(  $input[ $m[1] ][ $m[2] ] ) &&
 							'@' !== $input[ $m[1] ][ $m[2] ] ?
@@ -347,11 +377,15 @@ class IP_Geo_Block_Admin_Ajax {
 							strval( $input[  $m[1]  ][  $m[2]  ] ) & (int)$m[3];
 					}
 					elseif ( isset( $input[ $m[1] ][ $m[2] ] ) ) {
-						if ( '*' === $m[3] ) {
+						if ( '*' === $m[3] ) { // [*]:checkbox
 							foreach ( $input[ $m[1] ][ $m[2] ] as $val ) {
-								$json[ $prfx.'['.$m[1].']['.$m[2].']'.'['.$val.']' ] = 1;
+								$json[ $prfx.'['.$m[1].']['.$m[2].']'.'['.$val.']' ] = '1';
 							}
-						} elseif ( is_array( $input[ $m[1] ][ $m[2] ] ) ) {
+						} elseif ( '%' === $m[3] ) { // [%]:associative array
+							foreach ( $input[ $m[1] ][ $m[2] ] as $key => $val ) {
+								$json[ $prfx.'['.$m[1].']['.$m[2].']'.'['.$key.']' ] = $val;
+							}
+						} elseif ( is_array( $input[ $m[1] ][ $m[2] ] ) ) { // [$]:comma separated text to array
 							$json[ $prfx.'['.$m[1].']['.$m[2].']' ] = implode( ',', $input[ $m[1] ][ $m[2] ] );
 						}
 					}
@@ -376,7 +410,7 @@ class IP_Geo_Block_Admin_Ajax {
 				    'admin'       => 3,       // Validate on admin (1:country 2:ZEP)
 				    'ajax'        => 3,       // Validate on ajax/post (1:country 2:ZEP)
 				    'xmlrpc'      => 1,       // Validate on xmlrpc (1:country 2:close)
-				    'postkey'     => 'action,comment,log,pwd', // Keys in $_POST
+				    'postkey'     => 'action,comment,log,pwd,FILES', // Keys in $_POST and $_FILES
 				    'plugins'     => 2,       // Validate on wp-content/plugins
 				    'themes'      => 2,       // Validate on wp-content/themes
 				    'timing'      => 1,       // 0:init, 1:mu-plugins, 2:drop-in

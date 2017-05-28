@@ -73,7 +73,7 @@ function ip_geo_block_mu_notice() {
 		__FILE__,
 		'<a href="https://wordpress.org/plugins/ip-geo-block/" title="IP Geo Block &mdash; WordPress Plugins">IP Geo Block</a>'
 	);
-	echo '</></div>' . "\n";
+	echo '</p></div>' . "\n";
 }
 
 endif; // ! class_exists( 'IP_Geo_Block' )

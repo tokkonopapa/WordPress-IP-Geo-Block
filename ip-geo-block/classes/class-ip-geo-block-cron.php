@@ -51,46 +51,49 @@ class IP_Geo_Block_Cron {
 		$settings = IP_Geo_Block::get_option();
 		$args = IP_Geo_Block::get_request_headers( $settings );
 
+		// extract ip address from transient API to confirm the request source
+		add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
+
 		// download database files (higher priority order)
 		foreach ( $providers = IP_Geo_Block_Provider::get_addons() as $provider ) {
-			if ( $geo = IP_Geo_Block_API::get_instance( $provider, $settings ) )
+			if ( $geo = IP_Geo_Block_API::get_instance( $provider, $settings ) ) {
 				$res[ $provider ] = $geo->download( $settings[ $provider ], $args );
+
+				// update matching rule immediately
+				if ( $immediate && FALSE !== ( $stat = get_transient( IP_Geo_Block::CRON_NAME ) ) && 'done' !== $stat ) {
+					$validate = IP_Geo_Block::get_geolocation( NULL, array( $provider ) );
+					$validate = IP_Geo_Block::validate_country( NULL, $validate, $settings );
+
+					// if blocking may happen then disable validation
+					if ( -1 !== (int)$settings['matching_rule'] && 'passed' !== $validate['result'] &&
+						 ( empty( $_SERVER['HTTP_X_REQUESTED_FROM'] ) || FALSE === strpos( $_SERVER['HTTP_X_REQUESTED_FROM'], 'InfiniteWP' ) ) ) {
+						$settings['matching_rule'] = -1;
+					}
+
+					// setup country code if it needs to be initialized
+					if ( -1 === (int)$settings['matching_rule'] && 'ZZ' !== $validate['code'] ) {
+						$settings['matching_rule'] = 0; // white list
+
+						if ( FALSE === strpos( $settings['white_list'], $validate['code'] ) )
+							$settings['white_list'] .= ( $settings['white_list'] ? ',' : '' ) . $validate['code'];
+
+						// finished to update matching rule
+						set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
+					}
+				}
+			}
 		}
 
-		// re-schedule cron job
-		if ( ! empty( $providers ) )
-			self::schedule_cron_job( $settings['update'], $settings[ $providers[0] ], FALSE );
-
-		// update option settings
-		self::update_settings( $settings, array_merge( array( 'update' ), $providers ) );
-
-		// update matching rule immediately
-		if ( $immediate && FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
-			add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
-
-			$validate = IP_Geo_Block::get_geolocation( NULL, $providers );
-			$validate = IP_Geo_Block::validate_country( NULL, $validate, $settings );
-
-			// if blocking may happen then disable validation
-			if ( -1 !== (int)$settings['matching_rule'] && 'passed' !== $validate['result'] &&
-			     ( empty( $_SERVER['HTTP_X_REQUESTED_FROM'] ) || FALSE === strpos( $_SERVER['HTTP_X_REQUESTED_FROM'], 'InfiniteWP' ) ) ) {
-				$settings['matching_rule'] = -1;
-			}
-
-			// setup country code if it needs to be initialized
-			if ( -1 === (int)$settings['matching_rule'] && 'ZZ' !== $validate['code'] ) {
-				$settings['matching_rule'] = 0; // white list
-
-				if ( FALSE === strpos( $settings['white_list'], $validate['code'] ) )
-					$settings['white_list'] .= ( $settings['white_list'] ? ',' : '' ) . $validate['code'];
-			}
+		if ( ! empty( $providers ) ) {
+			// re-schedule cron job
+			self::schedule_cron_job( $settings['update'], $settings[ array_shift( $providers ) ], FALSE );
 
 			// update option settings
-			self::update_settings( $settings, array( 'matching_rule', 'white_list', 'black_list' ) );
-
-			// finished to update matching rule
-			set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
+			self::update_settings( $settings, array_merge( array( 'matching_rule', 'white_list', 'update' ), $providers ) );
 		}
+
+		// finished to update matching rule (it needs exclusive control doesn't it?)
+		set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
 
 		return isset( $res ) ? $res : NULL;
 	}
@@ -192,9 +195,8 @@ class IP_Geo_Block_Cron {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 
 		// if the name of src file is changed, then update the dst
-		if ( basename( $filename ) !== ( $base = pathinfo( $url, PATHINFO_FILENAME ) ) ) {
+		if ( basename( $filename ) !== ( $base = pathinfo( $url, PATHINFO_FILENAME ) ) )
 			$filename = dirname( $filename ) . '/' . $base;
-		}
 
 		// check file
 		if ( ! file_exists( $filename ) )

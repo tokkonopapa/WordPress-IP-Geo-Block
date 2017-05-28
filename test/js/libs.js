@@ -21,6 +21,19 @@ function sanitize(str) {
 	});
 }
 
+function escapeHTML(html) {
+	var elem = document.createElement('div');
+	elem.appendChild(document.createTextNode(html));
+	html = elem.innerHTML.replace(/["']/g, function (match) {
+		return {
+			'"': '&quot;',
+			"'": '&#39;'
+		}[match];
+	});
+	elem = '';
+	return html;
+}
+
 /**
  * Strip tags
  *

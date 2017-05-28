@@ -38,7 +38,7 @@ if ( $options['save_statistics'] ) :
 				'type' => 'html',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => esc_html( $statistics[ $field ] ),
+				'value' => (int)$statistics[ $field ],
 			)
 		);
 
@@ -68,7 +68,7 @@ if ( $options['save_statistics'] ) :
 			)
 		);
 
-		// Blocked on a daily basis
+		// Blocked by date
 		$field = 'daily';
 		$html = '<div id="'.$plugin_slug.'-chart-daily"><table id="'.$plugin_slug.'-targets">';
 

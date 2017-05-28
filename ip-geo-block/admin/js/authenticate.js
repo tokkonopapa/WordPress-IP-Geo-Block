@@ -225,7 +225,7 @@ var IP_GEO_BLOCK_ZEP = {
 		return ajax_links.hasOwnProperty(path) ? ajax_links[path] : null;
 	}
 
-	// embed a nonce before an Ajax request is sent
+	// embed a nonce before an Ajax request is sent (ToDo: consider to use $.ajaxPrefilter )
 	$(document).ajaxSend(function (event, jqxhr, settings) {
 		var nonce = IP_GEO_BLOCK_ZEP.nonce;
 

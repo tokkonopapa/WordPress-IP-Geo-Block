@@ -54,7 +54,8 @@ angular.module('language').factory('LanguageSvc', ['$window', function ($window)
 			xmlrpc_multi: 'XML-RPC Multi',
 			xmlrpc_repetition: 'Number of methods',
 			upload: 'Upload file',
-			filename: 'Filename',
+			filename: 'File to send',
+			content: '',
 			end: ''
 		},
 
@@ -104,7 +105,8 @@ angular.module('language').factory('LanguageSvc', ['$window', function ($window)
 			xmlrpc_multi: 'XML-RPC マルチ',
 			xmlrpc_repetition: 'メソッド数',
 			upload: 'ファイル・アップロード',
-			filename: 'ファイル名',
+			filename: '送信ファイル',
+			content: '',
 			end: ''
 		}
 	};

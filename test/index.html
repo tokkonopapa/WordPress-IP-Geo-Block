@@ -296,42 +296,42 @@
 					<span ng-bind="lang.param"></span>
 					<span class="required">*</span>
 				</label>
-				<ul class="clearfix">
-					<li>
-						<input type="text" name="key[0]" ng-model="form.ajax.key[0]" />
-					</li>
-					<li>
-						<input type="text" name="val[0]" ng-model="form.ajax.val[0]" />
-					</li>
-				</ul>
 			</p>
+			<ul class="clearfix">
+				<li>
+					<input type="text" name="key[0]" ng-model="form.ajax.key[0]" />
+				</li>
+				<li>
+					<input type="text" name="val[0]" ng-model="form.ajax.val[0]" />
+				</li>
+			</ul>
 			<p>
 				<label>
 					<span ng-bind="lang.param"></span>
 					<span class="required">*</span>
 				</label>
-				<ul class="clearfix">
-					<li>
-						<input type="text" name="key[1]" ng-model="form.ajax.key[1]" />
-					</li>
-					<li>
-						<input type="text" name="val[1]" ng-model="form.ajax.val[1]" />
-					</li>
-				</ul>
 			</p>
+			<ul class="clearfix">
+				<li>
+					<input type="text" name="key[1]" ng-model="form.ajax.key[1]" />
+				</li>
+				<li>
+					<input type="text" name="val[1]" ng-model="form.ajax.val[1]" />
+				</li>
+			</ul>
 			<p>
 				<label>
 					<span ng-bind="lang.param"></span>
 				</label>
-				<ul class="clearfix">
-					<li>
-						<input type="text" name="key[2]" ng-model="form.ajax.key[2]" />
-					</li>
-					<li>
-						<input type="text" name="val[2]" ng-model="form.ajax.val[2]" />
-					</li>
-				</ul>
 			</p>
+			<ul class="clearfix">
+				<li>
+					<input type="text" name="key[2]" ng-model="form.ajax.key[2]" />
+				</li>
+				<li>
+					<input type="text" name="val[2]" ng-model="form.ajax.val[2]" />
+				</li>
+			</ul>
 		</form>
 	</div>
 
@@ -346,15 +346,15 @@
 					<span ng-bind="lang.target"></span>
 					<span class="required">*</span>
 				</label>
-				<ul class="clearfix">
-					<li>
-						<input type="text" name="path" ng-model="form.wp_content.path" />
-					</li>
-					<li>
-						<input type="text" name="query" ng-model="form.wp_content.query" />
-					</li>
-				</ul>
 			</p>
+			<ul class="clearfix">
+				<li>
+					<input type="text" name="path" ng-model="form.wp_content.path" />
+				</li>
+				<li>
+					<input type="text" name="query" ng-model="form.wp_content.query" />
+				</li>
+			</ul>
 		</form>
 	</div>
 
@@ -497,13 +497,19 @@
 	<div class="setting">
 		<h3 class="collapse" ng-bind="lang.upload" ng-click="toggle('upload')"></h3>
 		<input type="checkbox" ng-model="checkbox.upload" />
-		<form class="post-form animate-show-hide" ng-show="show.upload">
-			<!-- Admin Cookie -->
+		<form enctype="multipart/form-data" class="post-form animate-show-hide" ng-show="show.upload" ng-submit="upload()">
 			<p>
-				<label for="upload-filename">
+				<label>
 					<span ng-bind="lang.filename"></span>
 				</label>
-				<input type="text" name="upload-filename" ng-model="form.upload.filename" />
+				<input type="text" name="upload-filename" ng-model="form.upload.filename" ng-disabled="form.upload.disabled"　/>
+			</p>
+			<p>
+				<label>
+					<span ng-bind="lang.content"></span>
+				</label>
+				<input type="button" name="reset-content"  ng-click="reset_content()" value="Reset" />
+				<input type="file" file-model="file" id="upload-content" />
 			</p>
 		</form>
 	</div>
