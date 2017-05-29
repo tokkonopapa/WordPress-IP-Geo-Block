@@ -59,6 +59,12 @@ class IP_Geo_Block_Cron {
 			if ( $geo = IP_Geo_Block_API::get_instance( $provider, $settings ) ) {
 				$res[ $provider ] = $geo->download( $settings[ $provider ], $args );
 
+				// re-schedule cron job
+				self::schedule_cron_job( $settings['update'], $settings[ $provider ], FALSE );
+
+				// update option settings
+				self::update_settings( $settings, array( 'update', $provider ) );
+
 				// update matching rule immediately
 				if ( $immediate && FALSE !== ( $stat = get_transient( IP_Geo_Block::CRON_NAME ) ) && 'done' !== $stat ) {
 					$validate = IP_Geo_Block::get_geolocation( NULL, array( $provider ) );
@@ -66,7 +72,7 @@ class IP_Geo_Block_Cron {
 
 					// if blocking may happen then disable validation
 					if ( -1 !== (int)$settings['matching_rule'] && 'passed' !== $validate['result'] &&
-						 ( empty( $_SERVER['HTTP_X_REQUESTED_FROM'] ) || FALSE === strpos( $_SERVER['HTTP_X_REQUESTED_FROM'], 'InfiniteWP' ) ) ) {
+					     ( empty( $_SERVER['HTTP_X_REQUESTED_FROM'] ) || FALSE === strpos( $_SERVER['HTTP_X_REQUESTED_FROM'], 'InfiniteWP' ) ) ) {
 						$settings['matching_rule'] = -1;
 					}
 
@@ -86,17 +92,6 @@ class IP_Geo_Block_Cron {
 				}
 			}
 		}
-
-		if ( ! empty( $providers ) ) {
-			// re-schedule cron job
-			self::schedule_cron_job( $settings['update'], $settings[ array_shift( $providers ) ], FALSE );
-
-			// update option settings
-			self::update_settings( $settings, array_merge( array( 'update' ), $providers ) );
-		}
-
-		// finished to update matching rule (it needs exclusive control doesn't it?)
-		set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
 
 		return isset( $res ) ? $res : NULL;
 	}
