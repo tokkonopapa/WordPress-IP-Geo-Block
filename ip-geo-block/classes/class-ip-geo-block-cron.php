@@ -77,6 +77,9 @@ class IP_Geo_Block_Cron {
 						if ( FALSE === strpos( $settings['white_list'], $validate['code'] ) )
 							$settings['white_list'] .= ( $settings['white_list'] ? ',' : '' ) . $validate['code'];
 
+						// update option settings
+						self::update_settings( $settings, array( 'matching_rule', 'white_list' ) );
+
 						// finished to update matching rule
 						set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
 					}
@@ -89,7 +92,7 @@ class IP_Geo_Block_Cron {
 			self::schedule_cron_job( $settings['update'], $settings[ array_shift( $providers ) ], FALSE );
 
 			// update option settings
-			self::update_settings( $settings, array_merge( array( 'matching_rule', 'white_list', 'update' ), $providers ) );
+			self::update_settings( $settings, array_merge( array( 'update' ), $providers ) );
 		}
 
 		// finished to update matching rule (it needs exclusive control doesn't it?)
