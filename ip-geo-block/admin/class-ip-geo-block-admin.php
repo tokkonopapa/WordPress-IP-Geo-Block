@@ -35,10 +35,10 @@ class IP_Geo_Block_Admin {
 		add_filter( 'wp_redirect', array( $this, 'add_admin_nonce' ), 10, 2 );
 
 		// Add the options page and menu item.
-		add_action( 'admin_menu', array( $this, 'setup_admin_page' ) );
-		add_action( 'wp_ajax_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
-		add_action( 'admin_post_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
-		add_filter( 'wp_prepare_revision_for_js', array( $this, 'add_revision_nonce' ), 10, 3 );
+		add_action( 'admin_menu',                 array( $this, 'setup_admin_page'    ) );
+		add_action( 'admin_post_ip_geo_block',    array( $this, 'admin_ajax_callback' ) );
+		add_action( 'wp_ajax_ip_geo_block',       array( $this, 'admin_ajax_callback' ) );
+		add_filter( 'wp_prepare_revision_for_js', array( $this, 'add_revision_nonce'  ), 10, 3 );
 
 		// If multisite, then enque the authentication script for network admin
 		if ( is_multisite() ) {

@@ -37,7 +37,7 @@ This plugin protects your site against such threats of attack to the back-end of
   You can configure this plugin such that a registered user can login as the membership from anywhere, but a request such as a new user registration, lost password, creating a new topic, and subscribing comment is blocked by the country code. It is suitable for [BuddyPress](https://wordpress.org/plugins/buddypress/ "BuddyPress &mdash; WordPress Plugins") and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins") to help reducing spams.
 
 * **Referrer suppressor for external links:**  
-  When you click an external hyperlink on admin screens, http referrer will be liminated to hide a footprint of your site.
+  When you click an external hyperlink on admin screens, http referrer will be eliminated to hide a footprint of your site.
 
 * **Multiple source of IP Geolocation databases:**  
   [MaxMind GeoLite free databases](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") and [IP2Location LITE databases](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Those will be downloaded and updated (once a month) automatically. Also free Geolocation REST APIs and whois information can be available for audit purposes.  
@@ -217,7 +217,7 @@ You can find the "**Emergent Functionality**" code section near the bottom of `i
  *
  * How to use: Activate the following code and upload this file via FTP.
  */
-/* -- ADD `/` TO THE TOP OR END OF THIS LINE TO ACTIVATE THE FOLLOWINGS -- */
+/* -- ADD '/' TO THE TOP OR END OF THIS LINE TO ACTIVATE THE FOLLOWINGS -- */
 function ip_geo_block_emergency( $validate ) {
     $validate['result'] = 'passed';
     return $validate;
@@ -242,9 +242,9 @@ If you can't solve your issue, please let me know about it on the [support forum
 
 = How can I fix "Unable to write" error? =
 
-When you enable "**Force to load WP core**" options, this plugin will try to configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` directory in order to protect your site against the malicous attacks to the [OMG plugins and shemes](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php | IP Geo Block").
+When you enable "**Force to load WP core**" options, this plugin will try to configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` directory in order to protect your site against the malicous attacks to the [OMG plugins and themes](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php | IP Geo Block").
 
-But some servers doesn't give reading / writing permission against `.htaccess` to WordPress. In this case, you can configure these `.htaccess` files by your own hand instead of enabling "**Force to load WP core**" options.
+But some servers doesn't give read / write permission against `.htaccess` to WordPress. In this case, you can configure `.htaccess` files by your own hand instead of enabling "**Force to load WP core**" options.
 
 Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')" in order to fix this error.
 
@@ -279,7 +279,7 @@ Currently, the following cache plugins and configurations can be supported:
 - [Vendi Cache](https://wordpress.org/plugins/vendi-cache/ "Vendi Cache &mdash; WordPress Plugins")  
   This was formerly built in Wordfence. Select "**basic caching**" for Vendi Cache and **"mu-plugin" (ip-geo-block-mu.php)** for IP Geo Block.
 
-If your plugin serves page caching by `mod_rewrite` via `.htaccess` (e.g. WP Fastest Cache) or caching by `advanced-cache.php` drop-in (e.g. Comet Cache) or your hosting provider serves page caching at server side, "**Blocking on front-end**" might lead to generate inconsistent pages.
+If your plugin serves page caching by `mod_rewrite` via `.htaccess` (e.g. WP Fastest Cache) or caching by `advanced-cache.php` [drop-in](https://make.wordpress.org/core/2016/08/13/global-overloading-in-advanced-cache-php/ "Global overloading in advanced-cache.php &#8211; Make WordPress Core") (e.g. Comet Cache) or your hosting provider serves page caching at server side, "**Blocking on front-end**" might lead to generate inconsistent pages.
 
 For more details, please refer to some documents at "[Blocking on front-end](http://www.ipgeoblock.com/codex/#blocking-on-front-end 'Codex | IP Geo Block')".
 
@@ -299,7 +299,7 @@ Yes. Roughly speaking, the strategy of this plugin has been constructed as follo
 - **Bad signatures in query**  
   It blocks the request which has not been covered in the above three.
 
-Please try "**Best settings**" button at the bottom of this plugin's setting page for easy setup. And also see more details in "[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html 'The best practice of target settings | IP Geo Block')".
+Please try "**Best for Back-end**" button at the bottom of this plugin's setting page for easy setup. And also see more details in "[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html 'The best practice of target settings | IP Geo Block')".
 
 = Does this plugin validate all the requests? =
 

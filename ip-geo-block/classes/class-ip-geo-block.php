@@ -597,7 +597,7 @@ class IP_Geo_Block {
 		$list = array_merge(
 			apply_filters( self::PLUGIN_NAME . '-bypass-admins', array() ),
 			array( 'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',  // in wp-admin js/widget.js, includes/template.php, async-upload.php
-				'wordfence_testAjax', 'wordfence_doScan', 'bp_avatar_upload', 'GOTMLS_logintime', // Wordfence, bbPress, Anti-Malware Security and Brute-Force Firewall
+				'bp_avatar_upload', 'GOTMLS_logintime', // Wordfence, bbPress, Anti-Malware Security and Brute-Force Firewall
 				'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', // jetpack page & action
 			)
 		);
