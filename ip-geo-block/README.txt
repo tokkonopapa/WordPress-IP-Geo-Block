@@ -312,7 +312,7 @@ But there're exceptions: When you enable "**Force to load WP core**" for **Plugi
 = Known issues =
 
 * No image is shown after drag & drop a image in grid view at "Media Library". For more details, please refer to [this ticket at Github](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/issues/2 "No image is shown after drag & drop a image in grid view at "Media Library". - Issue #2 - tokkonopapa/WordPress-IP-Geo-Block - GitHub").
-* From [WordPress 4.5](https://make.wordpress.org/core/2016/03/09/comment-changes-in-wordpress-4-5/ "Comment Changes in WordPress 4.5 &#8211; Make WordPress Core"), `rel=nofollow` attribute and value pair had no longer be added to relative or same domain links within `comment_content`. This change prevents to block "Server Side Request Forgeries" (not Cross Site but a malicious link in the comment field of own site).
+* From [WordPress 4.5](https://make.wordpress.org/core/2016/03/09/comment-changes-in-wordpress-4-5/ "Comment Changes in WordPress 4.5 &#8211; Make WordPress Core"), `rel=nofollow` had no longer be attached to the links in `comment_content`. This change prevents to block "[Server Side Request Forgeries](https://www.owasp.org/index.php/Server_Side_Request_Forgery 'Server Side Request Forgery - OWASP')" (not Cross Site but a malicious internal link in the comment field).
 
 == Screenshots ==
 

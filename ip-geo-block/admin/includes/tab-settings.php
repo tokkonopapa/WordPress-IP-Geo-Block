@@ -222,7 +222,7 @@ endif;
 		$key = 'proxy';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( '<dfn title="e.g. HTTP_X_FORWARDED_FOR">$_SERVER keys to retrieve extra IP addresses</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="If your server is placed behind the proxy or the load balancer, you need to put the appropriate key such as &#8220;HTTP_X_FORWARDED_FOR&#8221;, &#8220;HTTP_X_REAL_IP&#8221; or something like that to retrieve the correct IP address.">$_SERVER keys to retrieve extra IP addresses</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
