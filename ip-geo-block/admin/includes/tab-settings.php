@@ -82,6 +82,7 @@ class IP_Geo_Block_Admin_Tab {
 				'after' => '&nbsp;<a class="button button-secondary" id="ip-geo-block-scan-' . $field . '" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-' . $field . '"></div>',
 			)
 		);
+
 if ( isset( $_SERVER['SERVER_ADDR'] ) && $_SERVER['SERVER_ADDR'] !== $tmp ):
 		// Get the country code of server
 		$key = IP_Geo_Block::get_geolocation( $_SERVER['SERVER_ADDR'] );
@@ -102,6 +103,7 @@ if ( isset( $_SERVER['SERVER_ADDR'] ) && $_SERVER['SERVER_ADDR'] !== $tmp ):
 			)
 		);
 endif;
+
 		// If the matching rule is not initialized, then add a caution
 		$rule = array(
 			-1 => NULL,
@@ -222,7 +224,7 @@ endif;
 		$key = 'proxy';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( '<dfn title="If your server is placed behind the proxy or the load balancer, you need to put the appropriate key such as &#8220;HTTP_X_FORWARDED_FOR&#8221;, &#8220;HTTP_X_REAL_IP&#8221; or something like that to retrieve the correct IP address.">$_SERVER keys to retrieve extra IP addresses</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="If your server is placed behind the proxy server or the load balancer, you need to put the appropriate key such as &#8220;HTTP_X_FORWARDED_FOR&#8221;, &#8220;HTTP_X_REAL_IP&#8221; or something like that to retrieve the client IP address.">$_SERVER keys to retrieve IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -232,7 +234,7 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'after' => $comma[0],
+				'placeholder' => IP_Geo_Block_Util::get_proxy_var(),
 			)
 		);
 

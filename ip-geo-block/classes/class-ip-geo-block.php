@@ -33,7 +33,7 @@ class IP_Geo_Block {
 	private $pagenow = NULL;
 	private $request_uri = NULL;
 	private $target_type = NULL;
-	private $remote_addr = NULL;
+	private static $remote_addr = NULL;
 
 	/**
 	 * Initialize the plugin
@@ -45,6 +45,9 @@ class IP_Geo_Block {
 		$priority = $settings['priority'  ];
 		$validate = $settings['validation'];
 		$loader = new IP_Geo_Block_Loader();
+
+		// Get client IP address
+		self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $_SERVER['REMOTE_ADDR'], $validate['proxy'] );
 
 		// include drop in if it exists
 		file_exists( $key = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php' ) and include( $key );
@@ -241,7 +244,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function get_ip_address() {
-		return apply_filters( self::PLUGIN_NAME . '-ip-addr', empty( $_SERVER['REMOTE_ADDR'] ) ? '' : $_SERVER['REMOTE_ADDR'] );
+		return apply_filters( self::PLUGIN_NAME . '-ip-addr', self::$remote_addr );
 	}
 
 	/**
@@ -406,20 +409,6 @@ class IP_Geo_Block {
 	 * @param boolean $auth     save log and block         if validation fails (for admin dashboard)
 	 */
 	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $auth = TRUE ) {
-		// set IP address to be validated
-		$ips = array( self::get_ip_address() );
-
-		// pick up all the IPs in HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP and etc.
-		foreach ( explode( ',', $settings['validation']['proxy'] ) as $var ) {
-			if ( isset( $_SERVER[ $var ] ) ) {
-				foreach ( explode( ',', $_SERVER[ $var ] ) as $ip ) {
-					if ( ! in_array( $ip = trim( $ip ), $ips, TRUE ) && filter_var( $ip, FILTER_VALIDATE_IP ) ) {
-						array_unshift( $ips, $ip );
-					}
-				}
-			}
-		}
-
 		// register auxiliary validation functions
 		// priority high 4 close_xmlrpc, close_restapi
 		//               5 check_nonce (high), check_user (low)
@@ -447,18 +436,12 @@ class IP_Geo_Block {
 		//     'code'     => $code,     /* country code or reason of rejection */
 		//     'result'   => $result,   /* 'passed', 'blocked'                 */
 		// );
-		foreach ( $ips as $this->remote_addr ) {
-			$validate = self::_get_geolocation( $this->remote_addr, $settings, $providers );
-			$validate = apply_filters( $var, $validate, $settings );
+		$validate = self::_get_geolocation( self::$remote_addr, $settings, $providers );
+		$validate = apply_filters( $var, $validate, $settings );
 
-			// if no 'result' then validate ip address by country
-			if ( empty( $validate['result'] ) )
-				$validate = self::validate_country( $hook, $validate, $settings, $block );
-
-			// if one of IPs is blocked then stop
-			if ( 'passed' !== $validate['result'] )
-				break;
-		}
+		// if no 'result' then validate ip address by country
+		if ( empty( $validate['result'] ) )
+			$validate = self::validate_country( $hook, $validate, $settings, $block );
 
 		if ( $auth ) {
 			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
@@ -673,8 +656,8 @@ class IP_Geo_Block {
 	 */
 	public function auth_fail( $something = NULL ) {
 		// Count up a number of fails when authentication is failed
-		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $this->remote_addr ) ) {
-			$validate = self::make_validation( $this->remote_addr, array(
+		if ( $cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr ) ) {
+			$validate = self::make_validation( self::$remote_addr, array(
 				'code'     => $cache['code'],
 				'fail'     => TRUE,
 				'result'   => 'failed',
@@ -863,7 +846,8 @@ class IP_Geo_Block {
 			// check page
 			if ( isset( $public['target_pages'][ $pagename ] ) )
 				return $validate; // block by country
-		} elseif ( $post ) {
+		} 
+		elseif ( $post ) {
 			// check post type (this would not block top page)
 			$keys = array_keys( $public['target_posts'] );
 			if ( ! empty( $keys ) && is_singular( $keys ) )

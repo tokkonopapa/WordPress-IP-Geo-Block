@@ -646,6 +646,42 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
+	 * Check proxy variable
+	 *
+	 */
+	public static function get_proxy_var() {
+		foreach ( array( 'HTTP_X_FORWARDED_FOR', 'HTTP_CF_CONNECTING_IP', 'HTTP_X_REAL_IP', 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED' ) as $var ) {
+			if ( isset( $_SERVER[ $var ] ) ) {
+				return $var;
+			}
+		}
+
+		return NULL;
+	}
+
+	/**
+	 * Get client IP address
+	 *
+	 * @param  string $ip   IP address / default: $_SERVER['REMOTE_ADDR']
+	 * @param  string $vars 'HTTP_...' from http header
+	 * @return string $ip   IP address
+	 */
+	public static function get_client_ip( $ip, $vars ) {
+		foreach ( explode( ',', $vars ) as $var ) {
+			if ( isset( $_SERVER[ $var ] ) ) {
+				$ips = array_map( 'trim', explode( ',', $_SERVER[ $var ] ) );
+				while ( $var = array_pop( $ips ) ) {
+					if ( filter_var( $var, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
+						return $var;
+					}
+				}
+			}
+		}
+
+		return $ip;
+	}
+
+	/**
 	 * Check the client IP address behind the proxy
 	 *
 	 */
