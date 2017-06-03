@@ -83,7 +83,7 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-if ( isset( $_SERVER['SERVER_ADDR'] ) && $_SERVER['SERVER_ADDR'] !== $tmp ):
+if ( $key = IP_Geo_Block_Util::get_host_ip() && $key !== $tmp && ! IP_Geo_Block_Util::is_private_ip( $key ) ):
 		// Get the country code of server
 		$key = IP_Geo_Block::get_geolocation( $_SERVER['SERVER_ADDR'] );
 
@@ -224,7 +224,7 @@ endif;
 		$key = 'proxy';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( '<dfn title="If your server is placed behind the proxy server or the load balancer, you need to put the appropriate key such as &#8220;HTTP_X_FORWARDED_FOR&#8221;, &#8220;HTTP_X_REAL_IP&#8221; or something like that to retrieve the client IP address.">$_SERVER keys to retrieve IP address</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="If your server is placed behind the proxy server or the load balancing server, you need to put the appropriate key such as &#8220;HTTP_X_FORWARDED_FOR&#8221;, &#8220;HTTP_X_REAL_IP&#8221; or something like that to retrieve the client IP address.">$_SERVER keys to retrieve extra IP addresses</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -235,6 +235,7 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'placeholder' => IP_Geo_Block_Util::get_proxy_var(),
+				'after' => $comma[0],
 			)
 		);
 
@@ -603,9 +604,11 @@ endif;
 				. '</li>' . "\n";
 		}
 
+		$path = IP_Geo_Block::get_target_path();
+
 		// Admin ajax/post
 		$key = 'ajax';
-		$val = esc_html( substr( IP_Geo_Block::$wp_path['admin'], 1 ) );
+		$val = esc_html( substr( $path['admin'], 1 ) );
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
 			sprintf( $dfn, $val.'admin-(ajax|post).php', __( 'Admin ajax/post', 'ip-geo-block' ) ),
@@ -665,7 +668,7 @@ endif;
 
 		// Plugins area
 		$key = 'plugins';
-		$val = esc_html( IP_Geo_Block::$wp_path[ $key ] );
+		$val = esc_html( $path[ $key ] );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
 			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
@@ -715,7 +718,7 @@ endif;
 
 		// Themes area
 		$key = 'themes';
-		$val = esc_html( IP_Geo_Block::$wp_path[ $key ] );
+		$val = esc_html( $path[ $key ] );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
 			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )

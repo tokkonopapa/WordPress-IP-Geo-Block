@@ -631,6 +631,14 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
+	 * Remove `HOST` and `HOST=...` from `UA and qualification`
+	 *
+	 */
+	public static function mask_qualification( $ua_list ) {
+		return preg_replace( array( '/HOST[^,]*?/', '/\*[:#]!?\*,?/' ), array( '*', '' ), $ua_list );
+	}
+
+	/**
 	 * Whether the server software is IIS or something else
 	 *
 	 * @source wp-includes/vers.php
@@ -665,14 +673,18 @@ class IP_Geo_Block_Util {
 	 * @param  string $ip   IP address / default: $_SERVER['REMOTE_ADDR']
 	 * @param  string $vars 'HTTP_...' from http header
 	 * @return string $ip   IP address
+	 * @link   http://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-headers.html
+	 * @link   https://github.com/zendframework/zend-http/blob/master/src/PhpEnvironment/RemoteAddress.php
 	 */
-	public static function get_client_ip( $ip, $vars ) {
-		foreach ( explode( ',', $vars ) as $var ) {
-			if ( isset( $_SERVER[ $var ] ) ) {
-				$ips = array_map( 'trim', explode( ',', $_SERVER[ $var ] ) );
-				while ( $var = array_pop( $ips ) ) {
-					if ( filter_var( $var, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
-						return $var;
+	public static function get_client_ip( $ip, $vars = NULL ) {
+		if ( self::is_private_ip( $ip ) ) {
+			foreach ( explode( ',', $vars ? $vars : self::get_proxy_var() ) as $var ) {
+				if ( isset( $_SERVER[ $var ] ) ) {
+					$ips = array_map( 'trim', explode( ',', $_SERVER[ $var ] ) );
+					while ( $var = array_pop( $ips ) ) {
+						if ( ! self::is_private_ip( $var ) ) {
+							return $var;
+						}
 					}
 				}
 			}
@@ -682,7 +694,25 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
-	 * Check the client IP address behind the proxy
+	 * Pick up all the IPs in HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP and etc.
+	 *
+	 */
+	public static function retrieve_ips( $ips = array(), $vars = NULL ) {
+		foreach ( explode( ',', $vars ) as $var ) {
+			if ( isset( $_SERVER[ $var ] ) ) {
+				foreach ( explode( ',', $_SERVER[ $var ] ) as $ip ) {
+					if ( ! in_array( $ip = trim( $ip ), $ips, TRUE ) && ! self::is_private_ip( $ip ) ) {
+						array_unshift( $ips, $ip );
+					}
+				}
+			}
+		}
+
+		return $ips;
+	}
+
+	/**
+	 * Check the client IP address behind the VPN proxy
 	 *
 	 */
 	public static function get_proxy_ip( $ip ) {
@@ -718,11 +748,13 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
-	 * Remove `HOST` and `HOST=...` from `UA and qualification`
+	 * Get IP address of the host server
 	 *
 	 */
-	public static function mask_qualification( $ua_list ) {
-		return preg_replace( array( '/HOST[^,]*?/', '/\*[:#]!?\*,?/' ), array( '*', '' ), $ua_list );
+	public static function get_host_ip() {
+		return (int)self::is_IIS() >= 7 ?
+			( ! empty( $_SERVER['LOCAL_ADDR' ] ) ? $_SERVER['LOCAL_ADDR' ] : '' ) :
+			( ! empty( $_SERVER['SERVER_ADDR'] ) ? $_SERVER['SERVER_ADDR'] : '' );
 	}
 
 }

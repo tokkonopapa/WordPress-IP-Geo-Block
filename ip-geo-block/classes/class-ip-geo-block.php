@@ -29,11 +29,12 @@ class IP_Geo_Block {
 	protected static $instance = NULL;
 
 	// Globals in this class
-	public static $wp_path;
 	private $pagenow = NULL;
 	private $request_uri = NULL;
 	private $target_type = NULL;
-	private static $remote_addr = NULL;
+	private static $remote_addr;
+	private static $network_wide;
+	private static $wp_path;
 
 	/**
 	 * Initialize the plugin
@@ -46,13 +47,14 @@ class IP_Geo_Block {
 		$validate = $settings['validation'];
 		$loader = new IP_Geo_Block_Loader();
 
-		// Get client IP address
+		// get client IP address
+		self::$network_wide = is_plugin_active_for_network( IP_GEO_BLOCK_BASE ); // @since 3.0.0
 		self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $_SERVER['REMOTE_ADDR'], $validate['proxy'] );
 
 		// include drop in if it exists
 		file_exists( $key = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php' ) and include( $key );
 
-		// Garbage collection for IP address cache
+		// garbage collection for IP address cache
 		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );
 
 		// the action hook which will be fired by cron job
@@ -185,7 +187,12 @@ class IP_Geo_Block {
 
 	// get optional values from wp options
 	public static function get_option() {
-		return FALSE !== ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
+		return FALSE !== ( $option = self::$network_wide ? get_site_option( self::OPTION_NAME ) : get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
+	}
+
+	// get path of validation target
+	public static function get_target_path() {
+		return self::$wp_path;
 	}
 
 	/**
@@ -409,6 +416,9 @@ class IP_Geo_Block {
 	 * @param boolean $auth     save log and block         if validation fails (for admin dashboard)
 	 */
 	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $auth = TRUE ) {
+		// set IP address to be validated
+		$ips = IP_Geo_Block_Util::retrieve_ips( array( self::get_ip_address() ), $settings['validation']['proxy'] );
+
 		// register auxiliary validation functions
 		// priority high 4 close_xmlrpc, close_restapi
 		//               5 check_nonce (high), check_user (low)
@@ -436,12 +446,18 @@ class IP_Geo_Block {
 		//     'code'     => $code,     /* country code or reason of rejection */
 		//     'result'   => $result,   /* 'passed', 'blocked'                 */
 		// );
-		$validate = self::_get_geolocation( self::$remote_addr, $settings, $providers );
-		$validate = apply_filters( $var, $validate, $settings );
+		foreach ( $ips as self::$remote_addr ) {
+			$validate = self::_get_geolocation( self::$remote_addr, $settings, $providers );
+			$validate = apply_filters( $var, $validate, $settings );
 
-		// if no 'result' then validate ip address by country
-		if ( empty( $validate['result'] ) )
-			$validate = self::validate_country( $hook, $validate, $settings, $block );
+			// if no 'result' then validate ip address by country
+			if ( empty( $validate['result'] ) )
+				$validate = self::validate_country( $hook, $validate, $settings, $block );
+
+			// if one of IPs is blocked then stop
+			if ( 'passed' !== $validate['result'] )
+				break;
+		}
 
 		if ( $auth ) {
 			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
@@ -574,6 +590,7 @@ class IP_Geo_Block {
 			// if the request has no page and no action, skip WP-ZEP
 			$zep = ( $page || $action ) ? TRUE : FALSE;
 			$rule = (int)$settings['validation']['admin'];
+			break;
 		}
 
 		// list of request for specific action or page to bypass WP-ZEP
@@ -846,8 +863,7 @@ class IP_Geo_Block {
 			// check page
 			if ( isset( $public['target_pages'][ $pagename ] ) )
 				return $validate; // block by country
-		} 
-		elseif ( $post ) {
+		} elseif ( $post ) {
 			// check post type (this would not block top page)
 			$keys = array_keys( $public['target_posts'] );
 			if ( ! empty( $keys ) && is_singular( $keys ) )

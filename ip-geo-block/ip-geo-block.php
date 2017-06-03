@@ -43,6 +43,7 @@ define( 'IP_GEO_BLOCK_BASE', plugin_basename( __FILE__ ) ); // @since 1.5
  * Load class
  *
  */
+require_once ABSPATH      . '/wp-admin/includes/plugin.php';
 require IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php';
 require IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php';
 require IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-load.php';
