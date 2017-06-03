@@ -1512,33 +1512,33 @@ endif;
 	 * @param array $section settings of section added to admin pages
 	 * @param bool  $stat    TRUE:open ('o') or FALSE:close ('x')
 	 */
-	public static function note_target( $section, $stat ) {
+	public static function note_target() {
 		echo
-			'<ul class="ip-geo-block-note"', $stat ? '>' : ' style="display:none">', "\n",
+			'<ul class="ip-geo-block-note">', "\n",
 				'<li>', __( 'To enhance the protection ability, please refer to &#8220;<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html" title="The best practice for target settings | IP Geo Block">The best practice for target settings</a>&#8221;.', 'ip-geo-block' ), '</li>', "\n",
 				'<li>', __( 'If you have any troubles with these, please check FAQ at <a rel="noreferrer" href="https://wordpress.org/plugins/ip-geo-block/faq/" title="IP Geo Block &mdash; WordPress Plugins">WordPress.org</a> and <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/#faq" title="Codex | IP Geo Block">Codex</a>.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 
-	public static function note_services( $section, $stat ) {
+	public static function note_services() {
 		echo
-			'<ul class="ip-geo-block-note"', $stat ? '>' : ' style="display:none">', "\n",
+			'<ul class="ip-geo-block-note">', "\n",
 				'<li>', __( 'While Maxmind and IP2Location will fetch the local database, others will pass an IP address to the APIs via HTTP.', 'ip-geo-block' ), '</li>', "\n",
 				'<li>', __( 'Please select the appropriate APIs to fit the privacy law in your country.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 
-	public static function note_public( $section, $stat ) {
+	public static function note_public() {
 		echo
-			'<ul class="ip-geo-block-note"', $stat ? '>' : ' style="display:none">', "\n",
+			'<ul class="ip-geo-block-note">', "\n",
 				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/#blocking-on-front-end" title="Codex | IP Geo Block">Blocking on front-end</a>&#8221; for details, including restrictions on cache plugin.', 'ip-geo-block' ), '</li>', "\n",
 				'<li>', __( 'If you find any issues or have something to suggest, please feel free to open an issue at <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a>.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 
-	public static function note_record( $section, $stat ) {
+	public static function note_record() {
 		echo
-			'<ul class="ip-geo-block-note"', $stat ? '>' : ' style="display:none">', "\n",
+			'<ul class="ip-geo-block-note">', "\n",
 				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/record-settings-and-logs.html" title="Codex | IP Geo Block">Record settings and logs</a>&#8221; for details.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}

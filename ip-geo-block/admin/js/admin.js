@@ -316,7 +316,7 @@ var ip_geo_block_time = new Date();
 			}
 			if ($(ID('#', 'chart-countries')).width()) {
 				self.viewPie.draw(self.dataPie, {
-					backgroundColor: '#f1f1f1',
+					backgroundColor: '#fff', // '#f1f1f1',
 					chartArea: {
 						left: 0,
 						top: '5%',
@@ -361,7 +361,7 @@ var ip_geo_block_time = new Date();
 			if (i) {
 				i = i > 320 ? true : false;
 				self.viewLine.draw(self.dataLine, {
-					backgroundColor: '#f1f1f1',
+					backgroundColor: '#fff', // '#f1f1f1',
 					legend: { position: 'bottom' },
 					hAxis: { format: 'MM/dd' },
 					vAxis: { textPosition: (i ? 'out' : 'in') },
@@ -398,7 +398,7 @@ var ip_geo_block_time = new Date();
 
 	// Click event handler to show/hide form-table
 	function toggleSection(title, id, cookie) {
-		var index = title.closest('fieldset').data('ip-geo-block');
+		var index = title.closest('fieldset').data('section');
 
 		// Show/Hide
 		title.parent().nextAll().toggle();
@@ -431,8 +431,7 @@ var ip_geo_block_time = new Date();
 			title.each(function (i) {
 				$this = $(this);
 				$this.parent().nextAll().toggle(n ? false : true);
-				$this.removeClass(id.join(' '))
-					 .addClass(n ? id[1] : id[0]);
+				$this.removeClass(id.join(' ')).addClass(n ? id[1] : id[0]);
 				cookie[i] = n ? 'x' : 'o';
 			});
 

@@ -404,17 +404,18 @@ class IP_Geo_Block_Admin {
 			// TRUE:open ('o') or FALSE:close ('x')
 			$stat = $tab > 1 || empty( $cookie[ $index ] ) || 'o' === $cookie[ $index ];
 
-			echo '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field">', "\n";
-			echo '<legend><h2';
+			echo '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n";
+			echo '<legend class="panel-heading"><h2';
 
 			// add dropdown or dropup class
 			if ( $tab <= 1 )
 				echo ' class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '"';
 
 			echo '>', $section['title'], '</h2></legend>', "\n";
+			echo '<div class="panel-body"', $stat ? '>' : ' style="display:none">', "\n";
 
 			if ( $section['callback'] )
-				call_user_func( $section['callback'], $section, $stat );
+				call_user_func( $section['callback'], $section );
 
 			if ( ! isset( $wp_settings_fields ) ||
 			     ! isset( $wp_settings_fields[ $page ] ) ||
@@ -422,10 +423,9 @@ class IP_Geo_Block_Admin {
 				continue;
 			}
 
-			echo '<table class="form-table"', $stat ? '>' : ' style="display:none">';
+			echo '<table class="form-table">';
 			do_settings_fields( $page, $section['id'] );
-			echo '</table>';
-			echo '</fieldset>', "\n";
+			echo "</table>\n</div>\n</fieldset>\n";
 			++$index;
 		}
 	}
