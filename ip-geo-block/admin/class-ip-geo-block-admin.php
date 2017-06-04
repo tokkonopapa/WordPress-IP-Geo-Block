@@ -884,7 +884,7 @@ class IP_Geo_Block_Admin {
 
 	// Trim extra space and comma avoiding invalid signature which potentially blocks itself
 	private function trim( $text ) {
-		$path = IP_Geo_Block::get_target_path();
+		$path = IP_Geo_Block::get_wp_path();
 
 		$ret = array();
 		foreach ( explode( ',', $text ) as $val ) {

@@ -11,8 +11,6 @@ fieldset, legend {
     border: 0;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    -o-box-sizing: border-box;
     box-sizing: border-box;
 }
 fieldset {
@@ -28,15 +26,14 @@ label {
     max-width: 100%;
 }
 .panel {
+    -webkit-border-radius: 3px;
     border-radius: 3px;
     border-color: gray;
     border: 1px solid #e5e5e5;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.04);
     -moz-box-shadow: 0 1px 1px rgba(0,0,0,.04);
-    -ms-box-shadow: 0 1px 1px rgba(0,0,0,.04);
-    -o-box-shadow: 0 1px 1px rgba(0,0,0,.04);
     box-shadow: 0 1px 1px rgba(0,0,0,.04);
-    background: #fff;
+    background: #eee;
 }
 .panel-body {
     margin-top: 3em;

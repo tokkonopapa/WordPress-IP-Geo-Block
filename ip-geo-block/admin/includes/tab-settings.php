@@ -604,7 +604,7 @@ endif;
 				. '</li>' . "\n";
 		}
 
-		$path = IP_Geo_Block::get_target_path();
+		$path = IP_Geo_Block::get_wp_path();
 
 		// Admin ajax/post
 		$key = 'ajax';

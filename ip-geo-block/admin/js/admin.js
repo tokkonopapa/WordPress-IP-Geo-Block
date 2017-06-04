@@ -316,7 +316,7 @@ var ip_geo_block_time = new Date();
 			}
 			if ($(ID('#', 'chart-countries')).width()) {
 				self.viewPie.draw(self.dataPie, {
-					backgroundColor: '#fff', // '#f1f1f1',
+					backgroundColor: { fill: 'transparent' }, // '#f1f1f1',
 					chartArea: {
 						left: 0,
 						top: '5%',
@@ -361,7 +361,7 @@ var ip_geo_block_time = new Date();
 			if (i) {
 				i = i > 320 ? true : false;
 				self.viewLine.draw(self.dataLine, {
-					backgroundColor: '#fff', // '#f1f1f1',
+					backgroundColor: { fill: 'transparent' }, // '#f1f1f1',
 					legend: { position: 'bottom' },
 					hAxis: { format: 'MM/dd' },
 					vAxis: { textPosition: (i ? 'out' : 'in') },
@@ -464,11 +464,6 @@ var ip_geo_block_time = new Date();
 	$(function () {
 		// Get tab number
 		var tabNo = Number(IP_GEO_BLOCK.tab) || 0;
-
-		// Add section index as data
-		$('.form-table').each(function (index) {
-			$(this).parent('fieldset').data('ip-geo-block', index);
-		});
 
 		// Inhibit to submit by return key
 		$(ID('#', 'inhibit')).on('submit', function () {

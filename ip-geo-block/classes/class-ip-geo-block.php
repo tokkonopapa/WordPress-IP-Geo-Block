@@ -33,7 +33,6 @@ class IP_Geo_Block {
 	private $request_uri = NULL;
 	private $target_type = NULL;
 	private static $remote_addr;
-	private static $network_wide;
 	private static $wp_path;
 
 	/**
@@ -48,7 +47,6 @@ class IP_Geo_Block {
 		$loader = new IP_Geo_Block_Loader();
 
 		// get client IP address
-		self::$network_wide = is_plugin_active_for_network( IP_GEO_BLOCK_BASE ); // @since 3.0.0
 		self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $_SERVER['REMOTE_ADDR'], $validate['proxy'] );
 
 		// include drop in if it exists
@@ -187,11 +185,11 @@ class IP_Geo_Block {
 
 	// get optional values from wp options
 	public static function get_option() {
-		return FALSE !== ( $option = self::$network_wide ? get_site_option( self::OPTION_NAME ) : get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
+		return FALSE !== ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
 	}
 
-	// get path of validation target
-	public static function get_target_path() {
+	// get the WordPress path of validation target
+	public static function get_wp_path() {
 		return self::$wp_path;
 	}
 

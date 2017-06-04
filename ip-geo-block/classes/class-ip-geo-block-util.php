@@ -671,7 +671,7 @@ class IP_Geo_Block_Util {
 	 * Get client IP address
 	 *
 	 * @param  string $ip   IP address / default: $_SERVER['REMOTE_ADDR']
-	 * @param  string $vars 'HTTP_...' from http header
+	 * @param  string $vars keys in $_SERVER for http header ('HTTP_...')
 	 * @return string $ip   IP address
 	 * @link   http://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-headers.html
 	 * @link   https://github.com/zendframework/zend-http/blob/master/src/PhpEnvironment/RemoteAddress.php

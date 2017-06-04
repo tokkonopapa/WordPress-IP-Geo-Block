@@ -10,7 +10,6 @@
  */
 
 // Stuff for resources
-require_once ABSPATH           . '/wp-admin/includes/plugin.php';
 require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php';
 require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php';
 require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php';
@@ -47,6 +46,9 @@ class IP_Geo_Block_Activate {
 	 * if ( is_multisite() && $network_wide ) { ... }
 	 */
 	public static function activate( $network_wide = FALSE ) {
+		if ( ! function_exists( 'is_plugin_active_for_network' ) )
+			require_once ABSPATH . '/wp-admin/includes/plugin.php';
+
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			global $wpdb;
 			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
