@@ -930,7 +930,7 @@ var ip_geo_block_time = new Date();
 						whois.html(
 							'<fieldset id="' + ID('section-1') + '" class="' + ID('field') + ' panel panel-default" data-section="1">' +
 							'<legend class="panel-heading"><h2 id="' + ID('whois-title') + '" class="' + ID('dropdown') + '">Whois</h2></legend>' +
-							'<div class="panel-body"><table class="form-table">' + str + '</table></div>' +
+							'<div class="panel-body"><table class="' + ID('table') + '">' + str + '</table></div>' +
 							'</fieldset>'
 						).fadeIn('slow');
 

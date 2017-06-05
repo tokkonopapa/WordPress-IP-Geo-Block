@@ -208,13 +208,6 @@ ul.ip-geo-block-list label {
     display: inline-block;
 }
 
-#ip-geo-block-whois table.form-table {
-    margin: 1em auto;
-}
-#ip-geo-block-whois table.form-table td {
-    padding: 0.25em;
-}
-
 #ip-geo-block-map {
     height: 400px;
     margin: 1em auto;
@@ -260,6 +253,7 @@ table.ip-geo-block-statistics-table tr:nth-child(even) {
 table.ip-geo-block-statistics-table tr:nth-child(odd) {
 }
 table.ip-geo-block-table {
+    margin: 1em 0;
     white-space: normal;
     word-wrap: break-word;
     word-break: break-all;
