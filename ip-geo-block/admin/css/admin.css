@@ -208,6 +208,13 @@ ul.ip-geo-block-list label {
     display: inline-block;
 }
 
+#ip-geo-block-whois table.form-table {
+    margin: 1em auto;
+}
+#ip-geo-block-whois table.form-table td {
+    padding: 0.25em;
+}
+
 #ip-geo-block-map {
     height: 400px;
     margin: 1em auto;

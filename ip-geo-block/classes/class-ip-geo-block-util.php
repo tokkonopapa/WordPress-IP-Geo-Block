@@ -749,7 +749,7 @@ class IP_Geo_Block_Util {
 
 	/**
 	 * Get IP address of the host server
-	 *
+	 * @link http://php.net/manual/en/reserved.variables.server.php#88418
 	 */
 	public static function get_host_ip() {
 		return (int)self::is_IIS() >= 7 ?

@@ -384,20 +384,20 @@ var ip_geo_block_time = new Date();
 	}
 
 	// Load / Save cookie using wpCookies in wp-includes/js/utils.js
-	function loadCookie(id) {
-		return ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('$', id))) || {};
+	function loadCookie(tabNo) {
+		return ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('$', tabNo))) || {};
 	}
 
 	// setHash( name, value, expires, path, domain, secure )
-	function saveCookie(id, cookie) {
+	function saveCookie(tabNo, cookie) {
 		if ('undefined' !== typeof wpCookies) {
 			var path = 'undefined' !== typeof IP_GEO_BLOCK_AUTH ? IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin : '';
-			wpCookies.setHash(ID('$', id), cookie, new Date(Date.now() + 2592000000), path);
+			wpCookies.setHash(ID('$', tabNo), cookie, new Date(Date.now() + 2592000000), path);
 		}
 	}
 
 	// Click event handler to show/hide form-table
-	function toggleSection(title, id, cookie) {
+	function toggleSection(title, tabNo, cookie) {
 		var index = title.closest('fieldset').data('section');
 
 		// Show/Hide
@@ -405,13 +405,13 @@ var ip_geo_block_time = new Date();
 		title.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
 
 		cookie[index] = title.hasClass(ID('dropdown')) ? 'o' : 'x';
-		saveCookie(id, cookie); // Save cookie
+		saveCookie(tabNo, cookie); // Save cookie
 
 		// redraw google chart
 		drawChart();
 	}
 
-	function manageSection( tabNo ) {
+	function manageSection(tabNo) {
 		var cookie = loadCookie(tabNo);
 
 		// Click event handler to show/hide form-table
@@ -423,15 +423,15 @@ var ip_geo_block_time = new Date();
 		// Toggle all
 		$(ID('#', 'toggle-sections')).on('click', function (event) {
 			var $this,
-			    id = [ID('dropdown'), ID('dropup')],
 			    title = $(ID('.', 'field')).find('h2,h3'),
-			    n = title.filter('.' + id[0]).length;
+			    m = [ID('dropdown'), ID('dropup')],
+			    n = title.filter('.' + m[0]).length;
 
 			// update cookie
 			title.each(function (i) {
 				$this = $(this);
 				$this.parent().nextAll().toggle(n ? false : true);
-				$this.removeClass(id.join(' ')).addClass(n ? id[1] : id[0]);
+				$this.removeClass(m.join(' ')).addClass(n ? m[1] : m[0]);
 				cookie[i] = n ? 'x' : 'o';
 			});
 
@@ -928,10 +928,10 @@ var ip_geo_block_time = new Date();
 						}
 
 						whois.html(
-							'<fieldset class="' + ID('field') + '">' +
-							'<legend><h2 id="' + ID('whois-title') + '" class="' + ID('dropdown') + '">Whois</h2></legend>' +
-							'<table class="' + ID('table') + '">' + str + '</table>' +
-							'<fieldset>'
+							'<fieldset id="' + ID('section-1') + '" class="' + ID('field') + ' panel panel-default" data-section="1">' +
+							'<legend class="panel-heading"><h2 id="' + ID('whois-title') + '" class="' + ID('dropdown') + '">Whois</h2></legend>' +
+							'<div class="panel-body"><table class="form-table">' + str + '</table></div>' +
+							'</fieldset>'
 						).fadeIn('slow');
 
 						$(ID('#', 'whois-title')).on('click', function (event) {

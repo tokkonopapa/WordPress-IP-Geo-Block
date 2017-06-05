@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-06-04 17:38+0900\n"
-"PO-Revision-Date: 2017-06-04 17:45+0900\n"
+"POT-Creation-Date: 2017-06-05 23:05+0900\n"
+"PO-Revision-Date: 2017-06-05 23:16+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -60,7 +60,7 @@ msgid "Contribute at GitHub"
 msgstr "開発に参加"
 
 #: admin/class-ip-geo-block-admin.php:210
-#: admin/class-ip-geo-block-admin.php:440
+#: admin/class-ip-geo-block-admin.php:446
 msgid "Settings"
 msgstr "設定"
 
@@ -135,31 +135,41 @@ msgstr ""
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr "「<a href=\"%s\">検証ルールの設定</a>」を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:441
+#: admin/class-ip-geo-block-admin.php:344
+msgid ""
+"&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
+"timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
+"select &#8220;init&#8221; action hook."
+msgstr ""
+"「検証のタイミング」に「&#8220;mu-plugins&#8221; (ip-geo-block-mu.php)」が選"
+"択されていますが、<strong>IP Geo Allow</strong> と互換性がありません。"
+"「&#8220;init&#8221; アクション・フック」を選択してください。"
+
+#: admin/class-ip-geo-block-admin.php:447
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:442
+#: admin/class-ip-geo-block-admin.php:448
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:443
+#: admin/class-ip-geo-block-admin.php:449
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:444
+#: admin/class-ip-geo-block-admin.php:450
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:455
+#: admin/class-ip-geo-block-admin.php:461
 msgid "Toggle all"
 msgstr "全てを開閉"
 
-#: admin/class-ip-geo-block-admin.php:479
+#: admin/class-ip-geo-block-admin.php:485
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:480
+#: admin/class-ip-geo-block-admin.php:486
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -169,16 +179,16 @@ msgstr ""
 "html\" title=\"Referer Checker\">参照元を残さずにリンク先にリダイレクトできま"
 "す</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:485
+#: admin/class-ip-geo-block-admin.php:491
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: admin/class-ip-geo-block-admin.php:580
+#: admin/class-ip-geo-block-admin.php:586
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:953
-#: admin/class-ip-geo-block-admin.php:964
+#: admin/class-ip-geo-block-admin.php:959
+#: admin/class-ip-geo-block-admin.php:970
 #: classes/class-ip-geo-block-cron.php:260
 #: classes/class-ip-geo-block-cron.php:318
 #: classes/class-ip-geo-block-opts.php:379
@@ -186,7 +196,7 @@ msgstr "有効"
 msgid "Unable to write %s. Please check the permission."
 msgstr "%s に書き込めません。パーミッションを確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:954
+#: admin/class-ip-geo-block-admin.php:960
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."

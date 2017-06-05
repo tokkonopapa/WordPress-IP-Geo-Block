@@ -113,7 +113,7 @@ class IP_Geo_Block {
 				$loader->add_action( 'init', array( $this, 'validate_comment' ), $priority );
 		}
 
-		else {
+		elseif ( 'wp-' !== substr( $this->pagenow, 0, 3 ) ) {
 			// public facing pages
 			if ( $validate['public'] || ( ! empty( $_FILES ) && $validate['mimetype'] ) /* && 'index.php' === $this->pagenow */ )
 				$loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
@@ -414,6 +414,9 @@ class IP_Geo_Block {
 	 * @param boolean $auth     save log and block         if validation fails (for admin dashboard)
 	 */
 	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $auth = TRUE ) {
+		// Do action
+		// do_action( self::PLUGIN_NAME, $hook );
+
 		// set IP address to be validated
 		$ips = IP_Geo_Block_Util::retrieve_ips( array( self::get_ip_address() ), $settings['validation']['proxy'] );
 
@@ -588,7 +591,6 @@ class IP_Geo_Block {
 			// if the request has no page and no action, skip WP-ZEP
 			$zep = ( $page || $action ) ? TRUE : FALSE;
 			$rule = (int)$settings['validation']['admin'];
-			break;
 		}
 
 		// list of request for specific action or page to bypass WP-ZEP

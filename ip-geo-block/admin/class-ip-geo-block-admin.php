@@ -339,6 +339,12 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
+		if ( $settings['validation']['timing'] && is_plugin_active( 'ip-geo-allow/index.php' ) ) {
+			self::add_admin_notice( 'error',
+				__( '&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please select &#8220;init&#8221; action hook.', 'ip-geo-block' )
+			);
+		}
+
 		if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 			// Check creation of database table
 			if ( $settings['validation']['reclogs'] ) {

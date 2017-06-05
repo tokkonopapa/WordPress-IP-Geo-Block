@@ -27,7 +27,7 @@
 				url = 'https://rest.db.ripe.net/search%3fflags=no-filtering%26flags=resource%26query-string=';
 //				app = 'https://apps.db.ripe.net/search/lookup.html?source=%SRC%&key=%KEY%&type=%TYPE%';
 
-			function sanitize(str) {
+			function escapeHTML(str) {
 				return str ? str.toString().replace(/[&<>"']/g, function (match) {
 					return {
 						'&': '&amp;',
@@ -54,15 +54,15 @@
 								msg = err.text.split(/\n+/);
 
 							results.push({
-								name : sanitize(err.severity),
-								value: sanitize(msg[1].replace(/%s/, err.args.value))
+								name : escapeHTML(err.severity),
+								value: escapeHTML(msg[1].replace(/%s/, err.args.value))
 							});
 						}
 
 						else if (value.href) {
-							value.href = sanitize(value.href);
+							value.href = escapeHTML(value.href);
 							results.push({
-								name : sanitize(key),
+								name : escapeHTML(key),
 								value: '<a href="' + value.href + '.json" target=_blank>' + value.href + '</a>'
 							});
 						}
@@ -78,16 +78,16 @@
 							}*/
 
 							if (value.link) {
-								value.value = '<a href="' + sanitize(value.link.href) + '.json" target=_blank>' + sanitize(value.value) + '</a>';
+								value.value = '<a href="' + escapeHTML(value.link.href) + '.json" target=_blank>' + escapeHTML(value.value) + '</a>';
 							}
 
 							else if ('remarks' === value.name) {
-								value.value = sanitize(value.value);
+								value.value = escapeHTML(value.value);
 								value.value = value.value.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target=_blank>$1</a>');
 							}
 
 							results.push({
-								name : sanitize(value.name),
+								name : escapeHTML(value.name),
 								value: value.value
 							});
 						}
@@ -115,8 +115,8 @@
 
 			.fail(function (jqXHR, textStatus, errorThrown) {
 				results.push({
-					name : sanitize(textStatus),
-					value: sanitize(errorThrown)
+					name : escapeHTML(textStatus),
+					value: escapeHTML(errorThrown)
 				});
 			})
 
@@ -133,4 +133,4 @@
 		}
 	});
 
-})(jQuery);
+}(jQuery));
