@@ -113,7 +113,7 @@ class IP_Geo_Block {
 				$loader->add_action( 'init', array( $this, 'validate_comment' ), $priority );
 		}
 
-		elseif ( 'wp-' !== substr( $this->pagenow, 0, 3 ) ) {
+		else {
 			// public facing pages
 			if ( $validate['public'] || ( ! empty( $_FILES ) && $validate['mimetype'] ) /* && 'index.php' === $this->pagenow */ )
 				$loader->add_action( 'init', array( $this, 'validate_public' ), $priority );

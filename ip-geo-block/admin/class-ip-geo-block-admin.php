@@ -339,6 +339,7 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
+		// Check activation of IP Geo Allow
 		if ( $settings['validation']['timing'] && is_plugin_active( 'ip-geo-allow/index.php' ) ) {
 			self::add_admin_notice( 'error',
 				__( '&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please select &#8220;init&#8221; action hook.', 'ip-geo-block' )
@@ -387,36 +388,40 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
+	 * Get cookie that indicates open/close section
+	 *
+	 */
+	private function get_cookie( $name ) {
+		$cookie = array();
+		if ( ! empty( $_COOKIE[ $name ] ) ) {
+			foreach ( explode( '&', $_COOKIE[ $name ] ) as $i => $v ) {
+				list( $i, $v ) = explode( '=', $v );
+				$cookie[ $i ] = str_split( $v );
+			}
+		}
+		return $cookie;
+	}
+
+	/**
 	 * Prints out all settings sections added to a particular settings page
 	 *
 	 * wp-admin/includes/template.php @since 2.7.0
 	 */
-	public function get_cookie( $element ) {
-		$element = explode( '=', $element );
-		return $element[1];
-	}
-
-	private function do_settings_sections( $page, $tab = 0 ) {
+	private function do_settings_sections( $page, $cookie ) {
 		global $wp_settings_sections, $wp_settings_fields;
 
 		if ( ! isset( $wp_settings_sections[ $page ] ) )
 			return;
 
-		$index  = IP_Geo_Block::PLUGIN_NAME . '-' . $tab;
-		$cookie = isset( $_COOKIE[ $index ] ) ? array_map( array( $this, 'get_cookie' ), explode( '&', $_COOKIE[ $index ] ) ) : array();
 		$index  = 0; // index of fieldset
-
 		foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
-			// TRUE:open ('o') or FALSE:close ('x')
-			$stat = $tab > 1 || empty( $cookie[ $index ] ) || 'o' === $cookie[ $index ];
+			// TRUE if open ('o') or FALSE if close ('x')
+			$stat = empty( $cookie[ $index ] ) || 'x' !== $cookie[ $index ];
 
 			echo '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n";
 			echo '<legend class="panel-heading"><h2';
-
-			// add dropdown or dropup class
-			if ( $tab <= 1 )
+			if ( $this->admin_tab <= 1 )
 				echo ' class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '"';
-
 			echo '>', $section['title'], '</h2></legend>', "\n";
 			echo '<div class="panel-body"', $stat ? '>' : ' style="display:none">', "\n";
 
@@ -441,7 +446,6 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function display_plugin_admin_page() {
-		$tab = $this->admin_tab;
 		$tabs = array(
 			0 => __( 'Settings',    'ip-geo-block' ),
 			1 => __( 'Statistics',  'ip-geo-block' ),
@@ -449,6 +453,9 @@ class IP_Geo_Block_Admin {
 			2 => __( 'Search',      'ip-geo-block' ),
 			3 => __( 'Attribution', 'ip-geo-block' ),
 		);
+
+		$tab = $this->admin_tab;
+		$cookie = $this->get_cookie( IP_Geo_Block::PLUGIN_NAME );
 ?>
 <div class="wrap">
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
@@ -463,7 +470,7 @@ class IP_Geo_Block_Admin {
 	<form method="post" action="options.php"<?php if ( 0 !== $tab ) echo " id=\"", IP_Geo_Block::PLUGIN_NAME, "-inhibit\""; ?>>
 <?php
 		settings_fields( IP_Geo_Block::PLUGIN_NAME );
-		$this->do_settings_sections( IP_Geo_Block::PLUGIN_NAME, $tab );
+		$this->do_settings_sections( IP_Geo_Block::PLUGIN_NAME, isset( $cookie[ $tab ] ) ? $cookie[ $tab ] : array() );
 		if ( 0 === $tab )
 			submit_button(); // @since 3.1
 ?>

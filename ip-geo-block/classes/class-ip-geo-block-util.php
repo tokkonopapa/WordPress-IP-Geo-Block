@@ -668,6 +668,24 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
+	 * Pick up all the IPs in HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP and etc.
+	 *
+	 */
+	public static function retrieve_ips( $ips = array(), $vars = NULL ) {
+		foreach ( explode( ',', $vars ) as $var ) {
+			if ( isset( $_SERVER[ $var ] ) ) {
+				foreach ( explode( ',', $_SERVER[ $var ] ) as $ip ) {
+					if ( ! in_array( $ip = trim( $ip ), $ips, TRUE ) && ! self::is_private_ip( $ip ) ) {
+						array_unshift( $ips, $ip );
+					}
+				}
+			}
+		}
+
+		return $ips;
+	}
+
+	/**
 	 * Get client IP address
 	 *
 	 * @param  string $ip   IP address / default: $_SERVER['REMOTE_ADDR']
@@ -691,24 +709,6 @@ class IP_Geo_Block_Util {
 		}
 
 		return $ip;
-	}
-
-	/**
-	 * Pick up all the IPs in HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP and etc.
-	 *
-	 */
-	public static function retrieve_ips( $ips = array(), $vars = NULL ) {
-		foreach ( explode( ',', $vars ) as $var ) {
-			if ( isset( $_SERVER[ $var ] ) ) {
-				foreach ( explode( ',', $_SERVER[ $var ] ) as $ip ) {
-					if ( ! in_array( $ip = trim( $ip ), $ips, TRUE ) && ! self::is_private_ip( $ip ) ) {
-						array_unshift( $ips, $ip );
-					}
-				}
-			}
-		}
-
-		return $ips;
 	}
 
 	/**
@@ -749,12 +749,12 @@ class IP_Geo_Block_Util {
 
 	/**
 	 * Get IP address of the host server
+	 *
 	 * @link http://php.net/manual/en/reserved.variables.server.php#88418
 	 */
-	public static function get_host_ip() {
-		return (int)self::is_IIS() >= 7 ?
-			( ! empty( $_SERVER['LOCAL_ADDR' ] ) ? $_SERVER['LOCAL_ADDR' ] : '' ) :
-			( ! empty( $_SERVER['SERVER_ADDR'] ) ? $_SERVER['SERVER_ADDR'] : '' );
+	public static function get_server_ip() {
+		return isset( $_SERVER['SERVER_ADDR'] ) ? $_SERVER['SERVER_ADDR'] : ( (int)self::is_IIS() >= 7 ?
+		     ( isset( $_SERVER['LOCAL_ADDR' ] ) ? $_SERVER['LOCAL_ADDR' ] : NULL ) : NULL );
 	}
 
 }

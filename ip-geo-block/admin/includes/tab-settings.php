@@ -83,7 +83,7 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-if ( $key = IP_Geo_Block_Util::get_host_ip() && $key !== $tmp && ! IP_Geo_Block_Util::is_private_ip( $key ) ):
+if ( $key = IP_Geo_Block_Util::get_server_ip() && $key !== $tmp && ! IP_Geo_Block_Util::is_private_ip( $key ) ):
 		// Get the country code of server
 		$key = IP_Geo_Block::get_geolocation( $_SERVER['SERVER_ADDR'] );
 

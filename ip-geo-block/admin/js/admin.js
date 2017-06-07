@@ -385,14 +385,39 @@ var ip_geo_block_time = new Date();
 
 	// Load / Save cookie using wpCookies in wp-includes/js/utils.js
 	function loadCookie(tabNo) {
-		return ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('$', tabNo))) || {};
+		var i, cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash('ip-geo-block')) || [];
+
+		for (i in cookie) {
+			if(cookie.hasOwnProperty(i)) {
+				cookie[i] = cookie[i].split(''); // string (ooo...) to array (n)
+			}
+		}
+
+		if ( 'undefined' === typeof cookie[tabNo] ) {
+			cookie[tabNo] = [];
+		}
+
+		return cookie;
 	}
 
 	// setHash( name, value, expires, path, domain, secure )
-	function saveCookie(tabNo, cookie) {
+	function saveCookie(cookie) {
+		var j, c = [];
+
+		$.each(cookie, function(i, obj) {
+			for (j = 0; j < obj.length; ++j) {
+				obj[j] = obj[j] || 'o';
+				if (j === 0) {
+					c[i] = obj[j];
+				} else {
+					c[i] += obj[j];
+				}
+			}
+		});
+
 		if ('undefined' !== typeof wpCookies) {
-			var path = 'undefined' !== typeof IP_GEO_BLOCK_AUTH ? IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin : '';
-			wpCookies.setHash(ID('$', tabNo), cookie, new Date(Date.now() + 2592000000), path);
+			j = 'undefined' !== typeof IP_GEO_BLOCK_AUTH ? IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin : '';
+			wpCookies.setHash('ip-geo-block', c, new Date(Date.now() + 2592000000), j);
 		}
 	}
 
@@ -404,8 +429,8 @@ var ip_geo_block_time = new Date();
 		title.parent().nextAll().toggle();
 		title.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
 
-		cookie[index] = title.hasClass(ID('dropdown')) ? 'o' : 'x';
-		saveCookie(tabNo, cookie); // Save cookie
+		cookie[tabNo][index] = title.hasClass(ID('dropdown')) ? 'o' : 'x';
+		saveCookie(cookie); // Save cookie
 
 		// redraw google chart
 		drawChart();
@@ -432,11 +457,11 @@ var ip_geo_block_time = new Date();
 				$this = $(this);
 				$this.parent().nextAll().toggle(n ? false : true);
 				$this.removeClass(m.join(' ')).addClass(n ? m[1] : m[0]);
-				cookie[i] = n ? 'x' : 'o';
+				cookie[tabNo][i] = n ? 'x' : 'o';
 			});
 
 			// Save cookie
-			saveCookie(tabNo, cookie);
+			saveCookie(cookie);
 
 			// redraw google chart
 			drawChart();
