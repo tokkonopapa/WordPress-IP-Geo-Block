@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-06-10 14:32+0900\n"
-"PO-Revision-Date: 2017-06-10 14:32+0900\n"
+"POT-Creation-Date: 2017-06-10 23:50+0900\n"
+"PO-Revision-Date: 2017-06-10 23:50+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgid "Contribute at GitHub"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:210
-#: admin/class-ip-geo-block-admin.php:450
+#: admin/class-ip-geo-block-admin.php:452
 msgid "Settings"
 msgstr ""
 
@@ -127,47 +127,47 @@ msgid ""
 "select &#8220;init&#8221; action hook."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:451
+#: admin/class-ip-geo-block-admin.php:453
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:452
+#: admin/class-ip-geo-block-admin.php:454
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:453
+#: admin/class-ip-geo-block-admin.php:455
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:454
+#: admin/class-ip-geo-block-admin.php:456
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:467
+#: admin/class-ip-geo-block-admin.php:469
 msgid "Toggle all"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:489
+#: admin/class-ip-geo-block-admin.php:491
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:490
+#: admin/class-ip-geo-block-admin.php:492
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:495
+#: admin/class-ip-geo-block-admin.php:497
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:590
+#: admin/class-ip-geo-block-admin.php:592
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:968
-#: admin/class-ip-geo-block-admin.php:979
+#: admin/class-ip-geo-block-admin.php:970
+#: admin/class-ip-geo-block-admin.php:981
 #: classes/class-ip-geo-block-cron.php:260
 #: classes/class-ip-geo-block-cron.php:316
 #: classes/class-ip-geo-block-opts.php:379
@@ -175,7 +175,7 @@ msgstr ""
 msgid "Unable to write %s. Please check the permission."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:969
+#: admin/class-ip-geo-block-admin.php:971
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
@@ -1135,7 +1135,7 @@ msgstr ""
 msgid "gz or zip is not supported on your system."
 msgstr ""
 
-#: classes/class-ip-geo-block-file.php:38
+#: classes/class-ip-geo-block-file.php:55
 #, php-format
 msgid "%s: This plugin does not support FTP or SSH based file operations."
 msgstr ""

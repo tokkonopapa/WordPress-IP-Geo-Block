@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-06-10 14:32+0900\n"
-"PO-Revision-Date: 2017-06-10 14:43+0900\n"
+"POT-Creation-Date: 2017-06-10 23:50+0900\n"
+"PO-Revision-Date: 2017-06-10 23:55+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -60,7 +60,7 @@ msgid "Contribute at GitHub"
 msgstr "開発に参加"
 
 #: admin/class-ip-geo-block-admin.php:210
-#: admin/class-ip-geo-block-admin.php:450
+#: admin/class-ip-geo-block-admin.php:452
 msgid "Settings"
 msgstr "設定"
 
@@ -145,31 +145,31 @@ msgstr ""
 "択されていますが、<strong>IP Geo Allow</strong> と互換性がありません。"
 "「&#8220;init&#8221; アクション・フック」を選択してください。"
 
-#: admin/class-ip-geo-block-admin.php:451
+#: admin/class-ip-geo-block-admin.php:453
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:452
+#: admin/class-ip-geo-block-admin.php:454
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:453
+#: admin/class-ip-geo-block-admin.php:455
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:454
+#: admin/class-ip-geo-block-admin.php:456
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:467
+#: admin/class-ip-geo-block-admin.php:469
 msgid "Toggle all"
 msgstr "全てを開閉"
 
-#: admin/class-ip-geo-block-admin.php:489
+#: admin/class-ip-geo-block-admin.php:491
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:490
+#: admin/class-ip-geo-block-admin.php:492
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -179,16 +179,16 @@ msgstr ""
 "html\" title=\"Referer Checker\">参照元を残さずにリンク先にリダイレクトできま"
 "す</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:495
+#: admin/class-ip-geo-block-admin.php:497
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: admin/class-ip-geo-block-admin.php:590
+#: admin/class-ip-geo-block-admin.php:592
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:968
-#: admin/class-ip-geo-block-admin.php:979
+#: admin/class-ip-geo-block-admin.php:970
+#: admin/class-ip-geo-block-admin.php:981
 #: classes/class-ip-geo-block-cron.php:260
 #: classes/class-ip-geo-block-cron.php:316
 #: classes/class-ip-geo-block-opts.php:379
@@ -196,7 +196,7 @@ msgstr "有効"
 msgid "Unable to write %s. Please check the permission."
 msgstr "%s に書き込めません。パーミッションを確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:969
+#: admin/class-ip-geo-block-admin.php:971
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
@@ -1305,7 +1305,7 @@ msgstr "%sに書き込むことが出来ません。パーミションをチェ�
 msgid "gz or zip is not supported on your system."
 msgstr "gz または zip がサポートされていません。"
 
-#: classes/class-ip-geo-block-file.php:38
+#: classes/class-ip-geo-block-file.php:55
 #, php-format
 msgid "%s: This plugin does not support FTP or SSH based file operations."
 msgstr ""
