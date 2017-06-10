@@ -189,8 +189,8 @@ class IP_Geo_Block_Cron {
 	 * @return array status message.
 	 */
 	public static function download_zip( $url, $args, $filename, $modified ) {
-		if ( ! function_exists( 'download_url' ) )
-			require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		IP_Geo_Block_FS::init( 'download_zip' );
 
 		// if the name of src file is changed, then update the dst
 		if ( basename( $filename ) !== ( $base = pathinfo( $url, PATHINFO_FILENAME ) ) )
@@ -274,8 +274,6 @@ class IP_Geo_Block_Cron {
 			}
 
 			elseif ( 'zip' === $args && class_exists( 'ZipArchive' ) ) {
-				// https://codex.wordpress.org/Function_Reference/unzip_file
-				WP_Filesystem();
 				$tmp = get_temp_dir(); // @since 2.5
 				$ret = unzip_file( $src, $tmp ); // @since 2.5
 

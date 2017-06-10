@@ -205,7 +205,7 @@ class IP_Geo_Block_Opts {
 
 	/**
 	 * Upgrade option table
-	 *
+	 * @since 3.0.4 This should be executed in admin context
 	 */
 	public static function upgrade() {
 		$default = self::get_default();
@@ -366,7 +366,7 @@ class IP_Geo_Block_Opts {
 	 * Install / Uninstall APIs
 	 *
 	 */
-	public static function install_api( $settings ) {
+	private static function install_api( $settings ) {
 		$src = IP_GEO_BLOCK_PATH . 'wp-content/' . IP_Geo_Block::GEOAPI_NAME;
 		$dst = self::get_api_dir( $settings );
 
@@ -385,8 +385,11 @@ class IP_Geo_Block_Opts {
 	}
 
 	public static function delete_api( $settings ) {
-		if ( @is_writable( $dir = self::get_api_dir( $settings ) ) )
-			self::recurse_rmdir( $dir );
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		if ( FALSE === ( $fs = IP_Geo_Block_FS::init( 'delete_api' ) ) )
+			return FALSE;
+		else
+			return $fs->delete( self::get_api_dir( $settings ), TRUE ); // $recursive = true
 	}
 
 	private static function get_api_dir( $settings ) {
@@ -412,6 +415,10 @@ class IP_Geo_Block_Opts {
 
 	// http://php.net/manual/function.copy.php#91010
 	private static function recurse_copy( $src, $dst ) {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		if ( FALSE === ( $fs = IP_Geo_Block_FS::init( 'recurse_copy' ) ) )
+			return;
+
 		$src = IP_Geo_Block_Util::slashit( $src );
 		$dst = IP_Geo_Block_Util::slashit( $dst );
 
@@ -423,7 +430,7 @@ class IP_Geo_Block_Opts {
 					if ( @is_dir( $src.$file ) )
 						self::recurse_copy( $src.$file, $dst.$file );
 					else
-						@copy( $src.$file, $dst.$file );
+						$fs->copy( $src.$file, $dst.$file, TRUE ); // @copy( $src.$file, $dst.$file );
 				}
 			}
 
@@ -431,30 +438,20 @@ class IP_Geo_Block_Opts {
 		}
 	}
 
-	// http://php.net/manual/function.rmdir.php#110489
-	private static function recurse_rmdir( $dir ) {
-		$dir = IP_Geo_Block_Util::slashit( $dir );
-		$files = array_diff( @scandir( $dir ), array( '.', '..' ) );
-
-		foreach ( $files as $file ) {
-			if ( is_dir( $dir.$file ) )
-				self::recurse_rmdir( $dir.$file );
-			else
-				@unlink( $dir.$file );
-		}
-
-		return @rmdir( $dir );
-	}
-
 	/**
 	 * Activate / Deactivate Must-use plugin / Advanced cache
 	 *
 	 */
 	private static function remove_mu_plugin() {
-		if ( file_exists( $src = WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) )
-			return @unlink( $src ) ? TRUE : $src;
-		else
-			return TRUE;
+		if ( file_exists( $src = WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) ) {
+			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+			if ( FALSE === ( $fs = IP_Geo_Block_FS::init( 'remove_mu_plugin' ) ) )
+				return $src;
+			else
+				return $fs->delete( $dir ) ? TRUE : $src;
+		}
+
+		return TRUE;
 	}
 
 	public static function get_validation_timing() {
@@ -476,7 +473,10 @@ class IP_Geo_Block_Opts {
 				if ( ! file_exists( WPMU_PLUGIN_DIR ) )
 					wp_mkdir_p( WPMU_PLUGIN_DIR ); // @since 2.0.1 @mkdir( $path );
 
-				if ( ! @copy( $src, $dst ) )
+				require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+				if ( FALSE === ( $fs = IP_Geo_Block_FS::init( 'setup_validation_timing' ) ) )
+					return $dst;
+				elseif ( ! $fs->copy( $src.$file, $dst.$file, TRUE ) )
 					return $dst;
 			}
 			break;

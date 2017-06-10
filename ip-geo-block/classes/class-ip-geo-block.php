@@ -59,10 +59,6 @@ class IP_Geo_Block {
 		if ( $settings['update']['auto'] )
 			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
 
-		// check the package version and upgrade if needed (activation hook never fire on upgrade)
-		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
-			$loader->add_action( 'init', 'ip_geo_block_activate', $priority );
-
 		// normalize requested uri and page
 		$key = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
 		$this->request_uri = @parse_url( $key, PHP_URL_PATH ) or $this->request_uri = $key;

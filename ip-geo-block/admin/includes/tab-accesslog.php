@@ -20,7 +20,7 @@ if ( $settings['validation']['reclogs'] ) :
 		add_settings_section(
 			$section,
 			__( 'Validation logs', 'ip-geo-block' ),
-			array( __CLASS__, 'list_accesslog' ),
+			NULL,
 			$option_slug
 		);
 
@@ -71,6 +71,25 @@ if ( $settings['validation']['reclogs'] ) :
 			)
 		);
 
+		// same as in tab-settings.php
+		$dfn = __( '<dfn title="Validation log of request to %s.">%s</dfn>', 'ip-geo-block' );
+		$target = array(
+			'comment' => sprintf( $dfn, 'wp-comments-post.php', __( 'Comment post', 'ip-geo-block' ) ),
+			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',      'ip-geo-block' ) ),
+			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',   'ip-geo-block' ) ),
+			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',   'ip-geo-block' ) ),
+			'public'  => sprintf( $dfn, __( 'public facing pages', 'ip-geo-block' ), __( 'Public facing pages', 'ip-geo-block' ) ),
+		);
+
+		foreach ( $target as $key => $val ) {
+			add_settings_section(
+				$key,
+				$val,
+				array( __CLASS__, 'accesslog_' . $key ),
+				$option_slug
+			);
+		}
+
 else:
 
 		/*----------------------------------------*
@@ -104,30 +123,24 @@ endif;
 	 * Function that fills the section with the desired content.
 	 *
 	 */
-	public static function list_accesslog() {
-		// same as in tab-settings.php
-		$dfn = __( '<dfn title="Validation log of request to %s.">%s</dfn>', 'ip-geo-block' );
-		$target = array(
-			'comment' => sprintf( $dfn, 'wp-comments-post.php', __( 'Comment post', 'ip-geo-block' ) ),
-			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',      'ip-geo-block' ) ),
-			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',   'ip-geo-block' ) ),
-			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',   'ip-geo-block' ) ),
-			'public'  => sprintf( $dfn, __( 'public facing pages', 'ip-geo-block' ), __( 'Public facing pages', 'ip-geo-block' ) ),
-		);
+	public static function accesslog_comment() { self::list_accesslog( 'comment' ); }
+	public static function accesslog_xmlrpc () { self::list_accesslog( 'xmlrpc'  ); }
+	public static function accesslog_login  () { self::list_accesslog( 'login'   ); }
+	public static function accesslog_admin  () { self::list_accesslog( 'admin'   ); }
+	public static function accesslog_public () { self::list_accesslog( 'public'  ); }
 
-		foreach ( $target as $key => $val ) {
-			echo '<h4>', $val, '</h4>', "\n";
-			echo '<table class="fixed ', IP_Geo_Block::PLUGIN_NAME, '-log" data-page-size="10" data-limit-navigation="5" data-filter="#', IP_Geo_Block::OPTION_NAME, '_filter_logs" data-filter-text-only="true"><thead><tr>', "\n";
-			echo '<th data-type="numeric">', __( 'Date', 'ip-geo-block' ), '</th>', "\n";
-			echo '<th>', __( 'IP address', 'ip-geo-block' ), '</th>', "\n";
-			echo '<th>', __( 'Code',       'ip-geo-block' ), '</th>', "\n";
-			echo '<th>', __( 'Result',     'ip-geo-block' ), '</th>', "\n";
-			echo '<th data-hide="phone,tablet">', __( 'Request',      'ip-geo-block' ), '</th>', "\n";
-			echo '<th data-hide="all">',          __( 'User agent',   'ip-geo-block' ), '</th>', "\n";
-			echo '<th data-hide="all">',          __( 'HTTP headers', 'ip-geo-block' ), '</th>', "\n";
-			echo '<th data-hide="all">',          __( '$_POST data',  'ip-geo-block' ), '</th>', "\n";
-			echo '</tr></thead><tbody id="', IP_Geo_Block::PLUGIN_NAME, '-log-', $key, '">', "\n";
-			echo <<<EOT
+	private static function list_accesslog( $key ) {
+		echo '<table class="fixed ', IP_Geo_Block::PLUGIN_NAME, '-log" data-page-size="10" data-limit-navigation="5" data-filter="#', IP_Geo_Block::OPTION_NAME, '_filter_logs" data-filter-text-only="true" style="display:none"><thead><tr>', "\n";
+		echo '<th data-type="numeric">', __( 'Date', 'ip-geo-block' ), '</th>', "\n";
+		echo '<th>', __( 'IP address', 'ip-geo-block' ), '</th>', "\n";
+		echo '<th>', __( 'Code',       'ip-geo-block' ), '</th>', "\n";
+		echo '<th>', __( 'Result',     'ip-geo-block' ), '</th>', "\n";
+		echo '<th data-hide="phone,tablet">', __( 'Request',      'ip-geo-block' ), '</th>', "\n";
+		echo '<th data-hide="all">',          __( 'User agent',   'ip-geo-block' ), '</th>', "\n";
+		echo '<th data-hide="all">',          __( 'HTTP headers', 'ip-geo-block' ), '</th>', "\n";
+		echo '<th data-hide="all">',          __( '$_POST data',  'ip-geo-block' ), '</th>', "\n";
+		echo '</tr></thead><tbody id="', IP_Geo_Block::PLUGIN_NAME, '-log-', $key, '">', "\n";
+		echo <<<EOT
 </tbody>
 <tfoot class="hide-if-no-paging">
 	<tr>
@@ -139,7 +152,6 @@ endif;
 </table>
 
 EOT;
-		}
 	}
 
 	public static function warn_accesslog() {

@@ -145,9 +145,8 @@ var ip_geo_block_time = new Date();
 
 	// Show/Hide folding list
 	function show_folding_list($this, element, mask) {
-		var stat = false;
-		stat |= (0 === $this.prop('type').indexOf('checkbox') && $this.is(':checked'));
-		stat |= (0 === $this.prop('type').indexOf('select'  ) && '0' !== $this.val());
+		var stat = (0 === $this.prop('type').indexOf('checkbox') && $this.is(':checked')) ||
+		           (0 === $this.prop('type').indexOf('select'  ) && '0' !== $this.val());
 
 		element.nextAll(ID('.', 'settings-folding')).each(function (i, obj) {
 			fold_elements($(obj), stat && mask);
@@ -289,33 +288,27 @@ var ip_geo_block_time = new Date();
 
 	// google chart
 	var chart = {
-		self: this,
-		drawChart: function () {
-			this.drawPie();
-			this.drawLine();
-		},
-
 		// Pie Chart
 		dataPie: null,
 		viewPie: null,
 		drawPie: function () {
-			if (!self.dataPie) {
-				self.dataPie = new google.visualization.DataTable();
-				self.dataPie.addColumn('string', 'Country');
-				self.dataPie.addColumn('number', 'Requests');
+			if (!chart.dataPie) {
+				chart.dataPie = new google.visualization.DataTable();
+				chart.dataPie.addColumn('string', 'Country');
+				chart.dataPie.addColumn('number', 'Requests');
 				var value;
 				$(ID('#', 'countries li')).each(function () {
 					value = $(this).text().split(':');
-					self.dataPie.addRow([value[0] || '', Number(value[1])]);
+					chart.dataPie.addRow([value[0] || '', Number(value[1])]);
 				});
 			}
-			if (!self.viewPie) {
-				self.viewPie = new google.visualization.PieChart(
+			if (!chart.viewPie) {
+				chart.viewPie = new google.visualization.PieChart(
 					document.getElementById(ID('chart-countries'))
 				);
 			}
 			if ($(ID('#', 'chart-countries')).width()) {
-				self.viewPie.draw(self.dataPie, {
+				chart.viewPie.draw(chart.dataPie, {
 					backgroundColor: { fill: 'transparent' }, // '#f1f1f1',
 					chartArea: {
 						left: 0,
@@ -333,8 +326,8 @@ var ip_geo_block_time = new Date();
 		viewLine: null,
 		drawLine: function () {
 			var i, j, m, n, cells, arr = [], tr;
-			if (!self.dataLine) {
-				i = self.dataLine = new google.visualization.DataTable();
+			if (!chart.dataLine) {
+				i = chart.dataLine = new google.visualization.DataTable();
 				i.addColumn('date',   'Date'   );
 				i.addColumn('number', 'comment');
 				i.addColumn('number', 'xmlrpc' );
@@ -350,17 +343,17 @@ var ip_geo_block_time = new Date();
 						arr[i].push(Number(cells.eq(j).text()));
 					}
 				}
-				self.dataLine.addRows(arr);
+				chart.dataLine.addRows(arr);
 			}
-			if (!self.viewLine) {
-				self.viewLine = new google.visualization.LineChart(
+			if (!chart.viewLine) {
+				chart.viewLine = new google.visualization.LineChart(
 					document.getElementById(ID('chart-daily'))
 				);
 			}
 			i = $(ID('#', 'chart-daily')).width();
 			if (i) {
 				i = i > 320 ? true : false;
-				self.viewLine.draw(self.dataLine, {
+				chart.viewLine.draw(chart.dataLine, {
 					backgroundColor: { fill: 'transparent' }, // '#f1f1f1',
 					legend: { position: 'bottom' },
 					hAxis: { format: 'MM/dd' },
@@ -373,6 +366,12 @@ var ip_geo_block_time = new Date();
 					}
 				});
 			}
+		},
+
+		// draw pie chart and line chart
+		drawChart: function () {
+			chart.drawPie();
+			chart.drawLine();
 		}
 	};
 
@@ -389,11 +388,11 @@ var ip_geo_block_time = new Date();
 
 		for (i in cookie) {
 			if(cookie.hasOwnProperty(i)) {
-				cookie[i] = cookie[i].split(''); // string (ooo...) to array (n)
+				cookie[i] = cookie[i].replace(/[^ox]/g, '').split(''); // string (ooo...) to array (n)
 			}
 		}
 
-		if ( 'undefined' === typeof cookie[tabNo] ) {
+		if ('undefined' === typeof cookie[tabNo]) {
 			cookie[tabNo] = [];
 		}
 
@@ -402,15 +401,17 @@ var ip_geo_block_time = new Date();
 
 	// setHash( name, value, expires, path, domain, secure )
 	function saveCookie(cookie) {
-		var j, c = [];
+		var j, n, c = [];
 
 		$.each(cookie, function(i, obj) {
-			for (j = 0; j < obj.length; ++j) {
-				obj[j] = obj[j] || 'o';
-				if (j === 0) {
-					c[i] = obj[j];
-				} else {
-					c[i] += obj[j];
+			c[i] = '';
+			if ('undefined' !== typeof obj) {
+				n = obj.length;
+				if (n) {
+					c[i] = (obj[0] || 'o');
+					for (j = 1; j < n; ++j) {
+						c[i] += (obj[j] || 'o');
+					}
 				}
 			}
 		});
@@ -423,13 +424,20 @@ var ip_geo_block_time = new Date();
 
 	// Click event handler to show/hide form-table
 	function toggleSection(title, tabNo, cookie) {
-		var index = title.closest('fieldset').data('section');
+		var border, index = title.closest('fieldset').data('section');
 
 		// Show/Hide
 		title.parent().nextAll().toggle();
 		title.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
 
-		cookie[tabNo][index] = title.hasClass(ID('dropdown')) ? 'o' : 'x';
+		border = title.hasClass(ID('dropdown'));
+		if (border) {
+			title.parent().next().addClass(ID('border'));
+		} else {
+			title.parent().next().removeClass(ID('border'));
+		}
+
+		cookie[tabNo][index] =  border ? 'o' : 'x';
 		saveCookie(cookie); // Save cookie
 
 		// redraw google chart
@@ -468,6 +476,8 @@ var ip_geo_block_time = new Date();
 
 			return false;
 		});
+
+		return cookie;
 	}
 
 	// form for export / import
@@ -488,10 +498,13 @@ var ip_geo_block_time = new Date();
 
 	$(function () {
 		// Get tab number
-		var tabNo = Number(IP_GEO_BLOCK.tab) || 0;
+		var tabNo = Number(IP_GEO_BLOCK.tab) || 0,
+
+		// Attach event handler and manage cookie
+		cookie = manageSection(tabNo);
 
 		// Inhibit to submit by return key
-		$(ID('#', 'inhibit')).on('submit', function () {
+		$(ID('.', 'inhibit')).on('submit', function () {
 			return false;
 		});
 
@@ -501,8 +514,6 @@ var ip_geo_block_time = new Date();
 		   * Settings
 		   *----------------------------------------*/
 		  case 0:
-			manageSection(tabNo);
-
 			// Name of base class
 			var name = ID('%', 'settings');
 
@@ -510,14 +521,14 @@ var ip_geo_block_time = new Date();
 			 * Validation rule settings
 			 *---------------------------*/
 			// Scan your country code
-			$('[id^="' + ID('$', 'scan-') + '"]').on('click', function (event) {
+			$('[id^="' + ID('scan-') + '"]').on('click', function (event) {
 				var $this = $(this),
 				    id = $this.attr('id'),
 				    parent = $this.parent();
 
 				ajax_post(id.replace(/^.*(?:scan)/, 'scanning'), {
 					cmd: 'scan-code',
-					which: id.replace(ID('$', 'scan-'), '')
+					which: id.replace(ID('scan-'), '')
 				}, function (data) {
 					if (!parent.children('ul').length) {
 						parent.append('<ul id="' + ID('code-list') + '"></ul>');
@@ -878,8 +889,6 @@ var ip_geo_block_time = new Date();
 		   * Statistics
 		   *----------------------------------------*/
 		  case 1:
-			manageSection(tabNo);
-
 			// https://developers.google.com/loader/#Dynamic
 			if ($(ID('#', 'chart-countries')).length && 'object' === typeof google) {
 				google.load('visualization', '1', {
@@ -935,14 +944,14 @@ var ip_geo_block_time = new Date();
 
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (event) {
-				var whois = $(ID('#', 'whois')),
+				var whois = $(ID('#', 'whois')), obj,
 				    ip = $(ID('@', 'ip_address')).val();
 
 				if (ip) {
 					whois.hide().empty();
 
 					// Get whois data
-					var obj = $.whois(ip, function (data) {
+					obj = $.whois(ip, function (data) {
 						var i, str = '';
 						for (i = 0; i < data.length; ++i) {
 							str +=
@@ -954,8 +963,8 @@ var ip_geo_block_time = new Date();
 
 						whois.html(
 							'<fieldset id="' + ID('section-1') + '" class="' + ID('field') + ' panel panel-default" data-section="1">' +
-							'<legend class="panel-heading"><h2 id="' + ID('whois-title') + '" class="' + ID('dropdown') + '">Whois</h2></legend>' +
-							'<div class="panel-body"><table class="' + ID('table') + '">' + str + '</table></div>' +
+							'<legend class="panel-heading"><h3 id="' + ID('whois-title') + '" class="' + ID('dropdown') + '">Whois</h3></legend>' +
+							'<div class="panel-body ' + ID('border') + '"><table class="' + ID('table') + '">' + str + '</table></div>' +
 							'</fieldset>'
 						).fadeIn('slow');
 
@@ -1035,32 +1044,46 @@ var ip_geo_block_time = new Date();
 		   *----------------------------------------*/
 		  case 4:
 			// Kick-off footable
-			if ($(ID('.', 'log')).hide().length) {
-				ajax_post('logs', {
-					cmd: 'restore',
-					which: null,
-					time: new Date() - ip_geo_block_time
-				}, function (data) {
-					var key;
-					for (key in data) {
-						if (data.hasOwnProperty(key)) {
-							key = escapeHTML(key); // data has been already sanitized
-//							$(ID('#', 'log-' + key)).html($.parseHTML(data[key])); // jQuery 1.8+
-							$(ID('#', 'log-' + key)).html(data[key]);
+			ajax_post('logs', {
+				cmd: 'restore',
+				which: null,
+				time: new Date() - ip_geo_block_time
+			}, function (data) {
+				var key;
+				for (key in data) {
+					if (data.hasOwnProperty(key)) {
+						key = escapeHTML(key); // data has been already sanitized
+//						$(ID('#', 'log-' + key)).html($.parseHTML(data[key])); // jQuery 1.8+
+						$(ID('#', 'log-' + key)).html(data[key]);
+					}
+				}
+
+				if (typeof $.fn.footable === 'function') {
+					var c, logs = $(ID('.', 'log')),
+					    title = logs.parent().prevAll('legend').find('h2,h3');
+
+					// Once open section
+					title.removeClass(ID('dropup')).addClass(ID('dropdown'));
+
+					// Then make footable
+					logs.fadeIn('slow').footable();
+
+					// Finaly close section
+					title.each(function (i, obj) {
+						c = cookie[tabNo][i+1] || 'o';
+						if ('x' === c) {
+							cookie[tabNo][i+1] = 'o';
+							$(obj).click();
 						}
-					}
-
-					if (typeof $.fn.footable === 'function') {
-						$(ID('.', 'log')).fadeIn('slow').footable();
-					}
-
-					// Jump to search tab with opening new window
-					$('tbody[id^="' + ID('$', 'log-') + '"]').on('click', 'a', function (event) {
-						window.open(window.location.href.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''));
-						return false;
 					});
+				}
+
+				// Jump to search tab with opening new window
+				$('tbody[id^="' + ID('log-') + '"]').on('click', 'a', function (event) {
+					window.open(window.location.href.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''));
+					return false;
 				});
-			}
+			});
 
 			// Clear filter logs
 			$(ID('#', 'reset-filter')).on('click', function (event) {

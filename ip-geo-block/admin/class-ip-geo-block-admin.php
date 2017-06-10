@@ -407,7 +407,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 * wp-admin/includes/template.php @since 2.7.0
 	 */
-	private function do_settings_sections( $page, $cookie ) {
+	private function do_settings_sections( $page, $tab, $cookie ) {
 		global $wp_settings_sections, $wp_settings_fields;
 
 		if ( ! isset( $wp_settings_sections[ $page ] ) )
@@ -416,14 +416,16 @@ class IP_Geo_Block_Admin {
 		$index  = 0; // index of fieldset
 		foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
 			// TRUE if open ('o') or FALSE if close ('x')
-			$stat = empty( $cookie[ $index ] ) || 'x' !== $cookie[ $index ];
+			$stat = empty( $cookie[ $tab ][ $index ] ) || 'x' !== $cookie[ $tab ][ $index ];
 
 			echo '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n";
-			echo '<legend class="panel-heading"><h2';
-			if ( $this->admin_tab <= 1 )
-				echo ' class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '"';
-			echo '>', $section['title'], '</h2></legend>', "\n";
-			echo '<div class="panel-body"', $stat ? '>' : ' style="display:none">', "\n";
+			echo '<legend class="panel-heading"><h3';
+			echo ' class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '"';
+			echo '>', $section['title'], '</h3></legend>', "\n";
+			echo '<div class="panel-body',
+				($stat ? ' ' . IP_Geo_Block::PLUGIN_NAME . '-border"' : '"'),
+				($stat || (4 === $tab && $index) ? '>' : ' style="display:none">'), "\n";
+			++$index;
 
 			if ( $section['callback'] )
 				call_user_func( $section['callback'], $section );
@@ -431,13 +433,13 @@ class IP_Geo_Block_Admin {
 			if ( ! isset( $wp_settings_fields ) ||
 			     ! isset( $wp_settings_fields[ $page ] ) ||
 			     ! isset( $wp_settings_fields[ $page ][ $section['id'] ] ) ) {
+				 echo "</div>\n</fieldset>\n";
 				continue;
 			}
 
 			echo '<table class="form-table">';
 			do_settings_fields( $page, $section['id'] );
 			echo "</table>\n</div>\n</fieldset>\n";
-			++$index;
 		}
 	}
 
@@ -464,13 +466,11 @@ class IP_Geo_Block_Admin {
 	echo '<a href="?page=', IP_Geo_Block::PLUGIN_NAME, '&amp;tab=', $key, '" class="nav-tab', ($tab === $key ? ' nav-tab-active' : ''), '">', $val, '</a>';
 } ?>
 	</h2>
-<?php if ( 0 <= $tab && $tab <= 1 ) { ?>
 	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="javascript:void(0)"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]</p>
-<?php } ?>
-	<form method="post" action="options.php"<?php if ( 0 !== $tab ) echo " id=\"", IP_Geo_Block::PLUGIN_NAME, "-inhibit\""; ?>>
+	<form method="post" action="options.php" id="<?php echo IP_Geo_Block::PLUGIN_NAME, '-', $tab; ?>"<?php if ( $tab ) echo " class=\"", IP_Geo_Block::PLUGIN_NAME, "-inhibit\""; ?>>
 <?php
 		settings_fields( IP_Geo_Block::PLUGIN_NAME );
-		$this->do_settings_sections( IP_Geo_Block::PLUGIN_NAME, isset( $cookie[ $tab ] ) ? $cookie[ $tab ] : array() );
+		$this->do_settings_sections( IP_Geo_Block::PLUGIN_NAME, $tab, $cookie );
 		if ( 0 === $tab )
 			submit_button(); // @since 3.1
 ?>
@@ -480,9 +480,8 @@ class IP_Geo_Block_Admin {
 	<div id="ip-geo-block-map"></div>
 <?php } elseif ( 3 === $tab ) {
 	// show attribution (higher priority order)
-	$providers = IP_Geo_Block_Provider::get_addons();
 	$tab = array();
-	foreach ( $providers as $provider ) {
+	foreach ( IP_Geo_Block_Provider::get_addons() as $provider ) {
 		if ( $geo = IP_Geo_Block_API::get_instance( $provider, NULL ) ) {
 			$tab[] = $geo->get_attribution();
 		}
@@ -821,6 +820,11 @@ class IP_Geo_Block_Admin {
 		// initialize checkboxes not in the form
 		foreach ( array( 'login', 'admin', 'ajax', 'plugins', 'themes', 'public', 'mimetype' ) as $key ) {
 			$output['validation'][ $key ] = 0;
+		}
+
+		// initialize checkboxes not in the form
+		foreach ( array( 'plugins', 'themes', 'includes', 'uploads', 'languages' ) as $key ) {
+			$output['rewrite'][ $key ] = FALSE;
 		}
 
 		// initialize checkboxes not in the form

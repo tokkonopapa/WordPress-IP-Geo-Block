@@ -3,7 +3,7 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.7.5
+Tested up to: 4.8
 Stable tag: 3.0.4a
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -328,6 +328,15 @@ But there're exceptions: When you enable "**Force to load WP core**" for **Plugi
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.3.1 =
+This is a maintenance release addressing various minor improvement toward the next release.
+
+* Improvement of css and js for sections.
+* Better handling of cookie.
+* Better handling of server and private IP address.
+* Better compatibility with file operations by Filesystem API (but not yet supported FTP or SSH based operations).
+* Change the timing of upgrade check from `init` to activation phase.
 
 = 3.0.3 =
 * **New feature:** New option "Prevent malicious upload" to restrict MIME types.

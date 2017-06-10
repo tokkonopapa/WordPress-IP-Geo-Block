@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-06-05 23:05+0900\n"
-"PO-Revision-Date: 2017-06-05 23:16+0900\n"
+"POT-Creation-Date: 2017-06-10 14:32+0900\n"
+"PO-Revision-Date: 2017-06-10 14:43+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -60,7 +60,7 @@ msgid "Contribute at GitHub"
 msgstr "開発に参加"
 
 #: admin/class-ip-geo-block-admin.php:210
-#: admin/class-ip-geo-block-admin.php:446
+#: admin/class-ip-geo-block-admin.php:450
 msgid "Settings"
 msgstr "設定"
 
@@ -135,7 +135,7 @@ msgstr ""
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr "「<a href=\"%s\">検証ルールの設定</a>」を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:344
+#: admin/class-ip-geo-block-admin.php:345
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
@@ -145,31 +145,31 @@ msgstr ""
 "択されていますが、<strong>IP Geo Allow</strong> と互換性がありません。"
 "「&#8220;init&#8221; アクション・フック」を選択してください。"
 
-#: admin/class-ip-geo-block-admin.php:447
+#: admin/class-ip-geo-block-admin.php:451
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:448
+#: admin/class-ip-geo-block-admin.php:452
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:449
+#: admin/class-ip-geo-block-admin.php:453
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:450
+#: admin/class-ip-geo-block-admin.php:454
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:461
+#: admin/class-ip-geo-block-admin.php:467
 msgid "Toggle all"
 msgstr "全てを開閉"
 
-#: admin/class-ip-geo-block-admin.php:485
+#: admin/class-ip-geo-block-admin.php:489
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:486
+#: admin/class-ip-geo-block-admin.php:490
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -179,24 +179,24 @@ msgstr ""
 "html\" title=\"Referer Checker\">参照元を残さずにリンク先にリダイレクトできま"
 "す</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:491
+#: admin/class-ip-geo-block-admin.php:495
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: admin/class-ip-geo-block-admin.php:586
+#: admin/class-ip-geo-block-admin.php:590
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:959
-#: admin/class-ip-geo-block-admin.php:970
+#: admin/class-ip-geo-block-admin.php:968
+#: admin/class-ip-geo-block-admin.php:979
 #: classes/class-ip-geo-block-cron.php:260
-#: classes/class-ip-geo-block-cron.php:318
+#: classes/class-ip-geo-block-cron.php:316
 #: classes/class-ip-geo-block-opts.php:379
 #, php-format
 msgid "Unable to write %s. Please check the permission."
 msgstr "%s に書き込めません。パーミッションを確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:960
+#: admin/class-ip-geo-block-admin.php:969
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
@@ -218,7 +218,7 @@ msgid ""
 "illegal format at %s. Please delete the corresponding line and try again."
 msgstr "%s は誤ったフォーマットです。該当行を削除し、再度、実行してください。"
 
-#: admin/includes/tab-accesslog.php:22 admin/includes/tab-accesslog.php:82
+#: admin/includes/tab-accesslog.php:22 admin/includes/tab-accesslog.php:101
 msgid "Validation logs"
 msgstr "検証のログ"
 
@@ -251,69 +251,69 @@ msgstr "ローカル・ファイルにエクスポートする"
 msgid "Export csv"
 msgstr "CSVをエクスポート"
 
-#: admin/includes/tab-accesslog.php:109
+#: admin/includes/tab-accesslog.php:75
 #, php-format
 msgid "<dfn title=\"Validation log of request to %s.\">%s</dfn>"
 msgstr "<dfn title=\"%s に対するリクエストの検証ログです。\">%s</dfn>"
 
-#: admin/includes/tab-accesslog.php:111 admin/includes/tab-settings.php:453
+#: admin/includes/tab-accesslog.php:77 admin/includes/tab-settings.php:453
 msgid "Comment post"
 msgstr "コメント投稿"
 
-#: admin/includes/tab-accesslog.php:112 admin/includes/tab-settings.php:454
+#: admin/includes/tab-accesslog.php:78 admin/includes/tab-settings.php:454
 msgid "XML-RPC"
 msgstr "XML-RPC"
 
-#: admin/includes/tab-accesslog.php:113 admin/includes/tab-settings.php:455
+#: admin/includes/tab-accesslog.php:79 admin/includes/tab-settings.php:455
 msgid "Login form"
 msgstr "ログイン・フォーム"
 
-#: admin/includes/tab-accesslog.php:114 admin/includes/tab-settings.php:456
+#: admin/includes/tab-accesslog.php:80 admin/includes/tab-settings.php:456
 msgid "Admin area"
 msgstr "管理領域"
 
-#: admin/includes/tab-accesslog.php:115 admin/includes/tab-settings.php:458
+#: admin/includes/tab-accesslog.php:81 admin/includes/tab-settings.php:458
 msgid "public facing pages"
 msgstr "一般公開ページ"
 
-#: admin/includes/tab-accesslog.php:115 admin/includes/tab-settings.php:458
+#: admin/includes/tab-accesslog.php:81 admin/includes/tab-settings.php:458
 msgid "Public facing pages"
 msgstr "一般公開ページ"
 
-#: admin/includes/tab-accesslog.php:121
+#: admin/includes/tab-accesslog.php:134
 msgid "Date"
 msgstr "日時"
 
-#: admin/includes/tab-accesslog.php:122 admin/includes/tab-geolocation.php:65
+#: admin/includes/tab-accesslog.php:135 admin/includes/tab-geolocation.php:65
 #: admin/includes/tab-statistics.php:217
 msgid "IP address"
 msgstr "IPアドレス"
 
-#: admin/includes/tab-accesslog.php:123
+#: admin/includes/tab-accesslog.php:136
 msgid "Code"
 msgstr "国"
 
-#: admin/includes/tab-accesslog.php:124
+#: admin/includes/tab-accesslog.php:137
 msgid "Result"
 msgstr "判定"
 
-#: admin/includes/tab-accesslog.php:125
+#: admin/includes/tab-accesslog.php:138
 msgid "Request"
 msgstr "リクエスト"
 
-#: admin/includes/tab-accesslog.php:126
+#: admin/includes/tab-accesslog.php:139
 msgid "User agent"
 msgstr "ユーザーエージェント"
 
-#: admin/includes/tab-accesslog.php:127
+#: admin/includes/tab-accesslog.php:140
 msgid "HTTP headers"
 msgstr "HTTPヘッダ"
 
-#: admin/includes/tab-accesslog.php:128
+#: admin/includes/tab-accesslog.php:141
 msgid "$_POST data"
 msgstr "$_POSTデータ"
 
-#: admin/includes/tab-accesslog.php:146
+#: admin/includes/tab-accesslog.php:158
 msgid ""
 "Current selection of [<strong>Record validation logs</strong>] on "
 "[<strong>Settings</strong>] tab is [<strong>Disable</strong>]."
@@ -321,7 +321,7 @@ msgstr ""
 "現在［<strong>設定</strong>］タブの［<strong>検証のログを記録</strong>］は"
 "［<strong>無効</strong>］が選択されています。"
 
-#: admin/includes/tab-accesslog.php:147
+#: admin/includes/tab-accesslog.php:159
 msgid ""
 "Please select the proper condition to record and analyze the validation logs."
 msgstr "検証のログを記録し分析するためには、適切な条件を選択して下さい。"
@@ -905,7 +905,7 @@ msgid "database"
 msgstr "ファイル"
 
 #: admin/includes/tab-settings.php:1115
-#: classes/class-ip-geo-block-cron.php:370
+#: classes/class-ip-geo-block-cron.php:368
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
@@ -1280,30 +1280,37 @@ msgid "Your database file is up-to-date."
 msgstr "データベース・ファイルは最新です。"
 
 #: classes/class-ip-geo-block-cron.php:255
-#: classes/class-ip-geo-block-cron.php:313
+#: classes/class-ip-geo-block-cron.php:311
 #, php-format
 msgid "Unable to read %s. Please check the permission."
 msgstr "%s が読めません。パーミッションを確認して下さい。"
 
 #: classes/class-ip-geo-block-cron.php:265
-#: classes/class-ip-geo-block-cron.php:323
+#: classes/class-ip-geo-block-cron.php:321
 #, php-format
 msgid "Can't lock %s. Please try again after a while."
 msgstr "%s をロックできません。パーミッションを確認して下さい。"
 
-#: classes/class-ip-geo-block-cron.php:293
+#: classes/class-ip-geo-block-cron.php:291
 #, php-format
 msgid "Unable to read %s. Please check permission."
 msgstr "%sを読み込むことが出来ません。パーミションをチェックしてください。"
 
-#: classes/class-ip-geo-block-cron.php:302
+#: classes/class-ip-geo-block-cron.php:300
 #, php-format
 msgid "Unable to write %s. Please check permission."
 msgstr "%sに書き込むことが出来ません。パーミションをチェックしてください。"
 
-#: classes/class-ip-geo-block-cron.php:335
+#: classes/class-ip-geo-block-cron.php:333
 msgid "gz or zip is not supported on your system."
 msgstr "gz または zip がサポートされていません。"
+
+#: classes/class-ip-geo-block-file.php:38
+#, php-format
+msgid "%s: This plugin does not support FTP or SSH based file operations."
+msgstr ""
+"%s：本プラグインでは、FTP&thinsp;や&thinsp;SSH&thinsp;を使ったファイル操作は"
+"サポートされません。"
 
 #: classes/class-ip-geo-block-logs.php:149
 #, php-format

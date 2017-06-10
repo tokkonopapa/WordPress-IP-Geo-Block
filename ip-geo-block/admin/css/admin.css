@@ -35,15 +35,19 @@ label {
     box-shadow: 0 1px 1px rgba(0,0,0,.04);
     background: #eee;
 }
-.panel-body {
-    margin-top: 3em;
-    border-top: inherit;
-}
 .panel-heading {
     float: left !important;
 }
 .panel-default > .panel-heading {
     border-color: inherit;
+}
+.panel-body {
+    width: 100%;
+    padding: 0 1em;
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 .panel-body:before,
 .panel-body:after {
@@ -64,13 +68,10 @@ fieldset.ip-geo-block-field h2,
 fieldset.ip-geo-block-field h3 {
     padding: 0;
     margin: 0;
-    font-size: 14px;
+    font-size: 14px !important;
 }
 fieldset.ip-geo-block-field legend.panel-heading {
     padding: 10px;
-}
-fieldset.ip-geo-block-field div.panel-body {
-    padding: 0 1em;
 }
 
 fieldset.ip-geo-block-field .ip-geo-block-dropup,
@@ -194,6 +195,10 @@ ul.ip-geo-block-list label {
     vertical-align: middle;
 }
 
+.ip-geo-block-border {
+    border-top: inherit;
+}
+
 .ip-geo-block-notice {
     color: #dd3d36;
 }
@@ -259,9 +264,26 @@ table.ip-geo-block-table {
     word-break: break-all;
 }
 
+/* for whois */
+@media screen and (max-width:782px) {
+    #ip-geo-block-whois .panel-body {
+        padding: 0 0.5em;
+    }
+}
+
 /* for footable */
+#ip-geo-block-4 #ip-geo-block-section-1 .panel-body,
+#ip-geo-block-4 #ip-geo-block-section-2 .panel-body,
+#ip-geo-block-4 #ip-geo-block-section-3 .panel-body,
+#ip-geo-block-4 #ip-geo-block-section-4 .panel-body,
+#ip-geo-block-4 #ip-geo-block-section-5 .panel-body {
+    padding: 0;
+    display: table-cell;
+    border-collapse: collapse;
+}
 .ip-geo-block-log {
     width: 100% !important;
+    margin: 0.5em 0;
 }
 .ip-geo-block-log * {
     font-size: 13px !important;
@@ -271,9 +293,8 @@ table.ip-geo-block-table {
 .ip-geo-block-log .pagination ul {
     border-radius: 4px;
     display: inline-block;
-    margin-bottom: 0;
-    margin-left: 0;
-    padding-left: 0;
+    margin: 0.5em 0 0 0;
+    padding: 0;
 }
 .ip-geo-block-log .pagination ul > li {
     display: inline;
@@ -366,6 +387,7 @@ table.ip-geo-block-table {
 }
 .ip-geo-block-log > tbody > tr > td:first-child {
     text-align: left;
+    padding-left: 0.5em;
 }
 .ip-geo-block-log .footable-row-detail-row,
 .ip-geo-block-log .footable-row-detail-name,
