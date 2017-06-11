@@ -279,7 +279,7 @@ table.ip-geo-block-table {
 #ip-geo-block-4 #ip-geo-block-section-5 .panel-body {
     padding: 0;
     display: table-cell;
-    border-collapse: collapse;
+/*  border-collapse: collapse; *//* Bug of IE10, IE11 */
 }
 .ip-geo-block-log {
     width: 100% !important;

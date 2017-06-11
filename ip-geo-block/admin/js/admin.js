@@ -424,17 +424,17 @@ var ip_geo_block_time = new Date();
 
 	// Click event handler to show/hide form-table
 	function toggleSection(title, tabNo, cookie) {
-		var border, index = title.closest('fieldset').data('section');
+		var border, index = title.closest('fieldset').data('section'),
+		    body = title.parent().nextAll('.panel-body').toggle();
 
 		// Show/Hide
-		title.parent().nextAll().toggle();
 		title.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
 
 		border = title.hasClass(ID('dropdown'));
 		if (border) {
-			title.parent().next().addClass(ID('border'));
+			body.addClass(ID('border'));
 		} else {
-			title.parent().next().removeClass(ID('border'));
+			body.removeClass(ID('border'));
 		}
 
 		cookie[tabNo][index] =  border ? 'o' : 'x';
@@ -463,8 +463,13 @@ var ip_geo_block_time = new Date();
 			// update cookie
 			title.each(function (i) {
 				$this = $(this);
-				$this.parent().nextAll().toggle(n ? false : true);
 				$this.removeClass(m.join(' ')).addClass(n ? m[1] : m[0]);
+				$this = $this.parent().nextAll('.panel-body').toggle(n ? false : true);
+				if (n) {
+					$this.removeClass(ID('border'));
+				} else {
+					$this.addClass(ID('border'));
+				}
 				cookie[tabNo][i] = n ? 'x' : 'o';
 			});
 
@@ -1059,7 +1064,7 @@ var ip_geo_block_time = new Date();
 				}
 
 				if (typeof $.fn.footable === 'function') {
-					var c, logs = $(ID('.', 'log')),
+					var logs = $(ID('.', 'log')),
 					    title = logs.parent().prevAll('legend').find('h2,h3');
 
 					// Once open section
@@ -1070,8 +1075,7 @@ var ip_geo_block_time = new Date();
 
 					// Finaly close section
 					title.each(function (i, obj) {
-						c = cookie[tabNo][i+1] || 'o';
-						if ('x' === c) {
+						if ('x' === (cookie[tabNo][i+1] || 'o')) {
 							cookie[tabNo][i+1] = 'o';
 							$(obj).click();
 						}
@@ -1080,7 +1084,8 @@ var ip_geo_block_time = new Date();
 
 				// Jump to search tab with opening new window
 				$('tbody[id^="' + ID('log-') + '"]').on('click', 'a', function (event) {
-					window.open(window.location.href.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''));
+					key = window.location.pathname + window.location.search;
+					window.open(key.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''), '_blank');
 					return false;
 				});
 			});

@@ -330,8 +330,9 @@ But there're exceptions: When you enable "**Force to load WP core**" for **Plugi
 == Changelog ==
 
 = 3.0.3.1 =
-This is a maintenance release addressing various minor improvement toward the next release.
+This is a maintenance release addressing various improvement toward the next release.
 
+* Fix some issues caused by IE10/11.
 * Improvement of css and js for sections.
 * Better handling of cookie.
 * Better handling of server and private IP address.
