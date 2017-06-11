@@ -333,7 +333,7 @@ But there're exceptions: When you enable "**Force to load WP core**" for **Plugi
 This is a maintenance release addressing various improvement toward the next release.
 
 * **Bug fix:** Some issues caused by IE10/11 on admin pages.
-* **Improvement:** Strict validation of logged in user authentication.
+* **Improvement:** Better performance of validation for logged in user authentication.
 * **Improvement:** Better rendering by CSS and JS for sections.
 * **Improvement:** Better handling of cookie for sections.
 * **Improvement:** Better handling of server and private IP address.

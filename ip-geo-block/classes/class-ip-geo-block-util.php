@@ -195,9 +195,11 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/pluggable.php
 	 */
 	private static function parse_auth_cookie( $scheme = '' ) {
-		static $auth_cookie = FALSE;
+		static $cache_cookie = NULL;
 
-		if ( empty( $auth_cookie ) ) {
+		if ( NULL === $cache_cookie ) {
+			$cache_cookie = FALSE;
+
 			// @since 3.0.0 in wp-includes/default-constants.php
 			if ( ! defined( 'COOKIEHASH' ) )
 				wp_cookie_constants();
@@ -231,10 +233,10 @@ class IP_Geo_Block_Util {
 				return FALSE;
 
 			list( $username, $expiration, $token, $hmac ) = $cookie_elements;
-			$auth_cookie = compact( 'username', 'expiration', 'token', 'hmac', 'scheme' );
+			$cache_cookie = compact( 'username', 'expiration', 'token', 'hmac', 'scheme' );
 		}
 
-		return $auth_cookie;
+		return $cache_cookie;
 	}
 
 	/**
@@ -262,9 +264,11 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/pluggable.php
 	 */
 	public static function validate_auth_cookie( $cookie = '', $scheme = '' ) {
-		static $user_id = FALSE;
+		static $cache_uid = NULL;
 
-		if ( FALSE === $user_id ) {
+		if ( NULL === $cache_uid ) {
+			$cache_uid = FALSE;
+
 			if ( ! ( $cookie = self::parse_auth_cookie( $scheme ) ) )
 				return FALSE;
 
@@ -299,10 +303,10 @@ class IP_Geo_Block_Util {
 			if ( ! $manager->verify( $token ) )
 				return FALSE;
 
-			$user_id = $user->ID;
+			$cache_uid = $user->ID;
 		}
 
-		return $user_id;
+		return $cache_uid;
 	}
 
 	/**
