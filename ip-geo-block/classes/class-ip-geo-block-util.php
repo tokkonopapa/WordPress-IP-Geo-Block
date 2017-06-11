@@ -172,8 +172,8 @@ class IP_Geo_Block_Util {
 	 * Get hash of given string for nonce.
 	 * @source wp-includes/pluggable.php
 	 */
-	private static function hash_nonce( $data ) {
-		return self::hash_hmac( 'md5', $data, NONCE_KEY . NONCE_SALT );
+	private static function hash_nonce( $data, $scheme = 'nonce' ) {
+		return self::hash_hmac( 'md5', $data, $scheme === 'auth' ? AUTH_KEY . AUTH_SALT : NONCE_KEY . NONCE_SALT );
 	}
 
 	/**
@@ -184,7 +184,7 @@ class IP_Geo_Block_Util {
 	 */
 	private static function get_session_token() {
 		// Arrogating logged_in cookie never cause the privilege escalation.
-		$cookie = self::parse_auth_cookie( 'logged_in' );
+		$cookie = self::parse_auth_cookie();
 		return ! empty( $cookie['token'] ) ? $cookie['token'] : AUTH_KEY . AUTH_SALT;
 	}
 
@@ -192,36 +192,80 @@ class IP_Geo_Block_Util {
 	 * WP alternative function for mu-plugins
 	 *
 	 * Parse a cookie into its components. It assumes the key including $scheme.
-	 * @source wp-includes/pluggable.php (after muplugins_loaded, it would be initialized)
+	 * @source wp-includes/pluggable.php
 	 */
-	private static function parse_auth_cookie( $scheme ) {
-		static $cookie = FALSE;
+	private static function parse_auth_cookie( $scheme = '' ) {
+		static $auth_cookie = FALSE;
 
-		if ( FALSE === $cookie ) {
-			foreach ( array_keys( $_COOKIE ) as $key ) {
-				if ( FALSE !== strpos( $key, $scheme ) ) {
-					if ( count( $elements = explode( '|', $_COOKIE[ $key ] ) ) === 4 ) {
-						@list( $username, $expiration, $token, $hmac ) = $elements;
-						return $cookie = compact( 'username', 'expiration', 'token', 'hmac' );
-					}
+		if ( empty( $auth_cookie ) ) {
+			// @since 3.0.0 in wp-includes/default-constants.php
+			if ( ! defined( 'COOKIEHASH' ) )
+				wp_cookie_constants();
+
+			switch ( $scheme ) {
+			  case 'auth':
+				$cookie_name = AUTH_COOKIE;
+				break;
+			  case 'secure_auth':
+				$cookie_name = SECURE_AUTH_COOKIE;
+				break;
+			  case "logged_in":
+				$cookie_name = LOGGED_IN_COOKIE;
+				break;
+			  default:
+				if ( is_ssl() ) {
+					$cookie_name = SECURE_AUTH_COOKIE;
+					$scheme = 'secure_auth';
+				} else {
+					$cookie_name = AUTH_COOKIE;
+					$scheme = 'auth';
 				}
 			}
+
+			if ( empty( $_COOKIE[ $cookie_name ] ) )
+				return FALSE;
+
+			$cookie = $_COOKIE[ $cookie_name ];
+
+			if ( count( $cookie_elements = explode( '|', $cookie ) ) !== 4 )
+				return FALSE;
+
+			list( $username, $expiration, $token, $hmac ) = $cookie_elements;
+			$auth_cookie = compact( 'username', 'expiration', 'token', 'hmac', 'scheme' );
 		}
 
-		return $cookie;
+		return $auth_cookie;
+	}
+
+	/**
+	 * WP alternative function for mu-plugins
+	 *
+	 * Retrieve user info by a given field
+	 * @source wp-includes/pluggable.php
+	 */
+	private static function get_user_by( $field, $value ) {
+		$userdata = WP_User::get_data_by( $field, $value );
+
+		if ( ! $userdata )
+			return false;
+
+		$user = new WP_User;
+		$user->init( $userdata );
+
+		return $user;
 	}
 
 	/**
 	 * WP alternative function for mu-plugins
 	 *
 	 * Validates authentication cookie.
-	 * @source wp-includes/pluggable.php (after muplugins_loaded, it would be initialized)
+	 * @source wp-includes/pluggable.php
 	 */
-	public static function validate_auth_cookie() {
+	public static function validate_auth_cookie( $cookie = '', $scheme = '' ) {
 		static $user_id = FALSE;
 
 		if ( FALSE === $user_id ) {
-			if ( ! $cookie = self::parse_auth_cookie( 'logged_in' ) )
+			if ( ! ( $cookie = self::parse_auth_cookie( $scheme ) ) )
 				return FALSE;
 
 			$scheme   = $cookie['scheme'];
@@ -236,9 +280,9 @@ class IP_Geo_Block_Util {
 
 			// Quick check to see if an honest cookie has expired
 			if ( $expired < time() )
-				return false;
+				return FALSE;
 
-			if ( ! $user = get_user_by( 'login', $username ) ) // wp-includes/class-wp-user.php
+			if ( ! ( $user = self::get_user_by( 'login', $username ) ) ) // wp-includes/class-wp-user.php
 				return FALSE;
 
 			$pass_frag = substr( $user->user_pass, 8, 4 );
@@ -489,7 +533,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function is_user_logged_in() {
 		// possibly logged in but should be verified after 'init' hook is fired.
-		return did_action( 'init' ) ? is_user_logged_in() : ( self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE );
+		return did_action( 'init' ) ? is_user_logged_in() : ( self::validate_auth_cookie() ? TRUE : FALSE );
 	}
 
 	/**
@@ -525,7 +569,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function current_user_can( $capability ) {
 		// possibly logged in but should be verified after 'init' hook is fired.
-		return did_action( 'init' ) ? current_user_can( $capability ) : ( self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE );
+		return did_action( 'init' ) ? current_user_can( $capability ) : ( self::validate_auth_cookie() ? TRUE : FALSE );
 	}
 
 	/**

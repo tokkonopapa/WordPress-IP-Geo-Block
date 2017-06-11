@@ -476,7 +476,7 @@ class IP_Geo_Block_Opts {
 				require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 				if ( FALSE === ( $fs = IP_Geo_Block_FS::init( 'setup_validation_timing' ) ) )
 					return $dst;
-				elseif ( ! $fs->copy( $src.$file, $dst.$file, TRUE ) )
+				elseif ( ! $fs->copy( $src, $dst, TRUE ) )
 					return $dst;
 			}
 			break;

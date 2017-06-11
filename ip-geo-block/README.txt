@@ -332,12 +332,13 @@ But there're exceptions: When you enable "**Force to load WP core**" for **Plugi
 = 3.0.3.1 =
 This is a maintenance release addressing various improvement toward the next release.
 
-* Fix some issues caused by IE10/11.
-* Improvement of css and js for sections.
-* Better handling of cookie.
-* Better handling of server and private IP address.
-* Better compatibility with file operations by Filesystem API (but not yet supported FTP or SSH based operations).
-* Change the timing of upgrade check from `init` to activation phase.
+* **Bug fix:** Some issues caused by IE10/11 on admin pages.
+* **Improvement:** Strict validation of logged in user authentication.
+* **Improvement:** Better rendering by CSS and JS for sections.
+* **Improvement:** Better handling of cookie for sections.
+* **Improvement:** Better handling of server and private IP address.
+* **Improvement:** Better compatibility with file operations by Filesystem API (but not yet supported FTP or SSH based operations).
+* **Improvement:** Better timing of upgrade check at activation phase instead of `init` action hook.
 
 = 3.0.3 =
 * **New feature:** New option "Prevent malicious upload" to restrict MIME types.
