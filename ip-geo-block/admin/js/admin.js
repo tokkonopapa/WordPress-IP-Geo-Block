@@ -424,8 +424,8 @@ var ip_geo_block_time = new Date();
 
 	// Click event handler to show/hide form-table
 	function toggleSection(title, tabNo, cookie) {
-		var border, index = title.closest('fieldset').data('section'),
-		    body = title.parent().nextAll('.panel-body').toggle();
+		var index = title.closest('fieldset').data('section'),
+		    body  = title.parent().nextAll('.panel-body').toggle(), border;
 
 		// Show/Hide
 		title.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));

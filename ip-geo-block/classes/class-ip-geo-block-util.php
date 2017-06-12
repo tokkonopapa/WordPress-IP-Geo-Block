@@ -114,7 +114,7 @@ class IP_Geo_Block_Util {
 			if ( $nonce = self::retrieve_nonce( $key = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce' ) ) {
 				$location = esc_url_raw( add_query_arg(
 					array(
-						$key => false, // delete onece
+						$key => FALSE, // delete onece
 						$key => $nonce // add again
 					),
 					$location
@@ -136,7 +136,7 @@ class IP_Geo_Block_Util {
 		$tok = self::get_session_token();
 		$exp = self::nonce_tick();
 
-		return substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+		return substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok, 'nonce' ), -12, 10 );
 	}
 
 	/**
@@ -151,13 +151,13 @@ class IP_Geo_Block_Util {
 		$exp = self::nonce_tick();
 
 		// Nonce generated 0-12 hours ago
-		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok, 'nonce' ), -12, 10 );
 		if ( self::hash_equals( $expected, (string)$nonce ) ) {
 			return 1;
 		}
 
 		// Nonce generated 12-24 hours ago
-		$expected = substr( self::hash_nonce( ( $exp - 1 ) . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+		$expected = substr( self::hash_nonce( ( $exp - 1 ) . '|' . $action . '|' . $uid . '|' . $tok, 'nonce' ), -12, 10 );
 		if ( self::hash_equals( $expected, (string)$nonce ) ) {
 			return 2;
 		}
@@ -172,8 +172,14 @@ class IP_Geo_Block_Util {
 	 * Get hash of given string for nonce.
 	 * @source wp-includes/pluggable.php
 	 */
-	private static function hash_nonce( $data, $scheme = 'nonce' ) {
-		return self::hash_hmac( 'md5', $data, $scheme === 'auth' ? AUTH_KEY . AUTH_SALT : NONCE_KEY . NONCE_SALT );
+	private static function hash_nonce( $data, $scheme = 'auth' ) {
+		$salt = array(
+			'auth'        => AUTH_KEY        . AUTH_SALT,
+			'secure_auth' => SECURE_AUTH_KEY . SECURE_AUTH_SALT,
+			'logged_in'   => LOGGED_IN_KEY   . LOGGED_IN_SALT,
+			'nonce'       => NONCE_KEY       . NONCE_SALT,
+		);
+		return self::hash_hmac( 'md5', $data, apply_filters( 'salt', $salt[ $scheme ], $scheme ) );
 	}
 
 	/**
@@ -249,7 +255,7 @@ class IP_Geo_Block_Util {
 		$userdata = WP_User::get_data_by( $field, $value );
 
 		if ( ! $userdata )
-			return false;
+			return FALSE;
 
 		$user = new WP_User;
 		$user->init( $userdata );
@@ -397,12 +403,12 @@ class IP_Geo_Block_Util {
 				|   \xF0[\x90-\xBF][\x80-\xBF]{2} # four-byte sequences   11110xxx 10xxxxxx * 3
 				|   [\xF1-\xF3][\x80-\xBF]{3}
 				|   \xF4[\x80-\x8F][\x80-\xBF]{2}
-			){1,40}                              # ...one or more times
+			){1,40}                               # ...one or more times
 			)/x';
 		$location = preg_replace_callback( $regex, array( __CLASS__, 'sanitize_utf8_in_redirect' ), $location );
 		$location = preg_replace( '|[^a-z0-9-~+_.?#=&;,/:%!*\[\]()@]|i', '', $location );
 		$location = self::kses_no_null( $location ); // wp-includes/kses.php
-	 
+
 		// remove %0d and %0a from location
 		$strip = array( '%0d', '%0a', '%0D', '%0A' );
 		return self::deep_replace( $strip, $location ); // wp-includes/formatting.php
@@ -423,7 +429,7 @@ class IP_Geo_Block_Util {
 			if ( ! self::is_IIS() && PHP_SAPI != 'cgi-fcgi' )
 				status_header( $status ); // This causes problems on IIS and some FastCGI setups
 
-			header( "Location: $location", true, $status );
+			header( "Location: $location", TRUE, $status );
 
 			return TRUE;
 		}
@@ -547,22 +553,18 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/user.php
 	 */
 	public static function get_current_user_id() {
-		static $uid = 0;
+		static $cache_uid = NULL;
 
-		if ( ! $uid ) {
-			$uid = did_action( 'init' ) ? get_current_user_id() : 0;
-
-			if ( ! $uid && isset( $_COOKIE ) ) {
-				 foreach ( array_keys( $_COOKIE ) as $key ) {
-					if ( 0 === strpos( $key, 'wp-settings-' ) ) {
-						$uid = substr( $key, strrpos( $key, '-' ) + 1 ); // get numerical characters
-						break;
-					}
+		if ( NULL === $cache_uid ) {
+			if ( ! ( $cache_uid = ( did_action( 'init' ) ? get_current_user_id() : 0 ) ) ) {
+				$keys = preg_grep( '/wp-settings-/', array_keys( isset( $_COOKIE ) ? $_COOKIE : array() ) );
+				if ( $val = array_shift( $keys ) ) {
+					$cache_uid = (int)substr( $val, strrpos( $val, '-' ) + 1 ); // get numerical characters
 				}
 			}
 		}
 
-		return $uid;
+		return $cache_uid;
 	}
 
 	/**

@@ -266,9 +266,15 @@ See more details at "[How to test prevention of attacks](http://www.ipgeoblock.c
 
 = Does this plugin works well with caching? =
 
-For the back-end protection, the answer is YES if you disable caching on back-end. But for the front-end, the answer depends on the caching method you are employing.
+The short answer is **YES**, especially for the purpose of security e.g. blocking malicious access both on the back-end and on the front-end.
 
-Currently, the following cache plugins and configurations can be supported:
+The long answer is as follows:
+
+For the back-end protection, both blocking malicious access and blocking by country works fine, if you disable caching on the back-end. As for the front-end, there are 2 scenarios.
+
+The first one is the case that there's no cached page against a request to the specific page. In this scenario, this plugin responds a specific HTTP status code (including redirection) and defines the symbol `DONOTCACHEPAGE` when the request comes from blacklisted countries (or IPs). When the request comes from the whitelisted countries (or IPs), this plugin passes it to the caching plugin in order to generate a new cache.
+
+The second scenario is the case that there's a cached page. In this case, the response depends on the caching method you are employing. Currently, the following plugins and configurations can be supported if you want to [restrict content by geo-blocking](https://en.wikipedia.org/wiki/Geo-blocking "Geo-blocking - Wikipedia"):
 
 - [WP Super Cache](https://wordpress.org/plugins/wp-super-cache/ "WP Super Cache &mdash; WordPress Plugins")  
   Select "**Use PHP to serve cache files**" and enable "**Late init**".
@@ -277,9 +283,11 @@ Currently, the following cache plugins and configurations can be supported:
   Select "**Disk: Basic**" and enable "**Late initialization**" for page cache. "**Disk: Enhanced**" (where "**Late initialization**" is not available) in W3TC 0.9.5.1 seems to work good without any imcompatibility with this plugin.
 
 - [Vendi Cache](https://wordpress.org/plugins/vendi-cache/ "Vendi Cache &mdash; WordPress Plugins")  
-  This was formerly built in Wordfence. Select "**basic caching**" for Vendi Cache and **"mu-plugin" (ip-geo-block-mu.php)** for IP Geo Block.
+  This plugin was formerly built in Wordfence. Select "**basic caching**" for Vendi Cache and **"mu-plugin" (ip-geo-block-mu.php)** for IP Geo Block.
 
-If your plugin serves page caching by `mod_rewrite` via `.htaccess` (e.g. WP Fastest Cache) or caching by `advanced-cache.php` [drop-in](https://make.wordpress.org/core/2016/08/13/global-overloading-in-advanced-cache-php/ "Global overloading in advanced-cache.php &#8211; Make WordPress Core") (e.g. Comet Cache) or your hosting provider serves page caching at server side, "**Blocking on front-end**" might lead to generate inconsistent pages.
+Other plugins adopting `mod_rewrite` (e.g. WP Fastest Cache) or `advanced-cache.php` [drop-in](https://make.wordpress.org/core/2016/08/13/global-overloading-in-advanced-cache-php/ "Global overloading in advanced-cache.php &#8211; Make WordPress Core") (e.g. Comet Cache) or other caching method at server side might serve a normal page.
+
+Thus your site would have less risk against the exploiting via vulnerable plugins and themes.
 
 For more details, please refer to some documents at "[Blocking on front-end](http://www.ipgeoblock.com/codex/#blocking-on-front-end 'Codex | IP Geo Block')".
 
