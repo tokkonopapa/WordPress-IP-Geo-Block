@@ -208,62 +208,6 @@ or following descriptions for your best setup.
 
 It works on multisite, but there's no network setting at this moment.
 
-= I was locked down. What shall I do? =
-
-You can find the "**Emergent Functionality**" code section near the bottom of `ip-geo-block.php`. This code block can be activated by replacing `/*` (opening multi-line comment) at the top of the line to `//` (single line comment), or `*` at the end of the line to `*/` (closing multi-line comment).
-
-`/**
- * Invalidate blocking behavior in case yourself is locked out.
- *
- * How to use: Activate the following code and upload this file via FTP.
- */
-/* -- ADD '/' TO THE TOP OR END OF THIS LINE TO ACTIVATE THE FOLLOWINGS -- */
-function ip_geo_block_emergency( $validate ) {
-    $validate['result'] = 'passed';
-    return $validate;
-}
-add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency' );
-add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
-// */`
-
-Please not that you have to use an [appropriate editor](https://codex.wordpress.org/Editing_Files#Using_Text_Editors "Editing Files « WordPress Codex").
-
-After saving and uploading it to `/wp-content/plugins/ip-geo-block/` on your server via FTP, you become to be able to login again as an admin.
-
-Remember that you should upload the original one after re-configuration to deactivate this feature.
-
-[This document](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block") can also help you.
-
-= How to resolve "Sorry, your request cannot be accepted."? =
-
-If you encounter this message, please refer to [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;Sorry, your request cannot be accepted&rdquo; ? | IP Geo Block") to resolve your blocking issue.
-
-If you can't solve your issue, please let me know about it on the [support forum](https://wordpress.org/support/plugin/ip-geo-block/ "View: Plugin Support &laquo;  WordPress.org Forums"). Your logs in this plugin and "**Installation information**" at "**Plugin settings**" will be a great help to resolve the issue.
-
-= How can I fix "Unable to write" error? =
-
-When you enable "**Force to load WP core**" options, this plugin will try to configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` directory in order to protect your site against the malicous attacks to the [OMG plugins and themes](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php | IP Geo Block").
-
-But some servers doesn't give read / write permission against `.htaccess` to WordPress. In this case, you can configure `.htaccess` files by your own hand instead of enabling "**Force to load WP core**" options.
-
-Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')" in order to fix this error.
-
-= I still have access from blacklisted country. Does it work correctly? =
-
-Absolutely, YES. But unfortunately, accuracy of country code depends on the geolocation databases. Actually, there is a case that a same IP address has different country code.
-
-For more detail, please refer to "[I still have access from blacklisted country.](http://www.ipgeoblock.com/codex/access-from-blacklisted-country.html 'I still have access from blacklisted country. | IP Geo Block')".
-
-= How can I test this plugin works? =
-
-The easiest way is to use [free proxy browser addon](https://www.google.com/search?q=free+proxy+browser+addon "free proxy browser addon - Google Search").
-
-Another one is to use [http header browser addon](https://www.google.com/search?q=browser+add+on+modify+http+header "browser add on modify http header - Google Search").
-
-You can add an IP address to the `X-Forwarded-For` header to emulate the access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
-
-See more details at "[How to test prevention of attacks](http://www.ipgeoblock.com/codex/#how-to-test-prevention-of-attacks 'Codex | IP Geo Block')".
-
 = Does this plugin works well with caching? =
 
 The short answer is **YES**, especially for the purpose of security e.g. blocking malicious access both on the back-end and on the front-end.
@@ -291,6 +235,48 @@ Thus your site would have less risk against the exploiting via vulnerable plugin
 
 For more details, please refer to some documents at "[Blocking on front-end](http://www.ipgeoblock.com/codex/#blocking-on-front-end 'Codex | IP Geo Block')".
 
+= How can I test this plugin works? =
+
+The easiest way is to use [free proxy browser addon](https://www.google.com/search?q=free+proxy+browser+addon "free proxy browser addon - Google Search").
+
+Another one is to use [http header browser addon](https://www.google.com/search?q=browser+add+on+modify+http+header "browser add on modify http header - Google Search").
+
+You can add an IP address to the `X-Forwarded-For` header to emulate the access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
+
+See more details at "[How to test prevention of attacks](http://www.ipgeoblock.com/codex/#how-to-test-prevention-of-attacks 'Codex | IP Geo Block')".
+
+= I was locked down. What shall I do? =
+
+You can find the "**Emergent Functionality**" code section near the bottom of `ip-geo-block.php`. This code block can be activated by replacing `/*` (opening multi-line comment) at the top of the line to `//` (single line comment), or `*` at the end of the line to `*/` (closing multi-line comment).
+
+`/**
+ * Invalidate blocking behavior in case yourself is locked out.
+ *
+ * How to use: Activate the following code and upload this file via FTP.
+ */
+/* -- ADD '/' TO THE TOP OR END OF THIS LINE TO ACTIVATE THE FOLLOWINGS -- */
+function ip_geo_block_emergency( $validate ) {
+    $validate['result'] = 'passed';
+    return $validate;
+}
+add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency' );
+add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
+// */`
+
+Please not that you have to use an [appropriate editor](https://codex.wordpress.org/Editing_Files#Using_Text_Editors "Editing Files « WordPress Codex").
+
+After saving and uploading it to `/wp-content/plugins/ip-geo-block/` on your server via FTP, you become to be able to login again as an admin.
+
+Remember that you should upload the original one after re-configuration to deactivate this feature.
+
+[This document](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block") can also help you.
+
+= I still have access from blacklisted country. Does it work correctly? =
+
+Absolutely, YES. But unfortunately, accuracy of country code depends on the geolocation databases. Actually, there is a case that a same IP address has different country code.
+
+For more detail, please refer to "[I still have access from blacklisted country.](http://www.ipgeoblock.com/codex/access-from-blacklisted-country.html 'I still have access from blacklisted country. | IP Geo Block')".
+
 = Do I have to turn on all the selection to enhance security? =
 
 Yes. Roughly speaking, the strategy of this plugin has been constructed as follows:
@@ -314,6 +300,20 @@ Please try "**Best for Back-end**" button at the bottom of this plugin's setting
 Unfortunately, no. This plugin can't handle the requests that are not parsed by WordPress. In other words, a standalone file (PHP, CGI or something excutable) that is unrelated to WordPress can't be validated by this plugin even if it is in the WordPress install directory.
 
 But there're exceptions: When you enable "**Force to load WP core**" for **Plugins area** or **Themes area**, a standalone PHP file becomes to be able to be blocked. Sometimes this kind of file has some vulnerabilities. This function protects your site against such a case.
+
+= How to resolve "Sorry, your request cannot be accepted."? =
+
+If you encounter this message, please refer to [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;Sorry, your request cannot be accepted&rdquo; ? | IP Geo Block") to resolve your blocking issue.
+
+If you can't solve your issue, please let me know about it on the [support forum](https://wordpress.org/support/plugin/ip-geo-block/ "View: Plugin Support &laquo;  WordPress.org Forums"). Your logs in this plugin and "**Installation information**" at "**Plugin settings**" will be a great help to resolve the issue.
+
+= How can I fix "Unable to write" error? =
+
+When you enable "**Force to load WP core**" options, this plugin will try to configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` directory in order to protect your site against the malicous attacks to the [OMG plugins and themes](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php | IP Geo Block").
+
+But some servers doesn't give read / write permission against `.htaccess` to WordPress. In this case, you can configure `.htaccess` files by your own hand instead of enabling "**Force to load WP core**" options.
+
+Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')" in order to fix this error.
 
 == Other Notes ==
 

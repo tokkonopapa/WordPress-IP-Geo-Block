@@ -29,7 +29,7 @@ label {
     -webkit-border-radius: 3px;
     border-radius: 3px;
     border-color: gray;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #ccc;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.04);
     -moz-box-shadow: 0 1px 1px rgba(0,0,0,.04);
     box-shadow: 0 1px 1px rgba(0,0,0,.04);
@@ -62,7 +62,6 @@ label {
 fieldset.ip-geo-block-field {
 /*  padding: 0 10px;*/
     margin: 1em 0;
-    border: 1px solid #ccc;
 }
 fieldset.ip-geo-block-field h2,
 fieldset.ip-geo-block-field h3 {
