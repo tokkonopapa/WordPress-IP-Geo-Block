@@ -35,28 +35,25 @@ class IP_Geo_Block_FS {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		global $wp_filesystem;
 
-		if ( ! empty( $wp_filesystem ) ) // assigned in WP_Filesystem()
-			return self::get_instance();
+		// check already assigned by WP_Filesystem()
+		if ( empty( $wp_filesystem ) ) {
+			if ( 'direct' === ( self::$method = get_filesystem_method() ) ) { // @since 2.5.0
+				// request_filesystem_credentials() can be run without any issues and don't need to worry about passing in a URL
+				$creds = request_filesystem_credentials( admin_url(), '', FALSE, FALSE, NULL ); // @since 2.5.0
 
-		if ( 'direct' === ( self::$method = get_filesystem_method() ) ) { // @since 2.5.0
-			// request_filesystem_credentials() can be run without any issues and don't need to worry about passing in a URL
-			$creds = request_filesystem_credentials( site_url() . '/wp-admin/', '', FALSE, FALSE, NULL ); // @since 2.5.0
+				// initialize the API @since 2.5.0
+				WP_Filesystem( $creds );
+			}
 
-			// initialize the API @since 2.5.0
-			if ( ! WP_Filesystem( $creds ) )
-				return FALSE; // any problems and we exit
-
-			return self::get_instance();
+			elseif ( class_exists( 'IP_Geo_Block_Admin' ) ) {
+				IP_Geo_Block_Admin::add_admin_notice(
+					'error',
+					sprintf( __( '%s: This plugin does not support method &#8220;%s&#8221; for FTP or SSH based file operations.', 'ip-geo-block' ), $msg, self::$method )
+				);
+			}
 		}
 
-		elseif ( class_exists( 'IP_Geo_Block_Admin' ) ) {
-			IP_Geo_Block_Admin::add_admin_notice(
-				'error',
-				sprintf( __( '%s: This plugin does not support FTP or SSH based file operations.', 'ip-geo-block' ), $msg ? $msg : __CLASS__ )
-			);
-		}
-
-		return FALSE;
+		return self::get_instance();
 	}
 
 	// Add slash at the end of string.
@@ -67,8 +64,65 @@ class IP_Geo_Block_FS {
 	// Get absolute path.
 	private function absolute_path( $file ) {
 		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return $file;
+
 		$path = str_replace( ABSPATH, $wp_filesystem->abspath(), dirname( $file ) );
 		return $this->slashit( $path ) . basename( $file );
+	}
+
+	/**
+	 * Validate if path is file
+	 *
+	 * @param string $path
+	 * @return bool
+	 */
+	public function is_file( $path ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return FALSE;
+
+		if ( 'direct' !== self::$method )
+			$path = $this->absolute_path( $path );
+
+		return $wp_filesystem->is_file( $path );
+	}
+
+	/**
+	 * Validate if path is directory
+	 *
+	 * @param string $path
+	 * @return bool
+	 */
+	public function is_dir( $path ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return FALSE;
+
+		if ( 'direct' !== self::$method )
+			$path = $this->absolute_path( $path );
+
+		return $wp_filesystem->is_dir( $path );
+	}
+
+	/**
+	 * Make a directory
+	 *
+	 * @param string $path
+	 * @param mixed  $chmod
+	 * @param mixed  $chown
+	 * @param mixed  $chgrp
+	 * @return bool
+	 */
+	public function mkdir( $path, $chmod = false, $chown = false, $chgrp = false ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return FALSE;
+
+		if ( 'direct' !== self::$method )
+			$path = $this->absolute_path( $path );
+
+		return $wp_filesystem->mkdir( $path, $chmod, $chown, $chgrp );
 	}
 
 	/**
@@ -80,11 +134,13 @@ class IP_Geo_Block_FS {
 	 * @return bool
 	 */
 	public function delete( $file, $recursive = FALSE, $type = FALSE ) {
-		if ( 'direct' !== self::$method ) {
-			$file = $this->absolute_path( $file );
-		}
-
 		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return FALSE;
+
+		if ( 'direct' !== self::$method )
+			$file = $this->absolute_path( $file );
+
 		return $wp_filesystem->delete( $file, $recursive, $type );
 	}
 
@@ -98,12 +154,15 @@ class IP_Geo_Block_FS {
 	 * @return bool
 	 */
 	public function copy( $src, $dst, $overwrite = FALSE, $mode = FALSE ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return FALSE;
+
 		if ( 'direct' !== self::$method ) {
 			$src = $this->absolute_path( $src );
 			$dst = $this->absolute_path( $dst );
 		}
 
-		global $wp_filesystem;
 		return $wp_filesystem->copy( $src, $dst, $overwrite, $mode );
 	}
 
@@ -116,13 +175,15 @@ class IP_Geo_Block_FS {
 	 * @return bool
 	 */
 	public function put_contents( $file, $contents, $mode = FALSE ) {
-		if ( 'direct' !== self::$method ) {
-			$file = $this->absolute_path( $file );
-		}
-
-		if ( ! ( $fp = @fopen( $file, 'wb' ) ) ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
 			return FALSE;
-		}
+
+		if ( 'direct' !== self::$method )
+			$file = $this->absolute_path( $file );
+
+		if ( ! ( $fp = @fopen( $file, 'wb' ) ) )
+			return FALSE;
 
 		if ( ! flock( $fp, LOCK_EX ) ) {
 			fclose( $fp );
@@ -137,14 +198,24 @@ class IP_Geo_Block_FS {
 		flock ( $fp, LOCK_UN );
 		fclose( $fp );
 
-		if ( $data_length !== $bytes_written ) {
+		if ( $data_length !== $bytes_written )
 			return FALSE;
-		}
 
-		global $wp_filesystem;
-		$wp_filesystem->chmod( $file, $mode );
+		return $wp_filesystem->chmod( $file, $mode );
+	}
 
-		return TRUE;
+	/**
+	 * Unzips a specified ZIP file to a location on the Filesystem via the WordPress Filesystem Abstraction.
+	 *
+	 * @param  string $src Full path and filename of zip archive.
+	 * @param  string $dst Full path on the filesystem to extract archive to.
+	 * @return WP_Error on failure, True on success 
+	 */
+	public function unzip_file( $src, $dst ) {
+		if ( 'direct' !== self::$method )
+			$dst = $this->absolute_path( $dst );
+
+		return unzip_file( $src, $dst );
 	}
 
 }

@@ -1082,12 +1082,12 @@ endif;
 		/*----------------------------------------*
 		 * Local database settings
 		 *----------------------------------------*/
-		// higher priority order
+		// Local DBs for each API
 		$providers = IP_Geo_Block_Provider::get_addons();
 		if ( empty( $providers ) ) {
 			$context->add_admin_notice( 'error',
 				sprintf(
-					__( 'Can not find geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please refer to the <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">FAQ</a> to install <code>ip-geo-api</code> with write permission.', 'ip-geo-block' ),
+					__( 'Can not find geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
 					apply_filters( 'ip-geo-block-api-dir', basename( WP_CONTENT_DIR ) )
 				)
 			);
@@ -1101,7 +1101,6 @@ endif;
 			$option_slug
 		);
 
-		// Local DBs for each API
 		foreach ( $providers as $provider ) {
 			if ( $geo = IP_Geo_Block_API::get_instance( $provider, NULL ) ) {
 				$geo->add_settings_field(

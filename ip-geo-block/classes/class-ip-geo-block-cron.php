@@ -190,7 +190,7 @@ class IP_Geo_Block_Cron {
 	 */
 	public static function download_zip( $url, $args, $filename, $modified ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		IP_Geo_Block_FS::init( 'download_zip' );
+		$fs = IP_Geo_Block_FS::init( 'download_zip' );
 
 		// if the name of src file is changed, then update the dst
 		if ( basename( $filename ) !== ( $base = pathinfo( $url, PATHINFO_FILENAME ) ) )
@@ -275,7 +275,7 @@ class IP_Geo_Block_Cron {
 
 			elseif ( 'zip' === $args && class_exists( 'ZipArchive' ) ) {
 				$tmp = get_temp_dir(); // @since 2.5
-				$ret = unzip_file( $src, $tmp ); // @since 2.5
+				$ret = $fs->unzip_file( $src, $tmp ); // @since 2.5
 
 				if ( is_wp_error( $ret ) ) {
 					/* try fallback instead of throwing error
@@ -288,7 +288,7 @@ class IP_Geo_Block_Cron {
 					if ( TRUE !== $zip->open( $src ) )
 						throw new Exception(
 							sprintf(
-								__( 'Unable to read %s. Please check permission.', 'ip-geo-block' ),
+								__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ),
 								$src
 							)
 						);
@@ -297,7 +297,7 @@ class IP_Geo_Block_Cron {
 						$zip->close();
 						throw new Exception(
 							sprintf(
-								__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ),
+								__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ),
 								$tmp . basename( $filename )
 							)
 						);

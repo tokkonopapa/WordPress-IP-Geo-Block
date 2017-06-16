@@ -252,29 +252,6 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Register the administration menu into the WordPress Dashboard menu.
-	 *
-	 */
-	private function add_plugin_admin_menu() {
-		// Setup the tab number
-		$this->admin_tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
-		$this->admin_tab = min( 4, max( 0, $this->admin_tab ) );
-
-		// Add a settings page for this plugin to the Settings menu.
-		$hook = add_options_page(
-			__( 'IP Geo Block', 'ip-geo-block' ),
-			__( 'IP Geo Block', 'ip-geo-block' ),
-			'manage_options',
-			IP_Geo_Block::PLUGIN_NAME,
-			array( $this, 'display_plugin_admin_page' )
-		);
-
-		// If successful, load admin assets only on this page.
-		if ( $hook )
-			add_action( "load-$hook", array( $this, 'enqueue_admin_assets' ) );
-	}
-
-	/**
 	 * Diagnosis of admin settings.
 	 *
 	 */
@@ -363,14 +340,17 @@ class IP_Geo_Block_Admin {
 	 */
 	public function setup_admin_page() {
 		// Avoid multiple validation.
-		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
+		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] )
 			$this->diagnose_admin_screen();
-			$this->add_plugin_admin_menu();
-		}
 
 		// Register settings page only if it is needed.
 		if ( ( isset( $_GET ['page'       ] ) && IP_Geo_Block::PLUGIN_NAME === $_GET ['page'       ] ) ||
 		     ( isset( $_POST['option_page'] ) && IP_Geo_Block::PLUGIN_NAME === $_POST['option_page'] ) ) {
+			// Setup the tab number.
+			$this->admin_tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
+			$this->admin_tab = min( 4, max( 0, $this->admin_tab ) );
+
+			// Register the administration dashboard.
 			$this->register_settings_tab();
 		}
 
@@ -378,6 +358,18 @@ class IP_Geo_Block_Admin {
 		else {
 			add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
 			add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
+		}
+
+		// Add a settings page for this plugin to the Settings menu.
+		if ( $hook = add_options_page(
+			__( 'IP Geo Block', 'ip-geo-block' ),
+			__( 'IP Geo Block', 'ip-geo-block' ),
+			'manage_options',
+			IP_Geo_Block::PLUGIN_NAME,
+			array( $this, 'display_plugin_admin_page' )
+		) ) {
+			// Load admin assets only on this page.
+			add_action( "load-$hook", array( $this, 'enqueue_admin_assets' ) );
 		}
 
 		// Register scripts for admin.
@@ -978,7 +970,7 @@ class IP_Geo_Block_Admin {
 		if ( TRUE !== $file ) {
 			$options['validation']['timing'] = 0;
 			self::add_admin_notice( 'error', sprintf(
-				__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $file
+				__( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $file
 			) );
 		}
 

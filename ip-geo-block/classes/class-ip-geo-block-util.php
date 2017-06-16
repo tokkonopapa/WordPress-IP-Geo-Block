@@ -744,21 +744,19 @@ class IP_Geo_Block_Util {
 	 * @link   http://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-headers.html
 	 * @link   https://github.com/zendframework/zend-http/blob/master/src/PhpEnvironment/RemoteAddress.php
 	 */
-	public static function get_client_ip( $ip, $vars = NULL ) {
-		if ( self::is_private_ip( $ip ) ) {
-			foreach ( explode( ',', $vars ? $vars : self::get_proxy_var() ) as $var ) {
-				if ( isset( $_SERVER[ $var ] ) ) {
-					$ips = array_map( 'trim', explode( ',', $_SERVER[ $var ] ) );
-					while ( $var = array_pop( $ips ) ) {
-						if ( ! self::is_private_ip( $var ) ) {
-							return $var;
-						}
+	public static function get_client_ip( $vars = NULL ) {
+		foreach ( explode( ',', $vars ) as $var ) {
+			if ( isset( $_SERVER[ $var ] ) ) {
+				$ips = array_map( 'trim', explode( ',', $_SERVER[ $var ] ) );
+				while ( $var = array_pop( $ips ) ) {
+					if ( ! self::is_private_ip( $var ) ) {
+						return $var;
 					}
 				}
 			}
 		}
 
-		return $ip;
+		return isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
 	}
 
 	/**

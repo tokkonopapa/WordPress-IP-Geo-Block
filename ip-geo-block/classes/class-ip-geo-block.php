@@ -47,7 +47,7 @@ class IP_Geo_Block {
 		$loader = new IP_Geo_Block_Loader();
 
 		// get client IP address
-		self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $_SERVER['REMOTE_ADDR'], $validate['proxy'] );
+		self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $validate['proxy'] );
 
 		// include drop in if it exists
 		file_exists( $key = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php' ) and include( $key );

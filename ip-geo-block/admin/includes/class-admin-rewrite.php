@@ -153,11 +153,9 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private function put_rewrite_rule( $which, $content ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		if ( FALSE === ( $fs = IP_Geo_Block_FS::init( 'put_rewrite_rule' ) ) )
-			return FALSE;
+		$fs = IP_Geo_Block_FS::init( 'put_rewrite_rule' );
 
 		$file = $this->get_rewrite_file( $which );
-
 		if ( ! $file || FALSE === $fs->put_contents( $file, implode( PHP_EOL, $content ) ) )
 			return FALSE;
 

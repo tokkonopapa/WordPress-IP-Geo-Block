@@ -352,7 +352,8 @@ class IP_Geo_Block_Opts {
 		}
 
 		// install addons for IP Geolocation database API ver. 1.1.8
-		if ( ! $settings['api_dir'] || version_compare( $version, '3.0.3' ) < 0 )
+		$providers = IP_Geo_Block_Provider::get_addons();
+		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.3' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table
@@ -371,12 +372,14 @@ class IP_Geo_Block_Opts {
 		$dst = self::get_api_dir( $settings );
 
 		try {
-			if ( $src !== $dst )
-				self::recurse_copy( $src, $dst );
+			if ( $src !== $dst ) {
+				if ( FALSE === self::recurse_copy( $src, $dst ) )
+					throw new Exception();
+			}
 
 		} catch ( Exception $e ) {
 			if ( class_exists( 'IP_Geo_Block_Admin' ) )
-				IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $dst ) );
+				IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $dst ) );
 
 			return NULL;
 		}
@@ -386,10 +389,8 @@ class IP_Geo_Block_Opts {
 
 	public static function delete_api( $settings ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		if ( FALSE === ( $fs = IP_Geo_Block_FS::init( 'delete_api' ) ) )
-			return FALSE;
-		else
-			return $fs->delete( self::get_api_dir( $settings ), TRUE ); // $recursive = true
+		$fs = IP_Geo_Block_FS::init( 'delete_api' );
+		return $fs->delete( self::get_api_dir( $settings ), TRUE ); // $recursive = true
 	}
 
 	private static function get_api_dir( $settings ) {
@@ -416,26 +417,30 @@ class IP_Geo_Block_Opts {
 	// http://php.net/manual/function.copy.php#91010
 	private static function recurse_copy( $src, $dst ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		if ( FALSE === ( $fs = IP_Geo_Block_FS::init( 'recurse_copy' ) ) )
-			return;
+		$fs = IP_Geo_Block_FS::init( 'recurse_copy' );
 
 		$src = IP_Geo_Block_Util::slashit( $src );
 		$dst = IP_Geo_Block_Util::slashit( $dst );
 
-		! @is_dir( $dst ) and wp_mkdir_p( $dst ); // @since 2.0.1 @mkdir( $dst );
+		! $fs->is_dir( $dst ) and $fs->mkdir( $dst );
 
 		if ( $dir = @opendir( $src ) ) {
 			while( FALSE !== ( $file = readdir( $dir ) ) ) {
 				if ( '.' !== $file && '..' !== $file ) {
-					if ( @is_dir( $src.$file ) )
-						self::recurse_copy( $src.$file, $dst.$file );
-					else
-						$fs->copy( $src.$file, $dst.$file, TRUE ); // @copy( $src.$file, $dst.$file );
+					if ( $fs->is_dir( $src.$file ) ) {
+						if ( FALSE === self::recurse_copy( $src.$file, $dst.$file ) )
+							return FALSE;
+					} else {
+						if ( FALSE === $fs->copy( $src.$file, $dst.$file, TRUE ) )
+							return FALSE;
+					}
 				}
 			}
 
 			closedir( $dir );
 		}
+
+		return TRUE;
 	}
 
 	/**
@@ -445,10 +450,9 @@ class IP_Geo_Block_Opts {
 	private static function remove_mu_plugin() {
 		if ( file_exists( $src = WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) ) {
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-			if ( FALSE === ( $fs = IP_Geo_Block_FS::init( 'remove_mu_plugin' ) ) )
-				return $src;
-			else
-				return $fs->delete( $dir ) ? TRUE : $src;
+			$fs = IP_Geo_Block_FS::init( 'remove_mu_plugin' );
+
+			return $fs->delete( $src ) ? TRUE : $src;
 		}
 
 		return TRUE;
@@ -469,14 +473,14 @@ class IP_Geo_Block_Opts {
 			$src = IP_GEO_BLOCK_PATH . 'wp-content/mu-plugins/ip-geo-block-mu.php';
 			$dst = WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php';
 
-			if ( ! file_exists( $dst ) ) {
-				if ( ! file_exists( WPMU_PLUGIN_DIR ) )
-					wp_mkdir_p( WPMU_PLUGIN_DIR ); // @since 2.0.1 @mkdir( $path );
+			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+			$fs = IP_Geo_Block_FS::init( 'setup_validation_timing' );
 
-				require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-				if ( FALSE === ( $fs = IP_Geo_Block_FS::init( 'setup_validation_timing' ) ) )
+			if ( ! $fs->is_file( $dst ) ) {
+				if ( ! $fs->is_dir( WPMU_PLUGIN_DIR ) && ! $fs->mkdir( WPMU_PLUGIN_DIR ) )
 					return $dst;
-				elseif ( ! $fs->copy( $src, $dst, TRUE ) )
+
+				if ( ! $fs->copy( $src, $dst, TRUE ) )
 					return $dst;
 			}
 			break;
