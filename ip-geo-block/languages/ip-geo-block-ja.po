@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.4\n"
+"Project-Id-Version: IP Geo Block 3.0.3.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-06-17 00:58+0900\n"
-"PO-Revision-Date: 2017-06-17 01:13+0900\n"
+"POT-Creation-Date: 2017-06-17 17:03+0900\n"
+"PO-Revision-Date: 2017-06-17 17:07+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1302,14 +1302,32 @@ msgstr "%s をロックできません。パーミッションを確認して下
 msgid "gz or zip is not supported on your system."
 msgstr "gz または zip がサポートされていません。"
 
-#: classes/class-ip-geo-block-file.php:51
+#: classes/class-ip-geo-block-file.php:54
 #, php-format
 msgid ""
-"%s: This plugin does not support method &#8220;%s&#8221; for FTP or SSH "
-"based file operations."
+"This plugin does not support method &#8220;%s&#8221; for FTP or SSH based "
+"file operations. Please refer to <a href=\"https://codex.wordpress.org/"
+"Editing_wp-config.php#WordPress_Upgrade_Constants\" title=\"Editing wp-"
+"config.php &laquo; WordPress Codex\">this document</a> for more details."
 msgstr ""
-"%s: このプラグインは、FTP や SSH を使ったファイル操作用メソッド「%s」をサポー"
-"トしていません。"
+"本プラグインは、メソッド「%s」による FTP あるいは SSH を使ったファイル操作を"
+"サポートしていません。詳しくは、<a href=\"https://codex.wordpress.org/"
+"Editing_wp-config.php#WordPress_Upgrade_Constants\" title=\"Editing wp-"
+"config.php &laquo; WordPress Codex\">このドキュメント</a>を参照してください。"
+
+#: classes/class-ip-geo-block-file.php:65
+msgid ""
+"You should define some constants in your <code>wp-config.php</code> for FTP "
+"or SSH based file operations. Please refer to <a href=\"https://codex."
+"wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants\" title="
+"\"Editing wp-config.php &laquo; WordPress Codex\">this document</a> for more "
+"details."
+msgstr ""
+"本プラグインでは、FTP あるいは SSH を使ったファイル操作を有効にするためには、"
+"<code>wp-config.php</code> に幾つかの定義が必要です。詳しくは、<a href="
+"\"https://codex.wordpress.org/Editing_wp-config."
+"php#WordPress_Upgrade_Constants\" title=\"Editing wp-config.php &laquo; "
+"WordPress Codex\">このドキュメント</a>を参照してください。"
 
 #: classes/class-ip-geo-block-logs.php:149
 #, php-format

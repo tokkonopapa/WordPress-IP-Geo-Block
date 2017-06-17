@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.8
-Stable tag: 3.0.4a
+Stable tag: 3.0.3.1b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -235,6 +235,16 @@ Thus your site would have less risk against the exploiting via vulnerable plugin
 
 For more details, please refer to some documents at "[Blocking on front-end](http://www.ipgeoblock.com/codex/#blocking-on-front-end 'Codex | IP Geo Block')".
 
+= I still have access from blacklisted country. Does it work correctly? =
+
+Absolutely, YES.
+
+Sometimes, a Wordfence Security user would report this type of claim when he/she found some accesses in its Live traffic view. But please don't worry. Before WordPress runs, Wordfence cleverly filters out malicious requests to your site using <a href="http://php.net/manual/en/ini.core.php#ini.auto-prepend-file" title="PHP: Description of core php.ini directives - Manual">auto_prepend_file</a> directive to include PHP based Web Application Firewall. Then this plugin validates the rest of the requests that pass over Wordfence because those were not in WAF rules, especially you enables "**Prevent Zero-day Exploit**".
+
+It would also possibly be caused by the accuracy of country code in the geolocation databases. Actually, there is a case that a same IP address has different country code.
+
+For more detail, please refer to "[I still have access from blacklisted country.](http://www.ipgeoblock.com/codex/access-from-blacklisted-country.html 'I still have access from blacklisted country. | IP Geo Block')".
+
 = How can I test this plugin works? =
 
 The easiest way is to use [free proxy browser addon](https://www.google.com/search?q=free+proxy+browser+addon "free proxy browser addon - Google Search").
@@ -270,12 +280,6 @@ After saving and uploading it to `/wp-content/plugins/ip-geo-block/` on your ser
 Remember that you should upload the original one after re-configuration to deactivate this feature.
 
 [This document](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block") can also help you.
-
-= I still have access from blacklisted country. Does it work correctly? =
-
-Absolutely, YES. But unfortunately, accuracy of country code depends on the geolocation databases. Actually, there is a case that a same IP address has different country code.
-
-For more detail, please refer to "[I still have access from blacklisted country.](http://www.ipgeoblock.com/codex/access-from-blacklisted-country.html 'I still have access from blacklisted country. | IP Geo Block')".
 
 = Do I have to turn on all the selection to enhance security? =
 

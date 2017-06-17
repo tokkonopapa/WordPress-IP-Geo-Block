@@ -37,6 +37,9 @@ class IP_Geo_Block_FS {
 
 		// check already assigned by WP_Filesystem()
 		if ( empty( $wp_filesystem ) ) {
+			$err = error_reporting( 0 ); // PHP Warning: Cannot modify header information
+if (0) {
+			// https://codex.wordpress.org/Filesystem_API#Tips_and_Tricks
 			if ( 'direct' === ( self::$method = get_filesystem_method() ) ) { // @since 2.5.0
 				// request_filesystem_credentials() can be run without any issues and don't need to worry about passing in a URL
 				$creds = request_filesystem_credentials( admin_url(), '', FALSE, FALSE, NULL ); // @since 2.5.0
@@ -48,9 +51,27 @@ class IP_Geo_Block_FS {
 			elseif ( class_exists( 'IP_Geo_Block_Admin' ) ) {
 				IP_Geo_Block_Admin::add_admin_notice(
 					'error',
-					sprintf( __( '%s: This plugin does not support method &#8220;%s&#8221; for FTP or SSH based file operations.', 'ip-geo-block' ), $msg, self::$method )
+					sprintf( __( 'This plugin does not support method &#8220;%s&#8221; for FTP or SSH based file operations. Please refer to <a href="https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants" title="Editing wp-config.php &laquo; WordPress Codex">this document</a> for more details.', 'ip-geo-block' ), self::$method )
 				);
 			}
+} else {
+			// Determines the method on the filesystem.
+			self::$method = get_filesystem_method();
+
+			if ( FALSE === ( $creds = request_filesystem_credentials( admin_url(), '', FALSE, FALSE, NULL ) ) ) {
+				if ( class_exists( 'IP_Geo_Block_Admin' ) ) {
+					IP_Geo_Block_Admin::add_admin_notice(
+						'error',
+						__( 'You should define some constants in your <code>wp-config.php</code> for FTP or SSH based file operations. Please refer to <a href="https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants" title="Editing wp-config.php &laquo; WordPress Codex">this document</a> for more details.', 'ip-geo-block' )
+					);
+				}
+			}
+
+			elseif ( ! WP_Filesystem( $creds ) ) {
+				request_filesystem_credentials( admin_url(), '', TRUE, FALSE, NULL );
+			}
+}
+			error_reporting( $err );
 		}
 
 		return self::get_instance();

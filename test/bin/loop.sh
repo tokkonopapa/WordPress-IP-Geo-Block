@@ -78,6 +78,15 @@ case ${ATTACK} in
         done
         ;;
 
+    6) # index.php
+        echo "=== attack on index.php ===\n"
+        for i in `seq 1 60`
+        do
+            ab ${ABOPTS} -H "${HEADER}" -C "${COOKIE}" ${WPHOME}index.php
+            sleep 1
+        done
+        ;;
+
     *) # help
         echo "usage: $0 [-i \"IP address of attacker\"] [-w \"WordPress home URL\"] [1-5]"
         echo "where: 1 ... wp-comments-post.php"
@@ -85,5 +94,6 @@ case ${ATTACK} in
         echo "     : 3 ... xmlrpc.php by sys.multicall"
         echo "     : 4 ... wp-login.php"
         echo "     : 5 ... wp-admin/admin-ajax.php"
+        echo "     : 6 ... index.php"
         ;;
 esac
