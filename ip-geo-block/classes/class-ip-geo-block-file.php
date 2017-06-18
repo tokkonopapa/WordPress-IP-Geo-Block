@@ -37,7 +37,6 @@ class IP_Geo_Block_FS {
 
 		// check already assigned by WP_Filesystem()
 		if ( empty( $wp_filesystem ) ) {
-			$err = error_reporting( 0 ); // PHP Warning: Cannot modify header information
 if (0) {
 			// https://codex.wordpress.org/Filesystem_API#Tips_and_Tricks
 			if ( 'direct' === ( self::$method = get_filesystem_method() ) ) { // @since 2.5.0
@@ -67,11 +66,10 @@ if (0) {
 				}
 			}
 
-			elseif ( ! WP_Filesystem( $creds ) ) {
-				request_filesystem_credentials( admin_url(), '', TRUE, FALSE, NULL );
+			else {
+				WP_Filesystem( $creds );
 			}
 }
-			error_reporting( $err );
 		}
 
 		return self::get_instance();
@@ -84,12 +82,13 @@ if (0) {
 
 	// Get absolute path.
 	private function absolute_path( $file ) {
-		global $wp_filesystem;
-		if ( empty( $wp_filesystem ) )
-			return $file;
+		if ( 'direct' !== self::$method ) {
+			global $wp_filesystem;
+			$path = str_replace( ABSPATH, $wp_filesystem->abspath(), dirname( $file ) );
+			$file = $this->slashit( $path ) . basename( $file );
+		}
 
-		$path = str_replace( ABSPATH, $wp_filesystem->abspath(), dirname( $file ) );
-		return $this->slashit( $path ) . basename( $file );
+		return $file;
 	}
 
 	/**
@@ -103,10 +102,7 @@ if (0) {
 		if ( empty( $wp_filesystem ) )
 			return FALSE;
 
-		if ( 'direct' !== self::$method )
-			$path = $this->absolute_path( $path );
-
-		return $wp_filesystem->is_file( $path );
+		return $wp_filesystem->is_file( $this->absolute_path( $path ) );
 	}
 
 	/**
@@ -120,10 +116,7 @@ if (0) {
 		if ( empty( $wp_filesystem ) )
 			return FALSE;
 
-		if ( 'direct' !== self::$method )
-			$path = $this->absolute_path( $path );
-
-		return $wp_filesystem->is_dir( $path );
+		return $wp_filesystem->is_dir( $this->absolute_path( $path ) );
 	}
 
 	/**
@@ -140,10 +133,7 @@ if (0) {
 		if ( empty( $wp_filesystem ) )
 			return FALSE;
 
-		if ( 'direct' !== self::$method )
-			$path = $this->absolute_path( $path );
-
-		return $wp_filesystem->mkdir( $path, $chmod, $chown, $chgrp );
+		return $wp_filesystem->mkdir( $this->absolute_path( $path ), $chmod, $chown, $chgrp );
 	}
 
 	/**
@@ -159,10 +149,7 @@ if (0) {
 		if ( empty( $wp_filesystem ) )
 			return FALSE;
 
-		if ( 'direct' !== self::$method )
-			$file = $this->absolute_path( $file );
-
-		return $wp_filesystem->delete( $file, $recursive, $type );
+		return $wp_filesystem->delete( $this->absolute_path( $file ), $recursive, $type );
 	}
 
 	/**
@@ -179,12 +166,11 @@ if (0) {
 		if ( empty( $wp_filesystem ) )
 			return FALSE;
 
-		if ( 'direct' !== self::$method ) {
-			$src = $this->absolute_path( $src );
-			$dst = $this->absolute_path( $dst );
-		}
-
-		return $wp_filesystem->copy( $src, $dst, $overwrite, $mode );
+		return $wp_filesystem->copy(
+			$this->absolute_path( $src ),
+			$this->absolute_path( $dst ),
+			$overwrite, $mode
+		);
 	}
 
 	/**
@@ -200,8 +186,7 @@ if (0) {
 		if ( empty( $wp_filesystem ) )
 			return FALSE;
 
-		if ( 'direct' !== self::$method )
-			$file = $this->absolute_path( $file );
+		$file = $this->absolute_path( $file );
 
 		if ( ! ( $fp = @fopen( $file, 'wb' ) ) )
 			return FALSE;
@@ -233,10 +218,7 @@ if (0) {
 	 * @return WP_Error on failure, True on success 
 	 */
 	public function unzip_file( $src, $dst ) {
-		if ( 'direct' !== self::$method )
-			$dst = $this->absolute_path( $dst );
-
-		return unzip_file( $src, $dst );
+		return unzip_file( $src, $this->absolute_path( $dst ) );
 	}
 
 }
