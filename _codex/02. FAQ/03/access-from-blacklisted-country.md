@@ -8,7 +8,9 @@ excerpt: I still have access from blacklisted country.
 
 ### Does this plugin work properly? ###
 
-Absolutely, **YES**. But mainly there's two reasons.
+Absolutely, **YES**.
+
+However, there are some reasons why users have such an impression.
 
 #### 1. Wordfence Live Traffic ####
 
@@ -24,7 +26,7 @@ its Live Traffic view would claim that:
 But please do not get ahead of yourself, there's a proper order for everything!
 
 Before WordPress runs, Wordfence ingeniously filters out malicious requests 
-to your site using [auto_prepend_file][AUTO_PREPEND] directive to include 
+to your site by enabling [auto_prepend_file][AUTO_PREPEND] directive to include
 PHP based Web Application Firewall. Then this plugin validates the rest of 
 the requests that pass over Wordfence because those were not in WAF rules, 
 especially you enables "**Prevent Zero-day Exploit**".
