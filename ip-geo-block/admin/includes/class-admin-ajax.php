@@ -180,7 +180,7 @@ class IP_Geo_Block_Admin_Ajax {
 
 		// Integrate posted data into current settings because if can be a part of hole data
 		$input = array_replace_recursive(
-			$parent->preprocess_options( IP_Geo_Block::get_option() ),
+			$parent->preprocess_options( IP_Geo_Block::get_option(), IP_Geo_Block::get_default() ),
 			$input
 		);
 

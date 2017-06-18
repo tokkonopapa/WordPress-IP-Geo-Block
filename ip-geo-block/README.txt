@@ -345,11 +345,11 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 This is a maintenance release addressing various improvement toward the next release.
 
 * **Bug fix:** Some issues caused by IE10/11 on admin pages.
-* **Improvement:** Better performance of validation for logged in user authentication.
+* **Improvement:** Better validation performance for logged in user authentication.
 * **Improvement:** Better rendering by CSS and JS for sections.
 * **Improvement:** Better handling of cookie for sections.
 * **Improvement:** Better handling of server and private IP address.
-* **Improvement:** Better compatibility with file operations by Filesystem API (but not yet supported FTP or SSH based operations).
+* **Improvement:** Better compatibility with file operations using Filesystem API (but FTP or SSH based operations are not full supported yet).
 * **Improvement:** Better timing of upgrade check at activation phase instead of `init` action hook.
 
 = 3.0.3 =

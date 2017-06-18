@@ -657,7 +657,7 @@ class IP_Geo_Block_Admin {
 
 		// Integrate posted data into current settings because if can be a part of hole data
 		$input = array_replace_recursive(
-			$output = $this->preprocess_options( $output ),
+			$output = $this->preprocess_options( $output, $default ),
 			$input
 		);
 
@@ -803,10 +803,10 @@ class IP_Geo_Block_Admin {
 	}
 
 	// Initialize not on the form (mainly unchecked checkbox)
-	public function preprocess_options( $output ) {
+	public function preprocess_options( $output, $default ) {
 		// initialize checkboxes not in the form (added after 2.0.0, just in case)
-		foreach ( array( 'anonymize', 'network_wide' ) as $key ) {
-			$output[ $key ] = 0;
+		foreach ( array( 'providers', 'anonymize', 'network_wide' ) as $key ) {
+			$output[ $key ] = is_array( $default[ $key ] ) ? array() : 0;
 		}
 
 		// initialize checkboxes not in the form
