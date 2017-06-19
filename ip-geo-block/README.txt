@@ -342,14 +342,15 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 == Changelog ==
 
 = 3.0.3.1 =
-This is a maintenance release addressing various improvement toward the next release.
+This is a maintenance release addressing various internal improvement.
 
-* **Bug fix:** Some issues caused by IE10/11 on admin pages.
+* **Bug fix:** Some issues caused by IE10/11 on admin pages had been fixed.
+* **Bug fix:** Turning off check boxes in "**API selection and key settings**" section now becomes to work.
 * **Improvement:** Better validation performance for logged in user authentication.
 * **Improvement:** Better rendering by CSS and JS for sections.
 * **Improvement:** Better handling of cookie for sections.
 * **Improvement:** Better handling of server and private IP address.
-* **Improvement:** Better compatibility with file operations using Filesystem API (but FTP or SSH based operations are not full supported yet).
+* **Improvement:** Better compatibility with file operations using Filesystem API. FTP or SSH based operations are now supported only when [some symbols are defined in `wp-config.php`](https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants "Editing wp-config.php &laquo; WordPress Codex").
 * **Improvement:** Better timing of upgrade check at activation phase instead of `init` action hook.
 
 = 3.0.3 =

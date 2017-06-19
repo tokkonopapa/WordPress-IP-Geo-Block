@@ -198,10 +198,10 @@ var IP_GEO_BLOCK_ZEP = {
 			}
 		}
 		return data;
-	};
+	},
 
 	// `upload.php` eats the query and set it to `query[ip-geo-block-auth-nonce]` as a parameter
-	var media_library = function (data) {
+	media_library = function (data) {
 		var i = data.length;
 		while (i-- > 0) {
 			if (data[i].indexOf('query%5Bip-geo-block-auth-nonce%5D=') !== -1) {
@@ -210,10 +210,10 @@ var IP_GEO_BLOCK_ZEP = {
 			}
 		}
 		return data;
-	};
+	},
 
 	// list of excluded links
-	var ajax_links = {
+	ajax_links = {
 		'upload.php': media_library,
 		'theme-install.php': theme_featured,
 		'network/theme-install.php': theme_featured
@@ -226,7 +226,8 @@ var IP_GEO_BLOCK_ZEP = {
 	}
 
 	// embed a nonce before an Ajax request is sent (ToDo: consider to use $.ajaxPrefilter )
-	$(document).ajaxSend(function (event, jqxhr, settings) {
+//	$(document).ajaxSend(function (event, jqxhr, settings) {
+	$.ajaxPrefilter(function (settings, original, jqxhr) {
 		var nonce = IP_GEO_BLOCK_ZEP.nonce;
 
 		// POST to async-upload.php causes an error in https://wordpress.org/plugins/mammoth-docx-converter/
