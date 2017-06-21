@@ -388,7 +388,7 @@ var ip_geo_block_time = new Date();
 
 		for (i in cookie) {
 			if(cookie.hasOwnProperty(i)) {
-				cookie[i] = cookie[i].replace(/[^ox]/g, '').split(''); // string (ooo...) to array (n)
+				cookie[i] = cookie[i].replace(/[^ox\d]/g, '').split(''); // string (ooo...) to array (n)
 			}
 		}
 
@@ -946,6 +946,12 @@ var ip_geo_block_time = new Date();
 					);
 				});
 			}
+
+			// Set selected provider to cookie
+			$('select[id^="' + ID('!', 'service') + '"]').on('change', function (event) {
+				cookie[tabNo][3] = $(this).prop('selectedIndex');
+				saveCookie(cookie); // Save cookie
+			}).change();
 
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (event) {

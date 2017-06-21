@@ -336,17 +336,13 @@ var IP_GEO_BLOCK_ZEP = {
 				href = escapeHTML(decodeURIComponent(this.href));
 				href = href.split(';', 2).shift(); // avoid `url=...;url=javascript:...`
 
-				// identify IE
-				rel = window.navigator.userAgent.toLowerCase();
-				rel = (-1 !== rel.indexOf('msie') || -1 !== rel.indexOf('trident'));
-
 				admin = window.open();
 				admin.document.write(
 					'<!DOCTYPE html><html><head>' +
 					'<meta name="referrer" content="never" />' +
 					'<meta name="referrer" content="no-referrer" />' +
 					'<meta http-equiv="refresh" content="0; url=' + href + '" />' +
-					(rel ? '' : '<script>window.location.replace("' + href + '")</script>') +
+					($('body').hasClass('webview') ? '<script>window.location.replace("' + href + '")</script>' : '') +
 					'</head></html>'
 				);
 				admin.document.close();

@@ -28,8 +28,8 @@ class IP_Geo_Block_Admin {
 	 * and adding a settings page and menu.
 	 */
 	private function __construct() {
-		// Load plugin text domain.
-		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+		// Load plugin text domain and add body class
+		add_action( 'init', array( $this, 'admin_init' ) );
 
 		// Setup a nonce to validate authentication.
 		add_filter( 'wp_redirect', array( $this, 'add_admin_nonce' ), 10, 2 );
@@ -55,11 +55,29 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Load the plugin text domain for translation.
+	 * Load the plugin text domain for translation and add body class.
 	 *
 	 */
-	public function load_plugin_textdomain() {
+	public function admin_init() {
+		// loads a plugin’s translated strings.
 		load_plugin_textdomain( IP_Geo_Block::PLUGIN_NAME, FALSE, dirname( IP_GEO_BLOCK_BASE ) . '/languages/' );
+
+		// add webview class into body tag
+		// https://stackoverflow.com/questions/37591279/detect-if-user-is-using-webview-for-android-ios-or-a-regular-browser
+		if (  isset( $_SERVER['HTTP_USER_AGENT'] ) &&
+		   ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Mobile/' ) !== FALSE ) &&
+		   ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Safari/' ) === FALSE ) ) {
+			add_filter( 'admin_body_class', array( $this, 'add_body_class' ) );
+		}
+
+		// for Android
+		elseif ( isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === "com.company.app" ) {
+			add_filter( 'admin_body_class', array( $this, 'add_body_class' ) );
+		}
+	}
+
+	public function add_body_class( $classes ) {
+		return $classes . ($classes ? ' ' : '') . 'webview';
 	}
 
 	/**
@@ -383,7 +401,7 @@ class IP_Geo_Block_Admin {
 	 * Get cookie that indicates open/close section
 	 *
 	 */
-	private function get_cookie( $name ) {
+	public function get_cookie( $name ) {
 		$cookie = array();
 		if ( ! empty( $_COOKIE[ $name ] ) ) {
 			foreach ( explode( '&', $_COOKIE[ $name ] ) as $i => $v ) {

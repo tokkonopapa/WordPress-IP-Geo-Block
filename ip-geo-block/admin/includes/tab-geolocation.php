@@ -33,6 +33,10 @@ class IP_Geo_Block_Admin_Tab {
 			}
 		}
 
+		// get selected item
+		if ( $cookie = $context->get_cookie( IP_Geo_Block::PLUGIN_NAME ) )
+			$cookie = $cookie[2][3];
+
 		$field = 'service';
 		$provider = array_keys( $providers );
 		add_settings_field(
@@ -45,7 +49,7 @@ class IP_Geo_Block_Admin_Tab {
 				'type' => 'select',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => $provider[0],
+				'value' => $provider[ (int)$cookie ],
 				'list' => $list,
 			)
 		);
