@@ -1,7 +1,7 @@
 <?php
 class IP_Geo_Block_Admin_Tab {
 
-	public static function tab_setup( $context ) {
+	public static function tab_setup( $context, $tab ) {
 		$option_slug = IP_Geo_Block::PLUGIN_NAME;
 		$option_name = IP_Geo_Block::OPTION_NAME;
 		$settings = IP_Geo_Block::get_option();

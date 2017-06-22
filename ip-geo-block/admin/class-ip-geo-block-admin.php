@@ -523,7 +523,7 @@ class IP_Geo_Block_Admin {
 		);
 
 		require_once IP_GEO_BLOCK_PATH . $files[ $this->admin_tab ];
-		IP_Geo_Block_Admin_Tab::tab_setup( $this );
+		IP_Geo_Block_Admin_Tab::tab_setup( $this, $this->admin_tab );
 	}
 
 	/**

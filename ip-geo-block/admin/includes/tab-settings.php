@@ -7,7 +7,7 @@ if ( ! function_exists( 'get_plugins' ) )
 
 class IP_Geo_Block_Admin_Tab {
 
-	public static function tab_setup( $context ) {
+	public static function tab_setup( $context, $tab ) {
 		$plugin_slug = IP_Geo_Block::PLUGIN_NAME; // 'ip-geo-block'
 		$option_slug = IP_Geo_Block::PLUGIN_NAME; // 'ip-geo-block'
 		$option_name = IP_Geo_Block::OPTION_NAME; // 'ip_geo_block_settings'

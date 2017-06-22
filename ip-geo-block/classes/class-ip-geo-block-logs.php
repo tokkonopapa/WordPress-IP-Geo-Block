@@ -412,33 +412,27 @@ class IP_Geo_Block_Logs {
 	/**
 	 * Backup the validation log to text files
 	 *
-	 * Note: $path should not be within the public_html.
+	 * Note: $path should be absolute to the directory and should not be within the public_html.
 	 */
 	private static function backup_logs( $hook, $validate, $method, $agent, $heads, $posts, $path ) {
-		// $path should be absolute path to the directory
-		if ( validate_file( $path ) !== 0 )
-			return;
-
-		$path = IP_Geo_Block_Util::slashit( $path ) .
-			IP_Geo_Block::PLUGIN_NAME . date('-Y-m') . '.log';
-
-		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )
-			return;
-
-		fprintf( $fp, "%d,%s,%s,%d,%s,%s,%s,%s,%s,%s\n",
-			$_SERVER['REQUEST_TIME'],
-			$validate['ip'],
-			$hook,
-			$validate['auth'],
-			$validate['code'],
-			$validate['result'],
-			$method,
-			str_replace( ',', '‚', $agent ), // &#044; --> &#130;
-			str_replace( ',', '‚', $heads ), // &#044; --> &#130;
-			str_replace( ',', '‚', $posts )  // &#044; --> &#130;
-		);
-
-		fclose( $fp );
+		if ( validate_file( $path ) === 0 ) {
+			file_put_contents(
+				IP_Geo_Block_Util::slashit( $path ) . IP_Geo_Block::PLUGIN_NAME . date('-Y-m') . '.log',
+				sprintf( "%d,%s,%s,%d,%s,%s,%s,%s,%s,%s\n",
+					$_SERVER['REQUEST_TIME'],
+					$validate['ip'],
+					$hook,
+					$validate['auth'],
+					$validate['code'],
+					$validate['result'],
+					$method,
+					str_replace( ',', '‚', $agent ), // &#044; --> &#130;
+					str_replace( ',', '‚', $heads ), // &#044; --> &#130;
+					str_replace( ',', '‚', $posts )  // &#044; --> &#130;
+				),
+				FILE_APPEND | LOCK_EX
+			);
+		}
 	}
 
 	/**
