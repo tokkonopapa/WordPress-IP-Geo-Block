@@ -262,6 +262,9 @@ table.ip-geo-block-table {
     word-wrap: break-word;
     word-break: break-all;
 }
+table.ip-geo-block-table td:first-child {
+    min-width: 4.3em;
+}
 
 /* for whois */
 @media screen and (max-width:782px) {

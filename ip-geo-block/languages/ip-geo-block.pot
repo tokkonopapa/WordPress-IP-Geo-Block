@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.3.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-06-23 00:37+0900\n"
-"PO-Revision-Date: 2017-06-23 00:37+0900\n"
+"POT-Creation-Date: 2017-06-23 19:53+0900\n"
+"PO-Revision-Date: 2017-06-23 19:53+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgid "Contribute at GitHub"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:228
-#: admin/class-ip-geo-block-admin.php:462
+#: admin/class-ip-geo-block-admin.php:463
 msgid "Settings"
 msgstr ""
 
@@ -115,58 +115,58 @@ msgstr ""
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:340
+#: admin/class-ip-geo-block-admin.php:341
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
 "select &#8220;init&#8221; action hook."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:383
 #: admin/class-ip-geo-block-admin.php:384
+#: admin/class-ip-geo-block-admin.php:385
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:463
+#: admin/class-ip-geo-block-admin.php:464
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:464
+#: admin/class-ip-geo-block-admin.php:465
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:465
+#: admin/class-ip-geo-block-admin.php:466
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:466
+#: admin/class-ip-geo-block-admin.php:467
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:479
+#: admin/class-ip-geo-block-admin.php:477
 msgid "Toggle all"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:501
+#: admin/class-ip-geo-block-admin.php:499
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:502
+#: admin/class-ip-geo-block-admin.php:500
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:507
+#: admin/class-ip-geo-block-admin.php:505
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:602
+#: admin/class-ip-geo-block-admin.php:600
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:980
+#: admin/class-ip-geo-block-admin.php:978
 #: classes/class-ip-geo-block-cron.php:260
 #: classes/class-ip-geo-block-cron.php:300
 #: classes/class-ip-geo-block-cron.php:316
@@ -174,15 +174,15 @@ msgstr ""
 msgid "Unable to write %s. Please check the permission."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:981
+#: admin/class-ip-geo-block-admin.php:979
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-ip-geo-block-admin.php:991
-#: classes/class-ip-geo-block-opts.php:382
+#: admin/class-ip-geo-block-admin.php:989
+#: classes/class-ip-geo-block-opts.php:386
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr ""

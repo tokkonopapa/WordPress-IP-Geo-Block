@@ -331,6 +331,7 @@ class IP_Geo_Block_Admin {
 						esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-0'
 					)
 				);
+				break;
 			}
 		}
 
@@ -417,39 +418,38 @@ class IP_Geo_Block_Admin {
 	 *
 	 * wp-admin/includes/template.php @since 2.7.0
 	 */
-	private function do_settings_sections( $page, $tab, $cookie ) {
+	private function do_settings_sections( $page, $tab ) {
 		global $wp_settings_sections, $wp_settings_fields;
 
-		if ( ! isset( $wp_settings_sections[ $page ] ) )
-			return;
+		if ( isset( $wp_settings_sections[ $page ] ) ) {
+			$index  = 0; // index of fieldset
+			$cookie = $this->get_cookie( IP_Geo_Block::PLUGIN_NAME );
 
-		$index  = 0; // index of fieldset
-		foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
-			// TRUE if open ('o') or FALSE if close ('x')
-			$stat = empty( $cookie[ $tab ][ $index ] ) || 'x' !== $cookie[ $tab ][ $index ];
+			foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
+				// TRUE if open ('o') or FALSE if close ('x')
+				$stat = empty( $cookie[ $tab ][ $index ] ) || 'x' !== $cookie[ $tab ][ $index ];
 
-			echo '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n";
-			echo '<legend class="panel-heading"><h3';
-			echo ' class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '"';
-			echo '>', $section['title'], '</h3></legend>', "\n";
-			echo '<div class="panel-body',
-				($stat ? ' ' . IP_Geo_Block::PLUGIN_NAME . '-border"' : '"'),
-				($stat || (4 === $tab && $index) ? '>' : ' style="display:none">'), "\n";
-			++$index;
+				echo '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n",
+				     '<legend class="panel-heading"><h3 class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '">', $section['title'],
+				     '</h3></legend>', "\n", '<div class="panel-body',
+				     ($stat ? ' ' . IP_Geo_Block::PLUGIN_NAME . '-border"' : '"'),
+				     ($stat || (4 === $tab && $index) ? '>' : ' style="display:none">'), "\n";
 
-			if ( $section['callback'] )
-				call_user_func( $section['callback'], $section );
+				++$index;
 
-			if ( ! isset( $wp_settings_fields ) ||
-			     ! isset( $wp_settings_fields[ $page ] ) ||
-			     ! isset( $wp_settings_fields[ $page ][ $section['id'] ] ) ) {
-				 echo "</div>\n</fieldset>\n";
-				continue;
+				if ( $section['callback'] )
+					call_user_func( $section['callback'], $section );
+
+				if ( isset( $wp_settings_fields,
+							$wp_settings_fields[ $page ],
+							$wp_settings_fields[ $page ][ $section['id'] ] ) ) {
+					echo '<table class="form-table">';
+					do_settings_fields( $page, $section['id'] );
+					echo "</table>\n";
+				}
+
+				echo "</div>\n</fieldset>\n";
 			}
-
-			echo '<table class="form-table">';
-			do_settings_fields( $page, $section['id'] );
-			echo "</table>\n</div>\n</fieldset>\n";
 		}
 	}
 
@@ -458,6 +458,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function display_plugin_admin_page() {
+		$tab = $this->admin_tab;
 		$tabs = array(
 			0 => __( 'Settings',    'ip-geo-block' ),
 			1 => __( 'Statistics',  'ip-geo-block' ),
@@ -465,9 +466,6 @@ class IP_Geo_Block_Admin {
 			2 => __( 'Search',      'ip-geo-block' ),
 			3 => __( 'Attribution', 'ip-geo-block' ),
 		);
-
-		$tab = $this->admin_tab;
-		$cookie = $this->get_cookie( IP_Geo_Block::PLUGIN_NAME );
 ?>
 <div class="wrap">
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
@@ -480,7 +478,7 @@ class IP_Geo_Block_Admin {
 	<form method="post" action="options.php" id="<?php echo IP_Geo_Block::PLUGIN_NAME, '-', $tab; ?>"<?php if ( $tab ) echo " class=\"", IP_Geo_Block::PLUGIN_NAME, "-inhibit\""; ?>>
 <?php
 		settings_fields( IP_Geo_Block::PLUGIN_NAME );
-		$this->do_settings_sections( IP_Geo_Block::PLUGIN_NAME, $tab, $cookie );
+		$this->do_settings_sections( IP_Geo_Block::PLUGIN_NAME, $tab );
 		if ( 0 === $tab )
 			submit_button(); // @since 3.1
 ?>
@@ -498,7 +496,7 @@ class IP_Geo_Block_Admin {
 	}
 	echo '<p>', implode( '<br />', $tab ), "</p>\n";
 
-	echo "<p>", __( 'Thanks for providing these great services for free.', 'ip-geo-block' ), "<br />\n";
+	echo '<p>', __( 'Thanks for providing these great services for free.', 'ip-geo-block' ), "<br />\n";
 	echo __( '(Most browsers will redirect you to each site <a href="http://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', 'ip-geo-block' ), "</p>\n";
 } ?>
 <?php if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {

@@ -35,7 +35,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		// get selected item
 		$cookie = $context->get_cookie( IP_Geo_Block::PLUGIN_NAME );
-		$cookie = empty( $cookie ) ? 0 : (int)end( $cookie[ $tab ] );
+		$cookie = empty( $cookie[ $tab ] ) ? 0 : (int)end( $cookie[ $tab ] );
 
 		$field = 'service';
 		$provider = array_keys( $providers );

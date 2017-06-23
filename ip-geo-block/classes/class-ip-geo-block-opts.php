@@ -174,6 +174,7 @@ class IP_Geo_Block_Opts {
 			'gif' => 'image/gif',
 			'png' => 'image/png',
 			'ico' => 'image/x-icon',
+
 			// Video formats.
 			'wmv' => 'video/x-ms-wmv',
 			'avi' => 'video/avi',
@@ -183,13 +184,16 @@ class IP_Geo_Block_Opts {
 			'ogv' => 'video/ogg',
 			'3gp|3gpp' => 'video/3gpp',
 			'3g2|3gp2' => 'video/3gpp2',
+
 			// Audio formats.
 			'mp3|m4a|m4b' => 'audio/mpeg',
 			'wav' => 'audio/wav',
 			'ogg|oga' => 'audio/ogg',
+
 			// Misc application formats.
 			'pdf' => 'application/pdf',
 			'psd' => 'application/octet-stream',
+
 			// MS Office formats.
 			'doc' => 'application/msword',
 			'pot|pps|ppt' => 'application/vnd.ms-powerpoint',
