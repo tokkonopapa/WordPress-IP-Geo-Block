@@ -346,6 +346,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 = 3.0.3.1 =
 This is a maintenance release addressing various internal improvement.
 
+* **Bug fix:** Fixed an issue where deletion of the expired cache was not executed in subordinate blogs when this plugin was activated on the network wide.
 * **Bug fix:** Some issues caused by IE10/11 on admin pages had been fixed.
 * **Bug fix:** Turning off check boxes in "**API selection and key settings**" section now becomes to work.
 * **Improvement:** Better validation performance for logged in user authentication.
