@@ -58,10 +58,10 @@ var ip_geo_block_time = new Date();
 	function redirect(page, tab) {
 		if (-1 !== location.href.indexOf(page)) {
 			var url = escapeHTML(page) + (tab ? '&' + escapeHTML(tab) : '');
-			if (typeof IP_GEO_BLOCK_ZEP === 'undefined') {
-				window.location.href = url;
-			} else {
+			if ('undefined' !== typeof IP_GEO_BLOCK_ZEP) {
 				IP_GEO_BLOCK_ZEP.redirect(url);
+			} else {
+				window.location.href = url;
 			}
 		}
 	}

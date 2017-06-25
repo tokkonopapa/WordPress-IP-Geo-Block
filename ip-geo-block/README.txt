@@ -12,9 +12,11 @@ It blocks spam posts, login attempts and malicious access to the back-end reques
 
 == Description ==
 
-A considerable number of WordPress vulnerabilities in plugins and themes have been disclosed every month. You can easily find them at [WPScan Vulnerability Database](https://wpvulndb.com/ "WPScan Vulnerability Database") and [Exploits Database](https://www.exploit-db.com/ "Exploits Database by Offensive Security"). It means that many WordPress sites can be always exposed to the threats of being exploited caused by those vulnerabilities.
+A considerable number of WordPress vulnerabilities in plugins and themes have been disclosed every month. You can easily find them at [WPScan Vulnerability Database](https://wpvulndb.com/ "WPScan Vulnerability Database") and [Exploits Database](https://www.exploit-db.com/ "Exploits Database by Offensive Security"). It means that many WordPress sites can always be exposed to the threats of being exploited caused by those vulnerabilities.
 
-This plugin protects your site against such threats of attack to the back-end of your site such as login form (login attempt) and admin area. And it also blocks undesired requests to the comment form (spam and trackback), XML-RPC (login attempt and pingback) and even public facing pages aka front-end.
+This plugin protects your site against such threats of attack against the back-end of your site such as login form (login attempt) and admin area. And it also blocks undesired requests to the comment form (spam and trackback), XML-RPC (login attempt and pingback) and even public facing pages aka front-end.
+
+After several days of installation, you'll be supprised to find many malicious or undesirable accesses are blocked especially if you enable Zero-day Expoit Prevention for back-end.
 
 = Features =
 
@@ -61,7 +63,7 @@ This plugin protects your site against such threats of attack to the back-end of
   Website owners do not prefer themselves to be blocked. This plugin prevents such a sad thing unless you force it. And futhermore, if such a situation occurs, you can [rescue yourself](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block") easily.
 
 * **Clean uninstallation:**  
-  Nothing is left in your precious mySQL database after uninstallation. So you can feel free to install and activate to make a trial of this plugin's functionality. Several days later, you'll find many undesirable accesses in your validation logs if all validation targets are enabled.
+  Nothing is left in your precious mySQL database after uninstallation. So you can feel free to install and activate to make a trial of this plugin's functionality.
 
 = Attribution =
 
@@ -348,6 +350,7 @@ This is a maintenance release addressing various internal improvement.
 * **Bug fix:** Turning off check boxes in "**API selection and key settings**" section now becomes to work.
 * **Improvement:** Better validation performance for logged in user authentication.
 * **Improvement:** Better rendering by CSS and JS for sections.
+* **Improvement:** Better handling of click event for embedding a nonce.
 * **Improvement:** Better handling of cookie for sections.
 * **Improvement:** Better handling of server and private IP address.
 * **Improvement:** Better compatibility with file operations using Filesystem API. FTP or SSH based operations are now supported only when [some symbols are defined in `wp-config.php`](https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants "Editing wp-config.php &laquo; WordPress Codex").

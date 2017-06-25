@@ -43,6 +43,10 @@ class IP_Geo_Block_Admin {
 		// If multisite, then enque the authentication script for network admin
 		if ( is_multisite() ) {
 			add_action( 'network_admin_menu', 'IP_Geo_Block::enqueue_nonce' );
+
+			// when a blog is created or deleted.
+			add_action( 'wpmu_new_blog', array( $this, 'create_blog' ), 10, 6 ); // @since MU
+			add_action( 'delete_blog',   array( $this, 'delete_blog' ), 10, 2 ); // @since 3.0.0
 		}
 	}
 
@@ -86,6 +90,20 @@ class IP_Geo_Block_Admin {
 	 */
 	public function add_admin_nonce( $location, $status ) {
 		return IP_Geo_Block_Util::rebuild_nonce( $location, $status );
+	}
+
+	/**
+	 * Do some procedures when a blog is created or deleted.
+	 *
+	 */
+	public function create_blog( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php';
+		IP_Geo_Block_Activate::activate_blog( $blog_id );
+	}
+
+	public function delete_blog( $blog_id, $drop ) {
+		if ( $drop )
+			IP_Geo_Block_Logs::delete_tables(); // blog is already switched to the target in wpmu_delete_blog()
 	}
 
 	/**

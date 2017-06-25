@@ -18,12 +18,6 @@ require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
 
 class IP_Geo_Block_Activate {
 
-	// initialize logs then upgrade and return new options
-	private static function activate_blog() {
-		IP_Geo_Block_Logs::create_tables();
-		IP_Geo_Block_Opts::upgrade();
-	}
-
 	// initialize main blog
 	public static function init_main_blog() {
 		if ( current_user_can( 'manage_options' ) ) {
@@ -41,22 +35,28 @@ class IP_Geo_Block_Activate {
 		}
 	}
 
+	// initialize logs then upgrade and return new options
+	public static function activate_blog( $blog_id = FALSE ) {
+		// only multisite
+		if ( FALSE !== $blog_id )
+			switch_to_blog( $blog_id );
+
+		IP_Geo_Block_Logs::create_tables();
+		IP_Geo_Block_Opts::upgrade();
+	}
+
 	/**
 	 * Register options into database table when the plugin is activated.
-	 * if ( is_multisite() && $network_wide ) { ... }
+	 * @link https://wordpress.stackexchange.com/questions/181141/how-to-run-an-activation-function-when-plugin-is-network-activated-on-multisite
 	 */
 	public static function activate( $network_wide = FALSE ) {
-		if ( ! function_exists( 'is_plugin_active_for_network' ) )
-			require_once ABSPATH . '/wp-admin/includes/plugin.php';
-
-		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
+		if ( $network_wide ) {
 			global $wpdb;
 			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
 			$current_blog_id = get_current_blog_id();
 
 			foreach ( $blog_ids as $id ) {
-				switch_to_blog( $id );
-				self::activate_blog();
+				self::activate_blog( $id );
 			}
 
 			switch_to_blog( $current_blog_id );
