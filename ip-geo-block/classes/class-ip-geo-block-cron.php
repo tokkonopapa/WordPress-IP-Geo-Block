@@ -59,6 +59,12 @@ class IP_Geo_Block_Cron {
 			if ( $geo = IP_Geo_Block_API::get_instance( $provider, $settings ) ) {
 				$res[ $provider ] = $geo->download( $settings[ $provider ], $args );
 
+				// re-schedule cron job
+				self::schedule_cron_job( $settings['update'], $settings[ $provider ], FALSE );
+
+				// update option settings
+				self::update_settings( $settings, array( 'update', $provider ) );
+
 				// update matching rule immediately
 				if ( $immediate && FALSE !== ( $stat = get_transient( IP_Geo_Block::CRON_NAME ) ) && 'done' !== $stat ) {
 					$validate = IP_Geo_Block::get_geolocation( NULL, array( $provider ) );
@@ -66,7 +72,7 @@ class IP_Geo_Block_Cron {
 
 					// if blocking may happen then disable validation
 					if ( -1 !== (int)$settings['matching_rule'] && 'passed' !== $validate['result'] &&
-						 ( empty( $_SERVER['HTTP_X_REQUESTED_FROM'] ) || FALSE === strpos( $_SERVER['HTTP_X_REQUESTED_FROM'], 'InfiniteWP' ) ) ) {
+					     ( empty( $_SERVER['HTTP_X_REQUESTED_FROM'] ) || FALSE === strpos( $_SERVER['HTTP_X_REQUESTED_FROM'], 'InfiniteWP' ) ) ) {
 						$settings['matching_rule'] = -1;
 					}
 
@@ -77,23 +83,15 @@ class IP_Geo_Block_Cron {
 						if ( FALSE === strpos( $settings['white_list'], $validate['code'] ) )
 							$settings['white_list'] .= ( $settings['white_list'] ? ',' : '' ) . $validate['code'];
 
+						// update option settings
+						self::update_settings( $settings, array( 'matching_rule', 'white_list' ) );
+
 						// finished to update matching rule
 						set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
 					}
 				}
 			}
 		}
-
-		if ( ! empty( $providers ) ) {
-			// re-schedule cron job
-			self::schedule_cron_job( $settings['update'], $settings[ array_shift( $providers ) ], FALSE );
-
-			// update option settings
-			self::update_settings( $settings, array_merge( array( 'matching_rule', 'white_list', 'update' ), $providers ) );
-		}
-
-		// finished to update matching rule (it needs exclusive control doesn't it?)
-		set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
 
 		return isset( $res ) ? $res : NULL;
 	}
@@ -106,7 +104,7 @@ class IP_Geo_Block_Cron {
 		if ( ! function_exists( 'is_plugin_active_for_network' ) )
 			require_once ABSPATH . '/wp-admin/includes/plugin.php';
 
-		// for multisite
+		// for multisite (@since 3.0.0 in wp-admin/includes/plugin.php)
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			global $wpdb;
 			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
@@ -151,7 +149,7 @@ class IP_Geo_Block_Cron {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 		// the status is still inactive when this plugin is activated on dashboard.
-		if ( ! is_plugin_active( IP_GEO_BLOCK_BASE ) ) {
+		if ( ! is_plugin_active( IP_GEO_BLOCK_BASE ) ) { // @since 2.5.0 in wp-admin/includes/plugin.php
 			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address(), MINUTE_IN_SECONDS );
 			self::schedule_cron_job( $settings['update'], NULL, TRUE );
 		}
@@ -191,8 +189,8 @@ class IP_Geo_Block_Cron {
 	 * @return array status message.
 	 */
 	public static function download_zip( $url, $args, $filename, $modified ) {
-		if ( ! function_exists( 'download_url' ) )
-			require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( 'download_zip' );
 
 		// if the name of src file is changed, then update the dst
 		if ( basename( $filename ) !== ( $base = pathinfo( $url, PATHINFO_FILENAME ) ) )
@@ -276,10 +274,8 @@ class IP_Geo_Block_Cron {
 			}
 
 			elseif ( 'zip' === $args && class_exists( 'ZipArchive' ) ) {
-				// https://codex.wordpress.org/Function_Reference/unzip_file
-				WP_Filesystem();
 				$tmp = get_temp_dir(); // @since 2.5
-				$ret = unzip_file( $src, $tmp ); // @since 2.5
+				$ret = $fs->unzip_file( $src, $tmp ); // @since 2.5
 
 				if ( is_wp_error( $ret ) ) {
 					/* try fallback instead of throwing error
@@ -292,7 +288,7 @@ class IP_Geo_Block_Cron {
 					if ( TRUE !== $zip->open( $src ) )
 						throw new Exception(
 							sprintf(
-								__( 'Unable to read %s. Please check permission.', 'ip-geo-block' ),
+								__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ),
 								$src
 							)
 						);
@@ -301,7 +297,7 @@ class IP_Geo_Block_Cron {
 						$zip->close();
 						throw new Exception(
 							sprintf(
-								__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ),
+								__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ),
 								$tmp . basename( $filename )
 							)
 						);

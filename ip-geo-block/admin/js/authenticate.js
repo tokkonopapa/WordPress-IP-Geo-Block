@@ -188,8 +188,10 @@ var IP_GEO_BLOCK_ZEP = {
 		return 0; // internal not admin
 	}
 
+	var nonce = IP_GEO_BLOCK_ZEP.nonce,
+
 	// `theme-install.php` eats the query and set it to `request[browse]` as a parameter
-	var theme_featured = function (data) {
+	theme_featured = function (data) {
 		var i = data.length;
 		while (i-- > 0) {
 			if (data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth') !== -1) {
@@ -198,10 +200,10 @@ var IP_GEO_BLOCK_ZEP = {
 			}
 		}
 		return data;
-	};
+	},
 
 	// `upload.php` eats the query and set it to `query[ip-geo-block-auth-nonce]` as a parameter
-	var media_library = function (data) {
+	media_library = function (data) {
 		var i = data.length;
 		while (i-- > 0) {
 			if (data[i].indexOf('query%5Bip-geo-block-auth-nonce%5D=') !== -1) {
@@ -210,10 +212,10 @@ var IP_GEO_BLOCK_ZEP = {
 			}
 		}
 		return data;
-	};
+	},
 
 	// list of excluded links
-	var ajax_links = {
+	ajax_links = {
 		'upload.php': media_library,
 		'theme-install.php': theme_featured,
 		'network/theme-install.php': theme_featured
@@ -225,12 +227,10 @@ var IP_GEO_BLOCK_ZEP = {
 		return ajax_links.hasOwnProperty(path) ? ajax_links[path] : null;
 	}
 
-	// embed a nonce before an Ajax request is sent (ToDo: consider to use $.ajaxPrefilter )
-	$(document).ajaxSend(function (event, jqxhr, settings) {
-		var nonce = IP_GEO_BLOCK_ZEP.nonce;
-
+	// embed a nonce before an Ajax request is sent
+	$.ajaxPrefilter(function (settings, original, jqxhr) {
 		// POST to async-upload.php causes an error in https://wordpress.org/plugins/mammoth-docx-converter/
-		if (nonce && is_admin(settings.url) === 1 && !settings.url.match(/async-upload\.php$/)) {
+		if (is_admin(settings.url) === 1 && !settings.url.match(/async-upload\.php$/)) {
 			// multipart/form-data (XMLHttpRequest Level 2)
 			// IE10+, Firefox 4+, Safari 5+, Android 3+
 			if (typeof window.FormData !== 'undefined' && settings.data instanceof FormData) {
@@ -313,80 +313,60 @@ var IP_GEO_BLOCK_ZEP = {
 		return (is_admin(location.pathname) === 1 || location.search.indexOf(IP_GEO_BLOCK_ZEP.auth) >= 0);
 	}
 
-	function attach_nonce() {
-		var nonce = IP_GEO_BLOCK_ZEP.nonce;
-		if (nonce) {
-			var $body = $('body');
+	function attach_event() {
+		// https://www.sitepoint.com/jquery-body-on-document-on/
+		var elem = $(document); // `html` or `body` doesn't work with some browsers
 
-			$body.find('img').each(function (index) {
-				var src = $(this).attr('src');
+		elem.onFirst('click contextmenu', 'a', function (event) {
+			// attr() returns 'string' or 'undefined'
+			var $this = $(this),
+			    href  = $this.attr('href'),
+			    rel   = $this.attr('rel' ),
+			    admin = "undefined" !== typeof href ? is_admin(href) : 0;
 
-				// if admin area
-				if (is_admin(src) === 1) {
-					$(this).attr('src', add_query_nonce(src, nonce));
-				}
-			});
-
-			$body.onFirst('click contextmenu', 'a', function (event) {
-				// attr() returns 'string' or 'undefined'
-				var $this = $(this),
-				    href  = $this.attr('href'),
-				    rel   = $this.attr('rel' ),
-				    admin = "undefined" !== typeof href ? is_admin(href) : 0;
-
-				// if admin area (except in comment with nofollow) then add a nonce
-				if (admin === 1) {
-					$this.attr('href', add_query_nonce(
-						href, (!rel || rel.indexOf('nofollow') < 0) ? nonce : 'nofollow'
-					));
-				}
-
-				// if external then redirect with no referrer not to leak out the nonce
-				else if (admin === -1 && is_back_end()) {
-					href = escapeHTML(decodeURIComponent(this.href));
-					href = href.split(';', 2).shift(); // avoid `url=...;url=javascript:...`
-
-					var w = window.open();
-					w.document.write(
-						'<!DOCTYPE html><html><head>' +
-						'<meta name="referrer" content="never" />' +
-						'<meta name="referrer" content="no-referrer" />' +
-						'<meta http-equiv="refresh" content="0; url=' + href + '" />' +
-						'<script>window.location.replace("' + href + '")</script></head></html>'
-					);
-					w.document.close();
-
-					// stop event propagation
-					event.stopImmediatePropagation();
-
-					// automatically call event.stopPropagation() and event.preventDefault()
-					return false;
-				}
-			});
-
-			$body.onFirst('submit', 'form', function (event) {
-				var $this = $(this),
-				    action = $this.attr('action'); // possibly 'undefined'
-
-				// if admin area then add the nonce
-				if (is_admin(action) === 1) {
-					$this.attr('action', add_query_nonce(action, nonce));
-				}
-			});
-
-			// Restore post revisions (wp-admin/revisions.php @since 2.6.0)
-			if ('undefined' !== typeof window._wpRevisionsSettings) {
-				var i, data = window._wpRevisionsSettings.revisionData, n = data.length;
-				for (i = 0; i < n; ++i) {
-					if (-1 === data[i].restoreUrl.indexOf(IP_GEO_BLOCK_ZEP.auth)) {
-						window._wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(data[i].restoreUrl, nonce);
-					}
-				}
+			// if admin area (except in comment with nofollow) then add a nonce
+			if (admin === 1) {
+				$this.attr('href', add_query_nonce(
+					href, (!rel || rel.indexOf('nofollow') < 0) ? nonce : 'nofollow'
+				));
 			}
-		}
+
+			// if external then redirect with no referrer not to leak out the nonce
+			else if (admin === -1 && is_back_end()) {
+				href = escapeHTML(decodeURIComponent(this.href));
+				href = href.split(';', 2).shift(); // avoid `url=...;url=javascript:...`
+
+				admin = window.open();
+				admin.document.write(
+					'<!DOCTYPE html><html><head>' +
+					'<meta name="referrer" content="never" />' +
+					'<meta name="referrer" content="no-referrer" />' +
+					'<meta http-equiv="refresh" content="0; url=' + href + '" />' +
+					($('body').hasClass('webview') ? '<script>window.location.replace("' + href + '")</script>' : '') +
+					'</head></html>'
+				);
+				admin.document.close();
+
+				// stop event propagation
+				event.stopImmediatePropagation();
+
+				// automatically call event.stopPropagation() and event.preventDefault()
+				return false;
+			}
+		});
+
+		elem.onFirst('submit', 'form', function (event) {
+			var $this = $(this),
+			    action = $this.attr('action'); // possibly 'undefined'
+
+			// if admin area then add the nonce
+			if (is_admin(action) === 1) {
+				$this.attr('action', add_query_nonce(action, nonce));
+			}
+		});
 	}
 
-	$(function () {
+	function attach_ready() {
 		// avoid conflict with "Open external links in a new window"
 		if (is_back_end()) {
 			$('a').each(function () {
@@ -396,15 +376,41 @@ var IP_GEO_BLOCK_ZEP = {
 			});
 		}
 
-		// attach event to add nonce
-		attach_nonce();
-		IP_GEO_BLOCK_ZEP.init = true;
-	});
+		$('img').each(function (index) {
+			var src = $(this).attr('src');
+
+			// if admin area
+			if (is_admin(src) === 1) {
+				$(this).attr('src', add_query_nonce(src, nonce));
+			}
+		});
+
+		// Restore post revisions (wp-admin/revisions.php @since 2.6.0)
+		if ('undefined' !== typeof window._wpRevisionsSettings) {
+			var i,
+			    data = window._wpRevisionsSettings.revisionData,
+			    n = data.length;
+
+			for (i = 0; i < n; ++i) {
+				if (-1 === data[i].restoreUrl.indexOf(IP_GEO_BLOCK_ZEP.auth)) {
+					window._wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(data[i].restoreUrl, nonce);
+				}
+			}
+		}
+	}
 
 	// fallback on error
 	$(window).on('error', function () {
 		if (!IP_GEO_BLOCK_ZEP.init) {
-			attach_nonce();
+			attach_ready();
 		}
 	});
+
+	$(function () {
+		attach_ready();
+		IP_GEO_BLOCK_ZEP.init = true; // finish to attach event
+	});
+
+	// attach event to add nonce
+	attach_event();
 }(jQuery, document));

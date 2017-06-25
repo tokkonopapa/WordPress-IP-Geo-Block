@@ -58,10 +58,10 @@ var ip_geo_block_time = new Date();
 	function redirect(page, tab) {
 		if (-1 !== location.href.indexOf(page)) {
 			var url = escapeHTML(page) + (tab ? '&' + escapeHTML(tab) : '');
-			if (typeof IP_GEO_BLOCK_ZEP === 'undefined') {
-				window.location.href = url;
-			} else {
+			if ('undefined' !== typeof IP_GEO_BLOCK_ZEP) {
 				IP_GEO_BLOCK_ZEP.redirect(url);
+			} else {
+				window.location.href = url;
 			}
 		}
 	}
@@ -145,9 +145,8 @@ var ip_geo_block_time = new Date();
 
 	// Show/Hide folding list
 	function show_folding_list($this, element, mask) {
-		var stat = false;
-		stat |= (0 === $this.prop('type').indexOf('checkbox') && $this.is(':checked'));
-		stat |= (0 === $this.prop('type').indexOf('select'  ) && '0' !== $this.val());
+		var stat = (0 === $this.prop('type').indexOf('checkbox') && $this.is(':checked')) ||
+		           (0 === $this.prop('type').indexOf('select'  ) && '0' !== $this.val());
 
 		element.nextAll(ID('.', 'settings-folding')).each(function (i, obj) {
 			fold_elements($(obj), stat && mask);
@@ -289,34 +288,28 @@ var ip_geo_block_time = new Date();
 
 	// google chart
 	var chart = {
-		self: this,
-		drawChart: function () {
-			this.drawPie();
-			this.drawLine();
-		},
-
 		// Pie Chart
 		dataPie: null,
 		viewPie: null,
 		drawPie: function () {
-			if (!self.dataPie) {
-				self.dataPie = new google.visualization.DataTable();
-				self.dataPie.addColumn('string', 'Country');
-				self.dataPie.addColumn('number', 'Requests');
+			if (!chart.dataPie) {
+				chart.dataPie = new google.visualization.DataTable();
+				chart.dataPie.addColumn('string', 'Country');
+				chart.dataPie.addColumn('number', 'Requests');
 				var value;
 				$(ID('#', 'countries li')).each(function () {
 					value = $(this).text().split(':');
-					self.dataPie.addRow([value[0] || '', Number(value[1])]);
+					chart.dataPie.addRow([value[0] || '', Number(value[1])]);
 				});
 			}
-			if (!self.viewPie) {
-				self.viewPie = new google.visualization.PieChart(
+			if (!chart.viewPie) {
+				chart.viewPie = new google.visualization.PieChart(
 					document.getElementById(ID('chart-countries'))
 				);
 			}
 			if ($(ID('#', 'chart-countries')).width()) {
-				self.viewPie.draw(self.dataPie, {
-					backgroundColor: '#f1f1f1',
+				chart.viewPie.draw(chart.dataPie, {
+					backgroundColor: { fill: 'transparent' }, // '#f1f1f1',
 					chartArea: {
 						left: 0,
 						top: '5%',
@@ -333,8 +326,8 @@ var ip_geo_block_time = new Date();
 		viewLine: null,
 		drawLine: function () {
 			var i, j, m, n, cells, arr = [], tr;
-			if (!self.dataLine) {
-				i = self.dataLine = new google.visualization.DataTable();
+			if (!chart.dataLine) {
+				i = chart.dataLine = new google.visualization.DataTable();
 				i.addColumn('date',   'Date'   );
 				i.addColumn('number', 'comment');
 				i.addColumn('number', 'xmlrpc' );
@@ -350,18 +343,18 @@ var ip_geo_block_time = new Date();
 						arr[i].push(Number(cells.eq(j).text()));
 					}
 				}
-				self.dataLine.addRows(arr);
+				chart.dataLine.addRows(arr);
 			}
-			if (!self.viewLine) {
-				self.viewLine = new google.visualization.LineChart(
+			if (!chart.viewLine) {
+				chart.viewLine = new google.visualization.LineChart(
 					document.getElementById(ID('chart-daily'))
 				);
 			}
 			i = $(ID('#', 'chart-daily')).width();
 			if (i) {
 				i = i > 320 ? true : false;
-				self.viewLine.draw(self.dataLine, {
-					backgroundColor: '#f1f1f1',
+				chart.viewLine.draw(chart.dataLine, {
+					backgroundColor: { fill: 'transparent' }, // '#f1f1f1',
 					legend: { position: 'bottom' },
 					hAxis: { format: 'MM/dd' },
 					vAxis: { textPosition: (i ? 'out' : 'in') },
@@ -373,6 +366,12 @@ var ip_geo_block_time = new Date();
 					}
 				});
 			}
+		},
+
+		// draw pie chart and line chart
+		drawChart: function () {
+			chart.drawPie();
+			chart.drawLine();
 		}
 	};
 
@@ -384,34 +383,68 @@ var ip_geo_block_time = new Date();
 	}
 
 	// Load / Save cookie using wpCookies in wp-includes/js/utils.js
-	function loadCookie(id) {
-		return ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('$', id))) || {};
+	function loadCookie(tabNo) {
+		var i, cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash('ip-geo-block')) || [];
+
+		for (i in cookie) {
+			if(cookie.hasOwnProperty(i)) {
+				cookie[i] = cookie[i].replace(/[^ox\d]/g, '').split(''); // string (ooo...) to array (n)
+			}
+		}
+
+		if ('undefined' === typeof cookie[tabNo]) {
+			cookie[tabNo] = [];
+		}
+
+		return cookie;
 	}
 
 	// setHash( name, value, expires, path, domain, secure )
-	function saveCookie(id, cookie) {
+	function saveCookie(cookie) {
+		var j, n, c = [];
+
+		$.each(cookie, function(i, obj) {
+			c[i] = '';
+			if ('undefined' !== typeof obj) {
+				n = obj.length;
+				if (n) {
+					c[i] = (obj[0] || 'o');
+					for (j = 1; j < n; ++j) {
+						c[i] += (obj[j] || 'o');
+					}
+				}
+			}
+		});
+
 		if ('undefined' !== typeof wpCookies) {
-			var path = 'undefined' !== typeof IP_GEO_BLOCK_AUTH ? IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin : '';
-			wpCookies.setHash(ID('$', id), cookie, new Date(Date.now() + 2592000000), path);
+			j = 'undefined' !== typeof IP_GEO_BLOCK_AUTH ? IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin : '';
+			wpCookies.setHash('ip-geo-block', c, new Date(Date.now() + 2592000000), j);
 		}
 	}
 
 	// Click event handler to show/hide form-table
-	function toggleSection(title, id, cookie) {
-		var index = title.closest('fieldset').data('ip-geo-block');
+	function toggleSection(title, tabNo, cookie) {
+		var index = title.closest('fieldset').data('section'),
+		    body  = title.parent().nextAll('.panel-body').toggle(), border;
 
 		// Show/Hide
-		title.parent().nextAll().toggle();
 		title.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
 
-		cookie[index] = title.hasClass(ID('dropdown')) ? 'o' : 'x';
-		saveCookie(id, cookie); // Save cookie
+		border = title.hasClass(ID('dropdown'));
+		if (border) {
+			body.addClass(ID('border'));
+		} else {
+			body.removeClass(ID('border'));
+		}
+
+		cookie[tabNo][index] =  border ? 'o' : 'x';
+		saveCookie(cookie); // Save cookie
 
 		// redraw google chart
 		drawChart();
 	}
 
-	function manageSection( tabNo ) {
+	function manageSection(tabNo) {
 		var cookie = loadCookie(tabNo);
 
 		// Click event handler to show/hide form-table
@@ -423,27 +456,33 @@ var ip_geo_block_time = new Date();
 		// Toggle all
 		$(ID('#', 'toggle-sections')).on('click', function (event) {
 			var $this,
-			    id = [ID('dropdown'), ID('dropup')],
 			    title = $(ID('.', 'field')).find('h2,h3'),
-			    n = title.filter('.' + id[0]).length;
+			    m = [ID('dropdown'), ID('dropup')],
+			    n = title.filter('.' + m[0]).length;
 
 			// update cookie
 			title.each(function (i) {
 				$this = $(this);
-				$this.parent().nextAll().toggle(n ? false : true);
-				$this.removeClass(id.join(' '))
-					 .addClass(n ? id[1] : id[0]);
-				cookie[i] = n ? 'x' : 'o';
+				$this.removeClass(m.join(' ')).addClass(n ? m[1] : m[0]);
+				$this = $this.parent().nextAll('.panel-body').toggle(n ? false : true);
+				if (n) {
+					$this.removeClass(ID('border'));
+				} else {
+					$this.addClass(ID('border'));
+				}
+				cookie[tabNo][i] = n ? 'x' : 'o';
 			});
 
 			// Save cookie
-			saveCookie(tabNo, cookie);
+			saveCookie(cookie);
 
 			// redraw google chart
 			drawChart();
 
 			return false;
 		});
+
+		return cookie;
 	}
 
 	// form for export / import
@@ -464,15 +503,13 @@ var ip_geo_block_time = new Date();
 
 	$(function () {
 		// Get tab number
-		var tabNo = Number(IP_GEO_BLOCK.tab) || 0;
+		var tabNo = Number(IP_GEO_BLOCK.tab) || 0,
 
-		// Add section index as data
-		$('.form-table').each(function (index) {
-			$(this).parent('fieldset').data('ip-geo-block', index);
-		});
+		// Attach event handler and manage cookie
+		cookie = manageSection(tabNo);
 
 		// Inhibit to submit by return key
-		$(ID('#', 'inhibit')).on('submit', function () {
+		$(ID('.', 'inhibit')).on('submit', function () {
 			return false;
 		});
 
@@ -482,8 +519,6 @@ var ip_geo_block_time = new Date();
 		   * Settings
 		   *----------------------------------------*/
 		  case 0:
-			manageSection(tabNo);
-
 			// Name of base class
 			var name = ID('%', 'settings');
 
@@ -491,14 +526,14 @@ var ip_geo_block_time = new Date();
 			 * Validation rule settings
 			 *---------------------------*/
 			// Scan your country code
-			$('[id^="' + ID('$', 'scan-') + '"]').on('click', function (event) {
+			$('[id^="' + ID('scan-') + '"]').on('click', function (event) {
 				var $this = $(this),
 				    id = $this.attr('id'),
 				    parent = $this.parent();
 
 				ajax_post(id.replace(/^.*(?:scan)/, 'scanning'), {
 					cmd: 'scan-code',
-					which: id.replace(ID('$', 'scan-'), '')
+					which: id.replace(ID('scan-'), '')
 				}, function (data) {
 					if (!parent.children('ul').length) {
 						parent.append('<ul id="' + ID('code-list') + '"></ul>');
@@ -859,8 +894,6 @@ var ip_geo_block_time = new Date();
 		   * Statistics
 		   *----------------------------------------*/
 		  case 1:
-			manageSection(tabNo);
-
 			// https://developers.google.com/loader/#Dynamic
 			if ($(ID('#', 'chart-countries')).length && 'object' === typeof google) {
 				google.load('visualization', '1', {
@@ -914,16 +947,22 @@ var ip_geo_block_time = new Date();
 				});
 			}
 
+			// Set selected provider to cookie
+			$('select[id^="' + ID('!', 'service') + '"]').on('change', function (event) {
+				cookie[tabNo][3] = $(this).prop('selectedIndex');
+				saveCookie(cookie); // Save cookie
+			}).change();
+
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (event) {
-				var whois = $(ID('#', 'whois')),
+				var whois = $(ID('#', 'whois')), obj,
 				    ip = $(ID('@', 'ip_address')).val();
 
 				if (ip) {
 					whois.hide().empty();
 
 					// Get whois data
-					var obj = $.whois(ip, function (data) {
+					obj = $.whois(ip, function (data) {
 						var i, str = '';
 						for (i = 0; i < data.length; ++i) {
 							str +=
@@ -934,10 +973,10 @@ var ip_geo_block_time = new Date();
 						}
 
 						whois.html(
-							'<fieldset class="' + ID('field') + '">' +
-							'<legend><h2 id="' + ID('whois-title') + '" class="' + ID('dropdown') + '">Whois</h2></legend>' +
-							'<table class="' + ID('table') + '">' + str + '</table>' +
-							'<fieldset>'
+							'<fieldset id="' + ID('section-1') + '" class="' + ID('field') + ' panel panel-default" data-section="1">' +
+							'<legend class="panel-heading"><h3 id="' + ID('whois-title') + '" class="' + ID('dropdown') + '">Whois</h3></legend>' +
+							'<div class="panel-body ' + ID('border') + '"><table class="' + ID('table') + '">' + str + '</table></div>' +
+							'</fieldset>'
 						).fadeIn('slow');
 
 						$(ID('#', 'whois-title')).on('click', function (event) {
@@ -1016,32 +1055,46 @@ var ip_geo_block_time = new Date();
 		   *----------------------------------------*/
 		  case 4:
 			// Kick-off footable
-			if ($(ID('.', 'log')).hide().length) {
-				ajax_post('logs', {
-					cmd: 'restore',
-					which: null,
-					time: new Date() - ip_geo_block_time
-				}, function (data) {
-					var key;
-					for (key in data) {
-						if (data.hasOwnProperty(key)) {
-							key = escapeHTML(key); // data has been already sanitized
-//							$(ID('#', 'log-' + key)).html($.parseHTML(data[key])); // jQuery 1.8+
-							$(ID('#', 'log-' + key)).html(data[key]);
+			ajax_post('logs', {
+				cmd: 'restore',
+				which: null,
+				time: new Date() - ip_geo_block_time
+			}, function (data) {
+				var key;
+				for (key in data) {
+					if (data.hasOwnProperty(key)) {
+						key = escapeHTML(key); // data has been already sanitized
+//						$(ID('#', 'log-' + key)).html($.parseHTML(data[key])); // jQuery 1.8+
+						$(ID('#', 'log-' + key)).html(data[key]);
+					}
+				}
+
+				if (typeof $.fn.footable === 'function') {
+					var logs = $(ID('.', 'log')),
+					    title = logs.parent().prevAll('legend').find('h2,h3');
+
+					// Once open section
+					title.removeClass(ID('dropup')).addClass(ID('dropdown'));
+
+					// Then make footable
+					logs.fadeIn('slow').footable();
+
+					// Finaly close section
+					title.each(function (i, obj) {
+						if ('x' === (cookie[tabNo][i+1] || 'o')) {
+							cookie[tabNo][i+1] = 'o';
+							$(obj).click();
 						}
-					}
-
-					if (typeof $.fn.footable === 'function') {
-						$(ID('.', 'log')).fadeIn('slow').footable();
-					}
-
-					// Jump to search tab with opening new window
-					$('tbody[id^="' + ID('$', 'log-') + '"]').on('click', 'a', function (event) {
-						window.open(window.location.href.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''));
-						return false;
 					});
+				}
+
+				// Jump to search tab with opening new window
+				$('tbody[id^="' + ID('log-') + '"]').on('click', 'a', function (event) {
+					key = window.location.pathname + window.location.search;
+					window.open(key.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''), '_blank');
+					return false;
 				});
-			}
+			});
 
 			// Clear filter logs
 			$(ID('#', 'reset-filter')).on('click', function (event) {

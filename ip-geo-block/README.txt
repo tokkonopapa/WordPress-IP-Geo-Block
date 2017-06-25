@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.7.5
-Stable tag: 3.0.3
+Tested up to: 4.8
+Stable tag: 3.0.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,9 +12,11 @@ It blocks spam posts, login attempts and malicious access to the back-end reques
 
 == Description ==
 
-A considerable number of WordPress vulnerabilities in plugins and themes have been disclosed every month. You can easily find them at [WPScan Vulnerability Database](https://wpvulndb.com/ "WPScan Vulnerability Database") and [Exploits Database](https://www.exploit-db.com/ "Exploits Database by Offensive Security"). It means that many WordPress sites can be always exposed to the threats of being exploited caused by those vulnerabilities.
+A considerable number of WordPress vulnerabilities in plugins and themes have been disclosed every month. You can easily find them at [WPScan Vulnerability Database](https://wpvulndb.com/ "WPScan Vulnerability Database") and [Exploits Database](https://www.exploit-db.com/ "Exploits Database by Offensive Security"). It means that many WordPress sites can always be exposed to the threats of being exploited caused by those vulnerabilities.
 
-This plugin protects your site against such threats of attack to the back-end of your site such as login form (login attempt) and admin area. And it also blocks undesired requests to the comment form (spam and trackback), XML-RPC (login attempt and pingback) and even public facing pages aka front-end.
+This plugin protects your site against such threats of attack against the back-end of your site such as login form (login attempt) and admin area. And it also blocks undesired requests to the comment form (spam and trackback), XML-RPC (login attempt and pingback) and even public facing pages aka front-end.
+
+After several days of installation, you'll be supprised to find many malicious or undesirable accesses are blocked especially if you enable Zero-day Expoit Prevention for back-end.
 
 = Features =
 
@@ -37,7 +39,7 @@ This plugin protects your site against such threats of attack to the back-end of
   You can configure this plugin such that a registered user can login as the membership from anywhere, but a request such as a new user registration, lost password, creating a new topic, and subscribing comment is blocked by the country code. It is suitable for [BuddyPress](https://wordpress.org/plugins/buddypress/ "BuddyPress &mdash; WordPress Plugins") and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins") to help reducing spams.
 
 * **Referrer suppressor for external links:**  
-  When you click an external hyperlink on admin screens, http referrer will be liminated to hide a footprint of your site.
+  When you click an external hyperlink on admin screens, http referrer will be eliminated to hide a footprint of your site.
 
 * **Multiple source of IP Geolocation databases:**  
   [MaxMind GeoLite free databases](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") and [IP2Location LITE databases](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Those will be downloaded and updated (once a month) automatically. Also free Geolocation REST APIs and whois information can be available for audit purposes.  
@@ -61,7 +63,7 @@ This plugin protects your site against such threats of attack to the back-end of
   Website owners do not prefer themselves to be blocked. This plugin prevents such a sad thing unless you force it. And futhermore, if such a situation occurs, you can [rescue yourself](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block") easily.
 
 * **Clean uninstallation:**  
-  Nothing is left in your precious mySQL database after uninstallation. So you can feel free to install and activate to make a trial of this plugin's functionality. Several days later, you'll find many undesirable accesses in your validation logs if all validation targets are enabled.
+  Nothing is left in your precious mySQL database after uninstallation. So you can feel free to install and activate to make a trial of this plugin's functionality.
 
 = Attribution =
 
@@ -208,6 +210,53 @@ or following descriptions for your best setup.
 
 It works on multisite, but there's no network setting at this moment.
 
+= Does this plugin works well with caching? =
+
+The short answer is **YES**, especially for the purpose of security e.g. blocking malicious access both on the back-end and on the front-end.
+
+The long answer is as follows:
+
+For the back-end protection, both blocking malicious access and blocking by country works fine, if you disable caching on the back-end. As for the front-end, there are 2 scenarios.
+
+The first one is the case that there's no cached page against a request to the specific page. In this scenario, this plugin responds a specific HTTP status code (including redirection) and defines the symbol `DONOTCACHEPAGE` when the request comes from blacklisted countries (or IPs). When the request comes from the whitelisted countries (or IPs), this plugin passes it to the caching plugin in order to generate a new cache.
+
+The second scenario is the case that there's a cached page. In this case, the response depends on the caching method you are employing. Currently, the following plugins and configurations can be supported if you want to [restrict content by geo-blocking](https://en.wikipedia.org/wiki/Geo-blocking "Geo-blocking - Wikipedia"):
+
+- [WP Super Cache](https://wordpress.org/plugins/wp-super-cache/ "WP Super Cache &mdash; WordPress Plugins")  
+  Select "**Use PHP to serve cache files**" and enable "**Late init**".
+
+- [W3 Total Cache](https://wordpress.org/plugins/w3-total-cache/ "W3 Total Cache &mdash; WordPress Plugins")  
+  Select "**Disk: Basic**" and enable "**Late initialization**" for page cache. "**Disk: Enhanced**" (where "**Late initialization**" is not available) in W3TC 0.9.5.1 seems to work good without any imcompatibility with this plugin.
+
+- [Vendi Cache](https://wordpress.org/plugins/vendi-cache/ "Vendi Cache &mdash; WordPress Plugins")  
+  This plugin was formerly built in Wordfence. Select "**basic caching**" for Vendi Cache and **"mu-plugin" (ip-geo-block-mu.php)** for IP Geo Block.
+
+Other plugins adopting `mod_rewrite` (e.g. WP Fastest Cache) or `advanced-cache.php` [drop-in](https://make.wordpress.org/core/2016/08/13/global-overloading-in-advanced-cache-php/ "Global overloading in advanced-cache.php &#8211; Make WordPress Core") (e.g. Comet Cache) or other caching method at server side might serve a normal page.
+
+Thus your site would have less risk against the exploiting via vulnerable plugins and themes.
+
+For more details, please refer to some documents at "[Blocking on front-end](http://www.ipgeoblock.com/codex/#blocking-on-front-end 'Codex | IP Geo Block')".
+
+= I still have access from blacklisted country. Does it work correctly? =
+
+Absolutely, YES.
+
+Sometimes, a Wordfence Security user would report this type of claim when he/she found some accesses in its Live traffic view. But please don't worry. Before WordPress runs, Wordfence cleverly filters out malicious requests to your site using <a href="http://php.net/manual/en/ini.core.php#ini.auto-prepend-file" title="PHP: Description of core php.ini directives - Manual">auto_prepend_file</a> directive to include PHP based Web Application Firewall. Then this plugin validates the rest of the requests that pass over Wordfence because those were not in WAF rules, especially you enables "**Prevent Zero-day Exploit**".
+
+It would also possibly be caused by the accuracy of country code in the geolocation databases. Actually, there is a case that a same IP address has different country code.
+
+For more detail, please refer to "[I still have access from blacklisted country.](http://www.ipgeoblock.com/codex/access-from-blacklisted-country.html 'I still have access from blacklisted country. | IP Geo Block')".
+
+= How can I test this plugin works? =
+
+The easiest way is to use [free proxy browser addon](https://www.google.com/search?q=free+proxy+browser+addon "free proxy browser addon - Google Search").
+
+Another one is to use [http header browser addon](https://www.google.com/search?q=browser+add+on+modify+http+header "browser add on modify http header - Google Search").
+
+You can add an IP address to the `X-Forwarded-For` header to emulate the access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
+
+See more details at "[How to test prevention of attacks](http://www.ipgeoblock.com/codex/#how-to-test-prevention-of-attacks 'Codex | IP Geo Block')".
+
 = I was locked down. What shall I do? =
 
 You can find the "**Emergent Functionality**" code section near the bottom of `ip-geo-block.php`. This code block can be activated by replacing `/*` (opening multi-line comment) at the top of the line to `//` (single line comment), or `*` at the end of the line to `*/` (closing multi-line comment).
@@ -217,7 +266,7 @@ You can find the "**Emergent Functionality**" code section near the bottom of `i
  *
  * How to use: Activate the following code and upload this file via FTP.
  */
-/* -- ADD `/` TO THE TOP OR END OF THIS LINE TO ACTIVATE THE FOLLOWINGS -- */
+/* -- ADD '/' TO THE TOP OR END OF THIS LINE TO ACTIVATE THE FOLLOWINGS -- */
 function ip_geo_block_emergency( $validate ) {
     $validate['result'] = 'passed';
     return $validate;
@@ -233,55 +282,6 @@ After saving and uploading it to `/wp-content/plugins/ip-geo-block/` on your ser
 Remember that you should upload the original one after re-configuration to deactivate this feature.
 
 [This document](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block") can also help you.
-
-= How to resolve "Sorry, your request cannot be accepted."? =
-
-If you encounter this message, please refer to [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;Sorry, your request cannot be accepted&rdquo; ? | IP Geo Block") to resolve your blocking issue.
-
-If you can't solve your issue, please let me know about it on the [support forum](https://wordpress.org/support/plugin/ip-geo-block/ "View: Plugin Support &laquo;  WordPress.org Forums"). Your logs in this plugin and "**Installation information**" at "**Plugin settings**" will be a great help to resolve the issue.
-
-= How can I fix "Unable to write" error? =
-
-When you enable "**Force to load WP core**" options, this plugin will try to configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` directory in order to protect your site against the malicous attacks to the [OMG plugins and shemes](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php | IP Geo Block").
-
-But some servers doesn't give reading / writing permission against `.htaccess` to WordPress. In this case, you can configure these `.htaccess` files by your own hand instead of enabling "**Force to load WP core**" options.
-
-Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')" in order to fix this error.
-
-= I still have access from blacklisted country. Does it work correctly? =
-
-Absolutely, YES. But unfortunately, accuracy of country code depends on the geolocation databases. Actually, there is a case that a same IP address has different country code.
-
-For more detail, please refer to "[I still have access from blacklisted country.](http://www.ipgeoblock.com/codex/access-from-blacklisted-country.html 'I still have access from blacklisted country. | IP Geo Block')".
-
-= How can I test this plugin works? =
-
-The easiest way is to use [free proxy browser addon](https://www.google.com/search?q=free+proxy+browser+addon "free proxy browser addon - Google Search").
-
-Another one is to use [http header browser addon](https://www.google.com/search?q=browser+add+on+modify+http+header "browser add on modify http header - Google Search").
-
-You can add an IP address to the `X-Forwarded-For` header to emulate the access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
-
-See more details at "[How to test prevention of attacks](http://www.ipgeoblock.com/codex/#how-to-test-prevention-of-attacks 'Codex | IP Geo Block')".
-
-= Does this plugin works well with caching? =
-
-For the back-end protection, the answer is YES if you disable caching on back-end. But for the front-end, the answer depends on the caching method you are employing.
-
-Currently, the following cache plugins and configurations can be supported:
-
-- [WP Super Cache](https://wordpress.org/plugins/wp-super-cache/ "WP Super Cache &mdash; WordPress Plugins")  
-  Select "**Use PHP to serve cache files**" and enable "**Late init**".
-
-- [W3 Total Cache](https://wordpress.org/plugins/w3-total-cache/ "W3 Total Cache &mdash; WordPress Plugins")  
-  Select "**Disk: Basic**" and enable "**Late initialization**" for page cache. "**Disk: Enhanced**" (where "**Late initialization**" is not available) in W3TC 0.9.5.1 seems to work good without any imcompatibility with this plugin.
-
-- [Vendi Cache](https://wordpress.org/plugins/vendi-cache/ "Vendi Cache &mdash; WordPress Plugins")  
-  This was formerly built in Wordfence. Select "**basic caching**" for Vendi Cache and **"mu-plugin" (ip-geo-block-mu.php)** for IP Geo Block.
-
-If your plugin serves page caching by `mod_rewrite` via `.htaccess` (e.g. WP Fastest Cache) or caching by `advanced-cache.php` drop-in (e.g. Comet Cache) or your hosting provider serves page caching at server side, "**Blocking on front-end**" might lead to generate inconsistent pages.
-
-For more details, please refer to some documents at "[Blocking on front-end](http://www.ipgeoblock.com/codex/#blocking-on-front-end 'Codex | IP Geo Block')".
 
 = Do I have to turn on all the selection to enhance security? =
 
@@ -299,7 +299,7 @@ Yes. Roughly speaking, the strategy of this plugin has been constructed as follo
 - **Bad signatures in query**  
   It blocks the request which has not been covered in the above three.
 
-Please try "**Best settings**" button at the bottom of this plugin's setting page for easy setup. And also see more details in "[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html 'The best practice of target settings | IP Geo Block')".
+Please try "**Best for Back-end**" button at the bottom of this plugin's setting page for easy setup. And also see more details in "[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html 'The best practice of target settings | IP Geo Block')".
 
 = Does this plugin validate all the requests? =
 
@@ -307,12 +307,26 @@ Unfortunately, no. This plugin can't handle the requests that are not parsed by 
 
 But there're exceptions: When you enable "**Force to load WP core**" for **Plugins area** or **Themes area**, a standalone PHP file becomes to be able to be blocked. Sometimes this kind of file has some vulnerabilities. This function protects your site against such a case.
 
+= How to resolve "Sorry, your request cannot be accepted."? =
+
+If you encounter this message, please refer to [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;Sorry, your request cannot be accepted&rdquo; ? | IP Geo Block") to resolve your blocking issue.
+
+If you can't solve your issue, please let me know about it on the [support forum](https://wordpress.org/support/plugin/ip-geo-block/ "View: Plugin Support &laquo;  WordPress.org Forums"). Your logs in this plugin and "**Installation information**" at "**Plugin settings**" will be a great help to resolve the issue.
+
+= How can I fix "Unable to write" error? =
+
+When you enable "**Force to load WP core**" options, this plugin will try to configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` directory in order to protect your site against the malicous attacks to the [OMG plugins and themes](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php | IP Geo Block").
+
+But some servers doesn't give read / write permission against `.htaccess` to WordPress. In this case, you can configure `.htaccess` files by your own hand instead of enabling "**Force to load WP core**" options.
+
+Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')" in order to fix this error.
+
 == Other Notes ==
 
 = Known issues =
 
 * No image is shown after drag & drop a image in grid view at "Media Library". For more details, please refer to [this ticket at Github](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/issues/2 "No image is shown after drag & drop a image in grid view at "Media Library". - Issue #2 - tokkonopapa/WordPress-IP-Geo-Block - GitHub").
-* From [WordPress 4.5](https://make.wordpress.org/core/2016/03/09/comment-changes-in-wordpress-4-5/ "Comment Changes in WordPress 4.5 &#8211; Make WordPress Core"), `rel=nofollow` attribute and value pair had no longer be added to relative or same domain links within `comment_content`. This change prevents to block "Server Side Request Forgeries" (not Cross Site but a malicious link in the comment field of own site).
+* From [WordPress 4.5](https://make.wordpress.org/core/2016/03/09/comment-changes-in-wordpress-4-5/ "Comment Changes in WordPress 4.5 &#8211; Make WordPress Core"), `rel=nofollow` had no longer be attached to the links in `comment_content`. This change prevents to block "[Server Side Request Forgeries](https://www.owasp.org/index.php/Server_Side_Request_Forgery 'Server Side Request Forgery - OWASP')" (not Cross Site but a malicious internal link in the comment field).
 
 == Screenshots ==
 
@@ -328,6 +342,20 @@ But there're exceptions: When you enable "**Force to load WP core**" for **Plugi
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.3.1 =
+This is a maintenance release addressing various internal improvement.
+
+* **Bug fix:** Fixed an issue where deletion of the expired cache was not executed in subordinate blogs when this plugin was activated on the network wide.
+* **Bug fix:** Some issues caused by IE10/11 on admin pages had been fixed.
+* **Bug fix:** Turning off check boxes in "**API selection and key settings**" section now becomes to work.
+* **Improvement:** Better validation performance for logged in user authentication.
+* **Improvement:** Better rendering by CSS and JS for sections.
+* **Improvement:** Better handling of click event for embedding a nonce.
+* **Improvement:** Better handling of cookie for sections.
+* **Improvement:** Better handling of server and private IP address.
+* **Improvement:** Better compatibility with file operations using Filesystem API. FTP or SSH based operations are now supported only when [some symbols are defined in `wp-config.php`](https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants "Editing wp-config.php &laquo; WordPress Codex").
+* **Improvement:** Better timing of upgrade check at activation phase instead of `init` action hook.
 
 = 3.0.3 =
 * **New feature:** New option "Prevent malicious upload" to restrict MIME types.

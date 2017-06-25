@@ -10,9 +10,7 @@
  */
 
 // If uninstall not called from WordPress, then exit
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-	die;
-}
+defined( 'WP_UNINSTALL_PLUGIN' ) or die;
 
 define( 'IP_GEO_BLOCK_PATH', plugin_dir_path( __FILE__ ) ); // @since 2.8
 

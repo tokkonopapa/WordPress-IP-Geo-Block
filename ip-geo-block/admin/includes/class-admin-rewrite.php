@@ -152,13 +152,16 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * @param array contents of configuration file
 	 */
 	private function put_rewrite_rule( $which, $content ) {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( 'put_rewrite_rule' );
+
 		$file = $this->get_rewrite_file( $which );
-		if ( ! $file || FALSE === file_put_contents( $file, implode( PHP_EOL, $content ), LOCK_EX ) )
+		if ( ! $file || FALSE === $fs->put_contents( $file, implode( PHP_EOL, $content ) ) )
 			return FALSE;
 
 		// if content is empty then remove file
 		if ( empty( $content ) )
-			unlink( $file );
+			return $fs->delete( $file );
 
 		return TRUE;
 	}
@@ -203,8 +206,7 @@ class IP_Geo_Block_Admin_Rewrite {
 			reset( $block );
 			while (
 				( list( $key_end,   $val_end   ) = each( $block ) ) &&
-				( list( $key_begin, $val_begin ) = each( $block ) )
-			) {
+				( list( $key_begin, $val_begin ) = each( $block ) ) ) {
 				array_splice( $content, $key_begin, $key_end - $key_begin + 1 );
 			}
 		}

@@ -28,21 +28,25 @@ class IP_Geo_Block_Admin {
 	 * and adding a settings page and menu.
 	 */
 	private function __construct() {
-		// Load plugin text domain.
-		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+		// Load plugin text domain and add body class
+		add_action( 'init', array( $this, 'admin_init' ) );
 
 		// Setup a nonce to validate authentication.
 		add_filter( 'wp_redirect', array( $this, 'add_admin_nonce' ), 10, 2 );
 
 		// Add the options page and menu item.
-		add_action( 'admin_menu', array( $this, 'setup_admin_page' ) );
-		add_action( 'wp_ajax_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
-		add_action( 'admin_post_ip_geo_block', array( $this, 'admin_ajax_callback' ) );
-		add_filter( 'wp_prepare_revision_for_js', array( $this, 'add_revision_nonce' ), 10, 3 );
+		add_action( 'admin_menu',                 array( $this, 'setup_admin_page'    ) );
+		add_action( 'admin_post_ip_geo_block',    array( $this, 'admin_ajax_callback' ) );
+		add_action( 'wp_ajax_ip_geo_block',       array( $this, 'admin_ajax_callback' ) );
+		add_filter( 'wp_prepare_revision_for_js', array( $this, 'add_revision_nonce'  ), 10, 3 );
 
 		// If multisite, then enque the authentication script for network admin
 		if ( is_multisite() ) {
 			add_action( 'network_admin_menu', 'IP_Geo_Block::enqueue_nonce' );
+
+			// when a blog is created or deleted.
+			add_action( 'wpmu_new_blog', array( $this, 'create_blog' ), 10, 6 ); // @since MU
+			add_action( 'delete_blog',   array( $this, 'delete_blog' ), 10, 2 ); // @since 3.0.0
 		}
 	}
 
@@ -55,11 +59,29 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Load the plugin text domain for translation.
+	 * Load the plugin text domain for translation and add body class.
 	 *
 	 */
-	public function load_plugin_textdomain() {
+	public function admin_init() {
+		// loads a plugin’s translated strings.
 		load_plugin_textdomain( IP_Geo_Block::PLUGIN_NAME, FALSE, dirname( IP_GEO_BLOCK_BASE ) . '/languages/' );
+
+		// add webview class into body tag
+		// https://stackoverflow.com/questions/37591279/detect-if-user-is-using-webview-for-android-ios-or-a-regular-browser
+		if (  isset( $_SERVER['HTTP_USER_AGENT'] ) &&
+		   ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Mobile/' ) !== FALSE ) &&
+		   ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Safari/' ) === FALSE ) ) {
+			add_filter( 'admin_body_class', array( $this, 'add_body_class' ) );
+		}
+
+		// for Android
+		elseif ( isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === "com.company.app" ) {
+			add_filter( 'admin_body_class', array( $this, 'add_body_class' ) );
+		}
+	}
+
+	public function add_body_class( $classes ) {
+		return $classes . ($classes ? ' ' : '') . 'webview';
 	}
 
 	/**
@@ -68,6 +90,20 @@ class IP_Geo_Block_Admin {
 	 */
 	public function add_admin_nonce( $location, $status ) {
 		return IP_Geo_Block_Util::rebuild_nonce( $location, $status );
+	}
+
+	/**
+	 * Do some procedures when a blog is created or deleted.
+	 *
+	 */
+	public function create_blog( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php';
+		IP_Geo_Block_Activate::activate_blog( $blog_id );
+	}
+
+	public function delete_blog( $blog_id, $drop ) {
+		if ( $drop )
+			IP_Geo_Block_Logs::delete_tables(); // blog is already switched to the target in wpmu_delete_blog()
 	}
 
 	/**
@@ -252,29 +288,6 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Register the administration menu into the WordPress Dashboard menu.
-	 *
-	 */
-	private function add_plugin_admin_menu() {
-		// Setup the tab number
-		$this->admin_tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
-		$this->admin_tab = min( 4, max( 0, $this->admin_tab ) );
-
-		// Add a settings page for this plugin to the Settings menu.
-		$hook = add_options_page(
-			__( 'IP Geo Block', 'ip-geo-block' ),
-			__( 'IP Geo Block', 'ip-geo-block' ),
-			'manage_options',
-			IP_Geo_Block::PLUGIN_NAME,
-			array( $this, 'display_plugin_admin_page' )
-		);
-
-		// If successful, load admin assets only on this page.
-		if ( $hook )
-			add_action( "load-$hook", array( $this, 'enqueue_admin_assets' ) );
-	}
-
-	/**
 	 * Diagnosis of admin settings.
 	 *
 	 */
@@ -336,7 +349,15 @@ class IP_Geo_Block_Admin {
 						esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-0'
 					)
 				);
+				break;
 			}
+		}
+
+		// Check activation of IP Geo Allow
+		if ( $settings['validation']['timing'] && is_plugin_active( 'ip-geo-allow/index.php' ) ) {
+			self::add_admin_notice( 'error',
+				__( '&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please select &#8220;init&#8221; action hook.', 'ip-geo-block' )
+			);
 		}
 
 		if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
@@ -356,14 +377,17 @@ class IP_Geo_Block_Admin {
 	 */
 	public function setup_admin_page() {
 		// Avoid multiple validation.
-		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
+		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] )
 			$this->diagnose_admin_screen();
-			$this->add_plugin_admin_menu();
-		}
 
 		// Register settings page only if it is needed.
 		if ( ( isset( $_GET ['page'       ] ) && IP_Geo_Block::PLUGIN_NAME === $_GET ['page'       ] ) ||
 		     ( isset( $_POST['option_page'] ) && IP_Geo_Block::PLUGIN_NAME === $_POST['option_page'] ) ) {
+			// Setup the tab number.
+			$this->admin_tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
+			$this->admin_tab = min( 4, max( 0, $this->admin_tab ) );
+
+			// Register the administration dashboard.
 			$this->register_settings_tab();
 		}
 
@@ -371,6 +395,18 @@ class IP_Geo_Block_Admin {
 		else {
 			add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
 			add_filter( 'plugin_action_links_' . IP_GEO_BLOCK_BASE, array( $this, 'add_action_links' ), 10, 1 );
+		}
+
+		// Add a settings page for this plugin to the Settings menu.
+		if ( $hook = add_options_page(
+			__( 'IP Geo Block', 'ip-geo-block' ),
+			__( 'IP Geo Block', 'ip-geo-block' ),
+			'manage_options',
+			IP_Geo_Block::PLUGIN_NAME,
+			array( $this, 'display_plugin_admin_page' )
+		) ) {
+			// Load admin assets only on this page.
+			add_action( "load-$hook", array( $this, 'enqueue_admin_assets' ) );
 		}
 
 		// Register scripts for admin.
@@ -381,52 +417,57 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
+	 * Get cookie that indicates open/close section
+	 *
+	 */
+	public function get_cookie( $name ) {
+		$cookie = array();
+		if ( ! empty( $_COOKIE[ $name ] ) ) {
+			foreach ( explode( '&', $_COOKIE[ $name ] ) as $i => $v ) {
+				list( $i, $v ) = explode( '=', $v );
+				$cookie[ $i ] = str_split( $v );
+			}
+		}
+		return $cookie;
+	}
+
+	/**
 	 * Prints out all settings sections added to a particular settings page
 	 *
 	 * wp-admin/includes/template.php @since 2.7.0
 	 */
-	public function get_cookie( $element ) {
-		$element = explode( '=', $element );
-		return $element[1];
-	}
-
-	private function do_settings_sections( $page, $tab = 0 ) {
+	private function do_settings_sections( $page, $tab ) {
 		global $wp_settings_sections, $wp_settings_fields;
 
-		if ( ! isset( $wp_settings_sections[ $page ] ) )
-			return;
+		if ( isset( $wp_settings_sections[ $page ] ) ) {
+			$index  = 0; // index of fieldset
+			$cookie = $this->get_cookie( IP_Geo_Block::PLUGIN_NAME );
 
-		$index  = IP_Geo_Block::PLUGIN_NAME . '-' . $tab;
-		$cookie = isset( $_COOKIE[ $index ] ) ? array_map( array( $this, 'get_cookie' ), explode( '&', $_COOKIE[ $index ] ) ) : array();
-		$index  = 0; // index of fieldset
+			foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
+				// TRUE if open ('o') or FALSE if close ('x')
+				$stat = empty( $cookie[ $tab ][ $index ] ) || 'x' !== $cookie[ $tab ][ $index ];
 
-		foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
-			// TRUE:open ('o') or FALSE:close ('x')
-			$stat = $tab > 1 || empty( $cookie[ $index ] ) || 'o' === $cookie[ $index ];
+				echo '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n",
+				     '<legend class="panel-heading"><h3 class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '">', $section['title'],
+				     '</h3></legend>', "\n", '<div class="panel-body',
+				     ($stat ? ' ' . IP_Geo_Block::PLUGIN_NAME . '-border"' : '"'),
+				     ($stat || (4 === $tab && $index) ? '>' : ' style="display:none">'), "\n";
 
-			echo '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field">', "\n";
-			echo '<legend><h2';
+				++$index;
 
-			// add dropdown or dropup class
-			if ( $tab <= 1 )
-				echo ' class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '"';
+				if ( $section['callback'] )
+					call_user_func( $section['callback'], $section );
 
-			echo '>', $section['title'], '</h2></legend>', "\n";
+				if ( isset( $wp_settings_fields,
+							$wp_settings_fields[ $page ],
+							$wp_settings_fields[ $page ][ $section['id'] ] ) ) {
+					echo '<table class="form-table">';
+					do_settings_fields( $page, $section['id'] );
+					echo "</table>\n";
+				}
 
-			if ( $section['callback'] )
-				call_user_func( $section['callback'], $section, $stat );
-
-			if ( ! isset( $wp_settings_fields ) ||
-			     ! isset( $wp_settings_fields[ $page ] ) ||
-			     ! isset( $wp_settings_fields[ $page ][ $section['id'] ] ) ) {
-				continue;
+				echo "</div>\n</fieldset>\n";
 			}
-
-			echo '<table class="form-table"', $stat ? '>' : ' style="display:none">';
-			do_settings_fields( $page, $section['id'] );
-			echo '</table>';
-			echo '</fieldset>', "\n";
-			++$index;
 		}
 	}
 
@@ -451,10 +492,8 @@ class IP_Geo_Block_Admin {
 	echo '<a href="?page=', IP_Geo_Block::PLUGIN_NAME, '&amp;tab=', $key, '" class="nav-tab', ($tab === $key ? ' nav-tab-active' : ''), '">', $val, '</a>';
 } ?>
 	</h2>
-<?php if ( 0 <= $tab && $tab <= 1 ) { ?>
 	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="javascript:void(0)"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]</p>
-<?php } ?>
-	<form method="post" action="options.php"<?php if ( 0 !== $tab ) echo " id=\"", IP_Geo_Block::PLUGIN_NAME, "-inhibit\""; ?>>
+	<form method="post" action="options.php" id="<?php echo IP_Geo_Block::PLUGIN_NAME, '-', $tab; ?>"<?php if ( $tab ) echo " class=\"", IP_Geo_Block::PLUGIN_NAME, "-inhibit\""; ?>>
 <?php
 		settings_fields( IP_Geo_Block::PLUGIN_NAME );
 		$this->do_settings_sections( IP_Geo_Block::PLUGIN_NAME, $tab );
@@ -467,16 +506,15 @@ class IP_Geo_Block_Admin {
 	<div id="ip-geo-block-map"></div>
 <?php } elseif ( 3 === $tab ) {
 	// show attribution (higher priority order)
-	$providers = IP_Geo_Block_Provider::get_addons();
 	$tab = array();
-	foreach ( $providers as $provider ) {
+	foreach ( IP_Geo_Block_Provider::get_addons() as $provider ) {
 		if ( $geo = IP_Geo_Block_API::get_instance( $provider, NULL ) ) {
 			$tab[] = $geo->get_attribution();
 		}
 	}
 	echo '<p>', implode( '<br />', $tab ), "</p>\n";
 
-	echo "<p>", __( 'Thanks for providing these great services for free.', 'ip-geo-block' ), "<br />\n";
+	echo '<p>', __( 'Thanks for providing these great services for free.', 'ip-geo-block' ), "<br />\n";
 	echo __( '(Most browsers will redirect you to each site <a href="http://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', 'ip-geo-block' ), "</p>\n";
 } ?>
 <?php if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
@@ -501,7 +539,7 @@ class IP_Geo_Block_Admin {
 		);
 
 		require_once IP_GEO_BLOCK_PATH . $files[ $this->admin_tab ];
-		IP_Geo_Block_Admin_Tab::tab_setup( $this );
+		IP_Geo_Block_Admin_Tab::tab_setup( $this, $this->admin_tab );
 	}
 
 	/**
@@ -609,7 +647,8 @@ class IP_Geo_Block_Admin {
 
 		  case 'text': ?>
 <input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"
-<?php disabled( ! empty( $args['disabled'] ), TRUE ); ?> />
+<?php disabled( ! empty( $args['disabled'] ), TRUE ); ?>
+<?php if ( isset( $args['placeholder'] ) ) echo ' placeholder="', $args['placeholder'], '"'; ?> />
 <?php
 			break; // disabled @since 3.0
 
@@ -652,7 +691,7 @@ class IP_Geo_Block_Admin {
 
 		// Integrate posted data into current settings because if can be a part of hole data
 		$input = array_replace_recursive(
-			$output = $this->preprocess_options( $output ),
+			$output = $this->preprocess_options( $output, $default ),
 			$input
 		);
 
@@ -798,15 +837,20 @@ class IP_Geo_Block_Admin {
 	}
 
 	// Initialize not on the form (mainly unchecked checkbox)
-	public function preprocess_options( $output ) {
+	public function preprocess_options( $output, $default ) {
 		// initialize checkboxes not in the form (added after 2.0.0, just in case)
-		foreach ( array( 'anonymize', 'network_wide' ) as $key ) {
-			$output[ $key ] = 0;
+		foreach ( array( 'providers', 'anonymize', 'network_wide' ) as $key ) {
+			$output[ $key ] = is_array( $default[ $key ] ) ? array() : 0;
 		}
 
 		// initialize checkboxes not in the form
 		foreach ( array( 'login', 'admin', 'ajax', 'plugins', 'themes', 'public', 'mimetype' ) as $key ) {
 			$output['validation'][ $key ] = 0;
+		}
+
+		// initialize checkboxes not in the form
+		foreach ( array( 'plugins', 'themes', 'includes', 'uploads', 'languages' ) as $key ) {
+			$output['rewrite'][ $key ] = FALSE;
 		}
 
 		// initialize checkboxes not in the form
@@ -883,13 +927,16 @@ class IP_Geo_Block_Admin {
 
 	// Trim extra space and comma avoiding invalid signature which potentially blocks itself
 	private function trim( $text ) {
+		$path = IP_Geo_Block::get_wp_path();
+
 		$ret = array();
 		foreach ( explode( ',', $text ) as $val ) {
 			$val = trim( $val );
-			if ( $val && FALSE === stripos( IP_Geo_Block::$wp_path['admin'], $val ) ) {
+			if ( $val && FALSE === stripos( $path['admin'], $val ) ) {
 				$ret[] = $val;
 			}
 		}
+
 		return $ret;
 	}
 
@@ -957,7 +1004,7 @@ class IP_Geo_Block_Admin {
 		if ( TRUE !== $file ) {
 			$options['validation']['timing'] = 0;
 			self::add_admin_notice( 'error', sprintf(
-				__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $file
+				__( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $file
 			) );
 		}
 

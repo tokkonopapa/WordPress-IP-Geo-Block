@@ -114,7 +114,7 @@ class IP_Geo_Block_Util {
 			if ( $nonce = self::retrieve_nonce( $key = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce' ) ) {
 				$location = esc_url_raw( add_query_arg(
 					array(
-						$key => false, // delete onece
+						$key => FALSE, // delete onece
 						$key => $nonce // add again
 					),
 					$location
@@ -136,7 +136,7 @@ class IP_Geo_Block_Util {
 		$tok = self::get_session_token();
 		$exp = self::nonce_tick();
 
-		return substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+		return substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok, 'nonce' ), -12, 10 );
 	}
 
 	/**
@@ -151,13 +151,13 @@ class IP_Geo_Block_Util {
 		$exp = self::nonce_tick();
 
 		// Nonce generated 0-12 hours ago
-		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok, 'nonce' ), -12, 10 );
 		if ( self::hash_equals( $expected, (string)$nonce ) ) {
 			return 1;
 		}
 
 		// Nonce generated 12-24 hours ago
-		$expected = substr( self::hash_nonce( ( $exp - 1 ) . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+		$expected = substr( self::hash_nonce( ( $exp - 1 ) . '|' . $action . '|' . $uid . '|' . $tok, 'nonce' ), -12, 10 );
 		if ( self::hash_equals( $expected, (string)$nonce ) ) {
 			return 2;
 		}
@@ -172,8 +172,14 @@ class IP_Geo_Block_Util {
 	 * Get hash of given string for nonce.
 	 * @source wp-includes/pluggable.php
 	 */
-	private static function hash_nonce( $data ) {
-		return self::hash_hmac( 'md5', $data, NONCE_KEY . NONCE_SALT );
+	private static function hash_nonce( $data, $scheme = 'auth' ) {
+		$salt = array(
+			'auth'        => AUTH_KEY        . AUTH_SALT,
+			'secure_auth' => SECURE_AUTH_KEY . SECURE_AUTH_SALT,
+			'logged_in'   => LOGGED_IN_KEY   . LOGGED_IN_SALT,
+			'nonce'       => NONCE_KEY       . NONCE_SALT,
+		);
+		return self::hash_hmac( 'md5', $data, apply_filters( 'salt', $salt[ $scheme ], $scheme ) );
 	}
 
 	/**
@@ -184,7 +190,7 @@ class IP_Geo_Block_Util {
 	 */
 	private static function get_session_token() {
 		// Arrogating logged_in cookie never cause the privilege escalation.
-		$cookie = self::parse_auth_cookie( 'logged_in' );
+		$cookie = self::parse_auth_cookie();
 		return ! empty( $cookie['token'] ) ? $cookie['token'] : AUTH_KEY . AUTH_SALT;
 	}
 
@@ -192,36 +198,84 @@ class IP_Geo_Block_Util {
 	 * WP alternative function for mu-plugins
 	 *
 	 * Parse a cookie into its components. It assumes the key including $scheme.
-	 * @source wp-includes/pluggable.php (after muplugins_loaded, it would be initialized)
+	 * @source wp-includes/pluggable.php
 	 */
-	private static function parse_auth_cookie( $scheme ) {
-		static $cookie = FALSE;
+	private static function parse_auth_cookie( $scheme = '' ) {
+		static $cache_cookie = NULL;
 
-		if ( FALSE === $cookie ) {
-			foreach ( array_keys( $_COOKIE ) as $key ) {
-				if ( FALSE !== strpos( $key, $scheme ) ) {
-					if ( count( $elements = explode( '|', $_COOKIE[ $key ] ) ) === 4 ) {
-						@list( $username, $expiration, $token, $hmac ) = $elements;
-						return $cookie = compact( 'username', 'expiration', 'token', 'hmac' );
-					}
+		if ( NULL === $cache_cookie ) {
+			$cache_cookie = FALSE;
+
+			// @since 3.0.0 in wp-includes/default-constants.php
+			if ( ! defined( 'COOKIEHASH' ) )
+				wp_cookie_constants();
+
+			switch ( $scheme ) {
+			  case 'auth':
+				$cookie_name = AUTH_COOKIE;
+				break;
+			  case 'secure_auth':
+				$cookie_name = SECURE_AUTH_COOKIE;
+				break;
+			  case "logged_in":
+				$cookie_name = LOGGED_IN_COOKIE;
+				break;
+			  default:
+				if ( is_ssl() ) {
+					$cookie_name = SECURE_AUTH_COOKIE;
+					$scheme = 'secure_auth';
+				} else {
+					$cookie_name = AUTH_COOKIE;
+					$scheme = 'auth';
 				}
 			}
+
+			if ( empty( $_COOKIE[ $cookie_name ] ) )
+				return FALSE;
+
+			$cookie = $_COOKIE[ $cookie_name ];
+
+			if ( count( $cookie_elements = explode( '|', $cookie ) ) !== 4 )
+				return FALSE;
+
+			list( $username, $expiration, $token, $hmac ) = $cookie_elements;
+			$cache_cookie = compact( 'username', 'expiration', 'token', 'hmac', 'scheme' );
 		}
 
-		return $cookie;
+		return $cache_cookie;
+	}
+
+	/**
+	 * WP alternative function for mu-plugins
+	 *
+	 * Retrieve user info by a given field
+	 * @source wp-includes/pluggable.php
+	 */
+	private static function get_user_by( $field, $value ) {
+		$userdata = WP_User::get_data_by( $field, $value );
+
+		if ( ! $userdata )
+			return FALSE;
+
+		$user = new WP_User;
+		$user->init( $userdata );
+
+		return $user;
 	}
 
 	/**
 	 * WP alternative function for mu-plugins
 	 *
 	 * Validates authentication cookie.
-	 * @source wp-includes/pluggable.php (after muplugins_loaded, it would be initialized)
+	 * @source wp-includes/pluggable.php
 	 */
-	public static function validate_auth_cookie() {
-		static $user_id = FALSE;
+	public static function validate_auth_cookie( $cookie = '', $scheme = '' ) {
+		static $cache_uid = NULL;
 
-		if ( FALSE === $user_id ) {
-			if ( ! $cookie = self::parse_auth_cookie( 'logged_in' ) )
+		if ( NULL === $cache_uid ) {
+			$cache_uid = FALSE;
+
+			if ( ! ( $cookie = self::parse_auth_cookie( $scheme ) ) )
 				return FALSE;
 
 			$scheme   = $cookie['scheme'];
@@ -236,9 +290,9 @@ class IP_Geo_Block_Util {
 
 			// Quick check to see if an honest cookie has expired
 			if ( $expired < time() )
-				return false;
+				return FALSE;
 
-			if ( ! $user = get_user_by( 'login', $username ) ) // wp-includes/class-wp-user.php
+			if ( ! ( $user = self::get_user_by( 'login', $username ) ) ) // wp-includes/class-wp-user.php
 				return FALSE;
 
 			$pass_frag = substr( $user->user_pass, 8, 4 );
@@ -255,10 +309,10 @@ class IP_Geo_Block_Util {
 			if ( ! $manager->verify( $token ) )
 				return FALSE;
 
-			$user_id = $user->ID;
+			$cache_uid = $user->ID;
 		}
 
-		return $user_id;
+		return $cache_uid;
 	}
 
 	/**
@@ -349,12 +403,12 @@ class IP_Geo_Block_Util {
 				|   \xF0[\x90-\xBF][\x80-\xBF]{2} # four-byte sequences   11110xxx 10xxxxxx * 3
 				|   [\xF1-\xF3][\x80-\xBF]{3}
 				|   \xF4[\x80-\x8F][\x80-\xBF]{2}
-			){1,40}                              # ...one or more times
+			){1,40}                               # ...one or more times
 			)/x';
 		$location = preg_replace_callback( $regex, array( __CLASS__, 'sanitize_utf8_in_redirect' ), $location );
 		$location = preg_replace( '|[^a-z0-9-~+_.?#=&;,/:%!*\[\]()@]|i', '', $location );
 		$location = self::kses_no_null( $location ); // wp-includes/kses.php
-	 
+
 		// remove %0d and %0a from location
 		$strip = array( '%0d', '%0a', '%0D', '%0A' );
 		return self::deep_replace( $strip, $location ); // wp-includes/formatting.php
@@ -375,7 +429,7 @@ class IP_Geo_Block_Util {
 			if ( ! self::is_IIS() && PHP_SAPI != 'cgi-fcgi' )
 				status_header( $status ); // This causes problems on IIS and some FastCGI setups
 
-			header( "Location: $location", true, $status );
+			header( "Location: $location", TRUE, $status );
 
 			return TRUE;
 		}
@@ -489,7 +543,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function is_user_logged_in() {
 		// possibly logged in but should be verified after 'init' hook is fired.
-		return did_action( 'init' ) ? is_user_logged_in() : ( self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE );
+		return did_action( 'init' ) ? is_user_logged_in() : ( self::validate_auth_cookie() ? TRUE : FALSE );
 	}
 
 	/**
@@ -499,22 +553,18 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/user.php
 	 */
 	public static function get_current_user_id() {
-		static $uid = 0;
+		static $cache_uid = NULL;
 
-		if ( ! $uid ) {
-			$uid = did_action( 'init' ) ? get_current_user_id() : 0;
-
-			if ( ! $uid && isset( $_COOKIE ) ) {
-				 foreach ( array_keys( $_COOKIE ) as $key ) {
-					if ( 0 === strpos( $key, 'wp-settings-' ) ) {
-						$uid = substr( $key, strrpos( $key, '-' ) + 1 ); // get numerical characters
-						break;
-					}
+		if ( NULL === $cache_uid ) {
+			if ( ! ( $cache_uid = ( did_action( 'init' ) ? get_current_user_id() : 0 ) ) ) {
+				$keys = preg_grep( '/wp-settings-/', array_keys( isset( $_COOKIE ) ? $_COOKIE : array() ) );
+				if ( $val = array_shift( $keys ) ) {
+					$cache_uid = (int)substr( $val, strrpos( $val, '-' ) + 1 ); // get numerical characters
 				}
 			}
 		}
 
-		return $uid;
+		return $cache_uid;
 	}
 
 	/**
@@ -525,7 +575,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function current_user_can( $capability ) {
 		// possibly logged in but should be verified after 'init' hook is fired.
-		return did_action( 'init' ) ? current_user_can( $capability ) : ( self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE );
+		return did_action( 'init' ) ? current_user_can( $capability ) : ( self::validate_auth_cookie() ? TRUE : FALSE );
 	}
 
 	/**
@@ -631,6 +681,14 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
+	 * Remove `HOST` and `HOST=...` from `UA and qualification`
+	 *
+	 */
+	public static function mask_qualification( $ua_list ) {
+		return preg_replace( array( '/HOST[^,]*?/', '/\*[:#]!?\*,?/' ), array( '*', '' ), $ua_list );
+	}
+
+	/**
 	 * Whether the server software is IIS or something else
 	 *
 	 * @source wp-includes/vers.php
@@ -646,7 +704,63 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
-	 * Check the client IP address behind the proxy
+	 * Check proxy variable
+	 *
+	 */
+	public static function get_proxy_var() {
+		foreach ( array( 'HTTP_X_FORWARDED_FOR', 'HTTP_CF_CONNECTING_IP', 'HTTP_X_REAL_IP', 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED' ) as $var ) {
+			if ( isset( $_SERVER[ $var ] ) ) {
+				return $var;
+			}
+		}
+
+		return NULL;
+	}
+
+	/**
+	 * Pick up all the IPs in HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP and etc.
+	 *
+	 */
+	public static function retrieve_ips( $ips = array(), $vars = NULL ) {
+		foreach ( explode( ',', $vars ) as $var ) {
+			if ( isset( $_SERVER[ $var ] ) ) {
+				foreach ( explode( ',', $_SERVER[ $var ] ) as $ip ) {
+					if ( ! in_array( $ip = trim( $ip ), $ips, TRUE ) && ! self::is_private_ip( $ip ) ) {
+						array_unshift( $ips, $ip );
+					}
+				}
+			}
+		}
+
+		return $ips;
+	}
+
+	/**
+	 * Get client IP address
+	 *
+	 * @param  string $ip   IP address / default: $_SERVER['REMOTE_ADDR']
+	 * @param  string $vars keys in $_SERVER for http header ('HTTP_...')
+	 * @return string $ip   IP address
+	 * @link   http://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-headers.html
+	 * @link   https://github.com/zendframework/zend-http/blob/master/src/PhpEnvironment/RemoteAddress.php
+	 */
+	public static function get_client_ip( $vars = NULL ) {
+		foreach ( explode( ',', $vars ) as $var ) {
+			if ( isset( $_SERVER[ $var ] ) ) {
+				$ips = array_map( 'trim', explode( ',', $_SERVER[ $var ] ) );
+				while ( $var = array_pop( $ips ) ) {
+					if ( ! self::is_private_ip( $var ) ) {
+						return $var;
+					}
+				}
+			}
+		}
+
+		return isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+	}
+
+	/**
+	 * Check the client IP address behind the VPN proxy
 	 *
 	 */
 	public static function get_proxy_ip( $ip ) {
@@ -682,11 +796,13 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
-	 * Remove `HOST` and `HOST=...` from `UA and qualification`
+	 * Get IP address of the host server
 	 *
+	 * @link http://php.net/manual/en/reserved.variables.server.php#88418
 	 */
-	public static function mask_qualification( $ua_list ) {
-		return preg_replace( array( '/HOST[^,]*?/', '/\*[:#]!?\*,?/' ), array( '*', '' ), $ua_list );
+	public static function get_server_ip() {
+		return isset( $_SERVER['SERVER_ADDR'] ) ? $_SERVER['SERVER_ADDR'] : ( (int)self::is_IIS() >= 7 ?
+		     ( isset( $_SERVER['LOCAL_ADDR' ] ) ? $_SERVER['LOCAL_ADDR' ] : NULL ) : NULL );
 	}
 
 }

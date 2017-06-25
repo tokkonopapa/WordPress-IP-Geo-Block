@@ -174,6 +174,7 @@ class IP_Geo_Block_Opts {
 			'gif' => 'image/gif',
 			'png' => 'image/png',
 			'ico' => 'image/x-icon',
+
 			// Video formats.
 			'wmv' => 'video/x-ms-wmv',
 			'avi' => 'video/avi',
@@ -183,13 +184,16 @@ class IP_Geo_Block_Opts {
 			'ogv' => 'video/ogg',
 			'3gp|3gpp' => 'video/3gpp',
 			'3g2|3gp2' => 'video/3gpp2',
+
 			// Audio formats.
 			'mp3|m4a|m4b' => 'audio/mpeg',
 			'wav' => 'audio/wav',
 			'ogg|oga' => 'audio/ogg',
+
 			// Misc application formats.
 			'pdf' => 'application/pdf',
 			'psd' => 'application/octet-stream',
+
 			// MS Office formats.
 			'doc' => 'application/msword',
 			'pot|pps|ppt' => 'application/vnd.ms-powerpoint',
@@ -205,7 +209,7 @@ class IP_Geo_Block_Opts {
 
 	/**
 	 * Upgrade option table
-	 *
+	 * @since 3.0.4 This should be executed in admin context
 	 */
 	public static function upgrade() {
 		$default = self::get_default();
@@ -352,7 +356,8 @@ class IP_Geo_Block_Opts {
 		}
 
 		// install addons for IP Geolocation database API ver. 1.1.8
-		if ( ! $settings['api_dir'] || version_compare( $version, '3.0.3' ) < 0 )
+		$providers = IP_Geo_Block_Provider::get_addons();
+		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.3' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table
@@ -366,17 +371,19 @@ class IP_Geo_Block_Opts {
 	 * Install / Uninstall APIs
 	 *
 	 */
-	public static function install_api( $settings ) {
+	private static function install_api( $settings ) {
 		$src = IP_GEO_BLOCK_PATH . 'wp-content/' . IP_Geo_Block::GEOAPI_NAME;
 		$dst = self::get_api_dir( $settings );
 
 		try {
-			if ( $src !== $dst )
-				self::recurse_copy( $src, $dst );
+			if ( $src !== $dst ) {
+				if ( FALSE === self::recurse_copy( $src, $dst ) )
+					throw new Exception();
+			}
 
 		} catch ( Exception $e ) {
 			if ( class_exists( 'IP_Geo_Block_Admin' ) )
-				IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $dst ) );
+				IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $dst ) );
 
 			return NULL;
 		}
@@ -385,8 +392,9 @@ class IP_Geo_Block_Opts {
 	}
 
 	public static function delete_api( $settings ) {
-		if ( @is_writable( $dir = self::get_api_dir( $settings ) ) )
-			self::recurse_rmdir( $dir );
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( 'delete_api' );
+		return $fs->delete( self::get_api_dir( $settings ), TRUE ); // $recursive = true
 	}
 
 	private static function get_api_dir( $settings ) {
@@ -412,38 +420,31 @@ class IP_Geo_Block_Opts {
 
 	// http://php.net/manual/function.copy.php#91010
 	private static function recurse_copy( $src, $dst ) {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( 'recurse_copy' );
+
 		$src = IP_Geo_Block_Util::slashit( $src );
 		$dst = IP_Geo_Block_Util::slashit( $dst );
 
-		! @is_dir( $dst ) and wp_mkdir_p( $dst ); // @since 2.0.1 @mkdir( $dst );
+		! $fs->is_dir( $dst ) and $fs->mkdir( $dst );
 
 		if ( $dir = @opendir( $src ) ) {
 			while( FALSE !== ( $file = readdir( $dir ) ) ) {
 				if ( '.' !== $file && '..' !== $file ) {
-					if ( @is_dir( $src.$file ) )
-						self::recurse_copy( $src.$file, $dst.$file );
-					else
-						@copy( $src.$file, $dst.$file );
+					if ( $fs->is_dir( $src.$file ) ) {
+						if ( FALSE === self::recurse_copy( $src.$file, $dst.$file ) )
+							return FALSE;
+					} else {
+						if ( FALSE === $fs->copy( $src.$file, $dst.$file, TRUE ) )
+							return FALSE;
+					}
 				}
 			}
 
 			closedir( $dir );
 		}
-	}
 
-	// http://php.net/manual/function.rmdir.php#110489
-	private static function recurse_rmdir( $dir ) {
-		$dir = IP_Geo_Block_Util::slashit( $dir );
-		$files = array_diff( @scandir( $dir ), array( '.', '..' ) );
-
-		foreach ( $files as $file ) {
-			if ( is_dir( $dir.$file ) )
-				self::recurse_rmdir( $dir.$file );
-			else
-				@unlink( $dir.$file );
-		}
-
-		return @rmdir( $dir );
+		return TRUE;
 	}
 
 	/**
@@ -451,10 +452,14 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static function remove_mu_plugin() {
-		if ( file_exists( $src = WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) )
-			return @unlink( $src ) ? TRUE : $src;
-		else
-			return TRUE;
+		if ( file_exists( $src = WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) ) {
+			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+			$fs = IP_Geo_Block_FS::init( 'remove_mu_plugin' );
+
+			return $fs->delete( $src ) ? TRUE : $src;
+		}
+
+		return TRUE;
 	}
 
 	public static function get_validation_timing() {
@@ -472,11 +477,14 @@ class IP_Geo_Block_Opts {
 			$src = IP_GEO_BLOCK_PATH . 'wp-content/mu-plugins/ip-geo-block-mu.php';
 			$dst = WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php';
 
-			if ( ! file_exists( $dst ) ) {
-				if ( ! file_exists( WPMU_PLUGIN_DIR ) )
-					wp_mkdir_p( WPMU_PLUGIN_DIR ); // @since 2.0.1 @mkdir( $path );
+			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+			$fs = IP_Geo_Block_FS::init( 'setup_validation_timing' );
 
-				if ( ! @copy( $src, $dst ) )
+			if ( ! $fs->is_file( $dst ) ) {
+				if ( ! $fs->is_dir( WPMU_PLUGIN_DIR ) && ! $fs->mkdir( WPMU_PLUGIN_DIR ) )
+					return $dst;
+
+				if ( ! $fs->copy( $src, $dst, TRUE ) )
 					return $dst;
 			}
 			break;

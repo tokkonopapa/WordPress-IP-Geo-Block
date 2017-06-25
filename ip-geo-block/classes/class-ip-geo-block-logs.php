@@ -412,33 +412,27 @@ class IP_Geo_Block_Logs {
 	/**
 	 * Backup the validation log to text files
 	 *
-	 * Note: $path should not be within the public_html.
+	 * Note: $path should be absolute to the directory and should not be within the public_html.
 	 */
 	private static function backup_logs( $hook, $validate, $method, $agent, $heads, $posts, $path ) {
-		// $path should be absolute path to the directory
-		if ( validate_file( $path ) !== 0 )
-			return;
-
-		$path = IP_Geo_Block_Util::slashit( $path ) .
-			IP_Geo_Block::PLUGIN_NAME . date('-Y-m') . '.log';
-
-		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )
-			return;
-
-		fprintf( $fp, "%d,%s,%s,%d,%s,%s,%s,%s,%s,%s\n",
-			$_SERVER['REQUEST_TIME'],
-			$validate['ip'],
-			$hook,
-			$validate['auth'],
-			$validate['code'],
-			$validate['result'],
-			$method,
-			str_replace( ',', '‚', $agent ), // &#044; --> &#130;
-			str_replace( ',', '‚', $heads ), // &#044; --> &#130;
-			str_replace( ',', '‚', $posts )  // &#044; --> &#130;
-		);
-
-		fclose( $fp );
+		if ( validate_file( $path ) === 0 ) {
+			file_put_contents(
+				IP_Geo_Block_Util::slashit( $path ) . IP_Geo_Block::PLUGIN_NAME . date('-Y-m') . '.log',
+				sprintf( "%d,%s,%s,%d,%s,%s,%s,%s,%s,%s\n",
+					$_SERVER['REQUEST_TIME'],
+					$validate['ip'],
+					$hook,
+					$validate['auth'],
+					$validate['code'],
+					$validate['result'],
+					$method,
+					str_replace( ',', '‚', $agent ), // &#044; --> &#130;
+					str_replace( ',', '‚', $heads ), // &#044; --> &#130;
+					str_replace( ',', '‚', $posts )  // &#044; --> &#130;
+				),
+				FILE_APPEND | LOCK_EX
+			);
+		}
 	}
 
 	/**
@@ -662,14 +656,38 @@ class IP_Geo_Block_Logs {
 	 * Delete expired cache
 	 *
 	 */
-	public static function delete_expired_cache( $cache_time ) {
+	private static function expired_cache( $cache_time ) {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
 		$sql = $wpdb->prepare(
-			"DELETE FROM `$table` WHERE `time` < %d",
-			$_SERVER['REQUEST_TIME'] - $cache_time
-		) and $result = $wpdb->query( $sql ) or self::error( __LINE__ );
+			"DELETE FROM `$table` WHERE `time` < %d", $_SERVER['REQUEST_TIME'] - $cache_time
+		) and $result = ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
+
+		return $result;
+	}
+
+	public static function delete_expired_cache( $cache_time ) {
+		require_once ABSPATH . '/wp-admin/includes/plugin.php';
+
+		$result = FALSE;
+
+		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
+			global $wpdb;
+			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+			$current_blog_id = get_current_blog_id();
+
+			foreach ( $blog_ids as $id ) {
+				switch_to_blog( $id );
+				$result |= self::expired_cache( $cache_time );
+			}
+
+			switch_to_blog( $current_blog_id );
+		}
+
+		else {
+			$result |= self::expired_cache( $cache_time );
+		}
 
 		return $result;
 	}

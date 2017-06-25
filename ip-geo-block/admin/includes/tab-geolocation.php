@@ -1,7 +1,7 @@
 <?php
 class IP_Geo_Block_Admin_Tab {
 
-	public static function tab_setup( $context ) {
+	public static function tab_setup( $context, $tab ) {
 		$option_slug = IP_Geo_Block::PLUGIN_NAME;
 		$option_name = IP_Geo_Block::OPTION_NAME;
 		$options = IP_Geo_Block::get_option();
@@ -33,6 +33,10 @@ class IP_Geo_Block_Admin_Tab {
 			}
 		}
 
+		// get selected item
+		$cookie = $context->get_cookie( IP_Geo_Block::PLUGIN_NAME );
+		$cookie = empty( $cookie[ $tab ] ) ? 0 : (int)end( $cookie[ $tab ] );
+
 		$field = 'service';
 		$provider = array_keys( $providers );
 		add_settings_field(
@@ -45,7 +49,7 @@ class IP_Geo_Block_Admin_Tab {
 				'type' => 'select',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => $provider[0],
+				'value' => $provider[ $cookie ],
 				'list' => $list,
 			)
 		);

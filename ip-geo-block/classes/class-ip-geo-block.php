@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.3';
+	const VERSION = '3.0.3.1';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -29,11 +29,11 @@ class IP_Geo_Block {
 	protected static $instance = NULL;
 
 	// Globals in this class
-	public static $wp_path;
 	private $pagenow = NULL;
 	private $request_uri = NULL;
 	private $target_type = NULL;
-	private $remote_addr = NULL;
+	private static $remote_addr;
+	private static $wp_path;
 
 	/**
 	 * Initialize the plugin
@@ -46,19 +46,18 @@ class IP_Geo_Block {
 		$validate = $settings['validation'];
 		$loader = new IP_Geo_Block_Loader();
 
+		// get client IP address
+		self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $validate['proxy'] );
+
 		// include drop in if it exists
 		file_exists( $key = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php' ) and include( $key );
 
-		// Garbage collection for IP address cache
+		// garbage collection for IP address cache
 		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
 			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
-
-		// check the package version and upgrade if needed (activation hook never fire on upgrade)
-		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
-			$loader->add_action( 'init', 'ip_geo_block_activate', $priority );
 
 		// normalize requested uri and page
 		$key = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
@@ -185,6 +184,11 @@ class IP_Geo_Block {
 		return FALSE !== ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
 	}
 
+	// get the WordPress path of validation target
+	public static function get_wp_path() {
+		return self::$wp_path;
+	}
+
 	/**
 	 * Remove the redirecting URL on logout not to be blocked by WP-ZEP.
 	 *
@@ -241,7 +245,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function get_ip_address() {
-		return apply_filters( self::PLUGIN_NAME . '-ip-addr', empty( $_SERVER['REMOTE_ADDR'] ) ? '' : $_SERVER['REMOTE_ADDR'] );
+		return apply_filters( self::PLUGIN_NAME . '-ip-addr', self::$remote_addr );
 	}
 
 	/**
@@ -406,19 +410,11 @@ class IP_Geo_Block {
 	 * @param boolean $auth     save log and block         if validation fails (for admin dashboard)
 	 */
 	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $auth = TRUE ) {
-		// set IP address to be validated
-		$ips = array( self::get_ip_address() );
+		// Do action
+		// do_action( self::PLUGIN_NAME, $hook );
 
-		// pick up all the IPs in HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP and etc.
-		foreach ( explode( ',', $settings['validation']['proxy'] ) as $var ) {
-			if ( isset( $_SERVER[ $var ] ) ) {
-				foreach ( explode( ',', $_SERVER[ $var ] ) as $ip ) {
-					if ( ! in_array( $ip = trim( $ip ), $ips, TRUE ) && filter_var( $ip, FILTER_VALIDATE_IP ) ) {
-						array_unshift( $ips, $ip );
-					}
-				}
-			}
-		}
+		// set IP address to be validated
+		$ips = IP_Geo_Block_Util::retrieve_ips( array( self::get_ip_address() ), $settings['validation']['proxy'] );
 
 		// register auxiliary validation functions
 		// priority high 4 close_xmlrpc, close_restapi
@@ -447,8 +443,8 @@ class IP_Geo_Block {
 		//     'code'     => $code,     /* country code or reason of rejection */
 		//     'result'   => $result,   /* 'passed', 'blocked'                 */
 		// );
-		foreach ( $ips as $this->remote_addr ) {
-			$validate = self::_get_geolocation( $this->remote_addr, $settings, $providers );
+		foreach ( $ips as self::$remote_addr ) {
+			$validate = self::_get_geolocation( self::$remote_addr, $settings, $providers );
 			$validate = apply_filters( $var, $validate, $settings );
 
 			// if no 'result' then validate ip address by country
@@ -597,7 +593,7 @@ class IP_Geo_Block {
 		$list = array_merge(
 			apply_filters( self::PLUGIN_NAME . '-bypass-admins', array() ),
 			array( 'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',  // in wp-admin js/widget.js, includes/template.php, async-upload.php
-				'wordfence_testAjax', 'wordfence_doScan', 'bp_avatar_upload', 'GOTMLS_logintime', // Wordfence, bbPress, Anti-Malware Security and Brute-Force Firewall
+				'bp_avatar_upload', 'GOTMLS_logintime', // Wordfence, bbPress, Anti-Malware Security and Brute-Force Firewall
 				'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', // jetpack page & action
 			)
 		);
@@ -673,8 +669,8 @@ class IP_Geo_Block {
 	 */
 	public function auth_fail( $something = NULL ) {
 		// Count up a number of fails when authentication is failed
-		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $this->remote_addr ) ) {
-			$validate = self::make_validation( $this->remote_addr, array(
+		if ( $cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr ) ) {
+			$validate = self::make_validation( self::$remote_addr, array(
 				'code'     => $cache['code'],
 				'fail'     => TRUE,
 				'result'   => 'failed',
