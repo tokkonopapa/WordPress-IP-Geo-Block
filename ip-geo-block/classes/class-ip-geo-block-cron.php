@@ -44,7 +44,7 @@ class IP_Geo_Block_Cron {
 	 *   1. Plugin is activated
 	 *   2. WP Cron is kicked
 	 * under the following condition:
-	 *   A. Onece per site when this plugin is activated by network admin
+	 *   A. Once per site when this plugin is activated on network wide
 	 *   B. Multiple time for each blog when this plugin is individually activated
 	 */
 	public static function exec_job( $immediate = FALSE ) {
@@ -101,8 +101,7 @@ class IP_Geo_Block_Cron {
 	 *
 	 */
 	private static function update_settings( $src, $keys = array() ) {
-		if ( ! function_exists( 'is_plugin_active_for_network' ) )
-			require_once ABSPATH . '/wp-admin/includes/plugin.php';
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 		// for multisite (@since 3.0.0 in wp-admin/includes/plugin.php)
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
@@ -145,11 +144,11 @@ class IP_Geo_Block_Cron {
 	 *
 	 */
 	public static function start_update_db( $settings ) {
-		if ( ! function_exists( 'is_plugin_active' ) )
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 		// the status is still inactive when this plugin is activated on dashboard.
-		if ( ! is_plugin_active( IP_GEO_BLOCK_BASE ) ) { // @since 2.5.0 in wp-admin/includes/plugin.php
+		if ( ! ( is_plugin_active            ( IP_GEO_BLOCK_BASE ) ||    // @since 2.5.0
+		         is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) ) { // @since 3.0.0
 			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address(), MINUTE_IN_SECONDS );
 			self::schedule_cron_job( $settings['update'], NULL, TRUE );
 		}
@@ -165,7 +164,26 @@ class IP_Geo_Block_Cron {
 	 * Note: When the init action occurs in /wp-settings.php, wp_cron() runs.
 	 */
 	public static function exec_cache_gc( $settings ) {
-		IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
+			global $wpdb;
+			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+			$current_blog_id = get_current_blog_id();
+
+			foreach ( $blog_ids as $id ) {
+				switch_to_blog( $id );
+				IP_Geo_Block_Logs::delete_expired_cache( $cache_time );
+			}
+
+			switch_to_blog( $current_blog_id );
+		}
+
+		// for single site
+		else {
+			IP_Geo_Block_Logs::delete_expired_cache( $cache_time );
+		}
+
 		self::stop_cache_gc();
 		self::start_cache_gc( $settings );
 	}

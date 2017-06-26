@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.3.1\n"
+"Project-Id-Version: IP Geo Block 3.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-06-25 16:47+0900\n"
-"PO-Revision-Date: 2017-06-25 16:49+0900\n"
+"POT-Creation-Date: 2017-06-26 23:39+0900\n"
+"PO-Revision-Date: 2017-06-26 23:41+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -167,9 +167,9 @@ msgid "Enable"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:996
-#: classes/class-ip-geo-block-cron.php:260
-#: classes/class-ip-geo-block-cron.php:300
-#: classes/class-ip-geo-block-cron.php:316
+#: classes/class-ip-geo-block-cron.php:278
+#: classes/class-ip-geo-block-cron.php:318
+#: classes/class-ip-geo-block-cron.php:334
 #, php-format
 msgid "Unable to write %s. Please check the permission."
 msgstr ""
@@ -457,11 +457,11 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:278
 msgid ""
-"<dfn title=\"It prevents uploading malware and backdoor via both back-end "
-"and front-end. Please consider to select &#8220;mu-plugins&#8221; (ip-geo-"
-"block-mu.php) at &#8220;Validation timing&#8221; so that other staff would "
-"not fetch uploaded files before this validation.\">Prevent malicious file "
-"uploading</dfn>"
+"<dfn title=\"It restricts the file types on upload to block malware and "
+"backdoor via both back-end and front-end. Please consider to select &#8220;"
+"mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation timing&#8221; "
+"so that other staff would not fetch uploaded files before this validation."
+"\">Prevent malicious file uploading</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:289 admin/includes/tab-settings.php:495
@@ -779,7 +779,7 @@ msgid "database"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1114
-#: classes/class-ip-geo-block-cron.php:368
+#: classes/class-ip-geo-block-cron.php:386
 #, php-format
 msgid "Last update: %s"
 msgstr ""
@@ -1111,24 +1111,24 @@ msgid ""
 "<strong>you'll be blocked</strong> after the cache expires."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:227
+#: classes/class-ip-geo-block-cron.php:245
 msgid "Your database file is up-to-date."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:255
-#: classes/class-ip-geo-block-cron.php:291
-#: classes/class-ip-geo-block-cron.php:311
+#: classes/class-ip-geo-block-cron.php:273
+#: classes/class-ip-geo-block-cron.php:309
+#: classes/class-ip-geo-block-cron.php:329
 #, php-format
 msgid "Unable to read %s. Please check the permission."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:265
-#: classes/class-ip-geo-block-cron.php:321
+#: classes/class-ip-geo-block-cron.php:283
+#: classes/class-ip-geo-block-cron.php:339
 #, php-format
 msgid "Can't lock %s. Please try again after a while."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:333
+#: classes/class-ip-geo-block-cron.php:351
 msgid "gz or zip is not supported on your system."
 msgstr ""
 

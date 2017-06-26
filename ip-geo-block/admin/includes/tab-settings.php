@@ -275,7 +275,7 @@ endif;
 		$key = 'mimetype';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( '<dfn title="It prevents uploading malware and backdoor via both back-end and front-end. Please consider to select &#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation timing&#8221; so that other staff would not fetch uploaded files before this validation.">Prevent malicious file uploading</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="It restricts the file types on upload to block malware and backdoor via both back-end and front-end. Please consider to select &#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation timing&#8221; so that other staff would not fetch uploaded files before this validation.">Prevent malicious file uploading</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

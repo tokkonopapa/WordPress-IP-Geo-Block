@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.3.1';
+	const VERSION = '3.0.3.2';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -593,7 +593,7 @@ class IP_Geo_Block {
 		$list = array_merge(
 			apply_filters( self::PLUGIN_NAME . '-bypass-admins', array() ),
 			array( 'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',  // in wp-admin js/widget.js, includes/template.php, async-upload.php
-				'bp_avatar_upload', 'GOTMLS_logintime', // Wordfence, bbPress, Anti-Malware Security and Brute-Force Firewall
+				'bp_avatar_upload', 'GOTMLS_logintime', // bbPress, Anti-Malware Security and Brute-Force Firewall
 				'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', // jetpack page & action
 			)
 		);

@@ -19,7 +19,7 @@ require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
 class IP_Geo_Block_Activate {
 
 	// initialize main blog
-	public static function init_main_blog() {
+	private static function init_main_blog() {
 		if ( current_user_can( 'manage_options' ) ) {
 			$settings = IP_Geo_Block::get_option();
 

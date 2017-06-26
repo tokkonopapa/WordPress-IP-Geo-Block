@@ -656,38 +656,13 @@ class IP_Geo_Block_Logs {
 	 * Delete expired cache
 	 *
 	 */
-	private static function expired_cache( $cache_time ) {
+	public static function delete_expired_cache( $cache_time ) {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
 		$sql = $wpdb->prepare(
 			"DELETE FROM `$table` WHERE `time` < %d", $_SERVER['REQUEST_TIME'] - $cache_time
 		) and $result = ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
-
-		return $result;
-	}
-
-	public static function delete_expired_cache( $cache_time ) {
-		require_once ABSPATH . '/wp-admin/includes/plugin.php';
-
-		$result = FALSE;
-
-		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
-			global $wpdb;
-			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
-			$current_blog_id = get_current_blog_id();
-
-			foreach ( $blog_ids as $id ) {
-				switch_to_blog( $id );
-				$result |= self::expired_cache( $cache_time );
-			}
-
-			switch_to_blog( $current_blog_id );
-		}
-
-		else {
-			$result |= self::expired_cache( $cache_time );
-		}
 
 		return $result;
 	}
