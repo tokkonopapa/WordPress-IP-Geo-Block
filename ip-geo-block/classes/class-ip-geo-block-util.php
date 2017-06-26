@@ -200,7 +200,7 @@ class IP_Geo_Block_Util {
 	 * Parse a cookie into its components. It assumes the key including $scheme.
 	 * @source wp-includes/pluggable.php
 	 */
-	private static function parse_auth_cookie( $scheme = '' ) {
+	private static function parse_auth_cookie( $scheme = 'logged_in' ) {
 		static $cache_cookie = NULL;
 
 		if ( NULL === $cache_cookie ) {
@@ -269,7 +269,7 @@ class IP_Geo_Block_Util {
 	 * Validates authentication cookie.
 	 * @source wp-includes/pluggable.php
 	 */
-	public static function validate_auth_cookie( $cookie = '', $scheme = '' ) {
+	public static function validate_auth_cookie( $cookie = '', $scheme = 'logged_in' ) {
 		static $cache_uid = NULL;
 
 		if ( NULL === $cache_uid ) {
