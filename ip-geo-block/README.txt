@@ -12,11 +12,11 @@ It blocks spam posts, login attempts and malicious access to the back-end reques
 
 == Description ==
 
-A considerable number of WordPress vulnerabilities in plugins and themes have been disclosed every month. You can easily find them at [WPScan Vulnerability Database](https://wpvulndb.com/ "WPScan Vulnerability Database") and [Exploits Database](https://www.exploit-db.com/ "Exploits Database by Offensive Security"). It means that many WordPress sites can always be exposed to the threats of being exploited caused by those vulnerabilities.
+A considerable number of WordPress vulnerabilities in plugins and themes have been disclosed every month. You can easily find them at [WPScan Vulnerability Database](https://wpvulndb.com/ "WPScan Vulnerability Database") and [Exploits Database](https://www.exploit-db.com/ "Exploits Database by Offensive Security"). It means that we're always exposed to the threats of being exploited caused by those vulnerabilities.
 
-This plugin protects your site against such threats of attack against the back-end of your site such as login form (login attempt) and admin area. And it also blocks undesired requests to the comment form (spam and trackback), XML-RPC (login attempt and pingback) and even public facing pages aka front-end.
+This plugin protects your site against such threats of attack against the back-end of your site such as login form, XML-RPC (login attempt) and admin area. It also blocks undesired comment spam, trackback and pingback spam and any requests to public facing pages aka front-end from undesired countries.
 
-After several days of installation, you'll be supprised to find many malicious or undesirable accesses are blocked especially if you enable Zero-day Expoit Prevention for back-end.
+After several days of installation, you'll be supprised to find many malicious or undesirable accesses are blocked especially if you enable Zero-day Expoit Prevention.
 
 = Features =
 
@@ -115,6 +115,9 @@ or following descriptions for your best setup.
 * **Bad signatures in query**
   It validates malicious signatures independently of **Block by country** and **Prevent Zero-day Exploit** for the target **Admin area**, **Admin ajax/post**, **Plugins area** and **Themes area**. Typically, `/wp-config.php` and `/passwd`.
 
+* **Prevent malicious file uploading**  
+  It restricts the file types on upload to block malware and backdoor via both back-end and front-end.
+
 * **Response code**  
   Choose one of the [response code](http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1") to be sent when it blocks a comment.
   The 2xx code will lead to your top page, the 3xx code will redirect to [Black Hole Server](http://blackhole.webpagetest.org/), the 4xx code will lead to WordPress error page, and the 5xx will pretend an server error.
@@ -158,6 +161,9 @@ or following descriptions for your best setup.
 
 * **UA string and qualification**  
   Additional rules targeted at SEO which can specify acceptable requests based on user agent.
+
+* **DNS reverse lookup**  
+  It enables to verify the host by reverse DNS lookup which would spend some server resources.
 
 * **Simulation mode**  
   You can simulate the 'blocking on front-end' functionality before deploying.

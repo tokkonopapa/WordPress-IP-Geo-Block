@@ -83,8 +83,6 @@ if ( is_admin() ) {
 	add_action( 'plugins_loaded', array( 'IP_Geo_Block_Admin', 'get_instance' ) );
 }
 
-endif; // ! class_exists( 'IP_Geo_Block' )
-
 /*----------------------------------------------------------------------------*
  * Emergent Functionality
  *----------------------------------------------------------------------------*/
@@ -102,3 +100,5 @@ function ip_geo_block_emergency( $validate ) {
 add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency' );
 add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
 // */
+
+endif; // ! class_exists( 'IP_Geo_Block' )

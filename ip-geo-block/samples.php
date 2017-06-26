@@ -10,12 +10,11 @@
  */
 /* Start loading wp-load.php */
 if ( ! empty( $_GET['wp-load'] ) ) {
-	include_once substr( __FILE__, 0, strpos( __FILE__, '/wp-content/' ) ) . '/wp-load.php';
+	$abspath = dirname( dirname( dirname( __FILE__ ) ) );
+	include_once $abspath . '/wp-load.php';
 }
 die( '0' );
 /* End of loading wp-load.php */
-
-if ( class_exists( 'IP_Geo_Block' ) ):
 
 /**
  * Example 1: Usage of 'ip-geo-block-ip-addr'
@@ -404,7 +403,3 @@ function my_record_logs( $record, $hook, $validate ) {
 }
 
 add_filter( 'ip-geo-block-record-logs', 'my_record_logs', 10, 3 );
-
-endif; /* class_exists( 'IP_Geo_Block' ) */
-
-?>

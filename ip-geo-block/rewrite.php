@@ -112,7 +112,8 @@ class IP_Geo_Block_Rewrite {
 		// @link http://community.sitepoint.com/t/-server-document-root-injection-vulnerability/5274
 		// @link http://www.securityfocus.com/archive/1/476274/100/0/threaded
 		// @link http://www.securityfocus.com/archive/1/476437/100/0/threaded
-		$root = ! empty( $_SERVER['DOCUMENT_ROOT'] ) ? $_SERVER['DOCUMENT_ROOT'] :
+		$root = ! empty( $_SERVER['DOCUMENT_ROOT'] ) ?
+			$_SERVER['DOCUMENT_ROOT'] :
 			substr( $_SERVER['SCRIPT_FILENAME'], 0, -strlen( $_SERVER['SCRIPT_NAME'] ) );
 
 		// get absolute path of requested uri

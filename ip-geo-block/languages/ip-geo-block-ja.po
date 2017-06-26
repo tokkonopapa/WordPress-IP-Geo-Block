@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.3.1\n"
+"Project-Id-Version: IP Geo Block 3.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-06-25 16:47+0900\n"
-"PO-Revision-Date: 2017-06-25 16:52+0900\n"
+"POT-Creation-Date: 2017-06-26 23:39+0900\n"
+"PO-Revision-Date: 2017-06-27 00:48+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -188,9 +188,9 @@ msgid "Enable"
 msgstr "有効"
 
 #: admin/class-ip-geo-block-admin.php:996
-#: classes/class-ip-geo-block-cron.php:260
-#: classes/class-ip-geo-block-cron.php:300
-#: classes/class-ip-geo-block-cron.php:316
+#: classes/class-ip-geo-block-cron.php:278
+#: classes/class-ip-geo-block-cron.php:318
+#: classes/class-ip-geo-block-cron.php:334
 #, php-format
 msgid "Unable to write %s. Please check the permission."
 msgstr "%s に書き込めません。パーミッションを確認して下さい。"
@@ -517,16 +517,17 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:278
 msgid ""
-"<dfn title=\"It prevents uploading malware and backdoor via both back-end "
-"and front-end. Please consider to select &#8220;mu-plugins&#8221; (ip-geo-"
-"block-mu.php) at &#8220;Validation timing&#8221; so that other staff would "
-"not fetch uploaded files before this validation.\">Prevent malicious file "
-"uploading</dfn>"
+"<dfn title=\"It restricts the file types on upload to block malware and "
+"backdoor via both back-end and front-end. Please consider to select &#8220;"
+"mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation timing&#8221; "
+"so that other staff would not fetch uploaded files before this validation."
+"\">Prevent malicious file uploading</dfn>"
 msgstr ""
-"<dfn title=\"バックエンド、またはフロントエンドを経由するマルウェアやバックド"
-"アのアップロードを遮断します。他のプラグインやテーマに先んじて確実に遮断する"
-"ために、「検証のタイミング」を「&#8220;mu-plugins&#8221; (ip-geo-block-mu."
-"php)」に設定することを検討してください。\">悪意のあるアップロード防止</dfn>"
+"<dfn title=\"ファイル・タイプを限定し、バックエンド、またはフロントエンドを経"
+"由するマルウェアやバックドアのアップロードを遮断します。他のプラグインやテー"
+"マに先んじて確実に遮断するために、「検証のタイミング」を「&#8220;mu-"
+"plugins&#8221; (ip-geo-block-mu.php)」に設定することを検討してください。\">悪"
+"意のあるアップロード防止</dfn>"
 
 #: admin/includes/tab-settings.php:289 admin/includes/tab-settings.php:495
 #: admin/includes/tab-settings.php:638 admin/includes/tab-settings.php:1196
@@ -911,7 +912,7 @@ msgid "database"
 msgstr "ファイル"
 
 #: admin/includes/tab-settings.php:1114
-#: classes/class-ip-geo-block-cron.php:368
+#: classes/class-ip-geo-block-cron.php:386
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
@@ -1283,24 +1284,24 @@ msgstr ""
 "少なくとも1つ以上の位置情報サービスを選択して下さい。未選択の場合、キャッシュ"
 "の有効期限切れと共にロックアウトされます。"
 
-#: classes/class-ip-geo-block-cron.php:227
+#: classes/class-ip-geo-block-cron.php:245
 msgid "Your database file is up-to-date."
 msgstr "データベース・ファイルは最新です。"
 
-#: classes/class-ip-geo-block-cron.php:255
-#: classes/class-ip-geo-block-cron.php:291
-#: classes/class-ip-geo-block-cron.php:311
+#: classes/class-ip-geo-block-cron.php:273
+#: classes/class-ip-geo-block-cron.php:309
+#: classes/class-ip-geo-block-cron.php:329
 #, php-format
 msgid "Unable to read %s. Please check the permission."
 msgstr "%s が読めません。パーミッションを確認して下さい。"
 
-#: classes/class-ip-geo-block-cron.php:265
-#: classes/class-ip-geo-block-cron.php:321
+#: classes/class-ip-geo-block-cron.php:283
+#: classes/class-ip-geo-block-cron.php:339
 #, php-format
 msgid "Can't lock %s. Please try again after a while."
 msgstr "%s をロックできません。パーミッションを確認して下さい。"
 
-#: classes/class-ip-geo-block-cron.php:333
+#: classes/class-ip-geo-block-cron.php:351
 msgid "gz or zip is not supported on your system."
 msgstr "gz または zip がサポートされていません。"
 
