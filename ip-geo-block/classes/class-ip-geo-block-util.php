@@ -191,7 +191,7 @@ class IP_Geo_Block_Util {
 	private static function get_session_token() {
 		// Arrogating logged_in cookie never cause the privilege escalation.
 		$cookie = self::parse_auth_cookie();
-		return ! empty( $cookie['token'] ) ? $cookie['token'] : AUTH_KEY . AUTH_SALT;
+		return ! empty( $cookie['token'] ) ? $cookie['token'] : NONCE_KEY . NONCE_SALT;
 	}
 
 	/**
@@ -720,6 +720,9 @@ class IP_Geo_Block_Util {
 	/**
 	 * Pick up all the IPs in HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP and etc.
 	 *
+	 * @param  array  $ips  array of candidate IP addresses
+	 * @param  string $vars comma separated keys in $_SERVER for http header ('HTTP_...')
+	 * @return array  $ips  array of candidate IP addresses
 	 */
 	public static function retrieve_ips( $ips = array(), $vars = NULL ) {
 		foreach ( explode( ',', $vars ) as $var ) {
@@ -738,8 +741,7 @@ class IP_Geo_Block_Util {
 	/**
 	 * Get client IP address
 	 *
-	 * @param  string $ip   IP address / default: $_SERVER['REMOTE_ADDR']
-	 * @param  string $vars keys in $_SERVER for http header ('HTTP_...')
+	 * @param  string $vars comma separated keys in $_SERVER for http header ('HTTP_...')
 	 * @return string $ip   IP address
 	 * @link   http://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-headers.html
 	 * @link   https://github.com/zendframework/zend-http/blob/master/src/PhpEnvironment/RemoteAddress.php
@@ -792,7 +794,7 @@ class IP_Geo_Block_Util {
 	 * 192.168.0.0/16 reserved for Private-Use Networks [RFC1918]
 	 */
 	public static function is_private_ip( $ip ) {
-		return ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE /*| FILTER_FLAG_NO_RES_RANGE*/ );
+		return ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE );
 	}
 
 	/**

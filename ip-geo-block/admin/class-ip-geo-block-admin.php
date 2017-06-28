@@ -173,6 +173,7 @@ class IP_Geo_Block_Admin {
 				plugins_url( 'js/footable.min.js', __FILE__ ),
 				$dependency, IP_Geo_Block::VERSION, $footer
 			);
+			break;
 		}
 
 		// js for IP Geo Block admin page
@@ -319,6 +320,17 @@ class IP_Geo_Block_Admin {
 		elseif ( 'done' === get_transient( IP_Geo_Block::CRON_NAME ) ) {
 			delete_transient( IP_Geo_Block::CRON_NAME );
 			self::add_admin_notice( 'updated ', __( 'Local database and matching rule have been updated.', 'ip-geo-block' ) );
+		}
+
+		// Check private IP address
+		if ( IP_Geo_Block_Util::is_private_ip( IP_Geo_Block::get_ip_address() ) ) {
+			self::add_admin_notice( 'error',
+				__( 'Your server seems to be placed behind a proxy server or load balancing server.', 'ip-geo-block' ) . ' ' .
+				sprintf(
+					__( 'Please set the appropriate key into <strong>$_SERVER keys to retrieve extra IP addresses</strong> on <a href="%s">Settings tab</a> according to your server\'s configuration.', 'ip-geo-block' ),
+					esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $adminurl ) )
+				)
+			);
 		}
 
 		// Check self blocking
