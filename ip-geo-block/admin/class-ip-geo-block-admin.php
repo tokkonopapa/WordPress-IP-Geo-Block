@@ -346,7 +346,7 @@ class IP_Geo_Block_Admin {
 		}
 
 		// Check private IP address
-		if ( IP_Geo_Block_Util::is_private_ip( IP_Geo_Block::get_ip_address() ) ) {
+		if ( ! preg_match( '!https?://localhost!', site_url() ) && IP_Geo_Block_Util::is_private_ip( IP_Geo_Block::get_ip_address() ) ) {
 			self::add_admin_notice( 'error',
 				__( 'Your server seems to be placed behind a proxy server or load balancing server.', 'ip-geo-block' ) . ' ' .
 				sprintf(
