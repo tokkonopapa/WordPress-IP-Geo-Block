@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-06-26 23:39+0900\n"
-"PO-Revision-Date: 2017-06-27 00:48+0900\n"
+"POT-Creation-Date: 2017-06-28 22:44+0900\n"
+"PO-Revision-Date: 2017-06-28 22:58+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -27,48 +27,53 @@ msgstr ""
 "自国以外から投稿されるスパム、ログインフォーム、さらにゼロデイ攻撃を含む管理"
 "領域への悪意あるアクセスからサイトを守ります。"
 
-#: admin/class-ip-geo-block-admin.php:196
+#: admin/class-ip-geo-block-admin.php:197
 msgid "Import settings ?"
 msgstr "設定をインポートしますか？"
 
-#: admin/class-ip-geo-block-admin.php:197
+#: admin/class-ip-geo-block-admin.php:198
 msgid "Create table ?"
 msgstr "テーブルを作成しますか？"
 
-#: admin/class-ip-geo-block-admin.php:198
+#: admin/class-ip-geo-block-admin.php:199
 msgid "Delete table ?"
 msgstr "テーブルを削除しますか？"
 
-#: admin/class-ip-geo-block-admin.php:199
+#: admin/class-ip-geo-block-admin.php:200
 msgid "Clear statistics ?"
 msgstr "統計をクリアしますか？"
 
-#: admin/class-ip-geo-block-admin.php:200
+#: admin/class-ip-geo-block-admin.php:201
 msgid "Clear cache ?"
 msgstr "キャッシュをクリアしますか？"
 
-#: admin/class-ip-geo-block-admin.php:201
+#: admin/class-ip-geo-block-admin.php:202
 msgid "Clear logs ?"
 msgstr "ログをクリアしますか？"
 
-#: admin/class-ip-geo-block-admin.php:202
+#: admin/class-ip-geo-block-admin.php:203
 msgid "This feature is available with HTML5 compliant browsers."
 msgstr "HTML5準拠のブラウザでのみ機能します。"
 
-#: admin/class-ip-geo-block-admin.php:229
+#: admin/class-ip-geo-block-admin.php:230
 msgid "Contribute at GitHub"
 msgstr "開発に参加"
 
-#: admin/class-ip-geo-block-admin.php:246
-#: admin/class-ip-geo-block-admin.php:481
+#: admin/class-ip-geo-block-admin.php:247
+#: admin/class-ip-geo-block-admin.php:503
 msgid "Settings"
 msgstr "設定"
 
-#: admin/class-ip-geo-block-admin.php:297
+#: admin/class-ip-geo-block-admin.php:302
+#: admin/class-ip-geo-block-admin.php:303
+msgid "IP Geo Block"
+msgstr "IP Geo Block"
+
+#: admin/class-ip-geo-block-admin.php:321
 msgid "You need WordPress 3.7+."
 msgstr "WordPress 3.7&thinsp;以上が必要です。"
 
-#: admin/class-ip-geo-block-admin.php:306
+#: admin/class-ip-geo-block-admin.php:330
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -79,7 +84,7 @@ msgstr ""
 "いた後、あなたの国コードと「<strong>マッチング規則</strong>」を「<a href=\"%s"
 "\">検証ルールの設定</a>」で確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:312
+#: admin/class-ip-geo-block-admin.php:336
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
@@ -88,11 +93,29 @@ msgstr ""
 "「<strong>マッチング規則</strong>」が正しく設定されていません。「<a href=\"%s"
 "\">検証ルールの設定</a>」を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:321
+#: admin/class-ip-geo-block-admin.php:345
 msgid "Local database and matching rule have been updated."
 msgstr "ローカル・データベースとマッチング規則を更新しました。"
 
-#: admin/class-ip-geo-block-admin.php:332
+#: admin/class-ip-geo-block-admin.php:351
+msgid ""
+"Your server seems to be placed behind a proxy server or load balancing "
+"server."
+msgstr ""
+"あなたのサーバーは、プロキシー・サーバーかロード・バランサーの背後に位置する"
+"ようです。"
+
+#: admin/class-ip-geo-block-admin.php:353
+#, php-format
+msgid ""
+"Please set the appropriate key into <strong>$_SERVER keys to retrieve extra "
+"IP addresses</strong> on <a href=\"%s\">Settings tab</a> according to your "
+"server's configuration."
+msgstr ""
+"サーバーの設定に応じて、「<a href=\"%s\">設定</a>」タブの「IPアドレスを追加抽"
+"出する&thinsp;$_SERVER&thinsp;のキー」に適切なキーを設定してください。"
+
+#: admin/class-ip-geo-block-admin.php:367
 msgid ""
 "Once you logout, you will be unable to login again because the number of "
 "login attempts reaches the limit."
@@ -100,7 +123,7 @@ msgstr ""
 "あなたのIPアドレスのログイン試行可能回数がリミットに達したため、ログアウトす"
 "ると再びログインする事が出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:334
+#: admin/class-ip-geo-block-admin.php:369
 #, php-format
 msgid ""
 "Please execute \"<strong>Clear cache</strong>\" on <a href=\"%s\">Statistics "
@@ -109,7 +132,7 @@ msgstr ""
 "<a href=\"%s\">「統計」タブ</a>の \"<strong>キャッシュのクリア</strong>\" を"
 "実行し、ロックアウトを回避してください。"
 
-#: admin/class-ip-geo-block-admin.php:344
+#: admin/class-ip-geo-block-admin.php:379
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is in the blacklist."
@@ -117,7 +140,7 @@ msgstr ""
 "あなたの国コードまたはIPアドレスがブラックリストに含まれているため、ログアウ"
 "トすると再びログインする事が出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:345
+#: admin/class-ip-geo-block-admin.php:380
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is not in the whitelist."
@@ -125,12 +148,12 @@ msgstr ""
 "あなたの国コードまたはIPアドレスがホワイトリストに含まれていないため、ログア"
 "ウトすると再びログインする事が出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:348
+#: admin/class-ip-geo-block-admin.php:383
 #, php-format
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr "「<a href=\"%s\">検証ルールの設定</a>」を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:359
+#: admin/class-ip-geo-block-admin.php:394
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
@@ -140,36 +163,31 @@ msgstr ""
 "択されていますが、<strong>IP Geo Allow</strong> と互換性がありません。"
 "「&#8220;init&#8221; アクション・フック」を選択してください。"
 
-#: admin/class-ip-geo-block-admin.php:402
-#: admin/class-ip-geo-block-admin.php:403
-msgid "IP Geo Block"
-msgstr "IP Geo Block"
-
-#: admin/class-ip-geo-block-admin.php:482
+#: admin/class-ip-geo-block-admin.php:504
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:483
+#: admin/class-ip-geo-block-admin.php:505
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:484
+#: admin/class-ip-geo-block-admin.php:506
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:485
+#: admin/class-ip-geo-block-admin.php:507
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:495
+#: admin/class-ip-geo-block-admin.php:517
 msgid "Toggle all"
 msgstr "全てを開閉"
 
-#: admin/class-ip-geo-block-admin.php:517
+#: admin/class-ip-geo-block-admin.php:539
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:518
+#: admin/class-ip-geo-block-admin.php:540
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -179,15 +197,15 @@ msgstr ""
 "html\" title=\"Referer Checker\">参照元を残さずにリンク先にリダイレクトできま"
 "す</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:523
+#: admin/class-ip-geo-block-admin.php:545
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: admin/class-ip-geo-block-admin.php:618
+#: admin/class-ip-geo-block-admin.php:640
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:996
+#: admin/class-ip-geo-block-admin.php:1018
 #: classes/class-ip-geo-block-cron.php:278
 #: classes/class-ip-geo-block-cron.php:318
 #: classes/class-ip-geo-block-cron.php:334
@@ -195,14 +213,14 @@ msgstr "有効"
 msgid "Unable to write %s. Please check the permission."
 msgstr "%s に書き込めません。パーミッションを確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:997
+#: admin/class-ip-geo-block-admin.php:1019
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
 msgstr[0] "あるいは %s を参照し、手動で設定して下さい。"
 msgstr[1] "あるいは %s を参照し、手動で設定して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:1007
+#: admin/class-ip-geo-block-admin.php:1029
 #: classes/class-ip-geo-block-opts.php:386
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
