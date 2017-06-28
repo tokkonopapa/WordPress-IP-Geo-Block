@@ -173,7 +173,7 @@ class IP_Geo_Block_Cron {
 
 			foreach ( $blog_ids as $id ) {
 				switch_to_blog( $id );
-				IP_Geo_Block_Logs::delete_expired_cache( $cache_time );
+				IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
 			}
 
 			switch_to_blog( $current_blog_id );
@@ -181,7 +181,7 @@ class IP_Geo_Block_Cron {
 
 		// for single site
 		else {
-			IP_Geo_Block_Logs::delete_expired_cache( $cache_time );
+			IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
 		}
 
 		self::stop_cache_gc();
