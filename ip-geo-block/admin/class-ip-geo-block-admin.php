@@ -348,7 +348,7 @@ class IP_Geo_Block_Admin {
 		// Check private IP address
 		if ( FALSE === strpos( site_url(), 'localhost' ) && IP_Geo_Block_Util::is_private_ip( IP_Geo_Block::get_ip_address() ) ) {
 			self::add_admin_notice( 'error', sprintf(
-				__( 'Your IP address is out of range of the global internet. Please set the appropriate key into <strong>$_SERVER keys to retrieve extra IP addresses</strong> on <a href="%s">Settings tab</a> in case your server is placed behind a proxy server or a load balancing server. In case you run a localhost, please use <code><a href="http://www.ipgeoblock.com/codex/ip-geo-block-ip-addr.html" title="ip-geo-block-ip-addr | IP Geo Block"></a></code> filter hook to give this plugin an proper IP address.', 'ip-geo-block' ),
+				__( 'Your IP address is out of range of the global internet. Please set the appropriate key into &#8220;<strong>$_SERVER keys to retrieve extra IP addresses</strong>&#8221; on <a href="%s">Settings tab</a> in case your server is placed behind a proxy server or a load balancing server. In case you run a localhost, please use <code><a href="http://www.ipgeoblock.com/codex/ip-geo-block-ip-addr.html" title="ip-geo-block-ip-addr | IP Geo Block">ip-geo-block-ip-addr</a></code> filter hook to give this plugin an proper IP address.', 'ip-geo-block' ),
 				esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $adminurl ) )
 			) );
 		}
