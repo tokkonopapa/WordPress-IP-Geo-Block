@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-06-28 22:44+0900\n"
-"PO-Revision-Date: 2017-06-28 22:46+0900\n"
+"POT-Creation-Date: 2017-06-29 22:15+0900\n"
+"PO-Revision-Date: 2017-06-29 22:17+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgid "Contribute at GitHub"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:247
-#: admin/class-ip-geo-block-admin.php:503
+#: admin/class-ip-geo-block-admin.php:499
 msgid "Settings"
 msgstr ""
 
@@ -91,96 +91,94 @@ msgid "Local database and matching rule have been updated."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:351
-msgid ""
-"Your server seems to be placed behind a proxy server or load balancing "
-"server."
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:353
 #, php-format
 msgid ""
-"Please set the appropriate key into <strong>$_SERVER keys to retrieve extra "
-"IP addresses</strong> on <a href=\"%s\">Settings tab</a> according to your "
-"server's configuration."
+"Your IP address is out of range of the global internet. Please set the "
+"appropriate key into <strong>$_SERVER keys to retrieve extra IP addresses</"
+"strong> on <a href=\"%s\">Settings tab</a> in case your server is placed "
+"behind a proxy server or a load balancing server. In case you run a "
+"localhost, please use <code><a href=\"http://www.ipgeoblock.com/codex/ip-geo-"
+"block-ip-addr.html\" title=\"ip-geo-block-ip-addr | IP Geo Block\"></a></"
+"code> filter hook to give this plugin an proper IP address."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:367
+#: admin/class-ip-geo-block-admin.php:364
 msgid ""
 "Once you logout, you will be unable to login again because the number of "
 "login attempts reaches the limit."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:369
+#: admin/class-ip-geo-block-admin.php:366
 #, php-format
 msgid ""
 "Please execute \"<strong>Clear cache</strong>\" on <a href=\"%s\">Statistics "
 "tab</a> to prevent locking yourself out."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:379
+#: admin/class-ip-geo-block-admin.php:376
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is in the blacklist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:380
+#: admin/class-ip-geo-block-admin.php:377
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is not in the whitelist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:383
+#: admin/class-ip-geo-block-admin.php:380
 #, php-format
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:394
+#: admin/class-ip-geo-block-admin.php:391
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
 "select &#8220;init&#8221; action hook."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:504
+#: admin/class-ip-geo-block-admin.php:500
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:505
+#: admin/class-ip-geo-block-admin.php:501
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:506
+#: admin/class-ip-geo-block-admin.php:502
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:507
+#: admin/class-ip-geo-block-admin.php:503
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:517
+#: admin/class-ip-geo-block-admin.php:513
 msgid "Toggle all"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:539
+#: admin/class-ip-geo-block-admin.php:535
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:540
+#: admin/class-ip-geo-block-admin.php:536
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:545
+#: admin/class-ip-geo-block-admin.php:541
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:640
+#: admin/class-ip-geo-block-admin.php:636
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1018
+#: admin/class-ip-geo-block-admin.php:1014
 #: classes/class-ip-geo-block-cron.php:278
 #: classes/class-ip-geo-block-cron.php:318
 #: classes/class-ip-geo-block-cron.php:334
@@ -188,14 +186,14 @@ msgstr ""
 msgid "Unable to write %s. Please check the permission."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1019
+#: admin/class-ip-geo-block-admin.php:1015
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-ip-geo-block-admin.php:1029
+#: admin/class-ip-geo-block-admin.php:1025
 #: classes/class-ip-geo-block-opts.php:386
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."

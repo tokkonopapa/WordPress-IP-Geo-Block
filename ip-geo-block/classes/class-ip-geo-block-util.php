@@ -430,7 +430,6 @@ class IP_Geo_Block_Util {
 				status_header( $status ); // This causes problems on IIS and some FastCGI setups
 
 			header( "Location: $location", TRUE, $status );
-
 			return TRUE;
 		}
 
@@ -794,6 +793,7 @@ class IP_Geo_Block_Util {
 	 * 192.168.0.0/16 reserved for Private-Use Networks [RFC1918]
 	 */
 	public static function is_private_ip( $ip ) {
+		// http://php.net/manual/en/filter.filters.flags.php
 		return ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE );
 	}
 

@@ -346,14 +346,11 @@ class IP_Geo_Block_Admin {
 		}
 
 		// Check private IP address
-		if ( ! preg_match( '!https?://localhost!', site_url() ) && IP_Geo_Block_Util::is_private_ip( IP_Geo_Block::get_ip_address() ) ) {
-			self::add_admin_notice( 'error',
-				__( 'Your server seems to be placed behind a proxy server or load balancing server.', 'ip-geo-block' ) . ' ' .
-				sprintf(
-					__( 'Please set the appropriate key into <strong>$_SERVER keys to retrieve extra IP addresses</strong> on <a href="%s">Settings tab</a> according to your server\'s configuration.', 'ip-geo-block' ),
-					esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $adminurl ) )
-				)
-			);
+		if ( FALSE === strpos( site_url(), 'localhost' ) && IP_Geo_Block_Util::is_private_ip( IP_Geo_Block::get_ip_address() ) ) {
+			self::add_admin_notice( 'error', sprintf(
+				__( 'Your IP address is out of range of the global internet. Please set the appropriate key into <strong>$_SERVER keys to retrieve extra IP addresses</strong> on <a href="%s">Settings tab</a> in case your server is placed behind a proxy server or a load balancing server. In case you run a localhost, please use <code><a href="http://www.ipgeoblock.com/codex/ip-geo-block-ip-addr.html" title="ip-geo-block-ip-addr | IP Geo Block"></a></code> filter hook to give this plugin an proper IP address.', 'ip-geo-block' ),
+				esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $adminurl ) )
+			) );
 		}
 
 		// Check self blocking
@@ -421,7 +418,6 @@ class IP_Geo_Block_Admin {
 		// Register settings page only if it is needed.
 		if ( ( isset( $_GET ['page'       ] ) && IP_Geo_Block::PLUGIN_NAME === $_GET ['page'       ] ) ||
 		     ( isset( $_POST['option_page'] ) && IP_Geo_Block::PLUGIN_NAME === $_POST['option_page'] ) ) {
-			// Register the administration dashboard.
 			$this->register_settings_tab();
 		}
 
