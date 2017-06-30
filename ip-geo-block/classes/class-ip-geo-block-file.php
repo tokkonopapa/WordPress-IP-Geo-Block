@@ -32,7 +32,8 @@ class IP_Geo_Block_FS {
 	 *
 	 */
 	public static function init( $msg = NULL ) {
-		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/template.php'; // for submit_button() in request_filesystem_credentials()
+		require_once ABSPATH . 'wp-admin/includes/file.php'; // for get_filesystem_method(), request_filesystem_credentials()
 		global $wp_filesystem;
 
 		// check already assigned by WP_Filesystem()
@@ -208,6 +209,34 @@ if (0) {
 			return FALSE;
 
 		return $wp_filesystem->chmod( $file, $mode );
+	}
+
+	/**
+	 * Read entire file into a string.
+	 *
+	 * @param  string $file  Filename.
+	 * @return string|false  File contents on success, false if no file could be opened.
+	 */
+	public function get_contents( $file ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return FALSE;
+
+		return $wp_filesystem->get_contents( $file );
+	}
+
+	/**
+	 * Read entire file into an array.
+	 *
+	 * @param  string $file  Filename.
+	 * @return array
+	 */
+	public function get_contents_array( $file ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return array();
+
+		return $wp_filesystem->get_contents_array( $file );
 	}
 
 	/**

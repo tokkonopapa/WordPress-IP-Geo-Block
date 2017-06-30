@@ -92,7 +92,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private function find_rewrite_block( $content ) {
 		return preg_grep(
-			'/^\s*?#\s*?(BEGIN|END)?\s*?IP Geo Block\s*?(BEGIN|END)?\s*?$/i',
+			'/^\s*?[#;]\s*?(BEGIN|END)?\s*?IP Geo Block\s*?(BEGIN|END)?\s*?$/i',
 			$content
 		);
 	}

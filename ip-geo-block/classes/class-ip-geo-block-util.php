@@ -190,7 +190,7 @@ class IP_Geo_Block_Util {
 	 */
 	private static function get_session_token() {
 		// Arrogating logged_in cookie never cause the privilege escalation.
-		$cookie = self::parse_auth_cookie();
+		$cookie = self::parse_auth_cookie( 'logged_in' );
 		return ! empty( $cookie['token'] ) ? $cookie['token'] : NONCE_KEY . NONCE_SALT;
 	}
 
@@ -285,7 +285,7 @@ class IP_Geo_Block_Util {
 			$expired  = $expiration = $cookie['expiration'];
 
 			// Allow a grace period for POST and Ajax requests
-			if ( wp_doing_ajax() || 'POST' === $_SERVER['REQUEST_METHOD'] )
+			if ( ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || 'POST' === $_SERVER['REQUEST_METHOD'] )
 				$expired += HOUR_IN_SECONDS;
 
 			// Quick check to see if an honest cookie has expired
@@ -542,7 +542,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function is_user_logged_in() {
 		// possibly logged in but should be verified after 'init' hook is fired.
-		return did_action( 'init' ) ? is_user_logged_in() : ( self::validate_auth_cookie() ? TRUE : FALSE );
+		return did_action( 'init' ) ? is_user_logged_in() : ( self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE );
 	}
 
 	/**
@@ -574,7 +574,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function current_user_can( $capability ) {
 		// possibly logged in but should be verified after 'init' hook is fired.
-		return did_action( 'init' ) ? current_user_can( $capability ) : ( self::validate_auth_cookie() ? TRUE : FALSE );
+		return did_action( 'init' ) ? current_user_can( $capability ) : ( self::parse_auth_cookie( 'logged_in' ) ? TRUE : FALSE );
 	}
 
 	/**

@@ -353,6 +353,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 Thank you for your patience and understanding in frequent update.
 
 * **Bug fix:** Fixed the issue of "Notice: Undefined variable" in WP cron. This bug caused frequent refreshing of IP address cache.
+* **Bug fix:** Fixed the issue of "Fatal Error" in validating user authentication.
 
 = 3.0.3.2 =
 * **Bug fix:** Fixed the issue where nonce for WP-ZEP didn't match on front-end.
