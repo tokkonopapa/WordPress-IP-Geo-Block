@@ -49,15 +49,22 @@ two restrictions would be raised.
 
 2. **[Human friendly error page][ErrorPage] is unavailable**  
    It is because the theme setup would not have finished when this plugin do 
-   its jobs. In this case, you **must** save your human friendly error page as 
-   a static file when you want to use it. Taking `403.php` as an example, once 
-   you configure "**init action hook**" as "**Validation timing**" and somehow 
-   display that page (you should be blocked intentionally), then save its source
-   HTML as `403.php`.
-
-![Human friendly error page]({{ '/img/2016-09/HumanFriendly.png' | prepend: site.baseurl }}
- "Human friendly error page"
-)
+   its jobs. It means that when you select `404 Not Found` as **Response code**,
+   `404.php` in your theme folder might not work. In this case, you **must** 
+   save your human friendly error page as a static file. If you want to show a 
+   human friendly page for blocked visitors, you **must** configure as follows:  
+   
+   - Show your 404 page. (e.g. `http://example.com/wp-content/themes/your-theme/404.php`)
+   - Save the page as `404.php` using your browser. It means that the content 
+     of the file consists of not PHP codes but static HTML codes.
+   - Place it into your theme folder. A child theme is recommended to keep the 
+     original file in your parent theme folder.
+   - In case of `403 Forbidden`, it's almost the same but just save the page as
+     `403.php` and change the message as you like.  
+  
+  ![Human friendly error page]({{ '/img/2016-09/404NotFound.png' | prepend: site.baseurl }}  
+   "Human friendly error page"  
+  )
 
 #### Performance ####
 

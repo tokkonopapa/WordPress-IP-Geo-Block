@@ -2,7 +2,7 @@
 layout: page
 category: codex
 section: Features and performance
-title: Customizing the response
+title: Response code and message
 excerpt: Customizing the response
 ---
 
@@ -33,10 +33,13 @@ This plugin behaves differently according to the code you selected as follows:
   forwarding.
 
 - Client Error 4xx / Server Error 5xx  
-  Returns a simple html given by [`wp_die()`][WP_DIE].
-  ![403 error page]({{ '/img/2016-01/Simple403.png' | prepend: site.baseurl }}
-   "403 error page"
+  Returns a simple html given by [`wp_die()`][WP_DIE].  
+  
+  ![403 error page]({{ '/img/2016-01/Simple403.png' | prepend: site.baseurl }}  
+   "403 error page"  
   )
+  
+  See also [Human friendly error page][FriendlyPage].
 
 #### Redirect URL ####
 
@@ -57,38 +60,26 @@ is:
 Empty message is altered to what given by 
 [`get_status_header_desc()`][GetStatus].
 
-### Customizing code and reason ###
-
-Through the filter hooks `ip-geo-block-xxxxxx-(status|reason)` where 
-`xxxxxx` is one of `comment`, `xmlrpc`, `login`, `admin` and `public`, 
-you can customize the status code and reason.
-
-For example, the following code in your `functions.php` can hide your 
-login page.
-
-{% highlight ruby startinline %}
-function my_login_status ( $code ) {
-    return 404;
-}
-add_filter( 'ip-geo-block-login-status', 'my_login_status' );
-{% endhighlight %}
-
 ### Human friendly error page ###
 
+A human friendly error page is available instead of a dreary page by `wp_die()`
+if you select 4xx for client error and 5xx for server error as a response code.
+
 You can find `404.php` in your theme directory. Please copy it and give it a 
-name according to the setting of "**Response code**". For example, the 
-following picture is a sample of `403.php` in [Twenty Twelve][TwentyTwelve] 
-with [BuddyPress][BuddyPress].
+name according to the setting of "**Response code**". The following picture is 
+a sample of `403.php` in [Twenty Twelve][TwentyTwelve] with 
+[BuddyPress][BuddyPress].
 
 ![403 error page]({{ '/img/2015-06/403-page.png' | prepend: site.baseurl }}
  "403 error page"
 )
 
 <div class="alert alert-warning">
-	Warning: If you select <strong>"mu-plugins" (ip-geo-block-mu.php)</strong>
-	as "<strong>Vaidation target</strong>" at 
-	"<strong>Validation rule settings</strong>", there're restrictions on using 
-	custom filter hooks and human friendly error page. See also 
+	<strong>NOTICE:</strong>
+	If you select <code>"mu-plugins" (ip-geo-block-mu.php)</code> as 
+	"<strong>Vaidation timing</strong>" at 
+	"<strong>Validation rule settings</strong>", you have some restrictions on 
+	using custom filter hooks and human friendly error page. See also 
 	<a href="/codex/validation-timing.html" title="Validation timing | IP Geo Block">this codex</a>.
 </div>
 
@@ -109,5 +100,6 @@ with [BuddyPress][BuddyPress].
 [TwentyTwelve]: https://wordpress.org/themes/twentytwelve/ "WordPress › Twenty Twelve « Free WordPress Themes"
 [URL-redirect]: https://en.wikipedia.org/wiki/URL_redirection#HTTP_status_codes_3xx "URL redirection - Wikipedia"
 [BuddyPress]:   https://buddypress.org/ "BuddyPress.org"
+[FriendlyPage]: {{ '#human-friendly-error-page'            | prepend: site.baseurl }} 'Response code and message | IP Geo Block'
 [CodexReason]:  {{ '/codex/ip-geo-block-xxxxx-reason.html' | prepend: site.baseurl }} 'ip-geo-block-xxxxx-reason | IP Geo Block'
 [CodexStatus]:  {{ '/codex/ip-geo-block-xxxxx-status.html' | prepend: site.baseurl }} 'ip-geo-block-xxxxx-status | IP Geo Block'
