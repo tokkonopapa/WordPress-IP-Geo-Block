@@ -38,10 +38,10 @@ So here is a sample of API class library for CloudFlare.
 <script src="https://gist.github.com/tokkonopapa/d467976c4628e0be1fda6f57cf721c21.js"></script>
 
 The key point here is that the above library should be named as 
-`class-zcloudfront.php` and typically placed under the directory 
-named `/wp-content/ip-geo-api/zcloudfront/`.
+`class-zcloudflare.php` and typically placed under the directory 
+named `/wp-content/ip-geo-api/zcloudflare/`.
 
-You might wonder why `z` + `cloudfront`?
+You might wonder why `z` + `cloudflare`?
 
 Well, it's just a matter of convenience of this plugin to give it 
 a highest priority!
