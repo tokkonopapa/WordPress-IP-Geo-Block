@@ -43,7 +43,7 @@ named `/wp-content/ip-geo-api/zcloudflare/`.
 
 You might wonder why `z` + `cloudflare`?
 
-Well, it's just a matter of convenience of this plugin to give it 
+Well, it's just a matter of convenience for this plugin to give it 
 a highest priority!
 
 ### CloudFront ###
