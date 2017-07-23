@@ -11,7 +11,7 @@
  * @see       http://www.ipgeoblock.com/codex/#filter-hooks
  * @example   Use `IP_Geo_Block::add_filter()` instead of `add_filter()`
  */
-if ( ! class_exists( 'IP_Geo_Block' ) ) {
+if ( ! class_exists( 'IP_Geo_Block', FALSE ) ) {
 	die;
 }
 

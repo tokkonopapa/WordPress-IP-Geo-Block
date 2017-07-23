@@ -106,8 +106,7 @@ class IP_Geo_Block_Cron {
 		// for multisite (@since 3.0.0 in wp-admin/includes/plugin.php)
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			global $wpdb;
-			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
-			$current_blog_id = get_current_blog_id();
+			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" );
 
 			foreach ( $blog_ids as $id ) {
 				switch_to_blog( $id );
@@ -118,9 +117,8 @@ class IP_Geo_Block_Cron {
 				}
 
 				update_option( IP_Geo_Block::OPTION_NAME, $dst );
+				restore_current_blog();
 			}
-
-			switch_to_blog( $current_blog_id );
 		}
 
 		// for single site
@@ -168,20 +166,18 @@ class IP_Geo_Block_Cron {
 
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			global $wpdb;
-			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
-			$current_blog_id = get_current_blog_id();
+			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" );
 
 			foreach ( $blog_ids as $id ) {
 				switch_to_blog( $id );
-				IP_Geo_Block_Logs::delete_expired_cache( $cache_time );
+				IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
+				restore_current_blog();
 			}
-
-			switch_to_blog( $current_blog_id );
 		}
 
 		// for single site
 		else {
-			IP_Geo_Block_Logs::delete_expired_cache( $cache_time );
+			IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
 		}
 
 		self::stop_cache_gc();
@@ -291,38 +287,14 @@ class IP_Geo_Block_Cron {
 				}
 			}
 
-			elseif ( 'zip' === $args && class_exists( 'ZipArchive' ) ) {
+			elseif ( 'zip' === $args && class_exists( 'ZipArchive', FALSE ) ) {
 				$tmp = get_temp_dir(); // @since 2.5
 				$ret = $fs->unzip_file( $src, $tmp ); // @since 2.5
 
-				if ( is_wp_error( $ret ) ) {
-					/* try fallback instead of throwing error
+				if ( is_wp_error( $ret ) )
 					throw new Exception(
 						$ret->get_error_code() . ' ' . $ret->get_error_message()
-					);*/
-
-					// https://wordpress.org/support/topic/deactivated-after-updte-why/#post-6994655
-					$zip = new ZipArchive;
-					if ( TRUE !== $zip->open( $src ) )
-						throw new Exception(
-							sprintf(
-								__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ),
-								$src
-							)
-						);
-
-					if ( FALSE === @$zip->extractTo( $tmp ) ) {
-						$zip->close();
-						throw new Exception(
-							sprintf(
-								__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ),
-								$tmp . basename( $filename )
-							)
-						);
-					}
-
-					$zip->close();
-				}
+					);
 
 				if ( FALSE === ( $gz = @fopen( $tmp .= basename( $filename ), 'r' ) ) )
 					throw new Exception(
@@ -350,37 +322,24 @@ class IP_Geo_Block_Cron {
 			else {
 				throw new Exception( __( 'gz or zip is not supported on your system.', 'ip-geo-block' ) );
 			}
-
-			if ( ! empty( $fp ) ) {
-				fflush( $fp );          // flush output before releasing the lock
-				flock ( $fp, LOCK_UN ); // release the lock
-				fclose( $fp );
-			}
-
-			! empty( $gz  ) and gzclose( $gz  );
-			! empty( $tmp ) && @is_file( $tmp ) and @unlink( $tmp );
-			! is_wp_error( $src ) && @is_file( $src ) and @unlink( $src );
 		}
 
 		// error handler
 		catch ( Exception $e ) {
-			if ( ! empty( $fp ) ) {
-				fflush( $fp );          // flush output before releasing the lock
-				flock ( $fp, LOCK_UN ); // release the lock
-				fclose( $fp );
-			}
-
-			! empty( $gz  ) and gzclose( $gz  );
-			! empty( $tmp ) && @is_file( $tmp ) and @unlink( $tmp );
-			! is_wp_error( $src ) && @is_file( $src ) and @unlink( $src );
-
-			return array(
-				'code' => $e->getCode(),
-				'message' => $e->getMessage(),
-			);
+			$err = new WP_Error( $e->getCode(), $e->getMessage() );
 		}
 
-		return array(
+		if ( ! empty( $fp ) ) {
+			fflush( $fp );          // flush output before releasing the lock
+			flock ( $fp, LOCK_UN ); // release the lock
+			fclose( $fp );
+		}
+
+		! empty( $gz  ) and gzclose( $gz  );
+		! empty( $tmp ) && @is_file( $tmp ) and @unlink( $tmp );
+		! is_wp_error( $src ) && @is_file( $src ) and @unlink( $src );
+
+		return empty( $err ) ? array(
 			'code' => $code,
 			'message' => sprintf(
 				__( 'Last update: %s', 'ip-geo-block' ),
@@ -388,6 +347,9 @@ class IP_Geo_Block_Cron {
 			),
 			'filename' => $filename,
 			'modified' => $modified,
+		) : array(
+			'code' => $err->get_error_code(),
+			'message' => $err->get_error_message(),
 		);
 	}
 

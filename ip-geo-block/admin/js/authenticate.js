@@ -9,14 +9,17 @@ var IP_GEO_BLOCK_ZEP = {
 	init: false,
 	auth: 'ip-geo-block-auth-nonce',
 	nonce: IP_GEO_BLOCK_AUTH.nonce || '',
+	sites: IP_GEO_BLOCK_AUTH.sites || [],
 	redirect: function (url) {
 		'use strict';
-		if (-1 !== location.href.indexOf(url)) {
-			if (this.nonce) {
-				url += (url.indexOf('?') >= 0 ? '&' : '?') + this.auth + '=' + this.nonce;
+		var i, n = this.sites.length;
+		for (i = 0; i < n; ++i) {
+			if (url && -1 !== url.indexOf(this.sites[i]) && this.nonce) {
+				window.location = url;
+				return true;
 			}
-			window.location.href = url;
 		}
+		return false;
 	}
 };
 
@@ -324,15 +327,31 @@ var IP_GEO_BLOCK_ZEP = {
 			    rel   = $this.attr('rel' ),
 			    admin = "undefined" !== typeof href ? is_admin(href) : 0;
 
+			// if context menu then continue and should be checked in check_nonce()
+			if ('contextmenu' === event.type) {
+				return true;
+			}
+
 			// if admin area (except in comment with nofollow) then add a nonce
-			if (admin === 1) {
+			else if (admin === 1) {
 				$this.attr('href', add_query_nonce(
 					href, (!rel || rel.indexOf('nofollow') < 0) ? nonce : 'nofollow'
 				));
+				return true;
+			}
+
+			// if internal then check network admin url
+			else if (admin === 0) {
+				return ! IP_GEO_BLOCK_ZEP.redirect(add_query_nonce(href, nonce));
 			}
 
 			// if external then redirect with no referrer not to leak out the nonce
 			else if (admin === -1 && is_back_end()) {
+				if ('_self' === $this.attr('target')) {
+					IP_GEO_BLOCK_ZEP.redirect(add_query_nonce(href, nonce));
+					return false;
+				}
+
 				href = escapeHTML(decodeURIComponent(this.href));
 				href = href.split(';', 2).shift(); // avoid `url=...;url=javascript:...`
 
@@ -352,6 +371,10 @@ var IP_GEO_BLOCK_ZEP = {
 
 				// automatically call event.stopPropagation() and event.preventDefault()
 				return false;
+			}
+
+			else {
+				return true;
 			}
 		});
 
@@ -387,8 +410,7 @@ var IP_GEO_BLOCK_ZEP = {
 
 		// Restore post revisions (wp-admin/revisions.php @since 2.6.0)
 		if ('undefined' !== typeof window._wpRevisionsSettings) {
-			var i,
-			    data = window._wpRevisionsSettings.revisionData,
+			var i, data = window._wpRevisionsSettings.revisionData,
 			    n = data.length;
 
 			for (i = 0; i < n; ++i) {

@@ -16,7 +16,7 @@ class IP_Geo_Block_Admin_Tab {
 if ( $options['save_statistics'] ) :
 
 		/*----------------------------------------*
-		 * Statistics of comment post
+		 * Statistics of validation
 		 *----------------------------------------*/
 		$section = $plugin_slug . '-statistics';
 		add_settings_section(
@@ -43,17 +43,16 @@ if ( $options['save_statistics'] ) :
 		);
 
 		// Blocked by countries
-		$field = 'countries';
-		$html = '<div id="'.$plugin_slug.'-chart-countries"></div>';
-		$html .= '<ul id="'.$plugin_slug.'-countries" class="'.$option_slug.'-'.$field.'">';
+		$count = array();
 
 		arsort( $statistics['countries'] );
 		foreach ( $statistics['countries'] as $key => $val ) {
-			$html .= sprintf( '<li>%2s:%5d</li>', esc_html( $key ), (int)$val );
+			$count[] = array( esc_html( $key ), (int)$val );
 		}
 
-		$html .= '</ul>';
+		$html = '<div id="' . $plugin_slug . '-chart-countries" data-' . $plugin_slug . '-chart-countries=\'' . json_encode( $count ) . '\'></div>';
 
+		$field = 'countries';
 		add_settings_field(
 			$option_name.'_'.$field,
 			__( 'Blocked by countries', 'ip-geo-block' ),
@@ -68,30 +67,33 @@ if ( $options['save_statistics'] ) :
 			)
 		);
 
-		// Blocked by date
-		$field = 'daily';
-		$html = '<div id="'.$plugin_slug.'-chart-daily"><table id="'.$plugin_slug.'-targets">';
+		// Blocked hooks by date
+		$zero = array(
+			'comment' => 0,
+			'xmlrpc'  => 0,
+			'login'   => 0,
+			'admin'   => 0,
+			'public'  => 0,
+		);
 
 		$prev = 0;
-		$targets = array( 'comment', 'xmlrpc', 'login', 'admin', 'public' );
+		$count = array();
+
+		// make array( `time`, `comment`, `xlmrpc`, `login`, `admin`, `public` )
 		foreach ( $statistics['daystats'] as $key => $val ) {
-			while( $prev && $key - $prev > DAY_IN_SECONDS ) {
-				$prev += DAY_IN_SECONDS;
-				$html .= '<tr><td>' . IP_Geo_Block_Util::localdate( $prev, 'Y-m-d' ) . '</td>'; // must be ISO 8601 or RFC 2822
-				foreach ( $targets as $target ) {
-					$html .= '<td>0</td>';
-				}
+			while ( $prev && $key - $prev > DAY_IN_SECONDS ) {
+				$count[] = array( $prev += DAY_IN_SECONDS, 0, 0, 0, 0, 0 );
 			}
-			$prev = $key;
-			$html .= '<tr><td>' . date( 'Y-m-d', $key ) . '</td>'; // must be ISO 8601 or RFC 2822
-			foreach ( $targets as $target ) {
-				$html .= '<td>' . (isset( $val[ $target ] ) ? (int)$val[ $target ] : 0) . '</td>';
-			}
-			$html .= '</tr>';
+			$count[] = array_merge(
+				array( $prev = $key ),
+				array_values( array_merge( $zero, $val ) )
+			);
 		}
 
-		$html .= '</table></div>';
+		// embed array into data attribute as json
+		$html = '<div id="' . $plugin_slug . '-chart-daily" data-' . $plugin_slug . '-chart-daily=\'' . json_encode( $count ) . '\'></div>';
 
+		$field = 'daily';
 		add_settings_field(
 			$option_name.'_'.$field,
 			__( 'Blocked per day', 'ip-geo-block' ),
@@ -202,12 +204,12 @@ else:
 endif;
 
 		/*----------------------------------------*
-		 * Statistics of cache
+		 * Statistics in cache
 		 *----------------------------------------*/
 		$section = $plugin_slug . '-cache';
 		add_settings_section(
 			$section,
-			__( 'Statistics of cache', 'ip-geo-block' ),
+			__( 'Statistics in cache', 'ip-geo-block' ),
 			NULL, // array( $context, 'callback_cache_stat' ),
 			$option_slug
 		);

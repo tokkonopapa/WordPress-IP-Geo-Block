@@ -2,15 +2,15 @@
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context, $tab ) {
-		$option_slug = IP_Geo_Block::PLUGIN_NAME;
-		$option_name = IP_Geo_Block::OPTION_NAME;
 
 		register_setting(
-			$option_slug,
-			$option_name
+			$option_slug = IP_Geo_Block::PLUGIN_NAME,
+			$option_name = IP_Geo_Block::OPTION_NAME
 		);
 
 		$section = IP_Geo_Block::PLUGIN_NAME . '-attribution';
+		$field = 'attribution';
+
 		add_settings_section(
 			$section,
 			__( 'Attribution links', 'ip-geo-block' ),
@@ -18,7 +18,6 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug
 		);
 
-		$field = 'attribution';
 		$providers = IP_Geo_Block_Provider::get_providers( 'link' );
 
 		foreach ( $providers as $provider => $key ) {

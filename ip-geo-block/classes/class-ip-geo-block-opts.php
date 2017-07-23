@@ -26,7 +26,7 @@ class IP_Geo_Block_Opts {
 		'matching_rule'   => -1,      // -1:neither, 0:white list, 1:black list
 		'white_list'      => NULL,    // Comma separeted country code
 		'black_list'      => 'ZZ',    // Comma separeted country code
-		'timeout'         => 5,       // Timeout in second
+		'timeout'         => 6,       // Timeout in second
 		'response_code'   => 403,     // Response code
 		'save_statistics' => TRUE,    // Record validation statistics
 		'clean_uninstall' => FALSE,   // Remove all savings from DB
@@ -209,7 +209,7 @@ class IP_Geo_Block_Opts {
 
 	/**
 	 * Upgrade option table
-	 * @since 3.0.4 This should be executed in admin context
+	 * @since 3.0.3.1 This should be executed in admin context
 	 */
 	public static function upgrade() {
 		$default = self::get_default();
@@ -375,17 +375,17 @@ class IP_Geo_Block_Opts {
 		$src = IP_GEO_BLOCK_PATH . 'wp-content/' . IP_Geo_Block::GEOAPI_NAME;
 		$dst = self::get_api_dir( $settings );
 
-		try {
-			if ( $src !== $dst ) {
+		if ( $src !== $dst ) {
+			try {
 				if ( FALSE === self::recurse_copy( $src, $dst ) )
 					throw new Exception();
 			}
+			catch ( Exception $e ) {
+				if ( class_exists( 'IP_Geo_Block_Admin', FALSE ) )
+					IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $dst ) );
 
-		} catch ( Exception $e ) {
-			if ( class_exists( 'IP_Geo_Block_Admin' ) )
-				IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $dst ) );
-
-			return NULL;
+				return NULL;
+			}
 		}
 
 		return $dst;

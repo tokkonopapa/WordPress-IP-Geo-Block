@@ -57,12 +57,7 @@ var ip_geo_block_time = new Date();
 
 	function redirect(page, tab) {
 		if (-1 !== location.href.indexOf(page)) {
-			var url = escapeHTML(page) + (tab ? '&' + escapeHTML(tab) : '');
-			if ('undefined' !== typeof IP_GEO_BLOCK_ZEP) {
-				IP_GEO_BLOCK_ZEP.redirect(url);
-			} else {
-				window.location.href = url;
-			}
+			window.location = escapeHTML(page) + (tab ? '&' + escapeHTML(tab) : '');
 		}
 	}
 
@@ -289,26 +284,24 @@ var ip_geo_block_time = new Date();
 	// google chart
 	var chart = {
 		// Pie Chart
-		dataPie: null,
-		viewPie: null,
-		drawPie: function () {
-			if (!chart.dataPie) {
-				chart.dataPie = new google.visualization.DataTable();
-				chart.dataPie.addColumn('string', 'Country');
-				chart.dataPie.addColumn('number', 'Requests');
-				var value;
-				$(ID('#', 'countries li')).each(function () {
-					value = $(this).text().split(':');
-					chart.dataPie.addRow([value[0] || '', Number(value[1])]);
-				});
+		dataPie: [],
+		viewPie: [],
+		drawPie: function (id) {
+			var i, data;
+			if ('undefined' === typeof chart.dataPie[id]) {
+				i = chart.dataPie[id] = new google.visualization.DataTable();
+				i.addColumn('string', 'Country');
+				i.addColumn('number', 'Requests');
+				data = $.parseJSON($('#' + id).attr('data-' + id));
+				chart.dataPie[id].addRows(data);
 			}
-			if (!chart.viewPie) {
-				chart.viewPie = new google.visualization.PieChart(
-					document.getElementById(ID('chart-countries'))
+			if ('undefined' === typeof chart.viewPie[id]) {
+				chart.viewPie[id] = new google.visualization.PieChart(
+					document.getElementById(id)
 				);
 			}
-			if ($(ID('#', 'chart-countries')).width()) {
-				chart.viewPie.draw(chart.dataPie, {
+			if ($('#' + id).width()) {
+				chart.viewPie[id].draw(chart.dataPie[id], {
 					backgroundColor: { fill: 'transparent' }, // '#f1f1f1',
 					chartArea: {
 						left: 0,
@@ -322,41 +315,39 @@ var ip_geo_block_time = new Date();
 		},
 
 		// Line Chart
-		dataLine: null,
-		viewLine: null,
-		drawLine: function () {
-			var i, j, m, n, cells, arr = [], tr;
-			if (!chart.dataLine) {
-				i = chart.dataLine = new google.visualization.DataTable();
-				i.addColumn('date',   'Date'   );
+		dataLine: [],
+		viewLine: [],
+		drawLine: function (id, datetype) {
+			var i, n, t, data;
+			if ('undefined' === typeof chart.dataLine[id]) {
+				i = chart.dataLine[id] = new google.visualization.DataTable();
+				i.addColumn(datetype, 'Date'   );
 				i.addColumn('number', 'comment');
 				i.addColumn('number', 'xmlrpc' );
 				i.addColumn('number', 'login'  );
 				i.addColumn('number', 'admin'  );
 				i.addColumn('number', 'public' );
-				tr = $(ID('#', 'targets tr'));
-				for (m = tr.length, i = 0; i < m; ++i) {
-					arr[i] = [];
-					cells = tr.eq(i).children();
-					arr[i].push(new Date(cells.eq(0).text()));
-					for (n = cells.length, j = 1; j < n; ++j) {
-						arr[i].push(Number(cells.eq(j).text()));
-					}
+				data = $.parseJSON($('#' + id).attr('data-' + id));
+				n = data.length;
+				for (i = 0; i < n; ++i) {
+					data[i][0] = new Date(data[i][0] * 1000); // [sec] to [msec]
 				}
-				chart.dataLine.addRows(arr);
+				chart.dataLine[id].addRows(data);
 			}
-			if (!chart.viewLine) {
-				chart.viewLine = new google.visualization.LineChart(
-					document.getElementById(ID('chart-daily'))
+
+			if ('undefined' === typeof chart.viewLine[id]) {
+				chart.viewLine[id] = new google.visualization.LineChart(
+					document.getElementById(id)
 				);
 			}
-			i = $(ID('#', 'chart-daily')).width();
+
+			i = $('#' + id).width();
 			if (i) {
 				i = i > 320 ? true : false;
-				chart.viewLine.draw(chart.dataLine, {
+				chart.viewLine[id].draw(chart.dataLine[id], {
 					backgroundColor: { fill: 'transparent' }, // '#f1f1f1',
 					legend: { position: 'bottom' },
-					hAxis: { format: 'MM/dd' },
+					hAxis: { format: 'MM/dd' + ('datetime' === datetype ? ' HH:mm' : '') },
 					vAxis: { textPosition: (i ? 'out' : 'in') },
 					chartArea: {
 						left: (i ? '10%' : 0),
@@ -367,18 +358,28 @@ var ip_geo_block_time = new Date();
 				});
 			}
 		},
-
-		// draw pie chart and line chart
-		drawChart: function () {
-			chart.drawPie();
-			chart.drawLine();
-		}
 	};
 
 	// google chart
-	function drawChart() {
-		if ($(ID('#', 'chart-countries')).length) {
-			chart.drawChart();
+	function initChart(tabNo) {
+		if ('object' === typeof google) {
+			google.load('visualization', '1', {
+				packages: ['corechart'],
+				callback: function () {
+					drawChart(tabNo);
+				}
+			});
+		}
+	}
+
+	function drawChart(tabNo) {
+		if (1 === tabNo) {
+			chart.drawPie(ID('chart-countries'));
+			chart.drawLine(ID('chart-daily'), 'date');
+		} else if (5 === tabNo) {
+			$(ID('.', 'multisite')).each(function (i, obj) {
+				chart.drawLine($(obj).attr('id'), 'datetime');
+			});
 		}
 	}
 
@@ -441,7 +442,7 @@ var ip_geo_block_time = new Date();
 		saveCookie(cookie); // Save cookie
 
 		// redraw google chart
-		drawChart();
+		drawChart(tabNo);
 	}
 
 	function manageSection(tabNo) {
@@ -477,7 +478,7 @@ var ip_geo_block_time = new Date();
 			saveCookie(cookie);
 
 			// redraw google chart
-			drawChart();
+			drawChart(tabNo);
 
 			return false;
 		});
@@ -895,14 +896,7 @@ var ip_geo_block_time = new Date();
 		   *----------------------------------------*/
 		  case 1:
 			// https://developers.google.com/loader/#Dynamic
-			if ($(ID('#', 'chart-countries')).length && 'object' === typeof google) {
-				google.load('visualization', '1', {
-					packages: ['corechart'],
-					callback: function () {
-						chart.drawChart();
-					}
-				});
-			}
+			initChart(tabNo);
 
 			// Statistics
 			$(ID('@', 'clear_statistics')).on('click', function (event) {
@@ -1119,6 +1113,15 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 			break;
+
+		  /*----------------------------------------
+		   * Sites
+		   *----------------------------------------*/
+		  case 5:
+			// https://developers.google.com/loader/#Dynamic
+			initChart(tabNo);
+			break;
 		}
-	});
+	}); // document.ready()
+
 }(jQuery, window, document));

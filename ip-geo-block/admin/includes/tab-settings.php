@@ -65,7 +65,7 @@ class IP_Geo_Block_Admin_Tab {
 		 */
 
 		// Get the country code of client
-		$key = IP_Geo_Block::get_geolocation( $tmp = IP_Geo_Block::get_ip_address() );
+		$key = IP_Geo_Block::get_geolocation( $val = IP_Geo_Block::get_ip_address() );
 
 		$field = 'ip_client';
 		add_settings_field(
@@ -83,7 +83,7 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-if ( $key = IP_Geo_Block_Util::get_server_ip() && $key !== $tmp && ! IP_Geo_Block_Util::is_private_ip( $key ) ):
+if ( $key = IP_Geo_Block_Util::get_server_ip() && $key !== $val && ! IP_Geo_Block_Util::is_private_ip( $key ) ):
 		// Get the country code of server
 		$key = IP_Geo_Block::get_geolocation( $_SERVER['SERVER_ADDR'] );
 
@@ -624,7 +624,7 @@ endif;
 				'list' => $list,
 				'desc' => $desc,
 				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">'
-					. __( '<dfn title="Specify the page name (&#8220;&hellip;&#8221; in &#8220;page=&hellip;&#8221;) or action name (&#8220;&hellip;&#8221; in &#8220;action=&hellip;&#8221;) to prevent undesired blocking caused by &#8220;Block by country&#8221; for non logged-in user and &#8220;Prevent Zero-day Exploit&#8221; for logged-in user.">Exceptions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>'
+					. __( '<dfn title="Specify the page name (&#8220;page=&hellip;&#8221;) or the action name (&#8220;action=&hellip;&#8221;) to prevent undesired blocking caused by &#8220;Block by country&#8221; for non logged-in user and &#8220;Prevent Zero-day Exploit&#8221; for logged-in user.">Exceptions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>'
 					. "\n<li class=\"ip-geo-block-hide\"><ul><li>\n"
 					. '<input class="regular-text code" id="ip_geo_block_settings_exception_admin" name="ip_geo_block_settings[exception][admin]" type="text" value="' . esc_attr( implode( ',', $options['exception']['admin'] ) ) . '">' . "\n"
 					. $comma[0]
@@ -637,7 +637,7 @@ endif;
 
 		array_unshift( $list, __( 'Disable', 'ip-geo-block' ) );
 		$desc = array(
-			__( 'Regardless of the country code, it will block a malicious request to <code>%s&hellip;/*.php</code>.', 'ip-geo-block' ),
+			__( 'Regardless of the country code, it will block a malicious request to <code>%s&ctdot;/*.php</code>.', 'ip-geo-block' ),
 			__( 'It configures &#8220;%s&#8221; to validate a request to the PHP file which does not load WordPress core.', 'ip-geo-block' ),
 			__( '<dfn title="Select the item which causes undesired blocking in order to exclude from the validation target. Grayed item indicates &#8220;INACTIVE&#8221;.">Exceptions</dfn>', 'ip-geo-block' ),
 		);
@@ -1078,6 +1078,24 @@ endif;
 				'titles' => IP_Geo_Block_Provider::get_providers( 'type' ),
 			)
 		);
+
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		// Timeout for network API
+		$field = 'timeout';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Timeout for network API [sec]', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+			)
+		);
+endif;
 
 		/*----------------------------------------*
 		 * Local database settings

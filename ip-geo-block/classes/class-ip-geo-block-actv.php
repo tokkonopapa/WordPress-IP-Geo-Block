@@ -36,11 +36,7 @@ class IP_Geo_Block_Activate {
 	}
 
 	// initialize logs then upgrade and return new options
-	public static function activate_blog( $blog_id = FALSE ) {
-		// only multisite
-		if ( FALSE !== $blog_id )
-			switch_to_blog( $blog_id );
-
+	public static function activate_blog() {
 		IP_Geo_Block_Logs::create_tables();
 		IP_Geo_Block_Opts::upgrade();
 	}
@@ -50,16 +46,38 @@ class IP_Geo_Block_Activate {
 	 * @link https://wordpress.stackexchange.com/questions/181141/how-to-run-an-activation-function-when-plugin-is-network-activated-on-multisite
 	 */
 	public static function activate( $network_wide = FALSE ) {
+		defined( 'IP_GEO_BLOCK_DEBUG' ) and IP_GEO_BLOCK_DEBUG and assert( 'is_main_site()', 'Not main blog.' );
+
 		if ( $network_wide ) {
+			// Update main blog first.
+			self::activate_blog();
+
+			// Get option of main blog.
+			$option = IP_Geo_Block::get_option();
+
 			global $wpdb;
-			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
-			$current_blog_id = get_current_blog_id();
+			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
+
+			// Skip the main blog.
+			array_shift( $blog_ids );
 
 			foreach ( $blog_ids as $id ) {
-				self::activate_blog( $id );
-			}
+				switch_to_blog( $id );
 
-			switch_to_blog( $current_blog_id );
+				if ( $option['network_wide'] ) {
+					// individual data
+					$opt = IP_Geo_Block::get_option();
+					$option['api_key']['GoogleMap'] = $opt['api_key']['GoogleMap'];
+
+					update_option( IP_Geo_Block::OPTION_NAME, $option );
+				}
+
+				else {
+					self::activate_blog();
+				}
+
+				restore_current_blog();
+			}
 		}
 
 		else {

@@ -164,8 +164,8 @@ class IP_Geo_Block_Admin_Ajax {
 		// restore escaped characters (see wp_magic_quotes() in wp-includes/load.php)
 		$json = json_decode(
 			str_replace(
-				array( '\\"', '\\\\', "'"  ),
-				array( '"',   '\\',   '\"' ),
+				array( '\\"', '\\\\', "\'" ),
+				array( '"',   '\\',   "'"  ),
 				isset( $_POST['data'] ) ? $_POST['data'] : ''
 			),
 			TRUE
@@ -185,7 +185,7 @@ class IP_Geo_Block_Admin_Ajax {
 		);
 
 		// Validate options and convert to json
-		$output = $parent->validate_options( $input );
+		$output = $parent->sanitize_options( $input );
 		$json = self::json_unsafe_encode( self::settings_to_json( $output ) );
 
 		mbstring_binary_safe_encoding(); // @since 3.7.0
@@ -481,7 +481,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'WordPress:'  => $GLOBALS['wp_version'],
 			'Multisite:'  => is_multisite() ? 'yes' : 'no',
 			'Zlib:'       => function_exists( 'gzopen' ) ? 'yes' : 'no',
-			'ZipArchive:' => class_exists( 'ZipArchive' ) ? 'yes' : 'no',
+			'ZipArchive:' => class_exists( 'ZipArchive', FALSE ) ? 'yes' : 'no',
 			'BC Math:'    => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
 			'mb_strcut:'  => function_exists( 'mb_strcut' ) ? 'yes' : 'no',
 			'DNS lookup:' => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),

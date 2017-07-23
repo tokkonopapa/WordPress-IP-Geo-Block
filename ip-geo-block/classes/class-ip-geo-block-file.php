@@ -16,8 +16,8 @@ class IP_Geo_Block_FS {
 	 * Private variables of this class.
 	 *
 	 */
-	private static $method;
 	private static $instance = NULL;
+	private static $method = 'direct';
 
 	/**
 	 * Create an instance of this class.
@@ -32,7 +32,8 @@ class IP_Geo_Block_FS {
 	 *
 	 */
 	public static function init( $msg = NULL ) {
-		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/template.php'; // for submit_button() in request_filesystem_credentials()
+		require_once ABSPATH . 'wp-admin/includes/file.php'; // for get_filesystem_method(), request_filesystem_credentials()
 		global $wp_filesystem;
 
 		// check already assigned by WP_Filesystem()
@@ -47,7 +48,7 @@ if (0) {
 				WP_Filesystem( $creds );
 			}
 
-			elseif ( class_exists( 'IP_Geo_Block_Admin' ) ) {
+			elseif ( class_exists( 'IP_Geo_Block_Admin', FALSE ) ) {
 				IP_Geo_Block_Admin::add_admin_notice(
 					'error',
 					sprintf( __( 'This plugin does not support method &#8220;%s&#8221; for FTP or SSH based file operations. Please refer to <a href="https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants" title="Editing wp-config.php &laquo; WordPress Codex">this document</a> for more details.', 'ip-geo-block' ), self::$method )
@@ -57,17 +58,15 @@ if (0) {
 			// Determines the method on the filesystem.
 			self::$method = get_filesystem_method();
 
-			if ( FALSE === ( $creds = request_filesystem_credentials( admin_url(), '', FALSE, FALSE, NULL ) ) ) {
-				if ( class_exists( 'IP_Geo_Block_Admin' ) ) {
-					IP_Geo_Block_Admin::add_admin_notice(
-						'error',
-						__( 'You should define some constants in your <code>wp-config.php</code> for FTP or SSH based file operations. Please refer to <a href="https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants" title="Editing wp-config.php &laquo; WordPress Codex">this document</a> for more details.', 'ip-geo-block' )
-					);
-				}
+			if ( FALSE !== ( $creds = request_filesystem_credentials( admin_url(), '', FALSE, FALSE, NULL ) ) ) {
+				WP_Filesystem( $creds );
 			}
 
-			else {
-				WP_Filesystem( $creds );
+			elseif ( class_exists( 'IP_Geo_Block_Admin', FALSE ) ) {
+				IP_Geo_Block_Admin::add_admin_notice(
+					'error',
+					__( 'You should define some constants in your <code>wp-config.php</code> for FTP or SSH based file operations. Please refer to <a href="https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants" title="Editing wp-config.php &laquo; WordPress Codex">this document</a> for more details.', 'ip-geo-block' )
+				);
 			}
 }
 		}
@@ -92,9 +91,23 @@ if (0) {
 	}
 
 	/**
+	 * Check if a file or directory exists.
+	 *
+	 * @param  string $file Path to file/directory.
+	 * @return bool   Whether $file exists or not.
+	 */
+	public function exists( $file ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return FALSE;
+
+		return $wp_filesystem->exists( $this->absolute_path( $file ) );
+	}
+
+	/**
 	 * Validate if path is file
 	 *
-	 * @param string $path
+	 * @param  string $path
 	 * @return bool
 	 */
 	public function is_file( $path ) {
@@ -108,7 +121,7 @@ if (0) {
 	/**
 	 * Validate if path is directory
 	 *
-	 * @param string $path
+	 * @param  string $path
 	 * @return bool
 	 */
 	public function is_dir( $path ) {
@@ -117,6 +130,34 @@ if (0) {
 			return FALSE;
 
 		return $wp_filesystem->is_dir( $this->absolute_path( $path ) );
+	}
+
+	/**
+	 * Check if a file is readable.
+	 *
+	 * @param  string $file Path to file.
+	 * @return bool   Whether $file is readable.
+	 */
+	public function is_readable( $file ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return FALSE;
+
+		return $wp_filesystem->is_readable( $this->absolute_path( $file ) );
+	}
+
+	/**
+	 * Check if a file or directory is writable.
+	 *
+	 * @param  string $file Path to file.
+	 * @return bool   Whether $file is writable.
+	 */
+	public function is_writable( $file ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return FALSE;
+
+		return $wp_filesystem->is_writable( $this->absolute_path( $file ) );
 	}
 
 	/**
@@ -137,12 +178,12 @@ if (0) {
 	}
 
 	/**
-	 * Delete a file.
+	 * Delete a file or directory.
 	 *
-	 * @param  string $file
-	 * @param  bool   $recursive
-	 * @param  string $type
-	 * @return bool
+	 * @param  string $file      Path to the file.
+	 * @param  bool   $recursive If set True changes file group recursively. 
+	 * @param  bool   $type      Type of resource. 'f' for file, 'd' for directory.
+	 * @return bool   True if the file or directory was deleted, false on failure.
 	 */
 	public function delete( $file, $recursive = FALSE, $type = FALSE ) {
 		global $wp_filesystem;
@@ -186,28 +227,31 @@ if (0) {
 		if ( empty( $wp_filesystem ) )
 			return FALSE;
 
-		$file = $this->absolute_path( $file );
+		if ( 'direct' === self::$method )
+			return file_put_contents( $file, $contents, LOCK_EX );
+		else
+			return $wp_filesystem->put_contents( $this->absolute_path( $file ), $contents, $mode );
+	}
 
-		if ( ! ( $fp = @fopen( $file, 'wb' ) ) )
-			return FALSE;
+	/**
+	 * Read entire file into an array.
+	 *
+	 * @param  string $file  Filename.
+	 * @return array
+	 */
+	public function get_contents_array( $file ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return array();
 
-		if ( ! flock( $fp, LOCK_EX ) ) {
-			fclose( $fp );
-			return FALSE;
-		}
+		// http://php.net/manual/en/function.file.php#refsect1-function.file-returnvalues
+		@ini_set( 'auto_detect_line_endings', TRUE );
 
-		mbstring_binary_safe_encoding(); // @since 3.7.0 in wp-includes/functions.php
-		$data_length   = strlen( $contents );
-		$bytes_written = fwrite( $fp, $contents );
-		reset_mbstring_encoding();       // @since 3.7.0 in wp-includes/functions.php
+		if ( 'direct' === self::$method )
+			return @file( $file, FILE_IGNORE_NEW_LINES );
 
-		flock ( $fp, LOCK_UN );
-		fclose( $fp );
-
-		if ( $data_length !== $bytes_written )
-			return FALSE;
-
-		return $wp_filesystem->chmod( $file, $mode );
+		else // `rtrim`: same as FILE_IGNORE_NEW_LINES flag in file()
+			return array_map( 'rtrim', $wp_filesystem->get_contents_array( $this->absolute_path( $file ) ) );
 	}
 
 	/**

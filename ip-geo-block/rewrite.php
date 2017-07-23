@@ -31,7 +31,7 @@
  * this includes the originally requested php file to excute it.
  */
 
-if ( ! class_exists( 'IP_Geo_Block_Rewrite' ) ):
+if ( ! class_exists( 'IP_Geo_Block_Rewrite', FALSE ) ):
 
 class IP_Geo_Block_Rewrite {
 
@@ -161,7 +161,7 @@ require_once '../../../wp-load.php';
  * is enable. But in case of disable, the requested uri should be executed indirectly
  * as a fallback.
  */
-if ( ! class_exists( 'IP_Geo_Block' ) )
+if ( ! class_exists( 'IP_Geo_Block', FALSE ) )
 	require_once dirname( __FILE__ ) . '/ip-geo-block.php';
 
 IP_Geo_Block_Rewrite::exec(
@@ -170,7 +170,7 @@ IP_Geo_Block_Rewrite::exec(
 	IP_Geo_Block::get_option()
 );
 
-endif; /* ! class_exists( 'IP_Geo_Block_Rewrite' ) */
+endif; /* ! class_exists( 'IP_Geo_Block_Rewrite', FALSE ) */
 
 /**
  * Configuration samples of .htaccess for apache

@@ -24,7 +24,7 @@
 // If this file is called directly, abort.
 defined( 'WPINC' ) or die;
 
-if ( ! class_exists( 'IP_Geo_Block' ) ):
+if ( ! class_exists( 'IP_Geo_Block', FALSE ) ):
 
 /*----------------------------------------------------------------------------*
  * Detect plugin. For use on Front End only.
@@ -74,4 +74,4 @@ function ip_geo_block_mu_notice() {
 	echo '</p></div>' . "\n";
 }
 
-endif; // ! class_exists( 'IP_Geo_Block' )
+endif; // ! class_exists( 'IP_Geo_Block', FALSE )

@@ -136,7 +136,7 @@ class IP_Geo_Block_Util {
 		$tok = self::get_session_token();
 		$exp = self::nonce_tick();
 
-		return substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok, 'nonce' ), -12, 10 );
+		return substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
 	}
 
 	/**
@@ -151,13 +151,13 @@ class IP_Geo_Block_Util {
 		$exp = self::nonce_tick();
 
 		// Nonce generated 0-12 hours ago
-		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok, 'nonce' ), -12, 10 );
+		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
 		if ( self::hash_equals( $expected, (string)$nonce ) ) {
 			return 1;
 		}
 
 		// Nonce generated 12-24 hours ago
-		$expected = substr( self::hash_nonce( ( $exp - 1 ) . '|' . $action . '|' . $uid . '|' . $tok, 'nonce' ), -12, 10 );
+		$expected = substr( self::hash_nonce( ( $exp - 1 ) . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
 		if ( self::hash_equals( $expected, (string)$nonce ) ) {
 			return 2;
 		}
@@ -172,7 +172,7 @@ class IP_Geo_Block_Util {
 	 * Get hash of given string for nonce.
 	 * @source wp-includes/pluggable.php
 	 */
-	private static function hash_nonce( $data, $scheme = 'auth' ) {
+	private static function hash_nonce( $data, $scheme = 'nonce' ) {
 		$salt = array(
 			'auth'        => AUTH_KEY        . AUTH_SALT,
 			'secure_auth' => SECURE_AUTH_KEY . SECURE_AUTH_SALT,
@@ -190,8 +190,8 @@ class IP_Geo_Block_Util {
 	 */
 	private static function get_session_token() {
 		// Arrogating logged_in cookie never cause the privilege escalation.
-		$cookie = self::parse_auth_cookie();
-		return ! empty( $cookie['token'] ) ? $cookie['token'] : AUTH_KEY . AUTH_SALT;
+		$cookie = self::parse_auth_cookie( 'logged_in' );
+		return ! empty( $cookie['token'] ) ? $cookie['token'] : NONCE_KEY . NONCE_SALT;
 	}
 
 	/**
@@ -206,7 +206,7 @@ class IP_Geo_Block_Util {
 		if ( NULL === $cache_cookie ) {
 			$cache_cookie = FALSE;
 
-			// @since 3.0.0 in wp-includes/default-constants.php
+			// @since 3.0.0 wp_cookie_constants() in wp-includes/default-constants.php
 			if ( ! defined( 'COOKIEHASH' ) )
 				wp_cookie_constants();
 
@@ -249,10 +249,10 @@ class IP_Geo_Block_Util {
 	 * WP alternative function for mu-plugins
 	 *
 	 * Retrieve user info by a given field
-	 * @source wp-includes/pluggable.php
+	 * @source wp-includes/pluggable.php @since 2.8.0
 	 */
 	private static function get_user_by( $field, $value ) {
-		$userdata = WP_User::get_data_by( $field, $value );
+		$userdata = WP_User::get_data_by( $field, $value ); // wp-includes/class-wp-user.php @since 2.0.0
 
 		if ( ! $userdata )
 			return FALSE;
@@ -266,10 +266,20 @@ class IP_Geo_Block_Util {
 	/**
 	 * WP alternative function for mu-plugins
 	 *
+	 * Filters whether the current request is a WordPress Ajax request.
+	 * @source wp-includes/load.php @since 4.7.0
+	 */
+	public static function doing_ajax() {
+		return apply_filters( 'wp_doing_ajax', defined( 'DOING_AJAX' ) && DOING_AJAX );
+	}
+
+	/**
+	 * WP alternative function for mu-plugins
+	 *
 	 * Validates authentication cookie.
 	 * @source wp-includes/pluggable.php
 	 */
-	public static function validate_auth_cookie( $cookie = '', $scheme = 'logged_in' ) {
+	public static function validate_auth_cookie( $scheme = 'logged_in' ) {
 		static $cache_uid = NULL;
 
 		if ( NULL === $cache_uid ) {
@@ -285,14 +295,14 @@ class IP_Geo_Block_Util {
 			$expired  = $expiration = $cookie['expiration'];
 
 			// Allow a grace period for POST and Ajax requests
-			if ( wp_doing_ajax() || 'POST' === $_SERVER['REQUEST_METHOD'] )
+			if ( self::doing_ajax() || 'POST' === $_SERVER['REQUEST_METHOD'] )
 				$expired += HOUR_IN_SECONDS;
 
 			// Quick check to see if an honest cookie has expired
 			if ( $expired < time() )
 				return FALSE;
 
-			if ( ! ( $user = self::get_user_by( 'login', $username ) ) ) // wp-includes/class-wp-user.php
+			if ( ! ( $user = self::get_user_by( 'login', $username ) ) ) // wp-includes/pluggable.php @since 2.8.0
 				return FALSE;
 
 			$pass_frag = substr( $user->user_pass, 8, 4 );
@@ -305,7 +315,7 @@ class IP_Geo_Block_Util {
 			if ( ! self::hash_equals( $hash, $hmac ) )
 				return FALSE;
 
-			$manager = WP_Session_Tokens::get_instance( $user->ID ); // wp-includes/class-wp-session-tokens.php
+			$manager = WP_Session_Tokens::get_instance( $user->ID ); // wp-includes/class-wp-session-tokens.php @since 4.0.0
 			if ( ! $manager->verify( $token ) )
 				return FALSE;
 
@@ -430,7 +440,6 @@ class IP_Geo_Block_Util {
 				status_header( $status ); // This causes problems on IIS and some FastCGI setups
 
 			header( "Location: $location", TRUE, $status );
-
 			return TRUE;
 		}
 
@@ -543,7 +552,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function is_user_logged_in() {
 		// possibly logged in but should be verified after 'init' hook is fired.
-		return did_action( 'init' ) ? is_user_logged_in() : ( self::validate_auth_cookie() ? TRUE : FALSE );
+		return did_action( 'init' ) ? is_user_logged_in() : (bool)( class_exists( 'WP_Session_Tokens', FALSE ) ? self::validate_auth_cookie() : self::parse_auth_cookie() );
 	}
 
 	/**
@@ -575,7 +584,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function current_user_can( $capability ) {
 		// possibly logged in but should be verified after 'init' hook is fired.
-		return did_action( 'init' ) ? current_user_can( $capability ) : ( self::validate_auth_cookie() ? TRUE : FALSE );
+		return did_action( 'init' ) ? current_user_can( $capability ) : (bool)( class_exists( 'WP_Session_Tokens', FALSE ) ? self::validate_auth_cookie() : self::parse_auth_cookie() );
 	}
 
 	/**
@@ -720,6 +729,9 @@ class IP_Geo_Block_Util {
 	/**
 	 * Pick up all the IPs in HTTP_X_FORWARDED_FOR, HTTP_CLIENT_IP and etc.
 	 *
+	 * @param  array  $ips  array of candidate IP addresses
+	 * @param  string $vars comma separated keys in $_SERVER for http header ('HTTP_...')
+	 * @return array  $ips  array of candidate IP addresses
 	 */
 	public static function retrieve_ips( $ips = array(), $vars = NULL ) {
 		foreach ( explode( ',', $vars ) as $var ) {
@@ -738,8 +750,7 @@ class IP_Geo_Block_Util {
 	/**
 	 * Get client IP address
 	 *
-	 * @param  string $ip   IP address / default: $_SERVER['REMOTE_ADDR']
-	 * @param  string $vars keys in $_SERVER for http header ('HTTP_...')
+	 * @param  string $vars comma separated keys in $_SERVER for http header ('HTTP_...')
 	 * @return string $ip   IP address
 	 * @link   http://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-headers.html
 	 * @link   https://github.com/zendframework/zend-http/blob/master/src/PhpEnvironment/RemoteAddress.php
@@ -792,7 +803,8 @@ class IP_Geo_Block_Util {
 	 * 192.168.0.0/16 reserved for Private-Use Networks [RFC1918]
 	 */
 	public static function is_private_ip( $ip ) {
-		return ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE /*| FILTER_FLAG_NO_RES_RANGE*/ );
+		// http://php.net/manual/en/filter.filters.flags.php
+		return ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE );
 	}
 
 	/**

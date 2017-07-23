@@ -26,17 +26,16 @@ label {
     max-width: 100%;
 }
 .panel {
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
     border-color: gray;
-    border: 1px solid #ccc;
+    border: 1px solid #e5e5e5;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.04);
     -moz-box-shadow: 0 1px 1px rgba(0,0,0,.04);
     box-shadow: 0 1px 1px rgba(0,0,0,.04);
-    background: #eee;
+    background: #f5f5f5;
 }
 .panel-heading {
     float: left !important;
+    background: #fff;
 }
 .panel-default > .panel-heading {
     border-color: inherit;
@@ -252,7 +251,7 @@ table.ip-geo-block-statistics-table td {
     word-wrap: break-word;
 }
 table.ip-geo-block-statistics-table tr:nth-child(even) {
-    background-color: #f7f7f7;
+    background-color: #eee;
 }
 table.ip-geo-block-statistics-table tr:nth-child(odd) {
 }
@@ -417,10 +416,6 @@ input#ip_geo_block_settings_filter_logs {
 }
 
 /* for google chart */
-#ip-geo-block-countries,
-#ip-geo-block-targets {
-    display: none;
-}
 #ip-geo-block-chart-countries {
     height: 200px;
 }
@@ -454,13 +449,21 @@ input#ip_geo_block_settings_filter_logs {
 }
 #ip-geo-block-preferred {
     color: #fff;
-    background-color: #00838f !important;
+    background: #00838f !important;
     border-color: #00707a !important;
+    text-shadow: none; /* for WordPress 3.7.21 */
 }
 #ip-geo-block-preferred:hover {
     background-color: #00919e !important;
     border-color: #00525a !important;
 }
+
+span.ip-geo-block-title-link {
+    font-size: 13px;
+}
+/*span.ip-geo-block-title-link a {
+    box-shadow: none;
+}*/
 
 dfn + a.ip-geo-block-cycle {
     margin-left: 0.5em;
@@ -504,4 +507,22 @@ dfn + a.ip-geo-block-cycle {
 #ip-geo-block-back-to-top {
     margin:0;
     text-align:right;
+}
+
+/* for multisite */
+.ip-geo-block-multisite {
+    margin-bottom: 1em;
+}
+/* for statistics */
+ol.ip-geo-block-top-list {
+    display: inline-table;
+    list-style-position: outside;
+    margin: 0 2em 0.5em 1.75em;
+}
+ol.ip-geo-block-top-list h4 {
+    font-size: 13px;
+    margin: 0.5em 0;
+}
+ol.ip-geo-block-top-list li code {
+    background: none;
 }

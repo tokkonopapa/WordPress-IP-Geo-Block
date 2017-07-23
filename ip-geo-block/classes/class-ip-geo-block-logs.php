@@ -668,13 +668,28 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
+	 * 
+	 *
+	 */
+	public static function get_recent( $duration = DAY_IN_SECONDS ) {
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_LOGS;
+
+		$sql = $wpdb->prepare(
+			"SELECT `time`, `ip`, `hook`, `code`, `method`, `data` FROM `$table` WHERE `time` > %d", $_SERVER['REQUEST_TIME'] - $duration
+		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
+
+		return $result;
+	}
+
+	/**
 	 * SQL Error handling
 	 *
 	 */
 	private static function error( $line ) {
 		global $wpdb;
 		if ( $wpdb->last_error ) {
-			if ( class_exists( 'IP_Geo_Block_Admin' ) )
+			if ( class_exists( 'IP_Geo_Block_Admin', FALSE ) )
 				IP_Geo_Block_Admin::add_admin_notice( 'error', __FILE__ . ' (' . $line . ') ' . $wpdb->last_error );
 
 			if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG )

@@ -169,7 +169,7 @@ abstract class IP_Geo_Block_API {
 	 */
 	public static function get_class_name( $provider ) {
 		$provider = 'IP_Geo_Block_API_' . preg_replace( '/[\W]/', '', $provider );
-		return class_exists( $provider ) ? $provider : NULL;
+		return class_exists( $provider, FALSE ) ? $provider : NULL;
 	}
 
 	/**
@@ -659,7 +659,7 @@ class IP_Geo_Block_Provider {
  * Load additional plugins
  *
  */
-if ( class_exists( 'IP_Geo_Block' ) ) {
+if ( class_exists( 'IP_Geo_Block', FALSE ) ) {
 
 	// Get absolute path to the geo-location API
 	$dir = IP_Geo_Block::get_option();

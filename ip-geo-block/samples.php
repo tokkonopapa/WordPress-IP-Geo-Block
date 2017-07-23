@@ -10,7 +10,7 @@
  */
 /* Start loading wp-load.php */
 if ( ! empty( $_GET['wp-load'] ) ) {
-	$abspath = dirname( dirname( dirname( __FILE__ ) ) );
+	$abspath = substr( __FILE__, 0, strpos( __FILE__, '/wp-content/' ) );
 	include_once $abspath . '/wp-load.php';
 }
 die( '0' );

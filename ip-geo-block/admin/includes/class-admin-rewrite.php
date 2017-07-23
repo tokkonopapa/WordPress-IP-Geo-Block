@@ -92,7 +92,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private function find_rewrite_block( $content ) {
 		return preg_grep(
-			'/^\s*?#\s*?(BEGIN|END)?\s*?IP Geo Block\s*?(BEGIN|END)?\s*?$/i',
+			'/^\s*?[#;]\s*?(BEGIN|END)?\s*?IP Geo Block\s*?(BEGIN|END)?\s*?$/i',
 			$content
 		);
 	}
@@ -126,23 +126,23 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * @return array contents of configuration file
 	 */
 	private function get_rewrite_rule( $which ) {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( 'get_rewrite_rule' );
+
 		$file = $this->get_rewrite_file( $which );
-		$exist = @file_exists( $file );
+		$exist = $fs->exists( $file );
 
 		// check permission
 		if ( $exist ) {
-			if ( ! @is_readable( $file ) )
+			if ( ! $fs->is_readable( $file ) )
 				return FALSE;
 		} else {
-			if ( ! @is_readable( dirname( $file ) ) )
+			if ( ! $fs->is_readable( dirname( $file ) ) )
 				return FALSE;
 		}
 
-		// http://php.net/manual/en/function.file.php#refsect1-function.file-returnvalues
-		@ini_set( 'auto_detect_line_endings', TRUE );
-
 		// get file contents as an array
-		return $exist ? @file( $file, FILE_IGNORE_NEW_LINES ) : array();
+		return $exist ? $fs->get_contents_array( $file ) : array();
 	}
 
 	/**

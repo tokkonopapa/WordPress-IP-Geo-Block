@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.3.2';
+	const VERSION = '3.0.3.4';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -23,17 +23,15 @@ class IP_Geo_Block {
 	const CRON_NAME   = 'ip_geo_block_cron';
 
 	/**
-	 * Instance of this class.
+	 * Globals in this class
 	 *
 	 */
-	protected static $instance = NULL;
-
-	// Globals in this class
+	private static $instance = NULL;
+	private static $remote_addr;
+	private static $wp_path;
 	private $pagenow = NULL;
 	private $request_uri = NULL;
 	private $target_type = NULL;
-	private static $remote_addr;
-	private static $wp_path;
 
 	/**
 	 * Initialize the plugin
@@ -51,13 +49,6 @@ class IP_Geo_Block {
 
 		// include drop in if it exists
 		file_exists( $key = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php' ) and include( $key );
-
-		// garbage collection for IP address cache
-		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );
-
-		// the action hook which will be fired by cron job
-		if ( $settings['update']['auto'] )
-			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
 
 		// normalize requested uri and page
 		$key = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
@@ -114,44 +105,66 @@ class IP_Geo_Block {
 			if ( $validate['public'] || ( ! empty( $_FILES ) && $validate['mimetype'] ) /* && 'index.php' === $this->pagenow */ )
 				$loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
 
-			// message text on comment form
-			if ( $settings['comment']['pos'] ) {
-				$key = ( 1 === (int)$settings['comment']['pos'] ? '_top' : '' );
-				add_action( 'comment_form' . $key, array( $this, 'comment_form_message' ) );
-			}
-
-			if ( $validate['comment'] ) {
-				add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), $priority ); // wp-comments-post.php @since 2.8.0
-				add_action( 'pre_trackback_post',  array( $this, 'validate_comment' ), $priority ); // wp-trackback.php @since 4.7.0
-				add_filter( 'preprocess_comment',  array( $this, 'validate_comment' ), $priority ); // wp-includes/comment.php @since 1.5.0
-
-				// bbPress: prevent creating topic/relpy and rendering form
-				add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
-				add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
-				add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
-				add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
-			}
-
-			if ( $validate['login'] ) {
-				// for hide/rename wp-login.php, BuddyPress: prevent registration and rendering form
-				add_action( 'login_init', array( $this, 'validate_login' ), $priority );
-
-				// only when block on front-end is disabled
-				if ( ! $validate['public'] ) {
-					add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
-					add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
-				}
-			}
+			// others on init action hook
+			add_action( 'init', array( $this, 'actions_init' ) );
 		}
 
 		// force to change the redirect URL on logout to remove nonce, embed a nonce into pages
-		add_filter( 'wp_redirect', array( $this, 'logout_redirect' ), 20, 2 ); // logout_redirect @4.2
-		add_filter( 'http_request_args', array( $this, 'add_admin_nonce' ), $priority, 2 ); // @since 2.7.0
-		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority ); // @since 2.8.0
+		add_filter( 'wp_redirect',       array( $this, 'logout_redirect' ), 20,        2 ); // logout_redirect @4.2
+		add_filter( 'http_request_args', array( $this,   'request_nonce' ), $priority, 2 ); // @since 2.7.0
 
 		// Run the loader to execute all of the hooks with WordPress.
 		$loader->run( $this );
 		unset( $loader );
+	}
+
+	/**
+	 * Setup actions after init.
+	 *
+	 */
+	public function actions_init() {
+		$settings = self::get_option();
+		$priority = $settings['priority'  ];
+		$validate = $settings['validation'];
+
+		// prepare nonce for login user
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority ); // @since 2.8.0
+
+		// garbage collection for IP address cache
+		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );
+
+		// the action hook which will be fired by cron job
+		if ( $settings['update']['auto'] )
+			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
+
+		// message text on comment form
+		if ( $settings['comment']['pos'] ) {
+			$pos = ( 1 === (int)$settings['comment']['pos'] ? '_top' : '' );
+			add_action( 'comment_form' . $pos, array( $this, 'comment_form_message' ) );
+		}
+
+		if ( $validate['comment'] ) {
+			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), $priority ); // wp-comments-post.php @since 2.8.0
+			add_action( 'pre_trackback_post',  array( $this, 'validate_comment' ), $priority ); // wp-trackback.php @since 4.7.0
+			add_filter( 'preprocess_comment',  array( $this, 'validate_comment' ), $priority ); // wp-includes/comment.php @since 1.5.0
+
+			// bbPress: prevent creating topic/relpy and rendering form
+			add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
+			add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
+			add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
+			add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
+		}
+
+		if ( $validate['login'] ) {
+			// for hide/rename wp-login.php, BuddyPress: prevent registration and rendering form
+			add_action( 'login_init', array( $this, 'validate_login' ), $priority );
+
+			// only when block on front-end is disabled
+			if ( ! $validate['public'] ) {
+				add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
+				add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
+			}
+		}
 	}
 
 	/**
@@ -204,7 +217,7 @@ class IP_Geo_Block {
 	 * Add nonce into arguments used in an HTTP request.
 	 *
 	 */
-	public function add_admin_nonce( $args = array(), $url = '' ) {
+	public function request_nonce( $args = array(), $url = '' ) {
 		if ( 0 === strpos( $url, admin_url() ) && empty( $args[ $handle = self::PLUGIN_NAME . '-auth-nonce' ] ) )
 			$args += array( $handle => IP_Geo_Block_Util::create_nonce( $handle ) );
 
@@ -222,9 +235,23 @@ class IP_Geo_Block {
 				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_GEO_BLOCK_BASE
 			);
-			$nonce = array( 'nonce' => IP_Geo_Block_Util::create_nonce( $handle ) ) + self::$wp_path;
+			$args = array( 'nonce' => IP_Geo_Block_Util::create_nonce( $handle ) ) + self::$wp_path;
+
+			if ( is_multisite() ) {
+				global $wpdb;
+				foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
+					switch_to_blog( $id );
+					$sites[] = admin_url();
+					restore_current_blog();
+				}
+				if ( empty( $sites[ $url = network_admin_url() ] ) ) {
+					$sites[] = $url;
+				}
+				$args += array( 'sites' => $sites );
+			}
+
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
-			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $nonce );
+			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $args );
 		}
 	}
 
@@ -410,9 +437,6 @@ class IP_Geo_Block {
 	 * @param boolean $auth     save log and block         if validation fails (for admin dashboard)
 	 */
 	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $auth = TRUE ) {
-		// Do action
-		// do_action( self::PLUGIN_NAME, $hook );
-
 		// set IP address to be validated
 		$ips = IP_Geo_Block_Util::retrieve_ips( array( self::get_ip_address() ), $settings['validation']['proxy'] );
 
@@ -612,7 +636,7 @@ class IP_Geo_Block {
 		}
 
 		// register validation of malicious signature (except in the comment and post)
-		if ( ! IP_Geo_Block_Util::is_user_logged_in() || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
+		if ( ! IP_Geo_Block_Util::is_user_logged_in() && ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
 			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
@@ -625,10 +649,10 @@ class IP_Geo_Block {
 	 */
 	public function validate_direct() {
 		// analyze target in wp-includes, wp-content/(plugins|themes|language|uploads)
-		$path = preg_quote( self::$wp_path[ $type = $this->target_type ], '/' );
+		$path = preg_quote( self::$wp_path[ $type = $this->target_type ], '!' );
 		$name = ( 'plugins' === $type || 'themes' === $type ? '[^\?\&\/]*' : '[^\?\&]*' );
 
-		preg_match( "/($path)($name)/", $this->request_uri, $name );
+		preg_match( "!($path)($name)!", $this->request_uri, $name );
 		$name = empty( $name[2] ) ? $name[1] : $name[2];
 
 		// set validation rule by target (0: Bypass, 1: Block by country, 2: WP-ZEP)
@@ -659,7 +683,7 @@ class IP_Geo_Block {
 		$validate = $this->validate_ip( 'admin', $settings, 1 & $rule );
 
 		// if the validation is successful, execute the requested uri via rewrite.php
-		if ( class_exists( 'IP_Geo_Block_Rewrite' ) )
+		if ( class_exists( 'IP_Geo_Block_Rewrite', FALSE ) )
 			IP_Geo_Block_Rewrite::exec( $this, $validate, $settings );
 	}
 
@@ -727,10 +751,16 @@ class IP_Geo_Block {
 
 		foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $settings['signature'] ) as $sig ) {
 			$val = explode( ':', $sig, 2 );
+			$sig = trim( $val[0] );
 
-			if ( ( $sig = trim( $val[0] ) ) && FALSE !== strpos( $query, $sig ) ) {
-				if ( ( $score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] ) ) > 0.99 )
-					return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
+			if ( $sig && FALSE !== strpos( $query, $sig ) ) {
+				if ( preg_match( '!\W!', $sig ) || // ex) `../` or `/wp-config.php`
+				     preg_match( '!\b' . preg_quote( $sig, '!' ) . '\b!', $query ) ) {
+					$score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] );
+					if ( $score > 0.99 ) {
+						return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
+					}
+				}
 			}
 		}
 

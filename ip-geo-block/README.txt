@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.8
-Stable tag: 3.0.3.2
+Stable tag: 3.0.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -348,6 +348,20 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.3.4 =
+* **Improvement:** Some minor refactoring for the future release.
+* **Improvement:** Better throughput against attacks on admin area when `"mu-plugins" (ip-geo-block-mu.php)` is enable.
+* **Improvement:** Avoid annoying error message related to private IP address.
+* **Bug fix:** Fix the issue of excessive blocking by bad signature.
+* **Bug fix:** Fix the issue of illegal usage of `switch_to_blog()`. See [this notes on codex](https://codex.wordpress.org/Function_Reference/restore_current_blog#Notes "Function Reference/restore current blog &laquo; WordPress Codex").
+* **Bug fix:** Fix the issue of illegal JSON format on "Export settings".
+
+= 3.0.3.3 =
+Thank you for your patience and understanding in frequent update.
+
+* **Bug fix:** Fixed the issue of "Notice: Undefined variable" in WP cron. This bug caused frequent refreshing of IP address cache.
+* **Bug fix:** Fixed the issue of "Fatal Error" in validating user authentication.
 
 = 3.0.3.2 =
 * **Bug fix:** Fixed the issue where nonce for WP-ZEP didn't match on front-end.

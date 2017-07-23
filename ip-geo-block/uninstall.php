@@ -44,15 +44,13 @@ class IP_Geo_Block_Uninstall {
 
 			else {
 				global $wpdb;
-				$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
-				$current_blog_id = get_current_blog_id();
+				$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" );
 
 				foreach ( $blog_ids as $id ) {
 					switch_to_blog( $id );
 					self::delete_blog_options();
+					restore_current_blog();
 				}
-
-				switch_to_blog( $current_blog_id );
 			}
 		}
 
