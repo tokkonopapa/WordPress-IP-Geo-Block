@@ -502,8 +502,7 @@ dfn + a.ip-geo-block-cycle {
     vertical-align: text-top;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
-*/
+}*/
 #ip-geo-block-back-to-top {
     margin:0;
     text-align:right;
@@ -520,9 +519,12 @@ ol.ip-geo-block-top-list {
     margin: 0 2em 0.5em 1.75em;
 }
 ol.ip-geo-block-top-list h4 {
-    font-size: 13px;
-    margin: 0.5em 0;
+    margin: 1em 0;
 }
 ol.ip-geo-block-top-list li code {
     background: none;
+}
+#toplevel_page_ip-geo-block .wp-menu-image img {
+    height: 18px;
+    width: 18px;
 }

@@ -1,17 +1,13 @@
 <?php
+require_once ABSPATH           . 'wp-admin/includes/plugin.php'; // for get_plugins()
 require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php';
 require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
-
-if ( ! function_exists( 'get_plugins' ) )
-	require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context, $tab ) {
-		$plugin_slug = IP_Geo_Block::PLUGIN_NAME; // 'ip-geo-block'
-		$option_slug = IP_Geo_Block::PLUGIN_NAME; // 'ip-geo-block'
-		$option_name = IP_Geo_Block::OPTION_NAME; // 'ip_geo_block_settings'
 		$options = IP_Geo_Block::get_option();
+		$plugin_slug = IP_Geo_Block::PLUGIN_NAME; // 'ip-geo-block'
 
 		/**
 		 * Register a setting and its sanitization callback.
@@ -24,8 +20,8 @@ class IP_Geo_Block_Admin_Tab {
 		 * @since 2.7.0
 		 */
 		register_setting(
-			$option_slug,
-			$option_name,
+			$option_slug = IP_Geo_Block::PLUGIN_NAME, // 'ip-geo-block'
+			$option_name = IP_Geo_Block::OPTION_NAME, // 'ip_geo_block_settings'
 			array( $context, 'validate_settings' )
 		);
 
@@ -180,13 +176,34 @@ endif;
 			)
 		);
 
-		// White list of extra IP addresses prior to country code (CIDR)
+		// Use AS number
+		$field = 'Maxmind';
+		$key = 'use_asn';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( '<dfn title="It enables utilizing &#8220;AS number&#8221; in the &#8220;Whitelist/Blacklist of extra IP addresses&#8221; to specify a group of IP networks.">Use Autonomous System Number</dfn>', 'ip-geo-block' ) .
+			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => 1 === (int)$options[ $field ][ $key ],
+				'after' => '<p>[ <a rel="noreferrer" href="//ipinfo.io/countries/" title="Country IP Address Report - ipinfo.io">ASN by country</a> ] [ <a rel="noreferrer" href="https://www.ultratools.com/tools/asnInfo" title="ASN Lookup Tool | UltraTools">ASN lookup</a> ]</p>',
+			)
+		);
+
+		// White list of extra IP addresses prior to country code (CIDR, ASN)
 		$field = 'extra_ips';
 		$key = 'white_list';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( '<dfn title="e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, &#8220;69.46.36.0/27&#8221; for WordFence server">Whitelist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
-			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia, the free encyclopedia">CIDR</a>)',
+			__( '<dfn title="e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, &#8220;69.46.36.0/27&#8221; for WordFence server or &#8220;AS32934&#8221; for Facebook.">Whitelist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
+			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>'.
+			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -200,12 +217,13 @@ endif;
 			)
 		);
 
-		// Black list of extra IP addresses prior to country code (CIDR)
+		// Black list of extra IP addresses prior to country code (CIDR, ASN)
 		$key = 'black_list';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
 			__( '<dfn title="Server level access control is recommended (e.g. .htaccess).">Blacklist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
-			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia, the free encyclopedia">CIDR</a>)',
+			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>'.
+			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -293,32 +311,7 @@ endif;
 				'after' => $list,
 			)
 		);
-/*
-		// Create a new user
-		$field = 'others';
-		$key = 'create_user';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( '<dfn title="It enables/disables to restrict creation of new user accounts.">Create a newe user</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'select',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-				'list' => array(
-					0 => __( 'Disable',          'ip-geo-block' ),
-					1 => __( 'Block by country', 'ip-geo-block' ),
-					2 => 'Only by admin',
-					3 => 'Prohibit',
-				),
-				'after' => '<br /><input id="ip_geo_block_settings_' . $field . '_' . $key . '" name="ip_geo_block_settings[' . $field . '][' . $key . ']" type="checkbox"' . checked( ! empty( $options[ $field ][ $key ] ), TRUE, FALSE ) . '/><label for="ip_geo_block_settings_' . $field . '_' . $key . '"><dfn title="It enables to send email to administrator when a new user count is created.">Send email</dfn></label>',
-			)
-		);
-*/
+
 		// Response code (RFC 2616)
 		$field = 'response_code';
 		add_settings_field(
@@ -1397,7 +1390,29 @@ endif;
 			NULL,
 			$option_slug
 		);
+if (0):
+		// @see https://vedovini.net/2015/10/using-the-wordpress-settings-api-with-network-admin-pages/
+		if ( is_main_site() && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
+			add_action( 'network_admin_edit_' . IP_Geo_Block::PLUGIN_NAME, array( $context, 'validate_network_settings' ) );
 
+			// Network wide configuration
+			$field = 'network_wide';
+			add_settings_field(
+				$option_name.'_'.$field,
+				__( '<dfn title="Synchronize all settings over the network wide.">Network wide settings</dfn>', 'ip-geo-block' ),
+				array( $context, 'callback_field' ),
+				$option_slug,
+				$section,
+				array(
+					'type' => 'checkbox',
+					'option' => $option_name,
+					'field' => $field,
+					'value' => $options[ $field ],
+					'disabled' => ! current_user_can( 'manage_network_options' ),
+				)
+			);
+		}
+endif;
 		// Remove all settings at uninstallation
 		$field = 'clean_uninstall';
 		add_settings_field(

@@ -27,8 +27,17 @@ class IP_Geo_Block_Admin_Ajax {
 		}
 
 		if ( empty( $res['errorMessage'] ) ) {
+			if ( $options['Maxmind']['asn4_path'] && ( $geo = IP_Geo_Block_API::get_instance( 'Maxmind', $options ) ) ) {
+				$tmp = microtime( TRUE );
+				$geo = $geo->get_location( $ip, array( 'ASN' => TRUE ) );
+				$tmp = microtime( TRUE ) - $tmp;
+
+				$res['AS number']  = isset( $geo['ASN'] ) ? esc_html( $geo['ASN'] ) : '';
+				$res['AS number'] .= sprintf( ' (%.1f [msec])', $tmp * 1000.0 );
+			}
+
 			$tmp = microtime( TRUE );
-			$res['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $ip );
+			$res['host'] = esc_html( IP_Geo_Block_Lkup::gethostbyaddr( $ip ) );
 			$tmp = microtime( TRUE ) - $tmp;
 			$res['DNS lookup'] = sprintf( '%.1f [msec]', $tmp * 1000.0 );
 		}
@@ -135,10 +144,12 @@ class IP_Geo_Block_Admin_Ajax {
 			$n = 0;
 
 			foreach ( $rows as $row ) {
+				// Time of date
 				$log = (int)array_shift( $row );
 				$html .= '<tr><td data-value='.$log.'>';
 				$html .= IP_Geo_Block_Util::localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
 
+				// IP address
 				$log = array_shift( $row );
 				$html .= '<td><a href="#!">' . esc_html( $log ) . '</a></td>';
 
@@ -341,6 +352,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[mimetype][white_list][%]', // 3.0.3
 			'[mimetype][black_list]',    // 3.0.3
 			'[others][%]',               // 3.0.3
+			'[Maxmind][use_asn]',        // 3.0.4
 		);
 		$json = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;

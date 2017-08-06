@@ -51,6 +51,7 @@ class IP_Geo_Block_Logs {
 			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			`time` int(10) unsigned NOT NULL DEFAULT 0,
 			`ip` varchar(40) NOT NULL,
+			`asn` varchar(8) NULL,
 			`hook` varchar(8) NOT NULL,
 			`auth` int(10) unsigned NOT NULL DEFAULT 0,
 			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
@@ -64,6 +65,13 @@ class IP_Geo_Block_Logs {
 			KEY `hook` (`hook`)
 			) CHARACTER SET $charset"
 		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
+
+		// Add column for AS Number @since 3.0.4
+		if ( ! $wpdb->query( "DESCRIBE `$table` `asn`" ) ) {
+			$wpdb->query(
+				"ALTER TABLE `$table` ADD `asn` varchar(8) AFTER `ip`"
+			) or self::error( __LINE__ );
+		}
 
 		// for statistics
 		$table = $wpdb->prefix . self::TABLE_STAT;
@@ -86,6 +94,7 @@ class IP_Geo_Block_Logs {
 			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			`time` int(10) unsigned NOT NULL DEFAULT 0,
 			`ip` varchar(40) NOT NULL,
+			`asn` varchar(8) NULL,
 			`hook` varchar(8) NOT NULL,
 			`auth` int(10) unsigned NOT NULL DEFAULT 0,
 			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
@@ -97,6 +106,13 @@ class IP_Geo_Block_Logs {
 			) CHARACTER SET $charset"
 		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
 
+		// Add column for AS Number @since 3.0.4
+		if ( ! $wpdb->query( "DESCRIBE `$table` `asn`" ) ) {
+			$wpdb->query(
+				"ALTER TABLE `$table` ADD `asn` varchar(8) AFTER `ip`"
+			) or self::error( __LINE__ );
+		}
+
 		return $result;
 	}
 
@@ -104,7 +120,7 @@ class IP_Geo_Block_Logs {
 	 * Search table by specific IP address
 	 *
 	 */
-	private static function search_table( $table, $ip, $type = FALSE ) {
+	private static function search_table( $table, $ip, $type = TRUE ) {
 		global $wpdb;
 		$table = $wpdb->prefix . $table;
 
@@ -112,7 +128,7 @@ class IP_Geo_Block_Logs {
 			"SELECT * FROM `$table` WHERE `ip` = '%s'", $ip
 		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
 
-		if ( ! $type )
+		if ( $type )
 			return ! empty( $result[0] ) ? $result[0] : NULL; // for cache
 		else
 			return ! empty( $result ) ? $result : array(); // for logs
@@ -418,9 +434,10 @@ class IP_Geo_Block_Logs {
 		if ( validate_file( $path ) === 0 ) {
 			file_put_contents(
 				IP_Geo_Block_Util::slashit( $path ) . IP_Geo_Block::PLUGIN_NAME . date('-Y-m') . '.log',
-				sprintf( "%d,%s,%s,%d,%s,%s,%s,%s,%s,%s\n",
+				sprintf( "%d,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s\n",
 					$_SERVER['REQUEST_TIME'],
 					$validate['ip'],
+					$validate['asn'],
 					$hook,
 					$validate['auth'],
 					$validate['code'],
@@ -486,10 +503,11 @@ class IP_Geo_Block_Logs {
 		// insert into DB
 		$sql = $wpdb->prepare(
 			"INSERT INTO `$table`
-			(`time`, `ip`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, `data`)
-			VALUES (%d, %s, %s, %d, %s, %s, %s, %s, %s, %s)",
+			(`time`, `ip`, `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, `data`)
+			VALUES (%d, %s, %s, %s, %d, %s, %s, %s, %s, %s, %s)",
 			$_SERVER['REQUEST_TIME'],
 			$validate['ip'],
+			$validate['asn'],
 			$hook,
 			$validate['auth'],
 			$validate['code'],
@@ -521,7 +539,7 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 
-		$sql = "SELECT `hook`, `time`, `ip`, `code`, `result`, `method`, `user_agent`, `headers`, `data` FROM `$table`";
+		$sql = "SELECT `hook`, `time`, `ip`, `code`, `result`, `asn`, `method`, `user_agent`, `headers`, `data` FROM `$table`";
 
 		if ( ! $hook )
 			$sql .= " ORDER BY `hook`, `No` DESC";
@@ -536,7 +554,22 @@ class IP_Geo_Block_Logs {
 	 *
 	 */
 	public static function search_logs( $ip ) {
-		return self::search_table( self::TABLE_LOGS, $ip, TRUE );
+		return self::search_table( self::TABLE_LOGS, $ip, FALSE );
+	}
+
+	/**
+	 * Get logs for a specified duration in the past
+	 *
+	 */
+	public static function get_recent_logs( $duration = DAY_IN_SECONDS ) {
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_LOGS;
+
+		$sql = $wpdb->prepare(
+			"SELECT `time`, `ip`, `asn`, `hook`, `code`, `method`, `data` FROM `$table` WHERE `time` > %d", $_SERVER['REQUEST_TIME'] - $duration
+		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
+
+		return $result;
 	}
 
 	/**
@@ -591,7 +624,7 @@ class IP_Geo_Block_Logs {
 	 *
 	 */
 	public static function search_cache( $ip ) {
-		return self::search_table( IP_Geo_Block::CACHE_NAME, $ip );
+		return self::search_table( IP_Geo_Block::CACHE_NAME, $ip, TRUE );
 	}
 
 	/**
@@ -631,18 +664,18 @@ class IP_Geo_Block_Logs {
 
 		$sql = $wpdb->prepare(
 			"INSERT INTO `$table`
-			(`time`, `ip`, `hook`, `auth`, `code`, `fail`, `call`, `host`)
-			VALUES (%d, %s, %s, %d, %s, %d, %d, %s)
+			(`time`, `ip`, `asn`, `hook`, `auth`, `code`, `fail`, `call`, `host`)
+			VALUES (%d, %s, %s, %s, %d, %s, %d, %d, %s)
 			ON DUPLICATE KEY UPDATE 
 			`time` = VALUES(`time`),
 			`hook` = VALUES(`hook`),
 			`auth` = VALUES(`auth`),
 			`code` = VALUES(`code`),
 			`fail` = VALUES(`fail`),
-			`call` = VALUES(`call`),
-			`host` = VALUES(`host`)",
+			`call` = VALUES(`call`)",
 			$cache['time'],
 			$cache['ip'  ],
+			$cache['asn' ],
 			$cache['hook'],
 			$cache['auth'],
 			$cache['code'],
@@ -663,21 +696,6 @@ class IP_Geo_Block_Logs {
 		$sql = $wpdb->prepare(
 			"DELETE FROM `$table` WHERE `time` < %d", $_SERVER['REQUEST_TIME'] - $cache_time
 		) and $result = ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
-
-		return $result;
-	}
-
-	/**
-	 * 
-	 *
-	 */
-	public static function get_recent( $duration = DAY_IN_SECONDS ) {
-		global $wpdb;
-		$table = $wpdb->prefix . self::TABLE_LOGS;
-
-		$sql = $wpdb->prepare(
-			"SELECT `time`, `ip`, `hook`, `code`, `method`, `data` FROM `$table` WHERE `time` > %d", $_SERVER['REQUEST_TIME'] - $duration
-		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
 
 		return $result;
 	}

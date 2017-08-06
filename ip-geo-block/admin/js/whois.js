@@ -78,7 +78,11 @@
 							}*/
 
 							if (value.link) {
-								value.value = '<a href="' + escapeHTML(value.link.href) + '.json" target=_blank>' + escapeHTML(value.value) + '</a>';
+								if ((value['referenced-type'] || false) && 'aut-num' === value['referenced-type']) {
+									value.value += ' [ <a href="http://ipinfo.io/' + escapeHTML(value.value) + '" target=_blank>Search on ipinfo.io</a> ]';
+								} else {
+									value.value = '<a href="' + escapeHTML(value.link.href) + '.json" target=_blank>' + escapeHTML(value.value) + '</a>';
+								}
 							}
 
 							else if ('remarks' === value.name) {
