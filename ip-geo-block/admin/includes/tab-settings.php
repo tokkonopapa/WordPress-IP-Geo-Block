@@ -356,6 +356,7 @@ endif;
 				'field' => $field,
 				'value' => $options[ $field ],
 				'class' => $options['response_code'] < 400 ? '' : 'ip-geo-block-hide',
+				'placeholder' => '/about/',
 			)
 		);
 
@@ -877,6 +878,7 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'class' => $options[ $field ]['matching_rule'] != -1 && $options[ $field ]['response_code'] < 400 ? '' : 'ip-geo-block-hide',
+				'placeholder' => '/about/',
 			)
 		);
 

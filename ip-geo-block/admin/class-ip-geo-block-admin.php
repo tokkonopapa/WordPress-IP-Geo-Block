@@ -783,7 +783,7 @@ class IP_Geo_Block_Admin {
 		  case 'text': ?>
 <input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"
 <?php disabled( ! empty( $args['disabled'] ), TRUE ); ?>
-<?php if ( isset( $args['placeholder'] ) ) echo ' placeholder="', $args['placeholder'], '"'; ?> />
+<?php if ( isset( $args['placeholder'] ) ) echo ' placeholder="', esc_html( $args['placeholder'] ), '"'; ?> />
 <?php
 			break; // disabled @since 3.0
 

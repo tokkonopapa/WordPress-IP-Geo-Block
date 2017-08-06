@@ -291,7 +291,7 @@ class IP_Geo_Block {
 	private static function make_validation( $ip, $result ) {
 		return array_merge( array(
 			'ip'   => $ip,
-			'asn' => NULL,  // @since 3.0.4
+			'asn'  => NULL,  // @since 3.0.4
 			'auth' => IP_Geo_Block_Util::get_current_user_id(),
 			'code' => 'ZZ', // may be overwritten with $result
 		), $result );
@@ -386,10 +386,6 @@ class IP_Geo_Block {
 
 		// custom action (for fail2ban) @since 1.2.0
 		do_action( self::PLUGIN_NAME . '-send-response', $hook, $code, $validate );
-
-		// avoid redirection loop
-		if ( $code < 400 && IP_Geo_Block_Util::compare_url( $_SERVER['REQUEST_URI'], $settings['redirect_uri'] ? $settings['redirect_uri'] : home_url( '/' ) ) )
-			return; // do not block
 
 		// prevent caching (WP Super Cache, W3TC, Wordfence, Comet Cache)
 		defined( 'DONOTCACHEPAGE' ) or define( 'DONOTCACHEPAGE', TRUE );
@@ -704,10 +700,10 @@ class IP_Geo_Block {
 		$time = microtime( TRUE );
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr ) ) {
 			$validate = self::make_validation( self::$remote_addr, array(
-				'fail' => TRUE, // count up $cache['fail'] in update_cache()
-				'result' => 'failed',
+				'fail'     => TRUE, // count up $cache['fail'] in update_cache()
+				'result'   => 'failed',
 				'provider' => 'Cache',
-				'time' => microtime( TRUE ) - $time,
+				'time'     => microtime( TRUE ) - $time,
 			) + $cache );
 
 			$settings = self::get_option();
@@ -864,6 +860,10 @@ class IP_Geo_Block {
 				$settings[ $key ] = $public[ $key ];
 			}
 		}
+
+		// avoid redirection loop
+		if ( $settings['response_code'] < 400 && IP_Geo_Block_Util::compare_url( $_SERVER['REQUEST_URI'], $settings['redirect_uri'] ? $settings['redirect_uri'] : home_url( '/' ) ) )
+			return; // do not block
 
 		if ( $public['target_rule'] ) {
 			if ( ! did_action( 'wp' ) ) { // deferred validation on 'wp' when the target is specified
