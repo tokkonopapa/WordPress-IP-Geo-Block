@@ -51,7 +51,7 @@ following picture shows the result of 1st and 2nd time which is available at
 "**Installation information**" in "**Plugin settings**" section. It means that 
 the fetched result would be cached in your server.
 
-![DNS reverse lookup]({{ '/img/2017-05/DNS-Lookup.png' | prepend: site.baseurl }}
+![DNS reverse lookup]({{ '/img/2017-05/DNSLookupCache.png' | prepend: site.baseurl }}
  "DNS reverse lookup"
 )
 

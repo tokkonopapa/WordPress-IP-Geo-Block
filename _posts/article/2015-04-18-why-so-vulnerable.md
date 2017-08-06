@@ -298,7 +298,7 @@ And I quite agree with [James Golovich][James-Golovich]:
 > If you have the WordPress tools available to you then you should use them.
 > Something like current_user_can() and a nonce should always be used.
 
-[WPScan]:               https://wpvulndb.com/statistics "WordPress Vulnerability Statistics"
+[WPScan]:               https://wpvulndb.com/ "WPScan Vulnerability Database"
 [Sucuri]:               https://sucuri.net/ "Sucuri Security - Website Protection, Malware Removal, and Blacklist Prevention"
 [Sucuri-Blog]:          https://blog.sucuri.net/ "Sucuri Blog"
 [Custom-Contact-Forms]: https://blog.sucuri.net/2014/08/database-takeover-in-custom-contact-forms.html "Critical Vulnerability Disclosed on WordPress Custom Contact Forms Plugin | Sucuri Blog"
