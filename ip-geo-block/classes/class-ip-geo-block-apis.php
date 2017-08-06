@@ -469,6 +469,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		IP_Geo_Block_Logs::update_cache( $cache = array(
 			'time' => $_SERVER['REQUEST_TIME'],
 			'ip'   => $ip,
+			'asn'  => $validate['asn' ], // @since 3.0.4
 			'hook' => $hook,
 			'code' => $validate['code'],
 			'auth' => $validate['auth'], // get_current_user_id() > 0
@@ -504,7 +505,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 	}
 
 	public function get_country( $ip, $args = array() ) {
-		return ( $cache = self::get_cache( $ip ) ) ? $cache['code'] : NULL;
+		return ( $cache = self::get_cache( $ip ) ) ? ( isset( $args['cache'] ) ? $cache : $cache['code'] ) : NULL;
 	}
 }
 
@@ -605,8 +606,9 @@ class IP_Geo_Block_Provider {
 		if ( $rand )
 			shuffle( $tmp );
 
-		foreach ( $tmp as $name )
+		foreach ( $tmp as $name ) {
 			$list[ $name ] = self::$providers[ $name ][ $key ];
+		}
 
 		return $list;
 	}

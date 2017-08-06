@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.8
-Stable tag: 3.0.3.4
+Stable tag: 3.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,7 +21,7 @@ After several days of installation, you'll be supprised to find many malicious o
 = Features =
 
 * **Immigration control:**  
-  Access to the basic and important entrances into the back-end such as `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-signup.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by means of a country code based on IP address. It allows you to configure either whitelist or blacklist to specify the countires.
+  Access to the basic and important entrances into the back-end such as `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-signup.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by means of a country code based on IP address. It allows you to configure either whitelist or blacklist to [specify the countires](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia"), [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia") for a range of IP addresses and [AS number](https://en.wikipedia.org/wiki/Autonomous_system_(Internet) "Autonomous system (Internet) - Wikipedia") for a group of IP networks.
 
 * **Zero-day Exploit Prevention:**  
   Unlike other security plugins and firewalls based on attack patterns, the original feature "**W**ord**P**ress **Z**ero-day **E**xploit **P**revention" (WP-ZEP) is focused on vulnerability patterns. It is simple but still smart and strong enough to block any malicious accesses to `wp-admin/*.php`, `plugins/*.php` and `themes/*.php` even from the permitted countries. It will protect your site against certain types of attack such as CSRF, LFI, SQLi, XSS and so on, **even if you have some vulnerable plugins and themes in your site**.
@@ -42,8 +42,8 @@ After several days of installation, you'll be supprised to find many malicious o
   When you click an external hyperlink on admin screens, http referrer will be eliminated to hide a footprint of your site.
 
 * **Multiple source of IP Geolocation databases:**  
-  [MaxMind GeoLite free databases](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") and [IP2Location LITE databases](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Those will be downloaded and updated (once a month) automatically. Also free Geolocation REST APIs and whois information can be available for audit purposes.  
-  Father more, if you use CloudFlare or CloudFront as a reverse proxy service, you can get [dedicated API class libraries](http://www.ipgeoblock.com/article/api-class-library.html "CloudFlare & CloudFront API class library | IP Geo Block") for these services.
+  [MaxMind GeoLite free databases](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") and [IP2Location LITE databases](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Also free Geolocation REST APIs and whois information can be available for audit purposes.  
+  Father more, if you use CloudFlare or CloudFront as a reverse proxy service, you can install the [dedicated API class libraries](http://www.ipgeoblock.com/article/api-class-library.html "CloudFlare & CloudFront API class library | IP Geo Block") for these services.
 
 * **Customizing response:**  
   HTTP response code can be selectable as `403 Forbidden` to deny access pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
@@ -107,7 +107,10 @@ or following descriptions for your best setup.
   Specify the country code with two letters (see [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")). Each of them should be separated by comma.
 
 * **White/Black list of extra IPs for prior validation**  
-  The list of extra IP addresses prior to the validation of country code. [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia, the free encyclopedia") is acceptable to specify the range.
+  The list of extra IP addresses prior to the validation of country code. [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia, the free encyclopedia") and [AS number](https://en.wikipedia.org/wiki/Autonomous_system_(Internet) "Autonomous system (Internet) - Wikipedia") are also acceptable to specify the range.
+
+* **Use Autonomous System Number (ASN)**  
+  It enables you to use "AS number" in the whitelist and blacklist of extra IP addresses to specify a group of IP networks. 
 
 * **$_SERVER keys for extra IPs**  
   Additional IP addresses will be validated if some of keys in `$_SERVER` variable are specified in this textfield. Typically `HTTP_X_FORWARDED_FOR`.
@@ -348,6 +351,13 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.4 =
+* **New feature:** Statistics in logs - a new section in Statistics tab.
+* **New feature:** Autonomous System Number (ASN) in whitelist and blacklist of extra IP addresses instead of specifying many IP addresses.
+* **Improvement:** Redirected requests (HTTP response code < 400) are now recorded in statistics and logs as "blocked".
+* **Bug fix:** Fix the issue of illegal click event handling on anchor tag without href.
+* See [3.0.4 release note](http://www.ipgeoblock.com/changelog/release-3.0.4.html "3.0.4 Release Note | IP Geo Block") for some details.
 
 = 3.0.3.4 =
 * **Improvement:** Some minor refactoring for the future release.

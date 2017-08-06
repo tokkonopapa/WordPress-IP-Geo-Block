@@ -374,7 +374,7 @@ function my_geolocation() {
 	var_dump( $geolocation );
 
 	if ( isset( $geolocation['errorMessage'] ) ) {
-		echo 'error at getting geolocation'; // error handling
+		echo 'error on getting geolocation'; // error handling
 	}
 }
 

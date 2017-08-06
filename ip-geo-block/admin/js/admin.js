@@ -273,6 +273,9 @@ var ip_geo_block_time = new Date();
 			// Public facing pages
 			set_front_end($(ID('@', 'validation_public')));
 
+			// Admin ajax/post
+			show_folding_ajax($(ID('@', 'validation_ajax_1')));
+
 			// Additional edge case
 			if (clear) {
 				clear = ID('%', 'settings[providers][IPInfoDB]');
@@ -357,7 +360,7 @@ var ip_geo_block_time = new Date();
 					}
 				});
 			}
-		},
+		}
 	};
 
 	// google chart
@@ -668,10 +671,9 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Enable / Disable Exceptions
-			show_folding_ajax($(ID('@', 'validation_ajax_1')));
-			$('input[id^="' + ID('!', 'validation_ajax_') + '"]').on('click', function (event) {
+			$('input[id^="' + ID('!', 'validation_ajax_') + '"]').on('change', function (event) {
 				show_folding_ajax($(this));
-			});
+			}).change();
 
 			/*---------------------------
 			 * Front-end target settings
@@ -906,6 +908,14 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 
+			// Validation logs
+			$(ID('@', 'clear_logs')).on('click', function (event) {
+				confirm(IP_GEO_BLOCK.msg[5], function () {
+					ajax_clear('logs', null);
+				});
+				return false;
+			});
+
 			// Statistics
 			$(ID('@', 'clear_cache')).on('click', function (event) {
 				confirm(IP_GEO_BLOCK.msg[4], function () {
@@ -1090,9 +1100,19 @@ var ip_geo_block_time = new Date();
 				});
 			});
 
-			// Clear filter logs
+			// Clear filter
 			$(ID('#', 'reset-filter')).on('click', function (event) {
 				$('.footable').trigger('footable_clear_filter');
+				return false;
+			});
+
+			// Preset filter
+			$(ID('.', 'field')).on('footable_initialized', function (event) {
+				$('.footable').trigger(
+					'footable_filter', {
+						'filter': $(ID('@', 'filter_logs')).val()
+					}
+				);
 				return false;
 			});
 

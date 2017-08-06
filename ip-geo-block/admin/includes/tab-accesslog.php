@@ -14,9 +14,8 @@ if ( $options['validation']['reclogs'] ) :
 		/*----------------------------------------*
 		 * Validation logs
 		 *----------------------------------------*/
-		$section = IP_Geo_Block::PLUGIN_NAME . '-accesslog';
 		add_settings_section(
-			$section,
+			$section = IP_Geo_Block::PLUGIN_NAME . '-accesslog',
 			__( 'Validation logs', 'ip-geo-block' ),
 			NULL,
 			$option_slug
@@ -34,7 +33,7 @@ if ( $options['validation']['reclogs'] ) :
 				'type' => 'text',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => '',
+				'value' => isset( $_GET['s'] ) ? esc_html( $_GET['s'] ) : '', // preset filter
 				'after' => '<a class="button button-secondary" id="ip-geo-block-reset-filter" title="' . __( 'Reset', 'ip-geo-block' ) . '" href="javascript:void(0)">'. __( 'Reset', 'ip-geo-block' ) . '</a>',
 			)
 		);
@@ -88,14 +87,13 @@ if ( $options['validation']['reclogs'] ) :
 			);
 		}
 
-else:
+else: // $options['validation']['reclogs']
 
 		/*----------------------------------------*
 		 * Warning
 		 *----------------------------------------*/
-		$section = IP_Geo_Block::PLUGIN_NAME . '-accesslog';
 		add_settings_section(
-			$section,
+			$section = IP_Geo_Block::PLUGIN_NAME . '-accesslog',
 			__( 'Validation logs', 'ip-geo-block' ),
 			array( __CLASS__, 'warn_accesslog' ),
 			$option_slug
@@ -114,7 +112,8 @@ else:
 			)
 		);
 
-endif;
+endif; // $options['validation']['reclogs']
+
 	}
 
 	/**
@@ -129,11 +128,12 @@ endif;
 
 	private static function list_accesslog( $key ) {
 		echo '<table class="fixed ', IP_Geo_Block::PLUGIN_NAME, '-log" data-page-size="10" data-limit-navigation="5" data-filter="#', IP_Geo_Block::OPTION_NAME, '_filter_logs" data-filter-text-only="true" style="display:none"><thead><tr>', "\n";
-		echo '<th data-type="numeric">', __( 'Date', 'ip-geo-block' ), '</th>', "\n";
-		echo '<th>', __( 'IP address', 'ip-geo-block' ), '</th>', "\n";
-		echo '<th>', __( 'Code',       'ip-geo-block' ), '</th>', "\n";
-		echo '<th>', __( 'Result',     'ip-geo-block' ), '</th>', "\n";
-		echo '<th data-hide="phone,tablet">', __( 'Request',      'ip-geo-block' ), '</th>', "\n";
+		echo '<th data-type="numeric">',      __( 'Date',         'ip-geo-block' ), '</th>', "\n";
+		echo '<th>',                          __( 'IP address',   'ip-geo-block' ), '</th>', "\n";
+		echo '<th>',                          __( 'Code',         'ip-geo-block' ), '</th>', "\n";
+		echo '<th>',                          __( 'Result',       'ip-geo-block' ), '</th>', "\n";
+		echo '<th data-hide="phone,tablet">', __( 'AS number',    'ip-geo-block' ), '</th>', "\n";
+		echo '<th data-hide="all">',          __( 'Request',      'ip-geo-block' ), '</th>', "\n";
 		echo '<th data-hide="all">',          __( 'User agent',   'ip-geo-block' ), '</th>', "\n";
 		echo '<th data-hide="all">',          __( 'HTTP headers', 'ip-geo-block' ), '</th>', "\n";
 		echo '<th data-hide="all">',          __( '$_POST data',  'ip-geo-block' ), '</th>', "\n";

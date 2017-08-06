@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.3.4';
+	const VERSION = '3.0.4';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -135,7 +135,7 @@ class IP_Geo_Block {
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
-			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
+			add_action( self::CRON_NAME, array( $this, 'exec_update_db' ) );
 
 		// message text on comment form
 		if ( $settings['comment']['pos'] ) {
@@ -291,6 +291,7 @@ class IP_Geo_Block {
 	private static function make_validation( $ip, $result ) {
 		return array_merge( array(
 			'ip'   => $ip,
+			'asn' => NULL,  // @since 3.0.4
 			'auth' => IP_Geo_Block_Util::get_current_user_id(),
 			'code' => 'ZZ', // may be overwritten with $result
 		), $result );
@@ -310,7 +311,7 @@ class IP_Geo_Block {
 		if ( empty( $providers ) ) // make valid providers list
 			$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
 
-		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address(), $settings, $providers, $callback );
+		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address(), $settings, $providers, array(), $callback );
 
 		if ( ! empty( $result['countryCode'] ) )
 			$result['code'] = $result['countryCode'];
@@ -322,22 +323,29 @@ class IP_Geo_Block {
 	 * API for internal.
 	 *
 	 */
-	private static function _get_geolocation( $ip, $settings, $providers, $callback = 'get_country' ) {
+	private static function _get_geolocation( $ip, $settings, $providers, $args = array(), $callback = 'get_country' ) {
 		// check loop back / private address
 		if ( IP_Geo_Block_Util::is_private_ip( $ip ) )
 			return self::make_validation( $ip, array( 'time' => 0, 'provider' => 'Private', 'code' => 'XX' ) );
 
 		// set arguments for wp_remote_get()
-		$args = self::get_request_headers( $settings );
+		$args += self::get_request_headers( $settings );
 
 		foreach ( $providers as $provider ) {
 			$time = microtime( TRUE );
 			if ( ( $geo = IP_Geo_Block_API::get_instance( $provider, $settings ) ) &&
 			     ( $code = $geo->$callback( $ip, $args ) ) ) {
+				// Get AS number @since 3.0.4
+				if ( ( $settings['Maxmind']['use_asn'] ) && ( ! isset( $code['asn'] ) || 0 !== strpos( $code['asn'], 'AS' ) ) &&
+				     ( $geo = IP_Geo_Block_API::get_instance( 'Maxmind', $settings ) ) ) {
+					$asn = $geo->get_location( $ip, array( 'ASN' => TRUE ) );
+					$asn = isset( $asn['ASN'] ) ? strtok( $asn['ASN'], ' ' ) : NULL;
+				}
+
 				return self::make_validation( $ip, array(
 					'time' => microtime( TRUE ) - $time,
 					'provider' => $provider,
-				) + ( is_array( $code ) ? $code : array( 'code' => $code ) ) );
+				) + ( is_array( $code ) ? $code : array( 'code' => $code, 'asn' => isset( $asn ) ? $asn : NULL ) ) );
 			}
 		}
 
@@ -373,16 +381,18 @@ class IP_Geo_Block {
 	public function send_response( $hook, $validate, $settings ) {
 		require_once ABSPATH . WPINC . '/functions.php'; // for get_status_header_desc() @since 2.3.0
 
-		// prevent caching (WP Super Cache, W3TC, Wordfence, Comet Cache)
-		defined( 'DONOTCACHEPAGE' ) or define( 'DONOTCACHEPAGE', TRUE );
-
 		$code = (int   )apply_filters( self::PLUGIN_NAME . '-'.$hook.'-status', $settings['response_code'] );
 		$mesg = (string)apply_filters( self::PLUGIN_NAME . '-'.$hook.'-reason', $settings['response_msg' ] ? $settings['response_msg'] : get_status_header_desc( $code ) );
 
 		// custom action (for fail2ban) @since 1.2.0
 		do_action( self::PLUGIN_NAME . '-send-response', $hook, $code, $validate );
 
-		// Set the headers to prevent caching for the different browsers.
+		// avoid redirection loop
+		if ( $code < 400 && IP_Geo_Block_Util::compare_url( $_SERVER['REQUEST_URI'], $settings['redirect_uri'] ? $settings['redirect_uri'] : home_url( '/' ) ) )
+			return; // do not block
+
+		// prevent caching (WP Super Cache, W3TC, Wordfence, Comet Cache)
+		defined( 'DONOTCACHEPAGE' ) or define( 'DONOTCACHEPAGE', TRUE );
 		nocache_headers(); // wp-includes/functions.php @since 2.0.0
 
 		if ( defined( 'XMLRPC_REQUEST' ) && 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
@@ -468,7 +478,7 @@ class IP_Geo_Block {
 		//     'result'   => $result,   /* 'passed', 'blocked'                 */
 		// );
 		foreach ( $ips as self::$remote_addr ) {
-			$validate = self::_get_geolocation( self::$remote_addr, $settings, $providers );
+			$validate = self::_get_geolocation( self::$remote_addr, $settings, $providers, array( 'cache' => TRUE ) );
 			$validate = apply_filters( $var, $validate, $settings );
 
 			// if no 'result' then validate ip address by country
@@ -578,7 +588,6 @@ class IP_Geo_Block {
 	private function check_exceptions( $action, $page, $exceptions = array() ) {
 		$in_action = in_array( $action, $exceptions, TRUE );
 		$in_page   = in_array( $page,   $exceptions, TRUE );
-
 		return ( ( $action xor $page ) && ( ! $in_action and ! $in_page ) ) ||
 		       ( ( $action and $page ) && ( ! $in_action or  ! $in_page ) ) ? FALSE : TRUE;
 	}
@@ -614,13 +623,12 @@ class IP_Geo_Block {
 		}
 
 		// list of request for specific action or page to bypass WP-ZEP
-		$list = array_merge(
-			apply_filters( self::PLUGIN_NAME . '-bypass-admins', array() ),
-			array( 'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',  // in wp-admin js/widget.js, includes/template.php, async-upload.php
-				'bp_avatar_upload', 'GOTMLS_logintime', // bbPress, Anti-Malware Security and Brute-Force Firewall
-				'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', // jetpack page & action
-			)
-		);
+		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array() ), array(
+			// in wp-admin js/widget.js, includes/template.php, async-upload.php
+			'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',
+			// bbPress, Anti-Malware Security and Brute-Force Firewall, jetpack page & action
+			'bp_avatar_upload', 'GOTMLS_logintime', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate',
+		) );
 
 		// skip validation of country code and WP-ZEP if exceptions matches action or page
 		if ( ( $page || $action ) && $this->check_exceptions( $action, $page, $settings['exception']['admin'] ) )
@@ -693,13 +701,14 @@ class IP_Geo_Block {
 	 */
 	public function auth_fail( $something = NULL ) {
 		// Count up a number of fails when authentication is failed
+		$time = microtime( TRUE );
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr ) ) {
 			$validate = self::make_validation( self::$remote_addr, array(
-				'code'     => $cache['code'],
-				'fail'     => TRUE,
-				'result'   => 'failed',
+				'fail' => TRUE, // count up $cache['fail'] in update_cache()
+				'result' => 'failed',
 				'provider' => 'Cache',
-			) );
+				'time' => microtime( TRUE ) - $time,
+			) + $cache );
 
 			$settings = self::get_option();
 
@@ -756,8 +765,7 @@ class IP_Geo_Block {
 			if ( $sig && FALSE !== strpos( $query, $sig ) ) {
 				if ( preg_match( '!\W!', $sig ) || // ex) `../` or `/wp-config.php`
 				     preg_match( '!\b' . preg_quote( $sig, '!' ) . '\b!', $query ) ) {
-					$score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] );
-					if ( $score > 0.99 ) {
+					if ( ( $score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] ) ) > 0.99 ) {
 						return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
 					}
 				}
@@ -819,8 +827,8 @@ class IP_Geo_Block {
 			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
 
-				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) &&
-				     Net_IPv4::ipInNetwork( $ip, isset( $j[1] ) ? $i : $i.'/32' ) )
+				if ( ( ! empty( $validate['asn'] ) && $validate['asn'] === $j[0] ) ||
+				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && Net_IPv4::ipInNetwork( $ip, isset( $j[1] ) ? $i : $i.'/32' ) ) )
 					// can't overwrite existing result
 					return $validate + array( 'result' => $which ? 'extra' : 'passed' );
 			}
@@ -832,8 +840,8 @@ class IP_Geo_Block {
 			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
 
-				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) &&
-				     Net_IPv6::isInNetmask( $ip, isset( $j[1] ) ? $i : $i.'/128' ) )
+				if ( ( ! empty( $validate['asn'] ) && $validate['asn'] === $j[0] ) ||
+				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) && Net_IPv6::isInNetmask( $ip, isset( $j[1] ) ? $i : $i.'/128' ) ) )
 					// can't overwrite existing result
 					return $validate + array( 'result' => $which ? 'extra' : 'passed' );
 			}
@@ -856,10 +864,6 @@ class IP_Geo_Block {
 				$settings[ $key ] = $public[ $key ];
 			}
 		}
-
-		// avoid redirection loop
-		if ( $settings['response_code'] < 400 && IP_Geo_Block_Util::compare_url( $_SERVER['REQUEST_URI'], $settings['redirect_uri'] ? $settings['redirect_uri'] : home_url( '/' ) ) )
-			return; // do not block
 
 		if ( $public['target_rule'] ) {
 			if ( ! did_action( 'wp' ) ) { // deferred validation on 'wp' when the target is specified
@@ -970,12 +974,12 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Handlers of cron job
+	 * Handlers of cron job for database and garbage collection for cache
 	 *
 	 */
-	public function update_database( $immediate = FALSE ) {
+	public function exec_update_db( $immediate = FALSE ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
-		return IP_Geo_Block_Cron::exec_job( $immediate );
+		return IP_Geo_Block_Cron::exec_update_db( $immediate );
 	}
 
 	public function exec_cache_gc() {

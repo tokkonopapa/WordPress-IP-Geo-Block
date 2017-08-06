@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.0', // Version of this table (not package)
+		'version'         => '3.0.4', // Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -93,6 +93,12 @@ class IP_Geo_Block_Opts {
 			// since version 2.2.1
 			'ipv4_last'   => 0,       // Last-Modified of DB file
 			'ipv6_last'   => 0,       // Last-Modified of DB file
+			// since version 3.0.4
+			'use_asn'     => -1,      // -1:install, 0:disable, 1:enable
+			'asn4_path'   => NULL,    // AS Number for IPv4
+			'asn6_path'   => NULL,    // AS Number for IPv6
+			'asn4_last'   => 0,       // AS Number for IPv4
+			'asn6_last'   => 0,       // AS Number for IPv6
 		),
 		'IP2Location'     => array(   // IP2Location
 			// since version 2.2.2
@@ -204,6 +210,7 @@ class IP_Geo_Block_Opts {
 			'ppsx' => 'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
 			'odt' => 'application/vnd.oasis.opendocument.text',
 		);
+
 		return self::$option_table;
 	}
 
@@ -351,13 +358,21 @@ class IP_Geo_Block_Opts {
 				);
 			}
 
+			if ( version_compare( $version, '3.0.4' ) < 0 ) {
+				$settings['Maxmind']['use_asn'  ] = 0; // disable
+				$settings['Maxmind']['asn4_path'] = $default['Maxmind']['asn4_path'];
+				$settings['Maxmind']['asn4_last'] = $default['Maxmind']['asn4_last'];
+				$settings['Maxmind']['asn6_path'] = $default['Maxmind']['asn6_path'];
+				$settings['Maxmind']['asn6_last'] = $default['Maxmind']['asn6_last'];
+			}
+
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
 
-		// install addons for IP Geolocation database API ver. 1.1.8
+		// install addons for IP Geolocation database API ver. 1.1.9
 		$providers = IP_Geo_Block_Provider::get_addons();
-		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.3' ) < 0 )
+		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.4' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table
@@ -379,10 +394,9 @@ class IP_Geo_Block_Opts {
 			try {
 				if ( FALSE === self::recurse_copy( $src, $dst ) )
 					throw new Exception();
-			}
-			catch ( Exception $e ) {
+			} catch ( Exception $e ) {
 				if ( class_exists( 'IP_Geo_Block_Admin', FALSE ) )
-					IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $dst ) );
+					IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), '<code>' . $dst . '</code>' ) );
 
 				return NULL;
 			}

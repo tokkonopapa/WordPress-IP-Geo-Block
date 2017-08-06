@@ -2,15 +2,13 @@
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context, $tab ) {
-		$plugin_slug = IP_Geo_Block::PLUGIN_NAME;
-		$option_slug = IP_Geo_Block::PLUGIN_NAME;
-		$option_name = IP_Geo_Block::OPTION_NAME;
 		$options = IP_Geo_Block::get_option();
 		$statistics = IP_Geo_Block_Logs::restore_stat( TRUE );
+		$plugin_slug = IP_Geo_Block::PLUGIN_NAME;
 
 		register_setting(
-			$option_slug,
-			$option_name
+			$option_slug = IP_Geo_Block::PLUGIN_NAME,
+			$option_name = IP_Geo_Block::OPTION_NAME
 		);
 
 if ( $options['save_statistics'] ) :
@@ -175,6 +173,32 @@ if ( $options['save_statistics'] ) :
 			)
 		);
 
+		/*----------------------------------------*
+		 * Statistics in logs
+		 *----------------------------------------*/
+		$section = $plugin_slug . '-stat-logs';
+		add_settings_section(
+			$section,
+			__( 'Statistics in logs', 'ip-geo-block' ),
+			array( __CLASS__, 'statistics_logs' ),
+			$option_slug
+		);
+
+		$field = 'clear_logs';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Clear logs', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'button',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => __( 'Clear now', 'ip-geo-block' ),
+			)
+		);
+
 else:
 
 		/*----------------------------------------*
@@ -287,6 +311,100 @@ endif;
 	public static function warn_statistics() {
 		echo '<p>', __( 'Current setting of [<strong>Record validation statistics</strong>] on [<strong>Settings</strong>] tab is not selected [<strong>Enable</strong>].', 'ip-geo-block' ), '</p>', "\n";
 		echo '<p>', __( 'Please set the proper condition to record and analyze the validation statistics.', 'ip-geo-block' ), '</p>', "\n";
+	}
+
+	/**
+	 * Render top list
+	 *
+	 */
+	public static function statistics_logs() {
+		// array of ( `time`, `ip`, `hook`, `code`, `method`, `data` )
+		$logs = IP_Geo_Block_Logs::get_recent_logs( YEAR_IN_SECONDS );
+
+		// Count by key
+		$count = array();
+		$keys = array(
+			'code' => __( 'Country (Top 10)',    'ip-geo-block' ),
+			'asn'  => __( 'AS number (Top 10)',  'ip-geo-block' ),
+			'ip'   => __( 'IP address (Top 10)', 'ip-geo-block' ),
+			'slug' => __( 'Slug in back-end',    'ip-geo-block' ),
+		);
+
+		foreach( $logs as $val ) {
+			$val['ip'] = '[' . $val['code'] . '] ' . $val['ip'];
+			$key = $val['method'] . ' ' . $val['data'];
+
+			// <methodName>...</methodName>
+			if ( preg_match( '#<methodName>(.*?)</methodName>#', $key, $matches ) ) {
+				$val['slug'] = '/xmlrpc.php ' . $matches[1];
+			}
+
+			// /wp-content/(plugins|themes)/...
+			elseif ( preg_match( '#(/wp-content/(?:plugins|themes)/.*?/)#', $key, $matches ) ) {
+				$val['slug'] = $matches[1];
+			}
+
+			// /wp-admin/admin*.php?action=...
+			elseif ( preg_match( '#(/wp-admin/admin.*?\.php).*((?:page|action)=[\w-]+)#', $key, $matches ) ) {
+				$val['slug'] = $matches[1] . (isset( $matches[2] ) ? ' ' . $matches[2] : '');
+			}
+
+			// /wp-admin/*.php
+			elseif ( preg_match( '#(/wp-admin/(?!admin).*?\.php)#', $key, $matches ) ) {
+				$val['slug'] = $matches[1];
+			}
+
+			// file uploading *.(zip|tar|rar|gz|php|...)
+			elseif ( preg_match( '#(\[name\]\s*?=>.*\.\w+?)\b#', $key, $matches ) ) {
+				$val['slug'] = $matches[1];
+			}
+
+			// /*.php
+			elseif ( preg_match( '#^\w+?\[\d+?\]:(/[^/]+?\.php)#', $key, $matches ) ) {
+				$val['slug'] = $matches[1];
+			}
+
+			foreach ( array_keys( $keys ) as $key ) {
+				if ( ! empty( $val[ $key ] ) ) {
+					$count[ $key ][] = $val[ $key ];
+				}
+			}
+		}
+
+		foreach ( $keys as $slug => $val ) {
+			echo '<ol class="ip-geo-block-top-list"><h4>', esc_html( $val ), '</h4>';
+
+			if ( isset( $count[ $slug ] ) ) {
+				$logs = array_count_values( $count[ $slug ] );
+				arsort( $logs );
+
+				if ( 'slug' !== $slug )
+					$logs = array_slice( $logs, 0, 10 );
+
+				foreach ( $logs as $key => $val ) {
+					$link = explode( ' ', $key );
+					$link = esc_html( end( $link ) );
+					$key =  esc_html( $key ) ;
+
+					echo '<li><code>';
+					echo 'code' === $slug ?
+						$key :
+						str_replace(
+							$link,
+							'<a href="' .
+							esc_url( add_query_arg(
+								array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 4, 's' => $link ),
+								admin_url( 'options-general.php' )
+							) ) .
+							'" target=_blank>' . $link . '</a>',
+							$key
+						);
+					echo '</code> (', (int)$val, ')</li>';
+				}
+			}
+
+			echo '</ol>', "\n";
+		}
 	}
 
 }

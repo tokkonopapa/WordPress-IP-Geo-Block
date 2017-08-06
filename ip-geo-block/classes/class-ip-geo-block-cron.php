@@ -47,7 +47,7 @@ class IP_Geo_Block_Cron {
 	 *   A. Once per site when this plugin is activated on network wide
 	 *   B. Multiple time for each blog when this plugin is individually activated
 	 */
-	public static function exec_job( $immediate = FALSE ) {
+	public static function exec_update_db( $immediate = FALSE ) {
 		$settings = IP_Geo_Block::get_option();
 		$args = IP_Geo_Block::get_request_headers( $settings );
 
@@ -141,12 +141,12 @@ class IP_Geo_Block_Cron {
 	 * Kick off a cron job to download database immediately in background on activation.
 	 *
 	 */
-	public static function start_update_db( $settings ) {
+	public static function start_update_db( $settings, $force = FALSE ) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 		// the status is still inactive when this plugin is activated on dashboard.
-		if ( ! ( is_plugin_active            ( IP_GEO_BLOCK_BASE ) ||    // @since 2.5.0
-		         is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) ) { // @since 3.0.0
+		if ( ! ( is_plugin_active            ( IP_GEO_BLOCK_BASE )   ||            // @since 2.5.0
+		         is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) || $force ) { // @since 3.0.0
 			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address(), MINUTE_IN_SECONDS );
 			self::schedule_cron_job( $settings['update'], NULL, TRUE );
 		}

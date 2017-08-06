@@ -2,13 +2,13 @@
 /**
  * IP Geo Block API class library for IP2Location
  *
- * @version   1.1.8
+ * @version   1.1.9
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2017 tokkonopapa
  */
-if ( class_exists( 'IP_Geo_Block_API' ) ) :
+if ( class_exists( 'IP_Geo_Block_API', FALSE ) ) :
 
 /**
  * URL and Path for IP2Location database
@@ -45,7 +45,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 		if ( ! extension_loaded('bcmath') )
 			require_once( 'bcmath.php' );
 
-		if ( ! class_exists( 'IP2Location' ) )
+		if ( ! class_exists( 'IP2Location', FALSE ) )
 			require_once( 'IP2Location.php' );
 
 		// setup database file and function
@@ -104,6 +104,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	public function download( &$db, $args ) {
 		$dir = $this->get_db_dir();
 
+		// IPv4
 		if ( $dir !== dirname( $db['ipv4_path'] ) . '/' )
 			$db['ipv4_path'] = $dir . IP_GEO_BLOCK_IP2LOC_IPV4_DAT;
 
@@ -117,6 +118,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 			$db['ipv4_last']
 		);
 
+		// IPv6
 		if ( $dir !== dirname( $db['ipv6_path'] ) . '/' )
 			$db['ipv6_path'] = $dir . IP_GEO_BLOCK_IP2LOC_IPV6_DAT;
 
@@ -143,26 +145,24 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	}
 
 	public function add_settings_field( $field, $section, $option_slug, $option_name, $options, $callback, $str_path, $str_last ) {
+		$db  = $options[ $field ];
 		$dir = $this->get_db_dir();
+		$msg = __( 'Database file does not exist.', 'ip-geo-block' );
 
-		$path = apply_filters(
-			IP_Geo_Block::PLUGIN_NAME . '-ip2location-path',
-			empty( $options['IP2Location']['ipv4_path'] ) ? 
-				$dir . IP_GEO_BLOCK_IP2LOC_IPV4_DAT :
-				$options['IP2Location']['ipv4_path']
-		);
+		// IPv4
+		if ( $db['ipv4_path'] )
+			$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-ip2location-path', $db['ipv4_path'] );
+		else
+			$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-ip2location-path', $dir . IP_GEO_BLOCK_IP2LOC_IPV4_DAT );
 
-		$date = empty( $options['IP2Location']['ipv4_path'] ) ||
-			! @file_exists( $options['IP2Location']['ipv4_path'] ) ?
-			__( 'Database file does not exist.', 'ip-geo-block' ) :
-			sprintf(
-				$str_last,
-				IP_Geo_Block_Util::localdate( $options[ $field ]['ipv4_last'] )
-			);
+		if ( @file_exists( $path ) )
+			$date = sprintf( $str_last, IP_Geo_Block_Util::localdate( $db['ipv4_last'] ) );
+		else
+			$date = $msg;
 
 		add_settings_field(
 			$option_name . $field . '_ipv4',
-			"$field $str_path (<a rel='noreferrer' href='" . IP_GEO_BLOCK_IP2LOC_DOWNLOAD . "' title='" . IP_GEO_BLOCK_IP2LOC_IPV4_ZIP . "'>IPv4</a>)",
+			"$field $str_path<br />(<a rel='noreferrer' href='" . IP_GEO_BLOCK_IP2LOC_DOWNLOAD . "' title='" . IP_GEO_BLOCK_IP2LOC_IPV4_ZIP . "'>IPv4</a>)",
 			$callback,
 			$option_slug,
 			$section,
@@ -177,21 +177,20 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 			)
 		);
 
-		$path = empty( $options['IP2Location']['ipv6_path'] ) ?
-			$dir . IP_GEO_BLOCK_IP2LOC_IPV6_DAT :
-			$options['IP2Location']['ipv6_path'];
+		// IPv6
+		if ( $db['ipv6_path'] )
+			$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-ip2location-path', $db['ipv6_path'] );
+		else
+			$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-ip2location-path', $dir . IP_GEO_BLOCK_IP2LOC_IPV6_DAT );
 
-		$date = empty( $options['IP2Location']['ipv6_path'] ) ||
-			! @file_exists( $options['IP2Location']['ipv6_path'] ) ?
-			__( 'Database file does not exist.', 'ip-geo-block' ) :
-			sprintf(
-				$str_last,
-				IP_Geo_Block_Util::localdate( $options[ $field ]['ipv6_last'] )
-			);
+		if ( @file_exists( $path ) )
+			$date = sprintf( $str_last, IP_Geo_Block_Util::localdate( $db['ipv6_last'] ) );
+		else
+			$date = $msg;
 
 		add_settings_field(
 			$option_name . $field . '_ipv6',
-			"$field $str_path (<a rel='noreferrer' href='" . IP_GEO_BLOCK_IP2LOC_DOWNLOAD . "' title='" . IP_GEO_BLOCK_IP2LOC_IPV6_ZIP . "'>IPv6</a>)",
+			"$field $str_path<br />(<a rel='noreferrer' href='" . IP_GEO_BLOCK_IP2LOC_DOWNLOAD . "' title='" . IP_GEO_BLOCK_IP2LOC_IPV6_ZIP . "'>IPv6</a>)",
 			$callback,
 			$option_slug,
 			$section,
@@ -221,4 +220,3 @@ IP_Geo_Block_Provider::register_addon( array(
 ) );
 
 endif;
-?>

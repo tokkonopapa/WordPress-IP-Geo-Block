@@ -14,12 +14,10 @@ var IP_GEO_BLOCK_ZEP = {
 		'use strict';
 		var i, n = this.sites.length;
 		for (i = 0; i < n; ++i) {
-			if (url && -1 !== url.indexOf(this.sites[i]) && this.nonce) {
-				window.location = url;
-				return true;
+			if (-1 !== url.indexOf(this.sites[i]) && url && this.nonce) {
+				window.location = add_query_nonce(url, this.nonce);
 			}
 		}
-		return false;
 	}
 };
 
@@ -342,14 +340,15 @@ var IP_GEO_BLOCK_ZEP = {
 
 			// if internal then check network admin url
 			else if (admin === 0) {
-				return ! IP_GEO_BLOCK_ZEP.redirect(add_query_nonce(href, nonce));
+				IP_GEO_BLOCK_ZEP.redirect(href);
+				return true;
 			}
 
 			// if external then redirect with no referrer not to leak out the nonce
 			else if (admin === -1 && is_back_end()) {
 				if ('_self' === $this.attr('target')) {
-					IP_GEO_BLOCK_ZEP.redirect(add_query_nonce(href, nonce));
-					return false;
+					IP_GEO_BLOCK_ZEP.redirect(href);
+					return true;
 				}
 
 				href = escapeHTML(decodeURIComponent(this.href));
@@ -371,10 +370,6 @@ var IP_GEO_BLOCK_ZEP = {
 
 				// automatically call event.stopPropagation() and event.preventDefault()
 				return false;
-			}
-
-			else {
-				return true;
 			}
 		});
 
