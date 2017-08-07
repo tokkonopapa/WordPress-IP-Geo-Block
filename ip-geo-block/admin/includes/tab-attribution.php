@@ -20,9 +20,6 @@ class IP_Geo_Block_Admin_Tab {
 
 		$providers = IP_Geo_Block_Provider::get_providers( 'link' );
 
-		// additional link
-		$providers['Neustar'] = '<a rel="noreferrer" href="https://www.ultratools.com/" title="UltraTools | Free Domain, DNS, WHOIS & IP Lookup Tools">https://www.ultratools.com/</a>&nbsp;(Free Domain, DNS, WHOIS &amp; IP Lookup Tools)';
-
 		foreach ( $providers as $provider => $key ) {
 			add_settings_field(
 				$option_name.'_'.$field.'_'.$provider,
