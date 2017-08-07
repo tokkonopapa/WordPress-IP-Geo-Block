@@ -16,9 +16,13 @@ inline:
 code
 {% endhighlight %}
 
-[![title]({{ '/img/2017-xx/sample.png' | prepend: site.baseurl }}
+![title]({{ '/img/2017-08/.png' | prepend: site.baseurl }}
+ "title"
+)
+
+[![title]({{ '/img/2017-08/.png' | prepend: site.baseurl }}
   "title"
-)](link)
+)](http://example.com/ "description")
 
 {% comment %} http://www.emoji-cheat-sheet.com/ {% endcomment %}
 <span class="emoji">
