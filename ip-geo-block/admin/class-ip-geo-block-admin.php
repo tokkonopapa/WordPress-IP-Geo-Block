@@ -1067,6 +1067,10 @@ class IP_Geo_Block_Admin {
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
 			IP_Geo_Block_Cron::start_update_db( $output, TRUE ); // force to update
 		}
+		elseif ( ! $output['Maxmind']['use_asn'] && ! @file_exists( $output['Maxmind']['asn4_path'] ) ) {
+			$output['Maxmind']['asn4_path'] = NULL; // force to delete
+			$output['Maxmind']['asn6_path'] = NULL;
+		}
 
 		return $output;
 	}
