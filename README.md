@@ -6,7 +6,9 @@ IP Geo Block
 It blocks any spams, login attempts and malicious access to the admin area 
 posted from the specific countries, and also prevents zero-day exploit.
 
-See more detail at [WordPress.org][IPGB].
+### Stable:
+
+[IP Geo Block in WordPress.org][IPGB]
 
 ### Dependency:
 
