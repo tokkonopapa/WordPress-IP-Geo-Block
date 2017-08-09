@@ -6,9 +6,6 @@ title: Utilizing AS number
 excerpt: Introducing some useful tools
 ---
 
-### Under construction ###
-
-{% comment %}
 This document introduces some useful tools to make practical and effective 
 use of AS number in [IP Geo Block][IP-Geo-Block].
 
@@ -16,24 +13,34 @@ use of AS number in [IP Geo Block][IP-Geo-Block].
   List of AS numbers assigned to each country.
 
 - [ASN Lookup Tool][ASN-Lookup]  
-  Information search about AS numbers.
+  Information search tool for AS numbers.
+
+If you want to know about AS number itself, please refer to [3.0.4 Release 
+Note][304Note].
 
 <!--more-->
 
 ### ASNs by country ###
 
-![]({{ '/img/2017-08/.png' | prepend: site.baseurl }}
- ""
-)
+You can find ASNs that are assigned to each country.
+
+[![ASNs by country]({{ '/img/2017-08/ipinfo.io.png' | prepend: site.baseurl }}
+  "ASNs by country"
+)][ASN-Country]
 
 ### ASN Lookup Tool ###
 
+You can search ASNs that are assigned to a campany or an organization.
+
+[![ASN Lookup Tool]({{ '/img/2017-08/ASNLookup.png' | prepend: site.baseurl }}
+  "ASN Lookup Tool"
+)][ASN-Lookup]
+
 ### See also ###
 
-- [Customizing the response][CustomRes]
-{% endcomment %}
+- [3.0.4 Release Note][304Note].
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[ASN-Country]:  https//ipinfo.io/countries/ "Country IP Address Report - ipinfo.io"
+[ASN-Country]:  https://ipinfo.io/countries/ "Country IP Address Report - ipinfo.io"
 [ASN-Lookup]:   https://www.ultratools.com/tools/asnInfo "ASN Lookup Tool | UltraTools"
-[CustomRes]:    {{ '/codex/customizing-the-response.html' | prepend: site.baseurl }} "Customizing the response | IP Geo Block"
+[304Note]:      {{ '/changelog/release-3.0.4.html' | prepend: site.baseurl }} "3.0.4 Release Note | IP Geo Block"
