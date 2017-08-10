@@ -425,7 +425,7 @@ endif;
 				),
 				'desc' => array(
 					 0 => __( 'Validate at &#8220;init&#8221; action hook in the same manner as typical plugins.', 'ip-geo-block' ),
-					 1 => __( 'Validate at an earlier phase than other typical plugins. It can reduce load on server but has <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/validation-timing.html" title="Validation timing | IP Geo Block">some restrictions</a>.', 'ip-geo-block' ),
+					 1 => __( 'Validate at an earlier phase than other typical plugins. It can reduce load on server but has <a rel=\'noreferrer\' href=\'http://www.ipgeoblock.com/codex/validation-timing.html\' title=\'Validation timing | IP Geo Block\'>some restrictions</a>.', 'ip-geo-block' ),
 				),
 			)
 		);
