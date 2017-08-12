@@ -761,9 +761,8 @@ class IP_Geo_Block {
 			if ( $sig && FALSE !== strpos( $query, $sig ) ) {
 				if ( preg_match( '!\W!', $sig ) || // ex) `../` or `/wp-config.php`
 				     preg_match( '!\b' . preg_quote( $sig, '!' ) . '\b!', $query ) ) {
-					if ( ( $score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] ) ) > 0.99 ) {
+					if ( ( $score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] ) ) > 0.99 )
 						return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
-					}
 				}
 			}
 		}
@@ -779,26 +778,19 @@ class IP_Geo_Block {
 		if ( ! empty( $_FILES ) ) {
 			// check capability
 			if ( 1 === (int)$settings['validation']['mimetype'] && ! IP_Geo_Block_Util::current_user_can( 'upload_files' ) )
-				$validate['upload'] = TRUE; // mark for logs
+				return apply_filters( self::PLUGIN_NAME . '-forbidden-upload', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
 
 			else foreach ( $_FILES as $files ) {
 				foreach ( IP_Geo_Block_Util::arrange_files( $files ) as $file ) {
 					// check $_FILES corruption attack
-					if ( UPLOAD_ERR_OK !== $file['error'] ) {
-						$validate['upload'] = TRUE; // mark for logs
-						break;
-					}
+					if ( UPLOAD_ERR_OK !== $file['error'] )
+						return apply_filters( self::PLUGIN_NAME . '-forbidden-upload', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
 
 					// check mime type and extension
-					if ( ! IP_Geo_Block_Util::check_filetype_and_ext( $file, $settings['validation']['mimetype'], $settings['mimetype'] ) ) {
-						$validate['upload'] = TRUE; // mark for logs
-						break;
-					}
+					if ( ! IP_Geo_Block_Util::check_filetype_and_ext( $file, $settings['validation']['mimetype'], $settings['mimetype'] ) )
+						return apply_filters( self::PLUGIN_NAME . '-forbidden-upload', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
 				}
 			}
-
-			if ( isset( $validate['upload'] ) )
-				$validate = apply_filters( self::PLUGIN_NAME . '-forbidden-upload', $validate + array( 'result' => 'upload' ) );
 		}
 
 		return $validate;
