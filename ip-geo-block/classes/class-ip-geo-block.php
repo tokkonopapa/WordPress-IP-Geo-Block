@@ -779,26 +779,26 @@ class IP_Geo_Block {
 		if ( ! empty( $_FILES ) ) {
 			// check capability
 			if ( 1 === (int)$settings['validation']['mimetype'] && ! IP_Geo_Block_Util::current_user_can( 'upload_files' ) )
-				$upload = TRUE;
-
-			else foreach ( $_FILES as $key => $val ) {
-				// check $_FILES corruption attack
-				if ( ! isset( $val['error'] ) || is_array( $val['error'] ) ) {
-					$upload = TRUE;
-					break;
-				}
-
-				// check mime type and extension
-				if ( ! IP_Geo_Block_Util::check_filetype_and_ext( $val, $settings['validation']['mimetype'], $settings['mimetype'] ) ) {
-					$upload = TRUE;
-					break;
-				}
-			}
-
-			if ( isset( $upload ) ) {
 				$validate['upload'] = TRUE; // mark for logs
-				$validate = apply_filters( self::PLUGIN_NAME . '-forbidden-upload', $validate + array( 'result' => 'upload' ) );
+
+			else foreach ( $_FILES as $files ) {
+				foreach ( IP_Geo_Block_Util::arrange_files( $files ) as $file ) {
+					// check $_FILES corruption attack
+					if ( UPLOAD_ERR_OK !== $file['error'] ) {
+						$validate['upload'] = TRUE; // mark for logs
+						break;
+					}
+
+					// check mime type and extension
+					if ( ! IP_Geo_Block_Util::check_filetype_and_ext( $file, $settings['validation']['mimetype'], $settings['mimetype'] ) ) {
+						$validate['upload'] = TRUE; // mark for logs
+						break;
+					}
+				}
 			}
+
+			if ( isset( $validate['upload'] ) )
+				$validate = apply_filters( self::PLUGIN_NAME . '-forbidden-upload', $validate + array( 'result' => 'upload' ) );
 		}
 
 		return $validate;

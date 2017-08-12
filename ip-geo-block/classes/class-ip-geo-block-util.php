@@ -214,12 +214,15 @@ class IP_Geo_Block_Util {
 			  case 'auth':
 				$cookie_name = AUTH_COOKIE;
 				break;
+
 			  case 'secure_auth':
 				$cookie_name = SECURE_AUTH_COOKIE;
 				break;
+
 			  case "logged_in":
 				$cookie_name = LOGGED_IN_COOKIE;
 				break;
+
 			  default:
 				if ( is_ssl() ) {
 					$cookie_name = SECURE_AUTH_COOKIE;
@@ -642,6 +645,28 @@ class IP_Geo_Block_Util {
 		}
 
 		return TRUE;
+	}
+
+	/**
+	 * Arrange $_FILES array
+	 *
+	 * @see http://php.net/manual/ja/features.file-upload.multiple.php#53240
+	 */
+	public static function arrange_files( $files ) {
+		if ( ! is_array( $files['name'] ) )
+			return array( $files );
+
+		$file_array = array();
+		$file_count = count( $files['name'] );
+		$file_keys = array_keys( $files );
+
+		for ( $i=0; $i < $file_count; ++$i ) {
+			foreach ( $file_keys as $key ) {
+				$file_array[ $i ][ $key ] = $files[ $key ][ $i ];
+			}
+		}
+
+		return $file_array;
 	}
 
 	/**
