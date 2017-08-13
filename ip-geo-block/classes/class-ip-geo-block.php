@@ -777,7 +777,7 @@ class IP_Geo_Block {
 	public function check_upload( $validate, $settings ) {
 		if ( ! empty( $_FILES ) ) {
 			// check capability
-			if ( 1 === (int)$settings['validation']['mimetype'] && ! IP_Geo_Block_Util::current_user_can( 'upload_files' ) )
+			if ( 1 === (int)$settings['validation']['mimetype'] && ! apply_filters( self::PLUGIN_NAME . '-upload-capability', IP_Geo_Block_Util::current_user_can( 'upload_files' ) ) )
 				return apply_filters( self::PLUGIN_NAME . '-forbidden-upload', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
 
 			else foreach ( $_FILES as $files ) {
