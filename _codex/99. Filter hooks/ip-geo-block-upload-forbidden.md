@@ -2,17 +2,17 @@
 layout: page
 category: codex
 section: Filter Hooks
-title: ip-geo-block-forbidden-upload
+title: ip-geo-block-upload-forbidden
 file: [class-ip-geo-block.php]
 ---
 
-This will be applied when forbidden uploading is detected.
+This filter hook will be applied when forbidden uploading is detected.
 
 <!--more-->
 
 ### Description ###
 
-The filter hook "**ip-geo-block-forbidden-upload**" will be applied via 
+The filter hook "**ip-geo-block-upload-forbidden**" will be applied via 
 [`apply_filters()`][Apply-Filters] when the request has improper [capability]
 [RoleCapability] or forbidden MIME type is detected in the uploaded files.
 
@@ -39,24 +39,29 @@ The following code snippet can handle the uploaded files.
  * @param  array $validate  validation result
  * @return array $validate  validation result
  */
-function my_forbidden_upload( $validate ) {
+function my_upload_forbidden( $validate ) {
     // something to handle in $_FILES
     ;
 
     return $validate;
 }
-add_filter( "ip-geo-block-forbidden-upload", "my_forbidden_upload" );
+add_filter( "ip-geo-block-upload-forbidden", "my_upload_forbidden" );
 {% endhighlight %}
+
+### Deprecated ###
+
+In 3.0.3, this filter hook was named as `ip-geo-block-forbidden-upload`.
 
 {% include alert-drop-in.html %}
 
 ### Since ###
 
-3.0.3
+3.0.4
 
 ### See also ###
 
 - [3.0.3 Release Note][ReleaseNote303]
+- [3.0.4 Release Note][ReleaseNote304]
 - [Roles and Capabilities][RoleCapability]
 - [`get_allowed_mime_types()`][AllowedMIME]
 
@@ -65,3 +70,4 @@ add_filter( "ip-geo-block-forbidden-upload", "my_forbidden_upload" );
 [RoleCapability]: https://codex.wordpress.org/Roles_and_Capabilities "Roles and Capabilities &laquo; WordPress Codex"
 [AllowedMIME]:    https://developer.wordpress.org/reference/functions/get_allowed_mime_types/ "get_allowed_mime_types() | Function | WordPress Developer Resources"
 [ReleaseNote303]: {{ '/changelog/release-3.0.3.html' | prepend: site.baseurl }} "3.0.3 Release Note | IP Geo Block"
+[ReleaseNote304]: {{ '/changelog/release-3.0.4.html' | prepend: site.baseurl }} "3.0.4 Release Note | IP Geo Block"
