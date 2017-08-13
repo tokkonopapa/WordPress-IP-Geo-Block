@@ -42,7 +42,9 @@ function my_upload_capability( $capability ) {
     if ( function_exists( 'wp_get_current_user' ) && ( $user = wp_get_current_user() ) ) {
         foreach ( $user->roles as $role ) {
             $role = get_role( $role );
-            if ( $role->has_cap( 'attach_files' ) ) {
+
+            // if a user does not have `upload_files` but has `attach_files`
+            if ( ! $capability && $role->has_cap( 'attach_files' ) ) {
                 return TRUE;
             }
         }
