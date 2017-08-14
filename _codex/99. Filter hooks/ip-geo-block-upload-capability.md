@@ -12,11 +12,11 @@ Overwrite the `upload_files` capability.
 
 ### Description ###
 
-The capability [`upload_files`][UPLOAD-FILES] will be checked when you select 
-"**Verify capability and MIME type**" as "**Prevent malicious file uploading**"
-and a user requests to upload some files. But some of plugins or themes that 
-support file uploading would tend to define their own capability, may be for 
-the security reason.
+When a user requests to upload some files, this plugin will verify his/her 
+capability [`upload_files`][UPLOAD-FILES] if you select "**Verify capability 
+and MIME type**" as "**Prevent malicious file uploading**". But some plugins 
+and themes which support file uploading would tend to define their own 
+capability, may be for the security reason.
 
 In this case, you should overwrite the capability according to the plugin or 
 theme you are employing.
