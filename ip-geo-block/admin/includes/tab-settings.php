@@ -192,7 +192,7 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => 1 === (int)$options[ $field ][ $key ],
-				'after' => '<p>[ <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/utilizing-asnumber.html" title="Utilizing AS number | IP Geo Block">Utilizing AS number</a> ]</p>',
+				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Some useful tools for investigating ASN are introduced in  &#8220;%s&#8221;.', 'ip-geo-block' ), '<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/utilizing-asnumber.html" title="Utilizing AS number | IP Geo Block">Utilizing AS number</a>' ) . '</p>',
 			)
 		);
 

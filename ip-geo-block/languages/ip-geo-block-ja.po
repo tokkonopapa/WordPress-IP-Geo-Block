@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-08-08 21:17+0900\n"
-"PO-Revision-Date: 2017-08-10 23:47+0900\n"
+"POT-Creation-Date: 2017-08-14 18:51+0900\n"
+"PO-Revision-Date: 2017-08-14 19:02+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -477,6 +477,12 @@ msgstr ""
 "<dfn title=\"ホワイトリスト、ブラックリストにIPアドレスを指定する代わりに、"
 "ネットワークのグループを代表する「AS番号」の指定を可能にします。\">AS番号を使"
 "用可能にする</dfn>"
+
+#: admin/includes/tab-settings.php:195
+#, php-format
+msgid ""
+"Some useful tools for investigating ASN are introduced in  &#8220;%s&#8221;."
+msgstr "AS番号の検索に役立つツールを「%s」に紹介しています。"
 
 #: admin/includes/tab-settings.php:204
 msgid ""
