@@ -783,7 +783,7 @@ class IP_Geo_Block {
 			else foreach ( $_FILES as $files ) {
 				foreach ( IP_Geo_Block_Util::arrange_files( $files ) as $file ) {
 					// check $_FILES corruption attack
-					if ( UPLOAD_ERR_OK !== $file['error'] )
+					if ( ! empty( $file['name'] ) && UPLOAD_ERR_OK !== $file['error'] )
 						return apply_filters( self::PLUGIN_NAME . '-upload-forbidden', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
 
 					// check mime type and extension
