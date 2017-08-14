@@ -80,7 +80,7 @@ function my_ajax_handler() {
 }
 {% endhighlight %}
 
-### Blocking malicious request ###
+#### Blocking malicious request ####
 
 Now at first, uncheck and disable all the settings for "**Admin ajax/post**" 
 and "**Plugins area**".
@@ -100,7 +100,7 @@ see `0` in case your request are success, otherwise you'll be blocked.
   title="Prevent exposure of wp-config.php | IP Geo Block">this article</a>.
 </div>
 
-### Block by country ###
+#### Block by country ####
 
 OK then, check and enable "**Block by country**".
 
@@ -112,7 +112,7 @@ All the links will be blocked when you're behind the VPN proxy and `.htaccess`
 is set properly. And when you turn off the VPN addon, then only the malicious 
 links at even lines will be blocked.
 
-### Prevent Zero-day Exploit ###
+#### Prevent Zero-day Exploit ####
 
 Yeah, the last one is "**Prevent Zero-day Exploit**".
 
