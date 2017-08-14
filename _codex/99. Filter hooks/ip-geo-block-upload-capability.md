@@ -18,8 +18,8 @@ and MIME type**" as "**Prevent malicious file uploading**". But some plugins
 and themes which support file uploading would tend to define their own 
 capability, may be for the security reason.
 
-In this case, you should overwrite the capability according to the plugin or 
-theme you are employing.
+In this case, you should overwrite the slug of capability according to the 
+plugin or theme you are employing.
 
 ### Parameters ###
 
