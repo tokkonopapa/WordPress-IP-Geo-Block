@@ -14,16 +14,37 @@ area based on [version 2.2.2][Ver2.2.2] and later.
 ### Preparation ###
 
 The most easy way to simulate submitting a request from outside of your 
-country is using [the browser addon of VPN service][VPN-ADDON].
+country is using the browser addon for VPN service.
+
+- [VPN addon for Firefox][VPN-Firefox]
+- [VPN addon for Chrome][VPN-Chrome]
 
 ![VPN addon]({{ '/img/2016-01/VPN-Addon.png' | prepend: site.baseurl }}
  "VPN addon"
 )
 
-To test the blocking behavior, submit the following links to your post. The 
-first 2 lines are for admin ajax, and the last 4 lines are for direct access 
-to the PHP file in plugins area. In particular, the last 2 lines will include 
-`wp-load.php` to load the WordPress core functions.
+You can also find [many articles][VPN-ADDON] that recommend which one is better.
+
+### How to test on back-end ###
+
+After turning on your VPN addon and select the country you need to test, simple 
+visit to your back-end e.g. `/wp-login.php`, `/wp-admin/` or `/xmlrpc.php` with 
+your browser.
+
+Note that accessing to `/xmlrpc.php` with browser returns a simple message 
+because this script needs to be accessed by not **GET** method but **POST** 
+method.
+
+> XML-RPC server accepts POST requests only.
+
+But it doesn't matter. Your test access would be recorded in **Logs** tab of 
+IP Geo Block dashboard.
+
+Testing the blocking behavior on **Admin ajax/post**, **Plugins area** and 
+**Themes area** would be a bit complicated. Please submit the following links 
+to your post. The first 2 lines are for admin ajax, and the last 4 lines are 
+for direct access to the PHP file in plugins area. In particular, the last 2 
+lines will include `wp-load.php` to load the WordPress core functions.
 
 Ensure that `http://example.com` is replaced to your WordPress home.
 
@@ -133,6 +154,8 @@ admin, all the links at odd lines will not be blocked.
 - [Prevent exposure of wp-config.php][ExposeWPConf]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
+[VPN-Firefox]:  https://addons.mozilla.org/firefox/search/?q=vpn "vpn :: Searcg :: Add-ons for Firefox"
+[VPN-Chrome]:   https://chrome.google.com/webstore/search/vpn "Chrome Web Store"
 [VPN-ADDON]:    https://www.google.co.jp/search?q=browser+addon+vpn+service "browser addon vpn service - Google search"
 [Ver2.2.2]:     {{ '/changelog/release-2.2.2.html'                     | prepend: site.baseurl }} "2.2.1 Release Note | IP Geo Block"
 [BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
