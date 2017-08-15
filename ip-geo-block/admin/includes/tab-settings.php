@@ -275,7 +275,7 @@ endif;
 		);
 
 		// Prevent malicious upload - white list of file extention and MIME type
-		$list = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Select allowed MIME type.">Whitelist of allowed MIME type</dfn>', 'ip-geo-block' ) . "<a class=\"ip-geo-block-cycle ip-geo-block-hide\"><span></span></a>\n<li  class=\"ip-geo-block-hide\"><ul class=\"ip-geo-block-float\">\n";
+		$list = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Select allowed MIME type.">Whitelist of allowed MIME type</dfn>', 'ip-geo-block' ) . "<a class=\"ip-geo-block-cycle ip-geo-block-hide\"><span></span></a>\n<li class=\"ip-geo-block-hide\"><ul class=\"ip-geo-block-float\">\n";
 
 		// get_allowed_mime_types() in wp-includes/functions.php @since 2.8.6
 		foreach ( IP_Geo_Block_Util::get_allowed_mime_types() as $key => $val ) {
@@ -289,11 +289,15 @@ endif;
 		$list .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Put forbidden file extensions.">Blacklist of forbidden file extensions</dfn>', 'ip-geo-block' ) . "\n" . '<li class="ip-geo-block-hide"><ul><li><input type="text" class="regular-text code" id="ip_geo_block_settings_mimetype_black_list" name="ip_geo_block_settings[mimetype][black_list]" value="' . esc_attr( $options['mimetype']['black_list'] ) . '"/></li>';
 		$list .= "</ul></li></ul>\n";
 
+		// Verify capability
+		$list .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Put the capabilities to be verified. A certain type of plugin or theme requires the specific capability. Default is &#8220;upload_files&#8221; for Administrator, Editor and Author. Verification will be skipped if empty.">Capabilities to be verified</dfn>', 'ip-geo-block' ) . '&nbsp;<span class="ip-geo-block-desc">' . __( '(&thinsp;See &#8220;<a rel="noreferrer" href="https://codex.wordpress.org/Roles_and_Capabilities" title="Roles and Capabilities &laquo; WordPress Codex">Roles and Capabilities</a>&#8221;&thinsp;)', 'ip-geo-block' ) . '</span>' . "\n";
+		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_mimetype_capability" name="ip_geo_block_settings[mimetype][capability]" class="regular-text code" placeholder="upload_files" value="' . esc_attr( implode( ',', $options['mimetype']['capability'] ) ) . '" />' . $comma[0] . '</li></ul></li></ul>';
+
 		$field = 'validation';
 		$key = 'mimetype';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( '<dfn title="It restricts the file types on upload to block malware and backdoor via both back-end and front-end. Please consider to select &#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation timing&#8221; so that other staff would not fetch uploaded files before this validation.">Prevent malicious file uploading</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="It restricts the file types on upload in order to block malware and backdoor via both back-end and front-end. Please consider to select &#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation timing&#8221; so that other staff would not fetch the uploaded files before this validation.">Prevent malicious file uploading</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -304,9 +308,9 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'list' => array(
-					0 => __( 'Disable',                         'ip-geo-block' ),
-					1 => __( 'Verify capability and MIME type', 'ip-geo-block' ),
-					2 => __( 'Verify only file extension',      'ip-geo-block' ),
+					0 => __( 'Disable',                             'ip-geo-block' ),
+					1 => __( 'Verify file extension and MIME type', 'ip-geo-block' ),
+					2 => __( 'Verify file extension only',          'ip-geo-block' ),
 				),
 				'after' => $list,
 			)

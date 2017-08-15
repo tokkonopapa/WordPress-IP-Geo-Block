@@ -781,9 +781,9 @@ class IP_Geo_Block_Admin {
 			$args['value']  = $args['text']; // should be escaped because it can contain allowed tags
 
 		  case 'text': ?>
-<input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"
-<?php disabled( ! empty( $args['disabled'] ), TRUE ); ?>
-<?php if ( isset( $args['placeholder'] ) ) echo ' placeholder="', esc_html( $args['placeholder'] ), '"'; ?> />
+<input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php
+	disabled( ! empty( $args['disabled'] ), TRUE );
+	if ( isset( $args['placeholder'] ) ) echo ' placeholder="', esc_html( $args['placeholder'] ), '"'; ?> />
 <?php
 			break; // disabled @since 3.0
 
@@ -897,11 +897,14 @@ class IP_Geo_Block_Admin {
 			  case 'mimetype':
 				if ( isset( $input[ $key ]['white_list'] ) ) { // for json file before 3.0.3
 					foreach ( $input[ $key ]['white_list'] as $k => $v ) {
-						$output[ $key ]['white_list'][ $k ] = sanitize_text_field( $v );
+						$output[ $key ]['white_list'][ sanitize_text_field( $k ) ] = sanitize_mime_type( $v ); // @since 3.1.3
 					}
 				}
 				if ( isset( $input[ $key ]['black_list'] ) ) { // for json file before 3.0.3
 					$output[ $key ]['black_list'] = sanitize_text_field( $input[ $key ]['black_list'] );
+				}
+				if ( isset( $input[ $key ]['capability'] ) ) {
+					$output[ $key ]['capability'] = array_map( 'sanitize_key', explode( ',', trim( $input[ $key ]['capability'], ',' ) ) ); // @since 3.0.0
 				}
 				break;
 

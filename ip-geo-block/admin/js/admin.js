@@ -576,7 +576,7 @@ var ip_geo_block_time = new Date();
 				var $this = $(this),
 				    stat = parseInt($this.val(), 10);
 				$this.nextAll(ID('.', 'settings-folding')).each(function (i, obj) {
-					fold_elements($(obj), stat === i + 1);
+					fold_elements($(obj), (stat === i + 1) || (stat && 2 === i));
 				});
 				return stopPropergation(event);
 			}).change();

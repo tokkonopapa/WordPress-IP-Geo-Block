@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.8
-Stable tag: 3.0.4
+Stable tag: 3.0.4rc
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -357,7 +357,8 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 * **New feature:** Statistics in logs - a new section in Statistics tab.
 * **Deprecated:** Add a new filter hook `ip-geo-block-upload-forbidden` instead of `ip-geo-block-forbidden-upload`.
 * **Improvement:** Add a new filter hook `ip-geo-block-upload-capability` to improve compatibility with other plugins that have uploading functionality.
-* **Bug fix:** Fix the issue of validating file upload. It could not handle multiple files. ([@](https://wordpress.org/support/topic/incompatible-with-awesome-support-plugin/#post-9403708 "Topic: incompatible with Awesome Support plugin &laquo; WordPress.org Forums"))
+* **Improvement:** Verifying file upload capability can be set apart from verifying file extension and MIME type in "Prevent malicious file uploading". ([@]())
+* **Bug fix:** Fix the issue of verifying file upload. It could not handle multiple files. ([@](https://wordpress.org/support/topic/incompatible-with-awesome-support-plugin/#post-9403708 "Topic: incompatible with Awesome Support plugin &laquo; WordPress.org Forums"))
 * **Bug fix:** Fix the issue of illegal click event handling on anchor tag without href. ([@](https://wordpress.org/support/topic/pagebuilder-broken-by-ipgeoblock-v3-0-3-4/ "Topic: Pagebuilder broken by IPGeoblock v3.0.3.4 &laquo; WordPress.org Forums"))
 * See [3.0.4 release note](http://www.ipgeoblock.com/changelog/release-3.0.4.html "3.0.4 Release Note | IP Geo Block") for some details.
 

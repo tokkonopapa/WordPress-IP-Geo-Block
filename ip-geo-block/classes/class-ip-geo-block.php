@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.4';
+	const VERSION = '3.0.4rc';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -775,12 +775,20 @@ class IP_Geo_Block {
 	 * @see wp_handle_upload() in wp-admin/includes/file.php
 	 */
 	public function check_upload( $validate, $settings ) {
-		if ( ! empty( $_FILES ) ) {
+		if ( ! empty( $_FILES ) && $settings['validation']['mimetype'] ) {
 			// check capability
-			if ( 1 === (int)$settings['validation']['mimetype'] && ! apply_filters( self::PLUGIN_NAME . '-upload-capability', IP_Geo_Block_Util::current_user_can( 'upload_files' ) ) )
+			$files = empty( $settings['mimetype']['capability'] ) ? TRUE : FALSE;
+			foreach ( $settings['mimetype']['capability'] as $file ) {
+				if ( ! $file || IP_Geo_Block_Util::current_user_can( $file ) ) {
+					$files = TRUE;
+					break;
+				}
+			}
+
+			if ( ! apply_filters( self::PLUGIN_NAME . '-upload-capability', $files ) )
 				return apply_filters( self::PLUGIN_NAME . '-upload-forbidden', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
 
-			else foreach ( $_FILES as $files ) {
+			foreach ( $_FILES as $files ) {
 				foreach ( IP_Geo_Block_Util::arrange_files( $files ) as $file ) {
 					// check $_FILES corruption attack
 					if ( ! empty( $file['name'] ) && UPLOAD_ERR_OK !== $file['error'] )

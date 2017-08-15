@@ -263,7 +263,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function settings_to_json( $input, $overwrite = TRUE ) {
-		// [*]:checkbox, [$]:comma separated text to array, [%]:associative array
+		// [*]:list of checkboxes, [$]:comma separated text to array, [%]:associative array
 		$keys = array(
 			'[version]',
 			'[matching_rule]',
@@ -349,9 +349,10 @@ class IP_Geo_Block_Admin_Ajax {
 			'[clean_uninstall]',
 			'[api_key][GoogleMap]',      // 2.2.7
 			'[network_wide]',            // 3.0.0
+			'[others][%]',               // 3.0.3
 			'[mimetype][white_list][%]', // 3.0.3
 			'[mimetype][black_list]',    // 3.0.3
-			'[others][%]',               // 3.0.3
+			'[mimetype][capability][$]', // 3.0.4
 			'[Maxmind][use_asn]',        // 3.0.4
 		);
 		$json = array();
@@ -426,6 +427,7 @@ class IP_Geo_Block_Admin_Ajax {
 				    'plugins'     => 2,       // Validate on wp-content/plugins
 				    'themes'      => 2,       // Validate on wp-content/themes
 				    'timing'      => 1,       // 0:init, 1:mu-plugins, 2:drop-in
+				    'mimetype'    => 1,       // 0:disable, 1:white_list, 2:black_list
 				),
 				'signature'       => "../,/wp-config.php,/passwd\ncurl,wget,eval,base64\nselect:.5,where:.5,union:.5\nload_file:.5,create:.6,password:.4",
 				'rewrite'         => array(   // Apply rewrite rule
