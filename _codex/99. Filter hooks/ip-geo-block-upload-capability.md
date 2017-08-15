@@ -39,12 +39,10 @@ original one.
  * @return Bool TRUE if a user has right capability, FALSE if not.
  */
 function my_upload_capability( $capability ) {
-    if ( function_exists( 'wp_get_current_user' ) && ( $user = wp_get_current_user() ) ) {
-        foreach ( $user->roles as $role ) {
-            $role = get_role( $role );
-            if ( $role->has_cap( 'attach_files' ) ) {
-                return TRUE;
-            }
+    if ( function_exists( 'wp_get_current_user' ) ) {
+        $user = wp_get_current_user();
+        if ( $user->has_cap( 'attach_files' ) ) {
+            return TRUE;
         }
     }
 
