@@ -8,6 +8,14 @@ file: [class-ip-geo-block.php]
 
 This filter hook will be applied when forbidden uploading is detected.
 
+<div class="alert alert-danger">
+	<strong>Warning:</strong>
+	The filter hook <code>ip-geo-block-forbidden-upload</code> was abolished 
+	in <a href="/changelog/release-3.0.4.html" title="3.0.4 Release note">
+		release 3.0.4
+	</a>, but is replaced to <code>ip-geo-block-upload-forbidden</code>.
+</div>
+
 <!--more-->
 
 ### Description ###
@@ -47,10 +55,6 @@ function my_upload_forbidden( $validate ) {
 }
 add_filter( "ip-geo-block-upload-forbidden", "my_upload_forbidden" );
 {% endhighlight %}
-
-### Deprecated ###
-
-In 3.0.3, this filter hook was named as `ip-geo-block-forbidden-upload`.
 
 {% include alert-drop-in.html %}
 
