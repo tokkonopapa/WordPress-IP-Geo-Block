@@ -777,9 +777,9 @@ class IP_Geo_Block {
 	public function check_upload( $validate, $settings ) {
 		if ( ! empty( $_FILES ) && $settings['validation']['mimetype'] ) {
 			// check capability
-			$files = empty( $settings['mimetype']['capability'] ) ? TRUE : FALSE;
+			$files = empty( $settings['mimetype']['capability'] ) ? TRUE : FALSE; // skip if empty
 			foreach ( $settings['mimetype']['capability'] as $file ) {
-				if ( ! $file || IP_Geo_Block_Util::current_user_can( $file ) ) {
+				if ( empty( $file ) || IP_Geo_Block_Util::current_user_can( $file ) ) {
 					$files = TRUE;
 					break;
 				}
