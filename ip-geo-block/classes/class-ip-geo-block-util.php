@@ -842,4 +842,39 @@ class IP_Geo_Block_Util {
 		     ( isset( $_SERVER['LOCAL_ADDR' ] ) ? $_SERVER['LOCAL_ADDR' ] : NULL ) : NULL );
 	}
 
+
+	/**
+	 * Get the list of registered actions
+	 *
+	 */
+	public static function get_registered_actions() {
+		$installed = array();
+
+		global $wp_filter;
+		foreach ( $wp_filter as $key => $val ) {
+			if ( FALSE !== strpos( $key, 'wp_ajax_' ) ) {
+				if ( 0 === strpos( $key, 'wp_ajax_nopriv_' ) ) {
+					$key = substr( $key, 15 ); // 'wp_ajax_nopriv_'
+					$val = 2;                  // without privilege
+				} else {
+					$key = substr( $key, 8 );  // 'wp_ajax_'
+					$val = 1;                  // with privilege
+				}
+				$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
+			} elseif ( FALSE !== strpos( $key, 'admin_post_' ) ) {
+				if ( 0 === strpos( $key, 'admin_post_nopriv_' ) ) {
+					$key = substr( $key, 18 ); // 'admin_post_nopriv_'
+					$val = 2;                  // without privilege
+				} else {
+					$key = substr( $key, 11 ); // 'admin_post_'
+					$val = 1;                  // with privilege
+				}
+				$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
+			}
+		}
+		unset( $installed['ip_geo_block'] );
+
+		return $installed;
+	}
+
 }

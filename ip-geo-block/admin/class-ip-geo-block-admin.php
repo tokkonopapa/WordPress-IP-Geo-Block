@@ -1320,6 +1320,11 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Admin_Ajax::get_wp_info();
 			break;
 
+		  case 'get-actions':
+			// Get all the ajax/post actions
+			$res = IP_Geo_Block_Util::get_registered_actions();
+			break;
+
 		  case 'create-table':
 		  case 'delete-table':
 			// Need to define `IP_GEO_BLOCK_DEBUG` to true

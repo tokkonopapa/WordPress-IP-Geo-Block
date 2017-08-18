@@ -505,6 +505,17 @@ var ip_geo_block_time = new Date();
 		);
 	}
 
+	// form for export / import
+	function add_icon(dfn, span, title, icon) {
+		var i, j;
+		i = dfn.cloneNode(false);
+		i.setAttribute('title', title);
+		j = span.cloneNode(false);
+		j.setAttribute('class', 'ip-geo-block-colored dashicons dashicons-' + icon);
+		i.appendChild(j);
+		return i;
+	}
+
 	$(function () {
 		// Get tab number
 		var tabNo = Number(IP_GEO_BLOCK.tab) || 0,
@@ -636,38 +647,75 @@ var ip_geo_block_time = new Date();
 			}).change();
 
 			// Exceptions for Admin ajax/post
-			$(ID('@', 'exception_admin')).on('change', function (event) {
-				var actions = $.grep($(this).val().split(','), function (e){
-					return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
-				});
+			ajax_post(null, {
+				cmd: 'get-actions'
+			}, function (data) {
+				var i, j, k, id, key, $this = $(ID('#', 'actions')),
+				    li    = document.createElement('li'   ),
+				    input = document.createElement('input'),
+				    label = document.createElement('label'),
+				    dfn   = document.createElement('dfn'  ),
+				    span  = document.createElement('span' );
+				for (key in data) {
+					id = ID('%', key);
+					if (data.hasOwnProperty(key) && ! $this.find('#' + id).size()) {
+						i = input.cloneNode(false);
+						i.setAttribute('id', id);
+						i.setAttribute('value', '1');
+						i.setAttribute('type', 'checkbox');
+						j = li.cloneNode(false);
+						j.appendChild(i);
 
-				$(ID('#', 'actions')).find('input').each(function (i, e) {
-					var $this = $(this),
-					    action = $this.attr('id').replace(ID('%', ''), '');
-					$this.prop('checked', -1 !== $.inArray(action, actions));
-				});
-				return stopPropergation(event);
-			}).change();
+						i = label.cloneNode(false);
+						i.setAttribute('for', id);
+						i.appendChild(document.createTextNode(key));
+						j.appendChild(i);
 
-			// Candidate actions
-			$(ID('#', 'actions')).on('click', 'input', function (event) {
-				var i, $this = $(this),
-				action = $this.attr('id').replace(ID('%', ''), ''),
-				$admin = $(ID('@', 'exception_admin')),
-				actions = $.grep($admin.val().split(','), function (e){
-					return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
-				});
+						if (1 & data[key]) {
+							j.appendChild(add_icon(dfn, span, 'ajax for logged-in user', 'lock'));
+						}
+						if (2 & data[key]) {
+							j.appendChild(add_icon(dfn, span, 'ajax for non logged-in user', 'unlock'));
+						}
 
-				// find the action
-				i = $.inArray(action, actions);
-
-				if (-1 === i) {
-					actions.push(action);
-				} else {
-					actions.splice(i, 1);
+						$this.append(j);
+					}
 				}
 
-				$admin.val(actions.join(',')).change();
+				// Handle text field for actions
+				$(ID('@', 'exception_admin')).on('change', function (event) {
+					var actions = $.grep($(this).val().split(','), function (e){
+						return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
+					});
+
+					$(ID('#', 'actions')).find('input').each(function (i, e) {
+						var $this = $(this),
+							action = $this.attr('id').replace(ID('%', ''), '');
+						$this.prop('checked', -1 !== $.inArray(action, actions));
+					});
+					return stopPropergation(event);
+				}).change();
+
+				// Candidate actions
+				$(ID('#', 'actions')).on('click', 'input', function (event) {
+					var i, $this = $(this),
+					action = $this.attr('id').replace(ID('%', ''), ''),
+					$admin = $(ID('@', 'exception_admin')),
+					actions = $.grep($admin.val().split(','), function (e){
+						return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
+					});
+
+					// find the action
+					i = $.inArray(action, actions);
+
+					if (-1 === i) {
+						actions.push(action);
+					} else {
+						actions.splice(i, 1);
+					}
+
+					$admin.val(actions.join(',')).change();
+				});
 			});
 
 			// Enable / Disable Exceptions

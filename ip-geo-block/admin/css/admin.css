@@ -528,3 +528,7 @@ ol.ip-geo-block-top-list li code {
     height: 18px;
     width: 18px;
 }
+/* action for ajax */
+.ip-geo-block-colored {
+    color: #4169e1;
+}

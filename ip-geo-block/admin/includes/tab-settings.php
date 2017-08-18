@@ -559,38 +559,14 @@ endif;
 		);
 
 		// Get all the ajax/post actions
-		$exception = '';
-		$installed = array();
-
-		global $wp_filter;
-		foreach ( $wp_filter as $key => $val ) {
-			if ( FALSE !== strpos( $key, 'wp_ajax_' ) ) {
-				if ( 0 === strpos( $key, 'wp_ajax_nopriv_' ) ) {
-					$key = substr( $key, 15 );
-					$val = 2;
-				} else {
-					$key = substr( $key, 8 );
-					$val = 1;
-				}
-				$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
-			} elseif ( FALSE !== strpos( $key, 'admin_post_' ) ) {
-				if ( 0 === strpos( $key, 'admin_post_nopriv_' ) ) {
-					$key = substr( $key, 18 );
-					$val = 2;
-				} else {
-					$key = substr( $key, 11 );
-					$val = 1;
-				}
-				$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
-			}
-		}
-		unset( $installed['ip_geo_block'] );
+		$installed = IP_Geo_Block_Util::get_registered_actions();
 
 		$tmp = array(
 			__( 'for logged-in user',     'ip-geo-block' ),
 			__( 'for non logged-in user', 'ip-geo-block' ),
 		);
 
+		$exception = '';
 		foreach ( $installed as $key => $val ) {
 			$val = '';
 			$val .= $installed[ $key ] & 1 ? '<dfn title="' . $tmp[0] . '"><span class="dashicons dashicons-lock"></span></dfn>' : '';
