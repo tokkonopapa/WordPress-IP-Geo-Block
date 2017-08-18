@@ -650,7 +650,7 @@ var ip_geo_block_time = new Date();
 			ajax_post(null, {
 				cmd: 'get-actions'
 			}, function (data) {
-				var i, j, k, id, key, $this = $(ID('#', 'actions')),
+				var i, j, id, key, $this = $(ID('#', 'actions')),
 				    li    = document.createElement('li'   ),
 				    input = document.createElement('input'),
 				    label = document.createElement('label'),
