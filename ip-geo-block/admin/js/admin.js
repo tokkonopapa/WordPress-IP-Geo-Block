@@ -52,7 +52,7 @@ var ip_geo_block_time = new Date();
 	}
 
 	function notice_html5() {
-		warning(null, IP_GEO_BLOCK.msg[6]);
+		warning(null, IP_GEO_BLOCK.msg[8]);
 	}
 
 	function redirect(page, tab) {
@@ -511,7 +511,7 @@ var ip_geo_block_time = new Date();
 		i = dfn.cloneNode(false);
 		i.setAttribute('title', title);
 		j = span.cloneNode(false);
-		j.setAttribute('class', 'ip-geo-block-colored dashicons dashicons-' + icon);
+		j.setAttribute('class', 'dashicons dashicons-' + icon);
 		i.appendChild(j);
 		return i;
 	}
@@ -672,10 +672,10 @@ var ip_geo_block_time = new Date();
 						j.appendChild(i);
 
 						if (1 & data[key]) {
-							j.appendChild(add_icon(dfn, span, IP_GEO_BLOCK.msg[7], 'lock'));
+							j.appendChild(add_icon(dfn, span, IP_GEO_BLOCK.msg[6], 'lock'));
 						}
 						if (2 & data[key]) {
-							j.appendChild(add_icon(dfn, span, IP_GEO_BLOCK.msg[8], 'unlock'));
+							j.appendChild(add_icon(dfn, span, IP_GEO_BLOCK.msg[7], 'unlock'));
 						}
 
 						$this.append(j);

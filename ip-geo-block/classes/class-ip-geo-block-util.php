@@ -847,12 +847,12 @@ class IP_Geo_Block_Util {
 	 * Get the list of registered actions
 	 *
 	 */
-	public static function get_registered_actions() {
+	public static function get_registered_actions( $ajax = FALSE ) {
 		$installed = array();
 
 		global $wp_filter;
 		foreach ( $wp_filter as $key => $val ) {
-			if ( FALSE !== strpos( $key, 'wp_ajax_' ) ) {
+			if ( $ajax && FALSE !== strpos( $key, 'wp_ajax_' ) ) {
 				if ( 0 === strpos( $key, 'wp_ajax_nopriv_' ) ) {
 					$key = substr( $key, 15 ); // 'wp_ajax_nopriv_'
 					$val = 2;                  // without privilege

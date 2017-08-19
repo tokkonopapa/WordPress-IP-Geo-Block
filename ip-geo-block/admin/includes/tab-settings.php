@@ -559,19 +559,19 @@ endif;
 			)
 		);
 
-		// Get all the ajax/post actions
-		$installed = IP_Geo_Block_Util::get_registered_actions();
+		// Get all the admin-post actions
+		$installed = IP_Geo_Block_Util::get_registered_actions( FALSE );
 
 		$tmp = array(
-			__( 'for logged-in user',     'ip-geo-block' ),
-			__( 'for non logged-in user', 'ip-geo-block' ),
+			__( 'admin post for logged-in user',     'ip-geo-block' ),
+			__( 'admin post for non logged-in user', 'ip-geo-block' ),
 		);
 
 		$exception = '';
 		foreach ( $installed as $key => $val ) {
 			$val = '';
-			$val .= $installed[ $key ] & 1 ? '<dfn title="' . $tmp[0] . '"><span class="dashicons dashicons-lock"></span></dfn>' : '';
-			$val .= $installed[ $key ] & 2 ? '<dfn title="' . $tmp[1] . '"><span class="dashicons dashicons-unlock"></span></dfn>' : '';
+			$val .= $installed[ $key ] & 1 ? '<dfn title="' . $tmp[0] . '"><span class="ip-geo-block-admin-post dashicons dashicons-lock"></span></dfn>' : '';
+			$val .= $installed[ $key ] & 2 ? '<dfn title="' . $tmp[1] . '"><span class="ip-geo-block-admin-post dashicons dashicons-unlock"></span></dfn>' : '';
 			$key = esc_attr( $key );
 			$exception .= '<li>'
 				. '<input id="ip_geo_block_' . $key . '" type="checkbox" value="1"' . checked( in_array( $key, $options['exception']['admin'] ), TRUE, FALSE ) . ' />'

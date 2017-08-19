@@ -244,15 +244,15 @@ class IP_Geo_Block_Admin {
 				'url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => IP_Geo_Block_Util::create_nonce( $this->get_ajax_action() ),
 				'msg' => array(
-					__( 'Import settings ?',  'ip-geo-block' ),
-					__( 'Create table ?',     'ip-geo-block' ),
-					__( 'Delete table ?',     'ip-geo-block' ),
-					__( 'Clear statistics ?', 'ip-geo-block' ),
-					__( 'Clear cache ?',      'ip-geo-block' ),
-					__( 'Clear logs ?',       'ip-geo-block' ),
-					__( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
+					__( 'Import settings ?',           'ip-geo-block' ),
+					__( 'Create table ?',              'ip-geo-block' ),
+					__( 'Delete table ?',              'ip-geo-block' ),
+					__( 'Clear statistics ?',          'ip-geo-block' ),
+					__( 'Clear cache ?',               'ip-geo-block' ),
+					__( 'Clear logs ?',                'ip-geo-block' ),
 					__( 'ajax for logged-in user',     'ip-geo-block' ),
 					__( 'ajax for non logged-in user', 'ip-geo-block' ),
+					__( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
 				),
 			)
 		);
@@ -1324,7 +1324,7 @@ class IP_Geo_Block_Admin {
 
 		  case 'get-actions':
 			// Get all the ajax/post actions
-			$res = IP_Geo_Block_Util::get_registered_actions();
+			$res = IP_Geo_Block_Util::get_registered_actions( TRUE );
 			break;
 
 		  case 'create-table':
