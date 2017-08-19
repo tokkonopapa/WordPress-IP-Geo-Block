@@ -672,10 +672,10 @@ var ip_geo_block_time = new Date();
 						j.appendChild(i);
 
 						if (1 & data[key]) {
-							j.appendChild(add_icon(dfn, span, 'ajax for logged-in user', 'lock'));
+							j.appendChild(add_icon(dfn, span, IP_GEO_BLOCK.msg[7], 'lock'));
 						}
 						if (2 & data[key]) {
-							j.appendChild(add_icon(dfn, span, 'ajax for non logged-in user', 'unlock'));
+							j.appendChild(add_icon(dfn, span, IP_GEO_BLOCK.msg[8], 'unlock'));
 						}
 
 						$this.append(j);
@@ -900,17 +900,35 @@ var ip_geo_block_time = new Date();
 
 			// Toggle checkbox
 			$(ID('.', 'cycle')).on('click', function (event) {
-				var $that = $(this).next('li'),
+				var regex, $that = $(this).nextAll('li'), actions,
 				    text = $that.find(ID('@', 'exception_admin')),
-				    cbox = $that.find('input:checkbox'),
+				    cbox = $that.find('input:checkbox').filter(':visible'),
 				    stat = cbox.filter(':checked').length;
 
-				if (text.length) {
-					cbox.filter(stat ? ':checked' : ':not(:checked)').click();
-				} else {
-					cbox.prop('checked', !stat);
-				}
+				cbox.prop('checked', !stat);
 
+				if (text.length) {
+					if (stat) {
+						text.val('');
+					} else {
+						regex = new RegExp(ID('%', ''));
+						actions = [];
+						cbox.each(function (i) {
+							actions[i] = $(this).attr('id').replace(regex, '');
+						});
+						text.val(actions.join(','));
+					}
+				};
+
+				$(this).blur(); // unfocus anchor tag
+				return false;
+			});
+
+			// Show/Hide logged in user only
+			$(ID('.', 'unlock')).on('click', function (event) {
+				$(this).nextAll('li').find('h4').nextAll('li').filter(function (i, elm) {
+					return ! $(this).find('.dashicons-unlock').length;
+				}).toggle();
 				return false;
 			});
 

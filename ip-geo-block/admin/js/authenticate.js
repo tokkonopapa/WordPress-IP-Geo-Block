@@ -14,7 +14,7 @@ var IP_GEO_BLOCK_ZEP = {
 		'use strict';
 		var i, n = this.sites.length;
 		for (i = 0; i < n; ++i) {
-			if (-1 !== url.indexOf(this.sites[i]) && url && this.nonce) {
+			if (url && -1 !== url.indexOf(this.sites[i]) && this.nonce) {
 				window.location = add_query_nonce(url, this.nonce);
 			}
 		}

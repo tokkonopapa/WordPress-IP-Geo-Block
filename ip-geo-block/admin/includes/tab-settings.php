@@ -116,6 +116,7 @@ endif;
 		$comma = array(
 			'<span class="ip-geo-block-sup">' . __( '(comma separated)', 'ip-geo-block' ) . '</span>',
 			'<span class="ip-geo-block-sup">' . __( '(comma or RET separated)', 'ip-geo-block' ) . '</span>',
+			'<span title="' . __( 'Toggle selection', 'ip-geo-block' ) . '"></span>',
 		);
 
 		// Matching rule
@@ -275,7 +276,7 @@ endif;
 		);
 
 		// Prevent malicious upload - white list of file extention and MIME type
-		$list = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Select allowed MIME type.">Whitelist of allowed MIME type</dfn>', 'ip-geo-block' ) . "<a class=\"ip-geo-block-cycle ip-geo-block-hide\"><span></span></a>\n<li class=\"ip-geo-block-hide\"><ul class=\"ip-geo-block-float\">\n";
+		$list = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Select allowed MIME type.">Whitelist of allowed MIME type</dfn>', 'ip-geo-block' ) . "<a class=\"ip-geo-block-cycle ip-geo-block-hide\">" . $comma[2] . "</a>\n<li class=\"ip-geo-block-hide\"><ul class=\"ip-geo-block-float\">\n";
 
 		// get_allowed_mime_types() in wp-includes/functions.php @since 2.8.6
 		foreach ( IP_Geo_Block_Util::get_allowed_mime_types() as $key => $val ) {
@@ -525,7 +526,7 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'text' => __( 'Block by country', 'ip-geo-block' ),
-				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual action as a blocking target.">Target actions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $list . "</ul></li></ul>\n",
+				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual action as a blocking target.">Target actions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $list . "</ul></li></ul>\n",
 			)
 		);
 
@@ -598,7 +599,7 @@ endif;
 				'list' => $list,
 				'desc' => $desc,
 				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">'
-					. __( '<dfn title="Specify the page name (&#8220;page=&hellip;&#8221;) or the action name (&#8220;action=&hellip;&#8221;) to prevent undesired blocking caused by &#8220;Block by country&#8221; for non logged-in user and &#8220;Prevent Zero-day Exploit&#8221; for logged-in user.">Exceptions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>'
+				. __( '<dfn title="Specify the page name (&#8220;page=&hellip;&#8221;) or the action name (&#8220;action=&hellip;&#8221;) to prevent undesired blocking caused by &#8220;Block by country&#8221; for non logged-in user and &#8220;Prevent Zero-day Exploit&#8221; for logged-in user.">Exceptions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a><a class="ip-geo-block-unlock ip-geo-block-hide"><span title="' . __( 'Toggle with non logged-in user', 'ip-geo-block' ) . '"></span></a>'
 					. "\n<li class=\"ip-geo-block-hide\"><ul><li>\n"
 					. '<input class="regular-text code" id="ip_geo_block_settings_exception_admin" name="ip_geo_block_settings[exception][admin]" type="text" value="' . esc_attr( implode( ',', $options['exception']['admin'] ) ) . '">' . "\n"
 					. $comma[0]
@@ -669,7 +670,7 @@ endif;
 					2 => sprintf( $desc[0], $val ),
 				),
 				'before' => $tmp,
-				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . $desc[2] . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $exception . "</ul></li></ul>\n",
+				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . $desc[2] . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $exception . "</ul></li></ul>\n",
 			)
 		);
 
@@ -719,7 +720,7 @@ endif;
 					2 => sprintf( $desc[0], $val ),
 				),
 				'before' => $tmp,
-				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . $desc[2] . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $exception . "</ul></li></ul>\n",
+				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . $desc[2] . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $exception . "</ul></li></ul>\n",
 			)
 		);
 
@@ -881,7 +882,7 @@ endif;
 		);
 
 		// List of page
-		$exception = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual page as a blocking target.">Page</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
+		$exception = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual page as a blocking target.">Page</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_pages();
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -893,7 +894,7 @@ endif;
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// List of post type
-		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual post type on a single page as a blocking target.">Post type</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
+		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual post type on a single page as a blocking target.">Post type</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_post_types( array( 'public' => TRUE ) );
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -905,7 +906,7 @@ endif;
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// List of category
-		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual category on a single page or archive page as a blocking target.">Category</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
+		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual category on a single page or archive page as a blocking target.">Category</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_categories( array( 'hide_empty' => FALSE ) );
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -917,7 +918,7 @@ endif;
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// List of tag
-		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual tag on a single page or archive page as a blocking target.">Tag</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide"><span></span></a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
+		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual tag on a single page or archive page as a blocking target.">Tag</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_tags( array( 'hide_empty' => FALSE ) );
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {

@@ -251,6 +251,8 @@ class IP_Geo_Block_Admin {
 					__( 'Clear cache ?',      'ip-geo-block' ),
 					__( 'Clear logs ?',       'ip-geo-block' ),
 					__( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
+					__( 'ajax for logged-in user',     'ip-geo-block' ),
+					__( 'ajax for non logged-in user', 'ip-geo-block' ),
 				),
 			)
 		);
