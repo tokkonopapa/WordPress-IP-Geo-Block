@@ -358,6 +358,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 * **Deprecated:** Add a new filter hook `ip-geo-block-upload-forbidden` instead of `ip-geo-block-forbidden-upload`.
 * **Improvement:** Add a new filter hook `ip-geo-block-upload-capability` to improve compatibility with other plugins that have uploading functionality.
 * **Improvement:** Add a new option for verifying file upload capability. It can be set apart from verifying file extension and MIME type in "Prevent malicious file uploading".
+* **Improvement:** Improve ability to extract Ajax actions for "Exception" in "Admin post/ajax".
 * **Bug fix:** Fix the issue of verifying file upload. It could not handle multiple files. ([@](https://wordpress.org/support/topic/incompatible-with-awesome-support-plugin/#post-9403708 "Topic: incompatible with Awesome Support plugin &laquo; WordPress.org Forums"))
 * **Bug fix:** Fix the issue of illegal click event handling on anchor tag without href. ([@](https://wordpress.org/support/topic/pagebuilder-broken-by-ipgeoblock-v3-0-3-4/ "Topic: Pagebuilder broken by IPGeoblock v3.0.3.4 &laquo; WordPress.org Forums"))
 * See [3.0.4 release note](http://www.ipgeoblock.com/changelog/release-3.0.4.html "3.0.4 Release Note | IP Geo Block") for some details.
