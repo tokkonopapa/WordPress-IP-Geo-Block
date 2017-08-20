@@ -570,8 +570,8 @@ endif;
 		$exception = '';
 		foreach ( $installed as $key => $val ) {
 			$val = '';
-			$val .= $installed[ $key ] & 1 ? '<dfn title="' . $tmp[0] . '"><span class="ip-geo-block-admin-post dashicons dashicons-lock"></span></dfn>' : '';
-			$val .= $installed[ $key ] & 2 ? '<dfn title="' . $tmp[1] . '"><span class="ip-geo-block-admin-post dashicons dashicons-unlock"></span></dfn>' : '';
+			$val .= $installed[ $key ] & 1 ? '<dfn title="' . $tmp[0] . '"><span class="ip-geo-block-admin-post dashicons dashicons-lock">*</span></dfn>' : '';
+			$val .= $installed[ $key ] & 2 ? '<dfn title="' . $tmp[1] . '"><span class="ip-geo-block-admin-post dashicons dashicons-unlock">*</span></dfn>' : '';
 			$key = esc_attr( $key );
 			$exception .= '<li>'
 				. '<input id="ip_geo_block_' . $key . '" type="checkbox" value="1"' . checked( in_array( $key, $options['exception']['admin'] ), TRUE, FALSE ) . ' />'

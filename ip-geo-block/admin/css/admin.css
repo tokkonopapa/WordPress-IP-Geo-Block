@@ -465,10 +465,10 @@ span.ip-geo-block-title-link {
     box-shadow: none;
 }*/
 
-dfn ~ a.ip-geo-block-cycle,
-dfn ~ a.ip-geo-block-lock,
-dfn ~ a.ip-geo-block-unlock {
-    margin-left: 0.5em;
+dfn ~ .ip-geo-block-cycle,
+dfn ~ .ip-geo-block-lock,
+dfn ~ .ip-geo-block-unlock {
+    margin-left: 0.75em;
 }
 .ip-geo-block-cycle,
 .ip-geo-block-lock,
@@ -551,4 +551,5 @@ ol.ip-geo-block-top-list li code {
 /* action for admin post */
 .ip-geo-block-admin-post {
     color: #c43322;
+    margin-left: 0.25em;
 }

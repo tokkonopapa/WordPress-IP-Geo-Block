@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-08-19 17:19+0900\n"
-"PO-Revision-Date: 2017-08-19 17:19+0900\n"
+"POT-Creation-Date: 2017-08-20 14:08+0900\n"
+"PO-Revision-Date: 2017-08-20 14:08+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -50,15 +50,15 @@ msgid "Clear logs ?"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:253
-msgid "This feature is available with HTML5 compliant browsers."
-msgstr ""
-
-#: admin/class-ip-geo-block-admin.php:254
 msgid "ajax for logged-in user"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:255
+#: admin/class-ip-geo-block-admin.php:254
 msgid "ajax for non logged-in user"
+msgstr ""
+
+#: admin/class-ip-geo-block-admin.php:255
+msgid "This feature is available with HTML5 compliant browsers."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:268
@@ -187,8 +187,8 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1155
-#: admin/class-ip-geo-block-admin.php:1166
+#: admin/class-ip-geo-block-admin.php:1159
+#: admin/class-ip-geo-block-admin.php:1170
 #: classes/class-ip-geo-block-cron.php:274
 #: classes/class-ip-geo-block-cron.php:306
 #: classes/class-ip-geo-block-opts.php:399
@@ -196,14 +196,14 @@ msgstr ""
 msgid "Unable to write %s. Please check the permission."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1156
+#: admin/class-ip-geo-block-admin.php:1160
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-ip-geo-block-admin.php:1196
+#: admin/class-ip-geo-block-admin.php:1200
 msgid "Settings saved."
 msgstr ""
 
@@ -638,11 +638,11 @@ msgid ""
 msgstr ""
 
 #: admin/includes/tab-settings.php:566
-msgid "for logged-in user"
+msgid "admin post for logged-in user"
 msgstr ""
 
 #: admin/includes/tab-settings.php:567
-msgid "for non logged-in user"
+msgid "admin post for non logged-in user"
 msgstr ""
 
 #: admin/includes/tab-settings.php:589

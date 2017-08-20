@@ -1105,13 +1105,17 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	private function check_admin_post( $ajax = FALSE ) {
-		if ( FALSE === $ajax )
-			$nonce = check_admin_referer( IP_Geo_Block::PLUGIN_NAME . '-options' ); // a postfix '-options' is added at settings_fields().
-		else
+		if ( $ajax )
 			$nonce = IP_Geo_Block_Util::verify_nonce( IP_Geo_Block_Util::retrieve_nonce( 'nonce' ), $this->get_ajax_action() );
+		else
+			$nonce = check_admin_referer( IP_Geo_Block::PLUGIN_NAME . '-options' ); // a postfix '-options' is added at settings_fields().
 
-		$action = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
-		$nonce &= IP_Geo_Block_Util::verify_nonce( IP_Geo_Block_Util::retrieve_nonce( $action ), $action );
+		$settings = IP_Geo_Block::get_option();
+		if ( (   $ajax and $settings['validation']['ajax' ] & 2 ) ||
+		     ( ! $ajax and $settings['validation']['admin'] & 2 ) ) {
+			$action = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
+			$nonce &= IP_Geo_Block_Util::verify_nonce( IP_Geo_Block_Util::retrieve_nonce( $action ), $action );
+		}
 
 		if ( ! $nonce || ( ! current_user_can( 'manage_options' ) && ! current_user_can( 'manage_network_options' ) ) ) {
 			status_header( 403 );

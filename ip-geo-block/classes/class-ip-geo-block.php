@@ -235,7 +235,17 @@ class IP_Geo_Block {
 				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_GEO_BLOCK_BASE
 			);
-			$args = array( 'nonce' => IP_Geo_Block_Util::create_nonce( $handle ) ) + self::$wp_path;
+
+			$settings = self::get_option();
+			$args = array(
+				'nonce' => IP_Geo_Block_Util::create_nonce( $handle ),
+				'zep' => array(
+					'ajax'    => (bool)( $settings['validation']['ajax'   ] & 2 ),
+					'admin'   => (bool)( $settings['validation']['admin'  ] & 2 ),
+					'plugins' => (bool)( $settings['validation']['plugins'] & 2 ),
+					'themes'  => (bool)( $settings['validation']['themes' ] & 2 ),
+				),
+			) + self::$wp_path;
 
 			if ( is_multisite() ) {
 				global $wpdb;

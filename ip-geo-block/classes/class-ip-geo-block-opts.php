@@ -50,8 +50,8 @@ class IP_Geo_Block_Opts {
 			'maxlogs'     => 100,     // Max number of rows of log
 			'backup'      => NULL,    // Absolute path to directory for backup logs
 			// since version 2.1.0
-			'plugins'     => 0,       // Validate on wp-content/plugins
-			'themes'      => 0,       // Validate on wp-content/themes
+			'plugins'     => 0,       // Validate on wp-content/plugins (1:country 2:ZEP)
+			'themes'      => 0,       // Validate on wp-content/themes (1:country 2:ZEP)
 			// since version 2.2.9
 			'timing'      => 0,       // 0:init, 1:mu-plugins, 2:drop-in
 			'recdays'     => 30,      // Number of days for recording logs
