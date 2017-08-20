@@ -59,5 +59,6 @@ code
 	</table>
 </div>
 
-[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[WP-ZEP]: {{ '/article/how-wpzep-works.html' | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
+[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "IP Geo Block &mdash; WordPress Plugins"
+[IPGB-Forum]:   https://wordpress.org/support/plugin/ip-geo-block "View: [IP Geo Block] Support &laquo; WordPress.org Forums"
+[WP-ZEP]:       {{ '/article/how-wpzep-works.html' | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"
