@@ -50,8 +50,8 @@ class IP_Geo_Block_Opts {
 			'maxlogs'     => 100,     // Max number of rows of log
 			'backup'      => NULL,    // Absolute path to directory for backup logs
 			// since version 2.1.0
-			'plugins'     => 0,       // Validate on wp-content/plugins
-			'themes'      => 0,       // Validate on wp-content/themes
+			'plugins'     => 0,       // Validate on wp-content/plugins (1:country 2:ZEP)
+			'themes'      => 0,       // Validate on wp-content/themes (1:country 2:ZEP)
 			// since version 2.2.9
 			'timing'      => 0,       // 0:init, 1:mu-plugins, 2:drop-in
 			'recdays'     => 30,      // Number of days for recording logs
@@ -163,6 +163,8 @@ class IP_Geo_Block_Opts {
 		'mimetype'        => array(
 			'white_list'     => array(), // key and value
 			'black_list'     => "asp,aspx,cgi,exe,js,jsp,php,php3,php4,php5,pl,py,pht,phtml,html,htm,shtml,htaccess,sh,svg,gz,zip,rar,tar", // comma separated extension
+			// since version 3.0.4
+			'capability'     => array( 'upload_files' ),
 		),
 		'others'          => array(),    // TBD
 	);
@@ -280,16 +282,13 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '2.2.5' ) < 0 ) {
 				// https://wordpress.org/support/topic/compatibility-with-ag-custom-admin
 				$arr = array();
-
 				foreach ( explode( ',', $settings['signature'] ) as $tmp ) {
 					$tmp = trim( $tmp );
 					if ( 'wp-config.php' === $tmp || 'passwd' === $tmp )
 						$tmp = '/' . $tmp;
 					array_push( $arr, $tmp );
 				}
-
 				$settings['signature'] = implode( ',', $arr );
-
 				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
 					$settings['exception'][ $tmp ] = $default['exception'][ $tmp ];
 				}
@@ -359,11 +358,12 @@ class IP_Geo_Block_Opts {
 			}
 
 			if ( version_compare( $version, '3.0.4' ) < 0 ) {
-				$settings['Maxmind']['use_asn'  ] = 0; // disable
-				$settings['Maxmind']['asn4_path'] = $default['Maxmind']['asn4_path'];
-				$settings['Maxmind']['asn4_last'] = $default['Maxmind']['asn4_last'];
-				$settings['Maxmind']['asn6_path'] = $default['Maxmind']['asn6_path'];
-				$settings['Maxmind']['asn6_last'] = $default['Maxmind']['asn6_last'];
+				$settings['Maxmind' ]['use_asn'   ] = 0; // disable
+				$settings['Maxmind' ]['asn4_path' ] = $default['Maxmind' ]['asn4_path' ];
+				$settings['Maxmind' ]['asn4_last' ] = $default['Maxmind' ]['asn4_last' ];
+				$settings['Maxmind' ]['asn6_path' ] = $default['Maxmind' ]['asn6_path' ];
+				$settings['Maxmind' ]['asn6_last' ] = $default['Maxmind' ]['asn6_last' ];
+				$settings['mimetype']['capability'] = $default['mimetype']['capability'];
 			}
 
 			// save package version number

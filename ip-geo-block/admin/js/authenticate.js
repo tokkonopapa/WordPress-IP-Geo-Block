@@ -14,7 +14,7 @@ var IP_GEO_BLOCK_ZEP = {
 		'use strict';
 		var i, n = this.sites.length;
 		for (i = 0; i < n; ++i) {
-			if (-1 !== url.indexOf(this.sites[i]) && url && this.nonce) {
+			if (url && -1 !== url.indexOf(this.sites[i]) && this.nonce) {
 				window.location = add_query_nonce(url, this.nonce);
 			}
 		}
@@ -170,7 +170,7 @@ var IP_GEO_BLOCK_ZEP = {
 		uri = parse_uri(uri.toLowerCase());
 
 		// get absolute path with flattening `./`, `../`, `//`
-		var path = realpath(uri);
+		var match, path = realpath(uri);
 
 		// possibly scheme is `javascript` and path is `void(0);`
 		if (!uri.scheme || /^https?$/.test(uri.scheme)) {
@@ -181,8 +181,13 @@ var IP_GEO_BLOCK_ZEP = {
 			}
 
 			// exclude the case which component is only fragment (`#...`)
-			if ((uri.scheme || uri.path || uri.query) && regexp.test(path)) {
-				return 1; // internal for admin
+			if ((uri.scheme || uri.path || uri.query) && (match = regexp.exec(path))) {
+				if ((IP_GEO_BLOCK_AUTH.zep.ajax    && -1 !== match[0].indexOf(IP_GEO_BLOCK_AUTH.admin + 'admin-')) ||
+				    (IP_GEO_BLOCK_AUTH.zep.admin   && -1 !== match[0].indexOf(IP_GEO_BLOCK_AUTH.admin           )) ||
+				    (IP_GEO_BLOCK_AUTH.zep.plugins && -1 !== match[0].indexOf(IP_GEO_BLOCK_AUTH.plugins         )) ||
+				    (IP_GEO_BLOCK_AUTH.zep.themes  && -1 !== match[0].indexOf(IP_GEO_BLOCK_AUTH.themes          ))) {
+					return 1; // internal for admin
+				}
 			}
 		}
 

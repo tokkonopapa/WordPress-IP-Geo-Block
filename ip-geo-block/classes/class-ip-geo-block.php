@@ -235,7 +235,17 @@ class IP_Geo_Block {
 				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_GEO_BLOCK_BASE
 			);
-			$args = array( 'nonce' => IP_Geo_Block_Util::create_nonce( $handle ) ) + self::$wp_path;
+
+			$settings = self::get_option();
+			$args = array(
+				'nonce' => IP_Geo_Block_Util::create_nonce( $handle ),
+				'zep' => array(
+					'ajax'    => (bool)( $settings['validation']['ajax'   ] & 2 ),
+					'admin'   => (bool)( $settings['validation']['admin'  ] & 2 ),
+					'plugins' => (bool)( $settings['validation']['plugins'] & 2 ),
+					'themes'  => (bool)( $settings['validation']['themes' ] & 2 ),
+				),
+			) + self::$wp_path;
 
 			if ( is_multisite() ) {
 				global $wpdb;
@@ -291,7 +301,7 @@ class IP_Geo_Block {
 	private static function make_validation( $ip, $result ) {
 		return array_merge( array(
 			'ip'   => $ip,
-			'asn' => NULL,  // @since 3.0.4
+			'asn'  => NULL,  // @since 3.0.4
 			'auth' => IP_Geo_Block_Util::get_current_user_id(),
 			'code' => 'ZZ', // may be overwritten with $result
 		), $result );
@@ -386,10 +396,6 @@ class IP_Geo_Block {
 
 		// custom action (for fail2ban) @since 1.2.0
 		do_action( self::PLUGIN_NAME . '-send-response', $hook, $code, $validate );
-
-		// avoid redirection loop
-		if ( $code < 400 && IP_Geo_Block_Util::compare_url( $_SERVER['REQUEST_URI'], $settings['redirect_uri'] ? $settings['redirect_uri'] : home_url( '/' ) ) )
-			return; // do not block
 
 		// prevent caching (WP Super Cache, W3TC, Wordfence, Comet Cache)
 		defined( 'DONOTCACHEPAGE' ) or define( 'DONOTCACHEPAGE', TRUE );
@@ -704,10 +710,10 @@ class IP_Geo_Block {
 		$time = microtime( TRUE );
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr ) ) {
 			$validate = self::make_validation( self::$remote_addr, array(
-				'fail' => TRUE, // count up $cache['fail'] in update_cache()
-				'result' => 'failed',
+				'fail'     => TRUE, // count up $cache['fail'] in update_cache()
+				'result'   => 'failed',
 				'provider' => 'Cache',
-				'time' => microtime( TRUE ) - $time,
+				'time'     => microtime( TRUE ) - $time,
 			) + $cache );
 
 			$settings = self::get_option();
@@ -765,9 +771,8 @@ class IP_Geo_Block {
 			if ( $sig && FALSE !== strpos( $query, $sig ) ) {
 				if ( preg_match( '!\W!', $sig ) || // ex) `../` or `/wp-config.php`
 				     preg_match( '!\b' . preg_quote( $sig, '!' ) . '\b!', $query ) ) {
-					if ( ( $score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] ) ) > 0.99 ) {
+					if ( ( $score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] ) ) > 0.99 )
 						return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
-					}
 				}
 			}
 		}
@@ -780,28 +785,29 @@ class IP_Geo_Block {
 	 * @see wp_handle_upload() in wp-admin/includes/file.php
 	 */
 	public function check_upload( $validate, $settings ) {
-		if ( ! empty( $_FILES ) ) {
+		if ( ! empty( $_FILES ) && $settings['validation']['mimetype'] ) {
 			// check capability
-			if ( 1 === (int)$settings['validation']['mimetype'] && ! IP_Geo_Block_Util::current_user_can( 'upload_files' ) )
-				$upload = TRUE;
-
-			else foreach ( $_FILES as $key => $val ) {
-				// check $_FILES corruption attack
-				if ( ! isset( $val['error'] ) || is_array( $val['error'] ) ) {
-					$upload = TRUE;
-					break;
-				}
-
-				// check mime type and extension
-				if ( ! IP_Geo_Block_Util::check_filetype_and_ext( $val, $settings['validation']['mimetype'], $settings['mimetype'] ) ) {
-					$upload = TRUE;
+			$files = empty( $settings['mimetype']['capability'] ) ? TRUE : FALSE; // skip if empty
+			foreach ( $settings['mimetype']['capability'] as $file ) {
+				if ( empty( $file ) || IP_Geo_Block_Util::current_user_can( $file ) ) {
+					$files = TRUE;
 					break;
 				}
 			}
 
-			if ( isset( $upload ) ) {
-				$validate['upload'] = TRUE; // mark for logs
-				$validate = apply_filters( self::PLUGIN_NAME . '-forbidden-upload', $validate + array( 'result' => 'upload' ) );
+			if ( ! apply_filters( self::PLUGIN_NAME . '-upload-capability', $files ) )
+				return apply_filters( self::PLUGIN_NAME . '-upload-forbidden', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
+
+			foreach ( $_FILES as $files ) {
+				foreach ( IP_Geo_Block_Util::arrange_files( $files ) as $file ) {
+					// check $_FILES corruption attack
+					if ( ! empty( $file['name'] ) && UPLOAD_ERR_OK !== $file['error'] )
+						return apply_filters( self::PLUGIN_NAME . '-upload-forbidden', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
+
+					// check mime type and extension
+					if ( ! IP_Geo_Block_Util::check_filetype_and_ext( $file, $settings['validation']['mimetype'], $settings['mimetype'] ) )
+						return apply_filters( self::PLUGIN_NAME . '-upload-forbidden', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
+				}
 			}
 		}
 
@@ -864,6 +870,10 @@ class IP_Geo_Block {
 				$settings[ $key ] = $public[ $key ];
 			}
 		}
+
+		// avoid redirection loop
+		if ( $settings['response_code'] < 400 && IP_Geo_Block_Util::compare_url( $_SERVER['REQUEST_URI'], $settings['redirect_uri'] ? $settings['redirect_uri'] : home_url( '/' ) ) )
+			return; // do not block
 
 		if ( $public['target_rule'] ) {
 			if ( ! did_action( 'wp' ) ) { // deferred validation on 'wp' when the target is specified

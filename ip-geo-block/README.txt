@@ -12,31 +12,31 @@ It blocks spam posts, login attempts and malicious access to the back-end reques
 
 == Description ==
 
-A considerable number of WordPress vulnerabilities in plugins and themes have been disclosed every month. You can easily find them at [WPScan Vulnerability Database](https://wpvulndb.com/ "WPScan Vulnerability Database") and [Exploits Database](https://www.exploit-db.com/ "Exploits Database by Offensive Security"). It means that we're always exposed to the threats of being exploited caused by those vulnerabilities.
+A considerable number of WordPress vulnerabilities in plugins and themes have been disclosed every month on a site like [WPScan Vulnerability Database](https://wpvulndb.com/ "WPScan Vulnerability Database") and [Exploits Database](https://www.exploit-db.com/ "Exploits Database by Offensive Security"). It means that we're always exposed to the threats of being exploited caused by them.
 
-This plugin protects your site against such threats of attack against the back-end of your site such as login form, XML-RPC (login attempt) and admin area. It also blocks undesired comment spam, trackback and pingback spam and any requests to public facing pages aka front-end from undesired countries.
+This plugin guards your site against threats of attack to back-end of your site such as login form, XML-RPC (login attempt) and admin area. It also blocks undesired comment spam, trackback and pingback spam and any requests to public facing pages aka front-end from undesired countries.
 
 After several days of installation, you'll be supprised to find many malicious or undesirable accesses are blocked especially if you enable Zero-day Expoit Prevention.
 
 = Features =
 
 * **Immigration control:**  
-  Access to the basic and important entrances into the back-end such as `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-signup.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by means of a country code based on IP address. It allows you to configure either whitelist or blacklist to [specify the countires](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia"), [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia") for a range of IP addresses and [AS number](https://en.wikipedia.org/wiki/Autonomous_system_(Internet) "Autonomous system (Internet) - Wikipedia") for a group of IP networks.
+  Access to the basic and important entrances into back-end such as `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-signup.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by means of a country code based on IP address. It allows you to configure either whitelist or blacklist to [specify the countires](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia"), [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia") for a range of IP addresses and [AS number](https://en.wikipedia.org/wiki/Autonomous_system_(Internet) "Autonomous system (Internet) - Wikipedia") for a group of IP networks.
 
 * **Zero-day Exploit Prevention:**  
-  Unlike other security plugins and firewalls based on attack patterns, the original feature "**W**ord**P**ress **Z**ero-day **E**xploit **P**revention" (WP-ZEP) is focused on vulnerability patterns. It is simple but still smart and strong enough to block any malicious accesses to `wp-admin/*.php`, `plugins/*.php` and `themes/*.php` even from the permitted countries. It will protect your site against certain types of attack such as CSRF, LFI, SQLi, XSS and so on, **even if you have some vulnerable plugins and themes in your site**.
+  Unlike other security firewalls based on attack patterns (vectors), the original feature "**W**ord**P**ress **Z**ero-day **E**xploit **P**revention" (WP-ZEP) is focused on patterns of vulnerability. It is simple but still smart and strong enough to block any malicious accesses to `wp-admin/*.php`, `plugins/*.php` and `themes/*.php` even from the permitted countries. It will protect your site against certain types of attack such as CSRF, LFI, SQLi, XSS and so on, **even if you have some vulnerable plugins and themes in your site**.
 
 * **Guard against login attempts:**  
   In order to prevent hacking through the login form and XML-RPC by brute-force and the reverse-brute-force attacks, the number of login attempts will be limited per IP address even from the permitted countries.
 
 * **Minimize server load against brute-force attacks:**  
-  You can configure this plugin as a [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex") which would be loaded prior to regular plugins and can massively [reduce the load on server](http://www.ipgeoblock.com/codex/validation-timing.html "Validation timing | IP Geo Block").
+  You can configure this plugin as a [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex") so that this plugin can be loaded prior to regular plugins. It can massively [reduce the load on server](http://www.ipgeoblock.com/codex/validation-timing.html "Validation timing | IP Geo Block").
 
 * **Prevent malicious down/uploading:**  
-  A malicious request such as exposing `wp-config.php` and uploading undesired files via vulnerable plugins or themes can be blocked.
+  A malicious request such as exposing `wp-config.php` or uploading malwares via vulnerable plugins/themes can be blocked.
 
 * **Support of BuddyPress and bbPress:**  
-  You can configure this plugin such that a registered user can login as the membership from anywhere, but a request such as a new user registration, lost password, creating a new topic, and subscribing comment is blocked by the country code. It is suitable for [BuddyPress](https://wordpress.org/plugins/buddypress/ "BuddyPress &mdash; WordPress Plugins") and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins") to help reducing spams.
+  You can configure this plugin so that a registered user can login as a membership from anywhere, while a request such as a new user registration, lost password, creating a new topic and subscribing comment can be blocked by country. It is suitable for [BuddyPress](https://wordpress.org/plugins/buddypress/ "BuddyPress &mdash; WordPress Plugins") and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins") to help reducing spams.
 
 * **Referrer suppressor for external links:**  
   When you click an external hyperlink on admin screens, http referrer will be eliminated to hide a footprint of your site.
@@ -47,7 +47,7 @@ After several days of installation, you'll be supprised to find many malicious o
 
 * **Customizing response:**  
   HTTP response code can be selectable as `403 Forbidden` to deny access pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
-  You can also have the custom error page (for example `403.php`) in your theme template directory or child theme directory to fit your theme.
+  You can also have a human friendly page (like `404.php`) in your theme template directory or child theme directory to fit your theme.
 
 * **Validation logs:**  
   Validation logs can be recorded with useful information to audit attack patterns.
@@ -353,10 +353,15 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 == Changelog ==
 
 = 3.0.4 =
-* **New feature:** Statistics in logs - a new section in Statistics tab.
 * **New feature:** Autonomous System Number (ASN) in whitelist and blacklist of extra IP addresses instead of specifying many IP addresses.
-* **Improvement:** Redirected requests (HTTP response code < 400) are now recorded in statistics and logs as "blocked".
-* **Bug fix:** Fix the issue of illegal click event handling on anchor tag without href.
+* **New feature:** Statistics in logs - a new section in Statistics tab.
+* **Deprecated:** Add a new filter hook `ip-geo-block-upload-forbidden` instead of `ip-geo-block-forbidden-upload`.
+* **Improvement:** Add a new filter hook `ip-geo-block-upload-capability` to improve compatibility with other plugins that have uploading functionality.
+* **Improvement:** Add a new option for verifying file upload capability. It can be set apart from verifying file extension and MIME type in "Prevent malicious file uploading".
+* **Improvement:** Improve ability to extract Ajax actions for "Exception" in "Admin post/ajax".
+* **Improvement:** Inhibit to embed a special nonce into links when WP-ZEP is disabled at each target. This may improve compatibility with some plugins and themes.
+* **Bug fix:** Fix the issue of verifying file upload. It could not handle multiple files. ([@](https://wordpress.org/support/topic/incompatible-with-awesome-support-plugin/#post-9403708 "Topic: incompatible with Awesome Support plugin &laquo; WordPress.org Forums"))
+* **Bug fix:** Fix the issue of illegal click event handling on anchor tag without href. ([@](https://wordpress.org/support/topic/pagebuilder-broken-by-ipgeoblock-v3-0-3-4/ "Topic: Pagebuilder broken by IPGeoblock v3.0.3.4 &laquo; WordPress.org Forums"))
 * See [3.0.4 release note](http://www.ipgeoblock.com/changelog/release-3.0.4.html "3.0.4 Release Note | IP Geo Block") for some details.
 
 = 3.0.3.4 =

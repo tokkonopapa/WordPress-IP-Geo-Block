@@ -143,7 +143,7 @@ ul#ip-geo-block-actions dfn {
     border: none;
 }
 ul#ip-geo-block-actions span.dashicons {
-    font-size: 90%;
+    font-size: 14px;
 }
 .ip-geo-block-checked {
     list-style-type: disc;
@@ -465,19 +465,27 @@ span.ip-geo-block-title-link {
     box-shadow: none;
 }*/
 
-dfn + a.ip-geo-block-cycle {
-    margin-left: 0.5em;
+dfn ~ .ip-geo-block-cycle,
+dfn ~ .ip-geo-block-lock,
+dfn ~ .ip-geo-block-unlock {
+    margin-left: 0.75em;
 }
-.ip-geo-block-cycle {
+.ip-geo-block-cycle,
+.ip-geo-block-lock,
+.ip-geo-block-unlock {
     cursor: pointer;
     box-shadow: none;
     text-decoration: none;
 }
-.ip-geo-block-cycle:active {
+.ip-geo-block-cycle:active,
+.ip-geo-block-lock:active,
+.ip-geo-block-unlock:active {
     position: relative;
     top: 1px;
 }
-.ip-geo-block-cycle span {
+.ip-geo-block-cycle span,
+.ip-geo-block-lock span,
+.ip-geo-block-unlock span {
     height: 16px;
     width: 16px;
     margin: 0;
@@ -487,8 +495,17 @@ dfn + a.ip-geo-block-cycle {
     background-size: 16px 16px;
     background-position: center center;
     background-repeat: no-repeat;
+}
+.ip-geo-block-cycle span {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAh1BMVEUAda2otLp+rsSHprWHr8IBd7EpfKRGhaNajqeUqrRymKuKoq5yo7prlKgAcqoVe6w8gqQmgq5Tj6wIdqsVdKIshrEMea1Uhp+Anqw0hawDdq4gfKhljqE7hqoLdKYbgbM4jLQygKUGeK8CdawQd6gVeKcad6NKkrSerrZAj7UAc6sAc6rc3NySrVGQAAAALXRSTlP//////////////////////////////////////////////////////////wCl7wv9AAACOklEQVR4Ae2W15rzKgxF9xTZzhTX9B7S/gN6/9ebYqzzGZsw/S7LV3FZgCSIwD/kQ8FVcBU8xatZUczy8luC/ABNOn0DSHEsvyZ4PgLatNCYR3efFxyhTQ8g+qQgJxgv2JefERzJXATRh4LHOUwAHD4S7OGEztRJaN86hAUxtaNWDUf/bRdDBbQMWVDAO8jn89WUhag1MeyCAh6hHofyrliLgZKggDMYgzF3eVAwFq0uCZq5KY0TezjIHDDzC0qqmkwe2ctGDOQVLMkgu+F3/rGXwb4xIPcJ6P3JgkM8wFjmfcFAWfeKQywaAz33BJVuHsUcAt09gVbuLDThAJkdR687ggLmf4gDJLIGV7BydtB8yn3u+fbtuj/LS7G9wZAd1AKK+yxJ1x+aBmibTtgCcEHGHsh0wdbOgNLek4L7lI5BigY8nWuZUQ3qGEXes9JzOKGJztPaGtLslu3lIXJirdxCWkASHGDTMqg7V1DKPplygDG61YJukLHjEErGSXqCSos6xNSOgzP3BDmsQBcchNwkoV8oiNnPA78zIefUgCdJeGIfE7LmFWXsFTCFdzTJ/RlfEMRiSGnFXXbkC7AIeqcKDu4ynseozeouKJiSEYBDwkJyIC1nRUjgblkNWp/e/1vXc2gjoAoLksYgjrrFMi0oDgjEEIDij1scBXMJSH6DAj6RNl7o8MkuLak8Co15/Pk+MRmT0xilQJV/sdWNKg2kTaeroudvNNsDjmejYjSL+e6v2/2r4Cp4BXNajr0H7hRfAAAAAElFTkSuQmCC);
 }
+.ip-geo-block-lock span {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAYFBMVEXc3Ny3y9Zzq8dRmb7M1dlXnsIFdK0AcawAcqwphrYAcKvZ29wAb6oJd680jrqlw9MBcqxmo8MUfbJLl75eoMI7kbzX2ttqp8VSmL1YnL8NeK+Tu89DlL1ImMEOebBNmL4OkqMoAAAAAXRSTlMAQObYZgAAAPlJREFUeAG9kAWyhTAQBIPOsCzufv9TPnf4Ll0CSbpmxXwNy3Yc23rz2fV8kPA99433AIQIiGDTCD0lojiOQPXCDSFJIbF16CMWItkQMkF+inZzSLYhFKLl+a9UKTZaqJTZJYtarZuo40chrv9CqJTN+behVi+Cm7RdDgRld6AMgLxrE/dxBz0BEjwBEmD/uIsWPAOAF9A+CE56ufSryr8oqfOYcBbQJ8YkES7COkFOYzTypqCDOTDo2wljaEw4vp1APYyWKd8WMBozylvCpcvmXeHQ5fCegHia4s1FgZcIVeVFeFx1M4MvYG4eBHdYWufC+addBtf8E3vdjBNhWnVQqAAAAABJRU5ErkJggg==);
+}
+.ip-geo-block-unlock span {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAYFBMVEXc3NyzydRzq8dRmb7I09hYnsEFdK0AcawAcqzP1toqhrYAcKvZ29wAb6oMeK8zjbqrxtQBcazBz9Zko8MVfbLF0thMmL07kbtpp8WjwtJSmL1YnL+Tu89DlL1JmMEPebBFV++UAAAAAXRSTlMAQObYZgAAAONJREFUeAG9kAWChDAMAIMmJaTFXf7/ynXflvMbnE5j8DU8Pwh8D1yEUYxEGEchWFEJEjEflESBhTQSQm2MRpIotQhZTmgKgMIg5ZlFKBmrGg7UFXJpEQKW8qIKN7YeikJdBJI2BTtXwfyx0L3XoPphvBEliNU49OoxqEa6g4cTST/OYshvi3hV8+FxSNfluG3jqxG8C6h7gF6jU+AODnTsFGSCA5O4I8wpQDq7I5CUAKWQW+AZYOYtoQPoGDeECWDaioBmWQxeBduoWURso+5WpBdw7R4ENTVDcGE435tJwT+xB+vMEnZRNB0YAAAAAElFTkSuQmCC);
+}
+
 /* https://developer.wordpress.org/resource/dashicons/ for WordPress 3.8
 .ip-geo-block-cycle span:before {
     background: none;
@@ -524,7 +541,15 @@ ol.ip-geo-block-top-list h4 {
 ol.ip-geo-block-top-list li code {
     background: none;
 }
+
+/* icon for top level menu */
 #toplevel_page_ip-geo-block .wp-menu-image img {
     height: 18px;
     width: 18px;
+}
+
+/* action for admin post */
+.ip-geo-block-admin-post {
+    color: #c43322;
+    margin-left: 0.25em;
 }

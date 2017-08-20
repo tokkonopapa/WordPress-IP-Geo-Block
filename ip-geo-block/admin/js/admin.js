@@ -52,7 +52,7 @@ var ip_geo_block_time = new Date();
 	}
 
 	function notice_html5() {
-		warning(null, IP_GEO_BLOCK.msg[6]);
+		warning(null, IP_GEO_BLOCK.msg[8]);
 	}
 
 	function redirect(page, tab) {
@@ -505,6 +505,17 @@ var ip_geo_block_time = new Date();
 		);
 	}
 
+	// form for export / import
+	function add_icon(dfn, span, title, icon) {
+		var i, j;
+		i = dfn.cloneNode(false);
+		i.setAttribute('title', title);
+		j = span.cloneNode(false);
+		j.setAttribute('class', 'dashicons dashicons-' + icon);
+		i.appendChild(j);
+		return i;
+	}
+
 	$(function () {
 		// Get tab number
 		var tabNo = Number(IP_GEO_BLOCK.tab) || 0,
@@ -576,7 +587,7 @@ var ip_geo_block_time = new Date();
 				var $this = $(this),
 				    stat = parseInt($this.val(), 10);
 				$this.nextAll(ID('.', 'settings-folding')).each(function (i, obj) {
-					fold_elements($(obj), stat === i + 1);
+					fold_elements($(obj), (stat === i + 1) || (stat && 2 === i));
 				});
 				return stopPropergation(event);
 			}).change();
@@ -635,39 +646,81 @@ var ip_geo_block_time = new Date();
 				return stopPropergation(event);
 			}).change();
 
+			// WP-ZEP in Admin area
+			$(ID('@', 'validation_admin_2')).on('change', function (event) {
+				IP_GEO_BLOCK_AUTH.zep.admin = true;
+			});
+
 			// Exceptions for Admin ajax/post
-			$(ID('@', 'exception_admin')).on('change', function (event) {
-				var actions = $.grep($(this).val().split(','), function (e){
-					return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
-				});
+			ajax_post(null, {
+				cmd: 'get-actions'
+			}, function (data) {
+				var i, j, id, key, $this = $(ID('#', 'actions')),
+				    li    = document.createElement('li'   ),
+				    input = document.createElement('input'),
+				    label = document.createElement('label'),
+				    dfn   = document.createElement('dfn'  ),
+				    span  = document.createElement('span' );
+				for (key in data) {
+					id = ID('%', key);
+					if (data.hasOwnProperty(key) && ! $this.find('#' + id).size()) {
+						i = input.cloneNode(false);
+						i.setAttribute('id', id);
+						i.setAttribute('value', '1');
+						i.setAttribute('type', 'checkbox');
+						j = li.cloneNode(false);
+						j.appendChild(i);
 
-				$(ID('#', 'actions')).find('input').each(function (i, e) {
-					var $this = $(this),
-					    action = $this.attr('id').replace(ID('%', ''), '');
-					$this.prop('checked', -1 !== $.inArray(action, actions));
-				});
-				return stopPropergation(event);
-			}).change();
+						i = label.cloneNode(false);
+						i.setAttribute('for', id);
+						i.appendChild(document.createTextNode(key));
+						j.appendChild(i);
 
-			// Candidate actions
-			$(ID('#', 'actions')).on('click', 'input', function (event) {
-				var i, $this = $(this),
-				action = $this.attr('id').replace(ID('%', ''), ''),
-				$admin = $(ID('@', 'exception_admin')),
-				actions = $.grep($admin.val().split(','), function (e){
-					return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
-				});
+						if (1 & data[key]) {
+							j.appendChild(add_icon(dfn, span, IP_GEO_BLOCK.msg[6], 'lock'));
+						}
+						if (2 & data[key]) {
+							j.appendChild(add_icon(dfn, span, IP_GEO_BLOCK.msg[7], 'unlock'));
+						}
 
-				// find the action
-				i = $.inArray(action, actions);
-
-				if (-1 === i) {
-					actions.push(action);
-				} else {
-					actions.splice(i, 1);
+						$this.append(j);
+					}
 				}
 
-				$admin.val(actions.join(',')).change();
+				// Handle text field for actions
+				$(ID('@', 'exception_admin')).on('change', function (event) {
+					var actions = $.grep($(this).val().split(','), function (e){
+						return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
+					});
+
+					$(ID('#', 'actions')).find('input').each(function (i, e) {
+						var $this = $(this),
+							action = $this.attr('id').replace(ID('%', ''), '');
+						$this.prop('checked', -1 !== $.inArray(action, actions));
+					});
+					return stopPropergation(event);
+				}).change();
+
+				// Candidate actions
+				$(ID('#', 'actions')).on('click', 'input', function (event) {
+					var i, $this = $(this),
+					action = $this.attr('id').replace(ID('%', ''), ''),
+					$admin = $(ID('@', 'exception_admin')),
+					actions = $.grep($admin.val().split(','), function (e){
+						return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
+					});
+
+					// find the action
+					i = $.inArray(action, actions);
+
+					if (-1 === i) {
+						actions.push(action);
+					} else {
+						actions.splice(i, 1);
+					}
+
+					$admin.val(actions.join(',')).change();
+				});
 			});
 
 			// Enable / Disable Exceptions
@@ -852,17 +905,35 @@ var ip_geo_block_time = new Date();
 
 			// Toggle checkbox
 			$(ID('.', 'cycle')).on('click', function (event) {
-				var $that = $(this).next('li'),
+				var regex, $that = $(this).nextAll('li'), actions,
 				    text = $that.find(ID('@', 'exception_admin')),
-				    cbox = $that.find('input:checkbox'),
+				    cbox = $that.find('input:checkbox').filter(':visible'),
 				    stat = cbox.filter(':checked').length;
 
-				if (text.length) {
-					cbox.filter(stat ? ':checked' : ':not(:checked)').click();
-				} else {
-					cbox.prop('checked', !stat);
-				}
+				cbox.prop('checked', !stat);
 
+				if (text.length) {
+					if (stat) {
+						text.val('');
+					} else {
+						regex = new RegExp(ID('%', ''));
+						actions = [];
+						cbox.each(function (i) {
+							actions[i] = $(this).attr('id').replace(regex, '');
+						});
+						text.val(actions.join(','));
+					}
+				};
+
+				$(this).blur(); // unfocus anchor tag
+				return false;
+			});
+
+			// Show/Hide logged in user only
+			$(ID('.', 'unlock')).on('click', function (event) {
+				$(this).nextAll('li').find('h4').nextAll('li').filter(function (i, elm) {
+					return ! $(this).find('.dashicons-unlock').length;
+				}).toggle();
 				return false;
 			});
 

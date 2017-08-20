@@ -7,9 +7,13 @@ class IP_Geo_Block_Admin_Rewrite {
 	protected static $instance = NULL;
 
 	// private values
-	private $doc_root = NULL; // document root
-	private $base_uri = NULL; // plugins base uri
-	private $wp_dirs  = array();
+	private $doc_root  = NULL;  // document root
+	private $base_uri  = NULL;  // plugins base uri
+	private $is_apache = NULL;  // Apache
+	private $is_nginx  = NULL;  // Nginx
+	private $user_ini  = NULL;  // user ini file
+	private $is_cgi    = FALSE; // CGI or FastCGI SAPI
+	private $wp_dirs   = array();
 
 	// template of rewrite rule in wp-content/(plugins|themes)/
 	private $rewrite_rule = array(
@@ -36,19 +40,25 @@ class IP_Geo_Block_Admin_Rewrite {
 		),
 		'nginx' => array(
 			'plugins' => array(
-				'# BEGIN IP Geo Block',
-				'location ~ %REWRITE_BASE%rewrite.php$ {}',
-				'location %WP_CONTENT_DIR%/plugins/ {',
-				'    rewrite ^%WP_CONTENT_DIR%/plugins/.*/.*\.php$ %REWRITE_BASE%rewrite.php break;',
-				'}',
-				'# END IP Geo Block',
+//				'# BEGIN IP Geo Block',
+//				'location ~ %REWRITE_BASE%rewrite.php$ {}',
+//				'location %WP_CONTENT_DIR%/plugins/ {',
+//				'    rewrite ^%WP_CONTENT_DIR%/plugins/.*/.*\.php$ %REWRITE_BASE%rewrite.php break;',
+//				'}',
+//				'# END IP Geo Block',
+				'; BEGIN IP Geo Block',
+				'auto_prepend_file = "%ABSPATH%wp-load.php"',
+				'; END IP Geo Block',
 			),
 			'themes' => array(
-				'# BEGIN IP Geo Block',
-				'location %WP_CONTENT_DIR%/themes/ {',
-				'    rewrite ^%WP_CONTENT_DIR%/themes/.*/.*\.php$ %REWRITE_BASE%rewrite.php break;',
-				'}',
-				'# END IP Geo Block',
+//				'# BEGIN IP Geo Block',
+//				'location %WP_CONTENT_DIR%/themes/ {',
+//				'    rewrite ^%WP_CONTENT_DIR%/themes/.*/.*\.php$ %REWRITE_BASE%rewrite.php break;',
+//				'}',
+//				'# END IP Geo Block',
+				'; BEGIN IP Geo Block',
+				'auto_prepend_file = "%ABSPATH%wp-load.php"',
+				'; END IP Geo Block',
 			),
 		),
 	);
@@ -64,6 +74,15 @@ class IP_Geo_Block_Admin_Rewrite {
 			'plugins'   => $condir . '/plugins/',
 			'themes'    => $condir . '/themes/',
 		);
+
+		// wp-includes/vars.php
+		global $is_apache, $is_nginx;
+		$this->is_apache = $is_apache;
+		$this->is_nginx  = $is_nginx;
+
+		// CGI or not (cgi, cgi-fcgi, fpm-fcgi)
+		// $this->user_ini = ini_get( 'user_ini.filename' );
+		// $this->is_cgi = ( $this->user_ini && FALSE !== strpos( php_sapi_name(), 'cgi' ) );
 	}
 
 	/**
@@ -80,8 +99,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * @return string 'apache', 'nginx' or NULL
 	 */
 	private function get_server_type() {
-		global $is_apache, $is_nginx; // wp-includes/vars.php
-		return $is_apache ? 'apache' : ( $is_nginx ? 'nginx' : NULL );
+		return $this->is_apache ? 'apache' : ( $this->is_nginx ? 'nginx' : NULL );
 	}
 
 	/**
@@ -104,14 +122,12 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * @return string absolute path to the .htaccess
 	 */
 	private function get_rewrite_file( $which ) {
-		global $is_apache, $is_nginx; // wp-includes/vars.php
-
-		if ( $is_apache ) {
+		if ( $this->is_apache ) {
 			return $this->doc_root . $this->wp_dirs[ $which ] . '.htaccess';
 		}
 
-		elseif ( $is_nginx ) {
-			return NULL; /* MUST FIX */
+		elseif ( $this->is_nginx && $this->is_cgi ) {
+			return $this->doc_root . $this->wp_dirs[ $which ] . $this->user_ini;
 		}
 
 		else {
@@ -173,9 +189,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * @return bool TRUE or FALSE
 	 */
 	private function get_rewrite_stat( $which ) {
-		global $is_apache, $is_nginx; // wp-includes/vars.php
-
-		if ( $is_apache ) {
+		if ( $this->is_apache || ( $this->is_nginx && $this->is_cgi ) ) {
 			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
 				return FALSE;
 
@@ -183,7 +197,7 @@ class IP_Geo_Block_Admin_Rewrite {
 			return empty( $block ) ? FALSE : TRUE;
 		}
 
-		elseif ( $is_nginx ) {
+		elseif ( $this->is_nginx ) {
 			// https://www.wordfence.com/blog/2014/05/nginx-wordfence-falcon-engine-php-fpm-fastcgi-fast-cgi/
 			return -1; /* CURRENTLY NOT SUPPORTED */
 		}
@@ -227,8 +241,8 @@ class IP_Geo_Block_Admin_Rewrite {
 		return $server_type ? array_merge(
 			$content,
 			str_replace(
-				array( '%REWRITE_BASE%', '%WP_CONTENT_DIR%' ),
-				array( $this->base_uri,    WP_CONTENT_DIR   ),
+				array( '%REWRITE_BASE%', '%WP_CONTENT_DIR%', '%ABSPATH%' ),
+				array( $this->base_uri,    WP_CONTENT_DIR,     ABSPATH   ),
 				$this->rewrite_rule[ $server_type ][ $which ]
 			)
 		) : array();
@@ -240,9 +254,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * @param string 'plugins' or 'themes'
 	 */
 	private function add_rewrite_rule( $which ) {
-		global $is_apache, $is_nginx; // wp-includes/vars.php
-
-		if ( $is_apache ) {
+		if ( $this->is_apache || ( $this->is_nginx && $this->is_cgi ) ) {
 			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
 				return FALSE;
 
@@ -264,9 +276,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * @param string 'plugins' or 'themes'
 	 */
 	private function del_rewrite_rule( $which ) {
-		global $is_apache, $is_nginx; // wp-includes/vars.php
-
-		if ( $is_apache ) {
+		if ( $this->is_apache || ( $this->is_nginx && $this->is_cgi ) ) {
 			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
 				return FALSE;
 

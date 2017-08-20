@@ -244,12 +244,14 @@ class IP_Geo_Block_Admin {
 				'url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => IP_Geo_Block_Util::create_nonce( $this->get_ajax_action() ),
 				'msg' => array(
-					__( 'Import settings ?',  'ip-geo-block' ),
-					__( 'Create table ?',     'ip-geo-block' ),
-					__( 'Delete table ?',     'ip-geo-block' ),
-					__( 'Clear statistics ?', 'ip-geo-block' ),
-					__( 'Clear cache ?',      'ip-geo-block' ),
-					__( 'Clear logs ?',       'ip-geo-block' ),
+					__( 'Import settings ?',           'ip-geo-block' ),
+					__( 'Create table ?',              'ip-geo-block' ),
+					__( 'Delete table ?',              'ip-geo-block' ),
+					__( 'Clear statistics ?',          'ip-geo-block' ),
+					__( 'Clear cache ?',               'ip-geo-block' ),
+					__( 'Clear logs ?',                'ip-geo-block' ),
+					__( 'ajax for logged-in user',     'ip-geo-block' ),
+					__( 'ajax for non logged-in user', 'ip-geo-block' ),
 					__( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
 				),
 			)
@@ -781,9 +783,9 @@ class IP_Geo_Block_Admin {
 			$args['value']  = $args['text']; // should be escaped because it can contain allowed tags
 
 		  case 'text': ?>
-<input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"
-<?php disabled( ! empty( $args['disabled'] ), TRUE ); ?>
-<?php if ( isset( $args['placeholder'] ) ) echo ' placeholder="', $args['placeholder'], '"'; ?> />
+<input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php
+	disabled( ! empty( $args['disabled'] ), TRUE );
+	if ( isset( $args['placeholder'] ) ) echo ' placeholder="', esc_html( $args['placeholder'] ), '"'; ?> />
 <?php
 			break; // disabled @since 3.0
 
@@ -897,11 +899,14 @@ class IP_Geo_Block_Admin {
 			  case 'mimetype':
 				if ( isset( $input[ $key ]['white_list'] ) ) { // for json file before 3.0.3
 					foreach ( $input[ $key ]['white_list'] as $k => $v ) {
-						$output[ $key ]['white_list'][ $k ] = sanitize_text_field( $v );
+						$output[ $key ]['white_list'][ sanitize_text_field( $k ) ] = sanitize_mime_type( $v ); // @since 3.1.3
 					}
 				}
 				if ( isset( $input[ $key ]['black_list'] ) ) { // for json file before 3.0.3
 					$output[ $key ]['black_list'] = sanitize_text_field( $input[ $key ]['black_list'] );
+				}
+				if ( isset( $input[ $key ]['capability'] ) ) {
+					$output[ $key ]['capability'] = array_map( 'sanitize_key', explode( ',', trim( $input[ $key ]['capability'], ',' ) ) ); // @since 3.0.0
 				}
 				break;
 
@@ -1067,6 +1072,10 @@ class IP_Geo_Block_Admin {
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
 			IP_Geo_Block_Cron::start_update_db( $output, TRUE ); // force to update
 		}
+		elseif ( ! $output['Maxmind']['use_asn'] && ! @file_exists( $output['Maxmind']['asn4_path'] ) ) {
+			$output['Maxmind']['asn4_path'] = NULL; // force to delete
+			$output['Maxmind']['asn6_path'] = NULL;
+		}
 
 		return $output;
 	}
@@ -1096,13 +1105,17 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	private function check_admin_post( $ajax = FALSE ) {
-		if ( FALSE === $ajax )
-			$nonce = check_admin_referer( IP_Geo_Block::PLUGIN_NAME . '-options' ); // a postfix '-options' is added at settings_fields().
-		else
+		if ( $ajax )
 			$nonce = IP_Geo_Block_Util::verify_nonce( IP_Geo_Block_Util::retrieve_nonce( 'nonce' ), $this->get_ajax_action() );
+		else
+			$nonce = check_admin_referer( IP_Geo_Block::PLUGIN_NAME . '-options' ); // a postfix '-options' is added at settings_fields().
 
-		$action = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
-		$nonce &= IP_Geo_Block_Util::verify_nonce( IP_Geo_Block_Util::retrieve_nonce( $action ), $action );
+		$settings = IP_Geo_Block::get_option();
+		if ( (   $ajax and $settings['validation']['ajax' ] & 2 ) ||
+		     ( ! $ajax and $settings['validation']['admin'] & 2 ) ) {
+			$action = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
+			$nonce &= IP_Geo_Block_Util::verify_nonce( IP_Geo_Block_Util::retrieve_nonce( $action ), $action );
+		}
 
 		if ( ! $nonce || ( ! current_user_can( 'manage_options' ) && ! current_user_can( 'manage_network_options' ) ) ) {
 			status_header( 403 );
@@ -1311,6 +1324,11 @@ class IP_Geo_Block_Admin {
 
 		  case 'show-info':
 			$res = IP_Geo_Block_Admin_Ajax::get_wp_info();
+			break;
+
+		  case 'get-actions':
+			// Get all the ajax/post actions
+			$res = IP_Geo_Block_Util::get_registered_actions( TRUE );
 			break;
 
 		  case 'create-table':

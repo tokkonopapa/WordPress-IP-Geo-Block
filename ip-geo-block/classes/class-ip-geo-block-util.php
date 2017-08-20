@@ -214,12 +214,15 @@ class IP_Geo_Block_Util {
 			  case 'auth':
 				$cookie_name = AUTH_COOKIE;
 				break;
+
 			  case 'secure_auth':
 				$cookie_name = SECURE_AUTH_COOKIE;
 				break;
+
 			  case "logged_in":
 				$cookie_name = LOGGED_IN_COOKIE;
 				break;
+
 			  default:
 				if ( is_ssl() ) {
 					$cookie_name = SECURE_AUTH_COOKIE;
@@ -645,6 +648,28 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
+	 * Arrange $_FILES array
+	 *
+	 * @see http://php.net/manual/ja/features.file-upload.multiple.php#53240
+	 */
+	public static function arrange_files( $files ) {
+		if ( ! is_array( $files['name'] ) )
+			return array( $files );
+
+		$file_array = array();
+		$file_count = count( $files['name'] );
+		$file_keys = array_keys( $files );
+
+		for ( $i=0; $i < $file_count; ++$i ) {
+			foreach ( $file_keys as $key ) {
+				$file_array[ $i ][ $key ] = $files[ $key ][ $i ];
+			}
+		}
+
+		return $file_array;
+	}
+
+	/**
 	 * WP alternative function for advanced-cache.php
 	 *
 	 * Add / Remove slash at the end of string.
@@ -815,6 +840,41 @@ class IP_Geo_Block_Util {
 	public static function get_server_ip() {
 		return isset( $_SERVER['SERVER_ADDR'] ) ? $_SERVER['SERVER_ADDR'] : ( (int)self::is_IIS() >= 7 ?
 		     ( isset( $_SERVER['LOCAL_ADDR' ] ) ? $_SERVER['LOCAL_ADDR' ] : NULL ) : NULL );
+	}
+
+
+	/**
+	 * Get the list of registered actions
+	 *
+	 */
+	public static function get_registered_actions( $ajax = FALSE ) {
+		$installed = array();
+
+		global $wp_filter;
+		foreach ( $wp_filter as $key => $val ) {
+			if ( $ajax && FALSE !== strpos( $key, 'wp_ajax_' ) ) {
+				if ( 0 === strpos( $key, 'wp_ajax_nopriv_' ) ) {
+					$key = substr( $key, 15 ); // 'wp_ajax_nopriv_'
+					$val = 2;                  // without privilege
+				} else {
+					$key = substr( $key, 8 );  // 'wp_ajax_'
+					$val = 1;                  // with privilege
+				}
+				$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
+			} elseif ( FALSE !== strpos( $key, 'admin_post_' ) ) {
+				if ( 0 === strpos( $key, 'admin_post_nopriv_' ) ) {
+					$key = substr( $key, 18 ); // 'admin_post_nopriv_'
+					$val = 2;                  // without privilege
+				} else {
+					$key = substr( $key, 11 ); // 'admin_post_'
+					$val = 1;                  // with privilege
+				}
+				$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
+			}
+		}
+		unset( $installed['ip_geo_block'] );
+
+		return $installed;
 	}
 
 }
