@@ -355,7 +355,8 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 = 3.0.4.1 =
 Thank you all for taking your time again since last update.
 * **Bug fix:** Fix the error on updating 3.0.4. ([@](https://wordpress.org/support/topic/error-on-updating-3-0-4/ "Topic: Error on updating 3.0.4 &laquo; WordPress.org Forums"))
-* **Bug fix:** Fix the issue of unexpected redirection on anchor tag with empty href in multisite ([@](https://wordpress.org/support/topic/refresh-the-backend-page/ "Topic: refresh the backend page &laquo; WordPress.org Forums"))
+* **Bug fix:** Fix the issue of unexpected redirection on anchor tag with empty href in multisite. ([@](https://wordpress.org/support/topic/refresh-the-backend-page/ "Topic: refresh the backend page &laquo; WordPress.org Forums"))
+* **Bug fix:** Fix the issue that "Remove all settings at uninstallation" could not be unchecked. ([@](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/issues/19 "Bugs in v3.0.4 - Issue #19 - tokkonopapa/WordPress-IP-Geo-Block"))
 
 = 3.0.4 =
 * **New feature:** Autonomous System Number (ASN) in whitelist and blacklist of extra IP addresses instead of specifying many IP addresses.
