@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.8
-Stable tag: 3.0.4
+Tested up to: 4.8.1
+Stable tag: 3.0.4.1rc
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -351,6 +351,11 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.4.1 =
+Thank you all for taking your time again since last update.
+* **Bug fix:** Fix the error on updating 3.0.4. ([@](https://wordpress.org/support/topic/error-on-updating-3-0-4/ "Topic: Error on updating 3.0.4 &laquo; WordPress.org Forums"))
+* **Bug fix:** Fix the issue of unexpected redirection on anchor tag with empty href in multisite ([@](https://wordpress.org/support/topic/refresh-the-backend-page/ "Topic: refresh the backend page &laquo; WordPress.org Forums"))
 
 = 3.0.4 =
 * **New feature:** Autonomous System Number (ASN) in whitelist and blacklist of extra IP addresses instead of specifying many IP addresses.

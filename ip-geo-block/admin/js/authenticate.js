@@ -155,6 +155,16 @@ var IP_GEO_BLOCK_ZEP = {
 		return compose_uri(uri);
 	}
 
+	// check if uri is valid
+	function is_valid_uri(uri) {
+		return uri.scheme || uri.path || uri.query;
+	}
+
+	// check if current page in admin and the target of wp-zep
+	function is_back_end() {
+		return (is_admin(location.pathname) === 1 || location.search.indexOf(IP_GEO_BLOCK_ZEP.auth) >= 0);
+	}
+
 	// regular expression to find target for is_admin()
 	var regexp = new RegExp(
 		'^(?:' + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.admin
@@ -166,7 +176,7 @@ var IP_GEO_BLOCK_ZEP = {
 	// check the URI where the nonce is needed
 	function is_admin(uri) {
 		// parse uri and get real path
-		uri = uri || location.pathname;
+		uri = uri || location.pathname; // in case of empty `action` on the form tag
 		uri = parse_uri(uri.toLowerCase());
 
 		// get absolute path with flattening `./`, `../`, `//`
@@ -181,7 +191,7 @@ var IP_GEO_BLOCK_ZEP = {
 			}
 
 			// exclude the case which component is only fragment (`#...`)
-			if ((uri.scheme || uri.path || uri.query) && (match = regexp.exec(path))) {
+			if (is_valid_uri(uri) && (match = regexp.exec(path))) {
 				if ((IP_GEO_BLOCK_AUTH.zep.ajax    && -1 !== match[0].indexOf(IP_GEO_BLOCK_AUTH.admin + 'admin-')) ||
 				    (IP_GEO_BLOCK_AUTH.zep.admin   && -1 !== match[0].indexOf(IP_GEO_BLOCK_AUTH.admin           )) ||
 				    (IP_GEO_BLOCK_AUTH.zep.plugins && -1 !== match[0].indexOf(IP_GEO_BLOCK_AUTH.plugins         )) ||
@@ -315,10 +325,6 @@ var IP_GEO_BLOCK_ZEP = {
 		};
 	}
 
-	function is_back_end() {
-		return (is_admin(location.pathname) === 1 || location.search.indexOf(IP_GEO_BLOCK_ZEP.auth) >= 0);
-	}
-
 	function attach_event() {
 		// https://www.sitepoint.com/jquery-body-on-document-on/
 		var elem = $(document); // `html` or `body` doesn't work with some browsers
@@ -328,7 +334,7 @@ var IP_GEO_BLOCK_ZEP = {
 			var $this = $(this),
 			    href  = $this.attr('href'),
 			    rel   = $this.attr('rel' ),
-			    admin = "undefined" !== typeof href ? is_admin(href) : 0;
+			    admin = is_valid_uri(parse_uri(href)) ? is_admin(href) : -2; // do nothing if uri is not valid
 
 			// if context menu then continue and should be checked in check_nonce()
 			if ('contextmenu' === event.type) {

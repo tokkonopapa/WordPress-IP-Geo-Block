@@ -842,7 +842,6 @@ class IP_Geo_Block_Util {
 		     ( isset( $_SERVER['LOCAL_ADDR' ] ) ? $_SERVER['LOCAL_ADDR' ] : NULL ) : NULL );
 	}
 
-
 	/**
 	 * Get the list of registered actions
 	 *
@@ -875,6 +874,29 @@ class IP_Geo_Block_Util {
 		unset( $installed['ip_geo_block'] );
 
 		return $installed;
+	}
+
+	/**
+	 * Get the list of multisite
+	 *
+	 */
+	public static function get_multisite() {
+		$sites = array();
+
+		if ( is_multisite() ) {
+			global $wpdb;
+			foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
+				switch_to_blog( $id );
+				$sites[] = admin_url();
+				restore_current_blog();
+			}
+
+			if ( empty( $sites[ $url = network_admin_url() ] ) ) {
+				$sites[] = $url;
+			}
+		}
+
+		return $sites;
 	}
 
 }
