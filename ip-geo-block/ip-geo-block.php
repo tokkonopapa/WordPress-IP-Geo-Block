@@ -13,7 +13,7 @@
  * Plugin Name:       IP Geo Block
  * Plugin URI:        http://wordpress.org/plugins/ip-geo-block/
  * Description:       It blocks any spams, login attempts and malicious access to the admin area posted from outside your nation, and also prevents zero-day exploit.
- * Version:           3.0.4
+ * Version:           3.0.4.1
  * Author:            tokkonopapa
  * Author URI:        http://www.ipgeoblock.com/
  * Text Domain:       ip-geo-block
@@ -63,6 +63,22 @@ function ip_geo_block_deactivate( $network_wide = FALSE ) {
 
 register_activation_hook( __FILE__, 'ip_geo_block_activate' );
 register_deactivation_hook( __FILE__, 'ip_geo_block_deactivate' );
+
+/**
+ * check version and update before instantiation
+ *
+ * @see https://make.wordpress.org/core/2010/10/27/plugin-activation-hooks/
+ * @see https://wordpress.stackexchange.com/questions/144870/wordpress-update-plugin-hook-action-since-3-9
+ */
+function ip_geo_block_update() {
+	include_once ABSPATH . 'wp-admin/includes/plugin.php';
+	$settings = IP_Geo_Block::get_option();
+	if ( version_compare( $settings['version'], IP_Geo_Block::VERSION ) < 0 ) {
+		ip_geo_block_activate( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) );
+	}
+}
+
+add_action( 'plugins_loaded', 'ip_geo_block_update' );
 
 /**
  * Instantiate class

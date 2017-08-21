@@ -357,13 +357,15 @@ class IP_Geo_Block_Opts {
 				);
 			}
 
-			if ( version_compare( $version, '3.0.4' ) < 0 ) {
-				$settings['Maxmind' ]['use_asn'   ] = 0; // disable
-				$settings['Maxmind' ]['asn4_path' ] = $default['Maxmind' ]['asn4_path' ];
-				$settings['Maxmind' ]['asn4_last' ] = $default['Maxmind' ]['asn4_last' ];
-				$settings['Maxmind' ]['asn6_path' ] = $default['Maxmind' ]['asn6_path' ];
-				$settings['Maxmind' ]['asn6_last' ] = $default['Maxmind' ]['asn6_last' ];
-				$settings['mimetype']['capability'] = $default['mimetype']['capability'];
+			if ( version_compare( $version, '3.0.4.1' ) < 0 ) {
+				if ( ! isset( $settings['Maxmind']['use_asn'] ) ) {
+					$settings['Maxmind' ]['use_asn'   ] = 0; // disable
+					$settings['Maxmind' ]['asn4_path' ] = $default['Maxmind' ]['asn4_path' ];
+					$settings['Maxmind' ]['asn4_last' ] = $default['Maxmind' ]['asn4_last' ];
+					$settings['Maxmind' ]['asn6_path' ] = $default['Maxmind' ]['asn6_path' ];
+					$settings['Maxmind' ]['asn6_last' ] = $default['Maxmind' ]['asn6_last' ];
+					$settings['mimetype']['capability'] = $default['mimetype']['capability'];
+				}
 			}
 
 			// save package version number
@@ -372,7 +374,7 @@ class IP_Geo_Block_Opts {
 
 		// install addons for IP Geolocation database API ver. 1.1.9
 		$providers = IP_Geo_Block_Provider::get_addons();
-		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.4' ) < 0 )
+		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.4.1' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table

@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.4';
+	const VERSION = '3.0.4.1';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -106,7 +106,7 @@ class IP_Geo_Block {
 				$loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
 
 			// others on init action hook
-			add_action( 'init', array( $this, 'actions_init' ) );
+			add_action( 'init', array( $this, 'register_hooks' ) );
 		}
 
 		// force to change the redirect URL on logout to remove nonce, embed a nonce into pages
@@ -122,7 +122,7 @@ class IP_Geo_Block {
 	 * Setup actions after init.
 	 *
 	 */
-	public function actions_init() {
+	public function register_hooks() {
 		$settings = self::get_option();
 		$priority = $settings['priority'  ];
 		$validate = $settings['validation'];
@@ -230,38 +230,20 @@ class IP_Geo_Block {
 	 */
 	public static function enqueue_nonce() {
 		if ( is_user_logged_in() ) {
-			$handle = self::PLUGIN_NAME . '-auth-nonce';
+			$args['sites'] = IP_Geo_Block_Util::get_multisite();
+			$args['nonce'] = IP_Geo_Block_Util::create_nonce( $handle = self::PLUGIN_NAME . '-auth-nonce' );
+
+			$settings = self::get_option();
+			foreach ( array( 'ajax', 'admin', 'plugins', 'themes' ) as $key ) {
+				$args['zep'][ $key ] = (bool)( $settings['validation'][ $key ] & 2 );
+			}
+
 			$script = plugins_url(
 				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_GEO_BLOCK_BASE
 			);
-
-			$settings = self::get_option();
-			$args = array(
-				'nonce' => IP_Geo_Block_Util::create_nonce( $handle ),
-				'zep' => array(
-					'ajax'    => (bool)( $settings['validation']['ajax'   ] & 2 ),
-					'admin'   => (bool)( $settings['validation']['admin'  ] & 2 ),
-					'plugins' => (bool)( $settings['validation']['plugins'] & 2 ),
-					'themes'  => (bool)( $settings['validation']['themes' ] & 2 ),
-				),
-			) + self::$wp_path;
-
-			if ( is_multisite() ) {
-				global $wpdb;
-				foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
-					switch_to_blog( $id );
-					$sites[] = admin_url();
-					restore_current_blog();
-				}
-				if ( empty( $sites[ $url = network_admin_url() ] ) ) {
-					$sites[] = $url;
-				}
-				$args += array( 'sites' => $sites );
-			}
-
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
-			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $args );
+			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $args + self::$wp_path );
 		}
 	}
 
