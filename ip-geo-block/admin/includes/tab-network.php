@@ -35,9 +35,9 @@ class IP_Geo_Block_Admin_Tab {
 		switch_to_blog( str_replace( IP_Geo_Block::PLUGIN_NAME . '-multisite-', '', $args['id'] ) );
 
 		echo '<p>';
-		echo '[ <a href="', admin_url(), '" target="_self">', __( 'Dashboard' ), '</a> ] ';
-		echo '[ <a href="', add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ), admin_url( 'options-general.php' ) ), '" target="_self">', __( 'Statistics', 'ip-geo-block' ), '</a> ] ';
-		echo '[ <a href="', add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 4 ), admin_url( 'options-general.php' ) ), '" target="_self">', __( 'Logs',       'ip-geo-block' ), '</a> ]';
+		echo '[ <a target="_self" href="', admin_url(), '">', __( 'Dashboard' ), '</a> ] ';
+		echo '[ <a target="_self" href="', add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ), admin_url( 'options-general.php' ) ), '">', __( 'Statistics', 'ip-geo-block' ), '</a> ] ';
+		echo '[ <a target="_self" href="', add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 4 ), admin_url( 'options-general.php' ) ), '">', __( 'Logs',       'ip-geo-block' ), '</a> ]';
 		echo '</p>', "\n";
 
 		// array of ( `time`, `ip`, `hook`, `code`, `method`, `data` )

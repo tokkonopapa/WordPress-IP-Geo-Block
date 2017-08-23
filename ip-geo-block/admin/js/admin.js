@@ -923,7 +923,7 @@ var ip_geo_block_time = new Date();
 						});
 						text.val(actions.join(','));
 					}
-				};
+				}
 
 				$(this).blur(); // unfocus anchor tag
 				return false;

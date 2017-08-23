@@ -4,27 +4,56 @@
  * Copyright (c) 2015-2017 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
-// utility object
-var IP_GEO_BLOCK_ZEP = {
-	init: false,
-	auth: 'ip-geo-block-auth-nonce',
-	nonce: IP_GEO_BLOCK_AUTH.nonce || '',
-	sites: IP_GEO_BLOCK_AUTH.sites || [],
-	redirect: function (url) {
-		'use strict';
-		var i, n = this.sites.length;
-		for (i = 0; i < n; ++i) {
-			if (url && -1 !== url.indexOf(this.sites[i]) && this.nonce) {
-				window.location = add_query_nonce(url, this.nonce);
-			}
-		}
-	}
-};
-
-(function ($, document) {
+(function ($, window, document) {
 	'use strict';
 
-	// produce safe text for HTML
+	var wpzep = {
+		init: false,
+		auth: 'ip-geo-block-auth-nonce',
+		nonce: IP_GEO_BLOCK_AUTH.nonce || '',
+		sites: IP_GEO_BLOCK_AUTH.sites || []
+	},
+
+	// regular expression to find target for is_admin()
+	regexp = new RegExp(
+		'^(?:' + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.admin
+		+ '|'  + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.plugins
+		+ '|'  + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.themes
+		+ ')(?:.*\.php|.*\/)?$'
+	),
+
+	// `theme-install.php` eats the query and set it to `request[browse]` as a parameter
+	theme_featured = function (data) {
+		var i = data.length;
+		while (i-- > 0) {
+			if (data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth') !== -1) {
+				data[i] = 'request%5Bbrowse%5D=featured'; // correct the parameter
+				break;
+			}
+		}
+		return data;
+	},
+
+	// `upload.php` eats the query and set it to `query[ip-geo-block-auth-nonce]` as a parameter
+	media_library = function (data) {
+		var i = data.length;
+		while (i-- > 0) {
+			if (data[i].indexOf('query%5Bip-geo-block-auth-nonce%5D=') !== -1) {
+				delete data[i];
+				break;
+			}
+		}
+		return data;
+	},
+
+	// list of excluded links
+	ajax_links = {
+		'upload.php': media_library,
+		'theme-install.php': theme_featured,
+		'network/theme-install.php': theme_featured
+	};
+
+	// Escape string for use in HTML.
 	function escapeHTML(html) {
 		var elem = document.createElement('div');
 		elem.appendChild(document.createTextNode(html));
@@ -132,7 +161,7 @@ var IP_GEO_BLOCK_ZEP = {
 		});
 	}
 */
-	// append the nonce as query strings to the uri
+	// Append the nonce as query strings to the uri
 	function add_query_nonce(uri, nonce) {
 		if (typeof uri !== 'object') { // `string` or `undefined`
 			uri = parse_uri(uri || location.href);
@@ -143,37 +172,30 @@ var IP_GEO_BLOCK_ZEP = {
 
 		// remove an old nonce
 		while (i-- > 0) {
-			if (data[i].indexOf(IP_GEO_BLOCK_ZEP.auth) === 0) {
+			if (data[i].indexOf(wpzep.auth) === 0) {
 				data.splice(i, 1);
 				break;
 			}
 		}
 
-		data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponent(nonce));//RFC3986
+		data.push(wpzep.auth + '=' + encodeURIComponent(nonce));//RFC3986
 		uri.query = data.join('&');
 
 		return compose_uri(uri);
 	}
 
-	// check if uri is valid
-	function is_valid_uri(uri) {
+	// Check uri component if it is not empty or only fragment (`#...`)
+	function check_uri(uri) {
 		return uri.scheme || uri.path || uri.query;
 	}
 
-	// check if current page in admin and the target of wp-zep
-	function is_back_end() {
-		return (is_admin(location.pathname) === 1 || location.search.indexOf(IP_GEO_BLOCK_ZEP.auth) >= 0);
+	// Check path that should be excluded
+	function check_ajax(path) {
+		path = path.replace(IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin, '');
+		return ajax_links.hasOwnProperty(path) ? ajax_links[path] : null;
 	}
 
-	// regular expression to find target for is_admin()
-	var regexp = new RegExp(
-		'^(?:' + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.admin
-		+ '|'  + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.plugins
-		+ '|'  + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.themes
-		+ ')(?:.*\.php|.*\/)?$'
-	);
-
-	// check the URI where the nonce is needed
+	// Check uri where the nonce is needed
 	function is_admin(uri) {
 		// parse uri and get real path
 		uri = uri || location.pathname; // in case of empty `action` on the form tag
@@ -190,12 +212,12 @@ var IP_GEO_BLOCK_ZEP = {
 				return -1; // external
 			}
 
-			// exclude the case which component is only fragment (`#...`)
-			if (is_valid_uri(uri) && (match = regexp.exec(path))) {
-				if ((IP_GEO_BLOCK_AUTH.zep.ajax    && -1 !== match[0].indexOf(IP_GEO_BLOCK_AUTH.admin + 'admin-')) ||
-				    (IP_GEO_BLOCK_AUTH.zep.admin   && -1 !== match[0].indexOf(IP_GEO_BLOCK_AUTH.admin           )) ||
-				    (IP_GEO_BLOCK_AUTH.zep.plugins && -1 !== match[0].indexOf(IP_GEO_BLOCK_AUTH.plugins         )) ||
-				    (IP_GEO_BLOCK_AUTH.zep.themes  && -1 !== match[0].indexOf(IP_GEO_BLOCK_AUTH.themes          ))) {
+			// check if uri includes the target path of zep
+			if (check_uri(uri) && (match = regexp.exec(path))) {
+				if ((IP_GEO_BLOCK_AUTH.zep.ajax    && 0 <= match[0].indexOf(IP_GEO_BLOCK_AUTH.admin + 'admin-')) ||
+				    (IP_GEO_BLOCK_AUTH.zep.admin   && 0 <= match[0].indexOf(IP_GEO_BLOCK_AUTH.admin           )) ||
+				    (IP_GEO_BLOCK_AUTH.zep.plugins && 0 <= match[0].indexOf(IP_GEO_BLOCK_AUTH.plugins         )) ||
+				    (IP_GEO_BLOCK_AUTH.zep.themes  && 0 <= match[0].indexOf(IP_GEO_BLOCK_AUTH.themes          ))) {
 					return 1; // internal for admin
 				}
 			}
@@ -204,53 +226,29 @@ var IP_GEO_BLOCK_ZEP = {
 		return 0; // internal not admin
 	}
 
-	var nonce = IP_GEO_BLOCK_ZEP.nonce,
-
-	// `theme-install.php` eats the query and set it to `request[browse]` as a parameter
-	theme_featured = function (data) {
-		var i = data.length;
-		while (i-- > 0) {
-			if (data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth') !== -1) {
-				data[i] = 'request%5Bbrowse%5D=featured'; // correct the parameter
-				break;
-			}
-		}
-		return data;
-	},
-
-	// `upload.php` eats the query and set it to `query[ip-geo-block-auth-nonce]` as a parameter
-	media_library = function (data) {
-		var i = data.length;
-		while (i-- > 0) {
-			if (data[i].indexOf('query%5Bip-geo-block-auth-nonce%5D=') !== -1) {
-				delete data[i];
-				break;
-			}
-		}
-		return data;
-	},
-
-	// list of excluded links
-	ajax_links = {
-		'upload.php': media_library,
-		'theme-install.php': theme_featured,
-		'network/theme-install.php': theme_featured
-	};
-
-	// check excluded path
-	function check_ajax(path) {
-		path = path.replace(IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin, '');
-		return ajax_links.hasOwnProperty(path) ? ajax_links[path] : null;
+	// Check if current page is admin area and the target of wp-zep
+	function is_backend_nonce() {
+		return (is_admin(location.pathname) === 1 || location.search.indexOf(wpzep.auth) >= 0);
 	}
 
-	// embed a nonce before an Ajax request is sent
+	// Redirect if current page is admin area and the target of wp-zep
+	function redirect(url) {
+		var i, n = wpzep.sites.length;
+		for (i = 0; i < n; ++i) {
+			if (url && 0 <= url.indexOf(wpzep.sites[i]) && wpzep.nonce) {
+				window.location = add_query_nonce(url, wpzep.nonce);
+			}
+		}
+	}
+
+	// Embed a nonce before an Ajax request is sent
 	$.ajaxPrefilter(function (settings, original, jqxhr) {
 		// POST to async-upload.php causes an error in https://wordpress.org/plugins/mammoth-docx-converter/
 		if (is_admin(settings.url) === 1 && !settings.url.match(/async-upload\.php$/)) {
 			// multipart/form-data (XMLHttpRequest Level 2)
 			// IE10+, Firefox 4+, Safari 5+, Android 3+
 			if (typeof window.FormData !== 'undefined' && settings.data instanceof FormData) {
-				settings.data.append(IP_GEO_BLOCK_ZEP.auth, nonce);
+				settings.data.append(wpzep.auth, wpzep.nonce);
 			}
 
 			// application/x-www-form-urlencoded
@@ -259,17 +257,17 @@ var IP_GEO_BLOCK_ZEP = {
 				// method  url  url+data data
 				// GET    query  query   data
 				// POST   query  query   data
-				var uri = parse_uri(settings.url);
+				var data, callback, uri = parse_uri(settings.url);
 
 				if (typeof settings.data === 'undefined' || uri.query) {
-					settings.url = add_query_nonce(uri, nonce);
+					settings.url = add_query_nonce(uri, wpzep.nonce);
 				} else {
-					var data = settings.data ? settings.data.split('&') : [],
-					    callback = check_ajax(location.pathname);
+					data = settings.data ? settings.data.split('&') : [];
+					callback = check_ajax(location.pathname);
 					if (callback) {
 						data = callback(data);
 					}
-					data.push(IP_GEO_BLOCK_ZEP.auth + '=' + encodeURIComponent(nonce));//RFC3986
+					data.push(wpzep.auth + '=' + encodeURIComponent(wpzep.nonce));//RFC3986
 					settings.data = data.join('&');
 				}
 			}
@@ -325,6 +323,9 @@ var IP_GEO_BLOCK_ZEP = {
 		};
 	}
 
+	/*--------------------------------
+	 * Attach event to the document
+	 *--------------------------------*/
 	function attach_event() {
 		// https://www.sitepoint.com/jquery-body-on-document-on/
 		var elem = $(document); // `html` or `body` doesn't work with some browsers
@@ -334,32 +335,25 @@ var IP_GEO_BLOCK_ZEP = {
 			var $this = $(this),
 			    href  = $this.attr('href'),
 			    rel   = $this.attr('rel' ),
-			    admin = is_valid_uri(parse_uri(href)) ? is_admin(href) : -2; // do nothing if uri is not valid
+			    admin = check_uri(parse_uri(href)) ? is_admin(href) : 0; // 0: do nothing if href is empty
 
 			// if context menu then continue and should be checked in check_nonce()
-			if ('contextmenu' === event.type) {
-				return true;
+			if ('click' !== event.type) {
+				return;
 			}
 
 			// if admin area (except in comment with nofollow) then add a nonce
 			else if (admin === 1) {
 				$this.attr('href', add_query_nonce(
-					href, (!rel || rel.indexOf('nofollow') < 0) ? nonce : 'nofollow'
+					href, (!rel || rel.indexOf('nofollow') < 0) ? wpzep.nonce : 'nofollow'
 				));
-				return true;
-			}
-
-			// if internal then check network admin url
-			else if (admin === 0) {
-				IP_GEO_BLOCK_ZEP.redirect(href);
-				return true;
 			}
 
 			// if external then redirect with no referrer not to leak out the nonce
-			else if (admin === -1 && is_back_end()) {
+			else if (admin === -1 && is_backend_nonce()) {
 				if ('_self' === $this.attr('target')) {
-					IP_GEO_BLOCK_ZEP.redirect(href);
-					return true;
+					redirect(href);
+					return; // just in case redirection fails
 				}
 
 				href = escapeHTML(decodeURIComponent(this.href));
@@ -390,17 +384,20 @@ var IP_GEO_BLOCK_ZEP = {
 
 			// if admin area then add the nonce
 			if (is_admin(action) === 1) {
-				$this.attr('action', add_query_nonce(action, nonce));
+				$this.attr('action', add_query_nonce(action, wpzep.nonce));
 			}
 		});
 	}
 
+	/*--------------------------------
+	 * Something after document ready
+	 *--------------------------------*/
 	function attach_ready() {
 		// avoid conflict with "Open external links in a new window"
-		if (is_back_end()) {
+		if (is_backend_nonce()) {
 			$('a').each(function () {
 				if(!this.hasAttribute('onClick') && is_admin(this.getAttribute('href')) === -1) {
-					this.setAttribute('onClick', 'javascript:void(0);return false;');
+					this.setAttribute('onClick', 'javascript:return false');
 				}
 			});
 		}
@@ -410,7 +407,7 @@ var IP_GEO_BLOCK_ZEP = {
 
 			// if admin area
 			if (is_admin(src) === 1) {
-				$(this).attr('src', add_query_nonce(src, nonce));
+				$(this).attr('src', add_query_nonce(src, wpzep.nonce));
 			}
 		});
 
@@ -420,25 +417,24 @@ var IP_GEO_BLOCK_ZEP = {
 			    n = data.length;
 
 			for (i = 0; i < n; ++i) {
-				if (-1 === data[i].restoreUrl.indexOf(IP_GEO_BLOCK_ZEP.auth)) {
-					window._wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(data[i].restoreUrl, nonce);
+				if (-1 === data[i].restoreUrl.indexOf(wpzep.auth)) {
+					window._wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(data[i].restoreUrl, wpzep.nonce);
 				}
 			}
 		}
 	}
 
-	// fallback on error
+	// Attach event to add nonce
+	attach_event();
+
 	$(window).on('error', function () {
-		if (!IP_GEO_BLOCK_ZEP.init) {
-			attach_ready();
+		if (!wpzep.init) {
+			attach_ready(); // fallback on error
 		}
 	});
 
 	$(function () {
 		attach_ready();
-		IP_GEO_BLOCK_ZEP.init = true; // finish to attach event
+		wpzep.init = true; // finish to attach event
 	});
-
-	// attach event to add nonce
-	attach_event();
-}(jQuery, document));
+}(jQuery, window, document));

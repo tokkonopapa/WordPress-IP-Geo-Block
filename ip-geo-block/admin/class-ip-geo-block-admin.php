@@ -840,7 +840,7 @@ class IP_Geo_Block_Admin {
 		 * Sanitize a string from user input
 		 */
 		foreach ( $output as $key => $val ) {
-			$key = sanitize_text_field( $key );
+			$key = sanitize_key( $key ); // @since 3.0.0
 
 			// delete old key
 			if ( ! array_key_exists( $key, $default ) ) {
@@ -870,8 +870,7 @@ class IP_Geo_Block_Admin {
 					// need key
 					else {
 						$output[ $key ][ $provider ] =
-							isset( $input[ $key ][ $provider ] ) ?
-							sanitize_text_field( $input[ $key ][ $provider ] ) : '';
+							isset( $input[ $key ][ $provider ] ) ? sanitize_text_field( $input[ $key ][ $provider ] ) : '';
 					}
 				}
 
@@ -890,10 +889,7 @@ class IP_Geo_Block_Admin {
 
 			  case 'white_list':
 			  case 'black_list':
-				$output[ $key ] = isset( $input[ $key ] ) ?
-					sanitize_text_field(
-						preg_replace( '/[^A-Z,]/', '', strtoupper( $input[ $key ] ) )
-					) : '';
+				$output[ $key ] = isset( $input[ $key ] ) ? preg_replace( '/[^A-Z,]/', '', strtoupper( $input[ $key ] ) ) : '';
 				break;
 
 			  case 'mimetype':

@@ -4,7 +4,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	/**
 	 * Instance of this class.
 	 */
-	protected static $instance = NULL;
+	private static $instance = NULL;
 
 	// private values
 	private $doc_root  = NULL;  // document root
@@ -38,6 +38,7 @@ class IP_Geo_Block_Admin_Rewrite {
 				'# END IP Geo Block',
 			),
 		),
+		// https://www.wordfence.com/blog/2014/05/nginx-wordfence-falcon-engine-php-fpm-fastcgi-fast-cgi/
 		'nginx' => array(
 			'plugins' => array(
 //				'# BEGIN IP Geo Block',
@@ -63,16 +64,16 @@ class IP_Geo_Block_Admin_Rewrite {
 		),
 	);
 
-	public function __construct() {
+	private function __construct() {
 		// http://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
 		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
 
 		// target directories
-		$condir = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
+		$path = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
 		$this->wp_dirs = array(
-			'plugins'   => $condir . '/plugins/',
-			'themes'    => $condir . '/themes/',
+			'plugins'   => $path . '/plugins/',
+			'themes'    => $path . '/themes/',
 		);
 
 		// wp-includes/vars.php
@@ -150,11 +151,19 @@ class IP_Geo_Block_Admin_Rewrite {
 
 		// check permission
 		if ( $exist ) {
-			if ( ! $fs->is_readable( $file ) )
+			if ( ! $fs->is_readable( $file ) ) {
+				$this->show_message( sprintf( 
+					__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $file
+				) );
 				return FALSE;
+			}
 		} else {
-			if ( ! $fs->is_readable( dirname( $file ) ) )
+			if ( ! $fs->is_readable( dirname( $file ) ) ) {
+				$this->show_message( sprintf( 
+					__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), dirname( $file )
+				) );
 				return FALSE;
+			}
 		}
 
 		// get file contents as an array
@@ -172,8 +181,12 @@ class IP_Geo_Block_Admin_Rewrite {
 		$fs = IP_Geo_Block_FS::init( 'put_rewrite_rule' );
 
 		$file = $this->get_rewrite_file( $which );
-		if ( ! $file || FALSE === $fs->put_contents( $file, implode( PHP_EOL, $content ) ) )
+		if ( ! $file || FALSE === $fs->put_contents( $file, implode( PHP_EOL, $content ) ) ) {
+			$this->show_message( sprintf( 
+				__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $file
+			) );
 			return FALSE;
+		}
 
 		// if content is empty then remove file
 		if ( empty( $content ) )
@@ -186,25 +199,40 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * Check if the block of rewrite rule exists
 	 *
 	 * @param string 'plugins' or 'themes'
-	 * @return bool TRUE or FALSE
+	 * @return bool TRUE (found), FALSE (not found or unavailable)
 	 */
 	private function get_rewrite_stat( $which ) {
 		if ( $this->is_apache || ( $this->is_nginx && $this->is_cgi ) ) {
 			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
-				return FALSE;
+				return -1; // not readable
 
 			$block = $this->find_rewrite_block( $content );
-			return empty( $block ) ? FALSE : TRUE;
+
+			if ( $this->is_apache ) {
+				return empty( $block ) ? FALSE : TRUE;
+			}
+
+			elseif ( $this->is_nginx && $this->is_cgi ) {
+				if ( empty( $block ) ) {
+					$block = preg_grep( '/auto_prepend_file/i', $content );
+
+					if ( ! empty( $block ) ) {
+						$this->show_message( sprintf( 
+							__( '&#8220;auto_prepend_file&#8221; already defined in %s.', 'ip-geo-block' ), $this->get_rewrite_file( $which )
+						) );
+						return -1; // not available
+					}
+
+					return FALSE; // rewrite rule is not found in configuration file
+				}
+
+				else {
+					return TRUE; // rewrite rule already exists in configuration file
+				}
+			}
 		}
 
-		elseif ( $this->is_nginx ) {
-			// https://www.wordfence.com/blog/2014/05/nginx-wordfence-falcon-engine-php-fpm-fastcgi-fast-cgi/
-			return -1; /* CURRENTLY NOT SUPPORTED */
-		}
-
-		else {
-			return -1; /* NOT SUPPORTED */
-		}
+		return -1; /* NOT SUPPORTED */
 	}
 
 	/**
@@ -252,43 +280,53 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * Add rewrite rule to server configration
 	 *
 	 * @param string 'plugins' or 'themes'
+	 * @return bool TRUE (found), FALSE (not found or unavailable)
 	 */
 	private function add_rewrite_rule( $which ) {
-		if ( $this->is_apache || ( $this->is_nginx && $this->is_cgi ) ) {
-			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
-				return FALSE;
+		// if rewrite stat is not TRUE or FALSE
+		switch ( $this->get_rewrite_stat( $which ) ) {
+		  case TRUE:
+			return TRUE;
 
-			$block = $this->find_rewrite_block( $content );
-
-			if ( empty( $block ) ) {
-				$content = $this->remove_rewrite_block( $content, $block );
-				$content = $this->append_rewrite_block( $which, $content );
-				return $this->put_rewrite_rule( $which, $content );
-			}
+		  case FALSE:
+			$content = $this->get_rewrite_rule( $which );
+			$content = $this->append_rewrite_block( $which, $content );
+			return $this->put_rewrite_rule( $which, $content );
 		}
 
-		return TRUE;
+		return -1; /* NOT SUPPORTED */
 	}
 
 	/**
 	 * Delete rewrite rule to server configration
 	 *
 	 * @param string 'plugins' or 'themes'
+	 * @return bool TRUE (found), FALSE (not found or unavailable)
 	 */
 	private function del_rewrite_rule( $which ) {
-		if ( $this->is_apache || ( $this->is_nginx && $this->is_cgi ) ) {
-			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
-				return FALSE;
+		// if rewrite stat is not TRUE or FALSE
+		switch ( $this->get_rewrite_stat( $which ) ) {
+		  case TRUE:
+			$content = $this->get_rewrite_rule( $which );
+			$block   = $this->find_rewrite_block( $content );
+			$content = $this->remove_rewrite_block( $content, $block );
+			return $this->put_rewrite_rule( $which, $content );
 
-			$block = $this->find_rewrite_block( $content );
-
-			if ( ! empty( $block ) ) {
-				$content = $this->remove_rewrite_block( $content, $block );
-				return $this->put_rewrite_rule( $which, $content );
-			}
+		  case FALSE:
+			return TRUE;
 		}
 
-		return TRUE;
+		return -1; /* NOT SUPPORTED */
+	}
+
+	/**
+	 * Show notice message
+	 *
+	 */
+	private function show_message( $type, $msg ) {
+		if ( class_exists( 'IP_Geo_Block_Admin' ) ) {
+			IP_Geo_Block_Admin::add_admin_notice( 'error', $msg );
+		}
 	}
 
 	/**
