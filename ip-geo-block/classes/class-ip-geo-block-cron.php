@@ -326,7 +326,10 @@ class IP_Geo_Block_Cron {
 
 		// error handler
 		catch ( Exception $e ) {
-			$err = new WP_Error( $e->getCode(), $e->getMessage() );
+			$err = array(
+				'code'    => $e->getCode(),
+				'message' => $e->getMessage(),
+			);
 		}
 
 		if ( ! empty( $fp ) ) {
@@ -342,14 +345,13 @@ class IP_Geo_Block_Cron {
 		return empty( $err ) ? array(
 			'code' => $code,
 			'message' => sprintf(
-				__( 'Last update: %s', 'ip-geo-block' ),
-				IP_Geo_Block_Util::localdate( $modified )
+				__( 'Last update: %s', 'ip-geo-block' ), IP_Geo_Block_Util::localdate( $modified )
 			),
 			'filename' => $filename,
 			'modified' => $modified,
 		) : array(
-			'code' => $err->get_error_code(),
-			'message' => $err->get_error_message(),
+			'code'    => $err['code'],
+			'message' => $err['message'],
 		);
 	}
 
