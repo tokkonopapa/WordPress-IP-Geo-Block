@@ -840,7 +840,7 @@ class IP_Geo_Block_Admin {
 		 * Sanitize a string from user input
 		 */
 		foreach ( $output as $key => $val ) {
-			$key = sanitize_key( $key ); // @since 3.0.0
+			$key = sanitize_text_field( $key ); // @since 3.0.0 can't use sanitize_key() because of capital letters.
 
 			// delete old key
 			if ( ! array_key_exists( $key, $default ) ) {
