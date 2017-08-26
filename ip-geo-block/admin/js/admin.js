@@ -600,7 +600,7 @@ var ip_geo_block_time = new Date();
 
 				// only for Front-end target settings
 				if (0 <= $this.attr('name').indexOf('public')) {
-					if (-1 == $(ID('@', 'public_matching_rule')).val()) {
+					if (-1 === parseInt($(ID('@', 'public_matching_rule')).val(), 10)) {
 						elm.each(function (index) {
 							if (1 >= index) {
 								$(this).hide();

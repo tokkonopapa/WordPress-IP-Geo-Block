@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.4.1\n"
+"Project-Id-Version: IP Geo Block 3.0.4.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-08-21 22:45+0900\n"
-"PO-Revision-Date: 2017-08-21 22:48+0900\n"
+"POT-Creation-Date: 2017-08-26 18:49+0900\n"
+"PO-Revision-Date: 2017-08-26 18:50+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -187,8 +187,9 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1159
-#: admin/class-ip-geo-block-admin.php:1170
+#: admin/class-ip-geo-block-admin.php:1155
+#: admin/class-ip-geo-block-admin.php:1166
+#: admin/includes/class-admin-rewrite.php:188
 #: classes/class-ip-geo-block-cron.php:274
 #: classes/class-ip-geo-block-cron.php:306
 #: classes/class-ip-geo-block-opts.php:401
@@ -196,14 +197,14 @@ msgstr ""
 msgid "Unable to write %s. Please check the permission."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1160
+#: admin/class-ip-geo-block-admin.php:1156
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-ip-geo-block-admin.php:1200
+#: admin/class-ip-geo-block-admin.php:1196
 msgid "Settings saved."
 msgstr ""
 
@@ -220,6 +221,19 @@ msgstr ""
 #, php-format
 msgid ""
 "illegal format at %s. Please delete the corresponding line and try again."
+msgstr ""
+
+#: admin/includes/class-admin-rewrite.php:158
+#: admin/includes/class-admin-rewrite.php:165
+#: classes/class-ip-geo-block-cron.php:269
+#: classes/class-ip-geo-block-cron.php:301
+#, php-format
+msgid "Unable to read %s. Please check the permission."
+msgstr ""
+
+#: admin/includes/class-admin-rewrite.php:223
+#, php-format
+msgid "&#8220;auto_prepend_file&#8221; already defined in %s."
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:19 admin/includes/tab-accesslog.php:97
@@ -842,7 +856,7 @@ msgid "database"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1108
-#: classes/class-ip-geo-block-cron.php:345
+#: classes/class-ip-geo-block-cron.php:348
 #, php-format
 msgid "Last update: %s"
 msgstr ""
@@ -1202,12 +1216,6 @@ msgstr ""
 
 #: classes/class-ip-geo-block-cron.php:241
 msgid "Your database file is up-to-date."
-msgstr ""
-
-#: classes/class-ip-geo-block-cron.php:269
-#: classes/class-ip-geo-block-cron.php:301
-#, php-format
-msgid "Unable to read %s. Please check the permission."
 msgstr ""
 
 #: classes/class-ip-geo-block-cron.php:279

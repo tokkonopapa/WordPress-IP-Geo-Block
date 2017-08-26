@@ -649,7 +649,7 @@ endif;
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
 			. disabled( $options['rewrite'][ $key ], -1, FALSE ) . ' />'
 			. '<label for="ip_geo_block_settings_rewrite_' . $key . '"><dfn title="'
-			. sprintf( $desc[1], $val . '.htaccess' )
+			. sprintf( $desc[1], $val . '.' . IP_Geo_Block_Admin_Rewrite::get_type() )
 			. '">' . __( 'Force to load WP core', 'ip-geo-block' )
 			. '</dfn></label><br />';
 
@@ -699,7 +699,7 @@ endif;
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
 			. disabled( $options['rewrite'][ $key ], -1, FALSE ) . ' />'
 			. '<label for="ip_geo_block_settings_rewrite_' . $key . '"><dfn title="'
-			. sprintf( $desc[1], $val . '.htaccess' )
+			. sprintf( $desc[1], $val . '.' . IP_Geo_Block_Admin_Rewrite::get_type() )
 			. '">' . __( 'Force to load WP core', 'ip-geo-block' )
 			. '</dfn></label><br />';
 

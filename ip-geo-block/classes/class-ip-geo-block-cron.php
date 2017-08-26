@@ -349,10 +349,7 @@ class IP_Geo_Block_Cron {
 			),
 			'filename' => $filename,
 			'modified' => $modified,
-		) : array(
-			'code'    => $err['code'],
-			'message' => $err['message'],
-		);
+		) : $err;
 	}
 
 }

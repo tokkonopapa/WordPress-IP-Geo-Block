@@ -97,62 +97,93 @@
 	}
 
 	/**
-	 * Returns canonicalized absolute pathname
+	 * Convert relative url to absolute url using browser feature
 	 *
-	 * This code is based on http://phpjs.org/functions/realpath/
+	 * @param string target url
+	 * @param string base of absolute url (default window.locatoin.href)
+	 * @return component of url
 	 */
-	function realpath(uri) {
-		var i, path, real = [];
+	var absolute_uri = (function () {
+		var doc = null;
 
-		// extract pathname (avoid `undefined`)
-		if (typeof uri !== 'object') {
-			uri = parse_uri(uri);
-		}
-
-		// focusing only at pathname
-		path = uri.path;
-
-		// if it's not absolute, add root path
-		if ('/' !== path.charAt(0)) {
-			i = window.location.pathname;
-			path = i.substring(0, i.lastIndexOf('/') + 1) + path;
-		}
-
-		// explode the given path into it's parts
-		path = path.split('/');
-
-		// if path ends with `/`, adds it to the last part
-		if ('' === path[path.length - 1]) {
-			path.pop();
-			path[path.length - 1] += '/';
-		}
-
-		for (i in path) {
-			if (path.hasOwnProperty(i)) {
-				// this is'nt really interesting
-				if ('.' === path[i]) {
-					continue;
-				}
-
-				// this reduces the realpath
-				if ('..' === path[i]) {
-					if (real.length > 0) {
-						real.pop();
-					}
-				}
-
-				// this adds parts to the realpath
-				else {
-					if ((real.length < 1) || (path[i] !== '')) {
-						real.push(path[i]);
-					}
-				}
+		try {
+			new URL('/', 'http://example.com/'); // test if URL object is abailable
+		} catch (e) {
+			try {
+				doc = (new DOMParser()).parseFromString('<html><head></head><body></body></html>', 'text/html'); // IE11
+			} catch (f) {
+				doc = document.implementation.createHTMLDocument(''); // IE10
 			}
 		}
 
-		// returns the absloute path as a string
-		return real.join('/').replace(/\/\//g, '/');
-	}
+		return function (url, base) {
+			var d = document, baseElm, aElm, result;
+			url = typeof url !== 'undefined' ? url : location.href;
+			if (null === doc) {
+				if (typeof base === 'undefined') {
+					base = location.href; // based on current url
+				}
+				try {
+					result = new URL(url, base); // base must be valid
+				} catch (e) {
+					result = new URL(url, location.href);
+				}
+			} else {
+				// use anchor element to resolve url
+				if (typeof base !== 'undefined') {
+					// assign base element to anchor to be independent of the current document
+					d = doc;
+					while (d.head.firstChild) {
+						d.head.removeChild(d.head.firstChild);
+					}
+					baseElm = d.createElement('base');
+					baseElm.setAttribute('href', base);
+					d.head.appendChild(baseElm);
+				}
+				aElm = d.createElement('a');
+				aElm.setAttribute('href', url);
+				aElm.setAttribute('href', aElm.href);
+				//d.appendChild(aElm);
+
+				result = {
+					protocol: aElm.protocol,
+					host:     aElm.host,
+					hostname: aElm.hostname,
+					port:     aElm.port,
+					pathname: aElm.pathname,
+					search:   aElm.search,
+					hash:     aElm.hash,
+					href:     aElm.href,
+					username: '',
+					password: '',
+					origin :  aElm.origin || null
+				};
+				if ('http:' === result.protocol && '80' === result.port) {
+					// remove port number `80` in case of `http` and defalut port
+					result.port = '';
+					result.host = result.host.replace(/:80$/, '');
+				} else if ('https:' === result.protocol && '443' === result.port) {
+					// remove port number `443` in case of `https` and defalut port
+					result.port = '';
+					result.host = result.host.replace(/:443$/, '');
+				}
+				if ('http:' === result.protocol || 'https:' === result.protocol) {
+					if (result.pathname && result.pathname.charAt(0) !== '/') {
+						// in case no `/` at the top
+						result.pathname = '/' + result.pathname;
+					}
+					if (!result.origin) {
+						result.origin = result.protocol + '//' + result.hostname + (result.port ? ':' + result.port : '');
+					}
+				}
+			}
+			if (result.username || result.password) {
+				// throw an error if basic basic authentication is targeted
+				throw new URIError(result.username + ':' + result.password);
+			}
+			return result;
+		};
+	}());
 /*
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
 	function encodeURIComponentRFC3986(str) {
@@ -186,7 +217,7 @@
 
 	// Check uri component if it is not empty or only fragment (`#...`)
 	function check_uri(uri) {
-		return uri.scheme || uri.path || uri.query;
+		return (!uri.scheme || /^https?$/.test(uri.scheme)) && (uri.path || uri.query);
 	}
 
 	// Check path that should be excluded
@@ -196,28 +227,29 @@
 	}
 
 	// Check uri where the nonce is needed
-	function is_admin(uri) {
+	function is_admin(url) {
 		// parse uri and get real path
-		uri = uri || location.pathname; // in case of empty `action` on the form tag
+		var uri = url || location.pathname; // in case of empty `action` on the form tag
 		uri = parse_uri(uri.toLowerCase());
 
-		// get absolute path with flattening `./`, `../`, `//`
-		var match, path = realpath(uri);
-
 		// possibly scheme is `javascript` and path is `void(0);`
-		if (!uri.scheme || /^https?$/.test(uri.scheme)) {
+		if (check_uri(uri)) {
+			// get absolute path with flattening `./`, `../`, `//`
+			uri = absolute_uri(url);
+
 			// external domain (`http://example` or `www.example`)
 			// https://tools.ietf.org/html/rfc6454#section-4
-			if (uri.authority && uri.authority !== location.host.toLowerCase()) {
+			if (uri.origin !== location.origin) {
 				return -1; // external
 			}
 
 			// check if uri includes the target path of zep
-			if (check_uri(uri) && (match = regexp.exec(path))) {
-				if ((IP_GEO_BLOCK_AUTH.zep.ajax    && 0 <= match[0].indexOf(IP_GEO_BLOCK_AUTH.admin + 'admin-')) ||
-				    (IP_GEO_BLOCK_AUTH.zep.admin   && 0 <= match[0].indexOf(IP_GEO_BLOCK_AUTH.admin           )) ||
-				    (IP_GEO_BLOCK_AUTH.zep.plugins && 0 <= match[0].indexOf(IP_GEO_BLOCK_AUTH.plugins         )) ||
-				    (IP_GEO_BLOCK_AUTH.zep.themes  && 0 <= match[0].indexOf(IP_GEO_BLOCK_AUTH.themes          ))) {
+			uri = regexp.exec(uri.pathname);
+			if (uri) {
+				if ((IP_GEO_BLOCK_AUTH.zep.ajax    && 0 <= uri[0].indexOf(IP_GEO_BLOCK_AUTH.admin + 'admin-')) ||
+				    (IP_GEO_BLOCK_AUTH.zep.admin   && 0 <= uri[0].indexOf(IP_GEO_BLOCK_AUTH.admin           )) ||
+				    (IP_GEO_BLOCK_AUTH.zep.plugins && 0 <= uri[0].indexOf(IP_GEO_BLOCK_AUTH.plugins         )) ||
+				    (IP_GEO_BLOCK_AUTH.zep.themes  && 0 <= uri[0].indexOf(IP_GEO_BLOCK_AUTH.themes          ))) {
 					return 1; // internal for admin
 				}
 			}
