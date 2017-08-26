@@ -298,7 +298,7 @@ class IP_Geo_Block_Cron {
 
 				if ( FALSE === ( $gz = @fopen( $tmp .= basename( $filename ), 'r' ) ) )
 					throw new Exception(
-						sprintf( __( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $src )
+						sprintf( __( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $tmp )
 					);
 
 				if ( FALSE === ( $fp = @fopen( $filename, 'cb' ) ) )
