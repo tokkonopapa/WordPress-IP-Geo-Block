@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.4.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-08-26 18:49+0900\n"
-"PO-Revision-Date: 2017-08-26 19:04+0900\n"
+"POT-Creation-Date: 2017-08-27 14:37+0900\n"
+"PO-Revision-Date: 2017-08-27 14:41+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -210,7 +210,7 @@ msgstr "有効"
 
 #: admin/class-ip-geo-block-admin.php:1155
 #: admin/class-ip-geo-block-admin.php:1166
-#: admin/includes/class-admin-rewrite.php:188
+#: admin/includes/class-admin-rewrite.php:172
 #: classes/class-ip-geo-block-cron.php:274
 #: classes/class-ip-geo-block-cron.php:306
 #: classes/class-ip-geo-block-opts.php:401
@@ -244,15 +244,15 @@ msgid ""
 "illegal format at %s. Please delete the corresponding line and try again."
 msgstr "%s は誤ったフォーマットです。該当行を削除し、再度、実行してください。"
 
-#: admin/includes/class-admin-rewrite.php:158
-#: admin/includes/class-admin-rewrite.php:165
+#: admin/includes/class-admin-rewrite.php:142
+#: admin/includes/class-admin-rewrite.php:149
 #: classes/class-ip-geo-block-cron.php:269
 #: classes/class-ip-geo-block-cron.php:301
 #, php-format
 msgid "Unable to read %s. Please check the permission."
 msgstr "%s が読めません。パーミッションを確認して下さい。"
 
-#: admin/includes/class-admin-rewrite.php:223
+#: admin/includes/class-admin-rewrite.php:207
 #, php-format
 msgid "&#8220;auto_prepend_file&#8221; already defined in %s."
 msgstr "%s&thinsp;で既に「auto_prepend_file」が設定されています。"
