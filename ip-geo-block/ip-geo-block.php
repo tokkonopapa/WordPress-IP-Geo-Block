@@ -109,12 +109,12 @@ if ( is_admin() ) {
  * How to use: Activate the following code and upload this file via FTP.
  */
 /* -- ADD `/` TO THE TOP OR END OF THIS LINE TO ACTIVATE THE FOLLOWINGS -- *
-function ip_geo_block_emergency( $validate ) {
+function ip_geo_block_emergency( $validate, $settings ) {
 	$validate['result'] = 'passed';
 	return $validate;
 }
-add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency', 1 );
-add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency', 1 );
+add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency', 1, 2 );
+add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency', 1, 2 );
 // */
 
 endif; // ! class_exists( 'IP_Geo_Block', FALSE )
