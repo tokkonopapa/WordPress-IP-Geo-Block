@@ -354,7 +354,9 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 = 3.0.4.2 =
 This is a maintenance release addressing various internal improvement toward the next version.
-* **Bug fix:** Fixed a bug that an error messages was not displayed when downloading database file.
+* **Bug fix:** Fix a bug that the counter of login attempt counted illegally.
+* **Bug fix:** Fix a bug that the emergency functionality did not work properly.
+* **Bug fix:** Fix a bug that an error messages was not displayed when downloading database file.
 * **Improvement:** Change rewrite setting from server type base to function of server base.
 * **Improvement:** Strict evaluation of URL on anchor tags for preventing zero-day exploit.
 

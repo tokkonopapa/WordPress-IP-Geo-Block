@@ -53,6 +53,12 @@
 		'network/theme-install.php': theme_featured
 	};
 
+	// Check path that should be excluded
+	function check_ajax(path) {
+		path = path.replace(IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin, '');
+		return ajax_links.hasOwnProperty(path) ? ajax_links[path] : null;
+	}
+
 	// Escape string for use in HTML.
 	function escapeHTML(html) {
 		var elem = document.createElement('div');
@@ -218,12 +224,6 @@
 	// Check uri component if it is not empty or only fragment (`#...`)
 	function check_uri(uri) {
 		return (!uri.scheme || /^https?$/.test(uri.scheme)) && (uri.path || uri.query);
-	}
-
-	// Check path that should be excluded
-	function check_ajax(path) {
-		path = path.replace(IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin, '');
-		return ajax_links.hasOwnProperty(path) ? ajax_links[path] : null;
 	}
 
 	// Check uri where the nonce is needed
