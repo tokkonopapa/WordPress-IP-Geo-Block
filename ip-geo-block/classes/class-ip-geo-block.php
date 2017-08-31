@@ -770,13 +770,11 @@ class IP_Geo_Block {
 
 			foreach ( $_FILES as $files ) {
 				foreach ( IP_Geo_Block_Util::arrange_files( $files ) as $file ) {
-					// check $_FILES corruption attack
-					if ( ! empty( $file['name'] ) && UPLOAD_ERR_OK !== $file['error'] )
+					// check $_FILES corruption attack or mime type and extension
+					if ( ! empty( $file['name'] ) && UPLOAD_ERR_OK !== $file['error'] ||
+					     ! IP_Geo_Block_Util::check_filetype_and_ext( $file, $settings['validation']['mimetype'], $settings['mimetype'] ) ) {
 						return apply_filters( self::PLUGIN_NAME . '-upload-forbidden', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
-
-					// check mime type and extension
-					if ( ! IP_Geo_Block_Util::check_filetype_and_ext( $file, $settings['validation']['mimetype'], $settings['mimetype'] ) )
-						return apply_filters( self::PLUGIN_NAME . '-upload-forbidden', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
+					}
 				}
 			}
 		}
