@@ -18,4 +18,4 @@ This tool is built up with [AngularJS][AngularJS]. So the
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [AngularJS]:    https://angularjs.org/ "AngularJS — Superheroic JavaScript MVW Framework"
 [SameOrigin]:   https://en.wikipedia.org/wiki/Same-origin_policy "Same-origin policy - Wikipedia, the free encyclopedia"
-[Simulator]:    http://www.ipgeoblock/img/2016-02/PostSimulatorHead.png "WordPress Post Simulator"
+[Simulator]:    img/PostEmulator.png "WordPress Post Simulator"
