@@ -295,7 +295,17 @@ class IP_Geo_Block_Cron {
 					throw new Exception(
 						$ret->get_error_code() . ' ' . $ret->get_error_message()
 					);
+if ( 1 ) {
+				if ( FALSE === ( $data = $fs->get_contents( $tmp .= basename( $filename ) ) ) )
+					throw new Exception(
+						sprintf( __( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $tmp )
+					);
 
+				if ( FALSE === $fs->put_contents( $filename, $data, LOCK_EX ) )
+					throw new Exception(
+						sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $filename )
+					);
+} else {
 				if ( FALSE === ( $gz = @fopen( $tmp .= basename( $filename ), 'r' ) ) )
 					throw new Exception(
 						sprintf( __( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $tmp )
@@ -317,6 +327,7 @@ class IP_Geo_Block_Cron {
 				while ( $data = fread( $gz, 4096 ) ) {
 					fwrite( $fp, $data, strlen( $data ) );
 				}
+}
 			}
 
 			else {

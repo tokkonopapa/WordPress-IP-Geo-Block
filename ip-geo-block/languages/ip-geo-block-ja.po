@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.4.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-08-27 14:37+0900\n"
-"PO-Revision-Date: 2017-08-27 14:41+0900\n"
+"POT-Creation-Date: 2017-09-02 00:27+0900\n"
+"PO-Revision-Date: 2017-09-02 00:33+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -213,6 +213,7 @@ msgstr "有効"
 #: admin/includes/class-admin-rewrite.php:172
 #: classes/class-ip-geo-block-cron.php:274
 #: classes/class-ip-geo-block-cron.php:306
+#: classes/class-ip-geo-block-cron.php:316
 #: classes/class-ip-geo-block-opts.php:401
 #, php-format
 msgid "Unable to write %s. Please check the permission."
@@ -248,6 +249,7 @@ msgstr "%s は誤ったフォーマットです。該当行を削除し、再度
 #: admin/includes/class-admin-rewrite.php:149
 #: classes/class-ip-geo-block-cron.php:269
 #: classes/class-ip-geo-block-cron.php:301
+#: classes/class-ip-geo-block-cron.php:311
 #, php-format
 msgid "Unable to read %s. Please check the permission."
 msgstr "%s が読めません。パーミッションを確認して下さい。"
@@ -1001,7 +1003,7 @@ msgid "database"
 msgstr "ファイル"
 
 #: admin/includes/tab-settings.php:1108
-#: classes/class-ip-geo-block-cron.php:348
+#: classes/class-ip-geo-block-cron.php:359
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
@@ -1209,14 +1211,14 @@ msgstr "今すぐ作成"
 #: admin/includes/tab-settings.php:1510
 msgid ""
 "<dfn title=\"Please copy &amp; paste when submitting your issue to support "
-"forum.\">Installation information</dfn><br />[ <a rel=\"noreferrer\" href="
+"forum.\">System information</dfn><br />[ <a rel=\"noreferrer\" href="
 "\"https://wordpress.org/support/plugin/ip-geo-block\" title=\"WordPress "
 "&#8250; Support &raquo; IP Geo Block\">support forum</a> ]"
 msgstr ""
 "<dfn title=\"フォーラムに問題を投稿する際、コピーして張り付けてください。\">"
-"インストール情報</dfn><br />[ <a rel=\"noreferrer\" href=\"https://wordpress."
-"org/support/plugin/ip-geo-block\" title=\"WordPress &#8250; Support &raquo; "
-"IP Geo Block\">サポートフォーラム</a> ]"
+"システム情報</dfn><br />[ <a rel=\"noreferrer\" href=\"https://wordpress.org/"
+"support/plugin/ip-geo-block\" title=\"WordPress &#8250; Support &raquo; IP "
+"Geo Block\">サポートフォーラム</a> ]"
 
 #: admin/includes/tab-settings.php:1517
 msgid "Show PHP, WordPress, theme and plugins information."
@@ -1406,12 +1408,12 @@ msgid "Your database file is up-to-date."
 msgstr "データベース・ファイルは最新です。"
 
 #: classes/class-ip-geo-block-cron.php:279
-#: classes/class-ip-geo-block-cron.php:311
+#: classes/class-ip-geo-block-cron.php:321
 #, php-format
 msgid "Can't lock %s. Please try again after a while."
 msgstr "%s をロックできません。パーミッションを確認して下さい。"
 
-#: classes/class-ip-geo-block-cron.php:323
+#: classes/class-ip-geo-block-cron.php:334
 msgid "gz or zip is not supported on your system."
 msgstr "gz または zip がサポートされていません。"
 
