@@ -358,7 +358,7 @@ This is a maintenance release addressing various internal improvement toward the
 * **Bug fix:** Fix a bug that the emergency functionality did not work properly.
 * **Bug fix:** Fix a bug that an error messages was not displayed when downloading database file.
 * **Improvement:** Improve the compatibility with a certain type of server using "ftpext" as a method of file system.
-* **Improvement:** Change rewrite setting from server type base to function of server base.
+* **Improvement:** Change rewrite setting from server type base to server function base.
 * **Improvement:** Strict evaluation of URL on anchor tags for zero-day exploit prevention.
 
 = 3.0.4.1 =
