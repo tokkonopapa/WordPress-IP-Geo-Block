@@ -39,8 +39,7 @@ class IP_Geo_Block {
 	 */
 	private function __construct() {
 		// Run the loader to execute all of the hooks with WordPress.
-		$loader = new IP_Geo_Block_Loader();
-		$this->register_hooks( $loader );
+		$this->register_hooks( $loader = new IP_Geo_Block_Loader() );
 		$loader->run( $this );
 		unset( $loader );
 	}
@@ -235,6 +234,9 @@ class IP_Geo_Block {
 			);
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
 			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $args + self::$wp_path );
+
+			// add rel=nofollow to the links in comment before it is displayed
+			add_filter( 'comment_text', 'IP_Geo_Block_Util::rel_nofollow', 15 );
 		}
 	}
 
