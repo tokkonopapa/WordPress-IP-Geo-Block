@@ -236,7 +236,7 @@ class IP_Geo_Block {
 			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $args + self::$wp_path );
 
 			// add rel=nofollow to the links in comment before it is displayed
-			add_filter( 'comment_text', 'IP_Geo_Block_Util::rel_nofollow', 15 );
+			// add_filter( 'comment_text', 'IP_Geo_Block_Util::rel_nofollow', 15, 3 );
 		}
 	}
 

@@ -35,7 +35,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function rel_nofollow( $comment_text, $comment, $args ) {
 		// This is a pre save filter, so text is already escaped.
-		return wp_slash( preg_replace_callback( '|<a (.+?)>|i', array( __CLASS__, 'rel_nofollow_callback' ), stripslashes( $comment_text ) ) );
+		return preg_replace_callback( '|<a (.+?)>|i', array( __CLASS__, 'rel_nofollow_callback' ), $comment_text );
 	}
 
 	/**
@@ -54,16 +54,10 @@ class IP_Geo_Block_Util {
 				$parts[] = 'nofollow';
 
 			$rel = implode( ' ', $parts );
-			unset( $atts['rel'] );
-
-			$html = '';
-			foreach ( $atts as $name => $value ) {
-				$html .= "{$name}=\"$value\" ";
-			}
-			$text = trim( $html );
+			$text = preg_replace( '/rel=("|\').*?$1/', "rel=\"$rel\"", $text );
 		}
 
-		return "<a $text rel=\"$rel\">";
+		return "<a $text>";
 	}
 
 	/**
