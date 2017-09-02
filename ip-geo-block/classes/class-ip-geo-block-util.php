@@ -29,38 +29,6 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
-	 * Adds rel nofollow string to all HTML A elements in content.
-	 *
-	 * @source wp-includes/formatting.php
-	 */
-	public static function rel_nofollow( $comment_text, $comment, $args ) {
-		// This is a pre save filter, so text is already escaped.
-		return preg_replace_callback( '|<a (.+?)>|i', array( __CLASS__, 'rel_nofollow_callback' ), $comment_text );
-	}
-
-	/**
-	 * Callback to add rel=nofollow string to HTML A element.
-	 *
-	 * @source wp-includes/formatting.php
-	 */
-	public static function rel_nofollow_callback( $matches ) {
-		$text = $matches[1];
-		$atts = shortcode_parse_atts( $matches[1] );
-		$rel  = 'nofollow';
-
-		if ( ! empty( $atts['rel'] ) ) {
-			$parts = array_map( 'trim', explode( ' ', $atts['rel'] ) );
-			if ( false === array_search( 'nofollow', $parts ) )
-				$parts[] = 'nofollow';
-
-			$rel = implode( ' ', $parts );
-			$text = preg_replace( '/rel=("|\').*?$1/', "rel=\"$rel\"", $text );
-		}
-
-		return "<a $text>";
-	}
-
-	/**
 	 * Download zip/gz file, uncompress and save it to specified file
 	 *
 	 */

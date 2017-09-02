@@ -223,20 +223,20 @@ class IP_Geo_Block {
 			$args['sites'] = IP_Geo_Block_Util::get_multisite();
 			$args['nonce'] = IP_Geo_Block_Util::create_nonce( $handle = self::PLUGIN_NAME . '-auth-nonce' );
 
+			// target of wp-zep
 			$settings = self::get_option();
 			foreach ( array( 'ajax', 'admin', 'plugins', 'themes' ) as $key ) {
 				$args['zep'][ $key ] = (bool)( $settings['validation'][ $key ] & 2 );
 			}
 
+			// authentication
 			$script = plugins_url(
 				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_GEO_BLOCK_BASE
 			);
+
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
 			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $args + self::$wp_path );
-
-			// add rel=nofollow to the links in comment before it is displayed
-			// add_filter( 'comment_text', 'IP_Geo_Block_Util::rel_nofollow', 15, 3 );
 		}
 	}
 
