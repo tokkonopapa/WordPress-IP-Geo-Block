@@ -495,7 +495,7 @@ class IP_Geo_Block_Logs {
 			// Can't start transaction on the assumption that the storage engine is innoDB.
 			// So there are some cases where logs are excessively deleted.
 			$sql = $wpdb->prepare(
-				"DELETE FROM `$table` WHERE `hook` = '%s' ORDER BY `No` ASC LIMIT %d",
+				"DELETE FROM `$table` WHERE `hook` = '%s' ORDER BY `time` ASC LIMIT %d",
 				$hook, $count - $rows + 1
 			) and $wpdb->query( $sql ) or self::error( __LINE__ );
 		}
@@ -542,9 +542,9 @@ class IP_Geo_Block_Logs {
 		$sql = "SELECT `hook`, `time`, `ip`, `code`, `result`, `asn`, `method`, `user_agent`, `headers`, `data` FROM `$table`";
 
 		if ( ! $hook )
-			$sql .= " ORDER BY `hook`, `No` DESC";
+			$sql .= " ORDER BY `hook`, `time` DESC";
 		else
-			$sql .= $wpdb->prepare( " WHERE `hook` = '%s' ORDER BY `No` DESC", $hook );
+			$sql .= $wpdb->prepare( " WHERE `hook` = '%s' ORDER BY `time` DESC", $hook );
 
 		return $sql ? $wpdb->get_results( $sql, ARRAY_N ) : array();
 	}
