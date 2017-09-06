@@ -159,7 +159,6 @@ class IP_Geo_Block_Cron {
 	/**
 	 * Kick off a cron job to garbage collection for IP address cache.
 	 *
-	 * Note: When the init action occurs in /wp-settings.php, wp_cron() runs.
 	 */
 	public static function exec_cache_gc( $settings ) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -295,7 +294,7 @@ class IP_Geo_Block_Cron {
 					throw new Exception(
 						$ret->get_error_code() . ' ' . $ret->get_error_message()
 					);
-if ( 1 ) {
+
 				if ( FALSE === ( $data = $fs->get_contents( $tmp .= basename( $filename ) ) ) )
 					throw new Exception(
 						sprintf( __( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $tmp )
@@ -305,29 +304,6 @@ if ( 1 ) {
 					throw new Exception(
 						sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $filename )
 					);
-} else {
-				if ( FALSE === ( $gz = @fopen( $tmp .= basename( $filename ), 'r' ) ) )
-					throw new Exception(
-						sprintf( __( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $tmp )
-					);
-
-				if ( FALSE === ( $fp = @fopen( $filename, 'cb' ) ) )
-					throw new Exception(
-						sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $filename )
-					);
-
-				if ( ! flock( $fp, LOCK_EX ) )
-					throw new Exception(
-						sprintf( __( 'Can\'t lock %s. Please try again after a while.', 'ip-geo-block' ), $filename )
-					);
-
-				ftruncate( $fp, 0 ); // truncate file
-
-				// same block size in wp-includes/class-http.php
-				while ( $data = fread( $gz, 4096 ) ) {
-					fwrite( $fp, $data, strlen( $data ) );
-				}
-}
 			}
 
 			else {
@@ -349,15 +325,13 @@ if ( 1 ) {
 			fclose( $fp );
 		}
 
-		! empty( $gz  ) and gzclose( $gz  );
-		! empty( $tmp ) && @is_file( $tmp ) and @unlink( $tmp );
-		! is_wp_error( $src ) && @is_file( $src ) and @unlink( $src );
+		! empty( $gz  ) and gzclose( $gz );
+		! empty( $tmp )       && $fs->is_file( $tmp ) and $fs->delete( $tmp );
+		! is_wp_error( $src ) && $fs->is_file( $src ) and $fs->delete( $src );
 
 		return empty( $err ) ? array(
 			'code' => $code,
-			'message' => sprintf(
-				__( 'Last update: %s', 'ip-geo-block' ), IP_Geo_Block_Util::localdate( $modified )
-			),
+			'message' => sprintf( __( 'Last update: %s', 'ip-geo-block' ), IP_Geo_Block_Util::localdate( $modified ) ),
 			'filename' => $filename,
 			'modified' => $modified,
 		) : $err;

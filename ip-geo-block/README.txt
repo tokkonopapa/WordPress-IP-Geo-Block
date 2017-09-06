@@ -360,6 +360,7 @@ This is a maintenance release addressing various internal improvement toward the
 * **Improvement:** Improve the compatibility with a certain type of server using "ftpext" as a method of file system.
 * **Improvement:** Change rewrite setting from server type base to server function base.
 * **Improvement:** Strict evaluation of URL on anchor tags for zero-day exploit prevention.
+* **Improvement:** Avoid blocking on redirection between multisite admin screen.
 
 = 3.0.4.1 =
 Thank you all for taking your time again since last update.
