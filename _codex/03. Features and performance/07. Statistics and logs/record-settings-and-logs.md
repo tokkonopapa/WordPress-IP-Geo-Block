@@ -78,16 +78,17 @@ The following picutre shows the reason of blocking at "**Result**" column on
 
 Here are the descriptions:
 
-| Result        | Description                     |
-|:--------------|:--------------------------------|
-| passed        | passed through the validation   |
-| blocked       | blocked by country              |
-| wp-zep        | blocked by WP-ZEP               |
-| multi         | blocked by XML-RPC multicall    |
-| badsig        | blocked by Bad signatures       |
-| upload        | blocked by forbidden MIME type  |
-| extra         | blocked by Extra IP addresses   |
-| failed        | blocked by failed login attempt |
+| Result        | Description                              |
+|:--------------|:-----------------------------------------|
+| passed        | passed through the validation            |
+| blocked       | blocked by country                       |
+| wp-zep        | blocked by WP-ZEP                        |
+| multi         | blocked by XML-RPC multicall             |
+| badsig        | blocked by Bad signatures                |
+| upload        | blocked by forbidden MIME type           |
+| extra         | blocked by Extra IP addresses            |
+| failed        | blocked by failed login attempt          |
+| limited       | blocked by excess of limit login attempt |
 
 ### See also ###
 
