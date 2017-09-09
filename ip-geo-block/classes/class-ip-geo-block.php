@@ -602,7 +602,7 @@ class IP_Geo_Block {
 		}
 
 		// list of request for specific action or page to bypass WP-ZEP
-		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array() ), array(
+		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array(), $settings ), array(
 			// in wp-admin js/widget.js, includes/template.php, async-upload.php
 			'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',
 			// bbPress, Anti-Malware Security and Brute-Force Firewall, jetpack page & action
@@ -648,7 +648,7 @@ class IP_Geo_Block {
 
 		// list of request for specific action or page to bypass WP-ZEP
 		$path = array( 'includes' => array( 'ms-files.php', 'js/tinymce/wp-tinymce.php', ), /* for wp-includes */ );
-		$path = apply_filters( self::PLUGIN_NAME . "-bypass-{$type}", isset( $path[ $type ] ) ? $path[ $type ] : array() );
+		$path = apply_filters( self::PLUGIN_NAME . "-bypass-{$type}", isset( $path[ $type ] ) ? $path[ $type ] : array(), $settings );
 
 		// skip validation of country code if exceptions matches action or page
 		if ( in_array( $name, $settings['exception'][ $type ], TRUE ) )

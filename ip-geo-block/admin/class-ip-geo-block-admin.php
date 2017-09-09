@@ -62,7 +62,7 @@ class IP_Geo_Block_Admin {
 
 			// validate capability instead of nonce. @since 2.0.0 && 3.0.0
 			if ( $this->is_network = is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
-				add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_admin_screen' ) );
+				add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_network_redirect' ), 10, 2 );
 		}
 
 		// loads a plugin’s translated strings.
@@ -116,8 +116,8 @@ class IP_Geo_Block_Admin {
 	 * Verify admin screen without action instead of validating nonce.
 	 *
 	 */
-	public function verify_admin_screen( $queries ) {
-		if ( IP_Geo_Block_Util::is_user_logged_in() ) {
+	public function verify_network_redirect( $queries, $settings ) {
+		if ( IP_Geo_Block_Util::is_user_logged_in() && $settings['network_wide'] ) {
 			if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) ) {
 				$queries[] = $_GET['page']; // $_GET['action'] should be checked in IP_Geo_Block::validate_admin()
 			}
