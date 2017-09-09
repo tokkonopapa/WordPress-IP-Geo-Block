@@ -417,6 +417,7 @@ class IP_Geo_Block_Admin_Ajax {
 	static public function preferred_to_json() {
 		return self::settings_to_json(
 			array(
+				'login_fails'     => 10,      // Limited number of login attempts
 				'validation'      => array(   // Action hook for validation
 				    'comment'     => TRUE,    // Validate on comment post
 				    'login'       => 1,       // Validate on login

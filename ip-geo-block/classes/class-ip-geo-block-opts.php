@@ -36,7 +36,7 @@ class IP_Geo_Block_Opts {
 		// since version 3.0.0
 		'cache_time_gc'   => 900,     // Cache garbage collection time
 		// since version 1.2, 1.3
-		'login_fails'     => 5,       // Limited number of login attempts
+		'login_fails'     => -1,      // Limited number of login attempts
 		'validation'      => array(   // Action hook for validation
 			'comment'     => FALSE,   // Validate on comment post
 			'login'       => 1,       // Validate on login

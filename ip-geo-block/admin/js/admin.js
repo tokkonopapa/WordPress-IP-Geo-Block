@@ -241,7 +241,10 @@ var ip_geo_block_time = new Date();
 			}
 
 			$.each(data, function (name, val) {
-				$('[name="' + name + '"]:input', self).val(val);
+				key = $('[name="' + name + '"]:input', self).val(val);
+				if (key.attr('type') !== 'hidden') { // version
+					key.before('<span style="color:red">*</span>');
+				}
 			});
 		});
 	};
@@ -364,17 +367,6 @@ var ip_geo_block_time = new Date();
 	};
 
 	// google chart
-	function initChart(tabNo) {
-		if ('object' === typeof google) {
-			google.load('visualization', '1', {
-				packages: ['corechart'],
-				callback: function () {
-					drawChart(tabNo);
-				}
-			});
-		}
-	}
-
 	function drawChart(tabNo) {
 		if (1 === tabNo) {
 			chart.drawPie(ID('chart-countries'));
@@ -382,6 +374,17 @@ var ip_geo_block_time = new Date();
 		} else if (5 === tabNo) {
 			$(ID('.', 'multisite')).each(function (i, obj) {
 				chart.drawLine($(obj).attr('id'), 'datetime');
+			});
+		}
+	}
+
+    function initChart(tabNo) {
+		if ('object' === typeof google) {
+			google.load('visualization', '1', {
+				packages: ['corechart'],
+				callback: function () {
+					drawChart(tabNo);
+				}
 			});
 		}
 	}
