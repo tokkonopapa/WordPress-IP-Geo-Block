@@ -424,49 +424,50 @@
 	/*--------------------------------
 	 * Something after document ready
 	 *--------------------------------*/
-	function attach_ready() {
-		// avoid conflict with "Open external links in a new window"
-		if (is_backend_nonce()) {
-			$('a').each(function () {
-				if(!this.hasAttribute('onClick') && is_admin(this.getAttribute('href')) === -1) {
-					this.setAttribute('onClick', 'javascript:return false');
+	function attach_ready(stat) {
+		if (!wpzep.init) {
+			wpzep.init = true;
+
+			// avoid conflict with "Open external links in a new window"
+			if (is_backend_nonce()) {
+				$('a').each(function () {
+					if (!this.hasAttribute('onClick') && is_admin(this.getAttribute('href')) === -1) {
+						this.setAttribute('onClick', 'javascript:return false');
+					}
+				});
+			}
+
+			$('img').each(function (index) {
+				var src = $(this).attr('src');
+
+				// if admin area
+				if (is_admin(src) === 1) {
+					$(this).attr('src', add_query_nonce(src, wpzep.nonce));
 				}
 			});
-		}
 
-		$('img').each(function (index) {
-			var src = $(this).attr('src');
+			// Restore post revisions (wp-admin/revisions.php @since 2.6.0)
+			if ('undefined' !== typeof window._wpRevisionsSettings) {
+				var i, data = window._wpRevisionsSettings.revisionData,
+				    n = data.length;
 
-			// if admin area
-			if (is_admin(src) === 1) {
-				$(this).attr('src', add_query_nonce(src, wpzep.nonce));
-			}
-		});
-
-		// Restore post revisions (wp-admin/revisions.php @since 2.6.0)
-		if ('undefined' !== typeof window._wpRevisionsSettings) {
-			var i, data = window._wpRevisionsSettings.revisionData,
-			    n = data.length;
-
-			for (i = 0; i < n; ++i) {
-				if (-1 === data[i].restoreUrl.indexOf(wpzep.auth)) {
-					window._wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(data[i].restoreUrl, wpzep.nonce);
+				for (i = 0; i < n; ++i) {
+					if (-1 === data[i].restoreUrl.indexOf(wpzep.auth)) {
+						window._wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(data[i].restoreUrl, wpzep.nonce);
+					}
 				}
 			}
 		}
 	}
 
-	// Attach event to add nonce
-	attach_event();
-
-	$(window).on('error', function () {
-		if (!wpzep.init) {
-			attach_ready(); // fallback on error
-		}
+	$(window).on('error', function (event) { // event.originalEvent.message
+		attach_ready(false); // fallback on error
 	});
 
 	$(function () {
-		attach_ready();
-		wpzep.init = true; // finish to attach event
+		attach_ready(true);
 	});
+
+	// Attach event to add nonce
+	attach_event();
 }(jQuery, window, document));
