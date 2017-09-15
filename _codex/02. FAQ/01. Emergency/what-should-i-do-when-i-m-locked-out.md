@@ -31,8 +31,8 @@ function ip_geo_block_emergency( $validate ) {
 	$validate['result'] = 'passed';
 	return $validate;
 }
-add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency' );
-add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
+add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency', 1, 2 );
+add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency', 1, 2 );
 // */
 {% endhighlight %}
 
@@ -56,8 +56,8 @@ function ip_geo_block_emergency( $validate ) {
 	$validate['result'] = 'passed';
 	return $validate;
 }
-add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency' );
-add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
+add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency', 1, 2 );
+add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency', 1, 2 );
 // */
 {% endhighlight %}
 
