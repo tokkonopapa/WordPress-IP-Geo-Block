@@ -421,13 +421,13 @@ class IP_Geo_Block {
 	/**
 	 * Validate ip address.
 	 *
-	 * @param string  $hook     a name to identify action hook applied in this call.
-	 * @param array   $settings option settings
-	 * @param boolean $block    block                      if validation fails (for simulate)
-	 * @param boolean $die      send http response and die if validation fails (for validate_front )
-	 * @param boolean $auth     save log and block         if validation fails (for admin dashboard)
+	 * @param string  $hook       a name to identify action hook applied in this call.
+	 * @param array   $settings   option settings
+	 * @param boolean $block      block                      if validation fails (for simulate)
+	 * @param boolean $die        send http response and die if validation fails (for validate_front )
+	 * @param boolean $check_auth save log and block         if validation fails (for admin dashboard)
 	 */
-	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $auth = TRUE ) {
+	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $check_auth = TRUE ) {
 		// register auxiliary validation functions
 		// priority high 4 close_xmlrpc, close_restapi
 		//               5 check_nonce (high), check_user (low)
@@ -437,8 +437,8 @@ class IP_Geo_Block {
 		//               9 check_ips_black (high), check_ips_white (low)
 		// priority low 10 validate_country
 		$var = self::PLUGIN_NAME . '-' . $hook;
-		$settings['validation']['mimetype' ] and add_filter( $var, array( $this, 'check_upload'    ), 6, 2 );
-		$auth                                and add_filter( $var, array( $this, 'check_auth'      ), 7, 2 );
+		$settings['validation']['mimetype']  and add_filter( $var, array( $this, 'check_upload'    ), 6, 2 );
+		$check_auth                          and add_filter( $var, array( $this, 'check_auth'      ), 7, 2 );
 		$settings['login_fails'] >= 0        and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
 		$settings['extra_ips'] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
 		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 9, 2 );
@@ -469,7 +469,7 @@ class IP_Geo_Block {
 				break;
 		}
 
-		if ( $auth ) {
+		if ( $check_auth ) {
 			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
 			$var = (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
 			$block = ( 'passed' !== $validate['result'] );
@@ -688,7 +688,7 @@ class IP_Geo_Block {
 				'time'     => microtime( TRUE ) - $time,
 			) + $cache );
 
-			$settings = self::get_option();
+			$cache = IP_Geo_Block_API_Cache::update_cache( $hook = defined( 'XMLRPC_REQUEST' ) ? 'xmlrpc' : 'login', $validate, $settings = self::get_option() );
 
 			if ( $cache['fail'] > max( 0, (int)$settings['login_fails'] ) )
 				$validate['result'] = 'limited';
@@ -697,18 +697,16 @@ class IP_Geo_Block {
 			elseif ( defined( 'XMLRPC_REQUEST' ) && FALSE !== stripos( file_get_contents( 'php://input' ), 'system.multicall' ) )
 				$validate['result'] = 'multi';
 
-			$cache = IP_Geo_Block_API_Cache::update_cache( 'login', $validate, $settings ); // count up 'fail'
-
 			// (1) blocked, (3) unauthenticated, (5) all
 			if ( 1 & (int)$settings['validation']['reclogs'] )
-				IP_Geo_Block_Logs::record_logs( 'login', $validate, $settings );
+				IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings );
 
 			// send response code to refuse immediately
 			if ( 'failed' !== $validate['result'] ) {
 				if ( $settings['save_statistics'] )
-					IP_Geo_Block_Logs::update_stat( 'login', $validate, $settings );
+					IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 
-				$this->send_response( 'login', $validate, $settings );
+				$this->send_response( $hook, $validate, $settings );
 			}
 		}
 
