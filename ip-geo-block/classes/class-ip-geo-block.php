@@ -432,17 +432,17 @@ class IP_Geo_Block {
 		// priority high 4 close_xmlrpc, close_restapi
 		//               5 check_nonce (high), check_user (low)
 		//               6 check_upload (high), check_signature (low)
-		//               7 check_auth
-		//               8 check_fail
-		//               9 check_ips_black (high), check_ips_white (low)
+		//               7 check_ips_black (high), check_ips_white (low)
+		//               8 check_auth
+		//               9 check_fail
 		// priority low 10 validate_country
 		$var = self::PLUGIN_NAME . '-' . $hook;
-		$settings['validation']['mimetype']  and add_filter( $var, array( $this, 'check_upload'    ), 6, 2 );
-		$check_auth                          and add_filter( $var, array( $this, 'check_auth'      ), 7, 2 );
-		$settings['login_fails'] >= 0        and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
-		$settings['extra_ips'] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
-		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 9, 2 );
-		$settings['extra_ips']['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 9, 2 );
+		$settings['validation']['mimetype'  ] and add_filter( $var, array( $this, 'check_upload'    ), 6, 2 );
+		$settings['extra_ips' ] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
+		$settings['extra_ips' ]['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
+		$settings['extra_ips' ]['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
+		$check_auth                           and add_filter( $var, array( $this, 'check_auth'      ), 8, 2 );
+		$settings['login_fails'] >= 0         and add_filter( $var, array( $this, 'check_fail'      ), 9, 2 );
 
 		// make valid provider name list
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
@@ -718,10 +718,8 @@ class IP_Geo_Block {
 
 	public function check_fail( $validate, $settings ) {
 		// check if number of fails reaches the limit. can't overwrite existing result.
-		return ! $this->check_ips( $validate, $settings['extra_ips']['white_list'] ) &&
-			( $cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] ) ) &&
-			( $cache['fail'] > max( 0, (int)$settings['login_fails'] ) ) ?
-			$validate + array( 'result' => 'limited' ) : $validate;
+		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
+		return $cache && $cache['fail'] > max( 0, (int)$settings['login_fails'] ) ? $validate + array( 'result' => 'limited' ) : $validate;
 	}
 
 	public function check_auth( $validate, $settings ) {
