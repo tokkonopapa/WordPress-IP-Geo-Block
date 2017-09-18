@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.4.1\n"
+"Project-Id-Version: IP Geo Block 3.0.4.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-08-21 22:45+0900\n"
-"PO-Revision-Date: 2017-08-21 22:48+0900\n"
+"POT-Creation-Date: 2017-09-06 23:42+0900\n"
+"PO-Revision-Date: 2017-09-06 23:43+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -159,7 +159,6 @@ msgstr ""
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:605
 #: admin/class-ip-geo-block-admin.php:617
 msgid "Network"
 msgstr ""
@@ -187,23 +186,24 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1159
-#: admin/class-ip-geo-block-admin.php:1170
-#: classes/class-ip-geo-block-cron.php:274
-#: classes/class-ip-geo-block-cron.php:306
+#: admin/class-ip-geo-block-admin.php:1155
+#: admin/class-ip-geo-block-admin.php:1166
+#: admin/includes/class-admin-rewrite.php:172
+#: classes/class-ip-geo-block-cron.php:273
+#: classes/class-ip-geo-block-cron.php:305
 #: classes/class-ip-geo-block-opts.php:401
 #, php-format
 msgid "Unable to write %s. Please check the permission."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1160
+#: admin/class-ip-geo-block-admin.php:1156
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/class-ip-geo-block-admin.php:1200
+#: admin/class-ip-geo-block-admin.php:1196
 msgid "Settings saved."
 msgstr ""
 
@@ -220,6 +220,19 @@ msgstr ""
 #, php-format
 msgid ""
 "illegal format at %s. Please delete the corresponding line and try again."
+msgstr ""
+
+#: admin/includes/class-admin-rewrite.php:142
+#: admin/includes/class-admin-rewrite.php:149
+#: classes/class-ip-geo-block-cron.php:268
+#: classes/class-ip-geo-block-cron.php:300
+#, php-format
+msgid "Unable to read %s. Please check the permission."
+msgstr ""
+
+#: admin/includes/class-admin-rewrite.php:207
+#, php-format
+msgid "&#8220;auto_prepend_file&#8221; already defined in %s."
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:19 admin/includes/tab-accesslog.php:97
@@ -842,7 +855,7 @@ msgid "database"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1108
-#: classes/class-ip-geo-block-cron.php:345
+#: classes/class-ip-geo-block-cron.php:334
 #, php-format
 msgid "Last update: %s"
 msgstr ""
@@ -1038,7 +1051,7 @@ msgstr ""
 #: admin/includes/tab-settings.php:1510
 msgid ""
 "<dfn title=\"Please copy &amp; paste when submitting your issue to support "
-"forum.\">Installation information</dfn><br />[ <a rel=\"noreferrer\" href="
+"forum.\">System information</dfn><br />[ <a rel=\"noreferrer\" href="
 "\"https://wordpress.org/support/plugin/ip-geo-block\" title=\"WordPress "
 "&#8250; Support &raquo; IP Geo Block\">support forum</a> ]"
 msgstr ""
@@ -1200,23 +1213,16 @@ msgid ""
 "<strong>you'll be blocked</strong> after the cache expires."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:241
+#: classes/class-ip-geo-block-cron.php:240
 msgid "Your database file is up-to-date."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:269
-#: classes/class-ip-geo-block-cron.php:301
-#, php-format
-msgid "Unable to read %s. Please check the permission."
-msgstr ""
-
-#: classes/class-ip-geo-block-cron.php:279
-#: classes/class-ip-geo-block-cron.php:311
+#: classes/class-ip-geo-block-cron.php:278
 #, php-format
 msgid "Can't lock %s. Please try again after a while."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:323
+#: classes/class-ip-geo-block-cron.php:310
 msgid "gz or zip is not supported on your system."
 msgstr ""
 

@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.8.1
-Stable tag: 3.0.4.1
+Stable tag: 3.0.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -276,12 +276,12 @@ You can find the "**Emergent Functionality**" code section near the bottom of `i
  * How to use: Activate the following code and upload this file via FTP.
  */
 /* -- ADD '/' TO THE TOP OR END OF THIS LINE TO ACTIVATE THE FOLLOWINGS -- */
-function ip_geo_block_emergency( $validate ) {
+function ip_geo_block_emergency( $validate, $settings ) {
     $validate['result'] = 'passed';
     return $validate;
 }
-add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency' );
-add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency' );
+add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency', 1, 2 );
+add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency', 1, 2 );
 // */`
 
 Please not that you have to use an [appropriate editor](https://codex.wordpress.org/Editing_Files#Using_Text_Editors "Editing Files « WordPress Codex").
@@ -351,6 +351,16 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.4.2 =
+This is a maintenance release addressing various internal improvement toward the next version.
+* **Bug fix:** Fix a bug that the counter of login attempt counted illegally.
+* **Bug fix:** Fix a bug that the emergency functionality did not work properly.
+* **Bug fix:** Fix a bug that an error messages was not displayed when downloading database file.
+* **Improvement:** Improve the compatibility with a certain type of server using "ftpext" as a method of file system.
+* **Improvement:** Change rewrite setting from server type base to server function base.
+* **Improvement:** Strict evaluation of URL on anchor tags for zero-day exploit prevention.
+* **Improvement:** Avoid blocking on redirection between multisite admin screen.
 
 = 3.0.4.1 =
 Thank you all for taking your time again since last update.

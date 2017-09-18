@@ -525,10 +525,11 @@ dfn ~ .ip-geo-block-unlock {
     text-align:right;
 }
 
-/* for multisite */
+/* embeded data for multisite */
 .ip-geo-block-multisite {
     margin-bottom: 1em;
 }
+
 /* for statistics */
 ol.ip-geo-block-top-list {
     display: inline-table;

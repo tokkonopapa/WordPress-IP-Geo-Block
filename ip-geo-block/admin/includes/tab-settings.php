@@ -649,7 +649,7 @@ endif;
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
 			. disabled( $options['rewrite'][ $key ], -1, FALSE ) . ' />'
 			. '<label for="ip_geo_block_settings_rewrite_' . $key . '"><dfn title="'
-			. sprintf( $desc[1], $val . '.htaccess' )
+			. sprintf( $desc[1], $val . IP_Geo_Block_Admin_Rewrite::get_config_file() )
 			. '">' . __( 'Force to load WP core', 'ip-geo-block' )
 			. '</dfn></label><br />';
 
@@ -699,7 +699,7 @@ endif;
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
 			. disabled( $options['rewrite'][ $key ], -1, FALSE ) . ' />'
 			. '<label for="ip_geo_block_settings_rewrite_' . $key . '"><dfn title="'
-			. sprintf( $desc[1], $val . '.htaccess' )
+			. sprintf( $desc[1], $val . IP_Geo_Block_Admin_Rewrite::get_config_file() )
 			. '">' . __( 'Force to load WP core', 'ip-geo-block' )
 			. '</dfn></label><br />';
 
@@ -1503,11 +1503,11 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		);
 endif;
 
-		// Show WordPress installation info
+		// Show WordPress system info
 		$field = 'show-info';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="Please copy &amp; paste when submitting your issue to support forum.">Installation information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
+			__( '<dfn title="Please copy &amp; paste when submitting your issue to support forum.">System information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

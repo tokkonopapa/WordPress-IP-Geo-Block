@@ -91,6 +91,19 @@ if (0) {
 	}
 
 	/**
+	 * Get method of the file system;
+	 *
+	 * @return string method of file system
+	 */
+	public function get_method() {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return FALSE;
+
+		return self::$method;
+	}
+
+	/**
 	 * Check if a file or directory exists.
 	 *
 	 * @param  string $file Path to file/directory.
@@ -231,6 +244,25 @@ if (0) {
 			return file_put_contents( $file, $contents, LOCK_EX );
 		else
 			return $wp_filesystem->put_contents( $this->absolute_path( $file ), $contents, $mode );
+	}
+
+	/**
+	 * Reads entire file into a string
+	 *
+	 * @access public
+	 *
+	 * @param string $file Name of the file to read.
+	 * @return string|bool The function returns the read data or false on failure.
+	 */
+	public function get_contents( $file ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return FALSE;
+
+		if ( 'direct' === self::$method )
+			return @file_get_contents( $file );
+		else
+			return $wp_filesystem->get_contents( $this->absolute_path( $file ) );
 	}
 
 	/**

@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.4.1\n"
+"Project-Id-Version: IP Geo Block 3.0.4.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-08-21 22:45+0900\n"
-"PO-Revision-Date: 2017-08-21 22:50+0900\n"
+"POT-Creation-Date: 2017-09-06 23:42+0900\n"
+"PO-Revision-Date: 2017-09-06 23:47+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -53,11 +53,11 @@ msgstr "ログをクリアしますか？"
 
 #: admin/class-ip-geo-block-admin.php:253
 msgid "ajax for logged-in user"
-msgstr ""
+msgstr "認証済ユーザー用 ajax"
 
 #: admin/class-ip-geo-block-admin.php:254
 msgid "ajax for non logged-in user"
-msgstr ""
+msgstr "未認証ユーザー用 ajax"
 
 #: admin/class-ip-geo-block-admin.php:255
 msgid "This feature is available with HTML5 compliant browsers."
@@ -177,7 +177,6 @@ msgstr "サイト一覧"
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:605
 #: admin/class-ip-geo-block-admin.php:617
 msgid "Network"
 msgstr "ネットワーク"
@@ -208,23 +207,24 @@ msgstr "トップに戻る"
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:1159
-#: admin/class-ip-geo-block-admin.php:1170
-#: classes/class-ip-geo-block-cron.php:274
-#: classes/class-ip-geo-block-cron.php:306
+#: admin/class-ip-geo-block-admin.php:1155
+#: admin/class-ip-geo-block-admin.php:1166
+#: admin/includes/class-admin-rewrite.php:172
+#: classes/class-ip-geo-block-cron.php:273
+#: classes/class-ip-geo-block-cron.php:305
 #: classes/class-ip-geo-block-opts.php:401
 #, php-format
 msgid "Unable to write %s. Please check the permission."
 msgstr "%s に書き込めません。パーミッションを確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:1160
+#: admin/class-ip-geo-block-admin.php:1156
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgid_plural "Or please refer to %s to set them manually."
 msgstr[0] "あるいは %s を参照し、手動で設定して下さい。"
 msgstr[1] "あるいは %s を参照し、手動で設定して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:1200
+#: admin/class-ip-geo-block-admin.php:1196
 msgid "Settings saved."
 msgstr "設定を保存しました。"
 
@@ -242,6 +242,19 @@ msgstr "不明"
 msgid ""
 "illegal format at %s. Please delete the corresponding line and try again."
 msgstr "%s は誤ったフォーマットです。該当行を削除し、再度、実行してください。"
+
+#: admin/includes/class-admin-rewrite.php:142
+#: admin/includes/class-admin-rewrite.php:149
+#: classes/class-ip-geo-block-cron.php:268
+#: classes/class-ip-geo-block-cron.php:300
+#, php-format
+msgid "Unable to read %s. Please check the permission."
+msgstr "%s が読めません。パーミッションを確認して下さい。"
+
+#: admin/includes/class-admin-rewrite.php:207
+#, php-format
+msgid "&#8220;auto_prepend_file&#8221; already defined in %s."
+msgstr "%s&thinsp;で既に「auto_prepend_file」が設定されています。"
 
 #: admin/includes/tab-accesslog.php:19 admin/includes/tab-accesslog.php:97
 msgid "Validation logs"
@@ -740,7 +753,7 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:566
 msgid "admin post for logged-in user"
-msgstr "認証済みユーザー用 admin post"
+msgstr "認証済ユーザー用 admin post"
 
 #: admin/includes/tab-settings.php:567
 msgid "admin post for non logged-in user"
@@ -758,8 +771,8 @@ msgid ""
 "Prevent Zero-day Exploit&#8221; for logged-in user.\">Exceptions</dfn>"
 msgstr ""
 "<dfn title=\"「国コードで遮断」または「ゼロデイ攻撃を遮断」が、それぞれ認証済"
-"みユーザー、認証済みユーザーを意図せず遮断する場合、検証対象から除外するリク"
-"エストを特定するために、ページ名（&#8220;page=&hellip;&#8221; の &#8220;"
+"みユーザー、認証済ユーザーを意図せず遮断する場合、検証対象から除外するリクエ"
+"ストを特定するために、ページ名（&#8220;page=&hellip;&#8221; の &#8220;"
 "&hellip;&#8221; 部分）、またはアクション名（&#8220;action=&hellip;&#8221; の "
 "&#8220;&hellip;&#8221; 部分）を指定してください。\">除外する項目</dfn>"
 
@@ -987,7 +1000,7 @@ msgid "database"
 msgstr "ファイル"
 
 #: admin/includes/tab-settings.php:1108
-#: classes/class-ip-geo-block-cron.php:345
+#: classes/class-ip-geo-block-cron.php:334
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
@@ -1195,14 +1208,14 @@ msgstr "今すぐ作成"
 #: admin/includes/tab-settings.php:1510
 msgid ""
 "<dfn title=\"Please copy &amp; paste when submitting your issue to support "
-"forum.\">Installation information</dfn><br />[ <a rel=\"noreferrer\" href="
+"forum.\">System information</dfn><br />[ <a rel=\"noreferrer\" href="
 "\"https://wordpress.org/support/plugin/ip-geo-block\" title=\"WordPress "
 "&#8250; Support &raquo; IP Geo Block\">support forum</a> ]"
 msgstr ""
 "<dfn title=\"フォーラムに問題を投稿する際、コピーして張り付けてください。\">"
-"インストール情報</dfn><br />[ <a rel=\"noreferrer\" href=\"https://wordpress."
-"org/support/plugin/ip-geo-block\" title=\"WordPress &#8250; Support &raquo; "
-"IP Geo Block\">サポートフォーラム</a> ]"
+"システム情報</dfn><br />[ <a rel=\"noreferrer\" href=\"https://wordpress.org/"
+"support/plugin/ip-geo-block\" title=\"WordPress &#8250; Support &raquo; IP "
+"Geo Block\">サポートフォーラム</a> ]"
 
 #: admin/includes/tab-settings.php:1517
 msgid "Show PHP, WordPress, theme and plugins information."
@@ -1387,23 +1400,16 @@ msgstr ""
 "少なくとも1つ以上の位置情報サービスを選択して下さい。未選択の場合、キャッシュ"
 "の有効期限切れと共にロックアウトされます。"
 
-#: classes/class-ip-geo-block-cron.php:241
+#: classes/class-ip-geo-block-cron.php:240
 msgid "Your database file is up-to-date."
 msgstr "データベース・ファイルは最新です。"
 
-#: classes/class-ip-geo-block-cron.php:269
-#: classes/class-ip-geo-block-cron.php:301
-#, php-format
-msgid "Unable to read %s. Please check the permission."
-msgstr "%s が読めません。パーミッションを確認して下さい。"
-
-#: classes/class-ip-geo-block-cron.php:279
-#: classes/class-ip-geo-block-cron.php:311
+#: classes/class-ip-geo-block-cron.php:278
 #, php-format
 msgid "Can't lock %s. Please try again after a while."
 msgstr "%s をロックできません。パーミッションを確認して下さい。"
 
-#: classes/class-ip-geo-block-cron.php:323
+#: classes/class-ip-geo-block-cron.php:310
 msgid "gz or zip is not supported on your system."
 msgstr "gz または zip がサポートされていません。"
 

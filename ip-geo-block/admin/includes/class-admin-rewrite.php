@@ -4,20 +4,17 @@ class IP_Geo_Block_Admin_Rewrite {
 	/**
 	 * Instance of this class.
 	 */
-	protected static $instance = NULL;
+	private static $instance = NULL;
 
 	// private values
-	private $doc_root  = NULL;  // document root
-	private $base_uri  = NULL;  // plugins base uri
-	private $is_apache = NULL;  // Apache
-	private $is_nginx  = NULL;  // Nginx
-	private $user_ini  = NULL;  // user ini file
-	private $is_cgi    = FALSE; // CGI or FastCGI SAPI
-	private $wp_dirs   = array();
+	private $doc_root = NULL;    // document root
+	private $base_uri = NULL;    // plugins base uri
+	private $config_file = NULL; // `.htaccess` or `.user.ini`
+	private $wp_dirs = array();  // path to `plugins` and `themes`
 
 	// template of rewrite rule in wp-content/(plugins|themes)/
 	private $rewrite_rule = array(
-		'apache' => array(
+		'.htaccess' => array(
 			'plugins' => array(
 				'# BEGIN IP Geo Block',
 				'<IfModule mod_rewrite.c>',
@@ -38,51 +35,57 @@ class IP_Geo_Block_Admin_Rewrite {
 				'# END IP Geo Block',
 			),
 		),
-		'nginx' => array(
+		'.user.ini' => array(
 			'plugins' => array(
+				'; BEGIN IP Geo Block',
+				'auto_prepend_file = "%ABSPATH%wp-load.php"',
+				'; END IP Geo Block',
+			),
+			'themes' => array(
+				'; BEGIN IP Geo Block',
+				'auto_prepend_file = "%ABSPATH%wp-load.php"',
+				'; END IP Geo Block',
+			),
+		),
+//		https://www.wordfence.com/blog/2014/05/nginx-wordfence-falcon-engine-php-fpm-fastcgi-fast-cgi/
+//		'nginx' => array(
+//			'plugins' => array(
 //				'# BEGIN IP Geo Block',
 //				'location ~ %REWRITE_BASE%rewrite.php$ {}',
 //				'location %WP_CONTENT_DIR%/plugins/ {',
 //				'    rewrite ^%WP_CONTENT_DIR%/plugins/.*/.*\.php$ %REWRITE_BASE%rewrite.php break;',
 //				'}',
 //				'# END IP Geo Block',
-				'; BEGIN IP Geo Block',
-				'auto_prepend_file = "%ABSPATH%wp-load.php"',
-				'; END IP Geo Block',
-			),
-			'themes' => array(
+//			'themes' => array(
 //				'# BEGIN IP Geo Block',
 //				'location %WP_CONTENT_DIR%/themes/ {',
 //				'    rewrite ^%WP_CONTENT_DIR%/themes/.*/.*\.php$ %REWRITE_BASE%rewrite.php break;',
 //				'}',
 //				'# END IP Geo Block',
-				'; BEGIN IP Geo Block',
-				'auto_prepend_file = "%ABSPATH%wp-load.php"',
-				'; END IP Geo Block',
-			),
-		),
+//			),
+//		),
 	);
 
-	public function __construct() {
+	private function __construct() {
 		// http://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
 		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
 
 		// target directories
-		$condir = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
+		$path = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
 		$this->wp_dirs = array(
-			'plugins'   => $condir . '/plugins/',
-			'themes'    => $condir . '/themes/',
+			'plugins'   => $path . '/plugins/',
+			'themes'    => $path . '/themes/',
 		);
 
-		// wp-includes/vars.php
-		global $is_apache, $is_nginx;
-		$this->is_apache = $is_apache;
-		$this->is_nginx  = $is_nginx;
+		// Apache in wp-includes/vars.php
+		global $is_apache;
+		if ( $is_apache )
+			$this->config_file = '.htaccess';
 
-		// CGI or not (cgi, cgi-fcgi, fpm-fcgi)
-		// $this->user_ini = ini_get( 'user_ini.filename' );
-		// $this->is_cgi = ( $this->user_ini && FALSE !== strpos( php_sapi_name(), 'cgi' ) );
+		// CGI/FastCGI SAPI (cgi, cgi-fcgi, fpm-fcgi)
+//		elseif ( FALSE !== strpos( php_sapi_name(), 'cgi' ) )
+//			$this->config_file = ini_get( 'user_ini.filename' );
 	}
 
 	/**
@@ -94,15 +97,6 @@ class IP_Geo_Block_Admin_Rewrite {
 	}
 
 	/**
-	 * Get type of server
-	 *
-	 * @return string 'apache', 'nginx' or NULL
-	 */
-	private function get_server_type() {
-		return $this->is_apache ? 'apache' : ( $this->is_nginx ? 'nginx' : NULL );
-	}
-
-	/**
 	 * Extract the block of rewrite rule
 	 *
 	 * @param array contents of configuration file
@@ -110,7 +104,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private function find_rewrite_block( $content ) {
 		return preg_grep(
-			'/^\s*?[#;]\s*?(BEGIN|END)?\s*?IP Geo Block\s*?(BEGIN|END)?\s*?$/i',
+			'/^\s*?[#;]\s*?(?:BEGIN|END)\s*?IP Geo Block\s*?$/i',
 			$content
 		);
 	}
@@ -122,17 +116,10 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * @return string absolute path to the .htaccess
 	 */
 	private function get_rewrite_file( $which ) {
-		if ( $this->is_apache ) {
-			return $this->doc_root . $this->wp_dirs[ $which ] . '.htaccess';
-		}
-
-		elseif ( $this->is_nginx && $this->is_cgi ) {
-			return $this->doc_root . $this->wp_dirs[ $which ] . $this->user_ini;
-		}
-
-		else {
+		if ( $this->config_file )
+			return $this->doc_root . $this->wp_dirs[ $which ] . $this->config_file;
+		else
 			return NULL; /* NOT SUPPORTED */
-		}
 	}
 
 	/**
@@ -146,15 +133,23 @@ class IP_Geo_Block_Admin_Rewrite {
 		$fs = IP_Geo_Block_FS::init( 'get_rewrite_rule' );
 
 		$file = $this->get_rewrite_file( $which );
-		$exist = $fs->exists( $file );
+		$exist = $file ? $fs->exists( $file ) : FALSE;
 
 		// check permission
 		if ( $exist ) {
-			if ( ! $fs->is_readable( $file ) )
+			if ( ! $fs->is_readable( $file ) ) {
+				$this->show_message( sprintf( 
+					__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $file
+				) );
 				return FALSE;
+			}
 		} else {
-			if ( ! $fs->is_readable( dirname( $file ) ) )
+			if ( ! $fs->is_readable( dirname( $file ) ) ) {
+				$this->show_message( sprintf( 
+					__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), dirname( $file )
+				) );
 				return FALSE;
+			}
 		}
 
 		// get file contents as an array
@@ -165,15 +160,19 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * Put contents to .htaccess in wp-content/(plugins|themes)/
 	 *
 	 * @param string 'plugins' or 'themes'
-	 * @param array contents of configuration file
+	 * @param array  contents of configuration file
 	 */
 	private function put_rewrite_rule( $which, $content ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'put_rewrite_rule' );
 
 		$file = $this->get_rewrite_file( $which );
-		if ( ! $file || FALSE === $fs->put_contents( $file, implode( PHP_EOL, $content ) ) )
+		if ( ! $file || FALSE === $fs->put_contents( $file, implode( PHP_EOL, $content ) ) ) {
+			$this->show_message( sprintf( 
+				__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $file
+			) );
 			return FALSE;
+		}
 
 		// if content is empty then remove file
 		if ( empty( $content ) )
@@ -185,32 +184,47 @@ class IP_Geo_Block_Admin_Rewrite {
 	/**
 	 * Check if the block of rewrite rule exists
 	 *
-	 * @param string 'plugins' or 'themes'
-	 * @return bool TRUE or FALSE
+	 * @param  string 'plugins' or 'themes'
+	 * @return bool   TRUE (found), FALSE (not found or unavailable)
 	 */
 	private function get_rewrite_stat( $which ) {
-		if ( $this->is_apache || ( $this->is_nginx && $this->is_cgi ) ) {
+		if ( $this->config_file ) {
 			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
-				return FALSE;
+				return -1; // not readable
 
 			$block = $this->find_rewrite_block( $content );
-			return empty( $block ) ? FALSE : TRUE;
+
+			if ( '.htaccess' === $this->config_file ) {
+				return empty( $block ) ? FALSE : TRUE;
+			}
+
+			else {
+				if ( empty( $block ) ) {
+					$block = preg_grep( '/auto_prepend_file/i', $content );
+
+					if ( ! empty( $block ) ) {
+						$this->show_message( sprintf( 
+							__( '&#8220;auto_prepend_file&#8221; already defined in %s.', 'ip-geo-block' ), $this->get_rewrite_file( $which )
+						) );
+						return -1; // not available
+					}
+
+					return FALSE; // rewrite rule is not found in configuration file
+				}
+
+				else {
+					return TRUE; // rewrite rule already exists in configuration file
+				}
+			}
 		}
 
-		elseif ( $this->is_nginx ) {
-			// https://www.wordfence.com/blog/2014/05/nginx-wordfence-falcon-engine-php-fpm-fastcgi-fast-cgi/
-			return -1; /* CURRENTLY NOT SUPPORTED */
-		}
-
-		else {
-			return -1; /* NOT SUPPORTED */
-		}
+		return -1; /* NOT SUPPORTED */
 	}
 
 	/**
 	 * Remove the block of rewrite rule
 	 *
-	 * @param array contents of configuration file
+	 * @param  array contents of configuration file
 	 * @return array array of contents without rewrite rule
 	 */
 	private function remove_rewrite_block( $content, $block ) {
@@ -231,64 +245,79 @@ class IP_Geo_Block_Admin_Rewrite {
 	/**
 	 * Append the block of rewrite rule
 	 *
-	 * @param string 'plugins' or 'themes'
-	 * @param array contents of configuration file
-	 * @return array array of contents with the block of rewrite rule
+	 * @param  string 'plugins' or 'themes'
+	 * @param  array  name of configuration file
+	 * @return array  array of contents with the block of rewrite rule
 	 */
 	private function append_rewrite_block( $which, $content ) {
-		$server_type = $this->get_server_type();
+		if ( $type = $this->config_file ) {
+			// in case `.user.ini` is configured differently
+			if ( '.htaccess' !== $type && '.user.ini' !== $type )
+				$type = '.user.ini';
 
-		return $server_type ? array_merge(
-			$content,
-			str_replace(
-				array( '%REWRITE_BASE%', '%WP_CONTENT_DIR%', '%ABSPATH%' ),
-				array( $this->base_uri,    WP_CONTENT_DIR,     ABSPATH   ),
-				$this->rewrite_rule[ $server_type ][ $which ]
-			)
-		) : array();
+			return array_merge(
+				$content,
+				str_replace(
+					array( '%REWRITE_BASE%', '%WP_CONTENT_DIR%', '%ABSPATH%' ),
+					array( $this->base_uri,    WP_CONTENT_DIR,     ABSPATH   ),
+					$this->rewrite_rule[ $type ][ $which ]
+				)
+			);
+		} else {
+			return array();
+		}
 	}
 
 	/**
 	 * Add rewrite rule to server configration
 	 *
-	 * @param string 'plugins' or 'themes'
+	 * @param  string 'plugins' or 'themes'
+	 * @return bool   TRUE (found), FALSE (not found or unavailable)
 	 */
 	private function add_rewrite_rule( $which ) {
-		if ( $this->is_apache || ( $this->is_nginx && $this->is_cgi ) ) {
-			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
-				return FALSE;
+		// if rewrite stat is not TRUE or FALSE
+		switch ( $this->get_rewrite_stat( $which ) ) {
+		  case TRUE:
+			return TRUE;
 
-			$block = $this->find_rewrite_block( $content );
-
-			if ( empty( $block ) ) {
-				$content = $this->remove_rewrite_block( $content, $block );
-				$content = $this->append_rewrite_block( $which, $content );
-				return $this->put_rewrite_rule( $which, $content );
-			}
+		  case FALSE:
+			$content = $this->get_rewrite_rule( $which );
+			$content = $this->append_rewrite_block( $which, $content );
+			return $this->put_rewrite_rule( $which, $content );
 		}
 
-		return TRUE;
+		return -1; /* NOT SUPPORTED */
 	}
 
 	/**
 	 * Delete rewrite rule to server configration
 	 *
-	 * @param string 'plugins' or 'themes'
+	 * @param  string 'plugins' or 'themes'
+	 * @return bool   TRUE (found), FALSE (not found or unavailable)
 	 */
 	private function del_rewrite_rule( $which ) {
-		if ( $this->is_apache || ( $this->is_nginx && $this->is_cgi ) ) {
-			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
-				return FALSE;
+		// if rewrite stat is not TRUE or FALSE
+		switch ( $this->get_rewrite_stat( $which ) ) {
+		  case TRUE:
+			$content = $this->get_rewrite_rule( $which );
+			$block   = $this->find_rewrite_block( $content );
+			$content = $this->remove_rewrite_block( $content, $block );
+			return $this->put_rewrite_rule( $which, $content );
 
-			$block = $this->find_rewrite_block( $content );
-
-			if ( ! empty( $block ) ) {
-				$content = $this->remove_rewrite_block( $content, $block );
-				return $this->put_rewrite_rule( $which, $content );
-			}
+		  case FALSE:
+			return TRUE;
 		}
 
-		return TRUE;
+		return -1; /* NOT SUPPORTED */
+	}
+
+	/**
+	 * Show notice message
+	 *
+	 */
+	private function show_message( $type, $msg ) {
+		if ( class_exists( 'IP_Geo_Block_Admin' ) )
+			IP_Geo_Block_Admin::add_admin_notice( 'error', $msg );
 	}
 
 	/**
@@ -296,10 +325,10 @@ class IP_Geo_Block_Admin_Rewrite {
 	 *
 	 */
 	public static function check_rewrite_all() {
-		$status = array();
 		$rewrite = self::get_instance();
 
-		foreach ( array_keys( $rewrite->rewrite_rule['apache'] ) as $key ) {
+		$status = array();
+		foreach ( array_keys( $rewrite->rewrite_rule['.htaccess'] ) as $key ) {
 			$status[ $key ] = $rewrite->get_rewrite_stat( $key );
 		}
 
@@ -313,7 +342,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	public static function activate_rewrite_all( $options ) {
 		$rewrite = self::get_instance();
 
-		foreach ( array_keys( $rewrite->rewrite_rule['apache'] ) as $key ) {
+		foreach ( array_keys( $rewrite->rewrite_rule['.htaccess'] ) as $key ) {
 			if ( $options[ $key ] )
 				// if it fails to write, then return FALSE
 				$options[ $key ] = $rewrite->add_rewrite_rule( $key ) ? TRUE : FALSE;
@@ -332,7 +361,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	public static function deactivate_rewrite_all() {
 		$rewrite = self::get_instance();
 
-		foreach ( array_keys( $rewrite->rewrite_rule['apache'] ) as $key ) {
+		foreach ( array_keys( $rewrite->rewrite_rule['.htaccess'] ) as $key ) {
 			if ( FALSE === $rewrite->del_rewrite_rule( $key ) )
 				return FALSE;
 		}
@@ -347,6 +376,15 @@ class IP_Geo_Block_Admin_Rewrite {
 	public static function get_dirs() {
 		$rewrite = self::get_instance();
 		return str_replace( $rewrite->doc_root, '', $rewrite->wp_dirs );
+	}
+
+	/**
+	 * Return configuration file type.
+	 *
+	 */
+	public static function get_config_file() {
+		$rewrite = self::get_instance();
+		return $rewrite->config_file;
 	}
 
 }

@@ -417,6 +417,7 @@ class IP_Geo_Block_Admin_Ajax {
 	static public function preferred_to_json() {
 		return self::settings_to_json(
 			array(
+				'login_fails'     => 10,      // Limited number of login attempts
 				'validation'      => array(   // Action hook for validation
 				    'comment'     => TRUE,    // Validate on comment post
 				    'login'       => 1,       // Validate on login
@@ -482,6 +483,8 @@ class IP_Geo_Block_Admin_Ajax {
 
 	static public function get_wp_info() {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( 'get_wp_info' );
 
 		// DNS reverse lookup
 		$key = microtime( TRUE );
@@ -490,15 +493,16 @@ class IP_Geo_Block_Admin_Ajax {
 
 		// Server, PHP, WordPress
 		$res = array(
-			'Server:'     => $_SERVER['SERVER_SOFTWARE'],
-			'PHP:'        => PHP_VERSION,
-			'WordPress:'  => $GLOBALS['wp_version'],
-			'Multisite:'  => is_multisite() ? 'yes' : 'no',
-			'Zlib:'       => function_exists( 'gzopen' ) ? 'yes' : 'no',
-			'ZipArchive:' => class_exists( 'ZipArchive', FALSE ) ? 'yes' : 'no',
-			'BC Math:'    => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
-			'mb_strcut:'  => function_exists( 'mb_strcut' ) ? 'yes' : 'no',
-			'DNS lookup:' => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),
+			'Server:'      => $_SERVER['SERVER_SOFTWARE'],
+			'PHP:'         => PHP_VERSION,
+			'WordPress:'   => $GLOBALS['wp_version'],
+			'Multisite:'   => is_multisite() ? 'yes' : 'no',
+			'File system:' => $fs->get_method(),
+			'Zlib:'        => function_exists( 'gzopen' ) ? 'yes' : 'no',
+			'ZipArchive:'  => class_exists( 'ZipArchive', FALSE ) ? 'yes' : 'no',
+			'BC Math:'     => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
+			'mb_strcut:'   => function_exists( 'mb_strcut' ) ? 'yes' : 'no',
+			'DNS lookup:'  => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),
 		);
 
 		// Child and parent themes

@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.4.1';
+	const VERSION = '3.0.4.2';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -38,11 +38,20 @@ class IP_Geo_Block {
 	 * 
 	 */
 	private function __construct() {
-		// setup loader to configure validation function
+		// Run the loader to execute all of the hooks with WordPress.
+		$this->register_hooks( $loader = new IP_Geo_Block_Loader() );
+		$loader->run( $this );
+		unset( $loader );
+	}
+
+	/**
+	 * Setup actions after init.
+	 *
+	 */
+	private function register_hooks( $loader ) {
 		$settings = self::get_option();
 		$priority = $settings['priority'  ];
 		$validate = $settings['validation'];
-		$loader = new IP_Geo_Block_Loader();
 
 		// get client IP address
 		self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $validate['proxy'] );
@@ -105,66 +114,47 @@ class IP_Geo_Block {
 			if ( $validate['public'] || ( ! empty( $_FILES ) && $validate['mimetype'] ) /* && 'index.php' === $this->pagenow */ )
 				$loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
 
-			// others on init action hook
-			add_action( 'init', array( $this, 'register_hooks' ) );
-		}
-
-		// force to change the redirect URL on logout to remove nonce, embed a nonce into pages
-		add_filter( 'wp_redirect',       array( $this, 'logout_redirect' ), 20,        2 ); // logout_redirect @4.2
-		add_filter( 'http_request_args', array( $this,   'request_nonce' ), $priority, 2 ); // @since 2.7.0
-
-		// Run the loader to execute all of the hooks with WordPress.
-		$loader->run( $this );
-		unset( $loader );
-	}
-
-	/**
-	 * Setup actions after init.
-	 *
-	 */
-	public function register_hooks() {
-		$settings = self::get_option();
-		$priority = $settings['priority'  ];
-		$validate = $settings['validation'];
-
-		// prepare nonce for login user
-		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority ); // @since 2.8.0
-
-		// garbage collection for IP address cache
-		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );
-
-		// the action hook which will be fired by cron job
-		if ( $settings['update']['auto'] )
-			add_action( self::CRON_NAME, array( $this, 'exec_update_db' ) );
-
-		// message text on comment form
-		if ( $settings['comment']['pos'] ) {
-			$pos = ( 1 === (int)$settings['comment']['pos'] ? '_top' : '' );
-			add_action( 'comment_form' . $pos, array( $this, 'comment_form_message' ) );
-		}
-
-		if ( $validate['comment'] ) {
-			add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), $priority ); // wp-comments-post.php @since 2.8.0
-			add_action( 'pre_trackback_post',  array( $this, 'validate_comment' ), $priority ); // wp-trackback.php @since 4.7.0
-			add_filter( 'preprocess_comment',  array( $this, 'validate_comment' ), $priority ); // wp-includes/comment.php @since 1.5.0
-
-			// bbPress: prevent creating topic/relpy and rendering form
-			add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
-			add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
-			add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
-			add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
-		}
-
-		if ( $validate['login'] ) {
-			// for hide/rename wp-login.php, BuddyPress: prevent registration and rendering form
-			add_action( 'login_init', array( $this, 'validate_login' ), $priority );
-
-			// only when block on front-end is disabled
-			if ( ! $validate['public'] ) {
-				add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
-				add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
+			// message text on comment form
+			if ( $settings['comment']['pos'] ) {
+				$key = ( 1 === (int)$settings['comment']['pos'] ? '_top' : '' );
+				add_action( 'comment_form' . $key, array( $this, 'comment_form_message' ) );
 			}
+
+			if ( $validate['comment'] ) {
+				add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), $priority ); // wp-comments-post.php @since 2.8.0
+				add_action( 'pre_trackback_post',  array( $this, 'validate_comment' ), $priority ); // wp-trackback.php @since 4.7.0
+				add_filter( 'preprocess_comment',  array( $this, 'validate_comment' ), $priority ); // wp-includes/comment.php @since 1.5.0
+
+				// bbPress: prevent creating topic/relpy and rendering form
+				add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
+				add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
+				add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
+				add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
+			}
+
+			if ( $validate['login'] ) {
+				// for hide/rename wp-login.php, BuddyPress: prevent registration and rendering form
+				add_action( 'login_init', array( $this, 'validate_login' ), $priority );
+
+				// only when block on front-end is disabled
+				if ( ! $validate['public'] ) {
+					add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
+					add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
+				}
+			}
+
+			// the action hook which will be fired by cron job
+			if ( $settings['update']['auto'] )
+				add_action( self::CRON_NAME, array( $this, 'exec_update_db' ) );
+
+			// garbage collection for IP address cache, enque script for authentication
+			add_action( self::CACHE_NAME,     array( $this,     'exec_cache_gc' ) );
+            add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority ); // @since 2.8.0
 		}
+
+		// force to redirect on logout to remove nonce, embed a nonce into pages
+		add_filter( 'wp_redirect',        array( $this, 'logout_redirect' ), 20,        2 ); // logout_redirect @4.2
+		add_filter( 'http_request_args',  array( $this,   'request_nonce' ), $priority, 2 ); // @since 2.7.0
 	}
 
 	/**
@@ -233,15 +223,18 @@ class IP_Geo_Block {
 			$args['sites'] = IP_Geo_Block_Util::get_multisite();
 			$args['nonce'] = IP_Geo_Block_Util::create_nonce( $handle = self::PLUGIN_NAME . '-auth-nonce' );
 
+			// target of wp-zep
 			$settings = self::get_option();
 			foreach ( array( 'ajax', 'admin', 'plugins', 'themes' ) as $key ) {
 				$args['zep'][ $key ] = (bool)( $settings['validation'][ $key ] & 2 );
 			}
 
+			// authentication
 			$script = plugins_url(
 				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_GEO_BLOCK_BASE
 			);
+
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
 			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $args + self::$wp_path );
 		}
@@ -428,16 +421,13 @@ class IP_Geo_Block {
 	/**
 	 * Validate ip address.
 	 *
-	 * @param string  $hook     a name to identify action hook applied in this call.
-	 * @param array   $settings option settings
-	 * @param boolean $block    block                      if validation fails (for simulate)
-	 * @param boolean $die      send http response and die if validation fails (for validate_front )
-	 * @param boolean $auth     save log and block         if validation fails (for admin dashboard)
+	 * @param string  $hook       a name to identify action hook applied in this call.
+	 * @param array   $settings   option settings
+	 * @param boolean $block      block                      if validation fails (for simulate)
+	 * @param boolean $die        send http response and die if validation fails (for validate_front )
+	 * @param boolean $check_auth save log and block         if validation fails (for admin dashboard)
 	 */
-	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $auth = TRUE ) {
-		// set IP address to be validated
-		$ips = IP_Geo_Block_Util::retrieve_ips( array( self::get_ip_address() ), $settings['validation']['proxy'] );
-
+	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $check_auth = TRUE ) {
 		// register auxiliary validation functions
 		// priority high 4 close_xmlrpc, close_restapi
 		//               5 check_nonce (high), check_user (low)
@@ -447,8 +437,8 @@ class IP_Geo_Block {
 		//               9 check_ips_black (high), check_ips_white (low)
 		// priority low 10 validate_country
 		$var = self::PLUGIN_NAME . '-' . $hook;
-		$settings['validation']['mimetype' ] and add_filter( $var, array( $this, 'check_upload'    ), 6, 2 );
-		$auth                                and add_filter( $var, array( $this, 'check_auth'      ), 7, 2 );
+		$settings['validation']['mimetype']  and add_filter( $var, array( $this, 'check_upload'    ), 6, 2 );
+		$check_auth                          and add_filter( $var, array( $this, 'check_auth'      ), 7, 2 );
 		$settings['login_fails'] >= 0        and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
 		$settings['extra_ips'] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
 		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 9, 2 );
@@ -465,6 +455,7 @@ class IP_Geo_Block {
 		//     'code'     => $code,     /* country code or reason of rejection */
 		//     'result'   => $result,   /* 'passed', 'blocked'                 */
 		// );
+		$ips = IP_Geo_Block_Util::retrieve_ips( array( self::get_ip_address() ), $settings['validation']['proxy'] );
 		foreach ( $ips as self::$remote_addr ) {
 			$validate = self::_get_geolocation( self::$remote_addr, $settings, $providers, array( 'cache' => TRUE ) );
 			$validate = apply_filters( $var, $validate, $settings );
@@ -478,7 +469,7 @@ class IP_Geo_Block {
 				break;
 		}
 
-		if ( $auth ) {
+		if ( $check_auth ) {
 			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
 			$var = (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
 			$block = ( 'passed' !== $validate['result'] );
@@ -611,7 +602,7 @@ class IP_Geo_Block {
 		}
 
 		// list of request for specific action or page to bypass WP-ZEP
-		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array() ), array(
+		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array(), $settings ), array(
 			// in wp-admin js/widget.js, includes/template.php, async-upload.php
 			'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',
 			// bbPress, Anti-Malware Security and Brute-Force Firewall, jetpack page & action
@@ -657,7 +648,7 @@ class IP_Geo_Block {
 
 		// list of request for specific action or page to bypass WP-ZEP
 		$path = array( 'includes' => array( 'ms-files.php', 'js/tinymce/wp-tinymce.php', ), /* for wp-includes */ );
-		$path = apply_filters( self::PLUGIN_NAME . "-bypass-{$type}", isset( $path[ $type ] ) ? $path[ $type ] : array() );
+		$path = apply_filters( self::PLUGIN_NAME . "-bypass-{$type}", isset( $path[ $type ] ) ? $path[ $type ] : array(), $settings );
 
 		// skip validation of country code if exceptions matches action or page
 		if ( in_array( $name, $settings['exception'][ $type ], TRUE ) )
@@ -692,13 +683,12 @@ class IP_Geo_Block {
 		$time = microtime( TRUE );
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr ) ) {
 			$validate = self::make_validation( self::$remote_addr, array(
-				'fail'     => TRUE, // count up $cache['fail'] in update_cache()
-				'result'   => 'failed',
+				'result'   => 'failed', // count up $cache['fail'] in update_cache()
 				'provider' => 'Cache',
 				'time'     => microtime( TRUE ) - $time,
 			) + $cache );
 
-			$settings = self::get_option();
+			$cache = IP_Geo_Block_API_Cache::update_cache( $hook = defined( 'XMLRPC_REQUEST' ) ? 'xmlrpc' : 'login', $validate, $settings = self::get_option() );
 
 			if ( $cache['fail'] > max( 0, (int)$settings['login_fails'] ) )
 				$validate['result'] = 'limited';
@@ -707,18 +697,16 @@ class IP_Geo_Block {
 			elseif ( defined( 'XMLRPC_REQUEST' ) && FALSE !== stripos( file_get_contents( 'php://input' ), 'system.multicall' ) )
 				$validate['result'] = 'multi';
 
-			$cache = IP_Geo_Block_API_Cache::update_cache( 'login', $validate, $settings ); // count up 'fail'
-
 			// (1) blocked, (3) unauthenticated, (5) all
 			if ( 1 & (int)$settings['validation']['reclogs'] )
-				IP_Geo_Block_Logs::record_logs( 'login', $validate, $settings );
+				IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings );
 
 			// send response code to refuse immediately
 			if ( 'failed' !== $validate['result'] ) {
 				if ( $settings['save_statistics'] )
-					IP_Geo_Block_Logs::update_stat( 'login', $validate, $settings );
+					IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 
-				$this->send_response( 'login', $validate, $settings );
+				$this->send_response( $hook, $validate, $settings );
 			}
 		}
 
@@ -782,13 +770,11 @@ class IP_Geo_Block {
 
 			foreach ( $_FILES as $files ) {
 				foreach ( IP_Geo_Block_Util::arrange_files( $files ) as $file ) {
-					// check $_FILES corruption attack
-					if ( ! empty( $file['name'] ) && UPLOAD_ERR_OK !== $file['error'] )
+					// check $_FILES corruption attack or mime type and extension
+					if ( ! empty( $file['name'] ) && UPLOAD_ERR_OK !== $file['error'] ||
+					     ! IP_Geo_Block_Util::check_filetype_and_ext( $file, $settings['validation']['mimetype'], $settings['mimetype'] ) ) {
 						return apply_filters( self::PLUGIN_NAME . '-upload-forbidden', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
-
-					// check mime type and extension
-					if ( ! IP_Geo_Block_Util::check_filetype_and_ext( $file, $settings['validation']['mimetype'], $settings['mimetype'] ) )
-						return apply_filters( self::PLUGIN_NAME . '-upload-forbidden', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
+					}
 				}
 			}
 		}

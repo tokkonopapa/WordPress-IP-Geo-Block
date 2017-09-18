@@ -61,8 +61,8 @@ class IP_Geo_Block_Admin {
 			add_action( 'delete_blog',   array( $this, 'delete_blog' ), 10, 2 ); // @since 3.0.0
 
 			// validate capability instead of nonce. @since 2.0.0 && 3.0.0
-//			$this->is_network = current_user_can( 'manage_network_options' ) && is_plugin_active_for_network( IP_GEO_BLOCK_BASE );
-//			add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_capability' ) );
+			if ( $this->is_network = is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
+				add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_network_redirect' ), 10, 2 );
 		}
 
 		// loads a plugin’s translated strings.
@@ -113,13 +113,13 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Validate capability instead of nonce.
+	 * Verify admin screen without action instead of validating nonce.
 	 *
 	 */
-	public function verify_capability( $queries ) {
-		if ( isset( $_GET['page'] ) && $_GET['page'] === IP_Geo_Block::PLUGIN_NAME ) {
-			if ( $this->is_network ) {
-				$queries[] = IP_Geo_Block::PLUGIN_NAME;
+	public function verify_network_redirect( $queries, $settings ) {
+		if ( IP_Geo_Block_Util::is_user_logged_in() && $settings['network_wide'] ) {
+			if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) ) {
+				$queries[] = $_GET['page']; // $_GET['action'] should be checked in IP_Geo_Block::validate_admin()
 			}
 		}
 
@@ -343,16 +343,16 @@ class IP_Geo_Block_Admin {
 
 		// Network wide or not
 		$admin_menu = 'admin_menu' === current_filter();
-		$is_network = $this->is_network && $settings['network_wide'];
+		$this->is_network &= current_user_can( 'manage_network_options' ) && $settings['network_wide'];
 
 		// Setup the tab number.
 		$this->admin_tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
 		$this->admin_tab = min( 5, max( 0, $this->admin_tab ) );
 
-		if ( $is_network ) {
+		if ( $this->is_network ) {
 			if ( $admin_menu ) {
 				$this->admin_tab = max( $this->admin_tab, 1 );
-			} elseif ( ! in_array( $this->admin_tab, array( 0, 3, 5 ), TRUE ) ) {
+			} elseif ( ! in_array( $this->admin_tab, array( 0, 5 ), TRUE ) ) {
 				$this->admin_tab = 0;
 			}
 		} else {
@@ -361,7 +361,7 @@ class IP_Geo_Block_Admin {
 
 		if ( $admin_menu ) {
 			// `settings-updated` would be added when `network_wide` is saved as TRUE
-			if ( $is_network && isset( $_REQUEST['settings-updated'] ) ) {
+			if ( $this->is_network && isset( $_REQUEST['settings-updated'] ) ) {
 				$this->sync_multisite_option( $settings );
 				wp_safe_redirect(
 					esc_url_raw( add_query_arg(
@@ -382,7 +382,7 @@ class IP_Geo_Block_Admin {
 			);
 		}
 
-		elseif ( $is_network ) {
+		elseif ( $this->is_network ) {
 			// Add a settings page for this plugin to the Settings menu.
 			$hook = add_menu_page(
 				__( 'IP Geo Block', 'ip-geo-block' ),
@@ -390,7 +390,7 @@ class IP_Geo_Block_Admin {
 				'manage_network_options',
 				IP_Geo_Block::PLUGIN_NAME,
 				array( $this, 'display_plugin_admin_page' ),
-				plugins_url( 'img/icon-72x72.png', __FILE__ )
+				'dashicons-shield' // plugins_url( 'img/icon-72x72.png', __FILE__ )
 			);
 			/*$hook = add_submenu_page(
 				'settings.php',
@@ -403,7 +403,7 @@ class IP_Geo_Block_Admin {
 		}
 
 		// If successful, load admin assets only on this page.
-		if ( ! empty( $hook ) )
+		if ( ! empty( $hook ) ) // 'admin_enqueue_scripts'
 			add_action( "load-$hook", array( $this, 'enqueue_admin_assets' ) );
 	}
 
@@ -601,19 +601,19 @@ class IP_Geo_Block_Admin {
 			$action = 'options.php';
 
 			if ( $this->is_network ) {
-				unset( $tabs[0], $tabs[3], $tabs[5] ); // Settings, Attribution, Sites
-				$title .= ' <span class="ip-geo-block-title-link">' . __( 'Network', 'ip-geo-block' );
+				unset( $tabs[0], $tabs[5] ); // Settings, Sites
+				$title .= ' <span class="ip-geo-block-title-link">';
 				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Settings', 'ip-geo-block' ) . '</a> ]';
 				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Sites',    'ip-geo-block' ) . '</a> ]';
 				$title .= '</span>';
 			} else {
-				unset( $tabs[5] );
+				unset( $tabs[5] ); // Sites
 			}
 		} else {
 			$action = 'edit.php?action=' . IP_Geo_Block::PLUGIN_NAME;
 
 			if ( $settings['network_wide'] ) {
-				unset( $tabs[1], $tabs[4], $tabs[2] ); // Statistics, Logs, Search
+				unset( $tabs[1], $tabs[4], $tabs[2], $tabs[3] ); // Statistics, Logs, Search, Attribution
 				$title .= ' <span class="ip-geo-block-title-link">' . __( 'Network', 'ip-geo-block' );
 				$title .= '</span>';
 			}
@@ -840,7 +840,7 @@ class IP_Geo_Block_Admin {
 		 * Sanitize a string from user input
 		 */
 		foreach ( $output as $key => $val ) {
-			$key = sanitize_text_field( $key );
+			$key = sanitize_text_field( $key ); // @since 3.0.0 can't use sanitize_key() because of capital letters.
 
 			// delete old key
 			if ( ! array_key_exists( $key, $default ) ) {
@@ -870,8 +870,7 @@ class IP_Geo_Block_Admin {
 					// need key
 					else {
 						$output[ $key ][ $provider ] =
-							isset( $input[ $key ][ $provider ] ) ?
-							sanitize_text_field( $input[ $key ][ $provider ] ) : '';
+							isset( $input[ $key ][ $provider ] ) ? sanitize_text_field( $input[ $key ][ $provider ] ) : '';
 					}
 				}
 
@@ -890,10 +889,7 @@ class IP_Geo_Block_Admin {
 
 			  case 'white_list':
 			  case 'black_list':
-				$output[ $key ] = isset( $input[ $key ] ) ?
-					sanitize_text_field(
-						preg_replace( '/[^A-Z,]/', '', strtoupper( $input[ $key ] ) )
-					) : '';
+				$output[ $key ] = isset( $input[ $key ] ) ? preg_replace( '/[^A-Z,]/', '', strtoupper( $input[ $key ] ) ) : '';
 				break;
 
 			  case 'mimetype':
