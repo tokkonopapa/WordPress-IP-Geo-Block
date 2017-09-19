@@ -138,14 +138,14 @@ class IP_Geo_Block_Admin_Rewrite {
 		// check permission
 		if ( $exist ) {
 			if ( ! $fs->is_readable( $file ) ) {
-				$this->show_message( sprintf( 
+				$this->show_message( sprintf(
 					__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $file
 				) );
 				return FALSE;
 			}
 		} else {
 			if ( ! $fs->is_readable( dirname( $file ) ) ) {
-				$this->show_message( sprintf( 
+				$this->show_message( sprintf(
 					__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), dirname( $file )
 				) );
 				return FALSE;
@@ -168,7 +168,7 @@ class IP_Geo_Block_Admin_Rewrite {
 
 		$file = $this->get_rewrite_file( $which );
 		if ( ! $file || FALSE === $fs->put_contents( $file, implode( PHP_EOL, $content ) ) ) {
-			$this->show_message( sprintf( 
+			$this->show_message( sprintf(
 				__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $file
 			) );
 			return FALSE;
@@ -203,7 +203,7 @@ class IP_Geo_Block_Admin_Rewrite {
 					$block = preg_grep( '/auto_prepend_file/i', $content );
 
 					if ( ! empty( $block ) ) {
-						$this->show_message( sprintf( 
+						$this->show_message( sprintf(
 							__( '&#8220;auto_prepend_file&#8221; already defined in %s.', 'ip-geo-block' ), $this->get_rewrite_file( $which )
 						) );
 						return -1; // not available
@@ -315,7 +315,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * Show notice message
 	 *
 	 */
-	private function show_message( $type, $msg ) {
+	private function show_message( $msg ) {
 		if ( class_exists( 'IP_Geo_Block_Admin' ) )
 			IP_Geo_Block_Admin::add_admin_notice( 'error', $msg );
 	}

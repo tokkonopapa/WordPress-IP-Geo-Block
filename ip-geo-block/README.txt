@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.8.1
-Stable tag: 3.0.5b
+Stable tag: 3.0.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -352,9 +352,8 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 == Changelog ==
 
-= 3.0.5 =
-* **New feature:** Add network wide option for multisite.
-* **Improvement:** The IP addresses in the whitelist are always prior than login limit.
+= 3.0.4.3 =
+* **Bug fix:** Fix a bug of "Missing argument 2 for IP_Geo_Block_Admin_Rewrite::show_message()".
 
 = 3.0.4.2 =
 This is a maintenance release addressing various internal improvement toward the next version.
