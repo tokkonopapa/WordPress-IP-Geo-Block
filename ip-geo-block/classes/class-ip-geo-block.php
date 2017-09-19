@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.4.2';
+	const VERSION = '3.0.4.3';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -432,17 +432,17 @@ class IP_Geo_Block {
 		// priority high 4 close_xmlrpc, close_restapi
 		//               5 check_nonce (high), check_user (low)
 		//               6 check_upload (high), check_signature (low)
-		//               7 check_auth
-		//               8 check_fail
-		//               9 check_ips_black (high), check_ips_white (low)
+		//               7 check_ips_black (high), check_ips_white (low)
+		//               8 check_auth
+		//               9 check_fail
 		// priority low 10 validate_country
 		$var = self::PLUGIN_NAME . '-' . $hook;
-		$settings['validation']['mimetype']  and add_filter( $var, array( $this, 'check_upload'    ), 6, 2 );
-		$check_auth                          and add_filter( $var, array( $this, 'check_auth'      ), 7, 2 );
-		$settings['login_fails'] >= 0        and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
-		$settings['extra_ips'] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
-		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 9, 2 );
-		$settings['extra_ips']['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 9, 2 );
+		$settings['validation']['mimetype'  ] and add_filter( $var, array( $this, 'check_upload'    ), 6, 2 );
+		$settings['extra_ips' ] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
+		$settings['extra_ips' ]['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
+		$settings['extra_ips' ]['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
+		$check_auth                           and add_filter( $var, array( $this, 'check_auth'      ), 8, 2 );
+		$settings['login_fails'] >= 0         and add_filter( $var, array( $this, 'check_fail'      ), 9, 2 );
 
 		// make valid provider name list
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
@@ -690,12 +690,15 @@ class IP_Geo_Block {
 
 			$cache = IP_Geo_Block_API_Cache::update_cache( $hook = defined( 'XMLRPC_REQUEST' ) ? 'xmlrpc' : 'login', $validate, $settings = self::get_option() );
 
-			if ( $cache['fail'] > max( 0, (int)$settings['login_fails'] ) )
-				$validate['result'] = 'limited';
+			// The whitelist of IP address is prior
+			if ( ! $this->check_ips( $validate, $settings['extra_ips']['white_list'] ) ) {
+				if ( $cache['fail'] > max( 0, (int)$settings['login_fails'] ) )
+					$validate['result'] = 'limited';
 
-			// validate xmlrpc system.multicall
-			elseif ( defined( 'XMLRPC_REQUEST' ) && FALSE !== stripos( file_get_contents( 'php://input' ), 'system.multicall' ) )
-				$validate['result'] = 'multi';
+				// validate xmlrpc system.multicall
+				elseif ( defined( 'XMLRPC_REQUEST' ) && FALSE !== stripos( file_get_contents( 'php://input' ), 'system.multicall' ) )
+					$validate['result'] = 'multi';
+			}
 
 			// (1) blocked, (3) unauthenticated, (5) all
 			if ( 1 & (int)$settings['validation']['reclogs'] )
@@ -716,7 +719,7 @@ class IP_Geo_Block {
 	public function check_fail( $validate, $settings ) {
 		// check if number of fails reaches the limit. can't overwrite existing result.
 		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
-		return $cache && $cache['fail'] >= max( 0, (int)$settings['login_fails'] ) ? $validate + array( 'result' => 'limited' ) : $validate;
+		return $cache && $cache['fail'] > max( 0, (int)$settings['login_fails'] ) ? $validate + array( 'result' => 'limited' ) : $validate;
 	}
 
 	public function check_auth( $validate, $settings ) {
@@ -787,14 +790,14 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_ips_white( $validate, $settings ) {
-		return $this->check_ips( $validate, $settings['extra_ips']['white_list'], 0 );
+		return $this->check_ips( $validate, $settings['extra_ips']['white_list'] ) ? $validate + array( 'result' => 'passed' ) : $validate;
 	}
 
 	public function check_ips_black( $validate, $settings ) {
-		return $this->check_ips( $validate, $settings['extra_ips']['black_list'], 1 );
+		return $this->check_ips( $validate, $settings['extra_ips']['black_list'] ) ? $validate + array( 'result' => 'extra'  ) : $validate;
 	}
 
-	private function check_ips( $validate, $ips, $which ) {
+	private function check_ips( $validate, $ips ) {
 		if ( filter_var( $ip = $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			require_once IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php';
 
@@ -803,8 +806,7 @@ class IP_Geo_Block {
 
 				if ( ( ! empty( $validate['asn'] ) && $validate['asn'] === $j[0] ) ||
 				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && Net_IPv4::ipInNetwork( $ip, isset( $j[1] ) ? $i : $i.'/32' ) ) )
-					// can't overwrite existing result
-					return $validate + array( 'result' => $which ? 'extra' : 'passed' );
+					return TRUE;
 			}
 		}
 
@@ -816,12 +818,11 @@ class IP_Geo_Block {
 
 				if ( ( ! empty( $validate['asn'] ) && $validate['asn'] === $j[0] ) ||
 				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) && Net_IPv6::isInNetmask( $ip, isset( $j[1] ) ? $i : $i.'/128' ) ) )
-					// can't overwrite existing result
-					return $validate + array( 'result' => $which ? 'extra' : 'passed' );
+					return TRUE;
 			}
 		}
 
-		return $validate;
+		return FALSE;
 	}
 
 	/**
@@ -941,8 +942,7 @@ class IP_Geo_Block {
 				}
 
 				elseif ( preg_match( '!^[a-f\d\.:/]+$!', $code = substr( $pat, strpos( $pat, $code ) ) ) ) {
-					$name = $this->check_ips( $validate, $code, $which );
-					if ( $not xor isset( $name['result'] ) )
+					if ( $not xor $this->check_ips( $validate, $code ) )
 						return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
 				}
 			}
