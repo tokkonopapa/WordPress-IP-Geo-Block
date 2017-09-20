@@ -614,7 +614,7 @@ class IP_Geo_Block_Admin {
 
 			if ( $settings['network_wide'] ) {
 				unset( $tabs[1], $tabs[4], $tabs[2], $tabs[3] ); // Statistics, Logs, Search, Attribution
-				$title .= ' <span class="ip-geo-block-title-link">' . __( 'Network', 'ip-geo-block' );
+				$title .= ' <span class="ip-geo-block-title-link">[ ' . __( 'Network', 'ip-geo-block' ) . ' ]';
 				$title .= '</span>';
 			}
 		}
@@ -1152,7 +1152,7 @@ class IP_Geo_Block_Admin {
 			}
 
 			self::add_admin_notice( 'error',
-				sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), implode( ', ', $file ) ) . ' ' .
+				sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), implode( ', ', $file ) ) . ' ' .
 				sprintf( _n( 'Or please refer to %s to set it manually.', 'Or please refer to %s to set them manually.', count( $file ), 'ip-geo-block' ), '<a href="http://ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How to fix permission troubles? | IP Geo Block">How to fix permission troubles?</a>' )
 			);
 		}
@@ -1163,7 +1163,7 @@ class IP_Geo_Block_Admin {
 		if ( TRUE !== $file ) {
 			$options['validation']['timing'] = 0;
 			self::add_admin_notice( 'error', sprintf(
-				__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), '<code>' . $file . '</code>'
+				__( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), '<code>' . $file . '</code>'
 			) );
 		}
 

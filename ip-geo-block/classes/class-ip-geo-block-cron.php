@@ -265,17 +265,17 @@ class IP_Geo_Block_Cron {
 			if ( 'gz' === $args && function_exists( 'gzopen' ) ) {
 				if ( FALSE === ( $gz = gzopen( $src, 'r' ) ) )
 					throw new Exception(
-						sprintf( __( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $src )
+						sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $src )
 					);
 
 				if ( FALSE === ( $fp = @fopen( $filename, 'cb' ) ) )
 					throw new Exception(
-						sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $filename )
+						sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $filename )
 					);
 
 				if ( ! flock( $fp, LOCK_EX ) )
 					throw new Exception(
-						sprintf( __( 'Can\'t lock %s. Please try again after a while.', 'ip-geo-block' ), $filename )
+						sprintf( __( 'Can\'t lock <code>%s</code>. Please try again after a while.', 'ip-geo-block' ), $filename )
 					);
 
 				ftruncate( $fp, 0 ); // truncate file
@@ -297,12 +297,12 @@ class IP_Geo_Block_Cron {
 
 				if ( FALSE === ( $data = $fs->get_contents( $tmp .= basename( $filename ) ) ) )
 					throw new Exception(
-						sprintf( __( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $tmp )
+						sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $tmp )
 					);
 
 				if ( FALSE === $fs->put_contents( $filename, $data, LOCK_EX ) )
 					throw new Exception(
-						sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $filename )
+						sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $filename )
 					);
 			}
 
