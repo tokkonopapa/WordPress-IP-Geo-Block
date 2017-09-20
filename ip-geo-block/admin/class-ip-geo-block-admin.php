@@ -1140,9 +1140,9 @@ class IP_Geo_Block_Admin {
 
 		// check the status of rewrite rules
 		$diff = array_diff_assoc( $options['rewrite'], $stat );
-		if ( ! empty( $diff ) ) {
-			$options['rewrite'] = $stat;
+		$options['rewrite'] = $stat;
 
+		if ( ! empty( $diff ) ) {
 			$file = array();
 			$dirs = IP_Geo_Block_Admin_Rewrite::get_dirs();
 

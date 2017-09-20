@@ -145,14 +145,6 @@ class IP_Geo_Block_Admin_Rewrite {
 			}
 		}
 
-		else {
-			if ( ! $fs->is_readable( dirname( $file ) ) ) {
-				return new WP_Error( 'Error',
-					sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), dirname( $file ) )
-				);
-			}
-		}
-
 		// get file contents as an array
 		return $exist ? $fs->get_contents_array( $file ) : array();
 	}
@@ -296,6 +288,7 @@ class IP_Geo_Block_Admin_Rewrite {
 
 		elseif ( FALSE === $stat ) {
 			$content = $this->get_rewrite_rule( $which );
+
 			if ( is_wp_error( $content ) ) {
 				$this->show_message( $content->get_error_message() );
 				return FALSE;
@@ -328,6 +321,7 @@ class IP_Geo_Block_Admin_Rewrite {
 
 		elseif ( TRUE === $stat ) {
 			$content = $this->get_rewrite_rule( $which );
+
 			if ( is_wp_error( $content ) ) {
 				$this->show_message( $content->get_error_message() );
 				return FALSE;
@@ -346,8 +340,8 @@ class IP_Geo_Block_Admin_Rewrite {
 	 *
 	 */
 	private function show_message( $msg ) {
-		if ( class_exists( 'IP_Geo_Block_Admin' ) )
-			IP_Geo_Block_Admin::add_admin_notice( 'error', $msg );
+//		if ( class_exists( 'IP_Geo_Block_Admin' ) )
+//			IP_Geo_Block_Admin::add_admin_notice( 'error', $msg );
 	}
 
 	/**
@@ -359,7 +353,8 @@ class IP_Geo_Block_Admin_Rewrite {
 
 		$status = array();
 		foreach ( array_keys( $rewrite->rewrite_rule['.htaccess'] ) as $key ) {
-			$status[ $key ] = is_wp_error( $rewrite->get_rewrite_stat( $key ) ) ? FALSE : TRUE;
+			$stat = $rewrite->get_rewrite_stat( $key );
+			$status[ $key ] = is_wp_error( $stat ) ? FALSE : $stat;
 		}
 
 		return $status;

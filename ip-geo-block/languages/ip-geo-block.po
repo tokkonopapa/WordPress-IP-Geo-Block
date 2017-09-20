@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.4.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-09-20 21:38+0900\n"
-"PO-Revision-Date: 2017-09-20 21:40+0900\n"
+"POT-Creation-Date: 2017-09-20 23:43+0900\n"
+"PO-Revision-Date: 2017-09-20 23:45+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -188,7 +188,7 @@ msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:1155
 #: admin/class-ip-geo-block-admin.php:1166
-#: admin/includes/class-admin-rewrite.php:175
+#: admin/includes/class-admin-rewrite.php:167
 #: classes/class-ip-geo-block-cron.php:273
 #: classes/class-ip-geo-block-cron.php:305
 #: classes/class-ip-geo-block-opts.php:401
@@ -223,14 +223,13 @@ msgid ""
 msgstr ""
 
 #: admin/includes/class-admin-rewrite.php:143
-#: admin/includes/class-admin-rewrite.php:151
 #: classes/class-ip-geo-block-cron.php:268
 #: classes/class-ip-geo-block-cron.php:300
 #, php-format
 msgid "Unable to read <code>%s</code>. Please check the permission."
 msgstr ""
 
-#: admin/includes/class-admin-rewrite.php:216
+#: admin/includes/class-admin-rewrite.php:208
 #, php-format
 msgid "&#8220;auto_prepend_file&#8221; already defined in %s."
 msgstr ""
