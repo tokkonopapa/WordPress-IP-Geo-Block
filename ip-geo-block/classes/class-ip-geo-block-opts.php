@@ -398,7 +398,7 @@ class IP_Geo_Block_Opts {
 					throw new Exception();
 			} catch ( Exception $e ) {
 				if ( class_exists( 'IP_Geo_Block_Admin', FALSE ) )
-					IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), '<code>' . $dst . '</code>' ) );
+					IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), '<code>' . $dst . '</code>' ) );
 
 				return NULL;
 			}

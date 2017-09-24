@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.8.1
-Stable tag: 3.0.4.3
+Tested up to: 4.8.2
+Stable tag: 3.0.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -351,6 +351,11 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.4.4 =
+Sorry for the frequent update, but it should be fixed before the next release.
+* **Bug fix:** Fix the issue that limit of login attempts took precedence over authority of admin.
+* **Improvement:** Suppress "Unable to read" error message on dashboard in a certain type of server.
 
 = 3.0.4.3 =
 * **Bug fix:** Fix a bug of "Missing argument 2 for IP_Geo_Block_Admin_Rewrite::show_message()".

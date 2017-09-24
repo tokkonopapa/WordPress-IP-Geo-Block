@@ -99,21 +99,21 @@ class IP_Geo_Block_Admin_Rewrite {
 	/**
 	 * Extract the block of rewrite rule
 	 *
-	 * @param array contents of configuration file
+	 * @param  array contents of configuration file
 	 * @return array list of begin and end
 	 */
 	private function find_rewrite_block( $content ) {
 		return preg_grep(
 			'/^\s*?[#;]\s*?(?:BEGIN|END)\s*?IP Geo Block\s*?$/i',
-			$content
+			(array)$content
 		);
 	}
 
 	/**
 	 * Get the path of .htaccess in wp-content/plugins/themes/
 	 *
-	 * @param string 'plugins' or 'themes'
-	 * @return string absolute path to the .htaccess
+	 * @param  string 'plugins' or 'themes'
+	 * @return string absolute path to the .htaccess or NULL
 	 */
 	private function get_rewrite_file( $which ) {
 		if ( $this->config_file )
@@ -126,71 +126,68 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * Get contents in .htaccess in wp-content/(plugins|themes)/
 	 *
 	 * @param string 'plugins' or 'themes'
-	 * @return array contents of configuration file
+	 * @return array contents of configuration file or WP_Error
 	 */
 	private function get_rewrite_rule( $which ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'get_rewrite_rule' );
 
+		// check the existence of configuration file
 		$file = $this->get_rewrite_file( $which );
 		$exist = $file ? $fs->exists( $file ) : FALSE;
 
 		// check permission
 		if ( $exist ) {
 			if ( ! $fs->is_readable( $file ) ) {
-				$this->show_message( sprintf(
-					__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), $file
-				) );
-				return FALSE;
-			}
-		} else {
-			if ( ! $fs->is_readable( dirname( $file ) ) ) {
-				$this->show_message( sprintf(
-					__( 'Unable to read %s. Please check the permission.', 'ip-geo-block' ), dirname( $file )
-				) );
-				return FALSE;
+				return new WP_Error( 'Error',
+					sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $file ) . ' ' .
+					sprintf( __( 'Or please refer to %s to set it manually.', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How to fix permission troubles? | IP Geo Block">How to fix permission troubles?</a>' )
+				);
 			}
 		}
 
 		// get file contents as an array
-		return $exist ? $fs->get_contents_array( $file ) : array();
+		$exist = $fs->get_contents_array( $file );
+		return FALSE !== $exist ? $exist : array();
 	}
 
 	/**
 	 * Put contents to .htaccess in wp-content/(plugins|themes)/
 	 *
-	 * @param string 'plugins' or 'themes'
-	 * @param array  contents of configuration file
+	 * @param string $which 'plugins' or 'themes'
+	 * @param  array contents of configuration file
+	 * @return  bool TRUE (success) or FALSE (failure)
 	 */
 	private function put_rewrite_rule( $which, $content ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'put_rewrite_rule' );
 
 		$file = $this->get_rewrite_file( $which );
+
 		if ( ! $file || FALSE === $fs->put_contents( $file, implode( PHP_EOL, $content ) ) ) {
-			$this->show_message( sprintf(
-				__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $file
-			) );
+			$this->show_message(
+				sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $file ) . ' ' .
+				sprintf( __( 'Or please refer to %s to set it manually.', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How to fix permission troubles? | IP Geo Block">How to fix permission troubles?</a>' )
+			);
 			return FALSE;
 		}
 
 		// if content is empty then remove file
-		if ( empty( $content ) )
-			return $fs->delete( $file );
-
-		return TRUE;
+		return empty( $content ) ? $fs->delete( $file ) : TRUE;
 	}
 
 	/**
 	 * Check if the block of rewrite rule exists
 	 *
-	 * @param  string 'plugins' or 'themes'
-	 * @return bool   TRUE (found), FALSE (not found or unavailable)
+	 * @param string 'plugins' or 'themes'
+	 * @return  bool TRUE (found), FALSE (not found or unavailable) or WP_Error
 	 */
 	private function get_rewrite_stat( $which ) {
 		if ( $this->config_file ) {
-			if ( FALSE === ( $content = $this->get_rewrite_rule( $which ) ) )
-				return -1; // not readable
+			$content = $this->get_rewrite_rule( $which );
+
+			if ( is_wp_error( $content ) )
+				return $content;
 
 			$block = $this->find_rewrite_block( $content );
 
@@ -202,14 +199,16 @@ class IP_Geo_Block_Admin_Rewrite {
 				if ( empty( $block ) ) {
 					$block = preg_grep( '/auto_prepend_file/i', $content );
 
-					if ( ! empty( $block ) ) {
-						$this->show_message( sprintf(
-							__( '&#8220;auto_prepend_file&#8221; already defined in %s.', 'ip-geo-block' ), $this->get_rewrite_file( $which )
-						) );
-						return -1; // not available
+					if ( empty( $block ) ) {
+						return FALSE; // rewrite rule is not found in configuration file
 					}
 
-					return FALSE; // rewrite rule is not found in configuration file
+					else {
+						return new WP_Error( 'Error', sprintf(
+							__( '&#8220;auto_prepend_file&#8221; already defined in %s.', 'ip-geo-block' ),
+							$this->get_rewrite_file( $which )
+						) );
+					}
 				}
 
 				else {
@@ -225,6 +224,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 * Remove the block of rewrite rule
 	 *
 	 * @param  array contents of configuration file
+	 * @param  array contents to be removed
 	 * @return array array of contents without rewrite rule
 	 */
 	private function remove_rewrite_block( $content, $block ) {
@@ -245,9 +245,9 @@ class IP_Geo_Block_Admin_Rewrite {
 	/**
 	 * Append the block of rewrite rule
 	 *
-	 * @param  string 'plugins' or 'themes'
-	 * @param  array  name of configuration file
-	 * @return array  array of contents with the block of rewrite rule
+	 * @param string 'plugins' or 'themes'
+	 * @param  array contents of configuration file
+	 * @return array array of contents with the block of rewrite rule
 	 */
 	private function append_rewrite_block( $which, $content ) {
 		if ( $type = $this->config_file ) {
@@ -263,25 +263,37 @@ class IP_Geo_Block_Admin_Rewrite {
 					$this->rewrite_rule[ $type ][ $which ]
 				)
 			);
-		} else {
-			return array();
 		}
+
+		return array();
 	}
 
 	/**
 	 * Add rewrite rule to server configration
 	 *
-	 * @param  string 'plugins' or 'themes'
-	 * @return bool   TRUE (found), FALSE (not found or unavailable)
+	 * @param string 'plugins' or 'themes'
+	 * @return  bool TRUE (found), FALSE (not found or unavailable)
 	 */
 	private function add_rewrite_rule( $which ) {
-		// if rewrite stat is not TRUE or FALSE
-		switch ( $this->get_rewrite_stat( $which ) ) {
-		  case TRUE:
-			return TRUE;
+		$stat = $this->get_rewrite_stat( $which );
 
-		  case FALSE:
+		if ( is_wp_error( $stat ) ) {
+			$this->show_message( $stat->get_error_message() );
+			return FALSE;
+		}
+
+		elseif ( TRUE === $stat ) {
+			return TRUE;
+		}
+
+		elseif ( FALSE === $stat ) {
 			$content = $this->get_rewrite_rule( $which );
+
+			if ( is_wp_error( $content ) ) {
+				$this->show_message( $content->get_error_message() );
+				return FALSE;
+			}
+
 			$content = $this->append_rewrite_block( $which, $content );
 			return $this->put_rewrite_rule( $which, $content );
 		}
@@ -292,20 +304,32 @@ class IP_Geo_Block_Admin_Rewrite {
 	/**
 	 * Delete rewrite rule to server configration
 	 *
-	 * @param  string 'plugins' or 'themes'
-	 * @return bool   TRUE (found), FALSE (not found or unavailable)
+	 * @param string 'plugins' or 'themes'
+	 * @return  bool TRUE (found), FALSE (not found or unavailable)
 	 */
 	private function del_rewrite_rule( $which ) {
-		// if rewrite stat is not TRUE or FALSE
-		switch ( $this->get_rewrite_stat( $which ) ) {
-		  case TRUE:
+		$stat = $this->get_rewrite_stat( $which );
+
+		if ( is_wp_error( $stat ) ) {
+			$this->show_message( $stat->get_error_message() );
+			return FALSE;
+		}
+
+		elseif ( FALSE === $stat ) {
+			return TRUE;
+		}
+
+		elseif ( TRUE === $stat ) {
 			$content = $this->get_rewrite_rule( $which );
-			$block   = $this->find_rewrite_block( $content );
+
+			if ( is_wp_error( $content ) ) {
+				$this->show_message( $content->get_error_message() );
+				return FALSE;
+			}
+
+			$block = $this->find_rewrite_block( $content );
 			$content = $this->remove_rewrite_block( $content, $block );
 			return $this->put_rewrite_rule( $which, $content );
-
-		  case FALSE:
-			return TRUE;
 		}
 
 		return -1; /* NOT SUPPORTED */
@@ -329,7 +353,8 @@ class IP_Geo_Block_Admin_Rewrite {
 
 		$status = array();
 		foreach ( array_keys( $rewrite->rewrite_rule['.htaccess'] ) as $key ) {
-			$status[ $key ] = $rewrite->get_rewrite_stat( $key );
+			$stat = $rewrite->get_rewrite_stat( $key );
+			$status[ $key ] = is_wp_error( $stat ) ? FALSE : $stat;
 		}
 
 		return $status;
@@ -362,8 +387,7 @@ class IP_Geo_Block_Admin_Rewrite {
 		$rewrite = self::get_instance();
 
 		foreach ( array_keys( $rewrite->rewrite_rule['.htaccess'] ) as $key ) {
-			if ( FALSE === $rewrite->del_rewrite_rule( $key ) )
-				return FALSE;
+			$rewrite->del_rewrite_rule( $key );
 		}
 
 		return TRUE;

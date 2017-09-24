@@ -473,7 +473,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			'hook' => $hook,
 			'code' => $validate['code'],
 			'auth' => $validate['auth'], // get_current_user_id() > 0
-			'fail' => $fail, // $validate['auth'] ? 0 : $fail,
+			'fail' => $validate['auth'] ? 0 : $fail,
 			'call' => $settings['save_statistics'] ? $call : 0,
 			'host' => isset( $validate['host'] ) ? $validate['host'] : NULL,
 		) );

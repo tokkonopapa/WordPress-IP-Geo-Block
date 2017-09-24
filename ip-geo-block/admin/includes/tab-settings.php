@@ -39,9 +39,8 @@ class IP_Geo_Block_Admin_Tab {
 		/*----------------------------------------*
 		 * Validation rule settings
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-validation-rule';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-validation-rule',
 			__( 'Validation rule settings', 'ip-geo-block' ),
 			NULL,
 			$option_slug
@@ -438,9 +437,8 @@ endif;
 		/*----------------------------------------*
 		 * Back-end target settings
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-validation-target';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-validation-target',
 			__( 'Back-end target settings', 'ip-geo-block' ),
 			array( __CLASS__, 'note_target' ),
 			$option_slug
@@ -613,11 +611,13 @@ endif;
 		array_unshift( $list, __( 'Disable', 'ip-geo-block' ) );
 		$desc = array(
 			__( 'Regardless of the country code, it will block a malicious request to <code>%s&ctdot;/*.php</code>.', 'ip-geo-block' ),
-			__( 'It configures &#8220;%s&#8221; to validate a request to the PHP file which does not load WordPress core.', 'ip-geo-block' ),
 			__( '<dfn title="Select the item which causes undesired blocking in order to exclude from the validation target. Grayed item indicates &#8220;INACTIVE&#8221;.">Exceptions</dfn>', 'ip-geo-block' ),
+			__( 'It configures &#8220;%s&#8221; to validate a request to the PHP file which does not load WordPress core.', 'ip-geo-block' ),
+			__( 'Sorry, but your server type is not supported.', 'ip-geo-block' ),
 		);
 
 		// Set rewrite condition
+		$config = IP_Geo_Block_Admin_Rewrite::get_config_file();
 		$options['rewrite'] = IP_Geo_Block_Admin_Rewrite::check_rewrite_all();
 
 		// Get all the plugins
@@ -649,7 +649,7 @@ endif;
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
 			. disabled( $options['rewrite'][ $key ], -1, FALSE ) . ' />'
 			. '<label for="ip_geo_block_settings_rewrite_' . $key . '"><dfn title="'
-			. sprintf( $desc[1], $val . IP_Geo_Block_Admin_Rewrite::get_config_file() )
+			. ( $config ? sprintf( $desc[2], $val . $config ) : $desc[3] )
 			. '">' . __( 'Force to load WP core', 'ip-geo-block' )
 			. '</dfn></label><br />';
 
@@ -670,7 +670,7 @@ endif;
 					2 => sprintf( $desc[0], $val ),
 				),
 				'before' => $tmp,
-				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . $desc[2] . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $exception . "</ul></li></ul>\n",
+				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . $desc[1] . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $exception . "</ul></li></ul>\n",
 			)
 		);
 
@@ -699,7 +699,7 @@ endif;
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
 			. disabled( $options['rewrite'][ $key ], -1, FALSE ) . ' />'
 			. '<label for="ip_geo_block_settings_rewrite_' . $key . '"><dfn title="'
-			. sprintf( $desc[1], $val . IP_Geo_Block_Admin_Rewrite::get_config_file() )
+			. ( $config ? sprintf( $desc[2], $val . $config ) : $desc[3] )
 			. '">' . __( 'Force to load WP core', 'ip-geo-block' )
 			. '</dfn></label><br />';
 
@@ -720,16 +720,15 @@ endif;
 					2 => sprintf( $desc[0], $val ),
 				),
 				'before' => $tmp,
-				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . $desc[2] . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $exception . "</ul></li></ul>\n",
+				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . $desc[1] . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $exception . "</ul></li></ul>\n",
 			)
 		);
 
 		/*----------------------------------------*
 		 * Front-end settings
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-public';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-public',
 			__( 'Front-end target settings', 'ip-geo-block' ),
 			array( __CLASS__, 'note_public' ),
 			$option_slug
@@ -1029,9 +1028,8 @@ endif;
 		/*----------------------------------------*
 		 * Geolocation service settings
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-provider';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-provider',
 			__( 'Geolocation API settings', 'ip-geo-block' ),
 			array( __CLASS__, 'note_services' ),
 			$option_slug
@@ -1087,9 +1085,8 @@ endif;
 			);
 		}
 
-		$section = $plugin_slug . '-database';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-database',
 			__( 'Local database settings', 'ip-geo-block' ),
 			NULL,
 			$option_slug
@@ -1148,9 +1145,8 @@ endif;
 		/*----------------------------------------*
 		 * Record settings
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-recording';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-recording',
 			__( 'Record settings', 'ip-geo-block' ),
 			array( __CLASS__, 'note_record' ),
 			$option_slug
@@ -1267,9 +1263,8 @@ endif;
 		/*----------------------------------------*
 		 * Cache settings
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-cache';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-cache',
 			__( 'IP address cache settings', 'ip-geo-block' ),
 			NULL,
 			$option_slug
@@ -1328,9 +1323,8 @@ endif;
 		/*----------------------------------------*
 		 * Submission settings
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-submission';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-submission',
 			__( 'Submission settings', 'ip-geo-block' ),
 			NULL,
 			$option_slug
@@ -1366,9 +1360,8 @@ endif;
 		/*----------------------------------------*
 		 * Plugin settings
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-others';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-others',
 			__( 'Plugin settings', 'ip-geo-block' ),
 			NULL,
 			$option_slug
