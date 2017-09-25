@@ -1136,26 +1136,7 @@ class IP_Geo_Block_Admin {
 
 		// activate rewrite rules
 		require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
-		$stat = IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $options['rewrite'] );
-
-		// check the status of rewrite rules
-		$diff = array_diff_assoc( $options['rewrite'], $stat );
-		$options['rewrite'] = $stat;
-
-		if ( ! empty( $diff ) ) {
-			$file = array();
-			$dirs = IP_Geo_Block_Admin_Rewrite::get_dirs();
-
-			// show which file would be the issue
-			foreach ( $diff as $key => $stat ) {
-				$file[] = '<code>' . $dirs[ $key ] . '.htaccess</code>';
-			}
-
-			self::add_admin_notice( 'error',
-				sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), implode( ', ', $file ) ) . ' ' .
-				sprintf( _n( 'Or please refer to %s to set it manually.', 'Or please refer to %s to set them manually.', count( $file ), 'ip-geo-block' ), '<a href="http://ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How to fix permission troubles? | IP Geo Block">How to fix permission troubles?</a>' )
-			);
-		}
+		$options['rewrite'] = IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $options['rewrite'] );
 
 		// additional configuration
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php';
@@ -1338,7 +1319,6 @@ class IP_Geo_Block_Admin {
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 			);
-			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

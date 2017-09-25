@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.4.4b';
+	const VERSION = '3.0.4.4';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -274,12 +274,12 @@ class IP_Geo_Block {
 	 *
 	 */
 	private static function make_validation( $ip, $result ) {
+		// later parameters take precedence over previous ones
 		return array_merge( array(
 			'ip'   => $ip,
-			'asn'  => NULL,  // @since 3.0.4
-			'auth' => IP_Geo_Block_Util::get_current_user_id(),
-			'code' => 'ZZ', // may be overwritten with $result
-		), $result );
+			'asn'  => NULL, // @since 3.0.4
+			'code' => 'ZZ', // should be overwritten with $result
+		), $result, array( 'auth' => IP_Geo_Block_Util::get_current_user_id() ) );
 	}
 
 	/**
@@ -328,7 +328,7 @@ class IP_Geo_Block {
 				}
 
 				return self::make_validation( $ip, array(
-					'time' => microtime( TRUE ) - $time,
+					'time'     => microtime( TRUE ) - $time,
 					'provider' => $provider,
 				) + ( is_array( $code ) ? $code : array( 'code' => $code, 'asn' => isset( $asn ) ? $asn : NULL ) ) );
 			}

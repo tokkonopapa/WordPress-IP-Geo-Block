@@ -241,7 +241,7 @@ if (0) {
 			return FALSE;
 
 		if ( 'direct' === self::$method )
-			return file_put_contents( $file, $contents, LOCK_EX );
+			return @file_put_contents( $file, $contents, LOCK_EX );
 		else
 			return $wp_filesystem->put_contents( $this->absolute_path( $file ), $contents, $mode );
 	}
@@ -252,7 +252,7 @@ if (0) {
 	 * @access public
 	 *
 	 * @param string $file Name of the file to read.
-	 * @return string|bool The function returns the read data or false on failure.
+	 * @return string|bool The data of contents or false on failure.
 	 */
 	public function get_contents( $file ) {
 		global $wp_filesystem;
@@ -268,8 +268,8 @@ if (0) {
 	/**
 	 * Read entire file into an array.
 	 *
-	 * @param  string $file  Filename.
-	 * @return array
+	 * @param string $file Filename.
+	 * @return array|bool  An array of contents or false on failure.
 	 */
 	public function get_contents_array( $file ) {
 		global $wp_filesystem;
@@ -282,8 +282,8 @@ if (0) {
 		if ( 'direct' === self::$method )
 			return @file( $file, FILE_IGNORE_NEW_LINES );
 
-		else // `rtrim`: same as FILE_IGNORE_NEW_LINES flag in file()
-			return array_map( 'rtrim', $wp_filesystem->get_contents_array( $this->absolute_path( $file ) ) );
+		$file = $wp_filesystem->get_contents_array( $this->absolute_path( $file ) );
+		return FALSE !== $file ? array_map( 'rtrim', $file ) : FALSE;
 	}
 
 	/**

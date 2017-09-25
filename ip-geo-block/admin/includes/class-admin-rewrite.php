@@ -140,13 +140,15 @@ class IP_Geo_Block_Admin_Rewrite {
 		if ( $exist ) {
 			if ( ! $fs->is_readable( $file ) ) {
 				return new WP_Error( 'Error',
-					sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $file )
+					sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $file ) . ' ' .
+					sprintf( __( 'Or please refer to %s to set it manually.', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How to fix permission troubles? | IP Geo Block">How to fix permission troubles?</a>' )
 				);
 			}
 		}
 
 		// get file contents as an array
-		return $exist ? $fs->get_contents_array( $file ) : array();
+		$exist = $fs->get_contents_array( $file );
+		return FALSE !== $exist ? $exist : array();
 	}
 
 	/**
@@ -163,17 +165,15 @@ class IP_Geo_Block_Admin_Rewrite {
 		$file = $this->get_rewrite_file( $which );
 
 		if ( ! $file || FALSE === $fs->put_contents( $file, implode( PHP_EOL, $content ) ) ) {
-			$this->show_message( sprintf(
-				__( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $file
-			) );
+			$this->show_message(
+				sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $file ) . ' ' .
+				sprintf( __( 'Or please refer to %s to set it manually.', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How to fix permission troubles? | IP Geo Block">How to fix permission troubles?</a>' )
+			);
 			return FALSE;
 		}
 
 		// if content is empty then remove file
-		if ( empty( $content ) )
-			return $fs->delete( $file );
-
-		return TRUE;
+		return empty( $content ) ? $fs->delete( $file ) : TRUE;
 	}
 
 	/**
@@ -387,8 +387,7 @@ class IP_Geo_Block_Admin_Rewrite {
 		$rewrite = self::get_instance();
 
 		foreach ( array_keys( $rewrite->rewrite_rule['.htaccess'] ) as $key ) {
-			if ( FALSE === $rewrite->del_rewrite_rule( $key ) )
-				return FALSE;
+			$rewrite->del_rewrite_rule( $key );
 		}
 
 		return TRUE;

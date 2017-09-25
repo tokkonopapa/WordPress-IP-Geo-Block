@@ -16,9 +16,8 @@ if ( $options['save_statistics'] ) :
 		/*----------------------------------------*
 		 * Statistics of validation
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-statistics';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-statistics',
 			__( 'Statistics of validation', 'ip-geo-block' ),
 			NULL,
 			$option_slug
@@ -176,9 +175,8 @@ if ( $options['save_statistics'] ) :
 		/*----------------------------------------*
 		 * Statistics in logs
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-stat-logs';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-stat-logs',
 			__( 'Statistics in logs', 'ip-geo-block' ),
 			array( __CLASS__, 'statistics_logs' ),
 			$option_slug
@@ -204,9 +202,8 @@ else:
 		/*----------------------------------------*
 		 * Warning
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-statistics';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-statistics',
 			__( 'Statistics of validation', 'ip-geo-block' ),
 			array( __CLASS__, 'warn_statistics' ),
 			$option_slug
@@ -230,9 +227,8 @@ endif;
 		/*----------------------------------------*
 		 * Statistics in cache
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-cache';
 		add_settings_section(
-			$section,
+			$section = $plugin_slug . '-cache',
 			__( 'Statistics in cache', 'ip-geo-block' ),
 			NULL, // array( $context, 'callback_cache_stat' ),
 			$option_slug
