@@ -340,8 +340,8 @@ class IP_Geo_Block_Admin_Rewrite {
 	 *
 	 */
 	private function show_message( $msg ) {
-//		if ( class_exists( 'IP_Geo_Block_Admin' ) )
-//			IP_Geo_Block_Admin::add_admin_notice( 'error', $msg );
+		if ( class_exists( 'IP_Geo_Block_Admin' ) )
+			IP_Geo_Block_Admin::add_admin_notice( 'error', $msg );
 	}
 
 	/**
