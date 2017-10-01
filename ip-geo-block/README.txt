@@ -36,7 +36,7 @@ After several days of installation, you'll be supprised to find many malicious o
   A malicious request such as exposing `wp-config.php` or uploading malwares via vulnerable plugins/themes can be blocked.
 
 * **Support of BuddyPress and bbPress:**  
-  You can configure this plugin so that a registered user can login as a membership from anywhere, while a request such as a new user registration, lost password, creating a new topic and subscribing comment can be blocked by country. It is suitable for [BuddyPress](https://wordpress.org/plugins/buddypress/ "BuddyPress &mdash; WordPress Plugins") and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress › bbPress « WordPress Plugins") to help reducing spams.
+  You can configure this plugin so that a registered user can login as a membership from anywhere, while a request such as a new user registration, lost password, creating a new topic and subscribing comment can be blocked by country. It is suitable for [BuddyPress](https://wordpress.org/plugins/buddypress/ "BuddyPress &mdash; WordPress Plugins") and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress 窶ｺ bbPress ﾂｫ WordPress Plugins") to help reducing spams.
 
 * **Referrer suppressor for external links:**  
   When you click an external hyperlink on admin screens, http referrer will be eliminated to hide a footprint of your site.
@@ -146,10 +146,10 @@ or following descriptions for your best setup.
   Validate access to `wp-admin/admin-(ajax|post)*.php`.
 
 * **Plugins area**  
-  Validate direct access to plugins. Typically `wp-content/plugins/…/*.php`.
+  Validate direct access to plugins. Typically `wp-content/plugins/窶ｦ/*.php`.
 
 * **Themes area**  
-  Validate direct access to themes. Typically `wp-content/themes/…/*.php`.
+  Validate direct access to themes. Typically `wp-content/themes/窶ｦ/*.php`.
 
 = Front-end target settings =
 
@@ -284,7 +284,7 @@ add_filter( 'ip-geo-block-login', 'ip_geo_block_emergency', 1, 2 );
 add_filter( 'ip-geo-block-admin', 'ip_geo_block_emergency', 1, 2 );
 // */`
 
-Please not that you have to use an [appropriate editor](https://codex.wordpress.org/Editing_Files#Using_Text_Editors "Editing Files « WordPress Codex").
+Please not that you have to use an [appropriate editor](https://codex.wordpress.org/Editing_Files#Using_Text_Editors "Editing Files ﾂｫ WordPress Codex").
 
 After saving and uploading it to `/wp-content/plugins/ip-geo-block/` on your server via FTP, you become to be able to login again as an admin.
 
@@ -353,7 +353,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 == Changelog ==
 
 = 3.0.4.5 =
-* **Improvement:** Avoid conflict with [WP Limit Login Attempts](https://wordpress.org/plugins/wp-limit-login-attempts/ "WP Limit Login Attempts &mdash; WordPress Plugins"). See some details in [“Sorry, your request cannot be accepted.”](https://wordpress.org/support/topic/sorry-your-request-cannot-be-accepted/#post-9544556 "Topic: &#8220;Sorry, your request cannot be accepted.&#8221; &laquo; WordPress.org Forums").
+* **Improvement:** Avoid conflict with [WP Limit Login Attempts](https://wordpress.org/plugins/wp-limit-login-attempts/ "WP Limit Login Attempts &mdash; WordPress Plugins"). See some details in ["Sorry, your request cannot be accepted."](https://wordpress.org/support/topic/sorry-your-request-cannot-be-accepted/#post-9544556 "Topic: &#8220;Sorry, your request cannot be accepted.&#8221; &laquo; WordPress.org Forums").
 
 = 3.0.4.4 =
 Sorry for the frequent update, but it should be fixed before the next release.
@@ -531,14 +531,14 @@ This is a maintenance release addressing some issues.
 * **Improvement:** Support clean uninstall for network / multisite.
 * **Improvement:** Improve the compatibility of downloading IP address databases for Microsoft IIS.
 * **Bug fix:** Support `FORCE_SSL_ADMIN`.
-* **Bug fix:** Fix the issue of [@](https://wordpress.org/support/topic/compatibility-with-ag-custom-admin "WordPress › Support » Compatibility with AG Custom Admin") and change the option name "**Important files**" to "**Bad signatures in query**" to avoid misuse.
-* **Bug fix:** Fix the issue of [@](https://wordpress.org/support/topic/gb-added-to-whitelist "WordPress › Support » GB added to whitelist") which might be caused by some race condition.
+* **Bug fix:** Fix the issue of [@](https://wordpress.org/support/topic/compatibility-with-ag-custom-admin "WordPress 窶ｺ Support ﾂｻ Compatibility with AG Custom Admin") and change the option name "**Important files**" to "**Bad signatures in query**" to avoid misuse.
+* **Bug fix:** Fix the issue of [@](https://wordpress.org/support/topic/gb-added-to-whitelist "WordPress 窶ｺ Support ﾂｻ GB added to whitelist") which might be caused by some race condition.
 * **Bug fix:** Fix the issue of restoring post revisions which was blocked.
 
 = 2.2.4.1 =
 Sorry for frequent updating.
 
-* **Bug fix:** Fixed the issue of `Warning: strpos(): Empty needle in...` that was reported in [@](https://wordpress.org/support/topic/version-224-produces-warning-message "WordPress › Support » Version 2.2.4 Produces Warning Message") and [@](https://wordpress.org/support/topic/error-after-update-to-newest-version "WordPress › Support » Error after Update to newest version").
+* **Bug fix:** Fixed the issue of `Warning: strpos(): Empty needle in...` that was reported in [@](https://wordpress.org/support/topic/version-224-produces-warning-message "WordPress 窶ｺ Support ﾂｻ Version 2.2.4 Produces Warning Message") and [@](https://wordpress.org/support/topic/error-after-update-to-newest-version "WordPress 窶ｺ Support ﾂｻ Error after Update to newest version").
 
 = 2.2.4 =
 * **Bug fix:** Fixed the issue that some links on network admin of multisite were blocked when WP-ZEP for `admin area` or `admin ajax/post` was enabled.
@@ -595,7 +595,7 @@ Sorry for frequent update.
 * **Improvement:** Improved connectivity with Jetpack.
 * **Improvement:** Improved immediacy of downloading databases at upgrading.
 * **Improvement:** Replaced a terminated RESTful API service with a new stuff.
-* **Bug fix:** Fixed issue that clicking a link tag without href always refreshed the page. Thanks to [wyclef](https://wordpress.org/support/topic/conflict-with-menu-editor-plugin "WordPress › Support » Conflict with Menu Editor plugin?").
+* **Bug fix:** Fixed issue that clicking a link tag without href always refreshed the page. Thanks to [wyclef](https://wordpress.org/support/topic/conflict-with-menu-editor-plugin "WordPress 窶ｺ Support ﾂｻ Conflict with Menu Editor plugin?").
 * **Bug fix:** Fixed issue that deactivating and activating repeatedly caused to show the welcome message.
 * **Bug fix:** Fixed issue that a misaligned argument in the function caused 500 internal server error when a request to the php files in plugins/themes area was rewrited to `rewrite.php`.
 
@@ -607,25 +607,25 @@ Sorry for frequent update.
 = 2.2.0 =
 * **Important:** Now **Block by country** and **Prevent Zero-day Exploit** become to work independently on **Admin area**, **Admin ajax/post** at **Validation target settings**. Please reconfirm them.
 * **Important:** Previously, a request whose country code can't be available was always blocked. But from this release, such a request is considered as comming from the country whose code is `ZZ`. It means that you can put `ZZ` into the white list and black list.
-* **New feature:** White list and Black list of extra IP addresses prior to the validation of country code. Thanks to Fabiano for good suggestions at [support forum](https://wordpress.org/support/topic/white-list-of-ip-addresses-or-ranges "WordPress › Support » White list of IP addresses or ranges?")
+* **New feature:** White list and Black list of extra IP addresses prior to the validation of country code. Thanks to Fabiano for good suggestions at [support forum](https://wordpress.org/support/topic/white-list-of-ip-addresses-or-ranges "WordPress 窶ｺ Support ﾂｻ White list of IP addresses or ranges?")
 * **New feature:** Malicious signatures to prevent disclosing the important files via vulnerable plugins or themes. A malicious request to try to expose `wp-config.php` or `passwd` can be blocked.
 * **New feature:** Add privacy considerations related to IP address. Add **Anonymize IP address** at **Record settings**.
 * **Bug fix:** Fix the issue that spaces in **Text message on comment form** are deleted.
 * See details at [2.2.0 release note](http://www.ipgeoblock.com/changelog/release-2.2.0.html "2.2.0 Release Note").
 
 = 2.1.5.1 =
-* **Bug fix:** Fixed the issue that the Blacklist did not work properly. Thanks to TJayYay for reporting this issue at [support forum](https://wordpress.org/support/topic/hackers-from-country-in-blocked-list-of-countries-trying-to-login "WordPress › Support » Hackers from country in Blocked List of Countries trying to login").
+* **Bug fix:** Fixed the issue that the Blacklist did not work properly. Thanks to TJayYay for reporting this issue at [support forum](https://wordpress.org/support/topic/hackers-from-country-in-blocked-list-of-countries-trying-to-login "WordPress 窶ｺ Support ﾂｻ Hackers from country in Blocked List of Countries trying to login").
 
 = 2.1.5 =
-* **Enhancement:** Enforce preventing self blocking at the first installation. And add the scan button to get all the country code using selected API. Thanks to **Nils** for a nice idea at [support forum](https://wordpress.org/support/topic/locked-out-due-to-eu-vs-country "WordPress › Support » Locked out due to EU vs. Country").
+* **Enhancement:** Enforce preventing self blocking at the first installation. And add the scan button to get all the country code using selected API. Thanks to **Nils** for a nice idea at [support forum](https://wordpress.org/support/topic/locked-out-due-to-eu-vs-country "WordPress 窶ｺ Support ﾂｻ Locked out due to EU vs. Country").
 * **New feature:** Add pie chart to display statistics of "Blocked by country".
 * **Enhancement:** WP-ZEP is reinforced against CSRF.
 * **Bug fix:** Fix illegal handling of the fragment in a link.
 * See details at [2.1.5 release note](http://www.ipgeoblock.com/changelog/release-2.1.5.html "2.1.5 Release Note").
 
 = 2.1.4 =
-* **Bug fix:** Fix the issue that this plugin broke functionality of a certain plugin. Thanks to **opsec** for reporting this issue at [support forum](https://wordpress.org/support/topic/blocks-saves-in-types-or-any-plugins-from-wp-typescom "WordPress › Support » Blocks saves in Types or any plugins from wp-types.com").
-* **Improvement:** Add checking process for validation rule to prevent being blocked itself. Thanks to **internationals** for proposing at [support forum](https://wordpress.org/support/topic/locked-out-due-to-eu-vs-country "WordPress › Support » Locked out due to EU vs. Country")
+* **Bug fix:** Fix the issue that this plugin broke functionality of a certain plugin. Thanks to **opsec** for reporting this issue at [support forum](https://wordpress.org/support/topic/blocks-saves-in-types-or-any-plugins-from-wp-typescom "WordPress 窶ｺ Support ﾂｻ Blocks saves in Types or any plugins from wp-types.com").
+* **Improvement:** Add checking process for validation rule to prevent being blocked itself. Thanks to **internationals** for proposing at [support forum](https://wordpress.org/support/topic/locked-out-due-to-eu-vs-country "WordPress 窶ｺ Support ﾂｻ Locked out due to EU vs. Country")
 * **Improvement:** Arrage the order of setting sections to focus the goal of this plugin.
 * See details at [2.1.4 release note](http://www.ipgeoblock.com/changelog/release-2.1.4.html "2.1.4 Release Note").
 
@@ -643,7 +643,7 @@ This is a maintenance release.
 
 * **Bug fix:** Fix the issue that the login-fail-counter didn't work when the validation at `Login form` was `block by country (register, lost password)`. In this release, the login-fail-counter works correctly.
 * **Bug fix:** Fix the issue that the validation settings of `Admin area` and `Admin ajax/post` were influential with each other. Now each of those works individually.
-* **Bug fix:** "Site Stats" of Jetpack is now shown on the admin bar which issue was reported on [support forum](https://wordpress.org/support/topic/admin-area-prevent-zero-day-exploit-incompatible-with-jetpack-site-stats-in-a "WordPress › Support » Admin area - Prevent zero-day exploit: Incompatible with Jetpack Site Stats in A").
+* **Bug fix:** "Site Stats" of Jetpack is now shown on the admin bar which issue was reported on [support forum](https://wordpress.org/support/topic/admin-area-prevent-zero-day-exploit-incompatible-with-jetpack-site-stats-in-a "WordPress 窶ｺ Support ﾂｻ Admin area - Prevent zero-day exploit: Incompatible with Jetpack Site Stats in A").
 * **Improvement:** Hide checking the existence of log db behind the symbol `IP_GEO_BLOCK_DEBUG` to reduce 1 query on admin screen.
 * **Improvement:** Add alternative functions of BCMath extension to avoid `PHP Fatal error: Call to undefined function` in `IP2Location.php` when IPv6 is specified.
 * **Improvement:** Use MaxMind database at the activating process not to be locked out by means of inconsistency of database at the activation and after.
