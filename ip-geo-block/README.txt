@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.8.2
-Stable tag: 3.0.4.4
+Stable tag: 3.0.4.5b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -351,6 +351,9 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.4.5 =
+* **Improvement:** Avoid conflict with [WP Limit Login Attempts](https://wordpress.org/plugins/wp-limit-login-attempts/ "WP Limit Login Attempts &mdash; WordPress Plugins"). See some details in [“Sorry, your request cannot be accepted.”](https://wordpress.org/support/topic/sorry-your-request-cannot-be-accepted/#post-9544556 "Topic: &#8220;Sorry, your request cannot be accepted.&#8221; &laquo; WordPress.org Forums").
 
 = 3.0.4.4 =
 Sorry for the frequent update, but it should be fixed before the next release.
