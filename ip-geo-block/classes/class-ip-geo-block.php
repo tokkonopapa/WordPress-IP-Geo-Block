@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.4.4';
+	const VERSION = '3.0.4.5';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -539,8 +539,7 @@ class IP_Geo_Block {
 	 */
 	public function validate_login() {
 		// parse action
-		$action = isset( $_GET['key'] ) ?
-			'resetpass' : ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'login' );
+		$action = isset( $_GET['key'] ) ? 'resetpass' : ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'login' );
 
 		if ( 'retrievepassword' === $action )
 			$action = 'lostpassword';
@@ -554,7 +553,8 @@ class IP_Geo_Block {
 		! empty( $list['login'] ) and $list['logout'] = TRUE;
 
 		// wp-includes/pluggable.php @since 2.5.0
-		add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
+		if ( ! empty( $_POST ) ) // avoid conflict with WP Limit Login Attempts
+			add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
 
 		// enables to skip validation of country on login/out except BuddyPress signup
 		$this->validate_ip( 'login', $settings, ! empty( $list[ $action ] ) || 'bp_' === substr( current_filter(), 0, 3 ) );

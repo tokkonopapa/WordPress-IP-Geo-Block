@@ -84,7 +84,7 @@ class IP_Geo_Block_Admin_Rewrite {
 			$this->config_file = '.htaccess';
 
 		// CGI/FastCGI SAPI (cgi, cgi-fcgi, fpm-fcgi)
-//		elseif ( FALSE !== strpos( php_sapi_name(), 'cgi' ) )
+//		elseif ( version_compare( PHP_VERSION , '5.3.0' ) >= 0 && FALSE !== strpos( php_sapi_name(), 'cgi' ) )
 //			$this->config_file = ini_get( 'user_ini.filename' );
 	}
 
