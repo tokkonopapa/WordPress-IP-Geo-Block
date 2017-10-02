@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<title>Responsive example - Default initialisation</title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="css/responsive.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/admin.min.css">
+	<style type="text/css" class="init">
+/*------------------------------------------------------------
+ * customizing based on jquery.dataTables.css
+ *------------------------------------------------------------*/
+table.dataTable                      > thead tr th,
+table.dataTable.dtr-inline.collapsed > thead tr th {
+    text-align: left;
+}
+table.dataTable                      > tbody > tr        > td:first-child:before,
+table.dataTable                      > tbody > tr.parent > td:first-child:before,
+table.dataTable.dtr-inline.collapsed > tbody > tr        > td:first-child:before,
+table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before {
+    content: '';
+    height: 0;
+    width: 0;
+    border-radius: 0;
+    border: 5px solid transparent;
+    box-shadow: none;
+    display: inline-block;
+    position: relative;
+    background-color: transparent;
+}
+table.dataTable                      > tbody > tr > td:first-child:before,
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before {
+    border-left: 5px solid #555;
+    top: 0;
+    left: -0.2em;
+}
+table.dataTable                      > tbody > tr.parent > td:first-child:before,
+table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before {
+    border-top: 5px solid #555;
+    top: 0.2em;
+    left: -0.3em;
+}
+table.dataTable                      > tbody > tr.child > td:first-child:before,
+table.dataTable.dtr-inline.collapsed > tbody > tr.child > td:first-child:before {
+    border: none;
+}
+table.dataTable                      > tbody > tr,
+table.dataTable                      > tbody > tr.parent,
+table.dataTable.dtr-inline.collapsed > tbody > tr,
+table.dataTable.dtr-inline.collapsed > tbody > tr.parent {
+    cursor: pointer;
+}
+table.dataTable                      > tbody > tr.child,
+table.dataTable.dtr-inline.collapsed > tbody > tr.child {
+    cursor: auto;
+}
+table.dataTable                      > tbody > tr > td:first-child,
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child {
+/*    padding-left: 0.75em;*/
+}
+.dataTables_wrapper .dataTables_paginate {
+    float: none;
+    text-align: center;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+    min-width: 2em;
+    padding: 0.25em 0.5em;
+}
+.dataTables_wrapper .dataTables_paginate .ellipsis {
+    padding: 0 0.5em;
+}
+.dataTables_wrapper {
+    margin: 0.5em;
+}
+.dataTables_filter {
+    display: none;
+}
+
+mark {
+    padding: 0;
+    background: #FFFF88;
+}
+
+input.select-all {
+    margin-left: 0.425em;
+}
+    </style>
+	<script type="text/javascript" language="javascript" src="js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" language="javascript" src="js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="js/dataTables.responsive.min.js"></script>
+	<script type="text/javascript" language="javascript" src="js/jquery.mark.min.js"></script>
+	<script type="text/javascript" language="javascript" src="js/datatables.mark.min.js"></script>
+	<script type="text/javascript" language="javascript" class="init">
+
+var lang = window.navigator.language || window.navigator.userLanguage;
+lang = lang.indexOf('ja') !== -1 ? 'ja-JP.json' : 'en-US.json';
+
+$.extend( $.fn.dataTable.defaults, {
+	// Server side
+	processing: true,
+	deferLoading: 100,
+
+    // Interface
+//	ordering: false,
+//	searching: false,
+	info: false,
+	lengthChange: false,
+	order: [], // no initial order or [0, 'desc']
+
+	// Responsive
+	responsive: {
+		details: {
+			type: 'column',
+			target: 'td'
+//			target: 'td:nth-child(n+2)'
+		}
+	},
+
+	columns: [
+		{ title: '<input type=\"checkbox\" class=\"select-all\">' },
+		{ title: 'First name' },
+		{ title: 'Last name' },
+		{ title: 'Position' },
+		{ title: 'Office' },
+		{ title: 'Age' },
+		{ title: 'Start date' },
+		{ title: 'Salary' },
+		{ title: 'Extn.' },
+		{ title: 'E-mail' }
+	],
+
+    // https://datatables.net/reference/option/columns.responsivePriority
+	columnDefs: [
+		{ responsivePriority: 1, targets:  0 },
+		{ responsivePriority: 2, targets:  7 },
+		{ responsivePriority: 3, targets: -1 },
+		{ "orderable": false, "targets": 0 },
+		{
+			"targets": [ 0 ],
+			"data": null,
+			"defaultContent": "<input type=\"checkbox\" class=\"select-req\">"
+		}
+	],
+
+    // Pagenation
+	lengthMenu: [ 5, 10, 25, 50, 75, 100 ],
+	pageLength: 5,
+//	pagingType: 'simple_numbers',
+	pagingType: 'full_numbers',
+
+	// Others
+	language: {
+/*
+		loadingRecords: 'Please wait - loading...',
+		processing:     '<span style="color:red">loading...</span>',
+		lengthMenu:     'Show _MENU_ records',
+		zeroRecords:    'Nothing found - sorry',
+		info:           'Showing _PAGE_ of _PAGES_',
+		infoEmpty:      'No records available',
+		infoFiltered:   '(filtered from _MAX_ total records)',
+		paginate: {
+			first:    '&laquo;',
+			previous: '&lsaquo;',
+			next:     '&rsaquo;',
+			last:     '&raquo;',
+		},
+*/
+		url: 'i18n/' + lang
+	}
+
+} );
+
+$(document).ready(function() {
+	var table = $('.display').DataTable({
+		"ajax": "data/arrays.txt",
+		"deferRender": true,
+
+		// Enable mark.js search term highlighting
+		// https://github.com/julmot/datatables.mark.js/
+		// https://minhaskamal.github.io/DownGit/#/home
+		mark: true
+	});
+
+	// https://datatables.net/examples/api/regex.html
+	// https://datatables.net/reference/api/search()
+	$('#search_filter').on('keyup', function () {
+		table.search(this.value).draw();
+	}).trigger('keyup');
+
+	$('#reset_filter').on('click', function () {
+		var search = $('#search_filter');
+		search.val('');
+		search.trigger('keyup');
+	});
+
+	table.on('init', function (e) {
+		$('input.select-req').on('click', function (e) {
+			e.stopImmediatePropagation();
+		});
+		$('input.select-all').on('click', function (e) {
+			var $this = $(this);
+			$this.closest('table').find('input.select-req').prop('checked', $this.prop('checked'));
+		});
+	});
+});
+    </script>
+</head>
+<body class="dt-example">
+	<div class="container">
+		<section>
+			<h1>Responsive example <span>Default initialisation</span></h1>
+			<p>Search :
+				<input id="search_filter" type="text">
+				<input id="reset_filter" type="button" value="Reset">
+			</p>
+
+			<table id="example" class="display nowrap" cellspacing="0" width="100%">
+				<!--<thead>
+					<tr>
+						<th>First name</th>
+						<th>Last name</th>
+						<th>Position</th>
+						<th>Office</th>
+						<th>Age</th>
+						<th>Start date</th>
+						<th>Salary</th>
+						<th>Extn.</th>
+						<th>E-mail</th>
+					</tr>
+				</thead>-->
+			</table>
+
+			<table id="example1" class="display nowrap" cellspacing="0" width="100%">
+				<!--<thead>
+					<tr>
+						<th>First name</th>
+						<th>Last name</th>
+						<th>Position</th>
+						<th>Office</th>
+						<th>Age</th>
+						<th>Start date</th>
+						<th>Salary</th>
+						<th>Extn.</th>
+						<th>E-mail</th>
+					</tr>
+				</thead>-->
+			</table>
+
+		</section>
+	</div>
+	<section>
+		<div class="footer">
+		</div>
+	</section>
+</body>
+</html>

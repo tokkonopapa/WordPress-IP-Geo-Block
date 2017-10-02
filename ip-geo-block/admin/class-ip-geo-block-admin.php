@@ -171,16 +171,46 @@ class IP_Geo_Block_Admin {
 		$footer = TRUE;
 		$dependency = array( 'jquery' );
 
-		// css for option page
-		wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-styles',
-			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
-				'css/admin.min.css' : 'css/admin.css', __FILE__
-			),
-			array(), IP_Geo_Block::VERSION
-		);
-
 		switch ( $this->admin_tab ) {
 		  case 1:
+			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-jquery-datatables-css',
+				plugins_url( 'datatables/css/jquery.dataTables.css', __FILE__ ),
+				array(), IP_Geo_Block::VERSION
+			);
+			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-datatables-responsive-css',
+				plugins_url( 'datatables/css/responsive.dataTables.css', __FILE__ ),
+				array(), IP_Geo_Block::VERSION
+			);
+			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-datatables-mark-css',
+				plugins_url( 'datatables/css/datatables.mark.css', __FILE__ ),
+				array(), IP_Geo_Block::VERSION
+			);
+			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-datatables-css',
+				plugins_url( 'css/datatables.css', __FILE__ ),
+				array(), IP_Geo_Block::VERSION
+			);
+
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-jquery-datatables-js',
+				plugins_url( 'datatables/js/jquery.dataTables.js', __FILE__ ),
+				$dependency, IP_Geo_Block::VERSION, $footer
+			);
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-jquery-mark-js',
+				plugins_url( 'datatables/js/jquery.mark.js', __FILE__ ),
+				$dependency, IP_Geo_Block::VERSION, $footer
+			);
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-datatables-responsive-js',
+				plugins_url( 'datatables/js/dataTables.responsive.js', __FILE__ ),
+				$dependency, IP_Geo_Block::VERSION, $footer
+			);
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-datatables-mark-js',
+				plugins_url( 'datatables/js/datatables.mark.js', __FILE__ ),
+				$dependency, IP_Geo_Block::VERSION, $footer
+			);
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-datatables-js',
+				plugins_url( 'js/datatables.js', __FILE__ ),
+				$dependency, IP_Geo_Block::VERSION, $footer
+			);
+
 		  case 5:
 			// js for google chart
 			wp_register_script(
@@ -225,6 +255,14 @@ class IP_Geo_Block_Admin {
 			);
 			break;
 		}
+
+		// css for option page
+		wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-styles',
+			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+				'css/admin.min.css' : 'css/admin.css', __FILE__
+			),
+			array(), IP_Geo_Block::VERSION
+		);
 
 		// js for IP Geo Block admin page
 		wp_register_script(
@@ -390,7 +428,7 @@ class IP_Geo_Block_Admin {
 				'manage_network_options',
 				IP_Geo_Block::PLUGIN_NAME,
 				array( $this, 'display_plugin_admin_page' ),
-				'dashicons-shield' // plugins_url( 'img/icon-72x72.png', __FILE__ )
+				'dashicons-shield' // plugins_url( 'images/icon-72x72.png', __FILE__ )
 			);
 			/*$hook = add_submenu_page(
 				'settings.php',
@@ -413,7 +451,7 @@ class IP_Geo_Block_Admin {
 	 */
 	private function diagnose_admin_screen() {
 		$settings = IP_Geo_Block::get_option();
-		$adminurl = $this->dashboard_url( $settings['network_wide'] );
+		$adminurl = $this->dashboard_url( FALSE );
 
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7.0' ) < 0 )
@@ -1306,6 +1344,10 @@ class IP_Geo_Block_Admin {
 		  case 'get-actions':
 			// Get all the ajax/post actions
 			$res = IP_Geo_Block_Util::get_registered_actions( TRUE );
+			break;
+
+		  case 'show-cache':
+			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which );
 			break;
 
 		  case 'create-table':

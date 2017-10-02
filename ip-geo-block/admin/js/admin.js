@@ -324,7 +324,7 @@ var ip_geo_block_time = new Date();
 		dataLine: [],
 		viewLine: [],
 		drawLine: function (id, datetype) {
-			var i, n, t, data;
+			var i, n, data;
 			if ('undefined' === typeof chart.dataLine[id]) {
 				i = chart.dataLine[id] = new google.visualization.DataTable();
 				i.addColumn(datetype, 'Date'   );
@@ -988,6 +988,25 @@ var ip_geo_block_time = new Date();
 					ajax_clear('logs', null);
 				});
 				return false;
+			});
+
+			// Statistics in cache
+			var table = $(ID('#', 'statistics-cache')).DataTable({
+				deferRender: true,
+				ajax: {
+					url: IP_GEO_BLOCK.url,
+					type: 'POST',
+					data: {
+						cmd: 'show-cache',
+						action: IP_GEO_BLOCK.action,
+						nonce: IP_GEO_BLOCK.nonce
+					}
+				},
+
+				// Enable mark.js search term highlighting
+				// https://github.com/julmot/datatables.mark.js/
+				// https://minhaskamal.github.io/DownGit/#/home
+				mark: true
 			});
 
 			// Statistics

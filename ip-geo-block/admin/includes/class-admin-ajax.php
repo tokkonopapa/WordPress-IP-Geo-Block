@@ -168,6 +168,35 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	/**
+	 * Restore cache from MySQL DB
+	 *
+	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
+	 */
+	static public function restore_cache( $which ) {
+		$options = IP_Geo_Block::get_option();
+		$count = 0;
+		$time = time();
+		$res = array();
+
+		foreach ( IP_Geo_Block_API_Cache::get_cache_all() as $key => $val ) {
+			if ( $options['anonymize'] )
+				$key = preg_replace( '/\d{1,3}$/', '***', $key );
+
+			$res[] = array(
+				'',                        // Checkbox
+				esc_html( $key ),          // IP address
+				esc_html( $val['code'] ),  // Country code
+				esc_html( $val['asn' ] ),  // AS number
+				esc_html( $val['hook'] ),  // Target
+				$time - (int)$val['time'], // Elapsed [sec]
+				sprintf( '%d / %d', (int)$val['fail'], (int)$val['call'] ), // Fails / Calls
+			);
+		}
+
+		return array( 'data' => $res ); // DataTables requires `data`
+	}
+
+	/**
 	 * Validate json from the client and respond safe data
 	 *
 	 */

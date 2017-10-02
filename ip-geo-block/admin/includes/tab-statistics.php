@@ -230,57 +230,8 @@ endif;
 		add_settings_section(
 			$section = $plugin_slug . '-cache',
 			__( 'Statistics in cache', 'ip-geo-block' ),
-			NULL, // array( $context, 'callback_cache_stat' ),
+			array( __CLASS__, 'statistics_cache' ),
 			$option_slug
-		);
-
-		$field = 'cache';
-		$html  = '<table class="'.$option_slug.'-statistics-table"><thead><tr>';
-		$html .= '<th>' . __( 'IP address',            'ip-geo-block' ) . '</th>';
-		$html .= '<th>' . __( 'Country code / Access', 'ip-geo-block' ) . '</th>';
-		$html .= '<th>' . __( 'Elapsed [sec] / Calls', 'ip-geo-block' ) . '</th>';
-		$html .= '</tr></thead><tbody>';
-
-		if ( $cache = IP_Geo_Block_API_Cache::get_cache_all() ) {
-			$count = 0;
-			$time = time();
-			$debug = defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG;
-			foreach ( $cache as $key => $val ) {
-				if ( $options['anonymize'] )
-					$key = preg_replace( '/\d{1,3}$/', '***', $key );
-				$html .= '<tr><td>' .  esc_html( $key         ) . '</td>';
-				$html .= '<td>'     .  esc_html( $val['code'] ) . ' / ';
-				$html .= '<small>'  .  esc_html( $val['hook'] ) . '</small></td>';
-				$html .= '<td>' . ( $time - (int)$val['time'] ) . ' / ';
-				$html .= $options['save_statistics'] ? (int)$val['call'] : '-';
-				if ( $debug ) {
-					$user = get_user_by( 'id', intval( $val['auth'] ) );
-					$html .= ' ' . esc_html( $user ? $user->get( 'user_login' ) : '' );
-					$html .= ' / fail:' . intval( $val['fail'] );
-				}
-				$html .= '</td></tr>';
-				if ( ++$count >= $options['cache_hold'] )
-					break;
-			}
-		}
-
-		$html .= '</tbody></table>';
-
-		if ( ! empty( $count ) )
-			$html .= '<span style="float:right">[ ' . $count . ' / ' . count( $cache ) . ' ]</span>';
-
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( 'IP address in cache', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'html',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $html,
-			)
 		);
 
 		$field = 'clear_cache';
@@ -310,7 +261,7 @@ endif;
 	}
 
 	/**
-	 * Render top list
+	 * Render top list in logs
 	 *
 	 */
 	public static function statistics_logs() {
@@ -401,6 +352,25 @@ endif;
 
 			echo '</ol>', "\n";
 		}
+	}
+
+	/**
+	 * Render IP address cache
+	 *
+	 */
+	public static function statistics_cache() {
+		$option_slug = IP_Geo_Block::PLUGIN_NAME;
+		echo
+			'<table id="', $option_slug, '-statistics-cache" class="', $option_slug, '-statistics-table dataTable display nowrap" cellspacing="0" width="100%">', "\n",
+			'<thead><tr>', "\n",
+			'<th>', '<input type="checkbox" class="', $option_slug, '-select-all"></th>', "\n",
+			'<th>', __( 'IP address',    'ip-geo-block' ), '</th>', "\n",
+			'<th>', __( 'Country code',  'ip-geo-block' ), '</th>', "\n",
+			'<th>', __( 'AS number',     'ip-geo-block' ), '</th>', "\n",
+			'<th>', __( 'Target',        'ip-geo-block' ), '</th>', "\n",
+			'<th>', __( 'Elapsed [sec]', 'ip-geo-block' ), '</th>', "\n",
+			'<th>', __( 'Fails / Calls', 'ip-geo-block' ), '</th>', "\n",
+			'</tr></thead>', "\n", '<tbody></tbody></table>', "\n";
 	}
 
 }

@@ -1,0 +1,137 @@
+/*------------------------------------------------------------
+ * customizing based on jquery.dataTables.css
+ *------------------------------------------------------------*/
+table.dataTable {
+    clear: none !important;
+}
+table.dataTable th,
+table.dataTable td {
+    text-align: right;
+}
+.dataTables_filter {
+    display: none;
+}
+table.dataTable > thead > tr > th:first-child {
+    padding: 8px 10px 8px 20px;
+    text-align: left;
+}
+table.dataTable > tbody > tr > td:first-child {
+    padding: 8px 10px;
+    text-align: left;
+}
+table.dataTable > thead > tr > th:first-child input,
+table.dataTable > tbody > tr > td:first-child input {
+    vertical-align: baseline;
+}
+table.dataTable > thead > tr > th:nth-last-of-type(1),
+table.dataTable > tbody > tr > td:nth-last-of-type(1) {
+    padding-right: 1.25em;
+}
+table.dataTable > thead > tr {
+    line-height: 1.8em;
+}
+table.dataTable thead th,
+table.dataTable thead td,
+table.dataTable.no-footer,
+table.dataTable td.dataTables_empty {
+    border: none;
+}
+.dataTables_wrapper .dataTables_paginate {
+    float: none;
+    text-align: center;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+    min-width: 2em;
+    padding: 0.25em 0.5em;
+}
+.dataTables_wrapper .dataTables_paginate .ellipsis {
+    padding: 0 0.5em;
+}
+table.dataTable > tbody > tr        > td:first-child:before,
+table.dataTable > tbody > tr.parent > td:first-child:before {
+    content: '';
+    height: 0;
+    width: 0;
+    display: inline-block;
+    border-radius: 0;
+    border: 5px solid transparent;
+    box-shadow: none;
+    position: relative;
+    background-color: transparent;
+}
+table.dataTable > tbody > tr > td:first-child:before {
+    border-left: 5px solid #555;
+    top: 0;
+    left: -2px;
+}
+table.dataTable > tbody > tr.parent > td:first-child:before {
+    border-top: 5px solid #555;
+    top: 2px;
+    left: -3px;
+}
+table.dataTable > tbody > tr.child > td:first-child:before {
+    border: none;
+}
+
+/*
+table.dataTable th,
+table.dataTable td {
+    margin: 0;
+    padding: 0.2em;
+    text-align: right;
+    line-height: 1.5em;
+    word-wrap: break-word;
+}
+table.dataTable thead th,
+table.dataTable thead td,
+table.dataTable.no-footer,
+table.dataTable td.dataTables_empty {
+    border: none !important;
+    line-height: 1.7em !important;
+}
+table.dataTable th:first-child,
+table.dataTable td:first-child {
+    width: 2em;
+    margin: 0;
+    padding: 0;
+}
+table.dataTable > thead tr th {
+    text-align: left;
+}
+table.dataTable > tbody > tr,
+table.dataTable > tbody > tr.parent {
+    cursor: pointer;
+}
+table.dataTable > tbody > tr.child {
+    cursor: auto;
+}
+table.dataTable > tbody > tr > td:first-child {
+    padding-left: 0.75em;
+}
+.dataTables_wrapper .dataTables_paginate {
+    float: none;
+    text-align: center;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+    min-width: 2em;
+    padding: 0.25em 0.5em;
+}
+.dataTables_wrapper .dataTables_paginate .ellipsis {
+    padding: 0 0.5em;
+}
+.dataTables_filter {
+    display: none;
+}
+
+mark {
+    padding: 0;
+    background: #FFFF88;
+}
+
+input.ip-geo-block-select-all {
+    margin-left: 0.425em;
+}
+*/
+#ip-geo-block-statistics-cache_wrapper + table tr th {
+    padding-left: 1em;
+}
