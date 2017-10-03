@@ -12,7 +12,7 @@ table.dataTable td {
     display: none;
 }
 table.dataTable > thead > tr > th:first-child {
-    padding: 8px 10px 8px 20px;
+    padding: 8px 10px;
     text-align: left;
 }
 table.dataTable > tbody > tr > td:first-child {
@@ -47,8 +47,15 @@ table.dataTable td.dataTables_empty {
 .dataTables_wrapper .dataTables_paginate .ellipsis {
     padding: 0 0.5em;
 }
-table.dataTable > tbody > tr        > td:first-child:before,
-table.dataTable > tbody > tr.parent > td:first-child:before {
+table.collapsed > thead > tr > th:first-child {
+    padding: 8px 10px 8px 20px;
+}
+table.collapsed > thead > tr > th:first-child input,
+table.collapsed > tbody > tr > td:first-child input {
+    vertical-align: baseline;
+}
+table.collapsed > tbody > tr        > td:first-child:before,
+table.collapsed > tbody > tr.parent > td:first-child:before {
     content: '';
     height: 0;
     width: 0;
@@ -59,17 +66,17 @@ table.dataTable > tbody > tr.parent > td:first-child:before {
     position: relative;
     background-color: transparent;
 }
-table.dataTable > tbody > tr > td:first-child:before {
+table.collapsed > tbody > tr > td:first-child:before {
     border-left: 5px solid #555;
     top: 0;
     left: -2px;
 }
-table.dataTable > tbody > tr.parent > td:first-child:before {
+table.collapsed > tbody > tr.parent > td:first-child:before {
     border-top: 5px solid #555;
-    top: 2px;
-    left: -3px;
+    top: 4px;
+    left: -4px;
 }
-table.dataTable > tbody > tr.child > td:first-child:before {
+table.collapsed > tbody > tr.child > td:first-child:before {
     border: none;
 }
 
@@ -132,6 +139,13 @@ input.ip-geo-block-select-all {
     margin-left: 0.425em;
 }
 */
-#ip-geo-block-statistics-cache_wrapper + table tr th {
-    padding-left: 1em;
+
+#ip-geo-block-statistics-cache_wrapper + table {
+    margin-left: 1em;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    height: 16px;
+    width: 16px;
 }
