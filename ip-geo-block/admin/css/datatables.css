@@ -79,6 +79,10 @@ table.collapsed > tbody > tr.parent > td:first-child:before {
 table.collapsed > tbody > tr.child > td:first-child:before {
     border: none;
 }
+table.dataTable > tbody > tr,
+table.dataTable > tbody > tr.parent {
+    cursor: pointer;
+}
 
 /*
 table.dataTable th,
@@ -140,7 +144,7 @@ input.ip-geo-block-select-all {
 }
 */
 
-#ip-geo-block-statistics-cache_wrapper + table {
+#ip-geo-block-section-2 table.form-table {
     margin-left: 1em;
 }
 
