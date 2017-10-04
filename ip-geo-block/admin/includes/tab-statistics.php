@@ -364,12 +364,12 @@ endif;
 			'<table id="', $option_slug, '-statistics-cache" class="', $option_slug, '-statistics-table dataTable display nowrap" cellspacing="0" width="100%">', "\n",
 			'<thead><tr>', "\n",
 			'<th>', '<input type="checkbox" class="', $option_slug, '-select-all"></th>', "\n",
-			'<th>', __( 'IP address',    'ip-geo-block' ), '</th>', "\n",
-			'<th>', __( 'Country code',  'ip-geo-block' ), '</th>', "\n",
-			'<th>', __( 'AS number',     'ip-geo-block' ), '</th>', "\n",
-			'<th>', __( 'Target',        'ip-geo-block' ), '</th>', "\n",
-			'<th>', __( 'Elapsed [sec]', 'ip-geo-block' ), '</th>', "\n",
-			'<th>', __( 'Fails / Calls', 'ip-geo-block' ), '</th>', "\n",
+			'<th>', __( 'IP address',                   'ip-geo-block' ), '</th>', "\n",
+			'<th>', __( 'Country code',                 'ip-geo-block' ), '</th>', "\n",
+			'<th>', __( 'AS number',                    'ip-geo-block' ), '</th>', "\n",
+			'<th>', __( 'Target',                       'ip-geo-block' ), '</th>', "\n",
+			'<th>', __( 'Elapsed&thinsp;[sec]',         'ip-geo-block' ), '</th>', "\n",
+			'<th>', __( 'Failed&thinsp;/&thinsp;Calls', 'ip-geo-block' ), '</th>', "\n",
 			'</tr></thead>', "\n", '<tbody></tbody></table>', "\n";
 	}
 

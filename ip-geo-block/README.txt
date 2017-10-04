@@ -352,6 +352,10 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 == Changelog ==
 
+= 3.0.4.6 =
+* **Bug fix:** Fix the issue that the emergent functionality didn't work when the number of login attempts reached to the limit.
+* **Bug fix:** Fix the issue that the result would be always `limited` when "Max number of failed login attempts per IP address" is "Disabled".
+
 = 3.0.4.5 =
 * **Improvement:** Avoid conflict with [WP Limit Login Attempts](https://wordpress.org/plugins/wp-limit-login-attempts/ "WP Limit Login Attempts &mdash; WordPress Plugins"). See some details in ["Sorry, your request cannot be accepted."](https://wordpress.org/support/topic/sorry-your-request-cannot-be-accepted/#post-9544556 "Topic: &#8220;Sorry, your request cannot be accepted.&#8221; &laquo; WordPress.org Forums").
 

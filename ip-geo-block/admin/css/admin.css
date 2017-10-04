@@ -102,8 +102,8 @@ fieldset.ip-geo-block-field ul.ip-geo-block-dropup:before {
 fieldset.ip-geo-block-field ul.ip-geo-block-dropdown:before {
     top: 0.45em;
 }
-fieldset.ip-geo-block-field .form-table {
-    margin: 0;
+fieldset.ip-geo-block-field table.form-table {
+    margin: 0 0 0.5em;
     width: 100%;
 }
 fieldset.ip-geo-block-field .ip-geo-block-desc {

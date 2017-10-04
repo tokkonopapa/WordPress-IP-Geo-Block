@@ -688,7 +688,7 @@ class IP_Geo_Block {
 
 			// the whitelist of IP address should be prior
 			if ( ! $this->check_ips( $validate, $settings['extra_ips']['white_list'] ) ) {
-				if ( $cache['fail'] > max( 0, (int)$settings['login_fails'] ) )
+				if ( (int)$settings['login_fails'] >= 0 && $cache['fail'] > max( 0, (int)$settings['login_fails'] ) )
 					$validate['result'] = 'limited';
 
 				// validate xmlrpc system.multicall
