@@ -238,6 +238,23 @@ ul.ip-geo-block-statistics-countries li {
 }
 
 /* table */
+table.ip-geo-block-statistics-table {
+    float: right;
+}
+table.ip-geo-block-statistics-table th,
+table.ip-geo-block-statistics-table td {
+    width: 12em;
+    margin: 0;
+    padding: 0.2em;
+    text-align: right;
+    line-height: 1.5em;
+    word-wrap: break-word;
+}
+table.ip-geo-block-statistics-table tr:nth-child(even) {
+    background-color: #eee;
+}
+table.ip-geo-block-statistics-table tr:nth-child(odd) {
+}
 table.ip-geo-block-table {
     margin: 1em 0;
     white-space: normal;

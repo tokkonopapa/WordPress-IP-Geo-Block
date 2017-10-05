@@ -39,7 +39,8 @@
 			{ responsivePriority: 6, targets:  3 },
 			{ responsivePriority: 4, targets:  4 },
 			{ responsivePriority: 5, targets:  5 },
-			{ orderable: false, "targets": 0 },
+			{ orderable: false, targets: 0 },
+            { className: "all", targets: [ 0, 1 ] },
 			{
 				targets: [0],
 				data: null,
@@ -56,6 +57,18 @@
 			{ title: 'Elapsed[sec]' },
 			{ title: 'Fails/Calls'  },
 		],
+		columns: [
+		{ visible: true },
+		{ visible: true },
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		fixedColumns:   {
+			leftColumns: 2
+		},
 */
 		// Pagenation
 		pageLength: 10,

@@ -10,6 +10,8 @@ table.dataTable td {
 }
 table.dataTable.nowrap td {
     white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-all !important;
 }
 table.dataTable > tbody > tr {
     cursor: pointer;
@@ -72,6 +74,15 @@ table.collapsed > tbody > tr.parent > td:first-child:before {
 }
 table.collapsed > tbody > tr.child > td:first-child:before {
     border: none;
+}
+table.collapsed > tbody > tr.child > td.child > ul li {
+    border: none;
+    padding: 0;
+    margin: 0;
+    line-height: 2em;
+}
+table.collapsed > tbody > tr.child > td.child > ul li span.dtr-title {
+    min-width: 100px;
 }
 
 .dataTables_filter {
