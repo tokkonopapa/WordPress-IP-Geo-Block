@@ -1355,7 +1355,7 @@
 	// - kr - Swedish krona, Norwegian krone and Danish krone
 	// - \u2009 is thin space and \u202F is narrow no-break space, both used in many
 	//   standards as thousands separators.
-	var _re_formatted_numeric = /[',$£€¥%\u2009\u202F\u20BD\u20a9\u20BArfk]/gi;
+	var _re_formatted_numeric = /[',$ﾂ｣竄ｬﾂ･%\u2009\u202F\u20BD\u20a9\u20BArfk]/gi;
 	
 	
 	var _empty = function ( d ) {
@@ -15241,3 +15241,2409 @@
 
 	return $.fn.dataTable;
 }));
+
+/*! Responsive 2.1.1
+ * 2014-2016 SpryMedia Ltd - datatables.net/license
+ */
+
+/**
+ * @summary     Responsive
+ * @description Responsive tables plug-in for DataTables
+ * @version     2.1.1
+ * @file        dataTables.responsive.js
+ * @author      SpryMedia Ltd (www.sprymedia.co.uk)
+ * @contact     www.sprymedia.co.uk/contact
+ * @copyright   Copyright 2014-2016 SpryMedia Ltd.
+ *
+ * This source file is free software, available under the following license:
+ *   MIT license - http://datatables.net/license/mit
+ *
+ * This source file is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the license files for details.
+ *
+ * For details please refer to: http://www.datatables.net
+ */
+(function( factory ){
+	if ( typeof define === 'function' && define.amd ) {
+		// AMD
+		define( ['jquery', 'datatables.net'], function ( $ ) {
+			return factory( $, window, document );
+		} );
+	}
+	else if ( typeof exports === 'object' ) {
+		// CommonJS
+		module.exports = function (root, $) {
+			if ( ! root ) {
+				root = window;
+			}
+
+			if ( ! $ || ! $.fn.dataTable ) {
+				$ = require('datatables.net')(root, $).$;
+			}
+
+			return factory( $, root, root.document );
+		};
+	}
+	else {
+		// Browser
+		factory( jQuery, window, document );
+	}
+}(function( $, window, document, undefined ) {
+'use strict';
+var DataTable = $.fn.dataTable;
+
+
+/**
+ * Responsive is a plug-in for the DataTables library that makes use of
+ * DataTables' ability to change the visibility of columns, changing the
+ * visibility of columns so the displayed columns fit into the table container.
+ * The end result is that complex tables will be dynamically adjusted to fit
+ * into the viewport, be it on a desktop, tablet or mobile browser.
+ *
+ * Responsive for DataTables has two modes of operation, which can used
+ * individually or combined:
+ *
+ * * Class name based control - columns assigned class names that match the
+ *   breakpoint logic can be shown / hidden as required for each breakpoint.
+ * * Automatic control - columns are automatically hidden when there is no
+ *   room left to display them. Columns removed from the right.
+ *
+ * In additional to column visibility control, Responsive also has built into
+ * options to use DataTables' child row display to show / hide the information
+ * from the table that has been hidden. There are also two modes of operation
+ * for this child row display:
+ *
+ * * Inline - when the control element that the user can use to show / hide
+ *   child rows is displayed inside the first column of the table.
+ * * Column - where a whole column is dedicated to be the show / hide control.
+ *
+ * Initialisation of Responsive is performed by:
+ *
+ * * Adding the class `responsive` or `dt-responsive` to the table. In this case
+ *   Responsive will automatically be initialised with the default configuration
+ *   options when the DataTable is created.
+ * * Using the `responsive` option in the DataTables configuration options. This
+ *   can also be used to specify the configuration options, or simply set to
+ *   `true` to use the defaults.
+ *
+ *  @class
+ *  @param {object} settings DataTables settings object for the host table
+ *  @param {object} [opts] Configuration options
+ *  @requires jQuery 1.7+
+ *  @requires DataTables 1.10.3+
+ *
+ *  @example
+ *      $('#example').DataTable( {
+ *        responsive: true
+ *      } );
+ *    } );
+ */
+var Responsive = function ( settings, opts ) {
+	// Sanity check that we are using DataTables 1.10 or newer
+	if ( ! DataTable.versionCheck || ! DataTable.versionCheck( '1.10.3' ) ) {
+		throw 'DataTables Responsive requires DataTables 1.10.3 or newer';
+	}
+
+	this.s = {
+		dt: new DataTable.Api( settings ),
+		columns: [],
+		current: []
+	};
+
+	// Check if responsive has already been initialised on this table
+	if ( this.s.dt.settings()[0].responsive ) {
+		return;
+	}
+
+	// details is an object, but for simplicity the user can give it as a string
+	// or a boolean
+	if ( opts && typeof opts.details === 'string' ) {
+		opts.details = { type: opts.details };
+	}
+	else if ( opts && opts.details === false ) {
+		opts.details = { type: false };
+	}
+	else if ( opts && opts.details === true ) {
+		opts.details = { type: 'inline' };
+	}
+
+	this.c = $.extend( true, {}, Responsive.defaults, DataTable.defaults.responsive, opts );
+	settings.responsive = this;
+	this._constructor();
+};
+
+$.extend( Responsive.prototype, {
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * Constructor
+	 */
+
+	/**
+	 * Initialise the Responsive instance
+	 *
+	 * @private
+	 */
+	_constructor: function ()
+	{
+		var that = this;
+		var dt = this.s.dt;
+		var dtPrivateSettings = dt.settings()[0];
+		var oldWindowWidth = $(window).width();
+
+		dt.settings()[0]._responsive = this;
+
+		// Use DataTables' throttle function to avoid processor thrashing on
+		// resize
+		$(window).on( 'resize.dtr orientationchange.dtr', DataTable.util.throttle( function () {
+			// iOS has a bug whereby resize can fire when only scrolling
+			// See: http://stackoverflow.com/questions/8898412
+			var width = $(window).width();
+
+			if ( width !== oldWindowWidth ) {
+				that._resize();
+				oldWindowWidth = width;
+			}
+		} ) );
+
+		// DataTables doesn't currently trigger an event when a row is added, so
+		// we need to hook into its private API to enforce the hidden rows when
+		// new data is added
+		dtPrivateSettings.oApi._fnCallbackReg( dtPrivateSettings, 'aoRowCreatedCallback', function (tr, data, idx) {
+			if ( $.inArray( false, that.s.current ) !== -1 ) {
+				$('>td, >th', tr).each( function ( i ) {
+					var idx = dt.column.index( 'toData', i );
+
+					if ( that.s.current[idx] === false ) {
+						$(this).css('display', 'none');
+					}
+				} );
+			}
+		} );
+
+		// Destroy event handler
+		dt.on( 'destroy.dtr', function () {
+			dt.off( '.dtr' );
+			$( dt.table().body() ).off( '.dtr' );
+			$(window).off( 'resize.dtr orientationchange.dtr' );
+
+			// Restore the columns that we've hidden
+			$.each( that.s.current, function ( i, val ) {
+				if ( val === false ) {
+					that._setColumnVis( i, true );
+				}
+			} );
+		} );
+
+		// Reorder the breakpoints array here in case they have been added out
+		// of order
+		this.c.breakpoints.sort( function (a, b) {
+			return a.width < b.width ? 1 :
+				a.width > b.width ? -1 : 0;
+		} );
+
+		this._classLogic();
+		this._resizeAuto();
+
+		// Details handler
+		var details = this.c.details;
+
+		if ( details.type !== false ) {
+			that._detailsInit();
+
+			// DataTables will trigger this event on every column it shows and
+			// hides individually
+			dt.on( 'column-visibility.dtr', function (e, ctx, col, vis) {
+				that._classLogic();
+				that._resizeAuto();
+				that._resize();
+			} );
+
+			// Redraw the details box on each draw which will happen if the data
+			// has changed. This is used until DataTables implements a native
+			// `updated` event for rows
+			dt.on( 'draw.dtr', function () {
+				that._redrawChildren();
+			} );
+
+			$(dt.table().node()).addClass( 'dtr-'+details.type );
+		}
+
+		dt.on( 'column-reorder.dtr', function (e, settings, details) {
+			that._classLogic();
+			that._resizeAuto();
+			that._resize();
+		} );
+
+		// Change in column sizes means we need to calc
+		dt.on( 'column-sizing.dtr', function () {
+			that._resizeAuto();
+			that._resize();
+		});
+
+		// On Ajax reload we want to reopen any child rows which are displayed
+		// by responsive
+		dt.on( 'preXhr.dtr', function () {
+			var rowIds = [];
+			dt.rows().every( function () {
+				if ( this.child.isShown() ) {
+					rowIds.push( this.id(true) );
+				}
+			} );
+
+			dt.one( 'draw.dtr', function () {
+				dt.rows( rowIds ).every( function () {
+					that._detailsDisplay( this, false );
+				} );
+			} );
+		});
+
+		dt.on( 'init.dtr', function (e, settings, details) {
+			that._resizeAuto();
+			that._resize();
+
+			// If columns were hidden, then DataTables needs to adjust the
+			// column sizing
+			if ( $.inArray( false, that.s.current ) ) {
+				dt.columns.adjust();
+			}
+		} );
+
+		// First pass - draw the table for the current viewport size
+		this._resize();
+	},
+
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * Private methods
+	 */
+
+	/**
+	 * Calculate the visibility for the columns in a table for a given
+	 * breakpoint. The result is pre-determined based on the class logic if
+	 * class names are used to control all columns, but the width of the table
+	 * is also used if there are columns which are to be automatically shown
+	 * and hidden.
+	 *
+	 * @param  {string} breakpoint Breakpoint name to use for the calculation
+	 * @return {array} Array of boolean values initiating the visibility of each
+	 *   column.
+	 *  @private
+	 */
+	_columnsVisiblity: function ( breakpoint )
+	{
+		var dt = this.s.dt;
+		var columns = this.s.columns;
+		var i, ien;
+
+		// Create an array that defines the column ordering based first on the
+		// column's priority, and secondly the column index. This allows the
+		// columns to be removed from the right if the priority matches
+		var order = columns
+			.map( function ( col, idx ) {
+				return {
+					columnIdx: idx,
+					priority: col.priority
+				};
+			} )
+			.sort( function ( a, b ) {
+				if ( a.priority !== b.priority ) {
+					return a.priority - b.priority;
+				}
+				return a.columnIdx - b.columnIdx;
+			} );
+
+		// Class logic - determine which columns are in this breakpoint based
+		// on the classes. If no class control (i.e. `auto`) then `-` is used
+		// to indicate this to the rest of the function
+		var display = $.map( columns, function ( col ) {
+			return col.auto && col.minWidth === null ?
+				false :
+				col.auto === true ?
+					'-' :
+					$.inArray( breakpoint, col.includeIn ) !== -1;
+		} );
+
+		// Auto column control - first pass: how much width is taken by the
+		// ones that must be included from the non-auto columns
+		var requiredWidth = 0;
+		for ( i=0, ien=display.length ; i<ien ; i++ ) {
+			if ( display[i] === true ) {
+				requiredWidth += columns[i].minWidth;
+			}
+		}
+
+		// Second pass, use up any remaining width for other columns. For
+		// scrolling tables we need to subtract the width of the scrollbar. It
+		// may not be requires which makes this sub-optimal, but it would
+		// require another full redraw to make complete use of those extra few
+		// pixels
+		var scrolling = dt.settings()[0].oScroll;
+		var bar = scrolling.sY || scrolling.sX ? scrolling.iBarWidth : 0;
+		var widthAvailable = dt.table().container().offsetWidth - bar;
+		var usedWidth = widthAvailable - requiredWidth;
+
+		// Control column needs to always be included. This makes it sub-
+		// optimal in terms of using the available with, but to stop layout
+		// thrashing or overflow. Also we need to account for the control column
+		// width first so we know how much width is available for the other
+		// columns, since the control column might not be the first one shown
+		for ( i=0, ien=display.length ; i<ien ; i++ ) {
+			if ( columns[i].control ) {
+				usedWidth -= columns[i].minWidth;
+			}
+		}
+
+		// Allow columns to be shown (counting by priority and then right to
+		// left) until we run out of room
+		var empty = false;
+		for ( i=0, ien=order.length ; i<ien ; i++ ) {
+			var colIdx = order[i].columnIdx;
+
+			if ( display[colIdx] === '-' && ! columns[colIdx].control && columns[colIdx].minWidth ) {
+				// Once we've found a column that won't fit we don't let any
+				// others display either, or columns might disappear in the
+				// middle of the table
+				if ( empty || usedWidth - columns[colIdx].minWidth < 0 ) {
+					empty = true;
+					display[colIdx] = false;
+				}
+				else {
+					display[colIdx] = true;
+				}
+
+				usedWidth -= columns[colIdx].minWidth;
+			}
+		}
+
+		// Determine if the 'control' column should be shown (if there is one).
+		// This is the case when there is a hidden column (that is not the
+		// control column). The two loops look inefficient here, but they are
+		// trivial and will fly through. We need to know the outcome from the
+		// first , before the action in the second can be taken
+		var showControl = false;
+
+		for ( i=0, ien=columns.length ; i<ien ; i++ ) {
+			if ( ! columns[i].control && ! columns[i].never && ! display[i] ) {
+				showControl = true;
+				break;
+			}
+		}
+
+		for ( i=0, ien=columns.length ; i<ien ; i++ ) {
+			if ( columns[i].control ) {
+				display[i] = showControl;
+			}
+		}
+
+		// Finally we need to make sure that there is at least one column that
+		// is visible
+		if ( $.inArray( true, display ) === -1 ) {
+			display[0] = true;
+		}
+
+		return display;
+	},
+
+
+	/**
+	 * Create the internal `columns` array with information about the columns
+	 * for the table. This includes determining which breakpoints the column
+	 * will appear in, based upon class names in the column, which makes up the
+	 * vast majority of this method.
+	 *
+	 * @private
+	 */
+	_classLogic: function ()
+	{
+		var that = this;
+		var calc = {};
+		var breakpoints = this.c.breakpoints;
+		var dt = this.s.dt;
+		var columns = dt.columns().eq(0).map( function (i) {
+			var column = this.column(i);
+			var className = column.header().className;
+			var priority = dt.settings()[0].aoColumns[i].responsivePriority;
+
+			if ( priority === undefined ) {
+				var dataPriority = $(column.header()).data('priority');
+
+				priority = dataPriority !== undefined ?
+					dataPriority * 1 :
+					10000;
+			}
+
+			return {
+				className: className,
+				includeIn: [],
+				auto:      false,
+				control:   false,
+				never:     className.match(/\bnever\b/) ? true : false,
+				priority:  priority
+			};
+		} );
+
+		// Simply add a breakpoint to `includeIn` array, ensuring that there are
+		// no duplicates
+		var add = function ( colIdx, name ) {
+			var includeIn = columns[ colIdx ].includeIn;
+
+			if ( $.inArray( name, includeIn ) === -1 ) {
+				includeIn.push( name );
+			}
+		};
+
+		var column = function ( colIdx, name, operator, matched ) {
+			var size, i, ien;
+
+			if ( ! operator ) {
+				columns[ colIdx ].includeIn.push( name );
+			}
+			else if ( operator === 'max-' ) {
+				// Add this breakpoint and all smaller
+				size = that._find( name ).width;
+
+				for ( i=0, ien=breakpoints.length ; i<ien ; i++ ) {
+					if ( breakpoints[i].width <= size ) {
+						add( colIdx, breakpoints[i].name );
+					}
+				}
+			}
+			else if ( operator === 'min-' ) {
+				// Add this breakpoint and all larger
+				size = that._find( name ).width;
+
+				for ( i=0, ien=breakpoints.length ; i<ien ; i++ ) {
+					if ( breakpoints[i].width >= size ) {
+						add( colIdx, breakpoints[i].name );
+					}
+				}
+			}
+			else if ( operator === 'not-' ) {
+				// Add all but this breakpoint
+				for ( i=0, ien=breakpoints.length ; i<ien ; i++ ) {
+					if ( breakpoints[i].name.indexOf( matched ) === -1 ) {
+						add( colIdx, breakpoints[i].name );
+					}
+				}
+			}
+		};
+
+		// Loop over each column and determine if it has a responsive control
+		// class
+		columns.each( function ( col, i ) {
+			var classNames = col.className.split(' ');
+			var hasClass = false;
+
+			// Split the class name up so multiple rules can be applied if needed
+			for ( var k=0, ken=classNames.length ; k<ken ; k++ ) {
+				var className = $.trim( classNames[k] );
+
+				if ( className === 'all' ) {
+					// Include in all
+					hasClass = true;
+					col.includeIn = $.map( breakpoints, function (a) {
+						return a.name;
+					} );
+					return;
+				}
+				else if ( className === 'none' || col.never ) {
+					// Include in none (default) and no auto
+					hasClass = true;
+					return;
+				}
+				else if ( className === 'control' ) {
+					// Special column that is only visible, when one of the other
+					// columns is hidden. This is used for the details control
+					hasClass = true;
+					col.control = true;
+					return;
+				}
+
+				$.each( breakpoints, function ( j, breakpoint ) {
+					// Does this column have a class that matches this breakpoint?
+					var brokenPoint = breakpoint.name.split('-');
+					var re = new RegExp( '(min\\-|max\\-|not\\-)?('+brokenPoint[0]+')(\\-[_a-zA-Z0-9])?' );
+					var match = className.match( re );
+
+					if ( match ) {
+						hasClass = true;
+
+						if ( match[2] === brokenPoint[0] && match[3] === '-'+brokenPoint[1] ) {
+							// Class name matches breakpoint name fully
+							column( i, breakpoint.name, match[1], match[2]+match[3] );
+						}
+						else if ( match[2] === brokenPoint[0] && ! match[3] ) {
+							// Class name matched primary breakpoint name with no qualifier
+							column( i, breakpoint.name, match[1], match[2] );
+						}
+					}
+				} );
+			}
+
+			// If there was no control class, then automatic sizing is used
+			if ( ! hasClass ) {
+				col.auto = true;
+			}
+		} );
+
+		this.s.columns = columns;
+	},
+
+
+	/**
+	 * Show the details for the child row
+	 *
+	 * @param  {DataTables.Api} row    API instance for the row
+	 * @param  {boolean}        update Update flag
+	 * @private
+	 */
+	_detailsDisplay: function ( row, update )
+	{
+		var that = this;
+		var dt = this.s.dt;
+		var details = this.c.details;
+
+		if ( details && details.type !== false ) {
+			var res = details.display( row, update, function () {
+				return details.renderer(
+					dt, row[0], that._detailsObj(row[0])
+				);
+			} );
+
+			if ( res === true || res === false ) {
+				$(dt.table().node()).triggerHandler( 'responsive-display.dt', [dt, row, res, update] );
+			}
+		}
+	},
+
+
+	/**
+	 * Initialisation for the details handler
+	 *
+	 * @private
+	 */
+	_detailsInit: function ()
+	{
+		var that    = this;
+		var dt      = this.s.dt;
+		var details = this.c.details;
+
+		// The inline type always uses the first child as the target
+		if ( details.type === 'inline' ) {
+			details.target = 'td:first-child, th:first-child';
+		}
+
+		// Keyboard accessibility
+		dt.on( 'draw.dtr', function () {
+			that._tabIndexes();
+		} );
+		that._tabIndexes(); // Initial draw has already happened
+
+		$( dt.table().body() ).on( 'keyup.dtr', 'td, th', function (e) {
+			if ( e.keyCode === 13 && $(this).data('dtr-keyboard') ) {
+				$(this).click();
+			}
+		} );
+
+		// type.target can be a string jQuery selector or a column index
+		var target   = details.target;
+		var selector = typeof target === 'string' ? target : 'td, th';
+
+		// Click handler to show / hide the details rows when they are available
+		$( dt.table().body() )
+			.on( 'click.dtr mousedown.dtr mouseup.dtr', selector, function (e) {
+				// If the table is not collapsed (i.e. there is no hidden columns)
+				// then take no action
+				if ( ! $(dt.table().node()).hasClass('collapsed' ) ) {
+					return;
+				}
+
+				// Check that the row is actually a DataTable's controlled node
+				if ( $.inArray( $(this).closest('tr').get(0), dt.rows().nodes().toArray() ) === -1 ) {
+					return;
+				}
+
+				// For column index, we determine if we should act or not in the
+				// handler - otherwise it is already okay
+				if ( typeof target === 'number' ) {
+					var targetIdx = target < 0 ?
+						dt.columns().eq(0).length + target :
+						target;
+
+					if ( dt.cell( this ).index().column !== targetIdx ) {
+						return;
+					}
+				}
+
+				// $().closest() includes itself in its check
+				var row = dt.row( $(this).closest('tr') );
+
+				// Check event type to do an action
+				if ( e.type === 'click' ) {
+					// The renderer is given as a function so the caller can execute it
+					// only when they need (i.e. if hiding there is no point is running
+					// the renderer)
+					that._detailsDisplay( row, false );
+				}
+				else if ( e.type === 'mousedown' ) {
+					// For mouse users, prevent the focus ring from showing
+					$(this).css('outline', 'none');
+				}
+				else if ( e.type === 'mouseup' ) {
+					// And then re-allow at the end of the click
+					$(this).blur().css('outline', '');
+				}
+			} );
+	},
+
+
+	/**
+	 * Get the details to pass to a renderer for a row
+	 * @param  {int} rowIdx Row index
+	 * @private
+	 */
+	_detailsObj: function ( rowIdx )
+	{
+		var that = this;
+		var dt = this.s.dt;
+
+		return $.map( this.s.columns, function( col, i ) {
+			// Never and control columns should not be passed to the renderer
+			if ( col.never || col.control ) {
+				return;
+			}
+
+			return {
+				title:       dt.settings()[0].aoColumns[ i ].sTitle,
+				data:        dt.cell( rowIdx, i ).render( that.c.orthogonal ),
+				hidden:      dt.column( i ).visible() && !that.s.current[ i ],
+				columnIndex: i,
+				rowIndex:    rowIdx
+			};
+		} );
+	},
+
+
+	/**
+	 * Find a breakpoint object from a name
+	 *
+	 * @param  {string} name Breakpoint name to find
+	 * @return {object}      Breakpoint description object
+	 * @private
+	 */
+	_find: function ( name )
+	{
+		var breakpoints = this.c.breakpoints;
+
+		for ( var i=0, ien=breakpoints.length ; i<ien ; i++ ) {
+			if ( breakpoints[i].name === name ) {
+				return breakpoints[i];
+			}
+		}
+	},
+
+
+	/**
+	 * Re-create the contents of the child rows as the display has changed in
+	 * some way.
+	 *
+	 * @private
+	 */
+	_redrawChildren: function ()
+	{
+		var that = this;
+		var dt = this.s.dt;
+
+		dt.rows( {page: 'current'} ).iterator( 'row', function ( settings, idx ) {
+			var row = dt.row( idx );
+
+			that._detailsDisplay( dt.row( idx ), true );
+		} );
+	},
+
+
+	/**
+	 * Alter the table display for a resized viewport. This involves first
+	 * determining what breakpoint the window currently is in, getting the
+	 * column visibilities to apply and then setting them.
+	 *
+	 * @private
+	 */
+	_resize: function ()
+	{
+		var that = this;
+		var dt = this.s.dt;
+		var width = $(window).width();
+		var breakpoints = this.c.breakpoints;
+		var breakpoint = breakpoints[0].name;
+		var columns = this.s.columns;
+		var i, ien;
+		var oldVis = this.s.current.slice();
+
+		// Determine what breakpoint we are currently at
+		for ( i=breakpoints.length-1 ; i>=0 ; i-- ) {
+			if ( width <= breakpoints[i].width ) {
+				breakpoint = breakpoints[i].name;
+				break;
+			}
+		}
+		
+		// Show the columns for that break point
+		var columnsVis = this._columnsVisiblity( breakpoint );
+		this.s.current = columnsVis;
+
+		// Set the class before the column visibility is changed so event
+		// listeners know what the state is. Need to determine if there are
+		// any columns that are not visible but can be shown
+		var collapsedClass = false;
+		for ( i=0, ien=columns.length ; i<ien ; i++ ) {
+			if ( columnsVis[i] === false && ! columns[i].never && ! columns[i].control ) {
+				collapsedClass = true;
+				break;
+			}
+		}
+
+		$( dt.table().node() ).toggleClass( 'collapsed', collapsedClass );
+
+		var changed = false;
+
+		dt.columns().eq(0).each( function ( colIdx, i ) {
+			if ( columnsVis[i] !== oldVis[i] ) {
+				changed = true;
+				that._setColumnVis( colIdx, columnsVis[i] );
+			}
+		} );
+
+		if ( changed ) {
+			this._redrawChildren();
+
+			// Inform listeners of the change
+			$(dt.table().node()).trigger( 'responsive-resize.dt', [dt, this.s.current] );
+		}
+	},
+
+
+	/**
+	 * Determine the width of each column in the table so the auto column hiding
+	 * has that information to work with. This method is never going to be 100%
+	 * perfect since column widths can change slightly per page, but without
+	 * seriously compromising performance this is quite effective.
+	 *
+	 * @private
+	 */
+	_resizeAuto: function ()
+	{
+		var dt = this.s.dt;
+		var columns = this.s.columns;
+
+		// Are we allowed to do auto sizing?
+		if ( ! this.c.auto ) {
+			return;
+		}
+
+		// Are there any columns that actually need auto-sizing, or do they all
+		// have classes defined
+		if ( $.inArray( true, $.map( columns, function (c) { return c.auto; } ) ) === -1 ) {
+			return;
+		}
+
+		// Clone the table with the current data in it
+		var tableWidth   = dt.table().node().offsetWidth;
+		var columnWidths = dt.columns;
+		var clonedTable  = dt.table().node().cloneNode( false );
+		var clonedHeader = $( dt.table().header().cloneNode( false ) ).appendTo( clonedTable );
+		var clonedBody   = $( dt.table().body() ).clone( false, false ).empty().appendTo( clonedTable ); // use jQuery because of IE8
+
+		// Header
+		var headerCells = dt.columns()
+			.header()
+			.filter( function (idx) {
+				return dt.column(idx).visible();
+			} )
+			.to$()
+			.clone( false )
+			.css( 'display', 'table-cell' );
+
+		// Body rows - we don't need to take account of DataTables' column
+		// visibility since we implement our own here (hence the `display` set)
+		$(clonedBody)
+			.append( $(dt.rows( { page: 'current' } ).nodes()).clone( false ) )
+			.find( 'th, td' ).css( 'display', '' );
+
+		// Footer
+		var footer = dt.table().footer();
+		if ( footer ) {
+			var clonedFooter = $( footer.cloneNode( false ) ).appendTo( clonedTable );
+			var footerCells = dt.columns()
+				.footer()
+				.filter( function (idx) {
+					return dt.column(idx).visible();
+				} )
+				.to$()
+				.clone( false )
+				.css( 'display', 'table-cell' );
+
+			$('<tr/>')
+				.append( footerCells )
+				.appendTo( clonedFooter );
+		}
+
+		$('<tr/>')
+			.append( headerCells )
+			.appendTo( clonedHeader );
+
+		// In the inline case extra padding is applied to the first column to
+		// give space for the show / hide icon. We need to use this in the
+		// calculation
+		if ( this.c.details.type === 'inline' ) {
+			$(clonedTable).addClass( 'dtr-inline collapsed' );
+		}
+		
+		// It is unsafe to insert elements with the same name into the DOM
+		// multiple times. For example, cloning and inserting a checked radio
+		// clears the chcecked state of the original radio.
+		$( clonedTable ).find( '[name]' ).removeAttr( 'name' );
+		
+		var inserted = $('<div/>')
+			.css( {
+				width: 1,
+				height: 1,
+				overflow: 'hidden'
+			} )
+			.append( clonedTable );
+
+		inserted.insertBefore( dt.table().node() );
+
+		// The cloned header now contains the smallest that each column can be
+		headerCells.each( function (i) {
+			var idx = dt.column.index( 'fromVisible', i );
+			columns[ idx ].minWidth =  this.offsetWidth || 0;
+		} );
+
+		inserted.remove();
+	},
+
+	/**
+	 * Set a column's visibility.
+	 *
+	 * We don't use DataTables' column visibility controls in order to ensure
+	 * that column visibility can Responsive can no-exist. Since only IE8+ is
+	 * supported (and all evergreen browsers of course) the control of the
+	 * display attribute works well.
+	 *
+	 * @param {integer} col      Column index
+	 * @param {boolean} showHide Show or hide (true or false)
+	 * @private
+	 */
+	_setColumnVis: function ( col, showHide )
+	{
+		var dt = this.s.dt;
+		var display = showHide ? '' : 'none'; // empty string will remove the attr
+
+		$( dt.column( col ).header() ).css( 'display', display );
+		$( dt.column( col ).footer() ).css( 'display', display );
+		dt.column( col ).nodes().to$().css( 'display', display );
+	},
+
+
+	/**
+	 * Update the cell tab indexes for keyboard accessibility. This is called on
+	 * every table draw - that is potentially inefficient, but also the least
+	 * complex option given that column visibility can change on the fly. Its a
+	 * shame user-focus was removed from CSS 3 UI, as it would have solved this
+	 * issue with a single CSS statement.
+	 *
+	 * @private
+	 */
+	_tabIndexes: function ()
+	{
+		var dt = this.s.dt;
+		var cells = dt.cells( { page: 'current' } ).nodes().to$();
+		var ctx = dt.settings()[0];
+		var target = this.c.details.target;
+
+		cells.filter( '[data-dtr-keyboard]' ).removeData( '[data-dtr-keyboard]' );
+
+		var selector = typeof target === 'number' ?
+			':eq('+target+')' :
+			target;
+
+		// This is a bit of a hack - we need to limit the selected nodes to just
+		// those of this table
+		if ( selector === 'td:first-child, th:first-child' ) {
+			selector = '>td:first-child, >th:first-child';
+		}
+
+		$( selector, dt.rows( { page: 'current' } ).nodes() )
+			.attr( 'tabIndex', ctx.iTabIndex )
+			.data( 'dtr-keyboard', 1 );
+	}
+} );
+
+
+/**
+ * List of default breakpoints. Each item in the array is an object with two
+ * properties:
+ *
+ * * `name` - the breakpoint name.
+ * * `width` - the breakpoint width
+ *
+ * @name Responsive.breakpoints
+ * @static
+ */
+Responsive.breakpoints = [
+	{ name: 'desktop',  width: Infinity },
+	{ name: 'tablet-l', width: 1024 },
+	{ name: 'tablet-p', width: 768 },
+	{ name: 'mobile-l', width: 480 },
+	{ name: 'mobile-p', width: 320 }
+];
+
+
+/**
+ * Display methods - functions which define how the hidden data should be shown
+ * in the table.
+ *
+ * @namespace
+ * @name Responsive.defaults
+ * @static
+ */
+Responsive.display = {
+	childRow: function ( row, update, render ) {
+		if ( update ) {
+			if ( $(row.node()).hasClass('parent') ) {
+				row.child( render(), 'child' ).show();
+
+				return true;
+			}
+		}
+		else {
+			if ( ! row.child.isShown()  ) {
+				row.child( render(), 'child' ).show();
+				$( row.node() ).addClass( 'parent' );
+
+				return true;
+			}
+			else {
+				row.child( false );
+				$( row.node() ).removeClass( 'parent' );
+
+				return false;
+			}
+		}
+	},
+
+	childRowImmediate: function ( row, update, render ) {
+		if ( (! update && row.child.isShown()) || ! row.responsive.hasHidden() ) {
+			// User interaction and the row is show, or nothing to show
+			row.child( false );
+			$( row.node() ).removeClass( 'parent' );
+
+			return false;
+		}
+		else {
+			// Display
+			row.child( render(), 'child' ).show();
+			$( row.node() ).addClass( 'parent' );
+
+			return true;
+		}
+	},
+
+	// This is a wrapper so the modal options for Bootstrap and jQuery UI can
+	// have options passed into them. This specific one doesn't need to be a
+	// function but it is for consistency in the `modal` name
+	modal: function ( options ) {
+		return function ( row, update, render ) {
+			if ( ! update ) {
+				// Show a modal
+				var close = function () {
+					modal.remove(); // will tidy events for us
+					$(document).off( 'keypress.dtr' );
+				};
+
+				var modal = $('<div class="dtr-modal"/>')
+					.append( $('<div class="dtr-modal-display"/>')
+						.append( $('<div class="dtr-modal-content"/>')
+							.append( render() )
+						)
+						.append( $('<div class="dtr-modal-close">&times;</div>' )
+							.click( function () {
+								close();
+							} )
+						)
+					)
+					.append( $('<div class="dtr-modal-background"/>')
+						.click( function () {
+							close();
+						} )
+					)
+					.appendTo( 'body' );
+
+				$(document).on( 'keyup.dtr', function (e) {
+					if ( e.keyCode === 27 ) {
+						e.stopPropagation();
+
+						close();
+					}
+				} );
+			}
+			else {
+				$('div.dtr-modal-content')
+					.empty()
+					.append( render() );
+			}
+
+			if ( options && options.header ) {
+				$('div.dtr-modal-content').prepend(
+					'<h2>'+options.header( row )+'</h2>'
+				);
+			}
+		};
+	}
+};
+
+
+/**
+ * Display methods - functions which define how the hidden data should be shown
+ * in the table.
+ *
+ * @namespace
+ * @name Responsive.defaults
+ * @static
+ */
+Responsive.renderer = {
+	listHidden: function () {
+		return function ( api, rowIdx, columns ) {
+			var data = $.map( columns, function ( col ) {
+				return col.hidden ?
+					'<li data-dtr-index="'+col.columnIndex+'" data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
+						'<span class="dtr-title">'+
+							col.title+
+						'</span> '+
+						'<span class="dtr-data">'+
+							col.data+
+						'</span>'+
+					'</li>' :
+					'';
+			} ).join('');
+
+			return data ?
+				$('<ul data-dtr-index="'+rowIdx+'" class="dtr-details"/>').append( data ) :
+				false;
+		}
+	},
+
+	tableAll: function ( options ) {
+		options = $.extend( {
+			tableClass: ''
+		}, options );
+
+		return function ( api, rowIdx, columns ) {
+			var data = $.map( columns, function ( col ) {
+				return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
+						'<td>'+col.title+':'+'</td> '+
+						'<td>'+col.data+'</td>'+
+					'</tr>';
+			} ).join('');
+
+			return $('<table class="'+options.tableClass+' dtr-details" width="100%"/>').append( data );
+		}
+	}
+};
+
+/**
+ * Responsive default settings for initialisation
+ *
+ * @namespace
+ * @name Responsive.defaults
+ * @static
+ */
+Responsive.defaults = {
+	/**
+	 * List of breakpoints for the instance. Note that this means that each
+	 * instance can have its own breakpoints. Additionally, the breakpoints
+	 * cannot be changed once an instance has been creased.
+	 *
+	 * @type {Array}
+	 * @default Takes the value of `Responsive.breakpoints`
+	 */
+	breakpoints: Responsive.breakpoints,
+
+	/**
+	 * Enable / disable auto hiding calculations. It can help to increase
+	 * performance slightly if you disable this option, but all columns would
+	 * need to have breakpoint classes assigned to them
+	 *
+	 * @type {Boolean}
+	 * @default  `true`
+	 */
+	auto: true,
+
+	/**
+	 * Details control. If given as a string value, the `type` property of the
+	 * default object is set to that value, and the defaults used for the rest
+	 * of the object - this is for ease of implementation.
+	 *
+	 * The object consists of the following properties:
+	 *
+	 * * `display` - A function that is used to show and hide the hidden details
+	 * * `renderer` - function that is called for display of the child row data.
+	 *   The default function will show the data from the hidden columns
+	 * * `target` - Used as the selector for what objects to attach the child
+	 *   open / close to
+	 * * `type` - `false` to disable the details display, `inline` or `column`
+	 *   for the two control types
+	 *
+	 * @type {Object|string}
+	 */
+	details: {
+		display: Responsive.display.childRow,
+
+		renderer: Responsive.renderer.listHidden(),
+
+		target: 0,
+
+		type: 'inline'
+	},
+
+	/**
+	 * Orthogonal data request option. This is used to define the data type
+	 * requested when Responsive gets the data to show in the child row.
+	 *
+	 * @type {String}
+	 */
+	orthogonal: 'display'
+};
+
+
+/*
+ * API
+ */
+var Api = $.fn.dataTable.Api;
+
+// Doesn't do anything - work around for a bug in DT... Not documented
+Api.register( 'responsive()', function () {
+	return this;
+} );
+
+Api.register( 'responsive.index()', function ( li ) {
+	li = $(li);
+
+	return {
+		column: li.data('dtr-index'),
+		row:    li.parent().data('dtr-index')
+	};
+} );
+
+Api.register( 'responsive.rebuild()', function () {
+	return this.iterator( 'table', function ( ctx ) {
+		if ( ctx._responsive ) {
+			ctx._responsive._classLogic();
+		}
+	} );
+} );
+
+Api.register( 'responsive.recalc()', function () {
+	return this.iterator( 'table', function ( ctx ) {
+		if ( ctx._responsive ) {
+			ctx._responsive._resizeAuto();
+			ctx._responsive._resize();
+		}
+	} );
+} );
+
+Api.register( 'responsive.hasHidden()', function () {
+	var ctx = this.context[0];
+
+	return ctx._responsive ?
+		$.inArray( false, ctx._responsive.s.current ) !== -1 :
+		false;
+} );
+
+
+/**
+ * Version information
+ *
+ * @name Responsive.version
+ * @static
+ */
+Responsive.version = '2.1.1';
+
+
+$.fn.dataTable.Responsive = Responsive;
+$.fn.DataTable.Responsive = Responsive;
+
+// Attach a listener to the document which listens for DataTables initialisation
+// events so we can automatically initialise
+$(document).on( 'preInit.dt.dtr', function (e, settings, json) {
+	if ( e.namespace !== 'dt' ) {
+		return;
+	}
+
+	if ( $(settings.nTable).hasClass( 'responsive' ) ||
+		 $(settings.nTable).hasClass( 'dt-responsive' ) ||
+		 settings.oInit.responsive ||
+		 DataTable.defaults.responsive
+	) {
+		var init = settings.oInit.responsive;
+
+		if ( init !== false ) {
+			new Responsive( settings, $.isPlainObject( init ) ? init : {}  );
+		}
+	}
+} );
+
+
+return Responsive;
+}));
+
+/*!***************************************************
+ * mark.js v8.11.0
+ * https://github.com/julmot/mark.js
+ * Copyright (c) 2014–2017, Julian Motz
+ * Released under the MIT license https://git.io/vwTVl
+ *****************************************************/
+
+"use strict";
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+(function (factory, window, document) {
+    if (typeof define === "function" && define.amd) {
+        define(["jquery"], function (jQuery) {
+            return factory(window, document, jQuery);
+        });
+    } else if ((typeof module === "undefined" ? "undefined" : _typeof(module)) === "object" && module.exports) {
+        module.exports = factory(window, document, require("jquery"));
+    } else {
+        factory(window, document, jQuery);
+    }
+})(function (window, document, $) {
+    var Mark = function () {
+        function Mark(ctx) {
+            _classCallCheck(this, Mark);
+
+            this.ctx = ctx;
+
+            this.ie = false;
+            var ua = window.navigator.userAgent;
+            if (ua.indexOf("MSIE") > -1 || ua.indexOf("Trident") > -1) {
+                this.ie = true;
+            }
+        }
+
+        _createClass(Mark, [{
+            key: "log",
+            value: function log(msg) {
+                var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "debug";
+
+                var log = this.opt.log;
+                if (!this.opt.debug) {
+                    return;
+                }
+                if ((typeof log === "undefined" ? "undefined" : _typeof(log)) === "object" && typeof log[level] === "function") {
+                    log[level]("mark.js: " + msg);
+                }
+            }
+        }, {
+            key: "escapeStr",
+            value: function escapeStr(str) {
+                return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            }
+        }, {
+            key: "createRegExp",
+            value: function createRegExp(str) {
+                if (this.opt.wildcards !== "disabled") {
+                    str = this.setupWildcardsRegExp(str);
+                }
+                str = this.escapeStr(str);
+                if (Object.keys(this.opt.synonyms).length) {
+                    str = this.createSynonymsRegExp(str);
+                }
+                if (this.opt.ignoreJoiners || this.opt.ignorePunctuation.length) {
+                    str = this.setupIgnoreJoinersRegExp(str);
+                }
+                if (this.opt.diacritics) {
+                    str = this.createDiacriticsRegExp(str);
+                }
+                str = this.createMergedBlanksRegExp(str);
+                if (this.opt.ignoreJoiners || this.opt.ignorePunctuation.length) {
+                    str = this.createJoinersRegExp(str);
+                }
+                if (this.opt.wildcards !== "disabled") {
+                    str = this.createWildcardsRegExp(str);
+                }
+                str = this.createAccuracyRegExp(str);
+                return str;
+            }
+        }, {
+            key: "createSynonymsRegExp",
+            value: function createSynonymsRegExp(str) {
+                var syn = this.opt.synonyms,
+                    sens = this.opt.caseSensitive ? "" : "i",
+                    joinerPlaceholder = this.opt.ignoreJoiners || this.opt.ignorePunctuation.length ? "\0" : "";
+                for (var index in syn) {
+                    if (syn.hasOwnProperty(index)) {
+                        var value = syn[index],
+                            k1 = this.opt.wildcards !== "disabled" ? this.setupWildcardsRegExp(index) : this.escapeStr(index),
+                            k2 = this.opt.wildcards !== "disabled" ? this.setupWildcardsRegExp(value) : this.escapeStr(value);
+                        if (k1 !== "" && k2 !== "") {
+                            str = str.replace(new RegExp("(" + k1 + "|" + k2 + ")", "gm" + sens), joinerPlaceholder + ("(" + this.processSynomyms(k1) + "|") + (this.processSynomyms(k2) + ")") + joinerPlaceholder);
+                        }
+                    }
+                }
+                return str;
+            }
+        }, {
+            key: "processSynomyms",
+            value: function processSynomyms(str) {
+                if (this.opt.ignoreJoiners || this.opt.ignorePunctuation.length) {
+                    str = this.setupIgnoreJoinersRegExp(str);
+                }
+                return str;
+            }
+        }, {
+            key: "setupWildcardsRegExp",
+            value: function setupWildcardsRegExp(str) {
+                str = str.replace(/(?:\\)*\?/g, function (val) {
+                    return val.charAt(0) === "\\" ? "?" : "\x01";
+                });
+
+                return str.replace(/(?:\\)*\*/g, function (val) {
+                    return val.charAt(0) === "\\" ? "*" : "\x02";
+                });
+            }
+        }, {
+            key: "createWildcardsRegExp",
+            value: function createWildcardsRegExp(str) {
+                var spaces = this.opt.wildcards === "withSpaces";
+                return str.replace(/\u0001/g, spaces ? "[\\S\\s]?" : "\\S?").replace(/\u0002/g, spaces ? "[\\S\\s]*?" : "\\S*");
+            }
+        }, {
+            key: "setupIgnoreJoinersRegExp",
+            value: function setupIgnoreJoinersRegExp(str) {
+                return str.replace(/[^(|)\\]/g, function (val, indx, original) {
+                    var nextChar = original.charAt(indx + 1);
+                    if (/[(|)\\]/.test(nextChar) || nextChar === "") {
+                        return val;
+                    } else {
+                        return val + "\0";
+                    }
+                });
+            }
+        }, {
+            key: "createJoinersRegExp",
+            value: function createJoinersRegExp(str) {
+                var joiner = [];
+                var ignorePunctuation = this.opt.ignorePunctuation;
+                if (Array.isArray(ignorePunctuation) && ignorePunctuation.length) {
+                    joiner.push(this.escapeStr(ignorePunctuation.join("")));
+                }
+                if (this.opt.ignoreJoiners) {
+                    joiner.push("\\u00ad\\u200b\\u200c\\u200d");
+                }
+                return joiner.length ? str.split(/\u0000+/).join("[" + joiner.join("") + "]*") : str;
+            }
+        }, {
+            key: "createDiacriticsRegExp",
+            value: function createDiacriticsRegExp(str) {
+                var sens = this.opt.caseSensitive ? "" : "i",
+                    dct = this.opt.caseSensitive ? ["aàáảãạăằắẳẵặâầấẩẫậäåāą", "AÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÄÅĀĄ", "cçćč", "CÇĆČ", "dđď", "DĐĎ", "eèéẻẽẹêềếểễệëěēę", "EÈÉẺẼẸÊỀẾỂỄỆËĚĒĘ", "iìíỉĩịîïī", "IÌÍỈĨỊÎÏĪ", "lł", "LŁ", "nñňń", "NÑŇŃ", "oòóỏõọôồốổỗộơởỡớờợöøō", "OÒÓỎÕỌÔỒỐỔỖỘƠỞỠỚỜỢÖØŌ", "rř", "RŘ", "sšśșş", "SŠŚȘŞ", "tťțţ", "TŤȚŢ", "uùúủũụưừứửữựûüůū", "UÙÚỦŨỤƯỪỨỬỮỰÛÜŮŪ", "yýỳỷỹỵÿ", "YÝỲỶỸỴŸ", "zžżź", "ZŽŻŹ"] : ["aàáảãạăằắẳẵặâầấẩẫậäåāąAÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÄÅĀĄ", "cçćčCÇĆČ", "dđďDĐĎ", "eèéẻẽẹêềếểễệëěēęEÈÉẺẼẸÊỀẾỂỄỆËĚĒĘ", "iìíỉĩịîïīIÌÍỈĨỊÎÏĪ", "lłLŁ", "nñňńNÑŇŃ", "oòóỏõọôồốổỗộơởỡớờợöøōOÒÓỎÕỌÔỒỐỔỖỘƠỞỠỚỜỢÖØŌ", "rřRŘ", "sšśșşSŠŚȘŞ", "tťțţTŤȚŢ", "uùúủũụưừứửữựûüůūUÙÚỦŨỤƯỪỨỬỮỰÛÜŮŪ", "yýỳỷỹỵÿYÝỲỶỸỴŸ", "zžżźZŽŻŹ"];
+                var handled = [];
+                str.split("").forEach(function (ch) {
+                    dct.every(function (dct) {
+                        if (dct.indexOf(ch) !== -1) {
+                            if (handled.indexOf(dct) > -1) {
+                                return false;
+                            }
+
+                            str = str.replace(new RegExp("[" + dct + "]", "gm" + sens), "[" + dct + "]");
+                            handled.push(dct);
+                        }
+                        return true;
+                    });
+                });
+                return str;
+            }
+        }, {
+            key: "createMergedBlanksRegExp",
+            value: function createMergedBlanksRegExp(str) {
+                return str.replace(/[\s]+/gmi, "[\\s]+");
+            }
+        }, {
+            key: "createAccuracyRegExp",
+            value: function createAccuracyRegExp(str) {
+                var _this = this;
+
+                var chars = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~\xA1\xBF";
+                var acc = this.opt.accuracy,
+                    val = typeof acc === "string" ? acc : acc.value,
+                    ls = typeof acc === "string" ? [] : acc.limiters,
+                    lsJoin = "";
+                ls.forEach(function (limiter) {
+                    lsJoin += "|" + _this.escapeStr(limiter);
+                });
+                switch (val) {
+                    case "partially":
+                    default:
+                        return "()(" + str + ")";
+                    case "complementary":
+                        lsJoin = "\\s" + (lsJoin ? lsJoin : this.escapeStr(chars));
+                        return "()([^" + lsJoin + "]*" + str + "[^" + lsJoin + "]*)";
+                    case "exactly":
+                        return "(^|\\s" + lsJoin + ")(" + str + ")(?=$|\\s" + lsJoin + ")";
+                }
+            }
+        }, {
+            key: "getSeparatedKeywords",
+            value: function getSeparatedKeywords(sv) {
+                var _this2 = this;
+
+                var stack = [];
+                sv.forEach(function (kw) {
+                    if (!_this2.opt.separateWordSearch) {
+                        if (kw.trim() && stack.indexOf(kw) === -1) {
+                            stack.push(kw);
+                        }
+                    } else {
+                        kw.split(" ").forEach(function (kwSplitted) {
+                            if (kwSplitted.trim() && stack.indexOf(kwSplitted) === -1) {
+                                stack.push(kwSplitted);
+                            }
+                        });
+                    }
+                });
+                return {
+                    "keywords": stack.sort(function (a, b) {
+                        return b.length - a.length;
+                    }),
+                    "length": stack.length
+                };
+            }
+        }, {
+            key: "isNumeric",
+            value: function isNumeric(value) {
+                return Number(parseFloat(value)) == value;
+            }
+        }, {
+            key: "checkRanges",
+            value: function checkRanges(array) {
+                var _this3 = this;
+
+                if (!Array.isArray(array) || Object.prototype.toString.call(array[0]) !== "[object Object]") {
+                    this.log("markRanges() will only accept an array of objects");
+                    this.opt.noMatch(array);
+                    return [];
+                }
+                var stack = [];
+                var last = 0;
+                array.sort(function (a, b) {
+                    return a.start - b.start;
+                }).forEach(function (item) {
+                    var _callNoMatchOnInvalid = _this3.callNoMatchOnInvalidRanges(item, last),
+                        start = _callNoMatchOnInvalid.start,
+                        end = _callNoMatchOnInvalid.end,
+                        valid = _callNoMatchOnInvalid.valid;
+
+                    if (valid) {
+                        item.start = start;
+                        item.length = end - start;
+                        stack.push(item);
+                        last = end;
+                    }
+                });
+                return stack;
+            }
+        }, {
+            key: "callNoMatchOnInvalidRanges",
+            value: function callNoMatchOnInvalidRanges(range, last) {
+                var start = void 0,
+                    end = void 0,
+                    valid = false;
+                if (range && typeof range.start !== "undefined") {
+                    start = parseInt(range.start, 10);
+                    end = start + parseInt(range.length, 10);
+
+                    if (this.isNumeric(range.start) && this.isNumeric(range.length) && end - last > 0 && end - start > 0) {
+                        valid = true;
+                    } else {
+                        this.log("Ignoring invalid or overlapping range: " + ("" + JSON.stringify(range)));
+                        this.opt.noMatch(range);
+                    }
+                } else {
+                    this.log("Ignoring invalid range: " + JSON.stringify(range));
+                    this.opt.noMatch(range);
+                }
+                return {
+                    start: start,
+                    end: end,
+                    valid: valid
+                };
+            }
+        }, {
+            key: "checkWhitespaceRanges",
+            value: function checkWhitespaceRanges(range, originalLength, string) {
+                var end = void 0,
+                    valid = true,
+                    max = string.length,
+                    offset = originalLength - max,
+                    start = parseInt(range.start, 10) - offset;
+
+                start = start > max ? max : start;
+                end = start + parseInt(range.length, 10);
+                if (end > max) {
+                    end = max;
+                    this.log("End range automatically set to the max value of " + max);
+                }
+                if (start < 0 || end - start < 0 || start > max || end > max) {
+                    valid = false;
+                    this.log("Invalid range: " + JSON.stringify(range));
+                    this.opt.noMatch(range);
+                } else if (string.substring(start, end).replace(/\s+/g, "") === "") {
+                    valid = false;
+
+                    this.log("Skipping whitespace only range: " + JSON.stringify(range));
+                    this.opt.noMatch(range);
+                }
+                return {
+                    start: start,
+                    end: end,
+                    valid: valid
+                };
+            }
+        }, {
+            key: "getTextNodes",
+            value: function getTextNodes(cb) {
+                var _this4 = this;
+
+                var val = "",
+                    nodes = [];
+                this.iterator.forEachNode(NodeFilter.SHOW_TEXT, function (node) {
+                    nodes.push({
+                        start: val.length,
+                        end: (val += node.textContent).length,
+                        node: node
+                    });
+                }, function (node) {
+                    if (_this4.matchesExclude(node.parentNode)) {
+                        return NodeFilter.FILTER_REJECT;
+                    } else {
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                }, function () {
+                    cb({
+                        value: val,
+                        nodes: nodes
+                    });
+                });
+            }
+        }, {
+            key: "matchesExclude",
+            value: function matchesExclude(el) {
+                return DOMIterator.matches(el, this.opt.exclude.concat(["script", "style", "title", "head", "html"]));
+            }
+        }, {
+            key: "wrapRangeInTextNode",
+            value: function wrapRangeInTextNode(node, start, end) {
+                var hEl = !this.opt.element ? "mark" : this.opt.element,
+                    startNode = node.splitText(start),
+                    ret = startNode.splitText(end - start);
+                var repl = document.createElement(hEl);
+                repl.setAttribute("data-markjs", "true");
+                if (this.opt.className) {
+                    repl.setAttribute("class", this.opt.className);
+                }
+                repl.textContent = startNode.textContent;
+                startNode.parentNode.replaceChild(repl, startNode);
+                return ret;
+            }
+        }, {
+            key: "wrapRangeInMappedTextNode",
+            value: function wrapRangeInMappedTextNode(dict, start, end, filterCb, eachCb) {
+                var _this5 = this;
+
+                dict.nodes.every(function (n, i) {
+                    var sibl = dict.nodes[i + 1];
+                    if (typeof sibl === "undefined" || sibl.start > start) {
+                        if (!filterCb(n.node)) {
+                            return false;
+                        }
+
+                        var s = start - n.start,
+                            e = (end > n.end ? n.end : end) - n.start,
+                            startStr = dict.value.substr(0, n.start),
+                            endStr = dict.value.substr(e + n.start);
+                        n.node = _this5.wrapRangeInTextNode(n.node, s, e);
+
+                        dict.value = startStr + endStr;
+                        dict.nodes.forEach(function (k, j) {
+                            if (j >= i) {
+                                if (dict.nodes[j].start > 0 && j !== i) {
+                                    dict.nodes[j].start -= e;
+                                }
+                                dict.nodes[j].end -= e;
+                            }
+                        });
+                        end -= e;
+                        eachCb(n.node.previousSibling, n.start);
+                        if (end > n.end) {
+                            start = n.end;
+                        } else {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            }
+        }, {
+            key: "wrapMatches",
+            value: function wrapMatches(regex, ignoreGroups, filterCb, eachCb, endCb) {
+                var _this6 = this;
+
+                var matchIdx = ignoreGroups === 0 ? 0 : ignoreGroups + 1;
+                this.getTextNodes(function (dict) {
+                    dict.nodes.forEach(function (node) {
+                        node = node.node;
+                        var match = void 0;
+                        while ((match = regex.exec(node.textContent)) !== null && match[matchIdx] !== "") {
+                            if (!filterCb(match[matchIdx], node)) {
+                                continue;
+                            }
+                            var pos = match.index;
+                            if (matchIdx !== 0) {
+                                for (var i = 1; i < matchIdx; i++) {
+                                    pos += match[i].length;
+                                }
+                            }
+                            node = _this6.wrapRangeInTextNode(node, pos, pos + match[matchIdx].length);
+                            eachCb(node.previousSibling);
+
+                            regex.lastIndex = 0;
+                        }
+                    });
+                    endCb();
+                });
+            }
+        }, {
+            key: "wrapMatchesAcrossElements",
+            value: function wrapMatchesAcrossElements(regex, ignoreGroups, filterCb, eachCb, endCb) {
+                var _this7 = this;
+
+                var matchIdx = ignoreGroups === 0 ? 0 : ignoreGroups + 1;
+                this.getTextNodes(function (dict) {
+                    var match = void 0;
+                    while ((match = regex.exec(dict.value)) !== null && match[matchIdx] !== "") {
+                        var start = match.index;
+                        if (matchIdx !== 0) {
+                            for (var i = 1; i < matchIdx; i++) {
+                                start += match[i].length;
+                            }
+                        }
+                        var end = start + match[matchIdx].length;
+
+                        _this7.wrapRangeInMappedTextNode(dict, start, end, function (node) {
+                            return filterCb(match[matchIdx], node);
+                        }, function (node, lastIndex) {
+                            regex.lastIndex = lastIndex;
+                            eachCb(node);
+                        });
+                    }
+                    endCb();
+                });
+            }
+        }, {
+            key: "wrapRangeFromIndex",
+            value: function wrapRangeFromIndex(ranges, filterCb, eachCb, endCb) {
+                var _this8 = this;
+
+                this.getTextNodes(function (dict) {
+                    var originalLength = dict.value.length;
+                    ranges.forEach(function (range, counter) {
+                        var _checkWhitespaceRange = _this8.checkWhitespaceRanges(range, originalLength, dict.value),
+                            start = _checkWhitespaceRange.start,
+                            end = _checkWhitespaceRange.end,
+                            valid = _checkWhitespaceRange.valid;
+
+                        if (valid) {
+                            _this8.wrapRangeInMappedTextNode(dict, start, end, function (node) {
+                                return filterCb(node, range, dict.value.substring(start, end), counter);
+                            }, function (node) {
+                                eachCb(node, range);
+                            });
+                        }
+                    });
+                    endCb();
+                });
+            }
+        }, {
+            key: "unwrapMatches",
+            value: function unwrapMatches(node) {
+                var parent = node.parentNode;
+                var docFrag = document.createDocumentFragment();
+                while (node.firstChild) {
+                    docFrag.appendChild(node.removeChild(node.firstChild));
+                }
+                parent.replaceChild(docFrag, node);
+                if (!this.ie) {
+                    parent.normalize();
+                } else {
+                    this.normalizeTextNode(parent);
+                }
+            }
+        }, {
+            key: "normalizeTextNode",
+            value: function normalizeTextNode(node) {
+                if (!node) {
+                    return;
+                }
+                if (node.nodeType === 3) {
+                    while (node.nextSibling && node.nextSibling.nodeType === 3) {
+                        node.nodeValue += node.nextSibling.nodeValue;
+                        node.parentNode.removeChild(node.nextSibling);
+                    }
+                } else {
+                    this.normalizeTextNode(node.firstChild);
+                }
+                this.normalizeTextNode(node.nextSibling);
+            }
+        }, {
+            key: "markRegExp",
+            value: function markRegExp(regexp, opt) {
+                var _this9 = this;
+
+                this.opt = opt;
+                this.log("Searching with expression \"" + regexp + "\"");
+                var totalMatches = 0,
+                    fn = "wrapMatches";
+                var eachCb = function eachCb(element) {
+                    totalMatches++;
+                    _this9.opt.each(element);
+                };
+                if (this.opt.acrossElements) {
+                    fn = "wrapMatchesAcrossElements";
+                }
+                this[fn](regexp, this.opt.ignoreGroups, function (match, node) {
+                    return _this9.opt.filter(node, match, totalMatches);
+                }, eachCb, function () {
+                    if (totalMatches === 0) {
+                        _this9.opt.noMatch(regexp);
+                    }
+                    _this9.opt.done(totalMatches);
+                });
+            }
+        }, {
+            key: "mark",
+            value: function mark(sv, opt) {
+                var _this10 = this;
+
+                this.opt = opt;
+                var totalMatches = 0,
+                    fn = "wrapMatches";
+
+                var _getSeparatedKeywords = this.getSeparatedKeywords(typeof sv === "string" ? [sv] : sv),
+                    kwArr = _getSeparatedKeywords.keywords,
+                    kwArrLen = _getSeparatedKeywords.length,
+                    sens = this.opt.caseSensitive ? "" : "i",
+                    handler = function handler(kw) {
+                    var regex = new RegExp(_this10.createRegExp(kw), "gm" + sens),
+                        matches = 0;
+                    _this10.log("Searching with expression \"" + regex + "\"");
+                    _this10[fn](regex, 1, function (term, node) {
+                        return _this10.opt.filter(node, kw, totalMatches, matches);
+                    }, function (element) {
+                        matches++;
+                        totalMatches++;
+                        _this10.opt.each(element);
+                    }, function () {
+                        if (matches === 0) {
+                            _this10.opt.noMatch(kw);
+                        }
+                        if (kwArr[kwArrLen - 1] === kw) {
+                            _this10.opt.done(totalMatches);
+                        } else {
+                            handler(kwArr[kwArr.indexOf(kw) + 1]);
+                        }
+                    });
+                };
+
+                if (this.opt.acrossElements) {
+                    fn = "wrapMatchesAcrossElements";
+                }
+                if (kwArrLen === 0) {
+                    this.opt.done(totalMatches);
+                } else {
+                    handler(kwArr[0]);
+                }
+            }
+        }, {
+            key: "markRanges",
+            value: function markRanges(rawRanges, opt) {
+                var _this11 = this;
+
+                this.opt = opt;
+                var totalMatches = 0,
+                    ranges = this.checkRanges(rawRanges);
+                if (ranges && ranges.length) {
+                    this.log("Starting to mark with the following ranges: " + JSON.stringify(ranges));
+                    this.wrapRangeFromIndex(ranges, function (node, range, match, counter) {
+                        return _this11.opt.filter(node, range, match, counter);
+                    }, function (element, range) {
+                        totalMatches++;
+                        _this11.opt.each(element, range);
+                    }, function () {
+                        _this11.opt.done(totalMatches);
+                    });
+                } else {
+                    this.opt.done(totalMatches);
+                }
+            }
+        }, {
+            key: "unmark",
+            value: function unmark(opt) {
+                var _this12 = this;
+
+                this.opt = opt;
+                var sel = this.opt.element ? this.opt.element : "*";
+                sel += "[data-markjs]";
+                if (this.opt.className) {
+                    sel += "." + this.opt.className;
+                }
+                this.log("Removal selector \"" + sel + "\"");
+                this.iterator.forEachNode(NodeFilter.SHOW_ELEMENT, function (node) {
+                    _this12.unwrapMatches(node);
+                }, function (node) {
+                    var matchesSel = DOMIterator.matches(node, sel),
+                        matchesExclude = _this12.matchesExclude(node);
+                    if (!matchesSel || matchesExclude) {
+                        return NodeFilter.FILTER_REJECT;
+                    } else {
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                }, this.opt.done);
+            }
+        }, {
+            key: "opt",
+            set: function set(val) {
+                this._opt = _extends({}, {
+                    "element": "",
+                    "className": "",
+                    "exclude": [],
+                    "iframes": false,
+                    "iframesTimeout": 5000,
+                    "separateWordSearch": true,
+                    "diacritics": true,
+                    "synonyms": {},
+                    "accuracy": "partially",
+                    "acrossElements": false,
+                    "caseSensitive": false,
+                    "ignoreJoiners": false,
+                    "ignoreGroups": 0,
+                    "ignorePunctuation": [],
+                    "wildcards": "disabled",
+                    "each": function each() {},
+                    "noMatch": function noMatch() {},
+                    "filter": function filter() {
+                        return true;
+                    },
+                    "done": function done() {},
+                    "debug": false,
+                    "log": window.console
+                }, val);
+            },
+            get: function get() {
+                return this._opt;
+            }
+        }, {
+            key: "iterator",
+            get: function get() {
+                return new DOMIterator(this.ctx, this.opt.iframes, this.opt.exclude, this.opt.iframesTimeout);
+            }
+        }]);
+
+        return Mark;
+    }();
+
+    var DOMIterator = function () {
+        function DOMIterator(ctx) {
+            var iframes = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+            var exclude = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+            var iframesTimeout = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 5000;
+
+            _classCallCheck(this, DOMIterator);
+
+            this.ctx = ctx;
+
+            this.iframes = iframes;
+
+            this.exclude = exclude;
+
+            this.iframesTimeout = iframesTimeout;
+        }
+
+        _createClass(DOMIterator, [{
+            key: "getContexts",
+            value: function getContexts() {
+                var ctx = void 0,
+                    filteredCtx = [];
+                if (typeof this.ctx === "undefined" || !this.ctx) {
+                    ctx = [];
+                } else if (NodeList.prototype.isPrototypeOf(this.ctx)) {
+                    ctx = Array.prototype.slice.call(this.ctx);
+                } else if (Array.isArray(this.ctx)) {
+                    ctx = this.ctx;
+                } else if (typeof this.ctx === "string") {
+                    ctx = Array.prototype.slice.call(document.querySelectorAll(this.ctx));
+                } else {
+                    ctx = [this.ctx];
+                }
+
+                ctx.forEach(function (ctx) {
+                    var isDescendant = filteredCtx.filter(function (contexts) {
+                        return contexts.contains(ctx);
+                    }).length > 0;
+                    if (filteredCtx.indexOf(ctx) === -1 && !isDescendant) {
+                        filteredCtx.push(ctx);
+                    }
+                });
+                return filteredCtx;
+            }
+        }, {
+            key: "getIframeContents",
+            value: function getIframeContents(ifr, successFn) {
+                var errorFn = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
+
+                var doc = void 0;
+                try {
+                    var ifrWin = ifr.contentWindow;
+                    doc = ifrWin.document;
+                    if (!ifrWin || !doc) {
+                        throw new Error("iframe inaccessible");
+                    }
+                } catch (e) {
+                    errorFn();
+                }
+                if (doc) {
+                    successFn(doc);
+                }
+            }
+        }, {
+            key: "isIframeBlank",
+            value: function isIframeBlank(ifr) {
+                var bl = "about:blank",
+                    src = ifr.getAttribute("src").trim(),
+                    href = ifr.contentWindow.location.href;
+                return href === bl && src !== bl && src;
+            }
+        }, {
+            key: "observeIframeLoad",
+            value: function observeIframeLoad(ifr, successFn, errorFn) {
+                var _this13 = this;
+
+                var called = false,
+                    tout = null;
+                var listener = function listener() {
+                    if (called) {
+                        return;
+                    }
+                    called = true;
+                    clearTimeout(tout);
+                    try {
+                        if (!_this13.isIframeBlank(ifr)) {
+                            ifr.removeEventListener("load", listener);
+                            _this13.getIframeContents(ifr, successFn, errorFn);
+                        }
+                    } catch (e) {
+                        errorFn();
+                    }
+                };
+                ifr.addEventListener("load", listener);
+                tout = setTimeout(listener, this.iframesTimeout);
+            }
+        }, {
+            key: "onIframeReady",
+            value: function onIframeReady(ifr, successFn, errorFn) {
+                try {
+                    if (ifr.contentWindow.document.readyState === "complete") {
+                        if (this.isIframeBlank(ifr)) {
+                            this.observeIframeLoad(ifr, successFn, errorFn);
+                        } else {
+                            this.getIframeContents(ifr, successFn, errorFn);
+                        }
+                    } else {
+                        this.observeIframeLoad(ifr, successFn, errorFn);
+                    }
+                } catch (e) {
+                    errorFn();
+                }
+            }
+        }, {
+            key: "waitForIframes",
+            value: function waitForIframes(ctx, done) {
+                var _this14 = this;
+
+                var eachCalled = 0;
+                this.forEachIframe(ctx, function () {
+                    return true;
+                }, function (ifr) {
+                    eachCalled++;
+                    _this14.waitForIframes(ifr.querySelector("html"), function () {
+                        if (! --eachCalled) {
+                            done();
+                        }
+                    });
+                }, function (handled) {
+                    if (!handled) {
+                        done();
+                    }
+                });
+            }
+        }, {
+            key: "forEachIframe",
+            value: function forEachIframe(ctx, filter, each) {
+                var _this15 = this;
+
+                var end = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : function () {};
+
+                var ifr = ctx.querySelectorAll("iframe"),
+                    open = ifr.length,
+                    handled = 0;
+                ifr = Array.prototype.slice.call(ifr);
+                var checkEnd = function checkEnd() {
+                    if (--open <= 0) {
+                        end(handled);
+                    }
+                };
+                if (!open) {
+                    checkEnd();
+                }
+                ifr.forEach(function (ifr) {
+                    if (DOMIterator.matches(ifr, _this15.exclude)) {
+                        checkEnd();
+                    } else {
+                        _this15.onIframeReady(ifr, function (con) {
+                            if (filter(ifr)) {
+                                handled++;
+                                each(con);
+                            }
+                            checkEnd();
+                        }, checkEnd);
+                    }
+                });
+            }
+        }, {
+            key: "createIterator",
+            value: function createIterator(ctx, whatToShow, filter) {
+                return document.createNodeIterator(ctx, whatToShow, filter, false);
+            }
+        }, {
+            key: "createInstanceOnIframe",
+            value: function createInstanceOnIframe(contents) {
+                return new DOMIterator(contents.querySelector("html"), this.iframes);
+            }
+        }, {
+            key: "compareNodeIframe",
+            value: function compareNodeIframe(node, prevNode, ifr) {
+                var compCurr = node.compareDocumentPosition(ifr),
+                    prev = Node.DOCUMENT_POSITION_PRECEDING;
+                if (compCurr & prev) {
+                    if (prevNode !== null) {
+                        var compPrev = prevNode.compareDocumentPosition(ifr),
+                            after = Node.DOCUMENT_POSITION_FOLLOWING;
+                        if (compPrev & after) {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }, {
+            key: "getIteratorNode",
+            value: function getIteratorNode(itr) {
+                var prevNode = itr.previousNode();
+                var node = void 0;
+                if (prevNode === null) {
+                    node = itr.nextNode();
+                } else {
+                    node = itr.nextNode() && itr.nextNode();
+                }
+                return {
+                    prevNode: prevNode,
+                    node: node
+                };
+            }
+        }, {
+            key: "checkIframeFilter",
+            value: function checkIframeFilter(node, prevNode, currIfr, ifr) {
+                var key = false,
+                    handled = false;
+                ifr.forEach(function (ifrDict, i) {
+                    if (ifrDict.val === currIfr) {
+                        key = i;
+                        handled = ifrDict.handled;
+                    }
+                });
+                if (this.compareNodeIframe(node, prevNode, currIfr)) {
+                    if (key === false && !handled) {
+                        ifr.push({
+                            val: currIfr,
+                            handled: true
+                        });
+                    } else if (key !== false && !handled) {
+                        ifr[key].handled = true;
+                    }
+                    return true;
+                }
+                if (key === false) {
+                    ifr.push({
+                        val: currIfr,
+                        handled: false
+                    });
+                }
+                return false;
+            }
+        }, {
+            key: "handleOpenIframes",
+            value: function handleOpenIframes(ifr, whatToShow, eCb, fCb) {
+                var _this16 = this;
+
+                ifr.forEach(function (ifrDict) {
+                    if (!ifrDict.handled) {
+                        _this16.getIframeContents(ifrDict.val, function (con) {
+                            _this16.createInstanceOnIframe(con).forEachNode(whatToShow, eCb, fCb);
+                        });
+                    }
+                });
+            }
+        }, {
+            key: "iterateThroughNodes",
+            value: function iterateThroughNodes(whatToShow, ctx, eachCb, filterCb, doneCb) {
+                var _this17 = this;
+
+                var itr = this.createIterator(ctx, whatToShow, filterCb);
+                var ifr = [],
+                    elements = [],
+                    node = void 0,
+                    prevNode = void 0,
+                    retrieveNodes = function retrieveNodes() {
+                    var _getIteratorNode = _this17.getIteratorNode(itr);
+
+                    prevNode = _getIteratorNode.prevNode;
+                    node = _getIteratorNode.node;
+
+                    return node;
+                };
+                while (retrieveNodes()) {
+                    if (this.iframes) {
+                        this.forEachIframe(ctx, function (currIfr) {
+                            return _this17.checkIframeFilter(node, prevNode, currIfr, ifr);
+                        }, function (con) {
+                            _this17.createInstanceOnIframe(con).forEachNode(whatToShow, function (ifrNode) {
+                                return elements.push(ifrNode);
+                            }, filterCb);
+                        });
+                    }
+
+                    elements.push(node);
+                }
+                elements.forEach(function (node) {
+                    eachCb(node);
+                });
+                if (this.iframes) {
+                    this.handleOpenIframes(ifr, whatToShow, eachCb, filterCb);
+                }
+                doneCb();
+            }
+        }, {
+            key: "forEachNode",
+            value: function forEachNode(whatToShow, each, filter) {
+                var _this18 = this;
+
+                var done = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : function () {};
+
+                var contexts = this.getContexts();
+                var open = contexts.length;
+                if (!open) {
+                    done();
+                }
+                contexts.forEach(function (ctx) {
+                    var ready = function ready() {
+                        _this18.iterateThroughNodes(whatToShow, ctx, each, filter, function () {
+                            if (--open <= 0) {
+                                done();
+                            }
+                        });
+                    };
+
+                    if (_this18.iframes) {
+                        _this18.waitForIframes(ctx, ready);
+                    } else {
+                        ready();
+                    }
+                });
+            }
+        }], [{
+            key: "matches",
+            value: function matches(element, selector) {
+                var selectors = typeof selector === "string" ? [selector] : selector,
+                    fn = element.matches || element.matchesSelector || element.msMatchesSelector || element.mozMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector;
+                if (fn) {
+                    var match = false;
+                    selectors.every(function (sel) {
+                        if (fn.call(element, sel)) {
+                            match = true;
+                            return false;
+                        }
+                        return true;
+                    });
+                    return match;
+                } else {
+                    return false;
+                }
+            }
+        }]);
+
+        return DOMIterator;
+    }();
+
+    $.fn.mark = function (sv, opt) {
+        new Mark(this.get()).mark(sv, opt);
+        return this;
+    };
+    $.fn.markRegExp = function (regexp, opt) {
+        new Mark(this.get()).markRegExp(regexp, opt);
+        return this;
+    };
+    $.fn.markRanges = function (ranges, opt) {
+        new Mark(this.get()).markRanges(ranges, opt);
+        return this;
+    };
+    $.fn.unmark = function (opt) {
+        new Mark(this.get()).unmark(opt);
+        return this;
+    };
+    return $;
+}, window, document);
+
+/*!***************************************************
+ * datatables.mark.js v2.0.1
+ * https://github.com/julmot/datatables.mark.js
+ * Copyright (c) 2016–2017, Julian Motz
+ * Released under the MIT license https://git.io/voRZ7
+ *****************************************************/
+
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+(function (factory, window, document) {
+  if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
+    var jquery = require('jquery');
+    require('datatables.net');
+    require('mark.js/dist/jquery.mark.js');
+    module.exports = factory(window, document, jquery);
+  } else if (typeof define === 'function' && define.amd) {
+    define(['jquery', 'datatables.net', 'markjs'], function (jQuery) {
+      return factory(window, document, jQuery);
+    });
+  } else {
+    factory(window, document, jQuery);
+  }
+})(function (window, document, $) {
+  var MarkDataTables = function () {
+    function MarkDataTables(dtInstance, options) {
+      _classCallCheck(this, MarkDataTables);
+
+      if (!$.fn.mark || !$.fn.unmark) {
+        throw new Error('jquery.mark.js is necessary for datatables.mark.js');
+      }
+      this.instance = dtInstance;
+      this.options = (typeof options === 'undefined' ? 'undefined' : _typeof(options)) === 'object' ? options : {};
+      this.intervalThreshold = 49;
+      this.intervalMs = 300;
+      this.initMarkListener();
+    }
+
+    _createClass(MarkDataTables, [{
+      key: 'initMarkListener',
+      value: function initMarkListener() {
+        var _this = this;
+
+        var ev = 'draw.dt.dth column-visibility.dt.dth column-reorder.dt.dth';
+        var intvl = null;
+        this.instance.on(ev, function () {
+          var rows = _this.instance.rows({
+            filter: 'applied',
+            page: 'current'
+          }).nodes().length;
+          if (rows > _this.intervalThreshold) {
+            clearTimeout(intvl);
+            intvl = setTimeout(function () {
+              _this.mark();
+            }, _this.intervalMs);
+          } else {
+            _this.mark();
+          }
+        });
+        this.instance.on('destroy', function () {
+          _this.instance.off(ev);
+        });
+        this.mark();
+      }
+    }, {
+      key: 'mark',
+      value: function mark() {
+        var _this2 = this;
+
+        var globalSearch = this.instance.search();
+        $(this.instance.table().body()).unmark(this.options);
+        this.instance.columns({
+          search: 'applied',
+          page: 'current'
+        }).nodes().each(function (nodes, colIndex) {
+          var columnSearch = _this2.instance.column(colIndex).search(),
+              searchVal = columnSearch || globalSearch;
+          if (searchVal) {
+            nodes.forEach(function (node) {
+              $(node).mark(searchVal, _this2.options);
+            });
+          }
+        });
+      }
+    }]);
+
+    return MarkDataTables;
+  }();
+
+  $(document).on('init.dt.dth', function (event, settings) {
+    if (event.namespace !== 'dt') {
+      return;
+    }
+
+    var dtInstance = $.fn.dataTable.Api(settings);
+
+    var options = null;
+    if (dtInstance.init().mark) {
+      options = dtInstance.init().mark;
+    } else if ($.fn.dataTable.defaults.mark) {
+      options = $.fn.dataTable.defaults.mark;
+    }
+    if (options === null) {
+      return;
+    }
+
+    new MarkDataTables(dtInstance, options);
+  });
+}, window, document);

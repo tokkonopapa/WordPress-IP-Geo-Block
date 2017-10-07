@@ -368,13 +368,15 @@ var ip_geo_block_time = new Date();
 
 	// google chart
 	function drawChart(tabNo) {
-		if (1 === tabNo) {
-			chart.drawPie(ID('chart-countries'));
-			chart.drawLine(ID('chart-daily'), 'date');
-		} else if (5 === tabNo) {
-			$(ID('.', 'multisite')).each(function (i, obj) {
-				chart.drawLine($(obj).attr('id'), 'datetime');
-			});
+		if ('object' === typeof google) {
+			if (1 === tabNo) {
+				chart.drawPie(ID('chart-countries'));
+				chart.drawLine(ID('chart-daily'), 'date');
+			} else if (5 === tabNo) {
+				$(ID('.', 'multisite')).each(function (i, obj) {
+					chart.drawLine($(obj).attr('id'), 'datetime');
+				});
+			}
 		}
 	}
 
@@ -439,7 +441,7 @@ var ip_geo_block_time = new Date();
 
 		border = title.hasClass(ID('dropdown'));
 		if (border) {
-			body.addClass(ID('border'));
+			body.addClass(ID('border')).trigger(ID('show-body'));
 		} else {
 			body.removeClass(ID('border'));
 		}
@@ -475,7 +477,7 @@ var ip_geo_block_time = new Date();
 				if (n) {
 					$this.removeClass(ID('border'));
 				} else {
-					$this.addClass(ID('border'));
+					$this.addClass(ID('border')).trigger('show-body');
 				}
 				cookie[tabNo][i] = n ? 'x' : 'o';
 			});
@@ -517,6 +519,65 @@ var ip_geo_block_time = new Date();
 		j.setAttribute('class', 'dashicons dashicons-' + icon);
 		i.appendChild(j);
 		return i;
+	}
+
+	// DataTables
+	function initDataTable(options) {
+		var lang = window.navigator.language || window.navigator.userLanguage;
+		lang = lang.indexOf('ja') !== -1 ? 'ja-JP.json' : 'en-US.json';
+
+		$.extend( $.fn.dataTable.defaults, options, {
+			// Dom
+			dom: 'tp',
+
+			// Server side
+//			serverSide: true,
+			deferLoading: 100,
+
+			// Processing indicator
+//			processing: true,
+//			autoWidth: false,
+
+			// Interface
+//			ordering: false,
+//			searching: false,
+			info: false,
+			lengthChange: false,
+			order: [], // no initial order or [0, 'desc']
+
+			// Responsive
+			responsive: {
+				details: {
+					type: 'column',
+					target: 'td'
+//					target: 'td:nth-child(n+2)'
+				}
+			},
+/*
+			columns: [
+			{ visible: true },
+			{ visible: true },
+				null,
+				null,
+				null,
+				null,
+				null
+			],
+			fixedColumns:   {
+				leftColumns: 2
+			},
+*/
+			// Pagenation
+//			lengthMenu: [ 5, 10, 25, 50, 75, 100 ],
+//			pagingType: 'simple_numbers',
+			pagingType: 'full_numbers',
+			pageLength: 10,
+
+			// Language
+			language: {
+				url: '/wp-content/plugins/ip-geo-block/admin/datatables/i18n/' + lang
+			}
+		});
 	}
 
 	$(function () {
@@ -974,7 +1035,7 @@ var ip_geo_block_time = new Date();
 			// https://developers.google.com/loader/#Dynamic
 			initChart(tabNo);
 
-			// Statistics
+			// Statistics of validation
 			$(ID('@', 'clear_statistics')).on('click', function (event) {
 				confirm(IP_GEO_BLOCK.msg[3], function () {
 					ajax_clear('statistics', null);
@@ -982,7 +1043,7 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 
-			// Validation logs
+			// Statistics in logs
 			$(ID('@', 'clear_logs')).on('click', function (event) {
 				confirm(IP_GEO_BLOCK.msg[5], function () {
 					ajax_clear('logs', null);
@@ -991,6 +1052,34 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Statistics in cache
+			initDataTable({
+				columnDefs: [
+					{ responsivePriority:  1, targets: 0 },
+					{ responsivePriority:  2, targets: 1 },
+					{ responsivePriority:  3, targets: 2 },
+					{ responsivePriority:  4, targets: 4 },
+					{ responsivePriority:  5, targets: 5 },
+					{ responsivePriority:  6, targets: 3 },
+					{ className: "all",  targets: [0, 1] },
+					{ orderable:  false, targets: 0 },
+					{ searchable: false, targets: 0 },
+					{
+						targets: [0],
+						data: null,
+						defaultContent: '<input type="checkbox" class="select-req">'
+					}
+				],
+				columns: [
+					{ title: '<input type=\"checkbox\" class=\"select-all\">' },
+					{ title: 'IP address'   },
+					{ title: 'Country'      },
+					{ title: 'AS number'    },
+					{ title: 'Target'       },
+					{ title: 'Fails/Calls'  },
+					{ title: 'Elapsed[sec]' },
+				]
+			});
+
 			var table = $(ID('#', 'statistics-cache')).DataTable({
 				deferRender: true,
 				ajax: {
@@ -1002,18 +1091,154 @@ var ip_geo_block_time = new Date();
 						nonce: IP_GEO_BLOCK.nonce
 					}
 				},
-
-				// Enable mark.js search term highlighting
-				// https://github.com/julmot/datatables.mark.js/
-				// https://minhaskamal.github.io/DownGit/#/home
-				mark: true
+				mark: true // https://github.com/julmot/datatables.mark.js/
 			});
 
-			// Statistics
+			// Re-calculate the widths after panel-body is shown
+			$(ID('#', 'section-2')).find('.panel-body').on(ID('show-body'), function (event) {
+				table.columns.adjust().responsive.recalc();
+			})
+
+			// handle the event of checkbox for bulk action
+			.on('change', 'th input', function (event) {
+				var $this = $(this);
+				$this.closest('table').find('td input').prop('checked', $this.prop('checked'));
+			});
+
+			// Filter logs
+			$(ID('@', 'filter_cache')).on('keyup', function (event) {
+				table.search(this.value).draw();
+			});
+
+			// Reset filter
+			$(ID('#', 'reset-filter')).on('click', function (event) {
+				$(ID('@', 'filter_cache')).val('');
+				table.search('').draw();
+				return false;
+			});
+
+			// Bulk action
+			$(ID('#', 'bulk-action')).on('click', function (event) {
+				console.log($(this).prev().val());
+				return false;
+			});
+
+			// Clear cache
 			$(ID('@', 'clear_cache')).on('click', function (event) {
 				confirm(IP_GEO_BLOCK.msg[4], function () {
 					ajax_clear('cache', null);
 				});
+				return false;
+			});
+			break;
+
+		  /*----------------------------------------
+		   * Logs
+		   *----------------------------------------*/
+		  case 4:
+			// Jump to search tab with opening new window
+			$('tbody[id^="' + ID('log-') + '"]').on('click', 'a', function (event) {
+				key = window.location.pathname + window.location.search;
+				window.open(key.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''), '_blank');
+				return false;
+			});
+
+			initDataTable({
+				columnDefs: [
+					{ responsivePriority:  1, targets:  0 }, // checkbox
+					{ responsivePriority:  2, targets:  1 }, // Date
+					{ responsivePriority:  3, targets:  2 }, // IP address
+					{ responsivePriority:  4, targets:  3 }, // Country
+					{ responsivePriority:  5, targets:  5 }, // Target
+					{ responsivePriority:  6, targets:  6 }, // Status
+					{ responsivePriority:  7, targets:  4 }, // AS number
+					{ responsivePriority:  8, targets:  7 }, // Request
+					{ responsivePriority:  9, targets:  8 }, // User agent
+					{ responsivePriority: 10, targets:  9 }, // HTTP headers
+					{ responsivePriority: 11, targets: 10 }, // HTTP headers
+					{ className: "all",  targets: [0, 1] },
+					{ orderable:  false, targets: 0 },
+					{ searchable: false, targets: 0 },
+					{
+						targets: [0],
+						data: null,
+						defaultContent: '<input type="checkbox" class="select-req">'
+					}
+				],
+				columns: [
+					{ title: '<input type=\"checkbox\" class=\"select-all\">' },
+					{ title: 'Date'         }, //  1
+					{ title: 'IP address'   }, //  2
+					{ title: 'Country'      }, //  3
+					{ title: 'AS number'    }, //  4
+					{ title: 'Target'       }, //  5
+					{ title: 'Status'       }, //  6
+					{ title: 'Request'      }, //  7
+					{ title: 'User agent'   }, //  8
+					{ title: 'HTTP headers' }, //  9
+					{ title: '$_POST data'  }, // 10
+				]
+			});
+
+			var table = $(ID('#', 'validation-logs')).DataTable({
+				deferRender: true,
+				ajax: {
+					url: IP_GEO_BLOCK.url,
+					type: 'POST',
+					data: {
+						cmd: 'restore',
+						which: null,
+						time: new Date() - ip_geo_block_time,
+						action: IP_GEO_BLOCK.action,
+						nonce: IP_GEO_BLOCK.nonce
+					}
+				},
+				mark: true // https://github.com/julmot/datatables.mark.js/
+			});
+
+			// Re-calculate the widths after panel-body is shown
+			$(ID('#', 'section-0')).find('.panel-body').on(ID('show-body'), function (event) {
+				table.columns.adjust().responsive.recalc();
+			})
+
+			// handle the event of checkbox for bulk action
+			.on('change', 'th input', function (event) {
+				var $this = $(this);
+				$this.closest('table').find('td input').prop('checked', $this.prop('checked'));
+			});
+
+			// Filter logs
+			$(ID('@', 'filter_logs')).on('keyup', function (event) {
+				table.search(this.value).draw();
+			});
+
+			// Reset filter
+			$(ID('#', 'reset-filter')).on('click', function (event) {
+				$(ID('@', 'filter_logs')).val('');
+				table.search('').draw();
+				return false;
+			});
+
+			// Bulk action
+			$(ID('#', 'bulk-action')).on('click', function (event) {
+				console.log($(this).prev().val());
+				return false;
+			});
+
+			// Validation logs
+			$(ID('@', 'clear_logs')).on('click', function (event) {
+				confirm(IP_GEO_BLOCK.msg[5], function () {
+					ajax_clear('logs', null);
+				});
+				return false;
+			});
+
+			// Export / Import settings
+			add_hidden_form('export-logs');
+
+			// Export logs
+			$(ID('#', 'export-logs')).on('click', function (event) {
+				$(ID('#', 'export-form')).submit();
 				return false;
 			});
 			break;
@@ -1145,86 +1370,6 @@ var ip_geo_block_time = new Date();
 			if ($(ID('@', 'ip_address')).val()) {
 				$(ID('@', 'get_location')).click();
 			}
-			break;
-
-		  /*----------------------------------------
-		   * Logs
-		   *----------------------------------------*/
-		  case 4:
-			// Kick-off footable
-			ajax_post('logs', {
-				cmd: 'restore',
-				which: null,
-				time: new Date() - ip_geo_block_time
-			}, function (data) {
-				var key;
-				for (key in data) {
-					if (data.hasOwnProperty(key)) {
-						key = escapeHTML(key); // data has been already sanitized
-//						$(ID('#', 'log-' + key)).html($.parseHTML(data[key])); // jQuery 1.8+
-						$(ID('#', 'log-' + key)).html(data[key]);
-					}
-				}
-
-				if (typeof $.fn.footable === 'function') {
-					var logs = $(ID('.', 'log')),
-					    title = logs.parent().prevAll('legend').find('h2,h3');
-
-					// Once open section
-					title.removeClass(ID('dropup')).addClass(ID('dropdown'));
-
-					// Then make footable
-					logs.fadeIn('slow').footable();
-
-					// Finaly close section
-					title.each(function (i, obj) {
-						if ('x' === (cookie[tabNo][i+1] || 'o')) {
-							cookie[tabNo][i+1] = 'o';
-							$(obj).click();
-						}
-					});
-				}
-
-				// Jump to search tab with opening new window
-				$('tbody[id^="' + ID('log-') + '"]').on('click', 'a', function (event) {
-					key = window.location.pathname + window.location.search;
-					window.open(key.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''), '_blank');
-					return false;
-				});
-			});
-
-			// Clear filter
-			$(ID('#', 'reset-filter')).on('click', function (event) {
-				$('.footable').trigger('footable_clear_filter');
-				return false;
-			});
-
-			// Preset filter
-			$(ID('.', 'field')).on('footable_initialized', function (event) {
-				$('.footable').trigger(
-					'footable_filter', {
-						'filter': $(ID('@', 'filter_logs')).val()
-					}
-				);
-				return false;
-			});
-
-			// Validation logs
-			$(ID('@', 'clear_logs')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[5], function () {
-					ajax_clear('logs', null);
-				});
-				return false;
-			});
-
-			// Export / Import settings
-			add_hidden_form('export-logs');
-
-			// Export logs
-			$(ID('#', 'export-logs')).on('click', function (event) {
-				$(ID('#', 'export-form')).submit();
-				return false;
-			});
 			break;
 
 		  /*----------------------------------------

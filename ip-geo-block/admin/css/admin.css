@@ -272,143 +272,6 @@ table.ip-geo-block-table td:first-child {
     }
 }
 
-/* for footable */
-#ip-geo-block-1 #ip-geo-block-section-2 .panel-body {
-    padding: 0;
-}
-#ip-geo-block-4 #ip-geo-block-section-1 .panel-body,
-#ip-geo-block-4 #ip-geo-block-section-2 .panel-body,
-#ip-geo-block-4 #ip-geo-block-section-3 .panel-body,
-#ip-geo-block-4 #ip-geo-block-section-4 .panel-body,
-#ip-geo-block-4 #ip-geo-block-section-5 .panel-body {
-    padding: 0;
-    display: table-cell;
-/*  border-collapse: collapse; *//* Bug of IE10, IE11 */
-}
-.ip-geo-block-log {
-    width: 100% !important;
-    margin: 0.5em 0;
-}
-.ip-geo-block-log * {
-    font-size: 13px !important;
-    line-height: 1.5em;
-    vertical-align: middle;
-}
-.ip-geo-block-log .pagination ul {
-    border-radius: 4px;
-    display: inline-block;
-    margin: 0.5em 0 0 0;
-    padding: 0;
-}
-.ip-geo-block-log .pagination ul > li {
-    display: inline;
-}
-.ip-geo-block-log .pagination ul > li:first-child > a,
-.ip-geo-block-log .pagination ul > li:first-child > span {
-    border-bottom-left-radius: 4px;
-    border-left-width: 1px;
-    border-top-left-radius: 4px;
-}
-.ip-geo-block-log .pagination ul > li:last-child > a,
-.ip-geo-block-log .pagination ul > li:last-child > span {
-    border-bottom-right-radius: 4px;
-    border-top-right-radius: 4px;
-}
-.ip-geo-block-log .pagination ul > .disabled > span,
-.ip-geo-block-log .pagination ul > .disabled > a,
-.ip-geo-block-log .pagination ul > .disabled > a:hover,
-.ip-geo-block-log .pagination ul > .disabled > a:focus {
-    background-color: transparent;
-    color: #999;
-    cursor: default;
-}
-.ip-geo-block-log .pagination ul > li > a,
-.ip-geo-block-log .pagination ul > li > span {
-    border-color: #ddd;
-    border-image: none;
-    border-style: solid;
-    border-width: 1px 1px 1px 0;
-    float: left;
-    line-height: 20px;
-    padding: 4px;
-    width: 20px;
-    text-decoration: none;
-}
-.ip-geo-block-log .pagination ul > .active > a,
-.ip-geo-block-log .pagination ul > .active > span {
-    color: #999;
-    cursor: default;
-}
-.ip-geo-block-log .pagination ul > li > a:hover,
-.ip-geo-block-log .pagination ul > li > a:focus,
-.ip-geo-block-log .pagination ul > .active > a,
-.ip-geo-block-log .pagination ul > .active > span {
-    background-color: #f7f7f7;
-}
-.ip-geo-block-log .pagination-centered {
-    text-align: center;
-}
-.ip-geo-block-log.breakpoint > tbody > tr > td > span.footable-toggle {
-    font-size: 60% !important;
-    position: relative;
-    top: -1px;
-    left: 2px;
-}
-.ip-geo-block-log > thead > tr > th,
-.ip-geo-block-log > tbody > tr > td {
-    padding: 4px 0;
-    word-wrap: break-word;
-    width: 20%;
-}
-.ip-geo-block-log > thead > tr > th:first-child,
-.ip-geo-block-log > tbody > tr > td:first-child {
-    width: 25%;
-}
-.ip-geo-block-log > thead > tr > th:first-child + th,
-.ip-geo-block-log > tbody > tr > td:first-child + td {
-    width: 35%;
-}
-.ip-geo-block-log > thead > tr > th:nth-child(5),
-.ip-geo-block-log > tbody > tr > td:nth-child(5),
-.ip-geo-block-log > thead > tr > th:nth-child(5) + th,
-.ip-geo-block-log > tbody > tr > td:nth-child(5) + td {
-    width: 60%;
-    text-align: left;
-}
-@media screen and (min-width: 1024px) {
-    .ip-geo-block-log > thead > tr > th:nth-child(3),
-    .ip-geo-block-log > tbody > tr > td:nth-child(3),
-    .ip-geo-block-log > thead > tr > th:nth-child(3) + th,
-    .ip-geo-block-log > tbody > tr > td:nth-child(3) + td {
-        width: 10%;
-    }
-}
-.ip-geo-block-log > thead > tr > th > span.footable-sort-indicator {
-    color: #888;
-}
-.ip-geo-block-log > tbody > tr > td {
-    text-align: center;
-}
-.ip-geo-block-log > tbody > tr > td:first-child {
-    text-align: left;
-    padding-left: 0.5em;
-}
-.ip-geo-block-log .footable-row-detail-row,
-.ip-geo-block-log .footable-row-detail-name,
-.ip-geo-block-log .footable-row-detail-value {
-    display: block;
-}
-.ip-geo-block-log .footable-row-detail-value {
-    padding: 0 1em 4px 1em;
-    white-space: normal;
-    word-wrap: break-word;
-    word-break: break-all;
-}
-input#ip_geo_block_settings_filter_logs {
-    width: 16em;
-    padding-top: 3px;
-}
-
 /* Scan the country code */
 #ip-geo-block-scan-code {
     vertical-align: middle;
@@ -556,4 +419,219 @@ ol.ip-geo-block-top-list li code {
 .ip-geo-block-admin-post {
     color: #c43322;
     margin-left: 0.25em;
+}
+
+/*------------------------------------------------------------
+ * customizing based on jquery.dataTables.css
+ *------------------------------------------------------------*/
+table.dataTable {
+    clear: none !important;
+}
+table.dataTable th,
+table.dataTable td {
+    text-align: right;
+}
+table.dataTable th {
+    white-space: nowrap;
+}
+table.dataTable.nowrap td {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-all !important;
+}
+table.dataTable > tbody > tr {
+    cursor: pointer;
+}
+/* Checkbox */
+table.dataTable > thead > tr > th:first-child,
+table.dataTable > tbody > tr > td:first-child {
+    padding: 8px 10px;
+    text-align: left;
+    max-width: 1.25em;
+}
+table.dataTable > thead > tr > th:first-child input,
+table.dataTable > tbody > tr > td:first-child input {
+    vertical-align: baseline;
+}
+table.dataTable > thead > tr {
+    line-height: 1.8em;
+}
+table.dataTable > thead > tr > th,
+table.dataTable > thead > tr > td,
+table.dataTable.no-footer {
+    border-bottom: 1px solid #ddd;
+}
+/* Loading... */
+table.dataTable > tbody > tr > td.dataTables_empty,
+table.collapsed > tbody > tr > td.dataTables_empty:first-child::before {
+    border: none;
+    text-align: center;
+}
+/* Collapsed */
+table.collapsed > thead > tr > th:first-child {
+    padding: 8px 10px 8px 20px;
+}
+table.dataTable > thead > tr > th:first-child input,
+table.dataTable > tbody > tr > td:first-child input {
+    vertical-align: middle;
+}
+table.collapsed > tbody > tr        > td:first-child::before,
+table.collapsed > tbody > tr.parent > td:first-child::before {
+    content: '';
+    height: 0;
+    width: 0;
+    display: inline-block;
+    border-radius: 0;
+    border: 5px solid transparent;
+    box-shadow: none;
+    position: relative;
+    background-color: transparent;
+}
+table.collapsed > tbody > tr > td:first-child::before {
+    border-left: 5px solid #555;
+    top: 0;
+    left: -2px;
+}
+table.collapsed > tbody > tr.parent > td:first-child::before {
+    border-top: 5px solid #555;
+    top: 4px;
+    left: -4px;
+}
+table.collapsed > tbody > tr.child > td:first-child::before {
+    border: none;
+}
+table.collapsed > tbody > tr.child > td.child > ul li {
+    border: none;
+    padding: 0;
+    margin: 0;
+    line-height: 1.8em;
+}
+table.collapsed > tbody > tr.child > td.child > ul li span.dtr-title,
+table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
+    display: block;
+}
+table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
+    margin-left: 1.25em;
+}
+
+/* Pagenation */
+.dataTables_wrapper .dataTables_paginate {
+    float: none;
+    text-align: center;
+    margin-bottom: 1em;
+    padding-top: 0;
+}
+.dataTables_wrapper .dataTables_paginate span.ellipsis,
+.dataTables_wrapper .dataTables_paginate a.paginate_button,
+.dataTables_wrapper .dataTables_paginate a.paginate_button:hover,
+.dataTables_wrapper .dataTables_paginate a.paginate_button:active,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.current,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.current:hover,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.current:active,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.disabled:hover,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.disabled:active {
+    min-width: 2em;
+    background: inherit;
+    border-color: #ddd;
+    border-radius: 0;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px 1px 1px 0;
+    margin: 0.5em 0 0 0;
+    padding: 0.25em 0;
+    display: inline-block;
+}
+.dataTables_wrapper .dataTables_paginate a.paginate_button.first,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.first:hover,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.first:active {
+    border-left-width: 1px;
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+}
+.dataTables_wrapper .dataTables_paginate a.paginate_button.last,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.last:hover,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.last:active {
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+}
+.dataTables_wrapper .dataTables_paginate a.paginate_button {
+    color: #0073aa !important;
+}
+.dataTables_wrapper .dataTables_paginate a.paginate_button:hover {
+    color: #0096dd !important;
+    background-color: #fff;
+}
+.dataTables_wrapper .dataTables_paginate span.ellipsis,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.current,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.current:hover,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.current:active,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.disabled:hover,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.disabled:active {
+    cursor: default;
+    color: #999 !important;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+#ip-geo-block-1 #ip-geo-block-section-2 .panel-body,
+#ip-geo-block-4 #ip-geo-block-section-0 .panel-body {
+    padding: 0;
+}
+#ip-geo-block-1 #ip-geo-block-section-2 table.form-table,
+#ip-geo-block-4 #ip-geo-block-section-0 table.form-table {
+    margin-left: 1em;
+    max-width: 95%;
+}
+
+/* Filter */
+input#ip_geo_block_settings_filter_cache,
+input#ip_geo_block_settings_filter_logs {
+    width: 16em;
+    padding-top: 3px;
+}
+
+mark {
+    padding: 0;
+    background: #FFD700;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    height: 16px;
+    width: 16px;
+    margin: 0;
+}
+
+/**
+ * Statistics tab
+ */
+/* IP address */
+#ip-geo-block-1 table.dataTable > tbody > tr > td:nth-child(2) {
+    min-width: 9em;
+}
+/* Country Code */
+#ip-geo-block-1 table.dataTable > tbody > tr > td:nth-child(3) {
+    max-width: 1em;
+}
+
+/**
+ * Logs tab
+ */
+/* IP address */
+#ip-geo-block-4 table.dataTable > tbody > tr > td:nth-child(2) {
+    min-width: 10em;
+}
+@media screen and (max-width: 640px) {
+    #ip-geo-block-4 table.dataTable > tbody > tr > td:nth-child(2) {
+        min-width: 6em;
+    }
+}
+#ip-geo-block-4 table.dataTable > tbody > tr > td:nth-child(3) {
+    min-width: 9em;
+}
+/* Country Code */
+#ip-geo-block-4 table.dataTable > tbody > tr > td:nth-child(4) {
+    max-width: 1em;
 }

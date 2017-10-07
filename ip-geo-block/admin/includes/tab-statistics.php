@@ -167,7 +167,7 @@ if ( $options['save_statistics'] ) :
 				'type' => 'button',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => __( 'Clear now', 'ip-geo-block' ),
+				'value' => __( 'Clear all', 'ip-geo-block' ),
 				'after' => '<div id="'.$plugin_slug.'-statistics"></div>',
 			)
 		);
@@ -193,7 +193,7 @@ if ( $options['save_statistics'] ) :
 				'type' => 'button',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => __( 'Clear now', 'ip-geo-block' ),
+				'value' => __( 'Clear all', 'ip-geo-block' ),
 			)
 		);
 
@@ -234,6 +234,46 @@ endif;
 			$option_slug
 		);
 
+		$field = 'filter_cache';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Filter cache', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => '',
+				'after' => '<a class="button button-secondary" id="ip-geo-block-reset-filter" title="' . __( 'Reset', 'ip-geo-block' ) . '" href="javascript:void(0)">'. __( 'Reset', 'ip-geo-block' ) . '</a>',
+			)
+		);
+
+		$field = 'bulk_cache';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Bulk action', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => 0,
+				'list' => array(
+					0 => NULL,
+					'bulk-cache-remove'   => __( 'Remove from cache',                           'ip-geo-block' ),
+					'bulk-cache-ip-white' => __( 'Add IP address to &#8220;Whitelist&#8221;', 'ip-geo-block' ),
+					'bulk-cache-ip-black' => __( 'Add IP address to &#8220;Blacklist&#8221;', 'ip-geo-block' ), ) + ( $options['Maxmind']['use_asn'] <= 0 ? array() : array(
+					'bulk-cache-as-white' => __( 'Add AS number to &#8220;Whitelist&#8221;',  'ip-geo-block' ),
+					'bulk-cache-as-black' => __( 'Add AS number to &#8220;Blacklist&#8221;',  'ip-geo-block' ),
+				) ),
+				'after' => '<a class="button button-secondary" id="ip-geo-block-bulk-action" title="' . __( 'Apply', 'ip-geo-block' ) . '" href="javascript:void(0)">'. __( 'Apply', 'ip-geo-block' ) . '</a>',
+			)
+		);
+
 		$field = 'clear_cache';
 		add_settings_field(
 			$option_name.'_'.$field,
@@ -245,7 +285,7 @@ endif;
 				'type' => 'button',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => __( 'Clear now', 'ip-geo-block' ),
+				'value' => __( 'Clear all', 'ip-geo-block' ),
 				'after' => '<div id="'.$plugin_slug.'-cache"></div>',
 			)
 		);
@@ -360,17 +400,7 @@ endif;
 	 */
 	public static function statistics_cache() {
 		$option_slug = IP_Geo_Block::PLUGIN_NAME;
-		echo
-			'<table id="', $option_slug, '-statistics-cache" class="', $option_slug, '-statistics-table dataTable display nowrap" cellspacing="0" width="100%">', "\n",
-			'<thead><tr>', "\n",
-			'<th>', '<input type="checkbox" class="', $option_slug, '-select-all"></th>', "\n",
-			'<th>', __( 'IP address',                   'ip-geo-block' ), '</th>', "\n",
-			'<th>', __( 'Country code',                 'ip-geo-block' ), '</th>', "\n",
-			'<th>', __( 'AS number',                    'ip-geo-block' ), '</th>', "\n",
-			'<th>', __( 'Target',                       'ip-geo-block' ), '</th>', "\n",
-			'<th>', __( 'Elapsed&thinsp;[sec]',         'ip-geo-block' ), '</th>', "\n",
-			'<th>', __( 'Failed&thinsp;/&thinsp;Calls', 'ip-geo-block' ), '</th>', "\n",
-			'</tr></thead>', "\n", '<tbody></tbody></table>', "\n";
+		echo '<table id="', $option_slug, '-statistics-cache" class="', $option_slug, '-statistics-table dataTable display" cellspacing="0" width="100%">', "\n", '<tbody></tbody></table>', "\n";
 	}
 
 }

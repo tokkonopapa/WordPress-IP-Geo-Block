@@ -173,41 +173,13 @@ class IP_Geo_Block_Admin {
 
 		switch ( $this->admin_tab ) {
 		  case 1:
-			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-jquery-datatables-css',
-				plugins_url( 'datatables/css/jquery.dataTables.css', __FILE__ ),
-				array(), IP_Geo_Block::VERSION
-			);
-			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-datatables-responsive-css',
-				plugins_url( 'datatables/css/responsive.dataTables.css', __FILE__ ),
-				array(), IP_Geo_Block::VERSION
-			);
-			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-datatables-mark-css',
-				plugins_url( 'datatables/css/datatables.mark.css', __FILE__ ),
-				array(), IP_Geo_Block::VERSION
-			);
+		  case 4:
 			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-datatables-css',
-				plugins_url( 'css/datatables.css', __FILE__ ),
+				plugins_url( 'datatables/css/datatables-all.min.css', __FILE__ ),
 				array(), IP_Geo_Block::VERSION
-			);
-
-			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-jquery-datatables-js',
-				plugins_url( 'datatables/js/jquery.dataTables.js', __FILE__ ),
-				$dependency, IP_Geo_Block::VERSION, $footer
-			);
-			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-jquery-mark-js',
-				plugins_url( 'datatables/js/jquery.mark.js', __FILE__ ),
-				$dependency, IP_Geo_Block::VERSION, $footer
-			);
-			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-datatables-responsive-js',
-				plugins_url( 'datatables/js/dataTables.responsive.js', __FILE__ ),
-				$dependency, IP_Geo_Block::VERSION, $footer
-			);
-			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-datatables-mark-js',
-				plugins_url( 'datatables/js/datatables.mark.js', __FILE__ ),
-				$dependency, IP_Geo_Block::VERSION, $footer
 			);
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-datatables-js',
-				plugins_url( 'js/datatables.js', __FILE__ ),
+				plugins_url( 'datatables/js/datatables-all.min.js', __FILE__ ),
 				$dependency, IP_Geo_Block::VERSION, $footer
 			);
 
@@ -239,18 +211,6 @@ class IP_Geo_Block_Admin {
 				plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 					'js/whois.min.js' : 'js/whois.js', __FILE__
 				),
-				$dependency, IP_Geo_Block::VERSION, $footer
-			);
-			break;
-
-		  case 4:
-			// footable https://github.com/bradvin/FooTable
-			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-footable-css',
-				plugins_url( 'css/footable.core.min.css', __FILE__ ),
-				array(), IP_Geo_Block::VERSION
-			);
-			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-footable-js',
-				plugins_url( 'js/footable.min.js', __FILE__ ),
 				$dependency, IP_Geo_Block::VERSION, $footer
 			);
 			break;

@@ -599,7 +599,7 @@ class IP_Geo_Block {
 		// list of request for specific action or page to bypass WP-ZEP
 		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array(), $settings ), array(
 			// in wp-admin js/widget.js, includes/template.php, async-upload.php
-			'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',
+			'heartbeat', 'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',
 			// bbPress, Anti-Malware Security and Brute-Force Firewall, jetpack page & action
 			'bp_avatar_upload', 'GOTMLS_logintime', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate',
 		) );

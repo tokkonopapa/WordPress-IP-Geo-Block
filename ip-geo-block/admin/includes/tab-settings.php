@@ -447,11 +447,11 @@ endif;
 		// same as in tab-accesslog.php
 		$dfn = __( '<dfn title="Validate request to %s.">%s</dfn>', 'ip-geo-block' );
 		$target = array(
-			'comment' => sprintf( $dfn, 'wp-comments-post.php', __( 'Comment post', 'ip-geo-block' ) ),
-			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',      'ip-geo-block' ) ),
-			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',   'ip-geo-block' ) ),
-			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',   'ip-geo-block' ) ),
-			'others'  => sprintf( $dfn, 'executable files',     __( 'Other areas',  'ip-geo-block' ) ),
+			'comment' => sprintf( $dfn, 'wp-comments-post.php',                      __( 'Comment post',        'ip-geo-block' ) ),
+			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',                                __( 'XML-RPC',             'ip-geo-block' ) ),
+			'login'   => sprintf( $dfn, 'wp-login.php',                              __( 'Login form',          'ip-geo-block' ) ),
+			'admin'   => sprintf( $dfn, 'wp-admin/*.php',                            __( 'Admin area',          'ip-geo-block' ) ),
+			'others'  => sprintf( $dfn, 'executable files',                          __( 'Other areas',         'ip-geo-block' ) ),
 			'public'  => sprintf( $dfn, __( 'public facing pages', 'ip-geo-block' ), __( 'Public facing pages', 'ip-geo-block' ) ),
 		);
 

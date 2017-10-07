@@ -129,52 +129,34 @@ class IP_Geo_Block_Admin_Ajax {
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
 	static public function restore_logs( $which ) {
-		// if js is slow then limit the number of rows
-		$list = array();
-		$limit = IP_Geo_Block_Logs::limit_rows( @$_POST['time'] );
+		$options = IP_Geo_Block::get_option();
+		$res = array();
 
 		foreach ( IP_Geo_Block_Logs::restore_logs( $which ) as $row ) {
-			$hook = array_shift( $row );
-			$list[ $hook ][] = $row; // array_map( 'IP_Geo_Block_Logs::validate_utf8', $row );
+			$res[] = array(
+				'',                  // Checkbox
+				IP_Geo_Block_Util::localdate( $row[1], 'Y-m-d H:i:s' ),
+				esc_html( $row[2] ), // IP address
+				esc_html( $row[3] ), // Country code
+				esc_html( $row[5] ), // AS number
+				esc_html( $row[0] ), // Target
+				esc_html( $row[4] ), // Status
+				esc_html( $row[6] ), // Request
+				esc_html( $row[7] ), // User agent
+				esc_html( $row[8] ), // HTTP headers
+				esc_html( $row[9] ), // $_POST data
+			);
 		}
 
-		// compose html with sanitization
-		foreach ( $list as $hook => $rows ) {
-			$html = '';
-			$n = 0;
-
-			foreach ( $rows as $row ) {
-				// Time of date
-				$log = (int)array_shift( $row );
-				$html .= '<tr><td data-value='.$log.'>';
-				$html .= IP_Geo_Block_Util::localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
-
-				// IP address
-				$log = array_shift( $row );
-				$html .= '<td><a href="#!">' . esc_html( $log ) . '</a></td>';
-
-				foreach ( $row as $log ) {
-					$html .= '<td>' . esc_html( $log ) . '</td>';
-				}
-
-				$html .= "</tr>";
-				if ( ++$n >= $limit ) break;
-			}
-
-			$res[ $hook ] = $html;
-		}
-
-		return isset( $res ) ? $res : NULL;
+		return array( 'data' => $res ); // DataTables requires `data`
 	}
 
 	/**
 	 * Restore cache from MySQL DB
 	 *
-	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
 	static public function restore_cache( $which ) {
 		$options = IP_Geo_Block::get_option();
-		$count = 0;
 		$time = time();
 		$res = array();
 
@@ -188,8 +170,11 @@ class IP_Geo_Block_Admin_Ajax {
 				esc_html( $val['code'] ),  // Country code
 				esc_html( $val['asn' ] ),  // AS number
 				esc_html( $val['hook'] ),  // Target
+				sprintf( '%d / %d',        // Fails / Calls
+					(int)$val['fail'],
+					(int)$val['call']
+				),
 				$time - (int)$val['time'], // Elapsed [sec]
-				sprintf( '%d / %d', (int)$val['fail'], (int)$val['call'] ), // Fails / Calls
 			);
 		}
 
