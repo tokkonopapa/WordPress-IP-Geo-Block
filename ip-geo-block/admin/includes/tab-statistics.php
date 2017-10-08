@@ -399,8 +399,7 @@ endif;
 	 *
 	 */
 	public static function statistics_cache() {
-		$option_slug = IP_Geo_Block::PLUGIN_NAME;
-		echo '<table id="', $option_slug, '-statistics-cache" class="dataTable display" cellspacing="0" width="100%">', "\n", '<tbody></tbody></table>', "\n";
+		echo '<table id="', IP_Geo_Block::PLUGIN_NAME, '-statistics-cache" class="dataTable display" cellspacing="0" width="100%">', "\n", '<tbody></tbody></table>', "\n";
 	}
 
 }

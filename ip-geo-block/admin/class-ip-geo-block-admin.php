@@ -182,6 +182,8 @@ class IP_Geo_Block_Admin {
 				plugins_url( 'datatables/js/datatables-all.min.js', __FILE__ ),
 				$dependency, IP_Geo_Block::VERSION, $footer
 			);
+			if ( 4 === $this->admin_tab )
+				break;
 
 		  case 5:
 			// js for google chart

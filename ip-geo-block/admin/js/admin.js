@@ -556,7 +556,18 @@
 			// Language
 			language: {
 				url: IP_GEO_BLOCK.i18n + lang
-			}
+			},
+
+			columnDefs: [
+				{ className: "all",  targets: [0, 1] }, // always visible
+				{ orderable:  false, targets: 0 },
+				{ searchable: false, targets: 0 },
+				{
+					targets: [0],
+					data: null,
+					defaultContent: '<input type="checkbox">'
+				}
+			]
 		});
 	}
 
@@ -1033,22 +1044,6 @@
 
 			// Statistics in cache
 			initDataTable({
-				columnDefs: [
-					{ responsivePriority:  1, targets: 0 },
-					{ responsivePriority:  2, targets: 1 },
-					{ responsivePriority:  3, targets: 2 },
-					{ responsivePriority:  4, targets: 4 },
-					{ responsivePriority:  5, targets: 5 },
-					{ responsivePriority:  6, targets: 3 },
-					{ className: "all",  targets: [0, 1] },
-					{ orderable:  false, targets: 0 },
-					{ searchable: false, targets: 0 },
-					{
-						targets: [0],
-						data: null,
-						defaultContent: '<input type="checkbox">'
-					}
-				],
 				columns: [
 					{ title: '<input type=\"checkbox\">' },
 					{ title: 'IP address'   },
@@ -1056,7 +1051,15 @@
 					{ title: 'AS number'    },
 					{ title: 'Target'       },
 					{ title: 'Fails/Calls'  },
-					{ title: 'Elapsed[sec]' },
+					{ title: 'Elapsed[sec]' }
+				],
+				columnDefs: [
+					{ responsivePriority:  1, targets: 0 },
+					{ responsivePriority:  2, targets: 1 },
+					{ responsivePriority:  3, targets: 2 },
+					{ responsivePriority:  4, targets: 4 },
+					{ responsivePriority:  5, targets: 5 },
+					{ responsivePriority:  6, targets: 3 }
 				]
 			});
 
@@ -1141,6 +1144,19 @@
 			});
 
 			initDataTable({
+				columns: [
+					{ title: '<input type=\"checkbox\">' },
+					{ title: 'Date'         }, //  1
+					{ title: 'IP address'   }, //  2
+					{ title: 'Country'      }, //  3
+					{ title: 'AS number'    }, //  4
+					{ title: 'Target'       }, //  5
+					{ title: 'Status'       }, //  6
+					{ title: 'Request'      }, //  7
+					{ title: 'User agent'   }, //  8
+					{ title: 'HTTP headers' }, //  9
+					{ title: '$_POST data'  }  // 10
+				],
 				columnDefs: [
 					{ responsivePriority:  1, targets:  0 }, // checkbox
 					{ responsivePriority:  2, targets:  1 }, // Date
@@ -1153,29 +1169,8 @@
 					{ responsivePriority:  9, targets:  8 }, // User agent
 					{ responsivePriority: 10, targets:  9 }, // HTTP headers
 					{ responsivePriority: 11, targets: 10 }, // HTTP headers
-					{ className: "all",  targets: [0, 1] },  // always visible
-					{ className: "none", targets: [7, 8, 9, 10] }, // always hidden
-					{ orderable:  false, targets: 0 },
-					{ searchable: false, targets: 0 },
-					{
-						targets: [0],
-						data: null,
-						defaultContent: '<input type="checkbox">'
-					}
-				],
-				columns: [
-					{ title: '<input type=\"checkbox\">' },
-					{ title: 'Date'         }, //  1
-					{ title: 'IP address'   }, //  2
-					{ title: 'Country'      }, //  3
-					{ title: 'AS number'    }, //  4
-					{ title: 'Target'       }, //  5
-					{ title: 'Status'       }, //  6
-					{ title: 'Request'      }, //  7
-					{ title: 'User agent'   }, //  8
-					{ title: 'HTTP headers' }, //  9
-					{ title: '$_POST data'  }, // 10
-				],
+					{ className: "none", targets: [7, 8, 9, 10] } // always hidden
+				]
 			});
 
 			var table = $(ID('#', 'validation-logs')).DataTable({
