@@ -160,7 +160,7 @@ class IP_Geo_Block_Admin_Ajax {
 		$time = time();
 		$res = array();
 
-		foreach ( IP_Geo_Block_API_Cache::get_cache_all() as $key => $val ) {
+		foreach ( IP_Geo_Block_Logs::restore_cache() as $key => $val ) {
 			if ( $options['anonymize'] )
 				$key = preg_replace( '/\d{1,3}$/', '***', $key );
 

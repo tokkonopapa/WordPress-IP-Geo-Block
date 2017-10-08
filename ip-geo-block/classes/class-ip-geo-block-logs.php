@@ -215,23 +215,13 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_STAT;
 
-		if ( ! is_array( $stat ) ) {
+		if ( ! is_array( $stat ) )
 			$stat = self::$default;
-		}
 
 		$sql = $wpdb->prepare(
 			"UPDATE `$table` SET `data` = '%s'", serialize( $stat )
 //			"REPLACE INTO `$table` (`No`, `data`) VALUES (%d, %s)", 1, serialize( $stat )
 		) and $wpdb->query( $sql ) or self::error( __LINE__ );
-	}
-
-	/**
-	 * Limit the number of rows to send to the user agent according the processing time [msec]
-	 *
-	 */
-	public static function limit_rows( $time ) {
-		$options = IP_Geo_Block::get_option();
-		return (int)( $options['validation']['maxlogs'] / (wp_is_mobile() ? 2 : 1) );
 	}
 
 	/**

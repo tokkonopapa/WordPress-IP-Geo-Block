@@ -4,8 +4,6 @@
  * Copyright (c) 2015-2017 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
-var ip_geo_block_time = new Date();
-
 (function ($, window, document) {
 	'use strict';
 
@@ -532,15 +530,12 @@ var ip_geo_block_time = new Date();
 
 			// Server side
 //			serverSide: true,
-			deferLoading: 100,
-
-			// Processing indicator
 //			processing: true,
 //			autoWidth: false,
+			deferRender: true,
+			deferLoading: 10,
 
 			// Interface
-//			ordering: false,
-//			searching: false,
 			info: false,
 			lengthChange: false,
 			order: [], // no initial order or [0, 'desc']
@@ -549,33 +544,18 @@ var ip_geo_block_time = new Date();
 			responsive: {
 				details: {
 					type: 'column',
-					target: 'td'
-//					target: 'td:nth-child(n+2)'
+					target: 'td:nth-child(n+2)'
 				}
 			},
-/*
-			columns: [
-			{ visible: true },
-			{ visible: true },
-				null,
-				null,
-				null,
-				null,
-				null
-			],
-			fixedColumns:   {
-				leftColumns: 2
-			},
-*/
+
 			// Pagenation
 //			lengthMenu: [ 5, 10, 25, 50, 75, 100 ],
-//			pagingType: 'simple_numbers',
 			pagingType: 'full_numbers',
 			pageLength: 10,
 
 			// Language
 			language: {
-				url: '/wp-content/plugins/ip-geo-block/admin/datatables/i18n/' + lang
+				url: IP_GEO_BLOCK.i18n + lang
 			}
 		});
 	}
@@ -1066,11 +1046,11 @@ var ip_geo_block_time = new Date();
 					{
 						targets: [0],
 						data: null,
-						defaultContent: '<input type="checkbox" class="select-req">'
+						defaultContent: '<input type="checkbox">'
 					}
 				],
 				columns: [
-					{ title: '<input type=\"checkbox\" class=\"select-all\">' },
+					{ title: '<input type=\"checkbox\">' },
 					{ title: 'IP address'   },
 					{ title: 'Country'      },
 					{ title: 'AS number'    },
@@ -1081,12 +1061,11 @@ var ip_geo_block_time = new Date();
 			});
 
 			var table = $(ID('#', 'statistics-cache')).DataTable({
-				deferRender: true,
 				ajax: {
 					url: IP_GEO_BLOCK.url,
 					type: 'POST',
 					data: {
-						cmd: 'show-cache',
+						cmd: 'restore-cache',
 						action: IP_GEO_BLOCK.action,
 						nonce: IP_GEO_BLOCK.nonce
 					}
@@ -1097,17 +1076,20 @@ var ip_geo_block_time = new Date();
 			// Re-calculate the widths after panel-body is shown
 			$(ID('#', 'section-2')).find('.panel-body').on(ID('show-body'), function (event) {
 				table.columns.adjust().responsive.recalc();
+				return false;
 			})
 
 			// handle the event of checkbox for bulk action
 			.on('change', 'th input', function (event) {
 				var $this = $(this);
 				$this.closest('table').find('td input').prop('checked', $this.prop('checked'));
+				return false;
 			});
 
 			// Filter logs
 			$(ID('@', 'filter_cache')).on('keyup', function (event) {
 				table.search(this.value).draw();
+				return false;
 			});
 
 			// Reset filter
@@ -1119,7 +1101,22 @@ var ip_geo_block_time = new Date();
 
 			// Bulk action
 			$(ID('#', 'bulk-action')).on('click', function (event) {
-				console.log($(this).prev().val());
+				var cell, data = [];
+				$('table.dataTable').find('input:checked').each(function (index) {
+					cell = table.cell($(this).parent()).data();
+					data.push({
+						ip: cell[2],
+						as: cell[3]
+					});
+				});
+				var action = $(this).prev().val();
+				if (action) {
+					ajax_post('bulk-loading', {
+						cmd: action,
+						which: data
+					}, function (data) {
+					});
+				}
 				return false;
 			});
 
@@ -1156,17 +1153,18 @@ var ip_geo_block_time = new Date();
 					{ responsivePriority:  9, targets:  8 }, // User agent
 					{ responsivePriority: 10, targets:  9 }, // HTTP headers
 					{ responsivePriority: 11, targets: 10 }, // HTTP headers
-					{ className: "all",  targets: [0, 1] },
+					{ className: "all",  targets: [0, 1] },  // always visible
+					{ className: "none", targets: [7, 8, 9, 10] }, // always hidden
 					{ orderable:  false, targets: 0 },
 					{ searchable: false, targets: 0 },
 					{
 						targets: [0],
 						data: null,
-						defaultContent: '<input type="checkbox" class="select-req">'
+						defaultContent: '<input type="checkbox">'
 					}
 				],
 				columns: [
-					{ title: '<input type=\"checkbox\" class=\"select-all\">' },
+					{ title: '<input type=\"checkbox\">' },
 					{ title: 'Date'         }, //  1
 					{ title: 'IP address'   }, //  2
 					{ title: 'Country'      }, //  3
@@ -1177,20 +1175,25 @@ var ip_geo_block_time = new Date();
 					{ title: 'User agent'   }, //  8
 					{ title: 'HTTP headers' }, //  9
 					{ title: '$_POST data'  }, // 10
-				]
+				],
 			});
 
 			var table = $(ID('#', 'validation-logs')).DataTable({
-				deferRender: true,
 				ajax: {
 					url: IP_GEO_BLOCK.url,
 					type: 'POST',
 					data: {
-						cmd: 'restore',
-						which: null,
-						time: new Date() - ip_geo_block_time,
+						cmd: 'restore-logs',
 						action: IP_GEO_BLOCK.action,
 						nonce: IP_GEO_BLOCK.nonce
+					}
+				},
+				drawCallback: function (settings) {
+					if (3 === settings.iDraw) { // avoid rec ursive call
+						var $filter = $(ID('@', 'filter_logs'));
+						if ($filter.val()) {
+							$filter.trigger('keyup');
+						}
 					}
 				},
 				mark: true // https://github.com/julmot/datatables.mark.js/
@@ -1199,17 +1202,44 @@ var ip_geo_block_time = new Date();
 			// Re-calculate the widths after panel-body is shown
 			$(ID('#', 'section-0')).find('.panel-body').on(ID('show-body'), function (event) {
 				table.columns.adjust().responsive.recalc();
+				return false;
 			})
 
 			// handle the event of checkbox for bulk action
 			.on('change', 'th input', function (event) {
 				var $this = $(this);
 				$this.closest('table').find('td input').prop('checked', $this.prop('checked'));
+				return false;
 			});
+
+			// Filter reset
+			$(ID('#', 'filter-reset')).on('click', function (event) {
+				var $input = $(ID('.', 'filter-target input'));
+				$input.prop('checked',
+					// when all the target are checked
+					5 === $input.filter(function () {
+						return $(this).prop('checked');
+					}).length ? false : true
+				);
+				$(ID('.', 'filter-target')).trigger('change');
+				return false;
+			});
+
+			// Filter target
+			$(ID('.', 'filter-target')).on('change', function (event) {
+				var regexp = [];
+				$(this).find('input:checked').each(function (i) {
+					regexp.push($(this).val());
+				});
+				// search only the 5th column "Target"
+				table.column(5).search(regexp.join('|'), true).draw();
+				return false;
+			}).trigger('change');
 
 			// Filter logs
 			$(ID('@', 'filter_logs')).on('keyup', function (event) {
 				table.search(this.value).draw();
+				return false;
 			});
 
 			// Reset filter
@@ -1221,7 +1251,22 @@ var ip_geo_block_time = new Date();
 
 			// Bulk action
 			$(ID('#', 'bulk-action')).on('click', function (event) {
-				console.log($(this).prev().val());
+				var cell, data = [];
+				$('table.dataTable').find('input:checked').each(function (index) {
+					cell = table.cell($(this).parent()).data();
+					data.push({
+						ip: cell[2],
+						as: cell[3]
+					});
+				});
+				var action = $(this).prev().val();
+				if (action) {
+					ajax_post('bulk-loading', {
+						cmd: action,
+						which: data
+					}, function (data) {
+					});
+				}
 				return false;
 			});
 

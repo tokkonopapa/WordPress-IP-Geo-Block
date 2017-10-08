@@ -238,23 +238,6 @@ ul.ip-geo-block-statistics-countries li {
 }
 
 /* table */
-table.ip-geo-block-statistics-table {
-    float: right;
-}
-table.ip-geo-block-statistics-table th,
-table.ip-geo-block-statistics-table td {
-    width: 12em;
-    margin: 0;
-    padding: 0.2em;
-    text-align: right;
-    line-height: 1.5em;
-    word-wrap: break-word;
-}
-table.ip-geo-block-statistics-table tr:nth-child(even) {
-    background-color: #eee;
-}
-table.ip-geo-block-statistics-table tr:nth-child(odd) {
-}
 table.ip-geo-block-table {
     margin: 1em 0;
     white-space: normal;
@@ -334,7 +317,7 @@ span.ip-geo-block-title-link {
 dfn ~ .ip-geo-block-cycle,
 dfn ~ .ip-geo-block-lock,
 dfn ~ .ip-geo-block-unlock {
-    margin-left: 0.75em;
+    margin-left: 0.6em;
 }
 .ip-geo-block-cycle,
 .ip-geo-block-lock,
@@ -370,6 +353,9 @@ dfn ~ .ip-geo-block-unlock {
 }
 .ip-geo-block-unlock span {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAYFBMVEXc3NyzydRzq8dRmb7I09hYnsEFdK0AcawAcqzP1toqhrYAcKvZ29wAb6oMeK8zjbqrxtQBcazBz9Zko8MVfbLF0thMmL07kbtpp8WjwtJSmL1YnL+Tu89DlL1JmMEPebBFV++UAAAAAXRSTlMAQObYZgAAAONJREFUeAG9kAWChDAMAIMmJaTFXf7/ynXflvMbnE5j8DU8Pwh8D1yEUYxEGEchWFEJEjEflESBhTQSQm2MRpIotQhZTmgKgMIg5ZlFKBmrGg7UFXJpEQKW8qIKN7YeikJdBJI2BTtXwfyx0L3XoPphvBEliNU49OoxqEa6g4cTST/OYshvi3hV8+FxSNfluG3jqxG8C6h7gF6jU+AODnTsFGSCA5O4I8wpQDq7I5CUAKWQW+AZYOYtoQPoGDeECWDaioBmWQxeBduoWURso+5WpBdw7R4ENTVDcGE435tJwT+xB+vMEnZRNB0YAAAAAElFTkSuQmCC);
+}
+table.form-table th .ip-geo-block-cycle span {
+  vertical-align: text-bottom;
 }
 
 /* https://developer.wordpress.org/resource/dashicons/ for WordPress 3.8
@@ -461,7 +447,7 @@ table.dataTable > thead > tr > td,
 table.dataTable.no-footer {
     border-bottom: 1px solid #ddd;
 }
-/* Loading... */
+/* No data available in table */
 table.dataTable > tbody > tr > td.dataTables_empty,
 table.collapsed > tbody > tr > td.dataTables_empty:first-child::before {
     border: none;
@@ -519,7 +505,6 @@ table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
     float: none;
     text-align: center;
     margin-bottom: 1em;
-    padding-top: 0;
 }
 .dataTables_wrapper .dataTables_paginate span.ellipsis,
 .dataTables_wrapper .dataTables_paginate a.paginate_button,
@@ -604,9 +589,9 @@ input[type="checkbox"] {
     margin: 0;
 }
 
-/**
+/********************
  * Statistics tab
- */
+ ********************/
 /* IP address */
 #ip-geo-block-1 table.dataTable > tbody > tr > td:nth-child(2) {
     min-width: 9em;
@@ -615,10 +600,13 @@ input[type="checkbox"] {
 #ip-geo-block-1 table.dataTable > tbody > tr > td:nth-child(3) {
     max-width: 1em;
 }
+#ip-geo-block-statistics-cache {
+    margin-bottom: 0.25em;
+}
 
-/**
+/********************
  * Logs tab
- */
+ ********************/
 /* IP address */
 #ip-geo-block-4 table.dataTable > tbody > tr > td:nth-child(2) {
     min-width: 10em;
@@ -634,4 +622,26 @@ input[type="checkbox"] {
 /* Country Code */
 #ip-geo-block-4 table.dataTable > tbody > tr > td:nth-child(4) {
     max-width: 1em;
+}
+/* Filter target */
+ul.ip-geo-block-filter-target {
+    margin: 0;
+}
+ul.ip-geo-block-filter-target li {
+    float: left;
+    min-width: 12.5em;
+}
+ul.ip-geo-block-filter-target li dfn {
+    margin-left: 0.3em;
+}
+ul.ip-geo-block-filter-target li span {
+    margin-right: 0.3em;
+    vertical-align: text-bottom;
+}
+ul.ip-geo-block-filter-target li a {
+    position: relative;
+    top: 2px;
+}
+ul.ip-geo-block-filter-target li a:active {
+    top: 3px;
 }

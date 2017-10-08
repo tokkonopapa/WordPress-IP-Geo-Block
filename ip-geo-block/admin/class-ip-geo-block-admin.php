@@ -241,6 +241,7 @@ class IP_Geo_Block_Admin {
 				'tab' => $this->admin_tab,
 				'url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => IP_Geo_Block_Util::create_nonce( $this->get_ajax_action() ),
+				'i18n' => plugins_url( IP_Geo_Block::PLUGIN_NAME . '/admin/datatables/i18n/' ),
 				'msg' => array(
 					__( 'Import settings ?',           'ip-geo-block' ),
 					__( 'Create table ?',              'ip-geo-block' ),
@@ -1264,7 +1265,7 @@ class IP_Geo_Block_Admin {
 			IP_Geo_Block_Admin_Ajax::export_logs( $which );
 			break;
 
-		  case 'restore':
+		  case 'restore-logs':
 			// Get logs from MySQL DB
 			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which );
 			break;
@@ -1306,8 +1307,21 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Util::get_registered_actions( TRUE );
 			break;
 
-		  case 'show-cache':
+		  case 'restore-cache':
 			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which );
+			break;
+
+		  case 'bulk-cache-remove':
+		  case 'bulk-cache-ip-white':
+		  case 'bulk-cache-ip-black':
+		  case 'bulk-cache-as-white':
+		  case 'bulk-cache-as-black':
+			break;
+
+		  case 'bulk-logs-ip-white':
+		  case 'bulk-logs-ip-black':
+		  case 'bulk-logs-as-white':
+		  case 'bulk-logs-as-black':
 			break;
 
 		  case 'create-table':

@@ -19,7 +19,39 @@ if ( $options['validation']['reclogs'] ) :
 			$section = $plugin_slug . '-logs',
 			__( 'Validation logs', 'ip-geo-block' ),
 			array( __CLASS__, 'validation_logs' ),
-			$option_slug
+			$plugin_slug
+		);
+
+		// same as in tab-accesslog.php
+		$dfn = __( '<dfn title="Validate request to %s.">%s</dfn>', 'ip-geo-block' );
+		$target = array(
+			'comment' => sprintf( $dfn, 'wp-comments-post.php',                      __( 'Comment post',        'ip-geo-block' ) ),
+			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',                                __( 'XML-RPC',             'ip-geo-block' ) ),
+			'login'   => sprintf( $dfn, 'wp-login.php',                              __( 'Login form',          'ip-geo-block' ) ),
+			'admin'   => sprintf( $dfn, 'wp-admin/*.php',                            __( 'Admin area',          'ip-geo-block' ) ),
+			'public'  => sprintf( $dfn, __( 'public facing pages', 'ip-geo-block' ), __( 'Public facing pages', 'ip-geo-block' ) ),
+		);
+
+		$html = '<ul class="' . $plugin_slug . '-filter-target">' . "\n";
+		foreach ( $target as $key => $val ) {
+			$html .= '<li><input type="checkbox" id="' . $plugin_slug . '-' . $key . '" value="' . $key . '">';
+			$html .= '<label for="' . $plugin_slug . '-' . $key . '">' . $val . '</label></li>' . "\n";
+		}
+		$html .= '</ul>';
+
+		$field = 'filter_target';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Filter target', 'ip-geo-block' ) . '&nbsp;' . '(<a class="ip-geo-block-cycle" id="ip-geo-block-filter-reset">' . '<span title="' . __( 'Toggle selection', 'ip-geo-block' ) . '"></span></a>)',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'html',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $html,
+			)
 		);
 
 		$field = 'filter_logs';
@@ -52,13 +84,12 @@ if ( $options['validation']['reclogs'] ) :
 				'value' => 0,
 				'list' => array(
 					0 => NULL,
-					'bulk-logs-remove'   => __( 'Remove from cache',                           'ip-geo-block' ),
 					'bulk-logs-ip-white' => __( 'Add IP address to &#8220;Whitelist&#8221;', 'ip-geo-block' ),
 					'bulk-logs-ip-black' => __( 'Add IP address to &#8220;Blacklist&#8221;', 'ip-geo-block' ), ) + ( $options['Maxmind']['use_asn'] <= 0 ? array() : array(
 					'bulk-logs-as-white' => __( 'Add AS number to &#8220;Whitelist&#8221;',  'ip-geo-block' ),
 					'bulk-logs-as-black' => __( 'Add AS number to &#8220;Blacklist&#8221;',  'ip-geo-block' ),
 				) ),
-				'after' => '<a class="button button-secondary" id="ip-geo-block-bulk-action" title="' . __( 'Apply', 'ip-geo-block' ) . '" href="javascript:void(0)">'. __( 'Apply', 'ip-geo-block' ) . '</a>',
+				'after' => '<a class="button button-secondary" id="ip-geo-block-bulk-action" title="' . __( 'Apply', 'ip-geo-block' ) . '" href="javascript:void(0)">'. __( 'Apply', 'ip-geo-block' ) . '</a>' . '<div id="'.$plugin_slug.'-bulk-loading"></div>',
 			)
 		);
 
@@ -127,7 +158,7 @@ endif; // $options['validation']['reclogs']
 	 */
 	public static function validation_logs() {
 		$option_slug = IP_Geo_Block::PLUGIN_NAME;
-		echo '<table id="', $option_slug, '-validation-logs" class="', $option_slug, '-validation-logs dataTable display" cellspacing="0" width="100%">', "\n", '<tbody></tbody></table>', "\n";
+		echo '<table id="', $option_slug, '-validation-logs" class="dataTable display" cellspacing="0" width="100%">', "\n", '<tbody></tbody></table>', "\n";
 	}
 
 	public static function warn_accesslog() {

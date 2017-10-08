@@ -270,7 +270,7 @@ endif;
 					'bulk-cache-as-white' => __( 'Add AS number to &#8220;Whitelist&#8221;',  'ip-geo-block' ),
 					'bulk-cache-as-black' => __( 'Add AS number to &#8220;Blacklist&#8221;',  'ip-geo-block' ),
 				) ),
-				'after' => '<a class="button button-secondary" id="ip-geo-block-bulk-action" title="' . __( 'Apply', 'ip-geo-block' ) . '" href="javascript:void(0)">'. __( 'Apply', 'ip-geo-block' ) . '</a>',
+				'after' => '<a class="button button-secondary" id="ip-geo-block-bulk-action" title="' . __( 'Apply', 'ip-geo-block' ) . '" href="javascript:void(0)">'. __( 'Apply', 'ip-geo-block' ) . '</a>' . '<div id="'.$plugin_slug.'-bulk-loading"></div>',
 			)
 		);
 
@@ -400,7 +400,7 @@ endif;
 	 */
 	public static function statistics_cache() {
 		$option_slug = IP_Geo_Block::PLUGIN_NAME;
-		echo '<table id="', $option_slug, '-statistics-cache" class="', $option_slug, '-statistics-table dataTable display" cellspacing="0" width="100%">', "\n", '<tbody></tbody></table>', "\n";
+		echo '<table id="', $option_slug, '-statistics-cache" class="dataTable display" cellspacing="0" width="100%">', "\n", '<tbody></tbody></table>', "\n";
 	}
 
 }
