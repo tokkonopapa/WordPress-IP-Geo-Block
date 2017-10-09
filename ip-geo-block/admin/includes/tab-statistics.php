@@ -234,10 +234,10 @@ endif;
 			$option_slug
 		);
 
-		$field = 'filter_cache';
+		$field = 'search_filter';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Filter cache', 'ip-geo-block' ),
+			__( 'Search in cache', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -246,7 +246,8 @@ endif;
 				'option' => $option_name,
 				'field' => $field,
 				'value' => '',
-				'after' => '<a class="button button-secondary" id="ip-geo-block-reset-filter" title="' . __( 'Reset', 'ip-geo-block' ) . '" href="javascript:void(0)">'. __( 'Reset', 'ip-geo-block' ) . '</a>',
+				'after' => '<a class="button button-secondary" id="ip-geo-block-reset-filter" title="'
+				. __( 'Reset', 'ip-geo-block' ) . '" href="#!">'. __( 'Reset', 'ip-geo-block' ) . '</a>',
 			)
 		);
 
@@ -270,7 +271,7 @@ endif;
 					'bulk-cache-as-white' => __( 'Add AS number to &#8220;Whitelist&#8221;',  'ip-geo-block' ),
 					'bulk-cache-as-black' => __( 'Add AS number to &#8220;Blacklist&#8221;',  'ip-geo-block' ),
 				) ),
-				'after' => '<a class="button button-secondary" id="ip-geo-block-bulk-action" title="' . __( 'Apply', 'ip-geo-block' ) . '" href="javascript:void(0)">'. __( 'Apply', 'ip-geo-block' ) . '</a>' . '<div id="'.$plugin_slug.'-bulk-loading"></div>',
+				'after' => '<a class="button button-secondary" id="ip-geo-block-bulk-action" title="' . __( 'Apply', 'ip-geo-block' ) . '" href="#!">' . __( 'Apply', 'ip-geo-block' ) . '</a>' . '<div id="'.$plugin_slug.'-loading"></div>',
 			)
 		);
 
@@ -399,7 +400,7 @@ endif;
 	 *
 	 */
 	public static function statistics_cache() {
-		echo '<table id="', IP_Geo_Block::PLUGIN_NAME, '-statistics-cache" class="dataTable display" cellspacing="0" width="100%">', "\n", '<tbody></tbody></table>', "\n";
+		echo '<table id="', IP_Geo_Block::PLUGIN_NAME, '-statistics-cache" class="dataTable display" cellspacing="0" width="100%">', "\n", '<thead></thead><tbody></tbody></table>', "\n";
 	}
 
 }

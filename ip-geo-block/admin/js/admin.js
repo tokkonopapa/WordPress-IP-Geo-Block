@@ -520,7 +520,7 @@
 	}
 
 	// DataTables
-	function initDataTable(options) {
+	function initTable(id, options) {
 		var lang = window.navigator.language || window.navigator.userLanguage;
 		lang = lang.indexOf('ja') !== -1 ? 'ja-JP.json' : 'en-US.json';
 
@@ -558,16 +558,15 @@
 				url: IP_GEO_BLOCK.i18n + lang
 			},
 
-			columnDefs: [
-				{ className: "all",  targets: [0, 1] }, // always visible
-				{ orderable:  false, targets: 0 },
-				{ searchable: false, targets: 0 },
-				{
-					targets: [0],
-					data: null,
-					defaultContent: '<input type="checkbox">'
+			// draw callback
+			drawCallback: function (settings) {
+				if (3 === settings.iDraw) { // avoid recursive call for ajax source
+					var $filter = $(ID('@', 'search_filter'));
+					if ($filter.val()) { // if a filter value exists in the text field
+						$filter.trigger('keyup');
+					}
 				}
-			]
+			}
 		});
 	}
 
@@ -1043,23 +1042,32 @@
 			});
 
 			// Statistics in cache
-			initDataTable({
+			initTable('cache', {
 				columns: [
-					{ title: '<input type=\"checkbox\">' },
-					{ title: 'IP address'   },
-					{ title: 'Country'      },
-					{ title: 'AS number'    },
-					{ title: 'Target'       },
-					{ title: 'Fails/Calls'  },
-					{ title: 'Elapsed[sec]' }
+					{ title: '<input type="checkbox">' },
+					{ title: 'IP address'   }, // 1
+					{ title: 'Code'         }, // 2
+					{ title: 'AS number'    }, // 3
+					{ title: 'Target'       }, // 4
+					{ title: 'Fails/Calls'  }, // 5
+					{ title: 'Elapsed[sec]' }  // 6
 				],
 				columnDefs: [
-					{ responsivePriority:  1, targets: 0 },
-					{ responsivePriority:  2, targets: 1 },
-					{ responsivePriority:  3, targets: 2 },
-					{ responsivePriority:  4, targets: 4 },
-					{ responsivePriority:  5, targets: 5 },
-					{ responsivePriority:  6, targets: 3 }
+					{ responsivePriority:  0, targets: 0 }, // checkbox
+					{ responsivePriority:  1, targets: 1 }, // IP address
+					{ responsivePriority:  2, targets: 2 }, // Country code
+					{ responsivePriority:  6, targets: 3 }, // AS number
+					{ responsivePriority:  3, targets: 4 }, // Target
+					{ responsivePriority:  4, targets: 5 }, // Fails/Calls
+					{ responsivePriority:  5, targets: 6 }, // Elapsed[sec]
+					{ orderable:  false,      targets: 0 },
+					{ searchable: false,      targets: 0 },
+					{ className: "all",       targets: [0, 1, 2, 4] }, // always visible
+					{
+						targets: [0],
+						data: null,
+						defaultContent: '<input type="checkbox">'
+					}
 				]
 			});
 
@@ -1089,15 +1097,23 @@
 				return false;
 			});
 
-			// Filter logs
-			$(ID('@', 'filter_cache')).on('keyup', function (event) {
+			// Select target
+			$(ID('.', 'select-target')).on('change', function (event) {
+				var val = $(this).find('input[name="' + ID('$', 'target') + '"]:checked').val();
+				// search only the 4th column "Target"
+				table.columns(4).search('all' !== val ? val : '').draw();
+				return false;
+			}).trigger('change');
+
+			// Filter cache
+			$(ID('@', 'search_filter')).on('keyup', function (event) {
 				table.search(this.value).draw();
 				return false;
 			});
 
 			// Reset filter
 			$(ID('#', 'reset-filter')).on('click', function (event) {
-				$(ID('@', 'filter_cache')).val('');
+				$(ID('@', 'search_filter')).val('');
 				table.search('').draw();
 				return false;
 			});
@@ -1108,13 +1124,13 @@
 				$('table.dataTable').find('input:checked').each(function (index) {
 					cell = table.cell($(this).parent()).data();
 					data.push({
-						ip: cell[2],
+						ip: cell[1].replace(/(<([^>]+)>)/ig, ''),
 						as: cell[3]
 					});
 				});
 				var action = $(this).prev().val();
 				if (action) {
-					ajax_post('bulk-loading', {
+					ajax_post('loading', {
 						cmd: action,
 						which: data
 					}, function (data) {
@@ -1130,25 +1146,25 @@
 				});
 				return false;
 			});
+
+			// Jump to search tab with opening a new window
+			$('table.dataTable tbody').on('click', 'a', function (event) {
+				var key = window.location.pathname + window.location.search;
+				window.open(key.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''), '_blank');
+				return false;
+			});
 			break;
 
 		  /*----------------------------------------
 		   * Logs
 		   *----------------------------------------*/
 		  case 4:
-			// Jump to search tab with opening new window
-			$('tbody[id^="' + ID('log-') + '"]').on('click', 'a', function (event) {
-				key = window.location.pathname + window.location.search;
-				window.open(key.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''), '_blank');
-				return false;
-			});
-
-			initDataTable({
+			initTable('logs', {
 				columns: [
 					{ title: '<input type=\"checkbox\">' },
 					{ title: 'Date'         }, //  1
 					{ title: 'IP address'   }, //  2
-					{ title: 'Country'      }, //  3
+					{ title: 'Code'         }, //  3
 					{ title: 'AS number'    }, //  4
 					{ title: 'Target'       }, //  5
 					{ title: 'Status'       }, //  6
@@ -1158,18 +1174,26 @@
 					{ title: '$_POST data'  }  // 10
 				],
 				columnDefs: [
-					{ responsivePriority:  1, targets:  0 }, // checkbox
-					{ responsivePriority:  2, targets:  1 }, // Date
-					{ responsivePriority:  3, targets:  2 }, // IP address
-					{ responsivePriority:  4, targets:  3 }, // Country
-					{ responsivePriority:  5, targets:  5 }, // Target
-					{ responsivePriority:  6, targets:  6 }, // Status
-					{ responsivePriority:  7, targets:  4 }, // AS number
-					{ responsivePriority:  8, targets:  7 }, // Request
-					{ responsivePriority:  9, targets:  8 }, // User agent
-					{ responsivePriority: 10, targets:  9 }, // HTTP headers
-					{ responsivePriority: 11, targets: 10 }, // HTTP headers
-					{ className: "none", targets: [7, 8, 9, 10] } // always hidden
+					{ responsivePriority:  0, targets:  0 }, // checkbox
+					{ responsivePriority:  1, targets:  1 }, // Date
+					{ responsivePriority:  2, targets:  2 }, // IP address
+					{ responsivePriority:  3, targets:  3 }, // Country code
+					{ responsivePriority:  6, targets:  4 }, // AS number
+					{ responsivePriority:  4, targets:  5 }, // Target
+					{ responsivePriority:  5, targets:  6 }, // Status
+					{ responsivePriority:  7, targets:  7 }, // Request
+					{ responsivePriority:  8, targets:  8 }, // User agent
+					{ responsivePriority:  9, targets:  9 }, // HTTP headers
+					{ responsivePriority: 10, targets: 10 }, // $_POST data
+					{ orderable:  false,      targets:  0 },
+					{ searchable: false,      targets:  0 },
+					{ className: "all",       targets: [0, 1, 2, 3 ] }, // always visible
+					{ className: "none",      targets: [7, 8, 9, 10] }, // always hidden
+					{
+						targets: [0],
+						data: null,
+						defaultContent: '<input type="checkbox">'
+					}
 				]
 			});
 
@@ -1181,14 +1205,6 @@
 						cmd: 'restore-logs',
 						action: IP_GEO_BLOCK.action,
 						nonce: IP_GEO_BLOCK.nonce
-					}
-				},
-				drawCallback: function (settings) {
-					if (3 === settings.iDraw) { // avoid rec ursive call
-						var $filter = $(ID('@', 'filter_logs'));
-						if ($filter.val()) {
-							$filter.trigger('keyup');
-						}
 					}
 				},
 				mark: true // https://github.com/julmot/datatables.mark.js/
@@ -1207,39 +1223,23 @@
 				return false;
 			});
 
-			// Filter reset
-			$(ID('#', 'filter-reset')).on('click', function (event) {
-				var $input = $(ID('.', 'filter-target input'));
-				$input.prop('checked',
-					// when all the target are checked
-					5 === $input.filter(function () {
-						return $(this).prop('checked');
-					}).length ? false : true
-				);
-				$(ID('.', 'filter-target')).trigger('change');
-				return false;
-			});
-
-			// Filter target
-			$(ID('.', 'filter-target')).on('change', function (event) {
-				var regexp = [];
-				$(this).find('input:checked').each(function (i) {
-					regexp.push($(this).val());
-				});
+			// Select target
+			$(ID('.', 'select-target')).on('change', function (event) {
+				var val = $(this).find('input[name="' + ID('$', 'target') + '"]:checked').val();
 				// search only the 5th column "Target"
-				table.column(5).search(regexp.join('|'), true).draw();
+				table.columns(5).search('all' !== val ? val : '').draw();
 				return false;
 			}).trigger('change');
 
-			// Filter logs
-			$(ID('@', 'filter_logs')).on('keyup', function (event) {
+			// Search filter
+			$(ID('@', 'search_filter')).on('keyup', function (event) {
 				table.search(this.value).draw();
 				return false;
 			});
 
 			// Reset filter
 			$(ID('#', 'reset-filter')).on('click', function (event) {
-				$(ID('@', 'filter_logs')).val('');
+				$(ID('@', 'search_filter')).val('');
 				table.search('').draw();
 				return false;
 			});
@@ -1250,13 +1250,13 @@
 				$('table.dataTable').find('input:checked').each(function (index) {
 					cell = table.cell($(this).parent()).data();
 					data.push({
-						ip: cell[2],
-						as: cell[3]
+						ip: cell[2].replace(/(<([^>]+)>)/ig, ''),
+						as: cell[4]
 					});
 				});
 				var action = $(this).prev().val();
 				if (action) {
-					ajax_post('bulk-loading', {
+					ajax_post('loading', {
 						cmd: action,
 						which: data
 					}, function (data) {
@@ -1265,7 +1265,7 @@
 				return false;
 			});
 
-			// Validation logs
+			// Clear logs
 			$(ID('@', 'clear_logs')).on('click', function (event) {
 				confirm(IP_GEO_BLOCK.msg[5], function () {
 					ajax_clear('logs', null);
@@ -1279,6 +1279,13 @@
 			// Export logs
 			$(ID('#', 'export-logs')).on('click', function (event) {
 				$(ID('#', 'export-form')).submit();
+				return false;
+			});
+
+			// Jump to search tab with opening a new window
+			$('table.dataTable tbody').on('click', 'a', function (event) {
+				var key = window.location.pathname + window.location.search;
+				window.open(key.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''), '_blank');
 				return false;
 			});
 			break;

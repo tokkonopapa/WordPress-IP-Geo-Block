@@ -134,17 +134,17 @@ class IP_Geo_Block_Admin_Ajax {
 
 		foreach ( IP_Geo_Block_Logs::restore_logs( $which ) as $row ) {
 			$res[] = array(
-				'',                  // Checkbox
-				IP_Geo_Block_Util::localdate( $row[1], 'Y-m-d H:i:s' ),
-				esc_html( $row[2] ), // IP address
-				esc_html( $row[3] ), // Country code
-				esc_html( $row[5] ), // AS number
-				esc_html( $row[0] ), // Target
-				esc_html( $row[4] ), // Status
-				esc_html( $row[6] ), // Request
-				esc_html( $row[7] ), // User agent
-				esc_html( $row[8] ), // HTTP headers
-				esc_html( $row[9] ), // $_POST data
+				/* Checkbox     */ '',
+				/* Date         */ '&rsquo;' . IP_Geo_Block_Util::localdate( $row[1], 'y-m-d H:i:s' ),
+				/* IP address   */ '<a href="#!">' . esc_html( $row[2] ) . '</a>',
+				/* Country code */ esc_html( $row[3] ),
+				/* AS number    */ esc_html( $row[5] ),
+				/* Target       */ esc_html( $row[0] ),
+				/* Status       */ esc_html( $row[4] ),
+				/* Request      */ esc_html( $row[6] ),
+				/* User agent   */ esc_html( $row[7] ),
+				/* HTTP headers */ esc_html( $row[8] ),
+				/* $_POST data  */ esc_html( $row[9] ),
 			);
 		}
 
@@ -154,6 +154,7 @@ class IP_Geo_Block_Admin_Ajax {
 	/**
 	 * Restore cache from MySQL DB
 	 *
+	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
 	static public function restore_cache( $which ) {
 		$options = IP_Geo_Block::get_option();
@@ -165,16 +166,13 @@ class IP_Geo_Block_Admin_Ajax {
 				$key = preg_replace( '/\d{1,3}$/', '***', $key );
 
 			$res[] = array(
-				'',                        // Checkbox
-				esc_html( $key ),          // IP address
-				esc_html( $val['code'] ),  // Country code
-				esc_html( $val['asn' ] ),  // AS number
-				esc_html( $val['hook'] ),  // Target
-				sprintf( '%d / %d',        // Fails / Calls
-					(int)$val['fail'],
-					(int)$val['call']
-				),
-				$time - (int)$val['time'], // Elapsed [sec]
+				/* Checkbox     */ '',
+				/* IP address   */ '<a href="#!">' . esc_html( $key ) . '</a>',
+				/* Country code */ esc_html( $val['code'] ),
+				/* AS number    */ esc_html( $val['asn' ] ),
+				/* Target       */ esc_html( $val['hook'] ),
+				/* Fails/Calls  */ sprintf( '%d / %d', $val['fail'], $val['call'] ),
+				/* Elapsed[sec] */ $time - (int)$val['time'],
 			);
 		}
 
