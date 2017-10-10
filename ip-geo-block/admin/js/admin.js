@@ -324,7 +324,7 @@ var ip_geo_block_time = new Date();
 		dataLine: [],
 		viewLine: [],
 		drawLine: function (id, datetype) {
-			var i, n, t, data;
+			var i, n, data;
 			if ('undefined' === typeof chart.dataLine[id]) {
 				i = chart.dataLine[id] = new google.visualization.DataTable();
 				i.addColumn(datetype, 'Date'   );
@@ -368,13 +368,15 @@ var ip_geo_block_time = new Date();
 
 	// google chart
 	function drawChart(tabNo) {
-		if (1 === tabNo) {
-			chart.drawPie(ID('chart-countries'));
-			chart.drawLine(ID('chart-daily'), 'date');
-		} else if (5 === tabNo) {
-			$(ID('.', 'multisite')).each(function (i, obj) {
-				chart.drawLine($(obj).attr('id'), 'datetime');
-			});
+		if ('object' === typeof google) {
+			if (1 === tabNo) {
+				chart.drawPie(ID('chart-countries'));
+				chart.drawLine(ID('chart-daily'), 'date');
+			} else if (5 === tabNo) {
+				$(ID('.', 'multisite')).each(function (i, obj) {
+					chart.drawLine($(obj).attr('id'), 'datetime');
+				});
+			}
 		}
 	}
 
@@ -974,7 +976,7 @@ var ip_geo_block_time = new Date();
 			// https://developers.google.com/loader/#Dynamic
 			initChart(tabNo);
 
-			// Statistics
+			// Statistics of validation
 			$(ID('@', 'clear_statistics')).on('click', function (event) {
 				confirm(IP_GEO_BLOCK.msg[3], function () {
 					ajax_clear('statistics', null);
@@ -982,7 +984,7 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 
-			// Validation logs
+			// Statistics in logs
 			$(ID('@', 'clear_logs')).on('click', function (event) {
 				confirm(IP_GEO_BLOCK.msg[5], function () {
 					ajax_clear('logs', null);
@@ -990,7 +992,7 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 
-			// Statistics
+			// Statistics in cache
 			$(ID('@', 'clear_cache')).on('click', function (event) {
 				confirm(IP_GEO_BLOCK.msg[4], function () {
 					ajax_clear('cache', null);

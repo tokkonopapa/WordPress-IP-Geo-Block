@@ -413,7 +413,7 @@ class IP_Geo_Block_Admin {
 	 */
 	private function diagnose_admin_screen() {
 		$settings = IP_Geo_Block::get_option();
-		$adminurl = $this->dashboard_url( $settings['network_wide'] );
+		$adminurl = $this->dashboard_url( FALSE );
 
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7.0' ) < 0 )

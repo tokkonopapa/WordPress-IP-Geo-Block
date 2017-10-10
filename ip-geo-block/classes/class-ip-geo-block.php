@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.4.5';
+	const VERSION = '3.0.4.6';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -540,11 +540,7 @@ class IP_Geo_Block {
 	public function validate_login() {
 		// parse action
 		$action = isset( $_GET['key'] ) ? 'resetpass' : ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'login' );
-
-		if ( 'retrievepassword' === $action )
-			$action = 'lostpassword';
-		elseif ( 'rp' === $action )
-			$action = 'resetpass';
+		$action = 'retrievepassword' === $action ? 'lostpassword' : ( 'rp' === $action ? 'resetpass' : $action );
 
 		$settings = self::get_option();
 		$list = $settings['login_action'];
@@ -552,9 +548,8 @@ class IP_Geo_Block {
 		// the same rule should be applied to login and logout
 		! empty( $list['login'] ) and $list['logout'] = TRUE;
 
-		// wp-includes/pluggable.php @since 2.5.0
-		if ( ! empty( $_POST ) ) // avoid conflict with WP Limit Login Attempts
-			add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
+		// avoid conflict with WP Limit Login Attempts (wp-includes/pluggable.php @since 2.5.0)
+		! empty( $_POST ) and add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
 
 		// enables to skip validation of country on login/out except BuddyPress signup
 		$this->validate_ip( 'login', $settings, ! empty( $list[ $action ] ) || 'bp_' === substr( current_filter(), 0, 3 ) );
@@ -604,7 +599,7 @@ class IP_Geo_Block {
 		// list of request for specific action or page to bypass WP-ZEP
 		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array(), $settings ), array(
 			// in wp-admin js/widget.js, includes/template.php, async-upload.php
-			'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',
+			'heartbeat', 'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',
 			// bbPress, Anti-Malware Security and Brute-Force Firewall, jetpack page & action
 			'bp_avatar_upload', 'GOTMLS_logintime', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate',
 		) );
@@ -688,11 +683,12 @@ class IP_Geo_Block {
 				'time'     => microtime( TRUE ) - $time,
 			) + $cache );
 
-			$cache = IP_Geo_Block_API_Cache::update_cache( $hook = defined( 'XMLRPC_REQUEST' ) ? 'xmlrpc' : 'login', $validate, $settings = self::get_option() );
+			$settings = self::get_option();
+			$cache = IP_Geo_Block_API_Cache::update_cache( $hook = defined( 'XMLRPC_REQUEST' ) ? 'xmlrpc' : 'login', $validate, $settings );
 
-			// The whitelist of IP address is prior
+			// the whitelist of IP address should be prior
 			if ( ! $this->check_ips( $validate, $settings['extra_ips']['white_list'] ) ) {
-				if ( $cache['fail'] > max( 0, (int)$settings['login_fails'] ) )
+				if ( (int)$settings['login_fails'] >= 0 && $cache['fail'] > max( 0, (int)$settings['login_fails'] ) )
 					$validate['result'] = 'limited';
 
 				// validate xmlrpc system.multicall
@@ -700,12 +696,15 @@ class IP_Geo_Block {
 					$validate['result'] = 'multi';
 			}
 
+			// apply filter hook for emergent functionality
+			$validate = apply_filters( self::PLUGIN_NAME . '-login', $validate, $settings );
+
 			// (1) blocked, (3) unauthenticated, (5) all
 			if ( 1 & (int)$settings['validation']['reclogs'] )
 				IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings );
 
 			// send response code to refuse immediately
-			if ( 'failed' !== $validate['result'] ) {
+			if ( 'limited' === $validate['result'] || 'multi' === $validate['result'] ) {
 				if ( $settings['save_statistics'] )
 					IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 
@@ -768,6 +767,7 @@ class IP_Geo_Block {
 				}
 			}
 
+			// when a user does not have the capability, then block
 			if ( ! apply_filters( self::PLUGIN_NAME . '-upload-capability', $files ) )
 				return apply_filters( self::PLUGIN_NAME . '-upload-forbidden', $validate + array( 'upload' => TRUE, 'result' => 'upload' ) );
 
