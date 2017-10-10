@@ -15,7 +15,11 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
+<<<<<<< HEAD
 	const VERSION = '3.0.5a';
+=======
+	const VERSION = '3.0.4.6';
+>>>>>>> 8062c1491503efe71183406200b11346fa2171c6
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
