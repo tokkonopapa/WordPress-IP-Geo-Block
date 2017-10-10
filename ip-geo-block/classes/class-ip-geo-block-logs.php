@@ -532,7 +532,7 @@ class IP_Geo_Block_Logs {
 		$sql = "SELECT `hook`, `time`, `ip`, `code`, `result`, `asn`, `method`, `user_agent`, `headers`, `data` FROM `$table`";
 
 		if ( ! $hook )
-			$sql .= " ORDER BY `hook`, `time` DESC";
+			$sql .= " ORDER BY `time` DESC"; // " ORDER BY `hook`, `time` DESC";
 		else
 			$sql .= $wpdb->prepare( " WHERE `hook` = '%s' ORDER BY `time` DESC", $hook );
 

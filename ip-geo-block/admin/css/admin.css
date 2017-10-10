@@ -430,9 +430,6 @@ ol.ip-geo-block-top-list li code {
 table.dataTable {
     clear: none !important;
 }
-table.dataTable * {
-    font-size: 13px;
-}
 table.dataTable th,
 table.dataTable td {
     text-align: right;
@@ -457,7 +454,7 @@ table.dataTable > thead > tr > th:first-child,
 table.dataTable > tbody > tr > td:first-child {
     padding: 8px 4px 8px 10px;
     text-align: left;
-    max-width: 1.25em;
+/*  max-width: 1.25em;*/
 }
 table.dataTable > thead > tr > th:first-child input,
 table.dataTable > tbody > tr > td:first-child input {
@@ -499,7 +496,7 @@ table.collapsed > tbody > tr.parent > td:first-child::before {
 }
 table.collapsed > tbody > tr > td:first-child::before {
     border-left: 5px solid #555;
-    top: 0;
+    top: 1px;
     left: -4px;
 }
 table.collapsed > tbody > tr.parent > td:first-child::before {
@@ -518,7 +515,11 @@ table.collapsed > tbody > tr.child > td.child > ul li {
 }
 table.collapsed > tbody > tr.child > td.child > ul li span.dtr-title,
 table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
+    font-size: 13px;
     display: block;
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
     margin-left: 1.25em;
@@ -606,6 +607,7 @@ ul.ip-geo-block-select-target li {
     float: left;
     margin-right: 1.5em;
 }
+/* Vertial alignment *//*
 ul.ip-geo-block-select-target li label {
     display: block;
     position: relative;
@@ -617,8 +619,8 @@ ul.ip-geo-block-select-target li label input[type="radio"] {
     top: 8px;
     left: 0;
     margin: auto;
-}
-ul.ip-geo-block-select-target li dfn {
+}*/
+ul.ip-geo-block-select-target li label dfn {
     cursor: pointer;
 }
 /* Filter */
@@ -629,11 +631,10 @@ input#ip_geo_block_settings_search_filter {
 
 mark {
     padding: 0;
-    background: #FFD700;
+    background: #FFD700; // Gold
 }
 
-input[type="radio"],
-input[type="checkbox"] {
+table.dataTable input[type="checkbox"] {
     height: 16px;
     width: 16px;
     margin: 0;
@@ -642,16 +643,16 @@ input[type="checkbox"] {
 /********************
  * Statistics tab
  ********************/
-/* Target */
+/* Target *//*
 #ip-geo-block-1 table.dataTable > tbody > tr > td:nth-child(5),
 #ip-geo-block-4 table.dataTable > tbody > tr > td:nth-child(6) {
     min-width: 4.2em;
-}
+}*/
 
 /********************
  * Logs tab
  ********************/
-/* IP address */
+/* Date */
 @media screen and (min-width: 640px) {
     #ip-geo-block-4 table.dataTable > tbody > tr > td:nth-child(2) {
         min-width: 7em;

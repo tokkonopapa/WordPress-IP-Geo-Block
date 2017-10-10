@@ -1046,8 +1046,8 @@
 				columns: [
 					{ title: '<input type="checkbox">' },
 					{ title: 'IP address'   }, // 1
-					{ title: 'Code'         }, // 2
-					{ title: 'AS number'    }, // 3
+					{ title: 'CC'           }, // 2
+					{ title: 'ASN'          }, // 3
 					{ title: 'Target'       }, // 4
 					{ title: 'Fails/Calls'  }, // 5
 					{ title: 'Elapsed[sec]' }  // 6
@@ -1162,12 +1162,12 @@
 			initTable('logs', {
 				columns: [
 					{ title: '<input type=\"checkbox\">' },
-					{ title: 'Date'         }, //  1
+					{ title: 'Time'         }, //  1
 					{ title: 'IP address'   }, //  2
-					{ title: 'Code'         }, //  3
-					{ title: 'AS number'    }, //  4
+					{ title: 'CC'           }, //  3
+					{ title: 'ASN'          }, //  4
 					{ title: 'Target'       }, //  5
-					{ title: 'Status'       }, //  6
+					{ title: 'Stat'         }, //  6
 					{ title: 'Request'      }, //  7
 					{ title: 'User agent'   }, //  8
 					{ title: 'HTTP headers' }, //  9
