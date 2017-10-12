@@ -524,14 +524,14 @@
 		var lang = window.navigator.language || window.navigator.userLanguage;
 		lang = lang.indexOf('ja') !== -1 ? 'ja-JP.json' : 'en-US.json';
 
-		$.extend( $.fn.dataTable.defaults, options, {
-			// Dom
+		$.extend(true, $.fn.dataTable.defaults, options, {
+			// DOM
 			dom: 'tp',
 
 			// Server side
 //			serverSide: true,
 //			processing: true,
-//			autoWidth: false,
+			autoWidth: false,
 			deferRender: true,
 			deferLoading: 10,
 
@@ -557,6 +557,16 @@
 			language: {
 				url: IP_GEO_BLOCK.i18n + lang
 			},
+
+			columnDefs: [
+				{ orderable:  false,      targets: 0 },
+				{ searchable: false,      targets: 0 },
+				{
+					targets: [0],
+					data: null,
+					defaultContent: '<input type="checkbox">'
+				}
+			],
 
 			// draw callback
 			drawCallback: function (settings) {
@@ -1046,7 +1056,7 @@
 				columns: [
 					{ title: '<input type="checkbox">' },
 					{ title: 'IP address'   }, // 1
-					{ title: 'CC'           }, // 2
+					{ title: 'Code'         }, // 2
 					{ title: 'ASN'          }, // 3
 					{ title: 'Target'       }, // 4
 					{ title: 'Fails/Calls'  }, // 5
@@ -1060,14 +1070,7 @@
 					{ responsivePriority:  3, targets: 4 }, // Target
 					{ responsivePriority:  4, targets: 5 }, // Fails/Calls
 					{ responsivePriority:  5, targets: 6 }, // Elapsed[sec]
-					{ orderable:  false,      targets: 0 },
-					{ searchable: false,      targets: 0 },
 					{ className: "all",       targets: [0, 1, 2, 4] }, // always visible
-					{
-						targets: [0],
-						data: null,
-						defaultContent: '<input type="checkbox">'
-					}
 				]
 			});
 
@@ -1164,10 +1167,10 @@
 					{ title: '<input type=\"checkbox\">' },
 					{ title: 'Time'         }, //  1
 					{ title: 'IP address'   }, //  2
-					{ title: 'CC'           }, //  3
+					{ title: 'Code'         }, //  3
 					{ title: 'ASN'          }, //  4
 					{ title: 'Target'       }, //  5
-					{ title: 'Stat'         }, //  6
+					{ title: 'Result'       }, //  6
 					{ title: 'Request'      }, //  7
 					{ title: 'User agent'   }, //  8
 					{ title: 'HTTP headers' }, //  9
@@ -1185,15 +1188,8 @@
 					{ responsivePriority:  8, targets:  8 }, // User agent
 					{ responsivePriority:  9, targets:  9 }, // HTTP headers
 					{ responsivePriority: 10, targets: 10 }, // $_POST data
-					{ orderable:  false,      targets:  0 },
-					{ searchable: false,      targets:  0 },
 					{ className: "all",       targets: [0, 1, 2, 3 ] }, // always visible
 					{ className: "none",      targets: [7, 8, 9, 10] }, // always hidden
-					{
-						targets: [0],
-						data: null,
-						defaultContent: '<input type="checkbox">'
-					}
 				]
 			});
 

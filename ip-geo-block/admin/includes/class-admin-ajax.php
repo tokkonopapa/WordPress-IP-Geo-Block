@@ -136,15 +136,15 @@ class IP_Geo_Block_Admin_Ajax {
 			$res[] = array(
 				/* Checkbox     */ '',
 				/* Date         */ '&rsquo;' . IP_Geo_Block_Util::localdate( $row[1], 'y-m-d H:i:s' ),
-				/* IP address   */ '<a href="#!">' . esc_html( $row[2] ) . '</a>',
-				/* Country code */ esc_html( $row[3] ),
-				/* AS number    */ esc_html( $row[5] ),
-				/* Target       */ esc_html( $row[0] ),
-				/* Status       */ esc_html( $row[4] ),
-				/* Request      */ esc_html( $row[6] ),
-				/* User agent   */ esc_html( $row[7] ),
-				/* HTTP headers */ esc_html( $row[8] ),
-				/* $_POST data  */ esc_html( $row[9] ),
+				/* IP address   */ '<span><a href="#!">' . esc_html( $row[2] ) . '</a></span>',
+				/* Country code */ '<span>' . esc_html( $row[3] ) . '</span>',
+				/* AS number    */ '<span>' . esc_html( $row[5] ) . '</span>',
+				/* Target       */ '<span>' . esc_html( $row[0] ) . '</span>',
+				/* Status       */ '<span>' . esc_html( $row[4] ) . '</span>',
+				/* Request      */ '<span>' . esc_html( $row[6] ) . '</span>',
+				/* User agent   */ '<span>' . esc_html( $row[7] ) . '</span>',
+				/* HTTP headers */ '<span>' . esc_html( $row[8] ) . '</span>',
+				/* $_POST data  */ '<span>' . esc_html( $row[9] ) . '</span>',
 			);
 		}
 
@@ -167,12 +167,12 @@ class IP_Geo_Block_Admin_Ajax {
 
 			$res[] = array(
 				/* Checkbox     */ '',
-				/* IP address   */ '<a href="#!">' . esc_html( $key ) . '</a>',
-				/* Country code */ esc_html( $val['code'] ),
-				/* AS number    */ esc_html( $val['asn' ] ),
-				/* Target       */ esc_html( $val['hook'] ),
-				/* Fails/Calls  */ sprintf( '%d / %d', $val['fail'], $val['call'] ),
-				/* Elapsed[sec] */ $time - (int)$val['time'],
+				/* IP address   */ '<span><a href="#!">' . esc_html( $key ) . '</a></span>',
+				/* Country code */ '<span>' . esc_html( $val['code'] ) . '</span>',
+				/* AS number    */ '<span>' . esc_html( $val['asn' ] ) . '</span>',
+				/* Target       */ '<span>' . esc_html( $val['hook'] ) . '</span>',
+				/* Fails/Calls  */ '<span>' . sprintf( '%d / %d', $val['fail'], $val['call'] ) . '</span>',
+				/* Elapsed[sec] */ '<span>' . ( $time - (int)$val['time'] ) . '</span>',
 			);
 		}
 

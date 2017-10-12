@@ -89,12 +89,12 @@ fieldset.ip-geo-block-field .ip-geo-block-dropdown:before {
 fieldset.ip-geo-block-field .ip-geo-block-dropup:before {
     border-left: 0.4em solid #555;
     left: 3px;
-    top: 0.3em;
+    top: 18%;
 }
 fieldset.ip-geo-block-field .ip-geo-block-dropdown:before {
     border-top: 0.4em solid #555;
     left: 0;
-    top: 0.5em;
+    top: 38%;
 }
 fieldset.ip-geo-block-field ul.ip-geo-block-dropup:before {
     top: 0.25em;
@@ -108,7 +108,7 @@ fieldset.ip-geo-block-field table.form-table {
 }
 fieldset.ip-geo-block-field .ip-geo-block-desc {
     color: #666;
-    font-size: 13px;
+    font-size: 13px !important;
 /*  font-style: italic;*/
 }
 
@@ -325,7 +325,7 @@ table.ip-geo-block-table td:first-child {
 }
 
 span.ip-geo-block-title-link {
-    font-size: 13px;
+    font-size: 13px !important;
 }
 /*span.ip-geo-block-title-link a {
     box-shadow: none;
@@ -441,46 +441,55 @@ table.dataTable td:nth-child(n+2) {
 table.dataTable th {
     white-space: nowrap;
 }
-table.dataTable.nowrap td {
-    white-space: normal !important;
-    word-wrap: break-word !important;
-    word-break: break-all !important;
+table.dataTable > thead > tr {
+    line-height: 1.8em;
 }
 table.dataTable > tbody > tr {
     cursor: pointer;
-}
-/* Checkbox */
-table.dataTable > thead > tr > th:first-child,
-table.dataTable > tbody > tr > td:first-child {
-    padding: 8px 4px 8px 10px;
-    text-align: left;
-/*  max-width: 1.25em;*/
-}
-table.dataTable > thead > tr > th:first-child input,
-table.dataTable > tbody > tr > td:first-child input {
-    vertical-align: baseline;
-}
-table.dataTable > thead > tr {
-    line-height: 1.8em;
 }
 table.dataTable > thead > tr > th,
 table.dataTable > thead > tr > td,
 table.dataTable.no-footer {
     border-bottom: 1px solid #ddd;
 }
+
+/* Size of column */
+table.dataTable.nowrap td,
+table.dataTable > tbody > tr > td span {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    word-break: break-all !important;
+}
+table.dataTable > tbody > tr > td span {
+    display: inline-block;
+}
+
+/* Checkbox */
+table.dataTable input[type="checkbox"] {
+    height: 16px;
+    width: 16px;
+    margin: 0;
+}
+table.dataTable > thead > tr > th:first-child,
+table.dataTable > tbody > tr > td:first-child {
+    padding: 8px 4px 8px 10px;
+    text-align: left;
+}
+table.dataTable > thead > tr > th:first-child input,
+table.dataTable > tbody > tr > td:first-child input {
+    vertical-align: baseline;
+}
+
 /* No data available in table */
 table.dataTable > tbody > tr > td.dataTables_empty,
 table.collapsed > tbody > tr > td.dataTables_empty:first-child::before {
     border: none;
     text-align: center;
 }
+
 /* Collapsed */
 table.collapsed > thead > tr > th:first-child {
     padding: 8px 4px 8px 20px;
-}
-table.dataTable > thead > tr > th:first-child input,
-table.dataTable > tbody > tr > td:first-child input {
-    vertical-align: middle;
 }
 table.collapsed > tbody > tr        > td:first-child::before,
 table.collapsed > tbody > tr.parent > td:first-child::before {
@@ -496,12 +505,12 @@ table.collapsed > tbody > tr.parent > td:first-child::before {
 }
 table.collapsed > tbody > tr > td:first-child::before {
     border-left: 5px solid #555;
-    top: 1px;
+    top: 0;
     left: -4px;
 }
 table.collapsed > tbody > tr.parent > td:first-child::before {
     border-top: 5px solid #555;
-    top: 4px;
+    top: 3px;
     left: -6px;
 }
 table.collapsed > tbody > tr.child > td:first-child::before {
@@ -515,7 +524,7 @@ table.collapsed > tbody > tr.child > td.child > ul li {
 }
 table.collapsed > tbody > tr.child > td.child > ul li span.dtr-title,
 table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
-    font-size: 13px;
+    font-size: 13px !important;
     display: block;
     white-space: normal;
     word-wrap: break-word;
@@ -523,6 +532,7 @@ table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
 }
 table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
     margin-left: 1.25em;
+    margin-right: 0.3em;
 }
 
 /* Pagenation */
@@ -589,6 +599,7 @@ table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
     background-color: #fff !important;
 }
 
+/* Alignment of table */
 #ip-geo-block-1 #ip-geo-block-section-2 .panel-body,
 #ip-geo-block-4 #ip-geo-block-section-0 .panel-body {
     padding: 0;
@@ -607,54 +618,18 @@ ul.ip-geo-block-select-target li {
     float: left;
     margin-right: 1.5em;
 }
-/* Vertial alignment *//*
-ul.ip-geo-block-select-target li label {
-    display: block;
-    position: relative;
-    padding-left: 1.25em;
-    line-height: 2em;
-}
-ul.ip-geo-block-select-target li label input[type="radio"] {
-    position: absolute;
-    top: 8px;
-    left: 0;
-    margin: auto;
-}*/
 ul.ip-geo-block-select-target li label dfn {
     cursor: pointer;
 }
+
 /* Filter */
 input#ip_geo_block_settings_search_filter {
     width: 16em;
     padding-top: 3px;
 }
 
+/* Mark.js */
 mark {
     padding: 0;
     background: #FFD700; // Gold
-}
-
-table.dataTable input[type="checkbox"] {
-    height: 16px;
-    width: 16px;
-    margin: 0;
-}
-
-/********************
- * Statistics tab
- ********************/
-/* Target *//*
-#ip-geo-block-1 table.dataTable > tbody > tr > td:nth-child(5),
-#ip-geo-block-4 table.dataTable > tbody > tr > td:nth-child(6) {
-    min-width: 4.2em;
-}*/
-
-/********************
- * Logs tab
- ********************/
-/* Date */
-@media screen and (min-width: 640px) {
-    #ip-geo-block-4 table.dataTable > tbody > tr > td:nth-child(2) {
-        min-width: 7em;
-    }
 }

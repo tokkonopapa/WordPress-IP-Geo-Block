@@ -170,6 +170,12 @@ class IP_Geo_Block_Admin {
 	public function enqueue_admin_assets() {
 		$footer = TRUE;
 		$dependency = array( 'jquery' );
+		$version = ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+			IP_Geo_Block::VERSION :
+			max(
+				filemtime( plugin_dir_path( __FILE__ ) . 'css/admin.css' ),
+				filemtime( plugin_dir_path( __FILE__ ) . 'js/admin.js'   )
+			);
 
 		switch ( $this->admin_tab ) {
 		  case 1:
@@ -223,7 +229,7 @@ class IP_Geo_Block_Admin {
 			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 				'css/admin.min.css' : 'css/admin.css', __FILE__
 			),
-			array(), IP_Geo_Block::VERSION
+			array(), $version
 		);
 
 		// js for IP Geo Block admin page
@@ -233,7 +239,7 @@ class IP_Geo_Block_Admin {
 				'js/admin.min.js' : 'js/admin.js', __FILE__
 			),
 			$dependency + ( isset( $addon ) ? array( $addon ) : array() ),
-			IP_Geo_Block::VERSION,
+			$version,
 			$footer
 		);
 		wp_localize_script( $handle,
