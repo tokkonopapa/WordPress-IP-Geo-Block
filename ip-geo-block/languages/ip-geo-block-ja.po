@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
 "POT-Creation-Date: 2017-10-14 13:13+0900\n"
-"PO-Revision-Date: 2017-10-14 14:34+0900\n"
+"PO-Revision-Date: 2017-10-14 15:09+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -166,11 +166,11 @@ msgstr "AS番号"
 
 #: admin/class-ip-geo-block-admin.php:270
 msgid "Target"
-msgstr "対象"
+msgstr "検証対象"
 
 #: admin/class-ip-geo-block-admin.php:271
 msgid "Login failures/Calls"
-msgstr "ログイン失敗／リクエスト回数"
+msgstr "ログイン失敗／リクエスト"
 
 #: admin/class-ip-geo-block-admin.php:272
 msgid "Elapsed[sec]"
