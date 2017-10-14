@@ -180,6 +180,7 @@ class IP_Geo_Block_Admin {
 		switch ( $this->admin_tab ) {
 		  case 1:
 		  case 4:
+			// css and js for DataTables
 			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-datatables-css',
 				plugins_url( 'datatables/css/datatables-all.min.css', __FILE__ ),
 				array(), IP_Geo_Block::VERSION
@@ -249,8 +250,7 @@ class IP_Geo_Block_Admin {
 				'tab' => $this->admin_tab,
 				'url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => IP_Geo_Block_Util::create_nonce( $this->get_ajax_action() ),
-				'i18n' => plugins_url( IP_Geo_Block::PLUGIN_NAME . '/admin/datatables/i18n/' ),
-				'msg' => array(
+				'dialog' => array(
 					__( 'Import settings ?',           'ip-geo-block' ),
 					__( 'Create table ?',              'ip-geo-block' ),
 					__( 'Delete table ?',              'ip-geo-block' ),
@@ -260,6 +260,22 @@ class IP_Geo_Block_Admin {
 					__( 'ajax for logged-in user',     'ip-geo-block' ),
 					__( 'ajax for non logged-in user', 'ip-geo-block' ),
 					__( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
+				),
+				'language' => array(
+					__( 'No matching records found',   'ip-geo-block' ),
+					__( 'No data available in table',  'ip-geo-block' ),
+					__( 'IP address',                  'ip-geo-block' ),
+					__( 'Code',                        'ip-geo-block' ),
+					__( 'ASN',                         'ip-geo-block' ),
+					__( 'Target',                      'ip-geo-block' ),
+					__( 'Login failures/Calls',        'ip-geo-block' ),
+					__( 'Elapsed[sec]',                'ip-geo-block' ),
+					__( 'Time',                        'ip-geo-block' ),
+					__( 'Result',                      'ip-geo-block' ),
+					__( 'Request',                     'ip-geo-block' ),
+					__( 'User agent',                  'ip-geo-block' ),
+					__( 'HTTP headers',                'ip-geo-block' ),
+					__( '$_POST data',                 'ip-geo-block' ),
 				),
 			)
 		);

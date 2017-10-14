@@ -88,12 +88,12 @@ fieldset.ip-geo-block-field .ip-geo-block-dropdown:before {
 }
 fieldset.ip-geo-block-field .ip-geo-block-dropup:before {
     border-left: 0.4em solid #555;
-    left: 3px;
+    left: 2px;
     top: 18%;
 }
 fieldset.ip-geo-block-field .ip-geo-block-dropdown:before {
     border-top: 0.4em solid #555;
-    left: 0;
+    left: -2px;
     top: 38%;
 }
 fieldset.ip-geo-block-field ul.ip-geo-block-dropup:before {

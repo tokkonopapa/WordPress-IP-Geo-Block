@@ -7,6 +7,9 @@
 (function ($, window, document) {
 	'use strict';
 
+	var dialog   = IP_GEO_BLOCK.dialog,
+	    language = IP_GEO_BLOCK.language;
+
 	function ID(selector, id) {
 		var keys = {
 			'.': '.ip-geo-block-',
@@ -50,7 +53,7 @@
 	}
 
 	function notice_html5() {
-		warning(null, IP_GEO_BLOCK.msg[8]);
+		warning(null, dialog[8]);
 	}
 
 	function redirect(page, tab) {
@@ -520,18 +523,17 @@
 	}
 
 	// DataTables
-	function initTable(id, options) {
-		var lang = window.navigator.language || window.navigator.userLanguage;
-		lang = lang.indexOf('ja') !== -1 ? 'ja-JP.json' : 'en-US.json';
-
+	function initTable(tabNo, options) {
 		$.extend(true, $.fn.dataTable.defaults, options, {
 			// DOM
 			dom: 'tp',
 
 			// Server side
 //			serverSide: true,
-//			processing: true,
+
+			// Client behavior
 			autoWidth: false,
+			processing: true,
 			deferRender: true,
 			deferLoading: 10,
 
@@ -555,12 +557,21 @@
 
 			// Language
 			language: {
-				url: IP_GEO_BLOCK.i18n + lang
+				emptyTable:     '<div class="ip-geo-block-loading"></div>',
+				loadingRecords: '<div class="ip-geo-block-loading"></div>',
+				processing:     '<div class="ip-geo-block-loading"></div>',
+				zeroRecords:    language[0],
+				paginate: {
+					first:    '&laquo;',
+					last:     '&raquo;',
+					next:     '&rsaquo;',
+					previous: '&lsaquo;'
+				}
 			},
 
 			columnDefs: [
-				{ orderable:  false,      targets: 0 },
-				{ searchable: false,      targets: 0 },
+				{ orderable:  false, targets: 0 },
+				{ searchable: false, targets: 0 },
 				{
 					targets: [0],
 					data: null,
@@ -571,12 +582,41 @@
 			// draw callback
 			drawCallback: function (settings) {
 				if (3 === settings.iDraw) { // avoid recursive call for ajax source
+					$('td.dataTables_empty').html(language[1]); // 'No data available in table'
 					var $filter = $(ID('@', 'search_filter'));
 					if ($filter.val()) { // if a filter value exists in the text field
-						$filter.trigger('keyup');
+						$filter.trigger('keyup'); // then search the text
 					}
 				}
 			}
+		});
+
+		// Search filter
+		$(ID('@', 'search_filter')).on('keyup', function (event) {
+			table.search(this.value).draw();
+			return false;
+		});
+
+		// Reset filter
+		$(ID('#', 'reset-filter')).on('click', function (event) {
+			$(ID('@', 'search_filter')).val('');
+			table.search('').draw();
+			return false;
+		});
+
+		// Clear logs
+		$(ID('@', 'clear_logs')).on('click', function (event) {
+			confirm(dialog[5], function () {
+				ajax_clear('logs', null);
+			});
+			return false;
+		});
+
+		// Jump to search tab with opening a new window
+		$('table.dataTable tbody').on('click', 'a', function (event) {
+			var key = window.location.pathname + window.location.search;
+			window.open(key.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''), '_blank');
+			return false;
 		});
 	}
 
@@ -741,10 +781,10 @@
 						j.appendChild(i);
 
 						if (1 & data[key]) {
-							j.appendChild(add_icon(dfn, span, IP_GEO_BLOCK.msg[6], 'lock'));
+							j.appendChild(add_icon(dfn, span, dialog[6], 'lock'));
 						}
 						if (2 & data[key]) {
-							j.appendChild(add_icon(dfn, span, IP_GEO_BLOCK.msg[7], 'unlock'));
+							j.appendChild(add_icon(dfn, span, dialog[7], 'unlock'));
 						}
 
 						$this.append(j);
@@ -901,7 +941,7 @@
 
 			// Import pre-defined settings
 			$(ID('#', 'default')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[0], function () {
+				confirm(dialog[0], function () {
 					ajax_post('pre-defined', {
 						cmd: 'import-default'
 					}, function (data) {
@@ -912,7 +952,7 @@
 			});
 
 			$(ID('#', 'preferred')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[0], function () {
+				confirm(dialog[0], function () {
 					ajax_post('pre-defined', {
 						cmd: 'import-preferred'
 					}, function (data) {
@@ -924,14 +964,14 @@
 
 			// Manipulate DB table for validation logs
 			$(ID('@', 'create_table')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[1], function () {
+				confirm(dialog[1], function () {
 					ajax_table('create-table');
 				});
 				return false;
 			});
 
 			$(ID('@', 'delete_table')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[2], function () {
+				confirm(dialog[2], function () {
 					ajax_table('delete-table');
 				});
 				return false;
@@ -1037,7 +1077,7 @@
 
 			// Statistics of validation
 			$(ID('@', 'clear_statistics')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[3], function () {
+				confirm(dialog[3], function () {
 					ajax_clear('statistics', null);
 				});
 				return false;
@@ -1045,22 +1085,22 @@
 
 			// Statistics in logs
 			$(ID('@', 'clear_logs')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[5], function () {
+				confirm(dialog[5], function () {
 					ajax_clear('logs', null);
 				});
 				return false;
 			});
 
 			// Statistics in cache
-			initTable('cache', {
+			initTable(tabNo, {
 				columns: [
 					{ title: '<input type="checkbox">' },
-					{ title: 'IP address'   }, // 1
-					{ title: 'Code'         }, // 2
-					{ title: 'ASN'          }, // 3
-					{ title: 'Target'       }, // 4
-					{ title: 'Fails/Calls'  }, // 5
-					{ title: 'Elapsed[sec]' }  // 6
+					{ title: language[2] }, // 1
+					{ title: language[3] }, // 2
+					{ title: language[4] }, // 3
+					{ title: language[5] }, // 4
+					{ title: language[6] }, // 5
+					{ title: language[7] }  // 6
 				],
 				columnDefs: [
 					{ responsivePriority:  0, targets: 0 }, // checkbox
@@ -1108,19 +1148,6 @@
 				return false;
 			}).trigger('change');
 
-			// Filter cache
-			$(ID('@', 'search_filter')).on('keyup', function (event) {
-				table.search(this.value).draw();
-				return false;
-			});
-
-			// Reset filter
-			$(ID('#', 'reset-filter')).on('click', function (event) {
-				$(ID('@', 'search_filter')).val('');
-				table.search('').draw();
-				return false;
-			});
-
 			// Bulk action
 			$(ID('#', 'bulk-action')).on('click', function (event) {
 				var cell, data = [];
@@ -1141,40 +1168,25 @@
 				}
 				return false;
 			});
-
-			// Clear cache
-			$(ID('@', 'clear_cache')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[4], function () {
-					ajax_clear('cache', null);
-				});
-				return false;
-			});
-
-			// Jump to search tab with opening a new window
-			$('table.dataTable tbody').on('click', 'a', function (event) {
-				var key = window.location.pathname + window.location.search;
-				window.open(key.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''), '_blank');
-				return false;
-			});
 			break;
 
 		  /*----------------------------------------
 		   * Logs
 		   *----------------------------------------*/
 		  case 4:
-			initTable('logs', {
+			initTable(tabNo, {
 				columns: [
 					{ title: '<input type=\"checkbox\">' },
-					{ title: 'Time'         }, //  1
-					{ title: 'IP address'   }, //  2
-					{ title: 'Code'         }, //  3
-					{ title: 'ASN'          }, //  4
-					{ title: 'Target'       }, //  5
-					{ title: 'Result'       }, //  6
-					{ title: 'Request'      }, //  7
-					{ title: 'User agent'   }, //  8
-					{ title: 'HTTP headers' }, //  9
-					{ title: '$_POST data'  }  // 10
+					{ title: language[ 8] }, //  1
+					{ title: language[ 2] }, //  2
+					{ title: language[ 3] }, //  3
+					{ title: language[ 4] }, //  4
+					{ title: language[ 5] }, //  5
+					{ title: language[ 9] }, //  6
+					{ title: language[10] }, //  7
+					{ title: language[11] }, //  8
+					{ title: language[12] }, //  9
+					{ title: language[13] }  // 10
 				],
 				columnDefs: [
 					{ responsivePriority:  0, targets:  0 }, // checkbox
@@ -1227,19 +1239,6 @@
 				return false;
 			}).trigger('change');
 
-			// Search filter
-			$(ID('@', 'search_filter')).on('keyup', function (event) {
-				table.search(this.value).draw();
-				return false;
-			});
-
-			// Reset filter
-			$(ID('#', 'reset-filter')).on('click', function (event) {
-				$(ID('@', 'search_filter')).val('');
-				table.search('').draw();
-				return false;
-			});
-
 			// Bulk action
 			$(ID('#', 'bulk-action')).on('click', function (event) {
 				var cell, data = [];
@@ -1261,27 +1260,12 @@
 				return false;
 			});
 
-			// Clear logs
-			$(ID('@', 'clear_logs')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[5], function () {
-					ajax_clear('logs', null);
-				});
-				return false;
-			});
-
 			// Export / Import settings
 			add_hidden_form('export-logs');
 
 			// Export logs
 			$(ID('#', 'export-logs')).on('click', function (event) {
 				$(ID('#', 'export-form')).submit();
-				return false;
-			});
-
-			// Jump to search tab with opening a new window
-			$('table.dataTable tbody').on('click', 'a', function (event) {
-				var key = window.location.pathname + window.location.search;
-				window.open(key.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''), '_blank');
 				return false;
 			});
 			break;
