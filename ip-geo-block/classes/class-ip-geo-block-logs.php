@@ -676,6 +676,23 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
+	 * Delete cache entry by IP address
+	 *
+	 */
+	public static function delete_cache_entry( $entry ) {
+		global $wpdb;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
+		$result = TRUE;
+
+		foreach ( $entry as $ip ) {
+			$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = %s", $ip )
+			and $result &= ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Delete expired cache
 	 *
 	 */

@@ -790,7 +790,7 @@ class IP_Geo_Block_Admin {
 					echo ' data-desc="', $args['desc'][ $key ], '"';
 					$key === $args['value'] and $desc = $args['desc'][ $key ];
 				}
-				echo ">$val</option>\n";
+				echo '>', ( NULL === $val ? __( 'Select one', 'ip-geo-block' ) : $val ), '</option>', "\n";
 			}
 			echo "</select>\n";
 
@@ -1217,12 +1217,15 @@ class IP_Geo_Block_Admin {
 	private function sync_multisite_option( $option ) {
 		global $wpdb;
 		$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" );
+		$ret = TRUE;
 
 		foreach ( $blog_ids as $id ) {
 			switch_to_blog( $id );
-			update_option( IP_Geo_Block::OPTION_NAME, $option );
+			$ret &= update_option( IP_Geo_Block::OPTION_NAME, $option );
 			restore_current_blog();
 		}
+
+		return $ret;
 	}
 
 	/**
@@ -1335,17 +1338,33 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which );
 			break;
 
-		  case 'bulk-cache-remove':
-		  case 'bulk-cache-ip-white':
-		  case 'bulk-cache-ip-black':
-		  case 'bulk-cache-as-white':
-		  case 'bulk-cache-as-black':
+		  case 'bulk-action-remove':
+			$res = IP_Geo_Block_Logs::delete_cache_entry( $which['IP'] );
 			break;
 
-		  case 'bulk-logs-ip-white':
-		  case 'bulk-logs-ip-black':
-		  case 'bulk-logs-as-white':
-		  case 'bulk-logs-as-black':
+		  case 'bulk-action-ip-white':
+		  case 'bulk-action-ip-black':
+		  case 'bulk-action-as-white':
+		  case 'bulk-action-as-black':
+			$settings = IP_Geo_Block::get_option();
+			$src = ( FALSE !== strpos( $_POST['cmd'], '-ip-'   ) ? 'IP'         : 'AS'         );
+			$dst = ( FALSE !== strpos( $_POST['cmd'], '-white' ) ? 'white_list' : 'black_list' );
+
+			foreach ( array_unique( $which[ $src ] ) as $val ) {
+				$val = preg_replace( '/[^\w\.:]/', '', $val );
+				if ( FALSE === strpos( $settings['extra_ips'][ $dst ], $val ) )
+					$settings['extra_ips'][ $dst ] .= "\n" . $val;
+			}
+
+			if ( $settings['network_wide'] && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
+				$this->sync_multisite_option( $settings );
+			else
+				update_option( IP_Geo_Block::OPTION_NAME, $settings );
+
+			$res = array(
+				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
+				'tab' => 'tab=4'
+			);
 			break;
 
 		  case 'create-table':

@@ -272,8 +272,25 @@
 			}
 		}
 	}
+/*
+	$.ajaxSetup({
+		beforeSend: function (xhr, settings) {
+			// settings: {
+			//    url:         '/wp-admin/admin-ajax.php'
+			//    method:      'POST' or 'GET'
+			//    contentType: 'application/x-www-form-urlencoded; charset=UTF-8'
+			//    data:        'action=...'
+			// }
+		}
+	});
 
+	// plupload
+	$(window).on('BeforeUpload', function (uploader, file) {
+		console.log(uploader);
+	});
+*/
 	// Embed a nonce before an Ajax request is sent
+//	$(document).ajaxSend(function (event, jqxhr, settings) {
 	$.ajaxPrefilter(function (settings, original, jqxhr) {
 		// POST to async-upload.php causes an error in https://wordpress.org/plugins/mammoth-docx-converter/
 		if (is_admin(settings.url) === 1 && !settings.url.match(/async-upload\.php$/)) {

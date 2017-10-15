@@ -34,6 +34,10 @@
 		}) : '';
 	}
 
+	function stripTag(str) {
+		return str.replace(/(<([^>]+)>)/ig, '');
+	}
+
 	function loading(id, flag) {
 		if (flag) {
 			$(ID('#', id)).addClass(ID('loading'));
@@ -43,13 +47,13 @@
 	}
 
 	function confirm(msg, callback) {
-		if (window.confirm(escapeHTML(msg))) {
+		if (window.confirm(stripTag(msg))) {
 			callback();
 		}
 	}
 
 	function warning(status, msg) {
-		window.alert(status ? escapeHTML(status + ': ' + msg) : escapeHTML(msg));
+		window.alert(stripTag(status ? status + ': ' + msg : msg));
 	}
 
 	function notice_html5() {
@@ -523,7 +527,7 @@
 	}
 
 	// DataTables
-	function initTable(tabNo, options) {
+	function initTable(control, options) {
 		$.extend(true, $.fn.dataTable.defaults, options, {
 			// DOM
 			dom: 'tp',
@@ -582,13 +586,73 @@
 			// draw callback
 			drawCallback: function (settings) {
 				if (3 === settings.iDraw) { // avoid recursive call for ajax source
-					$('td.dataTables_empty').html(language[1]); // 'No data available in table'
+					// 'No data available in table'
+					$(ID('#', control.tableID)).find('td.dataTables_empty').html(language[1]);
+
 					var $filter = $(ID('@', 'search_filter'));
 					if ($filter.val()) { // if a filter value exists in the text field
 						$filter.trigger('keyup'); // then search the text
 					}
 				}
 			}
+		});
+
+		var table = $(ID('#', control.tableID)).DataTable({
+			ajax: {
+				url: IP_GEO_BLOCK.url,
+				type: 'POST',
+				data: {
+					cmd: control.ajaxCMD,
+					action: IP_GEO_BLOCK.action,
+					nonce: IP_GEO_BLOCK.nonce
+				}
+			},
+			mark: true // https://github.com/julmot/datatables.mark.js/
+		});
+
+		// Re-calculate the widths after panel-body is shown
+		$(ID('#', control.sectionID)).find('.panel-body').on(ID('show-body'), function (event) {
+			table.columns.adjust().responsive.recalc();
+			return false;
+		})
+
+		// handle the event of checkbox for bulk action
+		.on('change', 'th input', function (event) {
+			var $this = $(this);
+			$this.closest('table').find('td input').prop('checked', $this.prop('checked'));
+			return false;
+		});
+
+		// Select target
+		$(ID('.', 'select-target')).on('change', function (event) {
+			var val = $(this).find('input[name="' + ID('$', 'target') + '"]:checked').val();
+			// search only the 4th column "Target"
+			table.columns(control.searchColumn).search('all' !== val ? val : '').draw();
+			return false;
+		}).trigger('change');
+
+		// Bulk action
+		$(ID('#', 'bulk-action')).on('click', function (event) {
+			var cell, data = { IP: [], AS: [] }, regexp = /(<([^>]+)>)/ig;
+			$('table.dataTable').find('td>input:checked').each(function (index) {
+				cell = table.cell($(this).parent()).data();
+				data.IP.push(cell[control.columnIP].replace(regexp, '')); // strip tag
+				data.AS.push(cell[control.columnAS].replace(regexp, '')); // strip tag
+			});
+
+			ajax_post('loading', {
+				cmd: $(this).prev().val(),
+				which: data
+			}, function (data) {
+				if ('undefined' !== typeof data.page) {
+					redirect(data.page, data.tab);
+				} else if (data) {
+					table.ajax.reload();
+					$(ID('#', control.tableID)).find('th input[type="checkbox"]').prop('checked', false);
+				}
+			});
+
+			return false;
 		});
 
 		// Search filter
@@ -1092,173 +1156,84 @@
 			});
 
 			// Statistics in cache
-			initTable(tabNo, {
-				columns: [
-					{ title: '<input type="checkbox">' },
-					{ title: language[2] }, // 1
-					{ title: language[3] }, // 2
-					{ title: language[4] }, // 3
-					{ title: language[5] }, // 4
-					{ title: language[6] }, // 5
-					{ title: language[7] }  // 6
-				],
-				columnDefs: [
-					{ responsivePriority:  0, targets: 0 }, // checkbox
-					{ responsivePriority:  1, targets: 1 }, // IP address
-					{ responsivePriority:  2, targets: 2 }, // Country code
-					{ responsivePriority:  6, targets: 3 }, // AS number
-					{ responsivePriority:  3, targets: 4 }, // Target
-					{ responsivePriority:  4, targets: 5 }, // Fails/Calls
-					{ responsivePriority:  5, targets: 6 }, // Elapsed[sec]
-					{ className: "all",       targets: [0, 1, 2, 4] }, // always visible
-				]
-			});
-
-			var table = $(ID('#', 'statistics-cache')).DataTable({
-				ajax: {
-					url: IP_GEO_BLOCK.url,
-					type: 'POST',
-					data: {
-						cmd: 'restore-cache',
-						action: IP_GEO_BLOCK.action,
-						nonce: IP_GEO_BLOCK.nonce
-					}
+			initTable(
+				{
+					tableID:   'statistics-cache',
+					ajaxCMD:   'restore-cache',
+					sectionID: 'section-2',
+					searchColumn: 4,
+					columnIP: 1,
+					columnAS: 3,
 				},
-				mark: true // https://github.com/julmot/datatables.mark.js/
-			});
-
-			// Re-calculate the widths after panel-body is shown
-			$(ID('#', 'section-2')).find('.panel-body').on(ID('show-body'), function (event) {
-				table.columns.adjust().responsive.recalc();
-				return false;
-			})
-
-			// handle the event of checkbox for bulk action
-			.on('change', 'th input', function (event) {
-				var $this = $(this);
-				$this.closest('table').find('td input').prop('checked', $this.prop('checked'));
-				return false;
-			});
-
-			// Select target
-			$(ID('.', 'select-target')).on('change', function (event) {
-				var val = $(this).find('input[name="' + ID('$', 'target') + '"]:checked').val();
-				// search only the 4th column "Target"
-				table.columns(4).search('all' !== val ? val : '').draw();
-				return false;
-			}).trigger('change');
-
-			// Bulk action
-			$(ID('#', 'bulk-action')).on('click', function (event) {
-				var cell, data = [];
-				$('table.dataTable').find('input:checked').each(function (index) {
-					cell = table.cell($(this).parent()).data();
-					data.push({
-						ip: cell[1].replace(/(<([^>]+)>)/ig, ''),
-						as: cell[3]
-					});
-				});
-				var action = $(this).prev().val();
-				if (action) {
-					ajax_post('loading', {
-						cmd: action,
-						which: data
-					}, function (data) {
-					});
+				{
+					columns: [
+						{ title: '<input type="checkbox">' },
+						{ title: language[2] }, // 1
+						{ title: language[3] }, // 2
+						{ title: language[4] }, // 3
+						{ title: language[5] }, // 4
+						{ title: language[6] }, // 5
+						{ title: language[7] }  // 6
+					],
+					columnDefs: [
+						{ responsivePriority:  0, targets: 0 }, // checkbox
+						{ responsivePriority:  1, targets: 1 }, // IP address
+						{ responsivePriority:  2, targets: 2 }, // Country code
+						{ responsivePriority:  6, targets: 3 }, // AS number
+						{ responsivePriority:  3, targets: 4 }, // Target
+						{ responsivePriority:  4, targets: 5 }, // Fails/Calls
+						{ responsivePriority:  5, targets: 6 }, // Elapsed[sec]
+						{ className: "all",       targets: [0, 1, 2, 4] }, // always visible
+					]
 				}
-				return false;
-			});
+			);
 			break;
 
 		  /*----------------------------------------
 		   * Logs
 		   *----------------------------------------*/
 		  case 4:
-			initTable(tabNo, {
-				columns: [
-					{ title: '<input type=\"checkbox\">' },
-					{ title: language[ 8] }, //  1
-					{ title: language[ 2] }, //  2
-					{ title: language[ 3] }, //  3
-					{ title: language[ 4] }, //  4
-					{ title: language[ 5] }, //  5
-					{ title: language[ 9] }, //  6
-					{ title: language[10] }, //  7
-					{ title: language[11] }, //  8
-					{ title: language[12] }, //  9
-					{ title: language[13] }  // 10
-				],
-				columnDefs: [
-					{ responsivePriority:  0, targets:  0 }, // checkbox
-					{ responsivePriority:  1, targets:  1 }, // Date
-					{ responsivePriority:  2, targets:  2 }, // IP address
-					{ responsivePriority:  3, targets:  3 }, // Country code
-					{ responsivePriority:  6, targets:  4 }, // AS number
-					{ responsivePriority:  4, targets:  5 }, // Target
-					{ responsivePriority:  5, targets:  6 }, // Status
-					{ responsivePriority:  7, targets:  7 }, // Request
-					{ responsivePriority:  8, targets:  8 }, // User agent
-					{ responsivePriority:  9, targets:  9 }, // HTTP headers
-					{ responsivePriority: 10, targets: 10 }, // $_POST data
-					{ className: "all",       targets: [0, 1, 2, 3 ] }, // always visible
-					{ className: "none",      targets: [7, 8, 9, 10] }, // always hidden
-				]
-			});
-
-			var table = $(ID('#', 'validation-logs')).DataTable({
-				ajax: {
-					url: IP_GEO_BLOCK.url,
-					type: 'POST',
-					data: {
-						cmd: 'restore-logs',
-						action: IP_GEO_BLOCK.action,
-						nonce: IP_GEO_BLOCK.nonce
-					}
+			// Validation logs
+			initTable(
+				{
+					tableID:   'validation-logs',
+					ajaxCMD:   'restore-logs',
+					sectionID: 'section-0',
+					searchColumn: 5,
+					columnIP: 2,
+					columnAS: 4,
 				},
-				mark: true // https://github.com/julmot/datatables.mark.js/
-			});
-
-			// Re-calculate the widths after panel-body is shown
-			$(ID('#', 'section-0')).find('.panel-body').on(ID('show-body'), function (event) {
-				table.columns.adjust().responsive.recalc();
-				return false;
-			})
-
-			// handle the event of checkbox for bulk action
-			.on('change', 'th input', function (event) {
-				var $this = $(this);
-				$this.closest('table').find('td input').prop('checked', $this.prop('checked'));
-				return false;
-			});
-
-			// Select target
-			$(ID('.', 'select-target')).on('change', function (event) {
-				var val = $(this).find('input[name="' + ID('$', 'target') + '"]:checked').val();
-				// search only the 5th column "Target"
-				table.columns(5).search('all' !== val ? val : '').draw();
-				return false;
-			}).trigger('change');
-
-			// Bulk action
-			$(ID('#', 'bulk-action')).on('click', function (event) {
-				var cell, data = [];
-				$('table.dataTable').find('input:checked').each(function (index) {
-					cell = table.cell($(this).parent()).data();
-					data.push({
-						ip: cell[2].replace(/(<([^>]+)>)/ig, ''),
-						as: cell[4]
-					});
-				});
-				var action = $(this).prev().val();
-				if (action) {
-					ajax_post('loading', {
-						cmd: action,
-						which: data
-					}, function (data) {
-					});
+				{
+					columns: [
+						{ title: '<input type=\"checkbox\">' },
+						{ title: language[ 8] }, //  1
+						{ title: language[ 2] }, //  2
+						{ title: language[ 3] }, //  3
+						{ title: language[ 4] }, //  4
+						{ title: language[ 5] }, //  5
+						{ title: language[ 9] }, //  6
+						{ title: language[10] }, //  7
+						{ title: language[11] }, //  8
+						{ title: language[12] }, //  9
+						{ title: language[13] }  // 10
+					],
+					columnDefs: [
+						{ responsivePriority:  0, targets:  0 }, // checkbox
+						{ responsivePriority:  1, targets:  1 }, // Date
+						{ responsivePriority:  2, targets:  2 }, // IP address
+						{ responsivePriority:  3, targets:  3 }, // Country code
+						{ responsivePriority:  6, targets:  4 }, // AS number
+						{ responsivePriority:  4, targets:  5 }, // Target
+						{ responsivePriority:  5, targets:  6 }, // Status
+						{ responsivePriority:  7, targets:  7 }, // Request
+						{ responsivePriority:  8, targets:  8 }, // User agent
+						{ responsivePriority:  9, targets:  9 }, // HTTP headers
+						{ responsivePriority: 10, targets: 10 }, // $_POST data
+						{ className: "all",       targets: [0, 1, 2, 3 ] }, // always visible
+						{ className: "none",      targets: [7, 8, 9, 10] }, // always hidden
+					]
 				}
-				return false;
-			});
+			);
 
 			// Export / Import settings
 			add_hidden_form('export-logs');

@@ -266,7 +266,7 @@ You can add an IP address to the `X-Forwarded-For` header to emulate the access 
 
 See more details at "[How to test prevention of attacks](http://www.ipgeoblock.com/codex/#how-to-test-prevention-of-attacks 'Codex | IP Geo Block')".
 
-= I was locked down. What shall I do? =
+= I'm locked out! What shall I do? =
 
 You can find the "**Emergent Functionality**" code section near the bottom of `ip-geo-block.php`. This code block can be activated by replacing `/*` (opening multi-line comment) at the top of the line to `//` (single line comment), or `*` at the end of the line to `*/` (closing multi-line comment).
 

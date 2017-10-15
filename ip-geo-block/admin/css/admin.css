@@ -452,6 +452,10 @@ table.dataTable > thead > tr > td,
 table.dataTable.no-footer {
     border-bottom: 1px solid #ddd;
 }
+table.dataTable thead th,
+table.dataTable thead td {
+    padding: 10px 16px;
+}
 
 /* Size of column */
 table.dataTable.nowrap td,
@@ -474,10 +478,6 @@ table.dataTable > thead > tr > th:first-child,
 table.dataTable > tbody > tr > td:first-child {
     padding: 8px 4px 8px 10px;
     text-align: left;
-}
-table.dataTable > thead > tr > th:first-child input,
-table.dataTable > tbody > tr > td:first-child input {
-    vertical-align: baseline;
 }
 
 /* No data available in table */
@@ -505,12 +505,12 @@ table.collapsed > tbody > tr.parent > td:first-child::before {
 }
 table.collapsed > tbody > tr > td:first-child::before {
     border-left: 5px solid #555;
-    top: 0;
+    top: 1px;
     left: -4px;
 }
 table.collapsed > tbody > tr.parent > td:first-child::before {
     border-top: 5px solid #555;
-    top: 3px;
+    top: 4px;
     left: -6px;
 }
 table.collapsed > tbody > tr.child > td:first-child::before {
