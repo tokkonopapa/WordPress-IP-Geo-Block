@@ -1326,18 +1326,22 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'show-info':
+			// Show system and debug information
 			$res = IP_Geo_Block_Admin_Ajax::get_wp_info();
 			break;
 
 		  case 'get-actions':
-			$res = IP_Geo_Block_Util::get_registered_actions( TRUE ); // Get all the ajax/post actions
+			// Get all the ajax/post actions
+			$res = IP_Geo_Block_Util::get_registered_actions( TRUE );
 			break;
 
 		  case 'restore-cache':
+			// Restore cache from database and format for DataTables
 			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which );
 			break;
 
 		  case 'bulk-action-remove':
+			// Delete specified IP addresses from cache
 			$res = IP_Geo_Block_Logs::delete_cache_entry( $which['IP'] );
 			break;
 
@@ -1345,6 +1349,7 @@ class IP_Geo_Block_Admin {
 		  case 'bulk-action-ip-black':
 		  case 'bulk-action-as-white':
 		  case 'bulk-action-as-black':
+			// Bulk actions for registration of settings
 			$src = ( FALSE !== strpos( $_POST['cmd'], '-ip-'   ) ? 'IP'         : 'AS'         );
 			$dst = ( FALSE !== strpos( $_POST['cmd'], '-white' ) ? 'white_list' : 'black_list' );
 
