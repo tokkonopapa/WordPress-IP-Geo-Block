@@ -24,6 +24,10 @@ class IP_Geo_Block_Admin {
 	 * and adding a settings page and menu.
 	 */
 	private function __construct() {
+		// Setup the tab number.
+		$this->admin_tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
+		$this->admin_tab = min( 5, max( 0, $this->admin_tab ) );
+
 		// Load plugin text domain and add body class
 		add_action( 'init', array( $this, 'admin_init' ) );
 
@@ -367,10 +371,6 @@ class IP_Geo_Block_Admin {
 		// Network wide or not
 		$admin_menu = 'admin_menu' === current_filter();
 		$this->is_network &= current_user_can( 'manage_network_options' ) && $settings['network_wide'];
-
-		// Setup the tab number.
-		$this->admin_tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
-		$this->admin_tab = min( 5, max( 0, $this->admin_tab ) );
 
 		if ( $this->is_network ) {
 			if ( $admin_menu ) {
@@ -1330,8 +1330,7 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'get-actions':
-			// Get all the ajax/post actions
-			$res = IP_Geo_Block_Util::get_registered_actions( TRUE );
+			$res = IP_Geo_Block_Util::get_registered_actions( TRUE ); // Get all the ajax/post actions
 			break;
 
 		  case 'restore-cache':
@@ -1346,10 +1345,13 @@ class IP_Geo_Block_Admin {
 		  case 'bulk-action-ip-black':
 		  case 'bulk-action-as-white':
 		  case 'bulk-action-as-black':
-			$settings = IP_Geo_Block::get_option();
 			$src = ( FALSE !== strpos( $_POST['cmd'], '-ip-'   ) ? 'IP'         : 'AS'         );
 			$dst = ( FALSE !== strpos( $_POST['cmd'], '-white' ) ? 'white_list' : 'black_list' );
 
+			if ( empty( $which[ $src ] ) )
+				break;
+
+			$settings = IP_Geo_Block::get_option();
 			foreach ( array_unique( $which[ $src ] ) as $val ) {
 				$val = preg_replace( '/[^\w\.:]/', '', $val );
 				if ( FALSE === strpos( $settings['extra_ips'][ $dst ], $val ) )
@@ -1363,7 +1365,6 @@ class IP_Geo_Block_Admin {
 
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
-				'tab' => 'tab=4'
 			);
 			break;
 

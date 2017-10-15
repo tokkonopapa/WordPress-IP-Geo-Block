@@ -527,7 +527,7 @@
 	}
 
 	// DataTables
-	function initTable(control, options) {
+	function initTable(tabNo, control, options) {
 		$.extend(true, $.fn.dataTable.defaults, options, {
 			// DOM
 			dom: 'tp',
@@ -555,7 +555,6 @@
 			},
 
 			// Pagenation
-//			lengthMenu: [ 5, 10, 25, 50, 75, 100 ],
 			pagingType: 'full_numbers',
 			pageLength: 10,
 
@@ -640,17 +639,19 @@
 				data.AS.push(cell[control.columnAS].replace(regexp, '')); // strip tag
 			});
 
-			ajax_post('loading', {
-				cmd: $(this).prev().val(),
-				which: data
-			}, function (data) {
-				if ('undefined' !== typeof data.page) {
-					redirect(data.page, data.tab);
-				} else if (data) {
-					table.ajax.reload();
-					$(ID('#', control.tableID)).find('th input[type="checkbox"]').prop('checked', false);
-				}
-			});
+			if (data.IP.length) {
+				ajax_post('loading', {
+					cmd: $(this).prev().val(),
+					which: data
+				}, function (data) {
+					if ('undefined' !== typeof data.page) {
+						redirect(data.page, 'tab=' + tabNo);
+					} else if (data) {
+						table.ajax.reload();
+						$(ID('#', control.tableID)).find('th input[type="checkbox"]').prop('checked', false);
+					}
+				});
+			}
 
 			return false;
 		});
@@ -1156,37 +1157,34 @@
 			});
 
 			// Statistics in cache
-			initTable(
-				{
-					tableID:   'statistics-cache',
-					ajaxCMD:   'restore-cache',
-					sectionID: 'section-2',
-					searchColumn: 4,
-					columnIP: 1,
-					columnAS: 3,
-				},
-				{
-					columns: [
-						{ title: '<input type="checkbox">' },
-						{ title: language[2] }, // 1
-						{ title: language[3] }, // 2
-						{ title: language[4] }, // 3
-						{ title: language[5] }, // 4
-						{ title: language[6] }, // 5
-						{ title: language[7] }  // 6
-					],
-					columnDefs: [
-						{ responsivePriority:  0, targets: 0 }, // checkbox
-						{ responsivePriority:  1, targets: 1 }, // IP address
-						{ responsivePriority:  2, targets: 2 }, // Country code
-						{ responsivePriority:  6, targets: 3 }, // AS number
-						{ responsivePriority:  3, targets: 4 }, // Target
-						{ responsivePriority:  4, targets: 5 }, // Fails/Calls
-						{ responsivePriority:  5, targets: 6 }, // Elapsed[sec]
-						{ className: "all",       targets: [0, 1, 2, 4] }, // always visible
-					]
-				}
-			);
+			initTable(tabNo, {
+				tableID:   'statistics-cache',
+				ajaxCMD:   'restore-cache',
+				sectionID: 'section-2',
+				searchColumn: 4,
+				columnIP: 1,
+				columnAS: 3,
+			}, {
+				columns: [
+					{ title: '<input type="checkbox">' },
+					{ title: language[2] }, // 1
+					{ title: language[3] }, // 2
+					{ title: language[4] }, // 3
+					{ title: language[5] }, // 4
+					{ title: language[6] }, // 5
+					{ title: language[7] }  // 6
+				],
+				columnDefs: [
+					{ responsivePriority:  0, targets: 0 }, // checkbox
+					{ responsivePriority:  1, targets: 1 }, // IP address
+					{ responsivePriority:  2, targets: 2 }, // Country code
+					{ responsivePriority:  6, targets: 3 }, // AS number
+					{ responsivePriority:  3, targets: 4 }, // Target
+					{ responsivePriority:  4, targets: 5 }, // Fails/Calls
+					{ responsivePriority:  5, targets: 6 }, // Elapsed[sec]
+					{ className: "all",       targets: [0, 1, 2, 4] }, // always visible
+				]
+			});
 			break;
 
 		  /*----------------------------------------
@@ -1194,46 +1192,43 @@
 		   *----------------------------------------*/
 		  case 4:
 			// Validation logs
-			initTable(
-				{
-					tableID:   'validation-logs',
-					ajaxCMD:   'restore-logs',
-					sectionID: 'section-0',
-					searchColumn: 5,
-					columnIP: 2,
-					columnAS: 4,
-				},
-				{
-					columns: [
-						{ title: '<input type=\"checkbox\">' },
-						{ title: language[ 8] }, //  1
-						{ title: language[ 2] }, //  2
-						{ title: language[ 3] }, //  3
-						{ title: language[ 4] }, //  4
-						{ title: language[ 5] }, //  5
-						{ title: language[ 9] }, //  6
-						{ title: language[10] }, //  7
-						{ title: language[11] }, //  8
-						{ title: language[12] }, //  9
-						{ title: language[13] }  // 10
-					],
-					columnDefs: [
-						{ responsivePriority:  0, targets:  0 }, // checkbox
-						{ responsivePriority:  1, targets:  1 }, // Date
-						{ responsivePriority:  2, targets:  2 }, // IP address
-						{ responsivePriority:  3, targets:  3 }, // Country code
-						{ responsivePriority:  6, targets:  4 }, // AS number
-						{ responsivePriority:  4, targets:  5 }, // Target
-						{ responsivePriority:  5, targets:  6 }, // Status
-						{ responsivePriority:  7, targets:  7 }, // Request
-						{ responsivePriority:  8, targets:  8 }, // User agent
-						{ responsivePriority:  9, targets:  9 }, // HTTP headers
-						{ responsivePriority: 10, targets: 10 }, // $_POST data
-						{ className: "all",       targets: [0, 1, 2, 3 ] }, // always visible
-						{ className: "none",      targets: [7, 8, 9, 10] }, // always hidden
-					]
-				}
-			);
+			initTable(tabNo, {
+				tableID:   'validation-logs',
+				ajaxCMD:   'restore-logs',
+				sectionID: 'section-0',
+				searchColumn: 5,
+				columnIP: 2,
+				columnAS: 4,
+			}, {
+				columns: [
+					{ title: '<input type=\"checkbox\">' },
+					{ title: language[ 8] }, //  1
+					{ title: language[ 2] }, //  2
+					{ title: language[ 3] }, //  3
+					{ title: language[ 4] }, //  4
+					{ title: language[ 5] }, //  5
+					{ title: language[ 9] }, //  6
+					{ title: language[10] }, //  7
+					{ title: language[11] }, //  8
+					{ title: language[12] }, //  9
+					{ title: language[13] }  // 10
+				],
+				columnDefs: [
+					{ responsivePriority:  0, targets:  0 }, // checkbox
+					{ responsivePriority:  1, targets:  1 }, // Date
+					{ responsivePriority:  2, targets:  2 }, // IP address
+					{ responsivePriority:  3, targets:  3 }, // Country code
+					{ responsivePriority:  6, targets:  4 }, // AS number
+					{ responsivePriority:  4, targets:  5 }, // Target
+					{ responsivePriority:  5, targets:  6 }, // Status
+					{ responsivePriority:  7, targets:  7 }, // Request
+					{ responsivePriority:  8, targets:  8 }, // User agent
+					{ responsivePriority:  9, targets:  9 }, // HTTP headers
+					{ responsivePriority: 10, targets: 10 }, // $_POST data
+					{ className: "all",       targets: [0, 1, 2, 3 ] }, // always visible
+					{ className: "none",      targets: [7, 8, 9, 10] }, // always hidden
+				]
+			});
 
 			// Export / Import settings
 			add_hidden_form('export-logs');
