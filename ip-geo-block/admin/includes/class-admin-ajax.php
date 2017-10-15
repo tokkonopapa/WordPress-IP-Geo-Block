@@ -133,6 +133,9 @@ class IP_Geo_Block_Admin_Ajax {
 		$res = array();
 
 		foreach ( IP_Geo_Block_Logs::restore_logs( $which ) as $row ) {
+			if ( $options['anonymize'] )
+				$row[2] = preg_replace( '/\d{1,3}$/', '***', $row[2] );
+
 			$res[] = array(
 				/* Checkbox     */ '',
 				/* Date         */ '&rsquo;' . IP_Geo_Block_Util::localdate( $row[1], 'y-m-d H:i:s' ),

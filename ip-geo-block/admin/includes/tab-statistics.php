@@ -318,6 +318,7 @@ endif;
 			'slug' => __( 'Slug in back-end',    'ip-geo-block' ),
 		);
 
+		// Make list of top 10
 		foreach( $logs as $val ) {
 			$val['ip'] = '[' . $val['code'] . '] ' . $val['ip'];
 			$key = $val['method'] . ' ' . $val['data'];
@@ -359,6 +360,8 @@ endif;
 			}
 		}
 
+		$options = IP_Geo_Block::get_option();
+
 		foreach ( $keys as $slug => $val ) {
 			echo '<ol class="ip-geo-block-top-list"><h4>', esc_html( $val ), '</h4>';
 
@@ -372,22 +375,23 @@ endif;
 				foreach ( $logs as $key => $val ) {
 					$link = explode( ' ', $key );
 					$link = esc_html( end( $link ) );
-					$key =  esc_html( $key ) ;
+					$key  = esc_html( $key );
+
+					if ( 'ip' === $slug && $options['anonymize'] )
+						$link = $key = preg_replace( '/\d{1,3}$/', '***', $link );
 
 					echo '<li><code>';
-					echo 'code' === $slug ?
-						$key :
-						str_replace(
-							$link,
-							'<a href="' .
+					echo str_replace(
+						$link,
+						'<a href="' .
 							esc_url( add_query_arg(
 								array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 4, 's' => $link ),
 								admin_url( 'options-general.php' )
 							) ) .
-							'" target=_blank>' . $link . '</a>',
-							$key
-						);
-					echo '</code> (', (int)$val, ')</li>';
+						'" target=_blank>' . $link . '</a>',
+						$key
+					);
+					echo '</code> (', (int)$val, ')</li>', "\n";
 				}
 			}
 
