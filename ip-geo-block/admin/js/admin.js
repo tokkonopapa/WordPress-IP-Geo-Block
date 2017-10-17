@@ -679,8 +679,26 @@
 
 		// Jump to search tab with opening a new window
 		$('table.dataTable tbody').on('click', 'a', function (event) {
-			var key = window.location.pathname + window.location.search;
-			window.open(key.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''), '_blank');
+			var p = window.location.search.slice(1).split('&'),
+			    n = p.length, q = {}, i, j;
+
+			for (i = 0; i < n; ++i) {
+				j = p[i].split('=');
+				q[j[0]] = j[1];
+			}
+
+			// additional query
+			q.tab = 2;
+			q.ip = $(this).text().replace(/[^\w\.\:\*]/, '');
+
+			j = [];
+			for (i in q) {
+				if (q.hasOwnProperty(i)) {
+					j.push(i + '=' + q[i]);
+				}
+			}
+
+			window.open(window.location.pathname + '?' + j.join('&'), '_blank');
 			return false;
 		});
 	}
@@ -1163,7 +1181,7 @@
 				sectionID: 'section-2',
 				searchColumn: 4,
 				columnIP: 1,
-				columnAS: 3,
+				columnAS: 3
 			}, {
 				columns: [
 					{ title: '<input type="checkbox">' },
@@ -1182,7 +1200,7 @@
 					{ responsivePriority:  3, targets: 4 }, // Target
 					{ responsivePriority:  4, targets: 5 }, // Fails/Calls
 					{ responsivePriority:  5, targets: 6 }, // Elapsed[sec]
-					{ className: "all",       targets: [0, 1, 2, 4] }, // always visible
+					{ className: "all",       targets: [0, 1, 2, 4] } // always visible
 				]
 			});
 			break;
@@ -1198,7 +1216,7 @@
 				sectionID: 'section-0',
 				searchColumn: 5,
 				columnIP: 2,
-				columnAS: 4,
+				columnAS: 4
 			}, {
 				columns: [
 					{ title: '<input type=\"checkbox\">' },
@@ -1215,18 +1233,18 @@
 				],
 				columnDefs: [
 					{ responsivePriority:  0, targets:  0 }, // checkbox
-					{ responsivePriority:  1, targets:  1 }, // Date
+					{ responsivePriority:  1, targets:  1 }, // Time
 					{ responsivePriority:  2, targets:  2 }, // IP address
 					{ responsivePriority:  3, targets:  3 }, // Country code
 					{ responsivePriority:  6, targets:  4 }, // AS number
 					{ responsivePriority:  4, targets:  5 }, // Target
-					{ responsivePriority:  5, targets:  6 }, // Status
+					{ responsivePriority:  5, targets:  6 }, // Result
 					{ responsivePriority:  7, targets:  7 }, // Request
 					{ responsivePriority:  8, targets:  8 }, // User agent
 					{ responsivePriority:  9, targets:  9 }, // HTTP headers
 					{ responsivePriority: 10, targets: 10 }, // $_POST data
 					{ className: "all",       targets: [0, 1, 2, 3 ] }, // always visible
-					{ className: "none",      targets: [7, 8, 9, 10] }, // always hidden
+					{ className: "none",      targets: [7, 8, 9, 10] }  // always hidden
 				]
 			});
 
