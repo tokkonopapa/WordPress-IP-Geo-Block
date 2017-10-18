@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-10-15 23:52+0900\n"
-"PO-Revision-Date: 2017-10-15 23:53+0900\n"
+"POT-Creation-Date: 2017-10-18 21:57+0900\n"
+"PO-Revision-Date: 2017-10-18 21:58+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -136,7 +136,7 @@ msgid "No data available in table"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:271
-#: admin/includes/tab-geolocation.php:67
+#: admin/includes/tab-geolocation.php:71
 msgid "IP address"
 msgstr ""
 
@@ -394,7 +394,7 @@ msgstr ""
 msgid "Export logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:120 admin/includes/tab-settings.php:1441
+#: admin/includes/tab-accesslog.php:120 admin/includes/tab-settings.php:1442
 msgid "Export to the local file"
 msgstr ""
 
@@ -944,48 +944,52 @@ msgid "Record validation logs"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1187
-msgid "Only when blocked"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1188
 msgid "Only when passed"
 msgstr ""
 
+#: admin/includes/tab-settings.php:1188
+msgid "Only when blocked"
+msgstr ""
+
 #: admin/includes/tab-settings.php:1189
-msgid "Unauthenticated user"
+msgid "Blocked or Qualified"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1190
-msgid "Authenticated user"
+msgid "Unauthenticated user"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1191
+msgid "Authenticated user"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1192
 msgid "All of validation"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1200
+#: admin/includes/tab-settings.php:1201
 msgid "Recording period of the logs (days)"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1216
+#: admin/includes/tab-settings.php:1217
 msgid "Maximum length of logs for each target"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1233
+#: admin/includes/tab-settings.php:1234
 msgid ""
 "<dfn title=\"e.g. action, comment, log, pwd, FILES\">$_POST keys to be "
 "recorded with their values in logs</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1251
+#: admin/includes/tab-settings.php:1252
 msgid "<dfn title=\"e.g. 123.456.789.***\">Anonymize IP address</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1268
+#: admin/includes/tab-settings.php:1269
 msgid "IP address cache settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1277
+#: admin/includes/tab-settings.php:1278
 #, php-format
 msgid ""
 "<dfn title=\"If user authentication fails consecutively %d times, subsequent "
@@ -993,121 +997,121 @@ msgid ""
 "\">Expiration time [sec]</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1293
+#: admin/includes/tab-settings.php:1294
 msgid "Garbage collection period [sec]"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1310
+#: admin/includes/tab-settings.php:1311
 msgid "Number of entries to be displayed in cache"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1328
+#: admin/includes/tab-settings.php:1329
 msgid "Submission settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1340
+#: admin/includes/tab-settings.php:1341
 msgid "The whole will be wrapped by &lt;p&gt; tag. Allowed tags: "
 msgstr ""
 
-#: admin/includes/tab-settings.php:1340
+#: admin/includes/tab-settings.php:1341
 msgid "Message on comment form"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1352
+#: admin/includes/tab-settings.php:1353
 msgid "None"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1353
+#: admin/includes/tab-settings.php:1354
 msgid "Top"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1354
+#: admin/includes/tab-settings.php:1355
 msgid "Bottom"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1365
+#: admin/includes/tab-settings.php:1366
 msgid "Plugin settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1378
+#: admin/includes/tab-settings.php:1379
 msgid ""
 "<dfn title=\"Synchronize all settings over the network wide.\">Network wide "
 "settings</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1396
+#: admin/includes/tab-settings.php:1397
 msgid "Remove all settings at uninstallation"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1414
+#: admin/includes/tab-settings.php:1415
 msgid ""
 "<dfn title=\"Valid key for Google Maps JavaScript API\">Google Maps API key</"
 "dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1428
+#: admin/includes/tab-settings.php:1429
 msgid ""
 "You need to click the &#8220;Save Changes&#8221; button for imported "
 "settings to take effect."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1434
+#: admin/includes/tab-settings.php:1435
 msgid "Export / Import settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1441
+#: admin/includes/tab-settings.php:1442
 msgid "Export settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1442
+#: admin/includes/tab-settings.php:1443
 msgid "Import from the local file"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1442
+#: admin/includes/tab-settings.php:1443
 msgid "Import settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1451
+#: admin/includes/tab-settings.php:1452
 msgid "Import pre-defined settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1458
+#: admin/includes/tab-settings.php:1459
 msgid ""
 "Import the default settings to revert to the &#8220;Right after "
 "installing&#8221; state"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1458
+#: admin/includes/tab-settings.php:1459
 msgid "Default settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1459
+#: admin/includes/tab-settings.php:1460
 msgid ""
 "Import the preferred settings mainly by enabling Zero-day Exploit Prevention "
 "for the &#8220;Back-end target settings&#8221;"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1459
+#: admin/includes/tab-settings.php:1460
 msgid "Best for Back-end"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1469
+#: admin/includes/tab-settings.php:1470
 msgid "Delete DB table for validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1477
+#: admin/includes/tab-settings.php:1478
 msgid "Delete now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1485
+#: admin/includes/tab-settings.php:1486
 msgid "Create DB table for validation logs"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1493
+#: admin/includes/tab-settings.php:1494
 msgid "Create now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1503
+#: admin/includes/tab-settings.php:1504
 msgid ""
 "<dfn title=\"Please copy &amp; paste when submitting your issue to support "
 "forum.\">System information</dfn><br />[ <a rel=\"noreferrer\" href="
@@ -1115,15 +1119,15 @@ msgid ""
 "&#8250; Support &raquo; IP Geo Block\">support forum</a> ]"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1510
+#: admin/includes/tab-settings.php:1511
 msgid "Show PHP, WordPress, theme and plugins information."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1510
+#: admin/includes/tab-settings.php:1511
 msgid "Show information"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1526
+#: admin/includes/tab-settings.php:1527
 msgid ""
 "To enhance the protection ability, please refer to &#8220;<a rel=\"noreferrer"
 "\" href=\"http://www.ipgeoblock.com/codex/the-best-practice-for-target-"
@@ -1131,7 +1135,7 @@ msgid ""
 "\">The best practice for target settings</a>&#8221;."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1527
+#: admin/includes/tab-settings.php:1528
 msgid ""
 "If you have any troubles with these, please check FAQ at <a rel=\"noreferrer"
 "\" href=\"https://wordpress.org/plugins/ip-geo-block/faq/\" title=\"IP Geo "
@@ -1140,18 +1144,18 @@ msgid ""
 "\">Codex</a>."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1534
+#: admin/includes/tab-settings.php:1535
 msgid ""
 "While Maxmind and IP2Location will fetch the local database, others will "
 "pass an IP address to the APIs via HTTP."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1535
+#: admin/includes/tab-settings.php:1536
 msgid ""
 "Please select the appropriate APIs to fit the privacy law in your country."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1542
+#: admin/includes/tab-settings.php:1543
 msgid ""
 "Please refer to the document &#8220;<a rel=\"noreferrer\" href=\"http://www."
 "ipgeoblock.com/codex/#blocking-on-front-end\" title=\"Codex | IP Geo Block"
@@ -1159,7 +1163,7 @@ msgid ""
 "cache plugin."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1543
+#: admin/includes/tab-settings.php:1544
 msgid ""
 "If you find any issues or have something to suggest, please feel free to "
 "open an issue at <a rel=\"noreferrer\" href=\"https://wordpress.org/support/"
@@ -1167,7 +1171,7 @@ msgid ""
 "\">support forum</a>."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1550
+#: admin/includes/tab-settings.php:1551
 msgid ""
 "Please refer to the document &#8220;<a rel=\"noreferrer\" href=\"http://www."
 "ipgeoblock.com/codex/record-settings-and-logs.html\" title=\"Codex | IP Geo "
@@ -1291,11 +1295,11 @@ msgstr ""
 msgid "Geolocation service"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:82
+#: admin/includes/tab-geolocation.php:86
 msgid "Find geolocation"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:90
+#: admin/includes/tab-geolocation.php:94
 msgid "Search now"
 msgstr ""
 

@@ -436,7 +436,7 @@ class IP_Geo_Block_Admin {
 	 */
 	private function diagnose_admin_screen() {
 		$settings = IP_Geo_Block::get_option();
-		$adminurl = $this->dashboard_url( FALSE );
+		$adminurl = $this->dashboard_url( $this->is_network );
 
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7.0' ) < 0 )
@@ -1358,7 +1358,12 @@ class IP_Geo_Block_Admin {
 
 			$settings = IP_Geo_Block::get_option();
 			foreach ( array_unique( $which[ $src ] ) as $val ) {
-				$val = preg_replace( '/[^\w\.:]/', '', $val );
+				// replace anonymized IP address with CIDR (IPv4:256, IPv6:4096)
+				$val = preg_replace(
+					array( '!\.\*\*\*!', '!\*\*\*!', '![^\w\.:/]!' ),
+					array( '.0/24',      '000/116',  ''            ),
+					$val
+				);
 				if ( FALSE === strpos( $settings['extra_ips'][ $dst ], $val ) )
 					$settings['extra_ips'][ $dst ] .= "\n" . $val;
 			}
