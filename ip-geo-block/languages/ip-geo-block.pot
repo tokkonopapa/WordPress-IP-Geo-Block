@@ -952,7 +952,7 @@ msgid "Only when blocked"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1189
-msgid "Blocked or Qualified"
+msgid "Blocked / UA Qualified"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1190

@@ -1183,13 +1183,13 @@ endif;
 				'sub-field' => 'reclogs',
 				'value' => $options[ $field ]['reclogs'],
 				'list' => array(
-					0 => __( 'Disable',              'ip-geo-block' ),
-					2 => __( 'Only when passed',     'ip-geo-block' ),
-					1 => __( 'Only when blocked',    'ip-geo-block' ),
-					6 => __( 'Blocked or Qualified', 'ip-geo-block' ),
-					3 => __( 'Unauthenticated user', 'ip-geo-block' ),
-					4 => __( 'Authenticated user',   'ip-geo-block' ),
-					5 => __( 'All of validation',    'ip-geo-block' ),
+					0 => __( 'Disable',                'ip-geo-block' ),
+					2 => __( 'Only when passed',       'ip-geo-block' ),
+					1 => __( 'Only when blocked',      'ip-geo-block' ),
+					6 => __( 'Blocked / UA Qualified', 'ip-geo-block' ),
+					3 => __( 'Unauthenticated user',   'ip-geo-block' ),
+					4 => __( 'Authenticated user',     'ip-geo-block' ),
+					5 => __( 'All of validation',      'ip-geo-block' ),
 				),
 			)
 		);

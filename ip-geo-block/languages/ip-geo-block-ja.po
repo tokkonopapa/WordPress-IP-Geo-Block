@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
 "POT-Creation-Date: 2017-10-18 21:57+0900\n"
-"PO-Revision-Date: 2017-10-18 22:05+0900\n"
+"PO-Revision-Date: 2017-10-18 22:17+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -992,7 +992,7 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:960
 msgid "UA string and qualification"
-msgstr "ユーザーエージェント文字列と条件"
+msgstr "ユーザーエージェント(UA)文字列と条件"
 
 #: admin/includes/tab-settings.php:979
 msgid "Specify the name of action that is invariably blocked."
@@ -1111,8 +1111,8 @@ msgid "Only when blocked"
 msgstr "遮断時に記録"
 
 #: admin/includes/tab-settings.php:1189
-msgid "Blocked or Qualified"
-msgstr "遮断時または条件適合時に記録"
+msgid "Blocked / UA Qualified"
+msgstr "遮断時またはUA条件適合時に記録"
 
 #: admin/includes/tab-settings.php:1190
 msgid "Unauthenticated user"
