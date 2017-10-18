@@ -471,24 +471,17 @@ class IP_Geo_Block_Logs {
 		if ( ! empty( $settings['anonymize'] ) )
 			$validate['ip'] = preg_replace( '/\d{1,3}$/', '***', $validate['ip'] );
 
-		// limit the maximum number of rows
-		$rows = (int)$settings['validation']['maxlogs'];
-
 		// count the number of rows for each hook
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
-		$sql = $wpdb->prepare(
-			"SELECT count(*) FROM `$table` WHERE `hook` = '%s'", $hook
-		) and $count = (int)$wpdb->get_var( $sql );
+		$count = (int)$wpdb->get_var( "SELECT count(*) FROM `$table`" );
 
-		if ( isset( $count ) && $count >= $rows ) {
-			// Can't start transaction on the assumption that the storage engine is innoDB.
-			// So there are some cases where logs are excessively deleted.
-			$sql = $wpdb->prepare(
-				"DELETE FROM `$table` WHERE `hook` = '%s' ORDER BY `time` ASC LIMIT %d",
-				$hook, $count - $rows + 1
-			) and $wpdb->query( $sql ) or self::error( __LINE__ );
-		}
+		// Can't start transaction on the assumption that the storage engine is innoDB.
+		// So there are some cases where logs are excessively deleted.
+		$sql = $wpdb->prepare(
+			"DELETE FROM `$table` ORDER BY `time` ASC LIMIT %d",
+			max( 0, $count - (int)$settings['validation']['maxlogs'] * 5 + 1 )
+		) and $wpdb->query( $sql ) or self::error( __LINE__ );
 
 		// insert into DB
 		$sql = $wpdb->prepare(
