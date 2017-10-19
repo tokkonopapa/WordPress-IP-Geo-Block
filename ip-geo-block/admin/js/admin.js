@@ -368,6 +368,36 @@
 					}
 				});
 			}
+		},
+
+		// Column Chart
+		dataColumn: [],
+		viewColumn: [],
+		drawColumn: function (id) {
+			var options = {
+				title: 'Blocked by target',
+				legend: {position: 'none'},
+				width: 350,
+				height: 150,
+				chartArea: {'width': '90%', 'height': '70%'}
+			},
+
+			chart = new google.visualization.ColumnChart(
+				document.getElementById(id)
+			),
+
+			data  = new google.visualization.DataTable();
+			data.addColumn('string', 'Type');
+			data.addColumn('number', 'Requests');
+			data.addRows([
+				['Comment', 59],
+				['Login', 10],
+				['XML-RPC', 24],
+				['Admin', 50],
+				['Public', 25]
+			]);
+
+			chart.draw(data, options);
 		}
 	};
 
@@ -379,7 +409,8 @@
 				chart.drawLine(ID('chart-daily'), 'date');
 			} else if (5 === tabNo) {
 				$(ID('.', 'multisite')).each(function (i, obj) {
-					chart.drawLine($(obj).attr('id'), 'datetime');
+//					chart.drawLine($(obj).attr('id'), 'datetime');
+					chart.drawColumn($(obj).attr('id'));
 				});
 			}
 		}
@@ -555,7 +586,7 @@
 			},
 
 			// Pagenation
-			pagingType: 'full_numbers',
+			pagingType: 'full_numbers', // or 'simple_numbers'
 			pageLength: 10,
 
 			// Language
@@ -1184,23 +1215,25 @@
 				columnAS: 3
 			}, {
 				columns: [
-					{ title: '<input type="checkbox">' },
-					{ title: language[2] }, // 1
-					{ title: language[3] }, // 2
-					{ title: language[4] }, // 3
-					{ title: language[5] }, // 4
-					{ title: language[6] }, // 5
-					{ title: language[7] }  // 6
+					{ title: '<input type="checkbox">' }, // 0 checkbox
+					{ title: language[2] }, // 1 IP address
+					{ title: language[3] }, // 2 Country code
+					{ title: language[4] }, // 3 AS number
+					{ title: language[5] }, // 4 Host name
+					{ title: language[6] }, // 5 Target
+					{ title: language[7] }, // 6 Login failures/Calls
+					{ title: language[8] }  // 7 Elapsed[sec]
 				],
 				columnDefs: [
 					{ responsivePriority:  0, targets: 0 }, // checkbox
 					{ responsivePriority:  1, targets: 1 }, // IP address
 					{ responsivePriority:  2, targets: 2 }, // Country code
 					{ responsivePriority:  6, targets: 3 }, // AS number
-					{ responsivePriority:  3, targets: 4 }, // Target
-					{ responsivePriority:  4, targets: 5 }, // Fails/Calls
-					{ responsivePriority:  5, targets: 6 }, // Elapsed[sec]
-					{ className: "all",       targets: [0, 1, 2, 4] } // always visible
+					{ responsivePriority:  7, targets: 4 }, // Host name
+					{ responsivePriority:  3, targets: 5 }, // Target
+					{ responsivePriority:  4, targets: 6 }, // Login failures/Calls
+					{ responsivePriority:  5, targets: 7 }, // Elapsed[sec]
+					{ className: "all",       targets: [0, 1, 2, 5] } // always visible
 				]
 			});
 			break;
@@ -1219,17 +1252,17 @@
 				columnAS: 4
 			}, {
 				columns: [
-					{ title: '<input type=\"checkbox\">' },
-					{ title: language[ 8] }, //  1
-					{ title: language[ 2] }, //  2
-					{ title: language[ 3] }, //  3
-					{ title: language[ 4] }, //  4
-					{ title: language[ 5] }, //  5
-					{ title: language[ 9] }, //  6
-					{ title: language[10] }, //  7
-					{ title: language[11] }, //  8
-					{ title: language[12] }, //  9
-					{ title: language[13] }  // 10
+					{ title: '<input type=\"checkbox\">' }, // 0 checkbox
+					{ title: language[ 9] }, //  1 Time
+					{ title: language[ 2] }, //  2 IP address
+					{ title: language[ 3] }, //  3 Country code
+					{ title: language[ 4] }, //  4 AS number
+					{ title: language[ 6] }, //  5 Target
+					{ title: language[10] }, //  6 Result
+					{ title: language[11] }, //  7 Request
+					{ title: language[12] }, //  8 User agent
+					{ title: language[13] }, //  9 HTTP headers
+					{ title: language[14] }  // 10 $_POST data
 				],
 				columnDefs: [
 					{ responsivePriority:  0, targets:  0 }, // checkbox

@@ -173,6 +173,7 @@ class IP_Geo_Block_Admin_Ajax {
 				/* IP address   */ '<span><a href="#!">' . esc_html( $key ) . '</a></span>',
 				/* Country code */ '<span>' . esc_html( $val['code'] ) . '</span>',
 				/* AS number    */ '<span>' . esc_html( $val['asn' ] ) . '</span>',
+				/* Host name    */ '<span>' . esc_html( $val['host'] ) . '</span>',
 				/* Target       */ '<span>' . esc_html( $val['hook'] ) . '</span>',
 				/* Fails/Calls  */ '<span>' . sprintf( '%d / %d', $val['fail'], $val['call'] ) . '</span>',
 				/* Elapsed[sec] */ '<span>' . ( $time - (int)$val['time'] ) . '</span>',

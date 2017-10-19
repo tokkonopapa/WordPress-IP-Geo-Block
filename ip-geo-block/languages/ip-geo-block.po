@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-10-18 21:57+0900\n"
-"PO-Revision-Date: 2017-10-18 22:16+0900\n"
+"POT-Creation-Date: 2017-10-20 00:11+0900\n"
+"PO-Revision-Date: 2017-10-20 00:13+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -91,61 +91,65 @@ msgid ""
 "<strong>you'll be blocked</strong> after the cache expires."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:258
+#: admin/class-ip-geo-block-admin.php:257
 msgid "Import settings ?"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:259
+#: admin/class-ip-geo-block-admin.php:258
 msgid "Create table ?"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:260
+#: admin/class-ip-geo-block-admin.php:259
 msgid "Delete table ?"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:261
+#: admin/class-ip-geo-block-admin.php:260
 msgid "Clear statistics ?"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:262
+#: admin/class-ip-geo-block-admin.php:261
 msgid "Clear cache ?"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:263
+#: admin/class-ip-geo-block-admin.php:262
 msgid "Clear logs ?"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:264
+#: admin/class-ip-geo-block-admin.php:263
 msgid "ajax for logged-in user"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:265
+#: admin/class-ip-geo-block-admin.php:264
 msgid "ajax for non logged-in user"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:266
+#: admin/class-ip-geo-block-admin.php:265
 msgid "This feature is available with HTML5 compliant browsers."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:269
+#: admin/class-ip-geo-block-admin.php:268
 msgid "No matching records found"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:270
+#: admin/class-ip-geo-block-admin.php:269
 msgid "No data available in table"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:271
+#: admin/class-ip-geo-block-admin.php:270
 #: admin/includes/tab-geolocation.php:71
 msgid "IP address"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:272
+#: admin/class-ip-geo-block-admin.php:271
 msgid "Code"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:273
+#: admin/class-ip-geo-block-admin.php:272
 msgid "ASN"
+msgstr ""
+
+#: admin/class-ip-geo-block-admin.php:273
+msgid "Host name"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:274
@@ -1281,7 +1285,7 @@ msgstr ""
 msgid "n/a"
 msgstr ""
 
-#: admin/includes/class-admin-ajax.php:270
+#: admin/includes/class-admin-ajax.php:271
 #, php-format
 msgid ""
 "illegal format at %s. Please delete the corresponding line and try again."
