@@ -292,10 +292,9 @@ class IP_Geo_Block_Admin {
 	 */
 	public function add_plugin_meta_links( $links, $file ) {
 		if ( $file === IP_GEO_BLOCK_BASE ) {
-			$title = __( 'Contribute at GitHub', 'ip-geo-block' );
 			array_push(
 				$links,
-				"<a href=\"http://www.ipgeoblock.com\" title=\"$title\" target=_blank>$title</a>"
+				'<a href="https://github.com/tokkonopapa/Wordpress-ip-geo-block" title="tokkonopapa/WordPress-IP-Geo-Block" target=_blank>' . __( 'Contribute on GitHub', 'ip-geo-block' ) . '</a>'
 			);
 		}
 
@@ -309,6 +308,7 @@ class IP_Geo_Block_Admin {
 	public function add_action_links( $links ) {
 		return array_merge(
 			array(
+//				'settings' => '<a href="' . esc_url_raw( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( $this->is_network ) ) ) . '">' . __( 'Settings' ) . '</a>'
 				'settings' => '<a href="' . esc_url( admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME ) ) . '">' . __( 'Settings' ) . '</a>'
 			),
 			$links
@@ -626,8 +626,8 @@ class IP_Geo_Block_Admin {
 			if ( $this->is_network ) {
 				unset( $tabs[0], $tabs[5] ); // Settings, Sites
 				$title .= ' <span class="ip-geo-block-title-link">';
-				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Settings', 'ip-geo-block' ) . '</a> ]';
-				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Sites',    'ip-geo-block' ) . '</a> ]';
+				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Network', 'ip-geo-block' ) . '</a> ]';
+				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Sites',   'ip-geo-block' ) . '</a> ]';
 				$title .= '</span>';
 			} else {
 				unset( $tabs[5] ); // Sites

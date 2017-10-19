@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-10-20 00:11+0900\n"
-"PO-Revision-Date: 2017-10-20 00:11+0900\n"
+"POT-Creation-Date: 2017-10-20 01:04+0900\n"
+"PO-Revision-Date: 2017-10-20 01:04+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -188,13 +188,12 @@ msgstr ""
 msgid "$_POST data"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:295
-msgid "Contribute at GitHub"
+#: admin/class-ip-geo-block-admin.php:297
+msgid "Contribute on GitHub"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:312
 #: admin/class-ip-geo-block-admin.php:611
-#: admin/class-ip-geo-block-admin.php:629
 msgid "Settings"
 msgstr ""
 
@@ -286,6 +285,7 @@ msgstr ""
 msgid "Attribution"
 msgstr ""
 
+#: admin/class-ip-geo-block-admin.php:629
 #: admin/class-ip-geo-block-admin.php:640
 msgid "Network"
 msgstr ""
