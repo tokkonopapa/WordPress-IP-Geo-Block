@@ -445,7 +445,6 @@ class IP_Geo_Block_Admin_Ajax {
 				    'themes'      => 2,       // Validate on wp-content/themes
 				    'timing'      => 1,       // 0:init, 1:mu-plugins, 2:drop-in
 				    'mimetype'    => 1,       // 0:disable, 1:white_list, 2:black_list
-				    'reclogs'     => 6,       // 6:Blocked or Qualified
 				),
 				'signature'       => "../,/wp-config.php,/passwd\ncurl,wget,eval,base64\nselect:.5,where:.5,union:.5\nload_file:.5,create:.6,password:.4",
 				'rewrite'         => array(   // Apply rewrite rule

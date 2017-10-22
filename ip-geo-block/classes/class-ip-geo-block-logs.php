@@ -544,7 +544,7 @@ class IP_Geo_Block_Logs {
 	 * Get logs for a specified duration in the past
 	 *
 	 */
-	public static function get_recent_logs( $duration = DAY_IN_SECONDS ) {
+	public static function get_recent_logs( $duration = YEAR_IN_SECONDS ) {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 

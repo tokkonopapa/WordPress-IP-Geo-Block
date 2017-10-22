@@ -1,4 +1,8 @@
-/* This stylesheet is used to style the admin option form of the plugin. */
+/*!
+ * Project: WordPress IP Geo Block
+ * Copyright (c) 2015-2017 tokkonopapa (tokkonopapa@yahoo.com)
+ * This software is released under the MIT License.
+ */
 dfn {
     cursor: help;
     border-bottom: 1px dotted #888;
@@ -632,4 +636,13 @@ input#ip_geo_block_settings_search_filter {
 mark {
     padding: 0;
     background: #FFD700; // Gold
+}
+
+/* SVG in google chart */
+svg a > text {
+    fill: #0073aa;
+    text-decoration: underline;
+}
+svg a:hover > text {
+    fill: #0096dd;
 }

@@ -92,7 +92,7 @@ if ( $options['validation']['reclogs'] ) :
 			)
 		);
 
-		$field = 'clear_logs';
+		$field = 'clear_all';
 		add_settings_field(
 			$option_name.'_'.$field,
 			__( 'Clear logs', 'ip-geo-block' ),

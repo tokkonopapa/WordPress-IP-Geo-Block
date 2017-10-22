@@ -292,6 +292,19 @@
 		}
 	}
 
+	function inArray(val, arr) {
+		var i, n = arr.length;
+		val = val.replace('…', '');
+
+		for (i = 0; i < n; ++i) {
+			if (0 === arr[i].label.indexOf(val)) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
 	// google chart
 	var chart = {
 		// Pie Chart
@@ -306,14 +319,16 @@
 				data = $.parseJSON($('#' + id).attr('data-' + id));
 				chart.dataPie[id].addRows(data);
 			}
+
 			if ('undefined' === typeof chart.viewPie[id]) {
 				chart.viewPie[id] = new google.visualization.PieChart(
 					document.getElementById(id)
 				);
 			}
-			if ($('#' + id).width()) {
+
+			if ('undefined' !== typeof chart.dataPie[id] && 'undefined' !== typeof chart.viewPie[id] && $('#' + id).width()) {
 				chart.viewPie[id].draw(chart.dataPie[id], {
-					backgroundColor: { fill: 'transparent' }, // '#f1f1f1',
+					backgroundColor: { fill: 'transparent' },
 					chartArea: {
 						left: 0,
 						top: '5%',
@@ -353,10 +368,10 @@
 			}
 
 			i = $('#' + id).width();
-			if (i) {
+			if ('undefined' !== typeof chart.dataLine[id] && 'undefined' !== typeof chart.viewLine[id] && i) {
 				i = i > 320 ? true : false;
 				chart.viewLine[id].draw(chart.dataLine[id], {
-					backgroundColor: { fill: 'transparent' }, // '#f1f1f1',
+					backgroundColor: { fill: 'transparent' },
 					legend: { position: 'bottom' },
 					hAxis: { format: 'MM/dd' + ('datetime' === datetype ? ' HH:mm' : '') },
 					vAxis: { textPosition: (i ? 'out' : 'in') },
@@ -370,34 +385,64 @@
 			}
 		},
 
-		// Column Chart
-		dataColumn: [],
-		viewColumn: [],
-		drawColumn: function (id) {
-			var options = {
-				title: 'Blocked by target',
-				legend: {position: 'none'},
-				width: 350,
-				height: 150,
-				chartArea: {'width': '90%', 'height': '70%'}
-			},
+		// Stacked bar
+		dataStacked: [],
+		viewStacked: [],
+		drawStacked: function (id) {
+			var i, n, a, p, data, info;
+			if ('undefined' === typeof chart.dataStacked[id]) {
+				data = $.parseJSON($('#' + id).attr('data-' + id));
+				data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', { role: 'link' } ]);
+				chart.dataStacked[id] = google.visualization.arrayToDataTable(data);
+			}
 
-			chart = new google.visualization.ColumnChart(
-				document.getElementById(id)
-			),
+			if ('undefined' === typeof chart.viewStacked[id]) {
+				chart.viewStacked[id] = new google.visualization.BarChart(
+					document.getElementById(id)
+				);
+			}
 
-			data  = new google.visualization.DataTable();
-			data.addColumn('string', 'Type');
-			data.addColumn('number', 'Requests');
-			data.addRows([
-				['Comment', 59],
-				['Login', 10],
-				['XML-RPC', 24],
-				['Admin', 50],
-				['Public', 25]
-			]);
+			i = $('#' + id).width();
+			if ('undefined' !== typeof chart.dataStacked[id] && 'undefined' !== typeof chart.viewStacked[id] && i) {
+				data = chart.dataStacked[id];
+				chart.viewStacked[id].draw(data, {
+					backgroundColor: { fill: 'transparent' },
+					legend: { position: 'top' },
+					isStacked: true,
+					width: i,
+					chartArea: { width: '70%' },
+					allowHtml: true
+				});
 
-			chart.draw(data, options);
+				// Make an array of the title in each row.
+				info = [];
+				n = data.getNumberOfRows();
+				for (i = 0; i < n; i++) {
+					info.push({
+						label: data.getValue(i, 0),
+						link:  data.getValue(i, 6)
+					});
+				}
+
+				// https://stackoverflow.com/questions/12701772/insert-links-into-google-charts-api-data
+				n = 'http://www.w3.org/1999/xlink';
+				$('#' + id).find('text').each(function (i, elm) {
+					p = elm.parentNode;
+					if ('g' === p.tagName.toLowerCase()) {
+						i = inArray(elm.textContent, info);
+						if (-1 !== i) {
+							a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+							a.setAttributeNS(n, 'xlink:href', info[i].link);
+							a.setAttributeNS(n, 'title', info[i].label);
+							a.setAttribute('target', '_blank');
+							a.setAttribute('class', 'site');
+							a.appendChild(p.removeChild(elm));
+							p.appendChild(a);
+							info.splice(i, 1); // for speeding up
+						}
+					}
+				});
+			}
 		}
 	};
 
@@ -410,16 +455,21 @@
 			} else if (5 === tabNo) {
 				$(ID('.', 'multisite')).each(function (i, obj) {
 //					chart.drawLine($(obj).attr('id'), 'datetime');
-					chart.drawColumn($(obj).attr('id'));
+					chart.drawStacked($(obj).attr('id'));
 				});
 			}
 		}
 	}
 
     function initChart(tabNo) {
+		var packages = ['corechart'];
+		if (5 === tabNo) {
+			packages.push('bar');
+		}
+
 		if ('object' === typeof google) {
 			google.load('visualization', '1', {
-				packages: ['corechart'],
+				packages: packages,
 				callback: function () {
 					drawChart(tabNo);
 				}
@@ -615,7 +665,9 @@
 
 			// draw callback
 			drawCallback: function (settings) {
-				if (3 === settings.iDraw) { // avoid recursive call for ajax source
+				// avoid recursive call for ajax source
+				// 1: thead, 2: empty tbody, 3: after loading data
+				if (3 === settings.iDraw) {
 					// 'No data available in table'
 					$(ID('#', control.tableID)).find('td.dataTables_empty').html(language[1]);
 
@@ -656,8 +708,8 @@
 		// Select target
 		$(ID('.', 'select-target')).on('change', function (event) {
 			var val = $(this).find('input[name="' + ID('$', 'target') + '"]:checked').val();
-			// search only the 4th column "Target"
-			table.columns(control.searchColumn).search('all' !== val ? val : '').draw();
+			// search only the specified column for selecting "Target"
+			table.columns(control.targetColumn).search('all' !== val ? val : '').draw();
 			return false;
 		}).trigger('change');
 
@@ -700,10 +752,10 @@
 			return false;
 		});
 
-		// Clear logs
-		$(ID('@', 'clear_logs')).on('click', function (event) {
-			confirm(dialog[5], function () {
-				ajax_clear('logs', null);
+		// Clear all
+		$(ID('@', 'clear_all')).on('click', function (event) {
+			confirm(dialog[tabNo === 1 ? 4 : 5], function () {
+				ajax_clear(tabNo === 1 ? 'cache' : 'logs', null);
 			});
 			return false;
 		});
@@ -719,8 +771,8 @@
 			}
 
 			// additional query
-			q.tab = 2;
-			q.ip = $(this).text().replace(/[^\w\.\:\*]/, '');
+			q.tab = tabNo === 1 ? 4 : 2;
+			q.s = $(this).text().replace(/[^\w\.\:\*]/, '');
 
 			j = [];
 			for (i in q) {
@@ -1210,7 +1262,7 @@
 				tableID:   'statistics-cache',
 				ajaxCMD:   'restore-cache',
 				sectionID: 'section-2',
-				searchColumn: 4,
+				targetColumn: 4,
 				columnIP: 1,
 				columnAS: 3
 			}, {
@@ -1247,7 +1299,7 @@
 				tableID:   'validation-logs',
 				ajaxCMD:   'restore-logs',
 				sectionID: 'section-0',
-				searchColumn: 5,
+				targetColumn: 5,
 				columnIP: 2,
 				columnAS: 4
 			}, {

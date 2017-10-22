@@ -275,7 +275,7 @@ endif;
 			)
 		);
 
-		$field = 'clear_cache';
+		$field = 'clear_all';
 		add_settings_field(
 			$option_name.'_'.$field,
 			__( 'Clear cache', 'ip-geo-block' ),

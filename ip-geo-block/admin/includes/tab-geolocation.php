@@ -53,11 +53,11 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 		// preset IP address
-		if ( isset( $_GET['ip'] ) ) {
+		if ( isset( $_GET['s'] ) ) {
 			$list = preg_replace(
 				array( '!\.\*\*\*!', '!\*\*\*!' ),
 				array( '.0',         '000'      ),
-				$_GET['ip']
+				$_GET['s']
 			); // Anonymize IP address
 			$list = filter_var( $list, FILTER_VALIDATE_IP ) ? $list : '';
 		}

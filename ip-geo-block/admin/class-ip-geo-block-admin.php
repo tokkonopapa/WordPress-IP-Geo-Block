@@ -413,7 +413,7 @@ class IP_Geo_Block_Admin {
 				'manage_network_options',
 				IP_Geo_Block::PLUGIN_NAME,
 				array( $this, 'display_plugin_admin_page' ),
-				'dashicons-shield' // plugins_url( 'images/icon-72x72.png', __FILE__ )
+				'dashicons-shield' /*'dashicons-admin-site'*/ // plugins_url( 'images/icon-72x72.png', __FILE__ )
 			);
 			/*$hook = add_submenu_page(
 				'settings.php',
