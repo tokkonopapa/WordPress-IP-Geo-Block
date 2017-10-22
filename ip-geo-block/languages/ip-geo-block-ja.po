@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-10-22 19:16+0900\n"
-"PO-Revision-Date: 2017-10-22 19:49+0900\n"
+"POT-Creation-Date: 2017-10-23 00:31+0900\n"
+"PO-Revision-Date: 2017-10-23 00:35+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1390,7 +1390,7 @@ msgstr "あるいは %s を参照し、手動で設定して下さい。"
 msgid "&#8220;auto_prepend_file&#8221; already defined in %s."
 msgstr "%s&thinsp;で既に「auto_prepend_file」が設定されています。"
 
-#: admin/includes/tab-network.php:14
+#: admin/includes/tab-network.php:12
 msgid "Blocked per target in logs"
 msgstr "ログ中のターゲット毎遮断数"
 
@@ -1410,7 +1410,7 @@ msgstr "最新の1週間"
 msgid "Latest 1 month"
 msgstr "最新の1ヶ月"
 
-#: admin/includes/tab-network.php:37
+#: admin/includes/tab-network.php:38
 msgid "Period to extract"
 msgstr "抽出する期間"
 

@@ -614,18 +614,18 @@ table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
     max-width: 95%;
 }
 
-/* Select target */
-ul.ip-geo-block-select-target,
-ul.ip-geo-block-select-duration {
+/* Select target / Period to extract */
+ul#ip-geo-block-select-target,
+ul#ip-geo-block-select-period {
     margin: 0;
 }
-ul.ip-geo-block-select-target   li,
-ul.ip-geo-block-select-duration li {
+ul#ip-geo-block-select-target li,
+ul#ip-geo-block-select-period li {
     float: left;
     margin-right: 1.5em;
 }
-ul.ip-geo-block-select-target   li label,
-ul.ip-geo-block-select-duration li label {
+ul#ip-geo-block-select-target li label,
+ul#ip-geo-block-select-period li label {
     cursor: pointer;
 }
 

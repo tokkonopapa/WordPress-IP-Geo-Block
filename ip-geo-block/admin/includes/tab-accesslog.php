@@ -32,7 +32,7 @@ if ( $options['validation']['reclogs'] ) :
 		);
 
 		// make a list of target
-		$html = "\n".'<li><label><input type="radio" name="' . $plugin_slug . '-target" value="all" />' . __( 'All', 'ip-geo-block' ) . '</label></li>' . "\n";
+		$html = "\n".'<li><label><input type="radio" name="' . $plugin_slug . '-target" value="all" checked="checked" />' . __( 'All', 'ip-geo-block' ) . '</label></li>' . "\n";
 		foreach ( $target as $key => $val ) {
 			$html .= '<li><label><input type="radio" name="' . $plugin_slug . '-target" value="' . $key . '" />';
 			$html .= '<dfn title="' . $val . '">' . $key . '</dfn>' . '</label></li>' . "\n";
@@ -49,7 +49,7 @@ if ( $options['validation']['reclogs'] ) :
 				'type' => 'html',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => '<ul class="' . $plugin_slug . '-select-target">' . $html . '</ul>',
+				'value' => '<ul id="' . $plugin_slug . '-select-target">' . $html . '</ul>',
 			)
 		);
 

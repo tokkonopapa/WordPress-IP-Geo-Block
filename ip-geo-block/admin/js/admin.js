@@ -62,7 +62,10 @@
 
 	function redirect(page, tab) {
 		if (-1 !== location.href.indexOf(page)) {
-			window.location = escapeHTML(page) + (tab ? '&' + escapeHTML(tab) : '');
+			window.location =
+				escapeHTML(page)
+				+ (tab ? '&' + escapeHTML(tab) : '')
+				+ (typeof IP_GEO_BLOCK_AUTH ? '&ip-geo-block-auth-nonce=' + IP_GEO_BLOCK_AUTH.nonce : '');
 		}
 	}
 
@@ -494,7 +497,7 @@
 		return cookie;
 	}
 
-	// setHash( name, value, expires, path, domain, secure )
+	// cookie[tabNo][n] = [0-9a-zA-Z] or 'o' if empty
 	function saveCookie(cookie) {
 		var j, n, c = [];
 
@@ -511,6 +514,7 @@
 			}
 		});
 
+		// setHash( name, value, expires, path, domain, secure )
 		if ('undefined' !== typeof wpCookies) {
 			j = 'undefined' !== typeof IP_GEO_BLOCK_AUTH ? IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin : '';
 			wpCookies.setHash('ip-geo-block', c, new Date(Date.now() + 2592000000), j);
@@ -533,7 +537,7 @@
 		}
 
 		cookie[tabNo][index] =  border ? 'o' : 'x';
-		saveCookie(cookie); // Save cookie
+		saveCookie(cookie);
 
 		// redraw google chart
 		drawChart(tabNo);
@@ -706,7 +710,7 @@
 		});
 
 		// Select target
-		$(ID('.', 'select-target')).on('change', function (event) {
+		$(ID('#', 'select-target')).on('change', function (event) {
 			var val = $(this).find('input[name="' + ID('$', 'target') + '"]:checked').val();
 			// search only the specified column for selecting "Target"
 			table.columns(control.targetColumn).search('all' !== val ? val : '').draw();
@@ -1372,7 +1376,7 @@
 			// Set selected provider to cookie
 			$('select[id^="' + ID('!', 'service') + '"]').on('change', function (event) {
 				cookie[tabNo][3] = $(this).prop('selectedIndex');
-				saveCookie(cookie); // Save cookie
+				saveCookie(cookie);
 			}).change();
 
 			// Search Geolocation
@@ -1478,6 +1482,12 @@
 		  case 5:
 			// https://developers.google.com/loader/#Dynamic
 			initChart(tabNo);
+
+			$(ID('#', 'select-period')).on('click', function (event) {
+				cookie[tabNo][1] = $(this).find('input[name=' + ID('$', 'period') + ']:checked').val();
+				saveCookie(cookie);
+				redirect('?page=ip-geo-block', 'tab=5');
+			});
 			break;
 		}
 	}); // document.ready()

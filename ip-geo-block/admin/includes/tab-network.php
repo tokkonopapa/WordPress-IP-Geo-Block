@@ -2,8 +2,6 @@
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context, $tab ) {
-		$plugin_slug = IP_Geo_Block::PLUGIN_NAME;
-
 		register_setting(
 			$option_slug = IP_Geo_Block::PLUGIN_NAME,
 			$option_name = IP_Geo_Block::OPTION_NAME
@@ -16,22 +14,25 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug
 		);
 
-		// same as in tab-accesslog.php
-		$duration = array(
-			YEAR_IN_SECONDS  => __( 'All',             'ip-geo-block' ),
-			HOUR_IN_SECONDS  => __( 'Latest 1 hour',   'ip-geo-block' ),
-			DAY_IN_SECONDS   => __( 'Latest 24 hours', 'ip-geo-block' ),
-			WEEK_IN_SECONDS  => __( 'Latest 1 week',   'ip-geo-block' ),
-			MONTH_IN_SECONDS => __( 'Latest 1 month',  'ip-geo-block' ),
+		// Select period
+		$cookie = preg_match( '/5=.(\d)/', $_COOKIE[ IP_Geo_Block::PLUGIN_NAME ], $matches );
+		$cookie = min( 4, max( 0, isset( $matches[1] ) ? (int)$matches[1] : 0 ) );
+		$period = array(
+			__( 'All',             'ip-geo-block' ),
+			__( 'Latest 1 hour',   'ip-geo-block' ),
+			__( 'Latest 24 hours', 'ip-geo-block' ),
+			__( 'Latest 1 week',   'ip-geo-block' ),
+			__( 'Latest 1 month',  'ip-geo-block' ),
 		);
 
-		// make a list of duration
+		// make a list of period
 		$html = "\n";
-		foreach ( $duration as $key => $val ) {
-			$html .= '<li><label><input type="radio" name="' . $plugin_slug . '-duration" value="' . $key . '" />' . $val . '</label></li>' . "\n";
+		foreach ( $period as $key => $val ) {
+			$html .= '<li><label><input type="radio" name="' . $option_slug . '-period" value="' . $key . '"'
+				. ($key === $cookie ? ' checked="checked"' : '') . ' />' . $val . '</label></li>' . "\n";
 		}
 
-		$field = 'select_duration';
+		$field = 'select_period';
 		add_settings_field(
 			$option_name.'_'.$field,
 			__( 'Period to extract', 'ip-geo-block' ),
@@ -42,7 +43,7 @@ class IP_Geo_Block_Admin_Tab {
 				'type' => 'html',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => '<ul class="' . $plugin_slug . '-select-duration">' . $html . '</ul>',
+				'value' => '<ul id="' . $option_slug . '-select-period">' . $html . '</ul>',
 			)
 		);
 	}
@@ -53,6 +54,19 @@ class IP_Geo_Block_Admin_Tab {
 	 * @param array $args  associative array of `id`, `title`, `callback`.
 	 */
 	public static function render_log( $args ) {
+		// $_COOKIE[ip-geo-block] => 0=&1=&2=oooo&3=&4=&5=o1
+		$cookie = preg_match( '/5=.(\d)/', $_COOKIE[ IP_Geo_Block::PLUGIN_NAME ], $matches );
+		$cookie = min( 4, max( 0, isset( $matches[1] ) ? (int)$matches[1] : 0 ) );
+
+		// Peroid to extract
+		$period = array(
+			YEAR_IN_SECONDS,  // All
+			HOUR_IN_SECONDS,  // Latest 1 hour
+			DAY_IN_SECONDS,   // Latest 24 hours
+			WEEK_IN_SECONDS,  // Latest 1 week
+			MONTH_IN_SECONDS, // Latest 1 month
+		);
+
 		$zero = array(
 			'comment' => 0,
 			'xmlrpc'  => 0,
@@ -67,7 +81,7 @@ class IP_Geo_Block_Admin_Tab {
 
 			// array of ( `time`, `ip`, `hook`, `code`, `method`, `data` )
 			$name = get_bloginfo( 'name' );
-			$logs = IP_Geo_Block_Logs::get_recent_logs(); // YEAR_IN_SECONDS
+			$logs = IP_Geo_Block_Logs::get_recent_logs( $period[ $cookie ] );
 
 			$count[ $name ] = $zero;
 
