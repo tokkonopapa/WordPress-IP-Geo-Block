@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-10-20 01:04+0900\n"
-"PO-Revision-Date: 2017-10-20 01:09+0900\n"
+"POT-Creation-Date: 2017-10-22 19:16+0900\n"
+"PO-Revision-Date: 2017-10-22 19:49+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -296,11 +296,11 @@ msgstr ""
 "択されていますが、<strong>IP Geo Allow</strong> と互換性がありません。"
 "「&#8220;init&#8221; アクション・フック」を選択してください。"
 
-#: admin/class-ip-geo-block-admin.php:612 admin/includes/tab-network.php:38
+#: admin/class-ip-geo-block-admin.php:612
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:613 admin/includes/tab-network.php:39
+#: admin/class-ip-geo-block-admin.php:613
 msgid "Logs"
 msgstr "ログ"
 
@@ -380,7 +380,7 @@ msgstr "管理領域"
 msgid "Public facing pages"
 msgstr "一般公開ページ"
 
-#: admin/includes/tab-accesslog.php:35
+#: admin/includes/tab-accesslog.php:35 admin/includes/tab-network.php:21
 msgid "All"
 msgstr "全て"
 
@@ -1389,6 +1389,30 @@ msgstr "あるいは %s を参照し、手動で設定して下さい。"
 #, php-format
 msgid "&#8220;auto_prepend_file&#8221; already defined in %s."
 msgstr "%s&thinsp;で既に「auto_prepend_file」が設定されています。"
+
+#: admin/includes/tab-network.php:14
+msgid "Blocked per target in logs"
+msgstr "ログ中のターゲット毎遮断数"
+
+#: admin/includes/tab-network.php:22
+msgid "Latest 1 hour"
+msgstr "最新の1時間"
+
+#: admin/includes/tab-network.php:23
+msgid "Latest 24 hours"
+msgstr "最新の24時間"
+
+#: admin/includes/tab-network.php:24
+msgid "Latest 1 week"
+msgstr "最新の1週間"
+
+#: admin/includes/tab-network.php:25
+msgid "Latest 1 month"
+msgstr "最新の1ヶ月"
+
+#: admin/includes/tab-network.php:37
+msgid "Period to extract"
+msgstr "抽出する期間"
 
 #: admin/includes/tab-statistics.php:21 admin/includes/tab-statistics.php:207
 msgid "Statistics of validation"

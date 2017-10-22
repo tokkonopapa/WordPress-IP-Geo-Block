@@ -615,14 +615,17 @@ table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
 }
 
 /* Select target */
-ul.ip-geo-block-select-target {
+ul.ip-geo-block-select-target,
+ul.ip-geo-block-select-duration {
     margin: 0;
 }
-ul.ip-geo-block-select-target li {
+ul.ip-geo-block-select-target   li,
+ul.ip-geo-block-select-duration li {
     float: left;
     margin-right: 1.5em;
 }
-ul.ip-geo-block-select-target li label dfn {
+ul.ip-geo-block-select-target   li label,
+ul.ip-geo-block-select-duration li label {
     cursor: pointer;
 }
 

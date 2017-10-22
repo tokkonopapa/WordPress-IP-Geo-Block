@@ -2,20 +2,48 @@
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context, $tab ) {
+		$plugin_slug = IP_Geo_Block::PLUGIN_NAME;
 
 		register_setting(
 			$option_slug = IP_Geo_Block::PLUGIN_NAME,
 			$option_name = IP_Geo_Block::OPTION_NAME
 		);
 
-		$section = IP_Geo_Block::PLUGIN_NAME . '-multisite';
-		$field = 0;
-
 		add_settings_section(
-			$section . '-' . $field,
+			$section = IP_Geo_Block::PLUGIN_NAME . '-network',
 			__( 'Blocked per target in logs', 'ip-geo-block' ),
 			array( __CLASS__, 'render_log' ),
 			$option_slug
+		);
+
+		// same as in tab-accesslog.php
+		$duration = array(
+			YEAR_IN_SECONDS  => __( 'All',             'ip-geo-block' ),
+			HOUR_IN_SECONDS  => __( 'Latest 1 hour',   'ip-geo-block' ),
+			DAY_IN_SECONDS   => __( 'Latest 24 hours', 'ip-geo-block' ),
+			WEEK_IN_SECONDS  => __( 'Latest 1 week',   'ip-geo-block' ),
+			MONTH_IN_SECONDS => __( 'Latest 1 month',  'ip-geo-block' ),
+		);
+
+		// make a list of duration
+		$html = "\n";
+		foreach ( $duration as $key => $val ) {
+			$html .= '<li><label><input type="radio" name="' . $plugin_slug . '-duration" value="' . $key . '" />' . $val . '</label></li>' . "\n";
+		}
+
+		$field = 'select_duration';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Period to extract', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'html',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => '<ul class="' . $plugin_slug . '-select-duration">' . $html . '</ul>',
+			)
 		);
 	}
 
