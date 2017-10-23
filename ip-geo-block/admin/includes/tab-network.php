@@ -1,6 +1,8 @@
 <?php
 class IP_Geo_Block_Admin_Tab {
 
+	static $cookie;
+
 	public static function tab_setup( $context, $tab ) {
 		register_setting(
 			$option_slug = IP_Geo_Block::PLUGIN_NAME,
@@ -15,8 +17,8 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 		// Select period
-		$cookie = preg_match( '/5=.(\d)/', $_COOKIE[ IP_Geo_Block::PLUGIN_NAME ], $matches );
-		$cookie = min( 4, max( 0, isset( $matches[1] ) ? (int)$matches[1] : 0 ) );
+		self::$cookie = $context->get_cookie( IP_Geo_Block::PLUGIN_NAME );
+		self::$cookie = (int)min( 4, max( 0, empty( self::$cookie[5][1] ) ? 0 : self::$cookie[5][1] ) );
 		$period = array(
 			__( 'All',             'ip-geo-block' ),
 			__( 'Latest 1 hour',   'ip-geo-block' ),
@@ -29,7 +31,7 @@ class IP_Geo_Block_Admin_Tab {
 		$html = "\n";
 		foreach ( $period as $key => $val ) {
 			$html .= '<li><label><input type="radio" name="' . $option_slug . '-period" value="' . $key . '"'
-				. ($key === $cookie ? ' checked="checked"' : '') . ' />' . $val . '</label></li>' . "\n";
+				. ($key === self::$cookie ? ' checked="checked"' : '') . ' />' . $val . '</label></li>' . "\n";
 		}
 
 		$field = 'select_period';
@@ -54,10 +56,6 @@ class IP_Geo_Block_Admin_Tab {
 	 * @param array $args  associative array of `id`, `title`, `callback`.
 	 */
 	public static function render_log( $args ) {
-		// $_COOKIE[ip-geo-block] => 0=&1=&2=oooo&3=&4=&5=o1
-		$cookie = preg_match( '/5=.(\d)/', $_COOKIE[ IP_Geo_Block::PLUGIN_NAME ], $matches );
-		$cookie = min( 4, max( 0, isset( $matches[1] ) ? (int)$matches[1] : 0 ) );
-
 		// Peroid to extract
 		$period = array(
 			YEAR_IN_SECONDS,  // All
@@ -81,7 +79,7 @@ class IP_Geo_Block_Admin_Tab {
 
 			// array of ( `time`, `ip`, `hook`, `code`, `method`, `data` )
 			$name = get_bloginfo( 'name' );
-			$logs = IP_Geo_Block_Logs::get_recent_logs( $period[ $cookie ] );
+			$logs = IP_Geo_Block_Logs::get_recent_logs( $period[ self::$cookie ] );
 
 			$count[ $name ] = $zero;
 

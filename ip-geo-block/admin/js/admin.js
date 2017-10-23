@@ -300,7 +300,7 @@
 		val = val.replace('…', '');
 
 		for (i = 0; i < n; ++i) {
-			if (0 === arr[i].label.indexOf(val)) {
+			if (i in arr && 0 === arr[i].label.indexOf(val)) {
 				return i;
 			}
 		}
@@ -497,7 +497,7 @@
 		return cookie;
 	}
 
-	// cookie[tabNo][n] = [0-9a-zA-Z] or 'o' if empty
+	// cookie[tabNo][n] = 1 charactor or 'o' if empty
 	function saveCookie(cookie) {
 		var j, n, c = [];
 
@@ -1375,7 +1375,7 @@
 
 			// Set selected provider to cookie
 			$('select[id^="' + ID('!', 'service') + '"]').on('change', function (event) {
-				cookie[tabNo][3] = $(this).prop('selectedIndex');
+				cookie[tabNo][3] = $(this).prop('selectedIndex').charAt(0) || '0';
 				saveCookie(cookie);
 			}).change();
 
@@ -1484,7 +1484,7 @@
 			initChart(tabNo);
 
 			$(ID('#', 'select-period')).on('click', function (event) {
-				cookie[tabNo][1] = $(this).find('input[name=' + ID('$', 'period') + ']:checked').val();
+				cookie[tabNo][1] = $(this).find('input[name=' + ID('$', 'period') + ']:checked').val().charAt(0) || '0';
 				saveCookie(cookie);
 				redirect('?page=ip-geo-block', 'tab=5');
 			});
