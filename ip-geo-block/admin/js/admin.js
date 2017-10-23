@@ -7,8 +7,10 @@
 (function ($, window, document) {
 	'use strict';
 
-	var dialog   = IP_GEO_BLOCK.dialog,
-	    language = IP_GEO_BLOCK.language;
+	// External variables
+	var auth = IP_GEO_BLOCK_AUTH || { nonce:'', home:'', admin:'' },
+	    lang = IP_GEO_BLOCK.language || [],
+	    dialog = IP_GEO_BLOCK.dialog || [];
 
 	function ID(selector, id) {
 		var keys = {
@@ -61,11 +63,8 @@
 	}
 
 	function redirect(page, tab) {
-		if (-1 !== location.href.indexOf(page)) {
-			window.location =
-				escapeHTML(page)
-				+ (tab ? '&' + escapeHTML(tab) : '')
-				+ (typeof IP_GEO_BLOCK_AUTH ? '&ip-geo-block-auth-nonce=' + IP_GEO_BLOCK_AUTH.nonce : '');
+		if (-1 !== window.location.href.indexOf(page)) {
+			window.location = escapeHTML(page) + (tab ? '&' + escapeHTML(tab) : '') + '&ip-geo-block-auth-nonce=' + auth.nonce;
 		}
 	}
 
@@ -370,8 +369,9 @@
 				);
 			}
 
-			i = $('#' + id).width();
-			if ('undefined' !== typeof chart.dataLine[id] && 'undefined' !== typeof chart.viewLine[id] && i) {
+			if ('undefined' !== typeof chart.dataLine[id] &&
+			    'undefined' !== typeof chart.viewLine[id] &&
+			    0 < (i = $('#' + id).width())) {
 				i = i > 320 ? true : false;
 				chart.viewLine[id].draw(chart.dataLine[id], {
 					backgroundColor: { fill: 'transparent' },
@@ -392,48 +392,56 @@
 		dataStacked: [],
 		viewStacked: [],
 		drawStacked: function (id) {
-			var i, n, a, p, data, info;
+			var i;
+
 			if ('undefined' === typeof chart.dataStacked[id]) {
-				data = $.parseJSON($('#' + id).attr('data-' + id));
+				var data = $.parseJSON($('#' + id).attr('data-' + id));
 				data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', { role: 'link' } ]);
 				chart.dataStacked[id] = google.visualization.arrayToDataTable(data);
+/*
+				ajax_post(id, {
+					cmd: 'multisite-stat',
+					which: $('input[name=' + ID('$', 'period') + ']:checked').val()
+				}, function (data) {
+					data.cols = [
+						{type: 'string', label: 'site'   },
+						{type: 'number', label: 'comment'},
+						{type: 'number', label: 'xmlrpc' },
+						{type: 'number', label: 'login'  },
+						{type: 'number', label: 'admin'  },
+						{type: 'number', label: 'poblic' },
+						{type: 'string', role:  'link'   }
+					];
+					chart.dataStacked[id] = new google.visualization.DataTable(data);
+					chart.drawStacked(id);
+ 				});//*/
 			}
 
 			if ('undefined' === typeof chart.viewStacked[id]) {
 				chart.viewStacked[id] = new google.visualization.BarChart(
 					document.getElementById(id)
 				);
-			}
 
-			i = $('#' + id).width();
-			if ('undefined' !== typeof chart.dataStacked[id] && 'undefined' !== typeof chart.viewStacked[id] && i) {
-				data = chart.dataStacked[id];
-				chart.viewStacked[id].draw(data, {
-					backgroundColor: { fill: 'transparent' },
-					legend: { position: 'top' },
-					isStacked: true,
-					width: i,
-					chartArea: { width: '70%' },
-					allowHtml: true
-				});
+				// process for after animation
+				google.visualization.events.addListener(chart.viewStacked[id], 'animationfinish', function (e) {
+					// Make an array of the title in each row.
+					var i, n, a, p, data, info = [];
 
-				// Make an array of the title in each row.
-				info = [];
-				n = data.getNumberOfRows();
-				for (i = 0; i < n; i++) {
-					info.push({
-						label: data.getValue(i, 0),
-						link:  data.getValue(i, 6)
-					});
-				}
+					data = chart.dataStacked[id];
+					n = data.getNumberOfRows();
 
-				// https://stackoverflow.com/questions/12701772/insert-links-into-google-charts-api-data
-				n = 'http://www.w3.org/1999/xlink';
-				$('#' + id).find('text').each(function (i, elm) {
-					p = elm.parentNode;
-					if ('g' === p.tagName.toLowerCase()) {
-						i = inArray(elm.textContent, info);
-						if (-1 !== i) {
+					for (i = 0; i < n; i++) {
+						info.push({
+							label: data.getValue(i, 0),
+							link:  data.getValue(i, 6)
+						});
+					}
+
+					// https://stackoverflow.com/questions/12701772/insert-links-into-google-charts-api-data
+					n = 'http://www.w3.org/1999/xlink';
+					$('#' + id).find('text').each(function (i, elm) {
+						p = elm.parentNode;
+						if ('g' === p.tagName.toLowerCase() && -1 !== (i = inArray(elm.textContent, info))) {
 							a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
 							a.setAttributeNS(n, 'xlink:href', info[i].link);
 							a.setAttributeNS(n, 'title', info[i].label);
@@ -443,6 +451,24 @@
 							p.appendChild(a);
 							info.splice(i, 1); // for speeding up
 						}
+					});
+				});
+			}
+
+			if ('undefined' !== typeof chart.dataStacked[id] &&	
+			    'undefined' !== typeof chart.viewStacked[id] &&
+			    0 < (i = $('#' + id).width())) {
+				chart.viewStacked[id].draw(chart.dataStacked[id], {
+					width: i,
+					allowHtml: true,
+					isStacked: true,
+					legend: { position: 'top' },
+					chartArea: { width: '70%' },
+					backgroundColor: { fill: 'transparent' },
+					animation: {
+						startup: true,
+						duration: 500,
+						easing: 'out'
 					}
 				});
 			}
@@ -516,8 +542,9 @@
 
 		// setHash( name, value, expires, path, domain, secure )
 		if ('undefined' !== typeof wpCookies) {
-			j = 'undefined' !== typeof IP_GEO_BLOCK_AUTH ? IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin : '';
-			wpCookies.setHash('ip-geo-block', c, new Date(Date.now() + 2592000000), j);
+			wpCookies.setHash(
+				'ip-geo-block', c, new Date(Date.now() + 2592000000), auth.home + auth.admin
+			);
 		}
 	}
 
@@ -648,7 +675,7 @@
 				emptyTable:     '<div class="ip-geo-block-loading"></div>',
 				loadingRecords: '<div class="ip-geo-block-loading"></div>',
 				processing:     '<div class="ip-geo-block-loading"></div>',
-				zeroRecords:    language[0],
+				zeroRecords:    lang[0],
 				paginate: {
 					first:    '&laquo;',
 					last:     '&raquo;',
@@ -673,7 +700,7 @@
 				// 1: thead, 2: empty tbody, 3: after loading data
 				if (3 === settings.iDraw) {
 					// 'No data available in table'
-					$(ID('#', control.tableID)).find('td.dataTables_empty').html(language[1]);
+					$(ID('#', control.tableID)).find('td.dataTables_empty').html(lang[1]);
 
 					var $filter = $(ID('@', 'search_filter'));
 					if ($filter.val()) { // if a filter value exists in the text field
@@ -1272,13 +1299,13 @@
 			}, {
 				columns: [
 					{ title: '<input type="checkbox">' }, // 0 checkbox
-					{ title: language[2] }, // 1 IP address
-					{ title: language[3] }, // 2 Country code
-					{ title: language[4] }, // 3 AS number
-					{ title: language[5] }, // 4 Host name
-					{ title: language[6] }, // 5 Target
-					{ title: language[7] }, // 6 Login failures/Calls
-					{ title: language[8] }  // 7 Elapsed[sec]
+					{ title: lang[2] }, // 1 IP address
+					{ title: lang[3] }, // 2 Country code
+					{ title: lang[4] }, // 3 AS number
+					{ title: lang[5] }, // 4 Host name
+					{ title: lang[6] }, // 5 Target
+					{ title: lang[7] }, // 6 Login failures/Calls
+					{ title: lang[8] }  // 7 Elapsed[sec]
 				],
 				columnDefs: [
 					{ responsivePriority:  0, targets: 0 }, // checkbox
@@ -1309,16 +1336,16 @@
 			}, {
 				columns: [
 					{ title: '<input type=\"checkbox\">' }, // 0 checkbox
-					{ title: language[ 9] }, //  1 Time
-					{ title: language[ 2] }, //  2 IP address
-					{ title: language[ 3] }, //  3 Country code
-					{ title: language[ 4] }, //  4 AS number
-					{ title: language[ 6] }, //  5 Target
-					{ title: language[10] }, //  6 Result
-					{ title: language[11] }, //  7 Request
-					{ title: language[12] }, //  8 User agent
-					{ title: language[13] }, //  9 HTTP headers
-					{ title: language[14] }  // 10 $_POST data
+					{ title: lang[ 9] }, //  1 Time
+					{ title: lang[ 2] }, //  2 IP address
+					{ title: lang[ 3] }, //  3 Country code
+					{ title: lang[ 4] }, //  4 AS number
+					{ title: lang[ 6] }, //  5 Target
+					{ title: lang[10] }, //  6 Result
+					{ title: lang[11] }, //  7 Request
+					{ title: lang[12] }, //  8 User agent
+					{ title: lang[13] }, //  9 HTTP headers
+					{ title: lang[14] }  // 10 $_POST data
 				],
 				columnDefs: [
 					{ responsivePriority:  0, targets:  0 }, // checkbox

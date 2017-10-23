@@ -1,6 +1,7 @@
 <?php
 class IP_Geo_Block_Admin_Tab {
 
+	// selected period
 	static $cookie;
 
 	public static function tab_setup( $context, $tab ) {
@@ -18,7 +19,8 @@ class IP_Geo_Block_Admin_Tab {
 
 		// Select period
 		self::$cookie = $context->get_cookie( IP_Geo_Block::PLUGIN_NAME );
-		self::$cookie = (int)min( 4, max( 0, empty( self::$cookie[5][1] ) ? 0 : self::$cookie[5][1] ) );
+		self::$cookie = isset( self::$cookie[5][1] ) ? self::$cookie[5][1] : 0;
+
 		$period = array(
 			__( 'All',             'ip-geo-block' ),
 			__( 'Latest 1 hour',   'ip-geo-block' ),
@@ -31,7 +33,7 @@ class IP_Geo_Block_Admin_Tab {
 		$html = "\n";
 		foreach ( $period as $key => $val ) {
 			$html .= '<li><label><input type="radio" name="' . $option_slug . '-period" value="' . $key . '"'
-				. ($key === self::$cookie ? ' checked="checked"' : '') . ' />' . $val . '</label></li>' . "\n";
+				. ($key == self::$cookie ? ' checked="checked"' : '') . ' />' . $val . '</label></li>' . "\n";
 		}
 
 		$field = 'select_period';
@@ -56,53 +58,12 @@ class IP_Geo_Block_Admin_Tab {
 	 * @param array $args  associative array of `id`, `title`, `callback`.
 	 */
 	public static function render_log( $args ) {
-		// Peroid to extract
-		$period = array(
-			YEAR_IN_SECONDS,  // All
-			HOUR_IN_SECONDS,  // Latest 1 hour
-			DAY_IN_SECONDS,   // Latest 24 hours
-			WEEK_IN_SECONDS,  // Latest 1 week
-			MONTH_IN_SECONDS, // Latest 1 month
-		);
-
-		$zero = array(
-			'comment' => 0,
-			'xmlrpc'  => 0,
-			'login'   => 0,
-			'admin'   => 0,
-			'public'  => 0,
-		);
-
-		global $wpdb;
-		foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
-			switch_to_blog( $id );
-
-			// array of ( `time`, `ip`, `hook`, `code`, `method`, `data` )
-			$name = get_bloginfo( 'name' );
-			$logs = IP_Geo_Block_Logs::get_recent_logs( $period[ self::$cookie ] );
-
-			$count[ $name ] = $zero;
-
-			// Blocked hooks by time
-			foreach( $logs as $val ) {
-				++$count[ $name ][ $val['hook'] ];
-			}
-
-			$count[ $name ]['link'] = esc_url( add_query_arg(
-				array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ),
-				admin_url( 'options-general.php' )
-			) );
-
-			restore_current_blog();
-		}
-
-		$result = array();
-		foreach ( $count as $key => $val ) {
-			array_push( $result, array_merge( array( $key ), array_values( $val ) ) );
-		}
+		require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php';
+		$json = IP_Geo_Block_Admin_Ajax::restore_multisite( self::$cookie, FALSE );
 
 		// Embed array into data attribute as json
-		echo '<div class="', IP_Geo_Block::PLUGIN_NAME, '-multisite" id="', $args['id'], '" data-', $args['id'], '=\'', json_encode( $result ), '\'></div>';
+//		echo '<div class="', IP_Geo_Block::PLUGIN_NAME, '-multisite" id="', $args['id'], '"></div>', "\n";
+		echo '<div class="', IP_Geo_Block::PLUGIN_NAME, '-multisite" id="', $args['id'], '" data-', $args['id'], '=\'', json_encode( $json ), '\'></div>';
 	}
 
 }

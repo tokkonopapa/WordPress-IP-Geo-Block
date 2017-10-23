@@ -184,6 +184,76 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	/**
+	 * Restore blocked per target in logs
+	 *
+	 * @param string $time the number of selected period
+	 */
+	static public function restore_multisite( $time, $leteral = FALSE ) {
+		$zero = array(
+			'comment' => 0,
+			'xmlrpc'  => 0,
+			'login'   => 0,
+			'admin'   => 0,
+			'public'  => 0,
+		);
+		$period = array(
+			YEAR_IN_SECONDS,  // All
+			HOUR_IN_SECONDS,  // Latest 1 hour
+			DAY_IN_SECONDS,   // Latest 24 hours
+			WEEK_IN_SECONDS,  // Latest 1 week
+			MONTH_IN_SECONDS, // Latest 1 month
+		);
+		$json = array();
+		$time = isset( $period[ $time ] ) ? $period[ $time ] : 0; // Peroid to extract
+
+		global $wpdb;
+		foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
+			switch_to_blog( $id );
+
+			// array of ( `time`, `ip`, `hook`, `code`, `method`, `data` )
+			$name = get_bloginfo( 'name' );
+			$logs = IP_Geo_Block_Logs::get_recent_logs( $time );
+
+			$count[ $name ] = $zero;
+
+			// Blocked hooks by time
+			foreach( $logs as $val ) {
+				++$count[ $name ][ $val['hook'] ];
+			}
+
+			$count[ $name ]['link'] = esc_url( add_query_arg(
+				array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ),
+				admin_url( 'options-general.php' )
+			) );
+
+			restore_current_blog();
+		}
+
+		if ( $leteral ) {
+			// https://stackoverflow.com/questions/17327022/create-line-chart-using-google-chart-api-and-json-for-datatable
+			foreach ( $count as $key => $val ) {
+				$json['rows'][]['c'] = array(
+					array( 'v' => $key ),
+					array( 'v' => $val['comment'] ),
+					array( 'v' => $val['xmlrpc' ] ),
+					array( 'v' => $val['login'  ] ),
+					array( 'v' => $val['admin'  ] ),
+					array( 'v' => $val['public' ] ),
+					array( 'v' => $val['link'   ] ),
+				);
+			}
+		}
+
+		else {
+			foreach ( $count as $key => $val ) {
+				array_push( $json, array_merge( array( $key ), array_values( $val ) ) );
+			}
+		}
+
+		return $json;
+	}
+
+	/**
 	 * Validate json from the client and respond safe data
 	 *
 	 */

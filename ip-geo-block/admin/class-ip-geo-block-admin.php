@@ -1378,6 +1378,11 @@ class IP_Geo_Block_Admin {
 			);
 			break;
 
+		  case 'multisite-stat':
+			// Restore blocked per target in logs
+			$res = IP_Geo_Block_Admin_Ajax::restore_multisite( $which, TRUE );
+			break;
+
 		  case 'create-table':
 		  case 'delete-table':
 			// Need to define `IP_GEO_BLOCK_DEBUG` to true
