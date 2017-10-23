@@ -398,23 +398,6 @@
 				var data = $.parseJSON($('#' + id).attr('data-' + id));
 				data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', { role: 'link' } ]);
 				chart.dataStacked[id] = google.visualization.arrayToDataTable(data);
-/*
-				ajax_post(id, {
-					cmd: 'multisite-stat',
-					which: $('input[name=' + ID('$', 'period') + ']:checked').val()
-				}, function (data) {
-					data.cols = [
-						{type: 'string', label: 'site'   },
-						{type: 'number', label: 'comment'},
-						{type: 'number', label: 'xmlrpc' },
-						{type: 'number', label: 'login'  },
-						{type: 'number', label: 'admin'  },
-						{type: 'number', label: 'poblic' },
-						{type: 'string', role:  'link'   }
-					];
-					chart.dataStacked[id] = new google.visualization.DataTable(data);
-					chart.drawStacked(id);
- 				});//*/
 			}
 
 			if ('undefined' === typeof chart.viewStacked[id]) {
@@ -472,6 +455,24 @@
 					}
 				});
 			}
+		},
+		ajaxStacked: function (id) {
+			ajax_post(id, {
+				cmd: 'multisite-stat',
+				which: $('input[name=' + ID('$', 'period') + ']:checked').val()
+			}, function (data) {
+				data.cols = [
+					{type: 'string', label: 'site'   },
+					{type: 'number', label: 'comment'},
+					{type: 'number', label: 'xmlrpc' },
+					{type: 'number', label: 'login'  },
+					{type: 'number', label: 'admin'  },
+					{type: 'number', label: 'poblic' },
+					{type: 'string', role:  'link'   }
+				];
+				chart.dataStacked[id] = new google.visualization.DataTable(data);
+				chart.drawStacked(id);
+			});
 		}
 	};
 
