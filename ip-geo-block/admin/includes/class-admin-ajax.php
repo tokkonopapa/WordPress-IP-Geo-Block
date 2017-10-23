@@ -186,7 +186,8 @@ class IP_Geo_Block_Admin_Ajax {
 	/**
 	 * Restore blocked per target in logs
 	 *
-	 * @param string $time the number of selected period
+	 * @param string $time    the number of selected period
+	 * @param int    $leteral JavaScript leteral notation
 	 */
 	static public function restore_multisite( $time, $leteral = FALSE ) {
 		$zero = array(
@@ -245,6 +246,7 @@ class IP_Geo_Block_Admin_Ajax {
 		}
 
 		else {
+			// https://developers.google.com/chart/interactive/docs/datatables_dataviews#arraytodatatable
 			foreach ( $count as $key => $val ) {
 				array_push( $json, array_merge( array( $key ), array_values( $val ) ) );
 			}

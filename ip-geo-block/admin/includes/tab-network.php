@@ -10,6 +10,9 @@ class IP_Geo_Block_Admin_Tab {
 			$option_name = IP_Geo_Block::OPTION_NAME
 		);
 
+		/*----------------------------------------*
+		 * Graph section
+		 *----------------------------------------*/
 		add_settings_section(
 			$section = IP_Geo_Block::PLUGIN_NAME . '-network',
 			__( 'Blocked per target in logs', 'ip-geo-block' ),
@@ -17,7 +20,9 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug
 		);
 
-		// Select period
+		/*----------------------------------------*
+		 * Period to extract
+		 *----------------------------------------*/
 		self::$cookie = $context->get_cookie( IP_Geo_Block::PLUGIN_NAME );
 		self::$cookie = isset( self::$cookie[5][1] ) ? self::$cookie[5][1] : 0;
 
