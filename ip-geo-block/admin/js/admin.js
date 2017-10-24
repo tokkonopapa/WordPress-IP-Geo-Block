@@ -8,9 +8,8 @@
 	'use strict';
 
 	// External variables
-	var auth = IP_GEO_BLOCK_AUTH || { nonce:'', home:'', admin:'' },
-	    lang = IP_GEO_BLOCK.language || [],
-	    dialog = IP_GEO_BLOCK.dialog || [];
+	var ip_geo_block      = IP_GEO_BLOCK,
+	    ip_geo_block_auth = IP_GEO_BLOCK_AUTH;
 
 	function ID(selector, id) {
 		var keys = {
@@ -59,12 +58,12 @@
 	}
 
 	function notice_html5() {
-		warning(null, dialog[8]);
+		warning(null, ip_geo_block.dialog[8]);
 	}
 
 	function redirect(page, tab) {
 		if (-1 !== window.location.href.indexOf(page)) {
-			window.location = escapeHTML(page) + (tab ? '&' + escapeHTML(tab) : '') + '&ip-geo-block-auth-nonce=' + auth.nonce;
+			window.location = escapeHTML(page) + (tab ? '&' + escapeHTML(tab) : '') + '&ip-geo-block-auth-nonce=' + ip_geo_block_auth.nonce;
 		}
 	}
 
@@ -73,16 +72,16 @@
 			loading(id, true);
 		}
 
-		request.action = IP_GEO_BLOCK.action;
-		request.nonce = IP_GEO_BLOCK.nonce;
+		request.action = ip_geo_block.action;
+		request.nonce  = ip_geo_block.nonce;
 
-		$.post(IP_GEO_BLOCK.url, request)
+		$.post(ip_geo_block.url, request)
 
-		.done(function (data, textStatus, jqXHR) {
+		.done(function (data/*, textStatus, jqXHR*/) {
 			callback(data);
 		})
 
-		.fail(function (jqXHR, textStatus, errorThrown) {
+		.fail(function (jqXHR, textStatus/*, errorThrown*/) {
 			warning(textStatus, jqXHR.responseText);
 		})
 
@@ -225,7 +224,7 @@
 	 *
 	 * usage: $('form').deserialize({'name':'value', ...});
 	 */
-	$.fn.deserialize = function (json, options) {
+	$.fn.deserialize = function (json/*, options*/) {
 		return this.each(function () {
 			var key, name, value,
 			    self = this,
@@ -328,7 +327,9 @@
 				);
 			}
 
-			if ('undefined' !== typeof chart.dataPie[id] && 'undefined' !== typeof chart.viewPie[id] && $('#' + id).width()) {
+			if ('undefined' !== typeof chart.dataPie[id] &&
+			    'undefined' !== typeof chart.viewPie[id] &&
+			    0 < (i = $('#' + id).width())) {
 				chart.viewPie[id].draw(chart.dataPie[id], {
 					backgroundColor: { fill: 'transparent' },
 					chartArea: {
@@ -372,14 +373,13 @@
 			if ('undefined' !== typeof chart.dataLine[id] &&
 			    'undefined' !== typeof chart.viewLine[id] &&
 			    0 < (i = $('#' + id).width())) {
-				i = i > 320 ? true : false;
 				chart.viewLine[id].draw(chart.dataLine[id], {
-					backgroundColor: { fill: 'transparent' },
 					legend: { position: 'bottom' },
+					backgroundColor: { fill: 'transparent' },
 					hAxis: { format: 'MM/dd' + ('datetime' === datetype ? ' HH:mm' : '') },
-					vAxis: { textPosition: (i ? 'out' : 'in') },
+					vAxis: { textPosition: (i > 320 ? 'out' : 'in') },
 					chartArea: {
-						left: (i ? '10%' : 0),
+						left: (i > 320 ? '10%' : 0),
 						top: '5%',
 						width: '100%',
 						height: '75%'
@@ -393,11 +393,12 @@
 		viewStacked: [],
 		drawStacked: function (id) {
 			var i;
-
 			if ('undefined' === typeof chart.dataStacked[id]) {
 				var data = $.parseJSON($('#' + id).attr('data-' + id));
-				data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', { role: 'link' } ]);
-				chart.dataStacked[id] = google.visualization.arrayToDataTable(data);
+				if (data) {
+					data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', { role: 'link' } ]);
+					chart.dataStacked[id] = google.visualization.arrayToDataTable(data);
+				}
 			}
 
 			if ('undefined' === typeof chart.viewStacked[id]) {
@@ -406,12 +407,12 @@
 				);
 
 				// process for after animation
-				google.visualization.events.addListener(chart.viewStacked[id], 'animationfinish', function (e) {
+				google.visualization.events.addListener(chart.viewStacked[id], 'animationfinish', function (/*event*/) {
 					// Make an array of the title in each row.
-					var i, n, a, p, data, info = [];
-
-					data = chart.dataStacked[id];
-					n = data.getNumberOfRows();
+					var i, a, p,
+					    info = [],
+					    data = chart.dataStacked[id],
+					    n = data.getNumberOfRows();
 
 					for (i = 0; i < n; i++) {
 						info.push({
@@ -450,27 +451,28 @@
 					backgroundColor: { fill: 'transparent' },
 					animation: {
 						startup: true,
-						duration: 500,
+						duration: 200,
 						easing: 'out'
 					}
 				});
 			}
 		},
-		ajaxStacked: function (id) {
+		ajaxStacked: function (id, period) {
 			ajax_post(id, {
 				cmd: 'multisite-stat',
-				which: $('input[name=' + ID('$', 'period') + ']:checked').val()
+				which: period
 			}, function (data) {
-				data.cols = [
-					{type: 'string', label: 'site'   },
-					{type: 'number', label: 'comment'},
-					{type: 'number', label: 'xmlrpc' },
-					{type: 'number', label: 'login'  },
-					{type: 'number', label: 'admin'  },
-					{type: 'number', label: 'poblic' },
-					{type: 'string', role:  'link'   }
-				];
-				chart.dataStacked[id] = new google.visualization.DataTable(data);
+				var i, j,
+				    n = data.length,
+				    dt = chart.dataStacked[id];
+
+				for (i = 0; i < n; i++) {
+					// Column: 'site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', 'link'
+					for (j = 1; j <= 5; j++) {
+						dt.setValue(i, j, data[i][j]);
+					}
+				}
+
 				chart.drawStacked(id);
 			});
 		}
@@ -544,7 +546,7 @@
 		// setHash( name, value, expires, path, domain, secure )
 		if ('undefined' !== typeof wpCookies) {
 			wpCookies.setHash(
-				'ip-geo-block', c, new Date(Date.now() + 2592000000), auth.home + auth.admin
+				'ip-geo-block', c, new Date(Date.now() + 2592000000), ip_geo_block_auth.home + ip_geo_block_auth.admin
 			);
 		}
 	}
@@ -575,13 +577,13 @@
 		var cookie = loadCookie(tabNo);
 
 		// Click event handler to show/hide form-table
-		$('form').on('click', 'h2,h3', function (event) {
+		$('form').on('click', 'h2,h3', function (/*event*/) {
 			toggleSection($(this), tabNo, cookie);
 			return false;
 		});
 
 		// Toggle all
-		$(ID('#', 'toggle-sections')).on('click', function (event) {
+		$(ID('#', 'toggle-sections')).on('click', function (/*event*/) {
 			var $this,
 			    title = $(ID('.', 'field')).find('h2,h3'),
 			    m = [ID('dropdown'), ID('dropup')],
@@ -616,9 +618,9 @@
 	function add_hidden_form(cmd) {
 		$('body').append(
 			'<div style="display:none">' +
-				'<form method="POST" id="' + ID('export-form') + '" action="' + IP_GEO_BLOCK.url.replace('ajax.php', 'post.php') + '">' +
-					'<input type="hidden" name="action" value="' + IP_GEO_BLOCK.action + '" />' +
-					'<input type="hidden" name="nonce" value="' + IP_GEO_BLOCK.nonce + '" />' +
+				'<form method="POST" id="' + ID('export-form') + '" action="' + ip_geo_block.url.replace('ajax.php', 'post.php') + '">' +
+					'<input type="hidden" name="action" value="' + ip_geo_block.action + '" />' +
+					'<input type="hidden" name="nonce" value="' + ip_geo_block.nonce + '" />' +
 					'<input type="hidden" name="cmd" value="' + cmd + '" />' +
 					'<input type="hidden" name="data" value="" id="' + ID('export-data') + '"/>' +
 					'<input type="submit" value="submit" />' +
@@ -676,7 +678,7 @@
 				emptyTable:     '<div class="ip-geo-block-loading"></div>',
 				loadingRecords: '<div class="ip-geo-block-loading"></div>',
 				processing:     '<div class="ip-geo-block-loading"></div>',
-				zeroRecords:    lang[0],
+				zeroRecords:    ip_geo_block.language[0],
 				paginate: {
 					first:    '&laquo;',
 					last:     '&raquo;',
@@ -701,7 +703,7 @@
 				// 1: thead, 2: empty tbody, 3: after loading data
 				if (3 === settings.iDraw) {
 					// 'No data available in table'
-					$(ID('#', control.tableID)).find('td.dataTables_empty').html(lang[1]);
+					$(ID('#', control.tableID)).find('td.dataTables_empty').html(ip_geo_block.language[1]);
 
 					var $filter = $(ID('@', 'search_filter'));
 					if ($filter.val()) { // if a filter value exists in the text field
@@ -713,32 +715,32 @@
 
 		var table = $(ID('#', control.tableID)).DataTable({
 			ajax: {
-				url: IP_GEO_BLOCK.url,
+				url: ip_geo_block.url,
 				type: 'POST',
 				data: {
 					cmd: control.ajaxCMD,
-					action: IP_GEO_BLOCK.action,
-					nonce: IP_GEO_BLOCK.nonce
+					action: ip_geo_block.action,
+					nonce: ip_geo_block.nonce
 				}
 			},
 			mark: true // https://github.com/julmot/datatables.mark.js/
 		});
 
 		// Re-calculate the widths after panel-body is shown
-		$(ID('#', control.sectionID)).find('.panel-body').on(ID('show-body'), function (event) {
+		$(ID('#', control.sectionID)).find('.panel-body').on(ID('show-body'), function (/*event*/) {
 			table.columns.adjust().responsive.recalc();
 			return false;
 		})
 
 		// handle the event of checkbox for bulk action
-		.on('change', 'th input', function (event) {
+		.on('change', 'th input', function (/*event*/) {
 			var $this = $(this);
 			$this.closest('table').find('td input').prop('checked', $this.prop('checked'));
 			return false;
 		});
 
 		// Select target
-		$(ID('#', 'select-target')).on('change', function (event) {
+		$(ID('#', 'select-target')).on('change', function (/*event*/) {
 			var val = $(this).find('input[name="' + ID('$', 'target') + '"]:checked').val();
 			// search only the specified column for selecting "Target"
 			table.columns(control.targetColumn).search('all' !== val ? val : '').draw();
@@ -746,9 +748,9 @@
 		}).trigger('change');
 
 		// Bulk action
-		$(ID('#', 'bulk-action')).on('click', function (event) {
+		$(ID('#', 'bulk-action')).on('click', function (/*event*/) {
 			var cell, data = { IP: [], AS: [] }, regexp = /(<([^>]+)>)/ig;
-			$('table.dataTable').find('td>input:checked').each(function (index) {
+			$('table.dataTable').find('td>input:checked').each(function (/*index*/) {
 				cell = table.cell($(this).parent()).data();
 				data.IP.push(cell[control.columnIP].replace(regexp, '')); // strip tag
 				data.AS.push(cell[control.columnAS].replace(regexp, '')); // strip tag
@@ -772,28 +774,28 @@
 		});
 
 		// Search filter
-		$(ID('@', 'search_filter')).on('keyup', function (event) {
+		$(ID('@', 'search_filter')).on('keyup', function (/*event*/) {
 			table.search(this.value).draw();
 			return false;
 		});
 
 		// Reset filter
-		$(ID('#', 'reset-filter')).on('click', function (event) {
+		$(ID('#', 'reset-filter')).on('click', function (/*event*/) {
 			$(ID('@', 'search_filter')).val('');
 			table.search('').draw();
 			return false;
 		});
 
 		// Clear all
-		$(ID('@', 'clear_all')).on('click', function (event) {
-			confirm(dialog[tabNo === 1 ? 4 : 5], function () {
+		$(ID('@', 'clear_all')).on('click', function (/*event*/) {
+			confirm(ip_geo_block.dialog[tabNo === 1 ? 4 : 5], function () {
 				ajax_clear(tabNo === 1 ? 'cache' : 'logs', null);
 			});
 			return false;
 		});
 
 		// Jump to search tab with opening a new window
-		$('table.dataTable tbody').on('click', 'a', function (event) {
+		$('table.dataTable tbody').on('click', 'a', function (/*event*/) {
 			var p = window.location.search.slice(1).split('&'),
 			    n = p.length, q = {}, i, j;
 
@@ -820,7 +822,7 @@
 
 	$(function () {
 		// Get tab number
-		var tabNo = Number(IP_GEO_BLOCK.tab) || 0,
+		var tabNo = Number(ip_geo_block.tab) || 0,
 
 		// Attach event handler and manage cookie
 		cookie = manageSection(tabNo);
@@ -843,7 +845,7 @@
 			 * Validation rule settings
 			 *---------------------------*/
 			// Scan your country code
-			$('[id^="' + ID('scan-') + '"]').on('click', function (event) {
+			$('[id^="' + ID('scan-') + '"]').on('click', function (/*event*/) {
 				var $this = $(this),
 				    id = $this.attr('id'),
 				    parent = $this.parent();
@@ -927,7 +929,7 @@
 			}).change();
 
 			// Decode
-			$(ID('#', 'decode')).on('click', function (event) {
+			$(ID('#', 'decode')).on('click', function (/*event*/) {
 				var elm = $(ID('@', 'signature')),
 				    str = elm.val();
 				if (str.search(/,/) === -1) {
@@ -949,8 +951,8 @@
 			}).change();
 
 			// WP-ZEP in Admin area
-			$(ID('@', 'validation_admin_2')).on('change', function (event) {
-				IP_GEO_BLOCK_AUTH.zep.admin = true;
+			$(ID('@', 'validation_admin_2')).on('change', function (/*event*/) {
+				ip_geo_block_auth.zep.admin = true;
 			});
 
 			// Exceptions for Admin ajax/post
@@ -964,8 +966,7 @@
 				    dfn   = document.createElement('dfn'  ),
 				    span  = document.createElement('span' );
 				for (key in data) {
-					id = ID('%', key);
-					if (data.hasOwnProperty(key) && ! $this.find('#' + id).size()) {
+					if (data.hasOwnProperty(key) && ! $this.find('#' + (id = ID('%', key))).size()) {
 						i = input.cloneNode(false);
 						i.setAttribute('id', id);
 						i.setAttribute('value', '1');
@@ -979,10 +980,10 @@
 						j.appendChild(i);
 
 						if (1 & data[key]) {
-							j.appendChild(add_icon(dfn, span, dialog[6], 'lock'));
+							j.appendChild(add_icon(dfn, span, ip_geo_block.dialog[6], 'lock'));
 						}
 						if (2 & data[key]) {
-							j.appendChild(add_icon(dfn, span, dialog[7], 'unlock'));
+							j.appendChild(add_icon(dfn, span, ip_geo_block.dialog[7], 'unlock'));
 						}
 
 						$this.append(j);
@@ -995,7 +996,7 @@
 						return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
 					});
 
-					$(ID('#', 'actions')).find('input').each(function (i, e) {
+					$(ID('#', 'actions')).find('input').each(function (/*i, event*/) {
 						var $this = $(this),
 							action = $this.attr('id').replace(ID('%', ''), '');
 						$this.prop('checked', -1 !== $.inArray(action, actions));
@@ -1004,7 +1005,7 @@
 				}).change();
 
 				// Candidate actions
-				$(ID('#', 'actions')).on('click', 'input', function (event) {
+				$(ID('#', 'actions')).on('click', 'input', function (/*event*/) {
 					var i, $this = $(this),
 					action = $this.attr('id').replace(ID('%', ''), ''),
 					$admin = $(ID('@', 'exception_admin')),
@@ -1026,7 +1027,7 @@
 			});
 
 			// Enable / Disable Exceptions
-			$('input[id^="' + ID('!', 'validation_ajax_') + '"]').on('change', function (event) {
+			$('input[id^="' + ID('!', 'validation_ajax_') + '"]').on('change', function (/*event*/) {
 				show_folding_ajax($(this));
 			}).change();
 
@@ -1052,7 +1053,7 @@
 			 * Local database settings
 			 *---------------------------*/
 			// Update local database
-			$(ID('@', 'update')).on('click', function (event) {
+			$(ID('@', 'update')).on('click', function (/*event*/) {
 				ajax_post('download', {
 					cmd: 'download'
 				}, function (res) {
@@ -1085,7 +1086,7 @@
 			add_hidden_form('validate');
 
 			// Export settings
-			$(ID('#', 'export')).on('click', function (event) {
+			$(ID('#', 'export')).on('click', function (/*event*/) {
 				if ('undefined' === typeof JSON) {
 					notice_html5();
 					return false;
@@ -1132,14 +1133,14 @@
 				return false;
 			});
 
-			$(ID('#', 'import')).on('click', function (event) {
+			$(ID('#', 'import')).on('click', function (/*event*/) {
 				$(ID('#', 'file-dialog')).click();
 				return false;
 			});
 
 			// Import pre-defined settings
-			$(ID('#', 'default')).on('click', function (event) {
-				confirm(dialog[0], function () {
+			$(ID('#', 'default')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.dialog[0], function () {
 					ajax_post('pre-defined', {
 						cmd: 'import-default'
 					}, function (data) {
@@ -1149,8 +1150,8 @@
 				return false;
 			});
 
-			$(ID('#', 'preferred')).on('click', function (event) {
-				confirm(dialog[0], function () {
+			$(ID('#', 'preferred')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.dialog[0], function () {
 					ajax_post('pre-defined', {
 						cmd: 'import-preferred'
 					}, function (data) {
@@ -1161,22 +1162,22 @@
 			});
 
 			// Manipulate DB table for validation logs
-			$(ID('@', 'create_table')).on('click', function (event) {
-				confirm(dialog[1], function () {
+			$(ID('@', 'create_table')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.dialog[1], function () {
 					ajax_table('create-table');
 				});
 				return false;
 			});
 
-			$(ID('@', 'delete_table')).on('click', function (event) {
-				confirm(dialog[2], function () {
+			$(ID('@', 'delete_table')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.dialog[2], function () {
 					ajax_table('delete-table');
 				});
 				return false;
 			});
 
 			// Show WordPress installation info
-			$(ID('#', 'show-info')).on('click', function (event) {
+			$(ID('#', 'show-info')).on('click', function (/*event*/) {
 				$(ID('#', 'wp-info')).empty();
 				ajax_post('wp-info', {
 					cmd: 'show-info'
@@ -1198,7 +1199,7 @@
 			 * Common event handler
 			 *---------------------------*/
 			// Show/Hide description (this change event hander should be at the last)
-			$('select[name^="' + name + '"]').on('change', function (event) {
+			$('select[name^="' + name + '"]').on('change', function (/*event*/) {
 				var $this = $(this);
 				show_description($this);
 				show_folding_list($this, $this, name, true);
@@ -1206,7 +1207,7 @@
 			}).change();
 
 			// Toggle checkbox
-			$(ID('.', 'cycle')).on('click', function (event) {
+			$(ID('.', 'cycle')).on('click', function (/*event*/) {
 				var regex, $that = $(this).nextAll('li'), actions,
 				    text = $that.find(ID('@', 'exception_admin')),
 				    cbox = $that.find('input:checkbox').filter(':visible'),
@@ -1232,15 +1233,15 @@
 			});
 
 			// Show/Hide logged in user only
-			$(ID('.', 'unlock')).on('click', function (event) {
-				$(this).nextAll('li').find('h4').nextAll('li').filter(function (i, elm) {
+			$(ID('.', 'unlock')).on('click', function (/*event*/) {
+				$(this).nextAll('li').find('h4').nextAll('li').filter(function (/*i, elm*/) {
 					return ! $(this).find('.dashicons-unlock').length;
 				}).toggle();
 				return false;
 			});
 
 			// Folding list
-			$(ID('.', 'settings-folding>dfn')).on('click', function (event) {
+			$(ID('.', 'settings-folding>dfn')).on('click', function (/*event*/) {
 				var drop = ID('drop'),
 				$this = $(this).parent();
 				$this.children('li').toggle();
@@ -1256,7 +1257,7 @@
 			});
 
 			// Submit
-			$('#submit').on('click', function (event) {
+			$('#submit').on('click', function (/*event*/) {
 				var elm = $(ID('@', 'signature')),
 				    str = elm.val();
 				if (str.indexOf(',') !== -1) {
@@ -1274,16 +1275,16 @@
 			initChart(tabNo);
 
 			// Statistics of validation
-			$(ID('@', 'clear_statistics')).on('click', function (event) {
-				confirm(dialog[3], function () {
+			$(ID('@', 'clear_statistics')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.dialog[3], function () {
 					ajax_clear('statistics', null);
 				});
 				return false;
 			});
 
 			// Statistics in logs
-			$(ID('@', 'clear_logs')).on('click', function (event) {
-				confirm(dialog[5], function () {
+			$(ID('@', 'clear_logs')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.dialog[5], function () {
 					ajax_clear('logs', null);
 				});
 				return false;
@@ -1300,13 +1301,13 @@
 			}, {
 				columns: [
 					{ title: '<input type="checkbox">' }, // 0 checkbox
-					{ title: lang[2] }, // 1 IP address
-					{ title: lang[3] }, // 2 Country code
-					{ title: lang[4] }, // 3 AS number
-					{ title: lang[5] }, // 4 Host name
-					{ title: lang[6] }, // 5 Target
-					{ title: lang[7] }, // 6 Login failures/Calls
-					{ title: lang[8] }  // 7 Elapsed[sec]
+					{ title: ip_geo_block.language[2] }, // 1 IP address
+					{ title: ip_geo_block.language[3] }, // 2 Country code
+					{ title: ip_geo_block.language[4] }, // 3 AS number
+					{ title: ip_geo_block.language[5] }, // 4 Host name
+					{ title: ip_geo_block.language[6] }, // 5 Target
+					{ title: ip_geo_block.language[7] }, // 6 Login failures/Calls
+					{ title: ip_geo_block.language[8] }  // 7 Elapsed[sec]
 				],
 				columnDefs: [
 					{ responsivePriority:  0, targets: 0 }, // checkbox
@@ -1337,16 +1338,16 @@
 			}, {
 				columns: [
 					{ title: '<input type=\"checkbox\">' }, // 0 checkbox
-					{ title: lang[ 9] }, //  1 Time
-					{ title: lang[ 2] }, //  2 IP address
-					{ title: lang[ 3] }, //  3 Country code
-					{ title: lang[ 4] }, //  4 AS number
-					{ title: lang[ 6] }, //  5 Target
-					{ title: lang[10] }, //  6 Result
-					{ title: lang[11] }, //  7 Request
-					{ title: lang[12] }, //  8 User agent
-					{ title: lang[13] }, //  9 HTTP headers
-					{ title: lang[14] }  // 10 $_POST data
+					{ title: ip_geo_block.language[ 9] }, //  1 Time
+					{ title: ip_geo_block.language[ 2] }, //  2 IP address
+					{ title: ip_geo_block.language[ 3] }, //  3 Country code
+					{ title: ip_geo_block.language[ 4] }, //  4 AS number
+					{ title: ip_geo_block.language[ 6] }, //  5 Target
+					{ title: ip_geo_block.language[10] }, //  6 Result
+					{ title: ip_geo_block.language[11] }, //  7 Request
+					{ title: ip_geo_block.language[12] }, //  8 User agent
+					{ title: ip_geo_block.language[13] }, //  9 HTTP headers
+					{ title: ip_geo_block.language[14] }  // 10 $_POST data
 				],
 				columnDefs: [
 					{ responsivePriority:  0, targets:  0 }, // checkbox
@@ -1369,7 +1370,7 @@
 			add_hidden_form('export-logs');
 
 			// Export logs
-			$(ID('#', 'export-logs')).on('click', function (event) {
+			$(ID('#', 'export-logs')).on('click', function (/*event*/) {
 				$(ID('#', 'export-form')).submit();
 				return false;
 			});
@@ -1402,13 +1403,13 @@
 			}
 
 			// Set selected provider to cookie
-			$('select[id^="' + ID('!', 'service') + '"]').on('change', function (event) {
-				cookie[tabNo][3] = $(this).prop('selectedIndex').charAt(0) || '0';
+			$('select[id^="' + ID('!', 'service') + '"]').on('change', function (/*event*/) {
+				cookie[tabNo][3] = $(this).prop('selectedIndex');
 				saveCookie(cookie);
 			}).change();
 
 			// Search Geolocation
-			$(ID('@', 'get_location')).on('click', function (event) {
+			$(ID('@', 'get_location')).on('click', function (/*event*/) {
 				var whois = $(ID('#', 'whois')), obj,
 				    ip = $(ID('@', 'ip_address')).val();
 
@@ -1433,7 +1434,7 @@
 							'</fieldset>'
 						).fadeIn('slow');
 
-						$(ID('#', 'whois-title')).on('click', function (event) {
+						$(ID('#', 'whois-title')).on('click', function (/*event*/) {
 							var $this = $(this);
 							$this.parent().nextAll().toggle();
 							$this.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
@@ -1511,10 +1512,12 @@
 			// https://developers.google.com/loader/#Dynamic
 			initChart(tabNo);
 
-			$(ID('#', 'select-period')).on('click', function (event) {
-				cookie[tabNo][1] = $(this).find('input[name=' + ID('$', 'period') + ']:checked').val().charAt(0) || '0';
+			$('input[name=' + ID('$', 'period') + ']:radio').on('click', function (/*event*/) {
+				var period = cookie[tabNo][1] = $(this).val();
 				saveCookie(cookie);
-				redirect('?page=ip-geo-block', 'tab=5');
+				$(ID('.', 'multisite')).each(function (i, obj) {
+					chart.ajaxStacked($(obj).attr('id'), period);
+				});
 			});
 			break;
 		}

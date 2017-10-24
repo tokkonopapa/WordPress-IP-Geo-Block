@@ -1380,7 +1380,7 @@ class IP_Geo_Block_Admin {
 
 		  case 'multisite-stat':
 			// Restore blocked per target in logs
-			$res = IP_Geo_Block_Admin_Ajax::restore_multisite( $which, TRUE );
+			$res = IP_Geo_Block_Admin_Ajax::restore_multisite( $which, FALSE );
 			break;
 
 		  case 'create-table':
