@@ -418,7 +418,7 @@ class IP_Geo_Block_Logs {
 	/**
 	 * Backup the validation log to text files
 	 *
-	 * Note: $path should be absolute to the directory and should not be within the public_html.
+	 * $path should be absolute to the directory and should not be within the public_html.
 	 */
 	private static function backup_logs( $hook, $validate, $method, $agent, $heads, $posts, $path ) {
 		if ( validate_file( $path ) === 0 ) {
@@ -443,6 +443,25 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
+	 * Get directory for audit log
+	 *
+	 * The absolute path should be returned by action hook `ip-geo-block-audit-log-dir`.
+	 */
+	private static function get_audit_log_dir() {
+		return IP_Geo_Block_Util::slashit( apply_filters( IP_Geo_Block::PLUGIN_NAME . '-audit-log-dir', get_temp_dir() ) );
+	}
+
+	/**
+	 * Restore the auditing log
+	 *
+	 */
+	public static function restore_audit( $hook = NULL ) {
+		$pdo = new PDO( 'sqlite:' . self::get_audit_log_dir(). 'audit-log-' .  get_current_blog_id() . '.db' );
+		$stm = $pdo->query( 'SELECT * FROM logs' );
+		return $stm ? $stm->fetchAll( PDO::FETCH_ASSOC ) : FALSE;
+	}
+
+	/**
 	 * Record the validation log
 	 *
 	 * This function record the user agent string and post data.
@@ -455,6 +474,7 @@ class IP_Geo_Block_Logs {
 	 * @param string $hook type of log name
 	 * @param array $validate validation results
 	 * @param array $settings option settings
+	 * @param boolean $record record logs (TRUE) or not
 	 */
 	public static function record_logs( $hook, $validate, $settings, $record = TRUE ) {
 		// get data
@@ -515,7 +535,7 @@ class IP_Geo_Block_Logs {
 
 		if ( get_transient( IP_Geo_Block::PLUGIN_NAME . '-audit-log' ) ) {
 			try {
-				$pdo = new PDO( 'sqlite:' . IP_GEO_BLOCK_PATH . 'database/audit-log-' .  get_current_blog_id() . '.db' );
+				$pdo = new PDO( 'sqlite:' . self::get_audit_log_dir(). 'audit-log-' .  get_current_blog_id() . '.db' );
 				$pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 				$pdo->setAttribute( PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC );
 
@@ -558,16 +578,6 @@ class IP_Geo_Block_Logs {
 				self::error( __LINE__, $e->getMessage() );
 			}
 		}
-	}
-
-	/**
-	 * Restore the auditing log
-	 *
-	 */
-	public static function restore_audit( $hook = NULL ) {
-		$pdo = new PDO( 'sqlite:' . IP_GEO_BLOCK_PATH . 'database/audit-log-' .  get_current_blog_id() . '.db' );
-		$stm = $pdo->query( 'SELECT * FROM logs' );
-		return $stm ? $stm->fetchAll( PDO::FETCH_ASSOC ) : FALSE;
 	}
 
 	/**
