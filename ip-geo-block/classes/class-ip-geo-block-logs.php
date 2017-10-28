@@ -452,16 +452,6 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Restore the auditing log
-	 *
-	 */
-	public static function restore_audit( $hook = NULL ) {
-		$pdo = new PDO( 'sqlite:' . self::get_audit_log_dir(). 'audit-log-' .  get_current_blog_id() . '.db' );
-		$stm = $pdo->query( 'SELECT * FROM logs' );
-		return $stm ? $stm->fetchAll( PDO::FETCH_ASSOC ) : FALSE;
-	}
-
-	/**
 	 * Record the validation log
 	 *
 	 * This function record the user agent string and post data.
@@ -537,8 +527,6 @@ class IP_Geo_Block_Logs {
 			try {
 				$pdo = new PDO( 'sqlite:' . self::get_audit_log_dir(). 'audit-log-' .  get_current_blog_id() . '.db' );
 				$pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-				$pdo->setAttribute( PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC );
-
 				$pdo->exec( "CREATE TABLE IF NOT EXISTS logs (
 					No INTEGER PRIMARY KEY AUTOINCREMENT,
 					time bigint NOT NULL,
@@ -578,6 +566,16 @@ class IP_Geo_Block_Logs {
 				self::error( __LINE__, $e->getMessage() );
 			}
 		}
+	}
+
+	/**
+	 * Restore the auditing log
+	 *
+	 */
+	public static function restore_audit( $hook = NULL ) {
+		$pdo = new PDO( 'sqlite:' . self::get_audit_log_dir(). 'audit-log-' .  get_current_blog_id() . '.db' );
+		$stm = $pdo->query( 'SELECT * FROM logs' );
+		return $stm ? $stm->fetchAll( PDO::FETCH_ASSOC ) : FALSE;
 	}
 
 	/**
