@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-10-23 00:31+0900\n"
-"PO-Revision-Date: 2017-10-23 00:33+0900\n"
+"POT-Creation-Date: 2017-10-28 22:03+0900\n"
+"PO-Revision-Date: 2017-10-28 22:05+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -345,7 +345,7 @@ msgstr ""
 msgid "Public facing pages"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:35 admin/includes/tab-network.php:21
+#: admin/includes/tab-accesslog.php:35 admin/includes/tab-network.php:30
 msgid "All"
 msgstr ""
 
@@ -1193,27 +1193,27 @@ msgstr ""
 msgid "&#8220;auto_prepend_file&#8221; already defined in %s."
 msgstr ""
 
-#: admin/includes/tab-network.php:12
+#: admin/includes/tab-network.php:18
 msgid "Blocked per target in logs"
 msgstr ""
 
-#: admin/includes/tab-network.php:22
+#: admin/includes/tab-network.php:31
 msgid "Latest 1 hour"
 msgstr ""
 
-#: admin/includes/tab-network.php:23
+#: admin/includes/tab-network.php:32
 msgid "Latest 24 hours"
 msgstr ""
 
-#: admin/includes/tab-network.php:24
+#: admin/includes/tab-network.php:33
 msgid "Latest 1 week"
 msgstr ""
 
-#: admin/includes/tab-network.php:25
+#: admin/includes/tab-network.php:34
 msgid "Latest 1 month"
 msgstr ""
 
-#: admin/includes/tab-network.php:38
+#: admin/includes/tab-network.php:47
 msgid "Period to extract"
 msgstr ""
 
@@ -1309,7 +1309,7 @@ msgstr ""
 msgid "n/a"
 msgstr ""
 
-#: admin/includes/class-admin-ajax.php:271
+#: admin/includes/class-admin-ajax.php:352
 #, php-format
 msgid ""
 "illegal format at %s. Please delete the corresponding line and try again."

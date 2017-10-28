@@ -222,10 +222,11 @@ class IP_Geo_Block_Admin_Ajax {
 				++$count[ $name ][ $val['hook'] ];
 			}
 
-			$count[ $name ]['link'] = esc_url( add_query_arg(
+			/*$count[ $name ]['link'] = esc_url( add_query_arg(
 				array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ),
 				admin_url( 'options-general.php' )
-			) );
+			) );*/
+			$count[ $name ]['link'] = esc_url( admin_url() );
 
 			restore_current_blog();
 		}
@@ -253,6 +254,14 @@ class IP_Geo_Block_Admin_Ajax {
 		}
 
 		return $json;
+	}
+
+	/**
+	 * Restore audit logs in SQLite
+	 *
+	 */
+	static public function restore_audit() {
+		$res = IP_Geo_Block_Logs::restore_audit();
 	}
 
 	/**

@@ -456,7 +456,7 @@ class IP_Geo_Block_Logs {
 	 * @param array $validate validation results
 	 * @param array $settings option settings
 	 */
-	public static function record_logs( $hook, $validate, $settings ) {
+	public static function record_logs( $hook, $validate, $settings, $record = TRUE ) {
 		// get data
 		$agent = self::get_user_agent();
 		$heads = self::get_http_headers();
@@ -471,45 +471,103 @@ class IP_Geo_Block_Logs {
 		if ( ! empty( $settings['anonymize'] ) )
 			$validate['ip'] = preg_replace( '/\d{1,3}$/', '***', $validate['ip'] );
 
-		// count the number of rows for each hook
-		global $wpdb;
-		$table = $wpdb->prefix . self::TABLE_LOGS;
-		$count = (int)$wpdb->get_var( "SELECT count(*) FROM `$table`" );
+		if ( $record ) {
+			// count the number of rows for each hook
+			global $wpdb;
+			$table = $wpdb->prefix . self::TABLE_LOGS;
+			$count = (int)$wpdb->get_var( "SELECT count(*) FROM `$table`" );
 
-		// Can't start transaction on the assumption that the storage engine is innoDB.
-		// So there are some cases where logs are excessively deleted.
-		$sql = $wpdb->prepare(
-			"DELETE FROM `$table` ORDER BY `time` ASC LIMIT %d",
-			max( 0, $count - (int)$settings['validation']['maxlogs'] * 5 + 1 )
-		) and $wpdb->query( $sql ) or self::error( __LINE__ );
+			// Can't start transaction on the assumption that the storage engine is innoDB.
+			// So there are some cases where logs are excessively deleted.
+			$sql = $wpdb->prepare(
+				"DELETE FROM `$table` ORDER BY `time` ASC LIMIT %d",
+				max( 0, $count - (int)$settings['validation']['maxlogs'] * 5 + 1 )
+			) and $wpdb->query( $sql ) or self::error( __LINE__ );
 
-		// insert into DB
-		$sql = $wpdb->prepare(
-			"INSERT INTO `$table`
-			(`time`, `ip`, `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, `data`)
-			VALUES (%d, %s, %s, %s, %d, %s, %s, %s, %s, %s, %s)",
-			$_SERVER['REQUEST_TIME'],
-			$validate['ip'],
-			$validate['asn'],
-			$hook,
-			$validate['auth'],
-			$validate['code'],
-			$validate['result'],
-			$method,
-			$agent,
-			$heads,
-			$posts
-		) and $wpdb->query( $sql ) or self::error( __LINE__ );
+			// insert into DB
+			$sql = $wpdb->prepare(
+				"INSERT INTO `$table`
+				(`time`, `ip`, `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, `data`)
+				VALUES (%d, %s, %s, %s, %d, %s, %s, %s, %s, %s, %s)",
+				$_SERVER['REQUEST_TIME'],
+				$validate['ip'],
+				$validate['asn'],
+				$hook,
+				$validate['auth'],
+				$validate['code'],
+				$validate['result'],
+				$method,
+				$agent,
+				$heads,
+				$posts
+			) and $wpdb->query( $sql ) or self::error( __LINE__ );
 
-		// backup logs to text files
-		if ( $dir = apply_filters(
-			IP_Geo_Block::PLUGIN_NAME . '-backup-dir',
-			$settings['validation']['backup'], $hook
-		) ) {
-			self::backup_logs(
-				$hook, $validate, $method, $agent, $heads, $posts, $dir
-			);
+			// backup logs to text files
+			if ( $dir = apply_filters(
+				IP_Geo_Block::PLUGIN_NAME . '-backup-dir',
+				$settings['validation']['backup'], $hook
+			) ) {
+				self::backup_logs(
+					$hook, $validate, $method, $agent, $heads, $posts, $dir
+				);
+			}
 		}
+
+		if ( get_transient( IP_Geo_Block::PLUGIN_NAME . '-audit-log' ) ) {
+			try {
+				$pdo = new PDO( 'sqlite:' . IP_GEO_BLOCK_PATH . 'database/audit-log-' .  get_current_blog_id() . '.db' );
+				$pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+				$pdo->setAttribute( PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC );
+
+				$pdo->exec( "CREATE TABLE IF NOT EXISTS logs (
+					No INTEGER PRIMARY KEY AUTOINCREMENT,
+					time bigint NOT NULL,
+					ip varchar(40) NOT NULL,
+					asn varchar(8) NULL,
+					hook varchar(8) NOT NULL,
+					auth integer DEFAULT 0 NOT NULL,
+					code varchar(2) DEFAULT 'ZZ' NOT NULL,
+					result varchar(8) NULL,
+					method varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
+					user_agent varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
+					headers varchar("    . IP_GEO_BLOCK_MAX_TXT_LEN . ") NULL,
+					data text NULL
+				)" );
+
+				$stm = $pdo->prepare(
+					'INSERT INTO logs ( time, ip, asn, hook, auth, code, result, method, user_agent, headers, data)' .
+					' VALUES          (    ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,          ?,       ?,    ?)'
+				) and $stm->execute(
+					array(
+						$_SERVER['REQUEST_TIME'],
+						$validate['ip'],
+						$validate['asn'],
+						$hook,
+						$validate['auth'],
+						$validate['code'],
+						$validate['result'],
+						$method,
+						$agent,
+						$heads,
+						$posts
+					)
+				);
+			}
+
+			catch ( PDOException $e ) {
+				self::error( __LINE__, $e->getMessage() );
+			}
+		}
+	}
+
+	/**
+	 * Restore the auditing log
+	 *
+	 */
+	public static function restore_audit( $hook = NULL ) {
+		$pdo = new PDO( 'sqlite:' . IP_GEO_BLOCK_PATH . 'database/audit-log-' .  get_current_blog_id() . '.db' );
+		$stm = $pdo->query( 'SELECT * FROM logs' );
+		return $stm ? $stm->fetchAll( PDO::FETCH_ASSOC ) : FALSE;
 	}
 
 	/**
@@ -704,14 +762,18 @@ class IP_Geo_Block_Logs {
 	 * SQL Error handling
 	 *
 	 */
-	private static function error( $line ) {
-		global $wpdb;
-		if ( $wpdb->last_error ) {
+	private static function error( $line, $msg = FALSE ) {
+		if ( FALSE === $msg ) {
+			global $wpdb;
+			$msg = $wpdb->last_error;
+		}
+
+		if ( $msg ) {
 			if ( class_exists( 'IP_Geo_Block_Admin', FALSE ) )
-				IP_Geo_Block_Admin::add_admin_notice( 'error', __FILE__ . ' (' . $line . ') ' . $wpdb->last_error );
+				IP_Geo_Block_Admin::add_admin_notice( 'error', __FILE__ . ' (' . $line . ') ' . $msg );
 
 			if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG )
-				error_log( __FILE__ . ' (' . $line . ') ' . $wpdb->last_error );
+				error_log( __FILE__ . ' (' . $line . ') ' . $msg );
 		}
 	}
 

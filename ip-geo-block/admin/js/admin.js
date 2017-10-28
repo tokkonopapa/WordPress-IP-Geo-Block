@@ -661,18 +661,6 @@
 			lengthChange: false,
 			order: [], // no initial order or [0, 'desc']
 
-			// Responsive
-			responsive: {
-				details: {
-					type: 'column',
-					target: 'td:nth-child(n+2)'
-				}
-			},
-
-			// Pagenation
-			pagingType: 'full_numbers', // or 'simple_numbers'
-			pageLength: 10,
-
 			// Language
 			language: {
 				emptyTable:     '<div class="ip-geo-block-loading"></div>',
@@ -687,6 +675,14 @@
 				}
 			},
 
+			// Responsive
+			responsive: {
+				details: {
+					type: 'column',
+					target: 'td:nth-child(n+2)'
+				}
+			},
+
 			columnDefs: [
 				{ orderable:  false, targets: 0 },
 				{ searchable: false, targets: 0 },
@@ -696,6 +692,15 @@
 					defaultContent: '<input type="checkbox">'
 				}
 			],
+
+			// Pagenation
+			pagingType: 'full_numbers', // or 'simple_numbers'
+			pageLength: 10,
+
+			// scroller
+			scroller: true,
+			scrollY: 10000, // prevent to change column width on click
+			scrollCollapse: true, // fit the height of table
 
 			// draw callback
 			drawCallback: function (settings) {
@@ -732,14 +737,14 @@
 			return false;
 		})
 
-		// handle the event of checkbox for bulk action
-		.on('change', 'th input', function (/*event*/) {
-			var $this = $(this);
-			$this.closest('table').find('td input').prop('checked', $this.prop('checked'));
+		// Handle the event of checkbox in the first row for bulk action
+		.on('change', 'th>input[type="checkbox"]', function (/*event*/) {
+			var prop = $(this).prop('checked');
+			$(ID('#', control.tableID)).find('td>input[type="checkbox"]').prop('checked', prop);
 			return false;
 		});
 
-		// Select target
+		// Select target (radio button)
 		$(ID('#', 'select-target')).on('change', function (/*event*/) {
 			var val = $(this).find('input[name="' + ID('$', 'target') + '"]:checked').val();
 			// search only the specified column for selecting "Target"
@@ -818,6 +823,8 @@
 			window.open(window.location.pathname + '?' + j.join('&'), '_blank');
 			return false;
 		});
+
+		return table;
 	}
 
 	$(function () {

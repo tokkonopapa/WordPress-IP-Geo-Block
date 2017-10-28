@@ -1383,6 +1383,11 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Admin_Ajax::restore_multisite( $which, FALSE );
 			break;
 
+		  case 'restore-audit':
+			// Restore real time audit logs
+			$res = IP_Geo_Block_Admin_Ajax::restore_audit();
+			break;
+
 		  case 'create-table':
 		  case 'delete-table':
 			// Need to define `IP_GEO_BLOCK_DEBUG` to true

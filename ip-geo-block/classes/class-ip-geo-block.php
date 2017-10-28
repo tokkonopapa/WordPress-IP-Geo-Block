@@ -471,19 +471,17 @@ class IP_Geo_Block {
 
 		if ( $check_auth ) {
 			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
-			$var = (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
 			$block = ( 'passed' !== $validate['result'] );
-			if ( ( 1 === $var &&   $block ) || // blocked
-			     ( 6 === $var && ( $block   || 'passed' !== self::validate_country( NULL, $validate, $settings ) ) ) || // blocked or qualified
-			     ( 2 === $var && ! $block ) || // passed
-			     ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
-			     ( 4 === $var &&   $validate['auth'] ) || // authenticated
-			     ( 5 === $var ) // all
-			) {
-				IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings );
-			}
+			$var = (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
+			$var = ( 1 === $var &&   $block ) || // blocked
+			       ( 6 === $var && ( $block   || 'passed' !== self::validate_country( NULL, $validate, $settings ) ) ) || // blocked or qualified
+			       ( 2 === $var && ! $block ) || // passed
+			       ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
+			       ( 4 === $var &&   $validate['auth'] ) || // authenticated
+			       ( 5 === $var ); // all
 
-			// update cache
+			// record log and update cache
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $var );
 			IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
 			// update statistics
@@ -564,6 +562,7 @@ class IP_Geo_Block {
 	private function check_exceptions( $action, $page, $exceptions = array() ) {
 		$in_action = in_array( $action, $exceptions, TRUE );
 		$in_page   = in_array( $page,   $exceptions, TRUE );
+
 		return ( ( $action xor $page ) && ( ! $in_action and ! $in_page ) ) ||
 		       ( ( $action and $page ) && ( ! $in_action or  ! $in_page ) ) ? FALSE : TRUE;
 	}
@@ -702,8 +701,7 @@ class IP_Geo_Block {
 			$validate = apply_filters( self::PLUGIN_NAME . '-login', $validate, $settings );
 
 			// (1) blocked, (3) unauthenticated, (5) all
-			if ( 1 & (int)$settings['validation']['reclogs'] )
-				IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings );
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, 1 & (int)$settings['validation']['reclogs'] );
 
 			// send response code to refuse immediately
 			if ( 'limited' === $validate['result'] || 'multi' === $validate['result'] ) {
