@@ -447,8 +447,10 @@ class IP_Geo_Block_Logs {
 	 *
 	 * The absolute path should be returned by action hook `ip-geo-block-audit-log-dir`.
 	 */
-	private static function get_audit_log_dir() {
-		return IP_Geo_Block_Util::slashit( apply_filters( IP_Geo_Block::PLUGIN_NAME . '-audit-log-dir', get_temp_dir() ) );
+	private static function get_audit_log_db() {
+		return IP_Geo_Block_Util::slashit( apply_filters(
+			IP_Geo_Block::PLUGIN_NAME . '-audit-log-dir', get_temp_dir()
+		) ) . 'audit-log-' .  get_current_blog_id() . '.db';
 	}
 
 	/**
@@ -525,7 +527,7 @@ class IP_Geo_Block_Logs {
 
 		if ( get_transient( IP_Geo_Block::PLUGIN_NAME . '-audit-log' ) ) {
 			try {
-				$pdo = new PDO( 'sqlite:' . self::get_audit_log_dir(). 'audit-log-' .  get_current_blog_id() . '.db' );
+				$pdo = new PDO( 'sqlite:' . self::get_audit_log_db() );
 				$pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 				$pdo->exec( "CREATE TABLE IF NOT EXISTS logs (
 					No INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -573,7 +575,7 @@ class IP_Geo_Block_Logs {
 	 *
 	 */
 	public static function restore_audit( $hook = NULL ) {
-		$pdo = new PDO( 'sqlite:' . self::get_audit_log_dir(). 'audit-log-' .  get_current_blog_id() . '.db' );
+		$pdo = new PDO( 'sqlite:' . self::get_audit_log_db() );
 		$stm = $pdo->query( 'SELECT * FROM logs' );
 		return $stm ? $stm->fetchAll( PDO::FETCH_ASSOC ) : FALSE;
 	}
