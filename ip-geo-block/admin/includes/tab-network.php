@@ -23,7 +23,7 @@ class IP_Geo_Block_Admin_Tab {
 		/*----------------------------------------*
 		 * Period to extract
 		 *----------------------------------------*/
-		self::$cookie = $context->get_cookie( IP_Geo_Block::PLUGIN_NAME );
+		self::$cookie = $context->get_cookie();
 		self::$cookie = isset( self::$cookie[5][1] ) ? self::$cookie[5][1] : 0;
 
 		$period = array(

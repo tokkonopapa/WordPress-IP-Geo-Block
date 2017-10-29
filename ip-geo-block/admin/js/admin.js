@@ -780,7 +780,7 @@
 
 		// Search filter
 		$(ID('@', 'search_filter')).on('keyup', function (/*event*/) {
-			table.search(this.value).draw();
+			table.search(this.value, false, true, !/[A-Z]/.test(this.value)).draw();
 			return false;
 		});
 
@@ -810,7 +810,7 @@
 			}
 
 			// additional query
-			q.tab = tabNo === 1 ? 4 : 2;
+			q.tab = tabNo === 1 ? 4 : 4;
 			q.s = $(this).text().replace(/[^\w\.\:\*]/, '');
 
 			j = [];
@@ -1334,10 +1334,28 @@
 		   * Logs
 		   *----------------------------------------*/
 		  case 4:
+			// Real time mode
+			var $mode = $(ID('#', 'realtime-mode')),
+			     mode = $mode.prop('checked'); // checked in `display_plugin_admin_page()`
+
+			$mode.on('change', function (/*event*/) {
+				cookie[tabNo][1] = (mode = $mode.prop('checked')) ? 'o' : 'x';
+				saveCookie(cookie);
+
+				var $table = $(ID('#', 'section-0')).find('.form-table>tbody');
+				if (mode) {
+					$table.find('tr:first-child').show();
+					$table.find('tr:last-child').hide().prev().hide();
+				} else {
+					$table.find('tr:first-child').hide();
+					$table.find('tr:last-child').show().prev().show();
+				}
+			});
+
 			// Validation logs
 			initTable(tabNo, {
 				tableID:   'validation-logs',
-				ajaxCMD:   'restore-logs',
+				ajaxCMD:   /*mode ? 'audit-log' :*/ 'restore-logs',
 				sectionID: 'section-0',
 				targetColumn: 5,
 				columnIP: 2,

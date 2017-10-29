@@ -2,6 +2,7 @@
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context, $tab ) {
+		$cookie = $context->get_cookie();
 		$options = IP_Geo_Block::get_option();
 		$plugin_slug = IP_Geo_Block::PLUGIN_NAME;
 
@@ -10,17 +11,40 @@ class IP_Geo_Block_Admin_Tab {
 			$option_name = IP_Geo_Block::OPTION_NAME
 		);
 
-if ( $options['validation']['reclogs'] ) :
-
 		/*----------------------------------------*
 		 * Validation logs
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-logs',
 			__( 'Validation logs', 'ip-geo-block' ),
-			array( __CLASS__, 'validation_logs' ),
-			$plugin_slug
+			( $options['validation']['reclogs'] ?
+				array( __CLASS__, 'validation_logs' ) :
+				array( __CLASS__, 'warn_accesslog'  )
+			),
+			$option_slug
 		);
+
+		$html  = '<label title="Stop"><input type="radio" name="control-log" id="ip-geo-block-control-log-stop" checked><span class="dashicons dashicons-no"></span></label>';
+		$html .= '<label title="Start"><input type="radio" name="control-log" id="ip-geo-block-control-log-start"><span class="dashicons dashicons-controls-play"></span></label>';
+		$html .= '<label title="Pause"><input type="radio" name="control-log" id="ip-geo-block-control-log-pause"><span class="dashicons dashicons-controls-pause"></span></label>';
+
+		$field = 'control-log';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Control log update', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'html',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $html,
+				'class' => $cookie[ $tab ][1] === 'o' ? '' : 'ip-geo-block-hide',
+			)
+		);
+
+if ( $options['validation']['reclogs'] ) :
 
 		// same as in tab-accesslog.php
 		$target = array(
@@ -105,6 +129,7 @@ if ( $options['validation']['reclogs'] ) :
 				'field' => $field,
 				'value' => __( 'Clear all', 'ip-geo-block' ),
 				'after' => '<div id="'.$plugin_slug.'-logs"></div>',
+				'class' => $cookie[ $tab ][1] !== 'o' ? '' : 'ip-geo-block-hide',
 			)
 		);
 
@@ -119,31 +144,7 @@ if ( $options['validation']['reclogs'] ) :
 				'type' => 'none',
 				'before' => '<a class="button button-secondary" id="ip-geo-block-export-logs" title="' . __( 'Export to the local file',   'ip-geo-block' ) . '" href="#!">'. __( 'Export csv', 'ip-geo-block' ) . '</a>',
 				'after' => '<div id="'.$plugin_slug.'-export"></div>',
-			)
-		);
-
-else: // $options['validation']['reclogs']
-
-		/*----------------------------------------*
-		 * Warning
-		 *----------------------------------------*/
-		add_settings_section(
-			$section = IP_Geo_Block::PLUGIN_NAME . '-accesslog',
-			__( 'Validation logs', 'ip-geo-block' ),
-			array( __CLASS__, 'warn_accesslog' ),
-			$option_slug
-		);
-
-		$field = 'warning';
-		add_settings_field(
-			$option_name.'_'.$field,
-			'&hellip;',
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'none',
-				'after' => '&hellip;',
+				'class' => $cookie[ $tab ][1] !== 'o' ? '' : 'ip-geo-block-hide',
 			)
 		);
 
@@ -160,8 +161,8 @@ endif; // $options['validation']['reclogs']
 	}
 
 	public static function warn_accesslog() {
-		echo '<p>', __( 'Current selection of [<strong>Record validation logs</strong>] on [<strong>Settings</strong>] tab is [<strong>Disable</strong>].', 'ip-geo-block' ), '</p>', "\n";
-		echo '<p>', __( 'Please select the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
+		echo '<p style="padding:0 1em">', __( '[<strong>Record validation logs</strong>] on [<strong>Settings</strong>] tab is [<strong>Disable</strong>].', 'ip-geo-block' ), '</p>', "\n";
+		echo '<p style="padding:0 1em">', __( 'Please select the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
 	}
 
 }

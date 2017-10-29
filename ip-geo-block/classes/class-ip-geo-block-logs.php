@@ -493,7 +493,7 @@ class IP_Geo_Block_Logs {
 			// So there are some cases where logs are excessively deleted.
 			$sql = $wpdb->prepare(
 				"DELETE FROM `$table` ORDER BY `time` ASC LIMIT %d",
-				max( 0, $count - (int)$settings['validation']['maxlogs'] * 5 + 1 )
+				max( 0, $count - (int)$settings['validation']['maxlogs'] + 1 )
 			) and $wpdb->query( $sql ) or self::error( __LINE__ );
 
 			// insert into DB

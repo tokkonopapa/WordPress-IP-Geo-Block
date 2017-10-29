@@ -550,14 +550,16 @@ class IP_Geo_Block_Admin {
 	 * Get cookie that indicates open/close section
 	 *
 	 */
-	public function get_cookie( $name ) {
-		$cookie = array();
-		if ( ! empty( $_COOKIE[ $name ] ) ) {
-			foreach ( explode( '&', $_COOKIE[ $name ] ) as $i => $v ) {
+	public function get_cookie() {
+		static $cookie = array();
+
+		if ( empty( $cookie ) && ! empty( $_COOKIE[ IP_Geo_Block::PLUGIN_NAME ] ) ) {
+			foreach ( explode( '&', $_COOKIE[ IP_Geo_Block::PLUGIN_NAME ] ) as $i => $v ) {
 				list( $i, $v ) = explode( '=', $v );
 				$cookie[ $i ] = str_split( $v );
 			}
 		}
+
 		return $cookie;
 	}
 
@@ -571,7 +573,7 @@ class IP_Geo_Block_Admin {
 
 		if ( isset( $wp_settings_sections[ $page ] ) ) {
 			$index  = 0; // index of fieldset
-			$cookie = $this->get_cookie( IP_Geo_Block::PLUGIN_NAME );
+			$cookie = $this->get_cookie();
 
 			foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
 				// TRUE if open ('o') or FALSE if close ('x')
@@ -617,6 +619,7 @@ class IP_Geo_Block_Admin {
 		);
 
 		$settings = IP_Geo_Block::get_option();
+		$cookie = $this->get_cookie();
 		$title = esc_html( get_admin_page_title() );
 
 		// Target page that depends on the network multisite or not.
@@ -650,7 +653,12 @@ class IP_Geo_Block_Admin {
 	echo '<a href="?page=', IP_Geo_Block::PLUGIN_NAME, '&amp;tab=', $key, '" class="nav-tab', ($tab === $key ? ' nav-tab-active' : ''), '">', $val, '</a>';
 } ?>
 	</h2>
-	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]</p>
+	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]
+<?php if ( 4 === $tab ) { /* Logs tab */ ?>
+	<input id="ip-geo-block-realtime-mode" type="checkbox"<? checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] );?> /><label for="ip-geo-block-realtime-mode">
+		<dfn title="<?php _e( 'Regardless of &#8220;Record settings&#8221;, you can see all the validation results updated periodically.', 'ip-geo-block' ); ?>"><?php _e( 'Real time mode', 'ip-geo-block' ); ?></dfn>
+	</label>
+<?php } ?></p>
 	<form method="post" action="<?php echo $action; ?>" id="<?php echo IP_Geo_Block::PLUGIN_NAME, '-', $tab; ?>"<?php if ( $tab ) echo " class=\"", IP_Geo_Block::PLUGIN_NAME, "-inhibit\""; ?>>
 <?php
 		settings_fields( IP_Geo_Block::PLUGIN_NAME );
@@ -659,10 +667,10 @@ class IP_Geo_Block_Admin {
 			submit_button(); // @since 3.1
 ?>
 	</form>
-<?php if ( 2 === $tab ) { ?>
+<?php if ( 2 === $tab ) { /* Search tab */ ?>
 	<div id="ip-geo-block-whois"></div>
 	<div id="ip-geo-block-map"></div>
-<?php } elseif ( 3 === $tab ) {
+<?php } elseif ( 3 === $tab ) { /* Attribute tab */
 	// show attribution (higher priority order)
 	$tab = array();
 	foreach ( IP_Geo_Block_Provider::get_addons() as $provider ) {

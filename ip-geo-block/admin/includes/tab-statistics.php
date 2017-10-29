@@ -11,17 +11,20 @@ class IP_Geo_Block_Admin_Tab {
 			$option_name = IP_Geo_Block::OPTION_NAME
 		);
 
-if ( $options['save_statistics'] ) :
-
 		/*----------------------------------------*
 		 * Statistics of validation
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-statistics',
 			__( 'Statistics of validation', 'ip-geo-block' ),
-			NULL,
+			( $options['save_statistics'] ?
+				NULL :
+				array( __CLASS__, 'warn_statistics' )
+			),
 			$option_slug
 		);
+
+if ( $options['save_statistics'] ) :
 
 		// Number of blocked access
 		$field = 'blocked';
@@ -172,15 +175,22 @@ if ( $options['save_statistics'] ) :
 			)
 		);
 
+endif;
+
 		/*----------------------------------------*
 		 * Statistics in logs
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-stat-logs',
 			__( 'Statistics in logs', 'ip-geo-block' ),
-			array( __CLASS__, 'statistics_logs' ),
+			( $options['validation']['reclogs'] ?
+				array( __CLASS__, 'statistics_logs' ) :
+				array( __CLASS__, 'warn_validation' )
+			),
 			$option_slug
 		);
+
+if ( $options['validation']['reclogs'] ) :
 
 		$field = 'clear_logs';
 		add_settings_field(
@@ -194,31 +204,6 @@ if ( $options['save_statistics'] ) :
 				'option' => $option_name,
 				'field' => $field,
 				'value' => __( 'Clear all', 'ip-geo-block' ),
-			)
-		);
-
-else:
-
-		/*----------------------------------------*
-		 * Warning
-		 *----------------------------------------*/
-		add_settings_section(
-			$section = $plugin_slug . '-statistics',
-			__( 'Statistics of validation', 'ip-geo-block' ),
-			array( __CLASS__, 'warn_statistics' ),
-			$option_slug
-		);
-
-		$field = 'warning';
-		add_settings_field(
-			$option_name.'_'.$field,
-			'&hellip;',
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'none',
-				'after' => '&hellip;',
 			)
 		);
 
@@ -290,15 +275,6 @@ endif;
 				'after' => '<div id="'.$plugin_slug.'-cache"></div>',
 			)
 		);
-	}
-
-	/**
-	 * Function that fills the section with the desired content.
-	 *
-	 */
-	public static function warn_statistics() {
-		echo '<p>', __( 'Current setting of [<strong>Record validation statistics</strong>] on [<strong>Settings</strong>] tab is not selected [<strong>Enable</strong>].', 'ip-geo-block' ), '</p>', "\n";
-		echo '<p>', __( 'Please set the proper condition to record and analyze the validation statistics.', 'ip-geo-block' ), '</p>', "\n";
 	}
 
 	/**
@@ -405,6 +381,20 @@ endif;
 	 */
 	public static function statistics_cache() {
 		echo '<table id="', IP_Geo_Block::PLUGIN_NAME, '-statistics-cache" class="dataTable display" cellspacing="0" width="100%">', "\n", '<thead></thead><tbody></tbody></table>', "\n";
+	}
+
+	/**
+	 * Function that fills the section with the desired content.
+	 *
+	 */
+	public static function warn_statistics() {
+		echo '<p>', __( '[<strong>Record validation statistics</strong>] on [<strong>Settings</strong>] tab is not selected as [<strong>Enable</strong>].', 'ip-geo-block' ), '</p>', "\n";
+		echo '<p>', __( 'Please set the proper condition to record and analyze the validation statistics.', 'ip-geo-block' ), '</p>', "\n";
+	}
+
+	public static function warn_validation() {
+		echo '<p>', __( '[<strong>Record validation logs</strong>] on [<strong>Settings</strong>] tab is [<strong>Disable</strong>].', 'ip-geo-block' ), '</p>', "\n";
+		echo '<p>', __( 'Please set the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
 	}
 
 }

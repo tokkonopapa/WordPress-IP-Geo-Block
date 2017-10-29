@@ -1168,6 +1168,25 @@ endif;
 			)
 		);
 
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		$field = 'validation';
+		$key = 'recdays';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( 'Maximum period of validation statistics (days)', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+			)
+		);
+endif;
+
 		// Record validation logs
 		$field = 'validation';
 		add_settings_field(
@@ -1195,26 +1214,10 @@ endif;
 		);
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		$key = 'recdays';
-		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			__( 'Recording period of the logs (days)', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-			)
-		);
-
 		$key = 'maxlogs';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( 'Maximum length of logs for each target', 'ip-geo-block' ),
+			__( 'Maximum length of validation logs', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
