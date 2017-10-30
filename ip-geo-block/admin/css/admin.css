@@ -657,3 +657,139 @@ svg a > text {
 svg a:hover > text {
     fill: #0096dd;
 }
+
+/* audit log */
+ul#ip-geo-block-control-log {
+    margin: 0;
+}
+ul#ip-geo-block-control-log li {
+    float: left;
+    margin-right: 3em;
+}
+ul#ip-geo-block-control-log li input[type=radio] {
+    display: none;
+}
+ul#ip-geo-block-control-log li span {
+    display: inline-block;
+    width: 2em;
+    height: 2em;
+    color: #999;
+    border: 1px solid;
+    border-radius: 4px;
+}
+ul#ip-geo-block-control-log li input:checked + label span {
+    color: #0073aa;
+    border-width: 2px;
+}
+
+/**
+ * Additional icons
+ */
+@font-face {
+  font-family: 'icomoon';
+  src:  url('fonts/icomoon.eot?9y580b');
+  src:  url('fonts/icomoon.eot?9y580b#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?9y580b') format('truetype'),
+    url('fonts/icomoon.woff?9y580b') format('woff'),
+    url('fonts/icomoon.svg?9y580b#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-folder-download:before {
+  content: "\e933";
+}
+.icon-location2:before {
+  content: "\e948";
+}
+.icon-map:before {
+  content: "\e94b";
+}
+.icon-database:before {
+  content: "\e964";
+}
+.icon-spinner2:before {
+  content: "\e97b";
+}
+.icon-binoculars:before {
+  content: "\e985";
+}
+.icon-search:before {
+  content: "\e986";
+}
+.icon-key:before {
+  content: "\e98d";
+}
+.icon-lock:before {
+  content: "\e98f";
+}
+.icon-unlocked:before {
+  content: "\e990";
+}
+.icon-cogs:before {
+  content: "\e995";
+}
+.icon-pie-chart:before {
+  content: "\e99a";
+}
+.icon-stats-dots:before {
+  content: "\e99b";
+}
+.icon-stats-bars:before {
+  content: "\e99c";
+}
+.icon-stats-bars2:before {
+  content: "\e99d";
+}
+.icon-shield:before {
+  content: "\e9b4";
+}
+.icon-switch:before {
+  content: "\e9b6";
+}
+.icon-power-cord:before {
+  content: "\e9b7";
+}
+.icon-sphere:before {
+  content: "\e9c9";
+}
+.icon-earth:before {
+  content: "\e9ca";
+}
+.icon-play3:before {
+  content: "\ea1c";
+}
+.icon-pause2:before {
+  content: "\ea1d";
+}
+.icon-stop2:before {
+  content: "\ea1e";
+}
+.icon-eject:before {
+  content: "\ea25";
+}
+.icon-new-tab:before {
+  content: "\ea7e";
+}
+.icon-play3:before,
+.icon-pause2:before,
+.icon-stop2:before {
+    position: relative;
+    top: 0.5em;
+    left: 0.5em;
+}

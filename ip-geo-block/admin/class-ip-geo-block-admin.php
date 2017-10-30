@@ -656,7 +656,7 @@ class IP_Geo_Block_Admin {
 	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]
 <?php if ( 4 === $tab ) { /* Logs tab */ ?>
 	<input id="ip-geo-block-realtime-mode" type="checkbox"<? checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] );?> /><label for="ip-geo-block-realtime-mode">
-		<dfn title="<?php _e( 'Regardless of &#8220;Record settings&#8221;, you can see all the validation results updated periodically.', 'ip-geo-block' ); ?>"><?php _e( 'Real time mode', 'ip-geo-block' ); ?></dfn>
+		<dfn title="<?php _e( 'Regardless of &#8220;Record settings&#8221;, you can see all the validation results updated periodically.', 'ip-geo-block' ); ?>"><?php _e( 'Real time auditing', 'ip-geo-block' ); ?></dfn>
 	</label>
 <?php } ?></p>
 	<form method="post" action="<?php echo $action; ?>" id="<?php echo IP_Geo_Block::PLUGIN_NAME, '-', $tab; ?>"<?php if ( $tab ) echo " class=\"", IP_Geo_Block::PLUGIN_NAME, "-inhibit\""; ?>>

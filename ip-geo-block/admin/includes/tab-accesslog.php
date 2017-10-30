@@ -24,14 +24,16 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug
 		);
 
-		$html  = '<label title="Stop"><input type="radio" name="control-log" id="ip-geo-block-control-log-stop" checked><span class="dashicons dashicons-no"></span></label>';
-		$html .= '<label title="Start"><input type="radio" name="control-log" id="ip-geo-block-control-log-start"><span class="dashicons dashicons-controls-play"></span></label>';
-		$html .= '<label title="Pause"><input type="radio" name="control-log" id="ip-geo-block-control-log-pause"><span class="dashicons dashicons-controls-pause"></span></label>';
+		$html  = '<ul id="ip-geo-block-control-log">';
+		$html .= '<li><input type="radio" name="control-log" id="ip-geo-block-control-log-start"><label for="ip-geo-block-control-log-start" title="Start"><span class="icon-play3"></span></label></li>';
+		$html .= '<li><input type="radio" name="control-log" id="ip-geo-block-control-log-pause"><label for="ip-geo-block-control-log-pause" title="Pause"><span class="icon-pause2"></span></label></li>';
+		$html .= '<li><input type="radio" name="control-log" id="ip-geo-block-control-log-stop" checked><label for="ip-geo-block-control-log-stop" title="Stop"><span class="icon-stop2"></span></label></li>';
+		$html .= '</ul>';
 
 		$field = 'control-log';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Control log update', 'ip-geo-block' ),
+			__( 'Control of auditing', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -40,7 +42,7 @@ class IP_Geo_Block_Admin_Tab {
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $html,
-				'class' => $cookie[ $tab ][1] === 'o' ? '' : 'ip-geo-block-hide',
+				'class' => isset( $cookie[ $tab ][1] ) && $cookie[ $tab ][1] === 'o' ? '' : 'ip-geo-block-hide',
 			)
 		);
 
@@ -129,7 +131,7 @@ if ( $options['validation']['reclogs'] ) :
 				'field' => $field,
 				'value' => __( 'Clear all', 'ip-geo-block' ),
 				'after' => '<div id="'.$plugin_slug.'-logs"></div>',
-				'class' => $cookie[ $tab ][1] !== 'o' ? '' : 'ip-geo-block-hide',
+				'class' => empty( $cookie[ $tab ][1] ) || $cookie[ $tab ][1] !== 'o' ? '' : 'ip-geo-block-hide',
 			)
 		);
 
@@ -144,7 +146,7 @@ if ( $options['validation']['reclogs'] ) :
 				'type' => 'none',
 				'before' => '<a class="button button-secondary" id="ip-geo-block-export-logs" title="' . __( 'Export to the local file',   'ip-geo-block' ) . '" href="#!">'. __( 'Export csv', 'ip-geo-block' ) . '</a>',
 				'after' => '<div id="'.$plugin_slug.'-export"></div>',
-				'class' => $cookie[ $tab ][1] !== 'o' ? '' : 'ip-geo-block-hide',
+				'class' => empty( $cookie[ $tab ][1] ) || $cookie[ $tab ][1] !== 'o' ? '' : 'ip-geo-block-hide',
 			)
 		);
 
