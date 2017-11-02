@@ -666,6 +666,9 @@ ul#ip-geo-block-control-log li {
     float: left;
     margin-right: 3em;
 }
+ul#ip-geo-block-control-log li:last-child {
+    margin-right: 0;
+}
 ul#ip-geo-block-control-log li input[type=radio] {
     display: none;
 }

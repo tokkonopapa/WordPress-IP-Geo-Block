@@ -1,4 +1,5 @@
-/*jslint white: true */
+/*jslint white: true, plusplus: true, bitwise: true */
+/*eslint no-mixed-spaces-and-tabs: ["error", "smart-tabs"]*/
 /*!
  * Project: WordPress IP Geo Block
  * Copyright (c) 2015-2017 tokkonopapa (tokkonopapa@yahoo.com)
@@ -78,7 +79,9 @@
 		$.post(ip_geo_block.url, request)
 
 		.done(function (data/*, textStatus, jqXHR*/) {
-			callback(data);
+			if (callback) {
+				callback(data);
+			}
 		})
 
 		.fail(function (jqXHR, textStatus/*, errorThrown*/) {
@@ -191,7 +194,7 @@
 
 	// File Reader
 	function readfile(file, callback) {
-		var reader = new FileReader();
+		var reader = new window.FileReader();
 		reader.onload = function (event) {
 			if (callback) {
 				callback(event.target.result);
@@ -298,7 +301,7 @@
 		val = val.replace('…', '');
 
 		for (i = 0; i < n; ++i) {
-			if (i in arr && 0 === arr[i].label.indexOf(val)) {
+			if (arr.hasOwnProperty(i) && 0 === arr[i].label.indexOf(val)) {
 				return i;
 			}
 		}
@@ -314,7 +317,7 @@
 		drawPie: function (id) {
 			var i, data;
 			if ('undefined' === typeof chart.dataPie[id]) {
-				i = chart.dataPie[id] = new google.visualization.DataTable();
+				i = chart.dataPie[id] = new window.google.visualization.DataTable();
 				i.addColumn('string', 'Country');
 				i.addColumn('number', 'Requests');
 				data = $.parseJSON($('#' + id).attr('data-' + id));
@@ -322,7 +325,7 @@
 			}
 
 			if ('undefined' === typeof chart.viewPie[id]) {
-				chart.viewPie[id] = new google.visualization.PieChart(
+				chart.viewPie[id] = new window.google.visualization.PieChart(
 					document.getElementById(id)
 				);
 			}
@@ -349,7 +352,7 @@
 		drawLine: function (id, datetype) {
 			var i, n, data;
 			if ('undefined' === typeof chart.dataLine[id]) {
-				i = chart.dataLine[id] = new google.visualization.DataTable();
+				i = chart.dataLine[id] = new window.google.visualization.DataTable();
 				i.addColumn(datetype, 'Date'   );
 				i.addColumn('number', 'comment');
 				i.addColumn('number', 'xmlrpc' );
@@ -365,7 +368,7 @@
 			}
 
 			if ('undefined' === typeof chart.viewLine[id]) {
-				chart.viewLine[id] = new google.visualization.LineChart(
+				chart.viewLine[id] = new window.google.visualization.LineChart(
 					document.getElementById(id)
 				);
 			}
@@ -392,22 +395,22 @@
 		dataStacked: [],
 		viewStacked: [],
 		drawStacked: function (id) {
-			var i;
+			var i, data;
 			if ('undefined' === typeof chart.dataStacked[id]) {
-				var data = $.parseJSON($('#' + id).attr('data-' + id));
+				data = $.parseJSON($('#' + id).attr('data-' + id));
 				if (data) {
 					data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', { role: 'link' } ]);
-					chart.dataStacked[id] = google.visualization.arrayToDataTable(data);
+					chart.dataStacked[id] = window.google.visualization.arrayToDataTable(data);
 				}
 			}
 
 			if ('undefined' === typeof chart.viewStacked[id]) {
-				chart.viewStacked[id] = new google.visualization.BarChart(
+				chart.viewStacked[id] = new window.google.visualization.BarChart(
 					document.getElementById(id)
 				);
 
 				// process for after animation
-				google.visualization.events.addListener(chart.viewStacked[id], 'animationfinish', function (/*event*/) {
+				window.google.visualization.events.addListener(chart.viewStacked[id], 'animationfinish', function (/*event*/) {
 					// Make an array of the title in each row.
 					var i, a, p,
 					    info = [],
@@ -480,7 +483,7 @@
 
 	// google chart
 	function drawChart(tabNo) {
-		if ('object' === typeof google) {
+		if ('object' === typeof window.google) {
 			if (1 === tabNo) {
 				chart.drawPie(ID('chart-countries'));
 				chart.drawLine(ID('chart-daily'), 'date');
@@ -499,8 +502,8 @@
 			packages.push('bar');
 		}
 
-		if ('object' === typeof google) {
-			google.load('visualization', '1', {
+		if ('object' === typeof window.google) {
+			window.google.load('visualization', '1', {
 				packages: packages,
 				callback: function () {
 					drawChart(tabNo);
@@ -810,7 +813,7 @@
 			}
 
 			// additional query
-			q.tab = tabNo === 1 ? 4 : 4;
+			q.tab = 4; //tabNo === 1 ? 4 : 2;
 			q.s = $(this).text().replace(/[^\w\.\:\*]/, '');
 
 			j = [];
@@ -1087,6 +1090,10 @@
 			});
 
 			/*---------------------------
+			 * Record settings
+			 *---------------------------*/
+
+			/*---------------------------
 			 * Plugin settings
 			 *---------------------------*/
 			// Export / Import settings
@@ -1115,7 +1122,7 @@
 
 			// Import settings
 			$(ID('#', 'file-dialog')).on('change', function (event) {
-				if ('undefined' === typeof FileReader) {
+				if ('undefined' === typeof window.FileReader) {
 					notice_html5();
 					return false;
 				}
@@ -1334,28 +1341,10 @@
 		   * Logs
 		   *----------------------------------------*/
 		  case 4:
-			// Real time mode
-			var $mode = $(ID('#', 'realtime-mode')),
-			     mode = $mode.prop('checked'); // checked in `display_plugin_admin_page()`
-
-			$mode.on('change', function (/*event*/) {
-				cookie[tabNo][1] = (mode = $mode.prop('checked')) ? 'o' : 'x';
-				saveCookie(cookie);
-
-				var $table = $(ID('#', 'section-0')).find('.form-table>tbody');
-				if (mode) {
-					$table.find('tr:first-child').show();
-					$table.find('tr:last-child').hide().prev().hide();
-				} else {
-					$table.find('tr:first-child').hide();
-					$table.find('tr:last-child').show().prev().show();
-				}
-			});
-
 			// Validation logs
-			initTable(tabNo, {
+			var table = initTable(tabNo, {
 				tableID:   'validation-logs',
-				ajaxCMD:   /*mode ? 'audit-log' :*/ 'restore-logs',
+				ajaxCMD:   /*mode ? 'audit-logs' :*/ 'restore-logs',
 				sectionID: 'section-0',
 				targetColumn: 5,
 				columnIP: 2,
@@ -1388,7 +1377,47 @@
 					{ responsivePriority: 10, targets: 10 }, // $_POST data
 					{ className: "all",       targets: [0, 1, 2, 3 ] }, // always visible
 					{ className: "none",      targets: [7, 8, 9, 10] }  // always hidden
-				]
+				],
+				order: [[1, 'desc']]
+			}),
+
+			// Real time mode
+			timer = 0,
+			$mode = $(ID('#', 'realtime-mode')),
+			audit_start = function () {
+				ajax_post(null, {
+					cmd: 'audit-start'
+				}, function (res) {
+					if (res.data.length) {
+						table.rows.add(res.data).draw();
+					}
+				});
+				timer = window.setTimeout(audit_start, 2500);
+			},
+			audit_stop = function () {
+				if (timer) {
+					window.clearTimeout(timer);
+					ajax_post(null, {
+						cmd: 'audit-stop'
+					});
+				}
+			};
+
+			$mode.on('change', function (/*event*/) {
+				var $tr = $(ID('#', 'section-0')).find('.form-table>tbody>tr:first-child'),
+				    mode = $mode.prop('checked'); // checked in `display_plugin_admin_page()`
+
+				cookie[tabNo][1] = (mode) ? 'o' : 'x';
+				saveCookie(cookie);
+
+				if (mode) {
+					$tr.show().nextAll().hide();
+					table.clear();
+					audit_start();
+				} else {
+					$tr.hide().nextAll().show();
+					audit_stop();
+				}
 			});
 
 			// Export / Import settings
@@ -1414,7 +1443,7 @@
 
 			// Initialize map if exists
 			var map = $(ID('#', 'map'));
-			if ('object' === typeof google) {
+			if ('object' === typeof window.google) {
 				// Initialize map if exists
 				map.each(function () {
 					$(this).GmapRS();
@@ -1489,7 +1518,7 @@
 							}
 						}
 
-						if ('object' === typeof google) {
+						if ('object' === typeof window.google) {
 							map.GmapRS('addMarker', {
 								latitude: latitude,
 								longitude: longitude,

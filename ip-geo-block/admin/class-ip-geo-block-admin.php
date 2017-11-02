@@ -1305,6 +1305,17 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which );
 			break;
 
+		  case 'audit-start':
+			// Restore real time audit logs
+			set_transient( IP_Geo_Block::PLUGIN_NAME . '-audit-log', TRUE, 60 );
+			$res = IP_Geo_Block_Admin_Ajax::restore_audit();
+			break;
+
+		  case 'audit-stop':
+			// Stop restore real time audit logs
+			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-audit-log' );
+			break;
+
 		  case 'validate':
 			// Validate settings
 			IP_Geo_Block_Admin_Ajax::validate_settings( $this );
@@ -1389,11 +1400,6 @@ class IP_Geo_Block_Admin {
 		  case 'multisite-stat':
 			// Restore blocked per target in logs
 			$res = IP_Geo_Block_Admin_Ajax::restore_multisite( $which, FALSE );
-			break;
-
-		  case 'restore-audit':
-			// Restore real time audit logs
-			$res = IP_Geo_Block_Admin_Ajax::restore_audit();
 			break;
 
 		  case 'create-table':

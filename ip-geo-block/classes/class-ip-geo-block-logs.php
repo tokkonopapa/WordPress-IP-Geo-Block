@@ -576,8 +576,10 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function restore_audit( $hook = NULL ) {
 		$pdo = new PDO( 'sqlite:' . self::get_audit_log_db() );
-		$stm = $pdo->query( 'SELECT * FROM logs' );
-		return $stm ? $stm->fetchAll( PDO::FETCH_ASSOC ) : FALSE;
+		$stm = $pdo->query( 'SELECT hook, time, ip, code, result, asn, method, user_agent, headers, data FROM logs' );
+		$stm = $stm ? $stm->fetchAll( PDO::FETCH_NUM ) : FALSE;
+		$pdo->exec( 'DELETE FROM logs' );
+		return $stm;
 	}
 
 	/**

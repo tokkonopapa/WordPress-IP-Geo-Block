@@ -124,16 +124,15 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	/**
-	 * Restore logs from MySQL DB
+	 * Format logs from rows array
 	 *
-	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
-	static public function restore_logs( $which ) {
+	static private function format_logs( $rows ) {
 		$options = IP_Geo_Block::get_option();
 		$res = array();
 
-		foreach ( IP_Geo_Block_Logs::restore_logs( $which ) as $row ) {
-			if ( $options['anonymize'] )
+		foreach ( $rows as $row ) {
+			if ( $options['anonymize']  )
 				$row[2] = preg_replace( '/\d{1,3}$/', '***', $row[2] );
 
 			$res[] = array(
@@ -151,6 +150,25 @@ class IP_Geo_Block_Admin_Ajax {
 			);
 		}
 
+		return $res;
+	}
+
+	/**
+	 * Restore logs from MySQL DB
+	 *
+	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
+	 */
+	static public function restore_logs( $which ) {
+		$res = self::format_logs( IP_Geo_Block_Logs::restore_logs( $which ) );
+		return array( 'data' => $res ); // DataTables requires `data`
+	}
+
+	/**
+	 * Restore audit logs in SQLite
+	 *
+	 */
+	static public function restore_audit() {
+		$res = self::format_logs( IP_Geo_Block_Logs::restore_audit() );
 		return array( 'data' => $res ); // DataTables requires `data`
 	}
 
@@ -254,14 +272,6 @@ class IP_Geo_Block_Admin_Ajax {
 		}
 
 		return $json;
-	}
-
-	/**
-	 * Restore audit logs in SQLite
-	 *
-	 */
-	static public function restore_audit() {
-		$res = IP_Geo_Block_Logs::restore_audit();
 	}
 
 	/**
