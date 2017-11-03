@@ -499,6 +499,16 @@ table.collapsed > tbody > tr > td.dataTables_empty:first-child::before {
     text-align: center;
 }
 
+/* Column for checkbox */
+table.dataTable thead > tr > th:first-child.sorting_asc {
+    background-image: none !important;
+}
+table.dataTable.display tbody tr.even  > .sorting_1,
+table.dataTable.display tbody tr.odd   > .sorting_1,
+table.dataTable.display tbody tr:hover > .sorting_1 {
+    background-color: inherit !important;
+}
+
 /* Collapsed */
 table.dataTable.collapsed > tbody > tr > td:first-child {
     padding: 8px 4px 8px 8px !important;

@@ -1328,7 +1328,7 @@
 					{ title: ip_geo_block.language[4] }, // 3 AS number
 					{ title: ip_geo_block.language[5] }, // 4 Host name
 					{ title: ip_geo_block.language[6] }, // 5 Target
-					{ title: ip_geo_block.language[7] }, // 6 Login failures/Calls
+					{ title: ip_geo_block.language[7] }, // 6 Login fail/Call
 					{ title: ip_geo_block.language[8] }  // 7 Elapsed[sec]
 				],
 				columnDefs: [
@@ -1338,7 +1338,7 @@
 					{ responsivePriority:  6, targets: 3 }, // AS number
 					{ responsivePriority:  7, targets: 4 }, // Host name
 					{ responsivePriority:  3, targets: 5 }, // Target
-					{ responsivePriority:  4, targets: 6 }, // Login failures/Calls
+					{ responsivePriority:  4, targets: 6 }, // Login fail/Call
 					{ responsivePriority:  5, targets: 7 }, // Elapsed[sec]
 					{ className: "all",       targets: [0, 1, 2, 5] } // always visible
 				]

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-11-04 00:18+0900\n"
-"PO-Revision-Date: 2017-11-04 00:18+0900\n"
+"POT-Creation-Date: 2017-11-04 08:35+0900\n"
+"PO-Revision-Date: 2017-11-04 08:35+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr ""
 #: classes/class-ip-geo-block-opts.php:405
 #: classes/class-ip-geo-block-cron.php:273
 #: classes/class-ip-geo-block-cron.php:305
-#: admin/class-ip-geo-block-admin.php:1179
+#: admin/class-ip-geo-block-admin.php:1178
 #: admin/includes/class-admin-rewrite.php:169
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
@@ -157,7 +157,7 @@ msgid "Target"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:275
-msgid "Login failures/Calls"
+msgid "Login / Call"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:276
@@ -304,30 +304,30 @@ msgstr ""
 msgid "Real time auditing"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:684
+#: admin/class-ip-geo-block-admin.php:683
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:685
+#: admin/class-ip-geo-block-admin.php:684
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:690
+#: admin/class-ip-geo-block-admin.php:689
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:787
+#: admin/class-ip-geo-block-admin.php:786
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:802
+#: admin/class-ip-geo-block-admin.php:801
 msgid "Select one"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1209
+#: admin/class-ip-geo-block-admin.php:1208
 msgid "Settings saved."
 msgstr ""
 
@@ -1256,7 +1256,7 @@ msgid "Name of API"
 msgstr ""
 
 #: admin/includes/tab-statistics.php:134
-msgid "Calls"
+msgid "Call"
 msgstr ""
 
 #: admin/includes/tab-statistics.php:135

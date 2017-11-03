@@ -272,7 +272,7 @@ class IP_Geo_Block_Admin {
 					__( 'ASN',                         'ip-geo-block' ), // [ 4]
 					__( 'Host name',                   'ip-geo-block' ), // [ 5]
 					__( 'Target',                      'ip-geo-block' ), // [ 6]
-					__( 'Login failures/Calls',        'ip-geo-block' ), // [ 7]
+					__( 'Login / Call',                'ip-geo-block' ), // [ 7]
 					__( 'Elapsed[sec]',                'ip-geo-block' ), // [ 8]
 					__( 'Time',                        'ip-geo-block' ), // [ 9]
 					__( 'Result',                      'ip-geo-block' ), // [10]

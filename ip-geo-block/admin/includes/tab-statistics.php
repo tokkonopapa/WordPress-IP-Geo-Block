@@ -131,7 +131,7 @@ if ( $options['save_statistics'] ) :
 		$field = 'service';
 		$html  = '<table class="'.$option_slug.'-statistics-table"><thead><tr>';
 		$html .= '<th>' . __( 'Name of API',     'ip-geo-block' ) . '</th>';
-		$html .= '<th>' . __( 'Calls',           'ip-geo-block' ) . '</th>';
+		$html .= '<th>' . __( 'Call',            'ip-geo-block' ) . '</th>';
 		$html .= '<th>' . __( 'Response [msec]', 'ip-geo-block' ) . '</th>';
 		$html .= '</tr></thead><tbody>';
 
