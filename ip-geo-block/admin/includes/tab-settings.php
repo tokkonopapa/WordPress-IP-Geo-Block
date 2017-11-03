@@ -1173,7 +1173,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$key = 'recdays';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( 'Maximum period of validation statistics (days)', 'ip-geo-block' ),
+			__( 'Maximum period for validation statistics (days)', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1217,7 +1217,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$key = 'maxlogs';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( 'Maximum length of validation logs', 'ip-geo-block' ),
+			__( 'Maximum entries for validation logs', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

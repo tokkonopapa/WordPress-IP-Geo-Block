@@ -443,14 +443,45 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Get directory for audit log
+	 * Open sqlite database for audit log
 	 *
 	 * The absolute path should be returned by action hook `ip-geo-block-audit-log-dir`.
 	 */
-	private static function get_audit_log_db() {
-		return IP_Geo_Block_Util::slashit( apply_filters(
-			IP_Geo_Block::PLUGIN_NAME . '-audit-log-dir', get_temp_dir()
-		) ) . 'audit-log-' .  get_current_blog_id() . '.db';
+	private static function open_sqlite_db() {
+		$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-audit-log-dir', get_temp_dir() );
+		$path = IP_Geo_Block_Util::slashit( $path ) . 'audit-log-' .  get_current_blog_id() . '.db';
+
+		try {
+			$pdo = new PDO( 'sqlite:' . $path );
+		} catch (Exception $e) {
+			self::error( __LINE__, $e->getMessage() );
+			return FALSE;
+		}
+
+		try {
+			$pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+			$pdo->exec( "CREATE TABLE IF NOT EXISTS logs (
+				No INTEGER PRIMARY KEY AUTOINCREMENT,
+				time bigint NOT NULL,
+				ip varchar(40) NOT NULL,
+				asn varchar(8) NULL,
+				hook varchar(8) NOT NULL,
+				auth integer DEFAULT 0 NOT NULL,
+				code varchar(2) DEFAULT 'ZZ' NOT NULL,
+				result varchar(8) NULL,
+				method varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
+				user_agent varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
+				headers varchar("    . IP_GEO_BLOCK_MAX_TXT_LEN . ") NULL,
+				data text NULL
+			);" );
+
+			return $pdo;
+		}
+
+		catch ( PDOException $e ) {
+			self::error( __LINE__, $e->getMessage() );
+			return FALSE;
+		}
 	}
 
 	/**
@@ -526,27 +557,20 @@ class IP_Geo_Block_Logs {
 		}
 
 		if ( get_transient( IP_Geo_Block::PLUGIN_NAME . '-audit-log' ) ) {
-			try {
-				$pdo = new PDO( 'sqlite:' . self::get_audit_log_db() );
-				$pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-				$pdo->exec( "CREATE TABLE IF NOT EXISTS logs (
-					No INTEGER PRIMARY KEY AUTOINCREMENT,
-					time bigint NOT NULL,
-					ip varchar(40) NOT NULL,
-					asn varchar(8) NULL,
-					hook varchar(8) NOT NULL,
-					auth integer DEFAULT 0 NOT NULL,
-					code varchar(2) DEFAULT 'ZZ' NOT NULL,
-					result varchar(8) NULL,
-					method varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
-					user_agent varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
-					headers varchar("    . IP_GEO_BLOCK_MAX_TXT_LEN . ") NULL,
-					data text NULL
-				)" );
+			// skip self command
+			global $pagenow;
+			if ( 'admin-ajax.php' === $pagenow && isset( $_POST['action'] ) && 'ip_geo_block' === $_POST['action'] && isset( $_POST['cmd'] ) )
+				return;
 
+			// database file not available
+			if ( ! ( $pdo = self::open_sqlite_db() ) )
+				return;
+
+			try {
+				$pdo->beginTransaction();
 				$stm = $pdo->prepare(
 					'INSERT INTO logs ( time, ip, asn, hook, auth, code, result, method, user_agent, headers, data)' .
-					' VALUES          (    ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,          ?,       ?,    ?)'
+					' VALUES          (    ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,          ?,       ?,    ?);'
 				) and $stm->execute(
 					array(
 						$_SERVER['REQUEST_TIME'],
@@ -562,9 +586,11 @@ class IP_Geo_Block_Logs {
 						$posts
 					)
 				);
+				$pdo->commit();
 			}
 
 			catch ( PDOException $e ) {
+				$pdo->rollBack();
 				self::error( __LINE__, $e->getMessage() );
 			}
 		}
@@ -575,11 +601,24 @@ class IP_Geo_Block_Logs {
 	 *
 	 */
 	public static function restore_audit( $hook = NULL ) {
-		$pdo = new PDO( 'sqlite:' . self::get_audit_log_db() );
-		$stm = $pdo->query( 'SELECT hook, time, ip, code, result, asn, method, user_agent, headers, data FROM logs' );
-		$stm = $stm ? $stm->fetchAll( PDO::FETCH_NUM ) : FALSE;
-		$pdo->exec( 'DELETE FROM logs' );
-		return $stm;
+		if ( ! ( $pdo = self::open_sqlite_db() ) )
+			return array();
+
+		try {
+			$pdo->beginTransaction();
+			if ( $stm = $pdo->query( 'SELECT hook, time, ip, code, result, asn, method, user_agent, headers, data FROM logs;' ) ) {
+				$res = $stm->fetchAll( PDO::FETCH_NUM );
+				$pdo->exec( 'DELETE FROM logs;' ); // 'DROP TABLE IF EXISTS logs;' (it may commit automatically)
+			}
+			$pdo->commit();
+			return isset( $res ) ? $res : array();
+		}
+
+		catch ( PDOException $e ) {
+			$pdo->rollBack();
+			self::error( __LINE__, $e->getMessage() );
+			return array();
+		}
 	}
 
 	/**
@@ -784,8 +823,7 @@ class IP_Geo_Block_Logs {
 			if ( class_exists( 'IP_Geo_Block_Admin', FALSE ) )
 				IP_Geo_Block_Admin::add_admin_notice( 'error', __FILE__ . ' (' . $line . ') ' . $msg );
 
-			if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG )
-				error_log( __FILE__ . ' (' . $line . ') ' . $msg );
+			error_log( __FILE__ . ' (' . $line . ') ' . $msg );
 		}
 	}
 

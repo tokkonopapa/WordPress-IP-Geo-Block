@@ -281,6 +281,7 @@ class IP_Geo_Block_Admin {
 					__( 'HTTP headers',                'ip-geo-block' ), // [13]
 					__( '$_POST data',                 'ip-geo-block' ), // [14]
 				),
+				'interval' => 5000, // interval for real time auditing [sec]
 			)
 		);
 		wp_enqueue_script( $handle );
@@ -656,7 +657,7 @@ class IP_Geo_Block_Admin {
 	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]
 <?php if ( 4 === $tab ) { /* Logs tab */ ?>
 	<input id="ip-geo-block-realtime-mode" type="checkbox"<? checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] );?> /><label for="ip-geo-block-realtime-mode">
-		<dfn title="<?php _e( 'Regardless of &#8220;Record settings&#8221;, you can see all the validation results updated periodically.', 'ip-geo-block' ); ?>"><?php _e( 'Real time auditing', 'ip-geo-block' ); ?></dfn>
+		<dfn title="<?php _e( 'Independent of &#8220;Record settings&#8221;, you can see all the validation results updated periodically.', 'ip-geo-block' ); ?>"><?php _e( 'Real time auditing', 'ip-geo-block' ); ?></dfn>
 	</label>
 <?php } ?></p>
 	<form method="post" action="<?php echo $action; ?>" id="<?php echo IP_Geo_Block::PLUGIN_NAME, '-', $tab; ?>"<?php if ( $tab ) echo " class=\"", IP_Geo_Block::PLUGIN_NAME, "-inhibit\""; ?>>
@@ -679,7 +680,6 @@ class IP_Geo_Block_Admin {
 		}
 	}
 	echo '<p>', implode( '<br />', $tab ), "</p>\n";
-
 	echo '<p>', __( 'Thanks for providing these great services for free.', 'ip-geo-block' ), "<br />\n";
 	echo __( '(Most browsers will redirect you to each site <a href="http://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', 'ip-geo-block' ), "</p>\n";
 } ?>
@@ -1311,9 +1311,15 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Admin_Ajax::restore_audit();
 			break;
 
+		  case 'audit-pause':
+			// Restore real time audit logs
+			set_transient( IP_Geo_Block::PLUGIN_NAME . '-audit-log', TRUE, 60 );
+			break;
+
 		  case 'audit-stop':
 			// Stop restore real time audit logs
 			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-audit-log' );
+			$res = array( 'data' => array() );
 			break;
 
 		  case 'validate':

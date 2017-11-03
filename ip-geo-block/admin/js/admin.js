@@ -651,7 +651,7 @@
 			dom: 'tp',
 
 			// Server side
-//			serverSide: true,
+			serverSide: false,
 
 			// Client behavior
 			autoWidth: false,
@@ -662,7 +662,6 @@
 			// Interface
 			info: false,
 			lengthChange: false,
-			order: [], // no initial order or [0, 'desc']
 
 			// Language
 			language: {
@@ -687,6 +686,7 @@
 			},
 
 			columnDefs: [
+				{ width:   '1.25em', targets: 0 },
 				{ orderable:  false, targets: 0 },
 				{ searchable: false, targets: 0 },
 				{
@@ -1092,6 +1092,14 @@
 			/*---------------------------
 			 * Record settings
 			 *---------------------------*/
+			$(ID('@', 'save_statistics')).on('change', function (/*event*/) {
+				$(ID('@', 'validation_recdays')).prop('disabled', !$(this).prop('checked'));
+				return false;
+			}).trigger('change');
+
+			$(ID('@', 'validation_reclogs')).on('change', function (/*event*/) {
+				$(this).parent().parent().nextAll().find('input').prop('disabled', 0 == $(this).prop('selectedIndex'));
+			}).trigger('change');
 
 			/*---------------------------
 			 * Plugin settings
@@ -1342,14 +1350,14 @@
 		   *----------------------------------------*/
 		  case 4:
 			// Validation logs
-			var table = initTable(tabNo, {
+			var control = {
 				tableID:   'validation-logs',
-				ajaxCMD:   /*mode ? 'audit-logs' :*/ 'restore-logs',
 				sectionID: 'section-0',
 				targetColumn: 5,
 				columnIP: 2,
 				columnAS: 4
-			}, {
+			},
+			options = {
 				columns: [
 					{ title: '<input type=\"checkbox\">' }, // 0 checkbox
 					{ title: ip_geo_block.language[ 9] }, //  1 Time
@@ -1378,31 +1386,64 @@
 					{ className: "all",       targets: [0, 1, 2, 3 ] }, // always visible
 					{ className: "none",      targets: [7, 8, 9, 10] }  // always hidden
 				],
-				order: [[1, 'desc']]
-			}),
+			},
 
-			// Real time mode
 			timer = 0,
-			$mode = $(ID('#', 'realtime-mode')),
+			table = null,
+			pause = false,
+
 			audit_start = function () {
-				ajax_post(null, {
+				ajax_post('audit-loading', {
 					cmd: 'audit-start'
 				}, function (res) {
 					if (res.data.length) {
-						table.rows.add(res.data).draw();
+						var i, n = res.data.length;
+						for (i = 0; i < n; i++) {
+							table.row.add(res.data[i]); // doesn't work `raws.add()` because it needs object.
+						}
+						table.draw(false);
 					}
 				});
-				timer = window.setTimeout(audit_start, 2500);
+				timer = window.setTimeout(audit_start, ip_geo_block.interval);
 			},
-			audit_stop = function () {
+
+			audit_pause = function () {
+				ajax_post(null, {
+					cmd: 'audit-pause'
+				});
 				if (timer) {
 					window.clearTimeout(timer);
-					ajax_post(null, {
-						cmd: 'audit-stop'
-					});
 				}
-			};
+			},
 
+			audit_stop = function () {
+				ajax_post(null, {
+					cmd: 'audit-stop'
+				});
+				if (timer) {
+					window.clearTimeout(timer);
+				}
+			},
+
+			// Real time mode
+			$mode = $(ID('#', 'realtime-mode'));
+
+			// Control of real time auditing
+			$(ID('#', 'control-log')).on('change', function (/*event*/) {
+				switch($('input[name="' + ID('control-log') + '"]:checked').val()) {
+				  case 'start':
+					audit_start();
+					break;
+				  case 'pause':
+					audit_pause();
+					break;
+				  case 'stop':
+					audit_stop();
+					break;
+				}
+			});
+
+			// on change mode
 			$mode.on('change', function (/*event*/) {
 				var $tr = $(ID('#', 'section-0')).find('.form-table>tbody>tr:first-child'),
 				    mode = $mode.prop('checked'); // checked in `display_plugin_admin_page()`
@@ -1410,15 +1451,25 @@
 				cookie[tabNo][1] = (mode) ? 'o' : 'x';
 				saveCookie(cookie);
 
-				if (mode) {
-					$tr.show().nextAll().hide();
-					table.clear();
-					audit_start();
-				} else {
-					$tr.hide().nextAll().show();
-					audit_stop();
+				// Delete old datatables
+				if (table) {
+					table.clear().destroy();
 				}
-			});
+
+				if (mode) {
+					$tr.show().next().next().next().nextAll().hide();
+					control.ajaxCMD = 'audit-stop';
+					options.order = [1, 'desc'];
+				} else {
+					$tr.hide().next().next().next().nextAll().show();
+					control.ajaxCMD = 'restore-logs';
+					options.order = [0, ''];
+				}
+
+				// Re-initialize datatables
+				$(ID('#', 'control-log-stop')).trigger('click');
+				table = initTable(tabNo, control, options);
+			}).trigger('change');
 
 			// Export / Import settings
 			add_hidden_form('export-logs');
