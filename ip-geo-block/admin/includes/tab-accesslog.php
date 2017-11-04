@@ -33,7 +33,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'control-log';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Control of auditing', 'ip-geo-block' ) . '<div id="ip-geo-block-audit-loading"></div>',
+			__( 'Real time auditing', 'ip-geo-block' ) . '<div id="ip-geo-block-audit-loading"></div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

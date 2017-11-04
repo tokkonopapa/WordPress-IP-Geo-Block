@@ -215,6 +215,11 @@ ul.ip-geo-block-list label {
     display: inline-block;
 }
 
+#ip-geo-block-audit-loading {
+    width: 16px;
+    height: 16px;
+}
+
 #ip-geo-block-map {
     height: 400px;
     margin: 1em auto;

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-11-04 08:35+0900\n"
-"PO-Revision-Date: 2017-11-04 08:41+0900\n"
+"POT-Creation-Date: 2017-11-04 09:00+0900\n"
+"PO-Revision-Date: 2017-11-04 09:03+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -333,7 +333,7 @@ msgid ""
 msgstr ""
 "［記録の設定］にかかわらず、検証結果のすべてをリアルタイムに表示します。"
 
-#: admin/class-ip-geo-block-admin.php:660
+#: admin/class-ip-geo-block-admin.php:660 admin/includes/tab-accesslog.php:36
 msgid "Real time auditing"
 msgstr "リアルタイム監査"
 
@@ -370,10 +370,6 @@ msgstr "設定を保存しました。"
 #: admin/includes/tab-accesslog.php:19
 msgid "Validation logs"
 msgstr "検証のログ"
-
-#: admin/includes/tab-accesslog.php:36
-msgid "Control of auditing"
-msgstr "リアルタイム監査"
 
 #: admin/includes/tab-accesslog.php:53 admin/includes/tab-settings.php:450
 msgid "Comment post"

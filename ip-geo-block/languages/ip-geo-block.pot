@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-11-04 08:35+0900\n"
-"PO-Revision-Date: 2017-11-04 08:35+0900\n"
+"POT-Creation-Date: 2017-11-04 09:00+0900\n"
+"PO-Revision-Date: 2017-11-04 09:00+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,9 +20,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #. Description of the plugin/theme
-msgid ""
-"It blocks any spams, login attempts and malicious access to the admin area "
-"posted from outside your nation, and also prevents zero-day exploit."
+msgid "It blocks any spams, login attempts and malicious access to the admin area posted from outside your nation, and also prevents zero-day exploit."
 msgstr ""
 
 #: classes/class-ip-geo-block-opts.php:405
@@ -300,7 +298,7 @@ msgid ""
 "results updated periodically."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:660
+#: admin/class-ip-geo-block-admin.php:660 admin/includes/tab-accesslog.php:36
 msgid "Real time auditing"
 msgstr ""
 
@@ -333,10 +331,6 @@ msgstr ""
 
 #: admin/includes/tab-accesslog.php:19
 msgid "Validation logs"
-msgstr ""
-
-#: admin/includes/tab-accesslog.php:36
-msgid "Control of auditing"
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:53 admin/includes/tab-settings.php:450
