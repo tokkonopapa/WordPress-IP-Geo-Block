@@ -281,7 +281,7 @@ class IP_Geo_Block_Admin {
 					__( 'HTTP headers',                'ip-geo-block' ), // [13]
 					__( '$_POST data',                 'ip-geo-block' ), // [14]
 				),
-				'interval' => 5000, // interval for real time auditing [sec]
+				'interval' => 5000, // interval for live update [sec]
 			)
 		);
 		wp_enqueue_script( $handle );
@@ -657,7 +657,7 @@ class IP_Geo_Block_Admin {
 	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]
 <?php if ( 4 === $tab ) { /* Logs tab */ ?>
 	<input id="ip-geo-block-realtime-mode" type="checkbox"<? checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] );?> /><label for="ip-geo-block-realtime-mode">
-		<dfn title="<?php _e( 'Independent of &#8220;Record settings&#8221;, you can see all the validation results updated periodically.', 'ip-geo-block' ); ?>"><?php _e( 'Real time auditing', 'ip-geo-block' ); ?></dfn>
+		<dfn title="<?php _e( 'Independent of &#8220;Record settings&#8221;, you can see all the validation results updated periodically.', 'ip-geo-block' ); ?>"><?php _e( 'Live update', 'ip-geo-block' ); ?></dfn>
 	</label>
 <?php } ?></p>
 	<form method="post" action="<?php echo $action; ?>" id="<?php echo IP_Geo_Block::PLUGIN_NAME, '-', $tab; ?>"<?php if ( $tab ) echo " class=\"", IP_Geo_Block::PLUGIN_NAME, "-inhibit\""; ?>>
@@ -1305,20 +1305,20 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which );
 			break;
 
-		  case 'audit-start':
-			// Restore real time audit logs
-			set_transient( IP_Geo_Block::PLUGIN_NAME . '-audit-log', TRUE, 60 );
-			$res = IP_Geo_Block_Admin_Ajax::restore_audit();
+		  case 'live-start':
+			// Restore live log
+			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', TRUE, 60 );
+			$res = IP_Geo_Block_Admin_Ajax::restore_live();
 			break;
 
-		  case 'audit-pause':
-			// Restore real time audit logs
-			set_transient( IP_Geo_Block::PLUGIN_NAME . '-audit-log', TRUE, 60 );
+		  case 'live-pause':
+			// Pause live log
+			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', TRUE, 60 );
 			break;
 
-		  case 'audit-stop':
-			// Stop restore real time audit logs
-			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-audit-log' );
+		  case 'live-stop':
+			// Stop live log
+			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
 			$res = array( 'data' => array() );
 			break;
 

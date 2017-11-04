@@ -164,11 +164,11 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	/**
-	 * Restore audit logs in SQLite
+	 * Restore live log in SQLite
 	 *
 	 */
-	static public function restore_audit() {
-		$res = self::format_logs( IP_Geo_Block_Logs::restore_audit() );
+	static public function restore_live() {
+		$res = self::format_logs( IP_Geo_Block_Logs::restore_live() );
 		return array( 'data' => $res ); // DataTables requires `data`
 	}
 

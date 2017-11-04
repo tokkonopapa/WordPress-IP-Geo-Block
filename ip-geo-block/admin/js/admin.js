@@ -1392,9 +1392,13 @@
 			table = null,
 			pause = false,
 
-			audit_start = function () {
-				ajax_post('audit-loading', {
-					cmd: 'audit-start'
+			// Live update mode
+			$mode = $(ID('#', 'realtime-mode')),
+
+			// Control functions
+			live_start = function () {
+				ajax_post('live-loading', {
+					cmd: 'live-start'
 				}, function (res) {
 					if (res.data.length) {
 						var i, n = res.data.length;
@@ -1404,41 +1408,54 @@
 						table.draw(false);
 					}
 				});
-				timer = window.setTimeout(audit_start, ip_geo_block.interval);
+				timer = window.setTimeout(live_start, ip_geo_block.interval);
 			},
-
-			audit_pause = function () {
+			live_stop = function (cmd) {
 				ajax_post(null, {
-					cmd: 'audit-pause'
+					cmd: cmd || 'live-stop'
 				});
 				if (timer) {
 					window.clearTimeout(timer);
 				}
 			},
-
-			audit_stop = function () {
-				ajax_post(null, {
-					cmd: 'audit-stop'
-				});
-				if (timer) {
-					window.clearTimeout(timer);
-				}
+			live_pause = function () {
+				live_stop('live-pause');
 			},
 
-			// Real time mode
-			$mode = $(ID('#', 'realtime-mode'));
+			// animation on added
+			new_class = ID('$', ''),
+			add_class = function (row, data, index) {
+				if (-1 !== data[6 /* result */].indexOf('passed')) {
+					$(row).addClass(new_class + 'new-passed');
+				} else {
+					$(row).addClass(new_class + 'new-blocked');
+				}
+			};
 
-			// Control of real time auditing
-			$(ID('#', 'control-log')).on('change', function (/*event*/) {
-				switch($('input[name="' + ID('control-log') + '"]:checked').val()) {
+			// Remove animation class when animation finished
+			$(ID('#', 'validation-logs')).on('animationend', function (/*event*/) {
+				$(this).find('tr[class*="' + new_class + 'new' + '"]').each(function (/*elm, index*/) {
+					var $this = $(this);
+					if (-1 !== $this.prop('class').indexOf('passed')) {
+						$this.addClass(new_class + 'passed').removeClass(new_class + 'new-passed');
+					} else {
+						$this.addClass(new_class + 'blocked').removeClass(new_class + 'new-blocked');
+					}
+				});
+				return false;
+			});
+
+			// Control of live update
+			$(ID('#', 'live-log')).on('change', function (/*event*/) {
+				switch($('input[name="' + ID('live-log') + '"]:checked').val()) {
 				  case 'start':
-					audit_start();
+					live_start();
 					break;
 				  case 'pause':
-					audit_pause();
+					live_pause();
 					break;
 				  case 'stop':
-					audit_stop();
+					live_stop();
 					break;
 				}
 			});
@@ -1458,16 +1475,18 @@
 
 				if (mode) {
 					$tr.show().next().next().next().nextAll().hide();
-					control.ajaxCMD = 'audit-stop';
+					control.ajaxCMD = 'live-stop';
 					options.order = [1, 'desc'];
+					options.createdRow = add_class;
 				} else {
 					$tr.hide().next().next().next().nextAll().show();
 					control.ajaxCMD = 'restore-logs';
 					options.order = [0, ''];
+					delete options.createdRow;
 				}
 
 				// Re-initialize datatables
-				$(ID('#', 'control-log-stop')).trigger('click');
+				$(ID('#', 'live-log-stop')).trigger('click');
 				table = initTable(tabNo, control, options);
 			}).trigger('change');
 

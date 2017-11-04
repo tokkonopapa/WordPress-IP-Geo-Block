@@ -185,7 +185,7 @@ ul.ip-geo-block-list label {
 }
 
 .ip-geo-block-loading,
-#ip-geo-block-audit-loading {
+#ip-geo-block-live-loading {
     background-size: 16px 16px;
     background-position: center center;
     background-repeat: no-repeat;
@@ -434,8 +434,17 @@ ol.ip-geo-block-top-list li code {
     margin-left: 0.25em;
 }
 
+/* SVG in google chart */
+svg a > text {
+    fill: #0073aa;
+    text-decoration: underline;
+}
+svg a:hover > text {
+    fill: #0096dd;
+}
+
 /*------------------------------------------------------------
- * customizing based on jquery.dataTables.css
+ * Customizing based on jquery.dataTables.css
  *------------------------------------------------------------*/
 table.dataTable {
     clear: none !important;
@@ -502,7 +511,7 @@ table.collapsed > tbody > tr > td.dataTables_empty:first-child::before {
     text-align: center;
 }
 
-/* Column for checkbox */
+/* Checkbox column */
 table.dataTable thead > tr > th:first-child.sorting_asc {
     background-image: none !important;
 }
@@ -656,36 +665,49 @@ input#ip_geo_block_settings_search_filter {
     padding-top: 3px;
 }
 
+/* Transition for new row */
+table.dataTable.display tbody tr.ip-geo-block-passed {
+  background-color: #e0efff !important;
+}
+table.dataTable.display tbody tr.ip-geo-block-blocked {
+  background-color: #ffe7e7 !important;
+}
+.ip-geo-block-new-passed {
+    animation: ip-geo-block-flash-passed 1s ease-out 0s 1 normal both running;
+}
+.ip-geo-block-new-blocked {
+    animation: ip-geo-block-flash-blocked 1s ease-out 0s 1 normal both running;
+}
+@keyframes ip-geo-block-flash-passed {
+      0% { background-color: #ffd700; }
+    100% { background-color: #e0efff; }
+}
+@keyframes ip-geo-block-flash-blocked {
+      0% { background-color: #ffd700; }
+    100% { background-color: #ffe7e7; }
+}
+
 /* Mark.js */
 mark {
     padding: 0;
-    background: #FFD700; // Gold
+    background: #ffd700; // Gold
 }
 
-/* SVG in google chart */
-svg a > text {
-    fill: #0073aa;
-    text-decoration: underline;
-}
-svg a:hover > text {
-    fill: #0096dd;
-}
-
-/* audit log */
-ul#ip-geo-block-control-log {
+/* Live update log */
+ul#ip-geo-block-live-log {
     margin: 0;
 }
-ul#ip-geo-block-control-log li {
+ul#ip-geo-block-live-log li {
     float: left;
     margin-right: 3em;
 }
-ul#ip-geo-block-control-log li:last-child {
+ul#ip-geo-block-live-log li:last-child {
     margin-right: 0;
 }
-ul#ip-geo-block-control-log li input[type=radio] {
+ul#ip-geo-block-live-log li input[type=radio] {
     display: none;
 }
-ul#ip-geo-block-control-log li input[type=radio] + label {
+ul#ip-geo-block-live-log li input[type=radio] + label {
     display:inline-block;
     margin:-2px;
     padding: 4px 12px;
@@ -714,7 +736,7 @@ ul#ip-geo-block-control-log li input[type=radio] + label {
     -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
 }
-ul#ip-geo-block-control-log li input[type=radio]:checked + label {
+ul#ip-geo-block-live-log li input[type=radio]:checked + label {
     background-image: none;
     outline: 0;
     -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
@@ -723,9 +745,9 @@ ul#ip-geo-block-control-log li input[type=radio]:checked + label {
     background-color: #e0e0e0;
 }
 
-/**
+/*------------------------------------------------------------
  * Additional icons
- */
+ *------------------------------------------------------------*/
 @font-face {
   font-family: 'icomoon';
   src:  url('fonts/icomoon.eot?9y580b');

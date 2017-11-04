@@ -24,16 +24,16 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug
 		);
 
-		$html  = '<ul id="ip-geo-block-control-log">';
-		$html .= '<li><input type="radio" name="ip-geo-block-control-log" id="ip-geo-block-control-log-start" value="start"><label for="ip-geo-block-control-log-start" title="Start"><span class="icon-play3"></span></label></li>';
-		$html .= '<li><input type="radio" name="ip-geo-block-control-log" id="ip-geo-block-control-log-pause" value="pause"><label for="ip-geo-block-control-log-pause" title="Pause"><span class="icon-pause2"></span></label></li>';
-		$html .= '<li><input type="radio" name="ip-geo-block-control-log" id="ip-geo-block-control-log-stop"  value="stop" checked><label for="ip-geo-block-control-log-stop" title="Stop"><span class="icon-stop2"></span></label></li>';
+		$html  = '<ul id="ip-geo-block-live-log">';
+		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-start" value="start"><label for="ip-geo-block-live-log-start" title="Start"><span class="icon-play3"></span></label></li>';
+		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-pause" value="pause"><label for="ip-geo-block-live-log-pause" title="Pause"><span class="icon-pause2"></span></label></li>';
+		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-stop"  value="stop" checked><label for="ip-geo-block-live-log-stop" title="Stop"><span class="icon-stop2"></span></label></li>';
 		$html .= '</ul>';
 
-		$field = 'control-log';
+		$field = 'live-log';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Real time auditing', 'ip-geo-block' ) . '<div id="ip-geo-block-audit-loading"></div>',
+			__( 'Live update', 'ip-geo-block' ) . '<div id="ip-geo-block-live-loading"></div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

@@ -443,13 +443,13 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Open sqlite database for audit log
+	 * Open sqlite database for live log
 	 *
-	 * The absolute path should be returned by action hook `ip-geo-block-audit-log-dir`.
+	 * The absolute path should be returned by action hook `ip-geo-block-live-log-dir`.
 	 */
 	private static function open_sqlite_db() {
-		$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-audit-log-dir', get_temp_dir() );
-		$path = IP_Geo_Block_Util::slashit( $path ) . 'audit-log-' .  get_current_blog_id() . '.db';
+		$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-live-log-dir', get_temp_dir() );
+		$path = IP_Geo_Block_Util::slashit( $path ) . 'live-log-' .  get_current_blog_id() . '.db';
 
 		try {
 			$pdo = new PDO( 'sqlite:' . $path );
@@ -556,7 +556,7 @@ class IP_Geo_Block_Logs {
 			}
 		}
 
-		if ( get_transient( IP_Geo_Block::PLUGIN_NAME . '-audit-log' ) ) {
+		if ( get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' ) ) {
 			// skip self command
 			global $pagenow;
 			if ( 'admin-ajax.php' === $pagenow && isset( $_POST['action'] ) && 'ip_geo_block' === $_POST['action'] && isset( $_POST['cmd'] ) )
@@ -597,10 +597,10 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Restore the auditing log
+	 * Restore the live log
 	 *
 	 */
-	public static function restore_audit( $hook = NULL ) {
+	public static function restore_live( $hook = NULL ) {
 		if ( ! ( $pdo = self::open_sqlite_db() ) )
 			return array();
 
