@@ -40,6 +40,16 @@
 		return str.replace(/(<([^>]+)>)/ig, '');
 	}
 
+	function onresize(callback) {
+		var timer = false;
+		$(window).on('resize', function (/*event*/) {
+			if (false !== timer) {
+				clearTimeout(timer);
+			}
+			timer = setTimeout(callback, 200);
+		});
+	}
+
 	function loading(id, flag) {
 		if (flag) {
 			$(ID('#', id)).addClass(ID('loading'));
@@ -843,6 +853,11 @@
 			return false;
 		});
 
+		// draw when window is resized
+		onresize(function () {
+			table.draw();
+		});
+
 		return table;
 	}
 
@@ -1409,7 +1424,7 @@
 			pause = false,
 
 			// Live update mode
-			$mode = $(ID('#', 'realtime-mode')),
+			$mode = $(ID('#', 'live-update')),
 
 			// Control functions
 			live_start = function () {
@@ -1498,7 +1513,7 @@
 					$tr.hide().next().next().next().nextAll().show();
 					control.ajaxCMD = 'restore-logs';
 					options.order = [0, ''];
-					delete options.createdRow;
+					options.createdRow = null;
 				}
 
 				// Re-initialize datatables
