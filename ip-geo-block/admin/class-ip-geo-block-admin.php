@@ -254,32 +254,34 @@ class IP_Geo_Block_Admin {
 				'url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => IP_Geo_Block_Util::create_nonce( $this->get_ajax_action() ),
 				'dialog' => array(
-					__( 'Import settings ?',           'ip-geo-block' ), // [ 0]
-					__( 'Create table ?',              'ip-geo-block' ), // [ 1]
-					__( 'Delete table ?',              'ip-geo-block' ), // [ 2]
-					__( 'Clear statistics ?',          'ip-geo-block' ), // [ 3]
-					__( 'Clear cache ?',               'ip-geo-block' ), // [ 4]
-					__( 'Clear logs ?',                'ip-geo-block' ), // [ 5]
-					__( 'ajax for logged-in user',     'ip-geo-block' ), // [ 6]
-					__( 'ajax for non logged-in user', 'ip-geo-block' ), // [ 7]
-					__( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
+					/* [ 0] */ __( 'Import settings ?',           'ip-geo-block' ),
+					/* [ 1] */ __( 'Create table ?',              'ip-geo-block' ),
+					/* [ 2] */ __( 'Delete table ?',              'ip-geo-block' ),
+					/* [ 3] */ __( 'Clear statistics ?',          'ip-geo-block' ),
+					/* [ 4] */ __( 'Clear cache ?',               'ip-geo-block' ),
+					/* [ 5] */ __( 'Clear logs ?',                'ip-geo-block' ),
+					/* [ 6] */ __( 'ajax for logged-in user',     'ip-geo-block' ),
+					/* [ 7] */ __( 'ajax for non logged-in user', 'ip-geo-block' ),
+					/* [ 8] */ __( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
+					/* [ 9] */ __( 'The selected row cannot be found in the visible area.',    'ip-geo-block' ),
 				),
 				'language' => array(
-					__( 'No matching records found',   'ip-geo-block' ), // [ 0]
-					__( 'No data available in table',  'ip-geo-block' ), // [ 1]
-					__( 'IP address',                  'ip-geo-block' ), // [ 2]
-					__( 'Code',                        'ip-geo-block' ), // [ 3]
-					__( 'ASN',                         'ip-geo-block' ), // [ 4]
-					__( 'Host name',                   'ip-geo-block' ), // [ 5]
-					__( 'Target',                      'ip-geo-block' ), // [ 6]
-					__( 'Login / Call',                'ip-geo-block' ), // [ 7]
-					__( 'Elapsed[sec]',                'ip-geo-block' ), // [ 8]
-					__( 'Time',                        'ip-geo-block' ), // [ 9]
-					__( 'Result',                      'ip-geo-block' ), // [10]
-					__( 'Request',                     'ip-geo-block' ), // [11]
-					__( 'User agent',                  'ip-geo-block' ), // [12]
-					__( 'HTTP headers',                'ip-geo-block' ), // [13]
-					__( '$_POST data',                 'ip-geo-block' ), // [14]
+					/* [ 0] */ '<div class="ip-geo-block-loading"></div>',
+					/* [ 1] */ __( 'No data available in table',  'ip-geo-block' ),
+					/* [ 2] */ __( 'No matching records found',   'ip-geo-block' ),
+					/* [ 3] */ __( 'IP address',                  'ip-geo-block' ),
+					/* [ 4] */ __( 'Code',                        'ip-geo-block' ),
+					/* [ 5] */ __( 'ASN',                         'ip-geo-block' ),
+					/* [ 6] */ __( 'Host name',                   'ip-geo-block' ),
+					/* [ 7] */ __( 'Target',                      'ip-geo-block' ),
+					/* [ 8] */ __( 'Login / Call',                'ip-geo-block' ),
+					/* [ 9] */ __( 'Elapsed[sec]',                'ip-geo-block' ),
+					/* [10] */ __( 'Time',                        'ip-geo-block' ),
+					/* [11] */ __( 'Result',                      'ip-geo-block' ),
+					/* [12] */ __( 'Request',                     'ip-geo-block' ),
+					/* [13] */ __( 'User agent',                  'ip-geo-block' ),
+					/* [14] */ __( 'HTTP headers',                'ip-geo-block' ),
+					/* [15] */ __( '$_POST data',                 'ip-geo-block' ),
 				),
 				'interval' => 5000, // interval for live update [sec]
 			)

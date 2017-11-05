@@ -665,10 +665,10 @@
 
 			// Language
 			language: {
-				emptyTable:     '<div class="ip-geo-block-loading"></div>',
-				loadingRecords: '<div class="ip-geo-block-loading"></div>',
-				processing:     '<div class="ip-geo-block-loading"></div>',
-				zeroRecords:    ip_geo_block.language[0],
+				emptyTable:     ip_geo_block.language[1],
+				loadingRecords: ip_geo_block.language[0],
+				processing:     ip_geo_block.language[0],
+				zeroRecords:    ip_geo_block.language[2],
 				paginate: {
 					first:    '&laquo;',
 					last:     '&raquo;',
@@ -707,15 +707,20 @@
 
 			// draw callback
 			drawCallback: function (settings) {
+				var elm = $(ID('#', control.tableID)).find('td.dataTables_empty');
+
 				// avoid recursive call for ajax source
 				// 1: thead, 2: empty tbody, 3: after loading data
-				if (3 === settings.iDraw) {
+				if (3 > settings.iDraw) {
+					elm.html(ip_geo_block.language[0]);
+				}
+				else if (3 === settings.iDraw) {
 					// 'No data available in table'
-					$(ID('#', control.tableID)).find('td.dataTables_empty').html(ip_geo_block.language[1]);
+					elm.html(ip_geo_block.language[1]);
 
-					var $filter = $(ID('@', 'search_filter'));
-					if ($filter.val()) { // if a filter value exists in the text field
-						$filter.trigger('keyup'); // then search the text
+					elm = $(ID('@', 'search_filter'));
+					if (elm.val()) { // if a filter value exists in the text field
+						elm.trigger('keyup'); // then search the text
 					}
 				}
 			}
@@ -757,16 +762,27 @@
 
 		// Bulk action
 		$(ID('#', 'bulk-action')).on('click', function (/*event*/) {
-			var cell, data = { IP: [], AS: [] }, regexp = /(<([^>]+)>)/ig;
-			$('table.dataTable').find('td>input:checked').each(function (/*index*/) {
-				cell = table.cell($(this).parent()).data();
-				data.IP.push(cell[control.columnIP].replace(regexp, '')); // strip tag
-				data.AS.push(cell[control.columnAS].replace(regexp, '')); // strip tag
+			var cmd  = $(this).prev().val(), // value of selected option
+			    rexp = /(<([^>]+)>)/ig,      // regular expression to strip tag
+			    data = { IP: [], AS: [] },   // IP address and AS number
+			    cell, cells = $('table.dataTable').find('td>input:checked');
+
+			if (!cmd) {
+				return false;
+			} else if (!cells.length) {
+				warning(null, ip_geo_block.dialog[9]);
+				return false;
+			}
+
+			cells.each(function (/*index*/) {
+				cell = table.cell(this.parentNode).data();
+				data.IP.push(cell[control.columnIP].replace(rexp, ''));
+				data.AS.push(cell[control.columnAS].replace(rexp, ''));
 			});
 
 			if (data.IP.length) {
 				ajax_post('loading', {
-					cmd: $(this).prev().val(),
+					cmd: cmd,
 					which: data
 				}, function (data) {
 					if ('undefined' !== typeof data.page) {
@@ -1323,13 +1339,13 @@
 			}, {
 				columns: [
 					{ title: '<input type="checkbox">' }, // 0 checkbox
-					{ title: ip_geo_block.language[2] }, // 1 IP address
-					{ title: ip_geo_block.language[3] }, // 2 Country code
-					{ title: ip_geo_block.language[4] }, // 3 AS number
-					{ title: ip_geo_block.language[5] }, // 4 Host name
-					{ title: ip_geo_block.language[6] }, // 5 Target
-					{ title: ip_geo_block.language[7] }, // 6 Login fail/Call
-					{ title: ip_geo_block.language[8] }  // 7 Elapsed[sec]
+					{ title: ip_geo_block.language[3] }, // 1 IP address
+					{ title: ip_geo_block.language[4] }, // 2 Country code
+					{ title: ip_geo_block.language[5] }, // 3 AS number
+					{ title: ip_geo_block.language[6] }, // 4 Host name
+					{ title: ip_geo_block.language[7] }, // 5 Target
+					{ title: ip_geo_block.language[8] }, // 6 Login fail/Call
+					{ title: ip_geo_block.language[9] }  // 7 Elapsed[sec]
 				],
 				columnDefs: [
 					{ responsivePriority:  0, targets: 0 }, // checkbox
@@ -1360,16 +1376,16 @@
 			options = {
 				columns: [
 					{ title: '<input type=\"checkbox\">' }, // 0 checkbox
-					{ title: ip_geo_block.language[ 9] }, //  1 Time
-					{ title: ip_geo_block.language[ 2] }, //  2 IP address
-					{ title: ip_geo_block.language[ 3] }, //  3 Country code
-					{ title: ip_geo_block.language[ 4] }, //  4 AS number
-					{ title: ip_geo_block.language[ 6] }, //  5 Target
-					{ title: ip_geo_block.language[10] }, //  6 Result
-					{ title: ip_geo_block.language[11] }, //  7 Request
-					{ title: ip_geo_block.language[12] }, //  8 User agent
-					{ title: ip_geo_block.language[13] }, //  9 HTTP headers
-					{ title: ip_geo_block.language[14] }  // 10 $_POST data
+					{ title: ip_geo_block.language[10] }, //  1 Time
+					{ title: ip_geo_block.language[ 3] }, //  2 IP address
+					{ title: ip_geo_block.language[ 4] }, //  3 Country code
+					{ title: ip_geo_block.language[ 5] }, //  4 AS number
+					{ title: ip_geo_block.language[ 7] }, //  5 Target
+					{ title: ip_geo_block.language[11] }, //  6 Result
+					{ title: ip_geo_block.language[12] }, //  7 Request
+					{ title: ip_geo_block.language[13] }, //  8 User agent
+					{ title: ip_geo_block.language[14] }, //  9 HTTP headers
+					{ title: ip_geo_block.language[15] }  // 10 $_POST data
 				],
 				columnDefs: [
 					{ responsivePriority:  0, targets:  0 }, // checkbox

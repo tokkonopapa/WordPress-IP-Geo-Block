@@ -667,10 +667,10 @@ input#ip_geo_block_settings_search_filter {
 
 /* Transition for new row */
 table.dataTable.display tbody tr.ip-geo-block-passed {
-  background-color: #e0efff !important;
+  background-color: #edf6ff !important;
 }
 table.dataTable.display tbody tr.ip-geo-block-blocked {
-  background-color: #ffe7e7 !important;
+  background-color: #ffefef !important;
 }
 .ip-geo-block-new-passed {
     animation: ip-geo-block-flash-passed 1s ease-out 0s 1 normal both running;
@@ -680,11 +680,11 @@ table.dataTable.display tbody tr.ip-geo-block-blocked {
 }
 @keyframes ip-geo-block-flash-passed {
       0% { background-color: #ffd700; }
-    100% { background-color: #e0efff; }
+    100% { background-color: #edf6ff; }
 }
 @keyframes ip-geo-block-flash-blocked {
       0% { background-color: #ffd700; }
-    100% { background-color: #ffe7e7; }
+    100% { background-color: #ffefef; }
 }
 
 /* Mark.js */

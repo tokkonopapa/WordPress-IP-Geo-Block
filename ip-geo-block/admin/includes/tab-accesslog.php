@@ -30,6 +30,7 @@ class IP_Geo_Block_Admin_Tab {
 		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-stop"  value="stop" checked><label for="ip-geo-block-live-log-stop" title="Stop"><span class="icon-stop2"></span></label></li>';
 		$html .= '</ul>';
 
+		// Live update
 		$field = 'live-log';
 		add_settings_field(
 			$option_name.'_'.$field,
@@ -46,9 +47,7 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-if ( $options['validation']['reclogs'] ) :
-
-		// same as in tab-accesslog.php
+		// make a list of target (same as in tab-accesslog.php)
 		$target = array(
 			'comment' => __( 'Comment post',        'ip-geo-block' ),
 			'xmlrpc'  => __( 'XML-RPC',             'ip-geo-block' ),
@@ -57,13 +56,13 @@ if ( $options['validation']['reclogs'] ) :
 			'public'  => __( 'Public facing pages', 'ip-geo-block' ),
 		);
 
-		// make a list of target
 		$html = "\n".'<li><label><input type="radio" name="' . $plugin_slug . '-target" value="all" checked="checked" />' . __( 'All', 'ip-geo-block' ) . '</label></li>' . "\n";
 		foreach ( $target as $key => $val ) {
 			$html .= '<li><label><input type="radio" name="' . $plugin_slug . '-target" value="' . $key . '" />';
 			$html .= '<dfn title="' . $val . '">' . $key . '</dfn>' . '</label></li>' . "\n";
 		}
 
+		// Select target
 		$field = 'select_target';
 		add_settings_field(
 			$option_name.'_'.$field,
@@ -79,6 +78,7 @@ if ( $options['validation']['reclogs'] ) :
 			)
 		);
 
+		// Search in logs
 		$field = 'search_filter';
 		add_settings_field(
 			$option_name.'_'.$field,
@@ -95,6 +95,7 @@ if ( $options['validation']['reclogs'] ) :
 			)
 		);
 
+		// Bulk action
 		$field = 'bulk_action';
 		add_settings_field(
 			$option_name.'_'.$field,
@@ -118,6 +119,7 @@ if ( $options['validation']['reclogs'] ) :
 			)
 		);
 
+		// Clear logs
 		$field = 'clear_all';
 		add_settings_field(
 			$option_name.'_'.$field,
@@ -135,6 +137,7 @@ if ( $options['validation']['reclogs'] ) :
 			)
 		);
 
+		// Export logs
 		$field = 'export_logs';
 		add_settings_field(
 			$option_name.'_'.$field,
@@ -150,8 +153,6 @@ if ( $options['validation']['reclogs'] ) :
 			)
 		);
 
-endif; // $options['validation']['reclogs']
-
 	}
 
 	/**
@@ -165,6 +166,7 @@ endif; // $options['validation']['reclogs']
 	public static function warn_accesslog() {
 		echo '<p style="padding:0 1em">', __( '[<strong>Record validation logs</strong>] on [<strong>Settings</strong>] tab is [<strong>Disable</strong>].', 'ip-geo-block' ), '</p>', "\n";
 		echo '<p style="padding:0 1em">', __( 'Please select the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
+		self::validation_logs();
 	}
 
 }
