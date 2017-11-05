@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-11-05 19:08+0900\n"
-"PO-Revision-Date: 2017-11-05 19:15+0900\n"
+"POT-Creation-Date: 2017-11-05 21:46+0900\n"
+"PO-Revision-Date: 2017-11-05 21:55+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr ""
 #: classes/class-ip-geo-block-opts.php:405
 #: classes/class-ip-geo-block-cron.php:273
 #: classes/class-ip-geo-block-cron.php:305
-#: admin/class-ip-geo-block-admin.php:1201
+#: admin/class-ip-geo-block-admin.php:1199
 #: admin/includes/class-admin-rewrite.php:169
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
@@ -215,8 +215,8 @@ msgstr "開発に参加"
 #: admin/class-ip-geo-block-admin.php:314
 #: admin/class-ip-geo-block-admin.php:320
 #: admin/class-ip-geo-block-admin.php:430
-#: admin/class-ip-geo-block-admin.php:636
-#: admin/class-ip-geo-block-admin.php:655
+#: admin/class-ip-geo-block-admin.php:630
+#: admin/class-ip-geo-block-admin.php:649
 msgid "Settings"
 msgstr "設定"
 
@@ -230,8 +230,8 @@ msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
 #: admin/class-ip-geo-block-admin.php:438
-#: admin/class-ip-geo-block-admin.php:640
-#: admin/class-ip-geo-block-admin.php:656
+#: admin/class-ip-geo-block-admin.php:634
+#: admin/class-ip-geo-block-admin.php:650
 msgid "Site List"
 msgstr "サイト一覧"
 
@@ -311,46 +311,54 @@ msgstr ""
 "択されていますが、<strong>IP Geo Allow</strong> と互換性がありません。"
 "「&#8220;init&#8221; アクション・フック」を選択してください。"
 
-#: admin/class-ip-geo-block-admin.php:637
+#: admin/class-ip-geo-block-admin.php:631
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:638
+#: admin/class-ip-geo-block-admin.php:632
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:639
+#: admin/class-ip-geo-block-admin.php:633
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:641
+#: admin/class-ip-geo-block-admin.php:635
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:667
+#: admin/class-ip-geo-block-admin.php:661
 msgid "Network wide"
 msgstr "ネットワーク一括管理"
 
-#: admin/class-ip-geo-block-admin.php:680
+#: admin/class-ip-geo-block-admin.php:674
 msgid "Toggle all"
 msgstr "全てを開閉"
 
-#: admin/class-ip-geo-block-admin.php:683
+#: admin/class-ip-geo-block-admin.php:677
 msgid ""
 "Independent of &#8220;Record settings&#8221;, you can see all the validation "
 "results updated periodically."
 msgstr ""
 "［記録の設定］にかかわらず、検証結果のすべてをリアルタイムに表示します。"
 
-#: admin/class-ip-geo-block-admin.php:683 admin/includes/tab-accesslog.php:37
+#: admin/class-ip-geo-block-admin.php:677 admin/includes/tab-accesslog.php:37
 msgid "Live update"
 msgstr "ライブアップデート"
 
-#: admin/class-ip-geo-block-admin.php:706
+#: admin/class-ip-geo-block-admin.php:681
+msgid "Open a new window on clicking the link in the chart."
+msgstr "チャート内のリンクをクリックすると、新しいウィンドウが開きます。"
+
+#: admin/class-ip-geo-block-admin.php:681
+msgid "Open a new window"
+msgstr "別窓で開く"
+
+#: admin/class-ip-geo-block-admin.php:704
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:707
+#: admin/class-ip-geo-block-admin.php:705
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -360,19 +368,19 @@ msgstr ""
 "html\" title=\"Referer Checker\">参照元を残さずにリンク先にリダイレクトできま"
 "す</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:712
+#: admin/class-ip-geo-block-admin.php:710
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: admin/class-ip-geo-block-admin.php:809
+#: admin/class-ip-geo-block-admin.php:807
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:824
+#: admin/class-ip-geo-block-admin.php:822
 msgid "Select one"
 msgstr "何れかを選択"
 
-#: admin/class-ip-geo-block-admin.php:1231
+#: admin/class-ip-geo-block-admin.php:1229
 msgid "Settings saved."
 msgstr "設定を保存しました。"
 

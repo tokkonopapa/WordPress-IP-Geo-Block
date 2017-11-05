@@ -400,6 +400,7 @@ table.form-table th .ip-geo-block-cycle span {
     margin:0;
     text-align:right;
 }
+#ip-geo-block-open-new,
 #ip-geo-block-live-update {
     margin-left: 1em;
 }

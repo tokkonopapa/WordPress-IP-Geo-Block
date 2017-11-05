@@ -405,7 +405,8 @@
 		dataStacked: [],
 		viewStacked: [],
 		drawStacked: function (id) {
-			var i, data;
+			var i, data, mode = $(ID('#', 'open-new')).prop('checked');
+
 			if ('undefined' === typeof chart.dataStacked[id]) {
 				data = $.parseJSON($('#' + id).attr('data-' + id));
 				if (data) {
@@ -442,7 +443,7 @@
 							a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
 							a.setAttributeNS(n, 'xlink:href', info[i].link);
 							a.setAttributeNS(n, 'title', info[i].label);
-							a.setAttribute('target', '_blank');
+							a.setAttribute('target', mode ? '_blank' : '_self');
 							a.setAttribute('class', 'site');
 							a.appendChild(p.removeChild(elm));
 							p.appendChild(a);
@@ -1037,7 +1038,7 @@
 						return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
 					});
 
-					$(ID('#', 'actions')).find('input').each(function (/*i, event*/) {
+					$(ID('#', 'actions')).find('input').each(function (/*i, obj*/) {
 						var $this = $(this),
 							action = $this.attr('id').replace(ID('%', ''), '');
 						$this.prop('checked', -1 !== $.inArray(action, actions));
@@ -1423,9 +1424,6 @@
 			table = null,
 			pause = false,
 
-			// Live update mode
-			$mode = $(ID('#', 'live-update')),
-
 			// Control functions
 			live_start = function () {
 				ajax_post('live-loading', {
@@ -1461,11 +1459,14 @@
 				} else {
 					$(row).addClass(new_class + 'new-blocked');
 				}
-			};
+			},
+
+			// Live update mode
+			$mode = $(ID('#', 'live-update'));
 
 			// Remove animation class when animation finished
 			$(ID('#', 'validation-logs')).on('animationend', function (/*event*/) {
-				$(this).find('tr[class*="' + new_class + 'new' + '"]').each(function (/*elm, index*/) {
+				$(this).find('tr[class*="' + new_class + 'new' + '"]').each(function (/*index, obj*/) {
 					var $this = $(this);
 					if (-1 !== $this.prop('class').indexOf('passed')) {
 						$this.addClass(new_class + 'passed').removeClass(new_class + 'new-passed');
@@ -1496,7 +1497,7 @@
 				var $tr = $(ID('#', 'section-0')).find('.form-table>tbody>tr:first-child'),
 				    mode = $mode.prop('checked'); // checked in `display_plugin_admin_page()`
 
-				cookie[tabNo][1] = (mode) ? 'o' : 'x';
+				cookie[tabNo][1] = mode ? 'o' : 'x';
 				saveCookie(cookie);
 
 				// Delete old datatables
@@ -1669,10 +1670,22 @@
 
 			// Period to extract
 			$('input[name=' + ID('$', 'period') + ']:radio').on('click', function (/*event*/) {
-				var period = cookie[tabNo][1] = $(this).val();
+				var period = cookie[tabNo][2] = $(this).val();
 				saveCookie(cookie);
+
 				$(ID('.', 'multisite')).each(function (i, obj) {
 					chart.ajaxStacked($(obj).attr('id'), period);
+				});
+			});
+
+			// Live update mode
+			$(ID('#', 'open-new')).on('change', function (/*event*/) {
+				var mode = $(this).prop('checked');
+				cookie[tabNo][1] = mode ? 'o' : 'x';
+				saveCookie(cookie);
+
+				$(ID('#', 'section-0 svg')).find('a').each(function (/*index, obj*/) {
+					this.setAttribute('target', mode ? '_blank' : '_self');
 				});
 			});
 

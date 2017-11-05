@@ -24,7 +24,7 @@ class IP_Geo_Block_Admin_Tab {
 		 * Period to retrieve
 		 *----------------------------------------*/
 		self::$cookie = $context->get_cookie();
-		self::$cookie = isset( self::$cookie[5][1] ) ? self::$cookie[5][1] : 0;
+		self::$cookie = isset( self::$cookie[ $tab ][2] ) ? self::$cookie[ $tab ][2] : 0;
 
 		$period = array(
 			__( 'All',             'ip-geo-block' ),
