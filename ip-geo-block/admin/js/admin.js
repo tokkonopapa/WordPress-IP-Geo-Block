@@ -1667,6 +1667,7 @@
 			// https://developers.google.com/loader/#Dynamic
 			initChart(tabNo);
 
+			// Period to extract
 			$('input[name=' + ID('$', 'period') + ']:radio').on('click', function (/*event*/) {
 				var period = cookie[tabNo][1] = $(this).val();
 				saveCookie(cookie);
@@ -1674,6 +1675,9 @@
 					chart.ajaxStacked($(obj).attr('id'), period);
 				});
 			});
+
+			// Correct the `current` class because of the structure of sub manu.
+			$('ul.wp-submenu>li.wp-first-item').removeClass('current').next().addClass('current');
 			break;
 		}
 	}); // document.ready()

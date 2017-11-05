@@ -121,10 +121,9 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function verify_network_redirect( $queries, $settings ) {
-		if ( IP_Geo_Block_Util::is_user_logged_in() && $settings['network_wide'] ) {
-			if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) ) {
-				$queries[] = $_GET['page']; // $_GET['action'] should be checked in IP_Geo_Block::validate_admin()
-			}
+		// the request that is intended to show the page without any action follows authentication of core.
+		if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) && empty( $_GET['action'] ) ) {
+			$queries[] = $_GET['page'];
 		}
 
 		return $queries;
@@ -309,13 +308,19 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function add_action_links( $links ) {
+if (1):
+		// over network
 		return array_merge(
-			array(
-//				'settings' => '<a href="' . esc_url_raw( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( $this->is_network ) ) ) . '">' . __( 'Settings' ) . '</a>'
-				'settings' => '<a href="' . esc_url( admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME ) ) . '">' . __( 'Settings' ) . '</a>'
-			),
+			array( 'settings' => '<a href="' . esc_url_raw( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( $this->is_network ) ) ) . '">' . __( 'Settings' ) . '</a>' ),
 			$links
 		);
+else:
+		// just local site
+		return array_merge(
+			array( 'settings' => '<a href="' . esc_url( admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME ) ) . '">' . __( 'Settings' ) . '</a>' ),
+			$links
+		);
+endif;
 	}
 
 	/**
@@ -375,6 +380,7 @@ class IP_Geo_Block_Admin {
 		$admin_menu = 'admin_menu' === current_filter();
 		$this->is_network &= current_user_can( 'manage_network_options' ) && $settings['network_wide'];
 
+		// Verify tab number
 		if ( $this->is_network ) {
 			if ( $admin_menu ) {
 				$this->admin_tab = max( $this->admin_tab, 1 );
@@ -382,7 +388,7 @@ class IP_Geo_Block_Admin {
 				$this->admin_tab = 0;
 			}
 		} else {
-			$this->admin_tab = min( 4, $this->admin_tab ); // exclude `Sites` in multisite.
+			$this->admin_tab = min( 4, $this->admin_tab ); // exclude `Site List` in multisite.
 		}
 
 		if ( $admin_menu ) {
@@ -418,14 +424,22 @@ class IP_Geo_Block_Admin {
 				array( $this, 'display_plugin_admin_page' ),
 				'dashicons-shield' /*'dashicons-admin-site'*/ // plugins_url( 'images/icon-72x72.png', __FILE__ )
 			);
-			/*$hook = add_submenu_page(
-				'settings.php',
+			add_submenu_page(
+				IP_Geo_Block::PLUGIN_NAME,
 				__( 'IP Geo Block', 'ip-geo-block' ),
-				__( 'IP Geo Block', 'ip-geo-block' ),
+				__( 'Settings', 'ip-geo-block' ),
 				'manage_network_options',
 				IP_Geo_Block::PLUGIN_NAME,
 				array( $this, 'display_plugin_admin_page' )
-			);*/
+			);
+			add_submenu_page(
+				IP_Geo_Block::PLUGIN_NAME,
+				__( 'IP Geo Block', 'ip-geo-block' ),
+				__( 'Site List', 'ip-geo-block' ),
+				'manage_network_options',
+				IP_Geo_Block::PLUGIN_NAME . '&amp;tab=5',
+				array( $this, 'display_plugin_admin_page' )
+			);
 		}
 
 		// If successful, load admin assets only on this page.
@@ -617,7 +631,7 @@ class IP_Geo_Block_Admin {
 			1 => __( 'Statistics',   'ip-geo-block' ),
 			4 => __( 'Logs',         'ip-geo-block' ),
 			2 => __( 'Search',       'ip-geo-block' ),
-			5 => __( 'Sites',        'ip-geo-block' ),
+			5 => __( 'Site List',    'ip-geo-block' ),
 			3 => __( 'Attribution',  'ip-geo-block' ),
 		);
 
@@ -630,20 +644,21 @@ class IP_Geo_Block_Admin {
 			$action = 'options.php';
 
 			if ( $this->is_network ) {
-				unset( $tabs[0], $tabs[5] ); // Settings, Sites
+				unset( $tabs[0], $tabs[5] ); // Settings, Site List
 				$title .= ' <span class="ip-geo-block-title-link">';
-				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Network', 'ip-geo-block' ) . '</a> ]';
-				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Sites',   'ip-geo-block' ) . '</a> ]';
+				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Settings',  'ip-geo-block' ) . '</a> ]';
+				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Site List', 'ip-geo-block' ) . '</a> ]';
 				$title .= '</span>';
 			} else {
-				unset( $tabs[5] ); // Sites
+				unset( $tabs[5] ); // Site List
 			}
 		} else {
 			$action = 'edit.php?action=' . IP_Geo_Block::PLUGIN_NAME;
 
 			if ( $settings['network_wide'] ) {
 				unset( $tabs[1], $tabs[4], $tabs[2], $tabs[3] ); // Statistics, Logs, Search, Attribution
-				$title .= ' <span class="ip-geo-block-title-link">[ ' . __( 'Network', 'ip-geo-block' ) . ' ]';
+				$title .= ' <span class="ip-geo-block-title-link">';
+				$title .= '[ ' . __( 'Network wide', 'ip-geo-block' ) . ' ]';
 				$title .= '</span>';
 			}
 		}

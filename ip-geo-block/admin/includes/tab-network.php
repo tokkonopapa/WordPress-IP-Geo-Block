@@ -21,7 +21,7 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 		/*----------------------------------------*
-		 * Period to extract
+		 * Period to retrieve
 		 *----------------------------------------*/
 		self::$cookie = $context->get_cookie();
 		self::$cookie = isset( self::$cookie[5][1] ) ? self::$cookie[5][1] : 0;
@@ -44,7 +44,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'select_period';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Period to extract', 'ip-geo-block' ),
+			__( 'Period to retrieve', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

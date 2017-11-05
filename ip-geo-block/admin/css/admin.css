@@ -422,10 +422,10 @@ ol.ip-geo-block-top-list li code {
     background: none;
 }
 
-/* icon for top level menu */
-#toplevel_page_ip-geo-block .wp-menu-image img {
-    height: 18px;
-    width: 18px;
+/* icon for top level menu ... this must be included in every admin page */
+#adminmenu #toplevel_page_ip-geo-block .wp-menu-image img {
+    height: 20px !important;
+    width: 20px !important;
 }
 
 /* action for admin post */

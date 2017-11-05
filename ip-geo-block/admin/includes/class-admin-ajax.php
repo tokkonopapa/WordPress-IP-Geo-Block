@@ -239,13 +239,16 @@ class IP_Geo_Block_Admin_Ajax {
 			foreach( $logs as $val ) {
 				++$count[ $name ][ $val['hook'] ];
 			}
-
-			/*$count[ $name ]['link'] = esc_url( add_query_arg(
+if (1):
+			// over network
+			$count[ $name ]['link'] = esc_url( add_query_arg(
 				array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ),
 				admin_url( 'options-general.php' )
-			) );*/
+			) );
+else:
+			// just local site
 			$count[ $name ]['link'] = esc_url( admin_url() );
-
+endif;
 			restore_current_blog();
 		}
 
