@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-11-05 09:40+0900\n"
-"PO-Revision-Date: 2017-11-05 09:42+0900\n"
+"POT-Creation-Date: 2017-11-05 10:38+0900\n"
+"PO-Revision-Date: 2017-11-05 10:42+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -337,7 +337,7 @@ msgid ""
 msgstr ""
 "［記録の設定］にかかわらず、検証結果のすべてをリアルタイムに表示します。"
 
-#: admin/class-ip-geo-block-admin.php:662 admin/includes/tab-accesslog.php:36
+#: admin/class-ip-geo-block-admin.php:662 admin/includes/tab-accesslog.php:37
 msgid "Live update"
 msgstr "ライブアップデート"
 
@@ -375,88 +375,88 @@ msgstr "設定を保存しました。"
 msgid "Validation logs"
 msgstr "検証のログ"
 
-#: admin/includes/tab-accesslog.php:51 admin/includes/tab-settings.php:450
+#: admin/includes/tab-accesslog.php:52 admin/includes/tab-settings.php:450
 msgid "Comment post"
 msgstr "コメント投稿"
 
-#: admin/includes/tab-accesslog.php:52 admin/includes/tab-settings.php:451
+#: admin/includes/tab-accesslog.php:53 admin/includes/tab-settings.php:451
 msgid "XML-RPC"
 msgstr "XML-RPC"
 
-#: admin/includes/tab-accesslog.php:53 admin/includes/tab-settings.php:452
+#: admin/includes/tab-accesslog.php:54 admin/includes/tab-settings.php:452
 msgid "Login form"
 msgstr "ログイン・フォーム"
 
-#: admin/includes/tab-accesslog.php:54 admin/includes/tab-settings.php:453
+#: admin/includes/tab-accesslog.php:55 admin/includes/tab-settings.php:453
 msgid "Admin area"
 msgstr "管理領域"
 
-#: admin/includes/tab-accesslog.php:55 admin/includes/tab-settings.php:455
+#: admin/includes/tab-accesslog.php:56 admin/includes/tab-settings.php:455
 msgid "Public facing pages"
 msgstr "一般公開ページ"
 
-#: admin/includes/tab-accesslog.php:58 admin/includes/tab-network.php:30
+#: admin/includes/tab-accesslog.php:59 admin/includes/tab-network.php:30
 msgid "All"
 msgstr "全て"
 
-#: admin/includes/tab-accesslog.php:67
+#: admin/includes/tab-accesslog.php:69
 msgid "Select target"
 msgstr "対象を選択"
 
-#: admin/includes/tab-accesslog.php:82
+#: admin/includes/tab-accesslog.php:85
 msgid "Search in logs"
 msgstr "ログを検索"
 
-#: admin/includes/tab-accesslog.php:91 admin/includes/tab-statistics.php:235
+#: admin/includes/tab-accesslog.php:94 admin/includes/tab-statistics.php:235
 msgid "Reset"
 msgstr "リセット"
 
-#: admin/includes/tab-accesslog.php:98 admin/includes/tab-statistics.php:242
+#: admin/includes/tab-accesslog.php:102 admin/includes/tab-statistics.php:242
 msgid "Bulk action"
 msgstr "選択して実行"
 
-#: admin/includes/tab-accesslog.php:109 admin/includes/tab-statistics.php:254
+#: admin/includes/tab-accesslog.php:113 admin/includes/tab-statistics.php:254
 msgid "Add IP address to &#8220;Whitelist&#8221;"
 msgstr "IPアドレスをホワイトリストへ追加"
 
-#: admin/includes/tab-accesslog.php:110 admin/includes/tab-statistics.php:255
+#: admin/includes/tab-accesslog.php:114 admin/includes/tab-statistics.php:255
 msgid "Add IP address to &#8220;Blacklist&#8221;"
 msgstr "IPアドレスをブラックリストへ追加"
 
-#: admin/includes/tab-accesslog.php:111 admin/includes/tab-statistics.php:256
+#: admin/includes/tab-accesslog.php:115 admin/includes/tab-statistics.php:256
 msgid "Add AS number to &#8220;Whitelist&#8221;"
 msgstr "AS番号をホワイトリストへ追加"
 
-#: admin/includes/tab-accesslog.php:112 admin/includes/tab-statistics.php:257
+#: admin/includes/tab-accesslog.php:116 admin/includes/tab-statistics.php:257
 msgid "Add AS number to &#8220;Blacklist&#8221;"
 msgstr "AS番号をブラックリストへ追加"
 
-#: admin/includes/tab-accesslog.php:114 admin/includes/tab-statistics.php:259
+#: admin/includes/tab-accesslog.php:118 admin/includes/tab-statistics.php:259
 msgid "Apply"
 msgstr "実行する"
 
-#: admin/includes/tab-accesslog.php:123 admin/includes/tab-statistics.php:198
+#: admin/includes/tab-accesslog.php:126 admin/includes/tab-statistics.php:198
 msgid "Clear logs"
 msgstr "ログをクリア"
 
-#: admin/includes/tab-accesslog.php:131 admin/includes/tab-statistics.php:173
+#: admin/includes/tab-accesslog.php:134 admin/includes/tab-statistics.php:173
 #: admin/includes/tab-statistics.php:206 admin/includes/tab-statistics.php:274
 msgid "Clear all"
 msgstr "全てをクリア"
 
-#: admin/includes/tab-accesslog.php:140
+#: admin/includes/tab-accesslog.php:144
 msgid "Export logs"
 msgstr "ログをエクスポート"
 
-#: admin/includes/tab-accesslog.php:146 admin/includes/tab-settings.php:1445
+#: admin/includes/tab-accesslog.php:150 admin/includes/tab-settings.php:1445
 msgid "Export to the local file"
 msgstr "ローカル・ファイルへエクスポートする"
 
-#: admin/includes/tab-accesslog.php:146
+#: admin/includes/tab-accesslog.php:150
 msgid "Export csv"
 msgstr "CSVへエクスポート"
 
-#: admin/includes/tab-accesslog.php:165 admin/includes/tab-statistics.php:396
+#: admin/includes/tab-accesslog.php:167 admin/includes/tab-statistics.php:396
 msgid ""
 "[<strong>Record validation logs</strong>] on [<strong>Settings</strong>] tab "
 "is [<strong>Disable</strong>]."
@@ -464,7 +464,7 @@ msgstr ""
 "［<strong>設定</strong>］タブの［<strong>検証のログを記録</strong>］に"
 "［<strong>無効</strong>］が選択されています。"
 
-#: admin/includes/tab-accesslog.php:166
+#: admin/includes/tab-accesslog.php:168
 msgid ""
 "Please select the proper condition to record and analyze the validation logs."
 msgstr "検証のログを記録し分析するためには、適切な条件を選択して下さい。"
@@ -1119,7 +1119,7 @@ msgstr "検証の統計を記録"
 
 #: admin/includes/tab-settings.php:1176
 msgid "Maximum period for validation statistics (days)"
-msgstr "記録する検証統計の最大期間（日）"
+msgstr "記録する統計の最大期間（日）"
 
 #: admin/includes/tab-settings.php:1194
 msgid "Record validation logs"
@@ -1134,16 +1134,16 @@ msgid "Only when blocked"
 msgstr "遮断時に記録"
 
 #: admin/includes/tab-settings.php:1208
-msgid "Blocked / UA Qualified"
-msgstr "遮断時またはUA条件適合時に記録"
+msgid "Blocked / Blacklisted"
+msgstr "遮断時、ブラックリスト適合時に記録"
 
 #: admin/includes/tab-settings.php:1209
-msgid "Unauthenticated user"
-msgstr "未認証ユーザーを記録"
+msgid "Unauthenticated visitor"
+msgstr "未認証の訪問者を記録"
 
 #: admin/includes/tab-settings.php:1210
 msgid "Authenticated user"
-msgstr "認証済ユーザーを記録"
+msgstr "認証済のユーザーを記録"
 
 #: admin/includes/tab-settings.php:1211
 msgid "All of validation"
@@ -1151,7 +1151,7 @@ msgstr "すべての検証を記録"
 
 #: admin/includes/tab-settings.php:1220
 msgid "Maximum entries for validation logs"
-msgstr "記録する検証ログの最大エントリ数"
+msgstr "記録するログの最大エントリ数"
 
 #: admin/includes/tab-settings.php:1237
 msgid ""
