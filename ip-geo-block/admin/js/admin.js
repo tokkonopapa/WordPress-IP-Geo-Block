@@ -42,7 +42,7 @@
 
 	function onresize(callback) {
 		var timer = false;
-		$(window).on('resize', function (/*event*/) {
+		$(window).off('resize').on('resize', function (/*event*/) {
 			if (false !== timer) {
 				clearTimeout(timer);
 			}
@@ -751,20 +751,20 @@
 		});
 
 		// Re-calculate the widths after panel-body is shown
-		$(ID('#', control.sectionID)).find('.panel-body').on(ID('show-body'), function (/*event*/) {
+		$(ID('#', control.sectionID)).find('.panel-body').off(ID('show-body')).on(ID('show-body'), function (/*event*/) {
 			table.columns.adjust().responsive.recalc();
 			return false;
 		})
 
 		// Handle the event of checkbox in the first row for bulk action
-		.on('change', 'th>input[type="checkbox"]', function (/*event*/) {
+		.off('change').on('change', 'th>input[type="checkbox"]', function (/*event*/) {
 			var prop = $(this).prop('checked');
 			$(ID('#', control.tableID)).find('td>input[type="checkbox"]').prop('checked', prop);
 			return false;
 		});
 
 		// Select target (radio button)
-		$(ID('#', 'select-target')).on('change', function (/*event*/) {
+		$(ID('#', 'select-target')).off('change').on('change', function (/*event*/) {
 			var val = $(this).find('input[name="' + ID('$', 'target') + '"]:checked').val();
 			// search only the specified column for selecting "Target"
 			table.columns(control.targetColumn).search('all' !== val ? val : '').draw();
@@ -772,7 +772,7 @@
 		}).trigger('change');
 
 		// Bulk action
-		$(ID('#', 'bulk-action')).on('click', function (/*event*/) {
+		$(ID('#', 'bulk-action')).off('click').on('click', function (/*event*/) {
 			var cmd  = $(this).prev().val(), // value of selected option
 			    rexp = /(<([^>]+)>)/ig,      // regular expression to strip tag
 			    data = { IP: [], AS: [] },   // IP address and AS number
@@ -809,20 +809,20 @@
 		});
 
 		// Search filter
-		$(ID('@', 'search_filter')).on('keyup', function (/*event*/) {
+		$(ID('@', 'search_filter')).off('keyup').on('keyup', function (/*event*/) {
 			table.search(this.value, false, true, !/[A-Z]/.test(this.value)).draw();
 			return false;
 		});
 
 		// Reset filter
-		$(ID('#', 'reset-filter')).on('click', function (/*event*/) {
+		$(ID('#', 'reset-filter')).off('click').on('click', function (/*event*/) {
 			$(ID('@', 'search_filter')).val('');
 			table.search('').draw();
 			return false;
 		});
 
 		// Clear all
-		$(ID('@', 'clear_all')).on('click', function (/*event*/) {
+		$(ID('@', 'clear_all')).off('click').on('click', function (/*event*/) {
 			confirm(ip_geo_block.dialog[tabNo === 1 ? 4 : 5], function () {
 				ajax_clear(tabNo === 1 ? 'cache' : 'logs', null);
 			});
@@ -830,7 +830,7 @@
 		});
 
 		// Jump to search tab with opening a new window
-		$('table.dataTable tbody').on('click', 'a', function (/*event*/) {
+		$('table.dataTable tbody').off('click').on('click', 'a', function (/*event*/) {
 			var p = window.location.search.slice(1).split('&'),
 			    n = p.length, q = {}, i, j;
 
@@ -840,7 +840,7 @@
 			}
 
 			// additional query
-			q.tab = 4; //tabNo === 1 ? 4 : 2;
+			q.tab = tabNo === 1 ? 4 : 2;
 			q.s = $(this).text().replace(/[^\w\.\:\*]/, '');
 
 			j = [];
