@@ -44,9 +44,10 @@
 		var timer = false;
 		$(window).off('resize').on('resize', function (/*event*/) {
 			if (false !== timer) {
-				clearTimeout(timer);
+				window.clearTimeout(timer);
 			}
-			timer = setTimeout(callback, 200);
+			timer = window.setTimeout(callback, 200);
+			return false;
 		});
 	}
 
@@ -655,7 +656,9 @@
 		return i;
 	}
 
-	// DataTables
+	/*--------------------------------------------------
+	 * DataTables for tab 1 (Statistics) and 4 (Logs)
+	 *--------------------------------------------------*/
 	function initTable(tabNo, control, options) {
 		$.extend(true, $.fn.dataTable.defaults, options, {
 			// DOM
@@ -737,6 +740,7 @@
 			}
 		});
 
+		// Instantiate datatable
 		var table = $(ID('#', control.tableID)).DataTable({
 			ajax: {
 				url: ip_geo_block.url,
@@ -748,15 +752,23 @@
 				}
 			},
 			mark: true // https://github.com/julmot/datatables.mark.js/
-		});
+		}),
+
+		// redraw when column size changed
+		redraw = function () {
+			table.columns.adjust().responsive.recalc().draw();
+		};
+
+		// draw when window is resized
+		onresize(redraw);
 
 		// Re-calculate the widths after panel-body is shown
 		$(ID('#', control.sectionID)).find('.panel-body').off(ID('show-body')).on(ID('show-body'), function (/*event*/) {
-			table.columns.adjust().responsive.recalc();
+			redraw();
 			return false;
 		})
 
-		// Handle the event of checkbox in the first row for bulk action
+		// Handle the event of checkbox in the title header for bulk action
 		.off('change').on('change', 'th>input[type="checkbox"]', function (/*event*/) {
 			var prop = $(this).prop('checked');
 			$(ID('#', control.tableID)).find('td>input[type="checkbox"]').prop('checked', prop);
@@ -852,11 +864,6 @@
 
 			window.open(window.location.pathname + '?' + j.join('&'), '_blank');
 			return false;
-		});
-
-		// draw when window is resized
-		onresize(function () {
-			table.draw();
 		});
 
 		return table;
@@ -1130,7 +1137,7 @@
 			}).trigger('change');
 
 			$(ID('@', 'validation_reclogs')).on('change', function (/*event*/) {
-				$(this).parent().parent().nextAll().find('input').prop('disabled', 0 == $(this).prop('selectedIndex'));
+				$(this).parent().parent().nextAll().find('input').prop('disabled', 0 === Number($(this).prop('selectedIndex')));
 			}).trigger('change');
 
 			/*---------------------------
@@ -1417,14 +1424,13 @@
 					{ responsivePriority: 10, targets: 10 }, // $_POST data
 					{ className: "all",       targets: [0, 1, 2, 3 ] }, // always visible
 					{ className: "none",      targets: [7, 8, 9, 10] }  // always hidden
-				],
+				]
 			},
 
-			timer = 0,
+			timer = false,
 			table = null,
-			pause = false,
 
-			// Control functions
+			// Controler functions for live update
 			live_start = function () {
 				ajax_post('live-loading', {
 					cmd: 'live-start'
@@ -1437,7 +1443,9 @@
 						table.draw(false);
 					}
 				});
-				timer = window.setTimeout(live_start, ip_geo_block.interval);
+				if (!timer) {
+					timer = window.setTimeout(live_start, ip_geo_block.interval);
+				}
 			},
 			live_stop = function (cmd) {
 				ajax_post(null, {
@@ -1445,6 +1453,7 @@
 				});
 				if (timer) {
 					window.clearTimeout(timer);
+					timer = false;
 				}
 			},
 			live_pause = function () {
@@ -1453,7 +1462,7 @@
 
 			// animation on added
 			new_class = ID('$', ''),
-			add_class = function (row, data, index) {
+			add_class = function (row, data/*, index*/) {
 				if (-1 !== data[6 /* result */].indexOf('passed')) {
 					$(row).addClass(new_class + 'new-passed');
 				} else {
@@ -1461,7 +1470,8 @@
 				}
 			},
 
-			// Live update mode
+			// Live update controler and mode
+			$cntl = $(ID('#', 'live-log')),
 			$mode = $(ID('#', 'live-update'));
 
 			// Remove animation class when animation finished
@@ -1478,7 +1488,7 @@
 			});
 
 			// Control of live update
-			$(ID('#', 'live-log')).on('change', function (/*event*/) {
+			$cntl.on('change', function (/*event*/) {
 				switch($('input[name="' + ID('live-log') + '"]:checked').val()) {
 				  case 'start':
 					live_start();
@@ -1494,7 +1504,7 @@
 
 			// on change mode
 			$mode.on('change', function (/*event*/) {
-				var $tr = $(ID('#', 'section-0')).find('.form-table>tbody>tr:first-child'),
+				var $tr = $cntl.closest('tr'),
 				    mode = $mode.prop('checked'); // checked in `display_plugin_admin_page()`
 
 				cookie[tabNo][1] = mode ? 'o' : 'x';
