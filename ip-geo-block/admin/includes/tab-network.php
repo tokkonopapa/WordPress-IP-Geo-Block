@@ -66,9 +66,25 @@ class IP_Geo_Block_Admin_Tab {
 		require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php';
 		$json = IP_Geo_Block_Admin_Ajax::restore_multisite( self::$cookie, FALSE );
 
+		$row = 1;
+		$col = 3;
+		$arr = array_chunk( $json, $row );
+		$num = count( $arr );
+
+		// start of wrapper for multi column
+		echo '<div class="ip-geo-block-container">', "\n", '<div class="ip-geo-block-row">', "\n";
+
 		// Embed array into data attribute as json
-//		echo '<div class="', IP_Geo_Block::PLUGIN_NAME, '-multisite" id="', $args['id'], '"></div>', "\n";
-		echo '<div class="', IP_Geo_Block::PLUGIN_NAME, '-multisite" id="', $args['id'], '" data-', $args['id'], '=\'', json_encode( $json ), '\'></div>';
+		for ( $i = 0; $i < $num; $i += $col ) {
+			for ( $j = 0; $i + $j < $num; ++$j ) {
+				$k = $i + $j;
+//				echo '<div class="', IP_Geo_Block::PLUGIN_NAME, '-multisite ', IP_Geo_Block::PLUGIN_NAME, '-column" id="', $args['id'], $k, '"></div>', "\n";
+				echo '<div class="', IP_Geo_Block::PLUGIN_NAME, '-multisite ', IP_Geo_Block::PLUGIN_NAME, '-column" id="', $args['id'], $k, '" data-', $args['id'], $k, '=\'', json_encode( $arr[ $k ] ), '\'></div>', "\n";
+			}
+		}
+
+		// end of wrapper for multi column
+		echo '</div>', "\n", '</div>', "\n";
 	}
 
 }

@@ -40,13 +40,16 @@
 		return str.replace(/(<([^>]+)>)/ig, '');
 	}
 
-	function onresize(callback) {
-		var timer = false;
+	function onresize(name, callback) {
+		var stack = stack || [];
+		if ('undefined' === typeof stack[name]) {
+			stack[name] = {timer: false, callback: callback};
+		}
 		$(window).off('resize').on('resize', function (/*event*/) {
-			if (false !== timer) {
-				window.clearTimeout(timer);
+			if (false !== stack[name].timer) {
+				window.clearTimeout(stack[name].time);
 			}
-			timer = window.setTimeout(callback, 200);
+			stack[name].time = window.setTimeout(stack[name].callback, 200);
 			return false;
 		});
 	}
@@ -521,6 +524,9 @@
 					drawChart(tabNo);
 				}
 			});
+			onresize('draw-chart.' + tabNo, function () {
+				drawChart(tabNo);
+			});
 		}
 	}
 
@@ -760,7 +766,7 @@
 		};
 
 		// draw when window is resized
-		onresize(redraw);
+		onresize('draw-table.' + tabNo, redraw);
 
 		// Re-calculate the widths after panel-body is shown
 		$(ID('#', control.sectionID)).find('.panel-body').off(ID('show-body')).on(ID('show-body'), function (/*event*/) {

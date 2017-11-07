@@ -445,6 +445,60 @@ svg a:hover > text {
 }
 
 /*------------------------------------------------------------
+ * multi column for Site List
+ * https://caniuse.com/#search=flexbox
+ *------------------------------------------------------------*/
+.ip-geo-block-container {
+  margin: 0 auto;
+  padding: 0 1em;
+  position: relative;
+  width: 100%;
+}
+.ip-geo-block-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-items: stretch; /* baseline */
+    padding: 0;
+    width: 100%;
+}
+.ip-geo-block-row .ip-geo-block-column {
+    display: block;
+    flex: 1 1 auto;
+    align-self: flex-start;
+    margin-left: 0;
+    max-width: 100%;
+    width: 100%;
+}
+.ip-geo-block-row .ip-geo-block-column.column-20 {
+    flex: 0 0 20%;
+    max-width: 20%;
+}
+.ip-geo-block-row .ip-geo-block-column.column-25 {
+    flex: 0 0 25%;
+    max-width: 25%;
+}
+.ip-geo-block-row .ip-geo-block-column.column-33 {
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
+}
+.ip-geo-block-row .ip-geo-block-column.column-50 {
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+@media (min-width: 40rem) {
+    .ip-geo-block-row {
+        flex-direction: row;
+        margin-left: -2em;
+        width: calc(100% + 2em);
+    }
+    .ip-geo-block-row .ip-geo-block-column {
+        margin-bottom: inherit;
+        padding: 0 1em;
+    }
+}
+
+/*------------------------------------------------------------
  * Customizing based on jquery.dataTables.css
  *------------------------------------------------------------*/
 table.dataTable {
