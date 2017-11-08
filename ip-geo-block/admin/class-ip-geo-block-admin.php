@@ -388,7 +388,7 @@ endif;
 				$this->admin_tab = 0;
 			}
 		} else {
-			$this->admin_tab = min( 4, $this->admin_tab ); // exclude `Site List` in multisite.
+			$this->admin_tab = min( 4, $this->admin_tab ); // exclude `Site List`
 		}
 
 		if ( $admin_menu ) {
@@ -1424,9 +1424,9 @@ endif;
 			);
 			break;
 
-		  case 'multisite-stat':
+		  case 'restore-network':
 			// Restore blocked per target in logs
-			$res = IP_Geo_Block_Admin_Ajax::restore_multisite( $which, FALSE );
+			$res = IP_Geo_Block_Admin_Ajax::restore_network( $which, FALSE );
 			break;
 
 		  case 'create-table':

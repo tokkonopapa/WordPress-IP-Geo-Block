@@ -9,7 +9,8 @@
 	'use strict';
 
 	// External variables
-	var ip_geo_block      = IP_GEO_BLOCK,
+	var timer_stack = [],
+	    ip_geo_block      = IP_GEO_BLOCK,
 	    ip_geo_block_auth = IP_GEO_BLOCK_AUTH;
 
 	function ID(selector, id) {
@@ -41,15 +42,14 @@
 	}
 
 	function onresize(name, callback) {
-		var stack = stack || [];
-		if ('undefined' === typeof stack[name]) {
-			stack[name] = {timer: false, callback: callback};
+		if ('undefined' === typeof timer_stack[name]) {
+			timer_stack[name] = {id: false, callback: callback};
 		}
 		$(window).off('resize').on('resize', function (/*event*/) {
-			if (false !== stack[name].timer) {
-				window.clearTimeout(stack[name].time);
+			if (false !== timer_stack[name].id) {
+				window.clearTimeout(timer_stack[name].id);
 			}
-			stack[name].time = window.setTimeout(stack[name].callback, 200);
+			timer_stack[name].time = window.setTimeout(timer_stack[name].callback, 200);
 			return false;
 		});
 	}
@@ -323,6 +323,19 @@
 		return -1;
 	}
 
+	// Split an array into chunks
+	function array_chunk(arr, size) {
+		var n = Math.ceil(arr.length / size),
+		    r = [], i, j;
+
+		for(i = 0; i < n; ++i) {
+			j = i * size;
+			r.push(arr.slice(j, j + size));
+		}
+
+		return r;
+	}
+
 	// google chart
 	var chart = {
 		// Pie Chart
@@ -408,11 +421,13 @@
 		// Stacked bar
 		dataStacked: [],
 		viewStacked: [],
-		drawStacked: function (id) {
+		drawStacked: function (id, range) {
 			var i, data, mode = $(ID('#', 'open-new')).prop('checked');
 
 			if ('undefined' === typeof chart.dataStacked[id]) {
-				data = $.parseJSON($('#' + id).attr('data-' + id));
+				i = ID('$', 'range');
+				range = $.parseJSON($('#' + i ).attr('data-' + i ));
+				data  = $.parseJSON($('#' + id).attr('data-' + id));
 				if (data) {
 					data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', { role: 'link' } ]);
 					chart.dataStacked[id] = window.google.visualization.arrayToDataTable(data);
@@ -466,6 +481,10 @@
 					isStacked: true,
 					legend: { position: 'top' },
 					chartArea: { width: '70%' },
+					hAxis: {
+						minValue: 0,
+						maxValue: range[1]
+					},
 					backgroundColor: { fill: 'transparent' },
 					animation: {
 						startup: true,
@@ -475,23 +494,32 @@
 				});
 			}
 		},
-		ajaxStacked: function (id, period) {
-			ajax_post(id, {
-				cmd: 'multisite-stat',
+		ajaxStacked: function (period, row) {
+			period = Math.max( 0, Math.min( 4, period ) );
+			row    = Math.max( 1, Math.min( 5, row    ) );
+
+			ajax_post(null, {
+				cmd: 'restore-network',
 				which: period
 			}, function (data) {
-				var i, j,
-				    n = data.length,
-				    dt = chart.dataStacked[id];
+				var i, j, k = 0, id, dt, sum, max = 0, n = data.length;
 
-				for (i = 0; i < n; i++) {
-					// Column: 'site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', 'link'
-					for (j = 1; j <= 5; j++) {
-						dt.setValue(i, j, data[i][j]);
+				data = array_chunk(data, row);
+
+				$(ID('.', 'network')).each(function (index, obj) {
+					id = $(obj).prop('id');
+					dt = chart.dataStacked[id];
+
+					for (i = 0; i < row && k < n; ++i, ++k) {
+						// Column: 'site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', 'link'
+						for (sum = 0, j = 1; j <= 5; j++) {
+							sum += data[index][i][j];
+							dt.setValue(i, j, data[index][i][j]);
+						}
+						max = Math.max( max, sum );
 					}
-				}
-
-				chart.drawStacked(id);
+					chart.drawStacked(id, [0, max]);
+				});
 			});
 		}
 	};
@@ -503,7 +531,7 @@
 				chart.drawPie(ID('chart-countries'));
 				chart.drawLine(ID('chart-daily'), 'date');
 			} else if (5 === tabNo) {
-				$(ID('.', 'multisite')).each(function (i, obj) {
+				$(ID('.', 'network')).each(function (i, obj) {
 //					chart.drawLine($(obj).attr('id'), 'datetime');
 					chart.drawStacked($(obj).attr('id'));
 				});
@@ -848,7 +876,7 @@
 		});
 
 		// Jump to search tab with opening a new window
-		$('table.dataTable tbody').off('click').on('click', 'a', function (/*event*/) {
+		$('table.dataTable tbody').on('click', 'a', function (/*event*/) {
 			var p = window.location.search.slice(1).split('&'),
 			    n = p.length, q = {}, i, j;
 
@@ -1449,9 +1477,7 @@
 						table.draw(false);
 					}
 				});
-				if (!timer) {
-					timer = window.setTimeout(live_start, ip_geo_block.interval);
-				}
+				timer = window.setTimeout(live_start, ip_geo_block.interval);
 			},
 			live_stop = function (cmd) {
 				ajax_post(null, {
@@ -1686,12 +1712,9 @@
 
 			// Period to extract
 			$('input[name=' + ID('$', 'period') + ']:radio').on('click', function (/*event*/) {
-				var period = cookie[tabNo][2] = $(this).val();
+				cookie[tabNo][2] = $(this).val();
 				saveCookie(cookie);
-
-				$(ID('.', 'multisite')).each(function (i, obj) {
-					chart.ajaxStacked($(obj).attr('id'), period);
-				});
+				chart.ajaxStacked(cookie[tabNo][2] || 0, cookie[tabNo][3] || 1);
 			});
 
 			// Live update mode

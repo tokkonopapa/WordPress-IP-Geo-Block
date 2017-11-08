@@ -205,9 +205,9 @@ class IP_Geo_Block_Admin_Ajax {
 	 * Restore blocked per target in logs
 	 *
 	 * @param string $time    the number of selected period
-	 * @param int    $leteral JavaScript leteral notation
+	 * @param int    $leteral JavaScript literal notation
 	 */
-	static public function restore_multisite( $time, $leteral = FALSE ) {
+	static public function restore_network( $time, $literal = FALSE ) {
 		$zero = array(
 			'comment' => 0,
 			'xmlrpc'  => 0,
@@ -222,6 +222,7 @@ class IP_Geo_Block_Admin_Ajax {
 			WEEK_IN_SECONDS,  // Latest 1 week
 			MONTH_IN_SECONDS, // Latest 1 month
 		);
+
 		$json = array();
 		$time = isset( $period[ $time ] ) ? $period[ $time ] : 0; // Peroid to extract
 
@@ -252,7 +253,7 @@ endif;
 			restore_current_blog();
 		}
 
-		if ( $leteral ) {
+		if ( $literal ) {
 			// https://stackoverflow.com/questions/17327022/create-line-chart-using-google-chart-api-and-json-for-datatable
 			foreach ( $count as $key => $val ) {
 				$json['rows'][]['c'] = array(
