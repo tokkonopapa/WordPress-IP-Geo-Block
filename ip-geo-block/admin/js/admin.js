@@ -496,13 +496,14 @@
 		},
 		ajaxStacked: function (period, row) {
 			period = Math.max( 0, Math.min( 4, period ) );
-			row    = Math.max( 1, Math.min( 5, row    ) );
+			row    = Math.max( 1, Math.min( 5, row    ) ) * 5;
 
 			ajax_post(null, {
 				cmd: 'restore-network',
 				which: period
 			}, function (data) {
-				var i, j, k = 0, id, dt, sum, max = 0, n = data.length;
+				var i, j, k, n = data.length,
+				    id, dt, sum, max = 0;
 
 				data = array_chunk(data, row);
 
@@ -510,11 +511,11 @@
 					id = $(obj).prop('id');
 					dt = chart.dataStacked[id];
 
-					for (i = 0; i < row && k < n; ++i, ++k) {
-						// Column: 'site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', 'link'
+					for (i = 0; i < row && i < n; ++i) {
+						// Column: [0]:site, [1]:comment, [2]:xmlrpc, [3]:login, [4]:admin, [5]:public, [6]:link
 						for (sum = 0, j = 1; j <= 5; j++) {
-							sum += data[index][i][j];
-							dt.setValue(i, j, data[index][i][j]);
+							sum += (k = data[index][i][j]);
+							dt.setValue(i, j, k);
 						}
 						max = Math.max( max, sum );
 					}
@@ -539,13 +540,12 @@
 		}
 	}
 
-    function initChart(tabNo) {
-		var packages = ['corechart'];
-		if (5 === tabNo) {
-			packages.push('bar');
-		}
-
+	function initChart(tabNo) {
 		if ('object' === typeof window.google) {
+			var packages = ['corechart'];
+			if (5 === tabNo) {
+				packages.push('bar');
+			}
 			window.google.load('visualization', '1', {
 				packages: packages,
 				callback: function () {
@@ -876,6 +876,7 @@
 		});
 
 		// Jump to search tab with opening a new window
+		// @note: `click` cannot be `off` because it's a root.
 		$('table.dataTable tbody').on('click', 'a', function (/*event*/) {
 			var p = window.location.search.slice(1).split('&'),
 			    n = p.length, q = {}, i, j;
@@ -1472,12 +1473,13 @@
 					if (res.data.length) {
 						var i, n = res.data.length;
 						for (i = 0; i < n; i++) {
-							table.row.add(res.data[i]); // doesn't work `raws.add()` because it needs object.
+							// `raws.add()` doesn't work because it needs js literal object.
+							table.row.add(res.data[i]);
 						}
-						table.draw(false);
+						table.draw(false); // the current page will still be shown.
 					}
+					timer = window.setTimeout(live_start, ip_geo_block.interval);
 				});
-				timer = window.setTimeout(live_start, ip_geo_block.interval);
 			},
 			live_stop = function (cmd) {
 				ajax_post(null, {

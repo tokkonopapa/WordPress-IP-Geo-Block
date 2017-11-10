@@ -1,7 +1,7 @@
 <?php
 class IP_Geo_Block_Admin_Tab {
 
-	// selected period
+	// [0]:Section, [1]:Open a new window, [2]:Period to retrieve, [3]:Row, [4]:Column
 	static $cookie;
 
 	public static function tab_setup( $context, $tab ) {
@@ -23,14 +23,20 @@ class IP_Geo_Block_Admin_Tab {
 		/*----------------------------------------*
 		 * Period to retrieve
 		 *----------------------------------------*/
-		self::$cookie = $context->get_cookie();
-		self::$cookie = isset( self::$cookie[ $tab ] ) ? self::$cookie[ $tab ] : [
-			'o', // [0]: section
-			'x', // [1]: open a new window
+		$default = array(
+			'o', // [0]: Section
+			'x', // [1]: Open a new window
 			'0', // [2]: Period to retrieve
-			'0', // [3]: Row
-			'0', // [4]: Column
-		];
+			'2', // [3]: Row 1, 2, 4
+			'1', // [4]: Column 1, 2, 3, 4, 5
+		);
+		self::$cookie = $context->get_cookie();
+		self::$cookie = empty( self::$cookie[ $tab ] ) ? $default : self::$cookie[ $tab ];
+
+		for ( $i = 0; $i < 5; ++$i ) {
+			if ( empty( self::$cookie[ $i ] ) )
+				self::$cookie[ $i ] = $default[ $i ];
+		}
 
 		$period = array(
 			__( 'All',             'ip-geo-block' ),
@@ -72,36 +78,69 @@ class IP_Geo_Block_Admin_Tab {
 		require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php';
 		$json = IP_Geo_Block_Admin_Ajax::restore_network( self::$cookie[2], FALSE );
 
+		// selection for row and column
+		$row = min( 4, max( 1, (int)self::$cookie[3] ) ) * 5;
+		$col = min( 5, max( 1, (int)self::$cookie[4] ) );
+		echo '<div class="ip-geo-block-container">', "\n";
+		echo '<div class="ip-geo-block-row">', "\n",
+		        '<div class="ip-geo-block-column column-25">', "\n",
+		            __( 'Rows', 'ip-geo-block' ), ' : <select name="rows">', "\n",
+		                '<option value="1"', selected(  5, $row, FALSE ), '> 5</option>', "\n",
+		                '<option value="2"', selected( 10, $row, FALSE ), '>10</option>', "\n",
+		                '<option value="4"', selected( 20, $row, FALSE ), '>20</option>', "\n",
+		            '</select>', "\n",
+		        '</div>', "\n",
+		        '<div class="ip-geo-block-column column-25">', "\n",
+		            __( 'Columns', 'ip-geo-block' ), ' : <select name="cols">', "\n",
+		                '<option value="1"', selected( 1, $col, FALSE ), '>1</option>', "\n",
+		                '<option value="2"', selected( 2, $col, FALSE ), '>2</option>', "\n",
+		                '<option value="3"', selected( 3, $col, FALSE ), '>3</option>', "\n",
+		                '<option value="4"', selected( 4, $col, FALSE ), '>4</option>', "\n",
+		                '<option value="5"', selected( 5, $col, FALSE ), '>5</option>', "\n",
+		            '</select>', "\n",
+		        '</div>', "\n",
+		      '</div>', "\n";
+
 		// calculate max value on hAxis
-		$s = 0;
-		$n = count( $json );
-		for ( $i = 0; $i < $n; ++$i ) {
-			$s = max( $s, array_sum( array_slice( $json[ $i ], 1, 5 ) ) );
+		$max = 0;
+		$num = count( $json );
+		for ( $i = 0; $i < $num; ++$i ) {
+			// [1]:site, [2]:comment, [3]:xmlrpc, [4]:login, [5]:admin, [6]:public
+			$max = max( $max, array_sum( array_slice( $json[ $i ], 1, 6 ) ) );
 		}
+		echo '<div class="ip-geo-block-row" id="ip-geo-block-range"',
+		     ' data-ip-geo-block-range="[0,', $max, ']">', "\n";
 
 		// row and column
-		$row = 1;
-		$col = 3;
 		$arr = array_chunk( $json, $row );
 		$num = count( $arr );
-
-		$p = max( 0, empty( $_SERVER['p']) ? 0 : (int)$_SERVER['p'] );
-
-		// start of wrapper for multi column
-		echo '<div class="ip-geo-block-container">', "\n", '<div class="ip-geo-block-row" id="ip-geo-block-range" data-ip-geo-block-range="[0,', $s, ']">', "\n";
+		$page = max( 0, empty( $_SERVER['p']) ? 0 : (int)$_SERVER['p'] );
 
 		// Embed array into data attribute as json
-		for ( $i = $col * $p; $i < $num; $i += $col ) {
+		for ( $i = $col * $page; $i < $num; $i += $col ) {
 			for ( $j = 0; $i + $j < $num; ++$j ) {
 				$k = $i + $j;
-				echo '<div class="ip-geo-block-network ip-geo-block-column" id="', $args['id'], '-', $k, '" data-', $args['id'], '-', $k, '=\'', json_encode( $arr[ $k ] ), '\'></div>', "\n";
+				echo '<div class="ip-geo-block-network ip-geo-block-column" ',
+				     'id="',  $args['id'], '-', $k, '" ',
+				     'data-', $args['id'], '-', $k, '=\'', json_encode( $arr[ $k ] ), '\'>',
+				     '</div>', "\n";
 			}
 		}
 
 		// end of wrapper for multi column
-		echo '</div>', "\n", '</div>', "\n";
+		echo '</div>', "\n"; // ip-geo-block-row
 
 		// pagination
+		echo '<div class="ip-geo-block-row">', "\n", '<div class="ip-geo-block-column">', "\n";
+		echo '&laquo;'; // top
+		echo '&rsaquo;'; // next
+		$num = ceil( $num / ($row * $col));
+		for ( $i = 0; $i < $num; ++$i ) {
+			echo $i;
+		}
+		echo '&lsaquo;';
+		echo '&raquo;', "\n";
+		echo '</div>', "\n", '</div>', "\n", '</div>', "\n"; // row, column, container
 	}
 
 }
