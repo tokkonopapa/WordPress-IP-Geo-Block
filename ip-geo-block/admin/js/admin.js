@@ -421,13 +421,11 @@
 		// Stacked bar
 		dataStacked: [],
 		viewStacked: [],
-		drawStacked: function (id, range) {
-			var i, data, mode = $(ID('#', 'open-new')).prop('checked');
+		drawStacked: function (id) {
+			var i, w, data, range, $id = $('#' + id);
 
 			if ('undefined' === typeof chart.dataStacked[id]) {
-				i = ID('$', 'range');
-				range = $.parseJSON($('#' + i ).attr('data-' + i ));
-				data  = $.parseJSON($('#' + id).attr('data-' + id));
+				data = $.parseJSON($id.attr('data-' + id));
 				if (data) {
 					data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', { role: 'link' } ]);
 					chart.dataStacked[id] = window.google.visualization.arrayToDataTable(data);
@@ -445,7 +443,8 @@
 					var i, a, p,
 					    info = [],
 					    data = chart.dataStacked[id],
-					    n = data.getNumberOfRows();
+					    n = data.getNumberOfRows(),
+					    mode = $(ID('#', 'open-new')).prop('checked');
 
 					for (i = 0; i < n; i++) {
 						info.push({
@@ -456,7 +455,7 @@
 
 					// https://stackoverflow.com/questions/12701772/insert-links-into-google-charts-api-data
 					n = 'http://www.w3.org/1999/xlink';
-					$('#' + id).find('text').each(function (i, elm) {
+					$id.find('text').each(function (i, elm) {
 						p = elm.parentNode;
 						if ('g' === p.tagName.toLowerCase() && -1 !== (i = inArray(elm.textContent, info))) {
 							a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
@@ -472,15 +471,28 @@
 				});
 			}
 
-			if ('undefined' !== typeof chart.dataStacked[id] &&	
-			    'undefined' !== typeof chart.viewStacked[id] &&
-			    0 < (i = $('#' + id).width())) {
-				chart.viewStacked[id].draw(chart.dataStacked[id], {
-					width: i,
+			if (0 < (w = $id.width()) &&
+			    'undefined' !== typeof chart.dataStacked[id] &&	
+			    'undefined' !== typeof chart.viewStacked[id]) {
+
+				i = ID('$', 'range');
+				range = $.parseJSON($('.' + i).attr('data-' + i));
+
+				data = chart.dataStacked[id];
+				i = 40 * data.getNumberOfRows();
+
+				chart.viewStacked[id].draw(data, {
+					width: w,
+					height: i + 80,
 					allowHtml: true,
 					isStacked: true,
 					legend: { position: 'top' },
-					chartArea: { width: '70%' },
+					chartArea: {
+						top: 50,
+						left: 90,
+						width: '100%',
+						height: i
+					},
 					hAxis: {
 						minValue: 0,
 						maxValue: range[1]
@@ -494,32 +506,33 @@
 				});
 			}
 		},
-		ajaxStacked: function (period, row) {
-			period = Math.max( 0, Math.min( 4, period ) );
-			row    = Math.max( 1, Math.min( 5, row    ) ) * 5;
+		ajaxStacked: function (duration, row, col, page) {
+			duration = Math.max( 0, Math.min( 4, duration ) );
+			row      = Math.max( 1, Math.min( 5, row      ) ) * 5;
 
 			ajax_post(null, {
 				cmd: 'restore-network',
-				which: period
+				which: duration,
+				offset: row * col * page,
+				length: row
 			}, function (data) {
-				var i, j, k, n = data.length,
-				    id, dt, sum, max = 0;
+				var i, j, k, n, id, dt;
 
 				data = array_chunk(data, row);
 
 				$(ID('.', 'network')).each(function (index, obj) {
-					id = $(obj).prop('id');
-					dt = chart.dataStacked[id];
-
-					for (i = 0; i < row && i < n; ++i) {
-						// Column: [0]:site, [1]:comment, [2]:xmlrpc, [3]:login, [4]:admin, [5]:public, [6]:link
-						for (sum = 0, j = 1; j <= 5; j++) {
-							sum += (k = data[index][i][j]);
-							dt.setValue(i, j, k);
+					if ('undefined' !== typeof data[index]) {
+						id = $(obj).attr('id');
+						dt = chart.dataStacked[id];
+						n = Math.min(row, data[index].length);
+						for (i = 0; i < n; ++i) {
+							// [0]:site, [1]:comment, [2]:xmlrpc, [3]:login, [4]:admin, [5]:public, [6]:link
+							for (j = 1; j <= 5; j++) {
+								dt.setValue(i, j, data[index][i][j]);
+							}
 						}
-						max = Math.max( max, sum );
+						chart.drawStacked(id);
 					}
-					chart.drawStacked(id, [0, max]);
 				});
 			});
 		}
@@ -1085,17 +1098,19 @@
 							action = $this.attr('id').replace(ID('%', ''), '');
 						$this.prop('checked', -1 !== $.inArray(action, actions));
 					});
+
 					return stopPropergation(event);
 				}).change();
 
 				// Candidate actions
 				$(ID('#', 'actions')).on('click', 'input', function (/*event*/) {
-					var i, $this = $(this),
-					action = $this.attr('id').replace(ID('%', ''), ''),
-					$admin = $(ID('@', 'exception_admin')),
-					actions = $.grep($admin.val().split(','), function (e){
-						return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
-					});
+					var i,
+					    $this = $(this),
+					    $admin = $(ID('@', 'exception_admin')),
+					    action = $this.attr('id').replace(ID('%', ''), ''),
+					    actions = $.grep($admin.val().split(','), function (e){
+					    	return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
+					    });
 
 					// find the action
 					i = $.inArray(action, actions);
@@ -1473,8 +1488,7 @@
 					if (res.data.length) {
 						var i, n = res.data.length;
 						for (i = 0; i < n; i++) {
-							// `raws.add()` doesn't work because it needs js literal object.
-							table.row.add(res.data[i]);
+							table.row.add(res.data[i]); // `raws.add()` doesn't work because it needs js literal object.
 						}
 						table.draw(false); // the current page will still be shown.
 					}
@@ -1712,22 +1726,33 @@
 			// https://developers.google.com/loader/#Dynamic
 			initChart(tabNo);
 
-			// Period to extract
-			$('input[name=' + ID('$', 'period') + ']:radio').on('click', function (/*event*/) {
-				cookie[tabNo][2] = $(this).val();
+			// Duration to retrieve
+			// [0]:Section, [1]:Open a new window, [2]:Duration to retrieve, [3]:Row, [4]:Column
+			$('input[name=' + ID('$', 'duration') + ']:radio').on('click', function (/*event*/) {
+				var page = $('div[class*="paginate"]').find('a[class*="current"]').text();
+				cookie[tabNo][2] = $(this).val()    || 0; // Duration to retrieve
+				cookie[tabNo][3] = cookie[tabNo][3] || 2; // Rows
+				cookie[tabNo][4] = cookie[tabNo][4] || 1; // Columns
 				saveCookie(cookie);
-				chart.ajaxStacked(cookie[tabNo][2] || 0, cookie[tabNo][3] || 1);
+				chart.ajaxStacked(cookie[tabNo][2], cookie[tabNo][3], cookie[tabNo][4], page - 1);
 			});
 
-			// Live update mode
+			// Open a new window
 			$(ID('#', 'open-new')).on('change', function (/*event*/) {
 				var mode = $(this).prop('checked');
 				cookie[tabNo][1] = mode ? 'o' : 'x';
 				saveCookie(cookie);
-
 				$(ID('#', 'section-0 svg')).find('a').each(function (/*index, obj*/) {
 					this.setAttribute('target', mode ? '_blank' : '_self');
 				});
+			});
+
+			// Chart display layout
+			$(ID('#', 'apply-layout')).on('click', function (/*event*/) {
+				var $select = $(ID('#', 'select-layout'));
+				cookie[tabNo][3] = $select.find('select[name="rows"] option:selected').val();
+				cookie[tabNo][4] = $select.find('select[name="cols"] option:selected').val();
+				saveCookie(cookie);
 			});
 
 			// Correct the `current` class because of the structure of sub manu.

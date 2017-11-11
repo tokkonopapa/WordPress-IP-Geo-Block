@@ -1,4 +1,9 @@
 <?php
+
+// Test for restore_network()
+define( 'TEST_RESTORE_NETWORK', FALSE );
+define( 'TEST_NETWORK_BLOG_COUNT', 30 );
+
 class IP_Geo_Block_Admin_Ajax {
 
 	/**
@@ -202,12 +207,25 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	/**
+	 * Get the number of active sites on your installation
+	 */
+	static public function get_network_count() {
+if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
+		return get_blog_count();
+else:
+		return TEST_NETWORK_BLOG_COUNT;
+endif;
+	}
+
+	/**
 	 * Restore blocked per target in logs
 	 *
-	 * @param string $time    the number of selected period
-	 * @param int    $leteral JavaScript literal notation
+	 * @param string $duration the number of selected duration
+	 * @param int    $offset the start of blog to restore logs
+	 * @param int    $length the number of blogs to restore logs from $offset
+	 * @param int    $literal JavaScript literal notation
 	 */
-	static public function restore_network( $time, $literal = FALSE ) {
+	static public function restore_network( $duration, $offset = 0, $length = 100, $literal = FALSE ) {
 		$zero = array(
 			'comment' => 0,
 			'xmlrpc'  => 0,
@@ -215,7 +233,8 @@ class IP_Geo_Block_Admin_Ajax {
 			'admin'   => 0,
 			'public'  => 0,
 		);
-		$period = array(
+
+		$time = array(
 			YEAR_IN_SECONDS,  // All
 			HOUR_IN_SECONDS,  // Latest 1 hour
 			DAY_IN_SECONDS,   // Latest 24 hours
@@ -223,35 +242,50 @@ class IP_Geo_Block_Admin_Ajax {
 			MONTH_IN_SECONDS, // Latest 1 month
 		);
 
-		$json = array();
-		$time = isset( $period[ $time ] ) ? $period[ $time ] : 0; // Peroid to extract
+		$i = 0;
+		$length += $offset;
+		$json = $count = array();
+		$duration = isset( $time[ $duration ] ) ? $time[ $duration ] : $time[0];
 
+if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
 		global $wpdb;
 		foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
 			switch_to_blog( $id );
 
-			// array of ( `time`, `ip`, `hook`, `code`, `method`, `data` )
-			$name = get_bloginfo( 'name' );
-			$logs = IP_Geo_Block_Logs::get_recent_logs( $time );
+			if ( $offset <= $i && $i < $length ) {
+				// array of ( `time`, `ip`, `hook`, `code`, `method`, `data` )
+				$name = get_bloginfo( 'name' );
+				$logs = IP_Geo_Block_Logs::get_recent_logs( $duration );
 
-			$count[ $name ] = $zero;
+				$count[ $name ] = $zero;
 
-			// Blocked hooks by time
-			foreach( $logs as $val ) {
-				++$count[ $name ][ $val['hook'] ];
+				// Blocked hooks by time
+				foreach( $logs as $val ) {
+					++$count[ $name ][ $val['hook'] ];
+				}
+
+				// link over network
+				$count[ $name ]['link'] = esc_url( add_query_arg(
+					array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ),
+					admin_url( 'options-general.php' )
+				) );
+
+				restore_current_blog();
 			}
-if (1):
-			// over network
-			$count[ $name ]['link'] = esc_url( add_query_arg(
-				array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ),
-				admin_url( 'options-general.php' )
-			) );
-else:
-			// just local site
-			$count[ $name ]['link'] = esc_url( admin_url() );
-endif;
-			restore_current_blog();
 		}
+else:
+		for ( $i = 0; $i < TEST_NETWORK_BLOG_COUNT; ++$i ) {
+			if ( $offset <= $i && $i < $length ) {
+				$count[ 'site-' . $i ] = array(
+					$i, $i, $i, $i, $i,
+					esc_url( add_query_arg(
+						array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ),
+						admin_url( 'options-general.php' )
+					) )
+				);
+			}
+		}
+endif; // TEST_RESTORE_NETWORK
 
 		if ( $literal ) {
 			// https://stackoverflow.com/questions/17327022/create-line-chart-using-google-chart-api-and-json-for-datatable
@@ -289,8 +323,7 @@ endif;
 				array( '\\"', '\\\\', "\'" ),
 				array( '"',   '\\',   "'"  ),
 				isset( $_POST['data'] ) ? $_POST['data'] : ''
-			),
-			TRUE
+			), TRUE
 		);
 
 		if ( NULL === $json )
@@ -302,8 +335,7 @@ endif;
 
 		// Integrate posted data into current settings because if can be a part of hole data
 		$input = array_replace_recursive(
-			$parent->preprocess_options( IP_Geo_Block::get_option(), IP_Geo_Block::get_default() ),
-			$input
+			$parent->preprocess_options( IP_Geo_Block::get_option(), IP_Geo_Block::get_default() ), $input
 		);
 
 		// Validate options and convert to json

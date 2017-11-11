@@ -596,7 +596,8 @@ endif;
 				// TRUE if open ('o') or FALSE if close ('x')
 				$stat = empty( $cookie[ $tab ][ $index ] ) || 'x' !== $cookie[ $tab ][ $index ];
 
-				echo '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n",
+				echo "\n",
+				     '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n",
 				     '<legend class="panel-heading"><h3 class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '">', $section['title'],
 				     '</h3></legend>', "\n", '<div class="panel-body',
 				     ($stat ? ' ' . IP_Geo_Block::PLUGIN_NAME . '-border"' : '"'),
@@ -1426,7 +1427,7 @@ endif;
 
 		  case 'restore-network':
 			// Restore blocked per target in logs
-			$res = IP_Geo_Block_Admin_Ajax::restore_network( $which, FALSE );
+			$res = IP_Geo_Block_Admin_Ajax::restore_network( $which, (int)$_POST['offset'], (int)$_POST['length'], FALSE );
 			break;
 
 		  case 'create-table':

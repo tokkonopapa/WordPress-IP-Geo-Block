@@ -379,7 +379,7 @@ dfn ~ .ip-geo-block-unlock {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAYFBMVEXc3NyzydRzq8dRmb7I09hYnsEFdK0AcawAcqzP1toqhrYAcKvZ29wAb6oMeK8zjbqrxtQBcazBz9Zko8MVfbLF0thMmL07kbtpp8WjwtJSmL1YnL+Tu89DlL1JmMEPebBFV++UAAAAAXRSTlMAQObYZgAAAONJREFUeAG9kAWChDAMAIMmJaTFXf7/ynXflvMbnE5j8DU8Pwh8D1yEUYxEGEchWFEJEjEflESBhTQSQm2MRpIotQhZTmgKgMIg5ZlFKBmrGg7UFXJpEQKW8qIKN7YeikJdBJI2BTtXwfyx0L3XoPphvBEliNU49OoxqEa6g4cTST/OYshvi3hV8+FxSNfluG3jqxG8C6h7gF6jU+AODnTsFGSCA5O4I8wpQDq7I5CUAKWQW+AZYOYtoQPoGDeECWDaioBmWQxeBduoWURso+5WpBdw7R4ENTVDcGE435tJwT+xB+vMEnZRNB0YAAAAAElFTkSuQmCC);
 }
 table.form-table th .ip-geo-block-cycle span {
-  vertical-align: text-bottom;
+    vertical-align: text-bottom;
 }
 
 /* https://developer.wordpress.org/resource/dashicons/ for WordPress 3.8
@@ -651,6 +651,7 @@ table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
     margin: 0.5em 0 0 0;
     padding: 0.25em 0;
     display: inline-block;
+    text-decoration: none;
 }
 .dataTables_wrapper .dataTables_paginate        > a.paginate_button:first-child,
 .dataTables_wrapper .dataTables_paginate:hover  > a.paginate_button:first-child,
@@ -701,16 +702,18 @@ table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
 
 /* Select target / Period to extract */
 ul#ip-geo-block-select-target,
-ul#ip-geo-block-select-period {
+ul#ip-geo-block-select-layout,
+ul#ip-geo-block-select-duration {
     margin: 0;
 }
 ul#ip-geo-block-select-target li,
-ul#ip-geo-block-select-period li {
+ul#ip-geo-block-select-layout li,
+ul#ip-geo-block-select-duration li {
     float: left;
     margin-right: 1.5em;
 }
 ul#ip-geo-block-select-target li label,
-ul#ip-geo-block-select-period li label {
+ul#ip-geo-block-select-duration li label {
     cursor: pointer;
 }
 
@@ -722,10 +725,10 @@ input#ip_geo_block_settings_search_filter {
 
 /* Transition for new row */
 table.dataTable.display tbody tr.ip-geo-block-passed {
-  background-color: #edf6ff !important;
+    background-color: #edf6ff !important;
 }
 table.dataTable.display tbody tr.ip-geo-block-blocked {
-  background-color: #ffefef !important;
+    background-color: #ffefef !important;
 }
 .ip-geo-block-new-passed {
     animation: ip-geo-block-flash-passed 1s ease-out 0s 1 normal both running;
@@ -804,36 +807,36 @@ ul#ip-geo-block-live-log li input[type=radio]:checked + label {
  * Additional icons
  *------------------------------------------------------------*/
 @font-face {
-  font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?9y580b');
-  src:  url('fonts/icomoon.eot?9y580b#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?9y580b') format('truetype'),
-    url('fonts/icomoon.woff?9y580b') format('woff'),
-    url('fonts/icomoon.svg?9y580b#icomoon') format('svg');
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'icomoon';
+    src: url('fonts/icomoon.eot?9y580b');
+    src: url('fonts/icomoon.eot?9y580b#iefix') format('embedded-opentype'),
+         url('fonts/icomoon.ttf?9y580b') format('truetype'),
+         url('fonts/icomoon.woff?9y580b') format('woff'),
+         url('fonts/icomoon.svg?9y580b#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
 
 [class^="icon-"], [class*=" icon-"] {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'icomoon' !important;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .icon-play3:before {
-  content: "\ea1c";
+    content: "\ea1c";
 }
 .icon-pause2:before {
-  content: "\ea1d";
+    content: "\ea1d";
 }
 .icon-stop2:before {
-  content: "\ea1e";
+    content: "\ea1e";
 }
