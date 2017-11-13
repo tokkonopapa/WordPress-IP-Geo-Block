@@ -460,6 +460,7 @@ class IP_Geo_Block_Logs {
 
 		try {
 			$pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+			$pdo->setAttribute( PDO::ATTR_TIMEOUT, 2 );
 			$pdo->exec( "CREATE TABLE IF NOT EXISTS logs (
 				No INTEGER PRIMARY KEY AUTOINCREMENT,
 				time bigint NOT NULL,
@@ -547,8 +548,7 @@ class IP_Geo_Block_Logs {
 
 			// backup logs to text files
 			if ( $dir = apply_filters(
-				IP_Geo_Block::PLUGIN_NAME . '-backup-dir',
-				$settings['validation']['backup'], $hook
+				IP_Geo_Block::PLUGIN_NAME . '-backup-dir', $settings['validation']['backup'], $hook
 			) ) {
 				self::backup_logs(
 					$hook, $validate, $method, $agent, $heads, $posts, $dir

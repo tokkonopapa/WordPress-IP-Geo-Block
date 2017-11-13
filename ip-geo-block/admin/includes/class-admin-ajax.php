@@ -211,7 +211,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 */
 	static public function get_network_count() {
 if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
-		return get_blog_count();
+		return get_blog_count(); // get_sites( array( 'count' => TRUE ) ) @since 4.6
 else:
 		return TEST_NETWORK_BLOG_COUNT;
 endif;
