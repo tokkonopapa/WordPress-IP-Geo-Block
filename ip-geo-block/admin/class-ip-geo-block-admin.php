@@ -1271,6 +1271,7 @@ endif;
 
 		require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php';
 
+		$settings = IP_Geo_Block::get_option();
 		$which = isset( $_POST['which'] ) ? $_POST['which'] : NULL;
 		switch ( isset( $_POST['cmd'  ] ) ? $_POST['cmd'  ] : NULL ) {
 		  case 'download':
@@ -1327,23 +1328,6 @@ endif;
 			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which );
 			break;
 
-		  case 'live-start':
-			// Restore live log
-			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', TRUE, 60 );
-			$res = IP_Geo_Block_Admin_Ajax::restore_live();
-			break;
-
-		  case 'live-pause':
-			// Pause live log
-			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', TRUE, 60 );
-			break;
-
-		  case 'live-stop':
-			// Stop live log
-			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
-			$res = array( 'data' => array() );
-			break;
-
 		  case 'validate':
 			// Validate settings
 			IP_Geo_Block_Admin_Ajax::validate_settings( $this );
@@ -1361,10 +1345,9 @@ endif;
 
 		  case 'gmap-error':
 			// Reset Google Maps API key
-			$which = IP_Geo_Block::get_option();
-			if ( $which['api_key']['GoogleMap'] === 'default' ) {
-				$which['api_key']['GoogleMap'] = NULL;
-				update_option( IP_Geo_Block::OPTION_NAME, $which );
+			if ( $settings['api_key']['GoogleMap'] === 'default' ) {
+				$settings['api_key']['GoogleMap'] = NULL;
+				update_option( IP_Geo_Block::OPTION_NAME, $settings );
 				$res = array(
 					'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 					'tab' => 'tab=2'
@@ -1403,7 +1386,6 @@ endif;
 			if ( empty( $which[ $src ] ) )
 				break;
 
-			$settings = IP_Geo_Block::get_option();
 			foreach ( array_unique( $which[ $src ] ) as $val ) {
 				// replace anonymized IP address with CIDR (IPv4:256, IPv6:4096)
 				$val = preg_replace(
@@ -1428,6 +1410,26 @@ endif;
 		  case 'restore-network':
 			// Restore blocked per target in logs
 			$res = IP_Geo_Block_Admin_Ajax::restore_network( $which, (int)$_POST['offset'], (int)$_POST['length'], FALSE );
+			break;
+
+		  case 'live-start':
+			// Restore live log
+			if ( IP_Geo_Block_Logs::get_live_authority() )
+				$res = IP_Geo_Block_Admin_Ajax::restore_live();
+			else
+				$res = array( 'data' => array() );
+			break;
+
+		  case 'live-pause':
+			// Pause live log
+			IP_Geo_Block_Logs::get_live_authority();
+			$res = array( 'data' => array() );
+			break;
+
+		  case 'live-stop':
+			// Stop live log
+			IP_Geo_Block_Logs::release_live_authority();
+			$res = array( 'data' => array() );
 			break;
 
 		  case 'create-table':

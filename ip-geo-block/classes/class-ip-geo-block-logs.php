@@ -460,7 +460,7 @@ class IP_Geo_Block_Logs {
 
 		try {
 			$pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-			$pdo->setAttribute( PDO::ATTR_TIMEOUT, 2 );
+			$pdo->setAttribute( PDO::ATTR_TIMEOUT, 3 );
 			$pdo->exec( "CREATE TABLE IF NOT EXISTS logs (
 				No INTEGER PRIMARY KEY AUTOINCREMENT,
 				time bigint NOT NULL,
@@ -481,6 +481,31 @@ class IP_Geo_Block_Logs {
 
 		catch ( PDOException $e ) {
 			self::error( __LINE__, $e->getMessage() );
+			return FALSE;
+		}
+	}
+
+	/**
+	 * Get and release the authority for live update
+	 *
+	 */
+	public static function get_live_authority() {
+		$user = IP_Geo_Block_Util::get_current_user_id();
+		$auth = get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
+
+		if ( $auth === FALSE || $user === (int)$auth ) {
+			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', $user, 60 );
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+
+	public static function release_live_authority() {
+		if ( self::get_live_authority() ) {
+			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
+			return TRUE;
+		} else {
 			return FALSE;
 		}
 	}
@@ -601,7 +626,7 @@ class IP_Geo_Block_Logs {
 	 *
 	 */
 	public static function restore_live( $hook = NULL ) {
-		if ( ! ( $pdo = self::open_sqlite_db() ) )
+		if ( ! self::get_live_authority() || ! ( $pdo = self::open_sqlite_db() ) )
 			return array();
 
 		try {
