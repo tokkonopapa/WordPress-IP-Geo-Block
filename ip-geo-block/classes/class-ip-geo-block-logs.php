@@ -497,16 +497,17 @@ class IP_Geo_Block_Logs {
 			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', $user, 60 );
 			return TRUE;
 		} else {
-			return FALSE;
+			$info = get_userdata( $user );
+			return new WP_Error( 'Warn', sprintf( __( 'The user %s (user ID: %d) is in use.', 'ip-geo-block' ), $info->user_login, $user ) );
 		}
 	}
 
 	public static function release_live_authority() {
-		if ( self::get_live_authority() ) {
+		if ( ! is_wp_error( $ret = self::get_live_authority() ) ) {
 			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
 			return TRUE;
 		} else {
-			return FALSE;
+			return $ret;
 		}
 	}
 
@@ -626,8 +627,10 @@ class IP_Geo_Block_Logs {
 	 *
 	 */
 	public static function restore_live( $hook = NULL ) {
-		if ( ! self::get_live_authority() || ! ( $pdo = self::open_sqlite_db() ) )
-			return array();
+		if ( is_wp_error( $pdo = self::get_live_authority() ) )
+			return $pdo;
+		elseif ( ! ( $pdo = self::open_sqlite_db() ) )
+			return new WP_Error( 'Warn', __( "Can't open SQLite database file in temporary directory.", 'ip-geo-block' ) );
 
 		try {
 			$pdo->beginTransaction();

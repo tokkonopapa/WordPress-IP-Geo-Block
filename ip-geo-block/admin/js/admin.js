@@ -1485,7 +1485,10 @@
 				ajax_post('live-loading', {
 					cmd: 'live-start'
 				}, function (res) {
-					if (res.data.length) {
+					if (res.error) {
+						warning(null, res.error);
+					}
+					else if (res.data.length) {
 						var i, n = res.data.length;
 						for (i = 0; i < n; i++) {
 							table.row.add(res.data[i]); // `raws.add()` doesn't work because it needs js literal object.

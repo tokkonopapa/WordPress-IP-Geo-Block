@@ -164,8 +164,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
 	static public function restore_logs( $which ) {
-		$res = self::format_logs( IP_Geo_Block_Logs::restore_logs( $which ) );
-		return array( 'data' => $res ); // DataTables requires `data`
+		return array( 'data' => self::format_logs( IP_Geo_Block_Logs::restore_logs( $which ) ) ); // DataTables requires `data`
 	}
 
 	/**
@@ -173,8 +172,10 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function restore_live() {
-		$res = self::format_logs( IP_Geo_Block_Logs::restore_live() );
-		return array( 'data' => $res ); // DataTables requires `data`
+		if ( ! is_wp_error( $res = IP_Geo_Block_Logs::restore_live() ) )
+			return array( 'data' => self::format_logs( $res ) ); // DataTables requires `data`
+		else
+			return array( 'error' => $res->get_error_message() );
 	}
 
 	/**

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-11-12 01:00+0900\n"
-"PO-Revision-Date: 2017-11-12 01:00+0900\n"
+"POT-Creation-Date: 2017-11-15 23:58+0900\n"
+"PO-Revision-Date: 2017-11-15 23:58+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -81,6 +81,15 @@ msgstr ""
 msgid ""
 "Creating a DB table %s had failed. Once de-activate this plugin, and then "
 "activate again."
+msgstr ""
+
+#: classes/class-ip-geo-block-logs.php:501
+#, php-format
+msgid "The user %s (user ID: %d) is in use."
+msgstr ""
+
+#: classes/class-ip-geo-block-logs.php:635
+msgid "Can't open SQLite database file in temporary directory."
 msgstr ""
 
 #: classes/class-ip-geo-block-apis.php:653
@@ -1349,7 +1358,7 @@ msgstr ""
 msgid "n/a"
 msgstr ""
 
-#: admin/includes/class-admin-ajax.php:396
+#: admin/includes/class-admin-ajax.php:399
 #, php-format
 msgid ""
 "illegal format at %s. Please delete the corresponding line and try again."

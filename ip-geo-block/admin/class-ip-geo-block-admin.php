@@ -1414,22 +1414,26 @@ endif;
 
 		  case 'live-start':
 			// Restore live log
-			if ( IP_Geo_Block_Logs::get_live_authority() )
+			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::get_live_authority() ) )
 				$res = IP_Geo_Block_Admin_Ajax::restore_live();
 			else
-				$res = array( 'data' => array() );
+				$res = array( 'error' => $res->get_error_message() );
 			break;
 
 		  case 'live-pause':
 			// Pause live log
-			IP_Geo_Block_Logs::get_live_authority();
-			$res = array( 'data' => array() );
+			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::get_live_authority() ) )
+				$res = array( 'data' => array() );
+			else
+				$res = array( 'error' => $res->get_error_message() );
 			break;
 
 		  case 'live-stop':
 			// Stop live log
-			IP_Geo_Block_Logs::release_live_authority();
-			$res = array( 'data' => array() );
+			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::release_live_authority() ) )
+				$res = array( 'data' => array() );
+			else
+				$res = array( 'error' => $res->get_error_message() );
 			break;
 
 		  case 'create-table':
