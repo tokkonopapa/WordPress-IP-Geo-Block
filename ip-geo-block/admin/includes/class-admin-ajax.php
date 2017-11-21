@@ -171,8 +171,8 @@ class IP_Geo_Block_Admin_Ajax {
 	 * Restore live log in SQLite
 	 *
 	 */
-	static public function restore_live() {
-		if ( ! is_wp_error( $res = IP_Geo_Block_Logs::restore_live() ) )
+	static public function restore_live( $hook, $settings ) {
+		if ( ! is_wp_error( $res = IP_Geo_Block_Logs::restore_live( $hook, $settings ) ) )
 			return array( 'data' => self::format_logs( $res ) ); // DataTables requires `data`
 		else
 			return array( 'error' => $res->get_error_message() );

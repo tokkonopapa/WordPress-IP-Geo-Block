@@ -445,13 +445,17 @@ class IP_Geo_Block_Logs {
 	/**
 	 * Open sqlite database for live log
 	 *
-	 * The absolute path to the database file should be set via action hook `ip-geo-block-live-log`.
+	 * The absolute path to the database can be set via filter hook `ip-geo-block-live-log`.
+	 * @see https://www.sqlite.org/sharedcache.html#shared_cache_and_in_memory_databases
+	 * @param int $id ID of the blog
+	 * @param bool $dsn data source name. TRUE for `in_memory`, FALSE for file
+	 * @return PDO $pdo instance of PDO class
 	 */
-	private static function open_sqlite_db( $id ) {
-		$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-live-log', get_temp_dir() . 'live-log-' . $id . '.db' );
+	private static function open_sqlite_db( $id, $dsn ) {
+		$dsn = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-live-log', ($dsn ? ':memory:' : get_temp_dir() . 'live-log-' . $id . '.db') );
 
 		try {
-			$pdo = new PDO( 'sqlite:' . $path, null, null, array(
+			$pdo = new PDO( 'sqlite:' . $dsn, null, null, array(
 				PDO::ATTR_PERSISTENT => TRUE, // https://www.sqlite.org/inmemorydb.html
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 				PDO::ATTR_TIMEOUT => 3, // reduce `SQLSTATE[HY000]: General error: 5 database is locked`
@@ -465,6 +469,7 @@ class IP_Geo_Block_Logs {
 
 		$pdo->exec( "CREATE TABLE IF NOT EXISTS logs (
 			No INTEGER PRIMARY KEY AUTOINCREMENT,
+			blog_id integer DEFAULT 1 NOT NULL,
 			time bigint NOT NULL,
 			ip varchar(40) NOT NULL,
 			asn varchar(8) NULL,
@@ -500,11 +505,11 @@ class IP_Geo_Block_Logs {
 	}
 
 	public static function release_live_authority() {
-		if ( ! is_wp_error( $ret = self::get_live_authority() ) ) {
+		if ( ! is_wp_error( $result = self::get_live_authority() ) ) {
 			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
 			return TRUE;
 		} else {
-			return $ret;
+			return $result;
 		}
 	}
 
@@ -586,26 +591,27 @@ class IP_Geo_Block_Logs {
 				return;
 
 			// database file not available
-			if ( ! ( $pdo = self::open_sqlite_db( get_current_blog_id() ) ) )
+			if ( ! ( $pdo = self::open_sqlite_db( $id = get_current_blog_id(), $settings['live_update']['in_memory'] ) ) )
 				return;
 
 			try {
 				$pdo->beginTransaction(); // possibly throw an PDOException
 				$stm = $pdo->prepare(     // possibly throw an PDOException
-					'INSERT INTO logs (time, ip, asn, hook, auth, code, result, method, user_agent, headers, data) ' .
-					'VALUES           (   ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,          ?,       ?,    ?);'
+					'INSERT INTO logs (blog_id, time, ip, asn, hook, auth, code, result, method, user_agent, headers, data) ' .
+					'VALUES           (      ?,    ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,          ?,       ?,    ?);'
 				) and (
-					$stm->bindParam(  1, $_SERVER['REQUEST_TIME'], PDO::PARAM_INT ) &&
-					$stm->bindParam(  2, $validate['ip'],          PDO::PARAM_STR ) &&
-					$stm->bindParam(  3, $validate['asn'],         PDO::PARAM_STR ) &&
-					$stm->bindParam(  4, $hook,                    PDO::PARAM_STR ) &&
-					$stm->bindParam(  5, $validate['auth'],        PDO::PARAM_INT ) &&
-					$stm->bindParam(  6, $validate['code'],        PDO::PARAM_STR ) &&
-					$stm->bindParam(  7, $validate['result'],      PDO::PARAM_STR ) &&
-					$stm->bindParam(  8, $method,                  PDO::PARAM_STR ) &&
-					$stm->bindParam(  9, $agent,                   PDO::PARAM_STR ) &&
-					$stm->bindParam( 10, $heads,                   PDO::PARAM_STR ) &&
-					$stm->bindParam( 11, $posts,                   PDO::PARAM_STR )
+					$stm->bindParam(  1, $id,                      PDO::PARAM_INT ) &&
+					$stm->bindParam(  2, $_SERVER['REQUEST_TIME'], PDO::PARAM_INT ) &&
+					$stm->bindParam(  3, $validate['ip'],          PDO::PARAM_STR ) &&
+					$stm->bindParam(  4, $validate['asn'],         PDO::PARAM_STR ) &&
+					$stm->bindParam(  5, $hook,                    PDO::PARAM_STR ) &&
+					$stm->bindParam(  6, $validate['auth'],        PDO::PARAM_INT ) &&
+					$stm->bindParam(  7, $validate['code'],        PDO::PARAM_STR ) &&
+					$stm->bindParam(  8, $validate['result'],      PDO::PARAM_STR ) &&
+					$stm->bindParam(  9, $method,                  PDO::PARAM_STR ) &&
+					$stm->bindParam( 10, $agent,                   PDO::PARAM_STR ) &&
+					$stm->bindParam( 11, $heads,                   PDO::PARAM_STR ) &&
+					$stm->bindParam( 12, $posts,                   PDO::PARAM_STR )
 				) and $stm->execute(); // TRUE or FALSE
 				$pdo->commit();        // possibly throw an PDOException
 				$stm->closeCursor();   // TRUE or FALSE
@@ -625,18 +631,18 @@ class IP_Geo_Block_Logs {
 	 *
 	 * @return array or WP_Error
 	 */
-	public static function restore_live( $hook = NULL ) {
+	public static function restore_live( $hook, $settings ) {
 		if ( is_wp_error( $pdo = self::get_live_authority() ) )
 			return $pdo;
 
-		if ( ! ( $pdo = self::open_sqlite_db( get_current_blog_id() ) ) )
+		if ( ! ( $pdo = self::open_sqlite_db( $id = get_current_blog_id(), $settings['live_update']['in_memory'] ) ) )
 			return new WP_Error( 'Warn', __( "Can't open SQLite database file in temporary directory.", 'ip-geo-block' ) );
 
 		try {
 			$pdo->beginTransaction(); // possibly throw an PDOException
-			if ( $stm = $pdo->query( 'SELECT hook, time, ip, code, result, asn, method, user_agent, headers, data FROM logs;' ) ) {
-				$ret = $stm->fetchAll( PDO::FETCH_NUM ); // array or FALSE
-				$pdo->exec( 'DELETE FROM logs;' );       // int or FALSE
+			if ( $stm = $pdo->query( "SELECT hook, time, ip, code, result, asn, method, user_agent, headers, data FROM logs WHERE blog_id = ${id};" ) ) {
+				$result = $stm->fetchAll( PDO::FETCH_NUM ); // array or FALSE
+				$pdo->exec( "DELETE FROM logs WHERE blog_id = ${id};" ); // int or FALSE
 			}
 			$pdo->commit();      // possibly throw an PDOException
 			$stm->closeCursor(); // TRUE or FALSE
@@ -644,11 +650,11 @@ class IP_Geo_Block_Logs {
 
 		catch ( PDOException $e ) {
 			$pdo->rollBack();
-			$ret = new WP_Error( 'Warn', __FILE__ . '(' . __LINE__ . ') ' . $e->getMessage() );
+			$result = new WP_Error( 'Warn', __FILE__ . '(' . __LINE__ . ') ' . $e->getMessage() );
 		}
 
 		$pdo = NULL;
-		return ! empty( $ret ) ? $ret : array();
+		return ! empty( $result ) ? $result : array();
 	}
 
 	/**

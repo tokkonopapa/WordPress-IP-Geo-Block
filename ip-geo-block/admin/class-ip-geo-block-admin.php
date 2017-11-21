@@ -1415,7 +1415,7 @@ endif;
 		  case 'live-start':
 			// Restore live log
 			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::get_live_authority() ) )
-				$res = IP_Geo_Block_Admin_Ajax::restore_live();
+				$res = IP_Geo_Block_Admin_Ajax::restore_live( $which, $settings );
 			else
 				$res = array( 'error' => $res->get_error_message() );
 			break;

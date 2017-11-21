@@ -166,7 +166,10 @@ class IP_Geo_Block_Opts {
 			// since version 3.0.4
 			'capability'     => array( 'upload_files' ),
 		),
-		'others'          => array(),    // TBD
+		// since version 3.0.5
+		'live_update'     => array(
+			'in_memory'      => FALSE,
+		),
 	);
 
 	/**
@@ -369,7 +372,8 @@ class IP_Geo_Block_Opts {
 			}
 
 			if ( version_compare( $version, '3.0.5' ) < 0 ) {
-				$settings['validation']['maxlogs'] = 500;
+				$settings['validation' ]['maxlogs'] = 500;
+				$settings['live_update'] = $default['live_update'];
 			}
 
 			// save package version number
