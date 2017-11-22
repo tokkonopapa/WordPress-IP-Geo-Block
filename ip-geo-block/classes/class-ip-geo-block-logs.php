@@ -446,23 +446,27 @@ class IP_Geo_Block_Logs {
 	 * Open sqlite database for live log
 	 *
 	 * The absolute path to the database can be set via filter hook `ip-geo-block-live-log`.
+	 *
+	 * @see http://php.net/manual/en/pdo.connections.php
+	 * @see http://www.php.net/manual/en/features.persistent-connections.php
 	 * @see https://www.sqlite.org/sharedcache.html#shared_cache_and_in_memory_databases
+	 *
 	 * @param int $id ID of the blog
-	 * @param bool $dsn data source name. TRUE for `in_memory`, FALSE for file
+	 * @param bool $dsn data source name for PDO, TRUE for `in_memory`, FALSE for file
 	 * @return PDO $pdo instance of PDO class
 	 */
-	private static function open_sqlite_db( $id, $dsn ) {
-		$dsn = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-live-log', ($dsn ? ':memory:' : get_temp_dir() . 'live-log-' . $id . '.db') );
+	private static function open_sqlite_db( $id, $dsn = FALSE ) {
+		$id = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-live-log', ($dsn ? ':memory:' : get_temp_dir() . 'live-log-' . $id . '.db') );
 
 		try {
-			$pdo = new PDO( 'sqlite:' . $dsn, null, null, array(
-				PDO::ATTR_PERSISTENT => TRUE, // https://www.sqlite.org/inmemorydb.html
+			$pdo = new PDO( 'sqlite:' . $id, null, null, array(
+				PDO::ATTR_PERSISTENT => (bool)$dsn, // https://www.sqlite.org/inmemorydb.html
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 				PDO::ATTR_TIMEOUT => 3, // reduce `SQLSTATE[HY000]: General error: 5 database is locked`
 			) );
 		}
 
-		catch ( Exception $e ) {
+		catch ( PDOException $e ) {
 			self::error( __LINE__, $e->getMessage() );
 			return FALSE;
 		}

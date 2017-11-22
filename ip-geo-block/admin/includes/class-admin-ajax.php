@@ -11,7 +11,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 * @param string $which name of the geolocation api provider
 	 */
-	static public function search_ip( $which ) {
+	public static function search_ip( $which ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 
 		// check format
@@ -55,7 +55,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 * @param string $which 'ip_client' or 'ip_server'
 	 */
-	static public function scan_country( $which ) {
+	public static function scan_country( $which ) {
 		// scan all the country code using selected APIs
 		$ip        = IP_Geo_Block::get_ip_address();
 		$options   = IP_Geo_Block::get_option();
@@ -87,7 +87,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 * Insert array
 	 *
 	 */
-	static private function array_insert( &$base_array, $insert_value, $position = null ) {
+	private static function array_insert( &$base_array, $insert_value, $position = null ) {
 		if ( ! is_array( $insert_value ) )
 			$insert_value = array( $insert_value );
 
@@ -104,7 +104,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
-	static public function export_logs( $which ) {
+	public static function export_logs( $which ) {
 		$csv = '';
 		$which = IP_Geo_Block_Logs::restore_logs( $which );
 		$date = isset( $which[0] ) ? $which[0][1] : $_SERVER['REQUEST_TIME'];
@@ -132,7 +132,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 * Format logs from rows array
 	 *
 	 */
-	static private function format_logs( $rows ) {
+	private static function format_logs( $rows ) {
 		$options = IP_Geo_Block::get_option();
 		$res = array();
 
@@ -163,19 +163,34 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
-	static public function restore_logs( $which ) {
+	public static function restore_logs( $which ) {
 		return array( 'data' => self::format_logs( IP_Geo_Block_Logs::restore_logs( $which ) ) ); // DataTables requires `data`
 	}
 
 	/**
-	 * Restore live log in SQLite
+	 * Restore and reset live log in SQLite
 	 *
 	 */
-	static public function restore_live( $hook, $settings ) {
+	public static function restore_live( $hook, $settings ) {
 		if ( ! is_wp_error( $res = IP_Geo_Block_Logs::restore_live( $hook, $settings ) ) )
 			return array( 'data' => self::format_logs( $res ) ); // DataTables requires `data`
 		else
 			return array( 'error' => $res->get_error_message() );
+	}
+
+	public static function reset_live_update() {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( 'reset_live_update' );
+
+		if ( FALSE !== ( $files = scandir( $dir = get_temp_dir(), 1 ) ) ) {
+			foreach ( $files as $file ) {
+				if ( FALSE !== strpos( $file, 'live-log-' ) ) {
+					$fs->delete( $dir . $file );
+				}
+			}
+		}
+
+		return TRUE;
 	}
 
 	/**
@@ -183,7 +198,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
-	static public function restore_cache( $which ) {
+	public static function restore_cache( $which ) {
 		$options = IP_Geo_Block::get_option();
 		$time = time();
 		$res = array();
@@ -210,7 +225,7 @@ class IP_Geo_Block_Admin_Ajax {
 	/**
 	 * Get the number of active sites on your installation
 	 */
-	static public function get_network_count() {
+	public static function get_network_count() {
 if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
 		return get_blog_count(); // get_sites( array( 'count' => TRUE ) ) @since 4.6
 else:
@@ -226,7 +241,7 @@ endif;
 	 * @param int    $length the number of blogs to restore logs from $offset
 	 * @param int    $literal JavaScript literal notation
 	 */
-	static public function restore_network( $duration, $offset = 0, $length = 100, $literal = FALSE ) {
+	public static function restore_network( $duration, $offset = 0, $length = 100, $literal = FALSE ) {
 		$zero = array(
 			'comment' => 0,
 			'xmlrpc'  => 0,
@@ -317,7 +332,7 @@ endif; // TEST_RESTORE_NETWORK
 	 * Validate json from the client and respond safe data
 	 *
 	 */
-	static public function validate_settings( $parent ) {
+	public static function validate_settings( $parent ) {
 		// restore escaped characters (see wp_magic_quotes() in wp-includes/load.php)
 		$json = json_decode(
 			str_replace(
@@ -362,7 +377,7 @@ endif; // TEST_RESTORE_NETWORK
 	 * Convert json associative array to settings array
 	 *
 	 */
-	static private function json_to_settings( $input ) {
+	private static function json_to_settings( $input ) {
 		$settings = $m = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;
 
@@ -406,7 +421,7 @@ endif; // TEST_RESTORE_NETWORK
 	 * Convert settings array to json associative array
 	 *
 	 */
-	static public function settings_to_json( $input, $overwrite = TRUE ) {
+	public static function settings_to_json( $input, $overwrite = TRUE ) {
 		// [*]:list of checkboxes, [$]:comma separated text to array, [%]:associative array
 		$keys = array(
 			'[version]',
@@ -558,7 +573,7 @@ endif; // TEST_RESTORE_NETWORK
 	 * Make preferred settings with formatted json
 	 *
 	 */
-	static public function preferred_to_json() {
+	public static function preferred_to_json() {
 		return self::settings_to_json(
 			array(
 				'login_fails'     => 10,      // Limited number of login attempts
@@ -586,7 +601,7 @@ endif; // TEST_RESTORE_NETWORK
 
 	// Encode json without JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
 	// Note: It should not be rendered via jQuery .html() at client side
-	static private function json_unsafe_encode( $data ) {
+	private static function json_unsafe_encode( $data ) {
 		if ( version_compare( PHP_VERSION, '5.4', '>=' ) ) {
 			$opts = JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
 			if ( function_exists( 'wp_json_encode' ) ) // @since 4.1.0
@@ -610,7 +625,7 @@ endif; // TEST_RESTORE_NETWORK
 	// Fallback function for PHP 5.3 and under
 	// @link http://qiita.com/keromichan16/items/5ff45a77fb0d48e046cc
 	// @link http://stackoverflow.com/questions/16498286/why-does-the-php-json-encode-function-convert-utf-8-strings-to-hexadecimal-entit/
-	static private function json_unescaped_unicode( $input ) {
+	private static function json_unescaped_unicode( $input ) {
 		return preg_replace_callback(
 			'/(?:\\\\u[0-9a-zA-Z]{4})++/',
 			array( __CLASS__, 'convert_encoding' ),
@@ -619,13 +634,13 @@ endif; // TEST_RESTORE_NETWORK
 	}
 
 	// Fallback function for PHP 5.3 and under
-	static private function convert_encoding( $matches ) {
+	private static function convert_encoding( $matches ) {
 		return mb_convert_encoding(
 			pack( 'H*', str_replace( '\\u', '', $matches[0] ) ), 'UTF-8', 'UTF-16'
 		);
 	}
 
-	static public function get_wp_info() {
+	public static function get_wp_info() {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'get_wp_info' );

@@ -1436,6 +1436,10 @@ endif;
 				$res = array( 'error' => $res->get_error_message() );
 			break;
 
+		  case 'reset-resource':
+			$res = IP_Geo_Block_Admin_Ajax::reset_live_update();
+			break;
+
 		  case 'create-table':
 		  case 'delete-table':
 			// Need to define `IP_GEO_BLOCK_DEBUG` to true

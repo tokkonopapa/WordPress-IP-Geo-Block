@@ -21,7 +21,7 @@ class IP_Geo_Block_Admin_Tab {
 		self::$controls['warn'] = ! $options['validation']['reclogs'];
 
 		/*----------------------------------------*
-		 * Blocked per target in logs section
+		 * Blocked by target in logs section
 		 *----------------------------------------*/
 		register_setting(
 			$option_slug = IP_Geo_Block::PLUGIN_NAME,
@@ -30,7 +30,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		add_settings_section(
 			$section = IP_Geo_Block::PLUGIN_NAME . '-network',
-			__( 'Blocked per target in logs', 'ip-geo-block' ),
+			__( 'Blocked by target in logs', 'ip-geo-block' ),
 			array( __CLASS__, 'render_network' ),
 			$option_slug
 		);

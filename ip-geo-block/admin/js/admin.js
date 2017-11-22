@@ -1272,6 +1272,14 @@
 				return false;
 			});
 
+			// Reset resource for live update
+			$(ID('@', 'reset_resource')).on('click', function (/*event*/) {
+				ajax_post('reset-resource', {
+					cmd: 'reset-resource'
+				});
+				return false;
+			});
+
 			// Manipulate DB table for validation logs
 			$(ID('@', 'create_table')).on('click', function (/*event*/) {
 				confirm(ip_geo_block.dialog[1], function () {

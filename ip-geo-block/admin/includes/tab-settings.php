@@ -1143,11 +1143,11 @@ endif;
 		);
 
 		/*----------------------------------------*
-		 * Record settings
+		 * Statistics and Logs settings
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-recording',
-			__( 'Record settings', 'ip-geo-block' ),
+			__( 'Statistics and Logs settings', 'ip-geo-block' ),
 			array( __CLASS__, 'note_record' ),
 			$option_slug
 		);
@@ -1263,6 +1263,42 @@ endif;
 				'value' => ! empty( $options[ $field ] ) ? TRUE : FALSE,
 			)
 		);
+
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		// Live update
+		$field = 'live_update';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="It keeps SQLite data in shared memory instead of file system.">Live update with memory cache</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => 'in_memory',
+				'value' => ! empty( $options[ $field ]['in_memory'] ) ? TRUE : FALSE,
+			)
+		);
+
+		// Reset resource for live update
+		$field = 'reset_resource';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Reset resource for live update', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'button',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => __( 'Reset now', 'ip-geo-block' ),
+				'after' => '<div id="ip-geo-block-reset-resource"></div>',
+			)
+		);
+endif;
 
 		/*----------------------------------------*
 		 * Cache settings
@@ -1504,14 +1540,14 @@ endif;
 		$field = 'show-info';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="Please copy &amp; paste when submitting your issue to support forum.">System information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
+			__( '<dfn title="When an unexpected blocking has occurred, please press the button to find the blocked request in the dumped information which may help to solve the issue.">Debug information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
 				'type' => 'none',
 				'before' =>
-					'<a class="button button-secondary" id="ip-geo-block-show-info" title="' . __( 'Show PHP, WordPress, theme and plugins information.', 'ip-geo-block' ) . '" href="#!">' . __( 'Show information', 'ip-geo-block' ) . '</a>&nbsp;',
+					'<a class="button button-secondary" id="ip-geo-block-show-info" title="' . __( 'Please copy &amp; paste when submitting your issue to support forum.', 'ip-geo-block' ) . '" href="#!">' . __( 'Show information', 'ip-geo-block' ) . '</a>&nbsp;',
 				'after' => '<div id="ip-geo-block-wp-info"></div>',
 			)
 		);
