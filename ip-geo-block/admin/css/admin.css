@@ -803,6 +803,62 @@ ul#ip-geo-block-live-log li input[type=radio]:checked + label {
     background-color: #e0e0e0;
 }
 
+/*----------------------------------------------------------------------
+ * Timer animation based on https://codepen.io/paulobrien/pen/joptI
+ *----------------------------------------------------------------------*/
+.ip-geo-block-live-timer {
+    height: 1em;
+    width: 1em;
+    position: relative;
+    top: -0.1em;
+    margin: 0;
+}
+.ip-geo-block-live-timer:before {
+    content: "";
+    display: block;
+    height: 1em;
+    width: 1em;
+    background-color: #72777c;
+    position: absolute;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+}
+.ip-geo-block-live-timer:after {
+    display: none
+}
+.ip-geo-block-live-timer > div {
+    position: absolute;
+    width: 1em;
+    height: 1em;
+    clip: rect(0, 1em, 1em, .5em);
+}
+.ip-geo-block-live-timer > div:before {
+    content: " ";
+    position: absolute;
+    width: 1em;
+    height: 1em;
+    border-radius: .5em;
+    clip: rect(0, .5em, 1em, 0);
+    background-color: #f1f1f1;
+    transform: rotate(0deg);
+}
+.ip-geo-block-live-timer > div:first-child:before {
+    animation: 30s spin-timer linear forwards;
+}
+.ip-geo-block-live-timer > div:last-child {
+    transform: rotate(180deg);
+}
+.ip-geo-block-live-timer > div:last-child:before {
+    /* older webkit seems buggy with zero so use 0.00001 */
+    transform: rotate(0.00001deg);
+    animation: 30s spin-timer linear 30s forwards;
+}
+@keyframes spin-timer {
+    0% {transform: rotate(  0deg);}
+  100% {transform: rotate(180deg);}
+}
+
 /*------------------------------------------------------------
  * Additional icons
  *------------------------------------------------------------*/

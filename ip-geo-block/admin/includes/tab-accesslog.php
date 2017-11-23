@@ -34,7 +34,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'live-log';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Live update', 'ip-geo-block' ) . '<div id="ip-geo-block-live-loading"></div>',
+			__( 'Live update', 'ip-geo-block' ) . '<div id="ip-geo-block-live-loading"><div></div><div></div></div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

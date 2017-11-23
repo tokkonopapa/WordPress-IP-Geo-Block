@@ -491,33 +491,6 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Get and release the authority for live update
-	 *
-	 * @return TRUE or WP_Error
-	 */
-	public static function get_live_authority() {
-		$user = IP_Geo_Block_Util::get_current_user_id();
-		$auth = get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
-
-		if ( $auth === FALSE || $user === (int)$auth ) {
-			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', $user, 60 );
-			return TRUE;
-		} else {
-			$info = get_userdata( $user );
-			return new WP_Error( 'Warn', sprintf( __( 'The user %s (user ID: %d) is in use.', 'ip-geo-block' ), $info->user_login, $user ) );
-		}
-	}
-
-	public static function release_live_authority() {
-		if ( ! is_wp_error( $result = self::get_live_authority() ) ) {
-			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
-			return TRUE;
-		} else {
-			return $result;
-		}
-	}
-
-	/**
 	 * Record the validation log
 	 *
 	 * This function record the user agent string and post data.
@@ -631,12 +604,39 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
+	 * Catch and release the authority for live log
+	 *
+	 * @return TRUE or WP_Error
+	 */
+	public static function catch_live_log() {
+		$user = IP_Geo_Block_Util::get_current_user_id();
+		$auth = get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
+
+		if ( $auth === FALSE || $user === (int)$auth ) {
+			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', $user, 60 );
+			return TRUE;
+		} else {
+			$info = get_userdata( $auth );
+			return new WP_Error( 'Warn', sprintf( __( 'The user %s (user ID: %d) is in use.', 'ip-geo-block' ), $info->user_login, $auth ) );
+		}
+	}
+
+	public static function release_live_log() {
+		if ( ! is_wp_error( $result = self::catch_live_log() ) ) {
+			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
+			return TRUE;
+		} else {
+			return $result;
+		}
+	}
+
+	/**
 	 * Restore the live log
 	 *
 	 * @return array or WP_Error
 	 */
-	public static function restore_live( $hook, $settings ) {
-		if ( is_wp_error( $pdo = self::get_live_authority() ) )
+	public static function restore_live_log( $hook, $settings ) {
+		if ( is_wp_error( $pdo = self::catch_live_log() ) )
 			return $pdo;
 
 		if ( ! ( $pdo = self::open_sqlite_db( $id = get_current_blog_id(), $settings['live_update']['in_memory'] ) ) )

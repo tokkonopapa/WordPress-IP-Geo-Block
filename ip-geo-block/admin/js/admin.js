@@ -475,7 +475,7 @@
 			    'undefined' !== typeof chart.dataStacked[id] &&	
 			    'undefined' !== typeof chart.viewStacked[id]) {
 
-				i = ID('$', 'range');
+				i = ID('range');
 				range = $.parseJSON($('.' + i).attr('data-' + i));
 
 				data = chart.dataStacked[id];
@@ -516,7 +516,7 @@
 				offset: row * col * page,
 				length: row
 			}, function (data) {
-				var i, j, k, n, id, dt;
+				var i, j, n, id, dt;
 
 				data = array_chunk(data, row);
 
@@ -824,7 +824,7 @@
 
 		// Select target (radio button)
 		$(ID('#', 'select-target')).off('change').on('change', function (/*event*/) {
-			var val = $(this).find('input[name="' + ID('$', 'target') + '"]:checked').val();
+			var val = $(this).find('input[name="' + ID('target') + '"]:checked').val();
 			// search only the specified column for selecting "Target"
 			table.columns(control.targetColumn).search('all' !== val ? val : '').draw();
 			return false;
@@ -1187,7 +1187,16 @@
 			}).trigger('change');
 
 			$(ID('@', 'validation_reclogs')).on('change', function (/*event*/) {
-				$(this).parent().parent().nextAll().find('input').prop('disabled', 0 === Number($(this).prop('selectedIndex')));
+				var $this = $(this);
+				$this.parent().parent().nextAll().find('input').prop('disabled', 0 === Number($this.prop('selectedIndex')));
+			}).trigger('change');
+
+			/*---------------------------
+			 * Submission settings
+			 *---------------------------*/
+			$(ID('@', 'comment_pos')).on('change', function (/*event*/) {
+				var $this = $(this);
+				$this.nextAll('input[type="text"]').prop('disabled', 0 === Number($this.prop('selectedIndex')));
 			}).trigger('change');
 
 			/*---------------------------
@@ -1272,10 +1281,10 @@
 				return false;
 			});
 
-			// Reset resource for live update
-			$(ID('@', 'reset_resource')).on('click', function (/*event*/) {
-				ajax_post('reset-resource', {
-					cmd: 'reset-resource'
+			// Reset data source for live log
+			$(ID('@', 'reset_live')).on('click', function (/*event*/) {
+				ajax_post('reset-live', {
+					cmd: 'reset-live'
 				});
 				return false;
 			});
@@ -1450,38 +1459,41 @@
 			var control = {
 				tableID:   'validation-logs',
 				sectionID: 'section-0',
-				targetColumn: 5,
-				columnIP: 2,
-				columnAS: 4
+				targetColumn: 6,
+				columnIP: 3,
+				columnAS: 5
 			},
 			options = {
 				columns: [
-					{ title: '<input type=\"checkbox\">' }, // 0 checkbox
-					{ title: ip_geo_block.language[10] }, //  1 Time
-					{ title: ip_geo_block.language[ 3] }, //  2 IP address
-					{ title: ip_geo_block.language[ 4] }, //  3 Country code
-					{ title: ip_geo_block.language[ 5] }, //  4 AS number
-					{ title: ip_geo_block.language[ 7] }, //  5 Target
-					{ title: ip_geo_block.language[11] }, //  6 Result
-					{ title: ip_geo_block.language[12] }, //  7 Request
-					{ title: ip_geo_block.language[13] }, //  8 User agent
-					{ title: ip_geo_block.language[14] }, //  9 HTTP headers
-					{ title: ip_geo_block.language[15] }  // 10 $_POST data
+					{ title: '<input type=\"checkbox\">' }, //  0 checkbox
+					{ title: ''                          }, //  1 Time (raw)
+					{ title: ip_geo_block.language[10]   }, //  2 Date
+					{ title: ip_geo_block.language[ 3]   }, //  3 IP address
+					{ title: ip_geo_block.language[ 4]   }, //  4 Country code
+					{ title: ip_geo_block.language[ 5]   }, //  5 AS number
+					{ title: ip_geo_block.language[ 7]   }, //  6 Target
+					{ title: ip_geo_block.language[11]   }, //  7 Result
+					{ title: ip_geo_block.language[12]   }, //  8 Request
+					{ title: ip_geo_block.language[13]   }, //  9 User agent
+					{ title: ip_geo_block.language[14]   }, // 10 HTTP headers
+					{ title: ip_geo_block.language[15]   }  // 11 $_POST data
 				],
 				columnDefs: [
-					{ responsivePriority:  0, targets:  0 }, // checkbox
-					{ responsivePriority:  1, targets:  1 }, // Time
-					{ responsivePriority:  2, targets:  2 }, // IP address
-					{ responsivePriority:  3, targets:  3 }, // Country code
-					{ responsivePriority:  6, targets:  4 }, // AS number
-					{ responsivePriority:  4, targets:  5 }, // Target
-					{ responsivePriority:  5, targets:  6 }, // Result
-					{ responsivePriority:  7, targets:  7 }, // Request
-					{ responsivePriority:  8, targets:  8 }, // User agent
-					{ responsivePriority:  9, targets:  9 }, // HTTP headers
-					{ responsivePriority: 10, targets: 10 }, // $_POST data
-					{ className: "all",       targets: [0, 1, 2, 3 ] }, // always visible
-					{ className: "none",      targets: [7, 8, 9, 10] }  // always hidden
+					{ responsivePriority: 11, targets:  0 }, // checkbox
+					{ responsivePriority:  0, targets:  1 }, // Time (raw)
+					{ responsivePriority:  1, targets:  2 }, // Date
+					{ responsivePriority:  2, targets:  3 }, // IP address
+					{ responsivePriority:  3, targets:  4 }, // Country code
+					{ responsivePriority:  6, targets:  5 }, // AS number
+					{ responsivePriority:  4, targets:  6 }, // Target
+					{ responsivePriority:  5, targets:  7 }, // Result
+					{ responsivePriority:  7, targets:  8 }, // Request
+					{ responsivePriority:  8, targets:  9 }, // User agent
+					{ responsivePriority:  9, targets: 10 }, // HTTP headers
+					{ responsivePriority: 10, targets: 11 }, // $_POST data
+					{ visible:   false,       targets:  1 }, // always hidden
+					{ className: "all",       targets: [0, 2,  3,  4] }, // always visible
+					{ className: "none",      targets: [8, 9, 10, 11] }  // always hidden
 				]
 			},
 
@@ -1506,9 +1518,10 @@
 					timer = window.setTimeout(live_start, ip_geo_block.interval);
 				});
 			},
-			live_stop = function (cmd) {
+			live_stop = function (cmd, callback) {
 				ajax_post(null, {
-					cmd: cmd || 'live-stop'
+					cmd: cmd || 'live-stop',
+					callback: callback
 				});
 				if (timer) {
 					window.clearTimeout(timer);
@@ -1516,13 +1529,20 @@
 				}
 			},
 			live_pause = function () {
-				live_stop('live-pause');
+				var $timer = $(ID('#', 'live-loading'));
+				live_stop('live-pause', function () {
+					$timer.addClass(ID('live-timer'));
+					window.setTimeout(function () {
+						$timer.removeClass(ID('live-timer'));
+						$(ID('#', 'live-log-stop')).prop('checked', true);
+					}, 60000);
+				});
 			},
 
 			// animation on added
-			new_class = ID('$', ''),
+			new_class = ID(''),
 			add_class = function (row, data/*, index*/) {
-				if (-1 !== data[6 /* result */].indexOf('passed')) {
+				if (-1 !== data[7 /* result */].indexOf('passed')) {
 					$(row).addClass(new_class + 'new-passed');
 				} else {
 					$(row).addClass(new_class + 'new-blocked');
@@ -1577,7 +1597,7 @@
 				if (mode) {
 					$tr.show().next().next().next().nextAll().hide();
 					control.ajaxCMD = 'live-stop';
-					options.order = [1, 'desc'];
+					options.order = [1, 'desc']; // sort by `Time (raw)`
 					options.createdRow = add_class;
 				} else {
 					$tr.hide().next().next().next().nextAll().show();
@@ -1739,7 +1759,7 @@
 
 			// Duration to retrieve
 			// [0]:Section, [1]:Open a new window, [2]:Duration to retrieve, [3]:Row, [4]:Column
-			$('input[name=' + ID('$', 'duration') + ']:radio').on('click', function (/*event*/) {
+			$('input[name=' + ID('duration') + ']:radio').on('click', function (/*event*/) {
 				var page = $('div[class*="paginate"]').find('a[class*="current"]').text();
 				cookie[tabNo][2] = $(this).val()    || 0; // Duration to retrieve
 				cookie[tabNo][3] = cookie[tabNo][3] || 2; // Rows

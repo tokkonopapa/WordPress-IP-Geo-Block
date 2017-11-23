@@ -137,21 +137,23 @@ class IP_Geo_Block_Admin_Ajax {
 		$res = array();
 
 		foreach ( $rows as $row ) {
+			$row = array_map( 'esc_html', $row );
 			if ( $options['anonymize']  )
 				$row[2] = preg_replace( '/\d{1,3}$/', '***', $row[2] );
 
 			$res[] = array(
-				/* Checkbox     */ '',
-				/* Date         */ '&rsquo;' . IP_Geo_Block_Util::localdate( $row[1], 'y-m-d H:i:s' ),
-				/* IP address   */ '<span><a href="#!">' . esc_html( $row[2] ) . '</a></span>',
-				/* Country code */ '<span>' . esc_html( $row[3] ) . '</span>',
-				/* AS number    */ '<span>' . esc_html( $row[5] ) . '</span>',
-				/* Target       */ '<span>' . esc_html( $row[0] ) . '</span>',
-				/* Status       */ '<span>' . esc_html( $row[4] ) . '</span>',
-				/* Request      */ '<span>' . esc_html( $row[6] ) . '</span>',
-				/* User agent   */ '<span>' . esc_html( $row[7] ) . '</span>',
-				/* HTTP headers */ '<span>' . esc_html( $row[8] ) . '</span>',
-				/* $_POST data  */ '<span>' . esc_html( $row[9] ) . '</span>',
+				/*  0 Checkbox     */ '',
+				/*  1 Time (raw)   */ $row[1],
+				/*  2 Date         */ '&rsquo;' . IP_Geo_Block_Util::localdate( $row[1], 'y-m-d H:i:s' ),
+				/*  3 IP address   */ '<span><a href="#!">' . $row[2] . '</a></span>',
+				/*  4 Country code */ '<span>' . $row[3] . '</span>',
+				/*  5 AS number    */ '<span>' . $row[5] . '</span>',
+				/*  6 Target       */ '<span>' . $row[0] . '</span>',
+				/*  7 Status       */ '<span>' . $row[4] . '</span>',
+				/*  8 Request      */ '<span>' . $row[6] . '</span>',
+				/*  9 User agent   */ '<span>' . $row[7] . '</span>',
+				/* 10 HTTP headers */ '<span>' . $row[8] . '</span>',
+				/* 11 $_POST data  */ '<span>' . $row[9] . '</span>',
 			);
 		}
 
@@ -171,16 +173,16 @@ class IP_Geo_Block_Admin_Ajax {
 	 * Restore and reset live log in SQLite
 	 *
 	 */
-	public static function restore_live( $hook, $settings ) {
-		if ( ! is_wp_error( $res = IP_Geo_Block_Logs::restore_live( $hook, $settings ) ) )
+	public static function restore_live_log( $hook, $settings ) {
+		if ( ! is_wp_error( $res = IP_Geo_Block_Logs::restore_live_log( $hook, $settings ) ) )
 			return array( 'data' => self::format_logs( $res ) ); // DataTables requires `data`
 		else
 			return array( 'error' => $res->get_error_message() );
 	}
 
-	public static function reset_live_update() {
+	public static function reset_live_log() {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'reset_live_update' );
+		$fs = IP_Geo_Block_FS::init( 'reset_live_log' );
 
 		if ( FALSE !== ( $files = scandir( $dir = get_temp_dir(), 1 ) ) ) {
 			foreach ( $files as $file ) {
@@ -214,7 +216,7 @@ class IP_Geo_Block_Admin_Ajax {
 				/* AS number    */ '<span>' . esc_html( $val['asn' ] ) . '</span>',
 				/* Host name    */ '<span>' . esc_html( $val['host'] ) . '</span>',
 				/* Target       */ '<span>' . esc_html( $val['hook'] ) . '</span>',
-				/* Fails/Calls  */ '<span>' . sprintf( '%d / %d', $val['fail'], $val['call'] ) . '</span>',
+				/* Fails/Calls  */ '<span>' . sprintf( '%d / %d', (int)$val['fail'], (int)$val['call'] ) . '</span>',
 				/* Elapsed[sec] */ '<span>' . ( $time - (int)$val['time'] ) . '</span>',
 			);
 		}

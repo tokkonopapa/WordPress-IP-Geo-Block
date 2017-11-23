@@ -308,19 +308,11 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function add_action_links( $links ) {
-if (1):
 		// over network
 		return array_merge(
 			array( 'settings' => '<a href="' . esc_url_raw( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( $this->is_network ) ) ) . '">' . __( 'Settings' ) . '</a>' ),
 			$links
 		);
-else:
-		// just local site
-		return array_merge(
-			array( 'settings' => '<a href="' . esc_url( admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME ) ) . '">' . __( 'Settings' ) . '</a>' ),
-			$links
-		);
-endif;
 	}
 
 	/**
@@ -675,7 +667,7 @@ endif;
 	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]
 <?php if ( 4 === $tab ) { /* Logs tab */ ?>
 	<input id="ip-geo-block-live-update" type="checkbox"<? checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] );?> /><label for="ip-geo-block-live-update">
-		<dfn title="<?php _e( 'Independent of &#8220;Record settings&#8221;, you can see all the validation results updated periodically.', 'ip-geo-block' ); ?>"><?php _e( 'Live update', 'ip-geo-block' ); ?></dfn>
+		<dfn title="<?php _e( 'Independent of &#8220;Statistics and Logs settings&#8221;, you can see all the requests validated by this plugin in almost real time.', 'ip-geo-block' ); ?>"><?php _e( 'Live update', 'ip-geo-block' ); ?></dfn>
 	</label>
 <?php } elseif (5 === $tab ) { /* Site List tab */ ?>
 	<input id="ip-geo-block-open-new" type="checkbox"<? checked( isset( $cookie[5][1] ) && 'o' === $cookie[5][1] );?> /><label for="ip-geo-block-open-new">
@@ -1414,15 +1406,15 @@ endif;
 
 		  case 'live-start':
 			// Restore live log
-			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::get_live_authority() ) )
-				$res = IP_Geo_Block_Admin_Ajax::restore_live( $which, $settings );
+			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::catch_live_log() ) )
+				$res = IP_Geo_Block_Admin_Ajax::restore_live_log( $which, $settings );
 			else
 				$res = array( 'error' => $res->get_error_message() );
 			break;
 
 		  case 'live-pause':
 			// Pause live log
-			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::get_live_authority() ) )
+			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::catch_live_log() ) )
 				$res = array( 'data' => array() );
 			else
 				$res = array( 'error' => $res->get_error_message() );
@@ -1430,14 +1422,15 @@ endif;
 
 		  case 'live-stop':
 			// Stop live log
-			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::release_live_authority() ) )
+			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::release_live_log() ) )
 				$res = array( 'data' => array() );
 			else
 				$res = array( 'error' => $res->get_error_message() );
 			break;
 
-		  case 'reset-resource':
-			$res = IP_Geo_Block_Admin_Ajax::reset_live_update();
+		  case 'reset-live':
+			// Reset data source of live log
+			$res = IP_Geo_Block_Admin_Ajax::reset_live_log();
 			break;
 
 		  case 'create-table':

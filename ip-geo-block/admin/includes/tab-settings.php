@@ -1282,11 +1282,11 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			)
 		);
 
-		// Reset resource for live update
-		$field = 'reset_resource';
+		// Reset data source of live log
+		$field = 'reset_live';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Reset resource for live update', 'ip-geo-block' ),
+			__( 'Reset data source of live update', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1295,7 +1295,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'option' => $option_name,
 				'field' => $field,
 				'value' => __( 'Reset now', 'ip-geo-block' ),
-				'after' => '<div id="ip-geo-block-reset-resource"></div>',
+				'after' => '<div id="ip-geo-block-reset-live"></div>',
 			)
 		);
 endif;
@@ -1406,7 +1406,7 @@ endif;
 			NULL,
 			$option_slug
 		);
-
+if (1):
 		// @see https://vedovini.net/2015/10/using-the-wordpress-settings-api-with-network-admin-pages/
 		if ( is_main_site() && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			add_action( 'network_admin_edit_' . IP_Geo_Block::PLUGIN_NAME, array( $context, 'validate_network_settings' ) );
@@ -1428,7 +1428,7 @@ endif;
 				)
 			);
 		}
-
+endif;
 		// Remove all settings at uninstallation
 		$field = 'clean_uninstall';
 		add_settings_field(
