@@ -413,8 +413,7 @@ class IP_Geo_Block_Admin {
 				__( 'IP Geo Block', 'ip-geo-block' ),
 				'manage_network_options',
 				IP_Geo_Block::PLUGIN_NAME,
-				array( $this, 'display_plugin_admin_page' ),
-				'dashicons-shield' /*'dashicons-admin-site'*/ // plugins_url( 'images/icon-72x72.png', __FILE__ )
+				array( $this, 'display_plugin_admin_page' )
 			);
 			add_submenu_page(
 				IP_Geo_Block::PLUGIN_NAME,
@@ -666,7 +665,7 @@ class IP_Geo_Block_Admin {
 	</h2>
 	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]
 <?php if ( 4 === $tab ) { /* Logs tab */ ?>
-	<input id="ip-geo-block-live-update" type="checkbox"<? checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] );?> /><label for="ip-geo-block-live-update">
+	<input id="ip-geo-block-live-update" type="checkbox"<? checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] ); disabled( extension_loaded( 'pdo_sqlite' ), FALSE ); ?> /><label for="ip-geo-block-live-update">
 		<dfn title="<?php _e( 'Independent of &#8220;Statistics and Logs settings&#8221;, you can see all the requests validated by this plugin in almost real time.', 'ip-geo-block' ); ?>"><?php _e( 'Live update', 'ip-geo-block' ); ?></dfn>
 	</label>
 <?php } elseif (5 === $tab ) { /* Site List tab */ ?>

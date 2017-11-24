@@ -787,7 +787,7 @@
 			}
 		});
 
-		// Instantiate datatable
+		// Instantiate DataTables
 		var table = $(ID('#', control.tableID)).DataTable({
 			ajax: {
 				url: ip_geo_block.url,
@@ -1497,11 +1497,26 @@
 				]
 			},
 
-			timer = false,
+			// Timer for Live update and DataTables
+			timer_start = null,
+			timer_pause = null,
+			$timer_pause = $(ID('#', 'live-loading')),
 			table = null,
 
-			// Controler functions for live update
+			// Controler functions for Live update
+			clear_timer = function () {
+				if (timer_start) {
+					window.clearTimeout(timer_start);
+					timer_start = null;
+				}
+				if (timer_pause) {
+					$timer_pause.removeClass(ID('live-timer'));
+					window.clearTimeout(timer_pause);
+					timer_pause = null;
+				}
+			},
 			live_start = function () {
+				clear_timer();
 				ajax_post('live-loading', {
 					cmd: 'live-start'
 				}, function (res) {
@@ -1515,25 +1530,21 @@
 						}
 						table.draw(false); // the current page will still be shown.
 					}
-					timer = window.setTimeout(live_start, ip_geo_block.interval);
+					timer_start = window.setTimeout(live_start, ip_geo_block.interval);
 				});
 			},
 			live_stop = function (cmd, callback) {
+				clear_timer();
 				ajax_post(null, {
 					cmd: cmd || 'live-stop',
 					callback: callback
 				});
-				if (timer) {
-					window.clearTimeout(timer);
-					timer = false;
-				}
 			},
 			live_pause = function () {
-				var $timer = $(ID('#', 'live-loading'));
 				live_stop('live-pause', function () {
-					$timer.addClass(ID('live-timer'));
-					window.setTimeout(function () {
-						$timer.removeClass(ID('live-timer'));
+					$timer_pause.addClass(ID('live-timer'));
+					timer_pause = window.setTimeout(function () {
+						clear_timer();
 						$(ID('#', 'live-log-stop')).prop('checked', true);
 					}, 60000);
 				});
@@ -1589,7 +1600,7 @@
 				cookie[tabNo][1] = mode ? 'o' : 'x';
 				saveCookie(cookie);
 
-				// Delete old datatables
+				// Delete old DataTables
 				if (table) {
 					table.clear().destroy();
 				}
@@ -1606,7 +1617,7 @@
 					options.createdRow = null;
 				}
 
-				// Re-initialize datatables
+				// Re-initialize DataTables
 				$(ID('#', 'live-log-stop')).trigger('click');
 				table = initTable(tabNo, control, options);
 			}).trigger('change');

@@ -453,10 +453,10 @@ class IP_Geo_Block_Logs {
 	 *
 	 * @param int $id ID of the blog
 	 * @param bool $dsn data source name for PDO, TRUE for `in_memory`, FALSE for file
-	 * @return PDO $pdo instance of PDO class
+	 * @return PDO $pdo instance of PDO class or WP_Error
 	 */
 	private static function open_sqlite_db( $id, $dsn = FALSE ) {
-		$id = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-live-log', ($dsn ? ':memory:' : get_temp_dir() . 'live-log-' . $id . '.db') );
+		$id = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-live-log', ($dsn ? ':memory:' : get_temp_dir() . IP_Geo_Block::PLUGIN_NAME . '-' . $id . '.db') );
 
 		try {
 			$pdo = new PDO( 'sqlite:' . $id, null, null, array(
@@ -467,11 +467,10 @@ class IP_Geo_Block_Logs {
 		}
 
 		catch ( PDOException $e ) {
-			self::error( __LINE__, $e->getMessage() );
-			return FALSE;
+			return new WP_Error(  'Warn', $e->getMessage() );
 		}
 
-		$pdo->exec( "CREATE TABLE IF NOT EXISTS logs (
+		$pdo->exec( "CREATE TABLE IF NOT EXISTS " . self::TABLE_LOGS . " (
 			No INTEGER PRIMARY KEY AUTOINCREMENT,
 			blog_id integer DEFAULT 1 NOT NULL,
 			time bigint NOT NULL,
@@ -568,14 +567,16 @@ class IP_Geo_Block_Logs {
 				return;
 
 			// database file not available
-			if ( ! ( $pdo = self::open_sqlite_db( $id = get_current_blog_id(), $settings['live_update']['in_memory'] ) ) )
+			if ( is_wp_error( $pdo = self::open_sqlite_db( $id = get_current_blog_id(), $settings['live_update']['in_memory'] ) ) ) {
+				self::error( __LINE__, $pdo->get_error_message() );
 				return;
+			}
 
 			try {
 				$pdo->beginTransaction(); // possibly throw an PDOException
 				$stm = $pdo->prepare(     // possibly throw an PDOException
-					'INSERT INTO logs (blog_id, time, ip, asn, hook, auth, code, result, method, user_agent, headers, data) ' .
-					'VALUES           (      ?,    ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,          ?,       ?,    ?);'
+					'INSERT INTO ' . self::TABLE_LOGS . ' (blog_id, time, ip, asn, hook, auth, code, result, method, user_agent, headers, data) ' .
+					'VALUES      ' .                    ' (      ?,    ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,          ?,       ?,    ?);'
 				) and (
 					$stm->bindParam(  1, $id,                      PDO::PARAM_INT ) &&
 					$stm->bindParam(  2, $_SERVER['REQUEST_TIME'], PDO::PARAM_INT ) &&
@@ -599,7 +600,7 @@ class IP_Geo_Block_Logs {
 				self::error( __LINE__, $e->getMessage() );
 			}
 
-			$pdo = NULL;
+			$pdo = $stm = NULL;
 		}
 	}
 
@@ -622,12 +623,11 @@ class IP_Geo_Block_Logs {
 	}
 
 	public static function release_live_log() {
-		if ( ! is_wp_error( $result = self::catch_live_log() ) ) {
-			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
-			return TRUE;
-		} else {
+		if ( is_wp_error( $result = self::catch_live_log() ) )
 			return $result;
-		}
+
+		delete_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
+		return TRUE;
 	}
 
 	/**
@@ -639,14 +639,14 @@ class IP_Geo_Block_Logs {
 		if ( is_wp_error( $pdo = self::catch_live_log() ) )
 			return $pdo;
 
-		if ( ! ( $pdo = self::open_sqlite_db( $id = get_current_blog_id(), $settings['live_update']['in_memory'] ) ) )
-			return new WP_Error( 'Warn', __( "Can't open SQLite database file in temporary directory.", 'ip-geo-block' ) );
+		if ( is_wp_error( $pdo = self::open_sqlite_db( $id = get_current_blog_id(), $settings['live_update']['in_memory'] ) ) )
+			return new WP_Error( 'Warn', $pdo->get_error_message() );
 
 		try {
 			$pdo->beginTransaction(); // possibly throw an PDOException
-			if ( $stm = $pdo->query( "SELECT hook, time, ip, code, result, asn, method, user_agent, headers, data FROM logs WHERE blog_id = ${id};" ) ) {
+			if ( $stm = $pdo->query( "SELECT hook, time, ip, code, result, asn, method, user_agent, headers, data FROM " . self::TABLE_LOGS . " WHERE blog_id = ${id};" ) ) {
 				$result = $stm->fetchAll( PDO::FETCH_NUM ); // array or FALSE
-				$pdo->exec( "DELETE FROM logs WHERE blog_id = ${id};" ); // int or FALSE
+				$pdo->exec( "DELETE FROM " . self::TABLE_LOGS . " WHERE blog_id = ${id};" ); // int or FALSE
 			}
 			$pdo->commit();      // possibly throw an PDOException
 			$stm->closeCursor(); // TRUE or FALSE

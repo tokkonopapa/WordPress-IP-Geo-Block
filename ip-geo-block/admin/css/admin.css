@@ -896,3 +896,9 @@ ul#ip-geo-block-live-log li input[type=radio]:checked + label {
 .icon-stop2:before {
     content: "\ea1e";
 }
+
+#toplevel_page_ip-geo-block .dashicons-admin-generic:before {
+    font-family: 'icomoon';
+/*  content: "\e9b4";*/
+    content: "\e9c9";
+}
