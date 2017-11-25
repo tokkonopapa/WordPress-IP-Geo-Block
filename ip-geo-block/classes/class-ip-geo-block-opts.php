@@ -168,7 +168,7 @@ class IP_Geo_Block_Opts {
 		),
 		// since version 3.0.5
 		'live_update'     => array(
-			'in_memory'      => FALSE,
+			'in_memory'      => 0,       // -1:unavailable, 0:file, 1:memory
 		),
 	);
 

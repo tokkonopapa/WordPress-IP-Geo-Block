@@ -1156,7 +1156,7 @@ endif;
 		$field = 'save_statistics';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Record validation statistics', 'ip-geo-block' ),
+			__( 'Record &#8220;Statistics&#8221;', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1173,7 +1173,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$key = 'recdays';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( 'Maximum period for validation statistics (days)', 'ip-geo-block' ),
+			__( 'Maximum period for &#8220;Statistics&#8221; (days)', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1191,7 +1191,7 @@ endif;
 		$field = 'validation';
 		add_settings_field(
 			$option_name.'_'.$field.'_reclogs',
-			__( 'Record validation logs', 'ip-geo-block' ),
+			__( 'Record &#8220;Logs&#8221;', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1217,7 +1217,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$key = 'maxlogs';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( 'Maximum entries for validation logs', 'ip-geo-block' ),
+			__( 'Maximum entries of &#8220;Logs&#8221;', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1234,7 +1234,7 @@ endif;
 		// $_POST keys to be recorded with their values in logs
 		add_settings_field(
 			$option_name.'_'.$field.'_postkey',
-			__( '<dfn title="e.g. action, comment, log, pwd, FILES">$_POST keys to be recorded with their values in logs</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="e.g. action, comment, log, pwd, FILES">$_POST keys to be recorded with their values in &#8220;Logs&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1269,16 +1269,26 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$field = 'live_update';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="It keeps SQLite data in shared memory instead of file system.">Live update with memory cache</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="Select SQLite database source.">Database source of SQLite for &#8220;Live update&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
-				'type' => 'checkbox',
+				'type' => 'select',
 				'option' => $option_name,
 				'field' => $field,
 				'sub-field' => 'in_memory',
-				'value' => ! empty( $options[ $field ]['in_memory'] ) ? TRUE : FALSE,
+				'value' => extension_loaded( 'pdo_sqlite' ) ? $options[ $field ]['in_memory'] : -1,
+				'list' => array(
+					-1 => NULL,
+					 0 => __( 'Ordinary file', 'ip-geo-block' ),
+					 1 => __( 'In-Memory', 'ip-geo-block' ),
+				),
+				'desc' => array(
+					-1 => __( 'PDO_SQLITE driver not available','ip-geo-block' ),
+					 0 => __( 'It takes a few tens of milliseconds as overhead. It can be safely used without conflict with other plugins.', 'ip-geo-block' ),
+					 1 => __( 'It takes a few milliseconds as overhead. There is a possibility of conflict with other plugins using this method.', 'ip-geo-block' ),
+				),
 			)
 		);
 
@@ -1286,7 +1296,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$field = 'reset_live';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Reset data source of live update', 'ip-geo-block' ),
+			__( 'Reset database source of &#8220;Live update&#8221;', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1406,7 +1416,7 @@ endif;
 			NULL,
 			$option_slug
 		);
-if (1):
+if (0):
 		// @see https://vedovini.net/2015/10/using-the-wordpress-settings-api-with-network-admin-pages/
 		if ( is_main_site() && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			add_action( 'network_admin_edit_' . IP_Geo_Block::PLUGIN_NAME, array( $context, 'validate_network_settings' ) );

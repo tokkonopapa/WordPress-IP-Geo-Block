@@ -186,7 +186,7 @@ class IP_Geo_Block_Admin_Ajax {
 
 		if ( FALSE !== ( $files = scandir( $dir = get_temp_dir(), 1 ) ) ) {
 			foreach ( $files as $file ) {
-				if ( FALSE !== strpos( $file, 'live-log-' ) ) {
+				if ( FALSE !== strpos( $file, IP_Geo_Block::PLUGIN_NAME ) ) {
 					$fs->delete( $dir . $file );
 				}
 			}

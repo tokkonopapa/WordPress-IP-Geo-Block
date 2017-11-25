@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9
-Stable tag: 3.0.5b
+Stable tag: 3.0.5rc
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -355,6 +355,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 = 3.0.5 =
 * **New feature:** Add "Live update" mode on "Logs" tab.
 * **Improvement:** List all the IP addresses in cache are now displayed and manageable on "Statistics" tab.
+* **Improvement:** Add "Blocked / Blacklisted" at "Recording Logs". It can verify the requests that are "passed" from blacklisted countries.
 
 = 3.0.4.6 =
 * **Bug fix:** Fix the issue that the emergent functionality didn't work when the number of login attempts reached to the limit.

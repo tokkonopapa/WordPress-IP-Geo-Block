@@ -25,9 +25,9 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 		$html  = '<ul id="ip-geo-block-live-log">';
-		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-start" value="start"><label for="ip-geo-block-live-log-start" title="Start"><span class="icon-play3"></span></label></li>';
-		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-pause" value="pause"><label for="ip-geo-block-live-log-pause" title="Pause"><span class="icon-pause2"></span></label></li>';
-		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-stop"  value="stop" checked><label for="ip-geo-block-live-log-stop" title="Stop"><span class="icon-stop2"></span></label></li>';
+		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-start" value="start"><label for="ip-geo-block-live-log-start" title="Start"><span class="ip-geo-block-icon-play3"></span></label></li>';
+		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-pause" value="pause"><label for="ip-geo-block-live-log-pause" title="Pause"><span class="ip-geo-block-icon-pause2"></span></label></li>';
+		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-stop"  value="stop" checked><label for="ip-geo-block-live-log-stop" title="Stop"><span class="ip-geo-block-icon-stop2"></span></label></li>';
 		$html .= '</ul>';
 
 		// Live update

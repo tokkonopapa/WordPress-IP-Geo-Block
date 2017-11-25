@@ -530,6 +530,11 @@ table.dataTable thead th,
 table.dataTable thead td {
     padding: 10px 16px;
 }
+/* country code */
+#ip-geo-block-statistics-cache td:nth-child(3),
+#ip-geo-block-validation-logs td:nth-child(4) {
+    min-width: 1.6em;
+}
 
 /* Scroll bar */
 .dataTables_wrapper.no-footer .dataTables_scrollBody {
@@ -818,7 +823,7 @@ ul#ip-geo-block-live-log li input[type=radio]:checked + label {
     display: block;
     height: 1em;
     width: 1em;
-    background-color: #72777c;
+    background: radial-gradient(#0073aa, #72777c);
     position: absolute;
     border-radius: 50%;
     top: 0;
@@ -857,48 +862,4 @@ ul#ip-geo-block-live-log li input[type=radio]:checked + label {
 @keyframes spin-timer {
     0% {transform: rotate(  0deg);}
   100% {transform: rotate(180deg);}
-}
-
-/*------------------------------------------------------------
- * Additional icons
- *------------------------------------------------------------*/
-@font-face {
-    font-family: 'icomoon';
-    src: url('fonts/icomoon.eot?9y580b');
-    src: url('fonts/icomoon.eot?9y580b#iefix') format('embedded-opentype'),
-         url('fonts/icomoon.ttf?9y580b') format('truetype'),
-         url('fonts/icomoon.woff?9y580b') format('woff'),
-         url('fonts/icomoon.svg?9y580b#icomoon') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-
-[class^="icon-"], [class*=" icon-"] {
-    /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'icomoon' !important;
-    speak: none;
-    font-style: normal;
-    font-weight: normal;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
-    /* Better Font Rendering =========== */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-.icon-play3:before {
-    content: "\ea1c";
-}
-.icon-pause2:before {
-    content: "\ea1d";
-}
-.icon-stop2:before {
-    content: "\ea1e";
-}
-
-#toplevel_page_ip-geo-block .dashicons-admin-generic:before {
-    font-family: 'icomoon';
-/*  content: "\e9b4";*/
-    content: "\e9c9";
 }

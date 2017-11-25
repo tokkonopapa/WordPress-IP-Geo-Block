@@ -229,6 +229,12 @@ class IP_Geo_Block_Admin {
 		}
 
 		// css for option page
+		wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-icons',
+			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+				'css/admin-icons.min.css' : 'css/admin-icons.css', __FILE__
+			),
+			array(), IP_Geo_Block::VERSION
+		);
 		wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-styles',
 			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 				'css/admin.min.css' : 'css/admin.css', __FILE__
@@ -273,7 +279,7 @@ class IP_Geo_Block_Admin {
 					/* [ 5] */ __( 'ASN',                         'ip-geo-block' ),
 					/* [ 6] */ __( 'Host name',                   'ip-geo-block' ),
 					/* [ 7] */ __( 'Target',                      'ip-geo-block' ),
-					/* [ 8] */ __( 'Login / Call',                'ip-geo-block' ),
+					/* [ 8] */ __( 'Failure / Total',             'ip-geo-block' ),
 					/* [ 9] */ __( 'Elapsed[sec]',                'ip-geo-block' ),
 					/* [10] */ __( 'Time',                        'ip-geo-block' ),
 					/* [11] */ __( 'Result',                      'ip-geo-block' ),
@@ -430,6 +436,13 @@ class IP_Geo_Block_Admin {
 				'manage_network_options',
 				IP_Geo_Block::PLUGIN_NAME . '&amp;tab=5',
 				array( $this, 'display_plugin_admin_page' )
+			);
+
+			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-icons',
+				plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+					'css/admin-icons.min.css' : 'css/admin-icons.css', __FILE__
+				),
+				array(), IP_Geo_Block::VERSION
 			);
 		}
 
@@ -1048,6 +1061,9 @@ class IP_Geo_Block_Admin {
 
 		// 3.0.4 AS number
 		$output['Maxmind']['use_asn'] = FALSE;
+
+		// 3.0.5 Live update
+		$output['live_update']['in_memory'] = 0;
 
 		return $output;
 	}
