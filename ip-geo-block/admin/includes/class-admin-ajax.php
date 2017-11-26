@@ -510,11 +510,11 @@ endif; // TEST_RESTORE_NETWORK
 			'[clean_uninstall]',
 			'[api_key][GoogleMap]',      // 2.2.7
 			'[network_wide]',            // 3.0.0
-			'[others][%]',               // 3.0.3
 			'[mimetype][white_list][%]', // 3.0.3
 			'[mimetype][black_list]',    // 3.0.3
 			'[mimetype][capability][$]', // 3.0.4
 			'[Maxmind][use_asn]',        // 3.0.4
+			'[live_update][in_memory]',  // 3.0.5
 		);
 		$json = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;

@@ -60,13 +60,13 @@ class IP_Geo_Block_Admin {
 		if ( is_multisite() ) {
 			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
 
-			// when a blog is created or deleted.
-			add_action( 'wpmu_new_blog', array( $this, 'create_blog' ), 10, 6 ); // @since MU
-			add_action( 'delete_blog',   array( $this, 'delete_blog' ), 10, 2 ); // @since 3.0.0
-
 			// validate capability instead of nonce. @since 2.0.0 && 3.0.0
 			if ( $this->is_network = is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
 				add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_network_redirect' ), 10, 2 );
+
+			// when a blog is created or deleted.
+			add_action( 'wpmu_new_blog', array( $this, 'create_blog' ), 10, 6 ); // @since MU
+			add_action( 'delete_blog',   array( $this, 'delete_blog' ), 10, 2 ); // @since 3.0.0
 		}
 
 		// loads a plugin’s translated strings.
@@ -122,9 +122,8 @@ class IP_Geo_Block_Admin {
 	 */
 	public function verify_network_redirect( $queries, $settings ) {
 		// the request that is intended to show the page without any action follows authentication of core.
-		if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) && empty( $_GET['action'] ) ) {
+		if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) && empty( $_GET['action'] ) )
 			$queries[] = $_GET['page'];
-		}
 
 		return $queries;
 	}
@@ -146,7 +145,7 @@ class IP_Geo_Block_Admin {
 		IP_Geo_Block_Activate::activate_blog();
 
 		// Copy option from main blog.
-		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) && $settings['network_wide'] )
+		if ( $this->is_network && $settings['network_wide'] )
 			update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
 		// Restore the main blog.
@@ -181,8 +180,8 @@ class IP_Geo_Block_Admin {
 			);
 
 		switch ( $this->admin_tab ) {
-		  case 1:
-		  case 4:
+		  case 1: /* Statistics */
+		  case 4: /* Logs */
 			// css and js for DataTables
 			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-datatables-css',
 				plugins_url( 'datatables/css/datatables-all.min.css', __FILE__ ),
@@ -195,7 +194,7 @@ class IP_Geo_Block_Admin {
 			if ( 4 === $this->admin_tab )
 				break;
 
-		  case 5:
+		  case 5: /* Site list */
 			// js for google chart
 			wp_register_script(
 				$addon = IP_Geo_Block::PLUGIN_NAME . '-google-chart',
@@ -204,7 +203,7 @@ class IP_Geo_Block_Admin {
 			wp_enqueue_script( $addon );
 			break;
 
-		  case 2:
+		  case 2: /* Search */
 			// js for google map
 			$settings = IP_Geo_Block::get_option();
 			if ( $key = $settings['api_key']['GoogleMap'] ) {
@@ -258,7 +257,7 @@ class IP_Geo_Block_Admin {
 				'tab' => $this->admin_tab,
 				'url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => IP_Geo_Block_Util::create_nonce( $this->get_ajax_action() ),
-				'dialog' => array(
+				'msg' => array(
 					/* [ 0] */ __( 'Import settings ?',           'ip-geo-block' ),
 					/* [ 1] */ __( 'Create table ?',              'ip-geo-block' ),
 					/* [ 2] */ __( 'Delete table ?',              'ip-geo-block' ),
@@ -270,7 +269,7 @@ class IP_Geo_Block_Admin {
 					/* [ 8] */ __( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
 					/* [ 9] */ __( 'The selected row cannot be found in the visible area.',    'ip-geo-block' ),
 				),
-				'language' => array(
+				'i18n' => array(
 					/* [ 0] */ '<div class="ip-geo-block-loading"></div>',
 					/* [ 1] */ __( 'No data available in table',  'ip-geo-block' ),
 					/* [ 2] */ __( 'No matching records found',   'ip-geo-block' ),
@@ -289,6 +288,7 @@ class IP_Geo_Block_Admin {
 					/* [15] */ __( '$_POST data',                 'ip-geo-block' ),
 				),
 				'interval' => 5000, // interval for live update [sec]
+				'pause'    =>   60, // time limit for pausing live update [sec]
 			)
 		);
 		wp_enqueue_script( $handle );
@@ -375,8 +375,8 @@ class IP_Geo_Block_Admin {
 		$settings = IP_Geo_Block::get_option();
 
 		// Network wide or not
-		$admin_menu = 'admin_menu' === current_filter();
-		$this->is_network &= current_user_can( 'manage_network_options' ) && $settings['network_wide'];
+		$admin_menu = ( 'admin_menu' === current_filter() );
+		$this->is_network &= ( current_user_can( 'manage_network_options' ) && $settings['network_wide'] );
 
 		// Verify tab number
 		if ( $this->is_network ) {
@@ -883,7 +883,7 @@ class IP_Geo_Block_Admin {
 		$output = IP_Geo_Block::get_option();
 		$default = IP_Geo_Block::get_default();
 
-		// Integrate posted data into current settings because if can be a part of hole data
+		// Integrate posted data into current settings because it can be a part of hole data
 		$input = array_replace_recursive(
 			$output = $this->preprocess_options( $output, $default ),
 			$input

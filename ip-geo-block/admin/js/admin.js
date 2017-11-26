@@ -73,7 +73,7 @@
 	}
 
 	function notice_html5() {
-		warning(null, ip_geo_block.dialog[8]);
+		warning(null, ip_geo_block.msg[8]);
 	}
 
 	function redirect(page, tab) {
@@ -692,7 +692,7 @@
 		);
 	}
 
-	// form for export / import
+	// Icons for 'Toggle section' and 'Toggle with non logged-in user'
 	function add_icon(dfn, span, title, icon) {
 		var i, j;
 		i = dfn.cloneNode(false);
@@ -726,10 +726,10 @@
 
 			// Language
 			language: {
-				emptyTable:     ip_geo_block.language[1],
-				loadingRecords: ip_geo_block.language[0],
-				processing:     ip_geo_block.language[0],
-				zeroRecords:    ip_geo_block.language[2],
+				emptyTable:     ip_geo_block.i18n[1],
+				loadingRecords: ip_geo_block.i18n[0],
+				processing:     ip_geo_block.i18n[0],
+				zeroRecords:    ip_geo_block.i18n[2],
 				paginate: {
 					first:    '&laquo;',
 					last:     '&raquo;',
@@ -773,11 +773,11 @@
 				// avoid recursive call for ajax source
 				// 1: thead, 2: empty tbody, 3: after loading data
 				if (3 > settings.iDraw) {
-					elm.html(ip_geo_block.language[0]);
+					elm.html(ip_geo_block.i18n[0]);
 				}
 				else if (3 === settings.iDraw) {
 					// 'No data available in table'
-					elm.html(ip_geo_block.language[1]);
+					elm.html(ip_geo_block.i18n[1]);
 
 					elm = $(ID('@', 'search_filter'));
 					if (elm.val()) { // if a filter value exists in the text field
@@ -840,7 +840,7 @@
 			if (!cmd) {
 				return false;
 			} else if (!cells.length) {
-				warning(null, ip_geo_block.dialog[9]);
+				warning(null, ip_geo_block.msg[9]);
 				return false;
 			}
 
@@ -882,7 +882,7 @@
 
 		// Clear all
 		$(ID('@', 'clear_all')).off('click').on('click', function (/*event*/) {
-			confirm(ip_geo_block.dialog[tabNo === 1 ? 4 : 5], function () {
+			confirm(ip_geo_block.msg[tabNo === 1 ? 4 : 5], function () {
 				ajax_clear(tabNo === 1 ? 'cache' : 'logs', null);
 			});
 			return false;
@@ -1077,10 +1077,10 @@
 						j.appendChild(i);
 
 						if (1 & data[key]) {
-							j.appendChild(add_icon(dfn, span, ip_geo_block.dialog[6], 'lock'));
+							j.appendChild(add_icon(dfn, span, ip_geo_block.msg[6], 'lock'));
 						}
 						if (2 & data[key]) {
-							j.appendChild(add_icon(dfn, span, ip_geo_block.dialog[7], 'unlock'));
+							j.appendChild(add_icon(dfn, span, ip_geo_block.msg[7], 'unlock'));
 						}
 
 						$this.append(j);
@@ -1178,9 +1178,9 @@
 				return false;
 			});
 
-			/*---------------------------
-			 * Record settings
-			 *---------------------------*/
+			/*--------------------------------
+			 * Statistics and Logs settings
+			 *--------------------------------*/
 			$(ID('@', 'save_statistics')).on('change', function (/*event*/) {
 				$(ID('@', 'validation_recdays')).prop('disabled', !$(this).prop('checked'));
 				return false;
@@ -1260,7 +1260,7 @@
 
 			// Import pre-defined settings
 			$(ID('#', 'default')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.dialog[0], function () {
+				confirm(ip_geo_block.msg[0], function () {
 					ajax_post('pre-defined', {
 						cmd: 'import-default'
 					}, function (data) {
@@ -1271,7 +1271,7 @@
 			});
 
 			$(ID('#', 'preferred')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.dialog[0], function () {
+				confirm(ip_geo_block.msg[0], function () {
 					ajax_post('pre-defined', {
 						cmd: 'import-preferred'
 					}, function (data) {
@@ -1291,14 +1291,14 @@
 
 			// Manipulate DB table for validation logs
 			$(ID('@', 'create_table')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.dialog[1], function () {
+				confirm(ip_geo_block.msg[1], function () {
 					ajax_table('create-table');
 				});
 				return false;
 			});
 
 			$(ID('@', 'delete_table')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.dialog[2], function () {
+				confirm(ip_geo_block.msg[2], function () {
 					ajax_table('delete-table');
 				});
 				return false;
@@ -1404,7 +1404,7 @@
 
 			// Statistics of validation
 			$(ID('@', 'clear_statistics')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.dialog[3], function () {
+				confirm(ip_geo_block.msg[3], function () {
 					ajax_clear('statistics', null);
 				});
 				return false;
@@ -1412,7 +1412,7 @@
 
 			// Statistics in logs
 			$(ID('@', 'clear_logs')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.dialog[5], function () {
+				confirm(ip_geo_block.msg[5], function () {
 					ajax_clear('logs', null);
 				});
 				return false;
@@ -1429,13 +1429,13 @@
 			}, {
 				columns: [
 					{ title: '<input type="checkbox">' }, // 0 checkbox
-					{ title: ip_geo_block.language[3] }, // 1 IP address
-					{ title: ip_geo_block.language[4] }, // 2 Country code
-					{ title: ip_geo_block.language[5] }, // 3 AS number
-					{ title: ip_geo_block.language[6] }, // 4 Host name
-					{ title: ip_geo_block.language[7] }, // 5 Target
-					{ title: ip_geo_block.language[8] }, // 6 Login fail/Call
-					{ title: ip_geo_block.language[9] }  // 7 Elapsed[sec]
+					{ title: ip_geo_block.i18n[3]      }, // 1 IP address
+					{ title: ip_geo_block.i18n[4]      }, // 2 Country code
+					{ title: ip_geo_block.i18n[5]      }, // 3 AS number
+					{ title: ip_geo_block.i18n[6]      }, // 4 Host name
+					{ title: ip_geo_block.i18n[7]      }, // 5 Target
+					{ title: ip_geo_block.i18n[8]      }, // 6 Login fail/Call
+					{ title: ip_geo_block.i18n[9]      }  // 7 Elapsed[sec]
 				],
 				columnDefs: [
 					{ responsivePriority:  0, targets: 0 }, // checkbox
@@ -1467,16 +1467,16 @@
 				columns: [
 					{ title: '<input type=\"checkbox\">' }, //  0 checkbox
 					{ title: ''                          }, //  1 Time (raw)
-					{ title: ip_geo_block.language[10]   }, //  2 Date
-					{ title: ip_geo_block.language[ 3]   }, //  3 IP address
-					{ title: ip_geo_block.language[ 4]   }, //  4 Country code
-					{ title: ip_geo_block.language[ 5]   }, //  5 AS number
-					{ title: ip_geo_block.language[ 7]   }, //  6 Target
-					{ title: ip_geo_block.language[11]   }, //  7 Result
-					{ title: ip_geo_block.language[12]   }, //  8 Request
-					{ title: ip_geo_block.language[13]   }, //  9 User agent
-					{ title: ip_geo_block.language[14]   }, // 10 HTTP headers
-					{ title: ip_geo_block.language[15]   }  // 11 $_POST data
+					{ title: ip_geo_block.i18n[10]       }, //  2 Date
+					{ title: ip_geo_block.i18n[ 3]       }, //  3 IP address
+					{ title: ip_geo_block.i18n[ 4]       }, //  4 Country code
+					{ title: ip_geo_block.i18n[ 5]       }, //  5 AS number
+					{ title: ip_geo_block.i18n[ 7]       }, //  6 Target
+					{ title: ip_geo_block.i18n[11]       }, //  7 Result
+					{ title: ip_geo_block.i18n[12]       }, //  8 Request
+					{ title: ip_geo_block.i18n[13]       }, //  9 User agent
+					{ title: ip_geo_block.i18n[14]       }, // 10 HTTP headers
+					{ title: ip_geo_block.i18n[15]       }  // 11 $_POST data
 				],
 				columnDefs: [
 					{ responsivePriority: 11, targets:  0 }, // checkbox
@@ -1546,7 +1546,7 @@
 					timer_pause = window.setTimeout(function () {
 						clear_timer();
 						$(ID('#', 'live-log-stop')).prop('checked', true);
-					}, 60000);
+					}, ip_geo_block.pause * 1000);
 				});
 			},
 
