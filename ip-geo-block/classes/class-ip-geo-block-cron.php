@@ -68,7 +68,7 @@ class IP_Geo_Block_Cron {
 				// update matching rule immediately
 				if ( $immediate && FALSE !== ( $stat = get_transient( IP_Geo_Block::CRON_NAME ) ) && 'done' !== $stat ) {
 					$validate = IP_Geo_Block::get_geolocation( NULL, array( $provider ) );
-					$validate = IP_Geo_Block::validate_country( NULL, $validate, $settings );
+					$validate = IP_Geo_Block::validate_country( 'cron', $validate, $settings );
 
 					// if blocking may happen then disable validation
 					if ( -1 !== (int)$settings['matching_rule'] && 'passed' !== $validate['result'] &&

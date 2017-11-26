@@ -78,8 +78,7 @@ class IP_Geo_Block_Rewrite {
 		$validate['result'] = 'blocked'; //'malice';
 
 		// (1) blocked, unknown, (3) unauthenticated, (5) all
-		if ( (int)$settings['validation']['reclogs'] & 1 )
-			IP_Geo_Block_Logs::record_logs( 'admin', $validate, $settings );
+		IP_Geo_Block_Logs::record_logs( 'admin', $validate, $settings, 1 & (int)$settings['validation']['reclogs'] );
 
 		// update statistics
 		if ( $settings['save_statistics'] )

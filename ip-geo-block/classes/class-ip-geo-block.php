@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.4.6';
+	const VERSION = '3.0.5';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -346,17 +346,17 @@ class IP_Geo_Block {
 			if ( $block && 0 === (int)$settings['matching_rule'] ) {
 				// 'ZZ' will be blocked if it's not in the $list.
 				if ( ( $list = $settings['white_list'] ) && FALSE === strpos( $list, $validate['code'] ) )
-					return $validate + array( 'result' => 'blocked' ); // can't overwrite existing result
+					return $hook ? $validate + array( 'result' => 'blocked' ) : 'blocked'; // can't overwrite existing result
 			}
 
 			elseif( $block && 1 === (int)$settings['matching_rule'] ) {
 				// 'ZZ' will NOT be blocked if it's not in the $list.
 				if ( ( $list = $settings['black_list'] ) && FALSE !== strpos( $list, $validate['code'] ) )
-					return $validate + array( 'result' => 'blocked' ); // can't overwrite existing result
+					return $hook ? $validate + array( 'result' => 'blocked' ) : 'blocked'; // can't overwrite existing result
 			}
 		}
 
-		return $validate + array( 'result' => 'passed' ); // can't overwrite existing result
+		return $hook ? $validate + array( 'result' => 'passed' ) : 'passed'; // can't overwrite existing result
 	}
 
 	/**
@@ -432,16 +432,16 @@ class IP_Geo_Block {
 		// priority high 4 close_xmlrpc, close_restapi
 		//               5 check_nonce (high), check_user (low)
 		//               6 check_upload (high), check_signature (low)
-		//               7 check_ips_black (high), check_ips_white (low)
-		//               8 check_auth
+		//               7 check_auth
+		//               8 check_ips_black (high), check_ips_white (low)
 		//               9 check_fail
 		// priority low 10 validate_country
 		$var = self::PLUGIN_NAME . '-' . $hook;
 		$settings['validation']['mimetype'  ] and add_filter( $var, array( $this, 'check_upload'    ), 6, 2 );
+		$check_auth                           and add_filter( $var, array( $this, 'check_auth'      ), 7, 2 );
 		$settings['extra_ips' ] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
-		$settings['extra_ips' ]['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
-		$settings['extra_ips' ]['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
-		$check_auth                           and add_filter( $var, array( $this, 'check_auth'      ), 8, 2 );
+		$settings['extra_ips' ]['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 8, 2 );
+		$settings['extra_ips' ]['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 8, 2 );
 		$settings['login_fails'] >= 0         and add_filter( $var, array( $this, 'check_fail'      ), 9, 2 );
 
 		// make valid provider name list
@@ -471,17 +471,17 @@ class IP_Geo_Block {
 
 		if ( $check_auth ) {
 			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
-			$var = (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
 			$block = ( 'passed' !== $validate['result'] );
-			if ( ( 1 === $var &&   $block ) || // blocked
-				 ( 2 === $var && ! $block ) || // passed
-				 ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
-				 ( 4 === $var &&   $validate['auth'] ) || // authenticated
-				 ( 5 === $var ) ) { // all
-				IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings );
-			}
+			$var = (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
+			$var = ( 1 === $var &&   $block ) || // blocked
+			       ( 6 === $var && ( $block   || 'passed' !== self::validate_country( NULL, $validate, $settings ) ) ) || // blocked or qualified
+			       ( 2 === $var && ! $block ) || // passed
+			       ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
+			       ( 4 === $var &&   $validate['auth'] ) || // authenticated
+			       ( 5 === $var ); // all
 
-			// update cache
+			// record log and update cache
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $var );
 			IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
 			// update statistics
@@ -562,6 +562,7 @@ class IP_Geo_Block {
 	private function check_exceptions( $action, $page, $exceptions = array() ) {
 		$in_action = in_array( $action, $exceptions, TRUE );
 		$in_page   = in_array( $page,   $exceptions, TRUE );
+
 		return ( ( $action xor $page ) && ( ! $in_action and ! $in_page ) ) ||
 		       ( ( $action and $page ) && ( ! $in_action or  ! $in_page ) ) ? FALSE : TRUE;
 	}
@@ -598,8 +599,8 @@ class IP_Geo_Block {
 
 		// list of request for specific action or page to bypass WP-ZEP
 		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array(), $settings ), array(
-			// in wp-admin js/widget.js, includes/template.php, async-upload.php
-			'heartbeat', 'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview',
+			// in wp-admin js/widget.js, includes/template.php, async-upload.php, PHP Compatibility Checker
+			'heartbeat', 'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview', 'wpephpcompat_start_test',
 			// bbPress, Anti-Malware Security and Brute-Force Firewall, jetpack page & action
 			'bp_avatar_upload', 'GOTMLS_logintime', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate',
 		) );
@@ -700,8 +701,7 @@ class IP_Geo_Block {
 			$validate = apply_filters( self::PLUGIN_NAME . '-login', $validate, $settings );
 
 			// (1) blocked, (3) unauthenticated, (5) all
-			if ( 1 & (int)$settings['validation']['reclogs'] )
-				IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings );
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, 1 & (int)$settings['validation']['reclogs'] );
 
 			// send response code to refuse immediately
 			if ( 'limited' === $validate['result'] || 'multi' === $validate['result'] ) {

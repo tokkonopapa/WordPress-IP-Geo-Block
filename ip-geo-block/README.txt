@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.8.2
-Stable tag: 3.0.4.6
+Tested up to: 4.9
+Stable tag: 3.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -266,7 +266,7 @@ You can add an IP address to the `X-Forwarded-For` header to emulate the access 
 
 See more details at "[How to test prevention of attacks](http://www.ipgeoblock.com/codex/#how-to-test-prevention-of-attacks 'Codex | IP Geo Block')".
 
-= I was locked down. What shall I do? =
+= I'm locked out! What shall I do? =
 
 You can find the "**Emergent Functionality**" code section near the bottom of `ip-geo-block.php`. This code block can be activated by replacing `/*` (opening multi-line comment) at the top of the line to `//` (single line comment), or `*` at the end of the line to `*/` (closing multi-line comment).
 
@@ -351,6 +351,11 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.5 =
+* **New feature:** Add "Live update" mode on "Logs" tab.
+* **Improvement:** List all the IP addresses in cache are now displayed and manageable on "Statistics" tab.
+* **Improvement:** Add "Blocked / Blacklisted" at "Recording Logs". It can verify the requests that are "passed" from blacklisted countries.
 
 = 3.0.4.6 =
 * **Bug fix:** Fix the issue that the emergent functionality didn't work when the number of login attempts reached to the limit.

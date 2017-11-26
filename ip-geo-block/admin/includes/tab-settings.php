@@ -74,7 +74,7 @@ class IP_Geo_Block_Admin_Tab {
 				'option' => $option_name,
 				'field' => $field,
 				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ) . '</span>',
-				'after' => '&nbsp;<a class="button button-secondary" id="ip-geo-block-scan-' . $field . '" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-' . $field . '"></div>',
+				'after' => '&nbsp;<a class="button button-secondary" id="ip-geo-block-scan-' . $field . '" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="#!">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-' . $field . '"></div>',
 			)
 		);
 
@@ -94,7 +94,7 @@ if ( $key = IP_Geo_Block_Util::get_server_ip() && $key !== $val && ! IP_Geo_Bloc
 				'option' => $option_name,
 				'field' => $field,
 				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ) . '</span>',
-				'after' => '&nbsp;<a class="button button-secondary" id="ip-geo-block-scan-' . $field . '" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-' . $field . '"></div>',
+				'after' => '&nbsp;<a class="button button-secondary" id="ip-geo-block-scan-' . $field . '" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="#!">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-' . $field . '"></div>',
 			)
 		);
 endif;
@@ -447,11 +447,11 @@ endif;
 		// same as in tab-accesslog.php
 		$dfn = __( '<dfn title="Validate request to %s.">%s</dfn>', 'ip-geo-block' );
 		$target = array(
-			'comment' => sprintf( $dfn, 'wp-comments-post.php', __( 'Comment post', 'ip-geo-block' ) ),
-			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',      'ip-geo-block' ) ),
-			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',   'ip-geo-block' ) ),
-			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',   'ip-geo-block' ) ),
-			'others'  => sprintf( $dfn, 'executable files',     __( 'Other areas',  'ip-geo-block' ) ),
+			'comment' => sprintf( $dfn, 'wp-comments-post.php',                      __( 'Comment post',        'ip-geo-block' ) ),
+			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',                                __( 'XML-RPC',             'ip-geo-block' ) ),
+			'login'   => sprintf( $dfn, 'wp-login.php',                              __( 'Login form',          'ip-geo-block' ) ),
+			'admin'   => sprintf( $dfn, 'wp-admin/*.php',                            __( 'Admin area',          'ip-geo-block' ) ),
+			'others'  => sprintf( $dfn, 'executable files',                          __( 'Other areas',         'ip-geo-block' ) ),
 			'public'  => sprintf( $dfn, __( 'public facing pages', 'ip-geo-block' ), __( 'Public facing pages', 'ip-geo-block' ) ),
 		);
 
@@ -1143,11 +1143,11 @@ endif;
 		);
 
 		/*----------------------------------------*
-		 * Record settings
+		 * Statistics and Logs settings
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-recording',
-			__( 'Record settings', 'ip-geo-block' ),
+			__( 'Statistics and Logs settings', 'ip-geo-block' ),
 			array( __CLASS__, 'note_record' ),
 			$option_slug
 		);
@@ -1156,7 +1156,7 @@ endif;
 		$field = 'save_statistics';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Record validation statistics', 'ip-geo-block' ),
+			__( 'Record &#8220;Statistics&#8221;', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1168,36 +1168,12 @@ endif;
 			)
 		);
 
-		// Record validation logs
-		$field = 'validation';
-		add_settings_field(
-			$option_name.'_'.$field.'_reclogs',
-			__( 'Record validation logs', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'select',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => 'reclogs',
-				'value' => $options[ $field ]['reclogs'],
-				'list' => array(
-					0 => __( 'Disable',              'ip-geo-block' ),
-					1 => __( 'Only when blocked',    'ip-geo-block' ),
-					2 => __( 'Only when passed',     'ip-geo-block' ),
-					3 => __( 'Unauthenticated user', 'ip-geo-block' ),
-					4 => __( 'Authenticated user',   'ip-geo-block' ),
-					5 => __( 'All of validation',    'ip-geo-block' ),
-				),
-			)
-		);
-
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		$field = 'validation';
 		$key = 'recdays';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( 'Recording period of the logs (days)', 'ip-geo-block' ),
+			__( 'Maximum period for &#8220;Statistics&#8221; (days)', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1209,11 +1185,39 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'value' => $options[ $field ][ $key ],
 			)
 		);
+endif;
 
+		// Record validation logs
+		$field = 'validation';
+		add_settings_field(
+			$option_name.'_'.$field.'_reclogs',
+			__( 'Record &#8220;Logs&#8221;', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => 'reclogs',
+				'value' => $options[ $field ]['reclogs'],
+				'list' => array(
+					0 => __( 'Disable',                 'ip-geo-block' ),
+					2 => __( 'Only when passed',        'ip-geo-block' ),
+					1 => __( 'Only when blocked',       'ip-geo-block' ),
+					6 => __( 'Blocked / Blacklisted',   'ip-geo-block' ),
+					3 => __( 'Unauthenticated visitor', 'ip-geo-block' ),
+					4 => __( 'Authenticated user',      'ip-geo-block' ),
+					5 => __( 'All of validation',       'ip-geo-block' ),
+				),
+			)
+		);
+
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$key = 'maxlogs';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( 'Maximum length of logs for each target', 'ip-geo-block' ),
+			__( 'Maximum entries of &#8220;Logs&#8221;', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1230,7 +1234,7 @@ endif;
 		// $_POST keys to be recorded with their values in logs
 		add_settings_field(
 			$option_name.'_'.$field.'_postkey',
-			__( '<dfn title="e.g. action, comment, log, pwd, FILES">$_POST keys to be recorded with their values in logs</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="e.g. action, comment, log, pwd, FILES">$_POST keys to be recorded with their values in &#8220;Logs&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1259,6 +1263,52 @@ endif;
 				'value' => ! empty( $options[ $field ] ) ? TRUE : FALSE,
 			)
 		);
+
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		// Live update
+		$field = 'live_update';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="Select SQLite database source.">Database source of SQLite for &#8220;Live update&#8221;</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => 'in_memory',
+				'value' => extension_loaded( 'pdo_sqlite' ) ? $options[ $field ]['in_memory'] : -1,
+				'list' => array(
+					-1 => NULL,
+					 0 => __( 'Ordinary file', 'ip-geo-block' ),
+					 1 => __( 'In-Memory', 'ip-geo-block' ),
+				),
+				'desc' => array(
+					-1 => __( 'PDO_SQLITE driver not available','ip-geo-block' ),
+					 0 => __( 'It takes a few tens of milliseconds as overhead. It can be safely used without conflict with other plugins.', 'ip-geo-block' ),
+					 1 => __( 'It takes a few milliseconds as overhead. There is a possibility of conflict with other plugins using this method.', 'ip-geo-block' ),
+				),
+			)
+		);
+
+		// Reset data source of live log
+		$field = 'reset_live';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Reset database source of &#8220;Live update&#8221;', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'button',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => __( 'Reset now', 'ip-geo-block' ),
+				'after' => '<div id="ip-geo-block-reset-live"></div>',
+			)
+		);
+endif;
 
 		/*----------------------------------------*
 		 * Cache settings
@@ -1438,8 +1488,8 @@ endif;
 			array(
 				'type' => 'none',
 				'before' =>
-					'<a class="button button-secondary" id="ip-geo-block-export" title="' . __( 'Export to the local file',   'ip-geo-block' ) . '" href="javascript:void(0)">'. __( 'Export settings', 'ip-geo-block' ) . '</a>&nbsp;' .
-					'<a class="button button-secondary" id="ip-geo-block-import" title="' . __( 'Import from the local file', 'ip-geo-block' ) . '" href="javascript:void(0)">'. __( 'Import settings', 'ip-geo-block' ) . '</a>',
+					'<a class="button button-secondary" id="ip-geo-block-export" title="' . __( 'Export to the local file',   'ip-geo-block' ) . '" href="#!">'. __( 'Export settings', 'ip-geo-block' ) . '</a>&nbsp;' .
+					'<a class="button button-secondary" id="ip-geo-block-import" title="' . __( 'Import from the local file', 'ip-geo-block' ) . '" href="#!">'. __( 'Import settings', 'ip-geo-block' ) . '</a>',
 				'after' => '<div id="ip-geo-block-export-import"></div>',
 			)
 		);
@@ -1455,8 +1505,8 @@ endif;
 			array(
 				'type' => 'none',
 				'before' =>
-					'<a class="button button-secondary" id="ip-geo-block-default" title="' . __( 'Import the default settings to revert to the &#8220;Right after installing&#8221; state', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Default settings', 'ip-geo-block' ) . '</a>&nbsp;' .
-					'<a class="button button-secondary" id="ip-geo-block-preferred" title="' . __( 'Import the preferred settings mainly by enabling Zero-day Exploit Prevention for the &#8220;Back-end target settings&#8221;', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Best for Back-end', 'ip-geo-block' ) . '</a>',
+					'<a class="button button-secondary" id="ip-geo-block-default" title="' . __( 'Import the default settings to revert to the &#8220;Right after installing&#8221; state', 'ip-geo-block' ) . '" href="#!">' . __( 'Default settings', 'ip-geo-block' ) . '</a>&nbsp;' .
+					'<a class="button button-secondary" id="ip-geo-block-preferred" title="' . __( 'Import the preferred settings mainly by enabling Zero-day Exploit Prevention for the &#8220;Back-end target settings&#8221;', 'ip-geo-block' ) . '" href="#!">' . __( 'Best for Back-end', 'ip-geo-block' ) . '</a>',
 				'after' => '<div id="ip-geo-block-pre-defined"></div>',
 			)
 		);
@@ -1500,14 +1550,14 @@ endif;
 		$field = 'show-info';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="Please copy &amp; paste when submitting your issue to support forum.">System information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
+			__( '<dfn title="When an unexpected blocking has occurred, please press the button to find the blocked request in the dumped information which may help to solve the issue.">Debug information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
 				'type' => 'none',
 				'before' =>
-					'<a class="button button-secondary" id="ip-geo-block-show-info" title="' . __( 'Show PHP, WordPress, theme and plugins information.', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Show information', 'ip-geo-block' ) . '</a>&nbsp;',
+					'<a class="button button-secondary" id="ip-geo-block-show-info" title="' . __( 'Please copy &amp; paste when submitting your issue to support forum.', 'ip-geo-block' ) . '" href="#!">' . __( 'Show information', 'ip-geo-block' ) . '</a>&nbsp;',
 				'after' => '<div id="ip-geo-block-wp-info"></div>',
 			)
 		);

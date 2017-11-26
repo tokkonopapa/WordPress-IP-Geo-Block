@@ -1,4 +1,9 @@
 <?php
+
+// Test for restore_network()
+define( 'TEST_RESTORE_NETWORK', FALSE );
+define( 'TEST_NETWORK_BLOG_COUNT', 30 );
+
 class IP_Geo_Block_Admin_Ajax {
 
 	/**
@@ -6,7 +11,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 * @param string $which name of the geolocation api provider
 	 */
-	static public function search_ip( $which ) {
+	public static function search_ip( $which ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 
 		// check format
@@ -50,7 +55,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 * @param string $which 'ip_client' or 'ip_server'
 	 */
-	static public function scan_country( $which ) {
+	public static function scan_country( $which ) {
 		// scan all the country code using selected APIs
 		$ip        = IP_Geo_Block::get_ip_address();
 		$options   = IP_Geo_Block::get_option();
@@ -82,7 +87,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 * Insert array
 	 *
 	 */
-	static private function array_insert( &$base_array, $insert_value, $position = null ) {
+	private static function array_insert( &$base_array, $insert_value, $position = null ) {
 		if ( ! is_array( $insert_value ) )
 			$insert_value = array( $insert_value );
 
@@ -99,7 +104,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
-	static public function export_logs( $which ) {
+	public static function export_logs( $which ) {
 		$csv = '';
 		$which = IP_Geo_Block_Logs::restore_logs( $which );
 		$date = isset( $which[0] ) ? $which[0][1] : $_SERVER['REQUEST_TIME'];
@@ -124,62 +129,219 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	/**
+	 * Format logs from rows array
+	 *
+	 */
+	private static function format_logs( $rows ) {
+		$options = IP_Geo_Block::get_option();
+		$res = array();
+
+		foreach ( $rows as $row ) {
+			$row = array_map( 'esc_html', $row );
+			if ( $options['anonymize']  )
+				$row[2] = preg_replace( '/\d{1,3}$/', '***', $row[2] );
+
+			$res[] = array(
+				/*  0 Checkbox     */ '',
+				/*  1 Time (raw)   */ $row[1],
+				/*  2 Date         */ '&rsquo;' . IP_Geo_Block_Util::localdate( $row[1], 'y-m-d H:i:s' ),
+				/*  3 IP address   */ '<span><a href="#!">' . $row[2] . '</a></span>',
+				/*  4 Country code */ '<span>' . $row[3] . '</span>',
+				/*  5 AS number    */ '<span>' . $row[5] . '</span>',
+				/*  6 Target       */ '<span>' . $row[0] . '</span>',
+				/*  7 Status       */ '<span>' . $row[4] . '</span>',
+				/*  8 Request      */ '<span>' . $row[6] . '</span>',
+				/*  9 User agent   */ '<span>' . $row[7] . '</span>',
+				/* 10 HTTP headers */ '<span>' . $row[8] . '</span>',
+				/* 11 $_POST data  */ '<span>' . $row[9] . '</span>',
+			);
+		}
+
+		return $res;
+	}
+
+	/**
 	 * Restore logs from MySQL DB
 	 *
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
-	static public function restore_logs( $which ) {
-		// if js is slow then limit the number of rows
-		$list = array();
-		$limit = IP_Geo_Block_Logs::limit_rows( @$_POST['time'] );
+	public static function restore_logs( $which ) {
+		return array( 'data' => self::format_logs( IP_Geo_Block_Logs::restore_logs( $which ) ) ); // DataTables requires `data`
+	}
 
-		foreach ( IP_Geo_Block_Logs::restore_logs( $which ) as $row ) {
-			$hook = array_shift( $row );
-			$list[ $hook ][] = $row; // array_map( 'IP_Geo_Block_Logs::validate_utf8', $row );
+	/**
+	 * Restore and reset live log in SQLite
+	 *
+	 */
+	public static function restore_live_log( $hook, $settings ) {
+		if ( ! is_wp_error( $res = IP_Geo_Block_Logs::restore_live_log( $hook, $settings ) ) )
+			return array( 'data' => self::format_logs( $res ) ); // DataTables requires `data`
+		else
+			return array( 'error' => $res->get_error_message() );
+	}
+
+	public static function reset_live_log() {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( 'reset_live_log' );
+
+		if ( FALSE !== ( $files = scandir( $dir = get_temp_dir(), 1 ) ) ) {
+			foreach ( $files as $file ) {
+				if ( FALSE !== strpos( $file, IP_Geo_Block::PLUGIN_NAME ) ) {
+					$fs->delete( $dir . $file );
+				}
+			}
 		}
 
-		// compose html with sanitization
-		foreach ( $list as $hook => $rows ) {
-			$html = '';
-			$n = 0;
+		return TRUE;
+	}
 
-			foreach ( $rows as $row ) {
-				// Time of date
-				$log = (int)array_shift( $row );
-				$html .= '<tr><td data-value='.$log.'>';
-				$html .= IP_Geo_Block_Util::localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
+	/**
+	 * Restore cache from MySQL DB
+	 *
+	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
+	 */
+	public static function restore_cache( $which ) {
+		$options = IP_Geo_Block::get_option();
+		$time = time();
+		$res = array();
 
-				// IP address
-				$log = array_shift( $row );
-				$html .= '<td><a href="#!">' . esc_html( $log ) . '</a></td>';
+		foreach ( IP_Geo_Block_Logs::restore_cache() as $key => $val ) {
+			if ( $options['anonymize'] )
+				$key = preg_replace( '/\d{1,3}$/', '***', $key );
 
-				foreach ( $row as $log ) {
-					$html .= '<td>' . esc_html( $log ) . '</td>';
+			$res[] = array(
+				/* Checkbox     */ '',
+				/* IP address   */ '<span><a href="#!">' . esc_html( $key ) . '</a></span>',
+				/* Country code */ '<span>' . esc_html( $val['code'] ) . '</span>',
+				/* AS number    */ '<span>' . esc_html( $val['asn' ] ) . '</span>',
+				/* Host name    */ '<span>' . esc_html( $val['host'] ) . '</span>',
+				/* Target       */ '<span>' . esc_html( $val['hook'] ) . '</span>',
+				/* Fails/Calls  */ '<span>' . sprintf( '%d / %d', (int)$val['fail'], (int)$val['call'] ) . '</span>',
+				/* Elapsed[sec] */ '<span>' . ( $time - (int)$val['time'] ) . '</span>',
+			);
+		}
+
+		return array( 'data' => $res ); // DataTables requires `data`
+	}
+
+	/**
+	 * Get the number of active sites on your installation
+	 */
+	public static function get_network_count() {
+if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
+		return get_blog_count(); // get_sites( array( 'count' => TRUE ) ) @since 4.6
+else:
+		return TEST_NETWORK_BLOG_COUNT;
+endif;
+	}
+
+	/**
+	 * Restore blocked per target in logs
+	 *
+	 * @param string $duration the number of selected duration
+	 * @param int    $offset the start of blog to restore logs
+	 * @param int    $length the number of blogs to restore logs from $offset
+	 * @param int    $literal JavaScript literal notation
+	 */
+	public static function restore_network( $duration, $offset = 0, $length = 100, $literal = FALSE ) {
+		$zero = array(
+			'comment' => 0,
+			'xmlrpc'  => 0,
+			'login'   => 0,
+			'admin'   => 0,
+			'public'  => 0,
+		);
+
+		$time = array(
+			YEAR_IN_SECONDS,  // All
+			HOUR_IN_SECONDS,  // Latest 1 hour
+			DAY_IN_SECONDS,   // Latest 24 hours
+			WEEK_IN_SECONDS,  // Latest 1 week
+			MONTH_IN_SECONDS, // Latest 1 month
+		);
+
+		$i = 0;
+		$length += $offset;
+		$json = $count = array();
+		$duration = isset( $time[ $duration ] ) ? $time[ $duration ] : $time[0];
+
+if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
+		global $wpdb;
+		foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
+			switch_to_blog( $id );
+
+			if ( $offset <= $i && $i < $length ) {
+				// array of ( `time`, `ip`, `hook`, `code`, `method`, `data` )
+				$name = get_bloginfo( 'name' );
+				$logs = IP_Geo_Block_Logs::get_recent_logs( $duration );
+
+				$count[ $name ] = $zero;
+
+				// Blocked hooks by time
+				foreach( $logs as $val ) {
+					++$count[ $name ][ $val['hook'] ];
 				}
 
-				$html .= "</tr>";
-				if ( ++$n >= $limit ) break;
-			}
+				// link over network
+				$count[ $name ]['link'] = esc_url( add_query_arg(
+					array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ),
+					admin_url( 'options-general.php' )
+				) );
 
-			$res[ $hook ] = $html;
+				restore_current_blog();
+			}
+		}
+else:
+		for ( $i = 0; $i < TEST_NETWORK_BLOG_COUNT; ++$i ) {
+			if ( $offset <= $i && $i < $length ) {
+				$count[ 'site-' . $i ] = array(
+					$i, $i, $i, $i, $i,
+					esc_url( add_query_arg(
+						array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ),
+						admin_url( 'options-general.php' )
+					) )
+				);
+			}
+		}
+endif; // TEST_RESTORE_NETWORK
+
+		if ( $literal ) {
+			// https://stackoverflow.com/questions/17327022/create-line-chart-using-google-chart-api-and-json-for-datatable
+			foreach ( $count as $key => $val ) {
+				$json['rows'][]['c'] = array(
+					array( 'v' => $key ),
+					array( 'v' => $val['comment'] ),
+					array( 'v' => $val['xmlrpc' ] ),
+					array( 'v' => $val['login'  ] ),
+					array( 'v' => $val['admin'  ] ),
+					array( 'v' => $val['public' ] ),
+					array( 'v' => $val['link'   ] ),
+				);
+			}
 		}
 
-		return isset( $res ) ? $res : NULL;
+		else {
+			// https://developers.google.com/chart/interactive/docs/datatables_dataviews#arraytodatatable
+			foreach ( $count as $key => $val ) {
+				array_push( $json, array_merge( array( $key ), array_values( $val ) ) );
+			}
+		}
+
+		return $json;
 	}
 
 	/**
 	 * Validate json from the client and respond safe data
 	 *
 	 */
-	static public function validate_settings( $parent ) {
+	public static function validate_settings( $parent ) {
 		// restore escaped characters (see wp_magic_quotes() in wp-includes/load.php)
 		$json = json_decode(
 			str_replace(
 				array( '\\"', '\\\\', "\'" ),
 				array( '"',   '\\',   "'"  ),
 				isset( $_POST['data'] ) ? $_POST['data'] : ''
-			),
-			TRUE
+			), TRUE
 		);
 
 		if ( NULL === $json )
@@ -191,8 +353,7 @@ class IP_Geo_Block_Admin_Ajax {
 
 		// Integrate posted data into current settings because if can be a part of hole data
 		$input = array_replace_recursive(
-			$parent->preprocess_options( IP_Geo_Block::get_option(), IP_Geo_Block::get_default() ),
-			$input
+			$parent->preprocess_options( IP_Geo_Block::get_option(), IP_Geo_Block::get_default() ), $input
 		);
 
 		// Validate options and convert to json
@@ -218,7 +379,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 * Convert json associative array to settings array
 	 *
 	 */
-	static private function json_to_settings( $input ) {
+	private static function json_to_settings( $input ) {
 		$settings = $m = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;
 
@@ -262,7 +423,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 * Convert settings array to json associative array
 	 *
 	 */
-	static public function settings_to_json( $input, $overwrite = TRUE ) {
+	public static function settings_to_json( $input, $overwrite = TRUE ) {
 		// [*]:list of checkboxes, [$]:comma separated text to array, [%]:associative array
 		$keys = array(
 			'[version]',
@@ -349,11 +510,11 @@ class IP_Geo_Block_Admin_Ajax {
 			'[clean_uninstall]',
 			'[api_key][GoogleMap]',      // 2.2.7
 			'[network_wide]',            // 3.0.0
-			'[others][%]',               // 3.0.3
 			'[mimetype][white_list][%]', // 3.0.3
 			'[mimetype][black_list]',    // 3.0.3
 			'[mimetype][capability][$]', // 3.0.4
 			'[Maxmind][use_asn]',        // 3.0.4
+			'[live_update][in_memory]',  // 3.0.5
 		);
 		$json = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;
@@ -414,7 +575,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 * Make preferred settings with formatted json
 	 *
 	 */
-	static public function preferred_to_json() {
+	public static function preferred_to_json() {
 		return self::settings_to_json(
 			array(
 				'login_fails'     => 10,      // Limited number of login attempts
@@ -442,7 +603,7 @@ class IP_Geo_Block_Admin_Ajax {
 
 	// Encode json without JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
 	// Note: It should not be rendered via jQuery .html() at client side
-	static private function json_unsafe_encode( $data ) {
+	private static function json_unsafe_encode( $data ) {
 		if ( version_compare( PHP_VERSION, '5.4', '>=' ) ) {
 			$opts = JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
 			if ( function_exists( 'wp_json_encode' ) ) // @since 4.1.0
@@ -466,7 +627,7 @@ class IP_Geo_Block_Admin_Ajax {
 	// Fallback function for PHP 5.3 and under
 	// @link http://qiita.com/keromichan16/items/5ff45a77fb0d48e046cc
 	// @link http://stackoverflow.com/questions/16498286/why-does-the-php-json-encode-function-convert-utf-8-strings-to-hexadecimal-entit/
-	static private function json_unescaped_unicode( $input ) {
+	private static function json_unescaped_unicode( $input ) {
 		return preg_replace_callback(
 			'/(?:\\\\u[0-9a-zA-Z]{4})++/',
 			array( __CLASS__, 'convert_encoding' ),
@@ -475,13 +636,13 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	// Fallback function for PHP 5.3 and under
-	static private function convert_encoding( $matches ) {
+	private static function convert_encoding( $matches ) {
 		return mb_convert_encoding(
 			pack( 'H*', str_replace( '\\u', '', $matches[0] ) ), 'UTF-8', 'UTF-16'
 		);
 	}
 
-	static public function get_wp_info() {
+	public static function get_wp_info() {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'get_wp_info' );
@@ -502,6 +663,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'ZipArchive:'  => class_exists( 'ZipArchive', FALSE ) ? 'yes' : 'no',
 			'BC Math:'     => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
 			'mb_strcut:'   => function_exists( 'mb_strcut' ) ? 'yes' : 'no',
+			'SQLite(PDO):' => extension_loaded('pdo_sqlite') ? 'yes' : 'no',
 			'DNS lookup:'  => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),
 		);
 

@@ -32,7 +32,7 @@ class IP_Geo_Block_Admin_Tab {
 		}
 
 		// get selected item
-		$cookie = $context->get_cookie( IP_Geo_Block::PLUGIN_NAME );
+		$cookie = $context->get_cookie();
 		$cookie = empty( $cookie[ $tab ] ) ? 0 : (int)end( $cookie[ $tab ] );
 
 		$field = 'service';
@@ -53,8 +53,12 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 		// preset IP address
-		if ( isset( $_GET['ip'] ) ) {
-			$list = str_replace( '***', '0', $_GET['ip'] ); // Anonymize IP address
+		if ( isset( $_GET['s'] ) ) {
+			$list = preg_replace(
+				array( '!\.\*\*\*!', '!\*\*\*!' ),
+				array( '.0',         '000'      ),
+				$_GET['s']
+			); // Anonymize IP address
 			$list = filter_var( $list, FILTER_VALIDATE_IP ) ? $list : '';
 		}
 		else {

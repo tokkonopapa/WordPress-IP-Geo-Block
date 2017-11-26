@@ -47,14 +47,14 @@ class IP_Geo_Block_Opts {
 			'reclogs'     => 1,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
 			'postkey'     => 'action,comment,log,pwd,FILES', // Keys in $_POST, $_FILES
 			// since version 1.3.1
-			'maxlogs'     => 100,     // Max number of rows of log
+			'maxlogs'     => 100,     // Max number of rows for validation logs
 			'backup'      => NULL,    // Absolute path to directory for backup logs
 			// since version 2.1.0
 			'plugins'     => 0,       // Validate on wp-content/plugins (1:country 2:ZEP)
 			'themes'      => 0,       // Validate on wp-content/themes (1:country 2:ZEP)
 			// since version 2.2.9
 			'timing'      => 0,       // 0:init, 1:mu-plugins, 2:drop-in
-			'recdays'     => 30,      // Number of days for recording logs
+			'recdays'     => 30,      // Number of days for validation statistics
 			// since version 3.0.0
 			'includes'    => 3,       // for wp-includes/
 			'uploads'     => 3,       // for UPLOADS/uploads
@@ -166,7 +166,10 @@ class IP_Geo_Block_Opts {
 			// since version 3.0.4
 			'capability'     => array( 'upload_files' ),
 		),
-		'others'          => array(),    // TBD
+		// since version 3.0.5
+		'live_update'     => array(
+			'in_memory'      => 0,       // -1:unavailable, 0:file, 1:memory
+		),
 	);
 
 	/**
@@ -366,6 +369,11 @@ class IP_Geo_Block_Opts {
 					$settings['Maxmind' ]['asn6_last' ] = $default['Maxmind' ]['asn6_last' ];
 					$settings['mimetype']['capability'] = $default['mimetype']['capability'];
 				}
+			}
+
+			if ( version_compare( $version, '3.0.5' ) < 0 ) {
+				$settings['validation' ]['maxlogs'] = 500;
+				$settings['live_update'] = $default['live_update'];
 			}
 
 			// save package version number

@@ -1,13 +1,17 @@
-/*jslint white: true */
+/*jslint white: true, plusplus: true, bitwise: true */
+/*eslint no-mixed-spaces-and-tabs: ["error", "smart-tabs"]*/
 /*!
  * Project: WordPress IP Geo Block
  * Copyright (c) 2015-2017 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
-var ip_geo_block_time = new Date();
-
 (function ($, window, document) {
 	'use strict';
+
+	// External variables
+	var timer_stack = [],
+	    ip_geo_block      = IP_GEO_BLOCK,
+	    ip_geo_block_auth = IP_GEO_BLOCK_AUTH;
 
 	function ID(selector, id) {
 		var keys = {
@@ -33,6 +37,23 @@ var ip_geo_block_time = new Date();
 		}) : '';
 	}
 
+	function stripTag(str) {
+		return str.replace(/(<([^>]+)>)/ig, '');
+	}
+
+	function onresize(name, callback) {
+		if ('undefined' === typeof timer_stack[name]) {
+			timer_stack[name] = {id: false, callback: callback};
+		}
+		$(window).off('resize').on('resize', function (/*event*/) {
+			if (false !== timer_stack[name].id) {
+				window.clearTimeout(timer_stack[name].id);
+			}
+			timer_stack[name].time = window.setTimeout(timer_stack[name].callback, 200);
+			return false;
+		});
+	}
+
 	function loading(id, flag) {
 		if (flag) {
 			$(ID('#', id)).addClass(ID('loading'));
@@ -42,22 +63,22 @@ var ip_geo_block_time = new Date();
 	}
 
 	function confirm(msg, callback) {
-		if (window.confirm(escapeHTML(msg))) {
+		if (window.confirm(stripTag(msg))) {
 			callback();
 		}
 	}
 
 	function warning(status, msg) {
-		window.alert(status ? escapeHTML(status + ': ' + msg) : escapeHTML(msg));
+		window.alert(stripTag(status ? status + ': ' + msg : msg));
 	}
 
 	function notice_html5() {
-		warning(null, IP_GEO_BLOCK.msg[8]);
+		warning(null, ip_geo_block.msg[8]);
 	}
 
 	function redirect(page, tab) {
-		if (-1 !== location.href.indexOf(page)) {
-			window.location = escapeHTML(page) + (tab ? '&' + escapeHTML(tab) : '');
+		if (-1 !== window.location.href.indexOf(page)) {
+			window.location = escapeHTML(page) + (tab ? '&' + escapeHTML(tab) : '') + '&ip-geo-block-auth-nonce=' + ip_geo_block_auth.nonce;
 		}
 	}
 
@@ -66,16 +87,18 @@ var ip_geo_block_time = new Date();
 			loading(id, true);
 		}
 
-		request.action = IP_GEO_BLOCK.action;
-		request.nonce = IP_GEO_BLOCK.nonce;
+		request.action = ip_geo_block.action;
+		request.nonce  = ip_geo_block.nonce;
 
-		$.post(IP_GEO_BLOCK.url, request)
+		$.post(ip_geo_block.url, request)
 
-		.done(function (data, textStatus, jqXHR) {
-			callback(data);
+		.done(function (data/*, textStatus, jqXHR*/) {
+			if (callback) {
+				callback(data);
+			}
 		})
 
-		.fail(function (jqXHR, textStatus, errorThrown) {
+		.fail(function (jqXHR, textStatus/*, errorThrown*/) {
 			warning(textStatus, jqXHR.responseText);
 		})
 
@@ -185,7 +208,7 @@ var ip_geo_block_time = new Date();
 
 	// File Reader
 	function readfile(file, callback) {
-		var reader = new FileReader();
+		var reader = new window.FileReader();
 		reader.onload = function (event) {
 			if (callback) {
 				callback(event.target.result);
@@ -218,7 +241,7 @@ var ip_geo_block_time = new Date();
 	 *
 	 * usage: $('form').deserialize({'name':'value', ...});
 	 */
-	$.fn.deserialize = function (json, options) {
+	$.fn.deserialize = function (json/*, options*/) {
 		return this.each(function () {
 			var key, name, value,
 			    self = this,
@@ -287,6 +310,32 @@ var ip_geo_block_time = new Date();
 		}
 	}
 
+	function inArray(val, arr) {
+		var i, n = arr.length;
+		val = val.replace('…', '');
+
+		for (i = 0; i < n; ++i) {
+			if (arr.hasOwnProperty(i) && 0 === arr[i].label.indexOf(val)) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	// Split an array into chunks
+	function array_chunk(arr, size) {
+		var n = Math.ceil(arr.length / size),
+		    r = [], i, j;
+
+		for(i = 0; i < n; ++i) {
+			j = i * size;
+			r.push(arr.slice(j, j + size));
+		}
+
+		return r;
+	}
+
 	// google chart
 	var chart = {
 		// Pie Chart
@@ -295,20 +344,24 @@ var ip_geo_block_time = new Date();
 		drawPie: function (id) {
 			var i, data;
 			if ('undefined' === typeof chart.dataPie[id]) {
-				i = chart.dataPie[id] = new google.visualization.DataTable();
+				i = chart.dataPie[id] = new window.google.visualization.DataTable();
 				i.addColumn('string', 'Country');
 				i.addColumn('number', 'Requests');
 				data = $.parseJSON($('#' + id).attr('data-' + id));
 				chart.dataPie[id].addRows(data);
 			}
+
 			if ('undefined' === typeof chart.viewPie[id]) {
-				chart.viewPie[id] = new google.visualization.PieChart(
+				chart.viewPie[id] = new window.google.visualization.PieChart(
 					document.getElementById(id)
 				);
 			}
-			if ($('#' + id).width()) {
+
+			if ('undefined' !== typeof chart.dataPie[id] &&
+			    'undefined' !== typeof chart.viewPie[id] &&
+			    0 < (i = $('#' + id).width())) {
 				chart.viewPie[id].draw(chart.dataPie[id], {
-					backgroundColor: { fill: 'transparent' }, // '#f1f1f1',
+					backgroundColor: { fill: 'transparent' },
 					chartArea: {
 						left: 0,
 						top: '5%',
@@ -326,7 +379,7 @@ var ip_geo_block_time = new Date();
 		drawLine: function (id, datetype) {
 			var i, n, data;
 			if ('undefined' === typeof chart.dataLine[id]) {
-				i = chart.dataLine[id] = new google.visualization.DataTable();
+				i = chart.dataLine[id] = new window.google.visualization.DataTable();
 				i.addColumn(datetype, 'Date'   );
 				i.addColumn('number', 'comment');
 				i.addColumn('number', 'xmlrpc' );
@@ -342,51 +395,178 @@ var ip_geo_block_time = new Date();
 			}
 
 			if ('undefined' === typeof chart.viewLine[id]) {
-				chart.viewLine[id] = new google.visualization.LineChart(
+				chart.viewLine[id] = new window.google.visualization.LineChart(
 					document.getElementById(id)
 				);
 			}
 
-			i = $('#' + id).width();
-			if (i) {
-				i = i > 320 ? true : false;
+			if ('undefined' !== typeof chart.dataLine[id] &&
+			    'undefined' !== typeof chart.viewLine[id] &&
+			    0 < (i = $('#' + id).width())) {
 				chart.viewLine[id].draw(chart.dataLine[id], {
-					backgroundColor: { fill: 'transparent' }, // '#f1f1f1',
 					legend: { position: 'bottom' },
+					backgroundColor: { fill: 'transparent' },
 					hAxis: { format: 'MM/dd' + ('datetime' === datetype ? ' HH:mm' : '') },
-					vAxis: { textPosition: (i ? 'out' : 'in') },
+					vAxis: { textPosition: (i > 320 ? 'out' : 'in') },
 					chartArea: {
-						left: (i ? '10%' : 0),
+						left: (i > 320 ? '10%' : 0),
 						top: '5%',
 						width: '100%',
 						height: '75%'
 					}
 				});
 			}
+		},
+
+		// Stacked bar
+		dataStacked: [],
+		viewStacked: [],
+		drawStacked: function (id) {
+			var i, w, data, range, $id = $('#' + id);
+
+			if ('undefined' === typeof chart.dataStacked[id]) {
+				data = $.parseJSON($id.attr('data-' + id));
+				if (data) {
+					data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', { role: 'link' } ]);
+					chart.dataStacked[id] = window.google.visualization.arrayToDataTable(data);
+				}
+			}
+
+			if ('undefined' === typeof chart.viewStacked[id]) {
+				chart.viewStacked[id] = new window.google.visualization.BarChart(
+					document.getElementById(id)
+				);
+
+				// process for after animation
+				window.google.visualization.events.addListener(chart.viewStacked[id], 'animationfinish', function (/*event*/) {
+					// Make an array of the title in each row.
+					var i, a, p,
+					    info = [],
+					    data = chart.dataStacked[id],
+					    n = data.getNumberOfRows(),
+					    mode = $(ID('#', 'open-new')).prop('checked');
+
+					for (i = 0; i < n; i++) {
+						info.push({
+							label: data.getValue(i, 0),
+							link:  data.getValue(i, 6)
+						});
+					}
+
+					// https://stackoverflow.com/questions/12701772/insert-links-into-google-charts-api-data
+					n = 'http://www.w3.org/1999/xlink';
+					$id.find('text').each(function (i, elm) {
+						p = elm.parentNode;
+						if ('g' === p.tagName.toLowerCase() && -1 !== (i = inArray(elm.textContent, info))) {
+							a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+							a.setAttributeNS(n, 'xlink:href', info[i].link);
+							a.setAttributeNS(n, 'title', info[i].label);
+							a.setAttribute('target', mode ? '_blank' : '_self');
+							a.setAttribute('class', 'site');
+							a.appendChild(p.removeChild(elm));
+							p.appendChild(a);
+							info.splice(i, 1); // for speeding up
+						}
+					});
+				});
+			}
+
+			if (0 < (w = $id.width()) &&
+			    'undefined' !== typeof chart.dataStacked[id] &&	
+			    'undefined' !== typeof chart.viewStacked[id]) {
+
+				i = ID('range');
+				range = $.parseJSON($('.' + i).attr('data-' + i));
+
+				data = chart.dataStacked[id];
+				i = 40 * data.getNumberOfRows();
+
+				chart.viewStacked[id].draw(data, {
+					width: w,
+					height: i + 80,
+					allowHtml: true,
+					isStacked: true,
+					legend: { position: 'top' },
+					chartArea: {
+						top: 50,
+						left: 90,
+						width: '100%',
+						height: i
+					},
+					hAxis: {
+						minValue: 0,
+						maxValue: range[1]
+					},
+					backgroundColor: { fill: 'transparent' },
+					animation: {
+						startup: true,
+						duration: 200,
+						easing: 'out'
+					}
+				});
+			}
+		},
+		ajaxStacked: function (duration, row, col, page) {
+			duration = Math.max( 0, Math.min( 4, duration ) );
+			row      = Math.max( 1, Math.min( 5, row      ) ) * 5;
+
+			ajax_post(null, {
+				cmd: 'restore-network',
+				which: duration,
+				offset: row * col * page,
+				length: row
+			}, function (data) {
+				var i, j, n, id, dt;
+
+				data = array_chunk(data, row);
+
+				$(ID('.', 'network')).each(function (index, obj) {
+					if ('undefined' !== typeof data[index]) {
+						id = $(obj).attr('id');
+						dt = chart.dataStacked[id];
+						n = Math.min(row, data[index].length);
+						for (i = 0; i < n; ++i) {
+							// [0]:site, [1]:comment, [2]:xmlrpc, [3]:login, [4]:admin, [5]:public, [6]:link
+							for (j = 1; j <= 5; j++) {
+								dt.setValue(i, j, data[index][i][j]);
+							}
+						}
+						chart.drawStacked(id);
+					}
+				});
+			});
 		}
 	};
 
 	// google chart
 	function drawChart(tabNo) {
-		if ('object' === typeof google) {
+		if ('object' === typeof window.google) {
 			if (1 === tabNo) {
 				chart.drawPie(ID('chart-countries'));
 				chart.drawLine(ID('chart-daily'), 'date');
 			} else if (5 === tabNo) {
-				$(ID('.', 'multisite')).each(function (i, obj) {
-					chart.drawLine($(obj).attr('id'), 'datetime');
+				$(ID('.', 'network')).each(function (i, obj) {
+//					chart.drawLine($(obj).attr('id'), 'datetime');
+					chart.drawStacked($(obj).attr('id'));
 				});
 			}
 		}
 	}
 
-    function initChart(tabNo) {
-		if ('object' === typeof google) {
-			google.load('visualization', '1', {
-				packages: ['corechart'],
+	function initChart(tabNo) {
+		if ('object' === typeof window.google) {
+			var packages = ['corechart'];
+			if (5 === tabNo) {
+				packages.push('bar');
+			}
+			window.google.load('visualization', '1', {
+				packages: packages,
 				callback: function () {
 					drawChart(tabNo);
 				}
+			});
+			onresize('draw-chart.' + tabNo, function () {
+				drawChart(tabNo);
 			});
 		}
 	}
@@ -408,7 +588,7 @@ var ip_geo_block_time = new Date();
 		return cookie;
 	}
 
-	// setHash( name, value, expires, path, domain, secure )
+	// cookie[tabNo][n] = 1 charactor or 'o' if empty
 	function saveCookie(cookie) {
 		var j, n, c = [];
 
@@ -425,9 +605,11 @@ var ip_geo_block_time = new Date();
 			}
 		});
 
+		// setHash( name, value, expires, path, domain, secure )
 		if ('undefined' !== typeof wpCookies) {
-			j = 'undefined' !== typeof IP_GEO_BLOCK_AUTH ? IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin : '';
-			wpCookies.setHash('ip-geo-block', c, new Date(Date.now() + 2592000000), j);
+			wpCookies.setHash(
+				'ip-geo-block', c, new Date(Date.now() + 2592000000), ip_geo_block_auth.home + ip_geo_block_auth.admin
+			);
 		}
 	}
 
@@ -441,13 +623,13 @@ var ip_geo_block_time = new Date();
 
 		border = title.hasClass(ID('dropdown'));
 		if (border) {
-			body.addClass(ID('border'));
+			body.addClass(ID('border')).trigger(ID('show-body'));
 		} else {
 			body.removeClass(ID('border'));
 		}
 
 		cookie[tabNo][index] =  border ? 'o' : 'x';
-		saveCookie(cookie); // Save cookie
+		saveCookie(cookie);
 
 		// redraw google chart
 		drawChart(tabNo);
@@ -457,13 +639,13 @@ var ip_geo_block_time = new Date();
 		var cookie = loadCookie(tabNo);
 
 		// Click event handler to show/hide form-table
-		$('form').on('click', 'h2,h3', function (event) {
+		$('form').on('click', 'h2,h3', function (/*event*/) {
 			toggleSection($(this), tabNo, cookie);
 			return false;
 		});
 
 		// Toggle all
-		$(ID('#', 'toggle-sections')).on('click', function (event) {
+		$(ID('#', 'toggle-sections')).on('click', function (/*event*/) {
 			var $this,
 			    title = $(ID('.', 'field')).find('h2,h3'),
 			    m = [ID('dropdown'), ID('dropup')],
@@ -477,7 +659,7 @@ var ip_geo_block_time = new Date();
 				if (n) {
 					$this.removeClass(ID('border'));
 				} else {
-					$this.addClass(ID('border'));
+					$this.addClass(ID('border')).trigger('show-body');
 				}
 				cookie[tabNo][i] = n ? 'x' : 'o';
 			});
@@ -498,9 +680,9 @@ var ip_geo_block_time = new Date();
 	function add_hidden_form(cmd) {
 		$('body').append(
 			'<div style="display:none">' +
-				'<form method="POST" id="' + ID('export-form') + '" action="' + IP_GEO_BLOCK.url.replace('ajax.php', 'post.php') + '">' +
-					'<input type="hidden" name="action" value="' + IP_GEO_BLOCK.action + '" />' +
-					'<input type="hidden" name="nonce" value="' + IP_GEO_BLOCK.nonce + '" />' +
+				'<form method="POST" id="' + ID('export-form') + '" action="' + ip_geo_block.url.replace('ajax.php', 'post.php') + '">' +
+					'<input type="hidden" name="action" value="' + ip_geo_block.action + '" />' +
+					'<input type="hidden" name="nonce" value="' + ip_geo_block.nonce + '" />' +
 					'<input type="hidden" name="cmd" value="' + cmd + '" />' +
 					'<input type="hidden" name="data" value="" id="' + ID('export-data') + '"/>' +
 					'<input type="submit" value="submit" />' +
@@ -510,7 +692,7 @@ var ip_geo_block_time = new Date();
 		);
 	}
 
-	// form for export / import
+	// Icons for 'Toggle section' and 'Toggle with non logged-in user'
 	function add_icon(dfn, span, title, icon) {
 		var i, j;
 		i = dfn.cloneNode(false);
@@ -521,9 +703,223 @@ var ip_geo_block_time = new Date();
 		return i;
 	}
 
+	/*--------------------------------------------------
+	 * DataTables for tab 1 (Statistics) and 4 (Logs)
+	 *--------------------------------------------------*/
+	function initTable(tabNo, control, options) {
+		$.extend(true, $.fn.dataTable.defaults, options, {
+			// DOM
+			dom: 'tp',
+
+			// Server side
+			serverSide: false,
+
+			// Client behavior
+			autoWidth: false,
+			processing: true,
+			deferRender: true,
+			deferLoading: 10,
+
+			// Interface
+			info: false,
+			lengthChange: false,
+
+			// Language
+			language: {
+				emptyTable:     ip_geo_block.i18n[1],
+				loadingRecords: ip_geo_block.i18n[0],
+				processing:     ip_geo_block.i18n[0],
+				zeroRecords:    ip_geo_block.i18n[2],
+				paginate: {
+					first:    '&laquo;',
+					last:     '&raquo;',
+					next:     '&rsaquo;',
+					previous: '&lsaquo;'
+				}
+			},
+
+			// Responsive
+			responsive: {
+				details: {
+					type: 'column',
+					target: 'td:nth-child(n+2)'
+				}
+			},
+
+			columnDefs: [
+				{ width:   '1.25em', targets: 0 },
+				{ orderable:  false, targets: 0 },
+				{ searchable: false, targets: 0 },
+				{
+					targets: [0],
+					data: null,
+					defaultContent: '<input type="checkbox">'
+				}
+			],
+
+			// Pagenation
+			pagingType: 'full_numbers', // or 'simple_numbers'
+			pageLength: 10,
+
+			// scroller
+			scroller: true,
+			scrollY: 10000, // prevent to change column width on click
+			scrollCollapse: true, // fit the height of table
+
+			// draw callback
+			drawCallback: function (settings) {
+				var elm = $(ID('#', control.tableID)).find('td.dataTables_empty');
+
+				// avoid recursive call for ajax source
+				// 1: thead, 2: empty tbody, 3: after loading data
+				if (3 > settings.iDraw) {
+					elm.html(ip_geo_block.i18n[0]);
+				}
+				else if (3 === settings.iDraw) {
+					// 'No data available in table'
+					elm.html(ip_geo_block.i18n[1]);
+
+					elm = $(ID('@', 'search_filter'));
+					if (elm.val()) { // if a filter value exists in the text field
+						elm.trigger('keyup'); // then search the text
+					}
+				}
+			}
+		});
+
+		// Instantiate DataTables
+		var table = $(ID('#', control.tableID)).DataTable({
+			ajax: {
+				url: ip_geo_block.url,
+				type: 'POST',
+				data: {
+					cmd: control.ajaxCMD,
+					action: ip_geo_block.action,
+					nonce: ip_geo_block.nonce
+				}
+			},
+			mark: true // https://github.com/julmot/datatables.mark.js/
+		}),
+
+		// redraw when column size changed
+		redraw = function () {
+			table.columns.adjust().responsive.recalc().draw();
+		};
+
+		// draw when window is resized
+		onresize('draw-table.' + tabNo, redraw);
+
+		// Re-calculate the widths after panel-body is shown
+		$(ID('#', control.sectionID)).find('.panel-body').off(ID('show-body')).on(ID('show-body'), function (/*event*/) {
+			redraw();
+			return false;
+		})
+
+		// Handle the event of checkbox in the title header for bulk action
+		.off('change').on('change', 'th>input[type="checkbox"]', function (/*event*/) {
+			var prop = $(this).prop('checked');
+			$(ID('#', control.tableID)).find('td>input[type="checkbox"]').prop('checked', prop);
+			return false;
+		});
+
+		// Select target (radio button)
+		$(ID('#', 'select-target')).off('change').on('change', function (/*event*/) {
+			var val = $(this).find('input[name="' + ID('target') + '"]:checked').val();
+			// search only the specified column for selecting "Target"
+			table.columns(control.targetColumn).search('all' !== val ? val : '').draw();
+			return false;
+		}).trigger('change');
+
+		// Bulk action
+		$(ID('#', 'bulk-action')).off('click').on('click', function (/*event*/) {
+			var cmd  = $(this).prev().val(), // value of selected option
+			    rexp = /(<([^>]+)>)/ig,      // regular expression to strip tag
+			    data = { IP: [], AS: [] },   // IP address and AS number
+			    cell, cells = $('table.dataTable').find('td>input:checked');
+
+			if (!cmd) {
+				return false;
+			} else if (!cells.length) {
+				warning(null, ip_geo_block.msg[9]);
+				return false;
+			}
+
+			cells.each(function (/*index*/) {
+				cell = table.cell(this.parentNode).data();
+				data.IP.push(cell[control.columnIP].replace(rexp, ''));
+				data.AS.push(cell[control.columnAS].replace(rexp, ''));
+			});
+
+			if (data.IP.length) {
+				ajax_post('loading', {
+					cmd: cmd,
+					which: data
+				}, function (data) {
+					if ('undefined' !== typeof data.page) {
+						redirect(data.page, 'tab=' + tabNo);
+					} else if (data) {
+						table.ajax.reload();
+						$(ID('#', control.tableID)).find('th input[type="checkbox"]').prop('checked', false);
+					}
+				});
+			}
+
+			return false;
+		});
+
+		// Search filter
+		$(ID('@', 'search_filter')).off('keyup').on('keyup', function (/*event*/) {
+			table.search(this.value, false, true, !/[A-Z]/.test(this.value)).draw();
+			return false;
+		});
+
+		// Reset filter
+		$(ID('#', 'reset-filter')).off('click').on('click', function (/*event*/) {
+			$(ID('@', 'search_filter')).val('');
+			table.search('').draw();
+			return false;
+		});
+
+		// Clear all
+		$(ID('@', 'clear_all')).off('click').on('click', function (/*event*/) {
+			confirm(ip_geo_block.msg[tabNo === 1 ? 4 : 5], function () {
+				ajax_clear(tabNo === 1 ? 'cache' : 'logs', null);
+			});
+			return false;
+		});
+
+		// Jump to search tab with opening a new window
+		// @note: `click` cannot be `off` because it's a root.
+		$('table.dataTable tbody').on('click', 'a', function (/*event*/) {
+			var p = window.location.search.slice(1).split('&'),
+			    n = p.length, q = {}, i, j;
+
+			for (i = 0; i < n; ++i) {
+				j = p[i].split('=');
+				q[j[0]] = j[1];
+			}
+
+			// additional query
+			q.tab = tabNo === 1 ? 4 : 2;
+			q.s = $(this).text().replace(/[^\w\.\:\*]/, '');
+
+			j = [];
+			for (i in q) {
+				if (q.hasOwnProperty(i)) {
+					j.push(i + '=' + q[i]);
+				}
+			}
+
+			window.open(window.location.pathname + '?' + j.join('&'), '_blank');
+			return false;
+		});
+
+		return table;
+	}
+
 	$(function () {
 		// Get tab number
-		var tabNo = Number(IP_GEO_BLOCK.tab) || 0,
+		var tabNo = Number(ip_geo_block.tab) || 0,
 
 		// Attach event handler and manage cookie
 		cookie = manageSection(tabNo);
@@ -546,7 +942,7 @@ var ip_geo_block_time = new Date();
 			 * Validation rule settings
 			 *---------------------------*/
 			// Scan your country code
-			$('[id^="' + ID('scan-') + '"]').on('click', function (event) {
+			$('[id^="' + ID('scan-') + '"]').on('click', function (/*event*/) {
 				var $this = $(this),
 				    id = $this.attr('id'),
 				    parent = $this.parent();
@@ -630,7 +1026,7 @@ var ip_geo_block_time = new Date();
 			}).change();
 
 			// Decode
-			$(ID('#', 'decode')).on('click', function (event) {
+			$(ID('#', 'decode')).on('click', function (/*event*/) {
 				var elm = $(ID('@', 'signature')),
 				    str = elm.val();
 				if (str.search(/,/) === -1) {
@@ -652,8 +1048,8 @@ var ip_geo_block_time = new Date();
 			}).change();
 
 			// WP-ZEP in Admin area
-			$(ID('@', 'validation_admin_2')).on('change', function (event) {
-				IP_GEO_BLOCK_AUTH.zep.admin = true;
+			$(ID('@', 'validation_admin_2')).on('change', function (/*event*/) {
+				ip_geo_block_auth.zep.admin = true;
 			});
 
 			// Exceptions for Admin ajax/post
@@ -667,8 +1063,7 @@ var ip_geo_block_time = new Date();
 				    dfn   = document.createElement('dfn'  ),
 				    span  = document.createElement('span' );
 				for (key in data) {
-					id = ID('%', key);
-					if (data.hasOwnProperty(key) && ! $this.find('#' + id).size()) {
+					if (data.hasOwnProperty(key) && ! $this.find('#' + (id = ID('%', key))).size()) {
 						i = input.cloneNode(false);
 						i.setAttribute('id', id);
 						i.setAttribute('value', '1');
@@ -682,10 +1077,10 @@ var ip_geo_block_time = new Date();
 						j.appendChild(i);
 
 						if (1 & data[key]) {
-							j.appendChild(add_icon(dfn, span, IP_GEO_BLOCK.msg[6], 'lock'));
+							j.appendChild(add_icon(dfn, span, ip_geo_block.msg[6], 'lock'));
 						}
 						if (2 & data[key]) {
-							j.appendChild(add_icon(dfn, span, IP_GEO_BLOCK.msg[7], 'unlock'));
+							j.appendChild(add_icon(dfn, span, ip_geo_block.msg[7], 'unlock'));
 						}
 
 						$this.append(j);
@@ -698,22 +1093,24 @@ var ip_geo_block_time = new Date();
 						return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
 					});
 
-					$(ID('#', 'actions')).find('input').each(function (i, e) {
+					$(ID('#', 'actions')).find('input').each(function (/*i, obj*/) {
 						var $this = $(this),
 							action = $this.attr('id').replace(ID('%', ''), '');
 						$this.prop('checked', -1 !== $.inArray(action, actions));
 					});
+
 					return stopPropergation(event);
 				}).change();
 
 				// Candidate actions
-				$(ID('#', 'actions')).on('click', 'input', function (event) {
-					var i, $this = $(this),
-					action = $this.attr('id').replace(ID('%', ''), ''),
-					$admin = $(ID('@', 'exception_admin')),
-					actions = $.grep($admin.val().split(','), function (e){
-						return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
-					});
+				$(ID('#', 'actions')).on('click', 'input', function (/*event*/) {
+					var i,
+					    $this = $(this),
+					    $admin = $(ID('@', 'exception_admin')),
+					    action = $this.attr('id').replace(ID('%', ''), ''),
+					    actions = $.grep($admin.val().split(','), function (e){
+					    	return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
+					    });
 
 					// find the action
 					i = $.inArray(action, actions);
@@ -729,7 +1126,7 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Enable / Disable Exceptions
-			$('input[id^="' + ID('!', 'validation_ajax_') + '"]').on('change', function (event) {
+			$('input[id^="' + ID('!', 'validation_ajax_') + '"]').on('change', function (/*event*/) {
 				show_folding_ajax($(this));
 			}).change();
 
@@ -755,7 +1152,7 @@ var ip_geo_block_time = new Date();
 			 * Local database settings
 			 *---------------------------*/
 			// Update local database
-			$(ID('@', 'update')).on('click', function (event) {
+			$(ID('@', 'update')).on('click', function (/*event*/) {
 				ajax_post('download', {
 					cmd: 'download'
 				}, function (res) {
@@ -781,6 +1178,27 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 
+			/*--------------------------------
+			 * Statistics and Logs settings
+			 *--------------------------------*/
+			$(ID('@', 'save_statistics')).on('change', function (/*event*/) {
+				$(ID('@', 'validation_recdays')).prop('disabled', !$(this).prop('checked'));
+				return false;
+			}).trigger('change');
+
+			$(ID('@', 'validation_reclogs')).on('change', function (/*event*/) {
+				var $this = $(this);
+				$this.parent().parent().nextAll().find('input').prop('disabled', 0 === Number($this.prop('selectedIndex')));
+			}).trigger('change');
+
+			/*---------------------------
+			 * Submission settings
+			 *---------------------------*/
+			$(ID('@', 'comment_pos')).on('change', function (/*event*/) {
+				var $this = $(this);
+				$this.nextAll('input[type="text"]').prop('disabled', 0 === Number($this.prop('selectedIndex')));
+			}).trigger('change');
+
 			/*---------------------------
 			 * Plugin settings
 			 *---------------------------*/
@@ -788,7 +1206,7 @@ var ip_geo_block_time = new Date();
 			add_hidden_form('validate');
 
 			// Export settings
-			$(ID('#', 'export')).on('click', function (event) {
+			$(ID('#', 'export')).on('click', function (/*event*/) {
 				if ('undefined' === typeof JSON) {
 					notice_html5();
 					return false;
@@ -810,7 +1228,7 @@ var ip_geo_block_time = new Date();
 
 			// Import settings
 			$(ID('#', 'file-dialog')).on('change', function (event) {
-				if ('undefined' === typeof FileReader) {
+				if ('undefined' === typeof window.FileReader) {
 					notice_html5();
 					return false;
 				}
@@ -835,14 +1253,14 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 
-			$(ID('#', 'import')).on('click', function (event) {
+			$(ID('#', 'import')).on('click', function (/*event*/) {
 				$(ID('#', 'file-dialog')).click();
 				return false;
 			});
 
 			// Import pre-defined settings
-			$(ID('#', 'default')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[0], function () {
+			$(ID('#', 'default')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.msg[0], function () {
 					ajax_post('pre-defined', {
 						cmd: 'import-default'
 					}, function (data) {
@@ -852,8 +1270,8 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 
-			$(ID('#', 'preferred')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[0], function () {
+			$(ID('#', 'preferred')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.msg[0], function () {
 					ajax_post('pre-defined', {
 						cmd: 'import-preferred'
 					}, function (data) {
@@ -863,23 +1281,31 @@ var ip_geo_block_time = new Date();
 				return false;
 			});
 
+			// Reset data source for live log
+			$(ID('@', 'reset_live')).on('click', function (/*event*/) {
+				ajax_post('reset-live', {
+					cmd: 'reset-live'
+				});
+				return false;
+			});
+
 			// Manipulate DB table for validation logs
-			$(ID('@', 'create_table')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[1], function () {
+			$(ID('@', 'create_table')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.msg[1], function () {
 					ajax_table('create-table');
 				});
 				return false;
 			});
 
-			$(ID('@', 'delete_table')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[2], function () {
+			$(ID('@', 'delete_table')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.msg[2], function () {
 					ajax_table('delete-table');
 				});
 				return false;
 			});
 
 			// Show WordPress installation info
-			$(ID('#', 'show-info')).on('click', function (event) {
+			$(ID('#', 'show-info')).on('click', function (/*event*/) {
 				$(ID('#', 'wp-info')).empty();
 				ajax_post('wp-info', {
 					cmd: 'show-info'
@@ -901,7 +1327,7 @@ var ip_geo_block_time = new Date();
 			 * Common event handler
 			 *---------------------------*/
 			// Show/Hide description (this change event hander should be at the last)
-			$('select[name^="' + name + '"]').on('change', function (event) {
+			$('select[name^="' + name + '"]').on('change', function (/*event*/) {
 				var $this = $(this);
 				show_description($this);
 				show_folding_list($this, $this, name, true);
@@ -909,7 +1335,7 @@ var ip_geo_block_time = new Date();
 			}).change();
 
 			// Toggle checkbox
-			$(ID('.', 'cycle')).on('click', function (event) {
+			$(ID('.', 'cycle')).on('click', function (/*event*/) {
 				var regex, $that = $(this).nextAll('li'), actions,
 				    text = $that.find(ID('@', 'exception_admin')),
 				    cbox = $that.find('input:checkbox').filter(':visible'),
@@ -935,15 +1361,15 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Show/Hide logged in user only
-			$(ID('.', 'unlock')).on('click', function (event) {
-				$(this).nextAll('li').find('h4').nextAll('li').filter(function (i, elm) {
+			$(ID('.', 'unlock')).on('click', function (/*event*/) {
+				$(this).nextAll('li').find('h4').nextAll('li').filter(function (/*i, elm*/) {
 					return ! $(this).find('.dashicons-unlock').length;
 				}).toggle();
 				return false;
 			});
 
 			// Folding list
-			$(ID('.', 'settings-folding>dfn')).on('click', function (event) {
+			$(ID('.', 'settings-folding>dfn')).on('click', function (/*event*/) {
 				var drop = ID('drop'),
 				$this = $(this).parent();
 				$this.children('li').toggle();
@@ -959,7 +1385,7 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Submit
-			$('#submit').on('click', function (event) {
+			$('#submit').on('click', function (/*event*/) {
 				var elm = $(ID('@', 'signature')),
 				    str = elm.val();
 				if (str.indexOf(',') !== -1) {
@@ -977,26 +1403,231 @@ var ip_geo_block_time = new Date();
 			initChart(tabNo);
 
 			// Statistics of validation
-			$(ID('@', 'clear_statistics')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[3], function () {
+			$(ID('@', 'clear_statistics')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.msg[3], function () {
 					ajax_clear('statistics', null);
 				});
 				return false;
 			});
 
 			// Statistics in logs
-			$(ID('@', 'clear_logs')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[5], function () {
+			$(ID('@', 'clear_logs')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.msg[5], function () {
 					ajax_clear('logs', null);
 				});
 				return false;
 			});
 
 			// Statistics in cache
-			$(ID('@', 'clear_cache')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[4], function () {
-					ajax_clear('cache', null);
+			initTable(tabNo, {
+				tableID:   'statistics-cache',
+				ajaxCMD:   'restore-cache',
+				sectionID: 'section-2',
+				targetColumn: 4,
+				columnIP: 1,
+				columnAS: 3
+			}, {
+				columns: [
+					{ title: '<input type="checkbox">' }, // 0 checkbox
+					{ title: ip_geo_block.i18n[3]      }, // 1 IP address
+					{ title: ip_geo_block.i18n[4]      }, // 2 Country code
+					{ title: ip_geo_block.i18n[5]      }, // 3 AS number
+					{ title: ip_geo_block.i18n[6]      }, // 4 Host name
+					{ title: ip_geo_block.i18n[7]      }, // 5 Target
+					{ title: ip_geo_block.i18n[8]      }, // 6 Login fail/Call
+					{ title: ip_geo_block.i18n[9]      }  // 7 Elapsed[sec]
+				],
+				columnDefs: [
+					{ responsivePriority:  0, targets: 0 }, // checkbox
+					{ responsivePriority:  1, targets: 1 }, // IP address
+					{ responsivePriority:  2, targets: 2 }, // Country code
+					{ responsivePriority:  6, targets: 3 }, // AS number
+					{ responsivePriority:  7, targets: 4 }, // Host name
+					{ responsivePriority:  3, targets: 5 }, // Target
+					{ responsivePriority:  4, targets: 6 }, // Login fail/Call
+					{ responsivePriority:  5, targets: 7 }, // Elapsed[sec]
+					{ className: "all",       targets: [0, 1, 2, 5] } // always visible
+				]
+			});
+			break;
+
+		  /*----------------------------------------
+		   * Logs
+		   *----------------------------------------*/
+		  case 4:
+			// Validation logs
+			var control = {
+				tableID:   'validation-logs',
+				sectionID: 'section-0',
+				targetColumn: 6,
+				columnIP: 3,
+				columnAS: 5
+			},
+			options = {
+				columns: [
+					{ title: '<input type=\"checkbox\">' }, //  0 checkbox
+					{ title: ''                          }, //  1 Time (raw)
+					{ title: ip_geo_block.i18n[10]       }, //  2 Date
+					{ title: ip_geo_block.i18n[ 3]       }, //  3 IP address
+					{ title: ip_geo_block.i18n[ 4]       }, //  4 Country code
+					{ title: ip_geo_block.i18n[ 5]       }, //  5 AS number
+					{ title: ip_geo_block.i18n[ 7]       }, //  6 Target
+					{ title: ip_geo_block.i18n[11]       }, //  7 Result
+					{ title: ip_geo_block.i18n[12]       }, //  8 Request
+					{ title: ip_geo_block.i18n[13]       }, //  9 User agent
+					{ title: ip_geo_block.i18n[14]       }, // 10 HTTP headers
+					{ title: ip_geo_block.i18n[15]       }  // 11 $_POST data
+				],
+				columnDefs: [
+					{ responsivePriority: 11, targets:  0 }, // checkbox
+					{ responsivePriority:  0, targets:  1 }, // Time (raw)
+					{ responsivePriority:  1, targets:  2 }, // Date
+					{ responsivePriority:  2, targets:  3 }, // IP address
+					{ responsivePriority:  3, targets:  4 }, // Country code
+					{ responsivePriority:  6, targets:  5 }, // AS number
+					{ responsivePriority:  4, targets:  6 }, // Target
+					{ responsivePriority:  5, targets:  7 }, // Result
+					{ responsivePriority:  7, targets:  8 }, // Request
+					{ responsivePriority:  8, targets:  9 }, // User agent
+					{ responsivePriority:  9, targets: 10 }, // HTTP headers
+					{ responsivePriority: 10, targets: 11 }, // $_POST data
+					{ visible:   false,       targets:  1 }, // always hidden
+					{ className: "all",       targets: [0, 2,  3,  4] }, // always visible
+					{ className: "none",      targets: [8, 9, 10, 11] }  // always hidden
+				]
+			},
+
+			// Timer for Live update and DataTables
+			timer_start = null,
+			timer_pause = null,
+			$timer_pause = $(ID('#', 'live-loading')),
+			table = null,
+
+			// Controler functions for Live update
+			clear_timer = function () {
+				if (timer_start) {
+					window.clearTimeout(timer_start);
+					timer_start = null;
+				}
+				if (timer_pause) {
+					$timer_pause.removeClass(ID('live-timer'));
+					window.clearTimeout(timer_pause);
+					timer_pause = null;
+				}
+			},
+			live_start = function () {
+				clear_timer();
+				ajax_post('live-loading', {
+					cmd: 'live-start'
+				}, function (res) {
+					if (res.error) {
+						warning(null, res.error);
+					}
+					else if (res.data.length) {
+						var i, n = res.data.length;
+						for (i = 0; i < n; i++) {
+							table.row.add(res.data[i]); // `raws.add()` doesn't work because it needs js literal object.
+						}
+						table.draw(false); // the current page will still be shown.
+					}
+					timer_start = window.setTimeout(live_start, ip_geo_block.interval * 1000);
 				});
+			},
+			live_stop = function (cmd, callback) {
+				clear_timer();
+				ajax_post(null, {
+					cmd: cmd || 'live-stop',
+					callback: callback
+				});
+			},
+			live_pause = function () {
+				live_stop('live-pause', function () {
+					$timer_pause.addClass(ID('live-timer'));
+					timer_pause = window.setTimeout(function () {
+						clear_timer();
+						$(ID('#', 'live-log-stop')).prop('checked', true);
+					}, ip_geo_block.timeout * 1000);
+				});
+			},
+
+			// animation on added
+			new_class = ID(''),
+			add_class = function (row, data/*, index*/) {
+				if (-1 !== data[7 /* result */].indexOf('passed')) {
+					$(row).addClass(new_class + 'new-passed');
+				} else {
+					$(row).addClass(new_class + 'new-blocked');
+				}
+			},
+
+			// Live update controler and mode
+			$cntl = $(ID('#', 'live-log')),
+			$mode = $(ID('#', 'live-update'));
+
+			// Remove animation class when animation finished
+			$(ID('#', 'validation-logs')).on('animationend', function (/*event*/) {
+				$(this).find('tr[class*="' + new_class + 'new' + '"]').each(function (/*index, obj*/) {
+					var $this = $(this);
+					if (-1 !== $this.prop('class').indexOf('passed')) {
+						$this.addClass(new_class + 'passed').removeClass(new_class + 'new-passed');
+					} else {
+						$this.addClass(new_class + 'blocked').removeClass(new_class + 'new-blocked');
+					}
+				});
+				return false;
+			});
+
+			// Control of live update
+			$cntl.on('change', function (/*event*/) {
+				switch($('input[name="' + ID('live-log') + '"]:checked').val()) {
+				  case 'start':
+					live_start();
+					break;
+				  case 'pause':
+					live_pause();
+					break;
+				  case 'stop':
+					live_stop();
+					break;
+				}
+			});
+
+			// on change mode
+			$mode.on('change', function (/*event*/) {
+				var $tr = $cntl.closest('tr'),
+				    mode = $mode.prop('checked'); // checked in `display_plugin_admin_page()`
+
+				cookie[tabNo][1] = mode ? 'o' : 'x';
+				saveCookie(cookie);
+
+				// Delete old DataTables
+				if (table) {
+					table.clear().destroy();
+				}
+
+				if (mode) {
+					$tr.show().next().next().next().nextAll().hide();
+					control.ajaxCMD = 'live-stop';
+					options.order = [1, 'desc']; // sort by `Time (raw)`
+					options.createdRow = add_class;
+				} else {
+					$tr.hide().next().next().next().nextAll().show();
+					control.ajaxCMD = 'restore-logs';
+					options.order = [0, ''];
+					options.createdRow = null;
+				}
+
+				// Re-initialize DataTables
+				$(ID('#', 'live-log-stop')).trigger('click');
+				table = initTable(tabNo, control, options);
+			}).trigger('change');
+
+			// Export / Import settings
+			add_hidden_form('export-logs');
+
+			// Export logs
+			$(ID('#', 'export-logs')).on('click', function (/*event*/) {
+				$(ID('#', 'export-form')).submit();
 				return false;
 			});
 			break;
@@ -1014,7 +1645,7 @@ var ip_geo_block_time = new Date();
 
 			// Initialize map if exists
 			var map = $(ID('#', 'map'));
-			if ('object' === typeof google) {
+			if ('object' === typeof window.google) {
 				// Initialize map if exists
 				map.each(function () {
 					$(this).GmapRS();
@@ -1028,13 +1659,13 @@ var ip_geo_block_time = new Date();
 			}
 
 			// Set selected provider to cookie
-			$('select[id^="' + ID('!', 'service') + '"]').on('change', function (event) {
+			$('select[id^="' + ID('!', 'service') + '"]').on('change', function (/*event*/) {
 				cookie[tabNo][3] = $(this).prop('selectedIndex');
-				saveCookie(cookie); // Save cookie
+				saveCookie(cookie);
 			}).change();
 
 			// Search Geolocation
-			$(ID('@', 'get_location')).on('click', function (event) {
+			$(ID('@', 'get_location')).on('click', function (/*event*/) {
 				var whois = $(ID('#', 'whois')), obj,
 				    ip = $(ID('@', 'ip_address')).val();
 
@@ -1059,7 +1690,7 @@ var ip_geo_block_time = new Date();
 							'</fieldset>'
 						).fadeIn('slow');
 
-						$(ID('#', 'whois-title')).on('click', function (event) {
+						$(ID('#', 'whois-title')).on('click', function (/*event*/) {
 							var $this = $(this);
 							$this.parent().nextAll().toggle();
 							$this.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
@@ -1089,7 +1720,7 @@ var ip_geo_block_time = new Date();
 							}
 						}
 
-						if ('object' === typeof google) {
+						if ('object' === typeof window.google) {
 							map.GmapRS('addMarker', {
 								latitude: latitude,
 								longitude: longitude,
@@ -1131,91 +1762,43 @@ var ip_geo_block_time = new Date();
 			break;
 
 		  /*----------------------------------------
-		   * Logs
-		   *----------------------------------------*/
-		  case 4:
-			// Kick-off footable
-			ajax_post('logs', {
-				cmd: 'restore',
-				which: null,
-				time: new Date() - ip_geo_block_time
-			}, function (data) {
-				var key;
-				for (key in data) {
-					if (data.hasOwnProperty(key)) {
-						key = escapeHTML(key); // data has been already sanitized
-//						$(ID('#', 'log-' + key)).html($.parseHTML(data[key])); // jQuery 1.8+
-						$(ID('#', 'log-' + key)).html(data[key]);
-					}
-				}
-
-				if (typeof $.fn.footable === 'function') {
-					var logs = $(ID('.', 'log')),
-					    title = logs.parent().prevAll('legend').find('h2,h3');
-
-					// Once open section
-					title.removeClass(ID('dropup')).addClass(ID('dropdown'));
-
-					// Then make footable
-					logs.fadeIn('slow').footable();
-
-					// Finaly close section
-					title.each(function (i, obj) {
-						if ('x' === (cookie[tabNo][i+1] || 'o')) {
-							cookie[tabNo][i+1] = 'o';
-							$(obj).click();
-						}
-					});
-				}
-
-				// Jump to search tab with opening new window
-				$('tbody[id^="' + ID('log-') + '"]').on('click', 'a', function (event) {
-					key = window.location.pathname + window.location.search;
-					window.open(key.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text().replace(/[^\w\.\:\*]/, ''), '_blank');
-					return false;
-				});
-			});
-
-			// Clear filter
-			$(ID('#', 'reset-filter')).on('click', function (event) {
-				$('.footable').trigger('footable_clear_filter');
-				return false;
-			});
-
-			// Preset filter
-			$(ID('.', 'field')).on('footable_initialized', function (event) {
-				$('.footable').trigger(
-					'footable_filter', {
-						'filter': $(ID('@', 'filter_logs')).val()
-					}
-				);
-				return false;
-			});
-
-			// Validation logs
-			$(ID('@', 'clear_logs')).on('click', function (event) {
-				confirm(IP_GEO_BLOCK.msg[5], function () {
-					ajax_clear('logs', null);
-				});
-				return false;
-			});
-
-			// Export / Import settings
-			add_hidden_form('export-logs');
-
-			// Export logs
-			$(ID('#', 'export-logs')).on('click', function (event) {
-				$(ID('#', 'export-form')).submit();
-				return false;
-			});
-			break;
-
-		  /*----------------------------------------
 		   * Sites
 		   *----------------------------------------*/
 		  case 5:
 			// https://developers.google.com/loader/#Dynamic
 			initChart(tabNo);
+
+			// Duration to retrieve
+			// [0]:Section, [1]:Open a new window, [2]:Duration to retrieve, [3]:Row, [4]:Column
+			$('input[name=' + ID('duration') + ']:radio').on('click', function (/*event*/) {
+				var page = $('div[class*="paginate"]').find('a[class*="current"]').text();
+				cookie[tabNo][2] = $(this).val()    || 0; // Duration to retrieve
+				cookie[tabNo][3] = cookie[tabNo][3] || 2; // Rows
+				cookie[tabNo][4] = cookie[tabNo][4] || 1; // Columns
+				saveCookie(cookie);
+				chart.ajaxStacked(cookie[tabNo][2], cookie[tabNo][3], cookie[tabNo][4], page - 1);
+			});
+
+			// Open a new window
+			$(ID('#', 'open-new')).on('change', function (/*event*/) {
+				var mode = $(this).prop('checked');
+				cookie[tabNo][1] = mode ? 'o' : 'x';
+				saveCookie(cookie);
+				$(ID('#', 'section-0 svg')).find('a').each(function (/*index, obj*/) {
+					this.setAttribute('target', mode ? '_blank' : '_self');
+				});
+			});
+
+			// Chart display layout
+			$(ID('#', 'apply-layout')).on('click', function (/*event*/) {
+				var $select = $(ID('#', 'select-layout'));
+				cookie[tabNo][3] = $select.find('select[name="rows"] option:selected').val();
+				cookie[tabNo][4] = $select.find('select[name="cols"] option:selected').val();
+				saveCookie(cookie);
+			});
+
+			// Correct the `current` class because of the structure of sub manu.
+			$('ul.wp-submenu>li.wp-first-item').removeClass('current').next().addClass('current');
 			break;
 		}
 	}); // document.ready()

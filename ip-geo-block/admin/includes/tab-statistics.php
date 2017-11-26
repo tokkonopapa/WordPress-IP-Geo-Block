@@ -11,17 +11,20 @@ class IP_Geo_Block_Admin_Tab {
 			$option_name = IP_Geo_Block::OPTION_NAME
 		);
 
-if ( $options['save_statistics'] ) :
-
 		/*----------------------------------------*
 		 * Statistics of validation
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-statistics',
 			__( 'Statistics of validation', 'ip-geo-block' ),
-			NULL,
+			( $options['save_statistics'] ?
+				NULL :
+				array( __CLASS__, 'warn_statistics' )
+			),
 			$option_slug
 		);
+
+if ( $options['save_statistics'] ) :
 
 		// Number of blocked access
 		$field = 'blocked';
@@ -128,7 +131,7 @@ if ( $options['save_statistics'] ) :
 		$field = 'service';
 		$html  = '<table class="'.$option_slug.'-statistics-table"><thead><tr>';
 		$html .= '<th>' . __( 'Name of API',     'ip-geo-block' ) . '</th>';
-		$html .= '<th>' . __( 'Calls',           'ip-geo-block' ) . '</th>';
+		$html .= '<th>' . __( 'Call',            'ip-geo-block' ) . '</th>';
 		$html .= '<th>' . __( 'Response [msec]', 'ip-geo-block' ) . '</th>';
 		$html .= '</tr></thead><tbody>';
 
@@ -167,10 +170,12 @@ if ( $options['save_statistics'] ) :
 				'type' => 'button',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => __( 'Clear now', 'ip-geo-block' ),
+				'value' => __( 'Clear all', 'ip-geo-block' ),
 				'after' => '<div id="'.$plugin_slug.'-statistics"></div>',
 			)
 		);
+
+endif;
 
 		/*----------------------------------------*
 		 * Statistics in logs
@@ -178,9 +183,14 @@ if ( $options['save_statistics'] ) :
 		add_settings_section(
 			$section = $plugin_slug . '-stat-logs',
 			__( 'Statistics in logs', 'ip-geo-block' ),
-			array( __CLASS__, 'statistics_logs' ),
+			( $options['validation']['reclogs'] ?
+				array( __CLASS__, 'statistics_logs' ) :
+				array( __CLASS__, 'warn_validation' )
+			),
 			$option_slug
 		);
+
+if ( $options['validation']['reclogs'] ) :
 
 		$field = 'clear_logs';
 		add_settings_field(
@@ -193,32 +203,7 @@ if ( $options['save_statistics'] ) :
 				'type' => 'button',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => __( 'Clear now', 'ip-geo-block' ),
-			)
-		);
-
-else:
-
-		/*----------------------------------------*
-		 * Warning
-		 *----------------------------------------*/
-		add_settings_section(
-			$section = $plugin_slug . '-statistics',
-			__( 'Statistics of validation', 'ip-geo-block' ),
-			array( __CLASS__, 'warn_statistics' ),
-			$option_slug
-		);
-
-		$field = 'warning';
-		add_settings_field(
-			$option_name.'_'.$field,
-			'&hellip;',
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'none',
-				'after' => '&hellip;',
+				'value' => __( 'Clear all', 'ip-geo-block' ),
 			)
 		);
 
@@ -230,60 +215,52 @@ endif;
 		add_settings_section(
 			$section = $plugin_slug . '-cache',
 			__( 'Statistics in cache', 'ip-geo-block' ),
-			NULL, // array( $context, 'callback_cache_stat' ),
+			array( __CLASS__, 'statistics_cache' ),
 			$option_slug
 		);
 
-		$field = 'cache';
-		$html  = '<table class="'.$option_slug.'-statistics-table"><thead><tr>';
-		$html .= '<th>' . __( 'IP address',            'ip-geo-block' ) . '</th>';
-		$html .= '<th>' . __( 'Country code / Access', 'ip-geo-block' ) . '</th>';
-		$html .= '<th>' . __( 'Elapsed [sec] / Calls', 'ip-geo-block' ) . '</th>';
-		$html .= '</tr></thead><tbody>';
-
-		if ( $cache = IP_Geo_Block_API_Cache::get_cache_all() ) {
-			$count = 0;
-			$time = time();
-			$debug = defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG;
-			foreach ( $cache as $key => $val ) {
-				if ( $options['anonymize'] )
-					$key = preg_replace( '/\d{1,3}$/', '***', $key );
-				$html .= '<tr><td>' .  esc_html( $key         ) . '</td>';
-				$html .= '<td>'     .  esc_html( $val['code'] ) . ' / ';
-				$html .= '<small>'  .  esc_html( $val['hook'] ) . '</small></td>';
-				$html .= '<td>' . ( $time - (int)$val['time'] ) . ' / ';
-				$html .= $options['save_statistics'] ? (int)$val['call'] : '-';
-				if ( $debug ) {
-					$user = get_user_by( 'id', intval( $val['auth'] ) );
-					$html .= ' ' . esc_html( $user ? $user->get( 'user_login' ) : '' );
-					$html .= ' / fail:' . intval( $val['fail'] );
-				}
-				$html .= '</td></tr>';
-				if ( ++$count >= $options['cache_hold'] )
-					break;
-			}
-		}
-
-		$html .= '</tbody></table>';
-
-		if ( ! empty( $count ) )
-			$html .= '<span style="float:right">[ ' . $count . ' / ' . count( $cache ) . ' ]</span>';
-
+		$field = 'search_filter';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'IP address in cache', 'ip-geo-block' ),
+			__( 'Search in cache', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
-				'type' => 'html',
+				'type' => 'text',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => $html,
+				'value' => '',
+				'after' => '<a class="button button-secondary" id="ip-geo-block-reset-filter" title="'
+				. __( 'Reset', 'ip-geo-block' ) . '" href="#!">'. __( 'Reset', 'ip-geo-block' ) . '</a>',
 			)
 		);
 
-		$field = 'clear_cache';
+		$field = 'bulk_action';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Bulk action', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => 0,
+				'list' => array(
+					0 => NULL,
+					'bulk-action-remove'   => __( 'Remove from cache',                         'ip-geo-block' ),
+					'bulk-action-ip-white' => __( 'Add IP address to &#8220;Whitelist&#8221;', 'ip-geo-block' ),
+					'bulk-action-ip-black' => __( 'Add IP address to &#8220;Blacklist&#8221;', 'ip-geo-block' ), ) + ( $options['Maxmind']['use_asn'] <= 0 ? array() : array(
+					'bulk-action-as-white' => __( 'Add AS number to &#8220;Whitelist&#8221;',  'ip-geo-block' ),
+					'bulk-action-as-black' => __( 'Add AS number to &#8220;Blacklist&#8221;',  'ip-geo-block' ),
+				) ),
+				'after' => '<a class="button button-secondary" id="ip-geo-block-bulk-action" title="' . __( 'Apply', 'ip-geo-block' ) . '" href="#!">' . __( 'Apply', 'ip-geo-block' ) . '</a>' . '<div id="'.$plugin_slug.'-loading"></div>',
+			)
+		);
+
+		$field = 'clear_all';
 		add_settings_field(
 			$option_name.'_'.$field,
 			__( 'Clear cache', 'ip-geo-block' ),
@@ -294,23 +271,14 @@ endif;
 				'type' => 'button',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => __( 'Clear now', 'ip-geo-block' ),
+				'value' => __( 'Clear all', 'ip-geo-block' ),
 				'after' => '<div id="'.$plugin_slug.'-cache"></div>',
 			)
 		);
 	}
 
 	/**
-	 * Function that fills the section with the desired content.
-	 *
-	 */
-	public static function warn_statistics() {
-		echo '<p>', __( 'Current setting of [<strong>Record validation statistics</strong>] on [<strong>Settings</strong>] tab is not selected [<strong>Enable</strong>].', 'ip-geo-block' ), '</p>', "\n";
-		echo '<p>', __( 'Please set the proper condition to record and analyze the validation statistics.', 'ip-geo-block' ), '</p>', "\n";
-	}
-
-	/**
-	 * Render top list
+	 * Render top list in logs
 	 *
 	 */
 	public static function statistics_logs() {
@@ -326,6 +294,7 @@ endif;
 			'slug' => __( 'Slug in back-end',    'ip-geo-block' ),
 		);
 
+		// Make list of top 10
 		foreach( $logs as $val ) {
 			$val['ip'] = '[' . $val['code'] . '] ' . $val['ip'];
 			$key = $val['method'] . ' ' . $val['data'];
@@ -367,6 +336,8 @@ endif;
 			}
 		}
 
+		$options = IP_Geo_Block::get_option();
+
 		foreach ( $keys as $slug => $val ) {
 			echo '<ol class="ip-geo-block-top-list"><h4>', esc_html( $val ), '</h4>';
 
@@ -380,27 +351,50 @@ endif;
 				foreach ( $logs as $key => $val ) {
 					$link = explode( ' ', $key );
 					$link = esc_html( end( $link ) );
-					$key =  esc_html( $key ) ;
+					$key  = esc_html( $key );
+
+					if ( 'ip' === $slug && $options['anonymize'] )
+						$link = $key = preg_replace( '/\d{1,3}$/', '***', $link );
 
 					echo '<li><code>';
-					echo 'code' === $slug ?
-						$key :
-						str_replace(
-							$link,
-							'<a href="' .
+					echo str_replace(
+						$link,
+						'<a href="' .
 							esc_url( add_query_arg(
 								array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 4, 's' => $link ),
 								admin_url( 'options-general.php' )
 							) ) .
-							'" target=_blank>' . $link . '</a>',
-							$key
-						);
-					echo '</code> (', (int)$val, ')</li>';
+						'" target=_blank>' . $link . '</a>',
+						$key
+					);
+					echo '</code> (', (int)$val, ')</li>', "\n";
 				}
 			}
 
 			echo '</ol>', "\n";
 		}
+	}
+
+	/**
+	 * Render IP address cache
+	 *
+	 */
+	public static function statistics_cache() {
+		echo '<table id="', IP_Geo_Block::PLUGIN_NAME, '-statistics-cache" class="dataTable display" cellspacing="0" width="100%">', "\n", '<thead></thead><tbody></tbody></table>', "\n";
+	}
+
+	/**
+	 * Function that fills the section with the desired content.
+	 *
+	 */
+	public static function warn_statistics() {
+		echo '<p>', __( '[<strong>Record validation statistics</strong>] on [<strong>Settings</strong>] tab is not selected as [<strong>Enable</strong>].', 'ip-geo-block' ), '</p>', "\n";
+		echo '<p>', __( 'Please set the proper condition to record and analyze the validation statistics.', 'ip-geo-block' ), '</p>', "\n";
+	}
+
+	public static function warn_validation() {
+		echo '<p>', __( '[<strong>Record validation logs</strong>] on [<strong>Settings</strong>] tab is [<strong>Disable</strong>].', 'ip-geo-block' ), '</p>', "\n";
+		echo '<p>', __( 'Please set the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
 	}
 
 }

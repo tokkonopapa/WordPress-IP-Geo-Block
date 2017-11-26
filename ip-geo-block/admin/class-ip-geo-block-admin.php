@@ -12,6 +12,13 @@
 class IP_Geo_Block_Admin {
 
 	/**
+	 * Constants for admin class
+	 *
+	 */
+	const INTERVAL_LIVE_UPDATE = 5; // interval for live update [sec]
+	const TIMEOUT_LIVE_UPDATE = 60; // timeout of pausing live update [sec]
+
+	/**
 	 * Globals in this class
 	 *
 	 */
@@ -24,6 +31,10 @@ class IP_Geo_Block_Admin {
 	 * and adding a settings page and menu.
 	 */
 	private function __construct() {
+		// Setup the tab number.
+		$this->admin_tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
+		$this->admin_tab = min( 5, max( 0, $this->admin_tab ) );
+
 		// Load plugin text domain and add body class
 		add_action( 'init', array( $this, 'admin_init' ) );
 
@@ -56,13 +67,13 @@ class IP_Geo_Block_Admin {
 		if ( is_multisite() ) {
 			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
 
-			// when a blog is created or deleted.
-			add_action( 'wpmu_new_blog', array( $this, 'create_blog' ), 10, 6 ); // @since MU
-			add_action( 'delete_blog',   array( $this, 'delete_blog' ), 10, 2 ); // @since 3.0.0
-
 			// validate capability instead of nonce. @since 2.0.0 && 3.0.0
 			if ( $this->is_network = is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
 				add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_network_redirect' ), 10, 2 );
+
+			// when a blog is created or deleted.
+			add_action( 'wpmu_new_blog', array( $this, 'create_blog' ), 10, 6 ); // @since MU
+			add_action( 'delete_blog',   array( $this, 'delete_blog' ), 10, 2 ); // @since 3.0.0
 		}
 
 		// loads a plugin’s translated strings.
@@ -117,11 +128,9 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function verify_network_redirect( $queries, $settings ) {
-		if ( IP_Geo_Block_Util::is_user_logged_in() && $settings['network_wide'] ) {
-			if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) ) {
-				$queries[] = $_GET['page']; // $_GET['action'] should be checked in IP_Geo_Block::validate_admin()
-			}
-		}
+		// the request that is intended to show the page without any action follows authentication of core.
+		if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) && empty( $_GET['action'] ) )
+			$queries[] = $_GET['page'];
 
 		return $queries;
 	}
@@ -143,7 +152,7 @@ class IP_Geo_Block_Admin {
 		IP_Geo_Block_Activate::activate_blog();
 
 		// Copy option from main blog.
-		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) && $settings['network_wide'] )
+		if ( $this->is_network && $settings['network_wide'] )
 			update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
 		// Restore the main blog.
@@ -170,18 +179,29 @@ class IP_Geo_Block_Admin {
 	public function enqueue_admin_assets() {
 		$footer = TRUE;
 		$dependency = array( 'jquery' );
-
-		// css for option page
-		wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-styles',
-			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
-				'css/admin.min.css' : 'css/admin.css', __FILE__
-			),
-			array(), IP_Geo_Block::VERSION
-		);
+		$version = ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+			IP_Geo_Block::VERSION :
+			max(
+				filemtime( plugin_dir_path( __FILE__ ) . 'css/admin.css' ),
+				filemtime( plugin_dir_path( __FILE__ ) . 'js/admin.js'   )
+			);
 
 		switch ( $this->admin_tab ) {
-		  case 1:
-		  case 5:
+		  case 1: /* Statistics */
+		  case 4: /* Logs */
+			// css and js for DataTables
+			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-datatables-css',
+				plugins_url( 'datatables/css/datatables-all.min.css', __FILE__ ),
+				array(), IP_Geo_Block::VERSION
+			);
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-datatables-js',
+				plugins_url( 'datatables/js/datatables-all.min.js', __FILE__ ),
+				$dependency, IP_Geo_Block::VERSION, $footer
+			);
+			if ( 4 === $this->admin_tab )
+				break;
+
+		  case 5: /* Site list */
 			// js for google chart
 			wp_register_script(
 				$addon = IP_Geo_Block::PLUGIN_NAME . '-google-chart',
@@ -190,7 +210,7 @@ class IP_Geo_Block_Admin {
 			wp_enqueue_script( $addon );
 			break;
 
-		  case 2:
+		  case 2: /* Search */
 			// js for google map
 			$settings = IP_Geo_Block::get_option();
 			if ( $key = $settings['api_key']['GoogleMap'] ) {
@@ -212,19 +232,21 @@ class IP_Geo_Block_Admin {
 				$dependency, IP_Geo_Block::VERSION, $footer
 			);
 			break;
-
-		  case 4:
-			// footable https://github.com/bradvin/FooTable
-			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-footable-css',
-				plugins_url( 'css/footable.core.min.css', __FILE__ ),
-				array(), IP_Geo_Block::VERSION
-			);
-			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-footable-js',
-				plugins_url( 'js/footable.min.js', __FILE__ ),
-				$dependency, IP_Geo_Block::VERSION, $footer
-			);
-			break;
 		}
+
+		// css for option page
+		wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-icons',
+			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+				'css/admin-icons.min.css' : 'css/admin-icons.css', __FILE__
+			),
+			array(), IP_Geo_Block::VERSION
+		);
+		wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-styles',
+			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+				'css/admin.min.css' : 'css/admin.css', __FILE__
+			),
+			array(), $version
+		);
 
 		// js for IP Geo Block admin page
 		wp_register_script(
@@ -233,8 +255,7 @@ class IP_Geo_Block_Admin {
 				'js/admin.min.js' : 'js/admin.js', __FILE__
 			),
 			$dependency + ( isset( $addon ) ? array( $addon ) : array() ),
-			IP_Geo_Block::VERSION,
-			$footer
+			$version, $footer
 		);
 		wp_localize_script( $handle,
 			'IP_GEO_BLOCK',
@@ -244,16 +265,37 @@ class IP_Geo_Block_Admin {
 				'url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => IP_Geo_Block_Util::create_nonce( $this->get_ajax_action() ),
 				'msg' => array(
-					__( 'Import settings ?',           'ip-geo-block' ),
-					__( 'Create table ?',              'ip-geo-block' ),
-					__( 'Delete table ?',              'ip-geo-block' ),
-					__( 'Clear statistics ?',          'ip-geo-block' ),
-					__( 'Clear cache ?',               'ip-geo-block' ),
-					__( 'Clear logs ?',                'ip-geo-block' ),
-					__( 'ajax for logged-in user',     'ip-geo-block' ),
-					__( 'ajax for non logged-in user', 'ip-geo-block' ),
-					__( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
+					/* [ 0] */ __( 'Import settings ?',           'ip-geo-block' ),
+					/* [ 1] */ __( 'Create table ?',              'ip-geo-block' ),
+					/* [ 2] */ __( 'Delete table ?',              'ip-geo-block' ),
+					/* [ 3] */ __( 'Clear statistics ?',          'ip-geo-block' ),
+					/* [ 4] */ __( 'Clear cache ?',               'ip-geo-block' ),
+					/* [ 5] */ __( 'Clear logs ?',                'ip-geo-block' ),
+					/* [ 6] */ __( 'ajax for logged-in user',     'ip-geo-block' ),
+					/* [ 7] */ __( 'ajax for non logged-in user', 'ip-geo-block' ),
+					/* [ 8] */ __( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
+					/* [ 9] */ __( 'The selected row cannot be found in the visible area.',    'ip-geo-block' ),
 				),
+				'i18n' => array(
+					/* [ 0] */ '<div class="ip-geo-block-loading"></div>',
+					/* [ 1] */ __( 'No data available in table',  'ip-geo-block' ),
+					/* [ 2] */ __( 'No matching records found',   'ip-geo-block' ),
+					/* [ 3] */ __( 'IP address',                  'ip-geo-block' ),
+					/* [ 4] */ __( 'Code',                        'ip-geo-block' ),
+					/* [ 5] */ __( 'ASN',                         'ip-geo-block' ),
+					/* [ 6] */ __( 'Host name',                   'ip-geo-block' ),
+					/* [ 7] */ __( 'Target',                      'ip-geo-block' ),
+					/* [ 8] */ __( 'Failure / Total',             'ip-geo-block' ),
+					/* [ 9] */ __( 'Elapsed[sec]',                'ip-geo-block' ),
+					/* [10] */ __( 'Time',                        'ip-geo-block' ),
+					/* [11] */ __( 'Result',                      'ip-geo-block' ),
+					/* [12] */ __( 'Request',                     'ip-geo-block' ),
+					/* [13] */ __( 'User agent',                  'ip-geo-block' ),
+					/* [14] */ __( 'HTTP headers',                'ip-geo-block' ),
+					/* [15] */ __( '$_POST data',                 'ip-geo-block' ),
+				),
+				'interval' => self::INTERVAL_LIVE_UPDATE, // interval for live update [sec]
+				'timeout'  => self::TIMEOUT_LIVE_UPDATE,  // timeout of pausing live update [sec]
 			)
 		);
 		wp_enqueue_script( $handle );
@@ -265,10 +307,9 @@ class IP_Geo_Block_Admin {
 	 */
 	public function add_plugin_meta_links( $links, $file ) {
 		if ( $file === IP_GEO_BLOCK_BASE ) {
-			$title = __( 'Contribute at GitHub', 'ip-geo-block' );
 			array_push(
 				$links,
-				"<a href=\"http://www.ipgeoblock.com\" title=\"$title\" target=_blank>$title</a>"
+				'<a href="https://github.com/tokkonopapa/Wordpress-ip-geo-block" title="tokkonopapa/WordPress-IP-Geo-Block" target=_blank>' . __( 'Contribute on GitHub', 'ip-geo-block' ) . '</a>'
 			);
 		}
 
@@ -280,10 +321,9 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function add_action_links( $links ) {
+		// over network
 		return array_merge(
-			array(
-				'settings' => '<a href="' . esc_url( admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME ) ) . '">' . __( 'Settings' ) . '</a>'
-			),
+			array( 'settings' => '<a href="' . esc_url_raw( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( $this->is_network ) ) ) . '">' . __( 'Settings' ) . '</a>' ),
 			$links
 		);
 	}
@@ -342,13 +382,10 @@ class IP_Geo_Block_Admin {
 		$settings = IP_Geo_Block::get_option();
 
 		// Network wide or not
-		$admin_menu = 'admin_menu' === current_filter();
-		$this->is_network &= current_user_can( 'manage_network_options' ) && $settings['network_wide'];
+		$admin_menu = ( 'admin_menu' === current_filter() );
+		$this->is_network &= ( current_user_can( 'manage_network_options' ) && $settings['network_wide'] );
 
-		// Setup the tab number.
-		$this->admin_tab = isset( $_GET['tab'] ) ? (int)$_GET['tab'] : 0;
-		$this->admin_tab = min( 5, max( 0, $this->admin_tab ) );
-
+		// Verify tab number
 		if ( $this->is_network ) {
 			if ( $admin_menu ) {
 				$this->admin_tab = max( $this->admin_tab, 1 );
@@ -356,7 +393,7 @@ class IP_Geo_Block_Admin {
 				$this->admin_tab = 0;
 			}
 		} else {
-			$this->admin_tab = min( 4, $this->admin_tab ); // exclude `Sites` in multisite.
+			$this->admin_tab = min( 4, $this->admin_tab ); // exclude `Site List`
 		}
 
 		if ( $admin_menu ) {
@@ -389,17 +426,31 @@ class IP_Geo_Block_Admin {
 				__( 'IP Geo Block', 'ip-geo-block' ),
 				'manage_network_options',
 				IP_Geo_Block::PLUGIN_NAME,
-				array( $this, 'display_plugin_admin_page' ),
-				'dashicons-shield' // plugins_url( 'img/icon-72x72.png', __FILE__ )
+				array( $this, 'display_plugin_admin_page' )
 			);
-			/*$hook = add_submenu_page(
-				'settings.php',
+			add_submenu_page(
+				IP_Geo_Block::PLUGIN_NAME,
 				__( 'IP Geo Block', 'ip-geo-block' ),
-				__( 'IP Geo Block', 'ip-geo-block' ),
+				__( 'Settings', 'ip-geo-block' ),
 				'manage_network_options',
 				IP_Geo_Block::PLUGIN_NAME,
 				array( $this, 'display_plugin_admin_page' )
-			);*/
+			);
+			add_submenu_page(
+				IP_Geo_Block::PLUGIN_NAME,
+				__( 'IP Geo Block', 'ip-geo-block' ),
+				__( 'Site List', 'ip-geo-block' ),
+				'manage_network_options',
+				IP_Geo_Block::PLUGIN_NAME . '&amp;tab=5',
+				array( $this, 'display_plugin_admin_page' )
+			);
+
+			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-icons',
+				plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+					'css/admin-icons.min.css' : 'css/admin-icons.css', __FILE__
+				),
+				array(), IP_Geo_Block::VERSION
+			);
 		}
 
 		// If successful, load admin assets only on this page.
@@ -413,7 +464,7 @@ class IP_Geo_Block_Admin {
 	 */
 	private function diagnose_admin_screen() {
 		$settings = IP_Geo_Block::get_option();
-		$adminurl = $this->dashboard_url( FALSE );
+		$adminurl = $this->dashboard_url( $this->is_network );
 
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7.0' ) < 0 )
@@ -527,14 +578,16 @@ class IP_Geo_Block_Admin {
 	 * Get cookie that indicates open/close section
 	 *
 	 */
-	public function get_cookie( $name ) {
-		$cookie = array();
-		if ( ! empty( $_COOKIE[ $name ] ) ) {
-			foreach ( explode( '&', $_COOKIE[ $name ] ) as $i => $v ) {
+	public function get_cookie() {
+		static $cookie = array();
+
+		if ( empty( $cookie ) && ! empty( $_COOKIE[ IP_Geo_Block::PLUGIN_NAME ] ) ) {
+			foreach ( explode( '&', $_COOKIE[ IP_Geo_Block::PLUGIN_NAME ] ) as $i => $v ) {
 				list( $i, $v ) = explode( '=', $v );
 				$cookie[ $i ] = str_split( $v );
 			}
 		}
+
 		return $cookie;
 	}
 
@@ -548,13 +601,14 @@ class IP_Geo_Block_Admin {
 
 		if ( isset( $wp_settings_sections[ $page ] ) ) {
 			$index  = 0; // index of fieldset
-			$cookie = $this->get_cookie( IP_Geo_Block::PLUGIN_NAME );
+			$cookie = $this->get_cookie();
 
 			foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
 				// TRUE if open ('o') or FALSE if close ('x')
 				$stat = empty( $cookie[ $tab ][ $index ] ) || 'x' !== $cookie[ $tab ][ $index ];
 
-				echo '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n",
+				echo "\n",
+				     '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n",
 				     '<legend class="panel-heading"><h3 class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '">', $section['title'],
 				     '</h3></legend>', "\n", '<div class="panel-body',
 				     ($stat ? ' ' . IP_Geo_Block::PLUGIN_NAME . '-border"' : '"'),
@@ -589,11 +643,12 @@ class IP_Geo_Block_Admin {
 			1 => __( 'Statistics',   'ip-geo-block' ),
 			4 => __( 'Logs',         'ip-geo-block' ),
 			2 => __( 'Search',       'ip-geo-block' ),
-			5 => __( 'Sites',        'ip-geo-block' ),
+			5 => __( 'Site List',    'ip-geo-block' ),
 			3 => __( 'Attribution',  'ip-geo-block' ),
 		);
 
 		$settings = IP_Geo_Block::get_option();
+		$cookie = $this->get_cookie();
 		$title = esc_html( get_admin_page_title() );
 
 		// Target page that depends on the network multisite or not.
@@ -601,20 +656,21 @@ class IP_Geo_Block_Admin {
 			$action = 'options.php';
 
 			if ( $this->is_network ) {
-				unset( $tabs[0], $tabs[5] ); // Settings, Sites
+				unset( $tabs[0], $tabs[5] ); // Settings, Site List
 				$title .= ' <span class="ip-geo-block-title-link">';
-				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Settings', 'ip-geo-block' ) . '</a> ]';
-				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Sites',    'ip-geo-block' ) . '</a> ]';
+				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Settings',  'ip-geo-block' ) . '</a> ]';
+				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Site List', 'ip-geo-block' ) . '</a> ]';
 				$title .= '</span>';
 			} else {
-				unset( $tabs[5] ); // Sites
+				unset( $tabs[5] ); // Site List
 			}
 		} else {
 			$action = 'edit.php?action=' . IP_Geo_Block::PLUGIN_NAME;
 
 			if ( $settings['network_wide'] ) {
 				unset( $tabs[1], $tabs[4], $tabs[2], $tabs[3] ); // Statistics, Logs, Search, Attribution
-				$title .= ' <span class="ip-geo-block-title-link">[ ' . __( 'Network', 'ip-geo-block' ) . ' ]';
+				$title .= ' <span class="ip-geo-block-title-link">';
+				$title .= '[ ' . __( 'Network wide', 'ip-geo-block' ) . ' ]';
 				$title .= '</span>';
 			}
 		}
@@ -627,7 +683,16 @@ class IP_Geo_Block_Admin {
 	echo '<a href="?page=', IP_Geo_Block::PLUGIN_NAME, '&amp;tab=', $key, '" class="nav-tab', ($tab === $key ? ' nav-tab-active' : ''), '">', $val, '</a>';
 } ?>
 	</h2>
-	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="javascript:void(0)"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]</p>
+	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]
+<?php if ( 4 === $tab ) { /* Logs tab */ ?>
+	<input id="ip-geo-block-live-update" type="checkbox"<? checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] ); disabled( extension_loaded( 'pdo_sqlite' ), FALSE ); ?> /><label for="ip-geo-block-live-update">
+		<dfn title="<?php _e( 'Independent of &#8220;Statistics and Logs settings&#8221;, you can see all the requests validated by this plugin in almost real time.', 'ip-geo-block' ); ?>"><?php _e( 'Live update', 'ip-geo-block' ); ?></dfn>
+	</label>
+<?php } elseif (5 === $tab ) { /* Site List tab */ ?>
+	<input id="ip-geo-block-open-new" type="checkbox"<? checked( isset( $cookie[5][1] ) && 'o' === $cookie[5][1] );?> /><label for="ip-geo-block-open-new">
+		<dfn title="<?php _e( 'Open a new window on clicking the link in the chart.', 'ip-geo-block' ); ?>"><?php _e( 'Open a new window', 'ip-geo-block' ); ?></dfn>
+	</label>
+<?php } ?></p>
 	<form method="post" action="<?php echo $action; ?>" id="<?php echo IP_Geo_Block::PLUGIN_NAME, '-', $tab; ?>"<?php if ( $tab ) echo " class=\"", IP_Geo_Block::PLUGIN_NAME, "-inhibit\""; ?>>
 <?php
 		settings_fields( IP_Geo_Block::PLUGIN_NAME );
@@ -636,10 +701,10 @@ class IP_Geo_Block_Admin {
 			submit_button(); // @since 3.1
 ?>
 	</form>
-<?php if ( 2 === $tab ) { ?>
+<?php if ( 2 === $tab ) { /* Search tab */ ?>
 	<div id="ip-geo-block-whois"></div>
 	<div id="ip-geo-block-map"></div>
-<?php } elseif ( 3 === $tab ) {
+<?php } elseif ( 3 === $tab ) { /* Attribute tab */
 	// show attribution (higher priority order)
 	$tab = array();
 	foreach ( IP_Geo_Block_Provider::get_addons() as $provider ) {
@@ -648,7 +713,6 @@ class IP_Geo_Block_Admin {
 		}
 	}
 	echo '<p>', implode( '<br />', $tab ), "</p>\n";
-
 	echo '<p>', __( 'Thanks for providing these great services for free.', 'ip-geo-block' ), "<br />\n";
 	echo __( '(Most browsers will redirect you to each site <a href="http://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', 'ip-geo-block' ), "</p>\n";
 } ?>
@@ -767,7 +831,7 @@ class IP_Geo_Block_Admin {
 					echo ' data-desc="', $args['desc'][ $key ], '"';
 					$key === $args['value'] and $desc = $args['desc'][ $key ];
 				}
-				echo ">$val</option>\n";
+				echo '>', ( NULL === $val ? __( 'Select one', 'ip-geo-block' ) : $val ), '</option>', "\n";
 			}
 			echo "</select>\n";
 
@@ -826,7 +890,7 @@ class IP_Geo_Block_Admin {
 		$output = IP_Geo_Block::get_option();
 		$default = IP_Geo_Block::get_default();
 
-		// Integrate posted data into current settings because if can be a part of hole data
+		// Integrate posted data into current settings because it can be a part of hole data
 		$input = array_replace_recursive(
 			$output = $this->preprocess_options( $output, $default ),
 			$input
@@ -1004,6 +1068,9 @@ class IP_Geo_Block_Admin {
 
 		// 3.0.4 AS number
 		$output['Maxmind']['use_asn'] = FALSE;
+
+		// 3.0.5 Live update
+		$output['live_update']['in_memory'] = 0;
 
 		return $output;
 	}
@@ -1194,12 +1261,15 @@ class IP_Geo_Block_Admin {
 	private function sync_multisite_option( $option ) {
 		global $wpdb;
 		$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" );
+		$ret = TRUE;
 
 		foreach ( $blog_ids as $id ) {
 			switch_to_blog( $id );
-			update_option( IP_Geo_Block::OPTION_NAME, $option );
+			$ret &= update_option( IP_Geo_Block::OPTION_NAME, $option );
 			restore_current_blog();
 		}
+
+		return $ret;
 	}
 
 	/**
@@ -1215,6 +1285,7 @@ class IP_Geo_Block_Admin {
 
 		require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php';
 
+		$settings = IP_Geo_Block::get_option();
 		$which = isset( $_POST['which'] ) ? $_POST['which'] : NULL;
 		switch ( isset( $_POST['cmd'  ] ) ? $_POST['cmd'  ] : NULL ) {
 		  case 'download':
@@ -1266,7 +1337,7 @@ class IP_Geo_Block_Admin {
 			IP_Geo_Block_Admin_Ajax::export_logs( $which );
 			break;
 
-		  case 'restore':
+		  case 'restore-logs':
 			// Get logs from MySQL DB
 			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which );
 			break;
@@ -1288,10 +1359,9 @@ class IP_Geo_Block_Admin {
 
 		  case 'gmap-error':
 			// Reset Google Maps API key
-			$which = IP_Geo_Block::get_option();
-			if ( $which['api_key']['GoogleMap'] === 'default' ) {
-				$which['api_key']['GoogleMap'] = NULL;
-				update_option( IP_Geo_Block::OPTION_NAME, $which );
+			if ( $settings['api_key']['GoogleMap'] === 'default' ) {
+				$settings['api_key']['GoogleMap'] = NULL;
+				update_option( IP_Geo_Block::OPTION_NAME, $settings );
 				$res = array(
 					'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 					'tab' => 'tab=2'
@@ -1300,12 +1370,89 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'show-info':
+			// Show system and debug information
 			$res = IP_Geo_Block_Admin_Ajax::get_wp_info();
 			break;
 
 		  case 'get-actions':
 			// Get all the ajax/post actions
 			$res = IP_Geo_Block_Util::get_registered_actions( TRUE );
+			break;
+
+		  case 'restore-cache':
+			// Restore cache from database and format for DataTables
+			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which );
+			break;
+
+		  case 'bulk-action-remove':
+			// Delete specified IP addresses from cache
+			$res = IP_Geo_Block_Logs::delete_cache_entry( $which['IP'] );
+			break;
+
+		  case 'bulk-action-ip-white':
+		  case 'bulk-action-ip-black':
+		  case 'bulk-action-as-white':
+		  case 'bulk-action-as-black':
+			// Bulk actions for registration of settings
+			$src = ( FALSE !== strpos( $_POST['cmd'], '-ip-'   ) ? 'IP'         : 'AS'         );
+			$dst = ( FALSE !== strpos( $_POST['cmd'], '-white' ) ? 'white_list' : 'black_list' );
+
+			if ( empty( $which[ $src ] ) )
+				break;
+
+			foreach ( array_unique( $which[ $src ] ) as $val ) {
+				// replace anonymized IP address with CIDR (IPv4:256, IPv6:4096)
+				$val = preg_replace(
+					array( '!\.\*\*\*!', '!\*\*\*!', '![^\w\.:/]!' ),
+					array( '.0/24',      '000/116',  ''            ),
+					$val
+				);
+				if ( FALSE === strpos( $settings['extra_ips'][ $dst ], $val ) )
+					$settings['extra_ips'][ $dst ] .= "\n" . $val;
+			}
+
+			if ( $settings['network_wide'] && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
+				$this->sync_multisite_option( $settings );
+			else
+				update_option( IP_Geo_Block::OPTION_NAME, $settings );
+
+			$res = array(
+				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
+			);
+			break;
+
+		  case 'restore-network':
+			// Restore blocked per target in logs
+			$res = IP_Geo_Block_Admin_Ajax::restore_network( $which, (int)$_POST['offset'], (int)$_POST['length'], FALSE );
+			break;
+
+		  case 'live-start':
+			// Restore live log
+			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::catch_live_log() ) )
+				$res = IP_Geo_Block_Admin_Ajax::restore_live_log( $which, $settings );
+			else
+				$res = array( 'error' => $res->get_error_message() );
+			break;
+
+		  case 'live-pause':
+			// Pause live log
+			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::catch_live_log() ) )
+				$res = array( 'data' => array() );
+			else
+				$res = array( 'error' => $res->get_error_message() );
+			break;
+
+		  case 'live-stop':
+			// Stop live log
+			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::release_live_log() ) )
+				$res = array( 'data' => array() );
+			else
+				$res = array( 'error' => $res->get_error_message() );
+			break;
+
+		  case 'reset-live':
+			// Reset data source of live log
+			$res = IP_Geo_Block_Admin_Ajax::reset_live_log();
 			break;
 
 		  case 'create-table':
