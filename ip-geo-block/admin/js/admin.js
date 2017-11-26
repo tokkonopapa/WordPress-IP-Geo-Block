@@ -1530,7 +1530,7 @@
 						}
 						table.draw(false); // the current page will still be shown.
 					}
-					timer_start = window.setTimeout(live_start, ip_geo_block.interval);
+					timer_start = window.setTimeout(live_start, ip_geo_block.interval * 1000);
 				});
 			},
 			live_stop = function (cmd, callback) {
@@ -1546,7 +1546,7 @@
 					timer_pause = window.setTimeout(function () {
 						clear_timer();
 						$(ID('#', 'live-log-stop')).prop('checked', true);
-					}, ip_geo_block.pause * 1000);
+					}, ip_geo_block.timeout * 1000);
 				});
 			},
 

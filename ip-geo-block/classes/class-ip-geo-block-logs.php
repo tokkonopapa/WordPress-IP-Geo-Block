@@ -614,7 +614,7 @@ class IP_Geo_Block_Logs {
 		$auth = get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
 
 		if ( $auth === FALSE || $user === (int)$auth ) {
-			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', $user, 60 );
+			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', $user, IP_Geo_Block_Admin::TIMEOUT_LIVE_UPDATE );
 			return TRUE;
 		} else {
 			$info = get_userdata( $auth );

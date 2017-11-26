@@ -12,6 +12,13 @@
 class IP_Geo_Block_Admin {
 
 	/**
+	 * Constants for admin class
+	 *
+	 */
+	const INTERVAL_LIVE_UPDATE = 5; // interval for live update [sec]
+	const TIMEOUT_LIVE_UPDATE = 60; // timeout of pausing live update [sec]
+
+	/**
 	 * Globals in this class
 	 *
 	 */
@@ -287,8 +294,8 @@ class IP_Geo_Block_Admin {
 					/* [14] */ __( 'HTTP headers',                'ip-geo-block' ),
 					/* [15] */ __( '$_POST data',                 'ip-geo-block' ),
 				),
-				'interval' => 5000, // interval for live update [sec]
-				'pause'    =>   60, // time limit for pausing live update [sec]
+				'interval' => self::INTERVAL_LIVE_UPDATE, // interval for live update [sec]
+				'timeout'  => self::TIMEOUT_LIVE_UPDATE,  // timeout of pausing live update [sec]
 			)
 		);
 		wp_enqueue_script( $handle );
