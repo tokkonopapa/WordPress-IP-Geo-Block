@@ -10,6 +10,7 @@
 
 	// External variables
 	var timer_stack = [],
+		window_width = $(window).width(),
 	    ip_geo_block      = IP_GEO_BLOCK,
 	    ip_geo_block_auth = IP_GEO_BLOCK_AUTH;
 
@@ -42,16 +43,20 @@
 	}
 
 	function onresize(name, callback) {
-		if ('undefined' === typeof timer_stack[name]) {
-			timer_stack[name] = {id: false, callback: callback};
-		}
-		$(window).off('resize').on('resize', function (/*event*/) {
-			if (false !== timer_stack[name].id) {
-				window.clearTimeout(timer_stack[name].id);
+		var w = $(window).width();
+		if (w !== window_width) {
+			window_width = w;
+			if ('undefined' === typeof timer_stack[name]) {
+				timer_stack[name] = {id: false, callback: callback};
 			}
-			timer_stack[name].time = window.setTimeout(timer_stack[name].callback, 200);
-			return false;
-		});
+			$(window).off('resize').on('resize', function (/*event*/) {
+				if (false !== timer_stack[name].id) {
+					window.clearTimeout(timer_stack[name].id);
+				}
+				timer_stack[name].time = window.setTimeout(timer_stack[name].callback, 200);
+				return false;
+			});
+		}
 	}
 
 	function loading(id, flag) {
@@ -793,9 +798,9 @@
 				url: ip_geo_block.url,
 				type: 'POST',
 				data: {
-					cmd: control.ajaxCMD,
+					cmd:    control.ajaxCMD,
 					action: ip_geo_block.action,
-					nonce: ip_geo_block.nonce
+					nonce:  ip_geo_block.nonce
 				}
 			},
 			mark: true // https://github.com/julmot/datatables.mark.js/
@@ -803,7 +808,7 @@
 
 		// redraw when column size changed
 		redraw = function () {
-			table.columns.adjust().responsive.recalc().draw();
+			table.columns.adjust().responsive.recalc().draw(false); // full-hold
 		};
 
 		// draw when window is resized
@@ -1550,13 +1555,13 @@
 				});
 			},
 
-			// animation on added
+			// animation on update
 			new_class = ID(''),
-			add_class = function (row, data/*, index*/) {
+			add_class = function (row, data, prefix) {
 				if (-1 !== data[7 /* result */].indexOf('passed')) {
-					$(row).addClass(new_class + 'new-passed');
+					$(row).addClass(new_class + prefix + 'passed');
 				} else {
-					$(row).addClass(new_class + 'new-blocked');
+					$(row).addClass(new_class + prefix + 'blocked');
 				}
 			},
 
@@ -1609,12 +1614,16 @@
 					$tr.show().next().next().next().nextAll().hide();
 					control.ajaxCMD = 'live-stop';
 					options.order = [1, 'desc']; // sort by `Time (raw)`
-					options.createdRow = add_class;
+					options.createdRow = function (row, data/*, index*/) {
+						add_class(row, data, 'new-');
+					};
 				} else {
 					$tr.hide().next().next().next().nextAll().show();
 					control.ajaxCMD = 'restore-logs';
 					options.order = [0, ''];
-					options.createdRow = null;
+					options.createdRow = function (row, data/*, index*/) {
+						add_class(row, data, '');
+					};
 				}
 
 				// Re-initialize DataTables
@@ -1746,7 +1755,6 @@
 									'</li>' +*/
 								'</ul>'
 								+ '<iframe src="//maps.google.com/maps?q=' + latitude + ',' + longitude + '&z=' + zoom + '&output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
-								/*+ '<iframe src="//www.google.com/maps/embed/v1/place?key=...&q=%20&center=' + latitude + ',' + longitude + '&zoom=' + zoom + '" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'*/
 							);
 						}
 					}, [obj]);

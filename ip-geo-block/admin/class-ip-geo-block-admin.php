@@ -160,8 +160,8 @@ class IP_Geo_Block_Admin {
 	}
 
 	public function delete_blog( $blog_id, $drop ) {
-		if ( $drop )
-			IP_Geo_Block_Logs::delete_tables(); // blog is already switched to the target in wpmu_delete_blog()
+		// blog is already switched to the target in wpmu_delete_blog()
+		$drop and IP_Geo_Block_Logs::delete_tables();
 	}
 
 	/**
@@ -175,6 +175,7 @@ class IP_Geo_Block_Admin {
 	/**
 	 * Register and enqueue plugin-specific style sheet and JavaScript.
 	 *
+	 * @see https://developers.google.com/maps/faq#china_ws_access
 	 */
 	public function enqueue_admin_assets() {
 		$footer = TRUE;
@@ -205,7 +206,8 @@ class IP_Geo_Block_Admin {
 			// js for google chart
 			wp_register_script(
 				$addon = IP_Geo_Block::PLUGIN_NAME . '-google-chart',
-				'https://www.google.com/jsapi', array(), NULL, $footer
+				// 'https://www.google.cn/jsapi' in china
+				apply_filters( 'google-jsapi', 'https://www.google.com/jsapi' ), array(), NULL, $footer
 			);
 			wp_enqueue_script( $addon );
 			break;
@@ -221,7 +223,8 @@ class IP_Geo_Block_Admin {
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 				wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-google-map',
-					'//maps.googleapis.com/maps/api/js' . ( 'default' !== $key ? "?key=$key" : '' ),
+					// 'http://maps.google.cn/maps/api/js' in china
+					apply_filters( 'google-maps', '//maps.googleapis.com/maps/api/js' ) . ( 'default' !== $key ? "?key=$key" : '' ),
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 			}
@@ -534,7 +537,7 @@ class IP_Geo_Block_Admin {
 		if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 			// Check creation of database table
 			if ( $settings['validation']['reclogs'] ) {
-				if ( ( $warn = IP_Geo_Block_Logs::diag_tables() ) &&
+				if ( ( $warn =   IP_Geo_Block_Logs::diag_tables()   ) &&
 				     ( FALSE === IP_Geo_Block_Logs::create_tables() ) ) {
 					self::add_admin_notice( 'notice-warning', $warn );
 				}
