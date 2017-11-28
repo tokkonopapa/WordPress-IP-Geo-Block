@@ -355,7 +355,9 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 = 3.0.5 =
 * **New feature:** Add "Live update" mode on "Logs" tab.
 * **Improvement:** List all the IP addresses in cache are now displayed and manageable on "Statistics" tab.
-* **Improvement:** Add "Blocked / Blacklisted" at "Recording Logs". It can verify the requests that are "passed" from blacklisted countries.
+* **Improvement:** Add "Either blocked or passed" as a new condition for recording logs. It enables to verify the requests "passed" from the blacklisted countries or the countries not in the whitelist.
+* **Improvement:** Add two new filter hooks to utilize Google APIs from native domain in China.
+* See [3.0.5 release note](http://www.ipgeoblock.com/changelog/release-3.0.5.html "3.0.5 Release Note | IP Geo Block") for some details.
 
 = 3.0.4.6 =
 * **Bug fix:** Fix the issue that the emergent functionality didn't work when the number of login attempts reached to the limit.

@@ -448,7 +448,7 @@ class IP_Geo_Block_Logs {
 	 * The absolute path to the database can be set via filter hook `ip-geo-block-live-log`.
 	 *
 	 * @see http://php.net/manual/en/pdo.connections.php
-	 * @see http://www.php.net/manual/en/features.persistent-connections.php
+	 * @see http://php.net/manual/en/features.persistent-connections.php
 	 * @see https://www.sqlite.org/sharedcache.html#shared_cache_and_in_memory_databases
 	 *
 	 * @param int $id ID of the blog
@@ -456,7 +456,7 @@ class IP_Geo_Block_Logs {
 	 * @return PDO $pdo instance of PDO class or WP_Error
 	 */
 	private static function open_sqlite_db( $id, $dsn = FALSE ) {
-		$id = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-live-log', ($dsn ? ':memory:' : get_temp_dir() . IP_Geo_Block::PLUGIN_NAME . '-' . $id . '.db') );
+		$id = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-live-log', ($dsn ? ':memory:' : get_temp_dir() . IP_Geo_Block::PLUGIN_NAME . "-${id}.sqlite") );
 
 		try {
 			$pdo = new PDO( 'sqlite:' . $id, null, null, array(
@@ -573,34 +573,34 @@ class IP_Geo_Block_Logs {
 			}
 
 			try {
-				$pdo->beginTransaction(); // possibly throw an PDOException
 				$stm = $pdo->prepare(     // possibly throw an PDOException
 					'INSERT INTO ' . self::TABLE_LOGS . ' (blog_id, time, ip, asn, hook, auth, code, result, method, user_agent, headers, data) ' .
 					'VALUES      ' .                    ' (      ?,    ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,          ?,       ?,    ?);'
-				) and (
-					$stm->bindParam(  1, $id,                      PDO::PARAM_INT ) &&
-					$stm->bindParam(  2, $_SERVER['REQUEST_TIME'], PDO::PARAM_INT ) &&
-					$stm->bindParam(  3, $validate['ip'],          PDO::PARAM_STR ) &&
-					$stm->bindParam(  4, $validate['asn'],         PDO::PARAM_STR ) &&
-					$stm->bindParam(  5, $hook,                    PDO::PARAM_STR ) &&
-					$stm->bindParam(  6, $validate['auth'],        PDO::PARAM_INT ) &&
-					$stm->bindParam(  7, $validate['code'],        PDO::PARAM_STR ) &&
-					$stm->bindParam(  8, $validate['result'],      PDO::PARAM_STR ) &&
-					$stm->bindParam(  9, $method,                  PDO::PARAM_STR ) &&
-					$stm->bindParam( 10, $agent,                   PDO::PARAM_STR ) &&
-					$stm->bindParam( 11, $heads,                   PDO::PARAM_STR ) &&
-					$stm->bindParam( 12, $posts,                   PDO::PARAM_STR )
-				) and $stm->execute(); // TRUE or FALSE
-				$pdo->commit();        // possibly throw an PDOException
-				$stm->closeCursor();   // TRUE or FALSE
+				); // example: http://php.net/manual/en/pdo.lobs.php
+				$stm->bindParam(  1, $id,                      PDO::PARAM_INT );
+				$stm->bindParam(  2, $_SERVER['REQUEST_TIME'], PDO::PARAM_INT );
+				$stm->bindParam(  3, $validate['ip'],          PDO::PARAM_STR );
+				$stm->bindParam(  4, $validate['asn'],         PDO::PARAM_STR );
+				$stm->bindParam(  5, $hook,                    PDO::PARAM_STR );
+				$stm->bindParam(  6, $validate['auth'],        PDO::PARAM_INT );
+				$stm->bindParam(  7, $validate['code'],        PDO::PARAM_STR );
+				$stm->bindParam(  8, $validate['result'],      PDO::PARAM_STR );
+				$stm->bindParam(  9, $method,                  PDO::PARAM_STR );
+				$stm->bindParam( 10, $agent,                   PDO::PARAM_STR );
+				$stm->bindParam( 11, $heads,                   PDO::PARAM_STR );
+				$stm->bindParam( 12, $posts,                   PDO::PARAM_STR );
+				$pdo->beginTransaction(); // possibly throw an PDOException
+				$stm->execute();          // TRUE or FALSE
+				$pdo->commit();           // possibly throw an PDOException
+				$stm->closeCursor();      // TRUE or FALSE
 			}
 
 			catch ( PDOException $e ) {
-				$pdo->rollBack();
+				@$pdo->rollBack(); // `@` is just for the exception without valid transaction
 				self::error( __LINE__, $e->getMessage() );
 			}
 
-			$pdo = $stm = NULL;
+			$pdo = $stm = NULL; // explicitly close the connection
 		}
 	}
 
@@ -653,11 +653,11 @@ class IP_Geo_Block_Logs {
 		}
 
 		catch ( PDOException $e ) {
-			$pdo->rollBack();
+			@$pdo->rollBack(); // `@` is just for the exception without valid transaction
 			$result = new WP_Error( 'Warn', __FILE__ . '(' . __LINE__ . ') ' . $e->getMessage() );
 		}
 
-		$pdo = NULL;
+		$pdo = $stm = NULL; // explicitly close the connection
 		return ! empty( $result ) ? $result : array();
 	}
 
