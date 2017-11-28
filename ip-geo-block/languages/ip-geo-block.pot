@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2017-11-28 23:51+0900\n"
-"PO-Revision-Date: 2017-11-28 23:51+0900\n"
+"POT-Creation-Date: 2017-11-29 01:33+0900\n"
+"PO-Revision-Date: 2017-11-29 01:33+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -76,14 +76,14 @@ msgid ""
 "details."
 msgstr ""
 
-#: classes/class-ip-geo-block-logs.php:165
+#: classes/class-ip-geo-block-logs.php:169
 #, php-format
 msgid ""
 "Creating a DB table %s had failed. Once de-activate this plugin, and then "
 "activate again."
 msgstr ""
 
-#: classes/class-ip-geo-block-logs.php:621
+#: classes/class-ip-geo-block-logs.php:639
 #, php-format
 msgid "The user %s (user ID: %d) is in use."
 msgstr ""
