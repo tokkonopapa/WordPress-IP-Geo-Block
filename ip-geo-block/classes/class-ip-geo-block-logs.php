@@ -29,6 +29,10 @@ class IP_Geo_Block_Logs {
 		'daystats'  => array(),
 	);
 
+	// SQLite for Live update
+	private static $pdo = NULL;
+	private static $stm = NULL;
+
 	/**
 	 * Create
 	 *
@@ -443,7 +447,7 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Open sqlite database for live log
+	 * Open and close sqlite database for live log
 	 *
 	 * The absolute path to the database can be set via filter hook `ip-geo-block-live-log`.
 	 *
@@ -456,6 +460,11 @@ class IP_Geo_Block_Logs {
 	 * @return PDO $pdo instance of PDO class or WP_Error
 	 */
 	private static function open_sqlite_db( $id, $dsn = FALSE ) {
+		// For the sake of emergency, register the shutdown function
+		self::$pdo = self::$stm = NULL;
+		register_shutdown_function( 'IP_Geo_Block_Logs::close_sqlite_db' );
+
+		// Set data source name
 		$id = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-live-log', ($dsn ? ':memory:' : get_temp_dir() . IP_Geo_Block::PLUGIN_NAME . "-${id}.sqlite") );
 
 		try {
@@ -487,6 +496,14 @@ class IP_Geo_Block_Logs {
 		);" ); // int or FALSE
 
 		return $pdo;
+	}
+
+	public static function close_sqlite_db() {
+		if ( self::$pdo && ! is_wp_error( self::$pdo ) ) {
+			@self::$pdo->rollBack(); // `@` is just for the exception without valid transaction
+			self::$stm = NULL;
+			self::$pdo = NULL;
+		}
 	}
 
 	/**
@@ -567,40 +584,41 @@ class IP_Geo_Block_Logs {
 				return;
 
 			// database file not available
-			if ( is_wp_error( $pdo = self::open_sqlite_db( $id = get_current_blog_id(), $settings['live_update']['in_memory'] ) ) ) {
-				self::error( __LINE__, $pdo->get_error_message() );
+			if ( is_wp_error( self::$pdo = self::open_sqlite_db( $id = get_current_blog_id(), $settings['live_update']['in_memory'] ) ) ) {
+				self::error( __LINE__, self::$pdo->get_error_message() );
 				return;
 			}
 
 			try {
-				$stm = $pdo->prepare(     // possibly throw an PDOException
+				self::$stm = self::$pdo->prepare( // possibly throw an PDOException
 					'INSERT INTO ' . self::TABLE_LOGS . ' (blog_id, time, ip, asn, hook, auth, code, result, method, user_agent, headers, data) ' .
 					'VALUES      ' .                    ' (      ?,    ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,          ?,       ?,    ?);'
 				); // example: http://php.net/manual/en/pdo.lobs.php
-				$stm->bindParam(  1, $id,                      PDO::PARAM_INT );
-				$stm->bindParam(  2, $_SERVER['REQUEST_TIME'], PDO::PARAM_INT );
-				$stm->bindParam(  3, $validate['ip'],          PDO::PARAM_STR );
-				$stm->bindParam(  4, $validate['asn'],         PDO::PARAM_STR );
-				$stm->bindParam(  5, $hook,                    PDO::PARAM_STR );
-				$stm->bindParam(  6, $validate['auth'],        PDO::PARAM_INT );
-				$stm->bindParam(  7, $validate['code'],        PDO::PARAM_STR );
-				$stm->bindParam(  8, $validate['result'],      PDO::PARAM_STR );
-				$stm->bindParam(  9, $method,                  PDO::PARAM_STR );
-				$stm->bindParam( 10, $agent,                   PDO::PARAM_STR );
-				$stm->bindParam( 11, $heads,                   PDO::PARAM_STR );
-				$stm->bindParam( 12, $posts,                   PDO::PARAM_STR );
-				$pdo->beginTransaction(); // possibly throw an PDOException
-				$stm->execute();          // TRUE or FALSE
-				$pdo->commit();           // possibly throw an PDOException
-				$stm->closeCursor();      // TRUE or FALSE
+				self::$stm->bindParam(  1, $id,                      PDO::PARAM_INT );
+				self::$stm->bindParam(  2, $_SERVER['REQUEST_TIME'], PDO::PARAM_INT );
+				self::$stm->bindParam(  3, $validate['ip'],          PDO::PARAM_STR );
+				self::$stm->bindParam(  4, $validate['asn'],         PDO::PARAM_STR );
+				self::$stm->bindParam(  5, $hook,                    PDO::PARAM_STR );
+				self::$stm->bindParam(  6, $validate['auth'],        PDO::PARAM_INT );
+				self::$stm->bindParam(  7, $validate['code'],        PDO::PARAM_STR );
+				self::$stm->bindParam(  8, $validate['result'],      PDO::PARAM_STR );
+				self::$stm->bindParam(  9, $method,                  PDO::PARAM_STR );
+				self::$stm->bindParam( 10, $agent,                   PDO::PARAM_STR );
+				self::$stm->bindParam( 11, $heads,                   PDO::PARAM_STR );
+				self::$stm->bindParam( 12, $posts,                   PDO::PARAM_STR );
+				self::$pdo->beginTransaction(); // possibly throw an PDOException
+				self::$stm->execute();          // TRUE or FALSE
+				self::$pdo->commit();           // possibly throw an PDOException
+				self::$stm->closeCursor();      // TRUE or FALSE
 			}
 
 			catch ( PDOException $e ) {
-				@$pdo->rollBack(); // `@` is just for the exception without valid transaction
+				@self::$pdo->rollBack(); // `@` is just for the exception without valid transaction
 				self::error( __LINE__, $e->getMessage() );
 			}
 
-			$pdo = $stm = NULL; // explicitly close the connection
+			self::$stm = NULL; // explicitly close the connection
+			self::$pdo = NULL; // explicitly close the connection
 		}
 	}
 
@@ -636,28 +654,30 @@ class IP_Geo_Block_Logs {
 	 * @return array or WP_Error
 	 */
 	public static function restore_live_log( $hook, $settings ) {
-		if ( is_wp_error( $pdo = self::catch_live_log() ) )
-			return $pdo;
+		if ( is_wp_error( $ret = self::catch_live_log() ) )
+			return $ret;
 
-		if ( is_wp_error( $pdo = self::open_sqlite_db( $id = get_current_blog_id(), $settings['live_update']['in_memory'] ) ) )
-			return new WP_Error( 'Warn', $pdo->get_error_message() );
+		if ( is_wp_error( self::$pdo = self::open_sqlite_db( $id = get_current_blog_id(), $settings['live_update']['in_memory'] ) ) )
+			return new WP_Error( 'Warn', self::$pdo->get_error_message() );
 
 		try {
-			$pdo->beginTransaction(); // possibly throw an PDOException
-			if ( $stm = $pdo->query( "SELECT hook, time, ip, code, result, asn, method, user_agent, headers, data FROM " . self::TABLE_LOGS . " WHERE blog_id = ${id};" ) ) {
-				$result = $stm->fetchAll( PDO::FETCH_NUM ); // array or FALSE
-				$pdo->exec( "DELETE FROM " . self::TABLE_LOGS . " WHERE blog_id = ${id};" ); // int or FALSE
+			self::$pdo->beginTransaction(); // possibly throw an PDOException
+			if ( self::$stm = self::$pdo->query( "SELECT hook, time, ip, code, result, asn, method, user_agent, headers, data FROM " . self::TABLE_LOGS . " WHERE blog_id = ${id};" ) ) {
+				$result = self::$stm->fetchAll( PDO::FETCH_NUM ); // array or FALSE
+				self::$pdo->exec( "DELETE FROM " . self::TABLE_LOGS . " WHERE blog_id = ${id};" ); // int or FALSE
 			}
-			$pdo->commit();      // possibly throw an PDOException
-			$stm->closeCursor(); // TRUE or FALSE
+			self::$pdo->commit();      // possibly throw an PDOException
+			self::$stm->closeCursor(); // TRUE or FALSE
 		}
 
 		catch ( PDOException $e ) {
-			@$pdo->rollBack(); // `@` is just for the exception without valid transaction
+			@self::$pdo->rollBack(); // `@` is just for the exception without valid transaction
 			$result = new WP_Error( 'Warn', __FILE__ . '(' . __LINE__ . ') ' . $e->getMessage() );
 		}
 
-		$pdo = $stm = NULL; // explicitly close the connection
+		self::$stm = NULL; // explicitly close the connection
+		self::$pdo = NULL; // explicitly close the connection
+
 		return ! empty( $result ) ? $result : array();
 	}
 
