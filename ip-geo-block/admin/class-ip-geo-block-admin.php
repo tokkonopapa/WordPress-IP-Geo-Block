@@ -1075,6 +1075,9 @@ class IP_Geo_Block_Admin {
 		// 3.0.5 Live update
 		$output['live_update']['in_memory'] = 0;
 
+		// 3.0.5.1 @see https://wordpress.org/support/topic/auto-updating-once-a-month-cannot-disable/
+		$output['update']['auto'] = FALSE;
+
 		return $output;
 	}
 
