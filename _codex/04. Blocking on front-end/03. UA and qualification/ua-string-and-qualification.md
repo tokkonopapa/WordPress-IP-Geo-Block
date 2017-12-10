@@ -75,6 +75,13 @@ eliminated.
 | Yandex#*             | Block if UA includes "Yandex".                              |
 | *#HOST=amazonaws     | Block all UA if host name includes "amazonaws".             |
 
+<div class="alert alert-info">
+	<strong>Note:</strong> The rules in "<strong>UA string and Qualification</strong>"
+	will be processed in order. For example, when <code>bot:HOST</code> appears
+	before <code>xyz-bot#HOST</code>, then all the bots will be passed whose
+	user agent string includes "bot" and its host name is available.
+</div>
+
 ### References ###
 
 - [Verifying Googlebot](https://support.google.com/webmasters/answer/80553?hl=en "Verifying Googlebot - Search Console Help")
