@@ -599,10 +599,10 @@ class IP_Geo_Block {
 
 		// list of request for specific action or page to bypass WP-ZEP
 		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array(), $settings ), array(
-			// in wp-admin js/widget.js, includes/template.php, async-upload.php, PHP Compatibility Checker, bbPress
-			'heartbeat', 'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview', 'wpephpcompat_start_test', 'bp_avatar_upload',
-			// Anti-Malware Security and Brute-Force Firewall, WPBruiser {no- Captcha anti-Spam}, jetpack page & action
-			'GOTMLS_logintime', 'gdbcRetrieveToken', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate',
+			// in wp-admin js/widget.js, includes/template.php, async-upload.php, PHP Compatibility Checker
+			'heartbeat', 'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview', 'wpephpcompat_start_test',
+			// bbPress, Anti-Malware Security and Brute-Force Firewall, jetpack page & action
+			'bp_avatar_upload', 'GOTMLS_logintime', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate',
 		) );
 
 		// skip validation of country code and WP-ZEP if exceptions matches action or page
