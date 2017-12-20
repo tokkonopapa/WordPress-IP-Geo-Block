@@ -814,9 +814,10 @@ ul#ip-geo-block-live-log li input[type=radio]:checked + label {
 .ip-geo-block-live-timer {
     height: 1em;
     width: 1em;
-    position: relative;
-    top: -0.1em;
     margin: 0;
+    position: relative;
+    top: 0;
+    left: 0;
 }
 .ip-geo-block-live-timer:before {
     content: "";
@@ -824,8 +825,8 @@ ul#ip-geo-block-live-log li input[type=radio]:checked + label {
     height: 1em;
     width: 1em;
     background: radial-gradient(#0073aa, #72777c);
-    position: absolute;
     border-radius: 50%;
+    position: absolute;
     top: 0;
     left: 0;
 }

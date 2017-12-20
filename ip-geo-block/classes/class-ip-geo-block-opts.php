@@ -65,7 +65,7 @@ class IP_Geo_Block_Opts {
 			'mimetype'    => 0,       // 0:disable, 1:white_list, 2:black_list
 		),
 		'update'          => array(   // Updating IP address DB
-			'auto'        => TRUE,    // Auto updating of DB file
+			'auto'        => TRUE,    // Auto updating of DB files
 			'retry'       => 0,       // Number of retry to download
 			'cycle'       => 30,      // Updating cycle (days)
 		),

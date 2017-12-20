@@ -656,15 +656,19 @@ endif; // TEST_RESTORE_NETWORK
 		$res = array(
 			'Server:'      => $_SERVER['SERVER_SOFTWARE'],
 			'PHP:'         => PHP_VERSION,
+			'PHP SAPI:'    => php_sapi_name(),
 			'WordPress:'   => $GLOBALS['wp_version'],
 			'Multisite:'   => is_multisite() ? 'yes' : 'no',
 			'File system:' => $fs->get_method(),
+			'Temp folder:' => get_temp_dir(),
+			'Umask:'       => sprintf( '%o', umask() ^ 511 /*0777*/ ),
 			'Zlib:'        => function_exists( 'gzopen' ) ? 'yes' : 'no',
 			'ZipArchive:'  => class_exists( 'ZipArchive', FALSE ) ? 'yes' : 'no',
 			'BC Math:'     => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
 			'mb_strcut:'   => function_exists( 'mb_strcut' ) ? 'yes' : 'no',
-			'SQLite(PDO):' => extension_loaded('pdo_sqlite') ? 'yes' : 'no',
+			'SQLite(PDO):' => extension_loaded( 'pdo_sqlite' ) ? 'yes' : 'no',
 			'DNS lookup:'  => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),
+			'User agent:'  => $_SERVER['HTTP_USER_AGENT'],
 		);
 
 		// Child and parent themes

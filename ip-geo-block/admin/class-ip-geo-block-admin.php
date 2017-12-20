@@ -178,14 +178,14 @@ class IP_Geo_Block_Admin {
 	 * @see https://developers.google.com/maps/faq#china_ws_access
 	 */
 	public function enqueue_admin_assets() {
+		$release = ( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG );
+
 		$footer = TRUE;
 		$dependency = array( 'jquery' );
-		$version = ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
-			IP_Geo_Block::VERSION :
-			max(
-				filemtime( plugin_dir_path( __FILE__ ) . 'css/admin.css' ),
-				filemtime( plugin_dir_path( __FILE__ ) . 'js/admin.js'   )
-			);
+		$version = $release ? IP_Geo_Block::VERSION : max(
+			filemtime( plugin_dir_path( __FILE__ ) . 'css/admin.css' ),
+			filemtime( plugin_dir_path( __FILE__ ) . 'js/admin.js'   )
+		);
 
 		switch ( $this->admin_tab ) {
 		  case 1: /* Statistics */
@@ -217,9 +217,7 @@ class IP_Geo_Block_Admin {
 			$settings = IP_Geo_Block::get_option();
 			if ( $key = $settings['api_key']['GoogleMap'] ) {
 				wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-gmap-js',
-					plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
-						'js/gmap.min.js' : 'js/gmap.js', __FILE__
-					),
+					plugins_url( $release ? 'js/gmap.min.js' : 'js/gmap.js', __FILE__ ),
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 				wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-google-map',
@@ -229,9 +227,7 @@ class IP_Geo_Block_Admin {
 				);
 			}
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-whois-js',
-				plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
-					'js/whois.min.js' : 'js/whois.js', __FILE__
-				),
+				plugins_url( $release ? 'js/whois.min.js' : 'js/whois.js', __FILE__ ),
 				$dependency, IP_Geo_Block::VERSION, $footer
 			);
 			break;
@@ -239,24 +235,18 @@ class IP_Geo_Block_Admin {
 
 		// css for option page
 		wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-icons',
-			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
-				'css/admin-icons.min.css' : 'css/admin-icons.css', __FILE__
-			),
+			plugins_url( $release ? 'css/admin-icons.min.css' : 'css/admin-icons.css', __FILE__ ),
 			array(), IP_Geo_Block::VERSION
 		);
 		wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-styles',
-			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
-				'css/admin.min.css' : 'css/admin.css', __FILE__
-			),
+			plugins_url( $release ? 'css/admin.min.css' : 'css/admin.css', __FILE__ ),
 			array(), $version
 		);
 
 		// js for IP Geo Block admin page
 		wp_register_script(
 			$handle = IP_Geo_Block::PLUGIN_NAME . '-admin-script',
-			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
-				'js/admin.min.js' : 'js/admin.js', __FILE__
-			),
+			plugins_url( $release ? 'js/admin.min.js' : 'js/admin.js', __FILE__ ),
 			$dependency + ( isset( $addon ) ? array( $addon ) : array() ),
 			$version, $footer
 		);
@@ -278,6 +268,7 @@ class IP_Geo_Block_Admin {
 					/* [ 7] */ __( 'ajax for non logged-in user', 'ip-geo-block' ),
 					/* [ 8] */ __( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
 					/* [ 9] */ __( 'The selected row cannot be found in the visible area.',    'ip-geo-block' ),
+					/* [10] */ __( 'An error occurred while executing the ajax command `%s`.', 'ip-geo-block' ),
 				),
 				'i18n' => array(
 					/* [ 0] */ '<div class="ip-geo-block-loading"></div>',
@@ -299,6 +290,7 @@ class IP_Geo_Block_Admin {
 				),
 				'interval' => self::INTERVAL_LIVE_UPDATE, // interval for live update [sec]
 				'timeout'  => self::TIMEOUT_LIVE_UPDATE,  // timeout of pausing live update [sec]
+				'altgmap'  => apply_filters( 'google-maps-nokey', '//maps.google.com/maps' ),
 			)
 		);
 		wp_enqueue_script( $handle );
@@ -400,8 +392,8 @@ class IP_Geo_Block_Admin {
 		}
 
 		if ( $admin_menu ) {
-			// `settings-updated` would be added when `network_wide` is saved as TRUE
-			if ( $this->is_network && isset( $_REQUEST['settings-updated'] ) ) {
+			// `settings-updated` would be added just after settings updated.
+			if ( ! empty( $_REQUEST['settings-updated'] ) && $this->is_network ) {
 				$this->sync_multisite_option( $settings );
 				wp_safe_redirect(
 					esc_url_raw( add_query_arg(
@@ -1069,14 +1061,11 @@ class IP_Geo_Block_Admin {
 			$output['public'][ $key ] = array();
 		}
 
-		// 3.0.4 AS number
-		$output['Maxmind']['use_asn'] = FALSE;
+		// 3.0.4 AS number, 3.0.6 Auto updating of DB files
+		$output['Maxmind']['use_asn'] = $output['update']['auto'] = FALSE;
 
 		// 3.0.5 Live update
 		$output['live_update']['in_memory'] = 0;
-
-		// 3.0.5.1 @see https://wordpress.org/support/topic/auto-updating-once-a-month-cannot-disable/
-		$output['update']['auto'] = FALSE;
 
 		return $output;
 	}

@@ -73,8 +73,8 @@
 		}
 	}
 
-	function warning(status, msg) {
-		window.alert(stripTag(status ? status + ': ' + msg : msg));
+	function warning(status, msg, cmd) {
+		window.alert(stripTag(msg ? msg : ip_geo_block.msg[10].replace('%s', cmd) + ' (' + status + ')'));
 	}
 
 	function notice_html5() {
@@ -104,7 +104,7 @@
 		})
 
 		.fail(function (jqXHR, textStatus/*, errorThrown*/) {
-			warning(textStatus, jqXHR.responseText);
+			warning(jqXHR.status, jqXHR.responseText, request.action);
 		})
 
 		.always(function () {
@@ -1662,7 +1662,7 @@
 			} else {
 				map.each(function () {
 					$(this).empty().html(
-						'<iframe src="//maps.google.com/maps?output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
+						'<iframe src="' + ip_geo_block.altgmap + '?output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
 					);
 				});
 			}

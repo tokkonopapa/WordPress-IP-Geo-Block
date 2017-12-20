@@ -80,12 +80,12 @@ class IP_Geo_Block_Admin_Rewrite {
 
 		// Apache in wp-includes/vars.php
 		global $is_apache;
-		if ( $is_apache )
+		if ( ! empty( $is_apache ) )
 			$this->config_file = '.htaccess';
 
 		// CGI/FastCGI SAPI (cgi, cgi-fcgi, fpm-fcgi)
-//		elseif ( version_compare( PHP_VERSION, '5.3' ) >= 0 && FALSE !== strpos( php_sapi_name(), 'cgi' ) )
-//			$this->config_file = ini_get( 'user_ini.filename' );
+		elseif ( version_compare( PHP_VERSION, '5.3' ) >= 0 && FALSE !== strpos( php_sapi_name(), 'cgi' ) )
+			$this->config_file = ini_get( 'user_ini.filename' );
 	}
 
 	/**

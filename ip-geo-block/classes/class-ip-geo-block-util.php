@@ -332,10 +332,10 @@ class IP_Geo_Block_Util {
 	 * WP alternative function for mu-plugins
 	 *
 	 * Get the time-dependent variable for nonce creation.
-	 * @source wp-includes/pluggable.php
+	 * @source wp_nonce_tick() in wp-includes/pluggable.php
 	 */
 	private static function nonce_tick() {
-		return ceil( time() / ( DAY_IN_SECONDS / 2 ) );
+		return ceil( time() / ( apply_filters( 'nonce_life', DAY_IN_SECONDS ) / 2 ) );
 	}
 
 	/**
