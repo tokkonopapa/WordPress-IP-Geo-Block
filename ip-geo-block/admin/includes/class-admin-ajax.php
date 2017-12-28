@@ -9,7 +9,7 @@ class IP_Geo_Block_Admin_Ajax {
 	/**
 	 * Admin ajax sub functions
 	 *
-	 * @param string $which name of the geolocation api provider
+	 * @param string $which name of the geolocation api provider (should be validated by whitelist)
 	 */
 	public static function search_ip( $which ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
@@ -53,7 +53,7 @@ class IP_Geo_Block_Admin_Ajax {
 	/**
 	 * Get country code from providers
 	 *
-	 * @param string $which 'ip_client' or 'ip_server'
+	 * @param string $which 'ip_client' or 'ip_server' (not in use)
 	 */
 	public static function scan_country( $which ) {
 		// scan all the country code using selected APIs
@@ -642,6 +642,52 @@ endif; // TEST_RESTORE_NETWORK
 		);
 	}
 
+	/**
+	 * Get blocked action and pages
+	 *
+	 * @param string $which 'action', 'plugin', 'theme'
+	 * @return array of the name of action/page, plugin or theme
+	 */
+	public static function get_blocked_queries( $which ) {
+		$result = array();
+
+		switch ( $which ) {
+		  case 'plugins':
+			$dir = dirname( IP_GEO_BLOCK_PATH ) . '/';
+			$pat = preg_quote( $dir, '/' );
+			foreach ( IP_Geo_Block_Logs::search_blocked( array( $dir ) ) as $which ) {
+				if ( preg_match( '/(' . $pat . '.+?\/)/', $which['method'], $matches ) ) {
+					$result[] = basename( dirname( $matches[1] ) );
+				}
+			}
+			break;
+
+		  case 'themes':
+			$dir = get_theme_root();
+			$pat = preg_quote( $dir, '/' );
+			foreach( IP_Geo_Block_Logs::search_blocked( array( $dir ) ) as $which ) {
+				if ( preg_match( '/(' . $pat . '.+?\/)/', $which['method'], $matches ) ) {
+					$result[] = basename( dirname( $matches[1] ) );
+				}
+			}
+			break;
+
+		  default: // 'admin'
+			foreach ( IP_Geo_Block_Logs::search_blocked( array( 'action=', 'page=' ) ) as $which ) {
+				if ( preg_match( '/(:?action|page)=(\w+?)/', $which['method'], $matches ) ) {
+					$result[] = $matches[1];
+				}
+			}
+			break;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Get blocked action and pages
+	 *
+	 */
 	public static function get_wp_info() {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
@@ -715,6 +761,13 @@ endif; // TEST_RESTORE_NETWORK
 			$res += array(
 				esc_html( IP_Geo_Block_Util::localdate( $val['time'], 'Y-m-d H:i:s' ) ) =>
 				esc_html( str_pad( $val['result'], 8 ) . $method )
+			);
+		}
+
+		foreach ( array( 'admin', 'plugins', 'themes') as $which ) {
+			$res += array(
+				'Blocked queries:' =>
+				esc_html( print_r( self::get_blocked_queries( $which ), TRUE ) )
 			);
 		}
 

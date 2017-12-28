@@ -39,3 +39,8 @@
     content: "\e9c9";
     font-size: 18px;
 }
+#toplevel_page_ip-geo-block .dashicons-admin-generic:after {
+    font-family: 'icomoon';
+    content: "\e9b4";
+    font-size: 8px;
+}

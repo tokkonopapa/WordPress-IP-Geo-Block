@@ -183,7 +183,7 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 
-		if ( $hook )
+		if ( in_array( $hook, array( 'comment', 'login', 'admin', 'xmlrpc', 'public' ), TRUE ) )
 			$sql = $wpdb->prepare(
 				"DELETE FROM `$table` WHERE `hook` = '%s'", $hook
 			) and $wpdb->query( $sql ) or self::error( __LINE__ );
@@ -693,10 +693,10 @@ class IP_Geo_Block_Logs {
 
 		$sql = "SELECT `hook`, `time`, `ip`, `code`, `result`, `asn`, `method`, `user_agent`, `headers`, `data` FROM `$table`";
 
-		if ( ! $hook )
-			$sql .= " ORDER BY `time` DESC"; // " ORDER BY `hook`, `time` DESC";
-		else
+		if ( in_array( $hook, array( 'comment', 'login', 'admin', 'xmlrpc', 'public' ), TRUE ) )
 			$sql .= $wpdb->prepare( " WHERE `hook` = '%s' ORDER BY `time` DESC", $hook );
+		else
+			$sql .= " ORDER BY `time` DESC"; // " ORDER BY `hook`, `time` DESC";
 
 		return $sql ? $wpdb->get_results( $sql, ARRAY_N ) : array();
 	}
@@ -847,8 +847,10 @@ class IP_Geo_Block_Logs {
 		$result = TRUE;
 
 		foreach ( $entry as $ip ) {
-			$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = %s", $ip )
-			and $result &= ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
+			if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+				$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = %s", $ip )
+				and $result &= ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
+			}
 		}
 
 		return $result;
@@ -865,6 +867,26 @@ class IP_Geo_Block_Logs {
 		$sql = $wpdb->prepare(
 			"DELETE FROM `$table` WHERE `time` < %d", $_SERVER['REQUEST_TIME'] - $cache_time
 		) and $result = ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
+
+		return $result;
+	}
+
+	/**
+	 * Search specific actions in method
+	 *
+	 */
+	public static function search_blocked( $queries = array() ) {
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_LOGS;
+
+		$result = array();
+
+		if ( ! empty( $queries ) ) {
+			$like = array_fill( 0, count( $queries ), "`method` LIKE '%%%s%%'" );
+			$sql = $wpdb->prepare(
+				"SELECT * FROM `$table` WHERE `result` != 'passed' AND (" . implode( 'OR', $like ) . ")", $queries
+			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
+		}
 
 		return $result;
 	}

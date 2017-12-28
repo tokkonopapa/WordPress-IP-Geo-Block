@@ -280,7 +280,7 @@ if (0) {
 		@ini_set( 'auto_detect_line_endings', TRUE );
 
 		if ( 'direct' === self::$method )
-			return @file( $file, FILE_IGNORE_NEW_LINES );
+			return @file( $this->absolute_path( $file ), FILE_IGNORE_NEW_LINES );
 
 		$file = $wp_filesystem->get_contents_array( $this->absolute_path( $file ) );
 		return FALSE !== $file ? array_map( 'rtrim', $file ) : FALSE;

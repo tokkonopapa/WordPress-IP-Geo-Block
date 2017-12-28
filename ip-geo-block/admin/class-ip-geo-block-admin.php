@@ -1318,9 +1318,7 @@ class IP_Geo_Block_Admin {
 
 		  case 'clear-logs':
 			// Delete logs in MySQL DB
-			$hook = array( 'comment', 'login', 'admin', 'xmlrpc', 'public' );
-			$which = in_array( $which, $hook ) ? $which : NULL;
-			IP_Geo_Block_Logs::clear_logs( $which );
+			IP_Geo_Block_Logs::clear_logs( $which ); // `$which` should be restricted by whitelist 
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 				'tab' => 'tab=4'
@@ -1329,12 +1327,12 @@ class IP_Geo_Block_Admin {
 
 		  case 'export-logs':
 			// Export logs from MySQL DB
-			IP_Geo_Block_Admin_Ajax::export_logs( $which );
+			IP_Geo_Block_Admin_Ajax::export_logs( $which ); // `$which` should be restricted by whitelist
 			break;
 
 		  case 'restore-logs':
 			// Get logs from MySQL DB
-			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which );
+			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which ); // `$which` should be restricted by whitelist
 			break;
 
 		  case 'validate':
@@ -1374,13 +1372,18 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Util::get_registered_actions( TRUE );
 			break;
 
+		  case 'get-blocked':
+			// Get blocked actions and pages (`$which` should be restricted by whitelist)
+			$res = IP_Geo_Block_Admin_Ajax::get_blocked_queries( $which );
+			break;
+
 		  case 'restore-cache':
 			// Restore cache from database and format for DataTables
-			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which );
+			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which ); // `$which` is not in use
 			break;
 
 		  case 'bulk-action-remove':
-			// Delete specified IP addresses from cache
+			// Delete specified IP addresses from cache (`$which` should be an array of valid IP addresses)
 			$res = IP_Geo_Block_Logs::delete_cache_entry( $which['IP'] );
 			break;
 
@@ -1398,12 +1401,14 @@ class IP_Geo_Block_Admin {
 			foreach ( array_unique( $which[ $src ] ) as $val ) {
 				// replace anonymized IP address with CIDR (IPv4:256, IPv6:4096)
 				$val = preg_replace(
-					array( '!\.\*\*\*!', '!\*\*\*!', '![^\w\.:/]!' ),
-					array( '.0/24',      '000/116',  ''            ),
+					array( '!\.\*\*\*$!', '!\*\*\*$!' ),
+					array( '.0/24',       '000/116'   ),
 					$val
 				);
-				if ( FALSE === strpos( $settings['extra_ips'][ $dst ], $val ) )
+				if ( ( filter_var( preg_replace( '!/\d+$!', '', $val ), FILTER_VALIDATE_IP ) || preg_match( '^AS\d+$', $val ) ) &&
+				     ( FALSE === strpos( $settings['extra_ips'][ $dst ], $val ) ) ) {
 					$settings['extra_ips'][ $dst ] .= "\n" . $val;
+				}
 			}
 
 			if ( $settings['network_wide'] && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
@@ -1417,14 +1422,14 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'restore-network':
-			// Restore blocked per target in logs
+			// Restore blocked per target in logs (`$which` should be restricted by whitelist)
 			$res = IP_Geo_Block_Admin_Ajax::restore_network( $which, (int)$_POST['offset'], (int)$_POST['length'], FALSE );
 			break;
 
 		  case 'live-start':
 			// Restore live log
 			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::catch_live_log() ) )
-				$res = IP_Geo_Block_Admin_Ajax::restore_live_log( $which, $settings );
+				$res = IP_Geo_Block_Admin_Ajax::restore_live_log( $which, $settings ); // `$which` is not in use
 			else
 				$res = array( 'error' => $res->get_error_message() );
 			break;
@@ -1461,6 +1466,7 @@ class IP_Geo_Block_Admin {
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 			);
+			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

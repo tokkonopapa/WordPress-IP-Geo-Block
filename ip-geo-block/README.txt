@@ -357,6 +357,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 * **Improvement:** Support nginx for "Force to load WP core" at "Plugins area" / "Themes area".
 * **Improvement:** Add a new result "UAlist" that indicate a request is blocked by "UA string and qualification" in "Front-end target settings" section.
 * **Bug fix:** Fix the issue that "Auto updating (once a month)" could not be disabled.
+* **Bug fix:** Fix the bug related to absolute path in filesystem on windows system.
 * See [3.0.6 release note](http://www.ipgeoblock.com/changelog/release-3.0.6.html "3.0.6 Release Note | IP Geo Block") for some details.
 
 = 3.0.5 =

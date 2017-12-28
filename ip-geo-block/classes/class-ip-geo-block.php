@@ -790,14 +790,14 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_ips_white( $validate, $settings ) {
-		return $this->check_ips( $validate, $settings['extra_ips']['white_list'] ) ? $validate + array( 'result' => 'passed' ) : $validate;
+		return self::check_ips( $validate, $settings['extra_ips']['white_list'] ) ? $validate + array( 'result' => 'passed' ) : $validate;
 	}
 
 	public function check_ips_black( $validate, $settings ) {
-		return $this->check_ips( $validate, $settings['extra_ips']['black_list'] ) ? $validate + array( 'result' => 'extra'  ) : $validate;
+		return self::check_ips( $validate, $settings['extra_ips']['black_list'] ) ? $validate + array( 'result' => 'extra'  ) : $validate;
 	}
 
-	private function check_ips( $validate, $ips ) {
+	public static function check_ips( $validate, $ips ) {
 		if ( filter_var( $ip = $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			require_once IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php';
 
