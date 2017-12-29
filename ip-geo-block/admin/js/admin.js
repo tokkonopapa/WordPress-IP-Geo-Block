@@ -74,7 +74,7 @@
 	}
 
 	function warning(status, msg, cmd) {
-		window.alert(stripTag(msg ? msg : ip_geo_block.msg[10].replace('%s', cmd) + ' (' + status + ')'));
+		window.alert(stripTag(msg || ip_geo_block.msg[10].replace('%s', cmd) + ' (' + status + ')'));
 	}
 
 	function notice_html5() {

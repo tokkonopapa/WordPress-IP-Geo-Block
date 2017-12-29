@@ -72,7 +72,7 @@ class IP_Geo_Block_Admin_Rewrite {
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
 
 		// target directories
-		$path = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
+		$path = str_replace( $this->doc_root, '', str_replace( '\\', '/', WP_CONTENT_DIR ) );
 		$this->wp_dirs = array(
 			'plugins'   => $path . '/plugins/',
 			'themes'    => $path . '/themes/',
