@@ -652,36 +652,39 @@ endif; // TEST_RESTORE_NETWORK
 		$result = array();
 
 		switch ( $which ) {
-		  case 'plugins':
-			$dir = dirname( IP_GEO_BLOCK_PATH ) . '/';
-			$pat = preg_quote( $dir, '/' );
-			foreach ( IP_Geo_Block_Logs::search_blocked( array( $dir ) ) as $which ) {
-				if ( preg_match( '/(' . $pat . '.+?\/)/', $which['method'], $matches ) ) {
-					$result[] = basename( dirname( $matches[1] ) );
-				}
-			}
-			break;
-
-		  case 'themes':
-			$dir = get_theme_root();
-			$pat = preg_quote( $dir, '/' );
-			foreach( IP_Geo_Block_Logs::search_blocked( array( $dir ) ) as $which ) {
-				if ( preg_match( '/(' . $pat . '.+?\/)/', $which['method'], $matches ) ) {
-					$result[] = basename( dirname( $matches[1] ) );
-				}
-			}
-			break;
-
-		  default: // 'admin'
-			foreach ( IP_Geo_Block_Logs::search_blocked( array( 'action=', 'page=' ) ) as $which ) {
-				if ( preg_match( '/(:?action|page)=(\w+?)/', $which['method'], $matches ) ) {
+		  case 'plugin':
+		  case 'theme':
+			$dir = 'plugin' === $which ? plugins_url() : get_theme_root_uri();
+			$dir = preg_replace( '!https?://.+?/!', '/', $dir );
+			$pat = preg_quote( $dir, '!' );
+			foreach ( IP_Geo_Block_Logs::search_blocked( 'method', "$dir/" ) as $which ) {
+				if ( preg_match( '!' . $pat . '/(.+?)/!', $which['method'], $matches ) ) {
 					$result[] = $matches[1];
 				}
 			}
 			break;
+
+		  case 'page':
+			$pat = $which;
+			foreach ( IP_Geo_Block_Logs::search_blocked( 'method', "$pat=" ) as $which ) {
+				if ( preg_match( '!' . $pat . '=([\w-]+)!', $which['method'], $matches ) ) {
+					$result[] = $matches[1];
+				}
+			}
+			break;
+
+		  case 'action':
+			$pat = $which;
+			foreach ( array( 'method', 'data' ) as $key ) {
+				foreach ( IP_Geo_Block_Logs::search_blocked( $key, "$pat=" ) as $which ) {
+					if ( preg_match( '!' . $pat . '=([\w-]+)!', $which[ $key ], $matches ) ) {
+						$result[] = $matches[1];
+					}
+				}
+			}
 		}
 
-		return $result;
+		return array_unique( $result );
 	}
 
 	/**
@@ -740,10 +743,17 @@ endif; // TEST_RESTORE_NETWORK
 			}
 		}
 
-		// Logs (hook, time, ip, code, result, method, user_agent, headers, data)
-		$installed = IP_Geo_Block_Logs::search_logs( IP_Geo_Block::get_ip_address() );
+		// Blocked requests
+		foreach ( array( 'action', 'page', 'plugin', 'theme' ) as $which ) {
+			$res += array(
+				'Blocked ' . $which . ':' =>
+				esc_html( implode( ', ', self::get_blocked_queries( $which ) ) )
+			);
+		}
 
-		foreach ( array_reverse( $installed ) as $val ) {
+		// Blocked self requests
+		$installed = array_reverse( IP_Geo_Block_Logs::search_logs( IP_Geo_Block::get_ip_address() ) );
+		foreach ( $installed as $val ) {
 			// hide port and nonce
 			$method = preg_replace( '/\[\d+\]/', '', $val['method'] );
 			$method = preg_replace( '/(' . IP_Geo_Block::PLUGIN_NAME . '-auth-nonce)(?:=|%3D)([\w]+)/', '$1=...', $method );
@@ -761,13 +771,6 @@ endif; // TEST_RESTORE_NETWORK
 			$res += array(
 				esc_html( IP_Geo_Block_Util::localdate( $val['time'], 'Y-m-d H:i:s' ) ) =>
 				esc_html( str_pad( $val['result'], 8 ) . $method )
-			);
-		}
-
-		foreach ( array( 'admin', 'plugins', 'themes') as $which ) {
-			$res += array(
-				'Blocked queries:' =>
-				esc_html( print_r( self::get_blocked_queries( $which ), TRUE ) )
 			);
 		}
 

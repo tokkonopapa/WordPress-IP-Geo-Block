@@ -874,19 +874,17 @@ class IP_Geo_Block_Logs {
 	/**
 	 * Search specific actions in method
 	 *
+	 * @param string $key 'method' or 'data'
 	 */
-	public static function search_blocked( $queries = array() ) {
+	public static function search_blocked( $key, $search ) {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 
 		$result = array();
 
-		if ( ! empty( $queries ) ) {
-			$like = array_fill( 0, count( $queries ), "`method` LIKE '%%%s%%'" );
-			$sql = $wpdb->prepare(
-				"SELECT * FROM `$table` WHERE `result` != 'passed' AND (" . implode( 'OR', $like ) . ")", $queries
-			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
-		}
+		$sql = $wpdb->prepare(
+			"SELECT * FROM `$table` WHERE `result` != 'passed' AND `" . $key . "` LIKE '%%%s%%'", $search
+		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
 
 		return $result;
 	}
