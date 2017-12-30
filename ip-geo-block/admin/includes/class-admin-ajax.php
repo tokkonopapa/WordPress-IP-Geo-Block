@@ -667,7 +667,7 @@ endif; // TEST_RESTORE_NETWORK
 		  case 'page':
 			$pat = $which;
 			foreach ( IP_Geo_Block_Logs::search_blocked( 'method', "$pat=" ) as $which ) {
-				if ( preg_match( '!' . $pat . '=([\w-]+)!', $which['method'], $matches ) ) {
+				if ( preg_match( '!' . $pat . '=([-\w]+)!', $which['method'], $matches ) ) {
 					$result[] = $matches[1];
 				}
 			}
@@ -677,7 +677,7 @@ endif; // TEST_RESTORE_NETWORK
 			$pat = $which;
 			foreach ( array( 'method', 'data' ) as $key ) {
 				foreach ( IP_Geo_Block_Logs::search_blocked( $key, "$pat=" ) as $which ) {
-					if ( preg_match( '!' . $pat . '=([\w-]+)!', $which[ $key ], $matches ) ) {
+					if ( preg_match( '!' . $pat . '=([-\w]+)!', $which[ $key ], $matches ) ) {
 						$result[] = $matches[1];
 					}
 				}

@@ -282,9 +282,6 @@ endif;
 	 *
 	 */
 	public static function statistics_logs() {
-		// array of ( `time`, `ip`, `hook`, `code`, `method`, `data` )
-		$logs = IP_Geo_Block_Logs::get_recent_logs( YEAR_IN_SECONDS );
-
 		// Count by key
 		$count = array();
 		$keys = array(
@@ -294,61 +291,62 @@ endif;
 			'slug' => __( 'Slug in back-end',    'ip-geo-block' ),
 		);
 
-		// Make list of top 10
-		foreach( $logs as $val ) {
-			$val['ip'] = '[' . $val['code'] . '] ' . $val['ip'];
-			$key = $val['method'] . ' ' . $val['data'];
+		// Count by keys ($log: `time`, `ip`, `hook`, `code`, `method`, `data`)
+		foreach( IP_Geo_Block_Logs::get_recent_logs( YEAR_IN_SECONDS ) as $log ) {
+			$log['ip'] = '[' . $log['code'] . '] ' . $log['ip'];
+			$key = $log['method'] . ' ' . $log['data'];
 
 			// <methodName>...</methodName>
 			if ( preg_match( '#<methodName>(.*?)</methodName>#', $key, $matches ) ) {
-				$val['slug'] = '/xmlrpc.php ' . $matches[1];
+				$log['slug'] = '/xmlrpc.php ' . $matches[1];
 			}
 
 			// /wp-content/(plugins|themes)/...
 			elseif ( preg_match( '#(/wp-content/(?:plugins|themes)/.*?/)#', $key, $matches ) ) {
-				$val['slug'] = $matches[1];
+				$log['slug'] = $matches[1];
 			}
 
 			// /wp-admin/admin*.php?action=...
-			elseif ( preg_match( '#(/wp-admin/admin.*?\.php).*((?:page|action)=[\w-]+)#', $key, $matches ) ) {
-				$val['slug'] = $matches[1] . (isset( $matches[2] ) ? ' ' . $matches[2] : '');
+			elseif ( preg_match( '#(/wp-admin/admin.*?\.php).*((?:page|action)=[-\w]+)#', $key, $matches ) ) {
+				$log['slug'] = $matches[1] . ' ' . $matches[2];
 			}
 
 			// /wp-admin/*.php
 			elseif ( preg_match( '#(/wp-admin/(?!admin).*?\.php)#', $key, $matches ) ) {
-				$val['slug'] = $matches[1];
+				$log['slug'] = $matches[1];
 			}
 
 			// file uploading *.(zip|tar|rar|gz|php|...)
 			elseif ( preg_match( '#(\[name\]\s*?=>.*\.\w+?)\b#', $key, $matches ) ) {
-				$val['slug'] = $matches[1];
+				$log['slug'] = $matches[1];
 			}
 
-			// /*.php
-			elseif ( preg_match( '#^\w+?\[\d+?\]:(/[^/]+?\.php)#', $key, $matches ) ) {
-				$val['slug'] = $matches[1];
+			// METHOD[PORT]:/*.php (exclude without action/page in /wp-admin/*.php)
+			elseif ( preg_match( '#.*?(/[-/\.\w]*\.php)#', $key, $matches ) && FALSE === strpos( $key, '/wp-admin/' ) ) {
+				$log['slug'] = $matches[1];
 			}
 
 			foreach ( array_keys( $keys ) as $key ) {
-				if ( ! empty( $val[ $key ] ) ) {
-					$count[ $key ][] = $val[ $key ];
+				if ( ! empty( $log[ $key ] ) ) {
+					$count[ $key ][] = $log[ $key ];
 				}
 			}
 		}
 
 		$options = IP_Geo_Block::get_option();
 
-		foreach ( $keys as $slug => $val ) {
-			echo '<ol class="ip-geo-block-top-list"><h4>', esc_html( $val ), '</h4>';
+		// Statistics by keys
+		foreach ( $keys as $slug => $log ) {
+			echo '<ol class="ip-geo-block-top-list"><h4>', esc_html( $log ), '</h4>';
 
 			if ( isset( $count[ $slug ] ) ) {
 				$logs = array_count_values( $count[ $slug ] );
 				arsort( $logs );
 
 				if ( 'slug' !== $slug )
-					$logs = array_slice( $logs, 0, 10 );
+					$logs = array_slice( $logs, 0, 10 ); // Make list of top 10
 
-				foreach ( $logs as $key => $val ) {
+				foreach ( $logs as $key => $log ) {
 					$link = explode( ' ', $key );
 					$link = esc_html( end( $link ) );
 					$key  = esc_html( $key );
@@ -367,7 +365,7 @@ endif;
 						'" target=_blank>' . $link . '</a>',
 						$key
 					);
-					echo '</code> (', (int)$val, ')</li>', "\n";
+					echo '</code> (', (int)$log, ')</li>', "\n";
 				}
 			}
 
