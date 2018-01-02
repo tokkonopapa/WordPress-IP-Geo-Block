@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-01-02 20:32+0900\n"
-"PO-Revision-Date: 2018-01-02 20:39+0900\n"
+"POT-Creation-Date: 2018-01-02 23:22+0900\n"
+"PO-Revision-Date: 2018-01-02 23:27+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -147,7 +147,7 @@ msgstr "未認証ユーザー用 ajax"
 #: admin/class-ip-geo-block-admin.php:269
 #, php-format
 msgid "Find and verify `%s` on &#8220;Logs&#8221; tab."
-msgstr "「ログ」タブ上で `%s` を検索・検証して下さい。"
+msgstr "ログから `%s` を検索し、検証して下さい。"
 
 #: admin/class-ip-geo-block-admin.php:270
 msgid "This feature is available with HTML5 compliant browsers."
@@ -596,18 +596,18 @@ msgstr "選択を切り替える"
 
 #: admin/includes/tab-settings.php:119
 msgid "Find blocked requests in &#8220;Logs&#8220;"
-msgstr "例外候補をログから検索する"
+msgstr "ログから遮断されたリクエストを検索する"
 
 #: admin/includes/tab-settings.php:120
 msgid ""
 "Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="
 "\"ip-geo-block-icon ip-geo-block-icon-alert\"><span></span></a>&#8221; "
-"button attached to the following list to confirm that the blocked request is "
-"not malicious."
+"button (if exists) attached to the following list to confirm that the "
+"blocked request is not malicious."
 msgstr ""
-"「例外」として追加する前に、以下のリストに付いたボタン&thinsp;&#8220;<a "
-"class=\"ip-geo-block-icon ip-geo-block-icon-alert\"><span></span></a>&#8221;"
-"&thinsp;をクリックし、遮断されたリクエストに悪意のないことを確認して下さい。"
+"「例外」として追加する前に、以下の候補に付いたボタン&thinsp;&#8220;<a class="
+"\"ip-geo-block-icon ip-geo-block-icon-alert\"><span></span></a>&#8221;（もし"
+"あれば）をクリックし、遮断されたリクエストに悪意のないことを確認して下さい。"
 
 #: admin/includes/tab-settings.php:127 admin/includes/tab-settings.php:794
 msgid "Matching rule"
@@ -903,16 +903,16 @@ msgstr "管理領域&thinsp;ajax/post"
 
 #: admin/includes/tab-settings.php:602
 msgid ""
-"Specify the page name (&#8220;page=&hellip;&#8221;) or the action name "
-"(&#8220;action=&hellip;&#8221;) to prevent undesired blocking caused by "
-"&#8220;Block by country&#8221; for non logged-in user and &#8220;Prevent "
-"Zero-day Exploit&#8221; for logged-in user"
+"Specify the action name (&#8220;action=&hellip;&#8221;) or the page name "
+"(&#8220;page=&hellip;&#8221;) to prevent unintended blocking caused by "
+"&#8220;Block by country&#8221; (for non logged-in user) and &#8220;Prevent "
+"Zero-day Exploit&#8221; (for logged-in user)."
 msgstr ""
-"「国コードで遮断」または「ゼロデイ攻撃を遮断」が、それぞれ認証済みユーザー、"
-"認証済ユーザーを意図せず遮断する場合、検証対象から除外するリクエストを特定す"
-"るために、ページ名（&#8220;page=&hellip;&#8221; の &#8220;&hellip;&#8221; 部"
-"分）、またはアクション名（&#8220;action=&hellip;&#8221; の &#8220;&hellip;"
-"&#8221; 部分）を指定してください。"
+"「国コードで遮断」（未認証ユーザーの場合）および「ゼロデイ攻撃を遮断」（認証"
+"済みユーザーの場合）が、意図しない遮断の原因となる場合、アクション名（&#8220;"
+"action=&hellip;&#8221; の &#8220;&hellip;&#8221; 部分）、またはページ名"
+"（&#8220;page=&hellip;&#8221; の &#8220;&hellip;&#8221; 部分）を指定し、検証"
+"対象から除外します。"
 
 #: admin/includes/tab-settings.php:602 admin/includes/tab-settings.php:682
 #: admin/includes/tab-settings.php:744
@@ -921,11 +921,11 @@ msgstr "例外"
 
 #: admin/includes/tab-settings.php:603
 msgid "Toggle with non logged-in user"
-msgstr "未認証ユーザー用を含む項目に限定して表示"
+msgstr "未認証ユーザー用を含む項目に限定して表示する"
 
 #: admin/includes/tab-settings.php:606
-msgid "Candidate actions"
-msgstr "候補アクション"
+msgid "Candidate actions/pages"
+msgstr "候補&thinsp;アクション／ページ"
 
 #: admin/includes/tab-settings.php:620
 #, php-format
@@ -938,8 +938,8 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:621
 msgid ""
-"Select the item which causes undesired blocking in order to exclude from the "
-"validation target. Grayed item indicates &#8220;INACTIVE&#8221;."
+"Select the item which causes unintended blocking in order to exclude from "
+"the validation target. Grayed item indicates &#8220;INACTIVE&#8221;."
 msgstr ""
 "意図しない遮断の原因となる項目を選択し、検証対象から除外します。灰色で表示さ"
 "れた項目は、「非アクティブ」であることを示しています。"
@@ -1181,7 +1181,7 @@ msgid "When requests passed"
 msgstr "通過時に記録"
 
 #: admin/includes/tab-settings.php:1237
-msgid "When blocked or passed from undesired country"
+msgid "When blocked or passed from unwanted country"
 msgstr "遮断時または遮断対象国の通過時に記録"
 
 #: admin/includes/tab-settings.php:1238

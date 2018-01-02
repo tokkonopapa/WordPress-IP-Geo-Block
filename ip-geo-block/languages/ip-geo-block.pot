@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-01-02 20:32+0900\n"
-"PO-Revision-Date: 2018-01-02 20:32+0900\n"
+"POT-Creation-Date: 2018-01-02 23:22+0900\n"
+"PO-Revision-Date: 2018-01-02 23:22+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -549,8 +549,8 @@ msgstr ""
 msgid ""
 "Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="
 "\"ip-geo-block-icon ip-geo-block-icon-alert\"><span></span></a>&#8221; "
-"button attached to the following list to confirm that the blocked request is "
-"not malicious."
+"button (if exists) attached to the following list to confirm that the "
+"blocked request is not malicious."
 msgstr ""
 
 #: admin/includes/tab-settings.php:127 admin/includes/tab-settings.php:794
@@ -785,10 +785,10 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:602
 msgid ""
-"Specify the page name (&#8220;page=&hellip;&#8221;) or the action name "
-"(&#8220;action=&hellip;&#8221;) to prevent undesired blocking caused by "
-"&#8220;Block by country&#8221; for non logged-in user and &#8220;Prevent "
-"Zero-day Exploit&#8221; for logged-in user"
+"Specify the action name (&#8220;action=&hellip;&#8221;) or the page name "
+"(&#8220;page=&hellip;&#8221;) to prevent unintended blocking caused by "
+"&#8220;Block by country&#8221; (for non logged-in user) and &#8220;Prevent "
+"Zero-day Exploit&#8221; (for logged-in user)."
 msgstr ""
 
 #: admin/includes/tab-settings.php:602 admin/includes/tab-settings.php:682
@@ -801,7 +801,7 @@ msgid "Toggle with non logged-in user"
 msgstr ""
 
 #: admin/includes/tab-settings.php:606
-msgid "Candidate actions"
+msgid "Candidate actions/pages"
 msgstr ""
 
 #: admin/includes/tab-settings.php:620
@@ -813,8 +813,8 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:621
 msgid ""
-"Select the item which causes undesired blocking in order to exclude from the "
-"validation target. Grayed item indicates &#8220;INACTIVE&#8221;."
+"Select the item which causes unintended blocking in order to exclude from "
+"the validation target. Grayed item indicates &#8220;INACTIVE&#8221;."
 msgstr ""
 
 #: admin/includes/tab-settings.php:622
@@ -1020,7 +1020,7 @@ msgid "When requests passed"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1237
-msgid "When blocked or passed from undesired country"
+msgid "When blocked or passed from unwanted country"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1238

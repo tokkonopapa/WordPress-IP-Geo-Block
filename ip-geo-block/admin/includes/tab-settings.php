@@ -117,7 +117,7 @@ endif;
 			'<span class="ip-geo-block-sup">' . __( '(comma or RET separated)', 'ip-geo-block' ) . '</span>',
 			'<span title="' . __( 'Toggle selection', 'ip-geo-block' ) . '"></span>',
 			'<span title="' . __( 'Find blocked requests in &#8220;Logs&#8220;', 'ip-geo-block' ) . '"></span>',
-			__( 'Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="ip-geo-block-icon ip-geo-block-icon-alert"><span></span></a>&#8221; button attached to the following list to confirm that the blocked request is not malicious.', 'ip-geo-block' ),
+			__( 'Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="ip-geo-block-icon ip-geo-block-icon-alert"><span></span></a>&#8221; button (if exists) attached to the following list to confirm that the blocked request is not malicious.', 'ip-geo-block' ),
 		);
 
 		// Matching rule
@@ -599,11 +599,11 @@ endif;
 				'desc' => $desc,
 				'after' =>
 					'<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . "\n" .
-					'	<dfn title="' . __( 'Specify the page name (&#8220;page=&hellip;&#8221;) or the action name (&#8220;action=&hellip;&#8221;) to prevent undesired blocking caused by &#8220;Block by country&#8221; for non logged-in user and &#8220;Prevent Zero-day Exploit&#8221; for logged-in user', 'ip-geo-block' ) . '">' . __( 'Exceptions', 'ip-geo-block' ) . "</dfn>\n" .
+					'	<dfn title="' . __( 'Specify the action name (&#8220;action=&hellip;&#8221;) or the page name (&#8220;page=&hellip;&#8221;) to prevent unintended blocking caused by &#8220;Block by country&#8221; (for non logged-in user) and &#8220;Prevent Zero-day Exploit&#8221; (for logged-in user).', 'ip-geo-block' ) . '">' . __( 'Exceptions', 'ip-geo-block' ) . "</dfn>\n" .
 					'	<a class="ip-geo-block-hide ip-geo-block-icon ip-geo-block-icon-unlock"><span title="' . __( 'Toggle with non logged-in user', 'ip-geo-block' ) . '"></span></a><a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide" data-target="admin">' . $comma[2] . '</a><a class="ip-geo-block-icon ip-geo-block-icon-find ip-geo-block-hide" data-target="admin">' . $comma[3] . "</a>\n" .
 					'	<li class="ip-geo-block-hide">' . "\n" .
 					'		<input class="regular-text code" id="ip_geo_block_settings_exception_admin" name="ip_geo_block_settings[exception][admin]" type="text" value="' . esc_attr( implode( ',', $options['exception']['admin'] ) ) . '">' . $comma[0] . "\n" .
-					'		<h4>' . __( 'Candidate actions', 'ip-geo-block' ) . "</h4>\n" .
+					'		<h4>' . __( 'Candidate actions/pages', 'ip-geo-block' ) . "</h4>\n" .
 					'		<p class="ip-geo-block-find-desc">' . $comma[4] . '<span id="ip-geo-block-find-admin"></span></p>' . "\n" .
 					'	</li>' . "\n" .
 					'	<li class="ip-geo-block-hide">' . "\n" .
@@ -618,7 +618,7 @@ endif;
 		array_unshift( $list, __( 'Disable', 'ip-geo-block' ) );
 		$desc = array(
 			__( 'Regardless of the country code, it will block a malicious request to <code>%s&ctdot;/*.php</code>.', 'ip-geo-block' ),
-			__( 'Select the item which causes undesired blocking in order to exclude from the validation target. Grayed item indicates &#8220;INACTIVE&#8221;.', 'ip-geo-block' ),
+			__( 'Select the item which causes unintended blocking in order to exclude from the validation target. Grayed item indicates &#8220;INACTIVE&#8221;.', 'ip-geo-block' ),
 			__( 'It configures &#8220;%s&#8221; to validate a request to the PHP file which does not load WordPress core.', 'ip-geo-block' ),
 			__( 'Sorry, but your server type is not supported.', 'ip-geo-block' ),
 		);
@@ -1234,7 +1234,7 @@ endif;
 					0 => __( 'Disable',                 'ip-geo-block' ),
 					1 => __( 'When requests blocked',   'ip-geo-block' ),
 					2 => __( 'When requests passed',    'ip-geo-block' ),
-					6 => __( 'When blocked or passed from undesired country', 'ip-geo-block' ),
+					6 => __( 'When blocked or passed from unwanted country', 'ip-geo-block' ),
 					3 => __( 'Unauthenticated visitor', 'ip-geo-block' ),
 					4 => __( 'Authenticated user',      'ip-geo-block' ),
 					5 => __( 'All the validation',      'ip-geo-block' ),
