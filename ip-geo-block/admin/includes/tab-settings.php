@@ -117,7 +117,7 @@ endif;
 			'<span class="ip-geo-block-sup">' . __( '(comma or RET separated)', 'ip-geo-block' ) . '</span>',
 			'<span title="' . __( 'Toggle selection', 'ip-geo-block' ) . '"></span>',
 			'<span title="' . __( 'Find blocked requests in &#8220;Logs&#8220;', 'ip-geo-block' ) . '"></span>',
-			__( 'Before adding as &#8220;Exception&#8221;, please click the &#8220;<a class="ip-geo-block-icon ip-geo-block-icon-alert"><span></span></a>&#8221; button attached to the following list to confirm it\'s not malicious.', 'ip-geo-block' ),
+			__( 'Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="ip-geo-block-icon ip-geo-block-icon-alert"><span></span></a>&#8221; button attached to the following list to confirm that the blocked request is not malicious.', 'ip-geo-block' ),
 		);
 
 		// Matching rule
