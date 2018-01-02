@@ -27,7 +27,7 @@
 	}
 
 	function escapeHTML(str) {
-		return str ? str.toString().replace(/[&<>"']/g, function (match) {
+		return str.toString().replace(/[&<>"']/g, function (match) {
 			return {
 				'&': '&amp;',
 				'<': '&lt;',
@@ -35,11 +35,11 @@
 				'"': '&quot;',
 				"'": '&#39;'
 			}[match];
-		}) : '';
+		}).replace(/&amp;#(\d+?;)/g, "&#$1"); // revert html character entity
 	}
 
 	function stripTag(str) {
-		return str.replace(/(<([^>]+)>)/ig, '');
+		return escapeHTML(str.toString().replace(/(<([^>]+)>)/ig, ''));
 	}
 
 	function onresize(name, callback) {
@@ -68,22 +68,22 @@
 	}
 
 	function confirm(msg, callback) {
-		if (window.confirm(stripTag(msg))) {
+		if (window.confirm(msg)) {
 			callback();
 		}
 	}
 
 	function warning(status, msg, cmd) {
-		window.alert(stripTag(msg || ip_geo_block.msg[10].replace('%s', cmd) + ' (' + status + ')'));
+		window.alert(msg || ip_geo_block.msg[11].replace('%s', cmd) + ' (' + status + ')');
 	}
 
 	function notice_html5() {
-		warning(null, ip_geo_block.msg[8]);
+		warning(null, ip_geo_block.msg[9]);
 	}
 
 	function redirect(page, tab) {
 		if (-1 !== window.location.href.indexOf(page)) {
-			window.location = escapeHTML(page) + (tab ? '&' + escapeHTML(tab) : '') + '&ip-geo-block-auth-nonce=' + ip_geo_block_auth.nonce;
+			window.location = stripTag(page) + (tab ? '&' + stripTag(tab) : '') + '&ip-geo-block-auth-nonce=' + ip_geo_block_auth.nonce;
 		}
 	}
 
@@ -160,7 +160,7 @@
 		if (stat) {
 			obj.removeClass('folding-disable');
 		} else {
-			obj.children('li,a').hide();
+			obj.children(ID('.', 'hide')).hide();
 			obj.addClass('folding-disable');
 			obj.removeClass(ID('dropdown')).addClass(ID('dropup'));
 		}
@@ -701,7 +701,7 @@
 	function add_icon(dfn, span, title, icon) {
 		var i, j;
 		i = dfn.cloneNode(false);
-		i.setAttribute('title', title);
+		i.setAttribute('title', stripTag(title));
 		j = span.cloneNode(false);
 		j.setAttribute('class', 'dashicons dashicons-' + icon);
 		i.appendChild(j);
@@ -845,7 +845,7 @@
 			if (!cmd) {
 				return false;
 			} else if (!cells.length) {
-				warning(null, ip_geo_block.msg[9]);
+				warning(null, ip_geo_block.msg[10]);
 				return false;
 			}
 
@@ -964,12 +964,12 @@
 					var key, val;
 					for (key in data) {
 						if (data.hasOwnProperty(key)) {
-							key = escapeHTML(key);
+							key = stripTag(key);
 							if ('string' === typeof data[key]) {
-								val = escapeHTML(data[key]);
+								val = stripTag(data[key]);
 							} else {
-								val = escapeHTML(data[key].code);
-								key = '<abbr title="' + escapeHTML(data[key].type) + '">' + key + '</abbr>';
+								val = stripTag(data[key].code);
+								key = '<abbr title="' + stripTag(data[key].type) + '">' + key + '</abbr>';
 							}
 							parent.append('<li>' + key + ' : <span class="' + ID('notice') + '">' + val + '</span></li>');
 						}
@@ -1061,17 +1061,18 @@
 			ajax_post(null, {
 				cmd: 'get-actions'
 			}, function (data) {
-				var i, j, id, key, $this = $(ID('#', 'actions')),
+				var i, j, id, key, $this = $(ID('#', 'list-admin')),
 				    li    = document.createElement('li'   ),
 				    input = document.createElement('input'),
 				    label = document.createElement('label'),
 				    dfn   = document.createElement('dfn'  ),
 				    span  = document.createElement('span' );
 				for (key in data) {
+					key = stripTag(key);
 					if (data.hasOwnProperty(key) && ! $this.find('#' + (id = ID('%', key))).size()) {
 						i = input.cloneNode(false);
 						i.setAttribute('id', id);
-						i.setAttribute('value', '1');
+						i.setAttribute('value', key);
 						i.setAttribute('type', 'checkbox');
 						j = li.cloneNode(false);
 						j.appendChild(i);
@@ -1092,28 +1093,36 @@
 					}
 				}
 
-				// Handle text field for actions
+				// Admin ajax/post: `Toggle non logged-in user` at `Exceptions`
+				$(ID('.', 'icon-unlock')).on('click', function (/*event*/) {
+					$(ID('#', 'list-admin') + '>li').filter(function (/*i, elm*/) {
+						return ! $(this).find('.dashicons-unlock').length;
+					}).toggle();
+					return false;
+				});
+
+				// Admin ajax/post: Handle text field for actions
 				$(ID('@', 'exception_admin')).on('change', function (event) {
 					var actions = $.grep($(this).val().split(','), function (e){
 						return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
 					});
 
-					$(ID('#', 'actions')).find('input').each(function (/*i, obj*/) {
+					$(ID('#', 'list-admin')).find('input').each(function (/*i, obj*/) {
 						var $this = $(this),
-							action = $this.attr('id').replace(ID('%', ''), '');
+							action = $this.val();
 						$this.prop('checked', -1 !== $.inArray(action, actions));
 					});
 
 					return stopPropergation(event);
 				}).change();
 
-				// Candidate actions
-				$(ID('#', 'actions')).on('click', 'input', function (/*event*/) {
+				// Admin ajax/post: Candidate actions
+				$(ID('#', 'list-admin')).on('click', 'input', function (/*event*/) {
 					var i,
 					    $this = $(this),
-					    $admin = $(ID('@', 'exception_admin')),
-					    action = $this.attr('id').replace(ID('%', ''), ''),
-					    actions = $.grep($admin.val().split(','), function (e){
+					    $text = $(ID('@', 'exception_admin')),
+					    action = $this.val(),
+					    actions = $.grep($text.val().split(','), function (e) {
 					    	return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
 					    });
 
@@ -1126,11 +1135,71 @@
 						actions.splice(i, 1);
 					}
 
-					$admin.val(actions.join(',')).change();
+					$text.val(actions.join(',')).change();
+				});
+
+				// Admin ajax/post: Find the blocked request in logs
+				$(ID('.', 'icon-find')).on('click', function (/*event*/) {
+					var $this  = $(this), list = [], key, val, ext, id, s,
+					    title  = stripTag(ip_geo_block.msg[8]),
+					    target = stripTag($this.data('target')); // `admin`, `plugins`, `themes`
+
+					// show description
+					$this.next().children(ID('.', 'find-desc')).show();
+
+					// make list of target
+					$this = $(ID('#', 'list-' + target));
+					$this.children('li').each(function (i, obj) {
+						list.push($(obj).find('input').val());
+					});
+
+					ajax_post('find-' + target, {
+						cmd: 'find-' + target
+					}, function (data) {
+						for (val in data) {
+							if (data.hasOwnProperty(val)) {
+								key = stripTag(data[val]);  // page, action, plugins, themes
+								val = stripTag(val);        // slug of target
+								ext = $.inArray(val, list); // slug already exists
+								id  = ID('%', val);
+
+								// make an anchor tab with search query
+								if (s = 'admin' === target) {
+									s = key + '=' + val;
+								} else {
+									s = '/' + key + '/' + val + '/';
+								}
+								s = '<a class="ip-geo-block-icon ip-geo-block-icon-alert" href="?page=ip-geo-block&tab=4&s=' +
+								encodeURIComponent(s) + '" title="' + title.replace('%s', s) + '" target="_blank"><span></span></a>';
+
+								// add a new list when not found in existent key
+								if (ext < 0) {
+									list.push(val);
+									$this.prepend(
+										'<li><input id="' + id + '" value="' + val + '" type="checkbox" />'
+										+ '<label for="' + id + '">'+ val + '</lable>' + s + '</li>'
+									);
+								}
+
+								// append button when found in existent key
+								else {
+									id = $this.find('#' + id).parent();
+									if (!id.find('a').length) {
+										id.append(s);
+									}
+								}
+							}
+
+							// update status of checkbox
+							$(ID('@', 'exception_admin')).trigger('change');
+						}
+					});
+
+					return false;
 				});
 			});
 
-			// Enable / Disable Exceptions
+			// Admin ajax/post: Enable / Disable Exceptions
 			$('input[id^="' + ID('!', 'validation_ajax_') + '"]').on('change', function (/*event*/) {
 				show_folding_ajax($(this));
 			}).change();
@@ -1167,12 +1236,12 @@
 							data = res[api];
 							for (key in data) { // key: ipv4, ipv6
 								if (data.hasOwnProperty(key)) {
-									key = escapeHTML(key);
+									key = stripTag(key);
 									if (data[key].filename) {
-										$(ID('@', api + '_' + key + '_path')).val(escapeHTML(data[key].filename));
+										$(ID('@', api + '_' + key + '_path')).val(stripTag(data[key].filename));
 									}
 									if (data[key].message) {
-										$(ID('#', api + '-' + key)).text(escapeHTML(data[key].message));
+										$(ID('#', api + '-' + key)).text(stripTag(data[key].message));
 									}
 								}
 							}
@@ -1323,7 +1392,7 @@
 					}
 
 					// response should be escaped at server side
-					$(ID('#', 'wp-info')).html('<textarea rows="' + res.length + '">' + /*escapeHTML*/(res.join("\n")) + '</textarea>').find('textarea').select();
+					$(ID('#', 'wp-info')).html('<textarea class="regular-text code" rows="' + res.length + '">' + /*stripTag*/(res.join("\n")) + '</textarea>').find('textarea').select();
 					return false;
 				});
 			});
@@ -1340,11 +1409,11 @@
 			}).change();
 
 			// Toggle checkbox
-			$(ID('.', 'cycle')).on('click', function (/*event*/) {
-				var regex, $that = $(this).nextAll('li'), actions,
-				    text = $that.find(ID('@', 'exception_admin')),
-				    cbox = $that.find('input:checkbox').filter(':visible'),
-				    stat = cbox.filter(':checked').length;
+			$(ID('.', 'icon-cycle')).on('click', function (/*event*/) {
+				var $that = $(this).nextAll('li'), actions,
+				    text  = $that.find(ID('@', 'exception_admin')),
+				    cbox  = $that.find('input:checkbox').filter(':visible'),
+				    stat  = cbox.filter(':checked').length;
 
 				cbox.prop('checked', !stat);
 
@@ -1352,10 +1421,9 @@
 					if (stat) {
 						text.val('');
 					} else {
-						regex = new RegExp(ID('%', ''));
 						actions = [];
-						cbox.each(function (i) {
-							actions[i] = $(this).attr('id').replace(regex, '');
+						cbox.each(function (i, obj) {
+							actions.push($(obj).val());
 						});
 						text.val(actions.join(','));
 					}
@@ -1365,25 +1433,15 @@
 				return false;
 			});
 
-			// Show/Hide logged in user only
-			$(ID('.', 'unlock')).on('click', function (/*event*/) {
-				$(this).nextAll('li').find('h4').nextAll('li').filter(function (/*i, elm*/) {
-					return ! $(this).find('.dashicons-unlock').length;
-				}).toggle();
-				return false;
-			});
-
 			// Folding list
 			$(ID('.', 'settings-folding>dfn')).on('click', function (/*event*/) {
 				var drop = ID('drop'),
 				$this = $(this).parent();
-				$this.children('li').toggle();
+				$this.children(ID('.', 'hide')).toggle();
 				$this.toggleClass(drop + 'up').toggleClass(drop + 'down');
 
-				if ($this.hasClass(drop + 'down')) {
-					$this.children('a').show();
-				} else {
-					$this.children('a').hide();
+				if ($this.hasClass(drop + 'up')) {
+					$this.children('div').hide();
 				}
 
 				return false;
@@ -1714,17 +1772,17 @@
 						which: $(ID('@', 'service')).val()
 					}, function (data) {
 						var key, info = '',
-						    latitude  = escapeHTML(data.latitude  || '0'),
-						    longitude = escapeHTML(data.longitude || '0'),
+						    latitude  = stripTag(data.latitude  || '0'),
+						    longitude = stripTag(data.longitude || '0'),
 						    zoom = (data.latitude || data.longitude) ? 8 : 2;
 
 						for (key in data) {
 							if (data.hasOwnProperty(key)) {
-								key = escapeHTML(key);
+								key = stripTag(key);
 								info +=
 									'<li>' +
 										'<span class="' + ID('title' ) + '">' + key + ' : </span>' +
-										'<span class="' + ID('result') + '">' + escapeHTML(data[key]) + '</span>' +
+										'<span class="' + ID('result') + '">' + stripTag(data[key]) + '</span>' +
 									'</li>';
 							}
 						}
@@ -1746,7 +1804,7 @@
 								'<ul style="margin-top:0; margin-left:1em;">' +
 									'<li>' +
 										'<span class="' + ID('title' ) + '">' + 'IP address' + ' : </span>' +
-										'<span class="' + ID('result') + '">' + escapeHTML(ip) + '</span>' +
+										'<span class="' + ID('result') + '">' + stripTag(ip) + '</span>' +
 									'</li>' +
 									info +
 									/*'<li>' +

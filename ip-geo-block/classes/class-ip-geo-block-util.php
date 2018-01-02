@@ -66,7 +66,7 @@ class IP_Geo_Block_Util {
 	 *
 	 */
 	public static function multiexplode ( $delimiters, $string ) {
-		return array_filter( explode( $delimiters[0], str_replace( $delimiters, $delimiters[0], $string ) ) );
+		return is_array( $string ) ? $string : array_filter( explode( $delimiters[0], str_replace( $delimiters, $delimiters[0], $string ) ) );
 	}
 
 	/**

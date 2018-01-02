@@ -266,9 +266,10 @@ class IP_Geo_Block_Admin {
 					/* [ 5] */ __( 'Clear logs ?',                'ip-geo-block' ),
 					/* [ 6] */ __( 'ajax for logged-in user',     'ip-geo-block' ),
 					/* [ 7] */ __( 'ajax for non logged-in user', 'ip-geo-block' ),
-					/* [ 8] */ __( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
-					/* [ 9] */ __( 'The selected row cannot be found in the visible area.',    'ip-geo-block' ),
-					/* [10] */ __( 'An error occurred while executing the ajax command `%s`.', 'ip-geo-block' ),
+					/* [ 8] */ __( 'Find and verify `%s` on &#8220;Logs&#8221; tab.',          'ip-geo-block' ),
+					/* [ 9] */ __( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
+					/* [10] */ __( 'The selected row cannot be found in the visible area.',    'ip-geo-block' ),
+					/* [11] */ __( 'An error occurred while executing the ajax command `%s`.', 'ip-geo-block' ),
 				),
 				'i18n' => array(
 					/* [ 0] */ '<div class="ip-geo-block-loading"></div>',
@@ -652,7 +653,7 @@ class IP_Geo_Block_Admin {
 
 			if ( $this->is_network ) {
 				unset( $tabs[0], $tabs[5] ); // Settings, Site List
-				$title .= ' <span class="ip-geo-block-title-link">';
+				$title .= ' <span class="ip-geo-block-menu-link">';
 				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Settings',  'ip-geo-block' ) . '</a> ]';
 				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Site List', 'ip-geo-block' ) . '</a> ]';
 				$title .= '</span>';
@@ -664,7 +665,7 @@ class IP_Geo_Block_Admin {
 
 			if ( $settings['network_wide'] ) {
 				unset( $tabs[1], $tabs[4], $tabs[2], $tabs[3] ); // Statistics, Logs, Search, Attribution
-				$title .= ' <span class="ip-geo-block-title-link">';
+				$title .= ' <span class="ip-geo-block-menu-link">';
 				$title .= '[ ' . __( 'Network wide', 'ip-geo-block' ) . ' ]';
 				$title .= '</span>';
 			}
@@ -1280,9 +1281,12 @@ class IP_Geo_Block_Admin {
 
 		require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php';
 
+		// `$which` and `$cmd` should be restricted by whitelist in each function
 		$settings = IP_Geo_Block::get_option();
 		$which = isset( $_POST['which'] ) ? $_POST['which'] : NULL;
-		switch ( isset( $_POST['cmd'  ] ) ? $_POST['cmd'  ] : NULL ) {
+		$cmd   = isset( $_POST['cmd'  ] ) ? $_POST['cmd'  ] : NULL;
+
+		switch ( $cmd ) {
 		  case 'download':
 			$res = IP_Geo_Block::get_instance();
 			$res = $res->exec_update_db();
@@ -1318,7 +1322,7 @@ class IP_Geo_Block_Admin {
 
 		  case 'clear-logs':
 			// Delete logs in MySQL DB
-			IP_Geo_Block_Logs::clear_logs( $which ); // `$which` should be restricted by whitelist 
+			IP_Geo_Block_Logs::clear_logs( $which );
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 				'tab' => 'tab=4'
@@ -1327,12 +1331,12 @@ class IP_Geo_Block_Admin {
 
 		  case 'export-logs':
 			// Export logs from MySQL DB
-			IP_Geo_Block_Admin_Ajax::export_logs( $which ); // `$which` should be restricted by whitelist
+			IP_Geo_Block_Admin_Ajax::export_logs( $which );
 			break;
 
 		  case 'restore-logs':
 			// Get logs from MySQL DB
-			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which ); // `$which` should be restricted by whitelist
+			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which );
 			break;
 
 		  case 'validate':
@@ -1373,18 +1377,18 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'get-blocked':
-			// Get blocked actions and pages (`$which` should be restricted by whitelist)
+			// Get blocked actions and pages
 			$res = IP_Geo_Block_Admin_Ajax::get_blocked_queries( $which );
 			break;
 
 		  case 'restore-cache':
 			// Restore cache from database and format for DataTables
-			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which ); // `$which` is not in use
+			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which );
 			break;
 
 		  case 'bulk-action-remove':
-			// Delete specified IP addresses from cache (`$which` should be an array of valid IP addresses)
-			$res = IP_Geo_Block_Logs::delete_cache_entry( $which['IP'] );
+			// Delete specified IP addresses from cache
+			$res = IP_Geo_Block_Logs::delete_cache_entry( @$which['IP'] );
 			break;
 
 		  case 'bulk-action-ip-white':
@@ -1392,13 +1396,15 @@ class IP_Geo_Block_Admin {
 		  case 'bulk-action-as-white':
 		  case 'bulk-action-as-black':
 			// Bulk actions for registration of settings
-			$src = ( FALSE !== strpos( $_POST['cmd'], '-ip-'   ) ? 'IP'         : 'AS'         );
-			$dst = ( FALSE !== strpos( $_POST['cmd'], '-white' ) ? 'white_list' : 'black_list' );
+			$src = ( FALSE !== strpos( $cmd, '-ip-'   ) ? 'IP'         : 'AS'         );
+			$dst = ( FALSE !== strpos( $cmd, '-white' ) ? 'white_list' : 'black_list' );
 
-			if ( empty( $which[ $src ] ) )
+			if ( empty( $which[ $src ] ) ) {
+				$res = array( 'error' => sprintf( __( 'An error occurred while executing the ajax command `%s`.', 'ip-geo-block' ), $cmd ) );
 				break;
+			}
 
-			foreach ( array_unique( $which[ $src ] ) as $val ) {
+			foreach ( array_unique( (array)$which[ $src ] ) as $val ) {
 				// replace anonymized IP address with CIDR (IPv4:256, IPv6:4096)
 				$val = preg_replace(
 					array( '!\.\*\*\*$!', '!\*\*\*$!' ),
@@ -1422,14 +1428,14 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'restore-network':
-			// Restore blocked per target in logs (`$which` should be restricted by whitelist)
+			// Restore blocked per target in logs
 			$res = IP_Geo_Block_Admin_Ajax::restore_network( $which, (int)$_POST['offset'], (int)$_POST['length'], FALSE );
 			break;
 
 		  case 'live-start':
 			// Restore live log
 			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::catch_live_log() ) )
-				$res = IP_Geo_Block_Admin_Ajax::restore_live_log( $which, $settings ); // `$which` is not in use
+				$res = IP_Geo_Block_Admin_Ajax::restore_live_log( $which, $settings );
 			else
 				$res = array( 'error' => $res->get_error_message() );
 			break;
@@ -1455,10 +1461,17 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Admin_Ajax::reset_live_log();
 			break;
 
+		  case 'find-admin':
+		  case 'find-plugins':
+		  case 'find-themes':
+			// Get slug in blocked requests for exceptions
+			$res = IP_Geo_Block_Admin_Ajax::find_exceptions( $cmd );
+			break;
+
 		  case 'create-table':
 		  case 'delete-table':
 			// Need to define `IP_GEO_BLOCK_DEBUG` to true
-			if ( 'create-table' === $_POST['cmd'] )
+			if ( 'create-table' === $cmd )
 				IP_Geo_Block_Logs::create_tables();
 			else
 				IP_Geo_Block_Logs::delete_tables();
@@ -1466,7 +1479,6 @@ class IP_Geo_Block_Admin {
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 			);
-			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

@@ -872,11 +872,11 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Search specific actions in method
+	 * Search blocked requests
 	 *
 	 * @param string $key 'method' or 'data'
 	 */
-	public static function search_blocked( $key, $search ) {
+	public static function search_blocked_logs( $key, $search ) {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 

@@ -788,15 +788,9 @@ class IP_Geo_Block {
 	/**
 	 * Verify specific ip addresses with CIDR.
 	 *
+	 * @param array $validate `ip`, `auth`, `code`, `asn`, `result`
+	 * @param array or string the list of IP addresses with CIDR notation
 	 */
-	public function check_ips_white( $validate, $settings ) {
-		return self::check_ips( $validate, $settings['extra_ips']['white_list'] ) ? $validate + array( 'result' => 'passed' ) : $validate;
-	}
-
-	public function check_ips_black( $validate, $settings ) {
-		return self::check_ips( $validate, $settings['extra_ips']['black_list'] ) ? $validate + array( 'result' => 'extra'  ) : $validate;
-	}
-
 	public static function check_ips( $validate, $ips ) {
 		if ( filter_var( $ip = $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			require_once IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php';
@@ -823,6 +817,14 @@ class IP_Geo_Block {
 		}
 
 		return FALSE;
+	}
+
+	public function check_ips_white( $validate, $settings ) {
+		return self::check_ips( $validate, $settings['extra_ips']['white_list'] ) ? $validate + array( 'result' => 'passed' ) : $validate;
+	}
+
+	public function check_ips_black( $validate, $settings ) {
+		return self::check_ips( $validate, $settings['extra_ips']['black_list'] ) ? $validate + array( 'result' => 'extra'  ) : $validate;
 	}
 
 	/**

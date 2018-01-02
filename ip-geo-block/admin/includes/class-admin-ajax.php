@@ -645,50 +645,69 @@ endif; // TEST_RESTORE_NETWORK
 	/**
 	 * Get blocked action and pages
 	 *
-	 * @param string $which 'action', 'plugin', 'theme'
+	 * @param string $which 'page', 'action', 'plugin', 'theme'
 	 * @return array of the name of action/page, plugin or theme
 	 */
-	public static function get_blocked_queries( $which ) {
+	private static function get_blocked_queries( $which ) {
 		$result = array();
 
 		switch ( $which ) {
-		  case 'plugin':
-		  case 'theme':
-			$dir = 'plugin' === $which ? plugins_url() : get_theme_root_uri();
-			$dir = preg_replace( '!https?://.+?/!', '/', $dir );
-			$pat = preg_quote( $dir, '!' );
-			foreach ( IP_Geo_Block_Logs::search_blocked( 'method', "$dir/" ) as $which ) {
-				if ( preg_match( '!' . $pat . '/(.+?)/!', $which['method'], $matches ) ) {
-					$result[] = $matches[1];
-				}
-			}
-			break;
-
 		  case 'page':
-			$pat = $which;
-			foreach ( IP_Geo_Block_Logs::search_blocked( 'method', "$pat=" ) as $which ) {
-				if ( preg_match( '!' . $pat . '=([-\w]+)!', $which['method'], $matches ) ) {
-					$result[] = $matches[1];
+		  case 'action':
+			$dir = admin_url();
+			$dir = preg_replace( '!https?://.+?/!', '/', IP_Geo_Block_Util::slashit( $dir ) );
+			foreach ( IP_Geo_Block_Logs::search_blocked_logs( 'method', $dir ) as $log ) {
+				foreach ( array( 'method', 'data' ) as $key ) {
+					if ( preg_match( '!' . $which . '=([\-\w]+)!', $log[ $key ], $matches ) ) {
+						$result += array( $matches[1] => $which );
+					}
 				}
 			}
 			break;
 
-		  case 'action':
-			$pat = $which;
-			foreach ( array( 'method', 'data' ) as $key ) {
-				foreach ( IP_Geo_Block_Logs::search_blocked( $key, "$pat=" ) as $which ) {
-					if ( preg_match( '!' . $pat . '=([-\w]+)!', $which[ $key ], $matches ) ) {
-						$result[] = $matches[1];
-					}
+		  case 'plugins':
+		  case 'themes':
+			$dir = 'plugins' === $which ? plugins_url() : get_theme_root_uri();
+			$dir = preg_replace( '!https?://.+?/!', '/', IP_Geo_Block_Util::slashit( $dir ) );
+			$pat = preg_quote( $dir, '!' );
+			foreach ( IP_Geo_Block_Logs::search_blocked_logs( 'method', $dir ) as $log ) {
+				if ( preg_match( '!' . $pat . '(.+?)/!', $log['method'], $matches ) ) {
+					$result += array( $matches[1] => $which );
 				}
 			}
 		}
 
-		return array_unique( $result );
+		return $result;
 	}
 
 	/**
-	 * Get blocked action and pages
+	 * Get slug in blocked requests for exceptions
+	 *
+	 */
+	public static function find_exceptions( $target ) {
+		$res = array();
+
+		switch ( $target ) {
+		  case 'find-admin':
+			foreach ( array( 'action', 'page' ) as $which ) {
+				$res += self::get_blocked_queries( $which );
+			}
+			break;
+
+		  case 'find-plugins':
+			$res = self::get_blocked_queries( 'plugins' );
+			break;
+
+		  case 'find-themes':
+			$res = self::get_blocked_queries( 'themes' );
+			break;
+		}
+
+		return $res;
+	}
+
+	/**
+	 * Get debug information related to WordPress
 	 *
 	 */
 	public static function get_wp_info() {
@@ -741,14 +760,6 @@ endif; // TEST_RESTORE_NETWORK
 					esc_html( $val['Name'] ) => esc_html( $val['Version'] )
 				);
 			}
-		}
-
-		// Blocked requests
-		foreach ( array( 'action', 'page', 'plugin', 'theme' ) as $which ) {
-			$res += array(
-				'Blocked ' . $which . ':' =>
-				esc_html( implode( ', ', self::get_blocked_queries( $which ) ) )
-			);
 		}
 
 		// Blocked self requests
