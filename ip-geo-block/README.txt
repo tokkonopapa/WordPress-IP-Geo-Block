@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.1
-Stable tag: 3.0.6a
+Stable tag: 3.0.6b
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -354,6 +354,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 = 3.0.6 =
 * **New feature:** Add "Network wide settings" in "Plugin settings" section.
+* **New feature:** Add "Find blocked requests in Logs" button at "Exceptions". This helps to find a solution related to the incompatibility with unwanted blocking.
 * **Improvement:** Support nginx for "Force to load WP core" at "Plugins area" / "Themes area".
 * **Improvement:** Add a new result "UAlist" that indicate a request is blocked by "UA string and qualification" in "Front-end target settings" section.
 * **Improvement:** Improve responsiveness of live update control button on windows system.
