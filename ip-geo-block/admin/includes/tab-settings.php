@@ -117,7 +117,7 @@ endif;
 			'<span class="ip-geo-block-sup">' . __( '(comma or RET separated)', 'ip-geo-block' ) . '</span>',
 			'<span title="' . __( 'Toggle selection', 'ip-geo-block' ) . '"></span>',
 			'<span title="' . __( 'Find blocked requests in &#8220;Logs&#8220;', 'ip-geo-block' ) . '"></span>',
-			__( 'Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="ip-geo-block-icon ip-geo-block-icon-alert"><span></span></a>&#8221; button (if exists) attached to the following list to confirm that the blocked request is not malicious.', 'ip-geo-block' ),
+			__( 'Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="ip-geo-block-icon ip-geo-block-icon-alert" title="This button is just a sample."><span></span></a>&#8221; button (if exists) attached to the following list to confirm that the blocked request is not malicious.', 'ip-geo-block' ),
 		);
 
 		// Matching rule
@@ -573,8 +573,8 @@ endif;
 			$val .= $installed[ $key ] & 2 ? '<dfn title="' . $tmp[1] . '"><span class="ip-geo-block-admin-post dashicons dashicons-unlock">*</span></dfn>' : '';
 			$key = esc_attr( $key );
 			$exception .= '<li>'
-				. '<input id="ip_geo_block_' . $key . '" type="checkbox" value="' . $key . '"' . checked( in_array( $key, $options['exception']['admin'] ), TRUE, FALSE ) . ' />'
-				. '<label for="ip_geo_block_' . $key . '">' . $key . '</label>' . $val
+				. '<input id="ip_geo_block_settings_exception_admin_' . $key . '" type="checkbox" value="' . $key . '"' . checked( in_array( $key, $options['exception']['admin'] ), TRUE, FALSE ) . ' />'
+				. '<label for="ip_geo_block_settings_exception_admin_' . $key . '">' . $key . '</label>' . $val
 				. '</li>' . "\n";
 		}
 
@@ -630,7 +630,6 @@ endif;
 		// Get all the plugins
 		$exception = '';
 		$installed = get_plugins(); // @since 1.5.0
-		unset( $installed[ IP_GEO_BLOCK_BASE ] ); // exclude myself
 
 		$activated = get_site_option( 'active_sitewide_plugins' ); // @since 2.8.0
 		! is_array( $activated ) and $activated = array();
@@ -695,8 +694,8 @@ endif;
 
 		// Get all the themes
 		$exception = '';
-		$installed = wp_get_themes( NULL ); // @since 3.4.0
-		$activated = wp_get_theme(); // @since 3.4.0
+		$installed = wp_get_themes(); // @since 3.4.0
+		$activated = wp_get_theme();  // @since 3.4.0
 		$activated = $activated->get( 'Name' );
 
 		// List of installed themes

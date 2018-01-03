@@ -10,7 +10,7 @@
 
 	// External variables
 	var timer_stack = [],
-		window_width = $(window).width(),
+	    window_width = $(window).width(),
 	    ip_geo_block      = IP_GEO_BLOCK,
 	    ip_geo_block_auth = IP_GEO_BLOCK_AUTH;
 
@@ -35,7 +35,7 @@
 				'"': '&quot;',
 				"'": '&#39;'
 			}[match];
-		}).replace(/&amp;#(\d+?;)/g, "&#$1"); // revert html character entity
+		}).replace(/&amp;(#\d{2,4}|\w{4,7});/g, "&$1;"); // revert html character entity
 	}
 
 	function stripTag(str) {
@@ -74,11 +74,11 @@
 	}
 
 	function warning(status, msg, cmd) {
-		window.alert(msg || ip_geo_block.msg[11].replace('%s', cmd) + ' (' + status + ')');
+		window.alert(msg || ip_geo_block.msg[12].replace('%s', cmd) + ' (' + status + ')');
 	}
 
 	function notice_html5() {
-		warning(null, ip_geo_block.msg[9]);
+		warning(null, ip_geo_block.msg[10]);
 	}
 
 	function redirect(page, tab) {
@@ -109,7 +109,7 @@
 
 		.always(function () {
 			if (id) {
-				if (objs) {
+				if ('object' === typeof objs) { // deferred object
 					$.when.apply($, objs).then(function () {
 						loading(id, false);
 					});
@@ -845,7 +845,7 @@
 			if (!cmd) {
 				return false;
 			} else if (!cells.length) {
-				warning(null, ip_geo_block.msg[10]);
+				warning(null, ip_geo_block.msg[11]);
 				return false;
 			}
 
@@ -1140,11 +1140,13 @@
 
 				// Admin ajax/post: Find the blocked request in logs
 				$(ID('.', 'icon-find')).on('click', function (/*event*/) {
-					var $this  = $(this), list = [], key, val, ext, id, s,
-					    title  = stripTag(ip_geo_block.msg[8]),
+					var $this  = $(this),
+					    list = [], n = 0, key, val, ext, id, s,
+					    title  = stripTag(ip_geo_block.msg[9]),
 					    target = stripTag($this.data('target')); // `admin`, `plugins`, `themes`
 
 					// show description
+					$(ID('#', 'find-' + target)).empty();
 					$this.next().children(ID('.', 'find-desc')).show();
 
 					// make list of target
@@ -1158,25 +1160,23 @@
 					}, function (data) {
 						for (val in data) {
 							if (data.hasOwnProperty(val)) {
+								++n;
 								key = stripTag(data[val]);  // page, action, plugins, themes
 								val = stripTag(val);        // slug of target
 								ext = $.inArray(val, list); // slug already exists
-								id  = ID('%', val);
+								id  = ID('!', 'exception_' + target + '_' + val);
 
 								// make an anchor tab with search query
-								if (s = 'admin' === target) {
-									s = key + '=' + val;
-								} else {
-									s = '/' + key + '/' + val + '/';
-								}
-								s = '<a class="ip-geo-block-icon ip-geo-block-icon-alert" href="?page=ip-geo-block&tab=4&s=' +
-								encodeURIComponent(s) + '" title="' + title.replace('%s', s) + '" target="_blank"><span></span></a>';
+								s = 'admin' === target ? key + '=' + val : '/' + key + '/' + val + '/';
+								s = '<a class="ip-geo-block-icon ip-geo-block-icon-alert" href="?page=ip-geo-block&tab=4&s='
+								+ encodeURIComponent(s) + '" title="' + title.replace('%s', s) + '" target="_blank"><span></span></a>';
 
 								// add a new list when not found in existent key
 								if (ext < 0) {
 									list.push(val);
 									$this.prepend(
-										'<li><input id="' + id + '" value="' + val + '" type="checkbox" />'
+										'<li><input id="' + id + '" value="' + val + '" type="checkbox" '
+										+ ('admin' === target ? '/>' : 'name=ip_geo_block_settings[exception][' + target + '][' + val + '] />')
 										+ '<label for="' + id + '">'+ val + '</lable>' + s + '</li>'
 									);
 								}
@@ -1189,10 +1189,13 @@
 									}
 								}
 							}
-
-							// update status of checkbox
-							$(ID('@', 'exception_admin')).trigger('change');
 						}
+
+						// update status of checkbox
+						$(ID('@', 'exception_' + target)).trigger('change');
+						$(ID('#', 'find-' + target)).append(
+							' ' + '<span class="ip-geo-block-found">' + stripTag(ip_geo_block.msg[8].replace('%d', n)) + '</span>'
+						);
 					});
 
 					return false;
@@ -1687,6 +1690,7 @@
 				// Re-initialize DataTables
 				$(ID('#', 'live-log-stop')).trigger('click');
 				table = initTable(tabNo, control, options);
+				return false;
 			}).trigger('change');
 
 			// Export / Import settings

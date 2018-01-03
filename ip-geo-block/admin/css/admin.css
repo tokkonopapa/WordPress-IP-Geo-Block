@@ -215,11 +215,13 @@ fieldset.ip-geo-block-field textarea.regular-text {
     margin: 0.2em;
 }
 
-.ip-geo-block-statistics-countries li {
-    width: 12em;
-    float: left;
-    text-align: right;
-    padding: 0.2em;
+/* SVG in google chart */
+svg a > text {
+    fill: #0073aa;
+    text-decoration: underline;
+}
+svg a:hover > text {
+    fill: #0096dd;
 }
 
 /* table */
@@ -366,6 +368,7 @@ dfn ~ .ip-geo-block-icon {
 span.ip-geo-block-icon-alert,
 .ip-geo-block-icon-alert span {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAkFBMVEXc3Nzc2trWl5DHRDTFOyvOgXfc1tXCLBrEMiHEMyLNcmfaxMLDMSDDLx7bu7jRiYHDLhzDMB/LX1PaxsTDLh3YtrHMY1bWmpPJVknSjYXUkYnZuLTMZVnENCPWlI3QhXzENiXXrqrDLRzXsa3Oal7Pe3Hc2NjVn5nNbmPayMbbwb7ay8rUj4fc09Lbw8Db0dDBbRUDAAAAAXRSTlMAQObYZgAAAPVJREFUeAG9ktXWwyAQBonC12brFvff5f2frr4nBredK2DnTFS8Gst2XM8XZmypIGeWcT4PFABaGIXlClfWG1NiC4Ubu705oKRcY32wTAHl2MdTYEqEK8hIiHgHSnSJeaogMyEWO4BijZCvwII2MS9UJ2BXTh+hQidoEttboBOwq3WBnkCNpQlA2iyAhol2hRu71n97p4fw0Z9/ugoPHCfFA+o/iLfCkyBglRJdICBas7uuey+R56fF14wNanj+/QjwY3aX23cBFn6EiHmHNT/ICYxystv/wJy4UHWGlN2cuPB72tFqAq3dP/Hk3zs0E5LZVryGC/hqGNnUa0SVAAAAAElFTkSuQmCC);
+    vertical-align: bottom;
 }
 
 table.form-table th .ip-geo-block-cycle span {
@@ -417,8 +420,18 @@ table.form-table th .ip-geo-block-cycle span {
     color: #c43322;
     margin-left: 0.25em;
 }
+.ip-geo-block-found {
+    color: #c43322;
+    font-weight: bold;
+}
 
 /* for statistics */
+.ip-geo-block-statistics-countries li {
+    width: 12em;
+    float: left;
+    text-align: right;
+    padding: 0.2em;
+}
 .ip-geo-block-top-list {
     display: inline-table;
     list-style-position: outside;
@@ -434,21 +447,6 @@ table.form-table th .ip-geo-block-cycle span {
 /* Embeded data for network site list */
 .ip-geo-block-network {
     margin-bottom: 1em;
-}
-
-/* Icon for top level menu ... this must be included in every admin page */
-#adminmenu #toplevel_page_ip-geo-block .wp-menu-image img {
-    height: 20px !important;
-    width: 20px !important;
-}
-
-/* SVG in google chart */
-svg a > text {
-    fill: #0073aa;
-    text-decoration: underline;
-}
-svg a:hover > text {
-    fill: #0096dd;
 }
 
 /*------------------------------------------------------------

@@ -230,7 +230,6 @@ class IP_Geo_Block_Admin {
 				plugins_url( $release ? 'js/whois.min.js' : 'js/whois.js', __FILE__ ),
 				$dependency, IP_Geo_Block::VERSION, $footer
 			);
-			break;
 		}
 
 		// css for option page
@@ -266,10 +265,11 @@ class IP_Geo_Block_Admin {
 					/* [ 5] */ __( 'Clear logs ?',                'ip-geo-block' ),
 					/* [ 6] */ __( 'ajax for logged-in user',     'ip-geo-block' ),
 					/* [ 7] */ __( 'ajax for non logged-in user', 'ip-geo-block' ),
-					/* [ 8] */ __( 'Find and verify `%s` on &#8220;Logs&#8221; tab.',          'ip-geo-block' ),
-					/* [ 9] */ __( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
-					/* [10] */ __( 'The selected row cannot be found in the visible area.',    'ip-geo-block' ),
-					/* [11] */ __( 'An error occurred while executing the ajax command `%s`.', 'ip-geo-block' ),
+					/* [ 8] */ __( '[Found: %d]',                 'ip-geo-block' ),
+					/* [ 9] */ __( 'Find and verify `%s` on &#8220;Logs&#8221; tab.',          'ip-geo-block' ),
+					/* [10] */ __( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
+					/* [11] */ __( 'The selected row cannot be found in the visible area.',    'ip-geo-block' ),
+					/* [12] */ __( 'An error occurred while executing the ajax command `%s`.', 'ip-geo-block' ),
 				),
 				'i18n' => array(
 					/* [ 0] */ '<div class="ip-geo-block-loading"></div>',
