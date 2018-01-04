@@ -1468,6 +1468,28 @@
 			// https://developers.google.com/loader/#Dynamic
 			initChart(tabNo);
 
+			// Toggle sorting order
+			var order = 0;
+			$(ID('#', 'sort-slug')).on('click', function (/*event*/) {
+				var $ol = $(this).closest('ol'),
+				    $li = $ol.children('li');
+
+				// toggle sorting
+				order = !order;
+				if (order) {
+					$li.sort(function (a, b) {
+						return $(a).text() > $(b).text();
+					});
+				} else {
+					$li.sort(function (a, b) {
+						return parseInt($(a).text().replace(/^.*\((\d+)\)$/, '$1')) <= parseInt($(b).text().replace(/^.*\((\d+)\)$/, '$1'));
+					});
+				}
+
+				$ol.children('li').remove();
+				$li.appendTo($ol);
+			});
+
 			// Statistics of validation
 			$(ID('@', 'clear_statistics')).on('click', function (/*event*/) {
 				confirm(ip_geo_block.msg[3], function () {

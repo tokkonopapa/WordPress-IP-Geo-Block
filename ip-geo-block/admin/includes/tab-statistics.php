@@ -322,7 +322,7 @@ endif;
 			}
 
 			// METHOD[PORT]:/*.php (exclude without action/page in /wp-admin/*.php)
-			elseif ( preg_match( '#.*?(/[-/\.\w]*\.php)#', $key, $matches ) && FALSE === strpos( $key, '/wp-admin/' ) ) {
+			elseif ( preg_match( '#(/[^/]*\.php)[\s\?]#', $key, $matches ) && FALSE === strpos( $key, '/wp-admin/' ) ) {
 				$log['slug'] = $matches[1];
 			}
 
@@ -337,7 +337,10 @@ endif;
 
 		// Statistics by keys
 		foreach ( $keys as $slug => $log ) {
-			echo '<ol class="ip-geo-block-top-list"><h4>', esc_html( $log ), '</h4>';
+			if ( 'slug' !== $slug )
+				echo '<ol class="ip-geo-block-top-list"><h4>', esc_html( $log ), '</h4>';
+			else
+				echo '<ol class="ip-geo-block-top-list"><h4>', esc_html( $log ), ' <a class="ip-geo-block-icon ip-geo-block-icon-cycle" id="ip-geo-block-sort-slug" title="', __( 'Toggle sorting order', 'ip-geo-block' ) ,'"><span></span></a></h4>';
 
 			if ( isset( $count[ $slug ] ) ) {
 				$logs = array_count_values( $count[ $slug ] );

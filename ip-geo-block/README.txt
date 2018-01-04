@@ -353,9 +353,9 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 == Changelog ==
 
 = 3.0.6 =
-* **New feature:** Add "Network wide settings" in "Plugin settings" section.
 * **New feature:** Add "Find blocked requests in Logs" button at "Exceptions". This helps to find a solution related to the incompatibility with unwanted blocking.
 * **Improvement:** Support nginx for "Force to load WP core" at "Plugins area" / "Themes area".
+* **Improvement:** Improve the extraction ability and verifiability of "Slug in back-end".
 * **Improvement:** Add a new result "UAlist" that indicate a request is blocked by "UA string and qualification" in "Front-end target settings" section.
 * **Improvement:** Improve responsiveness of live update control button on windows system.
 * **Bug fix:** Fix the bug using php short open tag on "Logs" tab.
