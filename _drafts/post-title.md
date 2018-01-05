@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Post Title"
-date: 2017-01-01 00:00:00
+date: 2018-01-01 00:00:00
 categories: article changelog
 published: false
 script: []
@@ -16,11 +16,11 @@ inline:
 code
 {% endhighlight %}
 
-![title]({{ '/img/2017-08/.png' | prepend: site.baseurl }}
+![title]({{ '/img/2018-01/.png' | prepend: site.baseurl }}
  "title"
 )
 
-[![title]({{ '/img/2017-08/.png' | prepend: site.baseurl }}
+[![title]({{ '/img/2018-01/.png' | prepend: site.baseurl }}
   "title"
 )](http://example.com/ "description")
 
