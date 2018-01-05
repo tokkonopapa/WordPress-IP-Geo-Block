@@ -321,8 +321,8 @@ endif;
 				$log['slug'] = $matches[1];
 			}
 
-			// METHOD[PORT]:/*.php (exclude without action/page in /wp-admin/*.php)
-			elseif ( preg_match( '#(/[^/]*\.php)[\s\?]#', $key, $matches ) && FALSE === strpos( $key, '/wp-admin/' ) ) {
+			// other *.php file with or without query string
+			elseif ( preg_match( '#(/[^/]*\.php)[^/\w]#', $key, $matches ) && FALSE === strpos( $key, '/wp-admin/' ) ) {
 				$log['slug'] = $matches[1];
 			}
 
