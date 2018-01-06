@@ -202,7 +202,7 @@ fieldset.ip-geo-block-field textarea.regular-text {
     background-image: url(data:image/gif;base64,R0lGODlhEAAQAPIGAAAAAMLCwkJCQpKSkmJiYoKCgv///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAGACwAAAAAEAAQAAADM2i63P4wyklrC0IEKgAQnAdOmGYFBLExwboQWcG2rlHEwTDQLUsUOd2mBxkUCgNKa+dIAAAh+QQJCgAGACwAAAIACgAOAAADLWgWIqHQCABEVLPe1R4MBOFFRFNsRUNsYDFewTC8iixvQ1EMyxjEvyBLODQkAAAh+QQJCgAGACwAAAAACgAOAAADLWi6IRJrCQCECoU0ag1xxeBARuEQ0UUU5DUM7fK+qTEUYR0EcM3Ev51uB7wAEwAh+QQJCgAGACwAAAAADgAKAAADLWi6URQrLiJEkSaM0eqrkLFtAVEEAgAIylAUQ5SuSqCFNZjhWG3zmB8wOJQkAAAh+QQJCgAGACwCAAAADgAKAAADK2hqMRMrLuekCnCU8gqBDCZ2glBcYkSUxIJJgQdaUVDOtAAAAr3oPN/llgAAIfkECQoABgAsBgAAAAoADgAAAytoEdauiz0Yx5BQFTvN2EMXWNgUFETZFIJQdERLiGgZtKohAIDQ7T0RrpEAACH5BAkKAAYALAYAAgAKAA4AAAMqaKoR+609Fie1K4zhZiibNRSg1XAQUXQPIQgE835voQgAIARqh+ummSUBACH5BAUKAAYALAIABgAOAAoAAAMsaLpsES2+F9mEddEgBFbBMGACAAiMOCrlGRBFWBQD2L0dYYjfUuQZEKynSAAAOw==);
 }
 
-/* google map infomation window */
+/* Google Map infomation window */
 #ip-geo-block-map {
     height: 400px;
     margin: 1em auto;
@@ -257,7 +257,7 @@ table.ip-geo-block-table td:first-child {
     min-width: 4.3em;
 }
 
-/* for whois */
+/* Whois */
 @media screen and (max-width:782px) {
     #ip-geo-block-whois .panel-body {
         padding: 0 0.5em;
@@ -273,7 +273,7 @@ table.ip-geo-block-table td:first-child {
     margin-bottom: 0;
 }
 
-/* for google chart */
+/* Google Chart */
 #ip-geo-block-chart-countries {
     height: 200px;
 }
@@ -324,9 +324,6 @@ table.ip-geo-block-table td:first-child {
 .ip-geo-block-menu-link {
     font-size: 13px !important;
 }
-/*.ip-geo-block-menu-link a {
-    box-shadow: none;
-}*/
 
 /* Icons */
 dfn ~ .ip-geo-block-icon {
@@ -426,13 +423,7 @@ table.form-table th .ip-geo-block-cycle span {
     font-weight: bold;
 }
 
-/* for statistics */
-.ip-geo-block-statistics-countries li {
-    width: 12em;
-    float: left;
-    text-align: right;
-    padding: 0.2em;
-}
+/* Statistics */
 .ip-geo-block-top-list {
     display: inline-table;
     list-style-position: outside;
