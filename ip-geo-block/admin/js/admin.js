@@ -2,7 +2,7 @@
 /*eslint no-mixed-spaces-and-tabs: ["error", "smart-tabs"]*/
 /*!
  * Project: WordPress IP Geo Block
- * Copyright (c) 2015-2017 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2013-2018 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
 (function ($, window, document) {
@@ -166,12 +166,16 @@
 		}
 	}
 
-	// Show/Hide folding list
-	function show_folding_list($this, element, mask) {
+	// Show/Hide descendant elements
+	function show_descendants($this, $elem, mask) {
 		var stat = (0 === $this.prop('type').indexOf('checkbox') && $this.is(':checked')) ||
 		           (0 === $this.prop('type').indexOf('select'  ) && '0' !== $this.val());
 
-		element.nextAll(ID('.', 'settings-folding')).each(function (i, obj) {
+		// checkbox
+		$this.siblings('input[name^="' + ID('%', 'settings') + '"]:checkbox').prop('disabled', !stat);
+
+		// folding list
+		$elem.nextAll(ID('.', 'settings-folding')).each(function (i, obj) {
 			fold_elements($(obj), stat && mask);
 		});
 	}
@@ -238,7 +242,7 @@
 		parent.find(ID('.', 'desc')).css('opacity', checked ? 1.0 : 0.5);
 
 		// Show / Hide validation target
-		show_folding_list($this, select, '1' === select.val() ? true : false);
+		show_descendants($this, select, '1' === select.val() ? true : false);
 	}
 
 	/**
@@ -1048,7 +1052,7 @@
 			// Show/Hide folding list at Login form
 			$(ID('@', 'validation_login')).on('change', function (event) {
 				var $this = $(this);
-				show_folding_list($this, $this, name, true);
+				show_descendants($this, $this, name, true);
 				return stopPropergation(event);
 			}).change();
 
@@ -1407,7 +1411,7 @@
 			$('select[name^="' + name + '"]').on('change', function (/*event*/) {
 				var $this = $(this);
 				show_description($this);
-				show_folding_list($this, $this, name, true);
+				show_descendants($this, $this, name, true);
 				return false;
 			}).change();
 

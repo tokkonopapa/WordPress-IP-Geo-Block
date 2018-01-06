@@ -675,8 +675,7 @@ endif;
 				'desc' => array(
 					2 => sprintf( $desc[0], $val ),
 				),
-				'before' => $tmp,
-				'after' =>
+				'after' => $tmp .
 					'<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . "\n" .
 					'	<dfn title="' . $desc[1] . '">' . __( 'Exceptions', 'ip-geo-block' ) . "</dfn>\n" .
 					'	<a class="ip-geo-block-hide ip-geo-block-icon ip-geo-block-icon-cycle">' . $comma[2] . '</a><a class="ip-geo-block-icon ip-geo-block-icon-find ip-geo-block-hide" data-target="plugins">' . $comma[3] . "</a>\n" .
@@ -737,8 +736,7 @@ endif;
 				'desc' => array(
 					2 => sprintf( $desc[0], $val ),
 				),
-				'before' => $tmp,
-				'after' =>
+				'after' => $tmp .
 					'<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . "\n" .
 					'	<dfn title="' . $desc[1] . '">' . __( 'Exceptions', 'ip-geo-block' ) . "</dfn>\n" .
 					'	<a class="ip-geo-block-hide ip-geo-block-icon ip-geo-block-icon-cycle">' . $comma[2] . '</a><a class="ip-geo-block-icon ip-geo-block-icon-find ip-geo-block-hide" data-target="themes">' . $comma[3] . "</a>\n" .

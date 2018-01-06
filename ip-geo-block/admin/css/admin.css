@@ -1,6 +1,6 @@
 /*!
  * Project: WordPress IP Geo Block
- * Copyright (c) 2015-2017 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2013-2018 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
 dfn {
@@ -103,6 +103,10 @@ fieldset.ip-geo-block-field .ip-geo-block-dropdown:before {
     left: -2px;
     top: 38%;
 }
+fieldset.ip-geo-block-field .form-table .ip-geo-block-dropup,
+fieldset.ip-geo-block-field .form-table .ip-geo-block-dropdown {
+    margin-top: 0.75em;
+}
 fieldset.ip-geo-block-field ul.ip-geo-block-dropup:before {
     top: 0.25em;
 }
@@ -146,6 +150,7 @@ fieldset.ip-geo-block-field textarea.regular-text {
 .ip-geo-block-float li {
     display: inline-block;
     width: 18em;
+    margin-top: 0;
 }
 .ip-geo-block-checked {
     list-style-type: disc;
@@ -281,10 +286,6 @@ table.ip-geo-block-table td:first-child {
 #ip_geo_block_settings_validation_mimetype + label + ul {
     margin-top: 0.7em;
 }
-#ip_geo_block_settings_validation_plugins,
-#ip_geo_block_settings_validation_themes {
-    margin-top: 0.7em;
-}
 #ip_geo_block_settings_create_user {
     margin-bottom: 0.5em;
 }
@@ -405,11 +406,11 @@ table.form-table th .ip-geo-block-cycle span {
 }
 
 /* Description */
-.ip-geo-block-desc,
-.ip-geo-block-find-desc {
+.form-table td p.ip-geo-block-desc,
+.form-table td p.ip-geo-block-find-desc {
     color: #666;
     font-size: 13px !important;
-    margin: 4px 0;
+    margin: 4px 0 0.5em 0.5em;
 }
 .ip-geo-block-find-desc {
     display: none;
