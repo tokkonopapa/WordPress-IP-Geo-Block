@@ -38,12 +38,12 @@ class IP_Geo_Block_Admin_Rewrite {
 		'.user.ini' => array(
 			'plugins' => array(
 				'; BEGIN IP Geo Block',
-				'auto_prepend_file = "%ABSPATH%wp-load.php"',
+				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-userini.php"',
 				'; END IP Geo Block',
 			),
 			'themes' => array(
 				'; BEGIN IP Geo Block',
-				'auto_prepend_file = "%ABSPATH%wp-load.php"',
+				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-userini.php"',
 				'; END IP Geo Block',
 			),
 		),
@@ -258,8 +258,8 @@ class IP_Geo_Block_Admin_Rewrite {
 			return array_merge(
 				$content,
 				str_replace(
-					array( '%REWRITE_BASE%', '%WP_CONTENT_DIR%', '%ABSPATH%' ),
-					array( $this->base_uri,    WP_CONTENT_DIR,     ABSPATH   ),
+					array( '%REWRITE_BASE%', '%WP_CONTENT_DIR%', '%IP_GEO_BLOCK_PATH%' ),
+					array( $this->base_uri,    WP_CONTENT_DIR,     IP_GEO_BLOCK_PATH   ),
 					$this->rewrite_rule[ $type ][ $which ]
 				)
 			);
