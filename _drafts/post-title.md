@@ -13,7 +13,7 @@ inline:
 ### Title ###
 
 {% highlight ruby startinline linenos %}
-code
+html+php nginx text
 {% endhighlight %}
 
 ![title]({{ '/img/2018-01/.png' | prepend: site.baseurl }}
