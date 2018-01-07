@@ -22,8 +22,7 @@
  *
  * The redirected requests will be verified against the certain attack patterns
  * such as null byte attack or directory traversal, and then load the WordPress
- * core module through wp-load.php to triger WP-ZEP. If it ends up successfully
- * this includes the originally requested php file to excute it.
+ * core module through wp-load.php to triger WP-ZEP.
  */
 
 if ( ! class_exists( 'IP_Geo_Block_Rewrite', FALSE ) ):
@@ -32,27 +31,34 @@ class IP_Geo_Block_Rewrite {
 
 	public static function search_user_ini() {
 		$dir = dirname( dirname( __FILE__ ) ); // `/wp-content/plugins`
-		$root = ! empty( $_SERVER['DOCUMENT_ROOT'] ) ?
+		$ini = ini_get( 'user_ini.filename' );
+		$doc = ! empty( $_SERVER['DOCUMENT_ROOT'] ) ?
 			$_SERVER['DOCUMENT_ROOT'] :
 			substr( $_SERVER['SCRIPT_FILENAME'], 0, -strlen( $_SERVER['SCRIPT_NAME'] ) );
 
 		do {
-			$dir = dirname( $dir );
-			if ( file_exists( "$dir/.user.ini" ) ) {
-				$content = @file( "$dir/.user.ini" );
-				$content = preg_grep( '/^\s*auto_prepend_file/', $content );
-				$content = explode( '=', (string)array_pop( $content ), 2 );
+			// avoid loop just in case
+			if ( ( $next = dirname( $dir ) ) !== $dir ) {
+				$dir = $next;
+			} else {
+				break;
+			}
 
-				if ( ! empty( $content ) ) {
-					$content = trim( $content[1], " \t\n\r\0\x0B\"\'" );
-					if ( $content && file_exists( $content ) ) {
-						@include_once( $content );
+			if ( file_exists( "$dir/$ini" ) ) {
+				$tmp = @file( "$dir/$ini" );
+				$tmp = preg_grep( '/^\s*auto_prepend_file/', $tmp );
+				$tmp = explode( '=', (string)array_pop( $tmp ), 2 );
+
+				if ( ! empty( $tmp ) ) {
+					$tmp = trim( $tmp[1], " \t\n\r\0\x0B\"\'" );
+					if ( $tmp && file_exists( $tmp ) ) {
+						@include_once( $tmp );
 					}
 				}
 
 				break;
 			}
-		} while ( $dir !== $root );
+		} while ( $dir !== $doc );
 	}
 
 	// this function should be empty

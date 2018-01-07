@@ -38,13 +38,13 @@ class IP_Geo_Block_Admin_Rewrite {
 		'.user.ini' => array(
 			'plugins' => array(
 				'; BEGIN IP Geo Block',
-				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-userini.php"',
-				'; END IP Geo Block',
+				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-ini.php"',
+				'%ADDITIONAL%; END IP Geo Block',
 			),
 			'themes' => array(
 				'; BEGIN IP Geo Block',
-				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-userini.php"',
-				'; END IP Geo Block',
+				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-ini.php"',
+				'%ADDITIONAL%; END IP Geo Block',
 			),
 		),
 //		https://www.wordfence.com/blog/2014/05/nginx-wordfence-falcon-engine-php-fpm-fastcgi-fast-cgi/
@@ -94,6 +94,24 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private static function get_instance() {
 		return self::$instance ? self::$instance : ( self::$instance = new self );
+	}
+
+	/**
+	 * Remove empty element from the end of array
+	 *
+	 * @param  array contents of configuration file
+	 * @return array updated array of contents
+	 */
+	private function remove_empty( $content ) {
+		while ( FALSE !== ( $last = end( $content ) ) ) {
+			if ( strlen( trim( $last ) ) ) {
+				break;
+			} else {
+				array_pop( $content );
+			}
+		}
+
+		return $content;
 	}
 
 	/**
@@ -173,6 +191,7 @@ class IP_Geo_Block_Admin_Rewrite {
 		}
 
 		// if content is empty then remove file
+		$content = $this->remove_empty( $content );
 		return empty( $content ) ? $fs->delete( $file ) : TRUE;
 	}
 
@@ -251,15 +270,47 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private function append_rewrite_block( $which, $content ) {
 		if ( $type = $this->config_file ) {
-			// in case `.user.ini` is configured differently
+			// in case that `.user.ini` is configured differently
 			if ( '.htaccess' !== $type && '.user.ini' !== $type )
 				$type = '.user.ini';
+
+			// in case that another `.user.ini` in ascendant directory
+			$additional = '';
+			if ( '.user.ini' === $type ) {
+				require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+				$fs = IP_Geo_Block_FS::init( 'append_rewrite_block' );
+
+				$dir = dirname( IP_GEO_BLOCK_PATH ); // `/wp-content/plugins`
+				$ini = $this->config_file;
+				$doc = $this->doc_root;
+
+				do {
+					// avoid loop just in case
+					if ( ( $next = dirname( $dir ) ) !== $dir ) {
+						$dir = $next;
+					} else {
+						break;
+					}
+
+					if ( $fs->exists( "$dir/$ini" ) ) {
+						$tmp = $fs->get_contents_array( "$dir/$ini" );
+						$tmp = preg_grep( '/^\s*auto_prepend_file/', $tmp, PREG_GREP_INVERT );
+						$tmp = $this->remove_empty( $tmp );
+
+						if ( ! empty( $tmp ) ) {
+							$additional = implode( PHP_EOL, $tmp ) . PHP_EOL;
+						}
+
+						break;
+					}
+				} while ( $dir !== $doc );
+			}
 
 			return array_merge(
 				$content,
 				str_replace(
-					array( '%REWRITE_BASE%', '%WP_CONTENT_DIR%', '%IP_GEO_BLOCK_PATH%' ),
-					array( $this->base_uri,    WP_CONTENT_DIR,     IP_GEO_BLOCK_PATH   ),
+					array( '%REWRITE_BASE%', '%WP_CONTENT_DIR%', '%IP_GEO_BLOCK_PATH%', '%ADDITIONAL%' ),
+					array( $this->base_uri,    WP_CONTENT_DIR,     IP_GEO_BLOCK_PATH,    $additional   ),
 					$this->rewrite_rule[ $type ][ $which ]
 				)
 			);
