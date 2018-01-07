@@ -37,14 +37,14 @@ class IP_Geo_Block_Admin_Rewrite {
 		),
 		'.user.ini' => array(
 			'plugins' => array(
-				'; BEGIN IP Geo Block',
-				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-ini.php"',
-				'%ADDITIONAL%; END IP Geo Block',
+				'; BEGIN IP Geo Block%ADDITIONAL%',
+				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-sapi.php"',
+				'; END IP Geo Block',
 			),
 			'themes' => array(
-				'; BEGIN IP Geo Block',
-				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-ini.php"',
-				'%ADDITIONAL%; END IP Geo Block',
+				'; BEGIN IP Geo Block%ADDITIONAL%',
+				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-sapi.php"',
+				'; END IP Geo Block',
 			),
 		),
 //		https://www.wordfence.com/blog/2014/05/nginx-wordfence-falcon-engine-php-fpm-fastcgi-fast-cgi/
@@ -298,7 +298,7 @@ class IP_Geo_Block_Admin_Rewrite {
 						$tmp = $this->remove_empty( $tmp );
 
 						if ( ! empty( $tmp ) ) {
-							$additional = implode( PHP_EOL, $tmp ) . PHP_EOL;
+							$additional = PHP_EOL . implode( PHP_EOL, $tmp );
 						}
 
 						break;
