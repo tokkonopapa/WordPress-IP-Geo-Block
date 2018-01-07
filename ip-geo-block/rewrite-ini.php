@@ -17,7 +17,7 @@
  * follows on nginx for example:
  *
  * ; BEGIN IP Geo Block
- * auto_prepend_file = "/wp-content/plugins/ip-geo-block/rewrite-userini.php"
+ * auto_prepend_file = "/home/wp-content/plugins/ip-geo-block/rewrite-ini.php"
  * ; END IP Geo Block
  *
  * The redirected requests will be verified against the certain attack patterns
