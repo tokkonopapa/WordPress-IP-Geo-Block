@@ -7,7 +7,7 @@
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
  * @link      https://codex.wordpress.org/Filesystem_API
- * @copyright 2017 tokkonopapa
+ * @copyright 2013-2018 tokkonopapa
  */
 
 class IP_Geo_Block_FS {
@@ -81,11 +81,9 @@ if (0) {
 
 	// Get absolute path.
 	private function absolute_path( $file ) {
-		if ( 'direct' !== self::$method ) {
-			global $wp_filesystem;
-			$path = str_replace( ABSPATH, $wp_filesystem->abspath(), dirname( $file ) );
-			$file = $this->slashit( $path ) . basename( $file );
-		}
+		global $wp_filesystem;
+		$path = str_replace( ABSPATH, $wp_filesystem->abspath(), dirname( $file ) );
+		$file = $this->slashit( $path ) . basename( $file );
 
 		return $file;
 	}
@@ -241,7 +239,7 @@ if (0) {
 			return FALSE;
 
 		if ( 'direct' === self::$method )
-			return @file_put_contents( $file, $contents, LOCK_EX );
+			return @file_put_contents( $this->absolute_path( $file ), $contents, LOCK_EX );
 		else
 			return $wp_filesystem->put_contents( $this->absolute_path( $file ), $contents, $mode );
 	}
@@ -260,7 +258,7 @@ if (0) {
 			return FALSE;
 
 		if ( 'direct' === self::$method )
-			return @file_get_contents( $file );
+			return @file_get_contents( $this->absolute_path( $file ) );
 		else
 			return $wp_filesystem->get_contents( $this->absolute_path( $file ) );
 	}
@@ -280,7 +278,7 @@ if (0) {
 		@ini_set( 'auto_detect_line_endings', TRUE );
 
 		if ( 'direct' === self::$method )
-			return @file( $file, FILE_IGNORE_NEW_LINES );
+			return @file( $this->absolute_path( $file ), FILE_IGNORE_NEW_LINES );
 
 		$file = $wp_filesystem->get_contents_array( $this->absolute_path( $file ) );
 		return FALSE !== $file ? array_map( 'rtrim', $file ) : FALSE;

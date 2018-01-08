@@ -116,6 +116,8 @@ endif;
 			'<span class="ip-geo-block-sup">' . __( '(comma separated)', 'ip-geo-block' ) . '</span>',
 			'<span class="ip-geo-block-sup">' . __( '(comma or RET separated)', 'ip-geo-block' ) . '</span>',
 			'<span title="' . __( 'Toggle selection', 'ip-geo-block' ) . '"></span>',
+			'<span title="' . __( 'Find blocked requests in &#8220;Logs&#8220;', 'ip-geo-block' ) . '"></span>',
+			__( 'Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="ip-geo-block-icon ip-geo-block-icon-alert" title="This button is just a sample."><span></span></a>&#8221; button (if exists) attached to the following list to confirm that the blocked request is not malicious.', 'ip-geo-block' ),
 		);
 
 		// Matching rule
@@ -261,7 +263,7 @@ endif;
 		$field = 'signature';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a class="ip-geo-block-cycle" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span></span></a>)</nobr>', 'ip-geo-block' ),
+			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a class="ip-geo-block-icon ip-geo-block-icon-cycle" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span></span></a>)</nobr>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -275,7 +277,7 @@ endif;
 		);
 
 		// Prevent malicious upload - white list of file extention and MIME type
-		$list = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Select allowed MIME type.">Whitelist of allowed MIME type</dfn>', 'ip-geo-block' ) . "<a class=\"ip-geo-block-cycle ip-geo-block-hide\">" . $comma[2] . "</a>\n<li class=\"ip-geo-block-hide\"><ul class=\"ip-geo-block-float\">\n";
+		$list = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Select allowed MIME type.">Whitelist of allowed MIME type</dfn>', 'ip-geo-block' ) . "<a class=\"ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide\">" . $comma[2] . "</a>\n<li class=\"ip-geo-block-hide\"><ul class=\"ip-geo-block-float\">\n";
 
 		// get_allowed_mime_types() in wp-includes/functions.php @since 2.8.6
 		foreach ( IP_Geo_Block_Util::get_allowed_mime_types() as $key => $val ) {
@@ -283,9 +285,9 @@ endif;
 			$val = esc_attr( $val );
 			$list .= '<li><input type="checkbox" id="ip_geo_block_settings_mimetype_white_list' . $key . '" name="ip_geo_block_settings[mimetype][white_list][' . $key . ']" value="' . $val . '"' . checked( isset( $options['mimetype']['white_list'][ $key ] ), TRUE, FALSE ) . '><label for="ip_geo_block_settings_mimetype_white_list' . $key . '"><dfn title="' . $val . '">' . $key . '</dfn></label></li>' . "\n";
 		}
-		$list .= "</ul></li></ul>\n";
 
 		// Prevent malicious upload - black list of file extension
+		$list .= "</ul></li></ul>\n";
 		$list .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Put forbidden file extensions.">Blacklist of forbidden file extensions</dfn>', 'ip-geo-block' ) . "\n" . '<li class="ip-geo-block-hide"><ul><li><input type="text" class="regular-text code" id="ip_geo_block_settings_mimetype_black_list" name="ip_geo_block_settings[mimetype][black_list]" value="' . esc_attr( $options['mimetype']['black_list'] ) . '"/></li>';
 		$list .= "</ul></li></ul>\n";
 
@@ -524,7 +526,7 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'text' => __( 'Block by country', 'ip-geo-block' ),
-				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual action as a blocking target.">Target actions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $list . "</ul></li></ul>\n",
+				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual action as a blocking target.">Target actions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $list . "</ul></li></ul>\n",
 			)
 		);
 
@@ -557,23 +559,22 @@ endif;
 			)
 		);
 
-		// Get all the admin-post actions
-		$installed = IP_Geo_Block_Util::get_registered_actions( FALSE );
-
 		$tmp = array(
 			__( 'admin post for logged-in user',     'ip-geo-block' ),
 			__( 'admin post for non logged-in user', 'ip-geo-block' ),
 		);
 
+		// Get all the admin-post actions
 		$exception = '';
+		$installed = IP_Geo_Block_Util::get_registered_actions( FALSE );
 		foreach ( $installed as $key => $val ) {
 			$val = '';
 			$val .= $installed[ $key ] & 1 ? '<dfn title="' . $tmp[0] . '"><span class="ip-geo-block-admin-post dashicons dashicons-lock">*</span></dfn>' : '';
 			$val .= $installed[ $key ] & 2 ? '<dfn title="' . $tmp[1] . '"><span class="ip-geo-block-admin-post dashicons dashicons-unlock">*</span></dfn>' : '';
 			$key = esc_attr( $key );
 			$exception .= '<li>'
-				. '<input id="ip_geo_block_' . $key . '" type="checkbox" value="1"' . checked( in_array( $key, $options['exception']['admin'] ), TRUE, FALSE ) . ' />'
-				. '<label for="ip_geo_block_' . $key . '">' . $key . '</label>' . $val
+				. '<input id="ip_geo_block_settings_exception_admin_' . $key . '" type="checkbox" value="' . $key . '"' . checked( in_array( $key, $options['exception']['admin'] ), TRUE, FALSE ) . ' />'
+				. '<label for="ip_geo_block_settings_exception_admin_' . $key . '">' . $key . '</label>' . $val
 				. '</li>' . "\n";
 		}
 
@@ -596,23 +597,29 @@ endif;
 				'value' => $options[ $field ][ $key ],
 				'list' => $list,
 				'desc' => $desc,
-				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">'
-				. __( '<dfn title="Specify the page name (&#8220;page=&hellip;&#8221;) or the action name (&#8220;action=&hellip;&#8221;) to prevent undesired blocking caused by &#8220;Block by country&#8221; for non logged-in user and &#8220;Prevent Zero-day Exploit&#8221; for logged-in user.">Exceptions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-unlock ip-geo-block-hide"><span title="' . __( 'Toggle with non logged-in user', 'ip-geo-block' ) . '"></span></a><a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>'
-					. "\n<li class=\"ip-geo-block-hide\"><ul><li>\n"
-					. '<input class="regular-text code" id="ip_geo_block_settings_exception_admin" name="ip_geo_block_settings[exception][admin]" type="text" value="' . esc_attr( implode( ',', $options['exception']['admin'] ) ) . '">' . "\n"
-					. $comma[0]
-					. '</li><li><ul id="ip-geo-block-actions">'
-					. '<h4>' . __( 'Candidate actions', 'ip-geo-block' ) . '</h4>'
-					. $exception
-					. '</ul></li></ul></li></ul>' . "\n",
+				'after' =>
+					'<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . "\n" .
+					'	<dfn title="' . __( 'Specify the action name (&#8220;action=&hellip;&#8221;) or the page name (&#8220;page=&hellip;&#8221;) to prevent unintended blocking caused by &#8220;Block by country&#8221; (for non logged-in user) and &#8220;Prevent Zero-day Exploit&#8221; (for logged-in user).', 'ip-geo-block' ) . '">' . __( 'Exceptions', 'ip-geo-block' ) . "</dfn>\n" .
+					'	<a class="ip-geo-block-hide ip-geo-block-icon ip-geo-block-icon-unlock"><span title="' . __( 'Toggle with non logged-in user', 'ip-geo-block' ) . '"></span></a><a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide" data-target="admin">' . $comma[2] . '</a><a class="ip-geo-block-icon ip-geo-block-icon-find ip-geo-block-hide" data-target="admin">' . $comma[3] . "</a>\n" .
+					'	<li class="ip-geo-block-hide">' . "\n" .
+					'		<input class="regular-text code" id="ip_geo_block_settings_exception_admin" name="ip_geo_block_settings[exception][admin]" type="text" value="' . esc_attr( implode( ',', $options['exception']['admin'] ) ) . '">' . $comma[0] . "\n" .
+					'		<h4>' . __( 'Candidate actions/pages', 'ip-geo-block' ) . "</h4>\n" .
+					'		<p class="ip-geo-block-find-desc">' . $comma[4] . '<span id="ip-geo-block-find-admin"></span></p>' . "\n" .
+					'	</li>' . "\n" .
+					'	<li class="ip-geo-block-hide">' . "\n" .
+					'		<ul class="ip-geo-block-list-exceptions" id="ip-geo-block-list-admin">' . "\n" .
+								$exception .
+					'		</ul>' . "\n" .
+					'	</li>' . "\n" .
+					'</ul>'
 			)
 		);
 
 		array_unshift( $list, __( 'Disable', 'ip-geo-block' ) );
 		$desc = array(
 			__( 'Regardless of the country code, it will block a malicious request to <code>%s&ctdot;/*.php</code>.', 'ip-geo-block' ),
-			__( '<dfn title="Select the item which causes undesired blocking in order to exclude from the validation target. Grayed item indicates &#8220;INACTIVE&#8221;.">Exceptions</dfn>', 'ip-geo-block' ),
-			__( 'It configures &#8220;%s&#8221; to validate a request to the PHP file which does not load WordPress core.', 'ip-geo-block' ),
+			__( 'Select the item which causes unintended blocking in order to exclude from the validation target. Grayed item indicates &#8220;INACTIVE&#8221;.', 'ip-geo-block' ),
+			__( 'It configures &#8220;%s&#8221; to validate a request to the PHP file which does not load WordPress core. Make sure to deny direct access to the hidden files beginning with a dot by the server\'s configuration.', 'ip-geo-block' ),
 			__( 'Sorry, but your server type is not supported.', 'ip-geo-block' ),
 		);
 
@@ -623,7 +630,6 @@ endif;
 		// Get all the plugins
 		$exception = '';
 		$installed = get_plugins(); // @since 1.5.0
-		unset( $installed[ IP_GEO_BLOCK_BASE ] ); // exclude myself
 
 		$activated = get_site_option( 'active_sitewide_plugins' ); // @since 2.8.0
 		! is_array( $activated ) and $activated = array();
@@ -636,7 +642,7 @@ endif;
 			$key = esc_attr( $key[0] );
 			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_plugins_' . $key
 				. '" name="ip_geo_block_settings[exception][plugins][' . $key
-				. ']" value="1"' . checked( in_array( $key, $options['exception']['plugins'] ), TRUE, FALSE )
+				. ']" value="' . $key . '"' . checked( in_array( $key, $options['exception']['plugins'] ), TRUE, FALSE )
 				. ' /><label for="ip_geo_block_settings_exception_plugins_' . $key
 				. ($active ? '">' : '" class="folding-inactive">') . esc_html( $val['Name'] ) . "</label></li>\n";
 		}
@@ -669,15 +675,26 @@ endif;
 				'desc' => array(
 					2 => sprintf( $desc[0], $val ),
 				),
-				'before' => $tmp,
-				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . $desc[1] . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $exception . "</ul></li></ul>\n",
+				'after' => $tmp .
+					'<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . "\n" .
+					'	<dfn title="' . $desc[1] . '">' . __( 'Exceptions', 'ip-geo-block' ) . "</dfn>\n" .
+					'	<a class="ip-geo-block-hide ip-geo-block-icon ip-geo-block-icon-cycle">' . $comma[2] . '</a><a class="ip-geo-block-icon ip-geo-block-icon-find ip-geo-block-hide" data-target="plugins">' . $comma[3] . "</a>\n" .
+					'	<li class="ip-geo-block-hide">' . "\n" .
+					'		<p class="ip-geo-block-find-desc">' . $comma[4] . '<span id="ip-geo-block-find-plugins"></span></p>' . "\n" .
+					'	</li>' . "\n" .
+					'	<li class="ip-geo-block-hide">' . "\n" .
+					'		<ul class="ip-geo-block-list-exceptions" id="ip-geo-block-list-plugins">' . "\n" .
+								$exception .
+					'		</ul>' . "\n" .
+					'	</li>' . "\n" .
+					'</ul>'
 			)
 		);
 
 		// Get all the themes
 		$exception = '';
-		$installed = wp_get_themes( NULL ); // @since 3.4.0
-		$activated = wp_get_theme(); // @since 3.4.0
+		$installed = wp_get_themes(); // @since 3.4.0
+		$activated = wp_get_theme();  // @since 3.4.0
 		$activated = $activated->get( 'Name' );
 
 		// List of installed themes
@@ -686,7 +703,7 @@ endif;
 			$active = ( ( $val = $val->get( 'Name' ) ) === $activated );
 			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_themes_' . $key
 				. '" name="ip_geo_block_settings[exception][themes][' . $key
-				. ']" value="1"' . checked( in_array( $key, $options['exception']['themes'] ), TRUE, FALSE )
+				. ']" value="' . $key . '"' . checked( in_array( $key, $options['exception']['themes'] ), TRUE, FALSE )
 				. ' /><label for="ip_geo_block_settings_exception_themes_' . $key
 				. ($active ? '">' : '" class="folding-inactive">') . esc_html( $val ) . "</label></li>\n";
 		}
@@ -719,8 +736,19 @@ endif;
 				'desc' => array(
 					2 => sprintf( $desc[0], $val ),
 				),
-				'before' => $tmp,
-				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . $desc[1] . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $exception . "</ul></li></ul>\n",
+				'after' => $tmp .
+					'<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . "\n" .
+					'	<dfn title="' . $desc[1] . '">' . __( 'Exceptions', 'ip-geo-block' ) . "</dfn>\n" .
+					'	<a class="ip-geo-block-hide ip-geo-block-icon ip-geo-block-icon-cycle">' . $comma[2] . '</a><a class="ip-geo-block-icon ip-geo-block-icon-find ip-geo-block-hide" data-target="themes">' . $comma[3] . "</a>\n" .
+					'	<li class="ip-geo-block-hide">' . "\n" .
+					'		<p class="ip-geo-block-find-desc">' . $comma[4] . '<span id="ip-geo-block-find-themes"></span></p>' . "\n" .
+					'	</li>' . "\n" .
+					'	<li class="ip-geo-block-hide">' . "\n" .
+					'		<ul class="ip-geo-block-list-exceptions" id="ip-geo-block-list-themes">' . "\n" .
+								$exception .
+					'		</ul>' . "\n" .
+					'	</li>' . "\n" .
+					'</ul>'
 			)
 		);
 
@@ -881,7 +909,7 @@ endif;
 		);
 
 		// List of page
-		$exception = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual page as a blocking target.">Page</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
+		$exception = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual page as a blocking target.">Page</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_pages();
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -893,7 +921,7 @@ endif;
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// List of post type
-		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual post type on a single page as a blocking target.">Post type</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
+		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual post type on a single page as a blocking target.">Post type</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_post_types( array( 'public' => TRUE ) );
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -905,7 +933,7 @@ endif;
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// List of category
-		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual category on a single page or archive page as a blocking target.">Category</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
+		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual category on a single page or archive page as a blocking target.">Category</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_categories( array( 'hide_empty' => FALSE ) );
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -917,7 +945,7 @@ endif;
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// List of tag
-		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual tag on a single page or archive page as a blocking target.">Tag</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
+		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual tag on a single page or archive page as a blocking target.">Tag</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_tags( array( 'hide_empty' => FALSE ) );
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -1077,12 +1105,10 @@ endif;
 		// Local DBs for each API
 		$providers = IP_Geo_Block_Provider::get_addons();
 		if ( empty( $providers ) ) {
-			$context->add_admin_notice( 'error',
-				sprintf(
-					__( 'Can not find geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
-					apply_filters( 'ip-geo-block-api-dir', basename( WP_CONTENT_DIR ) )
-				)
-			);
+			$context->add_admin_notice( 'error', sprintf(
+				__( 'Can not find geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
+				apply_filters( 'ip-geo-block-api-dir', basename( WP_CONTENT_DIR ) )
+			) );
 		}
 
 		add_settings_section(
@@ -1205,7 +1231,7 @@ endif;
 					0 => __( 'Disable',                 'ip-geo-block' ),
 					1 => __( 'When requests blocked',   'ip-geo-block' ),
 					2 => __( 'When requests passed',    'ip-geo-block' ),
-					6 => __( 'When blocked or passed from undesired country', 'ip-geo-block' ),
+					6 => __( 'When &#8220;blocked&#8221; or &#8220;passed (not in whitelist)&#8221;', 'ip-geo-block' ),
 					3 => __( 'Unauthenticated visitor', 'ip-geo-block' ),
 					4 => __( 'Authenticated user',      'ip-geo-block' ),
 					5 => __( 'All the validation',      'ip-geo-block' ),

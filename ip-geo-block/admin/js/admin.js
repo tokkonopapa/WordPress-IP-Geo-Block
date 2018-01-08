@@ -2,7 +2,7 @@
 /*eslint no-mixed-spaces-and-tabs: ["error", "smart-tabs"]*/
 /*!
  * Project: WordPress IP Geo Block
- * Copyright (c) 2015-2017 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2013-2018 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
 (function ($, window, document) {
@@ -10,7 +10,7 @@
 
 	// External variables
 	var timer_stack = [],
-		window_width = $(window).width(),
+	    window_width = $(window).width(),
 	    ip_geo_block      = IP_GEO_BLOCK,
 	    ip_geo_block_auth = IP_GEO_BLOCK_AUTH;
 
@@ -27,7 +27,7 @@
 	}
 
 	function escapeHTML(str) {
-		return str ? str.toString().replace(/[&<>"']/g, function (match) {
+		return str.toString().replace(/[&<>"']/g, function (match) {
 			return {
 				'&': '&amp;',
 				'<': '&lt;',
@@ -35,11 +35,11 @@
 				'"': '&quot;',
 				"'": '&#39;'
 			}[match];
-		}) : '';
+		}).replace(/&amp;(#\d{2,4}|\w{4,7});/g, "&$1;"); // revert html character entity
 	}
 
 	function stripTag(str) {
-		return str.replace(/(<([^>]+)>)/ig, '');
+		return escapeHTML(str.toString().replace(/(<([^>]+)>)/ig, ''));
 	}
 
 	function onresize(name, callback) {
@@ -68,22 +68,22 @@
 	}
 
 	function confirm(msg, callback) {
-		if (window.confirm(stripTag(msg))) {
+		if (window.confirm(msg)) {
 			callback();
 		}
 	}
 
-	function warning(status, msg) {
-		window.alert(stripTag(status ? status + ': ' + msg : msg));
+	function warning(status, msg, cmd) {
+		window.alert(msg || ip_geo_block.msg[12].replace('%s', cmd) + ' (' + status + ')');
 	}
 
 	function notice_html5() {
-		warning(null, ip_geo_block.msg[8]);
+		warning(null, ip_geo_block.msg[10]);
 	}
 
 	function redirect(page, tab) {
 		if (-1 !== window.location.href.indexOf(page)) {
-			window.location = escapeHTML(page) + (tab ? '&' + escapeHTML(tab) : '') + '&ip-geo-block-auth-nonce=' + ip_geo_block_auth.nonce;
+			window.location = stripTag(page) + (tab ? '&' + stripTag(tab) : '') + '&ip-geo-block-auth-nonce=' + ip_geo_block_auth.nonce;
 		}
 	}
 
@@ -103,13 +103,13 @@
 			}
 		})
 
-		.fail(function (jqXHR, textStatus/*, errorThrown*/) {
-			warning(textStatus, jqXHR.responseText);
+		.fail(function (jqXHR /*,textStatus, errorThrown*/) {
+			warning(jqXHR.status, jqXHR.responseText, request.action);
 		})
 
 		.always(function () {
 			if (id) {
-				if (objs) {
+				if ('object' === typeof objs) { // deferred object
 					$.when.apply($, objs).then(function () {
 						loading(id, false);
 					});
@@ -160,18 +160,22 @@
 		if (stat) {
 			obj.removeClass('folding-disable');
 		} else {
-			obj.children('li,a').hide();
+			obj.children(ID('.', 'hide')).hide();
 			obj.addClass('folding-disable');
 			obj.removeClass(ID('dropdown')).addClass(ID('dropup'));
 		}
 	}
 
-	// Show/Hide folding list
-	function show_folding_list($this, element, mask) {
+	// Show/Hide descendant elements
+	function show_descendants($this, $elem, mask) {
 		var stat = (0 === $this.prop('type').indexOf('checkbox') && $this.is(':checked')) ||
 		           (0 === $this.prop('type').indexOf('select'  ) && '0' !== $this.val());
 
-		element.nextAll(ID('.', 'settings-folding')).each(function (i, obj) {
+		// checkbox
+		$this.siblings('input[name^="' + ID('%', 'settings') + '"]:checkbox').prop('disabled', !stat);
+
+		// folding list
+		$elem.nextAll(ID('.', 'settings-folding')).each(function (i, obj) {
 			fold_elements($(obj), stat && mask);
 		});
 	}
@@ -238,7 +242,7 @@
 		parent.find(ID('.', 'desc')).css('opacity', checked ? 1.0 : 0.5);
 
 		// Show / Hide validation target
-		show_folding_list($this, select, '1' === select.val() ? true : false);
+		show_descendants($this, select, '1' === select.val() ? true : false);
 	}
 
 	/**
@@ -701,7 +705,7 @@
 	function add_icon(dfn, span, title, icon) {
 		var i, j;
 		i = dfn.cloneNode(false);
-		i.setAttribute('title', title);
+		i.setAttribute('title', stripTag(title));
 		j = span.cloneNode(false);
 		j.setAttribute('class', 'dashicons dashicons-' + icon);
 		i.appendChild(j);
@@ -845,7 +849,7 @@
 			if (!cmd) {
 				return false;
 			} else if (!cells.length) {
-				warning(null, ip_geo_block.msg[9]);
+				warning(null, ip_geo_block.msg[11]);
 				return false;
 			}
 
@@ -964,12 +968,12 @@
 					var key, val;
 					for (key in data) {
 						if (data.hasOwnProperty(key)) {
-							key = escapeHTML(key);
+							key = stripTag(key);
 							if ('string' === typeof data[key]) {
-								val = escapeHTML(data[key]);
+								val = stripTag(data[key]);
 							} else {
-								val = escapeHTML(data[key].code);
-								key = '<abbr title="' + escapeHTML(data[key].type) + '">' + key + '</abbr>';
+								val = stripTag(data[key].code);
+								key = '<abbr title="' + stripTag(data[key].type) + '">' + key + '</abbr>';
 							}
 							parent.append('<li>' + key + ' : <span class="' + ID('notice') + '">' + val + '</span></li>');
 						}
@@ -1048,7 +1052,7 @@
 			// Show/Hide folding list at Login form
 			$(ID('@', 'validation_login')).on('change', function (event) {
 				var $this = $(this);
-				show_folding_list($this, $this, name, true);
+				show_descendants($this, $this, name, true);
 				return stopPropergation(event);
 			}).change();
 
@@ -1061,59 +1065,71 @@
 			ajax_post(null, {
 				cmd: 'get-actions'
 			}, function (data) {
-				var i, j, id, key, $this = $(ID('#', 'actions')),
+				var i, j, id, key, $this = $(ID('#', 'list-admin')),
 				    li    = document.createElement('li'   ),
 				    input = document.createElement('input'),
 				    label = document.createElement('label'),
 				    dfn   = document.createElement('dfn'  ),
 				    span  = document.createElement('span' );
+
 				for (key in data) {
-					if (data.hasOwnProperty(key) && ! $this.find('#' + (id = ID('%', key))).size()) {
-						i = input.cloneNode(false);
-						i.setAttribute('id', id);
-						i.setAttribute('value', '1');
-						i.setAttribute('type', 'checkbox');
-						j = li.cloneNode(false);
-						j.appendChild(i);
+					if (data.hasOwnProperty(key)) {
+						key = stripTag(key);
+						if ($this.find('#' + (id = ID('%', key))).size()) {
+							i = input.cloneNode(false);
+							i.setAttribute('id', id);
+							i.setAttribute('value', key);
+							i.setAttribute('type', 'checkbox');
+							j = li.cloneNode(false);
+							j.appendChild(i);
 
-						i = label.cloneNode(false);
-						i.setAttribute('for', id);
-						i.appendChild(document.createTextNode(key));
-						j.appendChild(i);
+							i = label.cloneNode(false);
+							i.setAttribute('for', id);
+							i.appendChild(document.createTextNode(key));
+							j.appendChild(i);
 
-						if (1 & data[key]) {
-							j.appendChild(add_icon(dfn, span, ip_geo_block.msg[6], 'lock'));
+							if (1 & data[key]) {
+								j.appendChild(add_icon(dfn, span, ip_geo_block.msg[6], 'lock'));
+							}
+							if (2 & data[key]) {
+								j.appendChild(add_icon(dfn, span, ip_geo_block.msg[7], 'unlock'));
+							}
+
+							$this.append(j);
 						}
-						if (2 & data[key]) {
-							j.appendChild(add_icon(dfn, span, ip_geo_block.msg[7], 'unlock'));
-						}
-
-						$this.append(j);
 					}
 				}
 
-				// Handle text field for actions
+				// Admin ajax/post: `Toggle non logged-in user` at `Exceptions`
+				$(ID('.', 'icon-unlock')).on('click', function (/*event*/) {
+					$(ID('#', 'list-admin') + '>li').filter(function (/*i, elm*/) {
+						return ! $(this).find('.dashicons-unlock').length;
+					}).toggle();
+					return false;
+				});
+
+				// Admin ajax/post: Handle text field for actions
 				$(ID('@', 'exception_admin')).on('change', function (event) {
 					var actions = $.grep($(this).val().split(','), function (e){
 						return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
 					});
 
-					$(ID('#', 'actions')).find('input').each(function (/*i, obj*/) {
+					$(ID('#', 'list-admin')).find('input').each(function (/*i, obj*/) {
 						var $this = $(this),
-							action = $this.attr('id').replace(ID('%', ''), '');
+							action = $this.val();
 						$this.prop('checked', -1 !== $.inArray(action, actions));
 					});
 
 					return stopPropergation(event);
 				}).change();
 
-				// Candidate actions
-				$(ID('#', 'actions')).on('click', 'input', function (/*event*/) {
+				// Admin ajax/post: Candidate actions
+				$(ID('#', 'list-admin')).on('click', 'input', function (/*event*/) {
 					var i,
 					    $this = $(this),
-					    $admin = $(ID('@', 'exception_admin')),
-					    action = $this.attr('id').replace(ID('%', ''), ''),
-					    actions = $.grep($admin.val().split(','), function (e){
+					    $text = $(ID('@', 'exception_admin')),
+					    action = $this.val(),
+					    actions = $.grep($text.val().split(','), function (e) {
 					    	return '' !== e.replace(/^\s+|\s+$/g, ''); // remove empty element
 					    });
 
@@ -1126,11 +1142,75 @@
 						actions.splice(i, 1);
 					}
 
-					$admin.val(actions.join(',')).change();
+					$text.val(actions.join(',')).change();
+				});
+
+				// Admin ajax/post: Find the blocked request in logs
+				$(ID('.', 'icon-find')).on('click', function (/*event*/) {
+					var $this  = $(this),
+					    list = [], n = 0, key, ext, id, s,
+					    title  = stripTag(ip_geo_block.msg[9]),
+					    target = stripTag($this.data('target')); // `admin`, `plugins`, `themes`
+
+					// show description
+					$(ID('#', 'find-' + target)).empty();
+					$this.next().children(ID('.', 'find-desc')).show();
+
+					// make list of target
+					$this = $(ID('#', 'list-' + target));
+					$this.children('li').each(function (i, obj) {
+						list.push($(obj).find('input').val());
+					});
+
+					ajax_post('find-' + target, {
+						cmd: 'find-' + target
+					}, function (data) {
+						var val;
+						for (val in data) {
+							if (data.hasOwnProperty(val)) {
+								++n;
+								key = stripTag(data[val]);  // page, action, plugins, themes
+								val = stripTag(val);        // slug of target
+								ext = $.inArray(val, list); // slug already exists
+								id  = ID('!', 'exception_' + target + '_' + val);
+
+								// make an anchor tab with search query
+								s = 'admin' === target ? key + '=' + val : '/' + key + '/' + val + '/';
+								s = '<a class="ip-geo-block-icon ip-geo-block-icon-alert" href="?page=ip-geo-block&tab=4&s='
+								+ encodeURIComponent(s) + '" title="' + title.replace('%s', s) + '" target="_blank"><span></span></a>';
+
+								// add a new list when not found in existent key
+								if (ext < 0) {
+									list.push(val);
+									$this.prepend(
+										'<li><input id="' + id + '" value="' + val + '" type="checkbox" '
+										+ ('admin' === target ? '/>' : 'name=ip_geo_block_settings[exception][' + target + '][' + val + '] />')
+										+ '<label for="' + id + '">'+ val + '</lable>' + s + '</li>'
+									);
+								}
+
+								// append button when found in existent key
+								else {
+									id = $this.find('#' + id).parent();
+									if (!id.find('a').length) {
+										id.append(s);
+									}
+								}
+							}
+						}
+
+						// update status of checkbox
+						$(ID('@', 'exception_' + target)).trigger('change');
+						$(ID('#', 'find-' + target)).append(
+							' ' + '<span class="ip-geo-block-found">' + stripTag(ip_geo_block.msg[8].replace('%d', n)) + '</span>'
+						);
+					});
+
+					return false;
 				});
 			});
 
-			// Enable / Disable Exceptions
+			// Admin ajax/post: Enable / Disable Exceptions
 			$('input[id^="' + ID('!', 'validation_ajax_') + '"]').on('change', function (/*event*/) {
 				show_folding_ajax($(this));
 			}).change();
@@ -1167,12 +1247,12 @@
 							data = res[api];
 							for (key in data) { // key: ipv4, ipv6
 								if (data.hasOwnProperty(key)) {
-									key = escapeHTML(key);
+									key = stripTag(key);
 									if (data[key].filename) {
-										$(ID('@', api + '_' + key + '_path')).val(escapeHTML(data[key].filename));
+										$(ID('@', api + '_' + key + '_path')).val(stripTag(data[key].filename));
 									}
 									if (data[key].message) {
-										$(ID('#', api + '-' + key)).text(escapeHTML(data[key].message));
+										$(ID('#', api + '-' + key)).text(stripTag(data[key].message));
 									}
 								}
 							}
@@ -1323,7 +1403,7 @@
 					}
 
 					// response should be escaped at server side
-					$(ID('#', 'wp-info')).html('<textarea rows="' + res.length + '">' + /*escapeHTML*/(res.join("\n")) + '</textarea>').find('textarea').select();
+					$(ID('#', 'wp-info')).html('<textarea class="regular-text code" rows="' + res.length + '">' + /*stripTag*/(res.join("\n")) + '</textarea>').find('textarea').select();
 					return false;
 				});
 			});
@@ -1335,16 +1415,16 @@
 			$('select[name^="' + name + '"]').on('change', function (/*event*/) {
 				var $this = $(this);
 				show_description($this);
-				show_folding_list($this, $this, name, true);
+				show_descendants($this, $this, name, true);
 				return false;
 			}).change();
 
 			// Toggle checkbox
-			$(ID('.', 'cycle')).on('click', function (/*event*/) {
-				var regex, $that = $(this).nextAll('li'), actions,
-				    text = $that.find(ID('@', 'exception_admin')),
-				    cbox = $that.find('input:checkbox').filter(':visible'),
-				    stat = cbox.filter(':checked').length;
+			$(ID('.', 'icon-cycle')).on('click', function (/*event*/) {
+				var $that = $(this).nextAll('li'), actions,
+				    text  = $that.find(ID('@', 'exception_admin')),
+				    cbox  = $that.find('input:checkbox').filter(':visible'),
+				    stat  = cbox.filter(':checked').length;
 
 				cbox.prop('checked', !stat);
 
@@ -1352,10 +1432,9 @@
 					if (stat) {
 						text.val('');
 					} else {
-						regex = new RegExp(ID('%', ''));
 						actions = [];
-						cbox.each(function (i) {
-							actions[i] = $(this).attr('id').replace(regex, '');
+						cbox.each(function (i, obj) {
+							actions.push($(obj).val());
 						});
 						text.val(actions.join(','));
 					}
@@ -1365,25 +1444,15 @@
 				return false;
 			});
 
-			// Show/Hide logged in user only
-			$(ID('.', 'unlock')).on('click', function (/*event*/) {
-				$(this).nextAll('li').find('h4').nextAll('li').filter(function (/*i, elm*/) {
-					return ! $(this).find('.dashicons-unlock').length;
-				}).toggle();
-				return false;
-			});
-
 			// Folding list
 			$(ID('.', 'settings-folding>dfn')).on('click', function (/*event*/) {
 				var drop = ID('drop'),
 				$this = $(this).parent();
-				$this.children('li').toggle();
+				$this.children(ID('.', 'hide')).toggle();
 				$this.toggleClass(drop + 'up').toggleClass(drop + 'down');
 
-				if ($this.hasClass(drop + 'down')) {
-					$this.children('a').show();
-				} else {
-					$this.children('a').hide();
+				if ($this.hasClass(drop + 'up')) {
+					$this.children('div').hide();
 				}
 
 				return false;
@@ -1406,6 +1475,28 @@
 		  case 1:
 			// https://developers.google.com/loader/#Dynamic
 			initChart(tabNo);
+
+			// Toggle sorting order
+			var order = 0;
+			$(ID('#', 'sort-slug')).on('click', function (/*event*/) {
+				var $ol = $(this).closest('ol'),
+				    $li = $ol.children('li');
+
+				// toggle sorting
+				order = !order;
+				if (order) {
+					$li.sort(function (a, b) {
+						return $(a).text() > $(b).text();
+					});
+				} else {
+					$li.sort(function (a, b) {
+						return parseInt($(a).text().replace(/^.*\((\d+)\)$/, '$1'), 10) <= parseInt($(b).text().replace(/^.*\((\d+)\)$/, '$1'), 10);
+					});
+				}
+
+				$ol.children('li').remove();
+				$li.appendTo($ol);
+			});
 
 			// Statistics of validation
 			$(ID('@', 'clear_statistics')).on('click', function (/*event*/) {
@@ -1629,6 +1720,7 @@
 				// Re-initialize DataTables
 				$(ID('#', 'live-log-stop')).trigger('click');
 				table = initTable(tabNo, control, options);
+				return false;
 			}).trigger('change');
 
 			// Export / Import settings
@@ -1662,7 +1754,7 @@
 			} else {
 				map.each(function () {
 					$(this).empty().html(
-						'<iframe src="//maps.google.com/maps?output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
+						'<iframe src="' + ip_geo_block.altgmap + '?output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
 					);
 				});
 			}
@@ -1714,17 +1806,17 @@
 						which: $(ID('@', 'service')).val()
 					}, function (data) {
 						var key, info = '',
-						    latitude  = escapeHTML(data.latitude  || '0'),
-						    longitude = escapeHTML(data.longitude || '0'),
+						    latitude  = stripTag(data.latitude  || '0'),
+						    longitude = stripTag(data.longitude || '0'),
 						    zoom = (data.latitude || data.longitude) ? 8 : 2;
 
 						for (key in data) {
 							if (data.hasOwnProperty(key)) {
-								key = escapeHTML(key);
+								key = stripTag(key);
 								info +=
 									'<li>' +
 										'<span class="' + ID('title' ) + '">' + key + ' : </span>' +
-										'<span class="' + ID('result') + '">' + escapeHTML(data[key]) + '</span>' +
+										'<span class="' + ID('result') + '">' + stripTag(data[key]) + '</span>' +
 									'</li>';
 							}
 						}
@@ -1746,7 +1838,7 @@
 								'<ul style="margin-top:0; margin-left:1em;">' +
 									'<li>' +
 										'<span class="' + ID('title' ) + '">' + 'IP address' + ' : </span>' +
-										'<span class="' + ID('result') + '">' + escapeHTML(ip) + '</span>' +
+										'<span class="' + ID('result') + '">' + stripTag(ip) + '</span>' +
 									'</li>' +
 									info +
 									/*'<li>' +

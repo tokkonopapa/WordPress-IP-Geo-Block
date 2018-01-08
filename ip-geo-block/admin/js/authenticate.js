@@ -1,24 +1,24 @@
 /*jslint white: true */
 /*!
  * Project: WP-ZEP - Zero-day exploit Prevention for wp-admin
- * Copyright (c) 2015-2017 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2013-2018 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
 (function ($, window, document) {
 	'use strict';
 
-	var wpzep = {
+	var auth = IP_GEO_BLOCK_AUTH, wpzep = {
 		init: false,
 		auth: 'ip-geo-block-auth-nonce',
-		nonce: IP_GEO_BLOCK_AUTH.nonce || '',
-		sites: IP_GEO_BLOCK_AUTH.sites || []
+		nonce: auth.nonce || '',
+		sites: auth.sites || []
 	},
 
 	// regular expression to find target for is_admin()
 	regexp = new RegExp(
-		'^(?:' + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.admin
-		+ '|'  + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.plugins
-		+ '|'  + (IP_GEO_BLOCK_AUTH.home || '') + IP_GEO_BLOCK_AUTH.themes
+		'^(?:' + (auth.home || '') + auth.admin
+		+ '|'  + (auth.home || '') + auth.plugins
+		+ '|'  + (auth.home || '') + auth.themes
 		+ ')(?:.*\.php|.*\/)?$'
 	),
 
@@ -55,7 +55,7 @@
 
 	// Check path that should be excluded
 	function check_ajax(path) {
-		path = path.replace(IP_GEO_BLOCK_AUTH.home + IP_GEO_BLOCK_AUTH.admin, '');
+		path = path.replace(auth.home + auth.admin, '');
 		return ajax_links.hasOwnProperty(path) ? ajax_links[path] : null;
 	}
 
@@ -124,15 +124,15 @@
 
 		return function (url, base) {
 			var d = document, baseElm, aElm, result;
-			url = typeof url !== 'undefined' ? url : location.href;
+			url = typeof url !== 'undefined' ? url : window.location.href;
 			if (null === doc) {
 				if (typeof base === 'undefined') {
-					base = location.href; // based on current url
+					base = window.location.href; // based on current url
 				}
 				try {
 					result = new URL(url, base); // base must be valid
 				} catch (e) {
-					result = new URL(url, location.href);
+					result = new URL(url, window.location.href);
 				}
 			} else {
 				// use anchor element to resolve url
@@ -201,7 +201,7 @@
 	// Append the nonce as query strings to the uri
 	function add_query_nonce(uri, nonce) {
 		if (typeof uri !== 'object') { // `string` or `undefined`
-			uri = parse_uri(uri || location.href);
+			uri = parse_uri(uri || window.location.href);
 		}
 
 		var data = uri.query ? uri.query.split('&') : [],
@@ -229,7 +229,7 @@
 	// Check uri where the nonce is needed
 	function is_admin(url) {
 		// parse uri and get real path
-		var uri = url || location.pathname; // in case of empty `action` on the form tag
+		var uri = url || window.location.pathname; // in case of empty `action` on the form tag
 		uri = parse_uri(uri.toLowerCase());
 
 		// possibly scheme is `javascript` and path is `void(0);`
@@ -239,17 +239,17 @@
 
 			// external domain (`http://example` or `www.example`)
 			// https://tools.ietf.org/html/rfc6454#section-4
-			if (uri.origin !== location.origin) {
+			if (uri.origin !== window.location.origin) {
 				return -1; // external
 			}
 
 			// check if uri includes the target path of zep
 			uri = regexp.exec(uri.pathname);
 			if (uri) {
-				if ((IP_GEO_BLOCK_AUTH.zep.ajax    && 0 <= uri[0].indexOf(IP_GEO_BLOCK_AUTH.admin + 'admin-')) ||
-				    (IP_GEO_BLOCK_AUTH.zep.admin   && 0 <= uri[0].indexOf(IP_GEO_BLOCK_AUTH.admin           )) ||
-				    (IP_GEO_BLOCK_AUTH.zep.plugins && 0 <= uri[0].indexOf(IP_GEO_BLOCK_AUTH.plugins         )) ||
-				    (IP_GEO_BLOCK_AUTH.zep.themes  && 0 <= uri[0].indexOf(IP_GEO_BLOCK_AUTH.themes          ))) {
+				if ((auth.zep.ajax    && 0 <= uri[0].indexOf(auth.admin + 'admin-')) ||
+				    (auth.zep.admin   && 0 <= uri[0].indexOf(auth.admin           )) ||
+				    (auth.zep.plugins && 0 <= uri[0].indexOf(auth.plugins         )) ||
+				    (auth.zep.themes  && 0 <= uri[0].indexOf(auth.themes          ))) {
 					return 1; // internal for admin
 				}
 			}
@@ -260,7 +260,7 @@
 
 	// Check if current page is admin area and the target of wp-zep
 	function is_backend_nonce() {
-		return (is_admin(location.pathname) === 1 || location.search.indexOf(wpzep.auth) >= 0);
+		return (is_admin(window.location.pathname) === 1 || window.location.search.indexOf(wpzep.auth) >= 0);
 	}
 
 	// Redirect if current page is admin area and the target of wp-zep
@@ -291,7 +291,7 @@
 */
 	// Embed a nonce before an Ajax request is sent
 //	$(document).ajaxSend(function (event, jqxhr, settings) {
-	$.ajaxPrefilter(function (settings, original, jqxhr) {
+	$.ajaxPrefilter(function (settings /*, original, jqxhr*/) {
 		// POST to async-upload.php causes an error in https://wordpress.org/plugins/mammoth-docx-converter/
 		if (is_admin(settings.url) === 1 && !settings.url.match(/async-upload\.php$/)) {
 			// multipart/form-data (XMLHttpRequest Level 2)
@@ -312,7 +312,7 @@
 					settings.url = add_query_nonce(uri, wpzep.nonce);
 				} else {
 					data = settings.data ? settings.data.split('&') : [];
-					callback = check_ajax(location.pathname);
+					callback = check_ajax(window.location.pathname);
 					if (callback) {
 						data = callback(data);
 					}
@@ -427,7 +427,7 @@
 			}
 		});
 
-		elem.onFirst('submit', 'form', function (event) {
+		elem.onFirst('submit', 'form', function (/*event*/) {
 			var $this = $(this),
 			    action = $this.attr('action'); // possibly 'undefined'
 
@@ -441,7 +441,7 @@
 	/*--------------------------------
 	 * Something after document ready
 	 *--------------------------------*/
-	function attach_ready(stat) {
+	function attach_ready(/*stat*/) {
 		if (!wpzep.init) {
 			wpzep.init = true;
 
@@ -454,7 +454,7 @@
 				});
 			}
 
-			$('img').each(function (index) {
+			$('img').each(function (/*index*/) {
 				var src = $(this).attr('src');
 
 				// if admin area
@@ -477,7 +477,7 @@
 		}
 	}
 
-	$(window).on('error', function (event) { // event.originalEvent.message
+	$(window).on('error', function (/*event*/) { // event.originalEvent.message
 		attach_ready(false); // fallback on error
 	});
 

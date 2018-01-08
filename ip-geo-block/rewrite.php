@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2013-2017 tokkonopapa
+ * @copyright 2013-2018 tokkonopapa
  *
  * THIS IS FOR THE ADVANCED USERS:
  * This file is for WP-ZEP. If some php files in the plugins/themes directory
@@ -14,7 +14,7 @@
  * by WP-ZEP will be bypassed. To avoid such bypassing, those requests should
  * be redirected to this file in order to load WP core. The `.htaccess` in the
  * plugins/themes directory will help this redirection if it is configured as
- * follows (for apache):
+ * follows on apache for example:
  *
  * # BEGIN IP Geo Block
  * <IfModule mod_rewrite.c>

@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2013-2017 tokkonopapa
+ * @copyright 2013-2018 tokkonopapa
  */
 
 class IP_Geo_Block {
@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.5';
+	const VERSION = '3.0.6b';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -788,16 +788,10 @@ class IP_Geo_Block {
 	/**
 	 * Verify specific ip addresses with CIDR.
 	 *
+	 * @param array $validate `ip`, `auth`, `code`, `asn`, `result`
+	 * @param array or string $ips the list of IP addresses with CIDR notation
 	 */
-	public function check_ips_white( $validate, $settings ) {
-		return $this->check_ips( $validate, $settings['extra_ips']['white_list'] ) ? $validate + array( 'result' => 'passed' ) : $validate;
-	}
-
-	public function check_ips_black( $validate, $settings ) {
-		return $this->check_ips( $validate, $settings['extra_ips']['black_list'] ) ? $validate + array( 'result' => 'extra'  ) : $validate;
-	}
-
-	private function check_ips( $validate, $ips ) {
+	public static function check_ips( $validate, $ips ) {
 		if ( filter_var( $ip = $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			require_once IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php';
 
@@ -823,6 +817,14 @@ class IP_Geo_Block {
 		}
 
 		return FALSE;
+	}
+
+	public function check_ips_white( $validate, $settings ) {
+		return self::check_ips( $validate, $settings['extra_ips']['white_list'] ) ? $validate + array( 'result' => 'passed' ) : $validate;
+	}
+
+	public function check_ips_black( $validate, $settings ) {
+		return self::check_ips( $validate, $settings['extra_ips']['black_list'] ) ? $validate + array( 'result' => 'extra'  ) : $validate;
 	}
 
 	/**
@@ -858,7 +860,7 @@ class IP_Geo_Block {
 		add_filter( self::PLUGIN_NAME . '-ip-addr', array( 'IP_Geo_Block_Util', 'get_proxy_ip' ), 20, 1 );
 
 		// validate undesired user agent
-		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_bots' ), 6, 2 );
+		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_ua' ), 6, 2 );
 
 		// validate country by IP address (block: true, die: false)
 		$this->validate_ip( 'public', $settings, 1 & $settings['validation']['public'], ! $public['simulate'] );
@@ -892,7 +894,7 @@ class IP_Geo_Block {
 		return $validate + array( 'result' => 'passed' ); // provide content
 	}
 
-	public function check_bots( $validate, $settings ) {
+	public function check_ua( $validate, $settings ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 
 		// mask HOST if DNS lookup is false
@@ -918,32 +920,32 @@ class IP_Geo_Block {
 
 				if ( 'FEED' === $code ) {
 					if ( $not xor $is_feed )
-						return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
+						return $validate + array( 'result' => $which ? 'UAlist' : 'passed' );
 				}
 
 				elseif ( 'HOST' === $code ) {
 					if ( $not xor $validate['host'] !== $validate['ip'] )
-						return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
+						return $validate + array( 'result' => $which ? 'UAlist' : 'passed' );
 				}
 
 				elseif ( 0 === strncmp( 'HOST=', $code, 5 ) ) {
 					if ( $not xor FALSE !== strpos( $validate['host'], substr( $code, 5 ) ) )
-						return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
+						return $validate + array( 'result' => $which ? 'UAlist' : 'passed' );
 				}
 
 				elseif ( 0 === strncmp( 'REF=', $code, 4 ) ) {
 					if ( $not xor FALSE !== strpos( $referer, substr( $code, 4 ) ) )
-						return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
+						return $validate + array( 'result' => $which ? 'UAlist' : 'passed' );
 				}
 
 				elseif ( '*' === $code || 2 === strlen( $code ) ) {
 					if ( $not xor ( '*' === $code || $validate['code'] === $code ) )
-						return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
+						return $validate + array( 'result' => $which ? 'UAlist' : 'passed' );
 				}
 
 				elseif ( preg_match( '!^[a-f\d\.:/]+$!', $code = substr( $pat, strpos( $pat, $code ) ) ) ) {
 					if ( $not xor $this->check_ips( $validate, $code ) )
-						return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
+						return $validate + array( 'result' => $which ? 'UAlist' : 'passed' );
 				}
 			}
 		}

@@ -6,14 +6,13 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2014-2017 tokkonopapa
+ * @copyright 2013-2018 tokkonopapa
  */
 /* Start loading wp-load.php */
 if ( ! empty( $_GET['wp-load'] ) ) {
-	$abspath = substr( __FILE__, 0, strpos( __FILE__, '/wp-content/' ) );
-	include_once $abspath . '/wp-load.php';
+	$res = include_once '../../../wp-load.php';
 }
-die( '0' );
+die( isset( $res ) ? '1' : '0' );
 /* End of loading wp-load.php */
 
 /**

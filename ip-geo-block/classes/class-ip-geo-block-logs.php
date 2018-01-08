@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2013-2017 tokkonopapa
+ * @copyright 2013-2018 tokkonopapa
  */
 
 // varchar can not be exceeded over 255 before MySQL-5.0.3.
@@ -183,7 +183,7 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 
-		if ( $hook )
+		if ( in_array( $hook, array( 'comment', 'login', 'admin', 'xmlrpc', 'public' ), TRUE ) )
 			$sql = $wpdb->prepare(
 				"DELETE FROM `$table` WHERE `hook` = '%s'", $hook
 			) and $wpdb->query( $sql ) or self::error( __LINE__ );
@@ -693,10 +693,10 @@ class IP_Geo_Block_Logs {
 
 		$sql = "SELECT `hook`, `time`, `ip`, `code`, `result`, `asn`, `method`, `user_agent`, `headers`, `data` FROM `$table`";
 
-		if ( ! $hook )
-			$sql .= " ORDER BY `time` DESC"; // " ORDER BY `hook`, `time` DESC";
-		else
+		if ( in_array( $hook, array( 'comment', 'login', 'admin', 'xmlrpc', 'public' ), TRUE ) )
 			$sql .= $wpdb->prepare( " WHERE `hook` = '%s' ORDER BY `time` DESC", $hook );
+		else
+			$sql .= " ORDER BY `time` DESC"; // " ORDER BY `hook`, `time` DESC";
 
 		return $sql ? $wpdb->get_results( $sql, ARRAY_N ) : array();
 	}
@@ -847,8 +847,10 @@ class IP_Geo_Block_Logs {
 		$result = TRUE;
 
 		foreach ( $entry as $ip ) {
-			$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = %s", $ip )
-			and $result &= ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
+			if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+				$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = %s", $ip )
+				and $result &= ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
+			}
 		}
 
 		return $result;
@@ -865,6 +867,24 @@ class IP_Geo_Block_Logs {
 		$sql = $wpdb->prepare(
 			"DELETE FROM `$table` WHERE `time` < %d", $_SERVER['REQUEST_TIME'] - $cache_time
 		) and $result = ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
+
+		return $result;
+	}
+
+	/**
+	 * Search blocked requests
+	 *
+	 * @param string $key 'method' or 'data'
+	 */
+	public static function search_blocked_logs( $key, $search ) {
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_LOGS;
+
+		$result = array();
+
+		$sql = $wpdb->prepare(
+			"SELECT * FROM `$table` WHERE `result` != 'passed' AND `" . $key . "` LIKE '%%%s%%'", $search
+		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
 
 		return $result;
 	}

@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
  * @link      http://www.ipgeoblock.com/
- * @copyright 2013-2017 tokkonopapa
+ * @copyright 2013-2018 tokkonopapa
  */
 
 class IP_Geo_Block_Util {
@@ -66,7 +66,7 @@ class IP_Geo_Block_Util {
 	 *
 	 */
 	public static function multiexplode ( $delimiters, $string ) {
-		return array_filter( explode( $delimiters[0], str_replace( $delimiters, $delimiters[0], $string ) ) );
+		return is_array( $string ) ? $string : array_filter( explode( $delimiters[0], str_replace( $delimiters, $delimiters[0], $string ) ) );
 	}
 
 	/**
@@ -332,10 +332,10 @@ class IP_Geo_Block_Util {
 	 * WP alternative function for mu-plugins
 	 *
 	 * Get the time-dependent variable for nonce creation.
-	 * @source wp-includes/pluggable.php
+	 * @source wp_nonce_tick() in wp-includes/pluggable.php
 	 */
 	private static function nonce_tick() {
-		return ceil( time() / ( DAY_IN_SECONDS / 2 ) );
+		return ceil( time() / ( apply_filters( 'nonce_life', DAY_IN_SECONDS ) / 2 ) );
 	}
 
 	/**

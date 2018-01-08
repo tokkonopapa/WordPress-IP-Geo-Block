@@ -37,13 +37,13 @@ class IP_Geo_Block_Admin_Rewrite {
 		),
 		'.user.ini' => array(
 			'plugins' => array(
-				'; BEGIN IP Geo Block',
-				'auto_prepend_file = "%ABSPATH%wp-load.php"',
+				'; BEGIN IP Geo Block%ADDITIONAL%',
+				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-ini.php"',
 				'; END IP Geo Block',
 			),
 			'themes' => array(
-				'; BEGIN IP Geo Block',
-				'auto_prepend_file = "%ABSPATH%wp-load.php"',
+				'; BEGIN IP Geo Block%ADDITIONAL%',
+				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-ini.php"',
 				'; END IP Geo Block',
 			),
 		),
@@ -53,13 +53,13 @@ class IP_Geo_Block_Admin_Rewrite {
 //				'# BEGIN IP Geo Block',
 //				'location ~ %REWRITE_BASE%rewrite.php$ {}',
 //				'location %WP_CONTENT_DIR%/plugins/ {',
-//				'    rewrite ^%WP_CONTENT_DIR%/plugins/.*/.*\.php$ %REWRITE_BASE%rewrite.php break;',
+//				'    rewrite ^%WP_CONTENT_DIR%/plugins/.*\.php$ %REWRITE_BASE%rewrite.php break;',
 //				'}',
 //				'# END IP Geo Block',
 //			'themes' => array(
 //				'# BEGIN IP Geo Block',
 //				'location %WP_CONTENT_DIR%/themes/ {',
-//				'    rewrite ^%WP_CONTENT_DIR%/themes/.*/.*\.php$ %REWRITE_BASE%rewrite.php break;',
+//				'    rewrite ^%WP_CONTENT_DIR%/themes/.*\.php$ %REWRITE_BASE%rewrite.php break;',
 //				'}',
 //				'# END IP Geo Block',
 //			),
@@ -68,11 +68,11 @@ class IP_Geo_Block_Admin_Rewrite {
 
 	private function __construct() {
 		// http://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
-		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
-		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
+		$this->doc_root = str_replace( DIRECTORY_SEPARATOR, '/', str_replace( $_SERVER['SCRIPT_NAME'], '',  $_SERVER['SCRIPT_FILENAME'] ) );
+		$this->base_uri = str_replace( $this->doc_root,     '',  str_replace( DIRECTORY_SEPARATOR,     '/', IP_GEO_BLOCK_PATH           ) );
 
 		// target directories
-		$path = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
+		$path = str_replace( $this->doc_root, '', str_replace( '\\', '/', WP_CONTENT_DIR ) );
 		$this->wp_dirs = array(
 			'plugins'   => $path . '/plugins/',
 			'themes'    => $path . '/themes/',
@@ -80,12 +80,12 @@ class IP_Geo_Block_Admin_Rewrite {
 
 		// Apache in wp-includes/vars.php
 		global $is_apache;
-		if ( $is_apache )
+		if ( ! empty( $is_apache ) )
 			$this->config_file = '.htaccess';
 
 		// CGI/FastCGI SAPI (cgi, cgi-fcgi, fpm-fcgi)
-//		elseif ( version_compare( PHP_VERSION, '5.3' ) >= 0 && FALSE !== strpos( php_sapi_name(), 'cgi' ) )
-//			$this->config_file = ini_get( 'user_ini.filename' );
+		elseif ( version_compare( PHP_VERSION, '5.3' ) >= 0 && FALSE !== strpos( php_sapi_name(), 'cgi' ) )
+			$this->config_file = ini_get( 'user_ini.filename' );
 	}
 
 	/**
@@ -97,6 +97,32 @@ class IP_Geo_Block_Admin_Rewrite {
 	}
 
 	/**
+	 * Remove empty element from the array
+	 *
+	 * @param  array contents of configuration file
+	 * @return array updated array of contents
+	 */
+	private function remove_empty( $content ) {
+		while ( FALSE !== ( $tmp = reset( $content ) ) ) {
+			if ( strlen( trim( $tmp ) ) ) {
+				break;
+			} else {
+				array_shift( $content );
+			}
+		}
+
+		while ( FALSE !== ( $tmp = end( $content ) ) ) {
+			if ( strlen( trim( $tmp ) ) ) {
+				break;
+			} else {
+				array_pop( $content );
+			}
+		}
+
+		return $content;
+	}
+
+	/**
 	 * Extract the block of rewrite rule
 	 *
 	 * @param  array contents of configuration file
@@ -104,8 +130,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private function find_rewrite_block( $content ) {
 		return preg_grep(
-			'/^\s*?[#;]\s*?(?:BEGIN|END)\s*?IP Geo Block\s*?$/i',
-			(array)$content
+			'/^\s*?[#;]\s*?(?:BEGIN|END)\s*?IP Geo Block\s*?$/i', (array)$content
 		);
 	}
 
@@ -173,6 +198,7 @@ class IP_Geo_Block_Admin_Rewrite {
 		}
 
 		// if content is empty then remove file
+		$content = $this->remove_empty( $content );
 		return empty( $content ) ? $fs->delete( $file ) : TRUE;
 	}
 
@@ -251,15 +277,45 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private function append_rewrite_block( $which, $content ) {
 		if ( $type = $this->config_file ) {
-			// in case `.user.ini` is configured differently
+			// in case that `.user.ini` is configured differently
 			if ( '.htaccess' !== $type && '.user.ini' !== $type )
 				$type = '.user.ini';
+
+			// in case that another `.user.ini` in ascendant directory
+			$additional = '';
+			if ( '.user.ini' === $type ) {
+				require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+				$fs = IP_Geo_Block_FS::init( 'append_rewrite_block' );
+
+				$dir = dirname( IP_GEO_BLOCK_PATH ); // `/wp-content/plugins`
+				$ini = $this->config_file;
+				$doc = $this->doc_root;
+
+				do {
+					// avoid loop just in case
+					if ( ( $next = dirname( $dir ) ) !== $dir )
+						$dir = $next;
+					else
+						break;
+
+					if ( $fs->exists( "$dir/$ini" ) ) {
+						$tmp = $fs->get_contents_array( "$dir/$ini" );
+						$tmp = preg_replace( '/^\s*(auto_prepend_file.*)$/', '; $1', $tmp );
+						$tmp = $this->remove_empty( $tmp );
+
+						if ( ! empty( $tmp ) )
+							$additional = PHP_EOL . PHP_EOL . implode( PHP_EOL, $tmp ) . PHP_EOL;
+
+						break;
+					}
+				} while ( $dir !== $doc );
+			}
 
 			return array_merge(
 				$content,
 				str_replace(
-					array( '%REWRITE_BASE%', '%WP_CONTENT_DIR%', '%ABSPATH%' ),
-					array( $this->base_uri,    WP_CONTENT_DIR,     ABSPATH   ),
+					array( '%REWRITE_BASE%', '%WP_CONTENT_DIR%', '%IP_GEO_BLOCK_PATH%', '%ADDITIONAL%' ),
+					array( $this->base_uri,    WP_CONTENT_DIR,     IP_GEO_BLOCK_PATH,    $additional   ),
 					$this->rewrite_rule[ $type ][ $which ]
 				)
 			);
