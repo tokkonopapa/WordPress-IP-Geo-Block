@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-01-08 09:20+0900\n"
-"PO-Revision-Date: 2018-01-08 09:41+0900\n"
+"POT-Creation-Date: 2018-01-08 21:11+0900\n"
+"PO-Revision-Date: 2018-01-08 21:12+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr ""
 #: classes/class-ip-geo-block-cron.php:273
 #: classes/class-ip-geo-block-cron.php:305
 #: admin/class-ip-geo-block-admin.php:1210
-#: admin/includes/class-admin-rewrite.php:187
+#: admin/includes/class-admin-rewrite.php:194
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr ""
@@ -40,7 +40,7 @@ msgstr ""
 
 #: classes/class-ip-geo-block-cron.php:268
 #: classes/class-ip-geo-block-cron.php:300
-#: admin/includes/class-admin-rewrite.php:161
+#: admin/includes/class-admin-rewrite.php:168
 #, php-format
 msgid "Unable to read <code>%s</code>. Please check the permission."
 msgstr ""
@@ -1287,13 +1287,13 @@ msgid ""
 "Block\">Record settings and logs</a>&#8221; for details."
 msgstr ""
 
-#: admin/includes/class-admin-rewrite.php:162
-#: admin/includes/class-admin-rewrite.php:188
+#: admin/includes/class-admin-rewrite.php:169
+#: admin/includes/class-admin-rewrite.php:195
 #, php-format
 msgid "Or please refer to %s to set it manually."
 msgstr ""
 
-#: admin/includes/class-admin-rewrite.php:227
+#: admin/includes/class-admin-rewrite.php:234
 #, php-format
 msgid "&#8220;auto_prepend_file&#8221; already defined in %s."
 msgstr ""

@@ -553,7 +553,7 @@ table.dataTable > tbody > tr > td span {
 table.dataTable input[type="checkbox"] {
     height: 16px;
     width: 16px;
-    margin-top: -4px;
+    margin: -4px 1px 0 0;
 }
 table.dataTable > thead > tr > th:first-child,
 table.dataTable > tbody > tr > td:first-child {

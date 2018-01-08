@@ -38,12 +38,12 @@ class IP_Geo_Block_Admin_Rewrite {
 		'.user.ini' => array(
 			'plugins' => array(
 				'; BEGIN IP Geo Block%ADDITIONAL%',
-				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-sapi.php"',
+				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-ini.php"',
 				'; END IP Geo Block',
 			),
 			'themes' => array(
 				'; BEGIN IP Geo Block%ADDITIONAL%',
-				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-sapi.php"',
+				'auto_prepend_file = "%IP_GEO_BLOCK_PATH%rewrite-ini.php"',
 				'; END IP Geo Block',
 			),
 		),
@@ -53,13 +53,13 @@ class IP_Geo_Block_Admin_Rewrite {
 //				'# BEGIN IP Geo Block',
 //				'location ~ %REWRITE_BASE%rewrite.php$ {}',
 //				'location %WP_CONTENT_DIR%/plugins/ {',
-//				'    rewrite ^%WP_CONTENT_DIR%/plugins/.*/.*\.php$ %REWRITE_BASE%rewrite.php break;',
+//				'    rewrite ^%WP_CONTENT_DIR%/plugins/.*\.php$ %REWRITE_BASE%rewrite.php break;',
 //				'}',
 //				'# END IP Geo Block',
 //			'themes' => array(
 //				'# BEGIN IP Geo Block',
 //				'location %WP_CONTENT_DIR%/themes/ {',
-//				'    rewrite ^%WP_CONTENT_DIR%/themes/.*/.*\.php$ %REWRITE_BASE%rewrite.php break;',
+//				'    rewrite ^%WP_CONTENT_DIR%/themes/.*\.php$ %REWRITE_BASE%rewrite.php break;',
 //				'}',
 //				'# END IP Geo Block',
 //			),
@@ -68,8 +68,8 @@ class IP_Geo_Block_Admin_Rewrite {
 
 	private function __construct() {
 		// http://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
-		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
-		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
+		$this->doc_root = str_replace( DIRECTORY_SEPARATOR, '/', str_replace( $_SERVER['SCRIPT_NAME'], '',  $_SERVER['SCRIPT_FILENAME'] ) );
+		$this->base_uri = str_replace( $this->doc_root,     '',  str_replace( DIRECTORY_SEPARATOR,     '/', IP_GEO_BLOCK_PATH           ) );
 
 		// target directories
 		$path = str_replace( $this->doc_root, '', str_replace( '\\', '/', WP_CONTENT_DIR ) );
@@ -97,14 +97,22 @@ class IP_Geo_Block_Admin_Rewrite {
 	}
 
 	/**
-	 * Remove empty element from the end of array
+	 * Remove empty element from the array
 	 *
 	 * @param  array contents of configuration file
 	 * @return array updated array of contents
 	 */
 	private function remove_empty( $content ) {
-		while ( FALSE !== ( $last = end( $content ) ) ) {
-			if ( strlen( trim( $last ) ) ) {
+		while ( FALSE !== ( $tmp = reset( $content ) ) ) {
+			if ( strlen( trim( $tmp ) ) ) {
+				break;
+			} else {
+				array_shift( $content );
+			}
+		}
+
+		while ( FALSE !== ( $tmp = end( $content ) ) ) {
+			if ( strlen( trim( $tmp ) ) ) {
 				break;
 			} else {
 				array_pop( $content );
@@ -122,8 +130,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private function find_rewrite_block( $content ) {
 		return preg_grep(
-			'/^\s*?[#;]\s*?(?:BEGIN|END)\s*?IP Geo Block\s*?$/i',
-			(array)$content
+			'/^\s*?[#;]\s*?(?:BEGIN|END)\s*?IP Geo Block\s*?$/i', (array)$content
 		);
 	}
 
@@ -286,20 +293,18 @@ class IP_Geo_Block_Admin_Rewrite {
 
 				do {
 					// avoid loop just in case
-					if ( ( $next = dirname( $dir ) ) !== $dir ) {
+					if ( ( $next = dirname( $dir ) ) !== $dir )
 						$dir = $next;
-					} else {
+					else
 						break;
-					}
 
 					if ( $fs->exists( "$dir/$ini" ) ) {
 						$tmp = $fs->get_contents_array( "$dir/$ini" );
-						$tmp = preg_grep( '/^\s*auto_prepend_file/', $tmp, PREG_GREP_INVERT );
+						$tmp = preg_replace( '/^\s*(auto_prepend_file.*)$/', '; $1', $tmp );
 						$tmp = $this->remove_empty( $tmp );
 
-						if ( ! empty( $tmp ) ) {
-							$additional = PHP_EOL . implode( PHP_EOL, $tmp );
-						}
+						if ( ! empty( $tmp ) )
+							$additional = PHP_EOL . PHP_EOL . implode( PHP_EOL, $tmp ) . PHP_EOL;
 
 						break;
 					}

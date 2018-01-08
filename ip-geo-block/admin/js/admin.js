@@ -103,7 +103,7 @@
 			}
 		})
 
-		.fail(function (jqXHR, textStatus/*, errorThrown*/) {
+		.fail(function (jqXHR /*,textStatus, errorThrown*/) {
 			warning(jqXHR.status, jqXHR.responseText, request.action);
 		})
 
@@ -1071,29 +1071,32 @@
 				    label = document.createElement('label'),
 				    dfn   = document.createElement('dfn'  ),
 				    span  = document.createElement('span' );
+
 				for (key in data) {
-					key = stripTag(key);
-					if (data.hasOwnProperty(key) && ! $this.find('#' + (id = ID('%', key))).size()) {
-						i = input.cloneNode(false);
-						i.setAttribute('id', id);
-						i.setAttribute('value', key);
-						i.setAttribute('type', 'checkbox');
-						j = li.cloneNode(false);
-						j.appendChild(i);
+					if (data.hasOwnProperty(key)) {
+						key = stripTag(key);
+						if ($this.find('#' + (id = ID('%', key))).size()) {
+							i = input.cloneNode(false);
+							i.setAttribute('id', id);
+							i.setAttribute('value', key);
+							i.setAttribute('type', 'checkbox');
+							j = li.cloneNode(false);
+							j.appendChild(i);
 
-						i = label.cloneNode(false);
-						i.setAttribute('for', id);
-						i.appendChild(document.createTextNode(key));
-						j.appendChild(i);
+							i = label.cloneNode(false);
+							i.setAttribute('for', id);
+							i.appendChild(document.createTextNode(key));
+							j.appendChild(i);
 
-						if (1 & data[key]) {
-							j.appendChild(add_icon(dfn, span, ip_geo_block.msg[6], 'lock'));
+							if (1 & data[key]) {
+								j.appendChild(add_icon(dfn, span, ip_geo_block.msg[6], 'lock'));
+							}
+							if (2 & data[key]) {
+								j.appendChild(add_icon(dfn, span, ip_geo_block.msg[7], 'unlock'));
+							}
+
+							$this.append(j);
 						}
-						if (2 & data[key]) {
-							j.appendChild(add_icon(dfn, span, ip_geo_block.msg[7], 'unlock'));
-						}
-
-						$this.append(j);
 					}
 				}
 
@@ -1145,7 +1148,7 @@
 				// Admin ajax/post: Find the blocked request in logs
 				$(ID('.', 'icon-find')).on('click', function (/*event*/) {
 					var $this  = $(this),
-					    list = [], n = 0, key, val, ext, id, s,
+					    list = [], n = 0, key, ext, id, s,
 					    title  = stripTag(ip_geo_block.msg[9]),
 					    target = stripTag($this.data('target')); // `admin`, `plugins`, `themes`
 
@@ -1162,6 +1165,7 @@
 					ajax_post('find-' + target, {
 						cmd: 'find-' + target
 					}, function (data) {
+						var val;
 						for (val in data) {
 							if (data.hasOwnProperty(val)) {
 								++n;
@@ -1486,7 +1490,7 @@
 					});
 				} else {
 					$li.sort(function (a, b) {
-						return parseInt($(a).text().replace(/^.*\((\d+)\)$/, '$1')) <= parseInt($(b).text().replace(/^.*\((\d+)\)$/, '$1'));
+						return parseInt($(a).text().replace(/^.*\((\d+)\)$/, '$1'), 10) <= parseInt($(b).text().replace(/^.*\((\d+)\)$/, '$1'), 10);
 					});
 				}
 
