@@ -1371,7 +1371,7 @@ msgid "Clear statistics"
 msgstr ""
 
 #: admin/includes/tab-statistics.php:185
-msgid "Statistics in logs"
+msgid "Statistics in Logs"
 msgstr ""
 
 #: admin/includes/tab-statistics.php:217

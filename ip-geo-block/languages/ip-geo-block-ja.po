@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
 "POT-Creation-Date: 2018-01-08 21:11+0900\n"
-"PO-Revision-Date: 2018-01-08 21:15+0900\n"
+"PO-Revision-Date: 2018-01-08 23:59+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1579,7 +1579,7 @@ msgid "Clear statistics"
 msgstr "統計のクリア"
 
 #: admin/includes/tab-statistics.php:185
-msgid "Statistics in logs"
+msgid "Statistics in Logs"
 msgstr "ログの統計"
 
 #: admin/includes/tab-statistics.php:217

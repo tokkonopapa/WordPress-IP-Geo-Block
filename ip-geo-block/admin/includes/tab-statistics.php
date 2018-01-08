@@ -182,7 +182,7 @@ endif;
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-stat-logs',
-			__( 'Statistics in logs', 'ip-geo-block' ),
+			__( 'Statistics in Logs', 'ip-geo-block' ),
 			( $options['validation']['reclogs'] ?
 				array( __CLASS__, 'statistics_logs' ) :
 				array( __CLASS__, 'warn_validation' )
