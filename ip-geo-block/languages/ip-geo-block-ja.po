@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-01-07 21:37+0900\n"
-"PO-Revision-Date: 2018-01-07 21:52+0900\n"
+"POT-Creation-Date: 2018-01-08 09:20+0900\n"
+"PO-Revision-Date: 2018-01-08 09:41+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1189,7 +1189,7 @@ msgid "When requests passed"
 msgstr "通過時に記録"
 
 #: admin/includes/tab-settings.php:1234
-msgid "When blocked or passed from unwanted country"
+msgid "When &#8220;blocked&#8221; or &#8220;passed (not in whitelist)&#8221;"
 msgstr "遮断時または遮断対象国の通過時に記録"
 
 #: admin/includes/tab-settings.php:1235

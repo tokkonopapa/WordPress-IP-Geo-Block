@@ -1231,7 +1231,7 @@ endif;
 					0 => __( 'Disable',                 'ip-geo-block' ),
 					1 => __( 'When requests blocked',   'ip-geo-block' ),
 					2 => __( 'When requests passed',    'ip-geo-block' ),
-					6 => __( 'When blocked or passed from unwanted country', 'ip-geo-block' ),
+					6 => __( 'When &#8220;blocked&#8221; or &#8220;passed (not in whitelist)&#8221;', 'ip-geo-block' ),
 					3 => __( 'Unauthenticated visitor', 'ip-geo-block' ),
 					4 => __( 'Authenticated user',      'ip-geo-block' ),
 					5 => __( 'All the validation',      'ip-geo-block' ),
