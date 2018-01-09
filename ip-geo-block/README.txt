@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.1
-Stable tag: 3.0.6
+Stable tag: 3.0.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -351,6 +351,10 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.6.1 =
+Sorry for frequent update but the following bug should be fixed.
+* **Bug fix:** Fix the bug that "Candidate actions/pages" at "Exceptions" in "Admin ajax/post" were not displayed.
 
 = 3.0.6 =
 * **New feature:** Add "Find blocked requests in Logs" button at "Exceptions". This helps to find a solution related to the incompatibility with unwanted blocking.

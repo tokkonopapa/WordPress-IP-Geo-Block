@@ -1075,7 +1075,7 @@
 				for (key in data) {
 					if (data.hasOwnProperty(key)) {
 						key = stripTag(key);
-						if ($this.find('#' + (id = ID('%', key))).size()) {
+						if (!$this.find('#' + (id = ID('%', key))).size()) {
 							i = input.cloneNode(false);
 							i.setAttribute('id', id);
 							i.setAttribute('value', key);
