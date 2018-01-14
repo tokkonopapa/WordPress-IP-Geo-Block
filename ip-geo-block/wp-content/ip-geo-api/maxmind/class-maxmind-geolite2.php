@@ -9,7 +9,7 @@
  * @copyright 2013-2018 tokkonopapa
  */
 
-if ( class_exists( 'IP_Geo_Block_API', FALSE ) ) :
+class_exists( 'IP_Geo_Block_API', FALSE ) or die;
 
 /**
  * URL and Path for Maxmind GeoLite2 database
@@ -53,36 +53,31 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 	}
 
 	public function get_location( $ip, $args = array() ) {
-		$settings = IP_Geo_Block::get_option();
-
-		// setup database file and function
-		if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
-			$file = empty( $args['ASN'] ) ?
-				( empty( $settings['Maxmind']['ip_path'] ) ? $this->get_db_dir() . IP_GEO_BLOCK_GEOLITE2_DB_IP  : $settings['Maxmind']['ip_path'] ):
-				( empty( $settings['Maxmind']['asn_path'] ) ? $this->get_db_dir() . IP_GEO_BLOCK_GEOLITE2_DB_ASN : $settings['Maxmind']['asn_path'] );
-		}
-
-		else {
+		if ( ! filter_var( $ip, FILTER_VALIDATE_IP ) )
 			return array( 'errorMessage' => 'illegal format' );
-		}
 
 		require IP_GEO_BLOCK_PATH . 'wp-content/ip-geo-api/maxmind/vendor/autoload.php';
 
+		// setup database file and function
+		$settings = IP_Geo_Block::get_option();
+
 		if ( empty( $args['ASN'] ) ) {
-			$reader = new GeoIp2\Database\Reader( IP_GEO_BLOCK_PATH . 'wp-content/ip-geo-api/maxmind/GeoLite2/GeoLite2-Country.mmdb');
+			$file = ! empty( $settings['Maxmind']['ip_path'] ) ? $settings['Maxmind']['ip_path'] : $this->get_db_dir() . IP_GEO_BLOCK_GEOLITE2_DB_IP;
 			try {
+				$reader = new GeoIp2\Database\Reader( $file );
 				$res = $this->location_country( $reader->country( $ip ) );
 			} catch ( Exception $e ) {
-				$res = 'ZZ';
+				$res = array( 'countryCode' => 'ZZ' );
 			}
 		}
 
 		else {
-			$reader = new GeoIp2\Database\Reader( IP_GEO_BLOCK_PATH . 'wp-content/ip-geo-api/maxmind/GeoLite2/GeoLite2-ASN.mmdb');
+			$file = ! empty( $settings['Maxmind']['asn_path'] ) ? $settings['Maxmind']['asn_path'] : $this->get_db_dir() . IP_GEO_BLOCK_GEOLITE2_DB_ASN;
 			try {
+				$reader = new GeoIp2\Database\Reader( $file );
 				$res = $this->location_asnumber( $reader->asn( $ip ) );
 			} catch ( Exception $e ) {
-				$res = NULL;
+				$res = array( 'ASN' => NULL );
 			}
 		}
 
@@ -222,5 +217,3 @@ IP_Geo_Block_Provider::register_addon( array(
 		'link' => '<a class="ip-geo-block-link" href="https://dev.maxmind.com/geoip/geoip2/" title="GeoIP2 &laquo; MaxMind Developer Site" rel=noreferrer target=_blank>https://dev.maxmind.com/geoip/geoip2/</a>&nbsp;(IPv4, IPv6 / Apache License, Version 2.0)',
 	),
 ) );
-
-endif;
