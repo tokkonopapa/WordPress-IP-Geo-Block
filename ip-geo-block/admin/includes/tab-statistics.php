@@ -317,7 +317,7 @@ endif;
 			}
 
 			// file uploading *.(zip|tar|rar|gz|php|...)
-			elseif ( preg_match( '#(\[name\]\s*?=>.*\.\w+?)\b#', $key, $matches ) ) {
+			elseif ( preg_match( '#(\[name\]\s*?=>\s*?[^\s]+)#', $key, $matches ) ) {
 				$log['slug'] = $matches[1];
 			}
 

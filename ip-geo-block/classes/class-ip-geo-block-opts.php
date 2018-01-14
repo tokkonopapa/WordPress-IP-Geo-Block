@@ -4,7 +4,7 @@
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
- * @license   GPL-2.0+
+ * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
@@ -99,6 +99,11 @@ class IP_Geo_Block_Opts {
 			'asn6_path'   => NULL,    // AS Number for IPv6
 			'asn4_last'   => 0,       // AS Number for IPv4
 			'asn6_last'   => 0,       // AS Number for IPv6
+			// since version 3.0.7
+			'ip_path'     => NULL,    // GeoLite2 DB: Path
+			'ip_last'     => NULL,    // GeoLite2 DB: Last-Modified
+			'asn_path'    => NULL,    // GeoLite2 ASN DB: Path
+			'asn_last'    => NULL,    // GeoLite2 ASN DB: Last-Modified
 		),
 		'IP2Location'     => array(   // IP2Location
 			// since version 2.2.2
@@ -374,6 +379,12 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '3.0.5' ) < 0 ) {
 				$settings['validation' ]['maxlogs'] = 500;
 				$settings['live_update'] = $default['live_update'];
+			}
+
+			if ( version_compare( $version, '3.0.7' ) < 0 ) {
+				foreach ( array( 'ip_path', 'ip_last', 'asn_path', 'asn_last' ) as $tmp ) {
+					$settings['Maxmind'][ $tmp ] = $default['Maxmind'][ $tmp ];
+				}
 			}
 
 			// save package version number

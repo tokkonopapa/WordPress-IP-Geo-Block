@@ -6,19 +6,19 @@
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
- * @license   GPL-2.0+
+ * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  *
  * Plugin Name:       IP Geo Block
  * Plugin URI:        http://wordpress.org/plugins/ip-geo-block/
  * Description:       It blocks any spams, login attempts and malicious access to the admin area posted from outside your nation, and also prevents zero-day exploit.
- * Version:           3.0.6.1
+ * Version:           3.0.7a
  * Author:            tokkonopapa
  * Author URI:        http://www.ipgeoblock.com/
  * Text Domain:       ip-geo-block
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * License:           GPL-3.0
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.txt
  * Domain Path:       /languages
  */
 
@@ -70,9 +70,9 @@ register_deactivation_hook( __FILE__, 'ip_geo_block_deactivate' );
  * @see https://wordpress.stackexchange.com/questions/144870/wordpress-update-plugin-hook-action-since-3-9
  */
 function ip_geo_block_update() {
-	include_once ABSPATH . 'wp-admin/includes/plugin.php';
 	$settings = IP_Geo_Block::get_option();
 	if ( version_compare( $settings['version'], IP_Geo_Block::VERSION ) < 0 ) {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php'; // @since 3.0.0
 		ip_geo_block_activate( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) );
 	}
 }

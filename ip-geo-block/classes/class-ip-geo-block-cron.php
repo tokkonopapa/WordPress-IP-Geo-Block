@@ -4,7 +4,7 @@
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
- * @license   GPL-2.0+
+ * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
@@ -22,15 +22,24 @@ class IP_Geo_Block_Cron {
 			$now = time();
 			$cycle = DAY_IN_SECONDS * (int)$update['cycle'];
 
-			if ( FALSE === $immediate &&
-				$now - (int)$db['ipv4_last'] < $cycle &&
-				$now - (int)$db['ipv6_last'] < $cycle ) {
-				$update['retry'] = 0;
-				$next = max( (int)$db['ipv4_last'], (int)$db['ipv6_last'] ) +
-					$cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 6 );
-			} else {
+			if ( FALSE === $immediate ) {
 				++$update['retry'];
 				$next = $now + ( $immediate ? 0 : DAY_IN_SECONDS );
+
+				if ( empty( $db['ip_last'] ) ) {
+					if ( $now - (int)$db['ipv4_last'] < $cycle &&
+					     $now - (int)$db['ipv6_last'] < $cycle ) {
+						$update['retry'] = 0;
+						$next = max( (int)$db['ipv4_last'], (int)$db['ipv6_last'] ) +
+							$cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 6 );
+					}
+				} else {
+					if ( $now - (int)$db['ip_last'] < $cycle ) {
+						$update['retry'] = 0;
+						$next = (int)$db['ip_last'] +
+							$cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 6 );
+					}
+				}
 			}
 
 			wp_schedule_single_event( $next, IP_Geo_Block::CRON_NAME, array( $immediate ) );
@@ -88,6 +97,8 @@ class IP_Geo_Block_Cron {
 
 						// finished to update matching rule
 						set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
+
+						break; // exit foreach()
 					}
 				}
 			}
@@ -260,6 +271,8 @@ class IP_Geo_Block_Cron {
 
 			// get extension
 			$args = strtolower( pathinfo( $url, PATHINFO_EXTENSION ) );
+			if ( 'tar' === strtolower( pathinfo( pathinfo( $url, PATHINFO_FILENAME ), PATHINFO_EXTENSION ) ) )
+				$args = 'tar';
 
 			// unzip file
 			if ( 'gz' === $args && function_exists( 'gzopen' ) ) {

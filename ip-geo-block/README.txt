@@ -4,9 +4,9 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.1
-Stable tag: 3.0.6.1
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Stable tag: 3.0.7a
+License: GPLv3
+License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
 It blocks spam posts, login attempts and malicious access to the back-end requested from the specific countries, and also prevents zero-day exploit.
 
