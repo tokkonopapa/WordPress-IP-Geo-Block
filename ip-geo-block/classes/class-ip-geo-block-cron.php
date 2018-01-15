@@ -216,23 +216,30 @@ class IP_Geo_Block_Cron {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'download_zip' );
 
-		// if the name of src file is changed, then update the dst
-		if ( basename( $filename ) !== ( $base = pathinfo( $url, PATHINFO_FILENAME ) ) )
-			$filename = dirname( $filename ) . '/' . $base;
+		// get extension
+		$ext = strtolower( pathinfo( $url, PATHINFO_EXTENSION ) );
+		if ( 'tar' === strtolower( pathinfo( pathinfo( $url, PATHINFO_FILENAME ), PATHINFO_EXTENSION ) ) )
+			$ext = 'tar';
 
 		// check file
-		if ( ! file_exists( $filename ) )
+		if ( ! $fs->exists( $filename ) )
 			$modified = 0;
 
 		// set 'If-Modified-Since' request header
 		$args += array(
 			'headers'  => array(
+				'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+				'Accept-Encoding' => 'gzip, deflate',
 				'If-Modified-Since' => gmdate( DATE_RFC1123, (int)$modified ),
 			),
 		);
 
 		// fetch file and get response code & message
-		$src = wp_remote_head( ( $url = esc_url_raw( $url ) ), $args );
+		if ( isset( $args['method'] ) && 'GET' === $args['method'] ) {
+			$src = wp_remote_get ( ( $url = esc_url_raw( $url ) ), $args );
+		} else {
+			$src = wp_remote_head( ( $url = esc_url_raw( $url ) ), $args );
+		}
 
 		if ( is_wp_error( $src ) )
 			return array(
@@ -259,8 +266,31 @@ class IP_Geo_Block_Cron {
 				'message' => $code.' '.$mssg,
 			);
 
+		// in case that the server which does not support HEAD method
+		if ( isset( $args['method'] ) && 'GET' === $args['method'] ) {
+			$data = wp_remote_retrieve_body( $src );
+			$name = wp_remote_retrieve_header( $src, 'content-disposition' );
+			$name = explode( 'filename=', $name );
+			$name = count( $name ) > 1 ? $name[1] : basename( $url );
+
+			if ( 'tar' === $ext && class_exists( 'PharData' ) ) {
+				$src = get_temp_dir() . $name;
+				$fs->put_contents( $src, $data );
+
+				try {
+					$data = new PharData( $src );
+					$data->extractTo( dirname( $filename ), NULL, TRUE );
+				} catch ( Exception $e ) {
+					$err = array(
+						'code'    => $e->getCode(),
+						'message' => $e->getMessage(),
+					);
+				}
+			}
+		}
+
 		// downloaded and unzip
-		try {
+		else try {
 			// download file
 			$src = download_url( $url );
 
@@ -269,13 +299,8 @@ class IP_Geo_Block_Cron {
 					$src->get_error_code() . ' ' . $src->get_error_message()
 				);
 
-			// get extension
-			$args = strtolower( pathinfo( $url, PATHINFO_EXTENSION ) );
-			if ( 'tar' === strtolower( pathinfo( pathinfo( $url, PATHINFO_FILENAME ), PATHINFO_EXTENSION ) ) )
-				$args = 'tar';
-
 			// unzip file
-			if ( 'gz' === $args && function_exists( 'gzopen' ) ) {
+			if ( 'gz' === $ext && function_exists( 'gzopen' ) ) {
 				if ( FALSE === ( $gz = gzopen( $src, 'r' ) ) )
 					throw new Exception(
 						sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $src )
@@ -299,7 +324,7 @@ class IP_Geo_Block_Cron {
 				}
 			}
 
-			elseif ( 'zip' === $args && class_exists( 'ZipArchive', FALSE ) ) {
+			elseif ( 'zip' === $ext && class_exists( 'ZipArchive', FALSE ) ) {
 				$tmp = get_temp_dir(); // @since 2.5
 				$ret = $fs->unzip_file( $src, $tmp ); // @since 2.5
 

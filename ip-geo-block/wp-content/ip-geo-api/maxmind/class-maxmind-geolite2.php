@@ -102,7 +102,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 				IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-ip',
 				IP_GEO_BLOCK_GEOLITE2_ZIP_IP
 			),
-			$args,
+			$args + array( 'method' => 'GET' ),
 			$db['ip_path'],
 			$db['ip_last']
 		);
@@ -121,7 +121,7 @@ if ( $db['use_asn'] || ! empty( $db['asn_path'] ) ) :
 				IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-asn',
 				IP_GEO_BLOCK_GEOLITE2_ZIP_ASN
 			),
-			$args,
+			$args + array( 'method' => 'GET' ),
 			$db['asn_path'],
 			$db['asn_last']
 		);
