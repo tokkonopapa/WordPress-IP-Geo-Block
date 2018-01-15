@@ -20,13 +20,14 @@ class IP_Geo_Block_Cron {
 
 		if ( $update['auto'] ) {
 			$now = time();
-			$cycle = DAY_IN_SECONDS * (int)$update['cycle'];
+			$next = $now + ( $immediate ? 0 : DAY_IN_SECONDS );
 
 			if ( FALSE === $immediate ) {
 				++$update['retry'];
-				$next = $now + ( $immediate ? 0 : DAY_IN_SECONDS );
+				$cycle = DAY_IN_SECONDS * (int)$update['cycle'];
 
 				if ( empty( $db['ip_last'] ) ) {
+					// in case of Maxmind Legacy or IP2Location
 					if ( $now - (int)$db['ipv4_last'] < $cycle &&
 					     $now - (int)$db['ipv6_last'] < $cycle ) {
 						$update['retry'] = 0;
@@ -34,6 +35,7 @@ class IP_Geo_Block_Cron {
 							$cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 6 );
 					}
 				} else {
+					// in case of Maxmind GeoLite2
 					if ( $now - (int)$db['ip_last'] < $cycle ) {
 						$update['retry'] = 0;
 						$next = (int)$db['ip_last'] +
