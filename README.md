@@ -12,7 +12,7 @@ posted from the specific countries, and also prevents zero-day exploit.
 
 ### Dependency:
 
-[IP Geo API 1.1.9][IPGeoAPI]
+[IP Geo API 1.1.10][IPGeoAPI]
 
 ### Requirement:
 
@@ -20,7 +20,7 @@ posted from the specific countries, and also prevents zero-day exploit.
 
 ### Attribution:
 
-This package includes GeoLite data created by MaxMind, available from 
+This package includes GeoLite2 data created by MaxMind, available from 
     [MaxMind][MaxMind],
 and also includes IP2Location open source libraries available from 
     [IP2Location][IP2Loc].
@@ -40,7 +40,7 @@ Also thanks for providing the following great services and REST APIs for free.
 
 ### License:
 
-This plugin is licensed under the GPL v2 or later.
+This plugin is licensed under the GPL v3.
 
 [IPGB]:       https://wordpress.org/plugins/ip-geo-block/ "IP Geo Block — WordPress Plugins"
 [freegeoip]:  http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service"

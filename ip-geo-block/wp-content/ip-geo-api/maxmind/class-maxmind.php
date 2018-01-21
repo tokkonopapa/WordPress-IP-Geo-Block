@@ -10,9 +10,12 @@
  */
 class_exists( 'IP_Geo_Block_API', FALSE ) or die;
 
-$settings = IP_Geo_Block::get_option();
+if ( version_compare( PHP_VERSION, '5.4.0' ) >= 0 ):
 
-require_once dirname( __FILE__ ) . '/class-maxmind-geolite2.php';
-//require_once dirname( __FILE__ ) . '/class-maxmind-legacy.php';
+	require_once dirname( __FILE__ ) . '/class-maxmind-geolite2.php';
 
-unset( $settings );
+else:
+
+	require_once dirname( __FILE__ ) . '/class-maxmind-legacy.php';
+
+endif;

@@ -352,6 +352,10 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 == Changelog ==
 
+= 3.0.7 =
+* **New feature:** Support Maxmind GeoLite2 database.
+* **Bug fix:** Fix the issue that "Force to load WP core" did not work properly under certain condition on Nginx.
+
 = 3.0.6.1 =
 Sorry for frequent update but the following bug should be fixed.
 * **Bug fix:** Fix the bug that "Candidate actions/pages" at "Exceptions" in "Admin ajax/post" were not displayed.

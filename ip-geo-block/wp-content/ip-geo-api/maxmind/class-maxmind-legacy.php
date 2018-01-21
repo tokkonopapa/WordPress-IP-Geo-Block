@@ -8,7 +8,8 @@
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
-if ( class_exists( 'IP_Geo_Block_API', FALSE ) ) :
+
+class_exists( 'IP_Geo_Block_API', FALSE ) or die;
 
 /**
  * URL and Path for Maxmind GeoLite database
@@ -125,35 +126,48 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 	}
 
 	public function download( &$db, $args ) {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( __FILE__ );
+
+		// GeoLite Legacy databases would be stopped to update and download
+		$available = array(
+			'update'   => $_SERVER['REQUEST_TIME'] < strtotime( '2018-04-00' ), // April   1, 2018
+			'download' => $_SERVER['REQUEST_TIME'] < strtotime( '2019-01-02' ), // January 2, 2019
+		);
+
 		$dir = $this->get_db_dir();
 
 		// IPv4
 		if ( $dir !== dirname( $db['ipv4_path'] ) . '/' )
 			$db['ipv4_path'] = $dir . IP_GEO_BLOCK_MAXMIND_IPV4_DAT;
 
-		$res['ipv4'] = IP_Geo_Block_Util::download_zip(
-			apply_filters(
-				IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-ipv4',
-				IP_GEO_BLOCK_MAXMIND_IPV4_ZIP
-			),
-			$args,
-			$db['ipv4_path'],
-			$db['ipv4_last']
-		);
+		if ( $fs->exists( $db['ipv4_path'] ) ? $available['update'] : $available['download'] ) {
+			$res['ipv4'] = IP_Geo_Block_Util::download_zip(
+				apply_filters(
+					IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-ipv4',
+					IP_GEO_BLOCK_MAXMIND_IPV4_ZIP
+				),
+				$args + array( 'method' => 'GET' ),
+				$db['ipv4_path'],
+				$db['ipv4_last']
+			);
+		}
 
 		// IPv6
 		if ( $dir !== dirname( $db['ipv6_path'] ) . '/' )
 			$db['ipv6_path'] = $dir . IP_GEO_BLOCK_MAXMIND_IPV6_DAT;
 
-		$res['ipv6'] = IP_Geo_Block_Util::download_zip(
-			apply_filters(
-				IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-ipv6',
-				IP_GEO_BLOCK_MAXMIND_IPV6_ZIP
-			),
-			$args,
-			$db['ipv6_path'],
-			$db['ipv6_last']
-		);
+		if ( $fs->exists( $db['ipv6_path'] ) ? $available['update'] : $available['download'] ) {
+			$res['ipv6'] = IP_Geo_Block_Util::download_zip(
+				apply_filters(
+					IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-ipv6',
+					IP_GEO_BLOCK_MAXMIND_IPV6_ZIP
+				),
+				$args + array( 'method' => 'GET' ),
+				$db['ipv6_path'],
+				$db['ipv6_last']
+			);
+		}
 
 		! empty( $res['ipv4']['filename'] ) and $db['ipv4_path'] = $res['ipv4']['filename'];
 		! empty( $res['ipv6']['filename'] ) and $db['ipv6_path'] = $res['ipv6']['filename'];
@@ -166,29 +180,33 @@ if ( $db['use_asn'] || ! empty( $db['asn4_path'] ) ) :
 		if ( $dir !== dirname( $db['asn4_path'] ) . '/' )
 			$db['asn4_path'] = $dir . IP_GEO_BLOCK_MAXMIND_ASN4_DAT;
 
-		$res['asn4'] = IP_Geo_Block_Util::download_zip(
-			apply_filters(
-				IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-asn4',
-				IP_GEO_BLOCK_MAXMIND_ASN4_ZIP
-			),
-			$args,
-			$db['asn4_path'],
-			$db['asn4_last']
-		);
+		if ( $fs->exists( $db['asn4_path'] ) ? $available['update'] : $available['download'] ) {
+			$res['asn4'] = IP_Geo_Block_Util::download_zip(
+				apply_filters(
+					IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-asn4',
+					IP_GEO_BLOCK_MAXMIND_ASN4_ZIP
+				),
+				$args + array( 'method' => 'GET' ),
+				$db['asn4_path'],
+				$db['asn4_last']
+			);
+		}
 
 		// ASN for IPv6
 		if ( $dir !== dirname( $db['asn6_path'] ) . '/' )
 			$db['asn6_path'] = $dir . IP_GEO_BLOCK_MAXMIND_ASN6_DAT;
 
-		$res['asn6'] = IP_Geo_Block_Util::download_zip(
-			apply_filters(
-				IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-asn6',
-				IP_GEO_BLOCK_MAXMIND_ASN6_ZIP
-			),
-			$args,
-			$db['asn6_path'],
-			$db['asn6_last']
-		);
+		if ( $fs->exists( $db['asn6_path'] ) ? $available['update'] : $available['download'] ) {
+			$res['asn6'] = IP_Geo_Block_Util::download_zip(
+				apply_filters(
+					IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-asn6',
+					IP_GEO_BLOCK_MAXMIND_ASN6_ZIP
+				),
+				$args + array( 'method' => 'GET' ),
+				$db['asn6_path'],
+				$db['asn6_last']
+			);
+		}
 
 		! empty( $res['asn4']['filename'] ) and $db['asn4_path'] = $res['asn4']['filename'];
 		! empty( $res['asn6']['filename'] ) and $db['asn6_path'] = $res['asn6']['filename'];
@@ -339,5 +357,3 @@ IP_Geo_Block_Provider::register_addon( array(
 		'link' => '<a class="ip-geo-block-link" href="http://dev.maxmind.com/geoip/" title="GeoIP Products &laquo; Maxmind Developer Site" rel=noreferrer target=_blank>http://dev.maxmind.com/geoip/</a>&nbsp;(IPv4, IPv6 / LGPLv2)',
 	),
 ) );
-
-endif;
