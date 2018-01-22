@@ -1613,11 +1613,13 @@ endif;
 	}
 
 	public static function note_database() {
-		if ( version_compare( PHP_VERSION, '5.4.0', '>=' ) && class_exists( 'PharData', FALSE ) ) return;
-		echo
-			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'Maxmind GeoLite2 databases and APIs need PHP version 5.4.0+ and PECL phar 2.0.0+.', 'ip-geo-block' ), '</li>', "\n",
-			'</ul>', "\n";
+		// https://pecl.php.net/package/phar
+		if ( ! version_compare( PHP_VERSION, '5.4.0', '>=' ) || ! class_exists( 'PharData', FALSE ) ) {
+			echo
+				'<ul class="ip-geo-block-note">', "\n",
+					'<li>', sprintf( __( 'Maxmind GeoLite2 databases and APIs need PHP version 5.4.0+ and %sPECL phar 2.0.0+%s.', 'ip-geo-block' ), '<a href="https://pecl.php.net/package/phar" title="PECL :: Package :: phar">', '</a>' ), '</li>', "\n",
+				'</ul>', "\n";
+		}
 	}
 
 	public static function note_public() {

@@ -215,7 +215,7 @@ if ( $db['use_asn'] || ! empty( $db['asn4_path'] ) ) :
 
 endif; // $db['use_asn'] || ! empty( $db['asn4_path'] )
 
-		return $res;
+		return isset( $res ) ? $res : NULL;
 	}
 
 	public function get_attribution() {

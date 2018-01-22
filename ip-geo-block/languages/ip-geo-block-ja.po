@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-01-21 19:56+0900\n"
-"PO-Revision-Date: 2018-01-21 20:08+0900\n"
+"POT-Creation-Date: 2018-01-22 23:07+0900\n"
+"PO-Revision-Date: 2018-01-22 23:13+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr ""
 
 #: classes/class-ip-geo-block-opts.php:420
 #: classes/class-ip-geo-block-cron.php:224
-#: classes/class-ip-geo-block-cron.php:395
+#: classes/class-ip-geo-block-cron.php:399
 #: admin/class-ip-geo-block-admin.php:1224
 #: admin/includes/class-admin-rewrite.php:194
 #, php-format
@@ -37,7 +37,7 @@ msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr "<code>%s</code> に書き込めません。パーミッションをチェックして下さい。"
 
 #: classes/class-ip-geo-block-cron.php:219
-#: classes/class-ip-geo-block-cron.php:390
+#: classes/class-ip-geo-block-cron.php:394
 #: admin/includes/class-admin-rewrite.php:168
 #, php-format
 msgid "Unable to read <code>%s</code>. Please check the permission."
@@ -53,11 +53,11 @@ msgstr ""
 msgid "Your database file is up-to-date."
 msgstr "データベース・ファイルは最新です。"
 
-#: classes/class-ip-geo-block-cron.php:400
+#: classes/class-ip-geo-block-cron.php:404
 msgid "gz or zip is not supported on your system."
 msgstr "gz または zip がサポートされていません。"
 
-#: classes/class-ip-geo-block-cron.php:419
+#: classes/class-ip-geo-block-cron.php:423
 #: admin/includes/tab-settings.php:1131
 #, php-format
 msgid "Last update: %s"
@@ -1461,16 +1461,17 @@ msgid ""
 "Please select the appropriate APIs to fit the privacy law in your country."
 msgstr "自国のプライバシー関連法規に合わせ、適切なAPIを選択して下さい。"
 
-#: admin/includes/tab-settings.php:1619
+#: admin/includes/tab-settings.php:1620
+#, php-format
 msgid ""
-"Maxmind GeoLite2 databases and APIs need PHP version 5.4.0+ and PECL phar "
-"2.0.0+."
+"Maxmind GeoLite2 databases and APIs need PHP version 5.4.0+ and %sPECL phar "
+"2.0.0+%s."
 msgstr ""
 "Maxmind GeoLite2&thinsp;データベースと&thinsp;API&thinsp;には、PHP&thinsp;"
-"バージョン&thinsp;5.4.0&thinsp;以上と&thinsp;PECL phar 2.0.0&thinsp;以上が必"
-"要です。"
+"バージョン&thinsp;5.4.0&thinsp;以上と&thinsp;%sPECL phar 2.0.0&thinsp;以上%s"
+"が必要です。"
 
-#: admin/includes/tab-settings.php:1626
+#: admin/includes/tab-settings.php:1628
 msgid ""
 "Please refer to the document &#8220;<a rel=\"noreferrer\" href=\"http://www."
 "ipgeoblock.com/codex/#blocking-on-front-end\" title=\"Codex | IP Geo Block"
@@ -1482,7 +1483,7 @@ msgstr ""
 "end\" title=\"Codex | IP Geo Block\">Blocking on front-end</a>&#8221; を参照"
 "してください。"
 
-#: admin/includes/tab-settings.php:1627
+#: admin/includes/tab-settings.php:1629
 msgid ""
 "If you find any issues or have something to suggest, please feel free to "
 "open an issue at <a rel=\"noreferrer\" href=\"https://wordpress.org/support/"
@@ -1494,7 +1495,7 @@ msgstr ""
 "&#8250; Support &raquo; IP Geo Block\">サポートフォーラム</a> に投稿をお願い"
 "します。"
 
-#: admin/includes/tab-settings.php:1634
+#: admin/includes/tab-settings.php:1636
 msgid ""
 "Please refer to the document &#8220;<a rel=\"noreferrer\" href=\"http://www."
 "ipgeoblock.com/codex/record-settings-and-logs.html\" title=\"Codex | IP Geo "

@@ -271,7 +271,7 @@ class IP_Geo_Block_Cron {
 		if ( 'tar' === strtolower( pathinfo( pathinfo( $url, PATHINFO_FILENAME ), PATHINFO_EXTENSION ) ) )
 			$ext = 'tar';
 
-		// check file
+		// check file (1st parameter includes absolute path in case of array)
 		$filename = is_array( $files ) ? $files[0] : (string)$files;
 		if ( ! $fs->exists( $filename ) )
 			$modified = 0;
@@ -326,36 +326,40 @@ class IP_Geo_Block_Cron {
 						$fs->put_contents( $filename, gzdecode( $data ) );
 					}
 
+					// http://php.net/manual/ja/function.move-uploaded-file.php
 					elseif ( isset( $_FILES[0]['name'] ) ) {
 						TRUE === ( $ret = self::gzfile( $_FILES[0]['name'], $filename ) ) or $err = $ret;
 					}
 				}
 
-				elseif ( 'tar' === $ext && class_exists( 'PharData', FALSE ) ) { // @since PECL 2.0.0
+				elseif ( 'tar' === $ext && class_exists( 'PharData', FALSE ) ) { // @since PECL phar 2.0.0
 					$name = wp_remote_retrieve_header( $src, 'content-disposition' );
 					$name = explode( 'filename=', $name );
-					$name = array_pop( $name ); // ex: GeoLite2-Country_20180102.tar.gz
+					$name = array_pop( $name ); // e.g. GeoLite2-Country_20180102.tar.gz
 					$src  = ( $tmp = get_temp_dir() ) . $name; // $src should be removed
 
 					// CVE-2015-6833: A directory traversal when extracting ZIP files could be used to overwrite files
 					// outside of intended area via a `..` in a ZIP archive entry that is mishandled by extractTo().
 					if ( $fs->put_contents( $src, $data ) ) {
-						$data = new PharData( $src, FilesystemIterator::SKIP_DOTS );
+						$data = new PharData( $src, FilesystemIterator::SKIP_DOTS ); // get archives
 
-						// make list of contents to be extracted from archives
-						$dst = $data->getSubPathname(); // ex: GeoLite2-Country_20180102
+						// make the list of contents to be extracted from archives.
+						// when the list doesn't match the contents in archives, extractTo() may be crushed on windows.
+						$dst = $data->getSubPathname(); // e.g. GeoLite2-Country_20180102
 						foreach ( $files as $key => $val ) {
-							$files[ $key ] = $dst . '/' . basename( $val );
+							$files[ $key ] = $dst.'/'.basename( $val );
 						}
 
-						// extract from archives to temporary folder
-						$data->extractTo( $tmp .= $dst, $files, TRUE ); // $tmp should be removed
+						// extract specific files from archives to temporary directory
+						$data->extractTo( $tmp .= $dst, $files /* NULL */, TRUE ); // $tmp should be removed
 
-						// copy extracted files to Geolocation APIs folder
+						// copy extracted files to Geolocation APIs directory
 						$dst = basename( $filename );
 						foreach ( $files as $val ) {
 							$val = basename( $val );
-							$fs->copy( "$tmp/$val", "$dst/$val", TRUE );
+							// should the destination be exclusive with LOCK_EX ?
+							// $fs->put_contents( $dst.'/'.$val, $fs->get_contents( $tmp.'/'.$val ) );
+							$fs->copy( $tmp.'/'.$val, $dst.'/'.$val, TRUE );
 						}
 					}
 				}
@@ -411,7 +415,7 @@ class IP_Geo_Block_Cron {
 		}
 
 		! empty  ( $gz  ) and gzclose( $gz );
-		! empty  ( $tmp ) and $fs->delete( $tmp, TRUE );
+		! empty  ( $tmp ) and $fs->delete( $tmp, TRUE ); // should be removed recursively in case of directory
 		is_string( $src ) && $fs->is_file( $src ) and $fs->delete( $src );
 
 		return empty( $err ) ? array(
