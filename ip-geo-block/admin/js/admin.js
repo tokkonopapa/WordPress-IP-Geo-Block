@@ -68,17 +68,17 @@
 	}
 
 	function confirm(msg, callback) {
-		if (window.confirm(msg)) {
+		if (window.confirm(stripTag(msg))) {
 			callback();
 		}
 	}
 
 	function warning(status, msg, cmd) {
-		window.alert(msg || ip_geo_block.msg[12].replace('%s', cmd) + ' (' + status + ')');
+		window.alert(stripTag(msg || ip_geo_block.msg[12].replace('%s', cmd) + ' (' + status + ')'));
 	}
 
 	function notice_html5() {
-		warning(null, ip_geo_block.msg[10]);
+		warning(null, stripTag(ip_geo_block.msg[10]));
 	}
 
 	function redirect(page, tab) {

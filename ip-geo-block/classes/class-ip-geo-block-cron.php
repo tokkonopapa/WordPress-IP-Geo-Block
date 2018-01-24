@@ -298,7 +298,7 @@ class IP_Geo_Block_Cron {
 			);
 
 		$code = wp_remote_retrieve_response_code   ( $src );
-		$mssg = wp_remote_retrieve_response_message( $src );
+		$mesg = wp_remote_retrieve_response_message( $src );
 		$data = wp_remote_retrieve_header( $src, 'last-modified' );
 		$modified = $data ? strtotime( $data ) : $modified;
 
@@ -313,7 +313,7 @@ class IP_Geo_Block_Cron {
 		elseif ( 200 != $code )
 			return array(
 				'code' => $code,
-				'message' => $code.' '.$mssg,
+				'message' => $code.' '.$mesg,
 			);
 
 		try {
@@ -321,14 +321,18 @@ class IP_Geo_Block_Cron {
 			if ( isset( $args['method'] ) && 'GET' === $args['method'] ) {
 				$data = wp_remote_retrieve_body( $src );
 
-				if ( 'gz' === $ext ) {debug_log($_FILES);
-					if ( class_exists( 'gzdecode', FALSE ) ) { // @since PHP 5.4.0
-						$fs->put_contents( $filename, gzdecode( $data ) );
+				if ( 'gz' === $ext ) {
+					if ( function_exists( 'gzdecode') ) { // @since PHP 5.4.0
+						if ( FALSE === $fs->put_contents( $filename, gzdecode( $data ) ) )
+							throw new Exception(
+								sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $filename )
+							);
 					}
 
-					// http://php.net/manual/ja/function.move-uploaded-file.php
-					elseif ( isset( $_FILES[0]['name'] ) ) {
-						TRUE === ( $ret = self::gzfile( $_FILES[0]['name'], $filename ) ) or $err = $ret;
+					else {
+						$src = get_temp_dir() . basename( $url ); // $src should be removed
+						$fs->put_contents( $src, $data );
+						TRUE === ( $ret = self::gzfile( $src, $filename ) ) or $err = $ret;
 					}
 				}
 
@@ -350,16 +354,15 @@ class IP_Geo_Block_Cron {
 							$files[ $key ] = $dst.'/'.basename( $val );
 						}
 
-						// extract specific files from archives to temporary directory
+						// extract specific files from archives into temporary directory and copy it to the destination.
 						$data->extractTo( $tmp .= $dst, $files /* NULL */, TRUE ); // $tmp should be removed
 
 						// copy extracted files to Geolocation APIs directory
-						$dst = basename( $filename );
+						$dst = dirname( $filename );
 						foreach ( $files as $val ) {
-							$val = basename( $val );
 							// should the destination be exclusive with LOCK_EX ?
-							// $fs->put_contents( $dst.'/'.$val, $fs->get_contents( $tmp.'/'.$val ) );
-							$fs->copy( $tmp.'/'.$val, $dst.'/'.$val, TRUE );
+							// $fs->put_contents( $dst.'/'.basename( $val ), $fs->get_contents( $tmp.'/'.$val ) );
+							$fs->copy( $tmp.'/'.$val, $dst.'/'.basename( $val ), TRUE );
 						}
 					}
 				}
@@ -394,7 +397,7 @@ class IP_Geo_Block_Cron {
 							sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $tmp )
 						);
 
-					if ( FALSE === $fs->put_contents( $filename, $data, LOCK_EX ) )
+					if ( FALSE === $fs->put_contents( $filename, $data ) )
 						throw new Exception(
 							sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $filename )
 						);

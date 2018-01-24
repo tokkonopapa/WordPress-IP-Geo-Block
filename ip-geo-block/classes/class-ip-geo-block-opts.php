@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.4', // Version of this table (not package)
+		'version'         => '3.0.7', // Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -26,7 +26,7 @@ class IP_Geo_Block_Opts {
 		'matching_rule'   => -1,      // -1:neither, 0:white list, 1:black list
 		'white_list'      => NULL,    // Comma separeted country code
 		'black_list'      => 'ZZ',    // Comma separeted country code
-		'timeout'         => 6,       // Timeout in second
+		'timeout'         => 30,      // Timeout in second
 		'response_code'   => 403,     // Response code
 		'save_statistics' => TRUE,    // Record validation statistics
 		'clean_uninstall' => FALSE,   // Remove all savings from DB
@@ -35,6 +35,7 @@ class IP_Geo_Block_Opts {
 		'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
 		// since version 3.0.0
 		'cache_time_gc'   => 900,     // Cache garbage collection time
+		'request_ua'      => NULL,    // since version 3.0.7
 		// since version 1.2, 1.3
 		'login_fails'     => -1,      // Limited number of login attempts
 		'validation'      => array(   // Action hook for validation
@@ -357,7 +358,6 @@ class IP_Geo_Block_Opts {
 				$settings['public'      ]['ua_list'      ] = str_replace( '*:HOST=embed.ly', 'embed.ly:HOST', $settings['public']['ua_list'] );
 				$settings['login_action']['resetpass'    ] = @$settings['login_action']['resetpasss'];
 				$settings['mimetype'    ] = $default['mimetype'];
-				$settings['others'      ] = $default['others'  ];
 				unset(
 					$settings['rewrite'     ]['public'    ], // unused @3.0.0
 					$settings['rewrite'     ]['content'   ], // unused @3.0.0
@@ -382,6 +382,7 @@ class IP_Geo_Block_Opts {
 			}
 
 			if ( version_compare( $version, '3.0.7' ) < 0 ) {
+				$settings['timeout'] = $default['timeout'];
 				foreach ( array( 'ip_path', 'ip_last', 'asn_path', 'asn_last' ) as $tmp ) {
 					$settings['Maxmind'][ $tmp ] = $default['Maxmind'][ $tmp ];
 				}
@@ -391,12 +392,13 @@ class IP_Geo_Block_Opts {
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
 
-		// install addons for IP Geolocation database API ver. 1.1.9
+		// install addons for IP Geolocation database API ver. 1.1.10
 		$providers = IP_Geo_Block_Provider::get_addons();
-		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.4.1' ) < 0 )
+		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.7' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table
+		$settings['request_ua'] = $_SERVER['HTTP_USER_AGENT'];
 		update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
 		// return upgraded settings

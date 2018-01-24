@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.1
-Stable tag: 3.0.7a
+Stable tag: 3.0.7b
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -42,7 +42,7 @@ After several days of installation, you'll be supprised to find many malicious o
   When you click an external hyperlink on admin screens, http referrer will be eliminated to hide a footprint of your site.
 
 * **Multiple source of IP Geolocation databases:**  
-  [MaxMind GeoLite free databases](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") and [IP2Location LITE databases](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Also free Geolocation REST APIs and whois information can be available for audit purposes.  
+  [MaxMind GeoLite2 free databases](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") (it requires PHP 5.4.0+) and [IP2Location LITE databases](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Also free Geolocation REST APIs and whois information can be available for audit purposes.  
   Father more, if you use CloudFlare or CloudFront as a reverse proxy service, you can install the [dedicated API class libraries](http://www.ipgeoblock.com/article/api-class-library.html "CloudFlare & CloudFront API class library | IP Geo Block") for these services.
 
 * **Customizing response:**  
@@ -67,7 +67,7 @@ After several days of installation, you'll be supprised to find many malicious o
 
 = Attribution =
 
-This package includes GeoLite library distributed by MaxMind, available from [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"), and also includes IP2Location open source libraries available from [IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
+This package includes GeoLite2 library distributed by MaxMind, available from [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") (it requires PHP 5.4.0+), and also includes IP2Location open source libraries available from [IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
 
 Also thanks for providing the following great services and REST APIs for free.
 
@@ -179,7 +179,7 @@ or following descriptions for your best setup.
 = Local database settings settings =
 
 * **Auto updating (once a month)**  
-  If `Enable`, Maxmind GeoLite database will be downloaded automatically by WordPress cron job.
+  If `Enable`, geolocation databases will be downloaded automatically by WordPress cron job.
 
 = Record settings =
 
@@ -336,6 +336,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 * No image is shown after drag & drop a image in grid view at "Media Library". For more details, please refer to [this ticket at Github](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/issues/2 "No image is shown after drag & drop a image in grid view at "Media Library". - Issue #2 - tokkonopapa/WordPress-IP-Geo-Block - GitHub").
 * From [WordPress 4.5](https://make.wordpress.org/core/2016/03/09/comment-changes-in-wordpress-4-5/ "Comment Changes in WordPress 4.5 &#8211; Make WordPress Core"), `rel=nofollow` had no longer be attached to the links in `comment_content`. This change prevents to block "[Server Side Request Forgeries](https://www.owasp.org/index.php/Server_Side_Request_Forgery 'Server Side Request Forgery - OWASP')" (not Cross Site but a malicious internal link in the comment field).
+* [WordPress.com Mobile App](https://apps.wordpress.com/mobile/ "WordPress.com Apps - Mobile Apps") can't execute image uploading because of its own authentication system via XMLRPC.
 
 == Screenshots ==
 
@@ -353,7 +354,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 == Changelog ==
 
 = 3.0.7 =
-* **New feature:** Support Maxmind GeoLite2 database.
+* **New feature:** Support Maxmind GeoLite2 database which requires PHP 5.4.0+.
 * **Bug fix:** Fix the issue that "Force to load WP core" did not work properly under certain condition on Nginx.
 
 = 3.0.6.1 =

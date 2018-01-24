@@ -586,6 +586,8 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/capabilities.php
 	 */
 	public static function current_user_can( $capability ) {
+		do_action( IP_Geo_Block::PLUGIN_NAME . '-check-capability', $capability );
+
 		// possibly logged in but should be verified after 'init' hook is fired.
 		return did_action( 'init' ) ? current_user_can( $capability ) : (bool)( class_exists( 'WP_Session_Tokens', FALSE ) ? self::validate_auth_cookie() : self::parse_auth_cookie() );
 	}
@@ -650,7 +652,7 @@ class IP_Geo_Block_Util {
 	/**
 	 * Arrange $_FILES array
 	 *
-	 * @see http://php.net/manual/ja/features.file-upload.multiple.php#53240
+	 * @see http://php.net/manual/features.file-upload.multiple.php#53240
 	 */
 	public static function arrange_files( $files ) {
 		if ( ! is_array( $files['name'] ) )
@@ -660,7 +662,7 @@ class IP_Geo_Block_Util {
 		$file_count = count( $files['name'] );
 		$file_keys = array_keys( $files );
 
-		for ( $i=0; $i < $file_count; ++$i ) {
+		for ( $i = 0; $i < $file_count; ++$i ) {
 			foreach ( $file_keys as $key ) {
 				$file_array[ $i ][ $key ] = $files[ $key ][ $i ];
 			}

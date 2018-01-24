@@ -21,7 +21,7 @@ posted from the specific countries, and also prevents zero-day exploit.
 ### Attribution:
 
 This package includes GeoLite2 data created by MaxMind, available from 
-    [MaxMind][MaxMind],
+    [MaxMind][MaxMind] (it requires PHP 5.4.0+),
 and also includes IP2Location open source libraries available from 
     [IP2Location][IP2Loc].
 
