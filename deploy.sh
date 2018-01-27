@@ -134,6 +134,13 @@ cd $SVNPATH
 #	trunk/includes/venders/ \
 #	trunk/includes/download.php \
 #	trunk/includes/localdate.php
+svn delete --force \
+	trunk/admin/css/footable.core.min.css \
+	trunk/admin/css/font/footable.eot \
+	trunk/admin/css/font/footable.svg \
+	trunk/admin/css/font/footable.ttf \
+	trunk/admin/css/font/footable.woff \
+	trunk/admin/js/footable.min.js
 
 # Copy all files to tags
 svn copy trunk/ tags/$NEWVERSION1/

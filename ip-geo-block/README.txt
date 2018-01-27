@@ -355,7 +355,9 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 = 3.0.7 =
 * **New feature:** Support Maxmind GeoLite2 database which requires PHP 5.4.0+.
+* **Improvement:** "Live update" can show requests even if those are not specified as a blocking target.
 * **Bug fix:** Fix the issue that "Force to load WP core" did not work properly under certain condition on Nginx.
+* **Bug fix:** Fix the compatibility issue with Mail Poet 2/3 related to "Exceptions" for "Admin ajax/post".
 
 = 3.0.6.1 =
 Sorry for frequent update but the following bug should be fixed.
