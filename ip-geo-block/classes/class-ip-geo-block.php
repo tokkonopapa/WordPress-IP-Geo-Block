@@ -4,7 +4,7 @@
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
- * @license   GPL-2.0+
+ * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.6.1';
+	const VERSION = '3.0.7';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -52,6 +52,7 @@ class IP_Geo_Block {
 		$settings = self::get_option();
 		$priority = $settings['priority'  ];
 		$validate = $settings['validation'];
+		$live_log = get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
 
 		// get client IP address
 		self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $validate['proxy'] );
@@ -99,19 +100,19 @@ class IP_Geo_Block {
 
 		// analize core validation target (comment|xmlrpc|login|public)
 		elseif ( isset( $list[ $this->pagenow ] ) ) {
-			if ( $validate[ $list[ $this->pagenow ] ] )
+			if ( $validate[ $list[ $this->pagenow ] ] || $live_log )
 				$loader->add_action( 'init', array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority );
 		}
 
 		// alternative of trackback
 		elseif ( 'POST' === $_SERVER['REQUEST_METHOD'] && 'trackback' === basename( $this->request_uri ) ) {
-			if ( $validate['comment'] )
+			if ( $validate['comment'] || $live_log )
 				$loader->add_action( 'init', array( $this, 'validate_comment' ), $priority );
 		}
 
 		else {
 			// public facing pages
-			if ( $validate['public'] || ( ! empty( $_FILES ) && $validate['mimetype'] ) /* && 'index.php' === $this->pagenow */ )
+			if ( $validate['public'] || ( ! empty( $_FILES ) && $validate['mimetype'] ) || $live_log /* && 'index.php' === $this->pagenow */ )
 				$loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
 
 			// message text on comment form
@@ -120,7 +121,7 @@ class IP_Geo_Block {
 				add_action( 'comment_form' . $key, array( $this, 'comment_form_message' ) );
 			}
 
-			if ( $validate['comment'] ) {
+			if ( $validate['comment'] || $live_log ) {
 				add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), $priority ); // wp-comments-post.php @since 2.8.0
 				add_action( 'pre_trackback_post',  array( $this, 'validate_comment' ), $priority ); // wp-trackback.php @since 4.7.0
 				add_filter( 'preprocess_comment',  array( $this, 'validate_comment' ), $priority ); // wp-includes/comment.php @since 1.5.0
@@ -132,12 +133,12 @@ class IP_Geo_Block {
 				add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
 			}
 
-			if ( $validate['login'] ) {
+			if ( $validate['login'] || $live_log ) {
 				// for hide/rename wp-login.php, BuddyPress: prevent registration and rendering form
 				add_action( 'login_init', array( $this, 'validate_login' ), $priority );
 
 				// only when block on front-end is disabled
-				if ( ! $validate['public'] ) {
+				if ( ! $validate['public'] || $live_log ) {
 					add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
 					add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
 				}
@@ -248,7 +249,7 @@ class IP_Geo_Block {
 	public static function get_request_headers( $settings ) {
 		return apply_filters( self::PLUGIN_NAME . '-headers', array(
 			'timeout' => (int)$settings['timeout'],
-			'user-agent' => ! empty( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : 'WordPress/' . $GLOBALS['wp_version'] . ', ' . self::PLUGIN_NAME . ' ' . self::VERSION,
+			'user-agent' => ! empty( $settings['request_ua'] ) ? $settings['request_ua'] : @$_SERVER['HTTP_USER_AGENT']
 		) );
 	}
 
@@ -472,7 +473,7 @@ class IP_Geo_Block {
 		if ( $check_auth ) {
 			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
 			$block = ( 'passed' !== $validate['result'] );
-			$var = (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
+			$var = $settings['validation'][ $hook ] ? (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate ) : FALSE;
 			$var = ( 1 === $var &&   $block ) || // blocked
 			       ( 6 === $var && ( $block   || 'passed' !== self::validate_country( NULL, $validate, $settings ) ) ) || // blocked or qualified
 			       ( 2 === $var && ! $block ) || // passed
@@ -574,9 +575,8 @@ class IP_Geo_Block {
 	public function validate_admin() {
 		// if there's no action parameter but something is specified
 		$settings = self::get_option();
-		$action = isset( $_REQUEST['task' ] ) ? 'task' : 'action';
-		$action = isset( $_REQUEST[$action] ) ? $_REQUEST[$action] : NULL;
-		$page   = isset( $_REQUEST['page' ] ) ? $_REQUEST['page' ] : NULL;
+		$page   = isset( $_REQUEST['page'  ] ) ? $_REQUEST['page'  ] : NULL;
+		$action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : ( isset( $_REQUEST['task'] ) ? $_REQUEST['task'] : NULL );
 
 		switch ( $this->pagenow ) {
 		  case 'admin-ajax.php':

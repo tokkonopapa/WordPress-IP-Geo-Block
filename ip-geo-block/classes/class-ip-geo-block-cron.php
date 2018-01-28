@@ -4,7 +4,7 @@
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
- * @license   GPL-2.0+
+ * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
@@ -20,17 +20,28 @@ class IP_Geo_Block_Cron {
 
 		if ( $update['auto'] ) {
 			$now = time();
-			$cycle = DAY_IN_SECONDS * (int)$update['cycle'];
+			$next = $now + ( $immediate ? 0 : DAY_IN_SECONDS );
 
-			if ( FALSE === $immediate &&
-				$now - (int)$db['ipv4_last'] < $cycle &&
-				$now - (int)$db['ipv6_last'] < $cycle ) {
-				$update['retry'] = 0;
-				$next = max( (int)$db['ipv4_last'], (int)$db['ipv6_last'] ) +
-					$cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 6 );
-			} else {
+			if ( FALSE === $immediate ) {
 				++$update['retry'];
-				$next = $now + ( $immediate ? 0 : DAY_IN_SECONDS );
+				$cycle = DAY_IN_SECONDS * (int)$update['cycle'];
+
+				if ( empty( $db['ip_last'] ) ) {
+					// in case of Maxmind Legacy or IP2Location
+					if ( $now - (int)$db['ipv4_last'] < $cycle &&
+					     $now - (int)$db['ipv6_last'] < $cycle ) {
+						$update['retry'] = 0;
+						$next = max( (int)$db['ipv4_last'], (int)$db['ipv6_last'] ) +
+							$cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 6 );
+					}
+				} else {
+					// in case of Maxmind GeoLite2
+					if ( $now - (int)$db['ip_last'] < $cycle ) {
+						$update['retry'] = 0;
+						$next = (int)$db['ip_last'] +
+							$cycle + rand( DAY_IN_SECONDS, DAY_IN_SECONDS * 6 );
+					}
+				}
 			}
 
 			wp_schedule_single_event( $next, IP_Geo_Block::CRON_NAME, array( $immediate ) );
@@ -55,7 +66,7 @@ class IP_Geo_Block_Cron {
 		add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
 
 		// download database files (higher priority order)
-		foreach ( $providers = IP_Geo_Block_Provider::get_addons() as $provider ) {
+		foreach ( $providers = IP_Geo_Block_Provider::get_addons( $settings['providers'] ) as $provider ) {
 			if ( $geo = IP_Geo_Block_API::get_instance( $provider, $settings ) ) {
 				$res[ $provider ] = $geo->download( $settings[ $provider ], $args );
 
@@ -88,6 +99,8 @@ class IP_Geo_Block_Cron {
 
 						// finished to update matching rule
 						set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
+
+						break; // exit foreach()
 					}
 				}
 			}
@@ -193,6 +206,54 @@ class IP_Geo_Block_Cron {
 	}
 
 	/**
+	 * Decompresses gz archive and output to the file.
+	 *
+	 * @param string $src full path to the downloaded file.
+	 * @param string $dst full path to extracted file.
+	 * @return TRUE or array of error code and message.
+	 */
+	private static function gzfile( $src, $dst ) {
+		try {
+			if ( FALSE === ( $gz = gzopen( $src, 'r' ) ) )
+				throw new Exception(
+					sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $src )
+				);
+
+			if ( FALSE === ( $fp = @fopen( $dst, 'cb' ) ) )
+				throw new Exception(
+					sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $filename )
+				);
+
+			if ( ! flock( $fp, LOCK_EX ) )
+				throw new Exception(
+					sprintf( __( 'Can\'t lock <code>%s</code>. Please try again after a while.', 'ip-geo-block' ), $filename )
+				);
+
+			ftruncate( $fp, 0 ); // truncate file
+
+			// same block size in wp-includes/class-http.php
+			while ( $data = gzread( $gz, 4096 ) ) {
+				fwrite( $fp, $data, strlen( $data ) );
+			}
+		}
+
+		catch ( Exception $e ) {
+			$err = array(
+				'code'    => $e->getCode(),
+				'message' => $e->getMessage(),
+			);
+		}
+
+		if ( ! empty( $fp ) ) {
+			fflush( $fp );          // flush output before releasing the lock
+			flock ( $fp, LOCK_UN ); // release the lock
+			fclose( $fp );
+		}
+
+		return empty( $err ) ? TRUE : $err;
+	}
+
+	/**
 	 * Download zip/gz file, uncompress and save it to specified file
 	 *
 	 * @param string $url URL of remote file to be downloaded.
@@ -201,27 +262,34 @@ class IP_Geo_Block_Cron {
 	 * @param int $modified time of last modified on the remote server.
 	 * @return array status message.
 	 */
-	public static function download_zip( $url, $args, $filename, $modified ) {
+	public static function download_zip( $url, $args, $files, $modified ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'download_zip' );
 
-		// if the name of src file is changed, then update the dst
-		if ( basename( $filename ) !== ( $base = pathinfo( $url, PATHINFO_FILENAME ) ) )
-			$filename = dirname( $filename ) . '/' . $base;
+		// get extension
+		$ext = strtolower( pathinfo( $url, PATHINFO_EXTENSION ) );
+		if ( 'tar' === strtolower( pathinfo( pathinfo( $url, PATHINFO_FILENAME ), PATHINFO_EXTENSION ) ) )
+			$ext = 'tar';
 
-		// check file
-		if ( ! file_exists( $filename ) )
+		// check file (1st parameter includes absolute path in case of array)
+		$filename = is_array( $files ) ? $files[0] : (string)$files;
+		if ( ! $fs->exists( $filename ) )
 			$modified = 0;
 
 		// set 'If-Modified-Since' request header
 		$args += array(
 			'headers'  => array(
+				'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+				'Accept-Encoding' => 'gzip, deflate',
 				'If-Modified-Since' => gmdate( DATE_RFC1123, (int)$modified ),
 			),
 		);
 
 		// fetch file and get response code & message
-		$src = wp_remote_head( ( $url = esc_url_raw( $url ) ), $args );
+		if ( isset( $args['method'] ) && 'GET' === $args['method'] )
+			$src = wp_remote_get ( ( $url = esc_url_raw( $url ) ), $args );
+		else
+			$src = wp_remote_head( ( $url = esc_url_raw( $url ) ), $args );
 
 		if ( is_wp_error( $src ) )
 			return array(
@@ -230,7 +298,7 @@ class IP_Geo_Block_Cron {
 			);
 
 		$code = wp_remote_retrieve_response_code   ( $src );
-		$mssg = wp_remote_retrieve_response_message( $src );
+		$mesg = wp_remote_retrieve_response_message( $src );
 		$data = wp_remote_retrieve_header( $src, 'last-modified' );
 		$modified = $data ? strtotime( $data ) : $modified;
 
@@ -245,69 +313,99 @@ class IP_Geo_Block_Cron {
 		elseif ( 200 != $code )
 			return array(
 				'code' => $code,
-				'message' => $code.' '.$mssg,
+				'message' => $code.' '.$mesg,
 			);
 
-		// downloaded and unzip
 		try {
-			// download file
-			$src = download_url( $url );
+			// in case that the server which does not support HEAD method
+			if ( isset( $args['method'] ) && 'GET' === $args['method'] ) {
+				$data = wp_remote_retrieve_body( $src );
 
-			if ( is_wp_error( $src ) )
-				throw new Exception(
-					$src->get_error_code() . ' ' . $src->get_error_message()
-				);
+				if ( 'gz' === $ext ) {
+					if ( function_exists( 'gzdecode') ) { // @since PHP 5.4.0
+						if ( FALSE === $fs->put_contents( $filename, gzdecode( $data ) ) )
+							throw new Exception(
+								sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $filename )
+							);
+					}
 
-			// get extension
-			$args = strtolower( pathinfo( $url, PATHINFO_EXTENSION ) );
+					else {
+						$src = get_temp_dir() . basename( $url ); // $src should be removed
+						$fs->put_contents( $src, $data );
+						TRUE === ( $ret = self::gzfile( $src, $filename ) ) or $err = $ret;
+					}
+				}
 
-			// unzip file
-			if ( 'gz' === $args && function_exists( 'gzopen' ) ) {
-				if ( FALSE === ( $gz = gzopen( $src, 'r' ) ) )
-					throw new Exception(
-						sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $src )
-					);
+				elseif ( 'tar' === $ext && class_exists( 'PharData', FALSE ) ) { // @since PECL phar 2.0.0
+					$name = wp_remote_retrieve_header( $src, 'content-disposition' );
+					$name = explode( 'filename=', $name );
+					$name = array_pop( $name ); // e.g. GeoLite2-Country_20180102.tar.gz
+					$src  = ( $tmp = get_temp_dir() ) . $name; // $src should be removed
 
-				if ( FALSE === ( $fp = @fopen( $filename, 'cb' ) ) )
-					throw new Exception(
-						sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $filename )
-					);
+					// CVE-2015-6833: A directory traversal when extracting ZIP files could be used to overwrite files
+					// outside of intended area via a `..` in a ZIP archive entry that is mishandled by extractTo().
+					if ( $fs->put_contents( $src, $data ) ) {
+						$data = new PharData( $src, FilesystemIterator::SKIP_DOTS ); // get archives
 
-				if ( ! flock( $fp, LOCK_EX ) )
-					throw new Exception(
-						sprintf( __( 'Can\'t lock <code>%s</code>. Please try again after a while.', 'ip-geo-block' ), $filename )
-					);
+						// make the list of contents to be extracted from archives.
+						// when the list doesn't match the contents in archives, extractTo() may be crushed on windows.
+						$dst = $data->getSubPathname(); // e.g. GeoLite2-Country_20180102
+						foreach ( $files as $key => $val ) {
+							$files[ $key ] = $dst.'/'.basename( $val );
+						}
 
-				ftruncate( $fp, 0 ); // truncate file
+						// extract specific files from archives into temporary directory and copy it to the destination.
+						$data->extractTo( $tmp .= $dst, $files /* NULL */, TRUE ); // $tmp should be removed
 
-				// same block size in wp-includes/class-http.php
-				while ( $data = gzread( $gz, 4096 ) ) {
-					fwrite( $fp, $data, strlen( $data ) );
+						// copy extracted files to Geolocation APIs directory
+						$dst = dirname( $filename );
+						foreach ( $files as $val ) {
+							// should the destination be exclusive with LOCK_EX ?
+							// $fs->put_contents( $dst.'/'.basename( $val ), $fs->get_contents( $tmp.'/'.$val ) );
+							$fs->copy( $tmp.'/'.$val, $dst.'/'.basename( $val ), TRUE );
+						}
+					}
 				}
 			}
 
-			elseif ( 'zip' === $args && class_exists( 'ZipArchive', FALSE ) ) {
-				$tmp = get_temp_dir(); // @since 2.5
-				$ret = $fs->unzip_file( $src, $tmp ); // @since 2.5
-
-				if ( is_wp_error( $ret ) )
-					throw new Exception(
-						$ret->get_error_code() . ' ' . $ret->get_error_message()
-					);
-
-				if ( FALSE === ( $data = $fs->get_contents( $tmp .= basename( $filename ) ) ) )
-					throw new Exception(
-						sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $tmp )
-					);
-
-				if ( FALSE === $fs->put_contents( $filename, $data, LOCK_EX ) )
-					throw new Exception(
-						sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $filename )
-					);
-			}
-
+			// downloaded and unzip
 			else {
-				throw new Exception( __( 'gz or zip is not supported on your system.', 'ip-geo-block' ) );
+				// download file
+				$src = download_url( $url );
+
+				if ( is_wp_error( $src ) )
+					throw new Exception(
+						$src->get_error_code() . ' ' . $src->get_error_message()
+					);
+
+				// unzip file
+				if ( 'gz' === $ext ) {
+					TRUE === ( $ret = self::gzfile( $src, $filename ) ) or $err = $ret;
+				}
+
+				elseif ( 'zip' === $ext && class_exists( 'ZipArchive', FALSE ) ) {
+					$tmp = get_temp_dir(); // @since 2.5
+					$ret = $fs->unzip_file( $src, $tmp ); // @since 2.5
+
+					if ( is_wp_error( $ret ) )
+						throw new Exception(
+							$ret->get_error_code() . ' ' . $ret->get_error_message()
+						);
+
+					if ( FALSE === ( $data = $fs->get_contents( $tmp .= basename( $filename ) ) ) )
+						throw new Exception(
+							sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $tmp )
+						);
+
+					if ( FALSE === $fs->put_contents( $filename, $data ) )
+						throw new Exception(
+							sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $filename )
+						);
+				}
+
+				else {
+					throw new Exception( __( 'gz or zip is not supported on your system.', 'ip-geo-block' ) );
+				}
 			}
 		}
 
@@ -319,15 +417,9 @@ class IP_Geo_Block_Cron {
 			);
 		}
 
-		if ( ! empty( $fp ) ) {
-			fflush( $fp );          // flush output before releasing the lock
-			flock ( $fp, LOCK_UN ); // release the lock
-			fclose( $fp );
-		}
-
-		! empty( $gz  ) and gzclose( $gz );
-		! empty( $tmp )       && $fs->is_file( $tmp ) and $fs->delete( $tmp );
-		! is_wp_error( $src ) && $fs->is_file( $src ) and $fs->delete( $src );
+		! empty  ( $gz  ) and gzclose( $gz );
+		! empty  ( $tmp ) and $fs->delete( $tmp, TRUE ); // should be removed recursively in case of directory
+		is_string( $src ) && $fs->is_file( $src ) and $fs->delete( $src );
 
 		return empty( $err ) ? array(
 			'code' => $code,

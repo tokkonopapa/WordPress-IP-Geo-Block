@@ -2,9 +2,9 @@
 /**
  * IP Geo Block API class library for IP2Location
  *
- * @version   1.1.9
+ * @version   1.1.10
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
- * @license   GPL-2.0+
+ * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */

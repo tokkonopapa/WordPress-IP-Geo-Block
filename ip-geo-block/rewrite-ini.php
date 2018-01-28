@@ -4,7 +4,7 @@
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
- * @license   GPL-2.0+
+ * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  *
@@ -70,6 +70,6 @@ class IP_Geo_Block_Rewrite {
 IP_Geo_Block_Rewrite::search_user_ini();
 
 // this will trigger `init` action hook
-require_once '../../../wp-load.php';
+require_once substr( __FILE__, 0, strpos( __FILE__, '/wp-content/' ) ) . '/wp-load.php';
 
 endif; /* ! class_exists( 'IP_Geo_Block_Rewrite', FALSE ) */

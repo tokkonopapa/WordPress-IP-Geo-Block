@@ -4,7 +4,7 @@
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
- * @license   GPL-2.0+
+ * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
@@ -206,13 +206,20 @@ class IP_Geo_Block_Admin {
 			// js for google chart
 			wp_register_script(
 				$addon = IP_Geo_Block::PLUGIN_NAME . '-google-chart',
-				// 'https://www.google.cn/jsapi' in china
 				apply_filters( 'google-jsapi', 'https://www.google.com/jsapi' ), array(), NULL, $footer
 			);
 			wp_enqueue_script( $addon );
 			break;
 
 		  case 2: /* Search */
+			// Google Map in China
+			$geo = IP_Geo_Block::get_geolocation();
+			if ( isset( $geo['code'] ) && 'CN' === $geo['code'] ) {
+				add_filter( 'google-jsapi',      array( $this, 'google_jsapi_cn'      ) );
+				add_filter( 'google-maps',       array( $this, 'google_maps_cn'       ) );
+				add_filter( 'google-maps-nokey', array( $this, 'google_maps_nokey_cn' ) );
+			}
+
 			// js for google map
 			$settings = IP_Geo_Block::get_option();
 			if ( $key = $settings['api_key']['GoogleMap'] ) {
@@ -221,7 +228,6 @@ class IP_Geo_Block_Admin {
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 				wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-google-map',
-					// 'http://maps.google.cn/maps/api/js' in china
 					apply_filters( 'google-maps', '//maps.googleapis.com/maps/api/js' ) . ( 'default' !== $key ? "?key=$key" : '' ),
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
@@ -296,6 +302,14 @@ class IP_Geo_Block_Admin {
 		);
 		wp_enqueue_script( $handle );
 	}
+
+	/**
+	 * Google Map in China
+	 *
+	 */
+	public function google_jsapi_cn     ( $url ) { return 'https://www.google.cn/jsapi';  }
+	public function google_maps_cn      ( $url ) { return '//maps.google.cn/maps/api/js'; }
+	public function google_maps_nokey_cn( $url ) { return '//maps.google.cn/maps';        }
 
 	/**
 	 * Add plugin meta links
@@ -1292,18 +1306,15 @@ class IP_Geo_Block_Admin {
 			$res = $res->exec_update_db();
 			break;
 
-		  case 'search':
-			// Get geolocation by IP
+		  case 'search': // Get geolocation by IP
 			$res = IP_Geo_Block_Admin_Ajax::search_ip( $which );
 			break;
 
-		  case 'scan-code':
-			// Fetch providers to get country code
+		  case 'scan-code': // Fetch providers to get country code
 			$res = IP_Geo_Block_Admin_Ajax::scan_country( $which );
 			break;
 
-		  case 'clear-statistics':
-			// Set default values
+		  case 'clear-statistics': // Set default values
 			IP_Geo_Block_Logs::clear_stat();
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
@@ -1311,8 +1322,7 @@ class IP_Geo_Block_Admin {
 			);
 			break;
 
-		  case 'clear-cache':
-			// Delete cache of IP address
+		  case 'clear-cache': // Delete cache of IP address
 			IP_Geo_Block_API_Cache::clear_cache();
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
@@ -1320,8 +1330,7 @@ class IP_Geo_Block_Admin {
 			);
 			break;
 
-		  case 'clear-logs':
-			// Delete logs in MySQL DB
+		  case 'clear-logs': // Delete logs in MySQL DB
 			IP_Geo_Block_Logs::clear_logs( $which );
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
@@ -1329,33 +1338,27 @@ class IP_Geo_Block_Admin {
 			);
 			break;
 
-		  case 'export-logs':
-			// Export logs from MySQL DB
+		  case 'export-logs':// Export logs from MySQL DB
 			IP_Geo_Block_Admin_Ajax::export_logs( $which );
 			break;
 
-		  case 'restore-logs':
-			// Get logs from MySQL DB
+		  case 'restore-logs': // Get logs from MySQL DB
 			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which );
 			break;
 
-		  case 'validate':
-			// Validate settings
+		  case 'validate': // Validate settings
 			IP_Geo_Block_Admin_Ajax::validate_settings( $this );
 			break;
 
-		  case 'import-default':
-			// Import initial settings
+		  case 'import-default': // Import initial settings
 			$res = IP_Geo_Block_Admin_Ajax::settings_to_json( IP_Geo_Block::get_default() );
 			break;
 
-		  case 'import-preferred':
-			// Import preference
+		  case 'import-preferred': // Import preference
 			$res = IP_Geo_Block_Admin_Ajax::preferred_to_json();
 			break;
 
-		  case 'gmap-error':
-			// Reset Google Maps API key
+		  case 'gmap-error': // Reset Google Maps API key
 			if ( $settings['api_key']['GoogleMap'] === 'default' ) {
 				$settings['api_key']['GoogleMap'] = NULL;
 				update_option( IP_Geo_Block::OPTION_NAME, $settings );
@@ -1366,28 +1369,23 @@ class IP_Geo_Block_Admin {
 			}
 			break;
 
-		  case 'show-info':
-			// Show system and debug information
+		  case 'show-info': // Show system and debug information
 			$res = IP_Geo_Block_Admin_Ajax::get_wp_info();
 			break;
 
-		  case 'get-actions':
-			// Get all the ajax/post actions
+		  case 'get-actions': // Get all the ajax/post actions
 			$res = IP_Geo_Block_Util::get_registered_actions( TRUE );
 			break;
 
-		  case 'get-blocked':
-			// Get blocked actions and pages
+		  case 'get-blocked': // Get blocked actions and pages
 			$res = IP_Geo_Block_Admin_Ajax::get_blocked_queries( $which );
 			break;
 
-		  case 'restore-cache':
-			// Restore cache from database and format for DataTables
+		  case 'restore-cache': // Restore cache from database and format for DataTables
 			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which );
 			break;
 
-		  case 'bulk-action-remove':
-			// Delete specified IP addresses from cache
+		  case 'bulk-action-remove': // Delete specified IP addresses from cache
 			$res = IP_Geo_Block_Logs::delete_cache_entry( @$which['IP'] );
 			break;
 
@@ -1427,37 +1425,32 @@ class IP_Geo_Block_Admin {
 			);
 			break;
 
-		  case 'restore-network':
-			// Restore blocked per target in logs
+		  case 'restore-network': // Restore blocked per target in logs
 			$res = IP_Geo_Block_Admin_Ajax::restore_network( $which, (int)$_POST['offset'], (int)$_POST['length'], FALSE );
 			break;
 
-		  case 'live-start':
-			// Restore live log
+		  case 'live-start': // Restore live log
 			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::catch_live_log() ) )
 				$res = IP_Geo_Block_Admin_Ajax::restore_live_log( $which, $settings );
 			else
 				$res = array( 'error' => $res->get_error_message() );
 			break;
 
-		  case 'live-pause':
-			// Pause live log
+		  case 'live-pause': // Pause live log
 			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::catch_live_log() ) )
 				$res = array( 'data' => array() );
 			else
 				$res = array( 'error' => $res->get_error_message() );
 			break;
 
-		  case 'live-stop':
-			// Stop live log
+		  case 'live-stop': // Stop live log
 			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::release_live_log() ) )
 				$res = array( 'data' => array() );
 			else
 				$res = array( 'error' => $res->get_error_message() );
 			break;
 
-		  case 'reset-live':
-			// Reset data source of live log
+		  case 'reset-live': // Reset data source of live log
 			$res = IP_Geo_Block_Admin_Ajax::reset_live_log();
 			break;
 
@@ -1479,6 +1472,7 @@ class IP_Geo_Block_Admin {
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 			);
+			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

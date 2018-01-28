@@ -1103,7 +1103,7 @@ endif;
 		 * Local database settings
 		 *----------------------------------------*/
 		// Local DBs for each API
-		$providers = IP_Geo_Block_Provider::get_addons();
+		$providers = IP_Geo_Block_Provider::get_addons( $options['providers'] );
 		if ( empty( $providers ) ) {
 			$context->add_admin_notice( 'error', sprintf(
 				__( 'Can not find geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
@@ -1114,7 +1114,7 @@ endif;
 		add_settings_section(
 			$section = $plugin_slug . '-database',
 			__( 'Local database settings', 'ip-geo-block' ),
-			NULL,
+			array( __CLASS__, 'note_database' ),
 			$option_slug
 		);
 
@@ -1610,6 +1610,16 @@ endif;
 				'<li>', __( 'While Maxmind and IP2Location will fetch the local database, others will pass an IP address to the APIs via HTTP.', 'ip-geo-block' ), '</li>', "\n",
 				'<li>', __( 'Please select the appropriate APIs to fit the privacy law in your country.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
+	}
+
+	public static function note_database() {
+		// https://pecl.php.net/package/phar
+		if ( ! version_compare( PHP_VERSION, '5.4.0', '>=' ) || ! class_exists( 'PharData', FALSE ) ) {
+			echo
+				'<ul class="ip-geo-block-note">', "\n",
+					'<li>', sprintf( __( 'Maxmind GeoLite2 databases and APIs need PHP version 5.4.0+ and %sPECL phar 2.0.0+%s.', 'ip-geo-block' ), '<a href="https://pecl.php.net/package/phar" title="PECL :: Package :: phar">', '</a>' ), '</li>', "\n",
+				'</ul>', "\n";
+		}
 	}
 
 	public static function note_public() {
