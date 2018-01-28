@@ -398,7 +398,7 @@ class IP_Geo_Block_Opts {
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table
-		$settings['request_ua'] = $_SERVER['HTTP_USER_AGENT'];
+		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
 		update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
 		// return upgraded settings
