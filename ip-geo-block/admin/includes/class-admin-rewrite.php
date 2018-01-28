@@ -256,11 +256,11 @@ class IP_Geo_Block_Admin_Rewrite {
 	private function remove_rewrite_block( $content, $block ) {
 		$block = array_reverse( $block, TRUE );
 
-		if ( 2 <= count( $block ) ) {
-			reset( $block );
-			while (
-				( list( $key_end,   $val_end   ) = each( $block ) ) &&
-				( list( $key_begin, $val_begin ) = each( $block ) ) ) {
+		reset( $block );
+		while( FALSE !== current( $block ) ) {
+			$key_end   = key( $block ); $val_end   = current( $block ); next( $block );
+			$key_begin = key( $block ); $val_begin = current( $block ); next( $block );
+			if ( NULL !== $key_end && NULL !== $key_begin ) {
 				array_splice( $content, $key_begin, $key_end - $key_begin + 1 );
 			}
 		}

@@ -913,30 +913,12 @@ class Net_DNS2
         // loop so we can handle server errors
         //
         $response = null;
-        $ns = '';
+        $ns = null;
 
-        while (1) {
-
-            //
-            // grab the next DNS server
-            //
-            $ns = each($this->nameservers);
-            if ($ns === false) {
-
-                if (is_null($this->last_exception) == false) {
-
-                    throw $this->last_exception;
-                } else {
-
-                    throw new Net_DNS2_Exception(
-                        'every name server provided has failed',
-                        Net_DNS2_Lookups::E_NS_FAILED
-                    );
-                }
-            }
-
-            $ns = $ns[1];
-
+        //
+        // grab the next DNS server
+        //
+        foreach ( $this->nameservers as $ns ) {
             //
             // if the use TCP flag (force TCP) is set, or the packet is bigger than our 
             // max allowed UDP size- which is either 512, or if this is DNSSEC request,
@@ -1047,6 +1029,20 @@ class Net_DNS2
             }
 
             break;
+        }
+
+        if ($ns === null) {
+
+            if (is_null($this->last_exception) == false) {
+
+                throw $this->last_exception;
+            } else {
+
+                throw new Net_DNS2_Exception(
+                    'every name server provided has failed',
+                    Net_DNS2_Lookups::E_NS_FAILED
+                );
+            }
         }
 
         return $response;
