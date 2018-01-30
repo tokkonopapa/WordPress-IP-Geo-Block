@@ -392,9 +392,9 @@ class IP_Geo_Block_Opts {
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
 
-		// install addons for IP Geolocation database API ver. 1.1.10
+		// install addons for IP Geolocation database API ver. 1.1.11
 		$providers = IP_Geo_Block_Provider::get_addons();
-		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.7' ) < 0 )
+		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.7.2' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table

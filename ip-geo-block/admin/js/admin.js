@@ -1056,11 +1056,6 @@
 				return stopPropergation(event);
 			}).change();
 
-			// WP-ZEP in Admin area
-			$(ID('@', 'validation_admin_2')).on('change', function (/*event*/) {
-				ip_geo_block_auth.zep.admin = true;
-			});
-
 			// Exceptions for Admin ajax/post
 			ajax_post(null, {
 				cmd: 'get-actions'

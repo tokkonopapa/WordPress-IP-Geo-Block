@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.7.1';
+	const VERSION = '3.0.7.2';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -223,12 +223,6 @@ class IP_Geo_Block {
 		if ( is_user_logged_in() ) {
 			$args['sites'] = IP_Geo_Block_Util::get_multisite();
 			$args['nonce'] = IP_Geo_Block_Util::create_nonce( $handle = self::PLUGIN_NAME . '-auth-nonce' );
-
-			// target of wp-zep
-			$settings = self::get_option();
-			foreach ( array( 'ajax', 'admin', 'plugins', 'themes' ) as $key ) {
-				$args['zep'][ $key ] = (bool)( $settings['validation'][ $key ] & 2 );
-			}
 
 			// authentication
 			$script = plugins_url(

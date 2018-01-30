@@ -83,9 +83,8 @@ if (0) {
 	private function absolute_path( $file ) {
 		global $wp_filesystem;
 		$path = str_replace( ABSPATH, $wp_filesystem->abspath(), dirname( $file ) );
-		$file = $this->slashit( $path ) . basename( $file );
 
-		return $file;
+		return $this->slashit( $path ) . basename( $file );
 	}
 
 	/**
@@ -277,8 +276,11 @@ if (0) {
 		// http://php.net/manual/en/function.file.php#refsect1-function.file-returnvalues
 		@ini_set( 'auto_detect_line_endings', TRUE );
 
+		if ( ! $this->is_file( $file ) || ! $this->is_readable( $file ) )
+			return FALSE;
+
 		if ( 'direct' === self::$method )
-			return $this->is_file( $file ) && @file( $this->absolute_path( $file ), FILE_IGNORE_NEW_LINES );
+			return file( $this->absolute_path( $file ), FILE_IGNORE_NEW_LINES );
 
 		$file = $wp_filesystem->get_contents_array( $this->absolute_path( $file ) );
 		return FALSE !== $file ? array_map( 'rtrim', $file ) : FALSE;

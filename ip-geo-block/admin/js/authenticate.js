@@ -246,10 +246,10 @@
 			// check if uri includes the target path of zep
 			uri = regexp.exec(uri.pathname);
 			if (uri) {
-				if ((auth.zep.ajax    && 0 <= uri[0].indexOf(auth.admin + 'admin-')) ||
-				    (auth.zep.admin   && 0 <= uri[0].indexOf(auth.admin           )) ||
-				    (auth.zep.plugins && 0 <= uri[0].indexOf(auth.plugins         )) ||
-				    (auth.zep.themes  && 0 <= uri[0].indexOf(auth.themes          ))) {
+				if ((0 <= uri[0].indexOf(auth.admin + 'admin-')) ||
+				    (0 <= uri[0].indexOf(auth.admin           )) ||
+				    (0 <= uri[0].indexOf(auth.plugins         )) ||
+				    (0 <= uri[0].indexOf(auth.themes          ))) {
 					return 1; // internal for admin
 				}
 			}
@@ -399,9 +399,9 @@
 			}
 
 			// if external then redirect with no referrer not to leak out the nonce
-			else if (admin === -1) {
+			else if (admin === -1 && is_backend_nonce()) {
 				// open within the same window
-				if (is_backend_nonce() || '_self' === $this.attr('target')) {
+				if ('_self' === $this.attr('target')) {
 					redirect(href);
 					return; // just in case redirection fails
 				}
