@@ -2,7 +2,7 @@
 /**
  * IP Geo Block API class library for Maxmind
  *
- * @version   1.1.10
+ * @version   1.1.11
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
