@@ -399,12 +399,14 @@
 			}
 
 			// if external then redirect with no referrer not to leak out the nonce
-			else if (admin === -1 && is_backend_nonce()) {
-				if ('_self' === $this.attr('target')) {
+			else if (admin === -1) {
+				// open within the same window
+				if (is_backend_nonce() || '_self' === $this.attr('target')) {
 					redirect(href);
 					return; // just in case redirection fails
 				}
 
+				// open a new window
 				href = escapeHTML(decodeURIComponent(this.href));
 				href = href.split(';', 2).shift(); // avoid `url=...;url=javascript:...`
 

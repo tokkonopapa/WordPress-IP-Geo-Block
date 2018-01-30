@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.1
-Stable tag: 3.0.7
+Stable tag: 3.0.7.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -352,6 +352,10 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.7.1 =
+Sorry for frequent update every time, but the following bug should be fixed.
+* **Bug fix:** Fix the issue that unexpected blocking when GeoLite2 DBs returned "ZZ" (unknown country) as an country code. Actually, GeoLite2 DBs seems not to be equivalent to the legacy ones.
 
 = 3.0.7 =
 * **New feature:** Support Maxmind GeoLite2 database which requires PHP 5.4.0+.

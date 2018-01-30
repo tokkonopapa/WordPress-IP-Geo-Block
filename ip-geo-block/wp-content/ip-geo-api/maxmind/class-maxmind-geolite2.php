@@ -2,7 +2,7 @@
 /**
  * IP Geo Block API class library for Maxmind
  *
- * @version   1.1.10
+ * @version   1.1.11
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
@@ -67,7 +67,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 				$reader = new GeoIp2\Database\Reader( $file );
 				$res = $this->location_country( $reader->country( $ip ) );
 			} catch ( Exception $e ) {
-				$res = array( 'countryCode' => 'ZZ' );
+				$res = array( 'countryCode' => NULL );
 			}
 		}
 
