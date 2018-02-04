@@ -38,6 +38,7 @@ class IP_Geo_Block_Activate {
 	// initialize logs then upgrade and return new options
 	public static function activate_blog() {
 		IP_Geo_Block_Logs::create_tables();
+		IP_Geo_Block_Logs::delete_cache_entry();
 		IP_Geo_Block_Opts::upgrade();
 	}
 
@@ -48,10 +49,10 @@ class IP_Geo_Block_Activate {
 	public static function activate( $network_wide = FALSE ) {
 		defined( 'IP_GEO_BLOCK_DEBUG' ) and IP_GEO_BLOCK_DEBUG and assert( 'is_main_site()', 'Not main blog.' );
 
-		if ( $network_wide ) {
-			// Update main blog first.
-			self::activate_blog();
+		// Update main blog first.
+		self::activate_blog();
 
+		if ( $network_wide ) {
 			// Get option of main blog.
 			$option = IP_Geo_Block::get_option();
 
@@ -80,10 +81,6 @@ class IP_Geo_Block_Activate {
 			}
 		}
 
-		else {
-			self::activate_blog();
-		}
-
 		// only after 'init' action hook for is_user_logged_in().
 		if ( did_action( 'init' ) && is_user_logged_in() )
 			self::init_main_blog(); // should be called with high priority
@@ -103,6 +100,9 @@ class IP_Geo_Block_Activate {
 
 		// deactivate mu-plugins
 		IP_Geo_Block_Opts::setup_validation_timing();
+
+		// remove self ip address from cache
+		IP_Geo_Block_Logs::delete_cache_entry();
 	}
 
 }

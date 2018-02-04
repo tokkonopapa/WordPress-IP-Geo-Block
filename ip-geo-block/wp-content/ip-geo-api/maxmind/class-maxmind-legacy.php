@@ -2,7 +2,7 @@
 /**
  * IP Geo Block API class library for Maxmind
  *
- * @version   1.1.11
+ * @version   1.1.12
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
@@ -174,7 +174,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 		! empty( $res['ipv4']['modified'] ) and $db['ipv4_last'] = $res['ipv4']['modified'];
 		! empty( $res['ipv6']['modified'] ) and $db['ipv6_last'] = $res['ipv6']['modified'];
 
-if ( $db['use_asn'] || ! empty( $db['asn4_path'] ) ) :
+if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] ) ) :
 
 		// ASN for IPv4
 		if ( $dir !== dirname( $db['asn4_path'] ) . '/' )
@@ -213,7 +213,7 @@ if ( $db['use_asn'] || ! empty( $db['asn4_path'] ) ) :
 		! empty( $res['asn4']['modified'] ) and $db['asn4_last'] = $res['asn4']['modified'];
 		! empty( $res['asn6']['modified'] ) and $db['asn6_last'] = $res['asn6']['modified'];
 
-endif; // $db['use_asn'] || ! empty( $db['asn4_path'] )
+endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] )
 
 		return isset( $res ) ? $res : NULL;
 	}
@@ -283,7 +283,7 @@ endif; // $db['use_asn'] || ! empty( $db['asn4_path'] )
 			)
 		);
 
-if ( $db['use_asn'] || ! empty( $db['asn4_path'] ) ) :
+if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] ) ) :
 
 		// ASN for IPv4
 		if ( $db['asn4_path'] )
@@ -341,7 +341,7 @@ if ( $db['use_asn'] || ! empty( $db['asn4_path'] ) ) :
 			)
 		);
 
-endif; // $db['use_asn'] || ! empty( $db['asn4_path'] )
+endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] )
 
 	}
 }

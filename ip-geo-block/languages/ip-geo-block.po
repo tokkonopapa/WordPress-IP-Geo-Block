@@ -2,99 +2,28 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.7\n"
+"Project-Id-Version: IP Geo Block 3.0.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-01-24 21:16+0900\n"
-"PO-Revision-Date: 2018-01-24 21:18+0900\n"
-"Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
+"POT-Creation-Date: 2018-02-04 12:53+0900\n"
+"PO-Revision-Date: 2018-02-04 14:53+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-KeywordsList: __;_e;_n;_x;esc_html_e;esc_html__;esc_attr_e;"
 "esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_x:1,2c;_n:1,2\n"
-"X-Poedit-Basepath: ../\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+"Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
+"Language: en_001\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #. Description of the plugin/theme
 msgid ""
 "It blocks any spams, login attempts and malicious access to the admin area "
 "posted from outside your nation, and also prevents zero-day exploit."
-msgstr ""
-
-#: classes/class-ip-geo-block-opts.php:422
-#: classes/class-ip-geo-block-cron.php:224
-#: classes/class-ip-geo-block-cron.php:328
-#: classes/class-ip-geo-block-cron.php:402
-#: admin/class-ip-geo-block-admin.php:1224
-#: admin/includes/class-admin-rewrite.php:194
-#, php-format
-msgid "Unable to write <code>%s</code>. Please check the permission."
-msgstr ""
-
-#: classes/class-ip-geo-block-cron.php:219
-#: classes/class-ip-geo-block-cron.php:397
-#: admin/includes/class-admin-rewrite.php:168
-#, php-format
-msgid "Unable to read <code>%s</code>. Please check the permission."
-msgstr ""
-
-#: classes/class-ip-geo-block-cron.php:229
-#, php-format
-msgid "Can't lock <code>%s</code>. Please try again after a while."
-msgstr ""
-
-#: classes/class-ip-geo-block-cron.php:308
-msgid "Your database file is up-to-date."
-msgstr ""
-
-#: classes/class-ip-geo-block-cron.php:407
-msgid "gz or zip is not supported on your system."
-msgstr ""
-
-#: classes/class-ip-geo-block-cron.php:426
-#: admin/includes/tab-settings.php:1131
-#, php-format
-msgid "Last update: %s"
-msgstr ""
-
-#: classes/class-ip-geo-block-file.php:54
-#, php-format
-msgid ""
-"This plugin does not support method &#8220;%s&#8221; for FTP or SSH based "
-"file operations. Please refer to <a href=\"https://codex.wordpress.org/"
-"Editing_wp-config.php#WordPress_Upgrade_Constants\" title=\"Editing wp-"
-"config.php &laquo; WordPress Codex\">this document</a> for more details."
-msgstr ""
-
-#: classes/class-ip-geo-block-file.php:68
-msgid ""
-"You should define some constants in your <code>wp-config.php</code> for FTP "
-"or SSH based file operations. Please refer to <a href=\"https://codex."
-"wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants\" title="
-"\"Editing wp-config.php &laquo; WordPress Codex\">this document</a> for more "
-"details."
-msgstr ""
-
-#: classes/class-ip-geo-block-logs.php:169
-#, php-format
-msgid ""
-"Creating a DB table %s had failed. Once de-activate this plugin, and then "
-"activate again."
-msgstr ""
-
-#: classes/class-ip-geo-block-logs.php:639
-#, php-format
-msgid "The user %s (user ID: %d) is in use."
-msgstr ""
-
-#: classes/class-ip-geo-block-apis.php:653
-msgid ""
-"You need to select at least one IP geolocation service. Otherwise "
-"<strong>you'll be blocked</strong> after the cache expires."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:266
@@ -148,7 +77,7 @@ msgid "The selected row cannot be found in the visible area."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:278
-#: admin/class-ip-geo-block-admin.php:1401
+#: admin/class-ip-geo-block-admin.php:1417
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr ""
@@ -161,8 +90,7 @@ msgstr ""
 msgid "No matching records found"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:284
-#: admin/includes/tab-geolocation.php:71
+#: admin/class-ip-geo-block-admin.php:284 admin/includes/tab-geolocation.php:71
 msgid "IP address"
 msgstr ""
 
@@ -220,8 +148,8 @@ msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:336
 #: admin/class-ip-geo-block-admin.php:444
-#: admin/class-ip-geo-block-admin.php:652
-#: admin/class-ip-geo-block-admin.php:671
+#: admin/class-ip-geo-block-admin.php:659
+#: admin/class-ip-geo-block-admin.php:678
 msgid "Settings"
 msgstr ""
 
@@ -235,8 +163,8 @@ msgid "IP Geo Block"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:452
-#: admin/class-ip-geo-block-admin.php:656
-#: admin/class-ip-geo-block-admin.php:672
+#: admin/class-ip-geo-block-admin.php:663
+#: admin/class-ip-geo-block-admin.php:679
 msgid "Site List"
 msgstr ""
 
@@ -288,85 +216,136 @@ msgid ""
 "or IP address is not in the whitelist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:529
+#: admin/class-ip-geo-block-admin.php:530
 #, php-format
-msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
+msgid "Please check your &#8220;%sValidation rule settings%s&#8221;."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:540
+#: admin/class-ip-geo-block-admin.php:534
+#, php-format
+msgid ""
+"Please confirm your local geolocation databases at &#8220;%sLocal database "
+"settings%s&#8221; section and remove your IP address in cache at &#8220;"
+"%sStatistics in cache%s&#8221; section."
+msgstr ""
+
+#: admin/class-ip-geo-block-admin.php:547
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
 "select &#8220;init&#8221; action hook."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:653
+#: admin/class-ip-geo-block-admin.php:660
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:654
+#: admin/class-ip-geo-block-admin.php:661
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:655
+#: admin/class-ip-geo-block-admin.php:662
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:657
+#: admin/class-ip-geo-block-admin.php:664
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:683
+#: admin/class-ip-geo-block-admin.php:690
 msgid "Network wide"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:696
+#: admin/class-ip-geo-block-admin.php:703
 msgid "Toggle all"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:699
+#: admin/class-ip-geo-block-admin.php:706
 msgid ""
 "Independent of &#8220;Statistics and Logs settings&#8221;, you can see all "
 "the requests validated by this plugin in almost real time."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:699 admin/includes/tab-accesslog.php:37
+#: admin/class-ip-geo-block-admin.php:706 admin/includes/tab-accesslog.php:37
 msgid "Live update"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:703
+#: admin/class-ip-geo-block-admin.php:710
 msgid "Open a new window on clicking the link in the chart."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:703
+#: admin/class-ip-geo-block-admin.php:710
 msgid "Open a new window"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:726
+#: admin/class-ip-geo-block-admin.php:733
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:727
+#: admin/class-ip-geo-block-admin.php:734
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:732
+#: admin/class-ip-geo-block-admin.php:739
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:829
+#: admin/class-ip-geo-block-admin.php:836
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:844
+#: admin/class-ip-geo-block-admin.php:851
 msgid "Select one"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1254
+#: admin/class-ip-geo-block-admin.php:1240
+#: admin/includes/class-admin-rewrite.php:194
+#: classes/class-ip-geo-block-cron.php:228
+#: classes/class-ip-geo-block-cron.php:332
+#: classes/class-ip-geo-block-cron.php:406
+#: classes/class-ip-geo-block-opts.php:426
+#, php-format
+msgid "Unable to write <code>%s</code>. Please check the permission."
+msgstr ""
+
+#: admin/class-ip-geo-block-admin.php:1270
 msgid "Settings saved."
+msgstr ""
+
+#: admin/includes/class-admin-ajax.php:74
+msgid "n/a"
+msgstr ""
+
+#: admin/includes/class-admin-ajax.php:77 admin/includes/tab-settings.php:76
+#: admin/includes/tab-settings.php:96
+msgid "UNKNOWN"
+msgstr ""
+
+#: admin/includes/class-admin-ajax.php:416
+#, php-format
+msgid ""
+"illegal format at %s. Please delete the corresponding line and try again."
+msgstr ""
+
+#: admin/includes/class-admin-rewrite.php:168
+#: classes/class-ip-geo-block-cron.php:223
+#: classes/class-ip-geo-block-cron.php:401
+#, php-format
+msgid "Unable to read <code>%s</code>. Please check the permission."
+msgstr ""
+
+#: admin/includes/class-admin-rewrite.php:169
+#: admin/includes/class-admin-rewrite.php:195
+#, php-format
+msgid "Or please refer to %s to set it manually."
+msgstr ""
+
+#: admin/includes/class-admin-rewrite.php:234
+#, php-format
+msgid "&#8220;auto_prepend_file&#8221; already defined in %s."
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:19
@@ -471,6 +450,54 @@ msgstr ""
 msgid "Attribution links"
 msgstr ""
 
+#: admin/includes/tab-geolocation.php:18
+msgid "Search IP address geolocation"
+msgstr ""
+
+#: admin/includes/tab-geolocation.php:42
+msgid "Geolocation service"
+msgstr ""
+
+#: admin/includes/tab-geolocation.php:86
+msgid "Find geolocation"
+msgstr ""
+
+#: admin/includes/tab-geolocation.php:94
+msgid "Search now"
+msgstr ""
+
+#: admin/includes/tab-network.php:33
+msgid "Blocked by target in logs"
+msgstr ""
+
+#: admin/includes/tab-network.php:42
+msgid "Rows"
+msgstr ""
+
+#: admin/includes/tab-network.php:47
+msgid "Columns"
+msgstr ""
+
+#: admin/includes/tab-network.php:62
+msgid "Chart display layout"
+msgstr ""
+
+#: admin/includes/tab-network.php:77
+msgid "Latest 1 hour"
+msgstr ""
+
+#: admin/includes/tab-network.php:78
+msgid "Latest 24 hours"
+msgstr ""
+
+#: admin/includes/tab-network.php:79
+msgid "Latest 1 week"
+msgstr ""
+
+#: admin/includes/tab-network.php:92
+msgid "Duration to retrieve"
+msgstr ""
+
 #: admin/includes/tab-settings.php:44
 msgid "Validation rule settings"
 msgstr ""
@@ -480,11 +507,6 @@ msgid ""
 "<dfn title=\"You can confirm the appropriate Geolocation APIs and country "
 "code by referring &#8220;Scan country code&#8221;.\">Your IP address / "
 "Country</dfn>"
-msgstr ""
-
-#: admin/includes/tab-settings.php:76 admin/includes/tab-settings.php:96
-#: admin/includes/class-admin-ajax.php:77
-msgid "UNKNOWN"
 msgstr ""
 
 #: admin/includes/tab-settings.php:77 admin/includes/tab-settings.php:97
@@ -585,7 +607,7 @@ msgstr ""
 #: admin/includes/tab-settings.php:197
 #, php-format
 msgid ""
-"Some useful tools for investigating ASN are introduced in  &#8220;%s&#8221;."
+"Some useful tools for investigating ASN are introduced in &#8220;%s&#8221;."
 msgstr ""
 
 #: admin/includes/tab-settings.php:206
@@ -924,7 +946,7 @@ msgid "UA string and qualification"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1007
-msgid "Specify the name of action that is invariably blocked."
+msgid "Specify the name of actions as exception that is invariably blocked."
 msgstr ""
 
 #: admin/includes/tab-settings.php:1007
@@ -988,6 +1010,11 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:1130
 msgid "database"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1131 classes/class-ip-geo-block-cron.php:430
+#, php-format
+msgid "Last update: %s"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1140
@@ -1295,49 +1322,6 @@ msgid ""
 "Block\">Record settings and logs</a>&#8221; for details."
 msgstr ""
 
-#: admin/includes/class-admin-rewrite.php:169
-#: admin/includes/class-admin-rewrite.php:195
-#, php-format
-msgid "Or please refer to %s to set it manually."
-msgstr ""
-
-#: admin/includes/class-admin-rewrite.php:234
-#, php-format
-msgid "&#8220;auto_prepend_file&#8221; already defined in %s."
-msgstr ""
-
-#: admin/includes/tab-network.php:33
-msgid "Blocked by target in logs"
-msgstr ""
-
-#: admin/includes/tab-network.php:42
-msgid "Rows"
-msgstr ""
-
-#: admin/includes/tab-network.php:47
-msgid "Columns"
-msgstr ""
-
-#: admin/includes/tab-network.php:62
-msgid "Chart display layout"
-msgstr ""
-
-#: admin/includes/tab-network.php:77
-msgid "Latest 1 hour"
-msgstr ""
-
-#: admin/includes/tab-network.php:78
-msgid "Latest 24 hours"
-msgstr ""
-
-#: admin/includes/tab-network.php:79
-msgid "Latest 1 week"
-msgstr ""
-
-#: admin/includes/tab-network.php:92
-msgid "Duration to retrieve"
-msgstr ""
-
 #: admin/includes/tab-statistics.php:19
 msgid "Statistics of validation"
 msgstr ""
@@ -1435,35 +1419,58 @@ msgid ""
 "Please set the proper condition to record and analyze the validation logs."
 msgstr ""
 
-#: admin/includes/class-admin-ajax.php:74
-msgid "n/a"
+#: classes/class-ip-geo-block-apis.php:653
+msgid ""
+"You need to select at least one IP geolocation service. Otherwise "
+"<strong>you'll be blocked</strong> after the cache expires."
 msgstr ""
 
-#: admin/includes/class-admin-ajax.php:416
+#: classes/class-ip-geo-block-cron.php:233
+#, php-format
+msgid "Can't lock <code>%s</code>. Please try again after a while."
+msgstr ""
+
+#: classes/class-ip-geo-block-cron.php:312
+msgid "Your database file is up-to-date."
+msgstr ""
+
+#: classes/class-ip-geo-block-cron.php:411
+msgid "gz or zip is not supported on your system."
+msgstr ""
+
+#: classes/class-ip-geo-block-file.php:54
 #, php-format
 msgid ""
-"illegal format at %s. Please delete the corresponding line and try again."
+"This plugin does not support method &#8220;%s&#8221; for FTP or SSH based "
+"file operations. Please refer to <a href=\"https://codex.wordpress.org/"
+"Editing_wp-config.php#WordPress_Upgrade_Constants\" title=\"Editing wp-"
+"config.php &laquo; WordPress Codex\">this document</a> for more details."
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:18
-msgid "Search IP address geolocation"
+#: classes/class-ip-geo-block-file.php:68
+msgid ""
+"You should define some constants in your <code>wp-config.php</code> for FTP "
+"or SSH based file operations. Please refer to <a href=\"https://codex."
+"wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants\" title="
+"\"Editing wp-config.php &laquo; WordPress Codex\">this document</a> for more "
+"details."
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:42
-msgid "Geolocation service"
+#: classes/class-ip-geo-block-logs.php:169
+#, php-format
+msgid ""
+"Creating a DB table %s had failed. Once de-activate this plugin, and then "
+"activate again."
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:86
-msgid "Find geolocation"
+#: classes/class-ip-geo-block-logs.php:639
+#, php-format
+msgid "The user %s (user ID: %d) is in use."
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:94
-msgid "Search now"
-msgstr ""
-
-#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:228
+#: wp-content/ip-geo-api/ip2location/class-ip2location.php:151
 #: wp-content/ip-geo-api/maxmind/class-maxmind-geolite2.php:144
-#: wp-content/ip-geo-api/ip2location/class-ip2location.php:150
+#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:228
 msgid "Database file does not exist."
 msgstr ""
 

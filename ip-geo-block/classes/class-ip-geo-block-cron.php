@@ -26,7 +26,7 @@ class IP_Geo_Block_Cron {
 				++$update['retry'];
 				$cycle = DAY_IN_SECONDS * (int)$update['cycle'];
 
-				if ( empty( $db['ip_last'] ) ) {
+				if ( isset( $db['ipv4_last'] ) ) {
 					// in case of Maxmind Legacy or IP2Location
 					if ( $now - (int)$db['ipv4_last'] < $cycle &&
 					     $now - (int)$db['ipv6_last'] < $cycle ) {
@@ -73,22 +73,27 @@ class IP_Geo_Block_Cron {
 				// re-schedule cron job
 				self::schedule_cron_job( $settings['update'], $settings[ $provider ], FALSE );
 
-				// update option settings
+				// update provider settings
 				self::update_settings( $settings, array( 'update', $provider ) );
 
+				// skip to update settings in case of InfiniteWP that could be in a different country
+				if ( isset( $_SERVER['HTTP_X_REQUESTED_FROM'] ) && FALSE !== strpos( $_SERVER['HTTP_X_REQUESTED_FROM'], 'InfiniteWP' ) )
+					continue;
+
 				// update matching rule immediately
-				if ( $immediate && FALSE !== ( $stat = get_transient( IP_Geo_Block::CRON_NAME ) ) && 'done' !== $stat ) {
+				if ( $immediate && 'done' !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
 					$validate = IP_Geo_Block::get_geolocation( NULL, array( $provider ) );
 					$validate = IP_Geo_Block::validate_country( 'cron', $validate, $settings );
 
-					// if blocking may happen then disable validation
-					if ( -1 !== (int)$settings['matching_rule'] && 'passed' !== $validate['result'] &&
-					     ( empty( $_SERVER['HTTP_X_REQUESTED_FROM'] ) || FALSE === strpos( $_SERVER['HTTP_X_REQUESTED_FROM'], 'InfiniteWP' ) ) ) {
-						$settings['matching_rule'] = -1;
-					}
+					if ( 'ZZ' === $validate['code'] )
+						continue;
 
-					// setup country code if it needs to be initialized
-					if ( -1 === (int)$settings['matching_rule'] && 'ZZ' !== $validate['code'] ) {
+					// matching rule should be reset when blocking happens 
+					if ( 'passed' !== $validate['result'] )
+						$settings['matching_rule'] = -1;
+
+					// setup country code in whitelist if it needs to be initialized
+					if ( -1 === (int)$settings['matching_rule'] ) {
 						$settings['matching_rule'] = 0; // white list
 
 						if ( FALSE === strpos( $settings['white_list'], $validate['code'] ) )
@@ -96,12 +101,11 @@ class IP_Geo_Block_Cron {
 
 						// update option settings
 						self::update_settings( $settings, array( 'matching_rule', 'white_list' ) );
-
-						// finished to update matching rule
-						set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
-
-						break; // exit foreach()
 					}
+
+					// finished to update matching rule
+					if ( -1 !== (int)$settings['matching_rule'] )
+						set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
 				}
 			}
 		}
@@ -182,14 +186,14 @@ class IP_Geo_Block_Cron {
 
 			foreach ( $blog_ids as $id ) {
 				switch_to_blog( $id );
-				IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
+				IP_Geo_Block_Logs::delete_cache_expired( $settings['cache_time'] );
 				restore_current_blog();
 			}
 		}
 
 		// for single site
 		else {
-			IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
+			IP_Geo_Block_Logs::delete_cache_expired( $settings['cache_time'] );
 		}
 
 		self::stop_cache_gc();
