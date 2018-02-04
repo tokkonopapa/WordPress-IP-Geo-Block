@@ -194,7 +194,7 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => 1 === (int)$options[ $field ][ $key ],
-				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Some useful tools for investigating ASN are introduced in  &#8220;%s&#8221;.', 'ip-geo-block' ), '<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/utilizing-asnumber.html" title="Utilizing AS number | IP Geo Block">Utilizing AS number</a>' ) . '</p>',
+				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Some useful tools for investigating ASN are introduced in &#8220;%s&#8221;.', 'ip-geo-block' ), '<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/utilizing-asnumber.html" title="Utilizing AS number | IP Geo Block">Utilizing AS number</a>' ) . '</p>',
 			)
 		);
 
@@ -1004,7 +1004,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$key = 'exception';
 		add_settings_field(
 			$option_name.'_'.$key.'_'.$field,
-			'<dfn title="' . __( 'Specify the name of action that is invariably blocked.', 'ip-geo-block' ) . '">' . __( 'Excluded actions', 'ip-geo-block' ) . '</dfn>',
+			'<dfn title="' . __( 'Specify the name of actions as exception that is invariably blocked.', 'ip-geo-block' ) . '">' . __( 'Excluded actions', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

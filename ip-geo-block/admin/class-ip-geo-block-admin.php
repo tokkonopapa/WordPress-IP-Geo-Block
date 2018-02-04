@@ -474,6 +474,7 @@ class IP_Geo_Block_Admin {
 	 */
 	private function diagnose_admin_screen() {
 		$settings = IP_Geo_Block::get_option();
+		$updating = get_transient( IP_Geo_Block::CRON_NAME );
 		$adminurl = $this->dashboard_url( $this->is_network );
 
 		// Check version and compatibility
@@ -482,7 +483,7 @@ class IP_Geo_Block_Admin {
 
 		// Check consistency of matching rule
 		if ( -1 === (int)$settings['matching_rule'] ) {
-			if ( FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
+			if ( FALSE !== $updating ) {
 				self::add_admin_notice( 'notice-warning', sprintf(
 					__( 'Now downloading geolocation databases in background. After a little while, please check your country code and &#8220;<strong>Matching rule</strong>&#8221; at <a href="%s">Validation rule settings</a>.', 'ip-geo-block' ),
 					esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $adminurl ) )
@@ -497,13 +498,13 @@ class IP_Geo_Block_Admin {
 		}
 
 		// Check to finish updating matching rule
-		elseif ( 'done' === get_transient( IP_Geo_Block::CRON_NAME ) ) {
+		elseif ( 'done' === $updating ) {
 			delete_transient( IP_Geo_Block::CRON_NAME );
 			self::add_admin_notice( 'updated ', __( 'Local database and matching rule have been updated.', 'ip-geo-block' ) );
 		}
 
-		// Check self blocking
-		if ( 1 === (int)$settings['validation']['login'] ) {
+		// Check self blocking (skip during updating)
+		if ( FALSE === $updating && 1 === (int)$settings['validation']['login'] ) {
 			$instance = IP_Geo_Block::get_instance();
 			$validate = $instance->validate_ip( 'login', $settings, TRUE, FALSE, FALSE ); // skip authentication check
 
@@ -525,9 +526,16 @@ class IP_Geo_Block_Admin {
 						__( 'Once you logout, you will be unable to login again because your country code or IP address is in the blacklist.', 'ip-geo-block' ) :
 						__( 'Once you logout, you will be unable to login again because your country code or IP address is not in the whitelist.', 'ip-geo-block' )
 					) . ' ' .
-					sprintf(
-						__( 'Please check your <a href="%s">Validation rule settings</a>.', 'ip-geo-block' ),
-						esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-0'
+					( 'ZZ' !== $validate['code'] ?
+						sprintf(
+							__( 'Please check your &#8220;%sValidation rule settings%s&#8221;.', 'ip-geo-block' ),
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-0">', '</a></strong>'
+						) :
+						sprintf(
+							__( 'Please confirm your local geolocation databases at &#8220;%sLocal database settings%s&#8221; section and remove your IP address in cache at &#8220;%sStatistics in cache%s&#8221; section.', 'ip-geo-block' ),
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4">', '</a></strong>',
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-2">', '</a></strong>'
+						)
 					)
 				);
 				break;
@@ -1076,8 +1084,8 @@ class IP_Geo_Block_Admin {
 			$output['public'][ $key ] = array();
 		}
 
-		// 3.0.4 AS number, 3.0.6 Auto updating of DB files
-		$output['Maxmind']['use_asn'] = $output['update']['auto'] = FALSE;
+		// 3.0.4 AS number, 3.0.6 Auto updating of DB files, 3.0.8 Geolite2
+		$output['Maxmind']['use_asn'] = $output['Geolite2']['use_asn'] = $output['update']['auto'] = FALSE;
 
 		// 3.0.5 Live update
 		$output['live_update']['in_memory'] = 0;
@@ -1140,14 +1148,23 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
-		// 3.0.4 AS number
-		if ( $output['Maxmind']['use_asn'] && empty( $output['Maxmind']['asn4_path'] ) ) {
+		// 3.0.4 AS number, 3.0.8 Geolite2
+		$output['Geolite2']['use_asn'] = $output['Maxmind']['use_asn'];
+		if ( $output['Maxmind']['use_asn'] && ( ! $output['Maxmind']['asn4_path'] || ! $output['Geolite2']['asn_path'] ) ) {
+			// force to update in case of using asn
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
-			IP_Geo_Block_Cron::start_update_db( $output, TRUE ); // force to update
-		}
-		elseif ( ! $output['Maxmind']['use_asn'] && ! @file_exists( $output['Maxmind']['asn4_path'] ) ) {
-			$output['Maxmind']['asn4_path'] = NULL; // force to delete
-			$output['Maxmind']['asn6_path'] = NULL;
+			IP_Geo_Block_Cron::start_update_db( $output, TRUE );
+		} else {
+			// reset path if file does not exist
+			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+			$fs = IP_Geo_Block_FS::init( 'postprocess_options' );
+			if ( ! $output['Maxmind']['use_asn'] && ! $fs->exists( $output['Maxmind']['asn4_path'] ) ) {
+				$output['Maxmind']['asn4_path'] = NULL;
+				$output['Maxmind']['asn6_path'] = NULL;
+			}
+			if ( ! $output['Geolite2']['use_asn'] && ! $fs->exists( $output['Geolite2']['asn_path'] ) ) {
+				$output['Geolite2']['asn_path'] = NULL;
+			}
 		}
 
 		return $output;
@@ -1472,7 +1489,6 @@ class IP_Geo_Block_Admin {
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 			);
-			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

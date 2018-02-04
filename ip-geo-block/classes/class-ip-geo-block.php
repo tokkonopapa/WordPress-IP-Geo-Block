@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.7.2';
+	const VERSION = '3.0.8';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -252,6 +252,11 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function get_ip_address() {
+		if ( ! self::$remote_addr ) {
+			$settings = self::get_option();
+			self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $settings['validation']['proxy'] );
+		}
+
 		return apply_filters( self::PLUGIN_NAME . '-ip-addr', self::$remote_addr );
 	}
 
@@ -316,8 +321,9 @@ class IP_Geo_Block {
 			if ( ( $geo = IP_Geo_Block_API::get_instance( $provider, $settings ) ) &&
 			     ( $code = $geo->$callback( $ip, $args ) ) ) {
 				// Get AS number @since 3.0.4
-				if ( ( $settings['Maxmind']['use_asn'] ) && ( ! isset( $code['asn'] ) || 0 !== strpos( $code['asn'], 'AS' ) ) &&
-				     ( $geo = IP_Geo_Block_API::get_instance( 'Maxmind', $settings ) ) ) {
+				if ( ( ! empty( $settings[ $provider ]['use_asn'] ) ) &&
+				     ( ! isset( $code['asn'] ) || 0 !== strpos( $code['asn'], 'AS' ) ) &&
+				     ( $geo = IP_Geo_Block_API::get_instance( $provider, $settings ) ) ) {
 					$asn = $geo->get_location( $ip, array( 'ASN' => TRUE ) );
 					$asn = isset( $asn['ASN'] ) ? strtok( $asn['ASN'], ' ' ) : NULL;
 				}

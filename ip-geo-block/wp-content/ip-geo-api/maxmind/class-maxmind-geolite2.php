@@ -2,7 +2,7 @@
 /**
  * IP Geo Block API class library for Maxmind
  *
- * @version   1.1.11
+ * @version   1.1.12
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
@@ -33,7 +33,7 @@ define( 'IP_GEO_BLOCK_GEOLITE2_DOWNLOAD', 'https://dev.maxmind.com/geoip/geoip2/
  * Input type  : IP address (IPv4, IPv6)
  * Output type : array
  */
-class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
+class IP_Geo_Block_API_Geolite2 extends IP_Geo_Block_API {
 
 	private function location_country( $record ) {
 		return array( 'countryCode' => $record->country->isoCode );
@@ -110,7 +110,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 		! empty( $res['ip']['filename'] ) and $db['ip_path'] = $res['ip']['filename'];
 		! empty( $res['ip']['modified'] ) and $db['ip_last'] = $res['ip']['modified'];
 
-if ( $db['use_asn'] || ! empty( $db['asn_path'] ) ) :
+if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] ) ) :
 
 		// ASN for IPv4 and IPv6
 		if ( $dir !== dirname( $db['asn_path'] ) . '/' )
@@ -129,7 +129,7 @@ if ( $db['use_asn'] || ! empty( $db['asn_path'] ) ) :
 		! empty( $res['asn']['filename'] ) and $db['asn_path'] = $res['asn']['filename'];
 		! empty( $res['asn']['modified'] ) and $db['asn_last'] = $res['asn']['modified'];
 
-endif; // $db['use_asn'] || ! empty( $db['asn_path'] )
+endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] )
 
 		return $res;
 	}
@@ -171,7 +171,7 @@ endif; // $db['use_asn'] || ! empty( $db['asn_path'] )
 			)
 		);
 
-if ( $db['use_asn'] || ! empty( $db['asn_path'] ) ) :
+if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] ) ) :
 
 		// ASN for IPv4 and IPv6
 		if ( $db['asn_path'] )
@@ -201,7 +201,7 @@ if ( $db['use_asn'] || ! empty( $db['asn_path'] ) ) :
 			)
 		);
 
-endif; // $db['use_asn'] || ! empty( $db['asn_path'] )
+endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] )
 
 	}
 }
@@ -211,7 +211,7 @@ endif; // $db['use_asn'] || ! empty( $db['asn_path'] )
  *
  */
 IP_Geo_Block_Provider::register_addon( array(
-	'Maxmind' => array(
+	'Geolite2' => array(
 		'key'  => NULL,
 		'type' => 'IPv4, IPv6 / Apache License, Version 2.0',
 		'link' => '<a class="ip-geo-block-link" href="https://dev.maxmind.com/geoip/geoip2/" title="GeoIP2 &laquo; MaxMind Developer Site" rel=noreferrer target=_blank>https://dev.maxmind.com/geoip/geoip2/</a>&nbsp;(IPv4, IPv6 / Apache License, Version 2.0)',

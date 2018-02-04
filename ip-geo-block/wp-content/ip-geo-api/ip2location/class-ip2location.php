@@ -2,13 +2,14 @@
 /**
  * IP Geo Block API class library for IP2Location
  *
- * @version   1.1.11
+ * @version   1.1.12
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
-if ( class_exists( 'IP_Geo_Block_API', FALSE ) ) :
+
+class_exists( 'IP_Geo_Block_API', FALSE ) or die;
 
 /**
  * URL and Path for IP2Location database
@@ -218,5 +219,3 @@ IP_Geo_Block_Provider::register_addon( array(
 		'link' => '<a class="ip-geo-block-link" href="http://lite.ip2location.com/" title="Free IP Geolocation Database" rel=noreferrer target=_blank>http://lite.ip2location.com/</a>&nbsp;(IPv4, IPv6 / LGPLv3)',
 	),
 ) );
-
-endif;

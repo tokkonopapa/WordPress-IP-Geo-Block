@@ -732,7 +732,7 @@ class IP_Geo_Block_Logs {
 		// Restore statistics.
 		if ( $stat = self::restore_stat() ) {
 
-			$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'ZZ';
+			$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'Cache'; // asign `Cache` if no provider is available
 			if ( empty( $stat['providers'][ $provider ] ) )
 				$stat['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
 
@@ -841,12 +841,12 @@ class IP_Geo_Block_Logs {
 	 * Delete cache entry by IP address
 	 *
 	 */
-	public static function delete_cache_entry( $entry ) {
+	public static function delete_cache_entry( $entry = array() ) {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 		$result = TRUE;
 
-		foreach ( $entry as $ip ) {
+		foreach ( empty( $entry ) ? array( IP_Geo_Block::get_ip_address() ) : $entry as $ip ) {
 			if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
 				$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = %s", $ip )
 				and $result &= ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
@@ -860,7 +860,7 @@ class IP_Geo_Block_Logs {
 	 * Delete expired cache
 	 *
 	 */
-	public static function delete_expired_cache( $cache_time ) {
+	public static function delete_cache_expired( $cache_time ) {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 

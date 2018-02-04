@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.9.1
-Stable tag: 3.0.7.2
+Tested up to: 4.9.2
+Stable tag: 3.0.8
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -352,6 +352,10 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.8 =
+* **Improvement:** Use both Maxmind Legacy and GeoLite2 databases parallely.
+* **Improvement:** Remove self IP address from cache on activation or upgrade to prevent blocking caused by 'ZZ' in cache.
 
 = 3.0.7.2 =
 * **Bug fix:** Update Geolocation API library for Maxmind GeoLite2.

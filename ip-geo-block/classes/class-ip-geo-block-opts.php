@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.7', // Version of this table (not package)
+		'version'         => '3.0.8', // Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -100,11 +100,6 @@ class IP_Geo_Block_Opts {
 			'asn6_path'   => NULL,    // AS Number for IPv6
 			'asn4_last'   => 0,       // AS Number for IPv4
 			'asn6_last'   => 0,       // AS Number for IPv6
-			// since version 3.0.7
-			'ip_path'     => NULL,    // GeoLite2 DB: Path
-			'ip_last'     => NULL,    // GeoLite2 DB: Last-Modified
-			'asn_path'    => NULL,    // GeoLite2 ASN DB: Path
-			'asn_last'    => NULL,    // GeoLite2 ASN DB: Last-Modified
 		),
 		'IP2Location'     => array(   // IP2Location
 			// since version 2.2.2
@@ -113,6 +108,14 @@ class IP_Geo_Block_Opts {
 			// since version 2.2.1
 			'ipv4_last'   => 0,       // Last-Modified of DB file
 			'ipv6_last'   => 0,       // Last-Modified of DB file
+		),
+		// since version 3.0.8
+		'Geolite2'        => array(   // Maxmind
+			'use_asn'     => -1,      // -1:install, 0:disable, 1:enable
+			'ip_path'     => NULL,    // GeoLite2 DB: Path
+			'ip_last'     => NULL,    // GeoLite2 DB: Last-Modified
+			'asn_path'    => NULL,    // GeoLite2 ASN DB: Path
+			'asn_last'    => NULL,    // GeoLite2 ASN DB: Last-Modified
 		),
 		// since version 2.2.3
 		'api_dir'         => NULL,    // Path to geo-location API
@@ -381,10 +384,11 @@ class IP_Geo_Block_Opts {
 				$settings['live_update'] = $default['live_update'];
 			}
 
-			if ( version_compare( $version, '3.0.7' ) < 0 ) {
-				$settings['timeout'] = $default['timeout'];
+			if ( version_compare( $version, '3.0.8' ) < 0 ) {
+				$settings['timeout' ] = $default['timeout'];
+				$settings['Geolite2']['use_asn'] = $settings['Maxmind']['use_asn'];
 				foreach ( array( 'ip_path', 'ip_last', 'asn_path', 'asn_last' ) as $tmp ) {
-					$settings['Maxmind'][ $tmp ] = $default['Maxmind'][ $tmp ];
+					$settings['Geolite2'][ $tmp ] = $default['Geolite2'][ $tmp ];
 				}
 			}
 
@@ -394,7 +398,7 @@ class IP_Geo_Block_Opts {
 
 		// install addons for IP Geolocation database API ver. 1.1.11
 		$providers = IP_Geo_Block_Provider::get_addons();
-		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.7.2' ) < 0 )
+		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.8' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table
