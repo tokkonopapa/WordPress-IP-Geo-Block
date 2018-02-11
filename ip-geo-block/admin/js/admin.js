@@ -1070,7 +1070,7 @@
 				for (key in data) {
 					if (data.hasOwnProperty(key)) {
 						key = stripTag(key);
-						if (!$this.find('#' + (id = ID('%', key))).size()) {
+						if (!$this.find('#' + (id = ID('!', 'exception_admin_' + key))).size()) {
 							i = input.cloneNode(false);
 							i.setAttribute('id', id);
 							i.setAttribute('value', key);
@@ -1170,9 +1170,9 @@
 								id  = ID('!', 'exception_' + target + '_' + val);
 
 								// make an anchor tab with search query
-								s = 'admin' === target ? key + '=' + val : '/' + key + '/' + val + '/';
-								s = '<a class="ip-geo-block-icon ip-geo-block-icon-alert" href="?page=ip-geo-block&tab=4&s='
-								+ encodeURIComponent(s) + '" title="' + title.replace('%s', s) + '" target="_blank"><span></span></a>';
+								s = 'admin' === target ? (key + '=' + val) : ('/' + key + '/' + val + '/');
+								s = '<a class="ip-geo-block-icon ip-geo-block-icon-alert" href="' + ip_geo_block_auth.sites[0] + 'options-general.php' + // only main site
+								    '?page=ip-geo-block&tab=4&s=' + encodeURIComponent(s) + '" title="' + title.replace('%s', s) + '" target="_blank"><span></span></a>';
 
 								// add a new list when not found in existent key
 								if (ext < 0) {

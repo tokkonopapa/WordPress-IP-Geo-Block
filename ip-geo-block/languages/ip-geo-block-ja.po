@@ -1327,8 +1327,8 @@ msgid ""
 "<dfn title=\"Synchronize all settings over the network wide.\">Network wide "
 "settings</dfn>"
 msgstr ""
-"<dfn title=\"全ての設定をネットワーク全体で同期させます。\">ネットワークの一括"
-"設定</dfn>"
+"<dfn title=\"全ての設定をネットワーク全体で同期させます。\">ネットワーク一括管"
+"理</dfn>"
 
 #: admin/includes/tab-settings.php:1472
 msgid "Remove all settings at uninstallation"

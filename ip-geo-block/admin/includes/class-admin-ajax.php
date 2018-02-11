@@ -57,8 +57,8 @@ class IP_Geo_Block_Admin_Ajax {
 	 */
 	public static function scan_country( $which ) {
 		// scan all the country code using selected APIs
-		$ip        = IP_Geo_Block::get_ip_address();
 		$options   = IP_Geo_Block::get_option();
+		$ip        = IP_Geo_Block::get_ip_address();
 		$args      = IP_Geo_Block::get_request_headers( $options );
 		$type      = IP_Geo_Block_Provider::get_providers( 'type', FALSE, FALSE );
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $options['providers'], FALSE, FALSE );
@@ -485,6 +485,7 @@ endif; // TEST_RESTORE_NETWORK
 			'[public][dnslkup]',         // 3.0.3
 			'[public][response_code]',   // 3.0.3
 			'[public][redirect_uri]',    // 3.0.3
+			'[providers][Geolite2]',     // 3.0.8
 			'[providers][Maxmind]',
 			'[providers][IP2Location]',
 			'[providers][freegeoip.net]',
@@ -752,6 +753,8 @@ endif; // TEST_RESTORE_NETWORK
 			'DNS lookup:'  => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),
 			'User agent:'  => $_SERVER['HTTP_USER_AGENT'],
 		);
+
+		$res = array_map( 'esc_html', $res );
 
 		// Child and parent themes
 		$activated = wp_get_theme(); // @since 3.4.0

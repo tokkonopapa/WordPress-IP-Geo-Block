@@ -392,13 +392,13 @@ class IP_Geo_Block_Admin {
 		$settings = IP_Geo_Block::get_option();
 
 		// Network wide or not
-		$admin_menu = ( 'admin_menu' === current_filter() );
+		$admin_menu = ( 'admin_menu' === current_filter() ); // @since: 2.5 `admin_menu` or `network_admin_menu`
 		$this->is_network &= ( current_user_can( 'manage_network_options' ) && $settings['network_wide'] );
 
 		// Verify tab number
 		if ( $this->is_network ) {
 			if ( $admin_menu ) {
-				$this->admin_tab = max( $this->admin_tab, 1 );
+				$this->admin_tab = min( 4, max( 1, $this->admin_tab ) );
 			} elseif ( ! in_array( $this->admin_tab, array( 0, 5 ), TRUE ) ) {
 				$this->admin_tab = 0;
 			}

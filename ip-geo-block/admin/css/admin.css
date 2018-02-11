@@ -221,12 +221,15 @@ fieldset.ip-geo-block-field textarea.regular-text {
 }
 
 /* SVG in google chart */
-svg a > text {
-    fill: #0073aa;
-    text-decoration: underline;
+svg a {
+    cursor: pointer;
 }
 svg a:hover > text {
     fill: #0096dd;
+}
+svg a > text {
+    fill: #0073aa;
+    text-decoration: underline;
 }
 
 /* table */

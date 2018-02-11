@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.8';
+	const VERSION = '3.0.9a';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -54,11 +54,11 @@ class IP_Geo_Block {
 		$validate = $settings['validation'];
 		$live_log = get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
 
-		// get client IP address
-		self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $validate['proxy'] );
-
 		// include drop in if it exists
 		file_exists( $key = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php' ) and include( $key );
+
+		// get client IP address
+		self::$remote_addr = self::get_ip_address( $settings );
 
 		// normalize requested uri and page
 		$key = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
@@ -95,7 +95,7 @@ class IP_Geo_Block {
 			if ( 'admin' !== $this->target_type )
 				$loader->add_action( 'init', array( $this, 'validate_direct' ), $priority );
 			else // 'widget_init' for admin dashboard
-				$loader->add_action( 'wp_loaded', array( $this, 'validate_admin' ), $priority );
+				$loader->add_action( 'admin_init', array( $this, 'validate_admin' ), $priority );
 		}
 
 		// analize core validation target (comment|xmlrpc|login|public)
@@ -251,13 +251,17 @@ class IP_Geo_Block {
 	 * Get current IP address
 	 *
 	 */
-	public static function get_ip_address() {
+	public static function get_ip_address( $settings = NULL ) {
 		if ( ! self::$remote_addr ) {
-			$settings = self::get_option();
-			self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $settings['validation']['proxy'] );
+			$settings or $settings = self::get_option();
+
+			self::$remote_addr = apply_filters(
+				self::PLUGIN_NAME . '-ip-addr',
+				IP_Geo_Block_Util::get_client_ip( $settings['validation']['proxy'] )
+			);
 		}
 
-		return apply_filters( self::PLUGIN_NAME . '-ip-addr', self::$remote_addr );
+		return self::$remote_addr;
 	}
 
 	/**
