@@ -3,7 +3,7 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.9.2
+Tested up to: 4.9.4
 Stable tag: 3.0.9a
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt

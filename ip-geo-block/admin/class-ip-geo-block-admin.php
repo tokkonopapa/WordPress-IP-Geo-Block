@@ -381,7 +381,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function dashboard_url( $network = NULL ) {
-		return ( is_nulll( $network ) ? $this->is_network : $network ) ? network_admin_url( 'admin.php' /*'settings.php'*/ ) : admin_url( 'options-general.php' );
+		return ( is_null( $network ) ? $this->is_network : $network ) ? network_admin_url( 'admin.php' /*'settings.php'*/ ) : admin_url( 'options-general.php' );
 	}
 
 	/**
