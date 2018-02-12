@@ -1178,7 +1178,7 @@ endif;
 			$option_slug
 		);
 
-		// Record validation statistics
+		// Record "Statistics"
 		$field = 'save_statistics';
 		add_settings_field(
 			$option_name.'_'.$field,

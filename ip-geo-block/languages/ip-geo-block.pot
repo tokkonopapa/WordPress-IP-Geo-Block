@@ -2,11 +2,13 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.8\n"
+"Project-Id-Version: IP Geo Block 3.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-02-04 12:53+0900\n"
-"PO-Revision-Date: 2018-02-04 14:53+0900\n"
+"POT-Creation-Date: 2018-02-12 22:20+0900\n"
+"PO-Revision-Date: 2018-02-12 22:20+0900\n"
+"Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
+"Language: en_001\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,8 +18,6 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
-"Language: en_001\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #. Description of the plugin/theme
@@ -77,7 +77,7 @@ msgid "The selected row cannot be found in the visible area."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:278
-#: admin/class-ip-geo-block-admin.php:1417
+#: admin/class-ip-geo-block-admin.php:1418
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr ""
@@ -148,8 +148,8 @@ msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:336
 #: admin/class-ip-geo-block-admin.php:444
-#: admin/class-ip-geo-block-admin.php:659
-#: admin/class-ip-geo-block-admin.php:678
+#: admin/class-ip-geo-block-admin.php:660
+#: admin/class-ip-geo-block-admin.php:679
 msgid "Settings"
 msgstr ""
 
@@ -163,16 +163,16 @@ msgid "IP Geo Block"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:452
-#: admin/class-ip-geo-block-admin.php:663
-#: admin/class-ip-geo-block-admin.php:679
+#: admin/class-ip-geo-block-admin.php:664
+#: admin/class-ip-geo-block-admin.php:680
 msgid "Site List"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:481
+#: admin/class-ip-geo-block-admin.php:482
 msgid "You need WordPress 3.7+."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:487
+#: admin/class-ip-geo-block-admin.php:488
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -180,48 +180,48 @@ msgid ""
 "strong>&#8221; at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:493
+#: admin/class-ip-geo-block-admin.php:494
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
 "confirm it at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:502
+#: admin/class-ip-geo-block-admin.php:503
 msgid "Local database and matching rule have been updated."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:513
+#: admin/class-ip-geo-block-admin.php:514
 msgid ""
 "Once you logout, you will be unable to login again because the number of "
 "login attempts reaches the limit."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:515
+#: admin/class-ip-geo-block-admin.php:516
 #, php-format
 msgid ""
 "Please execute \"<strong>Clear cache</strong>\" on <a href=\"%s\">Statistics "
 "tab</a> to prevent locking yourself out."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:525
+#: admin/class-ip-geo-block-admin.php:526
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is in the blacklist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:526
+#: admin/class-ip-geo-block-admin.php:527
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is not in the whitelist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:530
+#: admin/class-ip-geo-block-admin.php:531
 #, php-format
 msgid "Please check your &#8220;%sValidation rule settings%s&#8221;."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:534
+#: admin/class-ip-geo-block-admin.php:535
 #, php-format
 msgid ""
 "Please confirm your local geolocation databases at &#8220;%sLocal database "
@@ -229,79 +229,79 @@ msgid ""
 "%sStatistics in cache%s&#8221; section."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:547
+#: admin/class-ip-geo-block-admin.php:548
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
 "select &#8220;init&#8221; action hook."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:660
+#: admin/class-ip-geo-block-admin.php:661
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:661
+#: admin/class-ip-geo-block-admin.php:662
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:662
+#: admin/class-ip-geo-block-admin.php:663
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:664
+#: admin/class-ip-geo-block-admin.php:665
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:690
+#: admin/class-ip-geo-block-admin.php:691
 msgid "Network wide"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:703
+#: admin/class-ip-geo-block-admin.php:704
 msgid "Toggle all"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:706
+#: admin/class-ip-geo-block-admin.php:707
 msgid ""
 "Independent of &#8220;Statistics and Logs settings&#8221;, you can see all "
 "the requests validated by this plugin in almost real time."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:706 admin/includes/tab-accesslog.php:37
+#: admin/class-ip-geo-block-admin.php:707 admin/includes/tab-accesslog.php:39
 msgid "Live update"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:710
+#: admin/class-ip-geo-block-admin.php:711
 msgid "Open a new window on clicking the link in the chart."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:710
+#: admin/class-ip-geo-block-admin.php:711
 msgid "Open a new window"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:733
+#: admin/class-ip-geo-block-admin.php:734
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:734
+#: admin/class-ip-geo-block-admin.php:735
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:739
+#: admin/class-ip-geo-block-admin.php:740
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:836
+#: admin/class-ip-geo-block-admin.php:837
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:851
+#: admin/class-ip-geo-block-admin.php:852
 msgid "Select one"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1240
+#: admin/class-ip-geo-block-admin.php:1241
 #: admin/includes/class-admin-rewrite.php:194
 #: classes/class-ip-geo-block-cron.php:228
 #: classes/class-ip-geo-block-cron.php:332
@@ -311,7 +311,7 @@ msgstr ""
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1270
+#: admin/class-ip-geo-block-admin.php:1271
 msgid "Settings saved."
 msgstr ""
 
@@ -352,98 +352,98 @@ msgstr ""
 msgid "Validation logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:52 admin/includes/tab-settings.php:452
+#: admin/includes/tab-accesslog.php:54 admin/includes/tab-settings.php:452
 msgid "Comment post"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:53 admin/includes/tab-settings.php:453
+#: admin/includes/tab-accesslog.php:55 admin/includes/tab-settings.php:453
 msgid "XML-RPC"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:54 admin/includes/tab-settings.php:454
+#: admin/includes/tab-accesslog.php:56 admin/includes/tab-settings.php:454
 msgid "Login form"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:55 admin/includes/tab-settings.php:455
+#: admin/includes/tab-accesslog.php:57 admin/includes/tab-settings.php:455
 msgid "Admin area"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:56 admin/includes/tab-settings.php:457
+#: admin/includes/tab-accesslog.php:58 admin/includes/tab-settings.php:457
 msgid "Public facing pages"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:59 admin/includes/tab-network.php:76
+#: admin/includes/tab-accesslog.php:61 admin/includes/tab-network.php:76
 msgid "All"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:69
+#: admin/includes/tab-accesslog.php:71
 msgid "Select target"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:85
+#: admin/includes/tab-accesslog.php:87
 msgid "Search in logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:94 admin/includes/tab-statistics.php:235
+#: admin/includes/tab-accesslog.php:96 admin/includes/tab-statistics.php:235
 msgid "Reset"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:102 admin/includes/tab-statistics.php:242
+#: admin/includes/tab-accesslog.php:104 admin/includes/tab-statistics.php:242
 msgid "Bulk action"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:113 admin/includes/tab-statistics.php:254
+#: admin/includes/tab-accesslog.php:115 admin/includes/tab-statistics.php:254
 msgid "Add IP address to &#8220;Whitelist&#8221;"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:114 admin/includes/tab-statistics.php:255
+#: admin/includes/tab-accesslog.php:116 admin/includes/tab-statistics.php:255
 msgid "Add IP address to &#8220;Blacklist&#8221;"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:115 admin/includes/tab-statistics.php:256
+#: admin/includes/tab-accesslog.php:117 admin/includes/tab-statistics.php:256
 msgid "Add AS number to &#8220;Whitelist&#8221;"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:116 admin/includes/tab-statistics.php:257
+#: admin/includes/tab-accesslog.php:118 admin/includes/tab-statistics.php:257
 msgid "Add AS number to &#8220;Blacklist&#8221;"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:118 admin/includes/tab-network.php:56
+#: admin/includes/tab-accesslog.php:120 admin/includes/tab-network.php:56
 #: admin/includes/tab-statistics.php:259
 msgid "Apply"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:126 admin/includes/tab-statistics.php:198
+#: admin/includes/tab-accesslog.php:128 admin/includes/tab-statistics.php:198
 msgid "Clear logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:134 admin/includes/tab-statistics.php:173
+#: admin/includes/tab-accesslog.php:136 admin/includes/tab-statistics.php:173
 #: admin/includes/tab-statistics.php:206 admin/includes/tab-statistics.php:274
 msgid "Clear all"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:144
+#: admin/includes/tab-accesslog.php:146
 msgid "Export logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:150 admin/includes/tab-settings.php:1517
+#: admin/includes/tab-accesslog.php:152 admin/includes/tab-settings.php:1517
 msgid "Export to the local file"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:150
+#: admin/includes/tab-accesslog.php:152
 msgid "Export csv"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:167 admin/includes/tab-network.php:112
-#: admin/includes/tab-statistics.php:397
-msgid ""
-"[<strong>Record validation logs</strong>] on [<strong>Settings</strong>] tab "
-"is [<strong>Disable</strong>]."
+#: admin/includes/tab-accesslog.php:173 admin/includes/tab-network.php:112
+#: admin/includes/tab-statistics.php:401
+#, php-format
+msgid "[ %sRecord &#8220;Logs&#8221;%s ] is desabled."
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:168 admin/includes/tab-network.php:113
+#: admin/includes/tab-accesslog.php:174 admin/includes/tab-network.php:113
+#: admin/includes/tab-statistics.php:402
 msgid ""
-"Please select the proper condition to record and analyze the validation logs."
+"Please set the proper condition to record and analyze the validation logs."
 msgstr ""
 
 #: admin/includes/tab-attribution.php:16
@@ -1402,21 +1402,15 @@ msgstr ""
 msgid "Toggle sorting order"
 msgstr ""
 
-#: admin/includes/tab-statistics.php:392
-msgid ""
-"[<strong>Record validation statistics</strong>] on [<strong>Settings</"
-"strong>] tab is not selected as [<strong>Enable</strong>]."
+#: admin/includes/tab-statistics.php:394
+#, php-format
+msgid "[ %sRecord &#8220;Statistics&#8221;%s ] is desabled."
 msgstr ""
 
-#: admin/includes/tab-statistics.php:393
+#: admin/includes/tab-statistics.php:395
 msgid ""
 "Please set the proper condition to record and analyze the validation "
 "statistics."
-msgstr ""
-
-#: admin/includes/tab-statistics.php:398
-msgid ""
-"Please set the proper condition to record and analyze the validation logs."
 msgstr ""
 
 #: classes/class-ip-geo-block-apis.php:653

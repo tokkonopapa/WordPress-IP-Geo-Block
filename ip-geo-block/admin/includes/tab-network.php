@@ -109,8 +109,8 @@ class IP_Geo_Block_Admin_Tab {
 		require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php';
 
 		if ( self::$controls['warn'] ) {
-			echo '<p style="padding:0 1em">', __( '[<strong>Record validation logs</strong>] on [<strong>Settings</strong>] tab is [<strong>Disable</strong>].', 'ip-geo-block' ), '</p>', "\n";
-			echo '<p style="padding:0 1em">', __( 'Please select the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
+			echo '<p style="padding:0 1em">', sprintf( __( '[ %sRecord &#8220;Logs&#8221;%s ] is desabled.', 'ip-geo-block' ), '<a class="ip-geo-block-jump" href="' . $url . '"><strong>', '</strong></a>' ), '</p>', "\n";
+			echo '<p style="padding:0 1em">', __( 'Please set the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
 		}
 
 		$row   = self::$controls['rows'] * 5;

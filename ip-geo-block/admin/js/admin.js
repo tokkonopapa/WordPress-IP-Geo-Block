@@ -551,8 +551,10 @@
 	function drawChart(tabNo) {
 		if ('object' === typeof window.google) {
 			if (1 === tabNo) {
-				chart.drawPie(ID('chart-countries'));
-				chart.drawLine(ID('chart-daily'), 'date');
+				if ($(ID('#', 'chart-countries')).length) {
+					chart.drawPie(ID('chart-countries'));
+					chart.drawLine(ID('chart-daily'), 'date');
+				}
 			} else if (5 === tabNo) {
 				$(ID('.', 'network')).each(function (i, obj) {
 //					chart.drawLine($(obj).attr('id'), 'datetime');
@@ -936,6 +938,16 @@
 		// Inhibit to submit by return key
 		$(ID('.', 'inhibit')).on('submit', function () {
 			return false;
+		});
+
+		// Jump at the specified section on "Settings" tab
+		$(ID('.', 'jump')).on('click', function () {
+			var section = this.href.split('#');
+			if (section.length) {
+				section = section[1].slice(-1)[0]; // last charactor
+				cookie[0][section] = 'o';
+				saveCookie(cookie);
+			} 
 		});
 
 		// Register event handler at specific tab

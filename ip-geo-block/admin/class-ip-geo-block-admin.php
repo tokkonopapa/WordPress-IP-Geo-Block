@@ -380,8 +380,8 @@ class IP_Geo_Block_Admin {
 	 * Get the admin url that depends on network multisite.
 	 *
 	 */
-	private function dashboard_url( $network ) {
-		return $network ? network_admin_url( 'admin.php' /*'settings.php'*/ ) : admin_url( 'options-general.php' );
+	public function dashboard_url( $network = NULL ) {
+		return ( is_nulll( $network ) ? $this->is_network : $network ) ? network_admin_url( 'admin.php' /*'settings.php'*/ ) : admin_url( 'options-general.php' );
 	}
 
 	/**
