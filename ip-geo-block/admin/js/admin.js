@@ -940,16 +940,6 @@
 			return false;
 		});
 
-		// Jump at the specified section on "Settings" tab
-		$(ID('.', 'jump')).on('click', function () {
-			var section = this.href.split('#');
-			if (section.length) {
-				section = section[1].slice(-1)[0]; // last charactor
-				cookie[0][section] = 'o';
-				saveCookie(cookie);
-			} 
-		});
-
 		// Register event handler at specific tab
 		switch (tabNo) {
 		  /*----------------------------------------

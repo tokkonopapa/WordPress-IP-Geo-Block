@@ -333,7 +333,7 @@ class IP_Geo_Block_Admin {
 	public function add_action_links( $links ) {
 		// over network
 		return array_merge(
-			array( 'settings' => '<a href="' . esc_url_raw( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( $this->is_network ) ) ) . '">' . __( 'Settings' ) . '</a>' ),
+			array( 'settings' => '<a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( $this->is_network ) ) ) . '">' . __( 'Settings' ) . '</a>' ),
 			$links
 		);
 	}
@@ -529,12 +529,12 @@ class IP_Geo_Block_Admin {
 					( 'ZZ' !== $validate['code'] ?
 						sprintf(
 							__( 'Please check your &#8220;%sValidation rule settings%s&#8221;.', 'ip-geo-block' ),
-							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-0">', '</a></strong>'
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 0 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-0">', '</a></strong>'
 						) :
 						sprintf(
 							__( 'Please confirm your local geolocation databases at &#8220;%sLocal database settings%s&#8221; section and remove your IP address in cache at &#8220;%sStatistics in cache%s&#8221; section.', 'ip-geo-block' ),
-							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4">', '</a></strong>',
-							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-2">', '</a></strong>'
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4">', '</a></strong>',
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1, 'sec' => 2 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-2">', '</a></strong>'
 						)
 					)
 				);
@@ -617,13 +617,16 @@ class IP_Geo_Block_Admin {
 	private function do_settings_sections( $page, $tab ) {
 		global $wp_settings_sections, $wp_settings_fields;
 
+		// target section to be opened
+		$target = isset( $_GET['sec'] ) ? (int)$_GET['sec'] : -1;
+
 		if ( isset( $wp_settings_sections[ $page ] ) ) {
 			$index  = 0; // index of fieldset
 			$cookie = $this->get_cookie();
 
 			foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
 				// TRUE if open ('o') or FALSE if close ('x')
-				$stat = empty( $cookie[ $tab ][ $index ] ) || 'x' !== $cookie[ $tab ][ $index ];
+				$stat = empty( $cookie[ $tab ][ $index ] ) || 'x' !== $cookie[ $tab ][ $index ] || $index === $target;
 
 				echo "\n",
 				     '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n",
@@ -1489,6 +1492,7 @@ class IP_Geo_Block_Admin {
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 			);
+			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

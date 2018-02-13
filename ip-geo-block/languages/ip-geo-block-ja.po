@@ -464,7 +464,7 @@ msgstr "CSVへエクスポート"
 #, php-format
 msgid "[ %sRecord &#8220;Logs&#8221;%s ] is desabled."
 msgstr ""
-"［%s検証のログを記録%s］が<strong>無効</strong>です。"
+"［%s検証のログを記録%s］が無効です。"
 
 #: admin/includes/tab-accesslog.php:174 admin/includes/tab-network.php:113
 #: admin/includes/tab-statistics.php:402

@@ -390,15 +390,15 @@ endif;
 	 */
 	public static function warn_statistics() {
 		$context = IP_Geo_Block_Admin::get_instance();
-		$url = esc_url( add_query_arg( array( 'page' => 'ip-geo-block', 'tab' => '0#ip-geo-block-section-5' ), $context->dashboard_url() ) );
-		echo '<p>', sprintf( __( '[ %sRecord &#8220;Statistics&#8221;%s ] is desabled.', 'ip-geo-block' ), '<a class="ip-geo-block-jump" href="' . $url . '"><strong>', '</strong></a>' ), '</p>', "\n";
+		$url = esc_url( add_query_arg( array( 'page' => 'ip-geo-block', 'tab' => '0', 'sec' => 5 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-5' );
+		echo '<p>', sprintf( __( '[ %sRecord &#8220;Statistics&#8221;%s ] is desabled.', 'ip-geo-block' ), '<a href="' . $url . '"><strong>', '</strong></a>' ), '</p>', "\n";
 		echo '<p>', __( 'Please set the proper condition to record and analyze the validation statistics.', 'ip-geo-block' ), '</p>', "\n";
 	}
 
 	public static function warn_validation() {
 		$context = IP_Geo_Block_Admin::get_instance();
-		$url = esc_url( add_query_arg( array( 'page' => 'ip-geo-block', 'tab' => '0#ip-geo-block-section-5' ), $context->dashboard_url() ) );
-		echo '<p>', sprintf( __( '[ %sRecord &#8220;Logs&#8221;%s ] is desabled.', 'ip-geo-block' ), '<a class="ip-geo-block-jump" href="' . $url . '"><strong>', '</strong></a>' ), '</p>', "\n";
+		$url = esc_url( add_query_arg( array( 'page' => 'ip-geo-block', 'tab' => '0', 'sec' => 5 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-5' );
+		echo '<p>', sprintf( __( '[ %sRecord &#8220;Logs&#8221;%s ] is desabled.', 'ip-geo-block' ), '<a href="' . $url . '"><strong>', '</strong></a>' ), '</p>', "\n";
 		echo '<p>', __( 'Please set the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
 	}
 
