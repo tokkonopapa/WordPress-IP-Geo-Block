@@ -733,7 +733,7 @@ class IP_Geo_Block {
 	public function check_nonce( $validate, $settings ) {
 		// should be passed when nonce is valid. can't overwrite existing result
 		$nonce = IP_Geo_Block_Util::retrieve_nonce( $action = self::PLUGIN_NAME . '-auth-nonce' );
-		return $validate + array( 'result' => IP_Geo_Block_Util::verify_nonce( $nonce, $action ) ? 'passed' : 'wp-zep' );
+		return $validate + array( 'result' => IP_Geo_Block_Util::verify_nonce( $nonce, $action ) || 'XX' === $validate['code'] ? 'passed' : 'wp-zep' );
 	}
 
 	public function check_signature( $validate, $settings ) {

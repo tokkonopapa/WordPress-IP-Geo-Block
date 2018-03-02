@@ -356,9 +356,11 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 = 3.0.9 =
 * **New featuer:** "Network wide settings" in "Plugin settings" section.
 * **New featuer:** "Site List" on network admin dashboard.
+* **Improvement:** Avoid blocking by wp-zep when IP address is private or loopback network.
 * **Improvement:** Chnage the priority of internal action hook for better compatibility with other plugins/themes.
 * **Maintenance:** Change the priority order of local geolocation databases.
-* **Bug fix:** Fix some minor bugs.
+* **Bug fix:** Fix the issue that the target action for login form could not unchecked on saving changes.
+* **Bug fix:** Fix some other minor bugs.
 
 = 3.0.8 =
 * **Improvement:** Use both Maxmind Legacy and GeoLite2 databases parallely.
