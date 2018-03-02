@@ -1090,6 +1090,11 @@ class IP_Geo_Block_Admin {
 		// 3.0.5 Live update
 		$output['live_update']['in_memory'] = 0;
 
+		// 3.0.9 Fix for `login_action`
+		foreach ( array( 'login', 'register', 'resetpass', 'lostpassword', 'postpass' ) as $key ) {
+			$output['login_action'][ $key ] = FALSE;
+		}
+
 		return $output;
 	}
 
