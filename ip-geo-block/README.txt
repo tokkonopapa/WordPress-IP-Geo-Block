@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.4
-Stable tag: 3.0.9a
+Stable tag: 3.0.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -354,12 +354,11 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 == Changelog ==
 
 = 3.0.9 =
-* **New featuer:** "Network wide settings" in "Plugin settings" section.
-* **New featuer:** "Site List" on network admin dashboard.
+* **New featuer:** Add CIDR calculator for IPv4 / IPv6.
 * **Improvement:** Avoid blocking by wp-zep when IP address is private or loopback network.
 * **Improvement:** Chnage the priority of internal action hook for better compatibility with other plugins/themes.
 * **Maintenance:** Change the priority order of local geolocation databases.
-* **Bug fix:** Fix the issue that the target action for login form could not unchecked on saving changes.
+* **Bug fix:** Fix the issue that the target action for login form on settings tab could not unchecked on saving changes.
 * **Bug fix:** Fix some other minor bugs.
 
 = 3.0.8 =

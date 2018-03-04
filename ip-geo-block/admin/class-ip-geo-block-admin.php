@@ -875,8 +875,10 @@ class IP_Geo_Block_Admin {
 			break; // disabled @since 3.0
 
 		  case 'textarea': ?>
-<textarea class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>"
-<?php disabled( ! empty( $args['disabled'] ), TRUE ); ?>><?php echo esc_html( $args['value'] ); ?></textarea>
+<textarea class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>"<?php 
+	disabled( ! empty( $args['disabled'] ), TRUE ); 
+	if ( isset( $args['placeholder'] ) ) echo ' placeholder="', esc_html( $args['placeholder'] ), '"'; ?>><?php
+	echo esc_html( $args['value'] ); ?></textarea>
 <?php
 			break;
 
