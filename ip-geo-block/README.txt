@@ -360,6 +360,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 * **Maintenance:** Change the priority order of local geolocation databases.
 * **Bug fix:** Fix the issue that the target action for login form on settings tab could not unchecked on saving changes.
 * **Bug fix:** Fix some other minor bugs.
+* See [3.0.9 release note](http://www.ipgeoblock.com/changelog/release-3.0.9.html "3.0.9 Release Note | IP Geo Block") for some details.
 
 = 3.0.8 =
 * **Improvement:** Use both Maxmind Legacy and GeoLite2 databases parallely.
