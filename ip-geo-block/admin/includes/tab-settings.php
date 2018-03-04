@@ -58,7 +58,6 @@ class IP_Geo_Block_Admin_Tab {
 		 * @param string $section The section of the settings page in which to show the box.
 		 * @param array $args Additional arguments that are passed to the $callback function.
 		 */
-
 		// Get the country code of client
 		$key = IP_Geo_Block::get_geolocation( $val = IP_Geo_Block::get_ip_address() );
 
@@ -118,6 +117,7 @@ endif;
 			'<span title="' . __( 'Toggle selection', 'ip-geo-block' ) . '"></span>',
 			'<span title="' . __( 'Find blocked requests in &#8220;Logs&#8220;', 'ip-geo-block' ) . '"></span>',
 			__( 'Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="ip-geo-block-icon ip-geo-block-icon-alert" title="This button is just a sample."><span></span></a>&#8221; button (if exists) attached to the following list to confirm that the blocked request is not malicious.', 'ip-geo-block' ),
+			__( 'Open CIDR calculator for IPv4 / IPv6', 'ip-geo-block' ),
 		);
 
 		// Matching rule
@@ -194,7 +194,7 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => 1 === (int)$options[ $field ][ $key ],
-				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Some useful tools for investigating ASN are introduced in &#8220;%s&#8221;.', 'ip-geo-block' ), '<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/utilizing-asnumber.html" title="Utilizing AS number | IP Geo Block">Utilizing AS number</a>' ) . '</p>',
+				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Some useful tools to find ASN are introduced in &#8220;%s&#8221;.', 'ip-geo-block' ), '<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/utilizing-asnumber.html" title="Utilizing AS number | IP Geo Block">Utilizing AS number</a>' ) . '</p>',
 			)
 		);
 
@@ -215,7 +215,8 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'after' => $comma[1],
+				'placeholder' => '192.168.0.0/16,2001:db8::/96,AS1234',
+				'after' => $comma[1] . ' <a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
 			)
 		);
 
@@ -235,7 +236,8 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'after' => $comma[1],
+				'placeholder' => '192.168.0.0/16,2001:db8::/96,AS1234',
+				'after' => $comma[1] . ' <a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
 			)
 		);
 
@@ -1178,7 +1180,7 @@ endif;
 			$option_slug
 		);
 
-		// Record validation statistics
+		// Record "Statistics"
 		$field = 'save_statistics';
 		add_settings_field(
 			$option_name.'_'.$field,

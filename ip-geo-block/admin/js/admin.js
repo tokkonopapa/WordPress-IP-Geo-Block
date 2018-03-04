@@ -551,8 +551,10 @@
 	function drawChart(tabNo) {
 		if ('object' === typeof window.google) {
 			if (1 === tabNo) {
-				chart.drawPie(ID('chart-countries'));
-				chart.drawLine(ID('chart-daily'), 'date');
+				if ($(ID('#', 'chart-countries')).length) {
+					chart.drawPie(ID('chart-countries'));
+					chart.drawLine(ID('chart-daily'), 'date');
+				}
 			} else if (5 === tabNo) {
 				$(ID('.', 'network')).each(function (i, obj) {
 //					chart.drawLine($(obj).attr('id'), 'datetime');
@@ -992,6 +994,25 @@
 				return false;
 			}).change();
 
+			// CIDR calculator
+			$(ID('.', 'icon-cidr')).on('click', function () {
+				var src = $(ID('#', 'admin-styles-css')).get(0).href,
+				    win = window.open('about:blank', '', 'width=560,height=170'); // menubar=no,toolbar=no,location=no
+				src = src.slice(0, src.lastIndexOf('css/'));
+				win.document.write(
+					'<!DOCTYPE html>' +
+					'<html lang=en>' +
+					'<meta charset=utf-8>' +
+					'<title>CIDR calculator for IPv4 / IPv6</title>' +
+					'<link href="' + src + 'css/cidr.min.css" rel=stylesheet>' +
+					'<div class="row container"><div class=row id=i><fieldset class="col span_11"><legend>Range <input id=a type=button value=Clear tabindex=1></legend><textarea id=c name=range placeholder="192.168.0.0 - 192.168.255.255" rows=5 wrap=off tabindex=2></textarea></fieldset><ul class="col span_2" id=h><li class=row><input id=e type=button value=&rarr; class="col span_24" tabindex=3><li class=row><input id=f type=button value=&larr; class="col span_24" tabindex=6></ul><fieldset class="col span_11"><legend>CIDR <input id=b type=button value=Clear tabindex=4></legend><textarea id=d name=cidr placeholder=192.168.0.0/16 rows=5 wrap=off tabindex=5></textarea></fieldset></div><div class=row id=j><span class=col id=g> </span></div></div>' +
+/*					'<div class="container row"><div class="row" id="top"><fieldset class="col span_11"><legend>Range <input type="button" id="r_clear" value="Clear" tabindex="1" /></legend><textarea name="range" id="r_text" rows="5" wrap="off" placeholder="192.168.0.0 - 192.168.255.255" tabindex="2"></textarea></fieldset><ul class="col span_2" id="b_conv"><li class="row"><input class="col span_24" type="button" id="r_conv" value="&rarr;" tabindex="3" /></li><li class="row"><input class="col span_24" type="button" id="c_conv" value="&larr;" tabindex="6" /></li></ul><fieldset class="col span_11"><legend>CIDR <input type="button" id="c_clear" value="Clear" tabindex="4" /></legend><textarea name="cidr" id="c_text" rows="5" wrap="off" placeholder="192.168.0.0/16" tabindex="5"></textarea></fieldset></div><div class="row" id="bottom"><span class="col" id="msg">&nbsp;</span></div></div>' +*/
+					'<script src="' + src + 'js/cidr.min.js"></script>'
+				);
+				win.document.close();
+				return false;
+			});
+
 			// Show/Hide folding list at prevent malicious upload
 			$(ID('@', 'validation_mimetype')).on('change', function (event) {
 				var $this = $(this),
@@ -1070,7 +1091,7 @@
 				for (key in data) {
 					if (data.hasOwnProperty(key)) {
 						key = stripTag(key);
-						if (!$this.find('#' + (id = ID('%', key))).size()) {
+						if (!$this.find('#' + (id = ID('!', 'exception_admin_' + key))).size()) {
 							i = input.cloneNode(false);
 							i.setAttribute('id', id);
 							i.setAttribute('value', key);
@@ -1170,9 +1191,9 @@
 								id  = ID('!', 'exception_' + target + '_' + val);
 
 								// make an anchor tab with search query
-								s = 'admin' === target ? key + '=' + val : '/' + key + '/' + val + '/';
-								s = '<a class="ip-geo-block-icon ip-geo-block-icon-alert" href="?page=ip-geo-block&tab=4&s='
-								+ encodeURIComponent(s) + '" title="' + title.replace('%s', s) + '" target="_blank"><span></span></a>';
+								s = 'admin' === target ? (key + '=' + val) : ('/' + key + '/' + val + '/');
+								s = '<a class="ip-geo-block-icon ip-geo-block-icon-alert" href="' + ip_geo_block_auth.sites[0] + 'options-general.php' + // only main site
+								    '?page=ip-geo-block&tab=4&s=' + encodeURIComponent(s) + '" title="' + title.replace('%s', s) + '" target="_blank"><span></span></a>';
 
 								// add a new list when not found in existent key
 								if (ext < 0) {

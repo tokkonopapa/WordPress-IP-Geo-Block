@@ -70,8 +70,8 @@ class IP_Geo_Block_Opts {
 			'retry'       => 0,       // Number of retry to download
 			'cycle'       => 30,      // Updating cycle (days)
 		),
-		// since version 2.0.8
-		'priority'        => 0,       // Action priority for WP-ZEP
+		// since version 3.0.9
+		'priority' => PHP_INT_MAX,    // Action priority for WP-ZEP
 		// since version 2.2.0
 		'anonymize'       => FALSE,   // Anonymize IP address to hide privacy
 		'signature'       => '../,/wp-config.php,/passwd', // malicious signature
@@ -251,9 +251,6 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '2.0.0' ) < 0 )
 				$settings = $default;
 
-			if ( version_compare( $version, '2.0.8' ) < 0 )
-				$settings['priority'] = $default['priority'];
-
 			if ( version_compare( $version, '2.1.0' ) < 0 ) {
 				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
 					$settings['validation'][ $tmp ] = $default['validation'][ $tmp ];
@@ -392,13 +389,16 @@ class IP_Geo_Block_Opts {
 				}
 			}
 
+			if ( version_compare( $version, '3.0.9' ) < 0 )
+				$settings['priority'] = $default['priority'];
+
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
 
 		// install addons for IP Geolocation database API ver. 1.1.11
 		$providers = IP_Geo_Block_Provider::get_addons();
-		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.8' ) < 0 )
+		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.9' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table

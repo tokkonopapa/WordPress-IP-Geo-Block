@@ -333,7 +333,7 @@ class IP_Geo_Block_Admin {
 	public function add_action_links( $links ) {
 		// over network
 		return array_merge(
-			array( 'settings' => '<a href="' . esc_url_raw( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( $this->is_network ) ) ) . '">' . __( 'Settings' ) . '</a>' ),
+			array( 'settings' => '<a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( $this->is_network ) ) ) . '">' . __( 'Settings' ) . '</a>' ),
 			$links
 		);
 	}
@@ -380,8 +380,8 @@ class IP_Geo_Block_Admin {
 	 * Get the admin url that depends on network multisite.
 	 *
 	 */
-	private function dashboard_url( $network ) {
-		return $network ? network_admin_url( 'admin.php' /*'settings.php'*/ ) : admin_url( 'options-general.php' );
+	public function dashboard_url( $network = NULL ) {
+		return ( is_null( $network ) ? $this->is_network : $network ) ? network_admin_url( 'admin.php' /*'settings.php'*/ ) : admin_url( 'options-general.php' );
 	}
 
 	/**
@@ -392,13 +392,13 @@ class IP_Geo_Block_Admin {
 		$settings = IP_Geo_Block::get_option();
 
 		// Network wide or not
-		$admin_menu = ( 'admin_menu' === current_filter() );
+		$admin_menu = ( 'admin_menu' === current_filter() ); // @since: 2.5 `admin_menu` or `network_admin_menu`
 		$this->is_network &= ( current_user_can( 'manage_network_options' ) && $settings['network_wide'] );
 
 		// Verify tab number
 		if ( $this->is_network ) {
 			if ( $admin_menu ) {
-				$this->admin_tab = max( $this->admin_tab, 1 );
+				$this->admin_tab = min( 4, max( 1, $this->admin_tab ) );
 			} elseif ( ! in_array( $this->admin_tab, array( 0, 5 ), TRUE ) ) {
 				$this->admin_tab = 0;
 			}
@@ -529,12 +529,12 @@ class IP_Geo_Block_Admin {
 					( 'ZZ' !== $validate['code'] ?
 						sprintf(
 							__( 'Please check your &#8220;%sValidation rule settings%s&#8221;.', 'ip-geo-block' ),
-							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-0">', '</a></strong>'
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 0 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-0' ) . '">', '</a></strong>'
 						) :
 						sprintf(
 							__( 'Please confirm your local geolocation databases at &#8220;%sLocal database settings%s&#8221; section and remove your IP address in cache at &#8220;%sStatistics in cache%s&#8221; section.', 'ip-geo-block' ),
-							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4">', '</a></strong>',
-							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-2">', '</a></strong>'
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4' ) . '">', '</a></strong>',
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1, 'sec' => 2 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-2' ) . '">', '</a></strong>'
 						)
 					)
 				);
@@ -617,13 +617,16 @@ class IP_Geo_Block_Admin {
 	private function do_settings_sections( $page, $tab ) {
 		global $wp_settings_sections, $wp_settings_fields;
 
+		// target section to be opened
+		$target = isset( $_GET['sec'] ) ? (int)$_GET['sec'] : -1;
+
 		if ( isset( $wp_settings_sections[ $page ] ) ) {
 			$index  = 0; // index of fieldset
 			$cookie = $this->get_cookie();
 
 			foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
 				// TRUE if open ('o') or FALSE if close ('x')
-				$stat = empty( $cookie[ $tab ][ $index ] ) || 'x' !== $cookie[ $tab ][ $index ];
+				$stat = empty( $cookie[ $tab ][ $index ] ) || 'x' !== $cookie[ $tab ][ $index ] || $index === $target;
 
 				echo "\n",
 				     '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n",
@@ -872,8 +875,10 @@ class IP_Geo_Block_Admin {
 			break; // disabled @since 3.0
 
 		  case 'textarea': ?>
-<textarea class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>"
-<?php disabled( ! empty( $args['disabled'] ), TRUE ); ?>><?php echo esc_html( $args['value'] ); ?></textarea>
+<textarea class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>"<?php 
+	disabled( ! empty( $args['disabled'] ), TRUE ); 
+	if ( isset( $args['placeholder'] ) ) echo ' placeholder="', esc_html( $args['placeholder'] ), '"'; ?>><?php
+	echo esc_html( $args['value'] ); ?></textarea>
 <?php
 			break;
 
