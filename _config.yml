@@ -26,7 +26,8 @@ excerpt_separator: "<!--more-->"
 
 # for jekyll 3
 # make sure https://github.com/github/pages-gem
-gems: [jekyll-paginate]
+plugins:
+  - jekyll-paginate
 
 # Build settings (jekyll 2.5.3: pygments, jekyll 3.0: rouge)
 # highlighter: pygments # rouge
