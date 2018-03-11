@@ -117,7 +117,7 @@ endif;
 			'<span title="' . __( 'Toggle selection', 'ip-geo-block' ) . '"></span>',
 			'<span title="' . __( 'Find blocked requests in &#8220;Logs&#8220;', 'ip-geo-block' ) . '"></span>',
 			__( 'Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="ip-geo-block-icon ip-geo-block-icon-alert" title="This button is just a sample."><span></span></a>&#8221; button (if exists) attached to the following list to confirm that the blocked request is not malicious.', 'ip-geo-block' ),
-			__( 'Open CIDR calculator for IPv4 / IPv6', 'ip-geo-block' ),
+			__( 'Open CIDR calculator for IPv4 / IPv6.', 'ip-geo-block' ),
 		);
 
 		// Matching rule
@@ -204,8 +204,9 @@ endif;
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
 			__( '<dfn title="e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, &#8220;69.46.36.0/27&#8221; for WordFence server or &#8220;AS32934&#8221; for Facebook.">Whitelist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
-			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>'.
-			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)',
+			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
+			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
+			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -216,7 +217,7 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'placeholder' => '192.168.0.0/16,2001:db8::/96,AS1234',
-				'after' => $comma[1] . ' <a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
+				'after' => $comma[1],
 			)
 		);
 
@@ -225,8 +226,9 @@ endif;
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
 			__( '<dfn title="Server level access control is recommended (e.g. .htaccess).">Blacklist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
-			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>'.
-			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)',
+			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
+			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
+			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -237,7 +239,7 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'placeholder' => '192.168.0.0/16,2001:db8::/96,AS1234',
-				'after' => $comma[1] . ' <a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
+				'after' => $comma[1],
 			)
 		);
 
@@ -501,11 +503,11 @@ endif;
 		);
 
 		$desc = array(
-			'login'        => __( 'Log in' ),
-			'register'     => __( 'Register' ),
-			'resetpass'    => __( 'Password Reset' ),
-			'lostpassword' => __( 'Lost Password' ),
-			'postpass'     => __( 'Password protected' ),
+			'login'        => '<dfn title="' . __( 'Action to login as a registered user.',                                          'ip-geo-block' ) . '">' . __( 'Log in'             ) . '</dfn>',
+			'register'     => '<dfn title="' . __( 'Action to register new users.',                                                  'ip-geo-block' ) . '">' . __( 'Register'           ) . '</dfn>',
+			'resetpass'    => '<dfn title="' . __( 'Action to reset a password to create a new one.',                                'ip-geo-block' ) . '">' . __( 'Password Reset'     ) . '</dfn>',
+			'lostpassword' => '<dfn title="' . __( 'Action to email a password to a registered user.',                               'ip-geo-block' ) . '">' . __( 'Lost Password'      ) . '</dfn>',
+			'postpass'     => '<dfn title="' . __( 'Action to show prompt to enter a password on password protected post and page.', 'ip-geo-block' ) . '">' . __( 'Password protected' ) . '</dfn>',
 		);
 
 		$list = '';

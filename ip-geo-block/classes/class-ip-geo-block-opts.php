@@ -449,8 +449,7 @@ class IP_Geo_Block_Opts {
 
 			if ( ! @is_writable( $dir ) ) {
 				// wp-content/plugins/ip-geo-block
-				if ( ! @is_writable( $dir = IP_GEO_BLOCK_PATH ) )
-					$dir = NULL;
+				$dir = @is_writable( IP_GEO_BLOCK_PATH ) ? IP_GEO_BLOCK_PATH : NULL;
 			}
 		}
 

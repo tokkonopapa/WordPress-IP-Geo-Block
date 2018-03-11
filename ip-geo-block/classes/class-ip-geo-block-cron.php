@@ -89,7 +89,7 @@ class IP_Geo_Block_Cron {
 						continue;
 
 					// matching rule should be reset when blocking happens 
-					if ( 'passed' !== $validate['result'] )
+					if ( 0 !== strpos( $validate['result'], 'passed' ) )
 						$settings['matching_rule'] = -1;
 
 					// setup country code in whitelist if it needs to be initialized

@@ -371,7 +371,7 @@ class IP_Geo_Block_Logs {
 
 	private static function get_post_data( $hook, $validate, $settings ) {
 		// condition of masking password
-		$mask_pwd = ( 'passed' === $validate['result'] );
+		$mask_pwd = ( 0 === strpos( $validate['result'], 'passed' ) );
 
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {
@@ -739,7 +739,7 @@ class IP_Geo_Block_Logs {
 			$stat['providers'][ $provider ]['count']++; // undefined in auth_fail()
 			$stat['providers'][ $provider ]['time' ] += (float)( isset( $validate['time'] ) ? $validate['time'] : 0 );
 
-			if ( 'passed' !== $validate['result'] ) {
+			if ( 0 !== strpos( $validate['result'], 'passed' ) ) {
 				// Blocked by type of IP address
 				if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
 					++$stat['IPv4'];

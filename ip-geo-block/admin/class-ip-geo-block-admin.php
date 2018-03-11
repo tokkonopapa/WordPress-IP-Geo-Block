@@ -436,7 +436,8 @@ class IP_Geo_Block_Admin {
 				__( 'IP Geo Block', 'ip-geo-block' ),
 				'manage_network_options',
 				IP_Geo_Block::PLUGIN_NAME,
-				array( $this, 'display_plugin_admin_page' )
+				array( $this, 'display_plugin_admin_page' ),
+				'dashicons-admin-site' // or 'data:image/svg+xml;base64...'
 			);
 			add_submenu_page(
 				IP_Geo_Block::PLUGIN_NAME,
@@ -454,13 +455,12 @@ class IP_Geo_Block_Admin {
 				IP_Geo_Block::PLUGIN_NAME . '&amp;tab=5',
 				array( $this, 'display_plugin_admin_page' )
 			);
-
-			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-icons',
+			/*wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-icons',
 				plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 					'css/admin-icons.min.css' : 'css/admin-icons.css', __FILE__
 				),
 				array(), IP_Geo_Block::VERSION
-			);
+			);*/
 		}
 
 		// If successful, load admin assets only on this page.
