@@ -371,7 +371,7 @@ class IP_Geo_Block_Logs {
 
 	private static function get_post_data( $hook, $validate, $settings ) {
 		// condition of masking password
-		$mask_pwd = ( 0 === strpos( $validate['result'], 'passed' ) );
+		$mask_pwd = ( 0 === strncmp( 'passed', $validate['result'], 6 ) );
 
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {
@@ -521,7 +521,15 @@ class IP_Geo_Block_Logs {
 	 * @param array $settings option settings
 	 * @param boolean $record record logs (TRUE) or not
 	 */
-	public static function record_logs( $hook, $validate, $settings, $record = TRUE ) {
+	public static function record_logs( $hook, $validate, $settings, $block = TRUE ) {
+		$record = $settings['validation'][ $hook ] ? apply_filters( IP_Geo_Block::PLUGIN_NAME . '-record-logs', (int)$settings['validation']['reclogs'], $hook, $validate ) : FALSE;
+		$record = ( 1 === $record &&   $block ) || // blocked
+		          ( 6 === $record && ( $block   || 'passed' !== IP_Geo_Block::validate_country( NULL, $validate, $settings ) ) ) || // blocked or qualified
+		          ( 2 === $record && ! $block ) || // passed
+		          ( 3 === $record && ! $validate['auth'] ) || // unauthenticated
+		          ( 4 === $record &&   $validate['auth'] ) || // authenticated
+		          ( 5 === $record ); // all
+
 		// get data
 		$agent = self::get_user_agent();
 		$heads = self::get_http_headers();
@@ -739,7 +747,7 @@ class IP_Geo_Block_Logs {
 			$stat['providers'][ $provider ]['count']++; // undefined in auth_fail()
 			$stat['providers'][ $provider ]['time' ] += (float)( isset( $validate['time'] ) ? $validate['time'] : 0 );
 
-			if ( 0 !== strpos( $validate['result'], 'passed' ) ) {
+			if ( 0 !== strncmp( 'passed', $validate['result'], 6 ) ) {
 				// Blocked by type of IP address
 				if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
 					++$stat['IPv4'];
@@ -818,7 +826,7 @@ class IP_Geo_Block_Logs {
 			"INSERT INTO `$table`
 			(`time`, `ip`, `asn`, `hook`, `auth`, `code`, `fail`, `call`, `host`)
 			VALUES (%d, %s, %s, %s, %d, %s, %d, %d, %s)
-			ON DUPLICATE KEY UPDATE 
+			ON DUPLICATE KEY UPDATE
 			`time` = VALUES(`time`),
 			`hook` = VALUES(`hook`),
 			`auth` = VALUES(`auth`),

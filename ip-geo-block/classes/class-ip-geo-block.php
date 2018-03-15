@@ -35,7 +35,7 @@ class IP_Geo_Block {
 
 	/**
 	 * Initialize the plugin
-	 * 
+	 *
 	 */
 	private function __construct() {
 		// Run the loader to execute all of the hooks with WordPress.
@@ -470,23 +470,13 @@ class IP_Geo_Block {
 				$validate = self::validate_country( $hook, $validate, $settings, $block );
 
 			// if one of IPs is blocked then stop
-			if ( 0 !== strpos( $validate['result'], 'passed' ) )
+			if ( 0 !== strncmp( 'passed', $validate['result'], 6 ) )
 				break;
 		}
 
 		if ( $check_auth ) {
-			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
-			$block = ( 0 !== strpos( $validate['result'], 'passed' ) );
-			$var = $settings['validation'][ $hook ] ? (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate ) : FALSE;
-			$var = ( 1 === $var &&   $block ) || // blocked
-			       ( 6 === $var && ( $block   || 'passed' !== self::validate_country( NULL, $validate, $settings ) ) ) || // blocked or qualified
-			       ( 2 === $var && ! $block ) || // passed
-			       ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
-			       ( 4 === $var &&   $validate['auth'] ) || // authenticated
-			       ( 5 === $var ); // all
-
 			// record log and update cache
-			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $var );
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $block = ( 0 !== strncmp( 'passed', $validate['result'], 6 ) ) );
 			IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
 			// update statistics
@@ -515,7 +505,7 @@ class IP_Geo_Block {
 
 	public function validate_front( $can_access = TRUE ) {
 		$validate = $this->validate_ip( 'comment', self::get_option(), TRUE, FALSE, FALSE );
-		return ( 0 === strpos( $validate['result'], 'passed' ) ? $can_access : FALSE );
+		return ( 0 === strncmp( 'passed', $validate['result'], 6 ) ? $can_access : FALSE );
 	}
 
 	/**
@@ -705,10 +695,10 @@ class IP_Geo_Block {
 			$validate = apply_filters( self::PLUGIN_NAME . '-login', $validate, $settings );
 
 			// (1) blocked, (3) unauthenticated, (5) all
-			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, 1 & (int)$settings['validation']['reclogs'] );
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $block = ( 0 !== strncmp( 'passed', $validate['result'], 6 ) ) );
 
 			// send response code to refuse immediately
-			if ( 'limited' === $validate['result'] || 'multi' === $validate['result'] ) {
+			if ( $block ) {
 				if ( $settings['save_statistics'] )
 					IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 

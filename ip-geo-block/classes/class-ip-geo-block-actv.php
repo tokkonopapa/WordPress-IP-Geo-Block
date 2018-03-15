@@ -19,20 +19,16 @@ require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
 class IP_Geo_Block_Activate {
 
 	// initialize main blog
-	private static function init_main_blog() {
-		if ( current_user_can( 'manage_options' ) ) {
-			$settings = IP_Geo_Block::get_option();
+	private static function init_main_blog( $settings ) {
+		// kick off a cron job to download database immediately
+		IP_Geo_Block_Cron::start_update_db( $settings );
+		IP_Geo_Block_Cron::start_cache_gc( $settings );
 
-			// kick off a cron job to download database immediately
-			IP_Geo_Block_Cron::start_update_db( $settings );
-			IP_Geo_Block_Cron::start_cache_gc( $settings );
+		// activate rewrite rules
+		IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
 
-			// activate rewrite rules
-			IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
-
-			// activate mu-plugins if needed
-			IP_Geo_Block_Opts::setup_validation_timing( $settings );
-		}
+		// activate mu-plugins if needed
+		IP_Geo_Block_Opts::setup_validation_timing( $settings );
 	}
 
 	// initialize logs then upgrade and return new options
@@ -47,15 +43,13 @@ class IP_Geo_Block_Activate {
 	 * @link https://wordpress.stackexchange.com/questions/181141/how-to-run-an-activation-function-when-plugin-is-network-activated-on-multisite
 	 */
 	public static function activate( $network_wide = FALSE ) {
-		defined( 'IP_GEO_BLOCK_DEBUG' ) and IP_GEO_BLOCK_DEBUG and assert( 'is_main_site()', 'Not main blog.' );
-
 		// Update main blog first.
 		self::activate_blog();
 
-		if ( $network_wide ) {
-			// Get option of main blog.
-			$option = IP_Geo_Block::get_option();
+		// Get option of main blog.
+		$settings = IP_Geo_Block::get_option();
 
+		if ( $network_wide ) {
 			global $wpdb;
 			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
 
@@ -65,25 +59,23 @@ class IP_Geo_Block_Activate {
 			foreach ( $blog_ids as $id ) {
 				switch_to_blog( $id );
 
-				if ( $option['network_wide'] ) {
-					// individual data
-					$opt = IP_Geo_Block::get_option();
-					$option['api_key']['GoogleMap'] = $opt['api_key']['GoogleMap'];
-
-					update_option( IP_Geo_Block::OPTION_NAME, $option );
+				if ( $settings['network_wide'] ) {
+					// copy settings of main site to individual site
+					$opts = IP_Geo_Block::get_option();
+					$settings['api_key']['GoogleMap'] = $opts['api_key']['GoogleMap'];
+					update_option( IP_Geo_Block::OPTION_NAME, $settings );
 				}
 
-				else {
-					self::activate_blog();
-				}
+				// initialize inidivisual site
+				self::activate_blog();
 
 				restore_current_blog();
 			}
 		}
 
 		// only after 'init' action hook for is_user_logged_in().
-		if ( did_action( 'init' ) && is_user_logged_in() )
-			self::init_main_blog(); // should be called with high priority
+		if ( did_action( 'init' ) && current_user_can( 'manage_options' ) )
+			self::init_main_blog( $settings ); // should be called with high priority
 	}
 
 	/**
@@ -91,18 +83,40 @@ class IP_Geo_Block_Activate {
 	 *
 	 */
 	public static function deactivate( $network_wide = FALSE ) {
-		// cancel schedule
-		IP_Geo_Block_Cron::stop_update_db();
-		IP_Geo_Block_Cron::stop_cache_gc();
+		add_action( 'shutdown', 'IP_Geo_Block_Activate::deactivate_plugin' );
+	}
 
-		// deactivate rewrite rules
-		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
+	public static function deactivate_plugin() {
+		global $wpdb;
+		$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" );
 
-		// deactivate mu-plugins
-		IP_Geo_Block_Opts::setup_validation_timing();
+		$count = 0;
+		foreach ( $blog_ids as $id ) {
+			switch_to_blog( $id );
 
-		// remove self ip address from cache
-		IP_Geo_Block_Logs::delete_cache_entry();
+			if ( ! is_plugin_active            ( IP_GEO_BLOCK_BASE ) &&
+			     ! is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
+				$count++;
+
+				// cancel schedule
+				IP_Geo_Block_Cron::stop_update_db();
+				IP_Geo_Block_Cron::stop_cache_gc();
+
+				// remove self ip address from cache
+				IP_Geo_Block_Logs::delete_cache_entry();
+			}
+
+			restore_current_blog();
+		}
+
+		// when all site deactivate this plugin
+		if ( count( $blog_ids ) === $count ) {
+			// deactivate rewrite rules
+			IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
+
+			// deactivate mu-plugins
+			IP_Geo_Block_Opts::setup_validation_timing();
+		}
 	}
 
 }

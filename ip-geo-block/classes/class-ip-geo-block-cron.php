@@ -59,6 +59,11 @@ class IP_Geo_Block_Cron {
 	 *   B. Multiple time for each blog when this plugin is individually activated
 	 */
 	public static function exec_update_db( $immediate = FALSE ) {
+		// when this plugin is activated for network but not main site, then skip updating
+		require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
+		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) && ! is_main_site() )
+			return NULL;
+
 		$settings = IP_Geo_Block::get_option();
 		$args = IP_Geo_Block::get_request_headers( $settings );
 
@@ -88,8 +93,8 @@ class IP_Geo_Block_Cron {
 					if ( 'ZZ' === $validate['code'] )
 						continue;
 
-					// matching rule should be reset when blocking happens 
-					if ( 0 !== strpos( $validate['result'], 'passed' ) )
+					// matching rule should be reset when blocking happens
+					if ( 0 !== strncmp( 'passed', $validate['result'], 6 ) )
 						$settings['matching_rule'] = -1;
 
 					// setup country code in whitelist if it needs to be initialized
@@ -118,9 +123,7 @@ class IP_Geo_Block_Cron {
 	 *
 	 */
 	private static function update_settings( $src, $keys = array() ) {
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
-
-		// for multisite (@since 3.0.0 in wp-admin/includes/plugin.php)
+		// for multisite
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			global $wpdb;
 			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" );
@@ -158,15 +161,13 @@ class IP_Geo_Block_Cron {
 	 * Kick off a cron job to download database immediately in background on activation.
 	 *
 	 */
-	public static function start_update_db( $settings, $force = FALSE ) {
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	public static function start_update_db( $settings, $immediate = TRUE ) {
+		self::stop_update_db();
 
-		// the status is still inactive when this plugin is activated on dashboard.
-		if ( ! ( is_plugin_active            ( IP_GEO_BLOCK_BASE )   ||            // @since 2.5.0
-		         is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) || $force ) { // @since 3.0.0
+		if ( $immediate ) // update matching rule immediately in exec_update_db() / extract_ip()
 			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address(), MINUTE_IN_SECONDS );
-			self::schedule_cron_job( $settings['update'], NULL, TRUE );
-		}
+
+		self::schedule_cron_job( $settings['update'], NULL, $immediate );
 	}
 
 	public static function stop_update_db() {
@@ -178,25 +179,8 @@ class IP_Geo_Block_Cron {
 	 *
 	 */
 	public static function exec_cache_gc( $settings ) {
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
-
-		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
-			global $wpdb;
-			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" );
-
-			foreach ( $blog_ids as $id ) {
-				switch_to_blog( $id );
-				IP_Geo_Block_Logs::delete_cache_expired( $settings['cache_time'] );
-				restore_current_blog();
-			}
-		}
-
-		// for single site
-		else {
-			IP_Geo_Block_Logs::delete_cache_expired( $settings['cache_time'] );
-		}
-
 		self::stop_cache_gc();
+		IP_Geo_Block_Logs::delete_cache_expired( $settings['cache_time'] );
 		self::start_cache_gc( $settings );
 	}
 

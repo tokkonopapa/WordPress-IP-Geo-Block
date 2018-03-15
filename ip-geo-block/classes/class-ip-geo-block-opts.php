@@ -240,8 +240,7 @@ class IP_Geo_Block_Opts {
 			$version = $default['version'] = IP_Geo_Block::VERSION;
 
 			// create new option table
-			$settings = $default;
-			add_option( IP_Geo_Block::OPTION_NAME, $default );
+			add_option( IP_Geo_Block::OPTION_NAME, $settings = $default );
 		}
 
 		else {
@@ -401,8 +400,9 @@ class IP_Geo_Block_Opts {
 		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.9' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
-		// update option table
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
+
+		// update option table
 		update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
 		// return upgraded settings

@@ -819,7 +819,7 @@ class IP_Geo_Block_Admin {
 		<input type="checkbox" id="<?php echo $id, $sub_id, '_', $key; ?>" name="<?php echo $name, $sub_name, '[', $key, ']'; ?>" value="<?php echo $key; ?>"<?php
 			checked( is_array( $args['value'] ) ? ! empty( $args['value'][ $key ] ) : ( $key & $args['value'] ? TRUE : FALSE ) ); ?> />
 		<label for="<?php echo $id, $sub_id, '_', $key; ?>"><?php
-			if ( isset( $args['desc'][ $key ] ) ) 
+			if ( isset( $args['desc'][ $key ] ) )
 				echo '<dfn title="', $args['desc'][ $key ], '">', $val, '</dfn>';
 			else
 				echo $val;
@@ -875,8 +875,8 @@ class IP_Geo_Block_Admin {
 			break; // disabled @since 3.0
 
 		  case 'textarea': ?>
-<textarea class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>"<?php 
-	disabled( ! empty( $args['disabled'] ), TRUE ); 
+<textarea class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>"<?php
+	disabled( ! empty( $args['disabled'] ), TRUE );
 	if ( isset( $args['placeholder'] ) ) echo ' placeholder="', esc_html( $args['placeholder'] ), '"'; ?>><?php
 	echo esc_html( $args['value'] ); ?></textarea>
 <?php
@@ -1177,6 +1177,16 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
+		// cron event
+		$key = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) );
+		if ( $output['update']['auto'] && ! $key ) {
+			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
+			IP_Geo_Block_Cron::start_update_db( $output, FALSE );
+		} else if ( ! $output['update']['auto'] && $key ){
+			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
+			IP_Geo_Block_Cron::stop_update_db();
+		}
+
 		return $output;
 	}
 
@@ -1281,7 +1291,7 @@ class IP_Geo_Block_Admin {
 		self::add_admin_notice( 'updated', __( 'Settings saved.' ) );
 
 		// Redirect in order to back to the settings page.
-		wp_redirect( esc_url_raw( 
+		wp_redirect( esc_url_raw(
 			add_query_arg(
 				array( 'page' => IP_Geo_Block::PLUGIN_NAME ),
 				$this->dashboard_url( ! empty( $_POST[ $option ]['network_wide'] ) )

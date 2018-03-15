@@ -356,6 +356,8 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 = 3.0.10 =
 * **Improvement:** Add a new result "passed+" when "UA string and qualification" is applied in order to distinguish "passed" by country.
 * **Improvement:** Add descriptions on "Target actions" at "Login form" in "Back-end target settings" section.
+* **Improvement:** Improve to make  WP cron job for "Auto updating" work reliably in multisite environment.
+* **Bug fix:** Fix the issue that enabling "Force to load WP core" always blocked the requests to plugins/themes area on windows server.
 
 = 3.0.9 =
 * **New featuer:** Add CIDR calculator for IPv4 / IPv6.

@@ -1137,6 +1137,16 @@ endif;
 			}
 		}
 
+		// Get the next schedule of cron
+		if ( ! ( $tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) ) ) ) {
+			global $wpdb;
+			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
+			switch_to_blog( $blog_ids[0] ); // main blog
+			$tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) );
+			restore_current_blog();
+		}
+		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '---';
+
 		// Auto updating (once a month)
 		$field = 'update';
 		add_settings_field(
@@ -1152,6 +1162,7 @@ endif;
 				'sub-field' => 'auto',
 				'value' => $options[ $field ]['auto'],
 				'disabled' => empty( $providers ),
+				'after' => $options[ $field ]['auto'] ? '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>' : '',
 			)
 		);
 
