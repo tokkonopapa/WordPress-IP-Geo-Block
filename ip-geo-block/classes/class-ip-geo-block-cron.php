@@ -158,7 +158,7 @@ class IP_Geo_Block_Cron {
 	 *
 	 */
 	public static function start_update_db( $settings, $immediate = TRUE ) {
-		// when this plugin is activated for network but not main site, then skip updating
+		// updating should be done by main site when this plugin is activated for network
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) && ! is_main_site() )
 			return;
 
