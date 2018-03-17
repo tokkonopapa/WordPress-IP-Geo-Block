@@ -8,6 +8,7 @@
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
+require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
 
 class IP_Geo_Block_Cron {
 
@@ -18,7 +19,7 @@ class IP_Geo_Block_Cron {
 	private static function schedule_cron_job( &$update, $db, $immediate = FALSE ) {
 		wp_clear_scheduled_hook( IP_Geo_Block::CRON_NAME, array( $immediate ) );
 
-		if ( $update['auto'] ) {
+		if ( $update['auto'] || $immediate ) {
 			$now = time();
 			$next = $now + ( $immediate ? 0 : DAY_IN_SECONDS );
 
@@ -59,16 +60,11 @@ class IP_Geo_Block_Cron {
 	 *   B. Multiple time for each blog when this plugin is individually activated
 	 */
 	public static function exec_update_db( $immediate = FALSE ) {
-		// when this plugin is activated for network but not main site, then skip updating
-		require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
-		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) && ! is_main_site() )
-			return NULL;
+		// extract ip address from transient API to confirm the request source
+		add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
 
 		$settings = IP_Geo_Block::get_option();
 		$args = IP_Geo_Block::get_request_headers( $settings );
-
-		// extract ip address from transient API to confirm the request source
-		add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
 
 		// download database files (higher priority order)
 		foreach ( $providers = IP_Geo_Block_Provider::get_addons( $settings['providers'] ) as $provider ) {
@@ -94,7 +90,7 @@ class IP_Geo_Block_Cron {
 						continue;
 
 					// matching rule should be reset when blocking happens
-					if ( 0 !== strncmp( 'passed', $validate['result'], 6 ) )
+					if ( 'passed' !== $validate['result'] )
 						$settings['matching_rule'] = -1;
 
 					// setup country code in whitelist if it needs to be initialized
@@ -162,7 +158,9 @@ class IP_Geo_Block_Cron {
 	 *
 	 */
 	public static function start_update_db( $settings, $immediate = TRUE ) {
-		self::stop_update_db();
+		// when this plugin is activated for network but not main site, then skip updating
+		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) && ! is_main_site() )
+			return;
 
 		if ( $immediate ) // update matching rule immediately in exec_update_db() / extract_ip()
 			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address(), MINUTE_IN_SECONDS );
@@ -184,7 +182,9 @@ class IP_Geo_Block_Cron {
 		self::start_cache_gc( $settings );
 	}
 
-	public static function start_cache_gc( $settings ) {
+	public static function start_cache_gc( $settings = FALSE ) {
+		$settings or $settings = IP_Geo_Block::get_option();
+
 		if ( ! wp_next_scheduled( IP_Geo_Block::CACHE_NAME ) )
 			wp_schedule_single_event( time() + $settings['cache_time_gc'], IP_Geo_Block::CACHE_NAME );
 	}

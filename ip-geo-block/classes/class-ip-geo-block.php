@@ -113,7 +113,7 @@ class IP_Geo_Block {
 		else {
 			// public facing pages
 			if ( $validate['public'] || ( ! empty( $_FILES ) && $validate['mimetype'] ) || $live_log /* && 'index.php' === $this->pagenow */ )
-				$loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
+				defined( 'DOING_CRON' ) or $loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
 
 			// message text on comment form
 			if ( $settings['comment']['pos'] ) {
