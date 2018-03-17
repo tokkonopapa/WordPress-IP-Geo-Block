@@ -101,16 +101,16 @@ class IP_Geo_Block_Cron {
 					if ( -1 === (int)$settings['matching_rule'] ) {
 						$settings['matching_rule'] = 0; // white list
 
+						// when the country code doesn't exist in whitelist, then add it
 						if ( FALSE === strpos( $settings['white_list'], $validate['code'] ) )
 							$settings['white_list'] .= ( $settings['white_list'] ? ',' : '' ) . $validate['code'];
-
-						// update option settings
-						self::update_settings( $settings, array( 'matching_rule', 'white_list' ) );
 					}
 
+					// update option settings
+					self::update_settings( $settings, array( 'matching_rule', 'white_list' ) );
+
 					// finished to update matching rule
-					if ( -1 !== (int)$settings['matching_rule'] )
-						set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
+					set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
 				}
 			}
 		}
