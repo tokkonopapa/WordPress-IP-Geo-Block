@@ -50,6 +50,8 @@ class IP_Geo_Block_Activate {
 	 * @link https://wordpress.stackexchange.com/questions/181141/how-to-run-an-activation-function-when-plugin-is-network-activated-on-multisite
 	 */
 	public static function activate( $network_wide = FALSE ) {
+		defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG and assert( did_action( 'init' ) && current_user_can( 'manage_options' ), __FUNCTION__ );
+
 		// Update main blog first.
 		self::activate_blog();
 
@@ -68,8 +70,8 @@ class IP_Geo_Block_Activate {
 
 				if ( $settings['network_wide'] ) {
 					// copy settings of main site to individual site
-					$opts = IP_Geo_Block::get_option();
-					$settings['api_key']['GoogleMap'] = $opts['api_key']['GoogleMap'];
+					$key = IP_Geo_Block::get_option();
+					$settings['api_key']['GoogleMap'] = $key['api_key']['GoogleMap'];
 					update_option( IP_Geo_Block::OPTION_NAME, $settings );
 				}
 
@@ -80,9 +82,7 @@ class IP_Geo_Block_Activate {
 			}
 		}
 
-		// only after 'init' action hook for is_user_logged_in().
-		if ( did_action( 'init' ) && current_user_can( 'manage_options' ) )
-			self::activate_main_blog( $settings );
+		self::activate_main_blog( $settings );
 	}
 
 	/**
@@ -90,29 +90,29 @@ class IP_Geo_Block_Activate {
 	 *
 	 */
 	public static function deactivate( $network_wide = FALSE ) {
-		add_action( 'shutdown', 'IP_Geo_Block_Activate::deactivate_plugin' );
+		add_action( 'shutdown', array( __CLASS__, 'deactivate_plugin' ) );
 	}
 
 	public static function deactivate_plugin() {
-		global $wpdb;
-		$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" );
+		self::deactivate_blog();
 
-		$count = 0;
+		global $wpdb;
+		$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
+
+		// Skip the main blog.
+		array_shift( $blog_ids );
+
 		foreach ( $blog_ids as $id ) {
 			switch_to_blog( $id );
 
-			if ( ! is_plugin_active            ( IP_GEO_BLOCK_BASE ) &&
-			     ! is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
-				$count++;
+			// skip when this plugin is still active
+			if ( ! is_plugin_active( IP_GEO_BLOCK_BASE ) )
 				self::deactivate_blog();
-			}
 
 			restore_current_blog();
 		}
 
-		// when all site deactivate this plugin
-		if ( count( $blog_ids ) === $count )
-			self::deactivate_main_blog();
+		self::deactivate_main_blog();
 	}
 
 }

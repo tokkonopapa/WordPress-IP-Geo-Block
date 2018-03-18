@@ -1182,7 +1182,8 @@ class IP_Geo_Block_Admin {
 		if ( $output['update']['auto'] && ! $key ) {
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
 			IP_Geo_Block_Cron::start_update_db( $output, FALSE );
-		} else if ( ! $output['update']['auto'] && $key ){
+		}
+		else if ( ! $output['update']['auto'] && $key ){
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
 			IP_Geo_Block_Cron::stop_update_db();
 		}
@@ -1254,8 +1255,7 @@ class IP_Geo_Block_Admin {
 
 		// additional configuration
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php';
-		$file = IP_Geo_Block_Opts::setup_validation_timing( $options );
-		if ( TRUE !== $file ) {
+		if ( TRUE !== ( $file = IP_Geo_Block_Opts::setup_validation_timing( $options ) ) ) {
 			$options['validation']['timing'] = 0;
 			self::add_admin_notice( 'error', sprintf(
 				__( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), '<code>' . $file . '</code>'
