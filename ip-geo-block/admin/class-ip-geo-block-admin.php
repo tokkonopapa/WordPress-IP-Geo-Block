@@ -55,8 +55,6 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function admin_init() {
-		require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
-
 		// Add the options page and menu item.
 		add_action( 'admin_menu',                 array( $this, 'setup_admin_page'    ) );
 		add_action( 'admin_post_ip_geo_block',    array( $this, 'admin_ajax_callback' ) );
@@ -68,6 +66,7 @@ class IP_Geo_Block_Admin {
 			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
 
 			// validate capability instead of nonce. @since 2.0.0 && 3.0.0
+			require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
 			if ( $this->is_network = is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
 				add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_network_redirect' ), 10, 2 );
 
@@ -140,7 +139,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function create_blog( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
-		defined( 'IP_GEO_BLOCK_DEBUG' ) and IP_GEO_BLOCK_DEBUG and assert( 'is_main_site()', 'Not main blog.' );
+		defined( 'IP_GEO_BLOCK_DEBUG' ) and IP_GEO_BLOCK_DEBUG and assert( is_main_site(), 'Not main blog.' );
 
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php';
 
@@ -409,7 +408,7 @@ class IP_Geo_Block_Admin {
 		if ( $admin_menu ) {
 			// `settings-updated` would be added just after settings updated.
 			if ( ! empty( $_REQUEST['settings-updated'] ) && $this->is_network ) {
-				$this->sync_multisite_option( $settings );
+				$this->update_multisite_settings( $settings );
 				wp_safe_redirect(
 					esc_url_raw( add_query_arg(
 						array( 'page' => IP_Geo_Block::PLUGIN_NAME ),
@@ -1182,8 +1181,7 @@ class IP_Geo_Block_Admin {
 		if ( $output['update']['auto'] && ! $key ) {
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
 			IP_Geo_Block_Cron::start_update_db( $output, FALSE );
-		}
-		else if ( ! $output['update']['auto'] && $key ){
+		} else if ( ! $output['update']['auto'] && $key ){
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
 			IP_Geo_Block_Cron::stop_update_db();
 		}
@@ -1284,7 +1282,7 @@ class IP_Geo_Block_Admin {
 		// Go through the posted data and save the targetted options.
 		foreach ( $options as $option ) {
 			if ( isset( $_POST[ $option ] ) )
-				$this->sync_multisite_option( $_POST[ $option ] );
+				$this->update_multisite_settings( $_POST[ $option ] );
 		}
 
 		// Register a settings error to be displayed to the user
@@ -1305,14 +1303,16 @@ class IP_Geo_Block_Admin {
 	 *
 	 * @note: This function triggers `validate_settings()` on register_setting() in wp-include/option.php.
 	 */
-	private function sync_multisite_option( $option ) {
+	private function update_multisite_settings( $settings ) {
 		global $wpdb;
 		$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" );
 		$ret = TRUE;
 
 		foreach ( $blog_ids as $id ) {
 			switch_to_blog( $id );
-			$ret &= update_option( IP_Geo_Block::OPTION_NAME, $option );
+			$map = IP_Geo_Block::get_option();
+			$settings['api_key']['GoogleMap'] = $map['api_key']['GoogleMap'];
+			$ret &= update_option( IP_Geo_Block::OPTION_NAME, $settings );
 			restore_current_blog();
 		}
 
@@ -1452,8 +1452,8 @@ class IP_Geo_Block_Admin {
 				}
 			}
 
-			if ( $settings['network_wide'] && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
-				$this->sync_multisite_option( $settings );
+			if ( $this->is_network && $settings['network_wide'] )
+				$this->update_multisite_settings( $settings );
 			else
 				update_option( IP_Geo_Block::OPTION_NAME, $settings );
 

@@ -1377,6 +1377,9 @@ endif;
 			)
 		);
 
+		$tmp = wp_next_scheduled( IP_Geo_Block::CACHE_NAME );
+		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '---';
+
 		// Garbage collection period [sec]
 		$field = 'cache_time_gc';
 		add_settings_field(
@@ -1390,6 +1393,7 @@ endif;
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
+				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>',
 			)
 		);
 
@@ -1457,7 +1461,7 @@ endif;
 			NULL,
 			$option_slug
 		);
-if (0):
+
 		// @see https://vedovini.net/2015/10/using-the-wordpress-settings-api-with-network-admin-pages/
 		if ( is_main_site() && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			add_action( 'network_admin_edit_' . IP_Geo_Block::PLUGIN_NAME, array( $context, 'validate_network_settings' ) );
@@ -1479,7 +1483,7 @@ if (0):
 				)
 			);
 		}
-endif;
+
 		// Remove all settings at uninstallation
 		$field = 'clean_uninstall';
 		add_settings_field(

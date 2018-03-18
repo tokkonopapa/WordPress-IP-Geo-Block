@@ -18,7 +18,7 @@ require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
 
 class IP_Geo_Block_Activate {
 
-	// activate and deactivate main blog
+	// Activate and deactivate main blog
 	private static function activate_main_blog( $settings ) {
 		IP_Geo_Block_Cron::start_update_db( $settings );
 		IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
@@ -31,7 +31,7 @@ class IP_Geo_Block_Activate {
 		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
 	}
 
-	// activate and deactivate each blog
+	// Activate and deactivate each blog
 	public static function activate_blog() {
 		IP_Geo_Block_Opts::upgrade();
 		IP_Geo_Block_Logs::create_tables();
@@ -58,7 +58,7 @@ class IP_Geo_Block_Activate {
 		// Get option of main blog.
 		$settings = IP_Geo_Block::get_option();
 
-		if ( $network_wide ) {
+		if ( is_multisite() && $network_wide ) {
 			global $wpdb;
 			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
 
@@ -69,13 +69,13 @@ class IP_Geo_Block_Activate {
 				switch_to_blog( $id );
 
 				if ( $settings['network_wide'] ) {
-					// copy settings of main site to individual site
-					$key = IP_Geo_Block::get_option();
-					$settings['api_key']['GoogleMap'] = $key['api_key']['GoogleMap'];
+					// Copy settings of main site to individual site
+					$map = IP_Geo_Block::get_option();
+					$settings['api_key']['GoogleMap'] = $map['api_key']['GoogleMap'];
 					update_option( IP_Geo_Block::OPTION_NAME, $settings );
 				}
 
-				// initialize inidivisual site
+				// Initialize inidivisual site
 				self::activate_blog();
 
 				restore_current_blog();
@@ -96,20 +96,22 @@ class IP_Geo_Block_Activate {
 	public static function deactivate_plugin() {
 		self::deactivate_blog();
 
-		global $wpdb;
-		$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
+		if ( is_multisite() && is_main_site() ) {
+			global $wpdb;
+			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
 
-		// Skip the main blog.
-		array_shift( $blog_ids );
+			// Skip the main blog.
+			array_shift( $blog_ids );
 
-		foreach ( $blog_ids as $id ) {
-			switch_to_blog( $id );
+			foreach ( $blog_ids as $id ) {
+				switch_to_blog( $id );
 
-			// skip when this plugin is still active
-			if ( ! is_plugin_active( IP_GEO_BLOCK_BASE ) )
-				self::deactivate_blog();
+				// Skip when this plugin is still active
+				if ( ! is_plugin_active( IP_GEO_BLOCK_BASE ) )
+					self::deactivate_blog();
 
-			restore_current_blog();
+				restore_current_blog();
+			}
 		}
 
 		self::deactivate_main_blog();

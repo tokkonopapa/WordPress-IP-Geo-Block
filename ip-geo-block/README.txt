@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.4
-Stable tag: 3.0.10a
+Stable tag: 3.0.10b
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -354,6 +354,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 == Changelog ==
 
 = 3.0.10 =
+* **New featuer:** Add "Network wide settings" in "Plugin settings" section and "Site List" tab on "Network Admin" dashboard menu.
 * **Improvement:** Add a new result "passed+" when "UA string and qualification" is applied in order to distinguish "passed" by country.
 * **Improvement:** Add descriptions on "Target actions" at "Login form" in "Back-end target settings" section.
 * **Improvement:** Improve to make WP cron job for "Auto updating" reliably in multisite environment.
