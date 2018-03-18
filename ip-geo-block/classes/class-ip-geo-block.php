@@ -791,9 +791,9 @@ class IP_Geo_Block {
 
 			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
-
+				$j[1] = isset( $j[1] ) ? min( 32, max( 0, (int)$j[1] ) ) : 32;
 				if ( ( ! empty( $validate['asn'] ) && $validate['asn'] === $j[0] ) ||
-				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && Net_IPv4::ipInNetwork( $ip, isset( $j[1] ) ? $i : $i.'/32' ) ) )
+				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && Net_IPv4::ipInNetwork( $ip, $j[0].'/'.$j[1] ) ) )
 					return TRUE;
 			}
 		}
@@ -803,9 +803,9 @@ class IP_Geo_Block {
 
 			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
-
+				$j[1] = isset( $j[1] ) ? min( 128, max( 0, (int)$j[1] ) ) : 128;
 				if ( ( ! empty( $validate['asn'] ) && $validate['asn'] === $j[0] ) ||
-				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) && Net_IPv6::isInNetmask( $ip, isset( $j[1] ) ? $i : $i.'/128' ) ) )
+				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) && Net_IPv6::isInNetmask( $ip, $j[0].'/'.$j[1] ) ) )
 					return TRUE;
 			}
 		}
