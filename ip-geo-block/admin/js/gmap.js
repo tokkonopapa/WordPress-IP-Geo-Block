@@ -14,6 +14,9 @@ function gm_authFailure() {
 (function ($) {
 	'use strict';
 	$(function ($) {
+		if ('undefined' === typeof google) {
+			return;
+		}
 		var e = "GmapRS",
 			d = "plugin_" + e,
 			b = {

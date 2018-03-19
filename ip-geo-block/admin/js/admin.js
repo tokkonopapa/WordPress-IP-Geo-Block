@@ -38,6 +38,10 @@
 		}).replace(/&amp;(#\d{2,4}|\w{4,7});/g, "&$1;"); // revert html character entity
 	}
 
+	function is_blocked( result ) {
+		return -1 === result.indexOf('pass');
+	}
+
 	function stripTag(str) {
 		return escapeHTML(str.toString().replace(/(<([^>]+)>)/ig, ''));
 	}
@@ -481,7 +485,7 @@
 			}
 
 			if (0 < (w = $id.width()) &&
-			    'undefined' !== typeof chart.dataStacked[id] &&	
+			    'undefined' !== typeof chart.dataStacked[id] &&
 			    'undefined' !== typeof chart.viewStacked[id]) {
 
 				i = ID('range');
@@ -1218,7 +1222,7 @@
 						// update status of checkbox
 						$(ID('@', 'exception_' + target)).trigger('change');
 						$(ID('#', 'find-' + target)).append(
-							' ' + '<span class="ip-geo-block-found">' + stripTag(ip_geo_block.msg[8].replace('%d', n)) + '</span>'
+							' ' + '<span class="ip-geo-block-warn">' + stripTag(ip_geo_block.msg[8].replace('%d', n)) + '</span>'
 						);
 					});
 
@@ -1665,10 +1669,10 @@
 			// animation on update
 			new_class = ID(''),
 			add_class = function (row, data, prefix) {
-				if (-1 !== data[7 /* result */].indexOf('passed')) {
-					$(row).addClass(new_class + prefix + 'passed');
-				} else {
+				if (is_blocked(data[7 /* result */])) {
 					$(row).addClass(new_class + prefix + 'blocked');
+				} else {
+					$(row).addClass(new_class + prefix + 'passed');
 				}
 			},
 
@@ -1869,6 +1873,14 @@
 				}
 
 				return false;
+			});
+
+			// Enter key in textbox
+			$(ID('@', 'ip_address')).on('keypress', function (event) {
+				if ((event.which && event.which === 13) || (event.keyCode && event.keyCode === 13)) {
+					$(ID('@', 'get_location')).click();
+					return false;
+				}
 			});
 
 			// Preset IP address

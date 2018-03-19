@@ -424,7 +424,7 @@ table.form-table th .ip-geo-block-cycle span {
     color: #c43322;
     margin-left: 0.25em;
 }
-.ip-geo-block-found {
+.ip-geo-block-warn {
     color: #c43322;
     font-weight: bold;
 }

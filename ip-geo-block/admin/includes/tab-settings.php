@@ -1145,7 +1145,7 @@ endif;
 			$tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) );
 			restore_current_blog();
 		}
-		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '---';
+		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '<span class="ip-geo-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-geo-block' ). '</span>';
 
 		// Auto updating (once a month)
 		$field = 'update';
@@ -1377,8 +1377,9 @@ endif;
 			)
 		);
 
+		// Get the next schedule of cron
 		$tmp = wp_next_scheduled( IP_Geo_Block::CACHE_NAME );
-		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '---';
+		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '<span class="ip-geo-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-geo-block' ). '</span>';
 
 		// Garbage collection period [sec]
 		$field = 'cache_time_gc';
@@ -1461,7 +1462,7 @@ endif;
 			NULL,
 			$option_slug
 		);
-
+if (0):
 		// @see https://vedovini.net/2015/10/using-the-wordpress-settings-api-with-network-admin-pages/
 		if ( is_main_site() && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			add_action( 'network_admin_edit_' . IP_Geo_Block::PLUGIN_NAME, array( $context, 'validate_network_settings' ) );
@@ -1483,7 +1484,7 @@ endif;
 				)
 			);
 		}
-
+endif;
 		// Remove all settings at uninstallation
 		$field = 'clean_uninstall';
 		add_settings_field(

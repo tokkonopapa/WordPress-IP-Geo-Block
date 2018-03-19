@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.8', // Version of this table (not package)
+		'version'         => '3.0.9', // Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form

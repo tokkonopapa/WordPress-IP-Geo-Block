@@ -782,24 +782,26 @@ endif; // TEST_RESTORE_NETWORK
 		// Blocked self requests
 		$installed = array_reverse( IP_Geo_Block_Logs::search_logs( IP_Geo_Block::get_ip_address() ) );
 		foreach ( $installed as $val ) {
-			// hide port and nonce
-			$method = preg_replace( '/\[\d+\]/', '', $val['method'] );
-			$method = preg_replace( '/(' . IP_Geo_Block::PLUGIN_NAME . '-auth-nonce)(?:=|%3D)([\w]+)/', '$1=...', $method );
+			if ( IP_Geo_Block::is_blocked( $val['result'] ) ) {
+				// hide port and nonce
+				$method = preg_replace( '/\[\d+\]/', '', $val['method'] );
+				$method = preg_replace( '/(' . IP_Geo_Block::PLUGIN_NAME . '-auth-nonce)(?:=|%3D)([\w]+)/', '$1=...', $method );
 
-			// add post data
-			$query = array();
-			foreach ( explode( ',', $val['data'] ) as $str ) {
-				if ( FALSE !== strpos( $str, '=' ) )
-					$query[] = $str;
+				// add post data
+				$query = array();
+				foreach ( explode( ',', $val['data'] ) as $str ) {
+					if ( FALSE !== strpos( $str, '=' ) )
+						$query[] = $str;
+				}
+
+				if ( ! empty( $query ) )
+					$method .= '(' . implode( ',', $query ) . ')';
+
+				$res += array(
+					esc_html( IP_Geo_Block_Util::localdate( $val['time'], 'Y-m-d H:i:s' ) ) =>
+					esc_html( str_pad( $val['result'], 8 ) . $method )
+				);
 			}
-
-			if ( ! empty( $query ) )
-				$method .= '(' . implode( ',', $query ) . ')';
-
-			$res += array(
-				esc_html( IP_Geo_Block_Util::localdate( $val['time'], 'Y-m-d H:i:s' ) ) =>
-				esc_html( str_pad( $val['result'], 8 ) . $method )
-			);
 		}
 
 		return $res;

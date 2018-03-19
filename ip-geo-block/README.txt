@@ -354,14 +354,17 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 == Changelog ==
 
 = 3.0.10 =
-* **New featuer:** Add "Network wide settings" in "Plugin settings" section and "Site List" tab on "Network Admin" dashboard menu.
-* **Improvement:** Add a new result "passed+" when "UA string and qualification" is applied in order to distinguish "passed" by country.
+This is a maintenance release addressing various internal improvement toward the next version.
+* **Improvement:** Add new descriptions "passUA" and "blockUA" for result in Logs to identify the reason when "UA string and qualification" is applied.
 * **Improvement:** Add descriptions on "Target actions" at "Login form" in "Back-end target settings" section.
-* **Improvement:** Improve to make WP cron job for "Auto updating" reliably in multisite environment.
-* **Bug fix:** Fix the issue that enabling "Force to load WP core" always blocked the requests to plugins/themes area on windows server.
+* **Improvement:** Make WP cron job for "Auto updating" reliably in multisite environment.
+* **Improvement:** Validate the prefix of IP address CIDR to prevent unexpected fatal error.
+* **Bug fix:** Fix the issue of unexpected blocking against the requests to plugins/themes area when "Force to load WP core" is enabled on windows server.
+* **Bug fix:** Fix the issue of illegal redirection after "Save Changes" on "Settings" => "General Settings" page.
+* **Bug fix:** Fix the issue that "Search now" was not available when google map failed to load.
 
 = 3.0.9 =
-* **New featuer:** Add CIDR calculator for IPv4 / IPv6.
+* **New feature:** Add CIDR calculator for IPv4 / IPv6.
 * **Improvement:** Avoid blocking by wp-zep when IP address is private or loopback network.
 * **Improvement:** Chnage the priority of internal action hook for better compatibility with other plugins/themes.
 * **Maintenance:** Change the priority order of local geolocation databases.

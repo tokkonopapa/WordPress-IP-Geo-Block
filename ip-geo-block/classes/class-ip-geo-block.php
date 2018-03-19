@@ -274,6 +274,14 @@ class IP_Geo_Block {
 	}
 
 	/**
+	 * Return true if the validation result is passed.
+	 *
+	 */
+	 public static function is_blocked( $result ) {
+		 return 0 !== strncmp( 'pass', $result, 4 );
+	 }
+
+	/**
 	 * Build a validation result for the current user.
 	 *
 	 */
@@ -470,13 +478,13 @@ class IP_Geo_Block {
 				$validate = self::validate_country( $hook, $validate, $settings, $block );
 
 			// if one of IPs is blocked then stop
-			if ( 0 !== strncmp( 'passed', $validate['result'], 6 ) )
+			if ( self::is_blocked( $validate['result'] ) )
 				break;
 		}
 
 		if ( $check_auth ) {
 			// record log and update cache
-			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $block = ( 0 !== strncmp( 'passed', $validate['result'], 6 ) ) );
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $block = self::is_blocked( $validate['result'] ) );
 			IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
 			// update statistics
@@ -505,7 +513,7 @@ class IP_Geo_Block {
 
 	public function validate_front( $can_access = TRUE ) {
 		$validate = $this->validate_ip( 'comment', self::get_option(), TRUE, FALSE, FALSE );
-		return ( 0 === strncmp( 'passed', $validate['result'], 6 ) ? $can_access : FALSE );
+		return self::is_blocked( $validate['result'] ) ? FALSE : $can_access;
 	}
 
 	/**
@@ -695,7 +703,7 @@ class IP_Geo_Block {
 			$validate = apply_filters( self::PLUGIN_NAME . '-login', $validate, $settings );
 
 			// (1) blocked, (3) unauthenticated, (5) all
-			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $block = ( 0 !== strncmp( 'passed', $validate['result'], 6 ) ) );
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $block = self::is_blocked( $validate['result'] ) );
 
 			// send response code to refuse immediately
 			if ( $block ) {
@@ -914,32 +922,32 @@ class IP_Geo_Block {
 
 				if ( 'FEED' === $code ) {
 					if ( $not xor $is_feed )
-						return $validate + array( 'result' => $which ? 'UAlist' : 'passed+' );
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 
 				elseif ( 'HOST' === $code ) {
 					if ( $not xor $validate['host'] !== $validate['ip'] )
-						return $validate + array( 'result' => $which ? 'UAlist' : 'passed+' );
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 
 				elseif ( 0 === strncmp( 'HOST=', $code, 5 ) ) {
 					if ( $not xor FALSE !== strpos( $validate['host'], substr( $code, 5 ) ) )
-						return $validate + array( 'result' => $which ? 'UAlist' : 'passed+' );
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 
 				elseif ( 0 === strncmp( 'REF=', $code, 4 ) ) {
 					if ( $not xor FALSE !== strpos( $referer, substr( $code, 4 ) ) )
-						return $validate + array( 'result' => $which ? 'UAlist' : 'passed+' );
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 
 				elseif ( '*' === $code || 2 === strlen( $code ) ) {
 					if ( $not xor ( '*' === $code || $validate['code'] === $code ) )
-						return $validate + array( 'result' => $which ? 'UAlist' : 'passed+' );
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 
 				elseif ( preg_match( '!^[a-f\d\.:/]+$!', $code = substr( $pat, strpos( $pat, $code ) ) ) ) {
 					if ( $not xor $this->check_ips( $validate, $code ) )
-						return $validate + array( 'result' => $which ? 'UAlist' : 'passed+' );
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 			}
 		}

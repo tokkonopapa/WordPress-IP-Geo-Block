@@ -371,7 +371,7 @@ class IP_Geo_Block_Logs {
 
 	private static function get_post_data( $hook, $validate, $settings ) {
 		// condition of masking password
-		$mask_pwd = ( 0 === strncmp( 'passed', $validate['result'], 6 ) );
+		$mask_pwd = ! IP_Geo_Block::is_blocked( $validate['result'] );
 
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {
@@ -524,7 +524,7 @@ class IP_Geo_Block_Logs {
 	public static function record_logs( $hook, $validate, $settings, $block = TRUE ) {
 		$record = $settings['validation'][ $hook ] ? apply_filters( IP_Geo_Block::PLUGIN_NAME . '-record-logs', (int)$settings['validation']['reclogs'], $hook, $validate ) : FALSE;
 		$record = ( 1 === $record &&   $block ) || // blocked
-		          ( 6 === $record && ( $block   || 'passed' !== IP_Geo_Block::validate_country( NULL, $validate, $settings ) ) ) || // blocked or qualified
+		          ( 6 === $record && ( $block   || IP_Geo_Block::is_blocked( IP_Geo_Block::validate_country( NULL, $validate, $settings ) ) ) ) || // blocked or qualified
 		          ( 2 === $record && ! $block ) || // passed
 		          ( 3 === $record && ! $validate['auth'] ) || // unauthenticated
 		          ( 4 === $record &&   $validate['auth'] ) || // authenticated
@@ -747,7 +747,7 @@ class IP_Geo_Block_Logs {
 			$stat['providers'][ $provider ]['count']++; // undefined in auth_fail()
 			$stat['providers'][ $provider ]['time' ] += (float)( isset( $validate['time'] ) ? $validate['time'] : 0 );
 
-			if ( 0 !== strncmp( 'passed', $validate['result'], 6 ) ) {
+			if ( IP_Geo_Block::is_blocked( $validate['result'] ) ) {
 				// Blocked by type of IP address
 				if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
 					++$stat['IPv4'];
@@ -891,7 +891,7 @@ class IP_Geo_Block_Logs {
 		$result = array();
 
 		$sql = $wpdb->prepare(
-			"SELECT * FROM `$table` WHERE `result` != 'passed' AND `" . $key . "` LIKE '%%%s%%'", $search
+			"SELECT * FROM `$table` WHERE `result` NOT LIKE '%%pass%%' AND `" . $key . "` LIKE '%%%s%%'", $search
 		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
 
 		return $result;

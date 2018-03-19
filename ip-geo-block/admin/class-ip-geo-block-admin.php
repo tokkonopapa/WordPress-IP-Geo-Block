@@ -407,14 +407,12 @@ class IP_Geo_Block_Admin {
 
 		if ( $admin_menu ) {
 			// `settings-updated` would be added just after settings updated.
-			if ( ! empty( $_REQUEST['settings-updated'] ) && $this->is_network ) {
+			if ( ! empty( $_REQUEST['settings-updated'] ) && $this->is_network &&
+			     ! empty( $_REQUEST['page'] ) && IP_Geo_Block::PLUGIN_NAME === $_REQUEST['page'] ) {
 				$this->update_multisite_settings( $settings );
-				wp_safe_redirect(
-					esc_url_raw( add_query_arg(
-						array( 'page' => IP_Geo_Block::PLUGIN_NAME ),
-						$this->dashboard_url( TRUE )
-					) )
-				);
+				wp_safe_redirect( esc_url_raw( add_query_arg(
+					array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( TRUE )
+				) ) );
 				exit;
 			}
 
