@@ -625,10 +625,10 @@ class IP_Geo_Block_Admin {
 				// TRUE if open ('o') or FALSE if close ('x')
 				$stat = empty( $cookie[ $tab ][ $index ] ) || 'x' !== $cookie[ $tab ][ $index ] || $index === $target;
 
-				echo "\n",
-				     '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n",
-				     '<legend class="panel-heading"><h3 class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '">', $section['title'],
-				     '</h3></legend>', "\n", '<div class="panel-body',
+				echo "\n", '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n",
+				     '<legend class="panel-heading"><h3 class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '">', is_string( $section['title'] ) ? $section['title'] : $section['title'][0],
+				     is_array( $section['title'] ) ? '<span class="' . IP_Geo_Block::PLUGIN_NAME . '-label-link">[ ' . $section['title'][1] . ' ]</span></h3>' : '</h3>',
+				     '</legend>', "\n", '<div class="panel-body',
 				     ($stat ? ' ' . IP_Geo_Block::PLUGIN_NAME . '-border"' : '"'),
 				     ($stat || (4 === $tab && $index) ? '>' : ' style="display:none">'), "\n";
 
@@ -683,6 +683,8 @@ class IP_Geo_Block_Admin {
 				unset( $tabs[5] ); // Site List
 			}
 		} else {
+			// `edit.php` is an action handler for Multisite administration panels.
+			// `edit.php` ==> do action `network_admin_edit_IP_GEO_BLOCK` ==> `validate_network_settings()`
 			$action = 'edit.php?action=' . IP_Geo_Block::PLUGIN_NAME;
 
 			if ( $settings['network_wide'] ) {

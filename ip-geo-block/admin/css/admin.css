@@ -60,6 +60,14 @@ label {
 .panel-body:after {
     clear: both;
 }
+.ip-geo-block-label-link {
+    float: right;
+    font-size: 90%;
+    font-weight: normal;
+}
+.ip-geo-block-label-link a {
+    box-shadow: none;
+}
 
 /* style legend and fieldset */
 fieldset.ip-geo-block-field {

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-03-19 22:56+0900\n"
-"PO-Revision-Date: 2018-03-19 22:57+0900\n"
+"POT-Creation-Date: 2018-03-20 23:40+0900\n"
+"PO-Revision-Date: 2018-03-20 23:41+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -79,7 +79,7 @@ msgid "The selected row cannot be found in the visible area."
 msgstr "可視領域に選択された行が見つかりません。"
 
 #: admin/class-ip-geo-block-admin.php:277
-#: admin/class-ip-geo-block-admin.php:1436
+#: admin/class-ip-geo-block-admin.php:1438
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr "Ajaxコマンド `%s` の実行中にエラーが発生しました。"
@@ -272,15 +272,15 @@ msgstr "検索"
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:691
+#: admin/class-ip-geo-block-admin.php:693
 msgid "Network wide"
 msgstr "ネットワーク一括管理"
 
-#: admin/class-ip-geo-block-admin.php:704
+#: admin/class-ip-geo-block-admin.php:706
 msgid "Toggle all"
 msgstr "全てを開閉"
 
-#: admin/class-ip-geo-block-admin.php:707
+#: admin/class-ip-geo-block-admin.php:709
 msgid ""
 "Independent of &#8220;Statistics and Logs settings&#8221;, you can see all "
 "the requests validated by this plugin in almost real time."
@@ -288,23 +288,23 @@ msgstr ""
 "［統計とログの設定］にかかわらず、このプラグインによる検証結果のすべてを、ほぼ"
 "リアルタイムに表示します。"
 
-#: admin/class-ip-geo-block-admin.php:707 admin/includes/tab-accesslog.php:39
+#: admin/class-ip-geo-block-admin.php:709 admin/includes/tab-accesslog.php:39
 msgid "Live update"
 msgstr "ライブアップデート"
 
-#: admin/class-ip-geo-block-admin.php:711
+#: admin/class-ip-geo-block-admin.php:713
 msgid "Open a new window on clicking the link in the chart."
 msgstr "チャート内のリンクをクリックすると、新しいウィンドウが開きます。"
 
-#: admin/class-ip-geo-block-admin.php:711
+#: admin/class-ip-geo-block-admin.php:713
 msgid "Open a new window"
 msgstr "別窓で開く"
 
-#: admin/class-ip-geo-block-admin.php:734
+#: admin/class-ip-geo-block-admin.php:736
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:735
+#: admin/class-ip-geo-block-admin.php:737
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -314,23 +314,23 @@ msgstr ""
 "\" title=\"Referer Checker\">参照元を残さずにリンク先にリダイレクトできます</"
 "a>。）"
 
-#: admin/class-ip-geo-block-admin.php:740
+#: admin/class-ip-geo-block-admin.php:742
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: admin/class-ip-geo-block-admin.php:837
+#: admin/class-ip-geo-block-admin.php:839
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:852
+#: admin/class-ip-geo-block-admin.php:854
 msgid "Select one"
 msgstr "何れかを選択"
 
-#: admin/class-ip-geo-block-admin.php:1230
+#: admin/class-ip-geo-block-admin.php:1232
 msgid "You do not have sufficient permissions to access this page."
 msgstr "このページにアクセスするための十分な権限がありません。"
 
-#: admin/class-ip-geo-block-admin.php:1257
+#: admin/class-ip-geo-block-admin.php:1259
 #: admin/includes/class-admin-rewrite.php:194
 #: classes/class-ip-geo-block-cron.php:212
 #: classes/class-ip-geo-block-cron.php:316
@@ -340,7 +340,7 @@ msgstr "このページにアクセスするための十分な権限がありま
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr "<code>%s</code> に書き込めません。パーミッションをチェックして下さい。"
 
-#: admin/class-ip-geo-block-admin.php:1287
+#: admin/class-ip-geo-block-admin.php:1289
 msgid "Settings saved."
 msgstr "設定を保存しました。"
 
@@ -380,6 +380,10 @@ msgstr "%s&thinsp;で既に「auto_prepend_file」が設定されています。
 #: admin/includes/tab-accesslog.php:19
 msgid "Validation logs"
 msgstr "検証のログ"
+
+#: admin/includes/tab-accesslog.php:19
+msgid "Description of &#8220;Result&#8221;"
+msgstr "検証結果の凡例"
 
 #: admin/includes/tab-accesslog.php:54 admin/includes/tab-settings.php:456
 msgid "Comment post"
@@ -1738,7 +1742,7 @@ msgstr ""
 msgid "The user %s (user ID: %d) is in use."
 msgstr "ユーザー %s（ユーザーID：%d）が使用中です。"
 
-#: classes/class-ip-geo-block.php:426
+#: classes/class-ip-geo-block.php:425
 msgid "Dashboard"
 msgstr "ダッシュボード"
 

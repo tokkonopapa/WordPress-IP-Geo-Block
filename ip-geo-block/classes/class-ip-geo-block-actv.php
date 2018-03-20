@@ -21,8 +21,8 @@ class IP_Geo_Block_Activate {
 	// Activate and deactivate main blog
 	private static function activate_main_blog( $settings ) {
 		IP_Geo_Block_Cron::start_update_db( $settings );
-		IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
 		IP_Geo_Block_Opts::setup_validation_timing( $settings );
+		IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
 	}
 
 	private static function deactivate_main_blog() {

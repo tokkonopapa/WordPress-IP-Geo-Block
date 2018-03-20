@@ -654,6 +654,10 @@
 		var cookie = loadCookie(tabNo);
 
 		// Click event handler to show/hide form-table
+		$('form').on('click', 'h2,h3 a', function (/*event*/) {
+			window.open(this.href, null);
+			return false;
+		});
 		$('form').on('click', 'h2,h3', function (/*event*/) {
 			toggleSection($(this), tabNo, cookie);
 			return false;
@@ -1008,10 +1012,10 @@
 					'<html lang=en>' +
 					'<meta charset=utf-8>' +
 					'<title>CIDR calculator for IPv4 / IPv6</title>' +
-					'<link href="' + src + 'css/cidr.min.css" rel=stylesheet>' +
+					'<link href="' + src + 'css/cidr.min.css?v=.1" rel=stylesheet>' +
 					'<div class="row container"><div class=row id=i><fieldset class="col span_11"><legend>Range <input id=a type=button value=Clear tabindex=1></legend><textarea id=c name=range placeholder="192.168.0.0 - 192.168.255.255" rows=5 wrap=off tabindex=2></textarea></fieldset><ul class="col span_2" id=h><li class=row><input id=e type=button value=&rarr; class="col span_24" tabindex=3><li class=row><input id=f type=button value=&larr; class="col span_24" tabindex=6></ul><fieldset class="col span_11"><legend>CIDR <input id=b type=button value=Clear tabindex=4></legend><textarea id=d name=cidr placeholder=192.168.0.0/16 rows=5 wrap=off tabindex=5></textarea></fieldset></div><div class=row id=j><span class=col id=g> </span></div></div>' +
 /*					'<div class="container row"><div class="row" id="top"><fieldset class="col span_11"><legend>Range <input type="button" id="r_clear" value="Clear" tabindex="1" /></legend><textarea name="range" id="r_text" rows="5" wrap="off" placeholder="192.168.0.0 - 192.168.255.255" tabindex="2"></textarea></fieldset><ul class="col span_2" id="b_conv"><li class="row"><input class="col span_24" type="button" id="r_conv" value="&rarr;" tabindex="3" /></li><li class="row"><input class="col span_24" type="button" id="c_conv" value="&larr;" tabindex="6" /></li></ul><fieldset class="col span_11"><legend>CIDR <input type="button" id="c_clear" value="Clear" tabindex="4" /></legend><textarea name="cidr" id="c_text" rows="5" wrap="off" placeholder="192.168.0.0/16" tabindex="5"></textarea></fieldset></div><div class="row" id="bottom"><span class="col" id="msg">&nbsp;</span></div></div>' +*/
-					'<script src="' + src + 'js/cidr.min.js"></script>'
+					'<script src="' + src + 'js/cidr.min.js?v=.1"></script>'
 				);
 				win.document.close();
 				return false;

@@ -150,7 +150,7 @@ class IP_Geo_Block {
 
 			// garbage collection for IP address cache, enque script for authentication
 			add_action( self::CACHE_NAME,     array( $this,     'exec_cache_gc' ) );
-            add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority ); // @since 2.8.0
+			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority ); // @since 2.8.0
 		}
 
 		// force to redirect on logout to remove nonce, embed a nonce into pages
@@ -277,9 +277,8 @@ class IP_Geo_Block {
 	 * Return true if the validation result is passed.
 	 *
 	 */
-	 public static function is_blocked( $result ) {
-		 return 0 !== strncmp( 'pass', $result, 4 );
-	 }
+	public static function is_passed ( $result ) { return 0 === strncmp( 'pass', $result, 4 ); }
+	public static function is_blocked( $result ) { return 0 !== strncmp( 'pass', $result, 4 ); }
 
 	/**
 	 * Build a validation result for the current user.
@@ -907,6 +906,10 @@ class IP_Geo_Block {
 		if ( empty( $validate['host'] ) && FALSE !== strpos( $settings['public']['ua_list'], 'HOST' ) )
 			$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
 
+		// set the AS number
+		if ( empty( $validate['asn'] ) )
+			$validate['asn'] = NULL;
+
 		// check requested url
 		$is_feed = IP_Geo_Block_Lkup::is_feed( $this->request_uri );
 		$u_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';
@@ -937,6 +940,11 @@ class IP_Geo_Block {
 
 				elseif ( 0 === strncmp( 'REF=', $code, 4 ) ) {
 					if ( $not xor FALSE !== strpos( $referer, substr( $code, 4 ) ) )
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
+				}
+
+				elseif ( 0 === strncmp( 'AS', $code, 2 ) ) {
+					if ( $not xor $validate['asn'] === $code )
 						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 
