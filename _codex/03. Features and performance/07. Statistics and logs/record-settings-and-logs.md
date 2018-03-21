@@ -81,8 +81,9 @@ Here are the descriptions:
 | Result        | Description                                      |
 |:--------------|:-------------------------------------------------|
 | passed        | passed through the validation                    |
-| passed+       | passed by menas of "UA string and qualification" |
+| passUA        | passed by menas of "UA string and qualification" |
 | blocked       | blocked by country                               |
+| blockUA       | blocked by menas of "UA string and qualification"|
 | wp-zep        | blocked by WP-ZEP                                |
 | multi         | blocked by XML-RPC multicall                     |
 | badsig        | blocked by Bad signatures                        |

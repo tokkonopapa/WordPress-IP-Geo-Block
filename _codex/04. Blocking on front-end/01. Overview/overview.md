@@ -68,7 +68,7 @@ can be "`:`" (pass) or "`#`" (block).
  "UA string and qualification"
 )
 
-See [this codex][UA-Qualify] for more details.
+See "[UA string and qualification][UA-Qualify]" for more details.
 
 ### Simulation mode ###
 

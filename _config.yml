@@ -26,6 +26,7 @@ excerpt_separator: "<!--more-->"
 
 # for jekyll 3
 # make sure https://github.com/github/pages-gem
+gems: [jekyll-paginate]
 plugins_dir:
   - jekyll-paginate
 

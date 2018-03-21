@@ -25,15 +25,16 @@ matches all user agents.
 
 Currently, you can obtain 7 types of qualification listed bellow:
 
-| Qualification       | Description                                           |
-|:--------------------|:------------------------------------------------------|
-| FEED                | True if the request is the feed url.                  |
-| HOST                | True if the result of host name is available.         |
-| HOST=_string_       | True if the host name includes _string_.              |
-| REF=_string_        | True if the HTTP referer includes _string_.           |
-| _Country code_      | True if the request comes from the specified country. |
-| _IP address (CIDR)_ | True if the IP address is within the specific range.  |
-| *                   | Always true                                           |
+| Qualification       | Description                                            |
+|:--------------------|:-------------------------------------------------------|
+| FEED                | True if the request is the feed url.                   |
+| HOST                | True if the result of host name is available.          |
+| HOST=_string_       | True if the host name includes _string_.               |
+| REF=_string_        | True if the HTTP referer includes _string_.            |
+| _Country code_      | True if the request comes from the specified _country_.|
+| _IP address (CIDR)_ | True if the _IP address_ is within the specific range. |
+| _AS number_         | True if the _AS number_ is matched.                    |
+| *                   | Always true                                            |
 
 The host name `HOST` corresponding IP address will be retrieved via DNS reverse
 lookup which is disabled by default.

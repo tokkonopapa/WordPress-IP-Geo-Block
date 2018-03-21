@@ -29,5 +29,16 @@
       { selector: '#scroll-fire3', offset: 50, callback: 'Materialize.showScrolled("#scroll-fire3")' }
     ]);
 
+    $(window).on('load', function() {
+        var hash = window.location.hash || null;
+        if (hash) {
+            hash = $(hash);
+            if (hash.length) {
+                $('html,body').animate({
+                    scrollTop: hash.offset().top
+                }, 1);
+            }
+        }
+    });
   }); // end of document ready
 })(jQuery); // end of jQuery name space
