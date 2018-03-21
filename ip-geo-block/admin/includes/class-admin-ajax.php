@@ -15,7 +15,7 @@ class IP_Geo_Block_Admin_Ajax {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 
 		// check format
-		if ( filter_var( $ip = $_POST['ip'], FILTER_VALIDATE_IP ) ) {
+		if ( filter_var( $ip = trim( $_POST['ip'] ), FILTER_VALIDATE_IP ) ) {
 			// get option settings and compose request headers
 			$options = IP_Geo_Block::get_option();
 			$tmp     = IP_Geo_Block::get_request_headers( $options );

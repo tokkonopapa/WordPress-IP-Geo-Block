@@ -626,9 +626,9 @@ class IP_Geo_Block_Admin {
 				$stat = empty( $cookie[ $tab ][ $index ] ) || 'x' !== $cookie[ $tab ][ $index ] || $index === $target;
 
 				echo "\n", '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n",
-				     '<legend class="panel-heading"><h3 class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '">', is_string( $section['title'] ) ? $section['title'] : $section['title'][0],
-				     is_array( $section['title'] ) ? '<span class="' . IP_Geo_Block::PLUGIN_NAME . '-label-link">[ ' . $section['title'][1] . ' ]</span></h3>' : '</h3>',
-				     '</legend>', "\n", '<div class="panel-body',
+				     '<legend class="panel-heading"><h3 class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '">',
+				     is_array( $section['title'] ) ? $section['title'][0] . '<span class="' . IP_Geo_Block::PLUGIN_NAME . '-label-link">[ ' . $section['title'][1] . ' ]</span>' : $section['title'],
+				     '</h3></legend>', "\n", '<div class="panel-body',
 				     ($stat ? ' ' . IP_Geo_Block::PLUGIN_NAME . '-border"' : '"'),
 				     ($stat || (4 === $tab && $index) ? '>' : ' style="display:none">'), "\n";
 
@@ -703,7 +703,7 @@ class IP_Geo_Block_Admin {
 	echo '<a href="?page=', IP_Geo_Block::PLUGIN_NAME, '&amp;tab=', $key, '" class="nav-tab', ($tab === $key ? ' nav-tab-active' : ''), '">', $val, '</a>';
 } ?>
 	</h2>
-	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]
+	<p class="ip-geo-block-navi-link">[ <a id="ip-geo-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]
 <?php if ( 4 === $tab ) { /* Logs tab */ ?>
 	<input id="ip-geo-block-live-update" type="checkbox"<?php checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] ); disabled( extension_loaded( 'pdo_sqlite' ), FALSE ); ?> /><label for="ip-geo-block-live-update">
 		<dfn title="<?php _e( 'Independent of &#8220;Statistics and Logs settings&#8221;, you can see all the requests validated by this plugin in almost real time.', 'ip-geo-block' ); ?>"><?php _e( 'Live update', 'ip-geo-block' ); ?></dfn>

@@ -761,7 +761,7 @@ endif;
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-public',
-			__( 'Front-end target settings', 'ip-geo-block' ),
+			array( __( 'Front-end target settings', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/overview.html" title="Overview | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>'),
 			array( __CLASS__, 'note_public' ),
 			$option_slug
 		);
@@ -1117,7 +1117,7 @@ endif;
 
 		add_settings_section(
 			$section = $plugin_slug . '-database',
-			__( 'Local database settings', 'ip-geo-block' ),
+			array( __( 'Local database settings', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/geolocation-api-library.html" title="Geolocation API library | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>'),
 			array( __CLASS__, 'note_database' ),
 			$option_slug
 		);
@@ -1562,7 +1562,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$field = 'delete_table';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Delete DB table for validation logs', 'ip-geo-block' ),
+			__( 'Delete DB tables for this plugin', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1578,7 +1578,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$field = 'create_table';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Create DB table for validation logs', 'ip-geo-block' ),
+			__( 'Create DB tables for this plugin', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

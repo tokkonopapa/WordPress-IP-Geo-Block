@@ -657,8 +657,8 @@
 		$('form').on('click', 'h2,h3 a', function (/*event*/) {
 			window.open(this.href, null);
 			return false;
-		});
-		$('form').on('click', 'h2,h3', function (/*event*/) {
+		})
+		.on('click', 'h2,h3', function (/*event*/) {
 			toggleSection($(this), tabNo, cookie);
 			return false;
 		});
@@ -1792,7 +1792,7 @@
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (/*event*/) {
 				var whois = $(ID('#', 'whois')), obj,
-				    ip = $(ID('@', 'ip_address')).val();
+				    ip = $.trim($(ID('@', 'ip_address')).val());
 
 				if (ip) {
 					whois.hide().empty();

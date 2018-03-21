@@ -60,6 +60,12 @@ label {
 .panel-body:after {
     clear: both;
 }
+.ip-geo-block-navi-link {
+    text-align: left;
+}
+.ip-geo-block-navi-link label {
+    vertical-align: text-top;
+}
 .ip-geo-block-label-link {
     float: right;
     font-size: 90%;
@@ -70,6 +76,13 @@ label {
 }
 
 /* style legend and fieldset */
+fieldset label {
+    vertical-align: middle;
+}
+fieldset label dfn,
+fieldset li label {
+    vertical-align: text-top;
+}
 fieldset.ip-geo-block-field {
 /*  padding: 0 10px;*/
     margin: 1em 0;

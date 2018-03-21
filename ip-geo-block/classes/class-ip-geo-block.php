@@ -906,10 +906,6 @@ class IP_Geo_Block {
 		if ( empty( $validate['host'] ) && FALSE !== strpos( $settings['public']['ua_list'], 'HOST' ) )
 			$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
 
-		// set the AS number
-		if ( empty( $validate['asn'] ) )
-			$validate['asn'] = NULL;
-
 		// check requested url
 		$is_feed = IP_Geo_Block_Lkup::is_feed( $this->request_uri );
 		$u_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';

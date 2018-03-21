@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-03-20 23:40+0900\n"
-"PO-Revision-Date: 2018-03-20 23:41+0900\n"
+"POT-Creation-Date: 2018-03-21 20:49+0900\n"
+"PO-Revision-Date: 2018-03-21 20:50+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -356,8 +356,9 @@ msgstr ""
 msgid "Validation logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:19
-msgid "Description of &#8220;Result&#8221;"
+#: admin/includes/tab-accesslog.php:19 admin/includes/tab-settings.php:764
+#: admin/includes/tab-settings.php:1120
+msgid "Help"
 msgstr ""
 
 #: admin/includes/tab-accesslog.php:54 admin/includes/tab-settings.php:456
@@ -1296,7 +1297,7 @@ msgid "Best for Back-end"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1565
-msgid "Delete DB table for validation logs"
+msgid "Delete DB tables for this plugin"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1573
@@ -1304,7 +1305,7 @@ msgid "Delete now"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1581
-msgid "Create DB table for validation logs"
+msgid "Create DB tables for this plugin"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1589

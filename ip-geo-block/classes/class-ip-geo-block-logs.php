@@ -371,7 +371,7 @@ class IP_Geo_Block_Logs {
 
 	private static function get_post_data( $hook, $validate, $settings ) {
 		// condition of masking password
-		$mask_pwd = ! IP_Geo_Block::is_blocked( $validate['result'] );
+		$mask_pwd = IP_Geo_Block::is_passed( $validate['result'] );
 
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {

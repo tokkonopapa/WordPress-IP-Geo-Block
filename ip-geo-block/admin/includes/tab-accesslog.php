@@ -16,7 +16,7 @@ class IP_Geo_Block_Admin_Tab {
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-logs',
-			array( __( 'Validation logs', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/record-settings-and-logs.html#description-of-result" title="Record settings and logs | IP Geo Block">' . __( 'Description of &#8220;Result&#8221;', 'ip-geo-block' ) . '</a>' ),
+			array( __( 'Validation logs', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/record-settings-and-logs.html" title="Record settings and logs | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>' ),
 			( $options['validation']['reclogs'] ?
 				array( __CLASS__, 'validation_logs' ) :
 				array( __CLASS__, 'warn_accesslog'  )
