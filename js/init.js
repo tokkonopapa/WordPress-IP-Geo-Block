@@ -32,12 +32,8 @@
     $(window).on('load', function() {
         var hash = window.location.hash || null;
         if (hash) {
-            hash = $(hash);
-            if (hash.length) {
-                $('html,body').animate({
-                    scrollTop: hash.offset().top
-                }, 1);
-            }
+            window.location.hash = '';
+            window.location.hash = hash;
         }
     });
   }); // end of document ready
