@@ -39,10 +39,10 @@ class IP_Geo_Block_Logs {
 	 * @internal creating mixed storage engine may cause troubles with some plugins.
 	 */
 	public static function create_tables() {
-		global $wpdb;
-		$result = TRUE;
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 		// Default charset
+		global $wpdb;
 		$charset = 'utf8'; // MySQL 5.0+
 		if ( preg_match( '/CHARACTER SET (\w+)/i', $wpdb->get_charset_collate(), $table ) &&
 		     FALSE !== strpos( $table[1], 'utf8' ) ) {
@@ -51,40 +51,33 @@ class IP_Geo_Block_Logs {
 
 		// for logs
 		$table = $wpdb->prefix . self::TABLE_LOGS;
-		$result &= ( FALSE !== $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
-			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-			`time` int(10) unsigned NOT NULL DEFAULT 0,
-			`ip` varchar(40) NOT NULL,
-			`asn` varchar(8) NULL,
-			`hook` varchar(8) NOT NULL,
-			`auth` int(10) unsigned NOT NULL DEFAULT 0,
-			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
-			`result` varchar(8) NULL,
-			`method` varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
-			`user_agent` varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
-			`headers` varchar("    . IP_GEO_BLOCK_MAX_TXT_LEN . ") NULL,
-			`data` text NULL,
-			PRIMARY KEY  (`No`),
-			KEY `time` (`time`),
-			KEY `hook` (`hook`)
-			) CHARACTER SET $charset"
-		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
-
-		// Add column for AS Number @since 3.0.4
-		if ( ! $wpdb->query( "DESCRIBE `$table` `asn`" ) ) {
-			$wpdb->query(
-				"ALTER TABLE `$table` ADD `asn` varchar(8) AFTER `ip`"
-			) or self::error( __LINE__ );
-		}
+		$sql = "CREATE TABLE IF NOT EXISTS $table (
+			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			time int(10) unsigned NOT NULL DEFAULT 0,
+			ip varchar(40) NOT NULL,
+			asn varchar(8) NULL,
+			hook varchar(8) NOT NULL,
+			auth int(10) unsigned NOT NULL DEFAULT 0,
+			code varchar(2) NOT NULL DEFAULT 'ZZ',
+			result varchar(8) NULL,
+			method varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
+			user_agent varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
+			headers varchar("    . IP_GEO_BLOCK_MAX_TXT_LEN . ") NULL,
+			data text NULL,
+			PRIMARY KEY  (No),
+			KEY time (time),
+			KEY hook (hook)
+		) CHARACTER SET $charset"; // utf8mb4 ENGINE=InnoDB or MyISAM
+		$result = dbDelta( $sql );
 
 		// for statistics
 		$table = $wpdb->prefix . self::TABLE_STAT;
-		$result &= ( FALSE !== $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
-			`No` tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
-			`data` longtext NULL,
-			PRIMARY KEY  (`No`)
-			) CHARACTER SET $charset"
-		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
+		$sql = "CREATE TABLE IF NOT EXISTS $table (
+			No tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
+			data longtext NULL,
+			PRIMARY KEY  (No)
+		) CHARACTER SET $charset";
+		$result = dbDelta( $sql );
 
 		// Create 1 record if not exists
 		$sql = $wpdb->prepare(
@@ -94,30 +87,29 @@ class IP_Geo_Block_Logs {
 
 		// for IP address cache
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
-		$result &= ( FALSE !== $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
-			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-			`time` int(10) unsigned NOT NULL DEFAULT 0,
-			`ip` varchar(40) NOT NULL,
-			`asn` varchar(8) NULL,
-			`hook` varchar(8) NOT NULL,
-			`auth` int(10) unsigned NOT NULL DEFAULT 0,
-			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
-			`fail` int(10) unsigned NOT NULL DEFAULT 0,
-			`call` int(10) unsigned NOT NULL DEFAULT 0,
-			`host` tinytext NOT NULL,
-			PRIMARY KEY  (`No`),
-			UNIQUE KEY (`ip`)
-			) CHARACTER SET $charset"
-		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
+		$sql = "CREATE TABLE IF NOT EXISTS $table (
+			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			time int(10) unsigned NOT NULL DEFAULT 0,
+			ip varchar(40) NOT NULL,
+			asn varchar(8) NULL,
+			hook varchar(8) NOT NULL,
+			auth int(10) unsigned NOT NULL DEFAULT 0,
+			code varchar(2) NOT NULL DEFAULT 'ZZ',
+			fail int(10) unsigned NOT NULL DEFAULT 0,
+			host tinytext NOT NULL,
+			PRIMARY KEY  (No),
+			UNIQUE KEY (ip)
+		) CHARACTER SET $charset"; // utf8mb4 ENGINE=InnoDB or MyISAM
+		$result = dbDelta( $sql );
 
-		// Add column for AS Number @since 3.0.4
-		if ( ! $wpdb->query( "DESCRIBE `$table` `asn`" ) ) {
+		// dbDelta() parses `call` field as `CALL` statement. So alter it after init @since 3.0.10
+		if ( ! $wpdb->query( "DESCRIBE `$table` `call`" ) ) {
 			$wpdb->query(
-				"ALTER TABLE `$table` ADD `asn` varchar(8) AFTER `ip`"
+				"ALTER TABLE `$table` ADD `call` int(10) unsigned AFTER `fail`"
 			) or self::error( __LINE__ );
 		}
 
-		return $result;
+		return TRUE;
 	}
 
 	/**

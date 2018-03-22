@@ -134,7 +134,7 @@ abstract class IP_Geo_Block_API {
 		$res = array();
 		foreach ( $template['transform'] as $key => $val ) {
 			if ( ! empty( $val ) && ! empty( $data[ $val ] ) )
-				$res[ $key ] = is_string( $data[ $val ] ) ? 
+				$res[ $key ] = is_string( $data[ $val ] ) ?
 					esc_html( $data[ $val ] ) : $data[ $val ];
 		}
 
@@ -318,9 +318,9 @@ class IP_Geo_Block_API_Nekudo extends IP_Geo_Block_API {
  * Class for Xhanch
  *
  * URL         : http://xhanch.com/xhanch-api-ip-get-detail/
- * Term of use : 
+ * Term of use :
  * Licence fee : free (donationware)
- * Rate limit  : 
+ * Rate limit  :
  * Sample URL  : http://api.xhanch.com/ip-get-detail.php?ip=124.83.187.140
  * Sample URL  : http://api.xhanch.com/ip-get-detail.php?ip=124.83.187.140&m=json
  * Input type  : IP address (IPv4)

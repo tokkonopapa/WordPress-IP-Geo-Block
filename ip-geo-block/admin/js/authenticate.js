@@ -398,8 +398,8 @@
 				));
 			}
 
-			// if external then redirect with no referrer not to leak out the nonce
-			else if (admin === -1 && is_backend_nonce()) {
+			// if external (except in admin bar) then redirect with no referrer not to leak out the nonce
+			else if (admin === -1 && is_backend_nonce() && ! $(this).hasClass('ab-item')) {
 				// open within the same window
 				if ('_self' === $this.attr('target')) {
 					redirect(href);

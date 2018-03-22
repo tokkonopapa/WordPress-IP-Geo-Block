@@ -361,6 +361,7 @@ This is a maintenance release addressing various internal improvement toward the
 * **Improvement:** AS Number can be handled in "UA string and qualification".
 * **Improvement:** Make WP cron job for "Auto updating" reliably in multisite environment.
 * **Improvement:** Validate the prefix of IP address CIDR to prevent unexpected fatal error.
+* **Improvement:** Prevent opening a new window on clicking "Visit Site" in the admin bar menu for multi site by multi domain type.
 * **Bug fix:** Fix the issue of unexpected blocking against the requests to plugins/themes area when "Force to load WP core" is enabled on windows server.
 * **Bug fix:** Fix the issue of illegal redirection after "Save Changes" on "Settings" => "General Settings" page.
 * **Bug fix:** Fix the issue that "Search now" was not available when google map failed to load.
