@@ -27,8 +27,8 @@ class IP_Geo_Block {
 	 *
 	 */
 	private static $instance = NULL;
-	private static $remote_addr;
-	private static $wp_path;
+	private static $wp_path = array();
+	private static $remote_addr = NULL;
 	private $pagenow = NULL;
 	private $request_uri = NULL;
 	private $target_type = NULL;
@@ -56,9 +56,6 @@ class IP_Geo_Block {
 
 		// include drop in if it exists
 		file_exists( $key = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php' ) and include( $key );
-
-		// get client IP address
-		self::$remote_addr = self::get_ip_address( $settings );
 
 		// normalize requested uri and page
 		$key = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
@@ -252,16 +249,11 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function get_ip_address( $settings = NULL ) {
-		if ( ! self::$remote_addr ) {
-			$settings or $settings = self::get_option();
-
-			self::$remote_addr = apply_filters(
-				self::PLUGIN_NAME . '-ip-addr',
-				IP_Geo_Block_Util::get_client_ip( $settings['validation']['proxy'] )
-			);
-		}
-
-		return self::$remote_addr;
+		$settings or $settings = self::get_option();
+		return self::$remote_addr && ! has_filter( self::PLUGIN_NAME . '-ip-addr' ) ? self::$remote_addr : apply_filters(
+			self::PLUGIN_NAME . '-ip-addr',
+			IP_Geo_Block_Util::get_client_ip( $settings['validation']['proxy'] )
+		);
 	}
 
 	/**
@@ -307,7 +299,7 @@ class IP_Geo_Block {
 		if ( empty( $providers ) ) // make valid providers list
 			$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
 
-		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address(), $settings, $providers, array(), $callback );
+		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address( $settings ), $settings, $providers, array(), $callback );
 
 		if ( ! empty( $result['countryCode'] ) )
 			$result['code'] = $result['countryCode'];
@@ -467,7 +459,7 @@ class IP_Geo_Block {
 		//     'code'     => $code,     /* country code or reason of rejection */
 		//     'result'   => $result,   /* 'passed', 'blocked'                 */
 		// );
-		$ips = IP_Geo_Block_Util::retrieve_ips( array( self::get_ip_address() ), $settings['validation']['proxy'] );
+		$ips = IP_Geo_Block_Util::retrieve_ips( array( self::get_ip_address( $settings ) ), $settings['validation']['proxy'] );
 		foreach ( $ips as self::$remote_addr ) {
 			$validate = self::_get_geolocation( self::$remote_addr, $settings, $providers, array( 'cache' => TRUE ) );
 			$validate = apply_filters( $var, $validate, $settings );
@@ -857,11 +849,11 @@ class IP_Geo_Block {
 			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_page' ), 10, 2 );
 		}
 
-		// retrieve IP address of visitor via proxy services
-		add_filter( self::PLUGIN_NAME . '-ip-addr', array( 'IP_Geo_Block_Util', 'get_proxy_ip' ), 20, 1 );
-
 		// validate undesired user agent
 		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_ua' ), 6, 2 );
+
+		// retrieve IP address of visitor via proxy services
+		add_filter( self::PLUGIN_NAME . '-ip-addr', array( 'IP_Geo_Block_Util', 'get_proxy_ip' ), 20, 1 );
 
 		// validate country by IP address (block: true, die: false)
 		$this->validate_ip( 'public', $settings, 1 & $settings['validation']['public'], ! $public['simulate'] );

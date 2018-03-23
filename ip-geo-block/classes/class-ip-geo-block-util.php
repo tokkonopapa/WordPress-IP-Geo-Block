@@ -75,7 +75,7 @@ class IP_Geo_Block_Util {
 	 * @see wp-includes/kses.php
 	 */
 	public static function kses( $str, $allow_tags = TRUE ) {
-		// wp_kses() is unavailable on advanced-cache.php 
+		// wp_kses() is unavailable on advanced-cache.php
 		return wp_kses( $str, $allow_tags ? $GLOBALS['allowedtags'] : array() );
 	}
 
@@ -255,6 +255,9 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/pluggable.php @since 2.8.0
 	 */
 	private static function get_user_by( $field, $value ) {
+		if ( function_exists( 'get_user_by' ) )
+			return get_user_by();
+
 		$userdata = WP_User::get_data_by( $field, $value ); // wp-includes/class-wp-user.php @since 2.0.0
 
 		if ( ! $userdata )
@@ -733,10 +736,7 @@ class IP_Geo_Block_Util {
 		$_is_apache = ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Apache' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'LiteSpeed' ) !== FALSE );
 		$_is_IIS = ! $_is_apache && ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer' ) !== FALSE );
 
-		if ( $_is_IIS )
-			$_is_IIS = substr( $_SERVER['SERVER_SOFTWARE'], strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS/' ) + 14 );
-
-		return $_is_IIS;
+		return $_is_IIS ? substr( $_SERVER['SERVER_SOFTWARE'], strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS/' ) + 14 ) : FALSE;
 	}
 
 	/**

@@ -59,7 +59,7 @@ class IP_Geo_Block_Admin_Tab {
 		 * @param array $args Additional arguments that are passed to the $callback function.
 		 */
 		// Get the country code of client
-		$key = IP_Geo_Block::get_geolocation( $val = IP_Geo_Block::get_ip_address() );
+		$key = IP_Geo_Block::get_geolocation( $val = IP_Geo_Block::get_ip_address( $options ) );
 
 		$field = 'ip_client';
 		add_settings_field(

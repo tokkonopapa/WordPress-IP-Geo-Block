@@ -43,7 +43,7 @@
 	}
 
 	function stripTag(str) {
-		return escapeHTML(str.toString().replace(/(<([^>]+)>)/ig, ''));
+		return str ? escapeHTML(str.toString().replace(/(<([^>]+)>)/ig, '')) : '';
 	}
 
 	function onresize(name, callback) {

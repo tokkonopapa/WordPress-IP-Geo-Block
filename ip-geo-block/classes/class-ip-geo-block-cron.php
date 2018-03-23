@@ -62,8 +62,8 @@ class IP_Geo_Block_Cron {
 	public static function exec_update_db( $immediate = FALSE ) {
 		// extract ip address from transient API to confirm the request source
 		add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
+		$ip = IP_Geo_Block::get_ip_address( $settings = IP_Geo_Block::get_option() );
 
-		$settings = IP_Geo_Block::get_option();
 		$args = IP_Geo_Block::get_request_headers( $settings );
 
 		// download database files (higher priority order)
@@ -83,7 +83,7 @@ class IP_Geo_Block_Cron {
 
 				// update matching rule immediately
 				if ( $immediate && 'done' !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
-					$validate = IP_Geo_Block::get_geolocation( NULL, array( $provider ) );
+					$validate = IP_Geo_Block::get_geolocation( $ip, array( $provider ) );
 					$validate = IP_Geo_Block::validate_country( 'cron', $validate, $settings );
 
 					if ( 'ZZ' === $validate['code'] )
@@ -163,7 +163,7 @@ class IP_Geo_Block_Cron {
 			return;
 
 		if ( $immediate ) // update matching rule immediately in exec_update_db() / extract_ip()
-			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address(), MINUTE_IN_SECONDS );
+			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address( $settings ), MINUTE_IN_SECONDS );
 
 		self::schedule_cron_job( $settings['update'], NULL, $immediate );
 	}
