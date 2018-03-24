@@ -9,9 +9,7 @@
 
 	var auth = IP_GEO_BLOCK_AUTH, wpzep = {
 		init: false,
-		auth: 'ip-geo-block-auth-nonce',
-		nonce: auth.nonce || '',
-		sites: auth.sites || []
+		name: 'ip-geo-block-auth-nonce'
 	},
 
 	// regular expression to find target for is_admin()
@@ -209,13 +207,13 @@
 
 		// remove an old nonce
 		while (i-- > 0) {
-			if (data[i].indexOf(wpzep.auth) === 0) {
+			if (data[i].indexOf(wpzep.name) === 0) {
 				data.splice(i, 1);
 				break;
 			}
 		}
 
-		data.push(wpzep.auth + '=' + encodeURIComponent(nonce));//RFC3986
+		data.push(wpzep.name + '=' + encodeURIComponent(nonce));//RFC3986
 		uri.query = data.join('&');
 
 		return compose_uri(uri);
@@ -229,8 +227,8 @@
 	// Check uri where the nonce is needed
 	function is_admin(url) {
 		// parse uri and get real path
-		var uri = url || window.location.pathname; // in case of empty `action` on the form tag
-		uri = parse_uri(uri.toLowerCase());
+		url = url || window.location.pathname; // in case of empty `action` on the form tag
+		var uri = parse_uri(url.toLowerCase());
 
 		// possibly scheme is `javascript` and path is `void(0);`
 		if (check_uri(uri)) {
@@ -244,12 +242,12 @@
 			}
 
 			// check if uri includes the target path of zep
-			uri = regexp.exec(uri.pathname);
-			if (uri) {
-				if ((0 <= uri[0].indexOf(auth.admin + 'admin-')) ||
-				    (0 <= uri[0].indexOf(auth.admin           )) ||
-				    (0 <= uri[0].indexOf(auth.plugins         )) ||
-				    (0 <= uri[0].indexOf(auth.themes          ))) {
+			url = regexp.exec(uri.pathname);
+			if (url) {
+				if ((0 <= url[0].indexOf(auth.admin + 'admin-')) ||
+				    (0 <= url[0].indexOf(auth.admin           )) ||
+				    (0 <= url[0].indexOf(auth.plugins         )) ||
+				    (0 <= url[0].indexOf(auth.themes          ))) {
 					return 1; // internal for admin
 				}
 			}
@@ -259,18 +257,37 @@
 	}
 
 	// Check if current page is admin area and the target of wp-zep
-	function is_backend_nonce() {
-		return (is_admin(window.location.pathname) === 1 || window.location.search.indexOf(wpzep.auth) >= 0);
+	function is_backend() {
+		return (is_admin(window.location.pathname) === 1 || window.location.search.indexOf(wpzep.name) >= 0);
+	}
+
+	// Check if url belongs to multisite
+	function is_multisite(url) {
+		var i, n = auth.sites.length;
+
+		for (i = 0; i < n; ++i) {
+			if (-1 !== url.indexOf(auth.sites[i] + '/')) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	// Redirect if current page is admin area and the target of wp-zep
 	function redirect(url) {
-		var i, n = wpzep.sites.length;
+		var i, n = auth.sites.length,
+		    uri = parse_uri(url);
+
 		for (i = 0; i < n; ++i) {
-			if (url && 0 <= url.indexOf(wpzep.sites[i]) && wpzep.nonce) {
-				window.location = add_query_nonce(url, wpzep.nonce);
+			if (url && 0 <= url.indexOf(auth.sites[i] + auth.admin) && auth.nonce) {
+				// if the end of url is like `/wp-admin/`, do not add a nonce
+				window.location = /[^\w]$/.test(uri.path) ? url : add_query_nonce(url, auth.nonce);
 			}
 		}
+
+		// just redirect
+		window.location = url;
 	}
 /*
 	$.ajaxSetup({
@@ -297,7 +314,7 @@
 			// multipart/form-data (XMLHttpRequest Level 2)
 			// IE10+, Firefox 4+, Safari 5+, Android 3+
 			if (typeof window.FormData !== 'undefined' && settings.data instanceof FormData) {
-				settings.data.append(wpzep.auth, wpzep.nonce);
+				settings.data.append(wpzep.name, auth.nonce);
 			}
 
 			// application/x-www-form-urlencoded
@@ -309,14 +326,14 @@
 				var data, callback, uri = parse_uri(settings.url);
 
 				if (typeof settings.data === 'undefined' || uri.query) {
-					settings.url = add_query_nonce(uri, wpzep.nonce);
+					settings.url = add_query_nonce(uri, auth.nonce);
 				} else {
 					data = settings.data ? settings.data.split('&') : [];
 					callback = check_ajax(window.location.pathname);
 					if (callback) {
 						data = callback(data);
 					}
-					data.push(wpzep.auth + '=' + encodeURIComponent(wpzep.nonce));//RFC3986
+					data.push(wpzep.name + '=' + encodeURIComponent(auth.nonce));//RFC3986
 					settings.data = data.join('&');
 				}
 			}
@@ -382,10 +399,10 @@
 		elem.onFirst('click contextmenu', 'a', function (event) {
 			// attr() returns 'string' or 'undefined'
 			var $this = $(this),
-			    href  = $this.attr('href'),
-			    rel   = $this.attr('rel' ),
+			    href  = $this.attr('href') || '',
+			    rel   = $this.attr('rel' ) || '',
 			    admin = check_uri(parse_uri(href)) ? is_admin(href) : 0; // 0: do nothing if href is empty
-
+//console.log('href:' + href, 'admin:' + admin, 'is_backend:' + is_backend(), 'is_multisite:' + is_multisite(href));
 			// if context menu then continue and should be checked in check_nonce()
 			if ('click' !== event.type) {
 				return;
@@ -394,38 +411,39 @@
 			// if admin area (except in comment with nofollow) then add a nonce
 			else if (admin === 1) {
 				$this.attr('href', add_query_nonce(
-					href, (!rel || rel.indexOf('nofollow') < 0) ? wpzep.nonce : 'nofollow'
+					href, (!rel || rel.indexOf('nofollow') < 0) ? auth.nonce : 'nofollow'
 				));
 			}
 
-			// if external (except in admin bar) then redirect with no referrer not to leak out the nonce
-			else if (admin === -1 && is_backend_nonce() && ! $(this).hasClass('ab-item')) {
+			// if external then redirect with no referrer not to leak out the nonce
+			else if (admin === -1 && is_backend()) {
 				// open within the same window
-				if ('_self' === $this.attr('target')) {
+				if ('_self' === $this.attr('target') || is_multisite(href)) {
 					redirect(href);
-					return; // just in case redirection fails
 				}
 
 				// open a new window
-				href = escapeHTML(decodeURIComponent(this.href));
-				href = href.split(';', 2).shift(); // avoid `url=...;url=javascript:...`
+				else {
+					href = escapeHTML(decodeURIComponent(this.href));
+					href = href.split(';', 2).shift(); // avoid `url=...;url=javascript:...`
 
-				admin = window.open();
-				admin.document.write(
-					'<!DOCTYPE html><html><head>' +
-					'<meta name="referrer" content="never" />' +
-					'<meta name="referrer" content="no-referrer" />' +
-					'<meta http-equiv="refresh" content="0; url=' + href + '" />' +
-					($('body').hasClass('webview') ? '<script>window.location.replace("' + href + '")</script>' : '') +
-					'</head></html>'
-				);
-				admin.document.close();
+					admin = window.open();
+					admin.document.write(
+						'<!DOCTYPE html><html><head>' +
+						'<meta name="referrer" content="never" />' +
+						'<meta name="referrer" content="no-referrer" />' +
+						'<meta http-equiv="refresh" content="0; url=' + href + '" />' +
+						($('body').hasClass('webview') ? '<script>window.location.replace("' + href + '")</script>' : '') +
+						'</head></html>'
+					);
+					admin.document.close();
 
-				// stop event propagation
-				event.stopImmediatePropagation();
+					// stop event propagation
+					event.stopImmediatePropagation();
 
-				// automatically call event.stopPropagation() and event.preventDefault()
-				return false;
+					// automatically call event.stopPropagation() and event.preventDefault()
+					return false;
+				}
 			}
 		});
 
@@ -435,7 +453,7 @@
 
 			// if admin area then add the nonce
 			if (is_admin(action) === 1) {
-				$this.attr('action', add_query_nonce(action, wpzep.nonce));
+				$this.attr('action', add_query_nonce(action, auth.nonce));
 			}
 		});
 	}
@@ -448,7 +466,7 @@
 			wpzep.init = true;
 
 			// avoid conflict with "Open external links in a new window"
-			if (is_backend_nonce()) {
+			if (is_backend()) {
 				$('a').each(function () {
 					if (!this.hasAttribute('onClick') && is_admin(this.getAttribute('href')) === -1) {
 						this.setAttribute('onClick', 'javascript:return false');
@@ -461,7 +479,7 @@
 
 				// if admin area
 				if (is_admin(src) === 1) {
-					$(this).attr('src', add_query_nonce(src, wpzep.nonce));
+					$(this).attr('src', add_query_nonce(src, auth.nonce));
 				}
 			});
 
@@ -471,8 +489,8 @@
 				    n = data.length;
 
 				for (i = 0; i < n; ++i) {
-					if (-1 === data[i].restoreUrl.indexOf(wpzep.auth)) {
-						window._wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(data[i].restoreUrl, wpzep.nonce);
+					if (-1 === data[i].restoreUrl.indexOf(wpzep.name)) {
+						window._wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(data[i].restoreUrl, auth.nonce);
 					}
 				}
 			}

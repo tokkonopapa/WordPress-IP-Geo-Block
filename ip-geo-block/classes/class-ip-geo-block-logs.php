@@ -41,13 +41,8 @@ class IP_Geo_Block_Logs {
 	public static function create_tables() {
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-		// Default charset
 		global $wpdb;
-		$charset = 'utf8'; // MySQL 5.0+
-		if ( preg_match( '/CHARACTER SET (\w+)/i', $wpdb->get_charset_collate(), $table ) &&
-		     FALSE !== strpos( $table[1], 'utf8' ) ) {
-			$charset = $table[1]; // ex) utf8mb4 MySQL 5.5+
-		}
+		$charset_collate = $wpdb->get_charset_collate(); // @since 3.5.0
 
 		// for logs
 		$table = $wpdb->prefix . self::TABLE_LOGS;
@@ -67,7 +62,7 @@ class IP_Geo_Block_Logs {
 			PRIMARY KEY  (No),
 			KEY time (time),
 			KEY hook (hook)
-		) CHARACTER SET $charset"; // utf8mb4 ENGINE=InnoDB or MyISAM
+		) $charset_collate";
 		$result = dbDelta( $sql );
 
 		// for statistics
@@ -76,7 +71,7 @@ class IP_Geo_Block_Logs {
 			No tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
 			data longtext NULL,
 			PRIMARY KEY  (No)
-		) CHARACTER SET $charset";
+		) $charset_collate";
 		$result = dbDelta( $sql );
 
 		// Create 1 record if not exists
@@ -90,16 +85,15 @@ class IP_Geo_Block_Logs {
 		$sql = "CREATE TABLE IF NOT EXISTS $table (
 			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			time int(10) unsigned NOT NULL DEFAULT 0,
-			ip varchar(40) NOT NULL,
+			ip varchar(40) UNIQUE NOT NULL,
 			asn varchar(8) NULL,
 			hook varchar(8) NOT NULL,
 			auth int(10) unsigned NOT NULL DEFAULT 0,
 			code varchar(2) NOT NULL DEFAULT 'ZZ',
 			fail int(10) unsigned NOT NULL DEFAULT 0,
 			host tinytext NOT NULL,
-			PRIMARY KEY  (No),
-			UNIQUE KEY (ip)
-		) CHARACTER SET $charset"; // utf8mb4 ENGINE=InnoDB or MyISAM
+			PRIMARY KEY  (No)
+		) $charset_collate";
 		$result = dbDelta( $sql );
 
 		// dbDelta() parses `call` field as `CALL` statement. So alter it after init @since 3.0.10

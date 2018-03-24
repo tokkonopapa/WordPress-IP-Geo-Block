@@ -889,13 +889,11 @@ class IP_Geo_Block_Util {
 			global $wpdb;
 			foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
 				switch_to_blog( $id );
-				$sites[] = admin_url();
+				$sites[] = preg_replace( '/^https?:/', '', site_url() );
 				restore_current_blog();
 			}
-
-			if ( empty( $sites[ $url = network_admin_url() ] ) ) {
-				$sites[] = $url;
-			}
+		} else {
+			$sites[] = preg_replace( '/^https?:/', '', site_url() );
 		}
 
 		return $sites;
