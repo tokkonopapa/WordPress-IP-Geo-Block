@@ -256,7 +256,7 @@ class IP_Geo_Block_Util {
 	 */
 	private static function get_user_by( $field, $value ) {
 		if ( function_exists( 'get_user_by' ) )
-			return get_user_by();
+			return get_user_by( $field, $value );
 
 		$userdata = WP_User::get_data_by( $field, $value ); // wp-includes/class-wp-user.php @since 2.0.0
 
