@@ -401,9 +401,11 @@
 
 			// if admin area (except a link with nofollow in the comment thread) then add a nonce
 			else if (admin === 1) {
-				$this.attr('href', !uri.query ? href : add_query_nonce(
-					href, -1 !== rel.indexOf('nofollow') ? 'nofollow' : auth.nonce
-				));
+				$this.attr('href', !uri.query || !$('body').hasClass('wp-core-ui') ?
+					href : add_query_nonce(
+						href, -1 !== rel.indexOf('nofollow') ? 'nofollow' : auth.nonce
+					)
+				);
 			}
 
 			// if external then redirect with no referrer not to leak out the nonce

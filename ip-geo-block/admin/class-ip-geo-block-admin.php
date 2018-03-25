@@ -65,11 +65,6 @@ class IP_Geo_Block_Admin {
 		if ( is_multisite() ) {
 			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
 
-			// validate capability instead of nonce. @since 2.0.0 && 3.0.0
-			require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
-			if ( $this->is_network = is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
-				add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_network_redirect' ), 10, 2 );
-
 			// when a blog is created or deleted.
 			add_action( 'wpmu_new_blog', array( $this, 'create_blog' ), 10, 6 ); // @since MU
 			add_action( 'delete_blog',   array( $this, 'delete_blog' ), 10, 2 ); // @since 3.0.0
@@ -120,18 +115,6 @@ class IP_Geo_Block_Admin {
 		);
 
 		return $revisions_data;
-	}
-
-	/**
-	 * Verify admin screen without action instead of validating nonce.
-	 *
-	 */
-	public function verify_network_redirect( $queries, $settings ) {
-		// the request that is intended to show the page without any action follows authentication of core.
-		if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) && empty( $_GET['action'] ) )
-			$queries[] = $_GET['page'];
-
-		return $queries;
 	}
 
 	/**
@@ -914,8 +897,7 @@ class IP_Geo_Block_Admin {
 
 		// Integrate posted data into current settings because it can be a part of hole data
 		$input = array_replace_recursive(
-			$output = $this->preprocess_options( $output, $default ),
-			$input
+			$output = $this->preprocess_options( $output, $default ), $input
 		);
 
 		// restore the 'signature' that might be transformed to avoid self blocking
