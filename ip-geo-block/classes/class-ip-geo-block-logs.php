@@ -58,7 +58,7 @@ class IP_Geo_Block_Logs {
 			method varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
 			user_agent varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
 			headers varchar("    . IP_GEO_BLOCK_MAX_TXT_LEN . ") NULL,
-			data text NULL,
+			data text DEFAULT NULL,
 			PRIMARY KEY  (No),
 			KEY time (time),
 			KEY hook (hook)
@@ -69,7 +69,7 @@ class IP_Geo_Block_Logs {
 		$table = $wpdb->prefix . self::TABLE_STAT;
 		$sql = "CREATE TABLE IF NOT EXISTS $table (
 			No tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
-			data longtext NULL,
+			data longtext DEFAULT NULL,
 			PRIMARY KEY  (No)
 		) $charset_collate";
 		$result = dbDelta( $sql );
