@@ -62,7 +62,7 @@ class IP_Geo_Block_Admin {
 		add_filter( 'wp_prepare_revision_for_js', array( $this, 'add_revision_nonce'  ), 10, 3 );
 
 		// validate capability instead of nonce. @since 2.0.0 && 3.0.0
-		add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_network_redirect' ), 10, 2 );
+		add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_request' ), 10, 2 );
 
 		// If multisite, then enque the authentication script for network admin
 		if ( is_multisite() ) {
@@ -123,7 +123,7 @@ class IP_Geo_Block_Admin {
 	 * Verify admin screen without action instead of validating nonce.
 	 *
 	 */
-	public function verify_network_redirect( $queries, $settings ) {
+	public function verify_request( $queries, $settings ) {
 		// the request that is intended to show the page without any action follows authentication of core.
 		if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) && empty( $_GET['action'] ) )
 			$queries[] = $_GET['page'];
