@@ -63,11 +63,13 @@ class IP_Geo_Block_Admin {
 
 		// If multisite, then enque the authentication script for network admin
 		if ( is_multisite() ) {
-			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
+			// validate capability instead of nonce. @since 2.0.0 && 3.0.0
+			if ( $this->is_network = is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
+				add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_network_redirect' ), 10, 2 );
 
-			// when a blog is created or deleted.
-			add_action( 'wpmu_new_blog', array( $this, 'create_blog' ), 10, 6 ); // @since MU
-			add_action( 'delete_blog',   array( $this, 'delete_blog' ), 10, 2 ); // @since 3.0.0
+			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
+			add_action( 'wpmu_new_blog',      array( $this, 'create_blog' ), 10, 6 ); // on creating a new blog @since MU
+			add_action( 'delete_blog',        array( $this, 'delete_blog' ), 10, 2 ); // on deleting an old blog @since 3.0.0
 		}
 
 		// loads a plugin’s translated strings.
@@ -100,7 +102,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function add_redirect_nonce( $location, $status ) {
-		return IP_Geo_Block_Util::rebuild_nonce( $location, $status );
+		return IP_Geo_Block_Util::rebuild_nonce( $location, FALSE === strpos( $location, wp_login_url() ) );
 	}
 
 	/**
@@ -115,6 +117,18 @@ class IP_Geo_Block_Admin {
 		);
 
 		return $revisions_data;
+	}
+
+	/**
+	 * Verify admin screen without action instead of validating nonce.
+	 *
+	 */
+	public function verify_network_redirect( $queries, $settings ) {
+		// the request that is intended to show the page without any action follows authentication of core.
+		if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) && empty( $_GET['action'] ) )
+			$queries[] = $_GET['page'];
+
+		return $queries;
 	}
 
 	/**
@@ -374,8 +388,8 @@ class IP_Geo_Block_Admin {
 		$settings = IP_Geo_Block::get_option();
 
 		// Network wide or not
+		$this->is_network &= current_user_can( 'manage_network_options' ) && $settings['network_wide'];
 		$admin_menu = ( 'admin_menu' === current_filter() ); // @since: 2.5 `admin_menu` or `network_admin_menu`
-		$this->is_network &= ( current_user_can( 'manage_network_options' ) && $settings['network_wide'] );
 
 		// Verify tab number
 		if ( $this->is_network ) {

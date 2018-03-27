@@ -103,26 +103,62 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
-	 * Retrieve nonce and rebuild query strings.
+	 * Retrieve or remove nonce and rebuild query strings.
 	 *
 	 */
-	public static function rebuild_nonce( $location, $status = 302 ) {
+	public static function rebuild_nonce( $location, $retrieve = TRUE ) {
 		// check if the location is internal
-		$host = parse_url( $location, PHP_URL_HOST );
-		if ( ! $host || $host === parse_url( home_url(), PHP_URL_HOST ) ) {
-			// it doesn't care about valid nonce or invalid nonce (must be sanitized)
-			if ( $nonce = self::retrieve_nonce( $key = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce' ) ) {
-				$location = esc_url_raw( add_query_arg(
-					array(
-						$key => FALSE, // delete onece
-						$key => $nonce // add again
-					),
-					$location
-				) );
+		$url = parse_url( $location );
+		$key = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
+
+		if ( empty( $url['host'] ) || $url['host'] === parse_url( home_url(), PHP_URL_HOST ) ) {
+			if ( $retrieve ) {
+				// it doesn't care a nonce is valid or not, but must be sanitized
+				if ( $nonce = self::retrieve_nonce( $key ) ) {
+					return esc_url_raw( add_query_arg(
+						array(
+							$key => FALSE, // delete onece
+							$key => $nonce // add again
+						),
+						$location
+					) );
+				}
+			}
+
+			else {
+				// remove a nonce from existing query
+				$location = esc_url_raw( add_query_arg( $key, FALSE, $location ) );
+				wp_parse_str( isset( $url['query'] ) ? $url['query'] : '', $query );
+				foreach ( $query as $arg => $val ) { // $val is url decoded
+					if ( FALSE !== strpos( $val, $key ) ) {
+						$query[ $arg ] = urlencode( add_query_arg( $key, FALSE, $val ) );
+					}
+				}
+				$url['query'] = implode( '&', $query );
+				return self::unparse_url( $url );
 			}
 		}
 
 		return $location;
+	}
+
+	/**
+	 * Convert back to string from a parsed url.
+	 *
+	 * @source http://php.net/manual/en/function.parse-url.php#106731
+	 */
+	private static function unparse_url( $url ) {
+		$scheme   = isset( $url['scheme'  ] ) ?       $url['scheme'  ] . '://' : '';
+		$host     = isset( $url['host'    ] ) ?       $url['host'    ] : '';
+		$port     = isset( $url['port'    ] ) ? ':' . $url['port'    ] : '';
+		$user     = isset( $url['user'    ] ) ?       $url['user'    ] : '';
+		$pass     = isset( $url['pass'    ] ) ? ':' . $url['pass'    ] : '';
+		$pass     =      ( $user || $pass   ) ?       "$pass@"         : '';
+		$path     = isset( $url['path'    ] ) ?       $url['path'    ] : '';
+		$query    = isset( $url['query'   ] ) ? '?' . $url['query'   ] : '';
+		$fragment = isset( $url['fragment'] ) ? '#' . $url['fragment'] : '';
+
+		return "$scheme$user$pass$host$port$path$query$fragment";
 	}
 
 	/**
@@ -438,7 +474,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function redirect( $location, $status = 302 ) {
 		// retrieve nonce from referer and add it to the location
-		$location = self::rebuild_nonce( $location, $status );
+		$location = self::rebuild_nonce( $location, TRUE );
 		$location = self::sanitize_redirect( $location );
 
 		if ( $location ) {
