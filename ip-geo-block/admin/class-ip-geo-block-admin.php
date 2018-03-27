@@ -61,12 +61,12 @@ class IP_Geo_Block_Admin {
 		add_action( 'wp_ajax_ip_geo_block',       array( $this, 'admin_ajax_callback' ) );
 		add_filter( 'wp_prepare_revision_for_js', array( $this, 'add_revision_nonce'  ), 10, 3 );
 
+		// validate capability instead of nonce. @since 2.0.0 && 3.0.0
+		add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_network_redirect' ), 10, 2 );
+
 		// If multisite, then enque the authentication script for network admin
 		if ( is_multisite() ) {
-			// validate capability instead of nonce. @since 2.0.0 && 3.0.0
-			if ( $this->is_network = is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
-				add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_network_redirect' ), 10, 2 );
-
+			$this->is_network = is_plugin_active_for_network( IP_GEO_BLOCK_BASE );
 			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
 			add_action( 'wpmu_new_blog',      array( $this, 'create_blog' ), 10, 6 ); // on creating a new blog @since MU
 			add_action( 'delete_blog',        array( $this, 'delete_blog' ), 10, 2 ); // on deleting an old blog @since 3.0.0
