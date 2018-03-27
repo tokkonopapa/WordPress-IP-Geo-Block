@@ -191,14 +191,14 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Remove the redirecting URL on logout not to be blocked by WP-ZEP.
+	 * Remove a nonce from the redirecting URL on logout to prevent disclosing a nonce.
 	 *
 	 */
-	public function logout_redirect( $uri ) {
-		if ( isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] && FALSE !== stripos( $uri, self::$wp_path['admin'] ) )
-			return esc_url_raw( add_query_arg( array( 'loggedout' => 'true' ), wp_login_url() ) );
+	public function logout_redirect( $location ) {
+		if ( isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] && FALSE !== stripos( $location, self::$wp_path['admin'] ) )
+			return IP_Geo_Block_Util::rebuild_nonce( $location, FALSE );
 		else
-			return $uri;
+			return $location;
 	}
 
 	/**

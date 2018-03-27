@@ -360,6 +360,7 @@ This is a maintenance release addressing various internal improvement toward the
 * **Improvement:** Add new descriptions "passUA" and "blockUA" for result in Logs to identify the reason when "UA string and qualification" is applied.
 * **Improvement:** AS Number can be handled in "UA string and qualification".
 * **Improvement:** Make WP cron job for "Auto updating" reliably in multisite environment.
+* **Improvement:** Better logout compatibility for redirecting to the previous page after login.
 * **Improvement:** Validate the prefix of IP address CIDR to prevent unexpected fatal error.
 * **Improvement:** Prevent opening a new window on clicking "Visit Site" in the admin bar menu for multi site by multi domain type.
 * **Bug fix:** Fix the issue of failing to retrieve client IP address from Chrome Data Saver.
