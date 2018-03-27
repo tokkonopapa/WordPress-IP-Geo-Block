@@ -129,12 +129,14 @@ class IP_Geo_Block_Util {
 				// remove a nonce from existing query
 				$location = esc_url_raw( add_query_arg( $key, FALSE, $location ) );
 				wp_parse_str( isset( $url['query'] ) ? $url['query'] : '', $query );
+				$args = [];
 				foreach ( $query as $arg => $val ) { // $val is url decoded
 					if ( FALSE !== strpos( $val, $key ) ) {
-						$query[ $arg ] = urlencode( add_query_arg( $key, FALSE, $val ) );
+						$val = urlencode( add_query_arg( $key, FALSE, $val ) );
 					}
+					$args[] = "$arg=$val";
 				}
-				$url['query'] = implode( '&', $query );
+				$url['query'] = implode( '&', $args );
 				return self::unparse_url( $url );
 			}
 		}
