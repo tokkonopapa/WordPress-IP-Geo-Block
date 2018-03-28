@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-03-28 07:23+0900\n"
-"PO-Revision-Date: 2018-03-28 07:24+0900\n"
+"POT-Creation-Date: 2018-03-28 20:07+0900\n"
+"PO-Revision-Date: 2018-03-28 20:08+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,153 +26,153 @@ msgid ""
 "posted from outside your nation, and also prevents zero-day exploit."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:262
+#: admin/class-ip-geo-block-admin.php:268
 msgid "Import settings ?"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:263
+#: admin/class-ip-geo-block-admin.php:269
 msgid "Create table ?"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:264
+#: admin/class-ip-geo-block-admin.php:270
 msgid "Delete table ?"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:265
+#: admin/class-ip-geo-block-admin.php:271
 msgid "Clear statistics ?"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:266
+#: admin/class-ip-geo-block-admin.php:272
 msgid "Clear cache ?"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:267
+#: admin/class-ip-geo-block-admin.php:273
 msgid "Clear logs ?"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:268
+#: admin/class-ip-geo-block-admin.php:274
 msgid "ajax for logged-in user"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:269
+#: admin/class-ip-geo-block-admin.php:275
 msgid "ajax for non logged-in user"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:270
+#: admin/class-ip-geo-block-admin.php:276
 #, php-format
 msgid "[Found: %d]"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:271
+#: admin/class-ip-geo-block-admin.php:277
 #, php-format
 msgid "Find and verify `%s` on &#8220;Logs&#8221; tab."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:272
+#: admin/class-ip-geo-block-admin.php:278
 msgid "This feature is available with HTML5 compliant browsers."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:273
+#: admin/class-ip-geo-block-admin.php:279
 msgid "The selected row cannot be found in the visible area."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:274
-#: admin/class-ip-geo-block-admin.php:1434
+#: admin/class-ip-geo-block-admin.php:280
+#: admin/class-ip-geo-block-admin.php:1438
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:278
+#: admin/class-ip-geo-block-admin.php:284
 msgid "No data available in table"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:279
+#: admin/class-ip-geo-block-admin.php:285
 msgid "No matching records found"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:280 admin/includes/tab-geolocation.php:71
+#: admin/class-ip-geo-block-admin.php:286 admin/includes/tab-geolocation.php:71
 msgid "IP address"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:281
+#: admin/class-ip-geo-block-admin.php:287
 msgid "Code"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:282
+#: admin/class-ip-geo-block-admin.php:288
 msgid "ASN"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:283
+#: admin/class-ip-geo-block-admin.php:289
 msgid "Host name"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:284
+#: admin/class-ip-geo-block-admin.php:290
 msgid "Target"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:285
+#: admin/class-ip-geo-block-admin.php:291
 msgid "Failure / Total"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:286
+#: admin/class-ip-geo-block-admin.php:292
 msgid "Elapsed[sec]"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:287
+#: admin/class-ip-geo-block-admin.php:293
 msgid "Time"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:288
+#: admin/class-ip-geo-block-admin.php:294
 msgid "Result"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:289
+#: admin/class-ip-geo-block-admin.php:295
 msgid "Request"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:290
+#: admin/class-ip-geo-block-admin.php:296
 msgid "User agent"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:291
+#: admin/class-ip-geo-block-admin.php:297
 msgid "HTTP headers"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:292
+#: admin/class-ip-geo-block-admin.php:298
 msgid "$_POST data"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:318
+#: admin/class-ip-geo-block-admin.php:324
 msgid "Contribute on GitHub"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:332
-#: admin/class-ip-geo-block-admin.php:439
-#: admin/class-ip-geo-block-admin.php:657
-#: admin/class-ip-geo-block-admin.php:676
+#: admin/class-ip-geo-block-admin.php:338
+#: admin/class-ip-geo-block-admin.php:446
+#: admin/class-ip-geo-block-admin.php:664
+#: admin/class-ip-geo-block-admin.php:683
 msgid "Settings"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:418
-#: admin/class-ip-geo-block-admin.php:419
-#: admin/class-ip-geo-block-admin.php:429
-#: admin/class-ip-geo-block-admin.php:430
-#: admin/class-ip-geo-block-admin.php:438
-#: admin/class-ip-geo-block-admin.php:446
+#: admin/class-ip-geo-block-admin.php:425
+#: admin/class-ip-geo-block-admin.php:426
+#: admin/class-ip-geo-block-admin.php:436
+#: admin/class-ip-geo-block-admin.php:437
+#: admin/class-ip-geo-block-admin.php:445
+#: admin/class-ip-geo-block-admin.php:453
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:447
-#: admin/class-ip-geo-block-admin.php:661
-#: admin/class-ip-geo-block-admin.php:677
+#: admin/class-ip-geo-block-admin.php:454
+#: admin/class-ip-geo-block-admin.php:668
+#: admin/class-ip-geo-block-admin.php:684
 msgid "Site List"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:476
+#: admin/class-ip-geo-block-admin.php:483
 msgid "You need WordPress 3.7+."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:482
+#: admin/class-ip-geo-block-admin.php:489
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -180,48 +180,48 @@ msgid ""
 "strong>&#8221; at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:488
+#: admin/class-ip-geo-block-admin.php:495
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
 "confirm it at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:497
+#: admin/class-ip-geo-block-admin.php:504
 msgid "Local database and matching rule have been updated."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:508
+#: admin/class-ip-geo-block-admin.php:515
 msgid ""
 "Once you logout, you will be unable to login again because the number of "
 "login attempts reaches the limit."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:510
+#: admin/class-ip-geo-block-admin.php:517
 #, php-format
 msgid ""
 "Please execute \"<strong>Clear cache</strong>\" on <a href=\"%s\">Statistics "
 "tab</a> to prevent locking yourself out."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:520
+#: admin/class-ip-geo-block-admin.php:527
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is in the blacklist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:521
+#: admin/class-ip-geo-block-admin.php:528
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is not in the whitelist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:525
+#: admin/class-ip-geo-block-admin.php:532
 #, php-format
 msgid "Please check your &#8220;%sValidation rule settings%s&#8221;."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:529
+#: admin/class-ip-geo-block-admin.php:536
 #, php-format
 msgid ""
 "Please confirm your local geolocation databases at &#8220;%sLocal database "
@@ -229,83 +229,83 @@ msgid ""
 "%sStatistics in cache%s&#8221; section."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:542
+#: admin/class-ip-geo-block-admin.php:549
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
 "select &#8220;init&#8221; action hook."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:658
+#: admin/class-ip-geo-block-admin.php:665
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:659
+#: admin/class-ip-geo-block-admin.php:666
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:660
+#: admin/class-ip-geo-block-admin.php:667
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:662
+#: admin/class-ip-geo-block-admin.php:669
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:690
+#: admin/class-ip-geo-block-admin.php:697
 msgid "Network wide"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:703
+#: admin/class-ip-geo-block-admin.php:710
 msgid "Toggle all"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:706
+#: admin/class-ip-geo-block-admin.php:713
 msgid ""
 "Independent of &#8220;Statistics and Logs settings&#8221;, you can see all "
 "the requests validated by this plugin in almost real time."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:706 admin/includes/tab-accesslog.php:39
+#: admin/class-ip-geo-block-admin.php:713 admin/includes/tab-accesslog.php:39
 msgid "Live update"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:710
+#: admin/class-ip-geo-block-admin.php:717
 msgid "Open a new window on clicking the link in the chart."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:710
+#: admin/class-ip-geo-block-admin.php:717
 msgid "Open a new window"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:733
+#: admin/class-ip-geo-block-admin.php:740
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:734
+#: admin/class-ip-geo-block-admin.php:741
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:739
+#: admin/class-ip-geo-block-admin.php:746
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:836
+#: admin/class-ip-geo-block-admin.php:842
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:851
+#: admin/class-ip-geo-block-admin.php:857
 msgid "Select one"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1228
+#: admin/class-ip-geo-block-admin.php:1232
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1255
+#: admin/class-ip-geo-block-admin.php:1259
 #: admin/includes/class-admin-rewrite.php:194
 #: classes/class-ip-geo-block-cron.php:212
 #: classes/class-ip-geo-block-cron.php:316
@@ -315,7 +315,7 @@ msgstr ""
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1285
+#: admin/class-ip-geo-block-admin.php:1289
 msgid "Settings saved."
 msgstr ""
 

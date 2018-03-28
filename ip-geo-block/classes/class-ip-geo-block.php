@@ -504,7 +504,7 @@ class IP_Geo_Block {
 
 	public function validate_front( $can_access = TRUE ) {
 		$validate = $this->validate_ip( 'comment', self::get_option(), TRUE, FALSE, FALSE );
-		return self::is_blocked( $validate['result'] ) ? FALSE : $can_access;
+		return self::is_passed( $validate['result'] ) ? $can_access : FALSE;
 	}
 
 	/**

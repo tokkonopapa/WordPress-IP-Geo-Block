@@ -64,9 +64,10 @@ class IP_Geo_Block_Admin {
 		if ( IP_Geo_Block_Util::is_user_logged_in() )
 			add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_request' ), 10, 2 );
 
-		// If multisite, then enque the authentication script for network admin
 		if ( is_multisite() ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
 			$this->is_network = is_plugin_active_for_network( IP_GEO_BLOCK_BASE );
+
 			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
 			add_action( 'wpmu_new_blog',      array( $this, 'create_blog' ), 10, 6 ); // on creating a new blog @since MU
 			add_action( 'delete_blog',        array( $this, 'delete_blog' ), 10, 2 ); // on deleting an old blog @since 3.0.0
@@ -125,8 +126,13 @@ class IP_Geo_Block_Admin {
 	 */
 	public function verify_request( $queries, $settings ) {
 		// the request that is intended to show the page without any action follows authentication of core.
-		if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) && empty( $_GET['action'] ) )
+		if ( 'GET' === $_SERVER['REQUEST_METHOD'] && isset( $_GET['page'] ) ) {
+			foreach ( array( 'action', 'task') as $key ) {
+				if ( ! empty( $_GET[ $key ] ) )
+					return $queries;
+			}
 			$queries[] = $_GET['page'];
+		}
 
 		return $queries;
 	}
@@ -388,8 +394,8 @@ class IP_Geo_Block_Admin {
 		$settings = IP_Geo_Block::get_option();
 
 		// Network wide or not
-		$this->is_network &= current_user_can( 'manage_network_options' ) && $settings['network_wide'];
 		$admin_menu = ( 'admin_menu' === current_filter() ); // @since: 2.5 `admin_menu` or `network_admin_menu`
+		$this->is_network &= ( current_user_can( 'manage_network_options' ) && $settings['network_wide'] );
 
 		// Verify tab number
 		if ( $this->is_network ) {
@@ -408,7 +414,8 @@ class IP_Geo_Block_Admin {
 			     ! empty( $_REQUEST['page'] ) && IP_Geo_Block::PLUGIN_NAME === $_REQUEST['page'] ) {
 				$this->update_multisite_settings( $settings );
 				wp_safe_redirect( esc_url_raw( add_query_arg(
-					array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( TRUE )
+					array( 'page' => IP_Geo_Block::PLUGIN_NAME ),
+					$this->dashboard_url( TRUE )
 				) ) );
 				exit;
 			}
@@ -624,7 +631,7 @@ class IP_Geo_Block_Admin {
 
 				echo "\n", '<fieldset id="', IP_Geo_Block::PLUGIN_NAME, '-section-', $index, '" class="', IP_Geo_Block::PLUGIN_NAME, '-field panel panel-default" data-section="', $index, '">', "\n",
 				     '<legend class="panel-heading"><h3 class="', IP_Geo_Block::PLUGIN_NAME, ( $stat ? '-dropdown' : '-dropup' ), '">',
-				     is_array( $section['title'] ) ? $section['title'][0] . '<span class="' . IP_Geo_Block::PLUGIN_NAME . '-label-link">[ ' . $section['title'][1] . ' ]</span>' : $section['title'],
+				     is_array( $section['title'] ) ? $section['title'][0] . '<span class="' . IP_Geo_Block::PLUGIN_NAME . '-help-link">[ ' . $section['title'][1] . ' ]</span>' : $section['title'],
 				     '</h3></legend>', "\n", '<div class="panel-body',
 				     ($stat ? ' ' . IP_Geo_Block::PLUGIN_NAME . '-border"' : '"'),
 				     ($stat || (4 === $tab && $index) ? '>' : ' style="display:none">'), "\n";
@@ -784,7 +791,6 @@ class IP_Geo_Block_Admin {
 		}
 
 		switch ( $args['type'] ) {
-
 		  case 'check-provider':
 			echo "\n<ul class=\"ip-geo-block-list\">\n";
 			foreach ( $args['providers'] as $key => $val ) {
@@ -1033,9 +1039,7 @@ class IP_Geo_Block_Admin {
 							foreach ( $input[ $key ][ $sub ] as $k => $v ) {
 								$output[ $key ][ $sub ] |= $v;
 							}
-						}
-
-						else {
+						} else {
 							$output[ $key ][ $sub ] = ( is_int( $default[ $key ][ $sub ] ) ?
 								(int)$input[ $key ][ $sub ] :
 								IP_Geo_Block_Util::kses( trim( $input[ $key ][ $sub ] ), FALSE )

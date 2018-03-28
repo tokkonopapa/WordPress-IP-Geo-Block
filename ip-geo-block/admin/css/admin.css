@@ -66,12 +66,12 @@ label {
 .ip-geo-block-navi-link label {
     vertical-align: text-top;
 }
-.ip-geo-block-label-link {
+.ip-geo-block-help-link {
     float: right;
     font-size: 90%;
     font-weight: normal;
 }
-.ip-geo-block-label-link a {
+.ip-geo-block-help-link a {
     box-shadow: none;
 }
 

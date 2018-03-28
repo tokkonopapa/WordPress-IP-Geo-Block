@@ -276,16 +276,16 @@
 		return false;
 	}
 
-	// check if the link has nofollow
-	function is_nofollow($elem) {
-		return -1 !== ($elem.attr('rel') || '').indexOf('nofollow');
-	}
-
 	// check if the uri does not need a nonce
 	function is_neutral(uri) {
 //		return !uri.query; // without queries
 //		return !uri.query || !$('body').hasClass('wp-core-ui'); // without queries or outside dashboard
 		return /\/$/.test(uri.path); // `/wp-admin/`
+	}
+
+	// check if the link has nofollow
+	function has_nofollow($elem) {
+		return -1 !== ($elem.attr('rel') || '').indexOf('nofollow');
 	}
 /*
 	$.ajaxSetup({
@@ -415,16 +415,16 @@
 			// if admin area (except a link with nofollow in the comment thread) then add a nonce
 			else if (admin === 1) {
 				$this.attr('href', is_neutral(uri) ? href :
-					add_query_nonce( href, is_nofollow($this) ? 'nofollow' : auth.nonce )
+					add_query_nonce( href, has_nofollow($this) ? 'nofollow' : auth.nonce )
 				);
 			}
 
 			// if external then redirect with no referrer not to leak out the nonce
 			else if (admin === -1 && is_backend()) {
 				// open within the same window
-				if (is_multisite(href) || '_self' === $this.attr('target')) {
+				if ('_self' === $this.attr('target') || is_multisite(href)) {
 					$this.attr('href', is_neutral(uri) ? href :
-						add_query_nonce( href, is_nofollow($this) ? 'nofollow' : auth.nonce )
+						add_query_nonce( href, has_nofollow($this) ? 'nofollow' : auth.nonce )
 					);
 				}
 

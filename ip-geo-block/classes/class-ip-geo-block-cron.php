@@ -61,8 +61,8 @@ class IP_Geo_Block_Cron {
 	 */
 	public static function exec_update_db( $immediate = FALSE ) {
 		// extract ip address from transient API to confirm the request source
-		add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
 		$ip = IP_Geo_Block::get_ip_address( $settings = IP_Geo_Block::get_option() );
+		add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
 
 		$args = IP_Geo_Block::get_request_headers( $settings );
 
