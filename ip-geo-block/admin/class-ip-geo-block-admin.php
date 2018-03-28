@@ -61,8 +61,8 @@ class IP_Geo_Block_Admin {
 		add_action( 'wp_ajax_ip_geo_block',       array( $this, 'admin_ajax_callback' ) );
 		add_filter( 'wp_prepare_revision_for_js', array( $this, 'add_revision_nonce'  ), 10, 3 );
 
-		// validate capability instead of nonce. @since 2.0.0 && 3.0.0
-		add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_request' ), 10, 2 );
+		if ( IP_Geo_Block_Util::is_user_logged_in() )
+			add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_request' ), 10, 2 );
 
 		// If multisite, then enque the authentication script for network admin
 		if ( is_multisite() ) {
