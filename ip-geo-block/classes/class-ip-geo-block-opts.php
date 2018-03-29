@@ -179,6 +179,12 @@ class IP_Geo_Block_Opts {
 		'live_update'     => array(
 			'in_memory'      => 0,       // -1:unavailable, 0:file, 1:memory
 		),
+		// since version 3.0.10
+		'bad_behavior'    => array(
+			'mode'           => 0,       // 0:off, 1:on
+			'time'           => 10,      // 10 seconds
+			'view'           => 10,      // 10 page view
+		),
 	);
 
 	/**
@@ -390,6 +396,9 @@ class IP_Geo_Block_Opts {
 
 			if ( version_compare( $version, '3.0.9' ) < 0 )
 				$settings['priority'] = $default['priority'];
+
+			if ( version_compare( $version, '3.0.10' ) < 0 )
+				$settings['bad_behavior'] = $default['bad_behavior'];
 
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;

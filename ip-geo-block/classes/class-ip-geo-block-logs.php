@@ -46,7 +46,7 @@ class IP_Geo_Block_Logs {
 
 		// for logs
 		$table = $wpdb->prefix . self::TABLE_LOGS;
-		$sql = "CREATE TABLE IF NOT EXISTS $table (
+		$sql = "CREATE TABLE $table (
 			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			time int(10) unsigned NOT NULL DEFAULT 0,
 			ip varchar(40) NOT NULL,
@@ -67,7 +67,7 @@ class IP_Geo_Block_Logs {
 
 		// for statistics
 		$table = $wpdb->prefix . self::TABLE_STAT;
-		$sql = "CREATE TABLE IF NOT EXISTS $table (
+		$sql = "CREATE TABLE $table (
 			No tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
 			data longtext DEFAULT NULL,
 			PRIMARY KEY  (No)
@@ -82,15 +82,17 @@ class IP_Geo_Block_Logs {
 
 		// for IP address cache
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
-		$sql = "CREATE TABLE IF NOT EXISTS $table (
+		$sql = "CREATE TABLE $table (
 			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			time int(10) unsigned NOT NULL DEFAULT 0,
 			ip varchar(40) UNIQUE NOT NULL,
-			asn varchar(8) NULL,
 			hook varchar(8) NOT NULL,
-			auth int(10) unsigned NOT NULL DEFAULT 0,
+			asn varchar(8) NULL,
 			code varchar(2) NOT NULL DEFAULT 'ZZ',
+			auth int(10) unsigned NOT NULL DEFAULT 0,
 			fail int(10) unsigned NOT NULL DEFAULT 0,
+			last int(10) unsigned NOT NULL DEFAULT 0,
+			view int(10) unsigned NOT NULL DEFAULT 0,
 			host tinytext NOT NULL,
 			PRIMARY KEY  (No)
 		) $charset_collate";
@@ -810,23 +812,27 @@ class IP_Geo_Block_Logs {
 
 		$sql = $wpdb->prepare(
 			"INSERT INTO `$table`
-			(`time`, `ip`, `asn`, `hook`, `auth`, `code`, `fail`, `call`, `host`)
-			VALUES (%d, %s, %s, %s, %d, %s, %d, %d, %s)
+			(`time`, `ip`, `hook`, `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, `host`)
+			VALUES (%d, %s, %s, %s, %s, %d, %d, %d, %d, %d, %s)
 			ON DUPLICATE KEY UPDATE
 			`time` = VALUES(`time`),
 			`hook` = VALUES(`hook`),
 			`auth` = VALUES(`auth`),
 			`code` = VALUES(`code`),
 			`fail` = VALUES(`fail`),
-			`call` = VALUES(`call`)",
+			`call` = VALUES(`call`),
+			`last` = VALUES(`last`),
+			`view` = VALUES(`view`)",
 			$cache['time'],
 			$cache['ip'  ],
-			$cache['asn' ],
 			$cache['hook'],
-			$cache['auth'],
+			$cache['asn' ],
 			$cache['code'],
+			$cache['auth'],
 			$cache['fail'],
 			$cache['call'],
+			$cache['last'],
+			$cache['view'],
 			$cache['host']
 		) and $wpdb->query( $sql ) or self::error( __LINE__ );
 	}

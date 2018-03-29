@@ -450,31 +450,41 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
  * Output type : array
  */
 class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
-
 	// memory cache
 	protected static $memcache = array();
 
 	public static function update_cache( $hook, $validate, $settings ) {
+		$time  = $_SERVER['REQUEST_TIME'];
 		$cache = self::get_cache( $ip = $validate['ip'] );
 
 		if ( $cache ) {
 			$fail = $cache['fail'] + ( 'failed' === $validate['result'] ? 1 : 0 );
 			$call = $cache['call'] + ( 'failed' !== $validate['result'] ? 1 : 0 );
+			$last = $cache['last'];
+			$view = $cache['view']++;
+			if ( $time - $last > $settings['bad_behavior']['time'] ) {
+				$last = $time;
+				$view = 1;
+			}
 		} else { // if new cache then reset these values
 			$fail = 0;
 			$call = 1;
+			$last = $time;
+			$view = 1;
 		}
 
 		// update elements
 		IP_Geo_Block_Logs::update_cache( $cache = array(
-			'time' => $_SERVER['REQUEST_TIME'],
+			'time' => $time,
 			'ip'   => $ip,
-			'asn'  => $validate['asn' ], // @since 3.0.4
 			'hook' => $hook,
+			'asn'  => $validate['asn' ], // @since 3.0.4
 			'code' => $validate['code'],
 			'auth' => $validate['auth'], // get_current_user_id() > 0
 			'fail' => $validate['auth'] ? 0 : $fail,
 			'call' => $settings['save_statistics'] ? $call : 0,
+			'last' => $last,
+			'view' => $view,
 			'host' => isset( $validate['host'] ) ? $validate['host'] : NULL,
 		) );
 
