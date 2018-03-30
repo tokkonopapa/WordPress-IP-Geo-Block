@@ -1124,7 +1124,7 @@ msgstr "<dfn title=“行儀の悪さ度合いを設定します。”>遮断条
 #: admin/includes/tab-settings.php:991
 #, php-format
 msgid "More than %1$s requests for every %2$s seconds"
-msgstr "%2$s 秒間に %1$s 以上のリクエスト"
+msgstr "%2$s 秒間に %1$s を超えるリクエスト"
 
 #: admin/includes/tab-settings.php:1000
 msgid ""
