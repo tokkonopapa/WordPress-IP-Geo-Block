@@ -9,7 +9,8 @@
 	'use strict';
 
 	// External variables
-	var timer_stack = [],
+	var skip_error = false,
+	    timer_stack = [],
 	    window_width = $(window).width(),
 	    ip_geo_block      = IP_GEO_BLOCK,
 	    ip_geo_block_auth = IP_GEO_BLOCK_AUTH;
@@ -108,7 +109,9 @@
 		})
 
 		.fail(function (jqXHR /*,textStatus, errorThrown*/) {
-			warning(jqXHR.status, jqXHR.responseText, request.action);
+			if (!skip_error) {
+				warning(jqXHR.status, jqXHR.responseText, request.action);
+			}
 		})
 
 		.always(function () {
@@ -178,10 +181,18 @@
 		// checkbox
 		$this.siblings('input[name^="' + ID('%', 'settings') + '"]:checkbox').prop('disabled', !stat);
 
-		// folding list
-		$elem.nextAll(ID('.', 'settings-folding')).each(function (i, obj) {
-			fold_elements($(obj), stat && mask);
-		});
+		// folding the list
+		if ($.isArray($elem)) {
+			$.each($elem, function (i, elm) {
+				$(elm).nextAll(ID('.', 'settings-folding')).each(function (j, obj) {
+					fold_elements($(obj), stat && mask[i]);
+				});
+			});
+		} else {
+			$elem.nextAll(ID('.', 'settings-folding')).each(function (j, obj) {
+				fold_elements($(obj), stat && mask);
+			});
+		}
 	}
 
 	// Show / Hide Exceptions
@@ -237,6 +248,7 @@
 	function set_front_end($this) {
 		var checked = $this.is(':checked'),
 		    select  = $(ID('@', 'public_target_rule')),
+		    behave  = $(ID('@', 'public_behavior')),
 		    parent  = $this.closest('tr').nextAll('tr');
 
 		// Enable / Disable descendent items
@@ -246,7 +258,12 @@
 		parent.find(ID('.', 'desc')).css('opacity', checked ? 1.0 : 0.5);
 
 		// Show / Hide validation target
-		show_descendants($this, select, '1' === select.val() ? true : false);
+		show_descendants($this, [select, behave], ['1' === select.val() ? true : false, behave.val()]);
+
+		// Render descendant element
+		if (checked) {
+			behave.change();
+		}
 	}
 
 	/**
@@ -948,6 +965,12 @@
 			return false;
 		});
 
+		// Prevent warning when page transition happens during ajax
+		$(window).on('beforeunload', function(/*event*/) {
+			skip_error = true;
+			return;
+		});
+
 		// Register event handler at specific tab
 		switch (tabNo) {
 		  /*----------------------------------------
@@ -1254,6 +1277,13 @@
 				$(ID('@', 'public_white_list'   )).closest('tr').toggle(value ===  '0');
 				$(ID('@', 'public_black_list'   )).closest('tr').toggle(value ===  '1');
 				$(ID('@', 'public_response_code')).change().closest('tr').toggle(value !== '-1');
+				return stopPropergation(event);
+			}).change();
+
+			// Badly-behaved bots and crawlers
+			$(ID('@', 'public_behavior')).on('change', function (event) {
+				var $this = $(this);
+				fold_elements($this.siblings('ul'), $this.prop('checked'));
 				return stopPropergation(event);
 			}).change();
 

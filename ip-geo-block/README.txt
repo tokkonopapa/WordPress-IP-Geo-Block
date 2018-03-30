@@ -354,7 +354,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 == Changelog ==
 
 = 3.0.10 =
-This is a maintenance release addressing various internal improvement toward the next version.
+* **New feature:** Add "Validation of bad behavior" in "Front-end target settings" section to block badly-behaved bots and crawlers.
 * **Improvement:** Add a help link to the document for some sections.
 * **Improvement:** Add descriptions on "Target actions" at "Login form" in "Back-end target settings" section.
 * **Improvement:** Add new descriptions "passUA" and "blockUA" for result in Logs to identify the reason when "UA string and qualification" is applied.
