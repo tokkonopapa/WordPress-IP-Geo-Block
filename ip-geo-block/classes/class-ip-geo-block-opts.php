@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.9', // Version of this table (not package)
+		'version'         => '3.0.10',// Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -167,6 +167,8 @@ class IP_Geo_Block_Opts {
 			'response_code'  => 307,     // better for AdSense
 			'redirect_uri'   => NULL,    // home
 			'response_msg'   => 'Sorry, your request cannot be accepted.', // message on blocking
+			// since version 3.0.10
+			'behavior'       => FALSE    // Bad behavior
 		),
 		// since version 3.0.3
 		'mimetype'        => array(
@@ -180,8 +182,7 @@ class IP_Geo_Block_Opts {
 			'in_memory'      => 0,       // -1:unavailable, 0:file, 1:memory
 		),
 		// since version 3.0.10
-		'bad_behavior'    => array(
-			'mode'           => 0,       // 0:off, 1:on
+		'behavior'        => array(
 			'time'           => 10,      // 10 seconds
 			'view'           => 10,      // 10 page view
 		),
@@ -397,8 +398,10 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '3.0.9' ) < 0 )
 				$settings['priority'] = $default['priority'];
 
-			if ( version_compare( $version, '3.0.10' ) < 0 )
-				$settings['bad_behavior'] = $default['bad_behavior'];
+			if ( version_compare( $version, '3.0.10' ) < 0 ) {
+				$settings['behavior'] = $default['behavior'];
+				$settings['public'  ]['behavior'] = $default['public']['behavior'];
+			}
 
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;

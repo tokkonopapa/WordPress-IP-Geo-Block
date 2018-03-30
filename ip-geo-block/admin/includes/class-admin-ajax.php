@@ -485,6 +485,9 @@ endif; // TEST_RESTORE_NETWORK
 			'[public][dnslkup]',         // 3.0.3
 			'[public][response_code]',   // 3.0.3
 			'[public][redirect_uri]',    // 3.0.3
+			'[public][behavior]',        // 3.0.10
+			'[behavior][time]',          // 3.0.10
+			'[behavior][view]',          // 3.0.10
 			'[providers][Geolite2]',     // 3.0.8
 			'[providers][Maxmind]',
 			'[providers][IP2Location]',
@@ -689,6 +692,7 @@ endif; // TEST_RESTORE_NETWORK
 					$result += array( $matches[1] => $which );
 				}
 			}
+			break;
 		}
 
 		return $result;

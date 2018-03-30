@@ -1084,8 +1084,8 @@ class IP_Geo_Block_Admin {
 		}
 
 		// keep disabled checkboxes not in the form
-		foreach ( array( 'target_pages', 'target_posts', 'target_cates', 'target_tags', 'simulate', 'dnslkup' ) as $key ) {
-			$output['public'][ $key ] = array();
+		foreach ( array( 'target_pages', 'target_posts', 'target_cates', 'target_tags', 'simulate', 'dnslkup', 'behavior' ) as $key ) {
+			$output['public'][ $key ] = is_array( $default['public'][ $key ] ) ?  array() : FALSE;
 		}
 
 		// 3.0.4 AS number, 3.0.6 Auto updating of DB files, 3.0.8 Geolite2

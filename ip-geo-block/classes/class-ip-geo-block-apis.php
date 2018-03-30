@@ -461,16 +461,20 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			$fail = $cache['fail'] + ( 'failed' === $validate['result'] ? 1 : 0 );
 			$call = $cache['call'] + ( 'failed' !== $validate['result'] ? 1 : 0 );
 			$last = $cache['last'];
-			$view = $cache['view']++;
-			if ( $time - $last > $settings['bad_behavior']['time'] ) {
-				$last = $time;
-				$view = 1;
-			}
+			$view = $cache['view'];
 		} else { // if new cache then reset these values
 			$fail = 0;
 			$call = 1;
 			$last = $time;
 			$view = 1;
+		}
+
+		if ( $cache && 'public' === $hook ) {
+			++$view;
+			if ( $time - $last > $settings['behavior']['time'] ) {
+				$last = $time;
+				$view = 1;
+			}
 		}
 
 		// update elements

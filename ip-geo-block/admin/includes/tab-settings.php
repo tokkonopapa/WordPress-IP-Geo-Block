@@ -985,6 +985,28 @@ endif;
 			)
 		);
 
+		// Badly-behaved bots and crawlers
+		$exception = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title=".">Rule</dfn>', 'ip-geo-block' ) . "\n<li class=\"ip-geo-block-hide\"><ul><span></span>\n";
+		$exception .= '<li>10 requests for every 10 seconds</li>' . "\n";
+		$exception .= '</ul></li></ul>' . "\n";
+
+		$key = 'behavior';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( '<dfn title="">Badly-behaved bots and crawlers</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'after' => $exception,
+			)
+		);
+
 		// UA string and qualification
 		$key = 'ua_list';
 		add_settings_field(
