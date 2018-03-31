@@ -902,18 +902,18 @@ class IP_Geo_Block {
 	}
 
 	public function check_ua( $validate, $settings ) {
-		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
-
 		// mask HOST if DNS lookup is false
 		if ( empty( $settings['public']['dnslkup'] ) )
 			$settings['public']['ua_list'] = IP_Geo_Block_Util::mask_qualification( $settings['public']['ua_list'] );
 
 		// get the name of host (from the cache if exists)
-		if ( empty( $validate['host'] ) && FALSE !== strpos( $settings['public']['ua_list'], 'HOST' ) )
+		if ( empty( $validate['host'] ) && FALSE !== strpos( $settings['public']['ua_list'], 'HOST' ) ) {
+			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 			$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
+		}
 
 		// check requested url
-		$is_feed = IP_Geo_Block_Lkup::is_feed( $this->request_uri );
+		$is_feed = IP_Geo_Block_Util::is_feed( $this->request_uri );
 		$u_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';
 		$referer = isset( $_SERVER['HTTP_REFERER'   ] ) ? $_SERVER['HTTP_REFERER'   ] : '';
 
