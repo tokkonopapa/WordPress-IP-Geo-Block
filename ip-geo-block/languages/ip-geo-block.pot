@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-03-31 02:22+0900\n"
-"PO-Revision-Date: 2018-03-31 02:22+0900\n"
+"POT-Creation-Date: 2018-03-31 10:15+0900\n"
+"PO-Revision-Date: 2018-03-31 10:15+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "Language: en_001\n"
@@ -987,7 +987,7 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:989
 msgid ""
-"<dfn title=\"Specify the degree of bad behavior.\">Blocking condition</dfn>"
+"<dfn title=\"Specify the frequency of request.\">Blocking condition</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:991
@@ -997,8 +997,8 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:1000
 msgid ""
-"<dfn title=\"Block badly-behaved bots and crawlers.\">Validation of bad "
-"behavior</dfn>"
+"<dfn title=\"It will validate the frequency of request.\">Block badly-"
+"behaved bots and crawlers</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1018

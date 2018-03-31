@@ -749,7 +749,7 @@ class IP_Geo_Block {
 	public function check_behavior( $validate, $settings ) {
 		// check if page view with a short period time is under the threshold
 		$cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr );
-		if ( $cache && $cache['view'] > $settings['behavior']['view'] ) {
+		if ( $cache && $cache['view'] >= $settings['behavior']['view'] ) {
 			return $validate + array( 'result' => 'badbhv' ); // can't overwrite existing result
 		}
 

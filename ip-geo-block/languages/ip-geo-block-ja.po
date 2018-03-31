@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-03-31 02:22+0900\n"
-"PO-Revision-Date: 2018-03-31 02:23+0900\n"
+"POT-Creation-Date: 2018-03-31 10:15+0900\n"
+"PO-Revision-Date: 2018-03-31 10:16+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1118,8 +1118,8 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:989
 msgid ""
-"<dfn title=\"Specify the degree of bad behavior.\">Blocking condition</dfn>"
-msgstr "<dfn title=“行儀の悪さ度合いを設定します。”>遮断条件</dfn>"
+"<dfn title=\"Specify the frequency of request.\">Blocking condition</dfn>"
+msgstr "<dfn title=\"リクエスト頻度を設定します。\">遮断条件</dfn>"
 
 #: admin/includes/tab-settings.php:991
 #, php-format
@@ -1128,10 +1128,11 @@ msgstr "%2$s 秒間に %1$s を超えるリクエスト"
 
 #: admin/includes/tab-settings.php:1000
 msgid ""
-"<dfn title=\"Block badly-behaved bots and crawlers.\">Validation of bad "
-"behavior</dfn>"
+"<dfn title=\"It will validate the frequency of request.\">Block badly-"
+"behaved bots and crawlers</dfn>"
 msgstr ""
-"<dfn title=“行儀の悪いボットやクローラーを遮断します。”>行儀悪さの検証</dfn>"
+"<dfn title=\"リクエスト頻度を検証します。\">行儀の悪いボットやクローラーを遮断</"
+"dfn>"
 
 #: admin/includes/tab-settings.php:1018
 msgid ""
