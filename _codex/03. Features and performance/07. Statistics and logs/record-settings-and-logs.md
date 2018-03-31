@@ -87,6 +87,7 @@ Here are the descriptions:
 | wp-zep        | blocked by WP-ZEP                                |
 | multi         | blocked by XML-RPC multicall                     |
 | badsig        | blocked by Bad signatures                        |
+| badbhv        | blocked by Badly-behaved bots and crawlers       |
 | extra         | blocked by Extra IP addresses                    |
 | failed        | blocked by failed login attempt                  |
 | limited       | blocked by excess of limit login attempt         |
