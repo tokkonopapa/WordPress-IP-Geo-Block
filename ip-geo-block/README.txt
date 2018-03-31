@@ -35,6 +35,9 @@ After several days of installation, you'll be supprised to find many malicious o
 * **Prevent malicious down/uploading:**  
   A malicious request such as exposing `wp-config.php` or uploading malwares via vulnerable plugins/themes can be blocked.
 
+* **Block badly-behaved bots and crawlers:**  
+  A simple logic may help to reduce the number of rogue bots and crawlers scraping your site.
+
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin so that a registered user can login as a membership from anywhere, while a request such as a new user registration, lost password, creating a new topic and subscribing comment can be blocked by country. It is suitable for [BuddyPress](https://wordpress.org/plugins/buddypress/ "BuddyPress &mdash; WordPress Plugins") and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress &rsaquo; bbPress &laquo; WordPress Plugins") to help reducing spams.
 
