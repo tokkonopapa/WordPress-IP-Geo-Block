@@ -746,16 +746,6 @@ class IP_Geo_Block {
 		return $validate;
 	}
 
-	public function check_behavior( $validate, $settings ) {
-		// check if page view with a short period time is under the threshold
-		$cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr );
-		if ( $cache && $cache['view'] >= $settings['behavior']['view'] && $_SERVER['REQUEST_TIME'] - $cache['last'] <= $settings['behavior']['time'] ) {
-			return $validate + array( 'result' => 'badbot' ); // can't overwrite existing result
-		}
-
-		return $validate;
-	}
-
 	/**
 	 * Validate malicious file uploading. @since 3.0.3
 	 * @see wp_handle_upload() in wp-admin/includes/file.php
@@ -871,6 +861,16 @@ class IP_Geo_Block {
 
 		// validate country by IP address (block: true, die: false)
 		$this->validate_ip( 'public', $settings, 1 & $settings['validation']['public'], ! $public['simulate'] );
+	}
+
+	public function check_behavior( $validate, $settings ) {
+		// check if page view with a short period time is under the threshold
+		$cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr );
+		if ( $cache && $cache['view'] >= $settings['behavior']['view'] && $_SERVER['REQUEST_TIME'] - $cache['last'] <= $settings['behavior']['time'] ) {
+			return $validate + array( 'result' => 'badbot' ); // can't overwrite existing result
+		}
+
+		return $validate;
 	}
 
 	public function check_page( $validate, $settings ) {
