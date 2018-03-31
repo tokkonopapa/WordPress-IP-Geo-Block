@@ -986,11 +986,11 @@ endif;
 		);
 
 		// Badly-behaved bots and crawlers
-		$exception  = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the frequency of request.">Blocking condition</dfn>', 'ip-geo-block' ) . "\n<li class=\"ip-geo-block-hide\"><ul>\n<li>";
+		$exception  = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the frequency of request for certain period of time.">Blocking condition</dfn>', 'ip-geo-block' ) . "\n<li class=\"ip-geo-block-hide\"><ul>\n<li>";
 		$exception .= sprintf(
 			__( 'More than %1$s requests for every %2$s seconds', 'ip-geo-block' ),
-			'<input type="text" id="ip_geo_block_settings_behavior_view" name="ip_geo_block_settings[behavior][view]" class="regular-text code" value="' . esc_attr( $options['behavior']['view'] ) . '" placeholder="10" maxlength="3" />',
-			'<input type="text" id="ip_geo_block_settings_behavior_time" name="ip_geo_block_settings[behavior][time]" class="regular-text code" value="' . esc_attr( $options['behavior']['time'] ) . '" placeholder="10" maxlength="3" /> '
+			'<input type="text" id="ip_geo_block_settings_behavior_view" name="ip_geo_block_settings[behavior][view]" class="regular-text code" value="' . (int)$options['behavior']['view'] . '" placeholder="10" maxlength="3" />',
+			'<input type="text" id="ip_geo_block_settings_behavior_time" name="ip_geo_block_settings[behavior][time]" class="regular-text code" value="' . (int)$options['behavior']['time'] . '" placeholder="10" maxlength="3" /> '
 		);
 		$exception .= "</li>\n</ul></li></ul>\n";
 
