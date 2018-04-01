@@ -470,11 +470,11 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		}
 
 		if ( $cache && 'public' === $hook ) {
-			++$view;
-			if ( $time - $last > $settings['behavior']['time'] ) {
-				$last = $time;
+			if ( $time - $last > $settings['behavior']['time'] )
 				$view = 1;
-			}
+			else
+				++$view;
+			$last = $time;
 		}
 
 		// update elements

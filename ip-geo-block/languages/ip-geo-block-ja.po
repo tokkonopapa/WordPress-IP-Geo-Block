@@ -1124,8 +1124,8 @@ msgstr "<dfn title=\"特定期間のリクエスト頻度を設定します。\"
 
 #: admin/includes/tab-settings.php:991
 #, php-format
-msgid "More than %1$s requests for every %2$s seconds"
-msgstr "%2$s 秒間に %1$s を超えるリクエスト"
+msgid "More than %1$s page view (PV) in %2$s seconds"
+msgstr "%2$s 秒間に %1$s を超えるページビュー (PV)"
 
 #: admin/includes/tab-settings.php:1000
 msgid ""
