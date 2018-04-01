@@ -184,7 +184,7 @@ class IP_Geo_Block_Opts {
 		// since version 3.0.10
 		'behavior'        => array(
 			'time'           => 10,      // 10 seconds
-			'view'           => 5,       // 5 page view
+			'view'           => 10,      // 10 page view
 		),
 	);
 
