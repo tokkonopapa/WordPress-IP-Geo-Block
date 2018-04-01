@@ -934,7 +934,7 @@ class IP_Geo_Block_Util {
 	public static function get_multisite() {
 		$sites = array();
 
-		foreach ( get_blogs_of_user( get_current_user_id(), FALSE ) as $site ) {
+		foreach ( get_blogs_of_user( get_current_user_id(), FALSE ) as $site ) { // @since 3.0.0
 			$sites[] = preg_replace( '/^https?:/', '', $site->siteurl );
 		}
 
