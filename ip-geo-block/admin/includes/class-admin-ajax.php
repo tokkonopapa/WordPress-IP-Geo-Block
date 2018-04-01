@@ -15,7 +15,7 @@ class IP_Geo_Block_Admin_Ajax {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 
 		// check format
-		if ( filter_var( $ip = $_POST['ip'], FILTER_VALIDATE_IP ) ) {
+		if ( filter_var( $ip = trim( $_POST['ip'] ), FILTER_VALIDATE_IP ) ) {
 			// get option settings and compose request headers
 			$options = IP_Geo_Block::get_option();
 			$tmp     = IP_Geo_Block::get_request_headers( $options );
@@ -485,6 +485,9 @@ endif; // TEST_RESTORE_NETWORK
 			'[public][dnslkup]',         // 3.0.3
 			'[public][response_code]',   // 3.0.3
 			'[public][redirect_uri]',    // 3.0.3
+			'[public][behavior]',        // 3.0.10
+			'[behavior][time]',          // 3.0.10
+			'[behavior][view]',          // 3.0.10
 			'[providers][Geolite2]',     // 3.0.8
 			'[providers][Maxmind]',
 			'[providers][IP2Location]',
@@ -689,6 +692,7 @@ endif; // TEST_RESTORE_NETWORK
 					$result += array( $matches[1] => $which );
 				}
 			}
+			break;
 		}
 
 		return $result;
@@ -782,24 +786,26 @@ endif; // TEST_RESTORE_NETWORK
 		// Blocked self requests
 		$installed = array_reverse( IP_Geo_Block_Logs::search_logs( IP_Geo_Block::get_ip_address() ) );
 		foreach ( $installed as $val ) {
-			// hide port and nonce
-			$method = preg_replace( '/\[\d+\]/', '', $val['method'] );
-			$method = preg_replace( '/(' . IP_Geo_Block::PLUGIN_NAME . '-auth-nonce)(?:=|%3D)([\w]+)/', '$1=...', $method );
+			if ( IP_Geo_Block::is_blocked( $val['result'] ) ) {
+				// hide port and nonce
+				$method = preg_replace( '/\[\d+\]/', '', $val['method'] );
+				$method = preg_replace( '/(' . IP_Geo_Block::PLUGIN_NAME . '-auth-nonce)(?:=|%3D)([\w]+)/', '$1=...', $method );
 
-			// add post data
-			$query = array();
-			foreach ( explode( ',', $val['data'] ) as $str ) {
-				if ( FALSE !== strpos( $str, '=' ) )
-					$query[] = $str;
+				// add post data
+				$query = array();
+				foreach ( explode( ',', $val['data'] ) as $str ) {
+					if ( FALSE !== strpos( $str, '=' ) )
+						$query[] = $str;
+				}
+
+				if ( ! empty( $query ) )
+					$method .= '(' . implode( ',', $query ) . ')';
+
+				$res += array(
+					esc_html( IP_Geo_Block_Util::localdate( $val['time'], 'Y-m-d H:i:s' ) ) =>
+					esc_html( str_pad( $val['result'], 8 ) . $method )
+				);
 			}
-
-			if ( ! empty( $query ) )
-				$method .= '(' . implode( ',', $query ) . ')';
-
-			$res += array(
-				esc_html( IP_Geo_Block_Util::localdate( $val['time'], 'Y-m-d H:i:s' ) ) =>
-				esc_html( str_pad( $val['result'], 8 ) . $method )
-			);
 		}
 
 		return $res;

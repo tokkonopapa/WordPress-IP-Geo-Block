@@ -49,7 +49,7 @@ class IP_Geo_Block_Rewrite {
 			$path = str_replace( $site, '', $path );
 		}
 
-		return realpath( $path );
+		return self::normalize_path( realpath( $path ) );
 	}
 
 	/**
@@ -74,11 +74,11 @@ class IP_Geo_Block_Rewrite {
 	 */
 	private static function abort( $context, $validate, $settings, $exist ) {
 
-		// mark as malicious
-		$validate['result'] = 'blocked'; //'malice';
+		// mark as malicious path
+		$validate['result'] = 'badpath';
 
 		// (1) blocked, unknown, (3) unauthenticated, (5) all
-		IP_Geo_Block_Logs::record_logs( 'admin', $validate, $settings, 1 & (int)$settings['validation']['reclogs'] );
+		IP_Geo_Block_Logs::record_logs( 'admin', $validate, $settings, TRUE );
 
 		// update statistics
 		if ( $settings['save_statistics'] )

@@ -25,7 +25,8 @@ class IP_Geo_Block_Lkup {
 		elseif ( FALSE !== filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			if ( FALSE === strpos( $ip, ':' ) ) {
 				$ip = pack( 'N', ip2long( $ip ) );
-			} else {
+			}
+			else {
 				$ip = explode( ':', $ip );
 				$ip = pack( 'N', ip2long( $ip[ count( $ip ) - 1 ] ) );
 			}
@@ -40,12 +41,14 @@ class IP_Geo_Block_Lkup {
 			foreach ( $ip as $seg ) {
 				if ( $seg != '' ) {
 					$res .= str_pad( $seg, 4, '0', STR_PAD_LEFT );
-				} elseif ( $replaced == 0 ) {
+				}
+				elseif ( $replaced == 0 ) {
 					for ( $i = 0; $i <= $parts; ++$i ) {
 						$res .= '0000';
 					}
 					$replaced = 1;
-				} elseif ( $replaced == 1 ) {
+				}
+				elseif ( $replaced == 1 ) {
 					$res .= '0000';
 				}
 			}
@@ -112,16 +115,6 @@ class IP_Geo_Block_Lkup {
 		}
 
 		return isset( $host ) ? $host : $ip;
-	}
-
-	/**
-	 * https://codex.wordpress.org/WordPress_Feeds
-	 *
-	 */
-	public static function is_feed( $request_uri ) {
-		return isset( $_GET['feed'] ) ?
-			( preg_match( '!(?:comments-)?(?:feed|rss|rss2|rdf|atom)$!', $_GET['feed'] ) ? TRUE : FALSE ) :
-			( preg_match( '!(?:comments/)?(?:feed|rss|rss2|rdf|atom)/?$!', $request_uri ) ? TRUE : FALSE );
 	}
 
 }

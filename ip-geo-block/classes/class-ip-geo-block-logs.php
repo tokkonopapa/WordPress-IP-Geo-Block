@@ -39,52 +39,40 @@ class IP_Geo_Block_Logs {
 	 * @internal creating mixed storage engine may cause troubles with some plugins.
 	 */
 	public static function create_tables() {
-		global $wpdb;
-		$result = TRUE;
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-		// Default charset
-		$charset = 'utf8'; // MySQL 5.0+
-		if ( preg_match( '/CHARACTER SET (\w+)/i', $wpdb->get_charset_collate(), $table ) &&
-		     FALSE !== strpos( $table[1], 'utf8' ) ) {
-			$charset = $table[1]; // ex) utf8mb4 MySQL 5.5+
-		}
+		global $wpdb;
+		$charset_collate = $wpdb->get_charset_collate(); // @since 3.5.0
 
 		// for logs
 		$table = $wpdb->prefix . self::TABLE_LOGS;
-		$result &= ( FALSE !== $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
-			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-			`time` int(10) unsigned NOT NULL DEFAULT 0,
-			`ip` varchar(40) NOT NULL,
-			`asn` varchar(8) NULL,
-			`hook` varchar(8) NOT NULL,
-			`auth` int(10) unsigned NOT NULL DEFAULT 0,
-			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
-			`result` varchar(8) NULL,
-			`method` varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
-			`user_agent` varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
-			`headers` varchar("    . IP_GEO_BLOCK_MAX_TXT_LEN . ") NULL,
-			`data` text NULL,
-			PRIMARY KEY  (`No`),
-			KEY `time` (`time`),
-			KEY `hook` (`hook`)
-			) CHARACTER SET $charset"
-		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
-
-		// Add column for AS Number @since 3.0.4
-		if ( ! $wpdb->query( "DESCRIBE `$table` `asn`" ) ) {
-			$wpdb->query(
-				"ALTER TABLE `$table` ADD `asn` varchar(8) AFTER `ip`"
-			) or self::error( __LINE__ );
-		}
+		$sql = "CREATE TABLE $table (
+			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			time int(10) unsigned NOT NULL DEFAULT 0,
+			ip varchar(40) NOT NULL,
+			asn varchar(8) NULL,
+			hook varchar(8) NOT NULL,
+			auth int(10) unsigned NOT NULL DEFAULT 0,
+			code varchar(2) NOT NULL DEFAULT 'ZZ',
+			result varchar(8) NULL,
+			method varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
+			user_agent varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
+			headers varchar("    . IP_GEO_BLOCK_MAX_TXT_LEN . ") NULL,
+			data text DEFAULT NULL,
+			PRIMARY KEY  (No),
+			KEY time (time),
+			KEY hook (hook)
+		) $charset_collate";
+		$result = dbDelta( $sql );
 
 		// for statistics
 		$table = $wpdb->prefix . self::TABLE_STAT;
-		$result &= ( FALSE !== $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
-			`No` tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
-			`data` longtext NULL,
-			PRIMARY KEY  (`No`)
-			) CHARACTER SET $charset"
-		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
+		$sql = "CREATE TABLE $table (
+			No tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
+			data longtext DEFAULT NULL,
+			PRIMARY KEY  (No)
+		) $charset_collate";
+		$result = dbDelta( $sql );
 
 		// Create 1 record if not exists
 		$sql = $wpdb->prepare(
@@ -94,30 +82,30 @@ class IP_Geo_Block_Logs {
 
 		// for IP address cache
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
-		$result &= ( FALSE !== $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
-			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-			`time` int(10) unsigned NOT NULL DEFAULT 0,
-			`ip` varchar(40) NOT NULL,
-			`asn` varchar(8) NULL,
-			`hook` varchar(8) NOT NULL,
-			`auth` int(10) unsigned NOT NULL DEFAULT 0,
-			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
-			`fail` int(10) unsigned NOT NULL DEFAULT 0,
-			`call` int(10) unsigned NOT NULL DEFAULT 0,
-			`host` tinytext NOT NULL,
-			PRIMARY KEY  (`No`),
-			UNIQUE KEY (`ip`)
-			) CHARACTER SET $charset"
-		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
+		$sql = "CREATE TABLE $table (
+			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			time int(10) unsigned NOT NULL DEFAULT 0,
+			ip varchar(40) UNIQUE NOT NULL,
+			hook varchar(8) NOT NULL,
+			asn varchar(8) NULL,
+			code varchar(2) NOT NULL DEFAULT 'ZZ',
+			auth int(10) unsigned NOT NULL DEFAULT 0,
+			fail int(10) unsigned NOT NULL DEFAULT 0,
+			last int(10) unsigned NOT NULL DEFAULT 0,
+			view int(10) unsigned NOT NULL DEFAULT 0,
+			host tinytext NOT NULL,
+			PRIMARY KEY  (No)
+		) $charset_collate";
+		$result = dbDelta( $sql );
 
-		// Add column for AS Number @since 3.0.4
-		if ( ! $wpdb->query( "DESCRIBE `$table` `asn`" ) ) {
+		// dbDelta() parses `call` field as `CALL` statement. So alter it after init @since 3.0.10
+		if ( ! $wpdb->query( "DESCRIBE `$table` `call`" ) ) {
 			$wpdb->query(
-				"ALTER TABLE `$table` ADD `asn` varchar(8) AFTER `ip`"
+				"ALTER TABLE `$table` ADD `call` int(10) unsigned AFTER `fail`"
 			) or self::error( __LINE__ );
 		}
 
-		return $result;
+		return TRUE;
 	}
 
 	/**
@@ -371,7 +359,7 @@ class IP_Geo_Block_Logs {
 
 	private static function get_post_data( $hook, $validate, $settings ) {
 		// condition of masking password
-		$mask_pwd = ( 'passed' === $validate['result'] );
+		$mask_pwd = IP_Geo_Block::is_passed( $validate['result'] );
 
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {
@@ -521,7 +509,15 @@ class IP_Geo_Block_Logs {
 	 * @param array $settings option settings
 	 * @param boolean $record record logs (TRUE) or not
 	 */
-	public static function record_logs( $hook, $validate, $settings, $record = TRUE ) {
+	public static function record_logs( $hook, $validate, $settings, $block = TRUE ) {
+		$record = $settings['validation'][ $hook ] ? apply_filters( IP_Geo_Block::PLUGIN_NAME . '-record-logs', (int)$settings['validation']['reclogs'], $hook, $validate ) : FALSE;
+		$record = ( 1 === $record &&   $block ) || // blocked
+		          ( 6 === $record && ( $block   || IP_Geo_Block::is_blocked( IP_Geo_Block::validate_country( NULL, $validate, $settings ) ) ) ) || // blocked or qualified
+		          ( 2 === $record && ! $block ) || // passed
+		          ( 3 === $record && ! $validate['auth'] ) || // unauthenticated
+		          ( 4 === $record &&   $validate['auth'] ) || // authenticated
+		          ( 5 === $record ); // all
+
 		// get data
 		$agent = self::get_user_agent();
 		$heads = self::get_http_headers();
@@ -739,7 +735,7 @@ class IP_Geo_Block_Logs {
 			$stat['providers'][ $provider ]['count']++; // undefined in auth_fail()
 			$stat['providers'][ $provider ]['time' ] += (float)( isset( $validate['time'] ) ? $validate['time'] : 0 );
 
-			if ( 'passed' !== $validate['result'] ) {
+			if ( IP_Geo_Block::is_blocked( $validate['result'] ) ) {
 				// Blocked by type of IP address
 				if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
 					++$stat['IPv4'];
@@ -816,23 +812,27 @@ class IP_Geo_Block_Logs {
 
 		$sql = $wpdb->prepare(
 			"INSERT INTO `$table`
-			(`time`, `ip`, `asn`, `hook`, `auth`, `code`, `fail`, `call`, `host`)
-			VALUES (%d, %s, %s, %s, %d, %s, %d, %d, %s)
-			ON DUPLICATE KEY UPDATE 
+			(`time`, `ip`, `hook`, `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, `host`)
+			VALUES (%d, %s, %s, %s, %s, %d, %d, %d, %d, %d, %s)
+			ON DUPLICATE KEY UPDATE
 			`time` = VALUES(`time`),
 			`hook` = VALUES(`hook`),
 			`auth` = VALUES(`auth`),
 			`code` = VALUES(`code`),
 			`fail` = VALUES(`fail`),
-			`call` = VALUES(`call`)",
+			`call` = VALUES(`call`),
+			`last` = VALUES(`last`),
+			`view` = VALUES(`view`)",
 			$cache['time'],
 			$cache['ip'  ],
-			$cache['asn' ],
 			$cache['hook'],
-			$cache['auth'],
+			$cache['asn' ],
 			$cache['code'],
+			$cache['auth'],
 			$cache['fail'],
 			$cache['call'],
+			$cache['last'],
+			$cache['view'],
 			$cache['host']
 		) and $wpdb->query( $sql ) or self::error( __LINE__ );
 	}
@@ -883,7 +883,7 @@ class IP_Geo_Block_Logs {
 		$result = array();
 
 		$sql = $wpdb->prepare(
-			"SELECT * FROM `$table` WHERE `result` != 'passed' AND `" . $key . "` LIKE '%%%s%%'", $search
+			"SELECT * FROM `$table` WHERE `result` NOT LIKE '%%pass%%' AND `" . $key . "` LIKE '%%%s%%'", $search
 		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
 
 		return $result;

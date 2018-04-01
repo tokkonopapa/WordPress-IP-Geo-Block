@@ -134,7 +134,7 @@ abstract class IP_Geo_Block_API {
 		$res = array();
 		foreach ( $template['transform'] as $key => $val ) {
 			if ( ! empty( $val ) && ! empty( $data[ $val ] ) )
-				$res[ $key ] = is_string( $data[ $val ] ) ? 
+				$res[ $key ] = is_string( $data[ $val ] ) ?
 					esc_html( $data[ $val ] ) : $data[ $val ];
 		}
 
@@ -318,9 +318,9 @@ class IP_Geo_Block_API_Nekudo extends IP_Geo_Block_API {
  * Class for Xhanch
  *
  * URL         : http://xhanch.com/xhanch-api-ip-get-detail/
- * Term of use : 
+ * Term of use :
  * Licence fee : free (donationware)
- * Rate limit  : 
+ * Rate limit  :
  * Sample URL  : http://api.xhanch.com/ip-get-detail.php?ip=124.83.187.140
  * Sample URL  : http://api.xhanch.com/ip-get-detail.php?ip=124.83.187.140&m=json
  * Input type  : IP address (IPv4)
@@ -450,31 +450,45 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
  * Output type : array
  */
 class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
-
 	// memory cache
 	protected static $memcache = array();
 
 	public static function update_cache( $hook, $validate, $settings ) {
+		$time  = $_SERVER['REQUEST_TIME'];
 		$cache = self::get_cache( $ip = $validate['ip'] );
 
 		if ( $cache ) {
 			$fail = $cache['fail'] + ( 'failed' === $validate['result'] ? 1 : 0 );
 			$call = $cache['call'] + ( 'failed' !== $validate['result'] ? 1 : 0 );
+			$last = $cache['last'];
+			$view = $cache['view'];
 		} else { // if new cache then reset these values
 			$fail = 0;
 			$call = 1;
+			$last = $time;
+			$view = 1;
+		}
+
+		if ( $cache && 'public' === $hook ) {
+			++$view;
+			if ( $time - $last > $settings['behavior']['time'] ) {
+				$last = $time;
+				$view = 1;
+			}
 		}
 
 		// update elements
 		IP_Geo_Block_Logs::update_cache( $cache = array(
-			'time' => $_SERVER['REQUEST_TIME'],
+			'time' => $time,
 			'ip'   => $ip,
-			'asn'  => $validate['asn' ], // @since 3.0.4
 			'hook' => $hook,
+			'asn'  => $validate['asn' ], // @since 3.0.4
 			'code' => $validate['code'],
 			'auth' => $validate['auth'], // get_current_user_id() > 0
 			'fail' => $validate['auth'] ? 0 : $fail,
 			'call' => $settings['save_statistics'] ? $call : 0,
+			'last' => $last,
+			'view' => $view,
 			'host' => isset( $validate['host'] ) ? $validate['host'] : NULL,
 		) );
 

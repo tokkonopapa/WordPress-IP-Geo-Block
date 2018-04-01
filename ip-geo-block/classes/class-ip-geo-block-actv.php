@@ -18,44 +18,85 @@ require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
 
 class IP_Geo_Block_Activate {
 
-	// initialize main blog
-	private static function init_main_blog() {
-		if ( current_user_can( 'manage_options' ) ) {
-			$settings = IP_Geo_Block::get_option();
-
-			// kick off a cron job to download database immediately
-			IP_Geo_Block_Cron::start_update_db( $settings );
-			IP_Geo_Block_Cron::start_cache_gc( $settings );
-
-			// activate rewrite rules
-			IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
-
-			// activate mu-plugins if needed
-			IP_Geo_Block_Opts::setup_validation_timing( $settings );
-		}
+	// Activate and deactivate main blog
+	private static function activate_main_blog( $settings ) {
+		IP_Geo_Block_Cron::start_update_db( $settings );
+		IP_Geo_Block_Opts::setup_validation_timing( $settings );
+		IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
 	}
 
-	// initialize logs then upgrade and return new options
+	private static function deactivate_main_blog() {
+		IP_Geo_Block_Cron::stop_update_db();
+		IP_Geo_Block_Opts::setup_validation_timing();
+		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
+	}
+
+	// Activate and deactivate each blog
 	public static function activate_blog() {
+		IP_Geo_Block_Opts::upgrade();
 		IP_Geo_Block_Logs::create_tables();
 		IP_Geo_Block_Logs::delete_cache_entry();
-		IP_Geo_Block_Opts::upgrade();
+		IP_Geo_Block_Cron::start_cache_gc();
+	}
+
+	private static function deactivate_blog() {
+		IP_Geo_Block_Cron::stop_cache_gc();
+		IP_Geo_Block_Logs::delete_cache_entry();
 	}
 
 	/**
 	 * Register options into database table when the plugin is activated.
+	 *
 	 * @link https://wordpress.stackexchange.com/questions/181141/how-to-run-an-activation-function-when-plugin-is-network-activated-on-multisite
 	 */
 	public static function activate( $network_wide = FALSE ) {
-		defined( 'IP_GEO_BLOCK_DEBUG' ) and IP_GEO_BLOCK_DEBUG and assert( 'is_main_site()', 'Not main blog.' );
+		if ( did_action( 'init' ) && current_user_can( 'manage_options' ) ) {
+			// Update main blog first.
+			self::activate_blog();
 
-		// Update main blog first.
-		self::activate_blog();
-
-		if ( $network_wide ) {
 			// Get option of main blog.
-			$option = IP_Geo_Block::get_option();
+			$settings = IP_Geo_Block::get_option();
 
+			if ( is_multisite() && $network_wide ) {
+				global $wpdb;
+				$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
+
+				// Skip the main blog.
+				array_shift( $blog_ids );
+
+				foreach ( $blog_ids as $id ) {
+					switch_to_blog( $id );
+
+					if ( $settings['network_wide'] ) {
+						// Copy settings of main site to individual site
+						$map = IP_Geo_Block::get_option();
+						$settings['api_key']['GoogleMap'] = $map['api_key']['GoogleMap'];
+						update_option( IP_Geo_Block::OPTION_NAME, $settings );
+					}
+
+					// Initialize inidivisual site
+					self::activate_blog();
+
+					restore_current_blog();
+				}
+			}
+
+			self::activate_main_blog( $settings );
+		}
+	}
+
+	/**
+	 * Fired when the plugin is deactivated.
+	 *
+	 */
+	public static function deactivate( $network_wide = FALSE ) {
+		add_action( 'shutdown', array( __CLASS__, 'deactivate_plugin' ) );
+	}
+
+	public static function deactivate_plugin() {
+		self::deactivate_blog();
+
+		if ( is_multisite() && is_main_site() ) {
 			global $wpdb;
 			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
 
@@ -65,44 +106,15 @@ class IP_Geo_Block_Activate {
 			foreach ( $blog_ids as $id ) {
 				switch_to_blog( $id );
 
-				if ( $option['network_wide'] ) {
-					// individual data
-					$opt = IP_Geo_Block::get_option();
-					$option['api_key']['GoogleMap'] = $opt['api_key']['GoogleMap'];
-
-					update_option( IP_Geo_Block::OPTION_NAME, $option );
-				}
-
-				else {
-					self::activate_blog();
-				}
+				// Skip when this plugin is still active
+				if ( ! is_plugin_active( IP_GEO_BLOCK_BASE ) )
+					self::deactivate_blog();
 
 				restore_current_blog();
 			}
 		}
 
-		// only after 'init' action hook for is_user_logged_in().
-		if ( did_action( 'init' ) && is_user_logged_in() )
-			self::init_main_blog(); // should be called with high priority
-	}
-
-	/**
-	 * Fired when the plugin is deactivated.
-	 *
-	 */
-	public static function deactivate( $network_wide = FALSE ) {
-		// cancel schedule
-		IP_Geo_Block_Cron::stop_update_db();
-		IP_Geo_Block_Cron::stop_cache_gc();
-
-		// deactivate rewrite rules
-		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
-
-		// deactivate mu-plugins
-		IP_Geo_Block_Opts::setup_validation_timing();
-
-		// remove self ip address from cache
-		IP_Geo_Block_Logs::delete_cache_entry();
+		self::deactivate_main_blog();
 	}
 
 }

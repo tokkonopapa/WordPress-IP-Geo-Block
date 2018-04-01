@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.4
-Stable tag: 3.0.9
+Stable tag: 3.0.10
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -34,6 +34,9 @@ After several days of installation, you'll be supprised to find many malicious o
 
 * **Prevent malicious down/uploading:**  
   A malicious request such as exposing `wp-config.php` or uploading malwares via vulnerable plugins/themes can be blocked.
+
+* **Block badly-behaved bots and crawlers:**  
+  A simple logic may help to reduce the number of rogue bots and crawlers scraping your site.
 
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin so that a registered user can login as a membership from anywhere, while a request such as a new user registration, lost password, creating a new topic and subscribing comment can be blocked by country. It is suitable for [BuddyPress](https://wordpress.org/plugins/buddypress/ "BuddyPress &mdash; WordPress Plugins") and [bbPress](https://wordpress.org/plugins/bbpress/ "WordPress &rsaquo; bbPress &laquo; WordPress Plugins") to help reducing spams.
@@ -353,8 +356,23 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 == Changelog ==
 
+= 3.0.10 =
+* **New feature:** Add "Block badly-behaved bots and crawlers" in "Front-end target settings" section that validates the frequency of request.
+* **Improvement:** Add a help link to the document for some sections.
+* **Improvement:** Add descriptions on "Target actions" at "Login form" in "Back-end target settings" section.
+* **Improvement:** Add new descriptions "passUA" and "blockUA" for result in Logs to identify the reason when "UA string and qualification" is applied.
+* **Improvement:** AS Number can be handled in "UA string and qualification".
+* **Improvement:** Make WP cron job for "Auto updating" reliably in multisite environment.
+* **Improvement:** Better logout compatibility for redirecting to the previous page after login.
+* **Improvement:** Validate the prefix of IP address CIDR to prevent unexpected fatal error.
+* **Improvement:** Prevent opening a new window on clicking "Visit Site" in the admin bar menu for multi site by multi domain type.
+* **Bug fix:** Fix the issue of failing to retrieve client IP address from Chrome Data Saver.
+* **Bug fix:** Fix the issue of illegal redirection after "Save Changes" on "Settings" => "General Settings" page.
+* **Bug fix:** Fix the issue of unexpected blocking against the requests to plugins/themes area when "Force to load WP core" is enabled on windows server.
+* **Bug fix:** Fix the issue that "Search now" was not available when google map failed to load.
+
 = 3.0.9 =
-* **New featuer:** Add CIDR calculator for IPv4 / IPv6.
+* **New feature:** Add CIDR calculator for IPv4 / IPv6.
 * **Improvement:** Avoid blocking by wp-zep when IP address is private or loopback network.
 * **Improvement:** Chnage the priority of internal action hook for better compatibility with other plugins/themes.
 * **Maintenance:** Change the priority order of local geolocation databases.

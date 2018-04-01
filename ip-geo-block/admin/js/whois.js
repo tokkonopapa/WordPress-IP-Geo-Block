@@ -70,7 +70,7 @@
 						else if (value.name && value.value) {
 							/*if (value.link) {
 								var src = value.link.href.match(/\w+-grs/);
-								value.value = '<a href="' + 
+								value.value = '<a href="' +
 									app.replace('%SRC%', src[0])
 									   .replace('%KEY%', encodeURI(value['value']))
 									   .replace('%TYPE%', value['referenced-type']) +

@@ -75,7 +75,7 @@ class IP_Geo_Block_Util {
 	 * @see wp-includes/kses.php
 	 */
 	public static function kses( $str, $allow_tags = TRUE ) {
-		// wp_kses() is unavailable on advanced-cache.php 
+		// wp_kses() is unavailable on advanced-cache.php
 		return wp_kses( $str, $allow_tags ? $GLOBALS['allowedtags'] : array() );
 	}
 
@@ -103,26 +103,64 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
-	 * Retrieve nonce and rebuild query strings.
+	 * Retrieve or remove nonce and rebuild query strings.
 	 *
 	 */
-	public static function rebuild_nonce( $location, $status = 302 ) {
+	public static function rebuild_nonce( $location, $retrieve = TRUE ) {
 		// check if the location is internal
-		$host = parse_url( $location, PHP_URL_HOST );
-		if ( ! $host || $host === parse_url( home_url(), PHP_URL_HOST ) ) {
-			// it doesn't care about valid nonce or invalid nonce (must be sanitized)
-			if ( $nonce = self::retrieve_nonce( $key = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce' ) ) {
-				$location = esc_url_raw( add_query_arg(
-					array(
-						$key => FALSE, // delete onece
-						$key => $nonce // add again
-					),
-					$location
-				) );
+		$url = parse_url( $location );
+		$key = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
+
+		if ( empty( $url['host'] ) || $url['host'] === parse_url( home_url(), PHP_URL_HOST ) ) {
+			if ( $retrieve ) {
+				// it doesn't care a nonce is valid or not, but must be sanitized
+				if ( $nonce = self::retrieve_nonce( $key ) ) {
+					return esc_url_raw( add_query_arg(
+						array(
+							$key => FALSE, // delete onece
+							$key => $nonce // add again
+						),
+						$location
+					) );
+				}
+			}
+
+			else {
+				// remove a nonce from existing query
+				$location = esc_url_raw( add_query_arg( $key, FALSE, $location ) );
+				wp_parse_str( isset( $url['query'] ) ? $url['query'] : '', $query );
+				$args = [];
+				foreach ( $query as $arg => $val ) { // $val is url decoded
+					if ( FALSE !== strpos( $val, $key ) ) {
+						$val = urlencode( add_query_arg( $key, FALSE, $val ) );
+					}
+					$args[] = "$arg=$val";
+				}
+				$url['query'] = implode( '&', $args );
+				return self::unparse_url( $url );
 			}
 		}
 
 		return $location;
+	}
+
+	/**
+	 * Convert back to string from a parsed url.
+	 *
+	 * @source http://php.net/manual/en/function.parse-url.php#106731
+	 */
+	private static function unparse_url( $url ) {
+		$scheme   = isset( $url['scheme'  ] ) ?       $url['scheme'  ] . '://' : '';
+		$host     = isset( $url['host'    ] ) ?       $url['host'    ] : '';
+		$port     = isset( $url['port'    ] ) ? ':' . $url['port'    ] : '';
+		$user     = isset( $url['user'    ] ) ?       $url['user'    ] : '';
+		$pass     = isset( $url['pass'    ] ) ? ':' . $url['pass'    ] : '';
+		$pass     =      ( $user || $pass   ) ?       "$pass@"         : '';
+		$path     = isset( $url['path'    ] ) ?       $url['path'    ] : '';
+		$query    = isset( $url['query'   ] ) ? '?' . $url['query'   ] : '';
+		$fragment = isset( $url['fragment'] ) ? '#' . $url['fragment'] : '';
+
+		return "$scheme$user$pass$host$port$path$query$fragment";
 	}
 
 	/**
@@ -179,6 +217,7 @@ class IP_Geo_Block_Util {
 			'logged_in'   => LOGGED_IN_KEY   . LOGGED_IN_SALT,
 			'nonce'       => NONCE_KEY       . NONCE_SALT,
 		);
+
 		return self::hash_hmac( 'md5', $data, apply_filters( 'salt', $salt[ $scheme ], $scheme ) );
 	}
 
@@ -255,6 +294,9 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/pluggable.php @since 2.8.0
 	 */
 	private static function get_user_by( $field, $value ) {
+		if ( function_exists( 'get_user_by' ) )
+			return get_user_by( $field, $value );
+
 		$userdata = WP_User::get_data_by( $field, $value ); // wp-includes/class-wp-user.php @since 2.0.0
 
 		if ( ! $userdata )
@@ -435,7 +477,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function redirect( $location, $status = 302 ) {
 		// retrieve nonce from referer and add it to the location
-		$location = self::rebuild_nonce( $location, $status );
+		$location = self::rebuild_nonce( $location, TRUE );
 		$location = self::sanitize_redirect( $location );
 
 		if ( $location ) {
@@ -725,6 +767,16 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
+	 * https://codex.wordpress.org/WordPress_Feeds
+	 *
+	 */
+	public static function is_feed( $request_uri ) {
+		return isset( $_GET['feed'] ) ?
+			( preg_match( '!(?:comments-)?(?:feed|rss|rss2|rdf|atom)$!', $_GET['feed'] ) ? TRUE : FALSE ) :
+			( preg_match( '!(?:comments/)?(?:feed|rss|rss2|rdf|atom)/?$!', $request_uri ) ? TRUE : FALSE );
+	}
+
+	/**
 	 * Whether the server software is IIS or something else
 	 *
 	 * @source wp-includes/vers.php
@@ -733,10 +785,7 @@ class IP_Geo_Block_Util {
 		$_is_apache = ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Apache' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'LiteSpeed' ) !== FALSE );
 		$_is_IIS = ! $_is_apache && ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer' ) !== FALSE );
 
-		if ( $_is_IIS )
-			$_is_IIS = substr( $_SERVER['SERVER_SOFTWARE'], strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS/' ) + 14 );
-
-		return $_is_IIS;
+		return $_is_IIS ? substr( $_SERVER['SERVER_SOFTWARE'], strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS/' ) + 14 ) : FALSE;
 	}
 
 	/**
@@ -881,21 +930,13 @@ class IP_Geo_Block_Util {
 	/**
 	 * Get the list of multisite
 	 *
+	 * This function should be called after 'init' hook is fired.
 	 */
-	public static function get_multisite() {
+	public static function get_sites_of_user() {
 		$sites = array();
 
-		if ( is_multisite() ) {
-			global $wpdb;
-			foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
-				switch_to_blog( $id );
-				$sites[] = admin_url();
-				restore_current_blog();
-			}
-
-			if ( empty( $sites[ $url = network_admin_url() ] ) ) {
-				$sites[] = $url;
-			}
+		foreach ( get_blogs_of_user( get_current_user_id(), current_user_can( 'manage_network_options' ) ) as $site ) { // @since 3.0.0
+			$sites[] = preg_replace( '/^https?:/', '', $site->siteurl );
 		}
 
 		return $sites;

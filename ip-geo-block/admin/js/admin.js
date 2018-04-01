@@ -9,7 +9,8 @@
 	'use strict';
 
 	// External variables
-	var timer_stack = [],
+	var skip_error = false,
+	    timer_stack = [],
 	    window_width = $(window).width(),
 	    ip_geo_block      = IP_GEO_BLOCK,
 	    ip_geo_block_auth = IP_GEO_BLOCK_AUTH;
@@ -38,8 +39,12 @@
 		}).replace(/&amp;(#\d{2,4}|\w{4,7});/g, "&$1;"); // revert html character entity
 	}
 
+	function is_blocked( result ) {
+		return -1 === result.indexOf('pass');
+	}
+
 	function stripTag(str) {
-		return escapeHTML(str.toString().replace(/(<([^>]+)>)/ig, ''));
+		return str ? escapeHTML(str.toString().replace(/(<([^>]+)>)/ig, '')) : '';
 	}
 
 	function onresize(name, callback) {
@@ -104,7 +109,9 @@
 		})
 
 		.fail(function (jqXHR /*,textStatus, errorThrown*/) {
-			warning(jqXHR.status, jqXHR.responseText, request.action);
+			if (!skip_error) {
+				warning(jqXHR.status, jqXHR.responseText, request.action);
+			}
 		})
 
 		.always(function () {
@@ -174,10 +181,18 @@
 		// checkbox
 		$this.siblings('input[name^="' + ID('%', 'settings') + '"]:checkbox').prop('disabled', !stat);
 
-		// folding list
-		$elem.nextAll(ID('.', 'settings-folding')).each(function (i, obj) {
-			fold_elements($(obj), stat && mask);
-		});
+		// folding the list
+		if ($.isArray($elem)) {
+			$.each($elem, function (i, elm) {
+				$(elm).nextAll(ID('.', 'settings-folding')).each(function (j, obj) {
+					fold_elements($(obj), stat && mask[i]);
+				});
+			});
+		} else {
+			$elem.nextAll(ID('.', 'settings-folding')).each(function (j, obj) {
+				fold_elements($(obj), stat && mask);
+			});
+		}
 	}
 
 	// Show / Hide Exceptions
@@ -233,6 +248,7 @@
 	function set_front_end($this) {
 		var checked = $this.is(':checked'),
 		    select  = $(ID('@', 'public_target_rule')),
+		    behave  = $(ID('@', 'public_behavior')),
 		    parent  = $this.closest('tr').nextAll('tr');
 
 		// Enable / Disable descendent items
@@ -242,7 +258,12 @@
 		parent.find(ID('.', 'desc')).css('opacity', checked ? 1.0 : 0.5);
 
 		// Show / Hide validation target
-		show_descendants($this, select, '1' === select.val() ? true : false);
+		show_descendants($this, [select, behave], ['1' === select.val() ? true : false, behave.val()]);
+
+		// Render descendant element
+		if (checked) {
+			behave.change();
+		}
 	}
 
 	/**
@@ -481,7 +502,7 @@
 			}
 
 			if (0 < (w = $id.width()) &&
-			    'undefined' !== typeof chart.dataStacked[id] &&	
+			    'undefined' !== typeof chart.dataStacked[id] &&
 			    'undefined' !== typeof chart.viewStacked[id]) {
 
 				i = ID('range');
@@ -650,7 +671,11 @@
 		var cookie = loadCookie(tabNo);
 
 		// Click event handler to show/hide form-table
-		$('form').on('click', 'h2,h3', function (/*event*/) {
+		$('form').on('click', 'h2,h3 a', function (/*event*/) {
+			window.open(this.href, null);
+			return false;
+		})
+		.on('click', 'h2,h3', function (/*event*/) {
 			toggleSection($(this), tabNo, cookie);
 			return false;
 		});
@@ -940,6 +965,12 @@
 			return false;
 		});
 
+		// Prevent warning when page transition happens during ajax
+		$(window).on('beforeunload', function(/*event*/) {
+			skip_error = true;
+			return;
+		});
+
 		// Register event handler at specific tab
 		switch (tabNo) {
 		  /*----------------------------------------
@@ -1004,10 +1035,10 @@
 					'<html lang=en>' +
 					'<meta charset=utf-8>' +
 					'<title>CIDR calculator for IPv4 / IPv6</title>' +
-					'<link href="' + src + 'css/cidr.min.css" rel=stylesheet>' +
+					'<link href="' + src + 'css/cidr.min.css?v=.1" rel=stylesheet>' +
 					'<div class="row container"><div class=row id=i><fieldset class="col span_11"><legend>Range <input id=a type=button value=Clear tabindex=1></legend><textarea id=c name=range placeholder="192.168.0.0 - 192.168.255.255" rows=5 wrap=off tabindex=2></textarea></fieldset><ul class="col span_2" id=h><li class=row><input id=e type=button value=&rarr; class="col span_24" tabindex=3><li class=row><input id=f type=button value=&larr; class="col span_24" tabindex=6></ul><fieldset class="col span_11"><legend>CIDR <input id=b type=button value=Clear tabindex=4></legend><textarea id=d name=cidr placeholder=192.168.0.0/16 rows=5 wrap=off tabindex=5></textarea></fieldset></div><div class=row id=j><span class=col id=g> </span></div></div>' +
 /*					'<div class="container row"><div class="row" id="top"><fieldset class="col span_11"><legend>Range <input type="button" id="r_clear" value="Clear" tabindex="1" /></legend><textarea name="range" id="r_text" rows="5" wrap="off" placeholder="192.168.0.0 - 192.168.255.255" tabindex="2"></textarea></fieldset><ul class="col span_2" id="b_conv"><li class="row"><input class="col span_24" type="button" id="r_conv" value="&rarr;" tabindex="3" /></li><li class="row"><input class="col span_24" type="button" id="c_conv" value="&larr;" tabindex="6" /></li></ul><fieldset class="col span_11"><legend>CIDR <input type="button" id="c_clear" value="Clear" tabindex="4" /></legend><textarea name="cidr" id="c_text" rows="5" wrap="off" placeholder="192.168.0.0/16" tabindex="5"></textarea></fieldset></div><div class="row" id="bottom"><span class="col" id="msg">&nbsp;</span></div></div>' +*/
-					'<script src="' + src + 'js/cidr.min.js"></script>'
+					'<script src="' + src + 'js/cidr.min.js?v=.1"></script>'
 				);
 				win.document.close();
 				return false;
@@ -1192,7 +1223,7 @@
 
 								// make an anchor tab with search query
 								s = 'admin' === target ? (key + '=' + val) : ('/' + key + '/' + val + '/');
-								s = '<a class="ip-geo-block-icon ip-geo-block-icon-alert" href="' + ip_geo_block_auth.sites[0] + 'options-general.php' + // only main site
+								s = '<a class="ip-geo-block-icon ip-geo-block-icon-alert" href="' + ip_geo_block_auth.sites[0] + ip_geo_block_auth.admin + 'options-general.php' + // only main site
 								    '?page=ip-geo-block&tab=4&s=' + encodeURIComponent(s) + '" title="' + title.replace('%s', s) + '" target="_blank"><span></span></a>';
 
 								// add a new list when not found in existent key
@@ -1218,7 +1249,7 @@
 						// update status of checkbox
 						$(ID('@', 'exception_' + target)).trigger('change');
 						$(ID('#', 'find-' + target)).append(
-							' ' + '<span class="ip-geo-block-found">' + stripTag(ip_geo_block.msg[8].replace('%d', n)) + '</span>'
+							' ' + '<span class="ip-geo-block-warn">' + stripTag(ip_geo_block.msg[8].replace('%d', n)) + '</span>'
 						);
 					});
 
@@ -1246,6 +1277,13 @@
 				$(ID('@', 'public_white_list'   )).closest('tr').toggle(value ===  '0');
 				$(ID('@', 'public_black_list'   )).closest('tr').toggle(value ===  '1');
 				$(ID('@', 'public_response_code')).change().closest('tr').toggle(value !== '-1');
+				return stopPropergation(event);
+			}).change();
+
+			// Badly-behaved bots and crawlers
+			$(ID('@', 'public_behavior')).on('change', function (event) {
+				var $this = $(this);
+				fold_elements($this.siblings('ul'), $this.prop('checked'));
 				return stopPropergation(event);
 			}).change();
 
@@ -1665,10 +1703,10 @@
 			// animation on update
 			new_class = ID(''),
 			add_class = function (row, data, prefix) {
-				if (-1 !== data[7 /* result */].indexOf('passed')) {
-					$(row).addClass(new_class + prefix + 'passed');
-				} else {
+				if (is_blocked(data[7 /* result */])) {
 					$(row).addClass(new_class + prefix + 'blocked');
+				} else {
+					$(row).addClass(new_class + prefix + 'passed');
 				}
 			},
 
@@ -1784,7 +1822,7 @@
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (/*event*/) {
 				var whois = $(ID('#', 'whois')), obj,
-				    ip = $(ID('@', 'ip_address')).val();
+				    ip = $.trim($(ID('@', 'ip_address')).val());
 
 				if (ip) {
 					whois.hide().empty();
@@ -1869,6 +1907,14 @@
 				}
 
 				return false;
+			});
+
+			// Enter key in textbox
+			$(ID('@', 'ip_address')).on('keypress', function (event) {
+				if ((event.which && event.which === 13) || (event.keyCode && event.keyCode === 13)) {
+					$(ID('@', 'get_location')).click();
+					return false;
+				}
 			});
 
 			// Preset IP address

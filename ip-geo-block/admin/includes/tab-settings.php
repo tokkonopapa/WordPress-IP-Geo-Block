@@ -59,7 +59,7 @@ class IP_Geo_Block_Admin_Tab {
 		 * @param array $args Additional arguments that are passed to the $callback function.
 		 */
 		// Get the country code of client
-		$key = IP_Geo_Block::get_geolocation( $val = IP_Geo_Block::get_ip_address() );
+		$key = IP_Geo_Block::get_geolocation( $val = IP_Geo_Block::get_ip_address( $options ) );
 
 		$field = 'ip_client';
 		add_settings_field(
@@ -117,7 +117,7 @@ endif;
 			'<span title="' . __( 'Toggle selection', 'ip-geo-block' ) . '"></span>',
 			'<span title="' . __( 'Find blocked requests in &#8220;Logs&#8220;', 'ip-geo-block' ) . '"></span>',
 			__( 'Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="ip-geo-block-icon ip-geo-block-icon-alert" title="This button is just a sample."><span></span></a>&#8221; button (if exists) attached to the following list to confirm that the blocked request is not malicious.', 'ip-geo-block' ),
-			__( 'Open CIDR calculator for IPv4 / IPv6', 'ip-geo-block' ),
+			__( 'Open CIDR calculator for IPv4 / IPv6.', 'ip-geo-block' ),
 		);
 
 		// Matching rule
@@ -204,8 +204,9 @@ endif;
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
 			__( '<dfn title="e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, &#8220;69.46.36.0/27&#8221; for WordFence server or &#8220;AS32934&#8221; for Facebook.">Whitelist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
-			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>'.
-			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)',
+			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
+			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
+			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -216,7 +217,7 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'placeholder' => '192.168.0.0/16,2001:db8::/96,AS1234',
-				'after' => $comma[1] . ' <a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
+				'after' => $comma[1],
 			)
 		);
 
@@ -225,8 +226,9 @@ endif;
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
 			__( '<dfn title="Server level access control is recommended (e.g. .htaccess).">Blacklist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
-			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>'.
-			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)',
+			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
+			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
+			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -237,7 +239,7 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'placeholder' => '192.168.0.0/16,2001:db8::/96,AS1234',
-				'after' => $comma[1] . ' <a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
+				'after' => $comma[1],
 			)
 		);
 
@@ -501,11 +503,11 @@ endif;
 		);
 
 		$desc = array(
-			'login'        => __( 'Log in' ),
-			'register'     => __( 'Register' ),
-			'resetpass'    => __( 'Password Reset' ),
-			'lostpassword' => __( 'Lost Password' ),
-			'postpass'     => __( 'Password protected' ),
+			'login'        => '<dfn title="' . __( 'Action to login as a registered user.',                                          'ip-geo-block' ) . '">' . __( 'Log in'             ) . '</dfn>',
+			'register'     => '<dfn title="' . __( 'Action to register new users.',                                                  'ip-geo-block' ) . '">' . __( 'Register'           ) . '</dfn>',
+			'resetpass'    => '<dfn title="' . __( 'Action to reset a password to create a new one.',                                'ip-geo-block' ) . '">' . __( 'Password Reset'     ) . '</dfn>',
+			'lostpassword' => '<dfn title="' . __( 'Action to email a password to a registered user.',                               'ip-geo-block' ) . '">' . __( 'Lost Password'      ) . '</dfn>',
+			'postpass'     => '<dfn title="' . __( 'Action to show prompt to enter a password on password protected post and page.', 'ip-geo-block' ) . '">' . __( 'Password protected' ) . '</dfn>',
 		);
 
 		$list = '';
@@ -759,7 +761,7 @@ endif;
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-public',
-			__( 'Front-end target settings', 'ip-geo-block' ),
+			array( __( 'Front-end target settings', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/overview.html" title="Overview | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>'),
 			array( __CLASS__, 'note_public' ),
 			$option_slug
 		);
@@ -983,6 +985,32 @@ endif;
 			)
 		);
 
+		// Badly-behaved bots and crawlers
+		$exception  = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the frequency of request for certain period of time.">Blocking condition</dfn>', 'ip-geo-block' ) . "\n<li class=\"ip-geo-block-hide\"><ul>\n<li>";
+		$exception .= sprintf(
+			__( 'More than %1$s requests for every %2$s seconds', 'ip-geo-block' ),
+			'<input type="text" id="ip_geo_block_settings_behavior_view" name="ip_geo_block_settings[behavior][view]" class="regular-text code" value="' . (int)$options['behavior']['view'] . '" placeholder="10" maxlength="3" />',
+			'<input type="text" id="ip_geo_block_settings_behavior_time" name="ip_geo_block_settings[behavior][time]" class="regular-text code" value="' . (int)$options['behavior']['time'] . '" placeholder="10" maxlength="3" /> '
+		);
+		$exception .= "</li>\n</ul></li></ul>\n";
+
+		$key = 'behavior';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( '<dfn title="It will validate the frequency of request.">Block badly-behaved bots and crawlers</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'after' => $exception,
+			)
+		);
+
 		// UA string and qualification
 		$key = 'ua_list';
 		add_settings_field(
@@ -1115,7 +1143,7 @@ endif;
 
 		add_settings_section(
 			$section = $plugin_slug . '-database',
-			__( 'Local database settings', 'ip-geo-block' ),
+			array( __( 'Local database settings', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/geolocation-api-library.html" title="Geolocation API library | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>'),
 			array( __CLASS__, 'note_database' ),
 			$option_slug
 		);
@@ -1135,6 +1163,16 @@ endif;
 			}
 		}
 
+		// Get the next schedule of cron
+		if ( ! ( $tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) ) ) ) {
+			global $wpdb;
+			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
+			switch_to_blog( $blog_ids[0] ); // main blog
+			$tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) );
+			restore_current_blog();
+		}
+		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '<span class="ip-geo-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-geo-block' ). '</span>';
+
 		// Auto updating (once a month)
 		$field = 'update';
 		add_settings_field(
@@ -1150,6 +1188,7 @@ endif;
 				'sub-field' => 'auto',
 				'value' => $options[ $field ]['auto'],
 				'disabled' => empty( $providers ),
+				'after' => $options[ $field ]['auto'] ? '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>' : '',
 			)
 		);
 
@@ -1364,6 +1403,10 @@ endif;
 			)
 		);
 
+		// Get the next schedule of cron
+		$tmp = wp_next_scheduled( IP_Geo_Block::CACHE_NAME );
+		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '<span class="ip-geo-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-geo-block' ). '</span>';
+
 		// Garbage collection period [sec]
 		$field = 'cache_time_gc';
 		add_settings_field(
@@ -1377,6 +1420,7 @@ endif;
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
+				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>',
 			)
 		);
 
@@ -1544,7 +1588,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$field = 'delete_table';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Delete DB table for validation logs', 'ip-geo-block' ),
+			__( 'Delete DB tables for this plugin', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1560,7 +1604,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$field = 'create_table';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Create DB table for validation logs', 'ip-geo-block' ),
+			__( 'Create DB tables for this plugin', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

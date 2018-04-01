@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.8', // Version of this table (not package)
+		'version'         => '3.0.10',// Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -167,6 +167,8 @@ class IP_Geo_Block_Opts {
 			'response_code'  => 307,     // better for AdSense
 			'redirect_uri'   => NULL,    // home
 			'response_msg'   => 'Sorry, your request cannot be accepted.', // message on blocking
+			// since version 3.0.10
+			'behavior'       => FALSE    // Bad behavior
 		),
 		// since version 3.0.3
 		'mimetype'        => array(
@@ -178,6 +180,11 @@ class IP_Geo_Block_Opts {
 		// since version 3.0.5
 		'live_update'     => array(
 			'in_memory'      => 0,       // -1:unavailable, 0:file, 1:memory
+		),
+		// since version 3.0.10
+		'behavior'        => array(
+			'time'           => 10,      // 10 seconds
+			'view'           => 10,      // 10 page view
 		),
 	);
 
@@ -240,8 +247,7 @@ class IP_Geo_Block_Opts {
 			$version = $default['version'] = IP_Geo_Block::VERSION;
 
 			// create new option table
-			$settings = $default;
-			add_option( IP_Geo_Block::OPTION_NAME, $default );
+			add_option( IP_Geo_Block::OPTION_NAME, $settings = $default );
 		}
 
 		else {
@@ -392,6 +398,11 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '3.0.9' ) < 0 )
 				$settings['priority'] = $default['priority'];
 
+			if ( version_compare( $version, '3.0.10' ) < 0 ) {
+				$settings['behavior'] = $default['behavior'];
+				$settings['public'  ]['behavior'] = $default['public']['behavior'];
+			}
+
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
@@ -401,8 +412,9 @@ class IP_Geo_Block_Opts {
 		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.9' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
-		// update option table
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
+
+		// update option table
 		update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
 		// return upgraded settings
@@ -449,8 +461,7 @@ class IP_Geo_Block_Opts {
 
 			if ( ! @is_writable( $dir ) ) {
 				// wp-content/plugins/ip-geo-block
-				if ( ! @is_writable( $dir = IP_GEO_BLOCK_PATH ) )
-					$dir = NULL;
+				$dir = @is_writable( IP_GEO_BLOCK_PATH ) ? IP_GEO_BLOCK_PATH : NULL;
 			}
 		}
 

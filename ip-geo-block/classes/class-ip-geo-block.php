@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.9';
+	const VERSION = '3.0.10';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -27,15 +27,15 @@ class IP_Geo_Block {
 	 *
 	 */
 	private static $instance = NULL;
-	private static $remote_addr;
-	private static $wp_path;
+	private static $wp_path = array();
+	private static $remote_addr = NULL;
 	private $pagenow = NULL;
 	private $request_uri = NULL;
 	private $target_type = NULL;
 
 	/**
 	 * Initialize the plugin
-	 * 
+	 *
 	 */
 	private function __construct() {
 		// Run the loader to execute all of the hooks with WordPress.
@@ -56,9 +56,6 @@ class IP_Geo_Block {
 
 		// include drop in if it exists
 		file_exists( $key = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php' ) and include( $key );
-
-		// get client IP address
-		self::$remote_addr = self::get_ip_address( $settings );
 
 		// normalize requested uri and page
 		$key = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
@@ -113,7 +110,7 @@ class IP_Geo_Block {
 		else {
 			// public facing pages
 			if ( $validate['public'] || ( ! empty( $_FILES ) && $validate['mimetype'] ) || $live_log /* && 'index.php' === $this->pagenow */ )
-				$loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
+				defined( 'DOING_CRON' ) or $loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
 
 			// message text on comment form
 			if ( $settings['comment']['pos'] ) {
@@ -150,7 +147,7 @@ class IP_Geo_Block {
 
 			// garbage collection for IP address cache, enque script for authentication
 			add_action( self::CACHE_NAME,     array( $this,     'exec_cache_gc' ) );
-            add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority ); // @since 2.8.0
+			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority ); // @since 2.8.0
 		}
 
 		// force to redirect on logout to remove nonce, embed a nonce into pages
@@ -194,14 +191,14 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Remove the redirecting URL on logout not to be blocked by WP-ZEP.
+	 * Remove a nonce from the redirecting URL on logout to prevent disclosing a nonce.
 	 *
 	 */
-	public function logout_redirect( $uri ) {
-		if ( isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] && FALSE !== stripos( $uri, self::$wp_path['admin'] ) )
-			return esc_url_raw( add_query_arg( array( 'loggedout' => 'true' ), wp_login_url() ) );
+	public function logout_redirect( $location ) {
+		if ( isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] && FALSE !== stripos( $location, self::$wp_path['admin'] ) )
+			return IP_Geo_Block_Util::rebuild_nonce( $location, FALSE );
 		else
-			return $uri;
+			return $location;
 	}
 
 	/**
@@ -221,7 +218,7 @@ class IP_Geo_Block {
 	 */
 	public static function enqueue_nonce() {
 		if ( is_user_logged_in() ) {
-			$args['sites'] = IP_Geo_Block_Util::get_multisite();
+			$args['sites'] = IP_Geo_Block_Util::get_sites_of_user();
 			$args['nonce'] = IP_Geo_Block_Util::create_nonce( $handle = self::PLUGIN_NAME . '-auth-nonce' );
 
 			// authentication
@@ -252,16 +249,11 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function get_ip_address( $settings = NULL ) {
-		if ( ! self::$remote_addr ) {
-			$settings or $settings = self::get_option();
-
-			self::$remote_addr = apply_filters(
-				self::PLUGIN_NAME . '-ip-addr',
-				IP_Geo_Block_Util::get_client_ip( $settings['validation']['proxy'] )
-			);
-		}
-
-		return self::$remote_addr;
+		$settings or $settings = self::get_option();
+		return self::$remote_addr && ! has_filter( self::PLUGIN_NAME . '-ip-addr' ) ? self::$remote_addr : apply_filters(
+			self::PLUGIN_NAME . '-ip-addr',
+			IP_Geo_Block_Util::get_client_ip( $settings['validation']['proxy'] )
+		);
 	}
 
 	/**
@@ -272,6 +264,13 @@ class IP_Geo_Block {
 		$settings = self::get_option();
 		echo '<p id="', self::PLUGIN_NAME, '-msg">', IP_Geo_Block_Util::kses( $settings['comment']['msg'] ), '</p>', "\n";
 	}
+
+	/**
+	 * Return true if the validation result is passed.
+	 *
+	 */
+	public static function is_passed ( $result ) { return 0 === strncmp( 'pass', $result, 4 ); }
+	public static function is_blocked( $result ) { return 0 !== strncmp( 'pass', $result, 4 ); }
 
 	/**
 	 * Build a validation result for the current user.
@@ -300,7 +299,7 @@ class IP_Geo_Block {
 		if ( empty( $providers ) ) // make valid providers list
 			$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
 
-		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address(), $settings, $providers, array(), $callback );
+		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address( $settings ), $settings, $providers, array(), $callback );
 
 		if ( ! empty( $result['countryCode'] ) )
 			$result['code'] = $result['countryCode'];
@@ -434,20 +433,21 @@ class IP_Geo_Block {
 	 */
 	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $check_auth = TRUE ) {
 		// register auxiliary validation functions
-		// priority high 4 close_xmlrpc, close_restapi
-		//               5 check_nonce (high), check_user (low)
-		//               6 check_upload (high), check_signature (low)
-		//               7 check_auth
-		//               8 check_ips_black (high), check_ips_white (low)
-		//               9 check_fail
-		// priority low 10 validate_country
+		// priority high 3 close_xmlrpc, close_restapi
+		//               4 check_nonce (high), check_user (low)
+		//               5 check_upload (high), check_signature (low)
+		//               6 check_auth
+		//               7 check_ips_black (high), check_ips_white (low)
+		//               8 check_fail
+		//               9 check_behavior (high), check_ua (low)
+		// priority low 10 check_page (high), validate_country (low)
 		$var = self::PLUGIN_NAME . '-' . $hook;
-		$settings['validation']['mimetype'  ] and add_filter( $var, array( $this, 'check_upload'    ), 6, 2 );
-		$check_auth                           and add_filter( $var, array( $this, 'check_auth'      ), 7, 2 );
-		$settings['extra_ips' ] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
-		$settings['extra_ips' ]['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 8, 2 );
-		$settings['extra_ips' ]['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 8, 2 );
-		$settings['login_fails'] >= 0         and add_filter( $var, array( $this, 'check_fail'      ), 9, 2 );
+		$settings['validation' ]['mimetype'  ] and add_filter( $var, array( $this, 'check_upload'    ), 5, 2 );
+		$check_auth                            and add_filter( $var, array( $this, 'check_auth'      ), 6, 2 );
+		$settings['extra_ips'  ] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
+		$settings['extra_ips'  ]['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
+		$settings['extra_ips'  ]['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
+		$settings['login_fails'] >= 0          and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
 
 		// make valid provider name list
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
@@ -460,7 +460,7 @@ class IP_Geo_Block {
 		//     'code'     => $code,     /* country code or reason of rejection */
 		//     'result'   => $result,   /* 'passed', 'blocked'                 */
 		// );
-		$ips = IP_Geo_Block_Util::retrieve_ips( array( self::get_ip_address() ), $settings['validation']['proxy'] );
+		$ips = IP_Geo_Block_Util::retrieve_ips( array( self::get_ip_address( $settings ) ), $settings['validation']['proxy'] );
 		foreach ( $ips as self::$remote_addr ) {
 			$validate = self::_get_geolocation( self::$remote_addr, $settings, $providers, array( 'cache' => TRUE ) );
 			$validate = apply_filters( $var, $validate, $settings );
@@ -470,23 +470,13 @@ class IP_Geo_Block {
 				$validate = self::validate_country( $hook, $validate, $settings, $block );
 
 			// if one of IPs is blocked then stop
-			if ( 'passed' !== $validate['result'] )
+			if ( self::is_blocked( $validate['result'] ) )
 				break;
 		}
 
 		if ( $check_auth ) {
-			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
-			$block = ( 'passed' !== $validate['result'] );
-			$var = $settings['validation'][ $hook ] ? (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate ) : FALSE;
-			$var = ( 1 === $var &&   $block ) || // blocked
-			       ( 6 === $var && ( $block   || 'passed' !== self::validate_country( NULL, $validate, $settings ) ) ) || // blocked or qualified
-			       ( 2 === $var && ! $block ) || // passed
-			       ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
-			       ( 4 === $var &&   $validate['auth'] ) || // authenticated
-			       ( 5 === $var ); // all
-
 			// record log and update cache
-			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $var );
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $block = self::is_blocked( $validate['result'] ) );
 			IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
 			// update statistics
@@ -515,7 +505,7 @@ class IP_Geo_Block {
 
 	public function validate_front( $can_access = TRUE ) {
 		$validate = $this->validate_ip( 'comment', self::get_option(), TRUE, FALSE, FALSE );
-		return ( 'passed' === $validate['result'] ? $can_access : FALSE );
+		return self::is_passed( $validate['result'] ) ? $can_access : FALSE;
 	}
 
 	/**
@@ -526,7 +516,7 @@ class IP_Geo_Block {
 		$settings = self::get_option();
 
 		if ( 2 === (int)$settings['validation']['xmlrpc'] ) // Completely close
-			add_filter( self::PLUGIN_NAME . '-xmlrpc', array( $this, 'close_xmlrpc' ), 4, 2 );
+			add_filter( self::PLUGIN_NAME . '-xmlrpc', array( $this, 'close_xmlrpc' ), 3, 2 );
 
 		else // wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
 			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ), $settings['priority'] );
@@ -618,13 +608,13 @@ class IP_Geo_Block {
 			if ( ( 2 & $rule ) && $zep ) {
 				// redirect if valid nonce in referer, otherwise register WP-ZEP (2: WP-ZEP)
 				IP_Geo_Block_Util::trace_nonce( self::PLUGIN_NAME . '-auth-nonce' );
-				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 5, 2 );
+				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 4, 2 );
 			}
 		}
 
 		// register validation of malicious signature (except in the comment and post)
 		if ( ! IP_Geo_Block_Util::is_user_logged_in() && ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
-			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
+			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 5, 2 );
 
 		// validate country by IP address (1: Block by country)
 		$this->validate_ip( 'admin', $settings, 1 & $rule );
@@ -658,13 +648,13 @@ class IP_Geo_Block {
 			if ( 2 & $rule ) {
 				// redirect if valid nonce in referer, otherwise register WP-ZEP (2: WP-ZEP)
 				IP_Geo_Block_Util::trace_nonce( self::PLUGIN_NAME . '-auth-nonce' );
-				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 5, 2 );
+				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 4, 2 );
 			}
 		}
 
 		// register validation of malicious signature
 		if ( ! IP_Geo_Block_Util::is_user_logged_in() )
-			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
+			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 5, 2 );
 
 		// validate country by IP address (1: Block by country)
 		$validate = $this->validate_ip( 'admin', $settings, 1 & $rule );
@@ -705,10 +695,10 @@ class IP_Geo_Block {
 			$validate = apply_filters( self::PLUGIN_NAME . '-login', $validate, $settings );
 
 			// (1) blocked, (3) unauthenticated, (5) all
-			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, 1 & (int)$settings['validation']['reclogs'] );
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $block = self::is_blocked( $validate['result'] ) );
 
 			// send response code to refuse immediately
-			if ( 'limited' === $validate['result'] || 'multi' === $validate['result'] ) {
+			if ( $block ) {
 				if ( $settings['save_statistics'] )
 					IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 
@@ -801,9 +791,9 @@ class IP_Geo_Block {
 
 			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
-
+				$j[1] = isset( $j[1] ) ? min( 32, max( 0, (int)$j[1] ) ) : 32;
 				if ( ( ! empty( $validate['asn'] ) && $validate['asn'] === $j[0] ) ||
-				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && Net_IPv4::ipInNetwork( $ip, isset( $j[1] ) ? $i : $i.'/32' ) ) )
+				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && Net_IPv4::ipInNetwork( $ip, $j[0].'/'.$j[1] ) ) )
 					return TRUE;
 			}
 		}
@@ -813,9 +803,9 @@ class IP_Geo_Block {
 
 			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
-
+				$j[1] = isset( $j[1] ) ? min( 128, max( 0, (int)$j[1] ) ) : 128;
 				if ( ( ! empty( $validate['asn'] ) && $validate['asn'] === $j[0] ) ||
-				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) && Net_IPv6::isInNetmask( $ip, isset( $j[1] ) ? $i : $i.'/128' ) ) )
+				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) && Net_IPv6::isInNetmask( $ip, $j[0].'/'.$j[1] ) ) )
 					return TRUE;
 			}
 		}
@@ -860,14 +850,27 @@ class IP_Geo_Block {
 			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_page' ), 10, 2 );
 		}
 
+		// validate bad behavior by bots and crawlers
+		$public['behavior'] and add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_behavior' ), 9, 2 );
+
+		// validate undesired user agent
+		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_ua' ), 9, 2 );
+
 		// retrieve IP address of visitor via proxy services
 		add_filter( self::PLUGIN_NAME . '-ip-addr', array( 'IP_Geo_Block_Util', 'get_proxy_ip' ), 20, 1 );
 
-		// validate undesired user agent
-		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_ua' ), 6, 2 );
-
 		// validate country by IP address (block: true, die: false)
 		$this->validate_ip( 'public', $settings, 1 & $settings['validation']['public'], ! $public['simulate'] );
+	}
+
+	public function check_behavior( $validate, $settings ) {
+		// check if page view with a short period time is under the threshold
+		$cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr );
+		if ( $cache && $cache['view'] >= $settings['behavior']['view'] && $_SERVER['REQUEST_TIME'] - $cache['last'] <= $settings['behavior']['time'] ) {
+			return $validate + array( 'result' => 'badbot' ); // can't overwrite existing result
+		}
+
+		return $validate;
 	}
 
 	public function check_page( $validate, $settings ) {
@@ -899,18 +902,18 @@ class IP_Geo_Block {
 	}
 
 	public function check_ua( $validate, $settings ) {
-		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
-
 		// mask HOST if DNS lookup is false
 		if ( empty( $settings['public']['dnslkup'] ) )
 			$settings['public']['ua_list'] = IP_Geo_Block_Util::mask_qualification( $settings['public']['ua_list'] );
 
 		// get the name of host (from the cache if exists)
-		if ( empty( $validate['host'] ) && FALSE !== strpos( $settings['public']['ua_list'], 'HOST' ) )
+		if ( empty( $validate['host'] ) && FALSE !== strpos( $settings['public']['ua_list'], 'HOST' ) ) {
+			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 			$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
+		}
 
 		// check requested url
-		$is_feed = IP_Geo_Block_Lkup::is_feed( $this->request_uri );
+		$is_feed = IP_Geo_Block_Util::is_feed( $this->request_uri );
 		$u_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';
 		$referer = isset( $_SERVER['HTTP_REFERER'   ] ) ? $_SERVER['HTTP_REFERER'   ] : '';
 
@@ -924,32 +927,37 @@ class IP_Geo_Block {
 
 				if ( 'FEED' === $code ) {
 					if ( $not xor $is_feed )
-						return $validate + array( 'result' => $which ? 'UAlist' : 'passed' );
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 
 				elseif ( 'HOST' === $code ) {
 					if ( $not xor $validate['host'] !== $validate['ip'] )
-						return $validate + array( 'result' => $which ? 'UAlist' : 'passed' );
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 
 				elseif ( 0 === strncmp( 'HOST=', $code, 5 ) ) {
 					if ( $not xor FALSE !== strpos( $validate['host'], substr( $code, 5 ) ) )
-						return $validate + array( 'result' => $which ? 'UAlist' : 'passed' );
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 
 				elseif ( 0 === strncmp( 'REF=', $code, 4 ) ) {
 					if ( $not xor FALSE !== strpos( $referer, substr( $code, 4 ) ) )
-						return $validate + array( 'result' => $which ? 'UAlist' : 'passed' );
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
+				}
+
+				elseif ( 0 === strncmp( 'AS', $code, 2 ) ) {
+					if ( $not xor $validate['asn'] === $code )
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 
 				elseif ( '*' === $code || 2 === strlen( $code ) ) {
 					if ( $not xor ( '*' === $code || $validate['code'] === $code ) )
-						return $validate + array( 'result' => $which ? 'UAlist' : 'passed' );
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 
 				elseif ( preg_match( '!^[a-f\d\.:/]+$!', $code = substr( $pat, strpos( $pat, $code ) ) ) ) {
 					if ( $not xor $this->check_ips( $validate, $code ) )
-						return $validate + array( 'result' => $which ? 'UAlist' : 'passed' );
+						return $validate + array( 'result' => $which ? 'blockUA' : 'passUA' );
 				}
 			}
 		}
