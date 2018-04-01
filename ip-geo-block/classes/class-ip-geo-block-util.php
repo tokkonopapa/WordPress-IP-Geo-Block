@@ -217,6 +217,7 @@ class IP_Geo_Block_Util {
 			'logged_in'   => LOGGED_IN_KEY   . LOGGED_IN_SALT,
 			'nonce'       => NONCE_KEY       . NONCE_SALT,
 		);
+
 		return self::hash_hmac( 'md5', $data, apply_filters( 'salt', $salt[ $scheme ], $scheme ) );
 	}
 
@@ -933,15 +934,8 @@ class IP_Geo_Block_Util {
 	public static function get_multisite() {
 		$sites = array();
 
-		if ( is_multisite() ) {
-			global $wpdb;
-			foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
-				switch_to_blog( $id );
-				$sites[] = preg_replace( '/^https?:/', '', site_url() );
-				restore_current_blog();
-			}
-		} else {
-			$sites[] = preg_replace( '/^https?:/', '', site_url() );
+		foreach ( get_blogs_of_user( get_current_user_id(), FALSE ) as $site ) {
+			$sites[] = preg_replace( '/^https?:/', '', $site->siteurl );
 		}
 
 		return $sites;
