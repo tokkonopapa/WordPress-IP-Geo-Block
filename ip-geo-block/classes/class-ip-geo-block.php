@@ -218,7 +218,7 @@ class IP_Geo_Block {
 	 */
 	public static function enqueue_nonce() {
 		if ( is_user_logged_in() ) {
-			$args['sites'] = IP_Geo_Block_Util::get_multisite();
+			$args['sites'] = IP_Geo_Block_Util::get_sites_of_user();
 			$args['nonce'] = IP_Geo_Block_Util::create_nonce( $handle = self::PLUGIN_NAME . '-auth-nonce' );
 
 			// authentication

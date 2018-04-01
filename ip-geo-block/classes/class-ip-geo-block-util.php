@@ -932,7 +932,7 @@ class IP_Geo_Block_Util {
 	 *
 	 * This function should be called after 'init' hook is fired.
 	 */
-	public static function get_multisite() {
+	public static function get_sites_of_user() {
 		$sites = array();
 
 		foreach ( get_blogs_of_user( get_current_user_id(), current_user_can( 'manage_network_options' ) ) as $site ) { // @since 3.0.0
