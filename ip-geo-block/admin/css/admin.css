@@ -453,7 +453,7 @@ table.form-table th .ip-geo-block-cycle span {
 /* Badly-behaved bots and crawlers */
 input#ip_geo_block_settings_behavior_view,
 input#ip_geo_block_settings_behavior_time {
-    width: 3em;
+    width: 3.2em;
 }
 
 /* Statistics */
