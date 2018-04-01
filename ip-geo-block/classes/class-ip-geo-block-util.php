@@ -930,11 +930,12 @@ class IP_Geo_Block_Util {
 	/**
 	 * Get the list of multisite
 	 *
+	 * This function should be called after 'init' hook is fired.
 	 */
 	public static function get_multisite() {
 		$sites = array();
 
-		foreach ( get_blogs_of_user( get_current_user_id(), FALSE ) as $site ) { // @since 3.0.0
+		foreach ( get_blogs_of_user( get_current_user_id(), current_user_can( 'manage_options' ) ) as $site ) { // @since 3.0.0
 			$sites[] = preg_replace( '/^https?:/', '', $site->siteurl );
 		}
 
