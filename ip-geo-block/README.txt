@@ -356,6 +356,9 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 == Changelog ==
 
+= 3.0.11 =
+* **New feature:** Add "Network wide settings" in "Plugin settings" section and "Site List" tab on "Network Admin" dashboard menu.
+
 = 3.0.10 =
 * **New feature:** Add "Block badly-behaved bots and crawlers" in "Front-end target settings" section that validates the frequency of request.
 * **Improvement:** Add a help link to the document for some sections.
