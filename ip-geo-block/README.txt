@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.4
-Stable tag: 3.0.10
+Stable tag: 3.0.10.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -358,6 +358,11 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 = 3.0.11 =
 * **New feature:** Add "Network wide settings" in "Plugin settings" section and "Site List" tab on "Network Admin" dashboard menu.
+
+= 3.0.10.1 =
+This release is intented to fix the issue reported at forum [here](https://wordpress.org/support/topic/error-on-updating-version-3-0-10/ "Error on updating Versión 3.0.10") and [here](https://wordpress.org/support/topic/error-report-on-latest-update/ "error report on latest update").
+
+If you still find the error "/plugins/ip-geo-block/classes/class-ip-geo-block-logs.php (837) Unknown column ‘last’ in ‘field list’", please deactivate plugin once and activate again. You will see the same error message again, but the things should be fixed.
 
 = 3.0.10 =
 * **New feature:** Add "Block badly-behaved bots and crawlers" in "Front-end target settings" section that validates the frequency of request.

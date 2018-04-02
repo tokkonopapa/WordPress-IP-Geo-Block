@@ -50,37 +50,37 @@ class IP_Geo_Block_Activate {
 	 * @link https://wordpress.stackexchange.com/questions/181141/how-to-run-an-activation-function-when-plugin-is-network-activated-on-multisite
 	 */
 	public static function activate( $network_wide = FALSE ) {
-		if ( did_action( 'init' ) && current_user_can( 'manage_options' ) ) {
-			// Update main blog first.
-			self::activate_blog();
+		// Update main blog first.
+		self::activate_blog();
 
-			// Get option of main blog.
-			$settings = IP_Geo_Block::get_option();
+		// Get option of main blog.
+		$settings = IP_Geo_Block::get_option();
 
-			if ( is_multisite() && $network_wide ) {
-				global $wpdb;
-				$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
+		if ( is_multisite() && $network_wide ) {
+			global $wpdb;
+			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
 
-				// Skip the main blog.
-				array_shift( $blog_ids );
+			// Skip the main blog.
+			array_shift( $blog_ids );
 
-				foreach ( $blog_ids as $id ) {
-					switch_to_blog( $id );
+			foreach ( $blog_ids as $id ) {
+				switch_to_blog( $id );
 
-					if ( $settings['network_wide'] ) {
-						// Copy settings of main site to individual site
-						$map = IP_Geo_Block::get_option();
-						$settings['api_key']['GoogleMap'] = $map['api_key']['GoogleMap'];
-						update_option( IP_Geo_Block::OPTION_NAME, $settings );
-					}
-
-					// Initialize inidivisual site
-					self::activate_blog();
-
-					restore_current_blog();
+				if ( $settings['network_wide'] ) {
+					// Copy settings of main site to individual site
+					$map = IP_Geo_Block::get_option();
+					$settings['api_key']['GoogleMap'] = $map['api_key']['GoogleMap'];
+					update_option( IP_Geo_Block::OPTION_NAME, $settings );
 				}
-			}
 
+				// Initialize inidivisual site
+				self::activate_blog();
+
+				restore_current_blog();
+			}
+		}
+
+		if ( did_action( 'init' ) && current_user_can( 'manage_options' ) ) {
 			self::activate_main_blog( $settings );
 		}
 	}
