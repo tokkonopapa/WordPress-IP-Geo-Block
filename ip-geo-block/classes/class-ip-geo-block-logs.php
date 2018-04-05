@@ -99,6 +99,16 @@ class IP_Geo_Block_Logs {
 		$result = dbDelta( $sql );
 
 		// dbDelta() parses `call` field as `CALL` statement. So alter it after init @since 3.0.10
+		if ( ! $wpdb->query( "DESCRIBE `$table` `view`" ) ) {
+			$wpdb->query(
+				"ALTER TABLE `$table` ADD `view` int(10) unsigned AFTER `fail`"
+			) or self::error( __LINE__ );
+		}
+		if ( ! $wpdb->query( "DESCRIBE `$table` `last`" ) ) {
+			$wpdb->query(
+				"ALTER TABLE `$table` ADD `last` int(10) unsigned AFTER `fail`"
+			) or self::error( __LINE__ );
+		}
 		if ( ! $wpdb->query( "DESCRIBE `$table` `call`" ) ) {
 			$wpdb->query(
 				"ALTER TABLE `$table` ADD `call` int(10) unsigned AFTER `fail`"

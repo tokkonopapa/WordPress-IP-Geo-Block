@@ -129,7 +129,7 @@ class IP_Geo_Block_Util {
 				// remove a nonce from existing query
 				$location = esc_url_raw( add_query_arg( $key, FALSE, $location ) );
 				wp_parse_str( isset( $url['query'] ) ? $url['query'] : '', $query );
-				$args = [];
+				$args = array();
 				foreach ( $query as $arg => $val ) { // $val is url decoded
 					if ( FALSE !== strpos( $val, $key ) ) {
 						$val = urlencode( add_query_arg( $key, FALSE, $val ) );
