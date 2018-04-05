@@ -358,7 +358,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 = 3.0.10.2 =
 * **Fix:** Add a fallback process to add some fields into database table especially for MariaDB.
-* **Fix:** Syntax error that would cause a blank page in PHP 5.3 and under.
+* **Fix:** Fatal error that would cause a blank page in PHP 5.3 and under or single site.
 
 = 3.0.10.1 =
 This release is intented to fix the issue reported at forum [here](https://wordpress.org/support/topic/error-on-updating-version-3-0-10/ "Error on updating Versión 3.0.10") and [here](https://wordpress.org/support/topic/error-report-on-latest-update/ "error report on latest update").
