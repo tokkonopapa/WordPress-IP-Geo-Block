@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.4
-Stable tag: 3.0.10.1
+Stable tag: 3.0.10.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -355,9 +355,6 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
-
-= 3.0.11 =
-* **New feature:** Add "Network wide settings" in "Plugin settings" section and "Site List" tab on "Network Admin" dashboard menu.
 
 = 3.0.10.2 =
 * **Fix:** Add a fallback process to add some fields into database table especially for MariaDB.
