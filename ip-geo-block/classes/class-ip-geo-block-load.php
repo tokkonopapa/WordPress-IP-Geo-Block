@@ -142,12 +142,12 @@ class IP_Geo_Block_Loader {
 		 * Execute callbacks that are specified by the component with 'init'.
 		 */
 		else {
-			foreach ( $this->actions as $index => $hook ) {  /* admin ajax/post needs to be deferred */
-				if ( 'init' === $hook['hook'] || ( 'wp_loaded' === $hook['hook'] && ( ! defined( 'WP_ADMIN' ) || ! WP_ADMIN ) ) ) {
+			foreach ( $this->actions as $index => $hook ) {
+				if ( ! defined( 'WP_ADMIN' ) || ! WP_ADMIN ) {
 					// Execute callback directly
 					call_user_func( $hook['callback'], $hook['accepted_args'] );
 				}
-				else {
+				else { // admin ajax/post needs to be deferred
 					add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
 				}
 
