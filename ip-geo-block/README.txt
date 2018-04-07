@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.4
-Stable tag: 3.0.10.2
+Stable tag: 3.0.10.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -359,9 +359,10 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 = 3.0.11 =
 * **New feature:** Add "Network wide settings" in "Plugin settings" section and "Site List" tab on "Network Admin" dashboard menu.
 
-= 3.0.10.2 =
+= 3.0.10.3 =
 * **Fix:** Add a fallback process to add some fields into database table especially for MariaDB.
-* **Fix:** Syntax error that would cause a blank page in PHP 5.3 and under.
+* **Fix:** Fatal error that would cause a blank page in PHP 5.3 and under or single site.
+* **Fix:** Validation timing was not proper when redirection happened in admin context. (#36)
 
 = 3.0.10.1 =
 This release is intented to fix the issue reported at forum [here](https://wordpress.org/support/topic/error-on-updating-version-3-0-10/ "Error on updating Versión 3.0.10") and [here](https://wordpress.org/support/topic/error-report-on-latest-update/ "error report on latest update").

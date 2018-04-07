@@ -1165,11 +1165,15 @@ endif;
 
 		// Get the next schedule of cron
 		if ( ! ( $tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) ) ) ) {
-			global $wpdb;
-			$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
-			switch_to_blog( $blog_ids[0] ); // main blog
-			$tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) );
-			restore_current_blog();
+			if ( is_multisite() ) {
+				global $wpdb;
+				$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
+				switch_to_blog( $blog_ids[0] ); // main blog
+				$tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) );
+				restore_current_blog();
+			} else {
+				$tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) );
+			}
 		}
 		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '<span class="ip-geo-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-geo-block' ). '</span>';
 
