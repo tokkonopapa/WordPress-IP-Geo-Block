@@ -916,7 +916,7 @@ class IP_Geo_Block_Admin {
 		$default = IP_Geo_Block::get_default();
 
 		// Integrate posted data into current settings because it can be a part of hole data
-		$input = array_replace_recursive(
+		$input = $this->array_replace_recursive(
 			$output = $this->preprocess_options( $output, $default ), $input
 		);
 
@@ -1187,6 +1187,46 @@ class IP_Geo_Block_Admin {
 		}
 
 		return $output;
+	}
+
+	/**
+	 * A fallback function of array_replace_recursive() before PHP 5.3.
+	 *
+	 * @link http://php.net/manual/en/function.array-replace-recursive.php#92574
+	 * @link http://php.net/manual/en/function.array-replace-recursive.php#109390
+	 */
+	public function array_replace_recursive() {
+		if ( function_exists( 'array_replace_recursive' ) ) {
+			$args = func_get_args();
+			return call_user_func_array( 'array_replace_recursive', $args );
+		}
+
+		else {
+			foreach ( array_slice( func_get_args(), 1 ) as $replacements ) {
+				$bref_stack = array( &$base );
+				$head_stack = array( $replacements );
+
+				do {
+					end( $bref_stack );
+
+					$bref = &$bref_stack[ key( $bref_stack ) ];
+					$head = array_pop( $head_stack );
+
+					unset( $bref_stack[ key( $bref_stack ) ] );
+
+					foreach ( array_keys( $head ) as $key ) {
+						if ( isset( $key, $bref ) && is_array( $bref[ $key ] ) && is_array( $head[ $key ] ) ) {
+							$bref_stack[] = &$bref[ $key ];
+							$head_stack[] = $head [ $key ];
+						} else {
+							$bref[ $key ] = $head [ $key ];
+						}
+					}
+				} while( count( $head_stack ) );
+			}
+
+			return $base;
+		}
 	}
 
 	// Callback for preg_replace_callback()

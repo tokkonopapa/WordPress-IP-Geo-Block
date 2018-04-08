@@ -358,6 +358,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 = 3.0.11 =
 * **New feature:** Add "Network wide settings" in "Plugin settings" section and "Site List" tab on "Network Admin" dashboard menu.
+* **Fix:** Add a fallback function to support WP 3.7 and PHP before 5.3.
 
 = 3.0.10.3 =
 * **Fix:** Add a fallback process to add some fields into database table especially for MariaDB.
