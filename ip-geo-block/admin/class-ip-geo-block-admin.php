@@ -395,14 +395,14 @@ class IP_Geo_Block_Admin {
 
 		// Network wide or not
 		$admin_menu = ( 'admin_menu' === current_filter() ); // @since: 2.5 `admin_menu` or `network_admin_menu`
-		$this->is_network &= ( current_user_can( 'manage_network_options' ) && $settings['network_wide'] );
+		$this->is_network &= current_user_can( 'manage_network_options' );
 
 		// Verify tab number
 		if ( $this->is_network ) {
 			if ( $admin_menu ) {
-				$this->admin_tab = min( 4, max( 1, $this->admin_tab ) );
-			} elseif ( ! in_array( $this->admin_tab, array( 0, 5 ), TRUE ) ) {
-				$this->admin_tab = 0;
+				$this->admin_tab = min( 4, max( $settings['network_wide'] ? 1 : 0, $this->admin_tab ) );
+			} elseif ( ! in_array( $this->admin_tab, $settings['network_wide'] ? array( 0, 5 ) : array( 5 ), TRUE ) ) {
+				$this->admin_tab = $settings['network_wide'] ? 0 : 5;
 			}
 		} else {
 			$this->admin_tab = min( 4, $this->admin_tab ); // exclude `Site List`
@@ -410,7 +410,7 @@ class IP_Geo_Block_Admin {
 
 		if ( $admin_menu ) {
 			// `settings-updated` would be added just after settings updated.
-			if ( ! empty( $_REQUEST['settings-updated'] ) && $this->is_network &&
+			if ( ! empty( $_REQUEST['settings-updated'] ) && $this->is_network && $settings['network_wide'] &&
 			     ! empty( $_REQUEST['page'] ) && IP_Geo_Block::PLUGIN_NAME === $_REQUEST['page'] ) {
 				$this->update_multisite_settings( $settings );
 				wp_safe_redirect( esc_url_raw( add_query_arg(
@@ -440,14 +440,16 @@ class IP_Geo_Block_Admin {
 				array( $this, 'display_plugin_admin_page' )
 				//'dashicons-admin-site' // or 'data:image/svg+xml;base64...'
 			);
-			add_submenu_page(
-				IP_Geo_Block::PLUGIN_NAME,
-				__( 'IP Geo Block', 'ip-geo-block' ),
-				__( 'Settings', 'ip-geo-block' ),
-				'manage_network_options',
-				IP_Geo_Block::PLUGIN_NAME,
-				array( $this, 'display_plugin_admin_page' )
-			);
+			if ( $settings['network_wide'] ) {
+				add_submenu_page(
+					IP_Geo_Block::PLUGIN_NAME,
+					__( 'IP Geo Block', 'ip-geo-block' ),
+					__( 'Settings', 'ip-geo-block' ),
+					'manage_network_options',
+					IP_Geo_Block::PLUGIN_NAME,
+					array( $this, 'display_plugin_admin_page' )
+				);
+			}
 			add_submenu_page(
 				IP_Geo_Block::PLUGIN_NAME,
 				__( 'IP Geo Block', 'ip-geo-block' ),
@@ -676,23 +678,21 @@ class IP_Geo_Block_Admin {
 		// Target page that depends on the network multisite or not.
 		if ( 'options-general.php' === $GLOBALS['pagenow'] ) {
 			$action = 'options.php';
-
+			unset( $tabs[5] ); // Site List
 			if ( $this->is_network ) {
-				unset( $tabs[0], $tabs[5] ); // Settings, Site List
+				if ( $settings['network_wide'] ) unset( $tabs[0] ); // Settings
 				$title .= ' <span class="ip-geo-block-menu-link">';
-				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Settings',  'ip-geo-block' ) . '</a> ]';
-				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Site List', 'ip-geo-block' ) . '</a> ]';
+				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Network wide', 'ip-geo-block' ) . '</a> ]';
 				$title .= '</span>';
-			} else {
-				unset( $tabs[5] ); // Site List
 			}
 		} else {
 			// `edit.php` is an action handler for Multisite administration panels.
 			// `edit.php` ==> do action `network_admin_edit_IP_GEO_BLOCK` ==> `validate_network_settings()`
 			$action = 'edit.php?action=' . IP_Geo_Block::PLUGIN_NAME;
-
-			if ( $settings['network_wide'] ) {
-				unset( $tabs[1], $tabs[4], $tabs[2], $tabs[3] ); // Statistics, Logs, Search, Attribution
+			if ( ! $settings['network_wide'] ) $tab = 5;
+			if ( $this->is_network ) {
+				if ( ! $settings['network_wide'] ) unset( $tabs[0] ); // Settings
+				unset( $tabs[1], $tabs[4], $tabs[2], $tabs[3] );      // Statistics, Logs, Search, Attribution
 				$title .= ' <span class="ip-geo-block-menu-link">';
 				$title .= '[ ' . __( 'Network wide', 'ip-geo-block' ) . ' ]';
 				$title .= '</span>';
