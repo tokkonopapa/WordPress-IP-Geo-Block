@@ -680,7 +680,9 @@ class IP_Geo_Block_Admin {
 			$action = 'options.php';
 			unset( $tabs[5] ); // Site List
 			if ( $this->is_network ) {
-				if ( $settings['network_wide'] ) unset( $tabs[0] ); // Settings
+				if ( $settings['network_wide'] ) {
+					unset( $tabs[0] ); // Settings
+				}
 				$title .= ' <span class="ip-geo-block-menu-link">';
 				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Network wide', 'ip-geo-block' ) . '</a> ]';
 				$title .= '</span>';
@@ -689,10 +691,12 @@ class IP_Geo_Block_Admin {
 			// `edit.php` is an action handler for Multisite administration panels.
 			// `edit.php` ==> do action `network_admin_edit_IP_GEO_BLOCK` ==> `validate_network_settings()`
 			$action = 'edit.php?action=' . IP_Geo_Block::PLUGIN_NAME;
-			if ( ! $settings['network_wide'] ) $tab = 5;
 			if ( $this->is_network ) {
-				if ( ! $settings['network_wide'] ) unset( $tabs[0] ); // Settings
-				unset( $tabs[1], $tabs[4], $tabs[2], $tabs[3] );      // Statistics, Logs, Search, Attribution
+				if ( ! $settings['network_wide'] ) {
+					$tab = 5;          // forct to Site List
+					unset( $tabs[0] ); // Settings
+				}
+				unset( $tabs[1], $tabs[4], $tabs[2], $tabs[3] ); // Statistics, Logs, Search, Attribution
 				$title .= ' <span class="ip-geo-block-menu-link">';
 				$title .= '[ ' . __( 'Network wide', 'ip-geo-block' ) . ' ]';
 				$title .= '</span>';

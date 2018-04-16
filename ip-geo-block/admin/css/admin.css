@@ -63,9 +63,6 @@ label {
 .ip-geo-block-navi-link {
     text-align: left;
 }
-.ip-geo-block-navi-link label {
-    vertical-align: text-top;
-}
 .ip-geo-block-help-link {
     float: right;
     font-size: 90%;
@@ -77,11 +74,10 @@ label {
 
 /* style legend and fieldset */
 fieldset label {
-    vertical-align: middle;
+    vertical-align: text-middle;
 }
-fieldset label dfn,
-fieldset li label {
-    vertical-align: text-top;
+fieldset input[type="checkbox"] {
+    margin: -1px 2px 0;
 }
 fieldset.ip-geo-block-field {
 /*  padding: 0 10px;*/
@@ -583,6 +579,9 @@ table.dataTable > tbody > tr > td span {
 }
 
 /* Checkbox */
+.ip-geo-block-settings-folding input[type="checkbox"] {
+    margin-right: 0.5em;
+}
 table.dataTable input[type="checkbox"] {
     height: 16px;
     width: 16px;
