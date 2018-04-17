@@ -89,7 +89,7 @@ class IP_Geo_Block_Logs {
 			ip varchar(40) UNIQUE NOT NULL,
 			asn varchar(8) NULL,
 			code varchar(2) NOT NULL DEFAULT 'ZZ',
-			hash varchar(64) UNIQUE NOT NULL,
+			hash varchar(64) NOT NULL,
 			auth int(10) unsigned NOT NULL DEFAULT 0,
 			fail int(10) unsigned NOT NULL DEFAULT 0,
 			last int(10) unsigned NOT NULL DEFAULT 0,
@@ -123,7 +123,7 @@ class IP_Geo_Block_Logs {
 		}
 		if ( ! $wpdb->query( "DESCRIBE `$table` `hash`" ) ) {
 			$wpdb->query(
-				"ALTER TABLE `$table` ADD `hash` varchar(64) UNIQUE AFTER `code`"
+				"ALTER TABLE `$table` ADD `hash` varchar(64) AFTER `code`"
 			) or self::error( __LINE__ );
 		}
 
