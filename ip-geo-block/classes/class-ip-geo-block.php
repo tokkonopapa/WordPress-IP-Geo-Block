@@ -195,7 +195,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function logout_redirect( $location ) {
-		if ( isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] && FALSE !== stripos( $location, self::$wp_path['admin'] ) )
+		if ( isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] )
 			return IP_Geo_Block_Util::rebuild_nonce( $location, FALSE );
 		else
 			return $location;
@@ -250,10 +250,8 @@ class IP_Geo_Block {
 	 */
 	public static function get_ip_address( $settings = NULL ) {
 		$settings or $settings = self::get_option();
-		return self::$remote_addr && ! has_filter( self::PLUGIN_NAME . '-ip-addr' ) ? self::$remote_addr : apply_filters(
-			self::PLUGIN_NAME . '-ip-addr',
-			IP_Geo_Block_Util::get_client_ip( $settings['validation']['proxy'] )
-		);
+		self::$remote_addr or self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $settings['validation']['proxy'] );
+		return has_filter( self::PLUGIN_NAME . '-ip-addr' ) ? apply_filters( self::PLUGIN_NAME . '-ip-addr', self::$remote_addr ) : self::$remote_addr;
 	}
 
 	/**
