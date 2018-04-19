@@ -494,15 +494,21 @@
 					}
 				}
 			}
+
+			// Hide the title of sub-menu.
+			$('#toplevel_page_ip-geo-block li.wp-first-item').each(function (/*i, obj*/) {
+				var $this = $(this);
+				$this.css('display', 'IP Geo Block' === $this.children('a').text() ? 'none' : 'block');
+			});
 		}
 	}
 
 	$(window).on('error', function (/*event*/) { // event.originalEvent.message
-		attach_ready(false); // fallback on error
+		attach_ready(); // fallback on error
 	});
 
 	$(function () {
-		attach_ready(true);
+		attach_ready();
 	});
 
 	// Attach event to add nonce
