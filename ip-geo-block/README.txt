@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.9.4
-Stable tag: 3.0.10.3
+Tested up to: 4.9.5
+Stable tag: 3.0.10.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -355,6 +355,12 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.10.4 =
+* **Fix:** JavaScript error caused by bad handling form tag without method property. This error was happened with Wordfence Live Traffic.
+* **Fix:** Inconsistent tags on the settings dashboard.
+* **Fix:** "Add AS number to Whitelist/Blacklist" at "Bulk action" in "Statistics in cache" section on "Statistics" tab did not work properly because of illegal regular expression.
+* **Fix:** Add a fallback function to support WP 3.7 and PHP before 5.3.
 
 = 3.0.10.3 =
 * **Fix:** Add a fallback process to add some fields into database table especially for MariaDB.

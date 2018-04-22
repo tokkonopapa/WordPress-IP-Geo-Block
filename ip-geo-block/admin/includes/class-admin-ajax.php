@@ -352,7 +352,7 @@ endif; // TEST_RESTORE_NETWORK
 		unset( $input['version'] );
 
 		// Integrate posted data into current settings because if can be a part of hole data
-		$input = array_replace_recursive(
+		$input = $parent->array_replace_recursive(
 			$parent->preprocess_options( IP_Geo_Block::get_option(), IP_Geo_Block::get_default() ), $input
 		);
 

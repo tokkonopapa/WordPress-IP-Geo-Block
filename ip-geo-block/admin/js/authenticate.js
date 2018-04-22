@@ -458,7 +458,7 @@
 
 			// if admin area then add the nonce
 			if (is_admin(action) === 1) {
-				if ('post' === $this.attr('method').toLowerCase()) {
+				if ('post' === ($this.attr('method') || '').toLowerCase()) {
 					$this.attr('action', add_query_nonce(action, auth.nonce));
 				} else {
 					$this.append('<input type="hidden" name="' + wpzep.name + '" value="' + auth.nonce + '">');
@@ -494,15 +494,21 @@
 					}
 				}
 			}
+
+			// Hide the title of sub-menu.
+			$('#toplevel_page_ip-geo-block li.wp-first-item').each(function (/*i, obj*/) {
+				var $this = $(this);
+				$this.css('display', 'IP Geo Block' === $this.children('a').text() ? 'none' : 'block');
+			});
 		}
 	}
 
 	$(window).on('error', function (/*event*/) { // event.originalEvent.message
-		attach_ready(false); // fallback on error
+		attach_ready(); // fallback on error
 	});
 
 	$(function () {
-		attach_ready(true);
+		attach_ready();
 	});
 
 	// Attach event to add nonce
