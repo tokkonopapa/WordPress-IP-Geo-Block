@@ -455,7 +455,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 	public static function update_cache( $hook, $validate, $settings ) {
 		$time  = $_SERVER['REQUEST_TIME'];
-		$cache = self::get_cache( $ip = $validate['ip'] );
+		$cache = self::get_cache( $ip = $validate['ip'], $settings['anonymize'] );
 
 		if ( $cache ) {
 			$fail = $cache['fail'] + ( 'failed' === $validate['result'] ? 1 : 0 );
@@ -489,8 +489,8 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			'call' => $settings['save_statistics'] ? $call : 0,
 			'last' => $last,
 			'view' => $view,
-			'host' => isset( $validate['host'] ) ? $validate['host'] : NULL,
-		) );
+			'host' => isset( $validate['host'] ) && $validate['host'] !== $ip ? $validate['host'] : NULL,
+		), $settings['anonymize'] );
 
 		return self::$memcache[ $ip ] = $cache;
 	}
@@ -504,11 +504,11 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		return IP_Geo_Block_Logs::restore_cache();
 	}
 
-	public static function get_cache( $ip ) {
+	public static function get_cache( $ip, $anonymize = FALSE ) {
 		if ( ! empty( self::$memcache[ $ip ] ) )
 			return self::$memcache[ $ip ];
 		else
-			return self::$memcache[ $ip ] = IP_Geo_Block_Logs::search_cache( $ip );
+			return self::$memcache[ $ip ] = IP_Geo_Block_Logs::search_cache( $ip, $anonymize );
 	}
 
 	public function get_location( $ip, $args = array() ) {
@@ -519,7 +519,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 	}
 
 	public function get_country( $ip, $args = array() ) {
-		return ( $cache = self::get_cache( $ip ) ) ? ( isset( $args['cache'] ) ? $cache : $cache['code'] ) : NULL;
+		return ( $cache = self::get_cache( $ip, func_get_arg( 2 ) ) ) ? ( isset( $args['cache'] ) ? $cache : $cache['code'] ) : NULL;
 	}
 }
 

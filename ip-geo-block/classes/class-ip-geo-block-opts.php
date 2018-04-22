@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.10',// Version of this table (not package)
+		'version'         => '3.0.11',// Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -403,6 +403,11 @@ class IP_Geo_Block_Opts {
 				$settings['public'  ]['behavior'] = $default['public']['behavior'];
 			}
 
+			if ( version_compare( $version, '3.0.11' ) < 0 ) {
+				IP_Geo_Block_Logs::delete_tables( IP_Geo_Block::CACHE_NAME );
+				IP_Geo_Block_Logs::create_tables();
+			}
+
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
@@ -447,6 +452,7 @@ class IP_Geo_Block_Opts {
 	public static function delete_api( $settings ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'delete_api' );
+
 		return $fs->delete( self::get_api_dir( $settings ), TRUE ); // $recursive = true
 	}
 

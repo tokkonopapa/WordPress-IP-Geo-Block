@@ -458,7 +458,7 @@
 
 			// if admin area then add the nonce
 			if (is_admin(action) === 1) {
-				if ('post' === $this.attr('method').toLowerCase()) {
+				if ('post' === ($this.attr('method') || '').toLowerCase()) {
 					$this.attr('action', add_query_nonce(action, auth.nonce));
 				} else {
 					$this.append('<input type="hidden" name="' + wpzep.name + '" value="' + auth.nonce + '">');

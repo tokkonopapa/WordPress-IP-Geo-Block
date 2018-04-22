@@ -85,55 +85,27 @@ class IP_Geo_Block_Logs {
 		$sql = "CREATE TABLE $table (
 			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			time int(10) unsigned NOT NULL DEFAULT 0,
-			ip varchar(40) UNIQUE NOT NULL,
 			hook varchar(8) NOT NULL,
+			ip varchar(80) UNIQUE NOT NULL,
 			asn varchar(8) NULL,
 			code varchar(2) NOT NULL DEFAULT 'ZZ',
 			auth int(10) unsigned NOT NULL DEFAULT 0,
 			fail int(10) unsigned NOT NULL DEFAULT 0,
 			last int(10) unsigned NOT NULL DEFAULT 0,
 			view int(10) unsigned NOT NULL DEFAULT 0,
-			host tinytext NOT NULL,
+			host tinytext NULL,
 			PRIMARY KEY  (No)
 		) $charset_collate";
 		$result = dbDelta( $sql );
 
 		// dbDelta() parses `call` field as `CALL` statement. So alter it after init @since 3.0.10
-		if ( ! $wpdb->query( "DESCRIBE `$table` `view`" ) ) {
-			$wpdb->query(
-				"ALTER TABLE `$table` ADD `view` int(10) unsigned AFTER `fail`"
-			) or self::error( __LINE__ );
-		}
-		if ( ! $wpdb->query( "DESCRIBE `$table` `last`" ) ) {
-			$wpdb->query(
-				"ALTER TABLE `$table` ADD `last` int(10) unsigned AFTER `fail`"
-			) or self::error( __LINE__ );
-		}
 		if ( ! $wpdb->query( "DESCRIBE `$table` `call`" ) ) {
 			$wpdb->query(
-				"ALTER TABLE `$table` ADD `call` int(10) unsigned AFTER `fail`"
+				"ALTER TABLE `$table` ADD `call` int(10) unsigned NOT NULL DEFAULT 0 AFTER `fail`"
 			) or self::error( __LINE__ );
 		}
 
 		return TRUE;
-	}
-
-	/**
-	 * Search table by specific IP address
-	 *
-	 */
-	private static function search_table( $table, $ip, $type = TRUE ) {
-		global $wpdb;
-		$table = $wpdb->prefix . $table;
-
-		$sql = $wpdb->prepare(
-			"SELECT * FROM `$table` WHERE `ip` = '%s'", $ip
-		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
-
-		if ( $type )
-			return ! empty( $result[0] ) ? $result[0] : NULL; // for cache
-		else
-			return ! empty( $result ) ? $result : array(); // for logs
 	}
 
 	/**
@@ -222,7 +194,6 @@ class IP_Geo_Block_Logs {
 
 		$sql = $wpdb->prepare(
 			"UPDATE `$table` SET `data` = '%s'", serialize( $stat )
-//			"REPLACE INTO `$table` (`No`, `data`) VALUES (%d, %s)", 1, serialize( $stat )
 		) and $wpdb->query( $sql ) or self::error( __LINE__ );
 	}
 
@@ -712,7 +683,14 @@ class IP_Geo_Block_Logs {
 	 *
 	 */
 	public static function search_logs( $ip ) {
-		return self::search_table( self::TABLE_LOGS, $ip, FALSE );
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_LOGS;
+
+		$sql = $wpdb->prepare(
+			"SELECT * FROM `$table` WHERE `ip` = '%s'", $ip
+		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
+
+		return ! empty( $result ) ? $result : array();
 	}
 
 	/**
@@ -778,14 +756,6 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Search cache by specific IP address
-	 *
-	 */
-	public static function search_cache( $ip ) {
-		return self::search_table( IP_Geo_Block::CACHE_NAME, $ip, TRUE );
-	}
-
-	/**
 	 * Restore cache
 	 *
 	 */
@@ -813,16 +783,47 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Update cache
+	 * Anonymize IP address
 	 *
 	 */
-	public static function update_cache( $cache ) {
+	private static function anonymize_ip( $ip ) {
+		return preg_replace( '/\d{1,3}$/', '***', $ip ) . ',' . md5( $ip . @$_SERVER['HTTP_USER_AGENT'] );
+	}
+
+	/**
+	 * Search cache by specific IP address
+	 *
+	 */
+	public static function search_cache( $ip, $anonymize ) {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
 		$sql = $wpdb->prepare(
+			"SELECT * FROM `$table` WHERE `ip` = '%s'", $anonymize ? self::anonymize_ip( $ip ) : $ip
+		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
+
+		if ( ! empty( $result[0] ) ) {
+			$result[0]['ip'] = $ip;
+			return $result[0];
+		} else {
+			return NULL;
+		}
+	}
+
+	/**
+	 * Update cache
+	 *
+	 */
+	public static function update_cache( $cache, $anonymize ) {
+		global $wpdb;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
+
+		// Anonymize personal data
+		$anonymize and $cache['ip'] = self::anonymize_ip( $cache['ip'] );
+
+		$sql = $wpdb->prepare(
 			"INSERT INTO `$table`
-			(`time`, `ip`, `hook`, `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, `host`)
+			(`time`, `hook`, `ip`, `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, `host`)
 			VALUES (%d, %s, %s, %s, %s, %d, %d, %d, %d, %d, %s)
 			ON DUPLICATE KEY UPDATE
 			`time` = VALUES(`time`),
@@ -834,8 +835,8 @@ class IP_Geo_Block_Logs {
 			`last` = VALUES(`last`),
 			`view` = VALUES(`view`)",
 			$cache['time'],
-			$cache['ip'  ],
 			$cache['hook'],
+			$cache['ip'  ],
 			$cache['asn' ],
 			$cache['code'],
 			$cache['auth'],
@@ -857,10 +858,8 @@ class IP_Geo_Block_Logs {
 		$result = TRUE;
 
 		foreach ( empty( $entry ) ? array( IP_Geo_Block::get_ip_address() ) : $entry as $ip ) {
-			if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
-				$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = %s", $ip )
-				and $result &= ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
-			}
+			$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = '%s'", $ip )
+			and $result &= ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
 		}
 
 		return $result;
@@ -885,6 +884,7 @@ class IP_Geo_Block_Logs {
 	 * Search blocked requests
 	 *
 	 * @param string $key 'method' or 'data'
+	 * @param string $search search string
 	 */
 	public static function search_blocked_logs( $key, $search ) {
 		global $wpdb;

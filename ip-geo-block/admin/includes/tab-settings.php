@@ -1093,6 +1093,18 @@ endif;
 			$option_slug
 		);
 
+		// Local DBs and APIs
+		$provider  = IP_Geo_Block_Provider::get_providers( 'key' );
+		$providers = IP_Geo_Block_Provider::get_addons( $options['providers'] );
+
+		// Disable 3rd parties API in case of 'anonymize'
+		if ( $options['anonymize'] ) {
+			foreach ( array_keys( $provider ) as $key ) {
+				if ( ! in_array( $key, $providers, TRUE ) )
+					$provider[ $key ] = -1;
+			}
+		}
+
 		// API selection and key settings
 		$field = 'providers';
 		add_settings_field(
@@ -1106,7 +1118,7 @@ endif;
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
-				'providers' => IP_Geo_Block_Provider::get_providers( 'key' ),
+				'providers' => $provider, //IP_Geo_Block_Provider::get_providers( 'key' ),
 				'titles' => IP_Geo_Block_Provider::get_providers( 'type' ),
 			)
 		);
@@ -1132,8 +1144,6 @@ endif;
 		/*----------------------------------------*
 		 * Local database settings
 		 *----------------------------------------*/
-		// Local DBs for each API
-		$providers = IP_Geo_Block_Provider::get_addons( $options['providers'] );
 		if ( empty( $providers ) ) {
 			$context->add_admin_notice( 'error', sprintf(
 				__( 'Can not find geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
@@ -1657,8 +1667,8 @@ endif;
 	public static function note_services() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'While Maxmind and IP2Location will fetch the local database, others will pass an IP address to the APIs via HTTP.', 'ip-geo-block' ), '</li>', "\n",
-				'<li>', __( 'Please select the appropriate APIs to fit the privacy law in your country.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'While Geolite2&thinsp;/&thinsp;Maxmind and IP2Location will fetch the local databases, others will pass an IP address to the 3rd parties\' API via HTTP.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'Please select the appropriate APIs to fit the privacy law&thinsp;/&thinsp;regulation in your country&thinsp;/&thinsp;region.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 

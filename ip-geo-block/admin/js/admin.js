@@ -311,7 +311,8 @@
 
 			// reset all checkboxes
 			if (clear) {
-				$('input[type="checkbox"]').prop('checked', false).change();
+				$('input[type="checkbox"]').prop('checked',  false).change();
+				$('input[name*=providers]').prop('disabled', false).change();
 			}
 
 			// deserialize to the form
@@ -868,10 +869,11 @@
 
 		// Bulk action
 		$(ID('#', 'bulk-action')).off('click').on('click', function (/*event*/) {
-			var cmd  = $(this).prev().val(), // value of selected option
-			    rexp = /(<([^>]+)>)/ig,      // regular expression to strip tag
-			    data = { IP: [], AS: [] },   // IP address and AS number
-			    cell, cells = $('table.dataTable').find('td>input:checked');
+			var cmd  = $(this).prev().val(),         // value of selected option
+			    texp = /(<([^>]+)>)/ig,              // regular expression to strip tag
+			    hexp = /data-hash=[\W]([\w]+)[\W]/i, // regular expression to extract hash
+			    data = { IP: [], AS: [] },           // IP address and AS number
+			    hash, cell, cells = $('table.dataTable').find('td>input:checked');
 
 			if (!cmd) {
 				return false;
@@ -882,8 +884,18 @@
 
 			cells.each(function (/*index*/) {
 				cell = table.cell(this.parentNode).data();
-				data.IP.push(cell[control.columnIP].replace(rexp, ''));
-				data.AS.push(cell[control.columnAS].replace(rexp, ''));
+
+				// hash for anonymized IP address
+				// ex:＜span＞＜a href="#!" data-hash="abcdef0123456789"＞123.456.789.***＜/a＞＜/span＞
+				if ('bulk-action-remove' === cmd) {
+					hash = cell[control.columnIP].match(hexp);
+					hash = hash ? ',' + hash[1] : '';
+				} else {
+					hash = '';
+				}
+
+				data.IP.push(cell[control.columnIP].replace(texp, '') + hash);
+				data.AS.push(cell[control.columnAS].replace(texp, ''));
 			});
 
 			if (data.IP.length) {

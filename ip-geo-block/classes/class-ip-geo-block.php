@@ -320,7 +320,7 @@ class IP_Geo_Block {
 		foreach ( $providers as $provider ) {
 			$time = microtime( TRUE );
 			if ( ( $geo = IP_Geo_Block_API::get_instance( $provider, $settings ) ) &&
-			     ( $code = $geo->$callback( $ip, $args ) ) ) {
+			     ( $code = $geo->$callback( $ip, $args, $settings['anonymize'] ) ) ) {
 				// Get AS number @since 3.0.4
 				if ( ( ! empty( $settings[ $provider ]['use_asn'] ) ) &&
 				     ( ! isset( $code['asn'] ) || 0 !== strpos( $code['asn'], 'AS' ) ) &&
@@ -669,14 +669,14 @@ class IP_Geo_Block {
 	public function auth_fail( $something = NULL ) {
 		// Count up a number of fails when authentication is failed
 		$time = microtime( TRUE );
-		if ( $cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr ) ) {
+		$settings = self::get_option();
+		if ( $cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr, $settings['anonymize'] ) ) {
 			$validate = self::make_validation( self::$remote_addr, array(
 				'result'   => 'failed', // count up $cache['fail'] in update_cache()
 				'provider' => 'Cache',
 				'time'     => microtime( TRUE ) - $time,
 			) + $cache );
 
-			$settings = self::get_option();
 			$cache = IP_Geo_Block_API_Cache::update_cache( $hook = defined( 'XMLRPC_REQUEST' ) ? 'xmlrpc' : 'login', $validate, $settings );
 
 			// the whitelist of IP address should be prior
@@ -709,7 +709,7 @@ class IP_Geo_Block {
 
 	public function check_fail( $validate, $settings ) {
 		// check if number of fails reaches the limit. can't overwrite existing result.
-		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'] );
+		$cache = IP_Geo_Block_API_Cache::get_cache( $validate['ip'], $settings['anonymize'] );
 		return $cache && $cache['fail'] > max( 0, (int)$settings['login_fails'] ) ? $validate + array( 'result' => 'limited' ) : $validate;
 	}
 
@@ -863,7 +863,7 @@ class IP_Geo_Block {
 
 	public function check_behavior( $validate, $settings ) {
 		// check if page view with a short period time is under the threshold
-		$cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr );
+		$cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr, $settings['anonymize'] );
 		if ( $cache && $cache['view'] >= $settings['behavior']['view'] && $_SERVER['REQUEST_TIME'] - $cache['last'] <= $settings['behavior']['time'] ) {
 			return $validate + array( 'result' => 'badbot' ); // can't overwrite existing result
 		}

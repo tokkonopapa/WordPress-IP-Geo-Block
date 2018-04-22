@@ -801,22 +801,18 @@ class IP_Geo_Block_Admin {
 			echo "\n<ul class=\"ip-geo-block-list\">\n";
 			foreach ( $args['providers'] as $key => $val ) {
 				$id   = "${args['option']}_providers_{$key}";
-				$name = "${args['option']}[providers][$key]"; ?>
+				$name = "${args['option']}[providers][$key]";
+				$stat = ( NULL   === $val   && ! isset( $args['value'][ $key ] ) ) ||
+				        ( FALSE  === $val   && ! empty( $args['value'][ $key ] ) ) ||
+				        ( is_string( $val ) && ! empty( $args['value'][ $key ] ) ); ?>
 	<li>
-		<input type="checkbox" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo $val; ?>"<?php
-			checked(
-				( NULL   === $val   && ! isset( $args['value'][ $key ] ) ) ||
-				( FALSE  === $val   && ! empty( $args['value'][ $key ] ) ) ||
-				( is_string( $val ) && ! empty( $args['value'][ $key ] ) )
-			); ?> />
+		<input type="checkbox" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo $val; ?>"<?php checked( $stat && -1 !== $val ); disabled( -1 === $val ); ?> />
 		<label for="<?php echo $id; ?>"><?php echo '<dfn title="', esc_attr( $args['titles'][ $key ] ), '">', $key, '</dfn>'; ?></label>
-<?php
-				if ( is_string( $val ) ) { ?>
+<?php			if ( is_string( $val ) ) { ?>
 		<input type="text" class="regular-text code" name="<?php echo $name; ?>" value="<?php echo esc_attr( isset( $args['value'][ $key ] ) ? $args['value'][ $key ] : '' ); ?>"<?php if ( ! isset( $val ) ) disabled( TRUE, TRUE ); ?> />
+<?php			} ?>
 	</li>
-<?php
-				}
-			}
+<?php		}
 			echo "</ul>\n";
 			break;
 
@@ -830,8 +826,8 @@ class IP_Geo_Block_Admin {
 			if ( isset( $args['desc'][ $key ] ) )
 				echo '<dfn title="', $args['desc'][ $key ], '">', $val, '</dfn>';
 			else
-				echo $val;
-		?></label>
+				echo $val; ?>
+		</label>
 	</li>
 <?php
 			}
@@ -1488,11 +1484,11 @@ class IP_Geo_Block_Admin {
 			foreach ( array_unique( (array)$which[ $src ] ) as $val ) {
 				// replace anonymized IP address with CIDR (IPv4:256, IPv6:4096)
 				$val = preg_replace(
-					array( '!\.\*\*\*$!', '!\*\*\*$!' ),
-					array( '.0/24',       '000/116'   ),
+					array( '/\.\*\*\*.*$/', '/\*\*\*.*$/' ),
+					array( '.0/24',         '000/116'     ),
 					$val
 				);
-				if ( ( filter_var( preg_replace( '!/\d+$!', '', $val ), FILTER_VALIDATE_IP ) || preg_match( '^AS\d+$', $val ) ) &&
+				if ( ( filter_var( preg_replace( '/\/\d+$/', '', $val ), FILTER_VALIDATE_IP ) || preg_match( '/^AS\d+$/', $val ) ) &&
 				     ( FALSE === strpos( $settings['extra_ips'][ $dst ], $val ) ) ) {
 					$settings['extra_ips'][ $dst ] .= "\n" . $val;
 				}

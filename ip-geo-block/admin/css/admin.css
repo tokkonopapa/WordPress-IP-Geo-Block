@@ -187,6 +187,10 @@ fieldset.ip-geo-block-field textarea.regular-text {
     margin-top: 1em;
     list-style: disc inside;
 }
+.ip-geo-block-note li {
+    text-indent: -1em;
+    padding-left: 1em;
+}
 .ip-geo-block-border {
     border-top: inherit;
 }
