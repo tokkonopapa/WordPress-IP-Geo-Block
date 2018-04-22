@@ -665,8 +665,8 @@ class IP_Geo_Block_Admin {
 			1 => __( 'Statistics',   'ip-geo-block' ),
 			4 => __( 'Logs',         'ip-geo-block' ),
 			2 => __( 'Search',       'ip-geo-block' ),
-			5 => __( 'Site List',    'ip-geo-block' ),
 			3 => __( 'Attribution',  'ip-geo-block' ),
+			5 => __( 'Site List',    'ip-geo-block' ),
 		);
 
 		$settings = IP_Geo_Block::get_option();
@@ -758,8 +758,8 @@ class IP_Geo_Block_Admin {
 			1 => 'admin/includes/tab-statistics.php',
 			4 => 'admin/includes/tab-accesslog.php',
 			2 => 'admin/includes/tab-geolocation.php',
-			5 => 'admin/includes/tab-network.php',
 			3 => 'admin/includes/tab-attribution.php',
+			5 => 'admin/includes/tab-network.php',
 		);
 
 		require_once IP_GEO_BLOCK_PATH . $files[ $this->admin_tab ];
@@ -795,22 +795,18 @@ class IP_Geo_Block_Admin {
 			echo "\n<ul class=\"ip-geo-block-list\">\n";
 			foreach ( $args['providers'] as $key => $val ) {
 				$id   = "${args['option']}_providers_{$key}";
-				$name = "${args['option']}[providers][$key]"; ?>
+				$name = "${args['option']}[providers][$key]";
+				$stat = ( NULL   === $val   && ! isset( $args['value'][ $key ] ) ) ||
+				        ( FALSE  === $val   && ! empty( $args['value'][ $key ] ) ) ||
+				        ( is_string( $val ) && ! empty( $args['value'][ $key ] ) ); ?>
 	<li>
-		<input type="checkbox" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo $val; ?>"<?php
-			checked(
-				( NULL   === $val   && ! isset( $args['value'][ $key ] ) ) ||
-				( FALSE  === $val   && ! empty( $args['value'][ $key ] ) ) ||
-				( is_string( $val ) && ! empty( $args['value'][ $key ] ) )
-			); ?> />
+		<input type="checkbox" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo $val; ?>"<?php checked( $stat ); ?> />
 		<label for="<?php echo $id; ?>"><?php echo '<dfn title="', esc_attr( $args['titles'][ $key ] ), '">', $key, '</dfn>'; ?></label>
-<?php
-				if ( is_string( $val ) ) { ?>
+<?php			if ( is_string( $val ) ) { ?>
 		<input type="text" class="regular-text code" name="<?php echo $name; ?>" value="<?php echo esc_attr( isset( $args['value'][ $key ] ) ? $args['value'][ $key ] : '' ); ?>"<?php if ( ! isset( $val ) ) disabled( TRUE, TRUE ); ?> />
+<?php			} ?>
 	</li>
-<?php
-				}
-			}
+<?php		}
 			echo "</ul>\n";
 			break;
 
@@ -824,8 +820,8 @@ class IP_Geo_Block_Admin {
 			if ( isset( $args['desc'][ $key ] ) )
 				echo '<dfn title="', $args['desc'][ $key ], '">', $val, '</dfn>';
 			else
-				echo $val;
-		?></label>
+				echo $val; ?>
+		</label>
 	</li>
 <?php
 			}
@@ -916,7 +912,7 @@ class IP_Geo_Block_Admin {
 		$default = IP_Geo_Block::get_default();
 
 		// Integrate posted data into current settings because it can be a part of hole data
-		$input = array_replace_recursive(
+		$input = $this->array_replace_recursive(
 			$output = $this->preprocess_options( $output, $default ), $input
 		);
 
@@ -1189,6 +1185,46 @@ class IP_Geo_Block_Admin {
 		return $output;
 	}
 
+	/**
+	 * A fallback function of array_replace_recursive() before PHP 5.3.
+	 *
+	 * @link http://php.net/manual/en/function.array-replace-recursive.php#92574
+	 * @link http://php.net/manual/en/function.array-replace-recursive.php#109390
+	 */
+	public function array_replace_recursive() {
+		if ( function_exists( 'array_replace_recursive' ) ) {
+			$args = func_get_args();
+			return call_user_func_array( 'array_replace_recursive', $args );
+		}
+
+		else {
+			foreach ( array_slice( func_get_args(), 1 ) as $replacements ) {
+				$bref_stack = array( &$base );
+				$head_stack = array( $replacements );
+
+				do {
+					end( $bref_stack );
+
+					$bref = &$bref_stack[ key( $bref_stack ) ];
+					$head = array_pop( $head_stack );
+
+					unset( $bref_stack[ key( $bref_stack ) ] );
+
+					foreach ( array_keys( $head ) as $key ) {
+						if ( isset( $key, $bref ) && is_array( $bref[ $key ] ) && is_array( $head[ $key ] ) ) {
+							$bref_stack[] = &$bref[ $key ];
+							$head_stack[] = $head [ $key ];
+						} else {
+							$bref[ $key ] = $head [ $key ];
+						}
+					}
+				} while( count( $head_stack ) );
+			}
+
+			return $base;
+		}
+	}
+
 	// Callback for preg_replace_callback()
 	public function strtoupper( $matches ) {
 		return filter_var( $matches[1], FILTER_VALIDATE_IP ) ? $matches[0] : strtoupper( $matches[0] );
@@ -1442,11 +1478,11 @@ class IP_Geo_Block_Admin {
 			foreach ( array_unique( (array)$which[ $src ] ) as $val ) {
 				// replace anonymized IP address with CIDR (IPv4:256, IPv6:4096)
 				$val = preg_replace(
-					array( '!\.\*\*\*$!', '!\*\*\*$!' ),
-					array( '.0/24',       '000/116'   ),
+					array( '/\.\*\*\*.*$/', '/\*\*\*.*$/' ),
+					array( '.0/24',         '000/116'     ),
 					$val
 				);
-				if ( ( filter_var( preg_replace( '!/\d+$!', '', $val ), FILTER_VALIDATE_IP ) || preg_match( '^AS\d+$', $val ) ) &&
+				if ( ( filter_var( preg_replace( '/\/\d+$/', '', $val ), FILTER_VALIDATE_IP ) || preg_match( '/^AS\d+$/', $val ) ) &&
 				     ( FALSE === strpos( $settings['extra_ips'][ $dst ], $val ) ) ) {
 					$settings['extra_ips'][ $dst ] .= "\n" . $val;
 				}
