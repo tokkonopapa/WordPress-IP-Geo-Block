@@ -61,7 +61,7 @@ class IP_Geo_Block_Admin_Ajax {
 		$ip        = IP_Geo_Block::get_ip_address();
 		$args      = IP_Geo_Block::get_request_headers( $options );
 		$type      = IP_Geo_Block_Provider::get_providers( 'type', FALSE, FALSE );
-		$providers = IP_Geo_Block_Provider::get_valid_providers( $options['providers'], FALSE, FALSE );
+		$providers = IP_Geo_Block_Provider::get_valid_providers( $options, FALSE, FALSE );
 
 		$res['IP address'] = esc_html( $ip );
 

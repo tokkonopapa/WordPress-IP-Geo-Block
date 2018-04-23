@@ -295,7 +295,7 @@ class IP_Geo_Block {
 		$settings = self::get_option();
 
 		if ( empty( $providers ) ) // make valid providers list
-			$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
+			$providers = IP_Geo_Block_Provider::get_valid_providers( $settings );
 
 		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address( $settings ), $settings, $providers, array(), $callback );
 
@@ -448,7 +448,7 @@ class IP_Geo_Block {
 		$settings['login_fails'] >= 0          and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
 
 		// make valid provider name list
-		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
+		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings );
 
 		// apply custom filter for validation
 		// @example add_filter( 'ip-geo-block-$hook', 'my_validation', 10, 2 );

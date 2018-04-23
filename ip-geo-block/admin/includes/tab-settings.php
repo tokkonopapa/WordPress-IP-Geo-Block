@@ -1101,7 +1101,7 @@ endif;
 		if ( $options['anonymize'] ) {
 			foreach ( array_keys( $provider ) as $key ) {
 				if ( ! in_array( $key, $providers, TRUE ) )
-					$provider[ $key ] = -1;
+					$provider[ $key ] = is_string( $provider[ $key ] ) ? '-1' : -1;
 			}
 		}
 
@@ -1118,7 +1118,7 @@ endif;
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
-				'providers' => $provider, //IP_Geo_Block_Provider::get_providers( 'key' ),
+				'providers' => $provider,
 				'titles' => IP_Geo_Block_Provider::get_providers( 'type' ),
 			)
 		);
@@ -1329,22 +1329,6 @@ endif;
 			)
 		);
 
-		// Anonymize IP address
-		$field = 'anonymize';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( '<dfn title="e.g. 123.456.789.***">Anonymize IP address</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => ! empty( $options[ $field ] ) ? TRUE : FALSE,
-			)
-		);
-
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		// Live update
 		$field = 'live_update';
@@ -1501,6 +1485,22 @@ endif;
 			__( 'Plugin settings', 'ip-geo-block' ),
 			NULL,
 			$option_slug
+		);
+
+		// Anonymize IP address
+		$field = 'anonymize';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="Anonymize IP address for GDPR (General Data Protection Regulation) compliance.">Privacy friendly</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => ! empty( $options[ $field ] ) ? TRUE : FALSE,
+			)
 		);
 if (0):
 		// @see https://vedovini.net/2015/10/using-the-wordpress-settings-api-with-network-admin-pages/

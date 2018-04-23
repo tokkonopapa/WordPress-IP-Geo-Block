@@ -606,7 +606,7 @@ class IP_Geo_Block_Provider {
 	 * Returns the pairs of provider name and API key
 	 *
 	 */
-	public static function get_providers( $key = 'key', $rand = FALSE, $cache = FALSE ) {
+	public static function get_providers( $key = 'key', $rand = FALSE, $cache = FALSE, $all = TRUE ) {
 		// add internal DB
 		$list = array();
 		foreach ( self::$internals as $provider => $tmp ) {
@@ -614,14 +614,16 @@ class IP_Geo_Block_Provider {
 				$list[ $provider ] = $tmp[ $key ];
 		}
 
-		$tmp = array_keys( self::$providers );
+		if ( $all ) {
+			$tmp = array_keys( self::$providers );
 
-		// randomize
-		if ( $rand )
-			shuffle( $tmp );
+			// randomize
+			if ( $rand )
+				shuffle( $tmp );
 
-		foreach ( $tmp as $name ) {
-			$list[ $name ] = self::$providers[ $name ][ $key ];
+			foreach ( $tmp as $name ) {
+				$list[ $name ] = self::$providers[ $name ][ $key ];
+			}
 		}
 
 		return $list;
@@ -631,13 +633,13 @@ class IP_Geo_Block_Provider {
 	 * Returns providers name list which are checked in settings
 	 *
 	 */
-	public static function get_valid_providers( $settings, $rand = TRUE, $cache = TRUE ) {
+	public static function get_valid_providers( $settings, $rand = TRUE, $cache = TRUE, $all = TRUE ) {
 		$list = array();
+		$providers = $settings['providers'];
 
-		foreach ( self::get_providers( 'key', $rand, $cache ) as $provider => $key ) {
-			if ( ! empty( $settings[ $provider ] ) || (
-			     ! isset( $settings[ $provider ] ) && NULL === $key ) ) {
-				$list[] = $provider;
+		foreach ( self::get_providers( 'key', $rand, $cache, ! $settings['anonymize'] && $all ) as $key => $val ) {
+			if ( ! empty( $providers[ $key ] ) || ( ! isset( $providers[ $key ] ) && NULL === $val ) ) {
+				$list[] = $key;
 			}
 		}
 

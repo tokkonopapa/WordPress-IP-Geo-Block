@@ -511,7 +511,7 @@ class IP_Geo_Block_Logs {
 
 		// anonymize ip address
 		if ( ! empty( $settings['anonymize'] ) )
-			$validate['ip'] = preg_replace( '/\d{1,3}$/', '***', $validate['ip'] );
+			$validate['ip'] = preg_replace( '/\w{1,3}$/', '***', $validate['ip'] );
 
 		if ( $record ) {
 			// count the number of rows for each hook
@@ -787,7 +787,7 @@ class IP_Geo_Block_Logs {
 	 *
 	 */
 	private static function anonymize_ip( $ip ) {
-		return preg_replace( '/\d{1,3}$/', '***', $ip ) . ',' . md5( $ip . @$_SERVER['HTTP_USER_AGENT'] );
+		return preg_replace( '/\w{1,3}$/', '***', $ip ) . ',' . md5( $ip . @$_SERVER['HTTP_USER_AGENT'] );
 	}
 
 	/**

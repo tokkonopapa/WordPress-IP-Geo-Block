@@ -55,13 +55,12 @@ class IP_Geo_Block_Admin_Tab {
 		// preset IP address
 		if ( isset( $_GET['s'] ) ) {
 			$list = preg_replace(
-				array( '!\.\*\*\*!', '!\*\*\*!' ),
-				array( '.0',         '000'      ),
+				array( '/\.\*\*\*.*$/', '/\*\*\*.*$/' ),
+				array( '.0',            '000'         ),
 				$_GET['s']
 			); // Anonymize IP address
 			$list = filter_var( $list, FILTER_VALIDATE_IP ) ? $list : '';
-		}
-		else {
+		} else {
 			$list = '';
 		}
 
@@ -77,6 +76,22 @@ class IP_Geo_Block_Admin_Tab {
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $list,
+			)
+		);
+
+		// Anonymize IP address
+		$field = 'anonymize';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="Anonymize IP address for GDPR (General Data Protection Regulation) compliance.">Privacy friendly</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => ! empty( $options[ $field ] ) ? TRUE : FALSE,
 			)
 		);
 

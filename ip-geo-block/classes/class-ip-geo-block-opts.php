@@ -73,7 +73,7 @@ class IP_Geo_Block_Opts {
 		// since version 3.0.9
 		'priority' => PHP_INT_MAX,    // Action priority for WP-ZEP
 		// since version 2.2.0
-		'anonymize'       => FALSE,   // Anonymize IP address to hide privacy
+		'anonymize'       => TRUE,    // Anonymize IP address to hide privacy
 		'signature'       => '../,/wp-config.php,/passwd', // malicious signature
 		'extra_ips'       => array(   // Additional IP validation
 			'white_list'  => NULL,    // White list of IP addresses

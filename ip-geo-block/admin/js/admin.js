@@ -333,8 +333,12 @@
 			// Admin ajax/post
 			show_folding_ajax($(ID('@', 'validation_ajax_1')));
 
-			// Additional edge case
+			// Additional edge case (it should be optimized except IPInfoDB)
 			if (clear) {
+				/*$('input[name*=providers]').each(function(i, elm) {
+					elm = $(elm);
+					elm.prop('checked', json[elm.prop('name')] ? false : true);
+				});*/
 				clear = ID('%', 'settings[providers][IPInfoDB]');
 				$(ID('@', 'providers_IPInfoDB')).prop('checked', json[clear] ? true : false);
 			}
@@ -1837,6 +1841,12 @@
 				    ip = $.trim($(ID('@', 'ip_address')).val());
 
 				if (ip) {
+					// Anonymize IP address
+					if ($(ID('@', 'anonymize' )).prop('checked')) {
+						ip = ip.replace(/([\.\:])\w{1,4}$/, '$1' + '0');
+						$(ID('@', 'ip_address')).val(ip);
+					}
+
 					whois.hide().empty();
 
 					// Get whois data

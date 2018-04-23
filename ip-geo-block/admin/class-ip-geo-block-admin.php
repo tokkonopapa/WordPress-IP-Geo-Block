@@ -806,10 +806,10 @@ class IP_Geo_Block_Admin {
 				        ( FALSE  === $val   && ! empty( $args['value'][ $key ] ) ) ||
 				        ( is_string( $val ) && ! empty( $args['value'][ $key ] ) ); ?>
 	<li>
-		<input type="checkbox" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo $val; ?>"<?php checked( $stat && -1 !== $val ); disabled( -1 === $val ); ?> />
+		<input type="checkbox" id="<?php echo $id; ?>" name="<?php echo $name; ?>" value="<?php echo $val; ?>"<?php checked( $stat && -1 !== (int)$val ); disabled( -1 === (int)$val ); ?> />
 		<label for="<?php echo $id; ?>"><?php echo '<dfn title="', esc_attr( $args['titles'][ $key ] ), '">', $key, '</dfn>'; ?></label>
 <?php			if ( is_string( $val ) ) { ?>
-		<input type="text" class="regular-text code" name="<?php echo $name; ?>" value="<?php echo esc_attr( isset( $args['value'][ $key ] ) ? $args['value'][ $key ] : '' ); ?>"<?php if ( ! isset( $val ) ) disabled( TRUE, TRUE ); ?> />
+		<input type="text" class="regular-text code" name="<?php echo $name; ?>" value="<?php echo esc_attr( isset( $args['value'][ $key ] ) ? $args['value'][ $key ] : '' ); ?>" placeholder="API key" />
 <?php			} ?>
 	</li>
 <?php		}
