@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-04-23 22:50+0900\n"
-"PO-Revision-Date: 2018-04-23 22:51+0900\n"
+"POT-Creation-Date: 2018-04-26 08:39+0900\n"
+"PO-Revision-Date: 2018-04-26 08:39+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "Language: en_001\n"
@@ -468,8 +468,8 @@ msgstr ""
 
 #: admin/includes/tab-geolocation.php:86 admin/includes/tab-settings.php:1494
 msgid ""
-"<dfn title=\"Anonymize IP address for GDPR (General Data Protection "
-"Regulation) compliance.\">Privacy friendly</dfn>"
+"<dfn title=\"Anonymize personal information (e.g. IP address) and refrain "
+"from sending it to third parties.\">Privacy friendly</dfn>"
 msgstr ""
 
 #: admin/includes/tab-geolocation.php:101
