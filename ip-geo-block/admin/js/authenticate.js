@@ -228,7 +228,11 @@
 	// Note: in case of url in the admin area of different site, it returns 0
 	function is_admin(url) {
 		// parse uri and get real path
-		url = url || window.location.pathname; // in case of empty `action` on the form tag
+		try {
+			url = url || window.location.pathname || ''; // in case of empty `action` on the form tag
+		} catch (e) {
+			url = '';
+		}
 		var uri = parse_uri(url.toLowerCase());
 
 		// possibly scheme is `javascript` and path is `void(0);`
