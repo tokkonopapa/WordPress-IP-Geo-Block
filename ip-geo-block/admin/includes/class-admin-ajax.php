@@ -133,10 +133,17 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	private static function format_logs( $rows ) {
+		$options = IP_Geo_Block::get_option();
 		$res = array();
 
 		foreach ( $rows as $row ) {
 			$row = array_map( 'esc_html', $row );
+
+			if ( $options['anonymize'] ) {
+				$row[2] = preg_replace( '/\d{1,3}$/', '***', $row[2] );
+				$row[8] = IP_Geo_Block_Util::anonymize_ip( $row[8] );
+			}
+
 			$res[] = array(
 				/*  0 Checkbox     */ '',
 				/*  1 Time (raw)   */ $row[1],
@@ -197,6 +204,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
 	public static function restore_cache( $which ) {
+		$options = IP_Geo_Block::get_option();
 		$time = time();
 		$res = array();
 
@@ -204,6 +212,8 @@ class IP_Geo_Block_Admin_Ajax {
 			// in case of anonymized IP address
 			$key = explode( ',', esc_html( $key ), 2 );
 			empty( $key[1] ) and $key[1] = '';
+
+			$options['anonymize'] and $key[0] = preg_replace( '/\d{1,3}$/', '***', $key[0] );
 
 			$res[] = array(
 				/* Checkbox     */ '',

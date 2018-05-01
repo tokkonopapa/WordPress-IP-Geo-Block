@@ -55,7 +55,7 @@ class IP_Geo_Block_Admin_Tab {
 		// preset IP address
 		if ( isset( $_GET['s'] ) ) {
 			$list = preg_replace(
-				array( '/\.\*\*\*.*$/', '/\*\*\*.*$/' ),
+				array( '/\.\*{3,}.*$/', '/\*{3,}.*$/' ),
 				array( '.0',            '000'         ),
 				$_GET['s']
 			); // Anonymize IP address
@@ -83,7 +83,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'anonymize';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="Anonymize IP address for GDPR (General Data Protection Regulation) compliance.">Privacy friendly</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="It makes an IP address anonymous on recording into the database and restricted on sending to the 3rd parties.">Privacy friendly</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

@@ -314,7 +314,7 @@ class IP_Geo_Block_Logs {
 		return isset( $_SERVER['HTTP_USER_AGENT'] ) ? self::truncate_utf8( $_SERVER['HTTP_USER_AGENT'] ) : '';
 	}
 
-	private static function get_http_headers() {
+	private static function get_http_headers( $anonymize ) {
 		$exclusions = array(
 			'HTTP_ACCEPT' => TRUE,
 			'HTTP_ACCEPT_CHARSET' => TRUE,
@@ -335,7 +335,8 @@ class IP_Geo_Block_Logs {
 				$headers[] = $key . '=' . $_SERVER[ $key ];
 		}
 
-		return self::truncate_utf8( implode( ',', $headers ) );
+		$headers = self::truncate_utf8( implode( ',', $headers ) );
+		return $anonymize ? IP_Geo_Block_Util::anonymize_ip( $headers ) : $headers;
 	}
 
 	private static function get_post_data( $hook, $validate, $settings ) {
@@ -491,7 +492,7 @@ class IP_Geo_Block_Logs {
 	 * @param boolean $record record logs (TRUE) or not
 	 */
 	public static function record_logs( $hook, $validate, $settings, $block = TRUE ) {
-		$record = $settings['validation'][ $hook ] ? apply_filters( IP_Geo_Block::PLUGIN_NAME . '-record-logs', (int)$settings['validation']['reclogs'], $hook, $validate ) : FALSE;
+		$record = $settings['validation'][ $hook ] ? apply_filters( IP_Geo_Block::PLUGIN_NAME . '-record-logs', (int)$settings['validation']['reclogs'], $hook, $validate ) : 0;
 		$record = ( 1 === $record &&   $block ) || // blocked
 		          ( 6 === $record && ( $block   || IP_Geo_Block::is_blocked( IP_Geo_Block::validate_country( NULL, $validate, $settings ) ) ) ) || // blocked or qualified
 		          ( 2 === $record && ! $block ) || // passed
@@ -501,7 +502,7 @@ class IP_Geo_Block_Logs {
 
 		// get data
 		$agent = self::get_user_agent();
-		$heads = self::get_http_headers();
+		$heads = self::get_http_headers( $settings['anonymize'] );
 		$posts = self::get_post_data( $hook, $validate, $settings );
 		$method = $_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . $_SERVER['REQUEST_URI'];
 
@@ -513,7 +514,7 @@ class IP_Geo_Block_Logs {
 		if ( ! empty( $settings['anonymize'] ) )
 			$validate['ip'] = preg_replace( '/\w{1,3}$/', '***', $validate['ip'] );
 
-		if ( $record ) {
+		if ( $record /*&& ! empty( $settings['agreement'] )*/ ) {
 			// count the number of rows for each hook
 			global $wpdb;
 			$table = $wpdb->prefix . self::TABLE_LOGS;
@@ -910,10 +911,9 @@ class IP_Geo_Block_Logs {
 		}
 
 		if ( $msg ) {
+			error_log( $msg = __FILE__ . ' (' . $line . ') ' . $msg );
 			if ( class_exists( 'IP_Geo_Block_Admin', FALSE ) )
-				IP_Geo_Block_Admin::add_admin_notice( 'error', __FILE__ . ' (' . $line . ') ' . $msg );
-
-			error_log( __FILE__ . ' (' . $line . ') ' . $msg );
+				IP_Geo_Block_Admin::add_admin_notice( 'error', $msg );
 		}
 	}
 

@@ -1491,7 +1491,7 @@ endif;
 		$field = 'anonymize';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="Anonymize IP address for GDPR (General Data Protection Regulation) compliance.">Privacy friendly</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="It makes an IP address anonymous on recording into the database and restricted on sending to the 3rd parties.">Privacy friendly</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1499,10 +1499,10 @@ endif;
 				'type' => 'checkbox',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => ! empty( $options[ $field ] ) ? TRUE : FALSE,
+				'value' => ! empty( $options[ $field ] ),
 			)
 		);
-if (0):
+
 		// @see https://vedovini.net/2015/10/using-the-wordpress-settings-api-with-network-admin-pages/
 		if ( is_main_site() && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			add_action( 'network_admin_edit_' . IP_Geo_Block::PLUGIN_NAME, array( $context, 'validate_network_settings' ) );
@@ -1524,7 +1524,7 @@ if (0):
 				)
 			);
 		}
-endif;
+
 		// Remove all settings at uninstallation
 		$field = 'clean_uninstall';
 		add_settings_field(

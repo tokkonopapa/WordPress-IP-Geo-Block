@@ -144,6 +144,11 @@ fieldset.ip-geo-block-field textarea.regular-text {
     font-size: 95%;
 }
 
+/* Geolocation API settings */
+input[id*="ip_geo_block_settings_providers"] + label {
+    min-width: 7em;
+}
+
 /* Folding */
 .ip-geo-block-settings-folding {
     margin: 0.5em 0;

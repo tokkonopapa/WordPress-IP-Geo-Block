@@ -14,11 +14,14 @@ It blocks spam posts, login attempts and malicious access to the back-end reques
 
 A considerable number of WordPress vulnerabilities in plugins and themes have been disclosed every month on a site like [WPScan Vulnerability Database](https://wpvulndb.com/ "WPScan Vulnerability Database") and [Exploits Database](https://www.exploit-db.com/ "Exploits Database by Offensive Security"). It means that we're always exposed to the threats of being exploited caused by them.
 
-This plugin guards your site against threats of attack to back-end of your site such as login form, XML-RPC (login attempt) and admin area. It also blocks undesired comment spam, trackback and pingback spam and any requests to public facing pages aka front-end from undesired countries.
+This plugin guards your site against threats of attack to the back-end of your site such as login form, XML-RPC (login attempt) and admin area. It also blocks undesired comment spam, trackback and pingback spam and any requests to public facing pages aka front-end from undesired countries.
 
 After several days of installation, you'll be supprised to find many malicious or undesirable accesses are blocked especially if you enable Zero-day Expoit Prevention.
 
 = Features =
+
+* **Privacy friendly:**  
+  IP address can be processed anonymously on recording log/cache and on sending 3rd parties such as geolocation APIs/whois database.
 
 * **Immigration control:**  
   Access to the basic and important entrances into back-end such as `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-signup.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by means of a country code based on IP address. It allows you to configure either whitelist or blacklist to [specify the countires](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia"), [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia") for a range of IP addresses and [AS number](https://en.wikipedia.org/wiki/Autonomous_system_(Internet) "Autonomous system (Internet) - Wikipedia") for a group of IP networks.
@@ -46,17 +49,17 @@ After several days of installation, you'll be supprised to find many malicious o
 
 * **Multiple source of IP Geolocation databases:**  
   [MaxMind GeoLite2 free databases](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") (it requires PHP 5.4.0+) and [IP2Location LITE databases](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Also free Geolocation REST APIs and whois information can be available for audit purposes.  
-  Father more, if you use CloudFlare or CloudFront as a reverse proxy service, you can install the [dedicated API class libraries](http://www.ipgeoblock.com/article/api-class-library.html "CloudFlare & CloudFront API class library | IP Geo Block") for these services.
+  Father more, [dedicated API class libraries](http://www.ipgeoblock.com/article/api-class-library.html "CloudFlare & CloudFront API class library | IP Geo Block") can be installed for CloudFlare and CloudFront as a reverse proxy service.
 
 * **Customizing response:**  
   HTTP response code can be selectable as `403 Forbidden` to deny access pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
-  You can also have a human friendly page (like `404.php`) in your theme template directory or child theme directory to fit your theme.
+  You can also have a human friendly page (like `404.php`) in your parent/child theme template directory to fit your site design.
 
 * **Validation logs:**  
-  Validation logs can be recorded with useful information to audit attack patterns.
+  Validation logs for useful information to audit attack patterns can be manageable.
 
 * **Cooperation with full spec security plugin:**  
-  This plugin is simple and lite enough to be able to cooperate with other full spec security plugin such as [Wordfence Security](https://wordpress.org/plugins/wordfence/ "Wordfence Security &mdash; WordPress Plugins"). See [this report](http://www.ipgeoblock.com/codex/page-speed-performance.html "Page speed performance | IP Geo Block") about page speed performance.
+  This plugin is lite enough to be able to cooperate with other full spec security plugin such as [Wordfence Security](https://wordpress.org/plugins/wordfence/ "Wordfence Security &mdash; WordPress Plugins"). See [this report](http://www.ipgeoblock.com/codex/page-speed-performance.html "Page speed performance | IP Geo Block") about page speed performance.
 
 * **Extendability:**  
   You can customize the behavior of this plugin via `add_filter()` with [pre-defined filter hook](http://www.ipgeoblock.com/codex/ "Codex | IP Geo Block"). See various use cases in [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub") bundled within this package.
@@ -74,13 +77,13 @@ This package includes GeoLite2 library distributed by MaxMind, available from [M
 
 Also thanks for providing the following great services and REST APIs for free.
 
-* [http://freegeoip.net/](http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service") (IPv4 / free)
-* [http://ipinfo.io/](http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details") (IPv4, IPv6 / free)
+* [https://ipdata.co/](https://ipdata.co/ "ipdata.co - IP Geolocation and Threat Data API") (IPv4, IPv6 / free)
+* [https://ipinfo.io/](https://ipinfo.io/ "IP Address API and Data Solutions") (IPv4, IPv6 / free)
 * [http://geoip.nekudo.com/](http://geoip.nekudo.com/ "Free IP GeoLocation/GeoIp API - geoip.nekudo.com") (IPv4, IPv6 / free)
-* [http://xhanch.com/](http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API &#8211; IP Get Detail | Xhanch Studio") (IPv4 / free)
 * [http://geoiplookup.net/](http://geoiplookup.net/ "What Is My IP Address | GeoIP Lookup") (IPv4, IPv6 / free)
 * [http://ip-api.com/](http://ip-api.com/ "IP-API.com - Free Geolocation API") (IPv4, IPv6 / free for non-commercial use)
-* [http://ipinfodb.com/](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") (IPv4, IPv6 / free for registered user, need API key)
+* [https://ipinfodb.com/](https://ipinfodb.com/ "Free IP Geolocation Tools and API| IPInfoDB") (IPv4, IPv6 / free for registered user, need API key)
+* [https://ipstack.com/](https://ipstack.com/ "ipstack - Free IP Geolocation API") (IPv4, IPv6 / free for registered user, need API key)
 
 = Development =
 
@@ -96,7 +99,7 @@ All contributions will always be welcome. Or visit my [development blog](http://
 2. Search for 'IP Geo Block'
 3. Click 'Install Now'
 4. Activate the plugin on the Plugin dashboard
-5. Try 'Best settings' button for easy setup at the bottom of this plugin's setting page.
+5. Try 'Best for Back-end' button for easy setup at the bottom of this plugin's setting page.
 
 Please refer to [the document](http://www.ipgeoblock.com/codex/ "Codex | IP Geo Block") 
 or following descriptions for your best setup.
@@ -106,16 +109,16 @@ or following descriptions for your best setup.
 * **Matching rule**  
   Choose either `White list` (recommended) or `Black list` to specify the countries from which you want to pass or block.
 
-* **Country code for matching rule**  
+* **Whitelist/Blacklist of country code**  
   Specify the country code with two letters (see [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")). Each of them should be separated by comma.
-
-* **White/Black list of extra IPs for prior validation**  
-  The list of extra IP addresses prior to the validation of country code. [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia, the free encyclopedia") and [AS number](https://en.wikipedia.org/wiki/Autonomous_system_(Internet) "Autonomous system (Internet) - Wikipedia") are also acceptable to specify the range.
 
 * **Use Autonomous System Number (ASN)**  
   It enables you to use "AS number" in the whitelist and blacklist of extra IP addresses to specify a group of IP networks. 
 
-* **$_SERVER keys for extra IPs**  
+* **Whitelist/Blacklist of extra IP addresses prior to country code**  
+  The list of extra IP addresses prior to the validation of country code. [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia, the free encyclopedia") and [AS number](https://en.wikipedia.org/wiki/Autonomous_system_(Internet) "Autonomous system (Internet) - Wikipedia") are also acceptable to specify the range.
+
+* **$_SERVER keys to retrieve extra IP addresses**  
   Additional IP addresses will be validated if some of keys in `$_SERVER` variable are specified in this textfield. Typically `HTTP_X_FORWARDED_FOR`.
 
 * **Bad signatures in query**
@@ -127,6 +130,9 @@ or following descriptions for your best setup.
 * **Response code**  
   Choose one of the [response code](http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1") to be sent when it blocks a comment.
   The 2xx code will lead to your top page, the 3xx code will redirect to [Black Hole Server](http://blackhole.webpagetest.org/), the 4xx code will lead to WordPress error page, and the 5xx will pretend an server error.
+
+* **Max number of failed login attempts per IP address**  
+  Set the maximum number of login attempts to accept the requests to the login process.
 
 * **Validation timing**  
   Choose **"init" action hook** or **"mu-plugins" (ip-geo-block-mu.php)** to specify the timing of validation.
@@ -165,6 +171,9 @@ or following descriptions for your best setup.
 * **Validation target**  
   Specify the single and archive page by post type, category and tag as blocking target.
 
+* **Block badly-behaved bots and crawlers**  
+  Specify the allowable request frequency over a period of time.
+
 * **UA string and qualification**  
   Additional rules targeted at SEO which can specify acceptable requests based on user agent.
 
@@ -184,6 +193,9 @@ or following descriptions for your best setup.
 * **Auto updating (once a month)**  
   If `Enable`, geolocation databases will be downloaded automatically by WordPress cron job.
 
+* **Download database**  
+  Fetch all the databases from their server if those are updated.
+
 = Record settings =
 
 * **Record validation statistics**  
@@ -195,10 +207,7 @@ or following descriptions for your best setup.
 * **$_POST keys in logs**  
   Normally, you can see just keys at `$_POST data:` on Logs tab. If you put some of interested keys into this textfield, you can see the value of key like `key=value`.
 
-* **Anonymize IP address**  
-  It will mask the last three digits of IP address when it is recorded into the log.
-
-= Cache settings =
+= IP address cache settings =
 
 * **Expiration time [sec]**  
   Maximum time in sec to keep cache.
@@ -213,14 +222,26 @@ or following descriptions for your best setup.
 
 = Plugin settings =
 
-* **Remove settings at uninstallation**  
+* **Privacy friendly**  
+  It makes an IP address anonymous on recording into the database (e.g. logs, IP address cache) and restricted on sending to the 3rd parties (e.g. geolocation APIs, whois).
+
+* **Network wide settings**  
+  Synchronize all settings over the network wide based on the settings of main blog.
+
+* **Remove all settings at uninstallation**  
   If you checked this option, all settings will be removed when this plugin is uninstalled for clean uninstalling.
+
+* **Export / Import settings**  
+  All settings data can be saved as json file which enables to export/import to the dashboard.
+
+* **Import pre-defined settings**  
+  Reset all settings data as initial values, or set as recommended values for "Back-end target settings".
 
 == Frequently Asked Questions ==
 
 = Does it support multisite? =
 
-It works on multisite, but there's no network setting at this moment.
+Yes, it works on multisite. And you can synchronize the settings with all the sites on the network if you enable "**Network wide settings**" in "**Plugin settings**" section.
 
 = Does this plugin works well with caching? =
 
@@ -353,11 +374,15 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 8. **IP Geo Plugin** - Logs tab
 9. **IP Geo Plugin** - Search tab
 10. **IP Geo Plugin** - Attribution tab
+11. **IP Geo Plugin** - Site List on network
 
 == Changelog ==
 
 = 3.0.11 =
-* **New feature:** Add "Network wide settings" in "Plugin settings" section and "Site List" tab on "Network Admin" dashboard menu.
+* **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog.
+* **Improvement:** For GDPR compliance, the option of "**Anonymize IP address**" in "**Statistics and Logs settings**" section was moved to "**Privacy friendly**" in "**Plugin settings**", in order not only to anonymize an IP address on recording into logs/cache but also to restrict on sending it to the third parties.
+* **Improvement:** Update geolocation APIs and add a new one.
+* **Improvement:** Change the JavaScript compressor from Google Closure Compiler to UglifyJS 2 to prevent "Uncaught TypeError: Cannot read property ‘toLowerCase’ of undefined" in a certain environment.
 
 = 3.0.10.4 =
 * **Fix:** JavaScript error caused by bad handling form tag without method property. This error was happened with Wordfence Live Traffic.

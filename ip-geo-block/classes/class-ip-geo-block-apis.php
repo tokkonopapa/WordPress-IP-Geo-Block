@@ -199,21 +199,49 @@ abstract class IP_Geo_Block_API {
 }
 
 /**
- * Class for freegeoip.net
+ * Class for Ipdata.co
  *
- * URL         : http://freegeoip.net/
- * Term of use :
- * Licence fee : free (donationware)
- * Rate limit  : 10,000 queries per hour
- * Sample URL  : http://freegeoip.net/json/124.83.187.140
- * Sample URL  : http://freegeoip.net/xml/yahoo.co.jp
- * Input type  : IP address (IPv4, IPv6) / domain name
- * Output type : json, jsonp, xml, csv
+ * URL         : https://ipdata.co/
+ * Term of use : https://ipdata.co/terms.html
+ * Licence fee : free
+ * Rate limit  : 1500 requests free daily
+ * Sample URL  : https://api.ipdata.co/8.8.8.8
+ * Input type  : IP address (IPv4, IPv6)
+ * Output type : json
  */
-class IP_Geo_Block_API_freegeoipnet extends IP_Geo_Block_API {
+class IP_Geo_Block_API_Ipdataco extends IP_Geo_Block_API {
 	protected $template = array(
 		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'http://freegeoip.net/%API_FORMAT%/%API_IP%',
+		'url' => 'https://api.ipdata.co/%API_IP%',
+		'api' => array(
+			'%API_FORMAT%' => 'json',
+		),
+		'transform' => array(
+			'countryCode' => 'country_code',
+			'countryName' => 'country_name',
+			'regionName'  => 'region',
+			'cityName'    => 'city',
+			'latitude'    => 'latitude',
+			'longitude'   => 'longitude',
+		)
+	);
+}
+
+/**
+ * Class for ipstack
+ *
+ * URL         : https://ipstack.com/
+ * Term of use : https://ipstack.com/terms
+ * Licence fee : free for registered user
+ * Rate limit  : 10,000 queries per month
+ * Sample URL  : http://api.ipstack.com/186.116.207.169?access_key=YOUR_ACCESS_KEY&output=json&legacy=1
+ * Input type  : IP address (IPv4, IPv6) / domain name
+ * Output type : json, xml
+ */
+class IP_Geo_Block_API_ipstack extends IP_Geo_Block_API {
+	protected $template = array(
+		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
+		'url' => 'http://api.ipstack.com/%API_IP%?access_key=%API_KEY%&output=%API_FORMAT%&legacy=1',
 		'api' => array(
 			'%API_FORMAT%' => 'json',
 		),
@@ -231,19 +259,19 @@ class IP_Geo_Block_API_freegeoipnet extends IP_Geo_Block_API {
 /**
  * Class for ipinfo.io
  *
- * URL         : http://ipinfo.io/
- * Term of use : http://ipinfo.io/developers#terms
+ * URL         : https://ipinfo.io/
+ * Term of use : https://ipinfo.io/developers#terms
  * Licence fee : free
  * Rate limit  :
- * Sample URL  : http://ipinfo.io/124.83.187.140/json
- * Sample URL  : http://ipinfo.io/124.83.187.140/country
+ * Sample URL  : https://ipinfo.io/124.83.187.140/json
+ * Sample URL  : https://ipinfo.io/124.83.187.140/country
  * Input type  : IP address (IPv4)
  * Output type : json
  */
 class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
 	protected $template = array(
 		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'http://ipinfo.io/%API_IP%/%API_FORMAT%%API_OPTION%',
+		'url' => 'https://ipinfo.io/%API_IP%/%API_FORMAT%%API_OPTION%',
 		'api' => array(
 			'%API_FORMAT%' => 'json',
 			'%API_OPTION%' => '',
@@ -289,7 +317,7 @@ class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
 class IP_Geo_Block_API_Nekudo extends IP_Geo_Block_API {
 	protected $template = array(
 		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'http://geoip.nekudo.com/api/%API_IP%',
+		'url' => 'https://geoip.nekudo.com/api/%API_IP%',
 		'api' => array(),
 		'transform' => array(
 			'countryCode' => 'country',
@@ -312,36 +340,6 @@ class IP_Geo_Block_API_Nekudo extends IP_Geo_Block_API {
 			return array( 'errorMessage' => 'Not Found' ); // 404
 		}
 	}
-}
-
-/**
- * Class for Xhanch
- *
- * URL         : http://xhanch.com/xhanch-api-ip-get-detail/
- * Term of use :
- * Licence fee : free (donationware)
- * Rate limit  :
- * Sample URL  : http://api.xhanch.com/ip-get-detail.php?ip=124.83.187.140
- * Sample URL  : http://api.xhanch.com/ip-get-detail.php?ip=124.83.187.140&m=json
- * Input type  : IP address (IPv4)
- * Output type : xml, json
- */
-class IP_Geo_Block_API_Xhanch extends IP_Geo_Block_API {
-	protected $template = array(
-		'type' => IP_GEO_BLOCK_API_TYPE_IPV4,
-		'url' => 'http://api.xhanch.com/ip-get-detail.php?ip=%API_IP%&m=%API_FORMAT%',
-		'api' => array(
-			'%API_FORMAT%' => 'json',
-		),
-		'transform' => array(
-			'countryCode' => 'country_code',
-			'countryName' => 'country_name',
-			'regionName'  => 'region',
-			'cityName'    => 'city',
-			'latitude'    => 'latitude',
-			'longitude'   => 'longitude',
-		)
-	);
 }
 
 /**
@@ -405,8 +403,8 @@ class IP_Geo_Block_API_ipapicom extends IP_Geo_Block_API {
 /**
  * Class for IPInfoDB
  *
- * URL         : http://ipinfodb.com/
- * Term of use : http://ipinfodb.com/ipinfodb_agreement.pdf
+ * URL         : https://ipinfodb.com/
+ * Term of use :
  * Licence fee : free (need to regist to get API key)
  * Rate limit  : 2 queries/second for registered user
  * Sample URL  : http://api.ipinfodb.com/v3/ip-city/?key=...&format=xml&ip=124.83.187.140
@@ -477,8 +475,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			$last = $time;
 		}
 
-		// update elements
-		IP_Geo_Block_Logs::update_cache( $cache = array(
+		$cache = array(
 			'time' => $time,
 			'ip'   => $ip,
 			'hook' => $hook,
@@ -490,7 +487,10 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			'last' => $last,
 			'view' => $view,
 			'host' => isset( $validate['host'] ) && $validate['host'] !== $ip ? $validate['host'] : NULL,
-		), $settings['anonymize'] );
+		);
+
+//		if ( ! empty( $settings['agreement'] ) )
+			IP_Geo_Block_Logs::update_cache( $cache, $settings['anonymize'] );
 
 		return self::$memcache[ $ip ] = $cache;
 	}
@@ -531,28 +531,22 @@ class IP_Geo_Block_Provider {
 
 	protected static $providers = array(
 
-		'freegeoip.net' => array(
+		'Ipdata.co' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="http://freegeoip.net/" title="freegeoip.net: FREE IP Geolocation Web Service">http://freegeoip.net/</a>&nbsp;(IPv4, IPv6 / free)',
+			'link' => '<a rel="noreferrer" href="https://ipdata.co/" title="ipdata.co - IP Geolocation and Threat Data API">https://ipdata.co/</a>&nbsp;(IPv4, IPv6 / free for 1500 requests/day)',
 		),
 
 		'ipinfo.io' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="http://ipinfo.io/" title="ip address information including geolocation, hostname and network details">http://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free)',
+			'link' => '<a rel="noreferrer" href="https://ipinfo.io/" title="IP Address API and Data Solutions">https://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'Nekudo' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
 			'link' => '<a rel="noreferrer" href="http://geoip.nekudo.com/" title="geoip.nekudo.com | Free IP to geolocation API">http://geoip.nekudo.com/</a>&nbsp;(IPv4, IPv6 / free)',
-		),
-
-		'Xhanch' => array(
-			'key'  => NULL,
-			'type' => 'IPv4 / free',
-			'link' => '<a rel="noreferrer" href="http://xhanch.com/xhanch-api-ip-get-detail/" title="Xhanch API &#8211; IP Get Detail | Xhanch Studio">http://xhanch.com/</a>&nbsp;(IPv4 / free)',
 		),
 
 		'GeoIPLookup' => array(
@@ -567,10 +561,16 @@ class IP_Geo_Block_Provider {
 			'link' => '<a rel="noreferrer" href="http://ip-api.com/" title="IP-API.com - Free Geolocation API">http://ip-api.com/</a>&nbsp;(IPv4, IPv6 / free for non-commercial use)',
 		),
 
+		'ipstack' => array(
+			'key'  => '',
+			'type' => 'IPv4, IPv6 / free for registered user',
+			'link' => '<a rel="noreferrer" href="https://ipstack.com/" title="ipstack - Free IP Geolocation API">https://ipstack.com/</a>&nbsp;(IPv4, IPv6 / free for registered user)',
+		),
+
 		'IPInfoDB' => array(
 			'key'  => '',
 			'type' => 'IPv4, IPv6 / free for registered user',
-			'link' => '<a rel="noreferrer" href="http://ipinfodb.com/" title="IPInfoDB | Free IP Address Geolocation Tools">http://ipinfodb.com/</a>&nbsp;(IPv4, IPv6 / free for registered user)',
+			'link' => '<a rel="noreferrer" href="https://ipinfodb.com/" title="Free IP Geolocation Tools and API| IPInfoDB">https://ipinfodb.com/</a>&nbsp;(IPv4, IPv6 / free for registered user)',
 		),
 	);
 

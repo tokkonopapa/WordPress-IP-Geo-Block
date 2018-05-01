@@ -809,14 +809,15 @@
 
 			// draw callback
 			drawCallback: function (settings) {
-				var elm = $(ID('#', control.tableID)).find('td.dataTables_empty');
+				var elm = $(ID('#', control.tableID)).find('td.dataTables_empty'),
+				n = 'restore-logs' === control.ajaxCMD ? 3 : 2; // 2:restore-cache
 
 				// avoid recursive call for ajax source
 				// 1: thead, 2: empty tbody, 3: after loading data
-				if (3 > settings.iDraw) {
+				if (n > settings.iDraw) {
 					elm.html(ip_geo_block.i18n[0]);
 				}
-				else if (3 === settings.iDraw) {
+				else if (n === settings.iDraw) {
 					// 'No data available in table'
 					elm.html(ip_geo_block.i18n[1]);
 
@@ -1985,6 +1986,7 @@
 			$('ul.wp-submenu>li.wp-first-item').removeClass('current').next().addClass('current');
 			break;
 		}
+
 	}); // document.ready()
 
 }(jQuery, window, document));

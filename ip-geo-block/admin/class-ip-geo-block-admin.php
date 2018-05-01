@@ -554,8 +554,8 @@ class IP_Geo_Block_Admin {
 		if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 			// Check creation of database table
 			if ( $settings['validation']['reclogs'] ) {
-				if ( ( $warn =   IP_Geo_Block_Logs::diag_tables()   ) &&
-				     ( FALSE === IP_Geo_Block_Logs::create_tables() ) ) {
+				if ( ( $warn =  IP_Geo_Block_Logs::diag_tables()   ) &&
+				     ( TRUE !== IP_Geo_Block_Logs::create_tables() ) ) {
 					self::add_admin_notice( 'notice-warning', $warn );
 				}
 			}
