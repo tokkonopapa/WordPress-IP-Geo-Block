@@ -453,7 +453,6 @@ class IP_Geo_Block_Opts {
 	public static function delete_api( $settings ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'delete_api' );
-
 		return $fs->delete( self::get_api_dir( $settings ), TRUE ); // $recursive = true
 	}
 

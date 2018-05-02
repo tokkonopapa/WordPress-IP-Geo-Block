@@ -8,7 +8,7 @@
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
-
+define( 'IP_GEO_BLOCK_NETWORK', FALSE );
 class IP_Geo_Block_Admin {
 
 	/**
@@ -429,7 +429,7 @@ class IP_Geo_Block_Admin {
 			);
 		}
 
-		elseif ( $this->is_network ) {
+		elseif ( IP_GEO_BLOCK_NETWORK && $this->is_network ) {
 			// Add a settings page for this plugin to the Settings menu.
 			$hook = add_menu_page(
 				__( 'IP Geo Block', 'ip-geo-block' ),
@@ -678,7 +678,7 @@ class IP_Geo_Block_Admin {
 		if ( 'options-general.php' === $GLOBALS['pagenow'] ) {
 			$action = 'options.php';
 			unset( $tabs[5] ); // Site List
-			if ( $this->is_network ) {
+			if ( IP_GEO_BLOCK_NETWORK && $this->is_network ) {
 				if ( $settings['network_wide'] ) {
 					unset( $tabs[0] ); // Settings
 				}

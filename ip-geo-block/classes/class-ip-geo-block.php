@@ -320,7 +320,7 @@ class IP_Geo_Block {
 		foreach ( $providers as $provider ) {
 			$time = microtime( TRUE );
 			if ( ( $geo = IP_Geo_Block_API::get_instance( $provider, $settings ) ) &&
-			     ( $code = $geo->$callback( $ip, $args, $settings['anonymize'] ) ) ) {
+			     ( $code = $geo->$callback( $ip, $args ) ) ) {
 				// Get AS number @since 3.0.4
 				if ( ( ! empty( $settings[ $provider ]['use_asn'] ) ) &&
 				     ( ! isset( $code['asn'] ) || 0 !== strpos( $code['asn'], 'AS' ) ) &&

@@ -489,8 +489,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			'host' => isset( $validate['host'] ) && $validate['host'] !== $ip ? $validate['host'] : NULL,
 		);
 
-//		if ( ! empty( $settings['agreement'] ) )
-			IP_Geo_Block_Logs::update_cache( $cache );
+		IP_Geo_Block_Logs::update_cache( $cache );
 
 		return self::$memcache[ $ip ] = $cache;
 	}
@@ -634,9 +633,8 @@ class IP_Geo_Block_Provider {
 		$providers = $settings['providers'];
 
 		foreach ( self::get_providers( 'key', $rand, $cache, ! $settings['anonymize'] && $all ) as $key => $val ) {
-			if ( ! empty( $providers[ $key ] ) || ( ! isset( $providers[ $key ] ) && NULL === $val ) ) {
+			if ( ! empty( $providers[ $key ] ) || ( ! isset( $providers[ $key ] ) && NULL === $val ) )
 				$list[] = $key;
-			}
 		}
 
 		return $list;

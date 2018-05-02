@@ -515,7 +515,7 @@ class IP_Geo_Block_Logs {
 		// anonymize ip address
 		$settings['anonymize'] and $validate['ip'] = preg_replace( '/\w{1,3}$/', '***', $validate['ip'] );
 
-		if ( $record /*&& ! empty( $settings['agreement'] )*/ ) {
+		if ( $record ) {
 			// count the number of rows for each hook
 			global $wpdb;
 			$table = $wpdb->prefix . self::TABLE_LOGS;

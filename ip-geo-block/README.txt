@@ -245,7 +245,7 @@ Yes. It records IP addresses encrypted in logs and caches by default from versio
 
 = Does this plugin support multisite? =
 
-Yes. It works on multisite. And you can synchronize the settings with all the sites on the network if you enable "**Network wide settings**" in "**Plugin settings**" section.
+It works on multisite, but there's no network setting at this moment.
 
 = Does this plugin works well with caching? =
 
@@ -378,12 +378,10 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 8. **IP Geo Plugin** - Logs tab
 9. **IP Geo Plugin** - Search tab
 10. **IP Geo Plugin** - Attribution tab
-11. **IP Geo Plugin** - Site List on network
 
 == Changelog ==
 
 = 3.0.11 =
-* **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog.
 * **Improvement:** To comply with GDPR, IP address in logs/cache will be encrypted by default. The option of "**Anonymize IP address**" in "**Statistics and Logs settings**" section was moved to "**Privacy friendly**" in "**Plugin settings**". It will not only anonymize an IP address but also will restrict on sending it to the third parties.
 * **Improvement:** Update geolocation APIs and add a new one.
 * **Improvement:** Change the JavaScript compressor from Google Closure Compiler to UglifyJS 2 to prevent "Uncaught TypeError: Cannot read property ‘toLowerCase’ of undefined" in a certain environment.
