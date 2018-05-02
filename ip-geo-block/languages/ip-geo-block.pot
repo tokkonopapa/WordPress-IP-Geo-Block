@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-04-29 11:24+0900\n"
-"PO-Revision-Date: 2018-04-29 11:24+0900\n"
+"POT-Creation-Date: 2018-05-02 12:53+0900\n"
+"PO-Revision-Date: 2018-05-02 12:53+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "Language: en_001\n"
@@ -77,7 +77,7 @@ msgid "The selected row cannot be found in the visible area."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:280
-#: admin/class-ip-geo-block-admin.php:1480
+#: admin/class-ip-geo-block-admin.php:1476
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr ""
@@ -309,7 +309,7 @@ msgstr ""
 #: classes/class-ip-geo-block-cron.php:212
 #: classes/class-ip-geo-block-cron.php:316
 #: classes/class-ip-geo-block-cron.php:390
-#: classes/class-ip-geo-block-opts.php:443
+#: classes/class-ip-geo-block-opts.php:447
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr ""
@@ -327,7 +327,7 @@ msgstr ""
 msgid "UNKNOWN"
 msgstr ""
 
-#: admin/includes/class-admin-ajax.php:412
+#: admin/includes/class-admin-ajax.php:416
 #, php-format
 msgid ""
 "illegal format at %s. Please delete the corresponding line and try again."
@@ -1497,7 +1497,7 @@ msgid ""
 "statistics."
 msgstr ""
 
-#: classes/class-ip-geo-block-apis.php:668
+#: classes/class-ip-geo-block-apis.php:665
 msgid ""
 "You need to select at least one IP geolocation service. Otherwise "
 "<strong>you'll be blocked</strong> after the cache expires."
@@ -1534,14 +1534,14 @@ msgid ""
 "details."
 msgstr ""
 
-#: classes/class-ip-geo-block-logs.php:139
+#: classes/class-ip-geo-block-logs.php:141
 #, php-format
 msgid ""
 "Creating a DB table %s had failed. Once de-activate this plugin, and then "
 "activate again."
 msgstr ""
 
-#: classes/class-ip-geo-block-logs.php:616
+#: classes/class-ip-geo-block-logs.php:622
 #, php-format
 msgid "The user %s (user ID: %d) is in use."
 msgstr ""

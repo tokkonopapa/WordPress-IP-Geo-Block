@@ -55,7 +55,7 @@ class IP_Geo_Block_Admin_Tab {
 		// preset IP address
 		if ( isset( $_GET['s'] ) ) {
 			$list = preg_replace(
-				array( '/\.\*{3,}.*$/', '/\*{3,}.*$/' ),
+				array( '/\.\*\*\*.*$/', '/\*\*\*.*$/' ),
 				array( '.0',            '000'         ),
 				$_GET['s']
 			); // Anonymize IP address

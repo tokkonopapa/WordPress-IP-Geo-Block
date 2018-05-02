@@ -946,14 +946,14 @@ class IP_Geo_Block_Util {
 	 * Anonymize IP address in string
 	 *
 	 */
-	public static function anonymize_ip( $str ) {
+	public static function anonymize_ip( $subject ) {
 		return preg_replace(
 			array(
 				'/([0-9]+\.[0-9]+\.[0-9]+\.)(?:[0-9]+)(\W?)/i', // loose pattern of IPv4
 				'/((?:[a-f0-9:]+:+)+)(?:[a-f0-9]+)(\W?)/i'      // loose pattern of IPv6
 			),
 			'$1***$2',
-			$str
+			$subject
 		);
 	}
 

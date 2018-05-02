@@ -239,9 +239,13 @@ or following descriptions for your best setup.
 
 == Frequently Asked Questions ==
 
-= Does it support multisite? =
+= Does this plugin comply with GDPR? =
 
-Yes, it works on multisite. And you can synchronize the settings with all the sites on the network if you enable "**Network wide settings**" in "**Plugin settings**" section.
+Yes. It records IP addresses encrypted in logs and caches by default from version 3.0.11. And also it not only provides a way to manually remove them, but also has the ability to delete them if those are exceeded a certain amount/time.
+
+= Does this plugin support multisite? =
+
+Yes. It works on multisite. And you can synchronize the settings with all the sites on the network if you enable "**Network wide settings**" in "**Plugin settings**" section.
 
 = Does this plugin works well with caching? =
 
@@ -380,7 +384,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 = 3.0.11 =
 * **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog.
-* **Improvement:** For GDPR compliance, the option of "**Anonymize IP address**" in "**Statistics and Logs settings**" section was moved to "**Privacy friendly**" in "**Plugin settings**", in order not only to anonymize an IP address on recording into logs/cache but also to restrict on sending it to the third parties.
+* **Improvement:** To comply with GDPR, IP address in logs/cache will be encrypted by default. The option of "**Anonymize IP address**" in "**Statistics and Logs settings**" section was moved to "**Privacy friendly**" in "**Plugin settings**". It will not only anonymize an IP address but also will restrict on sending it to the third parties.
 * **Improvement:** Update geolocation APIs and add a new one.
 * **Improvement:** Change the JavaScript compressor from Google Closure Compiler to UglifyJS 2 to prevent "Uncaught TypeError: Cannot read property ‘toLowerCase’ of undefined" in a certain environment.
 

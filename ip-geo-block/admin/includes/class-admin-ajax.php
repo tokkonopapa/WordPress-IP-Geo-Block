@@ -140,7 +140,7 @@ class IP_Geo_Block_Admin_Ajax {
 			$row = array_map( 'esc_html', $row );
 
 			if ( $options['anonymize'] ) {
-				$row[2] = preg_replace( '/\d{1,3}$/', '***', $row[2] );
+				$row[2] = IP_Geo_Block_Util::anonymize_ip( $row[2] );
 				$row[8] = IP_Geo_Block_Util::anonymize_ip( $row[8] );
 			}
 
@@ -203,21 +203,15 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
-	public static function restore_cache( $which ) {
-		$options = IP_Geo_Block::get_option();
+	public static function restore_cache( $which, $anonymize ) {
 		$time = time();
 		$res = array();
 
 		foreach ( IP_Geo_Block_Logs::restore_cache() as $key => $val ) {
-			// in case of anonymized IP address
-			$key = explode( ',', esc_html( $key ), 2 );
-			empty( $key[1] ) and $key[1] = '';
-
-			$options['anonymize'] and $key[0] = preg_replace( '/\d{1,3}$/', '***', $key[0] );
-
+			$anonymize and $key = preg_replace( '/\d{1,3}$/', '***', $key );
 			$res[] = array(
 				/* Checkbox     */ '',
-				/* IP address   */ '<span><a href="#!" data-hash="' . $key[1] . '">' . $key[0] . '</a></span>',
+				/* IP address   */ '<span><a href="#!" data-hash="' . esc_attr( $val['hash'] ). '">' . $key . '</a></span>',
 				/* Country code */ '<span>' . esc_html( $val['code'] ) . '</span>',
 				/* AS number    */ '<span>' . esc_html( $val['asn' ] ) . '</span>',
 				/* Host name    */ '<span>' . esc_html( $val['host'] ) . '</span>',

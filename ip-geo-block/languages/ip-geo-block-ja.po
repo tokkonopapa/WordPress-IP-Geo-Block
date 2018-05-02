@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-04-29 11:24+0900\n"
-"PO-Revision-Date: 2018-04-29 11:26+0900\n"
+"POT-Creation-Date: 2018-05-02 12:53+0900\n"
+"PO-Revision-Date: 2018-05-02 12:54+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -79,7 +79,7 @@ msgid "The selected row cannot be found in the visible area."
 msgstr "可視領域に選択された行が見つかりません。"
 
 #: admin/class-ip-geo-block-admin.php:280
-#: admin/class-ip-geo-block-admin.php:1480
+#: admin/class-ip-geo-block-admin.php:1476
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr "Ajaxコマンド `%s` の実行中にエラーが発生しました。"
@@ -334,7 +334,7 @@ msgstr "このページにアクセスするための十分な権限がありま
 #: classes/class-ip-geo-block-cron.php:212
 #: classes/class-ip-geo-block-cron.php:316
 #: classes/class-ip-geo-block-cron.php:390
-#: classes/class-ip-geo-block-opts.php:443
+#: classes/class-ip-geo-block-opts.php:447
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr "<code>%s</code> に書き込めません。パーミッションをチェックして下さい。"
@@ -352,7 +352,7 @@ msgstr "不明"
 msgid "UNKNOWN"
 msgstr "不明"
 
-#: admin/includes/class-admin-ajax.php:412
+#: admin/includes/class-admin-ajax.php:416
 #, php-format
 msgid ""
 "illegal format at %s. Please delete the corresponding line and try again."
@@ -1703,7 +1703,7 @@ msgid ""
 "statistics."
 msgstr "検証の統計を記録し分析するためには、適切な条件を設定して下さい。"
 
-#: classes/class-ip-geo-block-apis.php:668
+#: classes/class-ip-geo-block-apis.php:665
 msgid ""
 "You need to select at least one IP geolocation service. Otherwise "
 "<strong>you'll be blocked</strong> after the cache expires."
@@ -1752,7 +1752,7 @@ msgstr ""
 "php#WordPress_Upgrade_Constants\" title=\"Editing wp-config.php &laquo; "
 "WordPress Codex\">このドキュメント</a>を参照してください。"
 
-#: classes/class-ip-geo-block-logs.php:139
+#: classes/class-ip-geo-block-logs.php:141
 #, php-format
 msgid ""
 "Creating a DB table %s had failed. Once de-activate this plugin, and then "
@@ -1761,7 +1761,7 @@ msgstr ""
 "%s 用のテーブルが作成されていません。一旦このプラグインを無効化し、再度有効化"
 "して下さい。"
 
-#: classes/class-ip-geo-block-logs.php:616
+#: classes/class-ip-geo-block-logs.php:622
 #, php-format
 msgid "The user %s (user ID: %d) is in use."
 msgstr "ユーザー %s（ユーザーID：%d）が使用中です。"

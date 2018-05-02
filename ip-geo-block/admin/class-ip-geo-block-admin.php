@@ -1456,16 +1456,12 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Util::get_registered_actions( TRUE );
 			break;
 
-		  case 'get-blocked': // Get blocked actions and pages
-			$res = IP_Geo_Block_Admin_Ajax::get_blocked_queries( $which );
-			break;
-
 		  case 'restore-cache': // Restore cache from database and format for DataTables
-			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which );
+			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which, $settings['anonymize'] );
 			break;
 
 		  case 'bulk-action-remove': // Delete specified IP addresses from cache
-			$res = IP_Geo_Block_Logs::delete_cache_entry( @$which['IP'] );
+			$res = IP_Geo_Block_Logs::delete_cache_entry( $which['IP'] );
 			break;
 
 		  case 'bulk-action-ip-white':
