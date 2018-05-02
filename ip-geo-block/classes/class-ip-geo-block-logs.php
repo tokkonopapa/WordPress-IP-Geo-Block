@@ -701,9 +701,11 @@ class IP_Geo_Block_Logs {
 	 * Search logs by specific IP address
 	 *
 	 */
-	public static function search_logs( $ip ) {
+	public static function search_logs( $ip, $settings ) {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
+
+		$settings['anonymize'] and $ip = IP_Geo_Block_Util::anonymize_ip( $ip );
 
 		$sql = $wpdb->prepare(
 			"SELECT `No`, `time`, `ip`, AES_DECRYPT(`ip`, %s), `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, AES_DECRYPT(`headers`, %s), `data` FROM `$table` WHERE `ip` = AES_ENCRYPT(%s, %s)",

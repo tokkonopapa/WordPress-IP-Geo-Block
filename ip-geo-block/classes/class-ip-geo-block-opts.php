@@ -186,8 +186,6 @@ class IP_Geo_Block_Opts {
 			'time'           => 12,      // More than 10 page view in 12 seconds
 			'view'           => 10,      // More than 10 page view in 12 seconds
 		),
-		// since version 3.0.11
-		'agreement'       => FALSE,      // true:agreed, null:hold
 	);
 
 	/**
@@ -407,7 +405,6 @@ class IP_Geo_Block_Opts {
 
 			if ( version_compare( $version, '3.0.11' ) < 0 ) {
 				$settings['anonymize'] = $default['anonymize'];
-				$settings['agreement'] = $default['agreement'];
 				IP_Geo_Block_Logs::delete_tables( IP_Geo_Block::CACHE_NAME );
 				IP_Geo_Block_Logs::create_tables();
 			}

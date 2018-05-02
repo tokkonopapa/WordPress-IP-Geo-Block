@@ -784,7 +784,7 @@ endif; // TEST_RESTORE_NETWORK
 		}
 
 		// Blocked self requests
-		$installed = array_reverse( IP_Geo_Block_Logs::search_logs( IP_Geo_Block::get_ip_address() ) );
+		$installed = array_reverse( IP_Geo_Block_Logs::search_logs( IP_Geo_Block::get_ip_address(), IP_Geo_Block::get_option() ) );
 		foreach ( $installed as $val ) {
 			if ( IP_Geo_Block::is_blocked( $val['result'] ) ) {
 				// hide port and nonce
