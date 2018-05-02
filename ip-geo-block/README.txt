@@ -196,23 +196,27 @@ or following descriptions for your best setup.
 * **Download database**  
   Fetch all the databases from their server if those are updated.
 
-= Record settings =
+= Privacy and record settings =
 
-* **Record validation statistics**  
+* **Privacy friendly**  
+  It makes an IP address anonymous on recording into the database (e.g. logs, IP address cache) and restricted on sending to the 3rd parties (e.g. geolocation APIs, whois).
+
+* **Record "Statistics"**  
   If `Enable`, you can see `Statistics of validation` on Statistics tab.
 
-* **Record validation logs**  
+* **Record "Logs"**  
   If you choose anything but `Disable`, you can see `Validation logs` on Logs tab.
 
-* **$_POST keys in logs**  
+* **$_POST keys to be recorded with their values in "Logs"**  
   Normally, you can see just keys at `$_POST data:` on Logs tab. If you put some of interested keys into this textfield, you can see the value of key like `key=value`.
 
-= IP address cache settings =
+* **Record "IP address cache"**  
+  It enables to record the pare of IP address and country code into the cache on database to minimize the impact on site speed.
 
-* **Expiration time [sec]**  
+* **Expiration time [sec] for IP address cache**  
   Maximum time in sec to keep cache.
 
-* **Garbage collection period [sec]**  
+* **Garbage collection period [sec] for IP address cache**  
   Period of garbage collection to clean cache.
 
 = Submission settings =
@@ -221,9 +225,6 @@ or following descriptions for your best setup.
   If you want to put some text message on your comment form, please choose `Top` or `Bottom` and put text with some tags into the **Text message on comment form** textfield.
 
 = Plugin settings =
-
-* **Privacy friendly**  
-  It makes an IP address anonymous on recording into the database (e.g. logs, IP address cache) and restricted on sending to the 3rd parties (e.g. geolocation APIs, whois).
 
 * **Network wide settings**  
   Synchronize all settings over the network wide based on the settings of main blog.
@@ -239,9 +240,9 @@ or following descriptions for your best setup.
 
 == Frequently Asked Questions ==
 
-= Does this plugin comply with GDPR? =
+= Does the site using this plugin comply with GDPR? =
 
-Yes. It records IP addresses encrypted in logs and caches by default from version 3.0.11. And also it not only provides a way to manually remove them, but also has the ability to delete them if those are exceeded a certain amount/time.
+Using this plugin itself should not be the problem, because from version 3.0.11 it provides a risk-based approach. e.g. IP addresses in logs and cache of this plugin are encrypted by default in preparation for personal data breach. It also not only provides a way to manually erase them but also has the functionality to remove them if those are exceeded a certain amount/time. The option "Plivacy friendly" helps you to restrict sending the ip address to the 3rd parties such as geolocaiton APIs and whois database equiped in this plugin. However, even with these functions, it does not guarantee that the site compliant with GDPR.
 
 = Does this plugin support multisite? =
 
@@ -382,7 +383,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 == Changelog ==
 
 = 3.0.11 =
-* **Improvement:** To comply with GDPR, IP address in logs/cache will be encrypted by default. The option of "**Anonymize IP address**" in "**Statistics and Logs settings**" section was moved to "**Privacy friendly**" in "**Plugin settings**". It will not only anonymize an IP address but also will restrict on sending it to the third parties.
+* **Improvement:** To comply with GDPR, IP address in logs/cache will be encrypted by default. The option of "**Anonymize IP address**" was renamed to "**Privacy friendly**" in "**Privacy and record settings**". It will not only anonymize an IP address but also will restrict on sending to the 3rd parties such as geolocation APIs and whois service.
 * **Improvement:** Update geolocation APIs and add a new one.
 * **Improvement:** Change the JavaScript compressor from Google Closure Compiler to UglifyJS 2 to prevent "Uncaught TypeError: Cannot read property ‘toLowerCase’ of undefined" in a certain environment.
 

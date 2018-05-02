@@ -489,7 +489,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			'host' => isset( $validate['host'] ) && $validate['host'] !== $ip ? $validate['host'] : NULL,
 		);
 
-		IP_Geo_Block_Logs::update_cache( $cache );
+		$settings['cache_hold'] and IP_Geo_Block_Logs::update_cache( $cache );
 
 		return self::$memcache[ $ip ] = $cache;
 	}

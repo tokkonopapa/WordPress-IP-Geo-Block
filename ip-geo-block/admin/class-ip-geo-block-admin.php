@@ -1063,7 +1063,7 @@ class IP_Geo_Block_Admin {
 	// Initialize not on the form (mainly unchecked checkbox)
 	public function preprocess_options( $output, $default ) {
 		// initialize checkboxes not in the form (added after 2.0.0, just in case)
-		foreach ( array( 'providers', 'save_statistics', 'anonymize', 'network_wide', 'clean_uninstall' ) as $key ) {
+		foreach ( array( 'providers', 'save_statistics', 'cache_hold', 'anonymize', 'network_wide', 'clean_uninstall' ) as $key ) {
 			$output[ $key ] = is_array( $default[ $key ] ) ? array() : 0;
 		}
 

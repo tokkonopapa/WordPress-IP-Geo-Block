@@ -31,7 +31,7 @@ class IP_Geo_Block_Opts {
 		'save_statistics' => TRUE,    // Record validation statistics
 		'clean_uninstall' => FALSE,   // Remove all savings from DB
 		// since version 1.1
-		'cache_hold'      => 10,      // Max entries in cache
+		'cache_hold'      => TRUE,    // Record IP address in cache
 		'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
 		// since version 3.0.0
 		'cache_time_gc'   => 900,     // Cache garbage collection time
