@@ -693,10 +693,10 @@ class IP_Geo_Block {
 			$validate = apply_filters( self::PLUGIN_NAME . '-login', $validate, $settings );
 
 			// (1) blocked, (3) unauthenticated, (5) all
-			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $block = self::is_blocked( $validate['result'] ) );
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, self::is_blocked( $validate['result'] ) );
 
-			// send response code to refuse immediately
-			if ( $block ) {
+			// send response code to refuse if login attempts is exceeded
+			if ( 'failed' !== $validate['result'] ) {
 				if ( $settings['save_statistics'] )
 					IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 
