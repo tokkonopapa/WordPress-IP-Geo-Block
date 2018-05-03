@@ -404,7 +404,7 @@ class IP_Geo_Block_Opts {
 			}
 
 			if ( version_compare( $version, '3.0.11' ) < 0 ) {
-				$settings['anonymize'] = $default['anonymize'];
+				$settings['cache_hold'] = $default['cache_hold'];
 				IP_Geo_Block_Logs::delete_tables( IP_Geo_Block::CACHE_NAME );
 				IP_Geo_Block_Logs::create_tables();
 			}

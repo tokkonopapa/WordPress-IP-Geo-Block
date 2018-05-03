@@ -211,7 +211,7 @@ class IP_Geo_Block_Admin_Ajax {
 			$anonymize and $key = preg_replace( '/\d{1,3}$/', '***', $key );
 			$res[] = array(
 				/* Checkbox     */ '',
-				/* IP address   */ '<span><a href="#!" data-hash="' . esc_attr( $val['hash'] ). '">' . $key . '</a></span>',
+				/* IP address   */ '<span><a href="#!" data-hash="' . esc_attr( $val['hash'] ). '">' . esc_html( $key ) . '</a></span>',
 				/* Country code */ '<span>' . esc_html( $val['code'] ) . '</span>',
 				/* AS number    */ '<span>' . esc_html( $val['asn' ] ) . '</span>',
 				/* Host name    */ '<span>' . esc_html( $val['host'] ) . '</span>',

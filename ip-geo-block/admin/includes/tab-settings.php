@@ -391,7 +391,7 @@ endif;
 		$field = 'login_fails';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221;. Lockout period is defined as expiration time at &#8220;Cache settings&#8221;.">Max number of failed login attempts per IP address</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221;. Lockout period is defined as expiration time at &#8220;Privacy and record settings&#8221;.">Max number of failed login attempts per IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1109,7 +1109,7 @@ endif;
 		$field = 'providers';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="Cache and local database are scanned at the top priority.">API selection and key settings</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="IP address cache and local database are scanned at the top priority.">API selection and key settings</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1237,7 +1237,7 @@ endif;
 		$field = 'anonymize';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="IP address is encrypted on recording them in logs&thinsp;/&thinsp;cache by default. Moreover, this option makes the IP address anonymous and restricted on sending to the 3rd parties such as geolocation APIs or whois servece.">Privacy friendly</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="IP address is always encrypted on recording in logs and cache. Moreover, this option makes the IP address anonymous and restricted on sending to the 3rd parties such as geolocation APIs or whois servece.">Privacy friendly</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1395,7 +1395,7 @@ endif;
 		$field = 'cache_hold';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="This option enables to record the pare of IP address and country code into the cache on database to minimize the impact on site speed.">Record &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option enables to record the IP address , country code and login fail counter into the cache on database to minimize the impact on site speed.">Record &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1403,7 +1403,7 @@ endif;
 				'type' => 'checkbox',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => $options[ $field ] ? TRUE : FALSE,
+				'value' => $options[ $field ],
 			)
 		);
 
@@ -1411,7 +1411,7 @@ endif;
 		$field = 'cache_time';
 		add_settings_field(
 			$option_name.'_'.$field,
-			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this and garbage collection period.">Expiration time [sec] for IP address cache</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
+			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this and garbage collection period.">Expiration time [sec] for &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1431,7 +1431,7 @@ endif;
 		$field = 'cache_time_gc';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries of cache.">Garbage collection period [sec] for IP address cache</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries of cache.">Garbage collection period [sec] for &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

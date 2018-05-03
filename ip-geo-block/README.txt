@@ -242,7 +242,7 @@ or following descriptions for your best setup.
 
 = Does the site using this plugin comply with GDPR? =
 
-Using this plugin itself should not be the problem, because from version 3.0.11 it provides a risk-based approach. e.g. IP addresses in logs and cache of this plugin are encrypted by default in preparation for personal data breach. It also not only provides a way to manually erase them but also has the functionality to remove them if those are exceeded a certain amount/time. The option "Plivacy friendly" helps you to restrict sending the ip address to the 3rd parties such as geolocaiton APIs and whois database equiped in this plugin. However, even with these functions, it does not guarantee that the site compliant with GDPR.
+Using this plugin itself should not be the problem, because from version 3.0.11 IP addresses in logs and cache of this plugin are encrypted by default in preparation for personal data breach. It also not only provides a way to manually erase them but also has the functionality to remove them when those are exceeded a certain amount/time. The option "Plivacy friendly" helps you to restrict sending the ip address to the 3rd parties such as geolocaiton APIs and whois service equiped in this plugin. However, these functions are part of the requirements that GDPR requires and do not guarantee that the site is compliant with GDPR.
 
 = Does this plugin support multisite? =
 

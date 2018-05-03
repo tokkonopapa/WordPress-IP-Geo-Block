@@ -1335,7 +1335,7 @@
 			});
 
 			/*--------------------------------
-			 * Statistics and Logs settings
+			 * Privacy and record settings
 			 *--------------------------------*/
 			$(ID('@', 'save_statistics')).on('change', function (/*event*/) {
 				$(ID('@', 'validation_recdays')).prop('disabled', !$(this).prop('checked'));
@@ -1344,7 +1344,13 @@
 
 			$(ID('@', 'validation_reclogs')).on('change', function (/*event*/) {
 				var $this = $(this);
-				$this.parent().parent().nextAll().find('input').prop('disabled', 0 === Number($this.prop('selectedIndex')));
+				$this.parent().parent().nextAll().find('input[id*="validation"]').prop('disabled', 0 === Number($this.prop('selectedIndex')));
+			}).trigger('change');
+
+			$(ID('@', 'cache_hold')).on('change', function (/*event*/) {
+				var checked = $(this).prop('checked');
+				$('input[id*="cache_time"]'  ).prop('disabled', !checked);
+				$('select[id*="login_fails"]').prop('disabled', !checked);
 			}).trigger('change');
 
 			/*---------------------------

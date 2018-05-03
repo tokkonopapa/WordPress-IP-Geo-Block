@@ -873,14 +873,14 @@ class IP_Geo_Block_Admin {
 
 		  case 'text': ?>
 <input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"<?php
-	disabled( ! empty( $args['disabled'] ), TRUE );
+	disabled( ! empty( $args['disabled'] ) );
 	if ( isset( $args['placeholder'] ) ) echo ' placeholder="', esc_html( $args['placeholder'] ), '"'; ?> />
 <?php
 			break; // disabled @since 3.0
 
 		  case 'textarea': ?>
 <textarea class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>"<?php
-	disabled( ! empty( $args['disabled'] ), TRUE );
+	disabled( ! empty( $args['disabled'] ) );
 	if ( isset( $args['placeholder'] ) ) echo ' placeholder="', esc_html( $args['placeholder'] ), '"'; ?>><?php
 	echo esc_html( $args['value'] ); ?></textarea>
 <?php
@@ -888,7 +888,7 @@ class IP_Geo_Block_Admin {
 
 		  case 'button': ?>
 <input type="button" class="button-secondary" id="<?php echo $id; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"
-<?php disabled( ! empty( $args['disabled'] ), TRUE ); ?>/>
+<?php disabled( ! empty( $args['disabled'] ) ); ?>/>
 <?php
 			break;
 
