@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.11\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-05-03 13:18+0900\n"
-"PO-Revision-Date: 2018-05-03 13:20+0900\n"
+"POT-Creation-Date: 2018-05-03 23:39+0900\n"
+"PO-Revision-Date: 2018-05-03 23:40+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -466,10 +466,12 @@ msgstr ""
 msgid "Geolocation service"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:86
+#: admin/includes/tab-geolocation.php:86 admin/includes/tab-settings.php:1240
 msgid ""
-"<dfn title=\"It makes an IP address anonymous on recording into the database "
-"and restricted on sending to the 3rd parties.\">Privacy friendly</dfn>"
+"<dfn title=\"IP address is always encrypted on recording in logs and cache. "
+"Moreover, this option makes the IP address anonymous and restricted on "
+"sending to the 3rd parties such as geolocation APIs or whois service."
+"\">Privacy friendly</dfn>"
 msgstr ""
 
 #: admin/includes/tab-geolocation.php:101
@@ -1119,14 +1121,6 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:1231
 msgid "Privacy and record settings"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1240
-msgid ""
-"<dfn title=\"IP address is always encrypted on recording in logs and cache. "
-"Moreover, this option makes the IP address anonymous and restricted on "
-"sending to the 3rd parties such as geolocation APIs or whois servece."
-"\">Privacy friendly</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1256

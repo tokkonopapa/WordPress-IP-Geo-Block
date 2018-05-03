@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.5
-Stable tag: 3.0.11a
+Stable tag: 3.0.11b
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -21,7 +21,7 @@ After several days of installation, you'll be supprised to find many malicious o
 = Features =
 
 * **Privacy friendly:**  
-  IP address can be processed anonymously on recording log/cache and on sending 3rd parties such as geolocation APIs/whois database.
+  IP address is always encrypted on recording in logs/cache. Moreover, it can be anonymized and restricted on sending to the 3rd parties such as geolocation APIs or whois service.
 
 * **Immigration control:**  
   Access to the basic and important entrances into back-end such as `wp-comments-post.php`, `xmlrpc.php`, `wp-login.php`, `wp-signup.php`, `wp-admin/admin.php`, `wp-admin/admin-ajax.php`, `wp-admin/admin-post.php` will be validated by means of a country code based on IP address. It allows you to configure either whitelist or blacklist to [specify the countires](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia"), [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia") for a range of IP addresses and [AS number](https://en.wikipedia.org/wiki/Autonomous_system_(Internet) "Autonomous system (Internet) - Wikipedia") for a group of IP networks.
