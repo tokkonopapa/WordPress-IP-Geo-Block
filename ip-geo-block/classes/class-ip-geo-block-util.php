@@ -949,8 +949,8 @@ class IP_Geo_Block_Util {
 	public static function anonymize_ip( $subject ) {
 		return preg_replace(
 			array(
-				'/([0-9]+\.[0-9]+\.[0-9]+\.)(?:[0-9]+)([^\.0-9]{1,3})/i', // loose pattern of IPv4
-				'/((?:[a-f0-9:]+:+)+)(?:[a-f0-9]+)([^\*a-f0-9:]{1,3})/i', // loose pattern of IPv6
+				'/([0-9]+\.[0-9]+\.[0-9]+\.)(?:[0-9]+)([^\.0-9]?)/i', // loose pattern of IPv4
+				'/((?:[a-f0-9:]+:+)+)(?:[a-f0-9\*]+)([^a-f0-9:]?)/i', // loose pattern of IPv6
 			),
 			'$1***$2',
 			$subject
