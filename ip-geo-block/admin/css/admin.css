@@ -77,7 +77,7 @@ fieldset label {
     vertical-align: text-middle;
 }
 fieldset input[type="checkbox"] {
-    margin: -1px 2px 0;
+    margin: 1px 2px 0;
 }
 fieldset.ip-geo-block-field {
 /*  padding: 0 10px;*/
@@ -592,9 +592,9 @@ table.dataTable > tbody > tr > td span {
     margin-right: 0.5em;
 }
 table.dataTable input[type="checkbox"] {
-    height: 16px;
-    width: 16px;
-    margin: -4px 1px 0 0;
+    max-height: 16px;
+    max-width: 16px;
+    margin: 0;
 }
 table.dataTable > thead > tr > th:first-child,
 table.dataTable > tbody > tr > td:first-child {
@@ -637,11 +637,12 @@ table.collapsed > tbody > tr.parent > td:first-child::before {
 }
 table.collapsed > tbody > tr > td:first-child::before {
     border-left: 5px solid #555;
+    top: 1px;
     left: -2px;
 }
 table.collapsed > tbody > tr.parent > td:first-child::before {
     border-top: 5px solid #555;
-    top: 3px;
+    top: 4px;
     left: -4px;
 }
 table.collapsed > tbody > tr.child > td:first-child::before {
