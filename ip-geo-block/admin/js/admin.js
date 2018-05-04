@@ -892,7 +892,7 @@
 
 				// hash for anonymized IP address
 				// ex:＜span＞＜a href="#!" data-hash="abcdef0123456789"＞123.456.789.***＜/a＞＜/span＞
-				if ('bulk-action-remove' === cmd) {
+				if ('bulk-action-remove' === cmd || 'bulk-action-ip-erase' === cmd) {
 					hash = cell[control.columnIP].match(hexp);
 					hash = hash ? ',' + hash[1] : '';
 				} else {

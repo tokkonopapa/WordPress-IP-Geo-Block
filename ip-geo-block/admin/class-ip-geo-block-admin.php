@@ -1464,6 +1464,10 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Logs::delete_cache_entry( $which['IP'] );
 			break;
 
+		  case 'bulk-action-ip-erase':
+			$res = IP_Geo_Block_Logs::delete_logs_entry( $which['IP'] );
+			break;
+
 		  case 'bulk-action-ip-white':
 		  case 'bulk-action-ip-black':
 		  case 'bulk-action-as-white':

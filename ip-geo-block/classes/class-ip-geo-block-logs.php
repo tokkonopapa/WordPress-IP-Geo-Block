@@ -719,6 +719,22 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
+	 * Delete entries with the specific IP address
+	 *
+	 */
+	public static function delete_logs_entry( $entry = array() ) {
+		global $wpdb;
+		$table = $wpdb->prefix . self::TABLE_LOGS;
+
+		foreach ( array_unique( (array)$entry ) as $ip ) {
+			$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = AES_ENCRYPT(%s, %s)", $ip, self::CRYPT_KEY )
+			and $result = ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
+		}
+
+		return isset( $result ) ? $result : FALSE;
+	}
+
+	/**
 	 * Get logs for a specified duration in the past
 	 *
 	 */

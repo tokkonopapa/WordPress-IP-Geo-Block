@@ -112,6 +112,7 @@ if ( $options['validation']['reclogs'] ):
 				'value' => 0,
 				'list' => array(
 					0 => NULL,
+					'bulk-action-ip-erase' => __( 'Remove same IP address entries',            'ip-geo-block' ),
 					'bulk-action-ip-white' => __( 'Add IP address to &#8220;Whitelist&#8221;', 'ip-geo-block' ),
 					'bulk-action-ip-black' => __( 'Add IP address to &#8220;Blacklist&#8221;', 'ip-geo-block' ), ) + ( $options['Maxmind']['use_asn'] <= 0 ? array() : array(
 					'bulk-action-as-white' => __( 'Add AS number to &#8220;Whitelist&#8221;',  'ip-geo-block' ),
@@ -172,7 +173,6 @@ endif; // $options['validation']['reclogs']
 		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 5 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-5' );
 		echo '<p style="padding:0 1em">', sprintf( __( '[ %sRecord &#8220;Logs&#8221;%s ] is desabled.', 'ip-geo-block' ), '<a href="' . $url . '"><strong>', '</strong></a>' ), '</p>', "\n";
 		echo '<p style="padding:0 1em">', __( 'Please set the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
-//		self::validation_logs();
 	}
 
 }
