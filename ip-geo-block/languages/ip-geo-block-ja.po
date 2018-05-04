@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.11\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-05-03 23:39+0900\n"
-"PO-Revision-Date: 2018-05-03 23:40+0900\n"
+"POT-Creation-Date: 2018-05-04 13:16+0900\n"
+"PO-Revision-Date: 2018-05-04 13:18+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -334,7 +334,7 @@ msgstr "このページにアクセスするための十分な権限がありま
 #: classes/class-ip-geo-block-cron.php:212
 #: classes/class-ip-geo-block-cron.php:316
 #: classes/class-ip-geo-block-cron.php:390
-#: classes/class-ip-geo-block-opts.php:444
+#: classes/class-ip-geo-block-opts.php:446
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr "<code>%s</code> に書き込めません。パーミッションをチェックして下さい。"
@@ -343,16 +343,21 @@ msgstr "<code>%s</code> に書き込めません。パーミッションをチ�
 msgid "Settings saved."
 msgstr "設定を保存しました。"
 
-#: admin/includes/class-admin-ajax.php:74
+#: admin/includes/class-admin-ajax.php:72
 msgid "n/a"
-msgstr "不明"
+msgstr "利用不可"
 
-#: admin/includes/class-admin-ajax.php:77 admin/includes/tab-settings.php:75
+#: admin/includes/class-admin-ajax.php:75 admin/includes/tab-settings.php:75
 #: admin/includes/tab-settings.php:95
 msgid "UNKNOWN"
 msgstr "不明"
 
-#: admin/includes/class-admin-ajax.php:416
+#: admin/includes/class-admin-ajax.php:187
+#, php-format
+msgid "The user %s (user ID: %d) is in use."
+msgstr "ユーザー %s（ユーザーID：%d）が使用中です。"
+
+#: admin/includes/class-admin-ajax.php:432
 #, php-format
 msgid ""
 "illegal format at %s. Please delete the corresponding line and try again."
@@ -1774,7 +1779,7 @@ msgstr ""
 "php#WordPress_Upgrade_Constants\" title=\"Editing wp-config.php &laquo; "
 "WordPress Codex\">このドキュメント</a>を参照してください。"
 
-#: classes/class-ip-geo-block-logs.php:141
+#: classes/class-ip-geo-block-logs.php:140
 #, php-format
 msgid ""
 "Creating a DB table %s had failed. Once de-activate this plugin, and then "
@@ -1782,11 +1787,6 @@ msgid ""
 msgstr ""
 "%s 用のテーブルが作成されていません。一旦このプラグインを無効化し、再度有効化"
 "して下さい。"
-
-#: classes/class-ip-geo-block-logs.php:620
-#, php-format
-msgid "The user %s (user ID: %d) is in use."
-msgstr "ユーザー %s（ユーザーID：%d）が使用中です。"
 
 #: classes/class-ip-geo-block.php:415
 msgid "Dashboard"

@@ -1505,21 +1505,19 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'live-start': // Restore live log
-			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::catch_live_log() ) )
-				$res = IP_Geo_Block_Admin_Ajax::restore_live_log( $which, $settings );
-			else
+			if ( is_wp_error( $res = IP_Geo_Block_Admin_Ajax::restore_live_log( $which, $settings ) ) )
 				$res = array( 'error' => $res->get_error_message() );
 			break;
 
 		  case 'live-pause': // Pause live log
-			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::catch_live_log() ) )
+			if ( ! is_wp_error( $res = IP_Geo_Block_Admin_Ajax::catch_live_log() ) )
 				$res = array( 'data' => array() );
 			else
 				$res = array( 'error' => $res->get_error_message() );
 			break;
 
 		  case 'live-stop': // Stop live log
-			if ( ! is_wp_error( $res = IP_Geo_Block_Logs::release_live_log() ) )
+			if ( ! is_wp_error( $res = IP_Geo_Block_Admin_Ajax::release_live_log() ) )
 				$res = array( 'data' => array() );
 			else
 				$res = array( 'error' => $res->get_error_message() );

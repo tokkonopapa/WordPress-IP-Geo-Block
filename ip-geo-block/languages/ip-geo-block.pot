@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.11\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-05-03 23:39+0900\n"
-"PO-Revision-Date: 2018-05-03 23:39+0900\n"
+"POT-Creation-Date: 2018-05-04 13:16+0900\n"
+"PO-Revision-Date: 2018-05-04 13:16+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "Language: en_001\n"
@@ -309,7 +309,7 @@ msgstr ""
 #: classes/class-ip-geo-block-cron.php:212
 #: classes/class-ip-geo-block-cron.php:316
 #: classes/class-ip-geo-block-cron.php:390
-#: classes/class-ip-geo-block-opts.php:444
+#: classes/class-ip-geo-block-opts.php:446
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr ""
@@ -318,16 +318,21 @@ msgstr ""
 msgid "Settings saved."
 msgstr ""
 
-#: admin/includes/class-admin-ajax.php:74
+#: admin/includes/class-admin-ajax.php:72
 msgid "n/a"
 msgstr ""
 
-#: admin/includes/class-admin-ajax.php:77 admin/includes/tab-settings.php:75
+#: admin/includes/class-admin-ajax.php:75 admin/includes/tab-settings.php:75
 #: admin/includes/tab-settings.php:95
 msgid "UNKNOWN"
 msgstr ""
 
-#: admin/includes/class-admin-ajax.php:416
+#: admin/includes/class-admin-ajax.php:187
+#, php-format
+msgid "The user %s (user ID: %d) is in use."
+msgstr ""
+
+#: admin/includes/class-admin-ajax.php:432
 #, php-format
 msgid ""
 "illegal format at %s. Please delete the corresponding line and try again."
@@ -1544,16 +1549,11 @@ msgid ""
 "details."
 msgstr ""
 
-#: classes/class-ip-geo-block-logs.php:141
+#: classes/class-ip-geo-block-logs.php:140
 #, php-format
 msgid ""
 "Creating a DB table %s had failed. Once de-activate this plugin, and then "
 "activate again."
-msgstr ""
-
-#: classes/class-ip-geo-block-logs.php:620
-#, php-format
-msgid "The user %s (user ID: %d) is in use."
 msgstr ""
 
 #: classes/class-ip-geo-block.php:415

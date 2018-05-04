@@ -386,7 +386,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 * **Improvement:** To comply with GDPR, IP address in logs/cache will be encrypted by default. The option of "**Anonymize IP address**" was renamed to "**Privacy friendly**" in "**Privacy and record settings**". It will not only anonymize an IP address but also will restrict on sending to the 3rd parties such as geolocation APIs and whois service.
 * **Improvement:** Update geolocation APIs and add a new one.
 * **Improvement:** Change the JavaScript compressor from Google Closure Compiler to UglifyJS 2 to prevent "Uncaught TypeError: Cannot read property ‘toLowerCase’ of undefined" in a certain environment.
-* **Fix:** Fix the issue that blocking happens immediately when login fails.
+* **Fix:** Fix the issue that blocking occurred immediately instead of displaying the login page again when login failed, even the number of times did not exceed the limit.
 
 = 3.0.10.4 =
 * **Fix:** JavaScript error caused by bad handling form tag without method property. This error was happened with Wordfence Live Traffic.

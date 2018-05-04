@@ -11,8 +11,7 @@
 
 // varchar can not be exceeded over 255 before MySQL-5.0.3.
 define( 'IP_GEO_BLOCK_MAX_STR_LEN', 255 );
-define( 'IP_GEO_BLOCK_MAX_TXT_LEN', 511 );
-define( 'IP_GEO_BLOCK_MAX_BIN_LEN', 1024 );
+define( 'IP_GEO_BLOCK_MAX_BIN_LEN', 512 );
 
 class IP_Geo_Block_Logs {
 
@@ -463,7 +462,7 @@ class IP_Geo_Block_Logs {
 			result varchar(8) NULL,
 			method varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
 			user_agent varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
-			headers varchar("    . IP_GEO_BLOCK_MAX_TXT_LEN . ") NULL,
+			headers varchar("    . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
 			data text NULL
 		);" ); // int or FALSE
 
@@ -476,6 +475,21 @@ class IP_Geo_Block_Logs {
 			self::$stm = NULL;
 			self::$pdo = NULL;
 		}
+	}
+
+	public static function reset_sqlite_db() {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( 'reset_sqlite_db' );
+
+		if ( FALSE !== ( $files = scandir( $dir = get_temp_dir(), 1 ) ) ) {
+			foreach ( $files as $file ) {
+				if ( FALSE !== strpos( $file, IP_Geo_Block::PLUGIN_NAME ) ) {
+					$fs->delete( $dir . $file );
+				}
+			}
+		}
+
+		return TRUE;
 	}
 
 	/**
@@ -604,40 +618,12 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Catch and release the authority for live log
-	 *
-	 * @return TRUE or WP_Error
-	 */
-	public static function catch_live_log() {
-		$user = IP_Geo_Block_Util::get_current_user_id();
-		$auth = get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
-
-		if ( $auth === FALSE || $user === (int)$auth ) {
-			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', $user, IP_Geo_Block_Admin::TIMEOUT_LIVE_UPDATE );
-			return TRUE;
-		} else {
-			$info = get_userdata( $auth );
-			return new WP_Error( 'Warn', sprintf( __( 'The user %s (user ID: %d) is in use.', 'ip-geo-block' ), $info->user_login, $auth ) );
-		}
-	}
-
-	public static function release_live_log() {
-		if ( is_wp_error( $result = self::catch_live_log() ) )
-			return $result;
-
-		delete_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
-		return TRUE;
-	}
-
-	/**
 	 * Restore the live log
 	 *
+	 * @note need to get transient before calling this function
 	 * @return array or WP_Error
 	 */
 	public static function restore_live_log( $hook, $settings ) {
-		if ( is_wp_error( $ret = self::catch_live_log() ) )
-			return $ret;
-
 		if ( is_wp_error( self::$pdo = self::open_sqlite_db( $id = get_current_blog_id(), $settings['live_update']['in_memory'] ) ) )
 			return new WP_Error( 'Warn', self::$pdo->get_error_message() );
 
