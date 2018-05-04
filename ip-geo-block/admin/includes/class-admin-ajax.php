@@ -505,17 +505,6 @@ endif; // TEST_RESTORE_NETWORK
 			'[public][behavior]',        // 3.0.10
 			'[behavior][time]',          // 3.0.10
 			'[behavior][view]',          // 3.0.10
-			'[providers][Geolite2]',     // 3.0.8
-			'[providers][Maxmind]',
-			'[providers][IP2Location]',
-			'[providers][freegeoip.net]',
-			'[providers][ipinfo.io]',
-			'[providers][IP-Json]',
-			'[providers][Nekudo]',
-			'[providers][Xhanch]',
-			'[providers][GeoIPLookup]',  // 2.2.8
-			'[providers][ip-api.com]',
-			'[providers][IPInfoDB]',
 			'[save_statistics]',
 			'[validation][reclogs]',
 			'[validation][recdays]',     // 2.2.9
@@ -538,6 +527,11 @@ endif; // TEST_RESTORE_NETWORK
 		);
 		$json = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;
+
+		// add providers
+		foreach ( array_keys( IP_Geo_Block_Provider::get_providers( 'key' ) ) as $key ) {
+			$keys[] = '[providers][' . $key . ']';
+		}
 
 		foreach ( $keys as $key ) {
 			if ( preg_match( "/\[(.+?)\](?:\[(.+?)\](?:\[(.+?)\])?)?/", $key, $m ) ) {
