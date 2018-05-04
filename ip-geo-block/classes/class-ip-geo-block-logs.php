@@ -50,7 +50,7 @@ class IP_Geo_Block_Logs {
 		$sql = "CREATE TABLE $table (
 			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			time int(10) unsigned NOT NULL DEFAULT 0,
-			ip varbinary(128) NOT NULL,
+			ip varbinary(96) NOT NULL,
 			asn varchar(8) NULL,
 			hook varchar(8) NOT NULL,
 			auth int(10) unsigned NOT NULL DEFAULT 0,
@@ -87,7 +87,7 @@ class IP_Geo_Block_Logs {
 			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			time int(10) unsigned NOT NULL DEFAULT 0,
 			hook varchar(8) NOT NULL,
-			ip varbinary(128) UNIQUE NOT NULL,
+			ip varbinary(96) UNIQUE NOT NULL,
 			asn varchar(8) NULL,
 			code varchar(2) NOT NULL DEFAULT 'ZZ',
 			auth int(10) unsigned NOT NULL DEFAULT 0,
