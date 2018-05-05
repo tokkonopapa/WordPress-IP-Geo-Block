@@ -299,6 +299,7 @@ endif;
 		$list .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the capabilities to be verified. Depending on the particular type of uploader, certain capability may be required. Default is &#8220;upload_files&#8221; for Administrator, Editor and Author. This verification will be skipped if empty.">Capabilities to be verified</dfn>', 'ip-geo-block' ) . '&nbsp;<span class="ip-geo-block-desc">' . __( '(&thinsp;See &#8220;<a rel="noreferrer" href="https://codex.wordpress.org/Roles_and_Capabilities" title="Roles and Capabilities &laquo; WordPress Codex">Roles and Capabilities</a>&#8221;&thinsp;)', 'ip-geo-block' ) . '</span>' . "\n";
 		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_mimetype_capability" name="ip_geo_block_settings[mimetype][capability]" class="regular-text code" placeholder="upload_files" value="' . esc_attr( implode( ',', $options['mimetype']['capability'] ) ) . '" />' . $comma[0] . '</li></ul></li></ul>';
 
+		// Prevent malicious file uploading
 		$field = 'validation';
 		$key = 'mimetype';
 		add_settings_field(
@@ -1315,8 +1316,8 @@ endif;
 		);
 
 		// Local DBs and APIs
-		$provider  = IP_Geo_Block_Provider::get_providers( 'key' );
-		$providers = IP_Geo_Block_Provider::get_addons( $options['providers'] );
+		$provider  = IP_Geo_Block_Provider::get_providers( 'key' ); // all available providers
+		$providers = IP_Geo_Block_Provider::get_addons( $options['providers'] ); // only local
 
 		// Disable 3rd parties API in case of 'anonymize'
 		if ( $options['anonymize'] ) {
@@ -1339,6 +1340,7 @@ endif;
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
+				'local' => $providers,
 				'providers' => $provider,
 				'titles' => IP_Geo_Block_Provider::get_providers( 'type' ),
 			)

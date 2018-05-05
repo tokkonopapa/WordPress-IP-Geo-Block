@@ -1337,6 +1337,10 @@
 			/*--------------------------------
 			 * Privacy and record settings
 			 *--------------------------------*/
+			$(ID('@', 'anonymize')).on('change', function (/*event*/) {
+				$('input[class*="remote"]').prop('disabled', $(this).prop('checked'));
+			}).trigger('change');
+
 			$(ID('@', 'save_statistics')).on('change', function (/*event*/) {
 				$(ID('@', 'validation_recdays')).prop('disabled', !$(this).prop('checked'));
 				return false;
