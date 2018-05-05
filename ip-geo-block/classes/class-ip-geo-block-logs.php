@@ -727,7 +727,7 @@ class IP_Geo_Block_Logs {
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 
 		foreach ( array_unique( (array)$entry ) as $ip ) {
-			$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = AES_ENCRYPT(%s, %s)", $ip, self::CRYPT_KEY )
+			$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = AES_ENCRYPT(%s, %s) OR `ip` = %s", $ip, self::CRYPT_KEY, $ip )
 			and $result = ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
 		}
 

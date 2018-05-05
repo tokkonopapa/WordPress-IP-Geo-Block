@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.11\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-05-04 13:16+0900\n"
-"PO-Revision-Date: 2018-05-04 13:18+0900\n"
+"POT-Creation-Date: 2018-05-05 12:55+0900\n"
+"PO-Revision-Date: 2018-05-05 12:57+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
-"Language: en_001\n"
+"Language: en\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #. Description of the plugin/theme
@@ -77,7 +77,7 @@ msgid "The selected row cannot be found in the visible area."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:280
-#: admin/class-ip-geo-block-admin.php:1476
+#: admin/class-ip-geo-block-admin.php:1480
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr ""
@@ -405,55 +405,59 @@ msgstr ""
 msgid "Bulk action"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:115 admin/includes/tab-statistics.php:254
+#: admin/includes/tab-accesslog.php:115 admin/includes/tab-statistics.php:253
+msgid "Remove entries by IP address"
+msgstr ""
+
+#: admin/includes/tab-accesslog.php:116 admin/includes/tab-statistics.php:254
 msgid "Add IP address to &#8220;Whitelist&#8221;"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:116 admin/includes/tab-statistics.php:255
+#: admin/includes/tab-accesslog.php:117 admin/includes/tab-statistics.php:255
 msgid "Add IP address to &#8220;Blacklist&#8221;"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:117 admin/includes/tab-statistics.php:256
+#: admin/includes/tab-accesslog.php:118 admin/includes/tab-statistics.php:256
 msgid "Add AS number to &#8220;Whitelist&#8221;"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:118 admin/includes/tab-statistics.php:257
+#: admin/includes/tab-accesslog.php:119 admin/includes/tab-statistics.php:257
 msgid "Add AS number to &#8220;Blacklist&#8221;"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:120 admin/includes/tab-network.php:56
+#: admin/includes/tab-accesslog.php:121 admin/includes/tab-network.php:56
 #: admin/includes/tab-statistics.php:259
 msgid "Apply"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:128 admin/includes/tab-statistics.php:198
+#: admin/includes/tab-accesslog.php:129 admin/includes/tab-statistics.php:198
 msgid "Clear logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:136 admin/includes/tab-statistics.php:173
+#: admin/includes/tab-accesslog.php:137 admin/includes/tab-statistics.php:173
 #: admin/includes/tab-statistics.php:206 admin/includes/tab-statistics.php:274
 msgid "Clear all"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:146
+#: admin/includes/tab-accesslog.php:147
 msgid "Export logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:152 admin/includes/tab-settings.php:1565
+#: admin/includes/tab-accesslog.php:153 admin/includes/tab-settings.php:1565
 msgid "Export to the local file"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:152
+#: admin/includes/tab-accesslog.php:153
 msgid "Export csv"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:173 admin/includes/tab-network.php:114
+#: admin/includes/tab-accesslog.php:174 admin/includes/tab-network.php:114
 #: admin/includes/tab-statistics.php:401
 #, php-format
 msgid "[ %sRecord &#8220;Logs&#8221;%s ] is desabled."
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:174 admin/includes/tab-network.php:115
+#: admin/includes/tab-accesslog.php:175 admin/includes/tab-network.php:115
 #: admin/includes/tab-statistics.php:402
 msgid ""
 "Please set the proper condition to record and analyze the validation logs."
@@ -1471,10 +1475,6 @@ msgstr ""
 
 #: admin/includes/tab-statistics.php:225
 msgid "Search in cache"
-msgstr ""
-
-#: admin/includes/tab-statistics.php:253
-msgid "Remove from cache"
 msgstr ""
 
 #: admin/includes/tab-statistics.php:266

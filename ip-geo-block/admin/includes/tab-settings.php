@@ -757,7 +757,7 @@ endif;
 		);
 
 		/*----------------------------------------*
-		 * Front-end settings
+		 * Front-end target settings
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-public',
@@ -1084,146 +1084,6 @@ endif;
 		);
 
 		/*----------------------------------------*
-		 * Geolocation service settings
-		 *----------------------------------------*/
-		add_settings_section(
-			$section = $plugin_slug . '-provider',
-			__( 'Geolocation API settings', 'ip-geo-block' ),
-			array( __CLASS__, 'note_services' ),
-			$option_slug
-		);
-
-		// Local DBs and APIs
-		$provider  = IP_Geo_Block_Provider::get_providers( 'key' );
-		$providers = IP_Geo_Block_Provider::get_addons( $options['providers'] );
-
-		// Disable 3rd parties API in case of 'anonymize'
-		if ( $options['anonymize'] ) {
-			foreach ( array_keys( $provider ) as $key ) {
-				if ( ! in_array( $key, $providers, TRUE ) )
-					$provider[ $key ] = is_string( $provider[ $key ] ) ? '-1' : -1;
-			}
-		}
-
-		// API selection and key settings
-		$field = 'providers';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( '<dfn title="IP address cache and local database are scanned at the top priority.">API selection and key settings</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'check-provider',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
-				'providers' => $provider,
-				'titles' => IP_Geo_Block_Provider::get_providers( 'type' ),
-			)
-		);
-
-if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		// Timeout for network API
-		$field = 'timeout';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( 'Timeout for network API [sec]', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
-			)
-		);
-endif;
-
-		/*----------------------------------------*
-		 * Local database settings
-		 *----------------------------------------*/
-		if ( empty( $providers ) ) {
-			$context->add_admin_notice( 'error', sprintf(
-				__( 'Can not find geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
-				apply_filters( 'ip-geo-block-api-dir', basename( WP_CONTENT_DIR ) )
-			) );
-		}
-
-		add_settings_section(
-			$section = $plugin_slug . '-database',
-			array( __( 'Local database settings', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/geolocation-api-library.html" title="Geolocation API library | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>'),
-			array( __CLASS__, 'note_database' ),
-			$option_slug
-		);
-
-		foreach ( $providers as $provider ) {
-			if ( $geo = IP_Geo_Block_API::get_instance( $provider, NULL ) ) {
-				$geo->add_settings_field(
-					$provider,
-					$section,
-					$option_slug,
-					$option_name,
-					$options,
-					array( $context, 'callback_field' ),
-					__( 'database', 'ip-geo-block' ),
-					__( 'Last update: %s', 'ip-geo-block' )
-				);
-			}
-		}
-
-		// Get the next schedule of cron
-		if ( ! ( $tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) ) ) ) {
-			if ( is_multisite() ) {
-				global $wpdb;
-				$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
-				switch_to_blog( $blog_ids[0] ); // main blog
-				$tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) );
-				restore_current_blog();
-			} else {
-				$tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) );
-			}
-		}
-		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '<span class="ip-geo-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-geo-block' ). '</span>';
-
-		// Auto updating (once a month)
-		$field = 'update';
-		add_settings_field(
-			$option_name.'_'.$field.'_auto',
-			__( 'Auto updating (once a month)', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => 'auto',
-				'value' => $options[ $field ]['auto'],
-				'disabled' => empty( $providers ),
-				'after' => $options[ $field ]['auto'] ? '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>' : '',
-			)
-		);
-
-		// Download database
-		add_settings_field(
-			$option_name.'_'.$field.'_download',
-			__( 'Download database', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'button',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => __( 'Download now', 'ip-geo-block' ),
-				'disabled' => empty( $providers ),
-				'after' => '<div id="ip-geo-block-download"></div>',
-			)
-		);
-
-		/*----------------------------------------*
 		 * Privacy and record settings
 		 *----------------------------------------*/
 		add_settings_section(
@@ -1441,6 +1301,146 @@ endif;
 				'field' => $field,
 				'value' => $options[ $field ],
 				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>',
+			)
+		);
+
+		/*----------------------------------------*
+		 * Geolocation API settings
+		 *----------------------------------------*/
+		add_settings_section(
+			$section = $plugin_slug . '-provider',
+			__( 'Geolocation API settings', 'ip-geo-block' ),
+			array( __CLASS__, 'note_services' ),
+			$option_slug
+		);
+
+		// Local DBs and APIs
+		$provider  = IP_Geo_Block_Provider::get_providers( 'key' );
+		$providers = IP_Geo_Block_Provider::get_addons( $options['providers'] );
+
+		// Disable 3rd parties API in case of 'anonymize'
+		if ( $options['anonymize'] ) {
+			foreach ( array_keys( $provider ) as $key ) {
+				if ( ! in_array( $key, $providers, TRUE ) )
+					$provider[ $key ] = is_string( $provider[ $key ] ) ? '-1' : -1;
+			}
+		}
+
+		// API selection and key settings
+		$field = 'providers';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="IP address cache and local database are scanned at the top priority.">API selection and key settings</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'check-provider',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+				'providers' => $provider,
+				'titles' => IP_Geo_Block_Provider::get_providers( 'type' ),
+			)
+		);
+
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		// Timeout for network API
+		$field = 'timeout';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Timeout for network API [sec]', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+			)
+		);
+endif;
+
+		/*----------------------------------------*
+		 * Local database settings
+		 *----------------------------------------*/
+		if ( empty( $providers ) ) {
+			$context->add_admin_notice( 'error', sprintf(
+				__( 'Can not find geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
+				apply_filters( 'ip-geo-block-api-dir', basename( WP_CONTENT_DIR ) )
+			) );
+		}
+
+		add_settings_section(
+			$section = $plugin_slug . '-database',
+			array( __( 'Local database settings', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/geolocation-api-library.html" title="Geolocation API library | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>'),
+			array( __CLASS__, 'note_database' ),
+			$option_slug
+		);
+
+		foreach ( $providers as $provider ) {
+			if ( $geo = IP_Geo_Block_API::get_instance( $provider, NULL ) ) {
+				$geo->add_settings_field(
+					$provider,
+					$section,
+					$option_slug,
+					$option_name,
+					$options,
+					array( $context, 'callback_field' ),
+					__( 'database', 'ip-geo-block' ),
+					__( 'Last update: %s', 'ip-geo-block' )
+				);
+			}
+		}
+
+		// Get the next schedule of cron
+		if ( ! ( $tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) ) ) ) {
+			if ( is_multisite() ) {
+				global $wpdb;
+				$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs` ORDER BY `blog_id` ASC" );
+				switch_to_blog( $blog_ids[0] ); // main blog
+				$tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) );
+				restore_current_blog();
+			} else {
+				$tmp = wp_next_scheduled( IP_Geo_Block::CRON_NAME, array( FALSE ) );
+			}
+		}
+		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '<span class="ip-geo-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-geo-block' ). '</span>';
+
+		// Auto updating (once a month)
+		$field = 'update';
+		add_settings_field(
+			$option_name.'_'.$field.'_auto',
+			__( 'Auto updating (once a month)', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => 'auto',
+				'value' => $options[ $field ]['auto'],
+				'disabled' => empty( $providers ),
+				'after' => $options[ $field ]['auto'] ? '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>' : '',
+			)
+		);
+
+		// Download database
+		add_settings_field(
+			$option_name.'_'.$field.'_download',
+			__( 'Download database', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'button',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => __( 'Download now', 'ip-geo-block' ),
+				'disabled' => empty( $providers ),
+				'after' => '<div id="ip-geo-block-download"></div>',
 			)
 		);
 

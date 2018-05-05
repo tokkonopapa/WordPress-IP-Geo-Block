@@ -242,7 +242,7 @@ or following descriptions for your best setup.
 
 = Does the site using this plugin comply with GDPR? =
 
-Using this plugin itself should not be the problem, because from version 3.0.11 IP addresses in logs and cache of this plugin are encrypted by default in preparation for personal data breach. It also not only provides a way to manually erase them but also has the functionality to remove them when those are exceeded a certain amount/time. The option "Plivacy friendly" helps you to restrict sending the ip address to the 3rd parties such as geolocaiton APIs and whois service equiped in this plugin. However, these functions are part of the requirements that GDPR requires and do not guarantee that the site is compliant with GDPR.
+Using this plugin itself should not be the problem, because from version 3.0.11 IP addresses in logs and cache of this plugin are encrypted by default in preparation for personal data breach. It also not only provides a way to manually erase them but also has the functionality to remove them when those are exceeded a certain amount/time. The option "Plivacy friendly" helps you to restrict sending the ip address to the 3rd parties such as geolocaiton APIs and whois service equiped in this plugin. However, these functions are part of the requirements that GDPR requires and do not guarantee that the site is compliant with GDPR. Refer to [3.0.11 release note](http://www.ipgeoblock.com/changelog/release-3.0.11.html) for details.
 
 = Does this plugin support multisite? =
 
@@ -383,10 +383,11 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 == Changelog ==
 
 = 3.0.11 =
-* **Improvement:** To comply with GDPR, IP address in logs/cache will be encrypted by default. The option of "**Anonymize IP address**" was renamed to "**Privacy friendly**" in "**Privacy and record settings**". It will not only anonymize an IP address but also will restrict on sending to the 3rd parties such as geolocation APIs and whois service.
+* **Improvement:** To comply with GDPR, IP address in logs/cache will be always encrypted. The option of "**Anonymize IP address**" was renamed to "**Privacy friendly**" in "**Privacy and record settings**". It will not only anonymize an IP address but also will restrict on sending to the 3rd parties such as geolocation APIs and whois service.
 * **Improvement:** Update geolocation APIs and add a new one.
 * **Improvement:** Change the JavaScript compressor from Google Closure Compiler to UglifyJS 2 to prevent "Uncaught TypeError: Cannot read property ‘toLowerCase’ of undefined" in a certain environment.
 * **Fix:** Fix the issue that blocking occurred immediately instead of displaying the login page again when login failed, even the number of times did not exceed the limit.
+* See [3.0.11 release note](http://www.ipgeoblock.com/changelog/release-3.0.11.html) for some details.
 
 = 3.0.10.4 =
 * **Fix:** JavaScript error caused by bad handling form tag without method property. This error was happened with Wordfence Live Traffic.
