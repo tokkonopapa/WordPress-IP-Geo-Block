@@ -942,4 +942,23 @@ class IP_Geo_Block_Util {
 		return $sites;
 	}
 
+	/**
+	 * Anonymize IP address in string
+	 *
+	 */
+	public static function anonymize_ip( $subject ) {
+		return preg_replace(
+			array(
+				// loose pattern for IPv4
+				'/([0-9]{9})[0-9]{3}([^0-9]?)/',
+				'/([0-9]{1,3}[-\.][0-9]{1,3}[-\.][0-9]{1,3}[-\.])[0-9]+([^0-9]?)/',
+
+				// loose pattern for IPv6
+				'/((?:[0-9a-f:]+[-:]+)+)[0-9a-f\*]+([^0-9a-f]?)/i',
+			),
+			'$1***$2',
+			$subject
+		);
+	}
+
 }

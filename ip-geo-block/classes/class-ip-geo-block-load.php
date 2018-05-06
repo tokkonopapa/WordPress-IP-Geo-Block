@@ -132,7 +132,6 @@ class IP_Geo_Block_Loader {
 		if ( IP_Geo_Block_Util::is_user_logged_in() ) {
 			foreach ( $this->actions as $index => $hook ) {
 				add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
-
 				unset( $this->actions[ $index ] );
 			}
 		}
@@ -141,20 +140,21 @@ class IP_Geo_Block_Loader {
 		 * This part will be executed at the very beginning of WordPress core.
 		 * Execute callbacks that are specified by the component with 'init'.
 		 */
-		else {
+		else if ( defined( 'WP_ADMIN' ) && WP_ADMIN ) {
+			// admin ajax/post needs to be deferred
 			foreach ( $this->actions as $index => $hook ) {
-				if ( ! defined( 'WP_ADMIN' ) || ! WP_ADMIN ) {
-					// Execute callback directly
-					call_user_func( $hook['callback'], $hook['accepted_args'] );
-				}
-				else { // admin ajax/post needs to be deferred
-					add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
-				}
-
+				add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );
 				unset( $this->actions[ $index ] );
 			}
 		}
 
+		else {
+			// Execute callback directly
+			foreach ( $this->actions as $index => $hook ) {
+				call_user_func( $hook['callback'], $hook['accepted_args'] );
+				unset( $this->actions[ $index ] );
+			}
+		}
 	}
 
 }

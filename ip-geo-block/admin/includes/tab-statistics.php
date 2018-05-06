@@ -250,7 +250,7 @@ endif;
 				'value' => 0,
 				'list' => array(
 					0 => NULL,
-					'bulk-action-remove'   => __( 'Remove from cache',                         'ip-geo-block' ),
+					'bulk-action-remove'   => __( 'Remove entries by IP address',              'ip-geo-block' ),
 					'bulk-action-ip-white' => __( 'Add IP address to &#8220;Whitelist&#8221;', 'ip-geo-block' ),
 					'bulk-action-ip-black' => __( 'Add IP address to &#8220;Blacklist&#8221;', 'ip-geo-block' ), ) + ( $options['Maxmind']['use_asn'] <= 0 ? array() : array(
 					'bulk-action-as-white' => __( 'Add AS number to &#8220;Whitelist&#8221;',  'ip-geo-block' ),

@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.10',// Version of this table (not package)
+		'version'         => '3.0.11',// Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -31,7 +31,7 @@ class IP_Geo_Block_Opts {
 		'save_statistics' => TRUE,    // Record validation statistics
 		'clean_uninstall' => FALSE,   // Remove all savings from DB
 		// since version 1.1
-		'cache_hold'      => 10,      // Max entries in cache
+		'cache_hold'      => TRUE,    // Record IP address in cache
 		'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
 		// since version 3.0.0
 		'cache_time_gc'   => 900,     // Cache garbage collection time
@@ -45,7 +45,7 @@ class IP_Geo_Block_Opts {
 			'ajax'        => 0,       // Validate on ajax/post (1:country 2:ZEP)
 			'xmlrpc'      => 1,       // Validate on xmlrpc (1:country 2:close)
 			'proxy'       => NULL,    // $_SERVER variables for IPs
-			'reclogs'     => 6,       // 1:blocked 2:passed 3:unauth 4:auth 5:all 6:blocked/passed
+			'reclogs'     => 1,       // 1:blocked 2:passed 3:unauth 4:auth 5:all 6:blocked/passed
 			'postkey'     => 'action,comment,log,pwd,FILES', // Keys in $_POST, $_FILES
 			// since version 1.3.1
 			'maxlogs'     => 100,     // Max number of rows for validation logs
@@ -73,7 +73,7 @@ class IP_Geo_Block_Opts {
 		// since version 3.0.9
 		'priority' => PHP_INT_MAX,    // Action priority for WP-ZEP
 		// since version 2.2.0
-		'anonymize'       => FALSE,   // Anonymize IP address to hide privacy
+		'anonymize'       => TRUE,    // Anonymize IP address to hide privacy
 		'signature'       => '../,/wp-config.php,/passwd', // malicious signature
 		'extra_ips'       => array(   // Additional IP validation
 			'white_list'  => NULL,    // White list of IP addresses
@@ -401,6 +401,14 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '3.0.10' ) < 0 ) {
 				$settings['behavior'] = $default['behavior'];
 				$settings['public'  ]['behavior'] = $default['public']['behavior'];
+			}
+
+			if ( version_compare( $version, '3.0.11' ) < 0 ) {
+				// change the size of some database columns
+				$settings['cache_hold'] = $default['cache_hold'];
+				IP_Geo_Block_Logs::delete_tables( IP_Geo_Block::CACHE_NAME );
+				IP_Geo_Block_Logs::create_tables();
+				IP_Geo_Block_Logs::reset_sqlite_db();
 			}
 
 			// save package version number

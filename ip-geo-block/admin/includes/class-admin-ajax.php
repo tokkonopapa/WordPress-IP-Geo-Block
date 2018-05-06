@@ -25,9 +25,7 @@ class IP_Geo_Block_Admin_Ajax {
 				$res = $geo->get_location( $ip, $tmp );
 			else
 				$res = array( 'errorMessage' => 'Unknown service.' );
-		}
-
-		else {
+		} else {
 			$res = array( 'errorMessage' => 'Invalid IP address.' );
 		}
 
@@ -61,7 +59,7 @@ class IP_Geo_Block_Admin_Ajax {
 		$ip        = IP_Geo_Block::get_ip_address();
 		$args      = IP_Geo_Block::get_request_headers( $options );
 		$type      = IP_Geo_Block_Provider::get_providers( 'type', FALSE, FALSE );
-		$providers = IP_Geo_Block_Provider::get_valid_providers( $options['providers'], FALSE, FALSE );
+		$providers = IP_Geo_Block_Provider::get_valid_providers( $options, FALSE, FALSE );
 
 		$res['IP address'] = esc_html( $ip );
 
@@ -138,8 +136,11 @@ class IP_Geo_Block_Admin_Ajax {
 
 		foreach ( $rows as $row ) {
 			$row = array_map( 'esc_html', $row );
-			if ( $options['anonymize']  )
-				$row[2] = preg_replace( '/\d{1,3}$/', '***', $row[2] );
+
+			if ( $options['anonymize'] ) {
+				$row[2] = IP_Geo_Block_Util::anonymize_ip( $row[2] );
+				$row[8] = IP_Geo_Block_Util::anonymize_ip( $row[8] );
+			}
 
 			$res[] = array(
 				/*  0 Checkbox     */ '',
@@ -170,29 +171,47 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	/**
+	 * Catch and release the authority for live log
+	 *
+	 * @return TRUE or WP_Error
+	 */
+	public static function catch_live_log() {
+		$user = IP_Geo_Block_Util::get_current_user_id();
+		$auth = get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
+
+		if ( $auth === FALSE || $user === (int)$auth ) {
+			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', $user, IP_Geo_Block_Admin::TIMEOUT_LIVE_UPDATE );
+			return TRUE;
+		} else {
+			$info = get_userdata( $auth );
+			return new WP_Error( 'Warn', sprintf( __( 'The user %s (user ID: %d) is in use.', 'ip-geo-block' ), $info->user_login, $auth ) );
+		}
+	}
+
+	public static function release_live_log() {
+		if ( is_wp_error( $result = self::catch_live_log() ) )
+			return $result;
+
+		delete_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
+		return TRUE;
+	}
+
+	/**
 	 * Restore and reset live log in SQLite
 	 *
 	 */
+	public static function reset_live_log() {
+		return IP_Geo_Block_Logs::reset_sqlite_db();
+	}
+
 	public static function restore_live_log( $hook, $settings ) {
+		if ( is_wp_error( $ret = self::catch_live_log() ) )
+			return $ret;
+
 		if ( ! is_wp_error( $res = IP_Geo_Block_Logs::restore_live_log( $hook, $settings ) ) )
 			return array( 'data' => self::format_logs( $res ) ); // DataTables requires `data`
 		else
 			return array( 'error' => $res->get_error_message() );
-	}
-
-	public static function reset_live_log() {
-		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'reset_live_log' );
-
-		if ( FALSE !== ( $files = scandir( $dir = get_temp_dir(), 1 ) ) ) {
-			foreach ( $files as $file ) {
-				if ( FALSE !== strpos( $file, IP_Geo_Block::PLUGIN_NAME ) ) {
-					$fs->delete( $dir . $file );
-				}
-			}
-		}
-
-		return TRUE;
 	}
 
 	/**
@@ -200,18 +219,19 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
-	public static function restore_cache( $which ) {
-		$options = IP_Geo_Block::get_option();
+	public static function restore_cache( $which, $anonymize ) {
 		$time = time();
 		$res = array();
 
 		foreach ( IP_Geo_Block_Logs::restore_cache() as $key => $val ) {
-			if ( $options['anonymize'] )
-				$key = preg_replace( '/\d{1,3}$/', '***', $key );
+			if ( $anonymize ) {
+				$key         = IP_Geo_Block_Util::anonymize_ip( $key         );
+				$val['host'] = IP_Geo_Block_Util::anonymize_ip( $val['host'] );
+			}
 
 			$res[] = array(
 				/* Checkbox     */ '',
-				/* IP address   */ '<span><a href="#!">' . esc_html( $key ) . '</a></span>',
+				/* IP address   */ '<span><a href="#!" data-hash="' . esc_attr( $val['hash'] ). '">' . esc_html( $key ) . '</a></span>',
 				/* Country code */ '<span>' . esc_html( $val['code'] ) . '</span>',
 				/* AS number    */ '<span>' . esc_html( $val['asn' ] ) . '</span>',
 				/* Host name    */ '<span>' . esc_html( $val['host'] ) . '</span>',
@@ -432,6 +452,7 @@ endif; // TEST_RESTORE_NETWORK
 			'[black_list]',
 			'[extra_ips][white_list]',
 			'[extra_ips][black_list]',
+			'[anonymize]',
 			'[signature]',
 			'[login_fails]',
 			'[response_code]',
@@ -488,24 +509,12 @@ endif; // TEST_RESTORE_NETWORK
 			'[public][behavior]',        // 3.0.10
 			'[behavior][time]',          // 3.0.10
 			'[behavior][view]',          // 3.0.10
-			'[providers][Geolite2]',     // 3.0.8
-			'[providers][Maxmind]',
-			'[providers][IP2Location]',
-			'[providers][freegeoip.net]',
-			'[providers][ipinfo.io]',
-			'[providers][IP-Json]',
-			'[providers][Nekudo]',
-			'[providers][Xhanch]',
-			'[providers][GeoIPLookup]',  // 2.2.8
-			'[providers][ip-api.com]',
-			'[providers][IPInfoDB]',
 			'[save_statistics]',
 			'[validation][reclogs]',
 			'[validation][recdays]',     // 2.2.9
 			'[validation][maxlogs]',
 			'[validation][postkey]',
 			'[update][auto]',
-			'[anonymize]',
 			'[cache_time_gc]',           // 3.0.0
 			'[cache_hold]',
 			'[cache_time]',
@@ -522,6 +531,11 @@ endif; // TEST_RESTORE_NETWORK
 		);
 		$json = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;
+
+		// add providers
+		foreach ( array_keys( IP_Geo_Block_Provider::get_providers( 'key' ) ) as $key ) {
+			$keys[] = '[providers][' . $key . ']';
+		}
 
 		foreach ( $keys as $key ) {
 			if ( preg_match( "/\[(.+?)\](?:\[(.+?)\](?:\[(.+?)\])?)?/", $key, $m ) ) {
@@ -784,7 +798,7 @@ endif; // TEST_RESTORE_NETWORK
 		}
 
 		// Blocked self requests
-		$installed = array_reverse( IP_Geo_Block_Logs::search_logs( IP_Geo_Block::get_ip_address() ) );
+		$installed = array_reverse( IP_Geo_Block_Logs::search_logs( IP_Geo_Block::get_ip_address(), IP_Geo_Block::get_option() ) );
 		foreach ( $installed as $val ) {
 			if ( IP_Geo_Block::is_blocked( $val['result'] ) ) {
 				// hide port and nonce

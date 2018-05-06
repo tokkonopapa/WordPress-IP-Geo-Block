@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.10.4';
+	const VERSION = '3.0.11';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -195,7 +195,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function logout_redirect( $location ) {
-		if ( isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] && FALSE !== stripos( $location, self::$wp_path['admin'] ) )
+		if ( isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] )
 			return IP_Geo_Block_Util::rebuild_nonce( $location, FALSE );
 		else
 			return $location;
@@ -250,10 +250,8 @@ class IP_Geo_Block {
 	 */
 	public static function get_ip_address( $settings = NULL ) {
 		$settings or $settings = self::get_option();
-		return self::$remote_addr && ! has_filter( self::PLUGIN_NAME . '-ip-addr' ) ? self::$remote_addr : apply_filters(
-			self::PLUGIN_NAME . '-ip-addr',
-			IP_Geo_Block_Util::get_client_ip( $settings['validation']['proxy'] )
-		);
+		self::$remote_addr or self::$remote_addr = IP_Geo_Block_Util::get_client_ip( $settings['validation']['proxy'] );
+		return has_filter( self::PLUGIN_NAME . '-ip-addr' ) ? apply_filters( self::PLUGIN_NAME . '-ip-addr', self::$remote_addr ) : self::$remote_addr;
 	}
 
 	/**
@@ -297,7 +295,7 @@ class IP_Geo_Block {
 		$settings = self::get_option();
 
 		if ( empty( $providers ) ) // make valid providers list
-			$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
+			$providers = IP_Geo_Block_Provider::get_valid_providers( $settings );
 
 		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address( $settings ), $settings, $providers, array(), $callback );
 
@@ -414,7 +412,7 @@ class IP_Geo_Block {
 				FALSE !== ( @include get_stylesheet_directory() .'/'.$code.'.php' ) or // child  theme
 				FALSE !== ( @include get_template_directory()   .'/'.$code.'.php' ) or // parent theme
 				wp_die( // get_dashboard_url() @since 3.1.0
-					IP_Geo_Block_Util::kses( $mesg ) . ( $hook ? "\n<p><a rel='nofollow' href='" . esc_url( get_dashboard_url() ) . "'>&laquo; " . __( 'Dashboard' ) . "</a></p>" : '' ),
+					IP_Geo_Block_Util::kses( $mesg ) . ( $hook ? "\n<p><a rel='nofollow' href='" . esc_url( get_dashboard_url( IP_Geo_Block_Util::get_current_user_id() ) ) . "'>&laquo; " . __( 'Dashboard' ) . "</a></p>" : '' ),
 					'', array( 'response' => $code, 'back_link' => ! $hook )
 				);
 			}
@@ -450,7 +448,7 @@ class IP_Geo_Block {
 		$settings['login_fails'] >= 0          and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
 
 		// make valid provider name list
-		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
+		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings );
 
 		// apply custom filter for validation
 		// @example add_filter( 'ip-geo-block-$hook', 'my_validation', 10, 2 );
@@ -671,6 +669,7 @@ class IP_Geo_Block {
 	public function auth_fail( $something = NULL ) {
 		// Count up a number of fails when authentication is failed
 		$time = microtime( TRUE );
+		$settings = self::get_option();
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr ) ) {
 			$validate = self::make_validation( self::$remote_addr, array(
 				'result'   => 'failed', // count up $cache['fail'] in update_cache()
@@ -678,7 +677,6 @@ class IP_Geo_Block {
 				'time'     => microtime( TRUE ) - $time,
 			) + $cache );
 
-			$settings = self::get_option();
 			$cache = IP_Geo_Block_API_Cache::update_cache( $hook = defined( 'XMLRPC_REQUEST' ) ? 'xmlrpc' : 'login', $validate, $settings );
 
 			// the whitelist of IP address should be prior
@@ -695,10 +693,10 @@ class IP_Geo_Block {
 			$validate = apply_filters( self::PLUGIN_NAME . '-login', $validate, $settings );
 
 			// (1) blocked, (3) unauthenticated, (5) all
-			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $block = self::is_blocked( $validate['result'] ) );
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, self::is_blocked( $validate['result'] ) );
 
-			// send response code to refuse immediately
-			if ( $block ) {
+			// send response code to refuse if login attempts is exceeded
+			if ( 'failed' !== $validate['result'] ) {
 				if ( $settings['save_statistics'] )
 					IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 
@@ -907,7 +905,7 @@ class IP_Geo_Block {
 			$settings['public']['ua_list'] = IP_Geo_Block_Util::mask_qualification( $settings['public']['ua_list'] );
 
 		// get the name of host (from the cache if exists)
-		if ( empty( $validate['host'] ) && FALSE !== strpos( $settings['public']['ua_list'], 'HOST' ) ) {
+		if ( ! isset( $validate['host'] ) && FALSE !== strpos( $settings['public']['ua_list'], 'HOST' ) ) {
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 			$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
 		}

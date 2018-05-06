@@ -311,7 +311,8 @@
 
 			// reset all checkboxes
 			if (clear) {
-				$('input[type="checkbox"]').prop('checked', false).change();
+				$('input[type="checkbox"]').prop('checked',  false).change();
+				$('input[name*=providers]').prop('disabled', false).change();
 			}
 
 			// deserialize to the form
@@ -332,8 +333,12 @@
 			// Admin ajax/post
 			show_folding_ajax($(ID('@', 'validation_ajax_1')));
 
-			// Additional edge case
+			// Additional edge case (it should be optimized except IPInfoDB)
 			if (clear) {
+				/*$('input[name*=providers]').each(function(i, elm) {
+					elm = $(elm);
+					elm.prop('checked', json[elm.prop('name')] ? false : true);
+				});*/
 				clear = ID('%', 'settings[providers][IPInfoDB]');
 				$(ID('@', 'providers_IPInfoDB')).prop('checked', json[clear] ? true : false);
 			}
@@ -804,14 +809,15 @@
 
 			// draw callback
 			drawCallback: function (settings) {
-				var elm = $(ID('#', control.tableID)).find('td.dataTables_empty');
+				var elm = $(ID('#', control.tableID)).find('td.dataTables_empty'),
+				n = 'restore-logs' === control.ajaxCMD ? 3 : 2; // 2:restore-cache
 
 				// avoid recursive call for ajax source
 				// 1: thead, 2: empty tbody, 3: after loading data
-				if (3 > settings.iDraw) {
+				if (n > settings.iDraw) {
 					elm.html(ip_geo_block.i18n[0]);
 				}
-				else if (3 === settings.iDraw) {
+				else if (n === settings.iDraw) {
 					// 'No data available in table'
 					elm.html(ip_geo_block.i18n[1]);
 
@@ -868,10 +874,11 @@
 
 		// Bulk action
 		$(ID('#', 'bulk-action')).off('click').on('click', function (/*event*/) {
-			var cmd  = $(this).prev().val(), // value of selected option
-			    rexp = /(<([^>]+)>)/ig,      // regular expression to strip tag
-			    data = { IP: [], AS: [] },   // IP address and AS number
-			    cell, cells = $('table.dataTable').find('td>input:checked');
+			var cmd  = $(this).prev().val(),         // value of selected option
+			    texp = /(<([^>]+)>)/ig,              // regular expression to strip tag
+			    hexp = /data-hash=[\W]([\w]+)[\W]/i, // regular expression to extract hash
+			    data = { IP: [], AS: [] },           // IP address and AS number
+			    hash, cell, cells = $('table.dataTable').find('td>input:checked');
 
 			if (!cmd) {
 				return false;
@@ -882,8 +889,18 @@
 
 			cells.each(function (/*index*/) {
 				cell = table.cell(this.parentNode).data();
-				data.IP.push(cell[control.columnIP].replace(rexp, ''));
-				data.AS.push(cell[control.columnAS].replace(rexp, ''));
+
+				// hash for anonymized IP address
+				// ex:＜span＞＜a href="#!" data-hash="abcdef0123456789"＞123.456.789.***＜/a＞＜/span＞
+				if ('bulk-action-remove' === cmd || 'bulk-action-ip-erase' === cmd) {
+					hash = cell[control.columnIP].match(hexp);
+					hash = hash ? ',' + hash[1] : '';
+				} else {
+					hash = '';
+				}
+
+				data.IP.push(cell[control.columnIP].replace(texp, '') + hash);
+				data.AS.push(cell[control.columnAS].replace(texp, ''));
 			});
 
 			if (data.IP.length) {
@@ -1318,8 +1335,12 @@
 			});
 
 			/*--------------------------------
-			 * Statistics and Logs settings
+			 * Privacy and record settings
 			 *--------------------------------*/
+			$(ID('@', 'anonymize')).on('change', function (/*event*/) {
+				$('input[class*="remote"]').prop('disabled', $(this).prop('checked'));
+			}).trigger('change');
+
 			$(ID('@', 'save_statistics')).on('change', function (/*event*/) {
 				$(ID('@', 'validation_recdays')).prop('disabled', !$(this).prop('checked'));
 				return false;
@@ -1327,7 +1348,13 @@
 
 			$(ID('@', 'validation_reclogs')).on('change', function (/*event*/) {
 				var $this = $(this);
-				$this.parent().parent().nextAll().find('input').prop('disabled', 0 === Number($this.prop('selectedIndex')));
+				$this.parent().parent().nextAll().find('input[id*="validation"]').prop('disabled', 0 === Number($this.prop('selectedIndex')));
+			}).trigger('change');
+
+			$(ID('@', 'cache_hold')).on('change', function (/*event*/) {
+				var checked = $(this).prop('checked');
+				$('input[id*="cache_time"]'  ).prop('disabled', !checked);
+				$('select[id*="login_fails"]').prop('disabled', !checked);
 			}).trigger('change');
 
 			/*---------------------------
@@ -1825,6 +1852,12 @@
 				    ip = $.trim($(ID('@', 'ip_address')).val());
 
 				if (ip) {
+					// Anonymize IP address
+					if ($(ID('@', 'anonymize' )).prop('checked')) {
+						ip = ip.replace(/([\.\:])\w{1,4}$/, '$1' + '0');
+						$(ID('@', 'ip_address')).val(ip);
+					}
+
 					whois.hide().empty();
 
 					// Get whois data
@@ -1963,6 +1996,7 @@
 			$('ul.wp-submenu>li.wp-first-item').removeClass('current').next().addClass('current');
 			break;
 		}
+
 	}); // document.ready()
 
 }(jQuery, window, document));
