@@ -543,7 +543,7 @@ class IP_Geo_Block_Admin {
 				break;
 			}
 		}
-
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		// Check database tables
 		if ( $settings['cache_hold'] || $settings['validation']['reclogs'] ) {
 			if ( ( $warn =  IP_Geo_Block_Logs::diag_tables()   ) &&
@@ -551,7 +551,7 @@ class IP_Geo_Block_Admin {
 				self::add_admin_notice( 'notice-warning', $warn );
 			}
 		}
-
+endif;
 		// Check activation of IP Geo Allow
 		if ( $settings['validation']['timing'] && is_plugin_active( 'ip-geo-allow/index.php' ) ) {
 			self::add_admin_notice( 'error',
