@@ -544,21 +544,19 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
+		// Check database tables
+		if ( $settings['cache_hold'] || $settings['validation']['reclogs'] ) {
+			if ( ( $warn =  IP_Geo_Block_Logs::diag_tables()   ) &&
+				 ( TRUE !== IP_Geo_Block_Logs::create_tables() ) ) {
+				self::add_admin_notice( 'notice-warning', $warn );
+			}
+		}
+
 		// Check activation of IP Geo Allow
 		if ( $settings['validation']['timing'] && is_plugin_active( 'ip-geo-allow/index.php' ) ) {
 			self::add_admin_notice( 'error',
 				__( '&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please select &#8220;init&#8221; action hook.', 'ip-geo-block' )
 			);
-		}
-
-		if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
-			// Check creation of database table
-			if ( $settings['validation']['reclogs'] ) {
-				if ( ( $warn =  IP_Geo_Block_Logs::diag_tables()   ) &&
-				     ( TRUE !== IP_Geo_Block_Logs::create_tables() ) ) {
-					self::add_admin_notice( 'notice-warning', $warn );
-				}
-			}
 		}
 	}
 

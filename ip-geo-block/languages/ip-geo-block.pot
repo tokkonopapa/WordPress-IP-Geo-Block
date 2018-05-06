@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.11\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-05-06 12:05+0900\n"
-"PO-Revision-Date: 2018-05-06 12:05+0900\n"
+"POT-Creation-Date: 2018-05-06 15:31+0900\n"
+"PO-Revision-Date: 2018-05-06 15:32+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -77,7 +77,7 @@ msgid "The selected row cannot be found in the visible area."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:280
-#: admin/class-ip-geo-block-admin.php:1480
+#: admin/class-ip-geo-block-admin.php:1478
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr ""
@@ -148,7 +148,7 @@ msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:338
 #: admin/class-ip-geo-block-admin.php:446
-#: admin/class-ip-geo-block-admin.php:665
+#: admin/class-ip-geo-block-admin.php:663
 msgid "Settings"
 msgstr ""
 
@@ -162,7 +162,7 @@ msgid "IP Geo Block"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:455
-#: admin/class-ip-geo-block-admin.php:670
+#: admin/class-ip-geo-block-admin.php:668
 msgid "Site List"
 msgstr ""
 
@@ -227,84 +227,84 @@ msgid ""
 "%sStatistics in cache%s&#8221; section."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:550
+#: admin/class-ip-geo-block-admin.php:558
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
 "select &#8220;init&#8221; action hook."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:666
+#: admin/class-ip-geo-block-admin.php:664
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:667
+#: admin/class-ip-geo-block-admin.php:665
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:668
+#: admin/class-ip-geo-block-admin.php:666
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:669
+#: admin/class-ip-geo-block-admin.php:667
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:686
-#: admin/class-ip-geo-block-admin.php:703
+#: admin/class-ip-geo-block-admin.php:684
+#: admin/class-ip-geo-block-admin.php:701
 msgid "Network wide"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:716
+#: admin/class-ip-geo-block-admin.php:714
 msgid "Toggle all"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:719
+#: admin/class-ip-geo-block-admin.php:717
 msgid ""
 "Independent of &#8220;Statistics and Logs settings&#8221;, you can see all "
 "the requests validated by this plugin in almost real time."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:719 admin/includes/tab-accesslog.php:39
+#: admin/class-ip-geo-block-admin.php:717 admin/includes/tab-accesslog.php:39
 msgid "Live update"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:723
+#: admin/class-ip-geo-block-admin.php:721
 msgid "Open a new window on clicking the link in the chart."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:723
+#: admin/class-ip-geo-block-admin.php:721
 msgid "Open a new window"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:746
+#: admin/class-ip-geo-block-admin.php:744
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:747
+#: admin/class-ip-geo-block-admin.php:745
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:752
+#: admin/class-ip-geo-block-admin.php:750
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:844
+#: admin/class-ip-geo-block-admin.php:842
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:859
+#: admin/class-ip-geo-block-admin.php:857
 msgid "Select one"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1274
+#: admin/class-ip-geo-block-admin.php:1272
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1301
+#: admin/class-ip-geo-block-admin.php:1299
 #: admin/includes/class-admin-rewrite.php:194
 #: classes/class-ip-geo-block-cron.php:212
 #: classes/class-ip-geo-block-cron.php:316
@@ -314,7 +314,7 @@ msgstr ""
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1331
+#: admin/class-ip-geo-block-admin.php:1329
 msgid "Settings saved."
 msgstr ""
 
@@ -1549,11 +1549,18 @@ msgid ""
 "details."
 msgstr ""
 
-#: classes/class-ip-geo-block-logs.php:140
+#: classes/class-ip-geo-block-logs.php:138
 #, php-format
 msgid ""
 "Creating a DB table %s had failed. Once de-activate this plugin, and then "
 "activate again."
+msgstr ""
+
+#: classes/class-ip-geo-block-logs.php:143
+#, php-format
+msgid ""
+"Column type in %s unmatched. Once de-activate this plugin, and then activate "
+"again."
 msgstr ""
 
 #: classes/class-ip-geo-block.php:415

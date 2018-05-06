@@ -101,9 +101,8 @@ class IP_Geo_Block_Logs {
 
 		// dbDelta() parses `call` field as `CALL` statement. So alter it after init @since 3.0.10
 		if ( ! $wpdb->query( "DESCRIBE `$table` `call`" ) ) {
-			$wpdb->query(
-				"ALTER TABLE `$table` ADD `call` int(10) unsigned NOT NULL DEFAULT 0 AFTER `fail`"
-			) or self::error( __LINE__ );
+			$wpdb->query( "ALTER TABLE `$table` ADD `call` int(10) unsigned NOT NULL DEFAULT 0 AFTER `fail`" )
+			or self::error( __LINE__ );
 		}
 
 		return TRUE;
@@ -135,11 +134,13 @@ class IP_Geo_Block_Logs {
 
 		foreach ( $tables as $table ) {
 			$table = $wpdb->prefix . $table;
-			if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
-				return  sprintf(
-					__( 'Creating a DB table %s had failed. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ),
-					$table
-				);
+			if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table )
+				return sprintf( __( 'Creating a DB table %s had failed. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ), $table );
+
+			$result = $wpdb->get_results( "SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$table'", ARRAY_A );
+			foreach ( $result as $col ) {
+				if ( in_array( $col['COLUMN_NAME'], array( 'ip', 'host' ), TRUE ) && 'varbinary' !== $col['DATA_TYPE'] )
+					return sprintf( __( 'Column type in %s unmatched. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ), $table );
 			}
 		}
 
@@ -155,9 +156,8 @@ class IP_Geo_Block_Logs {
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 
 		if ( in_array( $hook, array( 'comment', 'login', 'admin', 'xmlrpc', 'public' ), TRUE ) )
-			$sql = $wpdb->prepare(
-				"DELETE FROM `$table` WHERE `hook` = %s", $hook
-			) and $wpdb->query( $sql ) or self::error( __LINE__ );
+			$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `hook` = %s", $hook )
+			and $wpdb->query( $sql ) or self::error( __LINE__ );
 		else
 			$wpdb->query( "TRUNCATE TABLE `$table`" ) or self::error( __LINE__ );
 	}
@@ -193,9 +193,8 @@ class IP_Geo_Block_Logs {
 		if ( ! is_array( $stat ) )
 			$stat = self::$default;
 
-		$sql = $wpdb->prepare(
-			"UPDATE `$table` SET `data` = %s", serialize( $stat )
-		) and $wpdb->query( $sql ) or self::error( __LINE__ );
+		$sql = $wpdb->prepare( "UPDATE `$table` SET `data` = %s", serialize( $stat ) )
+		and $wpdb->query( $sql ) or self::error( __LINE__ );
 	}
 
 	/**
@@ -527,7 +526,8 @@ class IP_Geo_Block_Logs {
 			$validate['result'] .= '*';
 
 		// anonymize ip address
-		$settings['anonymize'] and $validate['ip'] = preg_replace( '/\w{1,3}$/', '***', $validate['ip'] );
+		if ( $settings['anonymize'] )
+			$validate['ip'] = preg_replace( '/\w{1,3}$/', '***', $validate['ip'] );
 
 		if ( $record ) {
 			// count the number of rows for each hook
@@ -566,9 +566,7 @@ class IP_Geo_Block_Logs {
 			if ( $dir = apply_filters(
 				IP_Geo_Block::PLUGIN_NAME . '-backup-dir', $settings['validation']['backup'], $hook
 			) ) {
-				self::backup_logs(
-					$hook, $validate, $method, $agent, $heads, $posts, $dir
-				);
+				self::backup_logs( $hook, $validate, $method, $agent, $heads, $posts, $dir );
 			}
 		}
 
@@ -691,10 +689,11 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 
-		$settings['anonymize'] and $ip = IP_Geo_Block_Util::anonymize_ip( $ip );
+		if ( $settings['anonymize'] )
+			$ip = IP_Geo_Block_Util::anonymize_ip( $ip );
 
 		$sql = $wpdb->prepare(
-			"SELECT `No`, `time`, `ip`, AES_DECRYPT(`ip`, %s), `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, AES_DECRYPT(`headers`, %s), `data` FROM `$table` WHERE `ip` = AES_ENCRYPT(%s, %s)",
+			"SELECT `time`, `ip`, AES_DECRYPT(`ip`, %s), `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, AES_DECRYPT(`headers`, %s), `data` FROM `$table` WHERE `ip` = AES_ENCRYPT(%s, %s)",
 			self::CRYPT_KEY, self::CRYPT_KEY, $ip, self::CRYPT_KEY
 		) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 
@@ -710,7 +709,7 @@ class IP_Geo_Block_Logs {
 			}
 
 			$result[ $key ] = array_combine(
-				array( 'No', 'time', 'ip', 'asn', 'hook', 'auth', 'code', 'result', 'method', 'user_agent', 'headers', 'data' ),
+				array( 'time', 'ip', 'asn', 'hook', 'auth', 'code', 'result', 'method', 'user_agent', 'headers', 'data' ),
 				$result[ $key ]
 			);
 		}
@@ -969,9 +968,8 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
-		$sql = $wpdb->prepare(
-			"DELETE FROM `$table` WHERE `time` < %d", $_SERVER['REQUEST_TIME'] - $cache_time
-		) and $result = ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
+		$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `time` < %d", $_SERVER['REQUEST_TIME'] - $cache_time )
+		and $result = ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
 
 		return isset( $result ) ? $result : FALSE;
 	}
