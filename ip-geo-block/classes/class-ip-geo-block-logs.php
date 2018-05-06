@@ -94,7 +94,7 @@ class IP_Geo_Block_Logs {
 			fail int(10) unsigned NOT NULL DEFAULT 0,
 			last int(10) unsigned NOT NULL DEFAULT 0,
 			view int(10) unsigned NOT NULL DEFAULT 0,
-			host tinytext NULL,
+			host varbinary(512) NULL,
 			PRIMARY KEY  (No)
 		) $charset_collate";
 		$result = dbDelta( $sql );
@@ -852,20 +852,17 @@ class IP_Geo_Block_Logs {
 	public static function restore_cache() {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
-		$result = $wpdb->get_results(
-			"SELECT `No`, `time`, `hook`, AES_DECRYPT(`ip`, '" . self::CRYPT_KEY . "'), `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, `host`, `ip` FROM `$table`",
-			ARRAY_N
-		) or self::error( __LINE__ );
+
+		$sql = $wpdb->prepare(
+			"SELECT `time`, `hook`, AES_DECRYPT(`ip`, %s), `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, AES_DECRYPT(`host`, %s), `ip` FROM `$table`",
+			self::CRYPT_KEY, self::CRYPT_KEY
+		) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 
 		// transform DB to cache format
 		$cache = $hash = array();
 		foreach ( (array)$result as $key => $val ) {
-			$val = array_combine(
-				array( 'No', 'time', 'hook', 'ip', 'asn', 'code', 'auth', 'fail', 'call', 'last', 'view', 'host', 'hash' ),
-				$val
-			);
-
-			// make the encrypted `ip` a hash so that it can be specified as a key
+			// make the encrypted `ip` hashed so that it can be specified as a key
+			$val = array_combine( array( 'time', 'hook', 'ip', 'asn', 'code', 'auth', 'fail', 'call', 'last', 'view', 'host', 'hash' ), $val );
 			$val['hash'] = bin2hex( $val['hash'] );
 
 			$ip = $val['ip'];
@@ -892,10 +889,12 @@ class IP_Geo_Block_Logs {
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
 		$sql = $wpdb->prepare(
-			"SELECT * FROM `$table` WHERE `ip` = AES_ENCRYPT(%s, %s)", $ip, self::CRYPT_KEY
-		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
+			"SELECT `time`, `hook`, `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, AES_DECRYPT(`host`, %s) FROM `$table` WHERE `ip` = AES_ENCRYPT(%s, %s)",
+			self::CRYPT_KEY, $ip, self::CRYPT_KEY
+		) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 
 		if ( ! empty( $result[0] ) ) {
+			$result[0] = array_combine( array( 'time', 'hook', 'asn', 'code', 'auth', 'fail', 'call', 'last', 'view', 'host' ), $result[0] );
 			$result[0]['ip'] = $ip;
 			return $result[0];
 		} else {
@@ -914,7 +913,7 @@ class IP_Geo_Block_Logs {
 		$sql = $wpdb->prepare(
 			"INSERT INTO `$table`
 			(`time`, `hook`, `ip`, `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, `host`)
-			VALUES (%d, %s, AES_ENCRYPT(%s, %s), %s, %s, %d, %d, %d, %d, %d, %s)
+			VALUES (%d, %s, AES_ENCRYPT(%s, %s), %s, %s, %d, %d, %d, %d, %d, AES_ENCRYPT(%s, %s))
 			ON DUPLICATE KEY UPDATE
 			`time` = VALUES(`time`),
 			`hook` = VALUES(`hook`),
@@ -935,7 +934,8 @@ class IP_Geo_Block_Logs {
 			$cache['call'],
 			$cache['last'],
 			$cache['view'],
-			$cache['host']
+			$cache['host'],
+			self::CRYPT_KEY
 		) and $wpdb->query( $sql ) or self::error( __LINE__ );
 	}
 

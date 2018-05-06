@@ -224,7 +224,11 @@ class IP_Geo_Block_Admin_Ajax {
 		$res = array();
 
 		foreach ( IP_Geo_Block_Logs::restore_cache() as $key => $val ) {
-			$anonymize and $key = IP_Geo_Block_Util::anonymize_ip( $key );
+			if ( $anonymize ) {
+				$key         = IP_Geo_Block_Util::anonymize_ip( $key         );
+				$val['host'] = IP_Geo_Block_Util::anonymize_ip( $val['host'] );
+			}
+
 			$res[] = array(
 				/* Checkbox     */ '',
 				/* IP address   */ '<span><a href="#!" data-hash="' . esc_attr( $val['hash'] ). '">' . esc_html( $key ) . '</a></span>',

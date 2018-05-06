@@ -905,7 +905,7 @@ class IP_Geo_Block {
 			$settings['public']['ua_list'] = IP_Geo_Block_Util::mask_qualification( $settings['public']['ua_list'] );
 
 		// get the name of host (from the cache if exists)
-		if ( empty( $validate['host'] ) && FALSE !== strpos( $settings['public']['ua_list'], 'HOST' ) ) {
+		if ( ! isset( $validate['host'] ) && FALSE !== strpos( $settings['public']['ua_list'], 'HOST' ) ) {
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 			$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
 		}

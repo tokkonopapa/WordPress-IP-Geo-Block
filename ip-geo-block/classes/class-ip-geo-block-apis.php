@@ -134,8 +134,7 @@ abstract class IP_Geo_Block_API {
 		$res = array();
 		foreach ( $template['transform'] as $key => $val ) {
 			if ( ! empty( $val ) && ! empty( $data[ $val ] ) )
-				$res[ $key ] = is_string( $data[ $val ] ) ?
-					esc_html( $data[ $val ] ) : $data[ $val ];
+				$res[ $key ] = is_string( $data[ $val ] ) ? esc_html( $data[ $val ] ) : $data[ $val ];
 		}
 
 		// if country code is '-' or 'UNDEFINED' then error.
@@ -486,7 +485,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			'call' => $settings['save_statistics'] ? $call : 0,
 			'last' => $last,
 			'view' => $view,
-			'host' => isset( $validate['host'] ) && $validate['host'] !== $ip ? $validate['host'] : NULL,
+			'host' => isset( $validate['host'] ) && $validate['host'] !== $ip ? $validate['host'] : '',
 		);
 
 		$settings['cache_hold'] and IP_Geo_Block_Logs::update_cache( $cache );
@@ -525,7 +524,6 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 class IP_Geo_Block_Provider {
 
 	protected static $providers = array(
-
 		'Ipdata.co' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
