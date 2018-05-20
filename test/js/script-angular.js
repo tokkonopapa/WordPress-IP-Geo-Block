@@ -101,7 +101,7 @@ app.controller('WPAppCtrl', [
 		},
 		wp_content: {
 			path:   'wp-content/plugins/ip-geo-block/samples.php',
-			query:  'wp-load=1'
+			query:  'wp-load=0'
 		},
 		BuddyPress: {
 			path: 'register/',
