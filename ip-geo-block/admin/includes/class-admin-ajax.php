@@ -103,22 +103,36 @@ class IP_Geo_Block_Admin_Ajax {
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
 	public static function export_logs( $which ) {
-		$csv = '';
-		$which = IP_Geo_Block_Logs::restore_logs( $which );
-		$date = isset( $which[0] ) ? $which[0][1] : $_SERVER['REQUEST_TIME'];
-		$date = IP_Geo_Block_Util::localdate( $date, 'Y-m-d_H-i-s' );
+		$csv = '#';
+		$time = $_SERVER['REQUEST_TIME'];
 
-		foreach ( $which as $data ) {
+		$csv .= implode( ',', array(
+			__( 'Time',         'ip-geo-block' ),
+			__( 'IP address',   'ip-geo-block' ),
+			__( 'Code',         'ip-geo-block' ),
+			__( 'ASN',          'ip-geo-block' ),
+			__( 'Target',       'ip-geo-block' ),
+			__( 'Result',       'ip-geo-block' ),
+			__( 'Request',      'ip-geo-block' ),
+			__( 'User agent',   'ip-geo-block' ),
+			__( 'HTTP headers', 'ip-geo-block' ),
+			__( '$_POST data',  'ip-geo-block' ),
+		) ) . PHP_EOL;
+
+		foreach ( IP_Geo_Block_Logs::restore_logs( $which ) as $data ) {
 			$hook = array_shift( $data );
 			self::array_insert( $data, $hook, 3 );
 			$data[0] = IP_Geo_Block_Util::localdate( $data[0], 'Y-m-d H:i:s' );
+			$data[7] = str_replace( ',', '‚', $data[7] ); // &#044; --> &#130;
+			$data[8] = str_replace( ',', '‚', $data[8] ); // &#044; --> &#130;
+			$data[9] = str_replace( ',', '‚', $data[9] ); // &#044; --> &#130;
 			$csv .= implode( ',', $data ) . PHP_EOL;
 		}
 
 		// Send as file
 		header( 'Content-Description: File Transfer' );
 		header( 'Content-Type: application/octet-stream' );
-		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_NAME . '_' . $date . '.csv"' );
+		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_NAME . '_' . IP_Geo_Block_Util::localdate( $time, 'Y-m-d_H-i-s' ) . '.csv"' );
 		header( 'Pragma: public' );
 		header( 'Expires: 0' );
 		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
@@ -215,13 +229,58 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	/**
+	 * Export IP address in cache from MySQL DB
+	 *
+	 */
+	public static function export_cache( $anonymize = TRUE ) {
+		$csv = '#';
+		$time = $_SERVER['REQUEST_TIME'];
+
+		$csv .= implode( ',', array(
+			__( 'IP address',      'ip-geo-block' ),
+			__( 'Code',            'ip-geo-block' ),
+			__( 'ASN',             'ip-geo-block' ),
+			__( 'Host name',       'ip-geo-block' ),
+			__( 'Target',          'ip-geo-block' ),
+			__( 'Failure / Total', 'ip-geo-block' ),
+			__( 'Elapsed[sec]',    'ip-geo-block' ),
+		) ) . PHP_EOL;
+
+		foreach ( IP_Geo_Block_Logs::restore_cache() as $key => $val ) {
+			if ( $anonymize ) {
+				$key         = IP_Geo_Block_Util::anonymize_ip( $key         );
+				$val['host'] = IP_Geo_Block_Util::anonymize_ip( $val['host'] );
+			}
+
+			$csv .= implode( ',', array(
+				/* IP address      */ $key,
+				/* Country code    */ $val['code'],
+				/* AS number       */ $val['asn' ],
+				/* Host name       */ $val['host'],
+				/* Target          */ $val['hook'],
+				/* Failure / Total */ sprintf( '%d / %d', (int)$val['fail'], (int)$val['call'] ),
+				/* Elapsed[sec]    */ $time - (int)$val['time'],
+			) ) . PHP_EOL;
+		}
+
+		// Send as file
+		header( 'Content-Description: File Transfer' );
+		header( 'Content-Type: application/octet-stream' );
+		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_NAME . '_' . IP_Geo_Block_Util::localdate( $time, 'Y-m-d_H-i-s' ) . '.csv"' );
+		header( 'Pragma: public' );
+		header( 'Expires: 0' );
+		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
+		header( 'Content-Length: ' . strlen( $csv ) );
+		echo $csv;
+	}
+
+	/**
 	 * Restore cache from MySQL DB
 	 *
-	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
-	public static function restore_cache( $which, $anonymize ) {
-		$time = time();
+	public static function restore_cache( $anonymize = TRUE ) {
 		$res = array();
+		$time = $_SERVER['REQUEST_TIME'];
 
 		foreach ( IP_Geo_Block_Logs::restore_cache() as $key => $val ) {
 			if ( $anonymize ) {
@@ -510,9 +569,10 @@ endif; // TEST_RESTORE_NETWORK
 			'[behavior][time]',          // 3.0.10
 			'[behavior][view]',          // 3.0.10
 			'[save_statistics]',
-			'[validation][reclogs]',
 			'[validation][recdays]',     // 2.2.9
+			'[validation][reclogs]',
 			'[validation][maxlogs]',
+			'[validation][explogs]',     // 3.0.12
 			'[validation][postkey]',
 			'[update][auto]',
 			'[cache_time_gc]',           // 3.0.0

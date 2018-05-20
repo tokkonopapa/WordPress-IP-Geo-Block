@@ -964,14 +964,14 @@ class IP_Geo_Block_Logs {
 	 * Delete expired cache
 	 *
 	 */
-	public static function delete_cache_expired( $cache_time ) {
+	public static function delete_expired( $expired ) {
 		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
-		$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `time` < %d", $_SERVER['REQUEST_TIME'] - $cache_time )
-		and $result = ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
-
-		return isset( $result ) ? $result : FALSE;
+		foreach ( array( self::TABLE_LOGS, IP_Geo_Block::CACHE_NAME ) as $key => $table ) {
+			$table = $wpdb->prefix . $table;
+			$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `time` < %d", $_SERVER['REQUEST_TIME'] - $expired[ $key ] )
+			and FALSE !== $wpdb->query( $sql ) or self::error( __LINE__ );
+		}
 	}
 
 	/**

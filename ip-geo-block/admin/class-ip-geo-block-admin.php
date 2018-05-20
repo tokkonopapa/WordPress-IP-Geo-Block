@@ -9,6 +9,7 @@
  * @copyright 2013-2018 tokkonopapa
  */
 define( 'IP_GEO_BLOCK_NETWORK', FALSE );
+
 class IP_Geo_Block_Admin {
 
 	/**
@@ -397,11 +398,11 @@ class IP_Geo_Block_Admin {
 		$admin_menu = ( 'admin_menu' === current_filter() ); // @since: 2.5 `admin_menu` or `network_admin_menu`
 
 		// Verify tab number
-		if ( $this->is_network ) {
+		if ( $this->is_network &= $settings['network_wide'] ) {
 			if ( $admin_menu ) {
-				$this->admin_tab = min( 4, max( $settings['network_wide'] ? 1 : 0, $this->admin_tab ) );
-			} elseif ( ! in_array( $this->admin_tab, $settings['network_wide'] ? array( 0, 5 ) : array( 5 ), TRUE ) ) {
-				$this->admin_tab = $settings['network_wide'] ? 0 : 5;
+				$this->admin_tab = min( 4, max( 1, $this->admin_tab ) );
+			} elseif ( ! in_array( $this->admin_tab, array( 0, 5 ), TRUE ) ) {
+				$this->admin_tab = 0;
 			}
 		} else {
 			$this->admin_tab = min( 4, $this->admin_tab ); // exclude `Site List`
@@ -409,7 +410,7 @@ class IP_Geo_Block_Admin {
 
 		if ( $admin_menu ) {
 			// `settings-updated` would be added just after settings updated.
-			if ( ! empty( $_REQUEST['settings-updated'] ) && $this->is_network && $settings['network_wide'] &&
+			if ( ! empty( $_REQUEST['settings-updated'] ) && $this->is_network &&
 			     ! empty( $_REQUEST['page'] ) && IP_Geo_Block::PLUGIN_NAME === $_REQUEST['page'] ) {
 				$this->update_multisite_settings( $settings );
 				wp_safe_redirect( esc_url_raw( add_query_arg(
@@ -437,7 +438,7 @@ class IP_Geo_Block_Admin {
 				'manage_network_options',
 				IP_Geo_Block::PLUGIN_NAME,
 				array( $this, 'display_plugin_admin_page' )
-				//'dashicons-admin-site' // or 'data:image/svg+xml;base64...'
+				//, 'dashicons-admin-site' // or 'data:image/svg+xml;base64...'
 			);
 			if ( $settings['network_wide'] ) {
 				add_submenu_page(
@@ -1454,8 +1455,12 @@ endif;
 			$res = IP_Geo_Block_Util::get_registered_actions( TRUE );
 			break;
 
+		  case 'export-cache': // Restore cache from database and format for DataTables
+			IP_Geo_Block_Admin_Ajax::export_cache( $settings['anonymize'] );
+			break;
+
 		  case 'restore-cache': // Restore cache from database and format for DataTables
-			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $which, $settings['anonymize'] );
+			$res = IP_Geo_Block_Admin_Ajax::restore_cache( $settings['anonymize'] );
 			break;
 
 		  case 'bulk-action-remove': // Delete specified IP addresses from cache
@@ -1547,6 +1552,7 @@ endif;
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 			);
+			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

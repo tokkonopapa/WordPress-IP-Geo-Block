@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.5
-Stable tag: 3.0.11
+Stable tag: 3.0.12
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -381,6 +381,11 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.12 =
+* **Improvement:** Enhance "Privacy and record settings" where "Expiration time [sec] for Logs" can be specified.
+* **Improvement:** Add "Export cache" in "Statistics in IP address cache" on "Statistics" tab.
+* **Fix:** Fix some minor bugs.
 
 = 3.0.11 =
 * **Improvement:** To comply with GDPR, IP address in logs/cache will be always encrypted. The option of "**Anonymize IP address**" was renamed to "**Privacy friendly**" in "**Privacy and record settings**". It will not only anonymize an IP address but also will restrict on sending to the 3rd parties such as geolocation APIs and whois service.

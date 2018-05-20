@@ -178,7 +178,12 @@ class IP_Geo_Block_Cron {
 	 */
 	public static function exec_cache_gc( $settings ) {
 		self::stop_cache_gc();
-		IP_Geo_Block_Logs::delete_cache_expired( $settings['cache_time'] );
+
+		IP_Geo_Block_Logs::delete_expired( array(
+			$settings['validation']['explogs'],
+			$settings['cache_time']
+		) );
+
 		self::start_cache_gc( $settings );
 	}
 
@@ -186,7 +191,7 @@ class IP_Geo_Block_Cron {
 		$settings or $settings = IP_Geo_Block::get_option();
 
 		if ( ! wp_next_scheduled( IP_Geo_Block::CACHE_NAME ) )
-			wp_schedule_single_event( time() + $settings['cache_time_gc'], IP_Geo_Block::CACHE_NAME );
+			wp_schedule_single_event( time() + max( $settings['cache_time_gc'], MINUTE_IN_SECONDS ), IP_Geo_Block::CACHE_NAME );
 	}
 
 	public static function stop_cache_gc() {

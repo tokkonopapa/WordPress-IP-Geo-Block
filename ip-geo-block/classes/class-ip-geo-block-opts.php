@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.11',// Version of this table (not package)
+		'version'         => '3.0.12',// Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -29,9 +29,9 @@ class IP_Geo_Block_Opts {
 		'timeout'         => 30,      // Timeout in second
 		'response_code'   => 403,     // Response code
 		'save_statistics' => TRUE,    // Record validation statistics
-		'clean_uninstall' => FALSE,   // Remove all savings from DB
+		'clean_uninstall' => TRUE,    // Remove all savings from DB
 		// since version 1.1
-		'cache_hold'      => TRUE,    // Record IP address in cache
+		'cache_hold'      => FALSE,   // Record IP address cache
 		'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
 		// since version 3.0.0
 		'cache_time_gc'   => 900,     // Cache garbage collection time
@@ -45,11 +45,13 @@ class IP_Geo_Block_Opts {
 			'ajax'        => 0,       // Validate on ajax/post (1:country 2:ZEP)
 			'xmlrpc'      => 1,       // Validate on xmlrpc (1:country 2:close)
 			'proxy'       => NULL,    // $_SERVER variables for IPs
-			'reclogs'     => 1,       // 1:blocked 2:passed 3:unauth 4:auth 5:all 6:blocked/passed
+			'reclogs'     => 0,       // 1:blocked 2:passed 3:unauth 4:auth 5:all 6:blocked/passed
 			'postkey'     => 'action,comment,log,pwd,FILES', // Keys in $_POST, $_FILES
 			// since version 1.3.1
-			'maxlogs'     => 100,     // Max number of rows for validation logs
+			'maxlogs'     => 500,     // Max number of rows for validation logs
 			'backup'      => NULL,    // Absolute path to directory for backup logs
+			// since version 3.0.12
+			'explogs'     => WEEK_IN_SECONDS, // expiration time for logs
 			// since version 2.1.0
 			'plugins'     => 0,       // Validate on wp-content/plugins (1:country 2:ZEP)
 			'themes'      => 0,       // Validate on wp-content/themes (1:country 2:ZEP)
@@ -383,7 +385,6 @@ class IP_Geo_Block_Opts {
 			}
 
 			if ( version_compare( $version, '3.0.5' ) < 0 ) {
-				$settings['validation' ]['maxlogs'] = 500;
 				$settings['live_update'] = $default['live_update'];
 			}
 
@@ -409,6 +410,11 @@ class IP_Geo_Block_Opts {
 				IP_Geo_Block_Logs::delete_tables( IP_Geo_Block::CACHE_NAME );
 				IP_Geo_Block_Logs::create_tables();
 				IP_Geo_Block_Logs::reset_sqlite_db();
+			}
+
+			if ( version_compare( $version, '3.0.12' ) < 0 ) {
+				$settings['validation']['maxlogs'] = $default['validation']['maxlogs'];
+				$settings['validation']['explogs'] = $default['validation']['explogs'];
 			}
 
 			// save package version number

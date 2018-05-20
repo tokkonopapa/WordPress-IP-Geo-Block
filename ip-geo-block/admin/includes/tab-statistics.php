@@ -210,14 +210,19 @@ if ( $options['validation']['reclogs'] ) :
 endif;
 
 		/*----------------------------------------*
-		 * Statistics in cache
+		 * IP address in cache
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-cache',
-			__( 'Statistics in cache', 'ip-geo-block' ),
-			array( __CLASS__, 'statistics_cache' ),
+			__( 'Statistics in IP address cache', 'ip-geo-block' ),
+			( $options['cache_hold'] ?
+				array( __CLASS__, 'statistics_cache' ) :
+				array( __CLASS__, 'warn_ipadr_cache' )
+			),
 			$option_slug
 		);
+
+if ( $options['cache_hold'] ) :
 
 		$field = 'search_filter';
 		add_settings_field(
@@ -275,6 +280,24 @@ endif;
 				'after' => '<div id="'.$plugin_slug.'-cache"></div>',
 			)
 		);
+
+		// Export cache
+		$field = 'export_cache';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Export cache', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'none',
+				'before' => '<a class="button button-secondary" id="ip-geo-block-export-cache" title="' . __( 'Export to the local file',   'ip-geo-block' ) . '" href="#!">'. __( 'Export csv', 'ip-geo-block' ) . '</a>',
+				'after' => '<div id="'.$plugin_slug.'-export"></div>',
+			)
+		);
+
+endif;
+
 	}
 
 	/**
@@ -390,16 +413,23 @@ endif;
 	 */
 	public static function warn_statistics() {
 		$context = IP_Geo_Block_Admin::get_instance();
-		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 5 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-5' );
-		echo '<p>', sprintf( __( '[ %sRecord &#8220;Statistics&#8221;%s ] is desabled.', 'ip-geo-block' ), '<a href="' . $url . '"><strong>', '</strong></a>' ), '</p>', "\n";
+		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 3 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-3' );
+		echo '<p>', sprintf( __( '[ %sRecord &#8220;Statistics&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '">', '</a>' ), '</p>', "\n";
 		echo '<p>', __( 'Please set the proper condition to record and analyze the validation statistics.', 'ip-geo-block' ), '</p>', "\n";
 	}
 
 	public static function warn_validation() {
 		$context = IP_Geo_Block_Admin::get_instance();
-		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 5 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-5' );
-		echo '<p>', sprintf( __( '[ %sRecord &#8220;Logs&#8221;%s ] is desabled.', 'ip-geo-block' ), '<a href="' . $url . '"><strong>', '</strong></a>' ), '</p>', "\n";
+		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 3 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-3' );
+		echo '<p>', sprintf( __( '[ %sRecord &#8220;Logs&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '">', '</a>' ), '</p>', "\n";
 		echo '<p>', __( 'Please set the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
+	}
+
+	public static function warn_ipadr_cache() {
+		$context = IP_Geo_Block_Admin::get_instance();
+		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 3 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-3' );
+		echo '<p style="padding:0 1em">', sprintf( __( '[ %sRecord &#8220;IP address cache&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '">', '</a>' ), '</p>', "\n";
+		echo '<p style="padding:0 1em">', __( 'Please set the proper condition to record IP address in cache.', 'ip-geo-block' ), '</p>', "\n";
 	}
 
 }

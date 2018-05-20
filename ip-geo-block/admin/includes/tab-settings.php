@@ -1094,11 +1094,11 @@ endif;
 			$option_slug
 		);
 
-		// Privacy friendly
+		// Anonymize IP address and restrict 3rd party APIs
 		$field = 'anonymize';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="IP address is always encrypted on recording in logs and cache. Moreover, this option makes the IP address anonymous and restricted on sending to the 3rd parties such as geolocation APIs or whois service.">Privacy friendly</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="IP address is always encrypted on recording in cache and logs. Moreover, this option makes the IP address anonymous and restricted on sending to the 3rd parties such as geolocation APIs or whois service.">Anonymize IP address and restrict 3rd party APIs</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1110,11 +1110,11 @@ endif;
 			)
 		);
 
-		// Record "Statistics"
-		$field = 'save_statistics';
+		// Record IP address cache
+		$field = 'cache_hold';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="This option enables to record the number blocked countries and the number of blocked requests per day.">Record &#8220;Statistics&#8221;</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option enables to record the IP address, country code and failure counter of login attempts into the cache on database to minimize the impact on site speed.">Record &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1126,12 +1126,11 @@ endif;
 			)
 		);
 
-if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		$field = 'validation';
-		$key = 'recdays';
+		// Expiration time [sec] for IP address cache
+		$field = 'cache_time';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			__( 'Maximum period for &#8220;Statistics&#8221; (days)', 'ip-geo-block' ),
+			$option_name.'_'.$field,
+			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this and garbage collection period.">Expiration time [sec] for &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1139,17 +1138,15 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'type' => 'text',
 				'option' => $option_name,
 				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'value' => $options[ $field ],
 			)
 		);
-endif;
 
 		// Record "Logs"
 		$field = 'validation';
 		add_settings_field(
 			$option_name.'_'.$field.'_reclogs',
-			__( '<dfn title="This option enables to record the validation logs including IP address.">Record &#8220;Logs&#8221;</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option enables to record the validation logs including IP addresses.">Record &#8220;Logs&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1161,8 +1158,8 @@ endif;
 				'value' => $options[ $field ]['reclogs'],
 				'list' => array(
 					0 => __( 'Disable',                 'ip-geo-block' ),
-					1 => __( 'When requests blocked',   'ip-geo-block' ),
-					2 => __( 'When requests passed',    'ip-geo-block' ),
+					1 => __( 'When blocked',            'ip-geo-block' ),
+					2 => __( 'When passed',             'ip-geo-block' ),
 					6 => __( 'When &#8220;blocked&#8221; or &#8220;passed (not in whitelist)&#8221;', 'ip-geo-block' ),
 					3 => __( 'Unauthenticated visitor', 'ip-geo-block' ),
 					4 => __( 'Authenticated user',      'ip-geo-block' ),
@@ -1170,24 +1167,6 @@ endif;
 				),
 			)
 		);
-
-if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		$key = 'maxlogs';
-		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			__( 'Maximum entries of &#8220;Logs&#8221;', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-			)
-		);
-endif;
 
 		// $_POST keys to be recorded with their values in "Logs"
 		add_settings_field(
@@ -1206,7 +1185,40 @@ endif;
 			)
 		);
 
+		$key = 'explogs';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			sprintf( __( '<dfn title="The maximum number of entries in the logs is also limited to %d.">Expiration time [sec] for &#8220;Logs&#8221;</dfn>', 'ip-geo-block' ), $options[ $field ]['maxlogs'] ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+			)
+		);
+
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		// Maximum entries of Logs
+		$key = 'maxlogs';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( 'Maximum entries of &#8220;Logs&#8221;', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+			)
+		);
+
 		// Live update
 		$field = 'live_update';
 		add_settings_field(
@@ -1252,11 +1264,32 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		);
 endif;
 
-		// Record "IP address cache"
-		$field = 'cache_hold';
+		// Get the next schedule of cron
+		$tmp = wp_next_scheduled( IP_Geo_Block::CACHE_NAME );
+		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '<span class="ip-geo-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-geo-block' ). '</span>';
+
+		// Cleanup interval [sec] for Logs and IP address cache
+		$field = 'cache_time_gc';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="This option enables to record the IP address , country code and login fail counter into the cache on database to minimize the impact on site speed.">Record &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries in ip address cache and logs.">Cleanup interval [sec] for &#8220;IP address cache&#8221; and &#8220;Logs&#8221;</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>',
+			)
+		);
+
+		// Record "Statistics"
+		$field = 'save_statistics';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="This option enables to record the number blocked countries and the number of blocked requests per day.">Record &#8220;Statistics&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1268,11 +1301,12 @@ endif;
 			)
 		);
 
-		// Expiration time [sec] for IP address cache
-		$field = 'cache_time';
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		$field = 'validation';
+		$key = 'recdays';
 		add_settings_field(
-			$option_name.'_'.$field,
-			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this and garbage collection period.">Expiration time [sec] for &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
+			$option_name.'_'.$field.'_'.$key,
+			__( 'Maximum period for &#8220;Statistics&#8221; [day]', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1280,28 +1314,25 @@ endif;
 				'type' => 'text',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => $options[ $field ],
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
 			)
 		);
+endif;
 
-		// Get the next schedule of cron
-		$tmp = wp_next_scheduled( IP_Geo_Block::CACHE_NAME );
-		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '<span class="ip-geo-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-geo-block' ). '</span>';
-
-		// Garbage collection period [sec] for IP address cache
-		$field = 'cache_time_gc';
+		// Remove all settings and records at uninstallation
+		$field = 'clean_uninstall';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries of cache.">Garbage collection period [sec] for &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ),
+			__( 'Remove all settings and records at uninstallation', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
-				'type' => 'text',
+				'type' => 'checkbox',
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
-				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>',
 			)
 		);
 
@@ -1515,22 +1546,6 @@ if ( IP_GEO_BLOCK_NETWORK ):
 			);
 		}
 endif;
-		// Remove all settings at uninstallation
-		$field = 'clean_uninstall';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( 'Remove all settings at uninstallation', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
-			)
-		);
-
 		// Google Maps API key
 		$field = 'api_key';
 		$key = 'GoogleMap';
@@ -1622,11 +1637,11 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		);
 endif;
 
-		// Show WordPress system info
+		// Diagnostic information
 		$field = 'show-info';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="When an unexpected blocking has occurred, please press the button to find the blocked request in the dumped information which may help to solve the issue.">Debug information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
+			__( '<dfn title="When an unexpected blocking has occurred, please press the button to find the blocked request in the dumped information which may help to solve the issue.">Diagnostic information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

@@ -1353,8 +1353,8 @@
 
 			$(ID('@', 'cache_hold')).on('change', function (/*event*/) {
 				var checked = $(this).prop('checked');
-				$('input[id*="cache_time"]'  ).prop('disabled', !checked);
-				$('select[id*="login_fails"]').prop('disabled', !checked);
+				$('input[name*="[cache_time]"]').prop('disabled', !checked);
+				$('select[id*="login_fails"]'  ).prop('disabled', !checked);
 			}).trigger('change');
 
 			/*---------------------------
@@ -1595,7 +1595,7 @@
 				return false;
 			});
 
-			// Statistics in cache
+			// IP address in cache
 			initTable(tabNo, {
 				tableID:   'statistics-cache',
 				ajaxCMD:   'restore-cache',
@@ -1625,6 +1625,15 @@
 					{ responsivePriority:  5, targets: 7 }, // Elapsed[sec]
 					{ className: "all",       targets: [0, 1, 2, 5] } // always visible
 				]
+			});
+
+			// Export cache
+			add_hidden_form('export-cache');
+
+			// Export cache
+			$(ID('#', 'export-cache')).on('click', function (/*event*/) {
+				$(ID('#', 'export-form')).submit();
+				return false;
 			});
 			break;
 
@@ -1804,7 +1813,7 @@
 				return false;
 			}).trigger('change');
 
-			// Export / Import settings
+			// Export logs
 			add_hidden_form('export-logs');
 
 			// Export logs
