@@ -242,7 +242,7 @@ or following descriptions for your best setup.
 
 = Does the site using this plugin comply with GDPR? =
 
-Using this plugin itself should not be the problem, because from version 3.0.11 IP addresses in logs and cache of this plugin are encrypted by default in preparation for personal data breach. It also not only provides a way to manually erase them but also has the functionality to remove them when those are exceeded a certain amount/time. The option "Privacy friendly" helps you to restrict sending the ip address to the 3rd parties such as geolocaiton APIs and whois service equipped in this plugin. However, these functions are part of the requirements that GDPR requires and do not guarantee that the site is compliant with GDPR. Refer to [3.0.11 release note](http://www.ipgeoblock.com/changelog/release-3.0.11.html) for details.
+Using this plugin itself should not be the problem, because from version 3.0.11 IP addresses in logs and cache of this plugin are encrypted by default in preparation for personal data breach. It also not only provides a way to manually erase them but also has the functionality to remove them when those are exceeded a certain amount/time. The option "Privacy friendly" helps you to restrict sending the ip address to the 3rd parties such as geolocation APIs and whois service equipped in this plugin. However, these functions are part of the requirements that GDPR requires and do not guarantee that the site is compliant with GDPR. Refer to [3.0.11 release note](http://www.ipgeoblock.com/changelog/release-3.0.11.html) for details.
 
 = Does this plugin support multisite? =
 
