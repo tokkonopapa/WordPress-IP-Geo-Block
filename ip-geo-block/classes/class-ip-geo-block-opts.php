@@ -185,8 +185,8 @@ class IP_Geo_Block_Opts {
 		),
 		// since version 3.0.10
 		'behavior'        => array(
-			'time'           => 12,      // More than 10 page view in 12 seconds
-			'view'           => 10,      // More than 10 page view in 12 seconds
+			'time'           => 10,      // More than 10 page view in 10 seconds
+			'view'           => 10,      // More than 10 page view in 10 seconds
 		),
 	);
 

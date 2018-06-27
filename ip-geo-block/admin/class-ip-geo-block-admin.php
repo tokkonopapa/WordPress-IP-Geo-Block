@@ -104,7 +104,21 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function add_redirect_nonce( $location, $status ) {
-		return IP_Geo_Block_Util::rebuild_nonce( $location, FALSE === strpos( $location, wp_login_url() ) );
+		$status = TRUE; // default is `retrieve` a nonce
+		$urls = array( wp_login_url() );
+
+		// avoid multiple redirection caused by WP hide 1.4.9.1
+		if ( is_plugin_active( 'wp-hide-security-enhancer/wp-hide.php' ) )
+			$urls[] = 'options-permalink.php';
+
+		foreach ( $urls as $url ) {
+			if ( FALSE !== strpos( $location, $url ) ) {
+				$status = FALSE; // do not `retieve` a nonce
+				break;
+			}
+		}
+
+		return IP_Geo_Block_Util::rebuild_nonce( $location, $status );
 	}
 
 	/**
@@ -714,7 +728,7 @@ endif;
 	</h2>
 	<p class="ip-geo-block-navi-link">[ <a id="ip-geo-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]
 <?php if ( 4 === $tab ) { /* Logs tab */ ?>
-	<input id="ip-geo-block-live-update" type="checkbox"<?php checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] ); disabled( extension_loaded( 'pdo_sqlite' ), FALSE ); ?> /><label for="ip-geo-block-live-update">
+	<input id="ip-geo-block-live-update" type="checkbox"<?php checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] ); disabled( $settings['validation']['reclogs'] && extension_loaded( 'pdo_sqlite' ), FALSE ); ?> /><label for="ip-geo-block-live-update">
 		<dfn title="<?php _e( 'Independent of &#8220;Statistics and Logs settings&#8221;, you can see all the requests validated by this plugin in almost real time.', 'ip-geo-block' ); ?>"><?php _e( 'Live update', 'ip-geo-block' ); ?></dfn>
 	</label>
 <?php } elseif (5 === $tab ) { /* Site List tab */ ?>
