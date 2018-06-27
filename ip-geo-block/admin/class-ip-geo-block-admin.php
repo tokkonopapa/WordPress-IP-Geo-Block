@@ -104,7 +104,21 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function add_redirect_nonce( $location, $status ) {
-		return IP_Geo_Block_Util::rebuild_nonce( $location, FALSE === strpos( $location, wp_login_url() ) );
+		$status = TRUE; // default is `retrieve` a nonce
+		$urls = array( wp_login_url() );
+
+		// avoid multiple redirection caused by WP hide 1.4.9.1
+		if ( is_plugin_active( 'wp-hide-security-enhancer/wp-hide.php' ) )
+			$urls[] = 'options-permalink.php';
+
+		foreach ( $urls as $url ) {
+			if ( FALSE !== strpos( $location, $url ) ) {
+				$status = FALSE; // do not `retieve` a nonce
+				break;
+			}
+		}
+
+		return IP_Geo_Block_Util::rebuild_nonce( $location, $status );
 	}
 
 	/**
