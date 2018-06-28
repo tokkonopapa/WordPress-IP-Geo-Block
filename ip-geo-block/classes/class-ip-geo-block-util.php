@@ -736,7 +736,6 @@ class IP_Geo_Block_Util {
 	private static function kses_no_null( $string ) {
 		$string = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $string );
 		$string = preg_replace( '/\\\\+0+/', '', $string );
-
 		return $string;
 	}
 
@@ -968,7 +967,7 @@ class IP_Geo_Block_Util {
  	private static $theme_template = NULL;
 
 	public static function show_theme_template( $type, $settings ) {
-		if ( ! empty( $action = current_action() ) /* action: empty, `plugins_loaded` or `wp` */ && (
+		if ( ( $action = current_filter() ) && ! empty( $action ) /* `plugins_loaded` or `wp` */ && (
 		     file_exists( get_stylesheet_directory() . '/' . $type . '.php' ) /* child  theme */ ||
 		     file_exists( get_template_directory()   . '/' . $type . '.php' ) /* parent theme */ ) ) {
 			// keep type of theme template
@@ -989,7 +988,6 @@ class IP_Geo_Block_Util {
 		global $wp_query;
 		$wp_query->set_404(); // for stylesheet
 		$wp_query->is_404 = ( 404 === self::$theme_template );
-
 		status_header( self::$theme_template ); // @since 2.0.0
 
 		if ( $template ) {
