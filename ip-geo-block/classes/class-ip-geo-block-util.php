@@ -967,7 +967,7 @@ class IP_Geo_Block_Util {
  	private static $theme_template = NULL;
 
 	public static function show_theme_template( $type, $settings ) {
-		if ( ( $action = current_filter() ) && ! empty( $action ) /* `plugins_loaded` or `wp` */ && (
+		if ( $action = current_filter() /* FALSE, `plugins_loaded` or `wp` */ && (
 		     file_exists( get_stylesheet_directory() . '/' . $type . '.php' ) /* child  theme */ ||
 		     file_exists( get_template_directory()   . '/' . $type . '.php' ) /* parent theme */ ) ) {
 			// keep type of theme template
