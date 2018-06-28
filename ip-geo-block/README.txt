@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.5
-Stable tag: 3.0.12
+Stable tag: 3.0.12.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -381,6 +381,12 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.12.1 =
+* **Issue fix:** Unexpected blocking cause by an extra slash at the end of `$_SERVER['DOCUMENT_ROOT']` that might be added by server's configuration. ([forum topic](https://wordpress.org/support/topic/wpwebinar/ "Topic: WPWebinar &#124; WordPress.org"))
+* **Issue fix:** [Human friendly error page](http://www.ipgeoblock.com/codex/customizing-the-response.html#human-friendly-error-page) now works properly. ([forum topic](https://wordpress.org/support/topic/problem-with-permalinks-51/ "Topic: Problem with Permalinks &#124; WordPress.org"))
+* **Issue fix:** Fix the conflict with WP hide & Security Enhancer. ([forum topic](https://wordpress.org/support/topic/problem-with-permalinks-51/ "Topic: Problem with Permalinks &#124; WordPress.org"))
+* **Issue fix:** Hotfix [WordPress File Delete to Code Execution](https://blog.ripstech.com/2018/wordpress-file-delete-to-code-execution/ "WARNING: WordPress File Delete to Code Execution") by RIPS Technologies.
 
 = 3.0.12 =
 * **Improvement:** Enhance "Privacy and record settings" where "Expiration time [sec] for Logs" can be specified.

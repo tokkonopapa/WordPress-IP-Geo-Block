@@ -736,7 +736,6 @@ class IP_Geo_Block_Util {
 	private static function kses_no_null( $string ) {
 		$string = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $string );
 		$string = preg_replace( '/\\\\+0+/', '', $string );
-
 		return $string;
 	}
 
@@ -961,4 +960,41 @@ class IP_Geo_Block_Util {
 		);
 	}
 
+	/**
+	 * Load and show theme template
+	 *
+	 */
+ 	private static $theme_template = NULL;
+
+	public static function show_theme_template( $type, $settings ) {
+		if ( ( $action = current_filter() ) && ! empty( $action ) /* `plugins_loaded` or `wp` */ && (
+		     file_exists( get_stylesheet_directory() . '/' . $type . '.php' ) /* child  theme */ ||
+		     file_exists( get_template_directory()   . '/' . $type . '.php' ) /* parent theme */ ) ) {
+			// keep type of theme template
+			self::$theme_template = $type;
+
+ 			if ( 'wp' === $action ) // action hook `wp` is too late to include the template file directly
+				add_filter( 'template_include', 'IP_Geo_Block_Util::load_theme_template', $settings['priority'] );
+			else
+				add_action( 'init',             'IP_Geo_Block_Util::load_theme_template', $settings['priority'] );
+
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+
+	public static function load_theme_template( $template = FALSE ) {
+		global $wp_query;
+		$wp_query->set_404(); // for stylesheet
+		$wp_query->is_404 = ( 404 === self::$theme_template );
+		status_header( self::$theme_template ); // @since 2.0.0
+
+		if ( $template ) {
+			return locate_template( array( self::$theme_template . '.php' ) ); // @since 2.7.0 in wp-includes/template.php
+		} else {
+			@include locate_template( array( self::$theme_template . '.php' ) );
+			exit;
+		}
+	}
 }

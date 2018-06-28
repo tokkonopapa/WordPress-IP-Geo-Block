@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.12';
+	const VERSION = '3.0.12.1';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -153,6 +153,18 @@ class IP_Geo_Block {
 		// force to redirect on logout to remove nonce, embed a nonce into pages
 		add_filter( 'wp_redirect',        array( $this, 'logout_redirect' ), 20,        2 ); // logout_redirect @4.2
 		add_filter( 'http_request_args',  array( $this,   'request_nonce' ), $priority, 2 ); // @since 2.7.0
+
+		// Hotfix: https://blog.ripstech.com/2018/wordpress-file-delete-to-code-execution/
+		add_filter( 'wp_update_attachment_metadata', array( $this, 'unlink_tempfix' ) );
+	}
+
+	// Hotfix: WordPress File Delete to Code Execution
+	function unlink_tempfix( $data ) {
+		if( isset($data['thumb']) ) {
+			$data['thumb'] = basename($data['thumb']);
+		}
+	
+		return $data;
 	}
 
 	/**
@@ -408,13 +420,15 @@ class IP_Geo_Block {
 
 			// Show human readable page
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
-				$hook = IP_Geo_Block_Util::is_user_logged_in() && 'admin' === $this->target_type;
-				FALSE !== ( @include get_stylesheet_directory() .'/'.$code.'.php' ) or // child  theme
-				FALSE !== ( @include get_template_directory()   .'/'.$code.'.php' ) or // parent theme
-				wp_die( // get_dashboard_url() @since 3.1.0
-					IP_Geo_Block_Util::kses( $mesg ) . ( $hook ? "\n<p><a rel='nofollow' href='" . esc_url( get_dashboard_url( IP_Geo_Block_Util::get_current_user_id() ) ) . "'>&laquo; " . __( 'Dashboard' ) . "</a></p>" : '' ),
-					'', array( 'response' => $code, 'back_link' => ! $hook )
-				);
+				if ( IP_Geo_Block_Util::show_theme_template( $code, $settings ) ) {
+					return; // continue to show at `init`
+				} else {
+					$hook = ( IP_Geo_Block_Util::is_user_logged_in() && 'admin' === $this->target_type );
+					wp_die( // get_dashboard_url() @since 3.1.0
+						IP_Geo_Block_Util::kses( $mesg ) . ( $hook ? "\n<p><a rel='nofollow' href='" . esc_url( get_dashboard_url( IP_Geo_Block_Util::get_current_user_id() ) ) . "'>&laquo; " . __( 'Dashboard' ) . "</a></p>" : '' ),
+						'', array( 'response' => $code, 'back_link' => ! $hook )
+					);
+				}
 			}
 			exit;
 		}
@@ -591,9 +605,9 @@ class IP_Geo_Block {
 
 		// list of request for specific action or page to bypass WP-ZEP
 		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array(), $settings ), array(
-			// in wp-admin js/widget.js, includes/template.php, async-upload.php, PHP Compatibility Checker
-			'heartbeat', 'save-widget', 'wp-compression-test', 'upload-attachment', 'imgedit-preview', 'wpephpcompat_start_test',
-			// bbPress, Anti-Malware Security and Brute-Force Firewall, jetpack page & action
+			// in wp-admin js/widget.js, includes/template.php, async-upload.php, plugins.php, PHP Compatibility Checker
+			'heartbeat', 'save-widget', 'wp-compression-test', 'upload-attachment', 'deactivate', 'imgedit-preview', 'wpephpcompat_start_test',
+			// bbPress, Anti-Malware Security and Brute-Force Firewall, Jetpack page & action
 			'bp_avatar_upload', 'GOTMLS_logintime', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate',
 		) );
 

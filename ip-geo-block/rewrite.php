@@ -65,7 +65,7 @@ class IP_Geo_Block_Rewrite {
 		if ( ':' === substr( $path, 1, 1 ) )
 			$path = ucfirst( $path );
 
-		return $path;
+		return rtrim( $path, '/\\' );
 	}
 
 	/**
@@ -126,15 +126,15 @@ class IP_Geo_Block_Rewrite {
 		// @example $path = "/etc/passwd\0.php"; is_file( $path ) === true (5.2.14), false (5.4.4)
 		$path = self::realpath( str_replace( "\0", '', $path ) );
 
+		// check default index
+		if ( FALSE === strripos( strtolower( $path ), '.php', -4 ) )
+			$path .= '/index.php';
+
 		// check path if under the document root
 		// This may be meaningless because the HTTP request is always inside the document root.
 		// The only possibility is a symbolic link pointed to outside of the document root.
 		if ( 0 !== strpos( $path, "$root/" ) )
 			self::abort( $context, $validate, $settings, file_exists( $path ) );
-
-		// check default index
-		if ( 0 === preg_match( "/\/([^\/]+)$/", $path, $matches ) )
-			$path .= 'index.php';
 
 		// check file extention
 		// if it fails, rewrite rule may be misconfigured
