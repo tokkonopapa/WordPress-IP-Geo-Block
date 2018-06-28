@@ -155,15 +155,15 @@ class IP_Geo_Block {
 		add_filter( 'http_request_args',  array( $this,   'request_nonce' ), $priority, 2 ); // @since 2.7.0
 
 		// Hotfix: https://blog.ripstech.com/2018/wordpress-file-delete-to-code-execution/
-		add_filter( 'wp_update_attachment_metadata', array( $this, 'unlink_tempfix' ) );
+		add_filter( 'wp_update_attachment_metadata', array( $this, 'unlink_tempfix' ), $priority );
 	}
 
 	// Hotfix: WordPress File Delete to Code Execution
 	function unlink_tempfix( $data ) {
-		if( isset($data['thumb']) ) {
-			$data['thumb'] = basename($data['thumb']);
+		if( isset( $data['thumb'] ) ) {
+			$data['thumb'] = basename( $data['thumb'] );
 		}
-	
+
 		return $data;
 	}
 
