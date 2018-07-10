@@ -412,7 +412,7 @@ class IP_Geo_Block_Util {
 	 * Generate a keyed hash value using the HMAC method.
 	 * @source http://php.net/manual/en/function.hash-hmac.php#93440
 	 */
-	private static function hash_hmac( $algo, $data, $key, $raw_output = FALSE ) {
+	public static function hash_hmac( $algo, $data, $key, $raw_output = FALSE ) {
 		// PHP 5 >= 5.1.2, PECL hash >= 1.1 or wp-includes/compat.php
 		if ( function_exists( 'hash_hmac' ) )
 			return hash_hmac( $algo, $data, $key, $raw_output );

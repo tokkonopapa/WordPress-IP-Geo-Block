@@ -153,18 +153,6 @@ class IP_Geo_Block {
 		// force to redirect on logout to remove nonce, embed a nonce into pages
 		add_filter( 'wp_redirect',        array( $this, 'logout_redirect' ), 20,        2 ); // logout_redirect @4.2
 		add_filter( 'http_request_args',  array( $this,   'request_nonce' ), $priority, 2 ); // @since 2.7.0
-
-		// Hotfix: https://blog.ripstech.com/2018/wordpress-file-delete-to-code-execution/
-		add_filter( 'wp_update_attachment_metadata', array( $this, 'unlink_tempfix' ), $priority );
-	}
-
-	// Hotfix: WordPress File Delete to Code Execution
-	function unlink_tempfix( $data ) {
-		if( isset( $data['thumb'] ) ) {
-			$data['thumb'] = basename( $data['thumb'] );
-		}
-
-		return $data;
 	}
 
 	/**

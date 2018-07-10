@@ -120,7 +120,8 @@ class IP_Geo_Block_Admin_Ajax {
 		) ) . PHP_EOL;
 
 		foreach ( IP_Geo_Block_Logs::restore_logs( $which ) as $data ) {
-			$hook = array_shift( $data );
+			$hook = array_shift( $data ); // remove `No`
+			$hook = array_shift( $data ); // extract `hook`
 			self::array_insert( $data, $hook, 3 );
 			$data[0] = IP_Geo_Block_Util::localdate( $data[0], 'Y-m-d H:i:s' );
 			$data[7] = str_replace( ',', '‚', $data[7] ); // &#044; --> &#130;
@@ -149,6 +150,7 @@ class IP_Geo_Block_Admin_Ajax {
 		$res = array();
 
 		foreach ( $rows as $row ) {
+			array_shift( $row ); // remove `No`
 			$row = array_map( 'esc_html', $row );
 
 			if ( $options['anonymize'] ) {

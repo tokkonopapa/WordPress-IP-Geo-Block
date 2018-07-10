@@ -31,7 +31,7 @@ class IP_Geo_Block_Opts {
 		'save_statistics' => TRUE,    // Record validation statistics
 		'clean_uninstall' => TRUE,    // Remove all savings from DB
 		// since version 1.1
-		'cache_hold'      => FALSE,   // Record IP address cache
+		'cache_hold'      => TRUE,    // Record IP address cache
 		'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
 		// since version 3.0.0
 		'cache_time_gc'   => 900,     // Cache garbage collection time
@@ -45,7 +45,7 @@ class IP_Geo_Block_Opts {
 			'ajax'        => 0,       // Validate on ajax/post (1:country 2:ZEP)
 			'xmlrpc'      => 1,       // Validate on xmlrpc (1:country 2:close)
 			'proxy'       => NULL,    // $_SERVER variables for IPs
-			'reclogs'     => 0,       // 1:blocked 2:passed 3:unauth 4:auth 5:all 6:blocked/passed
+			'reclogs'     => 1,       // 1:blocked 2:passed 3:unauth 4:auth 5:all 6:blocked/passed
 			'postkey'     => 'action,comment,log,pwd,FILES', // Keys in $_POST, $_FILES
 			// since version 1.3.1
 			'maxlogs'     => 500,     // Max number of rows for validation logs
@@ -417,13 +417,16 @@ class IP_Geo_Block_Opts {
 				$settings['validation']['explogs'] = $default['validation']['explogs'];
 			}
 
+			if ( version_compare( $version, '3.0.13' ) < 0 )
+				IP_Geo_Block_Logs::upgrade( $version );
+
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
 
 		// install addons for IP Geolocation database API ver. 1.1.12
 		$providers = IP_Geo_Block_Provider::get_addons();
-		if ( empty( $providers ) || ! $settings['api_dir'] || version_compare( $version, '3.0.9' ) < 0 )
+		if ( empty( $providers ) || ! $settings['api_dir'] || ! file_exists( $settings['api_dir'] ) || version_compare( $version, '3.0.9' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
@@ -466,7 +469,7 @@ class IP_Geo_Block_Opts {
 
 	private static function get_api_dir( $settings ) {
 		// wp-content
-		$dir = empty( $settings['api_dir'] ) ? WP_CONTENT_DIR : dirname( $settings['api_dir'] );
+		$dir = ( empty( $settings['api_dir'] ) || ! file_exists( $settings['api_dir'] ) ) ? WP_CONTENT_DIR : dirname( $settings['api_dir'] );
 
 		if ( ! @is_writable( $dir ) ) {
 			// wp-content/uploads
