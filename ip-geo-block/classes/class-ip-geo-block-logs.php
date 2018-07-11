@@ -150,7 +150,7 @@ class IP_Geo_Block_Logs {
 	 * @link https://mysqlserverteam.com/understand-and-satisfy-your-aes-encryption-needs-with-5-6-17/
 	 */
 	private static function cipher_mode_key( $upgrade = TRUE ) {
-		if ( $upgrade ) {
+		if ( TRUE === $upgrade ) {
 			$mode = ( function_exists( 'openssl_cipher_iv_length' ) /* @since PHP 5.3.3 */ ?
 				2 /* openssl CBC */ :
 				1 /* mysql ECB */
@@ -167,6 +167,10 @@ class IP_Geo_Block_Logs {
 			$key = NONCE_KEY;
 		}
 
+		// for upgrade functional test
+//		$mode = 0;
+//		$key = ( 2 === $mode ? hash_hmac( 'sha256', NONCE_KEY, NONCE_SALT, TRUE ) : ( 1 === $mode ? md5( NONCE_KEY . NONCE_SALT, TRUE ) : NONCE_KEY ) );
+
 		return array( $mode, $key );
 	}
 
@@ -181,9 +185,9 @@ class IP_Geo_Block_Logs {
 		return openssl_encrypt( $data, IP_GEO_BLOCK_CIPHER_METHOD, $key, OPENSSL_RAW_DATA, $iv ) . $iv; // @since PHP 5.3.3, $data: 48 bytes for IPv6, $iv: 16 bytes
 	}
 
-	private static function decrypt( $data, $key, $iv = TRUE ) {
-		$len  = $iv ? 16 /* 16 bytes for md5 */ : openssl_cipher_iv_length( IP_GEO_BLOCK_CIPHER_METHOD ) /* 16 bytes */;
-		$iv   = substr( $data, -$len, $len );
+	private static function decrypt( $data, $key, $iv = FALSE ) {
+		$len = $iv ? openssl_cipher_iv_length( IP_GEO_BLOCK_CIPHER_METHOD ) /* 16 bytes */ : 16; /* 16 bytes for md5 */
+		$iv or $iv = substr( $data, -$len, $len );
 		$data = substr( $data, 0, strlen( $data ) - $len );
 		return openssl_decrypt( $data, IP_GEO_BLOCK_CIPHER_METHOD, $key, OPENSSL_RAW_DATA, $iv );
 	}

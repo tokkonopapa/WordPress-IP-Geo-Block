@@ -378,7 +378,7 @@ endif;
 					$key  = esc_html( $key );
 
 					if ( 'ip' === $slug && $options['anonymize'] )
-						$link = $key = preg_replace( '/\d{1,3}$/', '***', $link );
+						$link = $key = IP_Geo_Block_Util::anonymize_ip( $link );
 
 					echo '<li><code>';
 					echo str_replace(

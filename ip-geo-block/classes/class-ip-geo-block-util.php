@@ -486,9 +486,7 @@ class IP_Geo_Block_Util {
 
 			header( "Location: $location", TRUE, $status );
 			return TRUE;
-		}
-
-		else {
+		} else {
 			return FALSE;
 		}
 	}
@@ -783,7 +781,6 @@ class IP_Geo_Block_Util {
 	private static function is_IIS() {
 		$_is_apache = ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Apache' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'LiteSpeed' ) !== FALSE );
 		$_is_IIS = ! $_is_apache && ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer' ) !== FALSE );
-
 		return $_is_IIS ? substr( $_SERVER['SERVER_SOFTWARE'], strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS/' ) + 14 ) : FALSE;
 	}
 
@@ -951,7 +948,6 @@ class IP_Geo_Block_Util {
 				// loose pattern for IPv4
 				'/([0-9]{9})[0-9]{3}([^0-9]?)/',
 				'/([0-9]{1,3}[-\.][0-9]{1,3}[-\.][0-9]{1,3}[-\.])[0-9]+([^0-9]?)/',
-
 				// loose pattern for IPv6
 				'/((?:[0-9a-f:]+[-:]+)+)[0-9a-f\*]+([^0-9a-f]?)/i',
 			),
