@@ -1499,11 +1499,11 @@ endif;
 			}
 
 			foreach ( array_unique( (array)$which[ $src ] ) as $val ) {
-				// replace anonymized IP address with CIDR (IPv4:256, IPv6:65536)
+				// replace anonymized IP address with CIDR (IPv4:256, IPv6:4096)
 				$val = preg_replace(
-					array( '/\.\*\*\*.*$/', '/\*\*\*.*$/' ),
-					array( '.0/24',         ':/112'       ),
-					$val, 1
+					array( '/\.\*\*\*.*$/', '/\*\*\*.*$/', '/:000\/116$/' ),
+					array( '.0/24',         '000/116',     '::/116'       ),
+					$val
 				);
 				if ( ( filter_var( preg_replace( '/\/\d+$/', '', $val ), FILTER_VALIDATE_IP ) || preg_match( '/^AS\d+$/', $val ) ) &&
 				     ( FALSE === strpos( $settings['extra_ips'][ $dst ], $val ) ) ) {

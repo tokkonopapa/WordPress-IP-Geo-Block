@@ -154,8 +154,8 @@ class IP_Geo_Block_Admin_Ajax {
 			$row = array_map( 'esc_html', $row );
 
 			if ( $options['anonymize'] ) {
-				$row[2] = IP_Geo_Block_Util::anonymize_ip( $row[2] );
-				$row[8] = IP_Geo_Block_Util::anonymize_ip( $row[8] );
+				$row[2] = IP_Geo_Block_Util::anonymize_ip( $row[2], TRUE  );
+				$row[8] = IP_Geo_Block_Util::anonymize_ip( $row[8], FALSE );
 			}
 
 			$res[] = array(
@@ -250,8 +250,8 @@ class IP_Geo_Block_Admin_Ajax {
 
 		foreach ( IP_Geo_Block_Logs::restore_cache() as $key => $val ) {
 			if ( $anonymize ) {
-				$key         = IP_Geo_Block_Util::anonymize_ip( $key         );
-				$val['host'] = IP_Geo_Block_Util::anonymize_ip( $val['host'] );
+				$key         = IP_Geo_Block_Util::anonymize_ip( $key,         TRUE  );
+				$val['host'] = IP_Geo_Block_Util::anonymize_ip( $val['host'], FALSE );
 			}
 
 			$csv .= implode( ',', array(
@@ -286,8 +286,8 @@ class IP_Geo_Block_Admin_Ajax {
 
 		foreach ( IP_Geo_Block_Logs::restore_cache() as $key => $val ) {
 			if ( $anonymize ) {
-				$key         = IP_Geo_Block_Util::anonymize_ip( $key         );
-				$val['host'] = IP_Geo_Block_Util::anonymize_ip( $val['host'] );
+				$key         = IP_Geo_Block_Util::anonymize_ip( $key,         TRUE  );
+				$val['host'] = IP_Geo_Block_Util::anonymize_ip( $val['host'], FALSE );
 			}
 
 			$res[] = array(
@@ -566,6 +566,7 @@ endif; // TEST_RESTORE_NETWORK
 			'[public][simulate]',        // 3.0.0
 			'[public][dnslkup]',         // 3.0.3
 			'[public][response_code]',   // 3.0.3
+			'[public][response_msg]',    // 3.0.3
 			'[public][redirect_uri]',    // 3.0.3
 			'[public][behavior]',        // 3.0.10
 			'[behavior][time]',          // 3.0.10
@@ -768,7 +769,6 @@ endif; // TEST_RESTORE_NETWORK
 					$result += array( $matches[1] => $which );
 				}
 			}
-			break;
 		}
 
 		return $result;
