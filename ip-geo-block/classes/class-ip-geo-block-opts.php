@@ -188,6 +188,8 @@ class IP_Geo_Block_Opts {
 			'time'           => 10,      // More than 10 page view in 10 seconds
 			'view'           => 10,      // More than 10 page view in 10 seconds
 		),
+		// since version 3.0.13
+		'restrict_api'    => TRUE,       // Do not send IP address to external APIs
 	);
 
 	/**
@@ -417,8 +419,10 @@ class IP_Geo_Block_Opts {
 				$settings['validation']['explogs'] = $default['validation']['explogs'];
 			}
 
-			if ( version_compare( $version, '3.0.13' ) < 0 )
+			if ( version_compare( $version, '3.0.13' ) < 0 ) {
+				$settings['restrict_api'] = $default['restrict_api'];
 				IP_Geo_Block_Logs::upgrade( $version );
+			}
 
 			// save package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
@@ -464,6 +468,7 @@ class IP_Geo_Block_Opts {
 	public static function delete_api( $settings ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'delete_api' );
+
 		return $fs->delete( self::get_api_dir( $settings ), TRUE ); // $recursive = true
 	}
 

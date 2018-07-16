@@ -1076,7 +1076,7 @@ endif;
 	// Initialize not on the form (mainly unchecked checkbox)
 	public function preprocess_options( $output, $default ) {
 		// initialize checkboxes not in the form (added after 2.0.0, just in case)
-		foreach ( array( 'providers', 'save_statistics', 'cache_hold', 'anonymize', 'network_wide', 'clean_uninstall' ) as $key ) {
+		foreach ( array( 'providers', 'save_statistics', 'cache_hold', 'anonymize', 'restrict_api', 'network_wide', 'clean_uninstall' ) as $key ) {
 			$output[ $key ] = is_array( $default[ $key ] ) ? array() : 0;
 		}
 
@@ -1200,6 +1200,9 @@ endif;
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
 			IP_Geo_Block_Cron::stop_update_db();
 		}
+
+		// expiration time [days]
+		$output['validation']['explogs'] *= DAY_IN_SECONDS;
 
 		return $output;
 	}

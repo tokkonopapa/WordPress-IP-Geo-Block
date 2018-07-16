@@ -630,7 +630,7 @@ class IP_Geo_Block_Provider {
 		$list = array();
 		$providers = $settings['providers'];
 
-		foreach ( self::get_providers( 'key', $rand, $cache, ! $settings['anonymize'] && $all ) as $key => $val ) {
+		foreach ( self::get_providers( 'key', $rand, $cache, empty( $settings['restrict_api'] ) && $all ) as $key => $val ) {
 			if ( ! empty( $providers[ $key ] ) || ( ! isset( $providers[ $key ] ) && NULL === $val ) )
 				$list[] = $key;
 		}

@@ -878,7 +878,7 @@
 			    texp = /(<([^>]+)>)/ig,              // regular expression to strip tag
 			    hexp = /data-hash=[\W]([\w]+)[\W]/i, // regular expression to extract hash
 			    data = { IP: [], AS: [] },           // IP address and AS number
-			    hash, cell, cells = $('table.dataTable').find('td>input:checked');
+			    hash, cell, cells = $('table' + ID('.', 'dataTable')).find('td>input:checked');
 
 			if (!cmd) {
 				return false;
@@ -943,7 +943,7 @@
 
 		// Jump to search tab with opening a new window
 		// @note: `click` cannot be `off` because it's a root.
-		$('table.dataTable tbody').on('click', 'a', function (/*event*/) {
+		$('table' + ID('.', 'dataTable') + ' tbody').on('click', 'a', function (/*event*/) {
 			var p = window.location.search.slice(1).split('&'),
 			    n = p.length, q = {}, i, j;
 
@@ -1337,7 +1337,7 @@
 			/*--------------------------------
 			 * Privacy and record settings
 			 *--------------------------------*/
-			$(ID('@', 'anonymize')).on('change', function (/*event*/) {
+			$(ID('@', 'restrict_api')).on('change', function (/*event*/) {
 				$('input[class*="remote"]').prop('disabled', $(this).prop('checked'));
 			}).trigger('change');
 

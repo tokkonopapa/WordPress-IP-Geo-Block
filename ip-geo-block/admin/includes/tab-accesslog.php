@@ -165,7 +165,7 @@ endif; // $options['validation']['reclogs']
 	 *
 	 */
 	public static function validation_logs() {
-		echo '<table id="', IP_Geo_Block::PLUGIN_NAME, '-validation-logs" class="dataTable display" cellspacing="0" width="100%">', "\n", '<thead></thead><tbody></tbody></table>', "\n";
+		echo '<table id="', IP_Geo_Block::PLUGIN_NAME, '-validation-logs" class="', IP_Geo_Block::PLUGIN_NAME, '-dataTable display" cellspacing="0" width="100%">', "\n", '<thead></thead><tbody></tbody></table>', "\n";
 	}
 
 	public static function warn_accesslog() {

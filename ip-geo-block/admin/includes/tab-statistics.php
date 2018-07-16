@@ -404,7 +404,7 @@ endif;
 	 *
 	 */
 	public static function statistics_cache() {
-		echo '<table id="', IP_Geo_Block::PLUGIN_NAME, '-statistics-cache" class="dataTable display" cellspacing="0" width="100%">', "\n", '<thead></thead><tbody></tbody></table>', "\n";
+		echo '<table id="', IP_Geo_Block::PLUGIN_NAME, '-statistics-cache" class="', IP_Geo_Block::PLUGIN_NAME, '-dataTable display" cellspacing="0" width="100%">', "\n", '<thead></thead><tbody></tbody></table>', "\n";
 	}
 
 	/**

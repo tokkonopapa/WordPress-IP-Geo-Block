@@ -83,7 +83,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'anonymize';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="IP address is always encrypted on recording in cache and logs. Moreover, this option makes the IP address anonymous and restricted on sending to the 3rd parties such as geolocation APIs or whois service.">Anonymize IP address and restrict 3rd party APIs</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="IP address is always encrypted on recording in cache and logs. Moreover, this option makes the IP address anonymous.">Anonymize IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

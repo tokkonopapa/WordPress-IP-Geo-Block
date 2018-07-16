@@ -14,7 +14,7 @@ define( 'IP_GEO_BLOCK_MAX_STR_LEN', 255 );
 define( 'IP_GEO_BLOCK_MAX_BIN_LEN', 512 );
 
 // cipher mode and method
-define( 'IP_GEO_BLOCK_CIPHER_MODE', TRUE ); // use openssl
+define( 'IP_GEO_BLOCK_CIPHER_MODE', TRUE ); // true:upgrade, false:before 3.0.12
 define( 'IP_GEO_BLOCK_CIPHER_METHOD', 'AES-256-CBC' ); // for openssl
 
 class IP_Geo_Block_Logs {
@@ -150,8 +150,8 @@ class IP_Geo_Block_Logs {
 	 * @link http://php.net/manual/en/function.openssl-encrypt.php#119346
 	 * @link https://mysqlserverteam.com/understand-and-satisfy-your-aes-encryption-needs-with-5-6-17/
 	 */
-	private static function cipher_mode_key( $upgrade = TRUE ) {
-		if ( TRUE === $upgrade ) {
+	private static function cipher_mode_key( $mode = TRUE ) {
+		if ( TRUE === $mode ) { // upgrade
 			$mode = ( function_exists( 'openssl_cipher_iv_length' ) /* @since PHP 5.3.3 */ ?
 				2 /* openssl CBC */ :
 				1 /* mysql ECB */
@@ -165,13 +165,13 @@ class IP_Geo_Block_Logs {
 			);
 		}
 
-		elseif ( FALSE === $upgrade ) { // before 3.0.12
+		elseif ( FALSE === $mode ) { // before 3.0.12
 			$mode = 0;
 			$key = NONCE_KEY;
 		}
 
 		else { // for upgrade functional test
-			$mode = (int)$upgrade;
+			$mode = (int)$mode;
 			$key = ( 2 === $mode ? hash_hmac( 'sha256', NONCE_KEY, NONCE_SALT, TRUE ) : ( 1 === $mode ? md5( NONCE_KEY . NONCE_SALT, TRUE ) : NONCE_KEY ) );
 		}
 

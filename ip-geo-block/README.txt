@@ -386,7 +386,8 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 * **Deprecate:** Remove the hotfix in 3.0.12.1 because of [WordPress 4.9.7 Security and Maintenance Release](https://wordpress.org/news/2018/07/wordpress-4-9-7-security-and-maintenance-release/ "WordPress 4.9.7 Security and Maintenance Release").
 * **Fix issue:** Local databases settings will be updated when Geolocation API folder can not be found on activation. ([forum topic](https://wordpress.org/support/topic/local-database-settings-wrong-after-server-move/ "Topic: Local Database settings wrong after server move &#124; WordPress.org"))
 * **Fix issue:** Fix the issue of "ip_geo_block_cache doesn't exist" at activation on clean installation.
-* **Fix issue:** Fix the issue that "Remove entries by IP address" did not work when "Anonymize IP address and restrict 3rd party APIs" in "Privacy and record settings" section was enabled.
+* **Fix issue:** Fix the issue that "Remove entries by IP address" did not work when "Anonymize IP address" in "Privacy and record settings" section was enabled.
+* **Improvement:** Separate "Anonymize IP address" and "Do not send IP address to external APIs" in "Privacy and record settings" section.
 
 = 3.0.12.1 =
 * **Fix issue:** Unexpected blocking cause by an extra slash at the end of `$_SERVER['DOCUMENT_ROOT']` that might be added by server's configuration. ([forum topic](https://wordpress.org/support/topic/wpwebinar/ "Topic: WPWebinar &#124; WordPress.org"))
