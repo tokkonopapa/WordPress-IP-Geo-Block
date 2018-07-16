@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.13\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-07-16 21:38+0900\n"
-"PO-Revision-Date: 2018-07-16 21:39+0900\n"
+"POT-Creation-Date: 2018-07-16 22:55+0900\n"
+"PO-Revision-Date: 2018-07-16 22:55+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -494,11 +494,11 @@ msgstr ""
 msgid "Geolocation service"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:86
+#: admin/includes/tab-geolocation.php:86 admin/includes/tab-settings.php:1102
 msgid ""
 "<dfn title=\"IP address is always encrypted on recording in cache and logs. "
-"Moreover, this option makes the IP address anonymous.\">Anonymize IP "
-"address</dfn>"
+"Moreover, this option replaces the end of IP address with &#8220;***&#8221; "
+"to make it anonymous.\">Anonymize IP address</dfn>"
 msgstr ""
 
 #: admin/includes/tab-geolocation.php:101
@@ -1089,13 +1089,6 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:1093
 msgid "Privacy and record settings"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1102
-msgid ""
-"<dfn title=\"IP address is always encrypted on recording in cache and logs. "
-"Moreover, this option replaces the end of IP address with &#8220;***&#8221; "
-"to make it anonymous.\">Anonymize IP address</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1118

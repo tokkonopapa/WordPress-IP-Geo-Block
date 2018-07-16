@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.13\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-07-16 21:38+0900\n"
-"PO-Revision-Date: 2018-07-16 21:41+0900\n"
+"POT-Creation-Date: 2018-07-16 22:55+0900\n"
+"PO-Revision-Date: 2018-07-16 22:56+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -519,15 +519,15 @@ msgstr "IPアドレスの位置情報を検索"
 msgid "Geolocation service"
 msgstr "位置情報サービス"
 
-#: admin/includes/tab-geolocation.php:86
+#: admin/includes/tab-geolocation.php:86 admin/includes/tab-settings.php:1102
 msgid ""
 "<dfn title=\"IP address is always encrypted on recording in cache and logs. "
-"Moreover, this option makes the IP address anonymous.\">Anonymize IP "
-"address</dfn>"
+"Moreover, this option replaces the end of IP address with &#8220;***&#8221; "
+"to make it anonymous.\">Anonymize IP address</dfn>"
 msgstr ""
-"<dfn title=\"IPアドレスは、キャッシュとログに記録される際に常に暗号化されま"
-"す。このオプションはさらに、IPアドレスを匿名化します。\">IPアドレスを匿名化す"
-"る</dfn>"
+"<dfn title=\"IPアドレスは、常に暗号化されてキャッシュとログに記録されます。こ"
+"のオプションはさらに、IPアドレスの末尾を「***」に置き換えて匿名化します。\">IP"
+"アドレスを匿名化する</dfn>"
 
 #: admin/includes/tab-geolocation.php:101
 msgid "Find geolocation"
@@ -1237,16 +1237,6 @@ msgstr "シミュレーション・モード"
 #: admin/includes/tab-settings.php:1093
 msgid "Privacy and record settings"
 msgstr "プライバシーと記録の設定"
-
-#: admin/includes/tab-settings.php:1102
-msgid ""
-"<dfn title=\"IP address is always encrypted on recording in cache and logs. "
-"Moreover, this option replaces the end of IP address with &#8220;***&#8221; "
-"to make it anonymous.\">Anonymize IP address</dfn>"
-msgstr ""
-"<dfn title=\"IPアドレスは常に暗号化されて記録されます。このオプションはさら"
-"に、IPアドレスの末尾を「***」に置き換えて匿名化します。\">IPアドレスを匿名化す"
-"る</dfn>"
 
 #: admin/includes/tab-settings.php:1118
 msgid ""
