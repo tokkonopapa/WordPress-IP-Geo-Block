@@ -1202,7 +1202,7 @@ endif;
 		}
 
 		// expiration time [days]
-		$output['validation']['explogs'] *= DAY_IN_SECONDS;
+		$output['validation']['explogs'] = min( YEAR_IN_SECONDS, max( DAY_IN_SECONDS, DAY_IN_SECONDS * $output['validation']['explogs'] ) );
 
 		return $output;
 	}
