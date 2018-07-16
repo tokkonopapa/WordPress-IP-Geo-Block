@@ -171,7 +171,7 @@ class IP_Geo_Block_Logs {
 		}
 
 		else { // for upgrade functional test
-			$mode = (int)$mode;
+			$mode = min( 2, max( 0, (int)$mode ) );
 			$key = ( 2 === $mode ? hash_hmac( 'sha256', NONCE_KEY, NONCE_SALT, TRUE ) : ( 1 === $mode ? md5( NONCE_KEY . NONCE_SALT, TRUE ) : NONCE_KEY ) );
 		}
 
