@@ -430,7 +430,9 @@ endif; // TEST_RESTORE_NETWORK
 
 		// Convert json to setting data
 		$input = self::json_to_settings( $json );
-		unset( $input['version'] );
+
+		if ( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG )
+			unset( $input['version'] );
 
 		// Integrate posted data into current settings because if can be a part of hole data
 		$input = $parent->array_replace_recursive(
@@ -519,6 +521,7 @@ endif; // TEST_RESTORE_NETWORK
 			'[response_code]',
 			'[response_msg]',            // 3.0.0
 			'[redirect_uri]',            // 3.0.0
+			'[restrict_api]',            // 3.0.13
 			'[validation][timing]',      // 2.2.9
 			'[validation][proxy]',
 			'[validation][comment]',
@@ -779,25 +782,22 @@ endif; // TEST_RESTORE_NETWORK
 	 *
 	 */
 	public static function find_exceptions( $target ) {
-		$res = array();
-
 		switch ( $target ) {
 		  case 'find-admin':
+			$res = array();
 			foreach ( array( 'action', 'page' ) as $which ) {
 				$res += self::get_blocked_queries( $which );
 			}
-			break;
+			return $res;
 
 		  case 'find-plugins':
-			$res = self::get_blocked_queries( 'plugins' );
-			break;
+			return self::get_blocked_queries( 'plugins' );
 
 		  case 'find-themes':
-			$res = self::get_blocked_queries( 'themes' );
-			break;
+			return self::get_blocked_queries( 'themes' );
 		}
 
-		return $res;
+		return array();
 	}
 
 	/**

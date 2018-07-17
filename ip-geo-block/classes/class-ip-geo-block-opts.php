@@ -420,11 +420,11 @@ class IP_Geo_Block_Opts {
 			}
 
 			if ( version_compare( $version, '3.0.13' ) < 0 ) {
-				$settings['restrict_api'] = $default['restrict_api'];
+				$settings['restrict_api'] = $settings['anonymize'];
 				IP_Geo_Block_Logs::upgrade( $version );
 			}
 
-			// save package version number
+			// update package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
 

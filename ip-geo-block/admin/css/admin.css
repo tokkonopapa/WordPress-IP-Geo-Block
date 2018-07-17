@@ -916,6 +916,9 @@ mark {
   position: absolute;
   left: 2em;
 }
+.ip-geo-block-subitem dfn {
+  vertical-align: middle;
+}
 
 /* placeholder */
 :placeholder-shown          { color: #888; }
