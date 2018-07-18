@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.13\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-07-18 20:53+0900\n"
-"PO-Revision-Date: 2018-07-18 20:54+0900\n"
+"POT-Creation-Date: 2018-07-18 22:57+0900\n"
+"PO-Revision-Date: 2018-07-18 22:59+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1116,11 +1116,11 @@ msgid ""
 msgstr ""
 
 #: admin/includes/tab-settings.php:1182
-#, php-format
 msgid ""
-"<dfn title=\"If user authentication fails consecutively %d times, subsequent "
-"login will also be prohibited for this and cleanup interval.\">Expiration "
-"time [sec] for each entry</dfn>"
+"<dfn title=\"If user authentication fails consecutively beyond &#8220;Max "
+"number of failed login attempts per IP address&#8221;, subsequent login will "
+"also be prohibited for this period.\">Expiration time [sec] for each entry</"
+"dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1198

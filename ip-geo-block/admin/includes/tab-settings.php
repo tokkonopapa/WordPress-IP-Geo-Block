@@ -1179,7 +1179,7 @@ endif;
 		$field = 'cache_time';
 		add_settings_field(
 			$option_name.'_'.$field,
-			'<div class="ip-geo-block-subitem">' . sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this and cleanup interval.">Expiration time [sec] for each entry</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ) . '</div>',
+			'<div class="ip-geo-block-subitem">' . __( '<dfn title="If user authentication fails consecutively beyond &#8220;Max number of failed login attempts per IP address&#8221;, subsequent login will also be prohibited for this period.">Expiration time [sec] for each entry</dfn>', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
