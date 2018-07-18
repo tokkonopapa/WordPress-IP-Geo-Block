@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.13\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-07-17 22:54+0900\n"
-"PO-Revision-Date: 2018-07-17 22:55+0900\n"
+"POT-Creation-Date: 2018-07-18 20:53+0900\n"
+"PO-Revision-Date: 2018-07-18 20:54+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -516,8 +516,8 @@ msgid "Search IP address geolocation"
 msgstr "IPアドレスの位置情報を検索"
 
 #: admin/includes/tab-geolocation.php:42
-msgid "Geolocation service"
-msgstr "位置情報サービス"
+msgid "Geolocation API"
+msgstr "位置情報API"
 
 #: admin/includes/tab-geolocation.php:86 admin/includes/tab-settings.php:1099
 msgid ""
@@ -737,7 +737,7 @@ msgid ""
 "addresses</dfn>"
 msgstr ""
 "<dfn title=\"あなたのサーバーがプロキシー・サーバーやロード・バランサーの背後"
-"に位置する場合には、クライアントのIPアドレスを抽出するために"
+"に位置する場合は、クライアントのIPアドレスを抽出するため"
 "「HTTP_X_FORWARDED_FOR」や「HTTP_X_REAL_IP」など、$_SERVER&thinsp;の適切なキー"
 "を指定してください。\">IPアドレスを追加抽出する&thinsp;$_SERVER&thinsp;のキー"
 "</dfn>"
@@ -863,8 +863,8 @@ msgid ""
 "\">Max number of failed login attempts per IP address</dfn>"
 msgstr ""
 "<dfn title=\"［XML-RPC］と［ログイン・フォーム］に適用されます。ロックアウト時"
-"間は［プライバシーと記録の設定］/［IPアドレスのキャッシュ］/［有効時間］で定義"
-"します。\">IPアドレス当たりのログイン試行可能回数</dfn>"
+"間は［プライバシーと記録の設定］&raquo;［IPアドレスのキャッシュ］&raquo;［有効"
+"時間］で定義します。\">IPアドレス当たりのログイン試行可能回数</dfn>"
 
 #: admin/includes/tab-settings.php:423
 msgid "Select when to run the validation."
@@ -1197,7 +1197,7 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:1017
 msgid "UA string and qualification"
-msgstr "ユーザーエージェント（UA）文字列と条件"
+msgstr "ユーザーエージェント文字列と条件"
 
 #: admin/includes/tab-settings.php:1036
 msgid "Specify the name of actions as exception that is invariably blocked."
@@ -1257,7 +1257,7 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:1148
 msgid "Maximum period for &#8220;Statistics&#8221; [days]"
-msgstr "記録する統計の最大期間（日）"
+msgstr "記録する統計の最大期間［日］"
 
 #: admin/includes/tab-settings.php:1166
 msgid ""
@@ -1278,7 +1278,7 @@ msgid ""
 msgstr ""
 "<dfn title=\"ユーザ認証が連続%d回失敗した場合も、以降のログインがこの期間だけ"
 "（ガベージコレクション周期を含む）禁止されます。\">各エントリーの有効期間 "
-"[秒]</dfn>"
+"［秒］</dfn>"
 
 #: admin/includes/tab-settings.php:1198
 msgid ""
@@ -1319,7 +1319,7 @@ msgid ""
 "\">Expiration time [days] for each entry</dfn>"
 msgstr ""
 "<dfn title=\"ログの最大エントリー数は %d に制限されます。\">各エントリーの有効"
-"期間 [日]</dfn>"
+"期間［日］</dfn>"
 
 #: admin/includes/tab-settings.php:1240
 msgid ""
@@ -1392,7 +1392,7 @@ msgid ""
 "\">Interval [sec] to cleanup expired entries of IP address</dfn>"
 msgstr ""
 "<dfn title=\"このオプションは、有効期限の切れたIPアドレスのエントリーを削除す"
-"るWP-Cronイベントの起動周期を設定します。\">ガベージコレクション周期 [秒]</"
+"るWP-Cronイベントの起動周期を設定します。\">ガベージコレクション周期［秒］</"
 "dfn>"
 
 #: admin/includes/tab-settings.php:1334 admin/includes/tab-settings.php:1474
@@ -1772,7 +1772,7 @@ msgstr "検証の統計を記録し分析するためには、適切な条件を
 #: admin/includes/tab-statistics.php:431
 #, php-format
 msgid "[ %sRecord &#8220;IP address Cache&#8221;%s ] is disabled."
-msgstr "［ %sIPアドレスをキャッシュに記録%s］が無効です。"
+msgstr "［%sIPアドレスをキャッシュに記録%s］が無効です。"
 
 #: admin/includes/tab-statistics.php:432
 msgid "Please set the proper condition to record IP address in cache."
@@ -1781,11 +1781,11 @@ msgstr ""
 
 #: classes/class-ip-geo-block-apis.php:661
 msgid ""
-"You need to select at least one IP geolocation service. Otherwise "
-"<strong>you'll be blocked</strong> after the cache expires."
+"You need to select at least one IP Geolocation API. Otherwise <strong>you'll "
+"be blocked</strong> after the cache expires."
 msgstr ""
-"少なくとも1つ以上の位置情報サービスを選択して下さい。未選択の場合、キャッシュ"
-"の有効期限切れと共にロックアウトされます。"
+"少なくとも1つ以上の位置情報APIを選択して下さい。未選択の場合、キャッシュの有効"
+"期限切れと共にロックアウトされます。"
 
 #: classes/class-ip-geo-block-cron.php:222
 #, php-format

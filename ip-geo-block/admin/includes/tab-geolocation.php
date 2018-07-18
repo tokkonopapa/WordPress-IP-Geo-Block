@@ -39,7 +39,7 @@ class IP_Geo_Block_Admin_Tab {
 		$provider = array_keys( $providers );
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Geolocation service', 'ip-geo-block' ),
+			__( 'Geolocation API', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
