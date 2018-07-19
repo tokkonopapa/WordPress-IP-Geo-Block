@@ -4,13 +4,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.13\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-07-18 22:57+0900\n"
-"PO-Revision-Date: 2018-07-18 22:59+0900\n"
+"POT-Creation-Date: 2018-07-19 22:32+0900\n"
+"PO-Revision-Date: 2018-07-19 22:34+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.0.9\n"
 "X-Poedit-KeywordsList: __;_e;_n;_x;esc_html_e;esc_html__;esc_attr_e;"
 "esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_x:1,2c;_n:1,2\n"
 "X-Poedit-Basepath: ..\n"
@@ -188,7 +188,7 @@ msgstr "サイト一覧"
 
 #: admin/class-ip-geo-block-admin.php:513
 msgid "You need WordPress 3.7+."
-msgstr "WordPress 3.7&thinsp;以上が必要です。"
+msgstr "WordPress 3.7 以上が必要です。"
 
 #: admin/class-ip-geo-block-admin.php:519
 #, php-format
@@ -397,7 +397,7 @@ msgstr "あるいは %s を参照し、手動で設定して下さい。"
 #: admin/includes/class-admin-rewrite.php:234
 #, php-format
 msgid "&#8220;auto_prepend_file&#8221; already defined in %s."
-msgstr "%s&thinsp;で既に「auto_prepend_file」が設定されています。"
+msgstr "%s で既に「auto_prepend_file」が設定されています。"
 
 #: admin/includes/tab-accesslog.php:19
 msgid "Validation logs"
@@ -623,10 +623,9 @@ msgid ""
 "country code</dfn>"
 msgstr ""
 "<dfn title=\"空欄の場合、「国コードで遮断」はバイパスされます。特別なコード"
-"「XX」は、localhost&thinsp;を含むプライベート・アドレスに割り当てられ、また"
-"「ZZ」は不明（位置情報データベースに未登録）を表します。どの国にもマッチさせな"
-"いことが必要な場合には、「YY」を指定してください。\">国コードのホワイトリスト"
-"</dfn>"
+"「XX」は、localhost を含むプライベート・アドレスに割り当てられ、また「ZZ」は不"
+"明（位置情報データベースに未登録）を表します。どの国にもマッチさせないことが必"
+"要な場合には、「YY」を指定してください。\">国コードのホワイトリスト</dfn>"
 
 #: admin/includes/tab-settings.php:111
 msgid ""
@@ -638,10 +637,9 @@ msgid ""
 "country code</dfn>"
 msgstr ""
 "<dfn title=\"空欄の場合、「国コードで遮断」はバイパスされます。特別なコード"
-"「XX」は、localhost&thinsp;を含むプライベート・アドレスに割り当てられ、また"
-"「ZZ」は不明（位置情報データベースに未登録）を表します。どの国にもマッチさせな"
-"いことが必要な場合には、「YY」を指定してください。\">国コードのブラックリスト"
-"</dfn>"
+"「XX」は、localhost を含むプライベート・アドレスに割り当てられ、また「ZZ」は不"
+"明（位置情報データベースに未登録）を表します。どの国にもマッチさせないことが必"
+"要な場合には、「YY」を指定してください。\">国コードのブラックリスト</dfn>"
 
 #: admin/includes/tab-settings.php:115
 msgid "(comma separated)"
@@ -666,8 +664,8 @@ msgid ""
 "sample.\"><span></span></a>&#8221; button (if exists) attached to the "
 "following list to confirm that the blocked request is not malicious."
 msgstr ""
-"［例外］に追加する前に、以下の候補に付いたボタン&thinsp;&#8220;<a class=\"ip-"
-"geo-block-icon ip-geo-block-icon-alert\" title=\"このボタンは単なるサンプルで"
+"［例外］に追加する前に、以下の候補に付いたボタン &#8220;<a class=\"ip-geo-"
+"block-icon ip-geo-block-icon-alert\" title=\"このボタンは単なるサンプルで"
 "す。\"><span></span></a>&#8221;（もしあれば）をクリックし、遮断されたリクエス"
 "トに悪意のないことを確認して下さい。"
 
@@ -738,9 +736,8 @@ msgid ""
 msgstr ""
 "<dfn title=\"あなたのサーバーがプロキシー・サーバーやロード・バランサーの背後"
 "に位置する場合は、クライアントのIPアドレスを抽出するため"
-"「HTTP_X_FORWARDED_FOR」や「HTTP_X_REAL_IP」など、$_SERVER&thinsp;の適切なキー"
-"を指定してください。\">IPアドレスを追加抽出する&thinsp;$_SERVER&thinsp;のキー"
-"</dfn>"
+"「HTTP_X_FORWARDED_FOR」や「HTTP_X_REAL_IP」など、$_SERVER の適切なキーを指定"
+"してください。\">IPアドレスを追加抽出する $_SERVER のキー</dfn>"
 
 #: admin/includes/tab-settings.php:270
 msgid ""
@@ -763,8 +760,8 @@ msgstr ""
 msgid ""
 "<dfn title=\"Select allowed MIME type.\">Whitelist of allowed MIME type</dfn>"
 msgstr ""
-"<dfn title=\"許可する&thinsp;MIME&thinsp;タイプを指定します。\">許可する"
-"&thinsp;MIME&thinsp;タイプのホワイトリスト</dfn>"
+"<dfn title=\"許可する MIME タイプを指定します。\">許可する MIME タイプのホワイ"
+"トリスト</dfn>"
 
 #: admin/includes/tab-settings.php:295
 msgid ""
@@ -788,9 +785,9 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:299
 msgid ""
-"(&thinsp;See &#8220;<a rel=\"noreferrer\" href=\"https://codex.wordpress.org/"
+"( See &#8220;<a rel=\"noreferrer\" href=\"https://codex.wordpress.org/"
 "Roles_and_Capabilities\" title=\"Roles and Capabilities &laquo; WordPress "
-"Codex\">Roles and Capabilities</a>&#8221;&thinsp;)"
+"Codex\">Roles and Capabilities</a>&#8221; )"
 msgstr ""
 "（&#8220;<a rel=\"noreferrer\" href=\"http://wpdocs.osdn.jp/%E3%83%A6%E3%83%BC"
 "%E3%82%B6%E3%83%BC%E3%81%AE%E7%A8%AE%E9%A1%9E%E3%81%A8%E6%A8%A9%E9%99%90\" "
@@ -818,7 +815,7 @@ msgstr "無効"
 
 #: admin/includes/tab-settings.php:319
 msgid "Verify file extension and MIME type"
-msgstr "拡張子と&thinsp;MIME&thinsp;タイプを検証"
+msgstr "拡張子と MIME タイプを検証"
 
 #: admin/includes/tab-settings.php:320
 msgid "Verify file extension only"
@@ -830,8 +827,8 @@ msgid ""
 "<dfn title=\"You can put your original 403.php and so on into your theme "
 "directory.\">Response code</dfn> %s"
 msgstr ""
-"<dfn title=\"テーマ・ディレクトリには&thinsp;403.php&thinsp;など、独自のファイ"
-"ルを設置する事が出来ます。\">レスポンス・コード</dfn> %s"
+"<dfn title=\"テーマ・ディレクトリには 403.php など、独自のファイルを設置する事"
+"が出来ます。\">レスポンス・コード</dfn> %s"
 
 #: admin/includes/tab-settings.php:360 admin/includes/tab-settings.php:881
 msgid ""
@@ -841,19 +838,18 @@ msgid ""
 "[Front-end target settings] section. Empty URL is altered to your home."
 "\">Redirect URL</dfn>"
 msgstr ""
-"<dfn title=\"レスポンス・コード&thinsp;2xx&thinsp;、3xx&thinsp;用のリダイレク"
-"ト先&thinsp;URL&thinsp;を指定します。リダイレクトのループを避けるため、自サイ"
-"ト内の&thinsp;URL&thinsp;は［フロントエンドの設定］に関わらず遮断の対象外とな"
-"ります。空欄の場合、サイトのホームが使用されます。\">リダイレクト先&thinsp;"
-"URL</dfn>"
+"<dfn title=\"レスポンス・コード 2xx 、3xx 用のリダイレクト先 URL を指定しま"
+"す。リダイレクトのループを避けるため、自サイト内の URL は［フロントエンドの設"
+"定］に関わらず遮断の対象外となります。空欄の場合、サイトのホームが使用されま"
+"す。\">リダイレクト先 URL</dfn>"
 
 #: admin/includes/tab-settings.php:378 admin/includes/tab-settings.php:900
 msgid ""
 "<dfn title=\"Specify the message for response code 4xx and 5xx.\">Response "
 "message</dfn>"
 msgstr ""
-"<dfn title=\"レスポンス・コード&thinsp;4xx、5xx&thinsp;用のメッセージを指定し"
-"ます。\">レスポンス・メッセージ</dfn>"
+"<dfn title=\"レスポンス・コード 4xx、5xx 用のメッセージを指定します。\">レスポ"
+"ンス・メッセージ</dfn>"
 
 #: admin/includes/tab-settings.php:395
 msgid ""
@@ -900,7 +896,7 @@ msgstr ""
 "標準的な他のプラグインより早いタイミングで検証を実行します。これによりサーバー"
 "の負荷は軽減されますが、<a rel='noreferrer' href='http://www.ipgeoblock.com/"
 "codex/validation-timing.html' title='Validation timing | IP Geo Block'>幾つか"
-"の制限事項</a>&thinsp;が生じます。"
+"の制限事項</a> が生じます。"
 
 #: admin/includes/tab-settings.php:449
 msgid "Back-end target settings"
@@ -1009,7 +1005,7 @@ msgstr "未認証ユーザー用 admin post"
 
 #: admin/includes/tab-settings.php:593
 msgid "Admin ajax/post"
-msgstr "管理領域&thinsp;ajax/post"
+msgstr "管理領域 ajax/post"
 
 #: admin/includes/tab-settings.php:607
 msgid ""
@@ -1035,7 +1031,7 @@ msgstr "未認証ユーザー用を含む項目に限定して表示する"
 
 #: admin/includes/tab-settings.php:611
 msgid "Candidate actions/pages"
-msgstr "候補&thinsp;アクション／ページ"
+msgstr "候補 アクション／ページ"
 
 #: admin/includes/tab-settings.php:625
 #, php-format
@@ -1214,13 +1210,13 @@ msgid ""
 "HOST=&hellip;&#8221;in &#8220;UA string and qualification&#8221; will always "
 "return &#8220;true&#8221;."
 msgstr ""
-"DNS&thinsp;逆引きによりホストを検証します（幾らかのサーバー・リソースを消費し"
-"ます）。無効にした場合、［ユーザーエージェント文字列と条件］中の「HOST」、"
+"DNS 逆引きによりホストを検証します（幾らかのサーバー・リソースを消費します）。"
+"無効にした場合、［ユーザーエージェント文字列と条件］中の「HOST」、"
 "「HOST=&hellip;」は常に真となります。"
 
 #: admin/includes/tab-settings.php:1055
 msgid "DNS reverse lookup"
-msgstr "DNS&thinsp;逆引き"
+msgstr "DNS 逆引き"
 
 #: admin/includes/tab-settings.php:1072
 msgid ""
@@ -1604,7 +1600,7 @@ msgstr ""
 "防御性能をより高めるための設定については、&#8220;<a rel=\"noreferrer\" href="
 "\"http://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html"
 "\" title=\"The best practice for target settings | IP Geo Block\">The best "
-"practice fortarget settings</a>&#8220;&thinsp;を参照してください。"
+"practice fortarget settings</a>&#8220; を参照してください。"
 
 #: admin/includes/tab-settings.php:1681
 msgid ""
@@ -1622,17 +1618,19 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:1688
 msgid ""
-"While Geolite2&thinsp;/&thinsp;Maxmind and IP2Location will fetch the local "
-"databases, others will pass an IP address to the 3rd parties' API via HTTP."
+"While Geolite2 / Maxmind and IP2Location will fetch the local databases, "
+"others will pass an IP address to the 3rd parties' API via HTTP."
 msgstr ""
 "MaxmindとIP2Locationはローカルのデータベースを検索しますが、他はHTTPを介して外"
 "部のAPIにIPアドレスを渡します。"
 
 #: admin/includes/tab-settings.php:1689
 msgid ""
-"Please select the appropriate APIs to fit the privacy law&thinsp;/&thinsp;"
-"regulation in your country&thinsp;/&thinsp;region."
-msgstr "自国のプライバシー関連法規に合わせ、適切なAPIを選択して下さい。"
+"Please select the appropriate APIs to fit the privacy law / regulation in "
+"your country / region."
+msgstr ""
+"あなたの国／地域におけるプライバシー保護の法規・条例に適合するよう、適切なAPI"
+"を選択して下さい。"
 
 #: admin/includes/tab-settings.php:1698
 #, php-format
@@ -1640,9 +1638,8 @@ msgid ""
 "Maxmind GeoLite2 databases and APIs need PHP version 5.4.0+ and %sPECL phar "
 "2.0.0+%s."
 msgstr ""
-"Maxmind GeoLite2&thinsp;データベースと&thinsp;API&thinsp;には、PHP&thinsp;バー"
-"ジョン&thinsp;5.4.0&thinsp;以上と&thinsp;%sPECL phar 2.0.0&thinsp;以上%sが必要"
-"です。"
+"Maxmind GeoLite2 データベースと API には、PHP バージョン 5.4.0 以上と %sPECL "
+"phar 2.0.0 以上%sが必要です。"
 
 #: admin/includes/tab-settings.php:1706
 msgid ""

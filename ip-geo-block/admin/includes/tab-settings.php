@@ -296,7 +296,7 @@ endif;
 		$list .= "</ul></li></ul>\n";
 
 		// Verify capability
-		$list .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the capabilities to be verified. Depending on the particular type of uploader, certain capability may be required. Default is &#8220;upload_files&#8221; for Administrator, Editor and Author. This verification will be skipped if empty.">Capabilities to be verified</dfn>', 'ip-geo-block' ) . '&nbsp;<span class="ip-geo-block-desc">' . __( '(&thinsp;See &#8220;<a rel="noreferrer" href="https://codex.wordpress.org/Roles_and_Capabilities" title="Roles and Capabilities &laquo; WordPress Codex">Roles and Capabilities</a>&#8221;&thinsp;)', 'ip-geo-block' ) . '</span>' . "\n";
+		$list .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the capabilities to be verified. Depending on the particular type of uploader, certain capability may be required. Default is &#8220;upload_files&#8221; for Administrator, Editor and Author. This verification will be skipped if empty.">Capabilities to be verified</dfn>', 'ip-geo-block' ) . '&nbsp;<span class="ip-geo-block-desc">' . __( '( See &#8220;<a rel="noreferrer" href="https://codex.wordpress.org/Roles_and_Capabilities" title="Roles and Capabilities &laquo; WordPress Codex">Roles and Capabilities</a>&#8221; )', 'ip-geo-block' ) . '</span>' . "\n";
 		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_mimetype_capability" name="ip_geo_block_settings[mimetype][capability]" class="regular-text code" placeholder="upload_files" value="' . esc_attr( implode( ',', $options['mimetype']['capability'] ) ) . '" />' . $comma[0] . '</li></ul></li></ul>';
 
 		// Prevent malicious file uploading
@@ -1685,8 +1685,8 @@ endif;
 	public static function note_services() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'While Geolite2&thinsp;/&thinsp;Maxmind and IP2Location will fetch the local databases, others will pass an IP address to the 3rd parties\' API via HTTP.', 'ip-geo-block' ), '</li>', "\n",
-				'<li>', __( 'Please select the appropriate APIs to fit the privacy law&thinsp;/&thinsp;regulation in your country&thinsp;/&thinsp;region.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'While Geolite2 / Maxmind and IP2Location will fetch the local databases, others will pass an IP address to the 3rd parties\' API via HTTP.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'Please select the appropriate APIs to fit the privacy law / regulation in your country / region.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 
