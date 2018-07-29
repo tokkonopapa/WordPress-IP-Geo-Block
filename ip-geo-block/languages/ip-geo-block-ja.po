@@ -1239,7 +1239,7 @@ msgid ""
 "<dfn title=\"This option restricts not to send IP address to the external "
 "Geolocation APIs.\">Do not send IP address to external APIs</dfn>"
 msgstr ""
-"<dfn title=\"このオプションは、外部の位置情報APIへIPアドレスを送信することを制"
+"<dfn title=\"このオプションは、IPアドレスを外部の位置情報APIへ送信することを制"
 "限します。\">外部APIへの送信を制限する</dfn>"
 
 #: admin/includes/tab-settings.php:1131

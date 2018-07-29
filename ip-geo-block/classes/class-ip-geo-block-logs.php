@@ -14,7 +14,7 @@ define( 'IP_GEO_BLOCK_MAX_STR_LEN', 255 );
 define( 'IP_GEO_BLOCK_MAX_BIN_LEN', 512 );
 
 // cipher mode and method
-define( 'IP_GEO_BLOCK_CIPHER_MODE', TRUE ); // true:upgrade, false:before 3.0.12
+define( 'IP_GEO_BLOCK_CIPHER_MODE', 2 ); // 0:before 3.0.12, 1:mysql default, 2:openssl
 define( 'IP_GEO_BLOCK_CIPHER_METHOD', 'AES-256-CBC' ); // for openssl
 
 class IP_Geo_Block_Logs {
@@ -51,30 +51,30 @@ class IP_Geo_Block_Logs {
 		// for logs
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 		$sql = "CREATE TABLE $table (
-			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-			`time` int(10) unsigned NOT NULL DEFAULT 0,
-			`ip` varbinary(96) NOT NULL,
-			`asn` varchar(8) NULL,
-			`hook` varchar(8) NOT NULL,
-			`auth` int(10) unsigned NOT NULL DEFAULT 0,
-			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
-			`result` varchar(8) NULL,
-			`method` varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
-			`user_agent` varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
-			`headers` varbinary("  . IP_GEO_BLOCK_MAX_BIN_LEN . ") NULL,
-			`data` text NULL,
-			PRIMARY KEY  (`No`),
-			KEY `time` (`time`),
-			KEY `hook` (`hook`)
+			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			time int(10) unsigned NOT NULL DEFAULT 0,
+			ip varbinary(96) NOT NULL,
+			asn varchar(8) NULL,
+			hook varchar(8) NOT NULL,
+			auth int(10) unsigned NOT NULL DEFAULT 0,
+			code varchar(2) NOT NULL DEFAULT 'ZZ',
+			result varchar(8) NULL,
+			method varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
+			user_agent varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
+			headers varbinary("  . IP_GEO_BLOCK_MAX_BIN_LEN . ") NULL,
+			data text NULL,
+			PRIMARY KEY  (No),
+			KEY time (time),
+			KEY hook (hook)
 		) $charset_collate";
 		$result = dbDelta( $sql );
 
 		// for statistics
 		$table = $wpdb->prefix . self::TABLE_STAT;
 		$sql = "CREATE TABLE $table (
-			`No` tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
-			`data` longtext NULL,
-			PRIMARY KEY  (`No`)
+			No tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
+			data longtext NULL,
+			PRIMARY KEY  (No)
 		) $charset_collate";
 		$result = dbDelta( $sql );
 
@@ -87,21 +87,26 @@ class IP_Geo_Block_Logs {
 		// for IP address cache
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 		$sql = "CREATE TABLE $table (
-			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-			`time` int(10) unsigned NOT NULL DEFAULT 0,
-			`hook` varchar(8) NOT NULL,
-			`ip` varbinary(96) UNIQUE NOT NULL,
-			`asn` varchar(8) NULL,
-			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
-			`auth` int(10) unsigned NOT NULL DEFAULT 0,
-			`fail` int(10) unsigned NOT NULL DEFAULT 0,
-			`call` int(10) unsigned NOT NULL DEFAULT 0,
-			`last` int(10) unsigned NOT NULL DEFAULT 0,
-			`view` int(10) unsigned NOT NULL DEFAULT 0,
-			`host` varbinary(" . IP_GEO_BLOCK_MAX_BIN_LEN . ") NULL,
-			PRIMARY KEY  (`No`)
+			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			time int(10) unsigned NOT NULL DEFAULT 0,
+			hook varchar(8) NOT NULL,
+			ip varbinary(96) UNIQUE NOT NULL,
+			asn varchar(8) NULL,
+			code varchar(2) NOT NULL DEFAULT 'ZZ',
+			auth int(10) unsigned NOT NULL DEFAULT 0,
+			fail int(10) unsigned NOT NULL DEFAULT 0,
+			last int(10) unsigned NOT NULL DEFAULT 0,
+			view int(10) unsigned NOT NULL DEFAULT 0,
+			host varbinary(512) NULL,
+			PRIMARY KEY  (No)
 		) $charset_collate";
 		$result = dbDelta( $sql );
+
+		// dbDelta() parses `call` field as `CALL` statement. So alter it after init @since 3.0.10
+		if ( ! $wpdb->query( "DESCRIBE `$table` `call`" ) ) {
+			$wpdb->query( "ALTER TABLE `$table` ADD `call` int(10) unsigned NOT NULL DEFAULT 0 AFTER `fail`" )
+			or self::error( __LINE__ );
+		}
 
 		return TRUE;
 	}
@@ -149,13 +154,13 @@ class IP_Geo_Block_Logs {
 	 *
 	 * @link http://php.net/manual/en/function.openssl-encrypt.php#119346
 	 * @link https://mysqlserverteam.com/understand-and-satisfy-your-aes-encryption-needs-with-5-6-17/
+	 *
+	 * @param int $mode 0:before 3.0.12, 1:mysql default, 2:openssl
+	 * @return array actual mode and cipher key
 	 */
-	private static function cipher_mode_key( $mode = TRUE ) {
-		if ( TRUE === $mode ) { // upgrade
-			$mode = ( function_exists( 'openssl_cipher_iv_length' ) /* @since PHP 5.3.3 */ ?
-				2 /* openssl CBC */ :
-				1 /* mysql ECB */
-			);
+	private static function cipher_mode_key( $mode = IP_GEO_BLOCK_CIPHER_MODE ) {
+		if ( $mode ) {
+			function_exists( 'openssl_cipher_iv_length' ) or $mode = 1; /* @since PHP 5.3.3 */
 			$key = ( 2 === $mode ?
 				IP_Geo_Block_Util::hash_hmac(
 					function_exists( 'hash' ) ? 'sha256' /* 32 bytes (256 bits) */ : 'sha1' /* 20 bytes (160 bits) */,
@@ -165,14 +170,9 @@ class IP_Geo_Block_Logs {
 			);
 		}
 
-		elseif ( FALSE === $mode ) { // before 3.0.12
+		else { // before 3.0.12
 			$mode = 0;
 			$key = NONCE_KEY;
-		}
-
-		else { // for upgrade functional test
-			$mode = min( 2, max( 0, (int)$mode ) );
-			$key = ( 2 === $mode ? hash_hmac( 'sha256', NONCE_KEY, NONCE_SALT, TRUE ) : ( 1 === $mode ? md5( NONCE_KEY . NONCE_SALT, TRUE ) : NONCE_KEY ) );
 		}
 
 		return array( $mode, $key );
@@ -762,7 +762,7 @@ class IP_Geo_Block_Logs {
 	 * @param string $hook type of log name
 	 * @return array log data
 	 */
-	public static function restore_logs( $hook = NULL, $upgrade = TRUE ) {
+	public static function restore_logs( $hook = NULL, $upgrade = IP_GEO_BLOCK_CIPHER_MODE ) {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 

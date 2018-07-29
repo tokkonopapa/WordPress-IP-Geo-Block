@@ -39,6 +39,9 @@ class IP_Geo_Block_Admin {
 		// Load plugin text domain and add body class
 		add_action( 'init', array( $this, 'admin_init' ) );
 
+		// Add suggest text for inclusion in the site's privacy policy. @since 4.9.6
+		// add_action( 'admin_init', array( $this, 'add_privacy_policy' ) );
+
 		// Setup a nonce to validate authentication.
 		add_filter( 'wp_redirect', array( $this, 'add_redirect_nonce' ), 10, 2 );
 	}
@@ -353,6 +356,17 @@ class IP_Geo_Block_Admin {
 			array( 'settings' => '<a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( $settings['network_wide'] ) ) ) . '">' . __( 'Settings' ) . '</a>' ),
 			$links
 		);
+	}
+
+	/**
+	 * Add suggest text for inclusion in the site's privacy policy. @since 4.9.6
+	 *
+	 * /wp-admin/tools.php?wp-privacy-policy-guide
+	 * https://developer.wordpress.org/plugins/privacy/privacy-related-options-hooks-and-capabilities/
+	 */
+	public function add_privacy_policy() {
+		if ( function_exists( 'wp_add_privacy_policy_content' ) )
+			wp_add_privacy_policy_content( 'IP Geo Block', __( 'suggested text.', 'ip-geo-block' ) );
 	}
 
 	/**
