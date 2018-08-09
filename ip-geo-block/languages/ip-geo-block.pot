@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.13\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-07-19 22:32+0900\n"
-"PO-Revision-Date: 2018-07-19 22:32+0900\n"
+"POT-Creation-Date: 2018-08-08 20:16-0700\n"
+"PO-Revision-Date: 2018-08-08 20:16-0700\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -738,13 +738,21 @@ msgid "Verify file extension only"
 msgstr ""
 
 #: admin/includes/tab-settings.php:330
+msgid ""
+"<dfn title=\"This is applied to &#8220;XML-RPC&#8221; and &#8220;Login "
+"form&#8221;. Lockout period is defined as expiration time of &#8220;IP "
+"address Cache&#8221; in &#8220;Privacy and record settings&#8221; section."
+"\">Max number of failed login attempts per IP address</dfn>"
+msgstr ""
+
+#: admin/includes/tab-settings.php:355
 #, php-format
 msgid ""
 "<dfn title=\"You can put your original 403.php and so on into your theme "
 "directory.\">Response code</dfn> %s"
 msgstr ""
 
-#: admin/includes/tab-settings.php:360 admin/includes/tab-settings.php:881
+#: admin/includes/tab-settings.php:385 admin/includes/tab-settings.php:881
 msgid ""
 "<dfn title=\"Specify the URL for response code 2xx and 3xx. If it is pointed "
 "to a public facing page, visitors would not be blocked on the page to "
@@ -753,18 +761,10 @@ msgid ""
 "\">Redirect URL</dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:378 admin/includes/tab-settings.php:900
+#: admin/includes/tab-settings.php:403 admin/includes/tab-settings.php:900
 msgid ""
 "<dfn title=\"Specify the message for response code 4xx and 5xx.\">Response "
 "message</dfn>"
-msgstr ""
-
-#: admin/includes/tab-settings.php:395
-msgid ""
-"<dfn title=\"This is applied to &#8220;XML-RPC&#8221; and &#8220;Login "
-"form&#8221;. Lockout period is defined as expiration time of &#8220;IP "
-"address Cache&#8221; in &#8220;Privacy and record settings&#8221; section."
-"\">Max number of failed login attempts per IP address</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:423
@@ -1382,11 +1382,12 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:1657
 msgid ""
-"<dfn title=\"When an unexpected blocking has occurred, please press the "
-"button to find the blocked request in the dumped information which may help "
-"to solve the issue.\">Diagnostic information</dfn><br />[ <a rel=\"noreferrer"
-"\" href=\"https://wordpress.org/support/plugin/ip-geo-block\" title="
-"\"WordPress &#8250; Support &raquo; IP Geo Block\">support forum</a> ]"
+"<dfn title=\"When you have some unexpected blocking experiences, please "
+"press the button to find the blocked requests at the end of dumped "
+"information which may help you to solve the issues.\">Diagnostic "
+"information</dfn><br />[ <a rel=\"noreferrer\" href=\"https://wordpress.org/"
+"support/plugin/ip-geo-block\" title=\"WordPress &#8250; Support &raquo; IP "
+"Geo Block\">support forum</a> ]"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1664
@@ -1593,14 +1594,14 @@ msgid ""
 "details."
 msgstr ""
 
-#: classes/class-ip-geo-block-logs.php:226
+#: classes/class-ip-geo-block-logs.php:234
 #, php-format
 msgid ""
 "Creating a DB table %s had failed. Once de-activate this plugin, and then "
 "activate again."
 msgstr ""
 
-#: classes/class-ip-geo-block-logs.php:231
+#: classes/class-ip-geo-block-logs.php:239
 #, php-format
 msgid ""
 "Column type in %s unmatched. Once de-activate this plugin, and then activate "

@@ -206,7 +206,7 @@ endif;
 			__( '<dfn title="e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, &#8220;69.46.36.0/27&#8221; for WordFence server or &#8220;AS32934&#8221; for Facebook.">Whitelist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
 			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
 			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
-			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
+			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="ip-geo-block-icon-calc"></span></a>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -228,7 +228,7 @@ endif;
 			__( '<dfn title="Server level access control is recommended (e.g. .htaccess).">Blacklist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
 			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
 			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
-			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
+			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="ip-geo-block-icon ip-geo-block-icon-calc"></span></a>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -323,6 +323,31 @@ endif;
 			)
 		);
 
+		// Max number of failed login attempts per IP address
+		$field = 'login_fails';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221;. Lockout period is defined as expiration time of &#8220;IP address Cache&#8221; in &#8220;Privacy and record settings&#8221; section.">Max number of failed login attempts per IP address</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+				'list' => array(
+					-1 => 'Disable',
+					 0 =>  0,
+					 1 =>  1,
+					 3 =>  3,
+					 5 =>  5,
+					 7 =>  7,
+					10 => 10,
+				),
+			)
+		);
+
 		// Response code (RFC 2616)
 		$field = 'response_code';
 		add_settings_field(
@@ -385,31 +410,6 @@ endif;
 				'field' => $field,
 				'value' => $options[ $field ],
 				'class' => $options['response_code'] >= 400 ? '' : 'ip-geo-block-hide',
-			)
-		);
-
-		// Max number of failed login attempts per IP address
-		$field = 'login_fails';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( '<dfn title="This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221;. Lockout period is defined as expiration time of &#8220;IP address Cache&#8221; in &#8220;Privacy and record settings&#8221; section.">Max number of failed login attempts per IP address</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'select',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
-				'list' => array(
-					-1 => 'Disable',
-					 0 =>  0,
-					 1 =>  1,
-					 3 =>  3,
-					 5 =>  5,
-					 7 =>  7,
-					10 => 10,
-				),
 			)
 		);
 
@@ -1654,7 +1654,7 @@ endif;
 		$field = 'show-info';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="When an unexpected blocking has occurred, please press the button to find the blocked request in the dumped information which may help to solve the issue.">Diagnostic information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
+			__( '<dfn title="When you have some unexpected blocking experiences, please press the button to find the blocked requests at the end of dumped information which may help you to solve the issues.">Diagnostic information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

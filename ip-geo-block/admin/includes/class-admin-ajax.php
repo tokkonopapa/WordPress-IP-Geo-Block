@@ -814,9 +814,18 @@ endif; // TEST_RESTORE_NETWORK
 		$val = IP_Geo_Block_Lkup::gethostbyaddr( '8.8.8.8' );
 		$key = microtime( TRUE ) - $key;
 
+		// MySQL
+		global $wpdb;
+		$err = ini_get( 'error_log' );
+		ini_set( 'error_log', '/dev/null' ); // prevent WordPress error: Unknown system variable 'block_encryption_mode'
+		$ver = $wpdb->get_var( 'SELECT @@GLOBAL.version' );
+		$bem = $wpdb->get_var( 'SELECT @@GLOBAL.block_encryption_mode' ); // `aes-128-ecb` @since MySQL 5.6.17
+		ini_set( 'error_log', $err );
+
 		// Server, PHP, WordPress
 		$res = array(
 			'Server:'      => $_SERVER['SERVER_SOFTWARE'],
+			'MySQL:'       => $ver . ( $bem ? ' (' . $bem . ')' : '' ),
 			'PHP:'         => PHP_VERSION,
 			'PHP SAPI:'    => php_sapi_name(),
 			'WordPress:'   => $GLOBALS['wp_version'],
@@ -828,7 +837,8 @@ endif; // TEST_RESTORE_NETWORK
 			'ZipArchive:'  => class_exists( 'ZipArchive', FALSE ) ? 'yes' : 'no',
 			'PECL phar:'   => class_exists( 'PharData',   FALSE ) ? 'yes' : 'no',
 			'BC Math:'     => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
-			'mb_strcut:'   => function_exists( 'mb_strcut' ) ? 'yes' : 'no',
+			'mb_strcut:'   => function_exists( 'mb_strcut' ) ? 'yes' : 'no', // @since PHP 4.0.6
+			'OpenSSL:'     => function_exists( 'openssl_cipher_iv_length' ) ? 'yes' : 'no', // @since PHP 5.3.3
 			'SQLite(PDO):' => extension_loaded( 'pdo_sqlite' ) ? 'yes' : 'no',
 			'DNS lookup:'  => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),
 			'User agent:'  => $_SERVER['HTTP_USER_AGENT'],

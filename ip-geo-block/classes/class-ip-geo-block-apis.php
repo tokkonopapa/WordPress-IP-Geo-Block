@@ -204,14 +204,14 @@ abstract class IP_Geo_Block_API {
  * Term of use : https://ipdata.co/terms.html
  * Licence fee : free
  * Rate limit  : 1500 requests free daily
- * Sample URL  : https://api.ipdata.co/8.8.8.8
+ * Sample URL  : https://api.ipdata.co/8.8.8.8?api-key=...
  * Input type  : IP address (IPv4, IPv6)
  * Output type : json
  */
 class IP_Geo_Block_API_Ipdataco extends IP_Geo_Block_API {
 	protected $template = array(
 		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'https://api.ipdata.co/%API_IP%',
+		'url' => 'https://api.ipdata.co/%API_IP%?api-key=%API_KEY%',
 		'api' => array(
 			'%API_FORMAT%' => 'json',
 		),
@@ -524,12 +524,6 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 class IP_Geo_Block_Provider {
 
 	protected static $providers = array(
-		'Ipdata.co' => array(
-			'key'  => NULL,
-			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="https://ipdata.co/" title="ipdata.co - IP Geolocation and Threat Data API">https://ipdata.co/</a>&nbsp;(IPv4, IPv6 / free for 1500 requests/day)',
-		),
-
 		'ipinfo.io' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
@@ -552,6 +546,12 @@ class IP_Geo_Block_Provider {
 			'key'  => FALSE,
 			'type' => 'IPv4, IPv6 / free for non-commercial use',
 			'link' => '<a rel="noreferrer" href="http://ip-api.com/" title="IP-API.com - Free Geolocation API">http://ip-api.com/</a>&nbsp;(IPv4, IPv6 / free for non-commercial use)',
+		),
+
+		'Ipdata.co' => array(
+			'key'  => '',
+			'type' => 'IPv4, IPv6 / free',
+			'link' => '<a rel="noreferrer" href="https://ipdata.co/" title="ipdata.co - IP Geolocation and Threat Data API">https://ipdata.co/</a>&nbsp;(IPv4, IPv6 / up to 1500 requests daily free for registered user)',
 		),
 
 		'ipstack' => array(

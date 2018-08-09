@@ -91,7 +91,7 @@ class IP_Geo_Block_Admin_Tab {
 				'type' => 'checkbox',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => ! empty( $options[ $field ] ) ? TRUE : FALSE,
+				'value' => ( ! empty( $options[ $field ] ) || ! empty( $options['restrict_api'] ) ) ? TRUE : FALSE,
 			)
 		);
 

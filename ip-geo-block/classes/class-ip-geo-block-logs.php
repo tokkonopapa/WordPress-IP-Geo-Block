@@ -33,6 +33,9 @@ class IP_Geo_Block_Logs {
 		'daystats'  => array(),
 	);
 
+	// Cipher mode and key
+	private static $cipher = array();
+
 	// SQLite for Live update
 	private static $pdo = NULL;
 	private static $stm = NULL;
@@ -112,6 +115,55 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
+	 * Encrypts / Decrypts a string.
+	 *
+	 * @link https://php.net/manual/en/function.openssl-encrypt.php#119346
+	 * @link https://mysqlserverteam.com/understand-and-satisfy-your-aes-encryption-needs-with-5-6-17/
+	 *
+	 * @param int $mode 0:before 3.0.12, 1:mysql default, 2:openssl
+	 * @return array actual mode and cipher key
+	 */
+	private static function cipher_mode_key( $mode = IP_GEO_BLOCK_CIPHER_MODE ) {
+		$mode and $mode = function_exists( 'openssl_cipher_iv_length' ) ? $mode : 1; // @since PHP 5.3.3
+
+		if ( empty( self::$cipher['mode'] ) ) {
+			// openssl
+			if ( 2 === $mode ) {
+				// `openssl_random_pseudo_bytes()` can not be used as an IV because of search function
+				self::$cipher['iv' ] = md5( NONCE_KEY . NONCE_SALT, TRUE ); // 16 bytes (128 bits)
+				self::$cipher['key'] = IP_Geo_Block_Util::hash_hmac(
+					function_exists( 'hash' ) ? 'sha256' /* 32 bytes (256 bits) */ : 'sha1' /* 20 bytes (160 bits) */,
+					AUTH_KEY, AUTH_SALT, TRUE
+				);
+			}
+
+			// mysql default
+			elseif ( 1 === $mode ) {
+				self::$cipher['key'] = md5( NONCE_KEY . NONCE_SALT, TRUE ); // 16 bytes (128 bits)
+			}
+
+			// before 3.0.12
+			else {
+				self::$cipher['key'] = NONCE_KEY;
+			}
+		}
+
+		return self::$cipher['mode'] = $mode;
+	}
+
+	private static function decrypt( $data ) {
+		return openssl_decrypt( $data, IP_GEO_BLOCK_CIPHER_METHOD, self::$cipher['key'], OPENSSL_RAW_DATA, self::$cipher['iv'] ); // @since PHP 5.3.0
+	}
+
+	private static function encrypt( $data ) {
+		return openssl_encrypt( $data, IP_GEO_BLOCK_CIPHER_METHOD, self::$cipher['key'], OPENSSL_RAW_DATA, self::$cipher['iv'] ); // @since PHP 5.3.0
+	}
+
+	private static function encrypt_ip( $ip ) {
+		return isset( self::$cipher[ $ip ] ) ? self::$cipher[ $ip ] : self::$cipher[ $ip ] = self::encrypt( $ip );
+	}
+
+	/**
 	 * Upgrade
 	 *
 	 */
@@ -119,20 +171,23 @@ class IP_Geo_Block_Logs {
 		// delete IP address cache
 		self::clear_cache();
 
-		list( $cipher_mode, $cipher_key ) = self::cipher_mode_key( IP_GEO_BLOCK_CIPHER_MODE );
-		$iv = ( 2 === $cipher_mode ? self::cipher_iv() : bin2hex( $cipher_key ) );
+		// restore logs by old format
+		$logs = self::restore_logs( NULL, FALSE ); // should be called before `cipher_mode_key()`
+
+		if ( 1 === ( $mode = self::cipher_mode_key() ) )
+			$key = bin2hex( self::$cipher['key'] );
 
 		// `No`, `hook`, `time`, `ip`, `code`, `result`, `asn`, `method`, `user_agent`, `headers`, `data`
 		$fields = $ips = $headers = array();
-		foreach ( self::restore_logs( NULL, FALSE ) as $log ) {
+		foreach ( $logs as $log ) {
 			if ( $log[3] ) { // if `ip` is successfully extracted
 				$fields[] = $log[0]; // `No`
-				if ( 2 === $cipher_mode ) {
-					$ips    [] = "UNHEX('" . bin2hex( self::encrypt( $log[3], $cipher_key, $iv ) ) . "')"; // `ip`
-					$headers[] = "UNHEX('" . bin2hex( self::encrypt( $log[9], $cipher_key, $iv ) ) . "')"; // `headers`
+				if ( 2 === $mode ) {
+					$ips    [] = "UNHEX('" . bin2hex( self::encrypt( $log[3] ) ) . "')"; // `ip`
+					$headers[] = "UNHEX('" . bin2hex( self::encrypt( $log[9] ) ) . "')"; // `headers`
 				} else {
-					$ips    [] = "AES_ENCRYPT(UNHEX('" . bin2hex( $log[3] ) . "'), UNHEX('" . $iv . "'))"; // `ip`
-					$headers[] = "AES_ENCRYPT(UNHEX('" . bin2hex( $log[9] ) . "'), UNHEX('" . $iv . "'))"; // `headers`
+					$ips    [] = "AES_ENCRYPT(UNHEX('" . bin2hex( $log[3] ) . "'), UNHEX('" . $key . "'))"; // `ip`
+					$headers[] = "AES_ENCRYPT(UNHEX('" . bin2hex( $log[9] ) . "'), UNHEX('" . $key . "'))"; // `headers`
 				}
 			}
 		}
@@ -148,53 +203,6 @@ class IP_Geo_Block_Logs {
 			) and $wpdb->query( $sql ) or self::error( __LINE__ );
 		}
  	}
-
-	/**
-	 * Encrypts / Decrypts a string.
-	 *
-	 * @link http://php.net/manual/en/function.openssl-encrypt.php#119346
-	 * @link https://mysqlserverteam.com/understand-and-satisfy-your-aes-encryption-needs-with-5-6-17/
-	 *
-	 * @param int $mode 0:before 3.0.12, 1:mysql default, 2:openssl
-	 * @return array actual mode and cipher key
-	 */
-	private static function cipher_mode_key( $mode = IP_GEO_BLOCK_CIPHER_MODE ) {
-		if ( $mode ) {
-			function_exists( 'openssl_cipher_iv_length' ) or $mode = 1; /* @since PHP 5.3.3 */
-			$key = ( 2 === $mode ?
-				IP_Geo_Block_Util::hash_hmac(
-					function_exists( 'hash' ) ? 'sha256' /* 32 bytes (256 bits) */ : 'sha1' /* 20 bytes (160 bits) */,
-					NONCE_KEY, NONCE_SALT, TRUE
-				) :
-				md5( NONCE_KEY . NONCE_SALT, TRUE ) /* 16 bytes (128 bits) */
-			);
-		}
-
-		else { // before 3.0.12
-			$mode = 0;
-			$key = NONCE_KEY;
-		}
-
-		return array( $mode, $key );
-	}
-
-	private static function cipher_iv( $fixed = TRUE ) {
-		return ( $fixed ?
-			md5( NONCE_KEY . NONCE_SALT, TRUE ) /* 16 bytes (128 bits) */ :
-			openssl_random_pseudo_bytes( openssl_cipher_iv_length( IP_GEO_BLOCK_CIPHER_METHOD ) ) /* 16 bytes */
-		);
-	}
-
-	private static function encrypt( $data, $key, $iv ) {
-		return openssl_encrypt( $data, IP_GEO_BLOCK_CIPHER_METHOD, $key, OPENSSL_RAW_DATA, $iv ) . $iv; // @since PHP 5.3.3, $data: 48 bytes for IPv6, $iv: 16 bytes
-	}
-
-	private static function decrypt( $data, $key, $iv = FALSE ) {
-		$len = $iv ? openssl_cipher_iv_length( IP_GEO_BLOCK_CIPHER_METHOD ) /* 16 bytes */ : 16; /* 16 bytes for md5 */
-		$iv or $iv = substr( $data, -$len, $len );
-		$data = substr( $data, 0, strlen( $data ) - $len );
-		return openssl_decrypt( $data, IP_GEO_BLOCK_CIPHER_METHOD, $key, OPENSSL_RAW_DATA, $iv );
-	}
 
 	/**
 	 * Delete specific tables
@@ -265,8 +273,7 @@ class IP_Geo_Block_Logs {
 	public static function restore_stat( $default = FALSE ) {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_STAT;
-
-		$data = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A ) or self::error( __LINE__ );
+		$data  = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A ) or self::error( __LINE__ );
 		return empty( $data ) ? ( $default ? self::$default : FALSE ) : unserialize( $data[0]['data'] );
 	}
 
@@ -632,17 +639,14 @@ class IP_Geo_Block_Logs {
 				max( 0, $count - (int)$settings['validation']['maxlogs'] + 1 )
 			) and $wpdb->query( $sql ) or self::error( __LINE__ );
 
-			list( $cipher_mode, $cipher_key ) = self::cipher_mode_key( IP_GEO_BLOCK_CIPHER_MODE );
-
 			// insert into DB
-			if ( 2 === $cipher_mode ) {
-				$iv = self::cipher_iv();
+			if ( 2 === self::cipher_mode_key() ) {
 				$sql = $wpdb->prepare(
 					"INSERT INTO `$table`
 					(`time`, `ip`, `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, `data`)
 					VALUES (%d, %s, %s, %s, %d, %s, %s, %s, %s, %s, %s)",
 					$_SERVER['REQUEST_TIME'],
-					self::encrypt( $validate['ip'], $cipher_key, $iv ),
+					self::encrypt_ip( $validate['ip'] ),
 					$validate['asn'],
 					$hook,
 					$validate['auth'],
@@ -650,7 +654,7 @@ class IP_Geo_Block_Logs {
 					$validate['result'],
 					$method,
 					$agent,
-					self::encrypt( $heads, $cipher_key, $iv ),
+					self::encrypt( $heads ),
 					$posts
 				) and $wpdb->query( $sql ) or self::error( __LINE__ );
 			} else {
@@ -660,7 +664,7 @@ class IP_Geo_Block_Logs {
 					VALUES (%d, AES_ENCRYPT(%s, %s), %s, %s, %d, %s, %s, %s, %s, AES_ENCRYPT(%s, %s), %s)",
 					$_SERVER['REQUEST_TIME'],
 					$validate['ip'],
-					$cipher_key,
+					self::$cipher['key'],
 					$validate['asn'],
 					$hook,
 					$validate['auth'],
@@ -669,7 +673,7 @@ class IP_Geo_Block_Logs {
 					$method,
 					$agent,
 					$heads,
-					$cipher_key,
+					self::$cipher['key'],
 					$posts
 				) and $wpdb->query( $sql ) or self::error( __LINE__ );
 			}
@@ -766,14 +770,14 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 
-		list( $cipher_mode, $cipher_key ) = self::cipher_mode_key( $upgrade );
+		$mode = self::cipher_mode_key( $upgrade );
 
-		if ( 2 === $cipher_mode ) { // openssl
+		if ( 2 === $mode ) { // openssl
 			$sql = "SELECT `No`, `hook`, `time`, `ip`, `code`, `result`, `asn`, `method`, `user_agent`, `headers`, `data` FROM `$table`";
-		} else { // mysql
+		} else { // mysql default
 			$sql = $wpdb->prepare(
 				"SELECT `No`, `hook`, `time`, `ip`, AES_DECRYPT(`ip`, %s), `code`, `result`, `asn`, `method`, `user_agent`, `headers`, AES_DECRYPT(`headers`, %s), `data` FROM `$table`",
-				$cipher_key, $cipher_key
+				self::$cipher['key'], self::$cipher['key']
 			);
 		}
 
@@ -785,9 +789,9 @@ class IP_Geo_Block_Logs {
 		$result = $sql ? $wpdb->get_results( $sql, ARRAY_N ) : array();
 
 		foreach ( $result as $key => $val ) {
-			if ( 2 === $cipher_mode ) {
-				$result[ $key ][3] = self::decrypt( $val[3], $cipher_key );
-				$result[ $key ][9] = self::decrypt( $val[9], $cipher_key );
+			if ( 2 === $mode ) {
+				$result[ $key ][3] = self::decrypt( $val[3] );
+				$result[ $key ][9] = self::decrypt( $val[9] );
 			} elseif ( ctype_print( $result[ $key ][3] ) ) {
 				array_splice( $result[ $key ],  4, 1 ); // remove encrypted `ip`
 				array_splice( $result[ $key ], 10, 1 ); // remove encrypted `headers`
@@ -811,24 +815,24 @@ class IP_Geo_Block_Logs {
 		if ( $settings['anonymize'] )
 			$ip = IP_Geo_Block_Util::anonymize_ip( $ip );
 
-		list( $cipher_mode, $cipher_key ) = self::cipher_mode_key( IP_GEO_BLOCK_CIPHER_MODE );
+		$mode = self::cipher_mode_key();
 
-		if ( 2 === $cipher_mode ) { // openssl
+		if ( 2 === $mode ) { // openssl
 			$sql = $wpdb->prepare(
 				"SELECT `time`, `ip`, `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, `data` FROM `$table` WHERE `ip` = %s",
-				self::encrypt( $ip, $cipher_key, self::cipher_iv() )
+				self::encrypt_ip( $ip )
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
-		} else { // mysql
+		} else { // mysql default
 			$sql = $wpdb->prepare(
 				"SELECT `time`, `ip`, AES_DECRYPT(`ip`, %s), `asn`, `hook`, `auth`, `code`, `result`, `method`, `user_agent`, `headers`, AES_DECRYPT(`headers`, %s), `data` FROM `$table` WHERE `ip` = AES_ENCRYPT(%s, %s)",
-				$cipher_key, $cipher_key, $ip, $cipher_key
+				self::$cipher['key'], self::$cipher['key'], $ip, self::$cipher['key']
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		}
 
 		foreach ( empty( $result ) ? array() : $result as $key => $val ) {
-			if ( 2 === $cipher_mode ) {
-				$result[ $key ][1] = self::decrypt( $val[1], $cipher_key );
-				$result[ $key ][9] = self::decrypt( $val[9], $cipher_key );
+			if ( 2 === $mode ) {
+				$result[ $key ][1] = self::decrypt( $val[1] );
+				$result[ $key ][9] = self::decrypt( $val[9] );
 			} elseif ( ctype_print( $result[ $key ][2] ) ) {
 				array_splice( $result[ $key ],  3, 1 ); // remove encrypted `ip`
 				array_splice( $result[ $key ], 11, 1 ); // remove encrypted `headers`
@@ -854,16 +858,16 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 
-		list( $cipher_mode, $cipher_key ) = self::cipher_mode_key( IP_GEO_BLOCK_CIPHER_MODE );
+		$mode = self::cipher_mode_key();
 
 		foreach ( array_unique( (array)$entry ) as $ip ) {
-			if ( 2 === $cipher_mode ) {
+			if ( 2 === $mode ) {
 				$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = %s OR `ip` = %s",
-					self::encrypt( $ip, $cipher_key, self::cipher_iv() ), $ip
+					self::encrypt_ip( $ip ), $ip
 				) and $result = ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
 			} else {
 				$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = AES_ENCRYPT(%s, %s) OR `ip` = %s",
-					$ip, $cipher_key, $ip
+					$ip, self::$cipher['key'], $ip
 				) and $result = ( FALSE !== $wpdb->query( $sql ) ) or self::error( __LINE__ );
 			}
 		}
@@ -879,9 +883,9 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 
-		list( $cipher_mode, $cipher_key ) = self::cipher_mode_key( IP_GEO_BLOCK_CIPHER_MODE );
+		$mode = self::cipher_mode_key();
 
-		if ( 2 === $cipher_mode ) {
+		if ( 2 === $mode ) {
 			$sql = $wpdb->prepare(
 				"SELECT `time`, `ip`, `asn`, `hook`, `code`, `method`, `data` FROM `$table` WHERE `time` > %d",
 				$_SERVER['REQUEST_TIME'] - $duration
@@ -889,13 +893,13 @@ class IP_Geo_Block_Logs {
 		} else {
 			$sql = $wpdb->prepare(
 				"SELECT `time`, `ip`, AES_DECRYPT(`ip`, %s), `asn`, `hook`, `code`, `method`, `data` FROM `$table` WHERE `time` > %d",
-				$cipher_key, $_SERVER['REQUEST_TIME'] - $duration
+				self::$cipher['key'], $_SERVER['REQUEST_TIME'] - $duration
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		}
 
 		foreach ( empty( $result ) ? array() : $result as $key => $val ) {
-			if ( 2 === $cipher_mode ) {
-				$result[ $key ][1] = self::decrypt( $val[1], $cipher_key );
+			if ( 2 === $mode ) {
+				$result[ $key ][1] = self::decrypt( $val[1] );
 			} elseif ( ctype_print( $result[ $key ][1] ) ) {
 				array_splice( $result[ $key ], 2, 1 ); // remove encrypted `ip`
 			} else {
@@ -921,11 +925,11 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_LOGS;
 
-		list( $cipher_mode, $cipher_key ) = self::cipher_mode_key( IP_GEO_BLOCK_CIPHER_MODE );
+		self::cipher_mode_key();
 
 		$sql = $wpdb->prepare(
 			"SELECT `time`, `ip`, AES_DECRYPT(`ip`, %s), `asn`, `hook`, `code`, `method`, `data` FROM `$table` " .
-			"WHERE `result` NOT LIKE '%%pass%%' AND `" . $key . "` LIKE '%%%s%%'", $cipher_key, $search
+			"WHERE `result` NOT LIKE '%%pass%%' AND `" . $key . "` LIKE '%%%s%%'", self::$cipher['key'], $search
 		) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 
 		foreach ( empty( $result ) ? array() : $result as $key => $val ) {
@@ -1005,25 +1009,25 @@ class IP_Geo_Block_Logs {
 		if ( ! $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) )
 			return;
 
-		list( $cipher_mode, $cipher_key ) = self::cipher_mode_key( IP_GEO_BLOCK_CIPHER_MODE );
+		$mode = self::cipher_mode_key();
 
-		if ( 2 === $cipher_mode ) {
+		if ( 2 === $mode ) {
 			$sql = "SELECT `time`, `hook`, `ip`, `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, `host` FROM `$table`";
 			$result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		} else {
 			$sql = $wpdb->prepare(
 				"SELECT `time`, `hook`, AES_DECRYPT(`ip`, %s), `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, AES_DECRYPT(`host`, %s), `ip` FROM `$table`",
-				$cipher_key, $cipher_key
+				self::$cipher['key'], self::$cipher['key']
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		}
 
 		// transform DB to cache format
 		$cache = $hash = array();
 		foreach ( empty( $result ) ? array() : $result as $key => $val ) {
-			if ( 2 === $cipher_mode ) {
+			if ( 2 === $mode ) {
 				$val[11] = $val[ 2]; // `hash`
-				$val[ 2] = self::decrypt( $val[ 2], $cipher_key ); // `ip`
-				$val[10] = self::decrypt( $val[10], $cipher_key ); // `host`
+				$val[ 2] = self::decrypt( $val[ 2] ); // `ip`
+				$val[10] = self::decrypt( $val[10] ); // `host`
 			}
 
 			// make the encrypted `ip` hashed so that it can be specified as a key
@@ -1053,23 +1057,23 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
-		list( $cipher_mode, $cipher_key ) = self::cipher_mode_key( IP_GEO_BLOCK_CIPHER_MODE );
+		$mode = self::cipher_mode_key();
 
-		if ( 2 === $cipher_mode ) {
+		if ( 2 === $mode ) {
 			$sql = $wpdb->prepare(
 				"SELECT `time`, `hook`, `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, `host` FROM `$table` " .
-				"WHERE `ip` = %s", self::encrypt( $ip, $cipher_key, self::cipher_iv() )
+				"WHERE `ip` = %s", self::encrypt_ip( $ip )
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		} else {
 			$sql = $wpdb->prepare(
 				"SELECT `time`, `hook`, `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, AES_DECRYPT(`host`, %s) FROM `$table` " .
-				"WHERE `ip` = AES_ENCRYPT(%s, %s)", $cipher_key, $ip, $cipher_key
+				"WHERE `ip` = AES_ENCRYPT(%s, %s)", self::$cipher['key'], $ip, self::$cipher['key']
 			) and $result = $wpdb->get_results( $sql, ARRAY_N ) or self::error( __LINE__ );
 		}
 
 		if ( ! empty( $result[0] ) ) {
-			if ( 2 === $cipher_mode )
-				$result[0][9] = self::decrypt( $result[0][9], $cipher_key ); // decrypt `host`
+			if ( 2 === $mode )
+				$result[0][9] = self::decrypt( $result[0][9] ); // decrypt `host`
 
 			$result[0] = array_combine( array( 'time', 'hook', 'asn', 'code', 'auth', 'fail', 'call', 'last', 'view', 'host' ), $result[0] );
 			$result[0]['ip'] = $ip;
@@ -1087,10 +1091,7 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
-		list( $cipher_mode, $cipher_key ) = self::cipher_mode_key( IP_GEO_BLOCK_CIPHER_MODE );
-
-		if ( 2 === $cipher_mode ) {
-			$iv = self::cipher_iv();
+		if ( 2 === self::cipher_mode_key() ) {
 			$sql = $wpdb->prepare(
 				"INSERT INTO `$table`
 				(`time`, `hook`, `ip`, `asn`, `code`, `auth`, `fail`, `call`, `last`, `view`, `host`)
@@ -1106,7 +1107,7 @@ class IP_Geo_Block_Logs {
 				`view` = VALUES(`view`)",
 				$cache['time'],
 				$cache['hook'],
-				self::encrypt( $cache['ip'], $cipher_key, $iv ),
+				self::encrypt_ip( $cache['ip'] ),
 				$cache['asn' ],
 				$cache['code'],
 				$cache['auth'],
@@ -1114,7 +1115,7 @@ class IP_Geo_Block_Logs {
 				$cache['call'],
 				$cache['last'],
 				$cache['view'],
-				self::encrypt( $cache['host'], $cipher_key, $iv )
+				self::encrypt( $cache['host'] )
 			) and $wpdb->query( $sql ) or self::error( __LINE__ );
 		} else {
 			$sql = $wpdb->prepare(
@@ -1133,7 +1134,7 @@ class IP_Geo_Block_Logs {
 				$cache['time'],
 				$cache['hook'],
 				$cache['ip'  ],
-				$cipher_key,
+				self::$cipher['key'],
 				$cache['asn' ],
 				$cache['code'],
 				$cache['auth'],
@@ -1142,7 +1143,7 @@ class IP_Geo_Block_Logs {
 				$cache['last'],
 				$cache['view'],
 				$cache['host'],
-				$cipher_key
+				self::$cipher['key']
 			) and $wpdb->query( $sql ) or self::error( __LINE__ );
 		}
 	}
@@ -1158,15 +1159,14 @@ class IP_Geo_Block_Logs {
 		if ( ! $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) )
 			return;
 
-		list( $cipher_mode, $cipher_key ) = self::cipher_mode_key( IP_GEO_BLOCK_CIPHER_MODE );
+		$mode = self::cipher_mode_key();
 
 		foreach ( empty( $entry ) ? array( IP_Geo_Block::get_ip_address() ) : $entry as $ip ) {
 			// if specified ip address is anonymized, then extract the encripted value
 			$ip = explode( ',', $ip );
 			if ( empty( $ip[1] ) ) {
-				$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = %s", 2 === $cipher_mode ?
-					self::encrypt( $ip[0], $cipher_key, self::cipher_iv() ) :
-					'AES_ENCRYPT(' . $ip[0] . ', ' . $cipher_key . ')'
+				$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = %s",
+					2 === $mode ? self::encrypt_ip( $ip[0] ) : 'AES_ENCRYPT(' . $ip[0] . ', ' . self::$cipher['key'] . ')'
 				);
 			} else {
 				$sql = $wpdb->prepare( "DELETE FROM `$table` WHERE `ip` = UNHEX(%s)", $ip[1] );

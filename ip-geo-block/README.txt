@@ -3,7 +3,7 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.9.7
+Tested up to: 4.9.8
 Stable tag: 3.0.13a
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
@@ -387,6 +387,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 * **Fix issue:** Local databases settings will be updated when Geolocation API folder can not be found on activation. ([forum topic](https://wordpress.org/support/topic/local-database-settings-wrong-after-server-move/ "Topic: Local Database settings wrong after server move &#124; WordPress.org"))
 * **Fix issue:** Fix the issue of "ip_geo_block_cache doesn't exist" at activation on clean installation.
 * **Fix issue:** Fix the issue that "Remove entries by IP address" did not work when "Anonymize IP address" in "Privacy and record settings" section was enabled.
+* **Fix issue:** Ipdata.co became to require API key for registered user to make up to 1500 requests daily.
 * **Improvement:** Separate "Anonymize IP address" and "Do not send IP address to external APIs" in "Privacy and record settings" section.
 
 = 3.0.12.1 =

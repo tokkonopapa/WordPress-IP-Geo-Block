@@ -1862,7 +1862,7 @@
 
 				if (ip) {
 					// Anonymize IP address
-					if ($(ID('@', 'anonymize' )).prop('checked')) {
+					if ($(ID('@', 'anonymize')).prop('checked')) {
 						ip = ip.replace(/([\.\:])\w{1,4}$/, '$1' + '0');
 						$(ID('@', 'ip_address')).val(ip);
 					}
