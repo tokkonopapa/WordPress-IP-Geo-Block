@@ -582,10 +582,12 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/pluggable.php
 	 */
 	public static function is_user_logged_in() {
-		if ( did_action( 'init' ) )
-			return is_user_logged_in(); // @since 2.0.0
+		static $logged_in = NULL;
 
-		return ( $user = self::validate_auth_cookie() ) ? $user->exists() : FALSE; // @since 3.4.0
+		if ( NULL === $logged_in )
+			$logged_in = ( did_action( 'init' ) ? is_user_logged_in() /* @since 2.0.0 */ : ( ( $user = self::validate_auth_cookie() ) ? $user->exists() /* @since 3.4.0 */ : FALSE ) );
+
+		return $logged_in;
 	}
 
 	/**
@@ -595,10 +597,12 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/user.php
 	 */
 	public static function get_current_user_id() {
-		if ( did_action( 'init' ) )
-			return get_current_user_id(); // @since MU 3.0.0
+		static $user_id = NULL;
 
-		return ( $user = self::validate_auth_cookie() ) ? $user->ID : 0; // @since 2.0.0
+		if ( NULL === $user_id )
+			$user_id = ( did_action( 'init' ) ? get_current_user_id() /* @since MU 3.0.0 */ : ( ( $user = self::validate_auth_cookie() ) ? $user->ID /* @since 2.0.0 */ : 0 ) );
+
+		return $user_id;
 	}
 
 	/**
