@@ -90,11 +90,7 @@ class IP_Geo_Block_Admin_Ajax {
 			$insert_value = array( $insert_value );
 
 		$position = is_null( $position ) ? count( $base_array ) : intval( $position );
-
-		$base_array = array_merge(
-			array_splice( $base_array, 0, $position ),
-			$insert_value, $base_array
-		);
+		$base_array = array_merge( array_splice( $base_array, 0, $position ), $insert_value, $base_array );
 	}
 
 	/**
@@ -815,12 +811,16 @@ endif; // TEST_RESTORE_NETWORK
 		$key = microtime( TRUE ) - $key;
 
 		// MySQL
+		// Supress WordPress error: Unknown system variable 'block_encryption_mode'
+		$buf = @ini_set( 'output_buffering', FALSE );
+		$dsp = @ini_set( 'display_errors', FALSE );
+		$err = @error_reporting( FALSE );
 		global $wpdb;
-		$err = ini_get( 'error_log' );
-		ini_set( 'error_log', '/' . 'dev' . '/' . 'null' ); // supress WordPress error: Unknown system variable 'block_encryption_mode'
 		$ver = $wpdb->get_var( 'SELECT @@GLOBAL.version' );
 		$bem = $wpdb->get_var( 'SELECT @@GLOBAL.block_encryption_mode' ); // `aes-128-ecb` @since MySQL 5.6.17
-		ini_set( 'error_log', $err );
+		@ini_set( 'output_buffering', $buf );
+		@ini_set( 'display_errors', $dsp );
+		@error_reporting( $err );
 
 		// Server, PHP, WordPress
 		$res = array(
