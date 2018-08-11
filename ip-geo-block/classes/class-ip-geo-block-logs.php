@@ -14,7 +14,7 @@ define( 'IP_GEO_BLOCK_MAX_STR_LEN', 255 );
 define( 'IP_GEO_BLOCK_MAX_BIN_LEN', 512 );
 
 // cipher mode and method
-define( 'IP_GEO_BLOCK_CIPHER_MODE', 2 ); // 0:before 3.0.12, 1:mysql default, 2:openssl
+define( 'IP_GEO_BLOCK_CIPHER_MODE', 2 ); // 0:before 3.0.13, 1:mysql default, 2:openssl
 define( 'IP_GEO_BLOCK_CIPHER_METHOD', 'AES-256-CBC' ); // for openssl
 
 class IP_Geo_Block_Logs {

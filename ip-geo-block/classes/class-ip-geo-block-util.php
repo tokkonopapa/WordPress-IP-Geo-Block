@@ -297,7 +297,7 @@ class IP_Geo_Block_Util {
 		if ( function_exists( 'get_user_by' ) )
 			return get_user_by( $field, $value );
 
-		$userdata = WP_User::get_data_by( $field, $value ); // wp-includes/class-wp-user.php @since 2.0.0
+		$userdata = WP_User::get_data_by( $field, $value ); // wp-includes/class-wp-user.php @since 3.3.0
 
 		if ( ! $userdata )
 			return FALSE;
@@ -311,27 +311,15 @@ class IP_Geo_Block_Util {
 	/**
 	 * WP alternative function for mu-plugins
 	 *
-	 * Filters whether the current request is a WordPress Ajax request.
-	 * @source wp-includes/load.php @since 4.7.0
-	 */
-	public static function doing_ajax() {
-		return apply_filters( 'wp_doing_ajax', defined( 'DOING_AJAX' ) && DOING_AJAX );
-	}
-
-	/**
-	 * WP alternative function for mu-plugins
-	 *
 	 * Validates authentication cookie.
 	 * @source wp-includes/pluggable.php
 	 */
-	public static function validate_auth_cookie( $scheme = 'logged_in' ) {
-		static $cache_uid = NULL;
+	private static function validate_auth_cookie( $scheme = 'logged_in' ) {
+		static $cache_user = NULL;
 
-		if ( NULL === $cache_uid ) {
-			$cache_uid = FALSE;
-
+		if ( NULL === $cache_user ) {
 			if ( ! ( $cookie = self::parse_auth_cookie( $scheme ) ) )
-				return FALSE;
+				return $cache_user = FALSE;
 
 			$scheme   = $cookie['scheme'];
 			$username = $cookie['username'];
@@ -340,17 +328,17 @@ class IP_Geo_Block_Util {
 			$expired  = $expiration = $cookie['expiration'];
 
 			// Allow a grace period for POST and Ajax requests
-			if ( self::doing_ajax() || 'POST' === $_SERVER['REQUEST_METHOD'] )
+			if ( defined( 'DOING_AJAX' ) || 'POST' === $_SERVER['REQUEST_METHOD'] )
 				$expired += HOUR_IN_SECONDS;
 
 			// Quick check to see if an honest cookie has expired
 			if ( $expired < time() )
-				return FALSE;
+				return $cache_user = FALSE;
 
-			if ( ! ( $user = self::get_user_by( 'login', $username ) ) ) // wp-includes/pluggable.php @since 2.8.0
-				return FALSE;
+			if ( ! ( $cache_user = self::get_user_by( 'login', $username ) ) ) // wp-includes/pluggable.php @since 2.8.0
+				return $cache_user = FALSE;
 
-			$pass_frag = substr( $user->user_pass, 8, 4 );
+			$pass_frag = substr( $cache_user->user_pass, 8, 4 );
 			$key = self::hash_nonce( $username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme );
 
 			// If ext/hash is not present, compat.php's hash_hmac() does not support sha256.
@@ -358,16 +346,16 @@ class IP_Geo_Block_Util {
 			$hash = self::hash_hmac( $algo, $username . '|' . $expiration . '|' . $token, $key );
 
 			if ( ! self::hash_equals( $hash, $hmac ) )
-				return FALSE;
+				return $cache_user = FALSE;
 
-			$manager = WP_Session_Tokens::get_instance( $user->ID ); // wp-includes/class-wp-session-tokens.php @since 4.0.0
-			if ( ! $manager->verify( $token ) )
-				return FALSE;
-
-			$cache_uid = $user->ID;
+			if ( class_exists( 'WP_Session_Tokens', FALSE ) ) { // @since 4.0.0
+				$manager = WP_Session_Tokens::get_instance( $cache_user->ID );
+				if ( ! $manager->verify( $token ) )
+					return $cache_user = FALSE;
+			}
 		}
 
-		return $cache_uid;
+		return $cache_user;
 	}
 
 	/**
@@ -594,8 +582,10 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/pluggable.php
 	 */
 	public static function is_user_logged_in() {
-		// possibly logged in but should be verified after 'init' hook is fired.
-		return did_action( 'init' ) ? is_user_logged_in() : (bool)( class_exists( 'WP_Session_Tokens', FALSE ) ? self::validate_auth_cookie() : self::parse_auth_cookie() );
+		if ( did_action( 'init' ) )
+			return is_user_logged_in(); // @since 2.0.0
+
+		return ( $user = self::validate_auth_cookie() ) ? $user->exists() : FALSE; // @since 3.4.0
 	}
 
 	/**
@@ -605,18 +595,10 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/user.php
 	 */
 	public static function get_current_user_id() {
-		static $cache_uid = NULL;
+		if ( did_action( 'init' ) )
+			return get_current_user_id(); // @since MU 3.0.0
 
-		if ( NULL === $cache_uid ) {
-			if ( ! ( $cache_uid = ( did_action( 'init' ) ? get_current_user_id() : 0 ) ) ) {
-				$keys = preg_grep( '/wp-settings-/', array_keys( isset( $_COOKIE ) ? $_COOKIE : array() ) );
-				if ( $val = array_shift( $keys ) ) {
-					$cache_uid = (int)substr( $val, strrpos( $val, '-' ) + 1 ); // get numerical characters
-				}
-			}
-		}
-
-		return $cache_uid;
+		return ( $user = self::validate_auth_cookie() ) ? $user->ID : 0; // @since 2.0.0
 	}
 
 	/**
@@ -626,10 +608,10 @@ class IP_Geo_Block_Util {
 	 * @source wp-includes/capabilities.php
 	 */
 	public static function current_user_can( $capability ) {
-		do_action( IP_Geo_Block::PLUGIN_NAME . '-check-capability', $capability );
+		if ( did_action( 'init' ) )
+			return current_user_can( $capability ); // @since 2.0.0
 
-		// possibly logged in but should be verified after 'init' hook is fired.
-		return did_action( 'init' ) ? current_user_can( $capability ) : (bool)( class_exists( 'WP_Session_Tokens', FALSE ) ? self::validate_auth_cookie() : self::parse_auth_cookie() );
+		return ( $user = self::validate_auth_cookie() ) ? $user->has_cap( $capability ) : FALSE; // @since 2.0.0
 	}
 
 	/**

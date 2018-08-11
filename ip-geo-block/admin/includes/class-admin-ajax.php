@@ -817,7 +817,7 @@ endif; // TEST_RESTORE_NETWORK
 		// MySQL
 		global $wpdb;
 		$err = ini_get( 'error_log' );
-		ini_set( 'error_log', '/dev/null' ); // prevent WordPress error: Unknown system variable 'block_encryption_mode'
+		ini_set( 'error_log', '/' . 'dev' . '/' . 'null' ); // supress WordPress error: Unknown system variable 'block_encryption_mode'
 		$ver = $wpdb->get_var( 'SELECT @@GLOBAL.version' );
 		$bem = $wpdb->get_var( 'SELECT @@GLOBAL.block_encryption_mode' ); // `aes-128-ecb` @since MySQL 5.6.17
 		ini_set( 'error_log', $err );
