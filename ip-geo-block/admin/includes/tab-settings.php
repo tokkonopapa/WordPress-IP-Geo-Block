@@ -1230,7 +1230,7 @@ endif;
 				'option' => $option_name,
 				'field' => $field,
 				'sub-field' => $key,
-				'value' => (int)( $options[ $field ][ $key ] / DAY_IN_SECONDS ),
+				'value' => $options[ $field ][ $key ],
 			)
 		);
 

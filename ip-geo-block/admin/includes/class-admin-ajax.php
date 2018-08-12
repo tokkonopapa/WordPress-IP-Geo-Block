@@ -427,9 +427,6 @@ endif; // TEST_RESTORE_NETWORK
 		// Convert json to setting data
 		$input = self::json_to_settings( $json );
 
-		if ( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG )
-			unset( $input['version'] );
-
 		// Integrate posted data into current settings because if can be a part of hole data
 		$input = $parent->array_replace_recursive(
 			$parent->preprocess_options( IP_Geo_Block::get_option(), IP_Geo_Block::get_default() ), $input
@@ -643,6 +640,7 @@ endif; // TEST_RESTORE_NETWORK
 							$json[ $prfx.'['.$m[1].']['.$m[2].']' ] = implode( ',', $input[ $m[1] ][ $m[2] ] );
 						}
 					}
+					break;
 				}
 			}
 		}

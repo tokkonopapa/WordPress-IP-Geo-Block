@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.12',// Version of this table (not package)
+		'version'         => '3.0.13',// Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -50,8 +50,8 @@ class IP_Geo_Block_Opts {
 			// since version 1.3.1
 			'maxlogs'     => 500,     // Max number of rows for validation logs
 			'backup'      => NULL,    // Absolute path to directory for backup logs
-			// since version 3.0.12
-			'explogs'     => WEEK_IN_SECONDS, // expiration time for logs
+			// since version 3.0.13
+			'explogs'     => 7,       // expiration time for logs [days]
 			// since version 2.1.0
 			'plugins'     => 0,       // Validate on wp-content/plugins (1:country 2:ZEP)
 			'themes'      => 0,       // Validate on wp-content/themes (1:country 2:ZEP)
@@ -417,6 +417,8 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '3.0.12' ) < 0 ) {
 				$settings['validation']['maxlogs'] = $default['validation']['maxlogs'];
 				$settings['validation']['explogs'] = $default['validation']['explogs'];
+			} else if ( version_compare( $version, '3.0.13' ) < 0 ) {
+				$settings['validation']['explogs'] /= DAY_IN_SECONDS;
 			}
 
 			if ( version_compare( $version, '3.0.13' ) < 0 ) {

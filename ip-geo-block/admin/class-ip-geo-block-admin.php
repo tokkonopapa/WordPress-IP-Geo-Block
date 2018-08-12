@@ -1216,7 +1216,12 @@ endif;
 		}
 
 		// expiration time [days]
-		$output['validation']['explogs'] = min( YEAR_IN_SECONDS, max( DAY_IN_SECONDS, DAY_IN_SECONDS * $output['validation']['explogs'] ) );
+		if ( version_compare( $output['version'], '3.0.13' ) < 0 )
+			$output['validation']['explogs'] /= DAY_IN_SECONDS;
+		$output['validation']['explogs'] = min( 365, max( 1, $output['validation']['explogs'] ) );
+
+		// reset the version number
+		$output['version'] = $default['version'];
 
 		return $output;
 	}
