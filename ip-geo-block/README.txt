@@ -388,7 +388,8 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 * **Fix issue:** Fix the issue of "ip_geo_block_cache doesn't exist" at activation on clean installation.
 * **Fix issue:** Fix the issue that "Remove entries by IP address" did not work when "Anonymize IP address" in "Privacy and record settings" section was enabled.
 * **Fix issue:** Ipdata.co became to require API key for registered user to make up to 1500 requests daily.
-* **Improvement:** Separate "Anonymize IP address" and "Do not send IP address to external APIs" in "Privacy and record settings" section.
+* **Improvement:** AES256 is applied to encrypt IP address if the algorithm is available. (PHP 5.3.3+)
+* **Improvement:** Add "Do not send IP address to external APIs" apart from "Anonymize IP address" in "Privacy and record settings" section.
 
 = 3.0.12.1 =
 * **Fix issue:** Unexpected blocking cause by an extra slash at the end of `$_SERVER['DOCUMENT_ROOT']` that might be added by server's configuration. ([forum topic](https://wordpress.org/support/topic/wpwebinar/ "Topic: WPWebinar &#124; WordPress.org"))
