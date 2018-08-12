@@ -206,7 +206,7 @@ endif;
 			__( '<dfn title="e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, &#8220;69.46.36.0/27&#8221; for WordFence server or &#8220;AS32934&#8221; for Facebook.">Whitelist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
 			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
 			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
-			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
+			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="ip-geo-block-icon-calc"></span></a>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -228,7 +228,7 @@ endif;
 			__( '<dfn title="Server level access control is recommended (e.g. .htaccess).">Blacklist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
 			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
 			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
-			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="dashicons dashicons-sos"></span></a>',
+			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="ip-geo-block-icon ip-geo-block-icon-calc"></span></a>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -296,7 +296,7 @@ endif;
 		$list .= "</ul></li></ul>\n";
 
 		// Verify capability
-		$list .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the capabilities to be verified. Depending on the particular type of uploader, certain capability may be required. Default is &#8220;upload_files&#8221; for Administrator, Editor and Author. This verification will be skipped if empty.">Capabilities to be verified</dfn>', 'ip-geo-block' ) . '&nbsp;<span class="ip-geo-block-desc">' . __( '(&thinsp;See &#8220;<a rel="noreferrer" href="https://codex.wordpress.org/Roles_and_Capabilities" title="Roles and Capabilities &laquo; WordPress Codex">Roles and Capabilities</a>&#8221;&thinsp;)', 'ip-geo-block' ) . '</span>' . "\n";
+		$list .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the capabilities to be verified. Depending on the particular type of uploader, certain capability may be required. Default is &#8220;upload_files&#8221; for Administrator, Editor and Author. This verification will be skipped if empty.">Capabilities to be verified</dfn>', 'ip-geo-block' ) . '&nbsp;<span class="ip-geo-block-desc">' . __( '( See &#8220;<a rel="noreferrer" href="https://codex.wordpress.org/Roles_and_Capabilities" title="Roles and Capabilities &laquo; WordPress Codex">Roles and Capabilities</a>&#8221; )', 'ip-geo-block' ) . '</span>' . "\n";
 		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_mimetype_capability" name="ip_geo_block_settings[mimetype][capability]" class="regular-text code" placeholder="upload_files" value="' . esc_attr( implode( ',', $options['mimetype']['capability'] ) ) . '" />' . $comma[0] . '</li></ul></li></ul>';
 
 		// Prevent malicious file uploading
@@ -320,6 +320,31 @@ endif;
 					2 => __( 'Verify file extension only',          'ip-geo-block' ),
 				),
 				'after' => $list,
+			)
+		);
+
+		// Max number of failed login attempts per IP address
+		$field = 'login_fails';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221;. Lockout period is defined as expiration time of &#8220;IP address Cache&#8221; in &#8220;Privacy and record settings&#8221; section.">Max number of failed login attempts per IP address</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+				'list' => array(
+					-1 => 'Disable',
+					 0 =>  0,
+					 1 =>  1,
+					 3 =>  3,
+					 5 =>  5,
+					 7 =>  7,
+					10 => 10,
+				),
 			)
 		);
 
@@ -385,31 +410,6 @@ endif;
 				'field' => $field,
 				'value' => $options[ $field ],
 				'class' => $options['response_code'] >= 400 ? '' : 'ip-geo-block-hide',
-			)
-		);
-
-		// Max number of failed login attempts per IP address
-		$field = 'login_fails';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( '<dfn title="This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221;. Lockout period is defined as expiration time at &#8220;Privacy and record settings&#8221;.">Max number of failed login attempts per IP address</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'select',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
-				'list' => array(
-					-1 => 'Disable',
-					 0 =>  0,
-					 1 =>  1,
-					 3 =>  3,
-					 5 =>  5,
-					 7 =>  7,
-					10 => 10,
-				),
 			)
 		);
 
@@ -624,8 +624,9 @@ endif;
 		$desc = array(
 			__( 'Regardless of the country code, it will block a malicious request to <code>%s&ctdot;/*.php</code>.', 'ip-geo-block' ),
 			__( 'Select the item which causes unintended blocking in order to exclude from the validation target. Grayed item indicates &#8220;INACTIVE&#8221;.', 'ip-geo-block' ),
-			__( 'It configures &#8220;%s&#8221; to validate a request to the PHP file which does not load WordPress core. Make sure to deny direct access to the hidden files beginning with a dot by the server\'s configuration.', 'ip-geo-block' ),
+			__( 'It configures &#8220;%s&#8221; to validate a direct request to the PHP file which does not load WordPress core. Make sure to deny direct access to the hidden files beginning with a dot by the server\'s configuration.', 'ip-geo-block' ),
 			__( 'Sorry, but your server type is not supported.', 'ip-geo-block' ),
+			__( 'You need to click the &#8220;Save Changes&#8221; button for imported settings to take effect.', 'ip-geo-block' ),
 		);
 
 		// Set rewrite condition
@@ -785,9 +786,6 @@ endif;
 			)
 		);
 
-		// Default for matching rule on front-end
-		$rule[-1] = __( 'Follow &#8220;Validation rule settings&#8221;', 'ip-geo-block' );
-
 		// Matching rule
 		$field = 'public';
 		$key = 'matching_rule';
@@ -803,7 +801,7 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'list' => $rule,
+				'list' => array( -1 => __( 'Follow &#8220;Validation rule settings&#8221;', 'ip-geo-block' ) ) + $rule,
 			)
 		);
 
@@ -1071,7 +1069,7 @@ endif;
 		$key = 'simulate';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			'<dfn title="' . __( 'It enables to simulate validation without deployment. The results can be found at &#8220;Public facing pages&#8221; in Logs.', 'ip-geo-block' ) . '">' . __( 'Simulation mode', 'ip-geo-block' ) . '</dfn>',
+			'<dfn title="' . __( 'It enables to simulate validation without deployment. The results can be found as &#8220;public&#8221; in Logs.', 'ip-geo-block' ) . '">' . __( 'Simulation mode', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1090,15 +1088,15 @@ endif;
 		add_settings_section(
 			$section = $plugin_slug . '-recording',
 			__( 'Privacy and record settings', 'ip-geo-block' ),
-			array( __CLASS__, 'note_record' ),
+			array( __CLASS__, 'note_privacy' ),
 			$option_slug
 		);
 
-		// Anonymize IP address and restrict 3rd party APIs
+		// Anonymize IP address
 		$field = 'anonymize';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="IP address is always encrypted on recording in cache and logs. Moreover, this option makes the IP address anonymous and restricted on sending to the 3rd parties such as geolocation APIs or whois service.">Anonymize IP address and restrict 3rd party APIs</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="IP address is always encrypted on recording in Cache and Logs. Moreover, this option replaces the end of IP address with &#8220;***&#8221; to make it anonymous.">Anonymize IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1110,11 +1108,27 @@ endif;
 			)
 		);
 
-		// Record IP address cache
-		$field = 'cache_hold';
+		// Do not send IP address to external APIs
+		$field = 'restrict_api';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="This option enables to record the IP address, country code and failure counter of login attempts into the cache on database to minimize the impact on site speed.">Record &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option restricts not to send IP address to the external Geolocation APIs.">Do not send IP address to external APIs</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => ! empty( $options[ $field ] ),
+			)
+		);
+
+		// Record "Statistics"
+		$field = 'save_statistics';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="This option enables to record the number blocked countries and the number of blocked requests per day.">Record &#8220;Statistics&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1126,11 +1140,46 @@ endif;
 			)
 		);
 
-		// Expiration time [sec] for IP address cache
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		$field = 'validation';
+		$key = 'recdays';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			'<div class="ip-geo-block-subitem">' . __( 'Maximum period for &#8220;Statistics&#8221; [days]', 'ip-geo-block' ) . '</div>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+			)
+		);
+endif;
+
+		// Record IP address Cache
+		$field = 'cache_hold';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="This option enables to record the IP address, country code and failure counter of login attempts into the cache on database to minimize the impact on site speed.">Record &#8220;IP address Cache&#8221;</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+			)
+		);
+
+		// Expiration time [sec] for each entry
 		$field = 'cache_time';
 		add_settings_field(
 			$option_name.'_'.$field,
-			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this and garbage collection period.">Expiration time [sec] for &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
+			'<div class="ip-geo-block-subitem">' . __( '<dfn title="If user authentication fails consecutively beyond &#8220;Max number of failed login attempts per IP address&#8221;, subsequent login will also be prohibited for this period.">Expiration time [sec] for each entry</dfn>', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1168,10 +1217,27 @@ endif;
 			)
 		);
 
-		// $_POST keys to be recorded with their values in "Logs"
+		// Expiration time [days] for each entry
+		$key = 'explogs';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			'<div class="ip-geo-block-subitem">' . sprintf( __( '<dfn title="The maximum number of entries in the logs is also limited to %d.">Expiration time [days] for each entry</dfn>', 'ip-geo-block' ), $options[ $field ]['maxlogs'] ) . '</div>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+			)
+		);
+
+		// $_POST key to record with value
 		add_settings_field(
 			$option_name.'_'.$field.'_postkey',
-			__( '<dfn title="e.g. action, comment, log, pwd, FILES">$_POST keys to be recorded with their values in &#8220;Logs&#8221;</dfn>', 'ip-geo-block' ),
+			'<div class="ip-geo-block-subitem">' . __( '<dfn title="e.g. action, comment, log, pwd, FILES">$_POST key to record with value</dfn>', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1185,28 +1251,12 @@ endif;
 			)
 		);
 
-		$key = 'explogs';
-		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			sprintf( __( '<dfn title="The maximum number of entries in the logs is also limited to %d.">Expiration time [sec] for &#8220;Logs&#8221;</dfn>', 'ip-geo-block' ), $options[ $field ]['maxlogs'] ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-			)
-		);
-
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		// Maximum entries of Logs
 		$key = 'maxlogs';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( 'Maximum entries of &#8220;Logs&#8221;', 'ip-geo-block' ),
+			'<div class="ip-geo-block-subitem">' . __( 'Maximum entries of &#8220;Logs&#8221;', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1223,7 +1273,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$field = 'live_update';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="Select SQLite database source.">Database source of SQLite for &#8220;Live update&#8221;</dfn>', 'ip-geo-block' ),
+			'<div class="ip-geo-block-subitem">' . __( '<dfn title="Select SQLite database source.">Database source of SQLite for &#8220;Live update&#8221;</dfn>', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1250,7 +1300,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		$field = 'reset_live';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Reset database source of &#8220;Live update&#8221;', 'ip-geo-block' ),
+			'<div class="ip-geo-block-subitem">' . __( 'Reset database source of &#8220;Live update&#8221;', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1268,11 +1318,11 @@ endif;
 		$tmp = wp_next_scheduled( IP_Geo_Block::CACHE_NAME );
 		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '<span class="ip-geo-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-geo-block' ). '</span>';
 
-		// Cleanup interval [sec] for Logs and IP address cache
+		// Interval [sec] to cleanup expired entries of IP address
 		$field = 'cache_time_gc';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries in ip address cache and logs.">Cleanup interval [sec] for &#8220;IP address cache&#8221; and &#8220;Logs&#8221;</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries in &#8220;IP address Cache&#8221; and &#8220;Logs&#8221;.">Interval [sec] to cleanup expired entries of IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1284,41 +1334,6 @@ endif;
 				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>',
 			)
 		);
-
-		// Record "Statistics"
-		$field = 'save_statistics';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( '<dfn title="This option enables to record the number blocked countries and the number of blocked requests per day.">Record &#8220;Statistics&#8221;</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
-			)
-		);
-
-if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		$field = 'validation';
-		$key = 'recdays';
-		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			__( 'Maximum period for &#8220;Statistics&#8221; [day]', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-			)
-		);
-endif;
 
 		// Remove all settings and records at uninstallation
 		$field = 'clean_uninstall';
@@ -1350,8 +1365,8 @@ endif;
 		$provider  = IP_Geo_Block_Provider::get_providers( 'key' ); // all available providers
 		$providers = IP_Geo_Block_Provider::get_addons( $options['providers'] ); // only local
 
-		// Disable 3rd parties API in case of 'anonymize'
-		if ( $options['anonymize'] ) {
+		// Disable 3rd parties API
+		if ( ! empty( $options['restrict_api'] ) ) {
 			foreach ( array_keys( $provider ) as $key ) {
 				if ( ! in_array( $key, $providers, TRUE ) )
 					$provider[ $key ] = is_string( $provider[ $key ] ) ? '-1' : -1;
@@ -1362,7 +1377,7 @@ endif;
 		$field = 'providers';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="IP address cache and local database are scanned at the top priority.">API selection and key settings</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="IP address Cache and local databases are scanned at the top priority.">API selection and key settings</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1400,7 +1415,7 @@ endif;
 		 *----------------------------------------*/
 		if ( empty( $providers ) ) {
 			$context->add_admin_notice( 'error', sprintf(
-				__( 'Can not find geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
+				__( 'Can not find Geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
 				apply_filters( 'ip-geo-block-api-dir', basename( WP_CONTENT_DIR ) )
 			) );
 		}
@@ -1566,13 +1581,11 @@ endif;
 			);
 		}
 
-		$desc = __( 'You need to click the &#8220;Save Changes&#8221; button for imported settings to take effect.', 'ip-geo-block' );
-
 		// Export / Import settings
 		$field = 'export-import';
 		add_settings_field(
 			$option_name.'_'.$field,
-			sprintf( '<dfn title="%s">' . __( 'Export / Import settings', 'ip-geo-block' ) . '</dfn>', $desc ),
+			sprintf( '<dfn title="%s">' . __( 'Export / Import settings', 'ip-geo-block' ) . '</dfn>', $desc[4] ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1589,7 +1602,7 @@ endif;
 		$field = 'pre-defined';
 		add_settings_field(
 			$option_name.'_'.$field,
-			sprintf( '<dfn title="%s">' . __( 'Import pre-defined settings', 'ip-geo-block' ) . '</dfn>', $desc ),
+			sprintf( '<dfn title="%s">' . __( 'Import pre-defined settings', 'ip-geo-block' ) . '</dfn>', $desc[4] ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1641,7 +1654,7 @@ endif;
 		$field = 'show-info';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="When an unexpected blocking has occurred, please press the button to find the blocked request in the dumped information which may help to solve the issue.">Diagnostic information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
+			__( '<dfn title="When you have some unexpected blocking experiences, please press the button to find the blocked requests at the end of dumped information which may help you to solve the issues.">Diagnostic information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1672,8 +1685,8 @@ endif;
 	public static function note_services() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'While Geolite2&thinsp;/&thinsp;Maxmind and IP2Location will fetch the local databases, others will pass an IP address to the 3rd parties\' API via HTTP.', 'ip-geo-block' ), '</li>', "\n",
-				'<li>', __( 'Please select the appropriate APIs to fit the privacy law&thinsp;/&thinsp;regulation in your country&thinsp;/&thinsp;region.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'While Geolite2 / Maxmind and IP2Location will fetch the local databases, others will pass an IP address to the 3rd parties\' API via HTTP.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'Please select the appropriate APIs to fit the privacy law / regulation in your country / region.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 
@@ -1695,7 +1708,7 @@ endif;
 			'</ul>', "\n";
 	}
 
-	public static function note_record() {
+	public static function note_privacy() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
 				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/record-settings-and-logs.html" title="Codex | IP Geo Block">Record settings and logs</a>&#8221; for details.', 'ip-geo-block' ), '</li>', "\n",

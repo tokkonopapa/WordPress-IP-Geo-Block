@@ -210,11 +210,11 @@ if ( $options['validation']['reclogs'] ) :
 endif;
 
 		/*----------------------------------------*
-		 * IP address in cache
+		 * Statistics in IP address Cache
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-cache',
-			__( 'Statistics in IP address cache', 'ip-geo-block' ),
+			__( 'Statistics in IP address Cache', 'ip-geo-block' ),
 			( $options['cache_hold'] ?
 				array( __CLASS__, 'statistics_cache' ) :
 				array( __CLASS__, 'warn_ipadr_cache' )
@@ -378,7 +378,7 @@ endif;
 					$key  = esc_html( $key );
 
 					if ( 'ip' === $slug && $options['anonymize'] )
-						$link = $key = preg_replace( '/\d{1,3}$/', '***', $link );
+						$link = $key = IP_Geo_Block_Util::anonymize_ip( $link );
 
 					echo '<li><code>';
 					echo str_replace(
@@ -400,11 +400,11 @@ endif;
 	}
 
 	/**
-	 * Render IP address cache
+	 * Render IP address Cache
 	 *
 	 */
 	public static function statistics_cache() {
-		echo '<table id="', IP_Geo_Block::PLUGIN_NAME, '-statistics-cache" class="dataTable display" cellspacing="0" width="100%">', "\n", '<thead></thead><tbody></tbody></table>', "\n";
+		echo '<table id="', IP_Geo_Block::PLUGIN_NAME, '-statistics-cache" class="', IP_Geo_Block::PLUGIN_NAME, '-dataTable display" cellspacing="0" width="100%">', "\n", '<thead></thead><tbody></tbody></table>', "\n";
 	}
 
 	/**
@@ -428,7 +428,7 @@ endif;
 	public static function warn_ipadr_cache() {
 		$context = IP_Geo_Block_Admin::get_instance();
 		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 3 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-3' );
-		echo '<p style="padding:0 1em">', sprintf( __( '[ %sRecord &#8220;IP address cache&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '">', '</a>' ), '</p>', "\n";
+		echo '<p style="padding:0 1em">', sprintf( __( '[ %sRecord &#8220;IP address Cache&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '">', '</a>' ), '</p>', "\n";
 		echo '<p style="padding:0 1em">', __( 'Please set the proper condition to record IP address in cache.', 'ip-geo-block' ), '</p>', "\n";
 	}
 

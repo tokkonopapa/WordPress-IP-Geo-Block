@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.9.6
-Stable tag: 3.0.12.1
+Tested up to: 4.9.8
+Stable tag: 3.0.13a
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -113,7 +113,7 @@ or following descriptions for your best setup.
   Specify the country code with two letters (see [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")). Each of them should be separated by comma.
 
 * **Use Autonomous System Number (ASN)**  
-  It enables you to use "AS number" in the whitelist and blacklist of extra IP addresses to specify a group of IP networks. 
+  It enables you to use "AS number" in the whitelist and blacklist of extra IP addresses to specify a group of IP networks.
 
 * **Whitelist/Blacklist of extra IP addresses prior to country code**  
   The list of extra IP addresses prior to the validation of country code. [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia, the free encyclopedia") and [AS number](https://en.wikipedia.org/wiki/Autonomous_system_(Internet) "Autonomous system (Internet) - Wikipedia") are also acceptable to specify the range.
@@ -382,11 +382,20 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 == Changelog ==
 
+= 3.0.13 =
+* **Deprecate:** Remove the hotfix in 3.0.12.1 because of [WordPress 4.9.7 Security and Maintenance Release](https://wordpress.org/news/2018/07/wordpress-4-9-7-security-and-maintenance-release/ "WordPress 4.9.7 Security and Maintenance Release").
+* **Fix issue:** Local databases settings will be updated when Geolocation API folder can not be found on activation. ([forum topic](https://wordpress.org/support/topic/local-database-settings-wrong-after-server-move/ "Topic: Local Database settings wrong after server move &#124; WordPress.org"))
+* **Fix issue:** Fix the issue of "ip_geo_block_cache doesn't exist" at activation on clean installation.
+* **Fix issue:** Fix the issue that "Remove entries by IP address" did not work when "Anonymize IP address" in "Privacy and record settings" section was enabled.
+* **Fix issue:** Ipdata.co became to require API key for registered user to make up to 1500 requests daily.
+* **Improvement:** AES256 is applied to encrypt IP address if the algorithm is available. (PHP 5.3.3+)
+* **Improvement:** Add "Do not send IP address to external APIs" apart from "Anonymize IP address" in "Privacy and record settings" section.
+
 = 3.0.12.1 =
-* **Issue fix:** Unexpected blocking cause by an extra slash at the end of `$_SERVER['DOCUMENT_ROOT']` that might be added by server's configuration. ([forum topic](https://wordpress.org/support/topic/wpwebinar/ "Topic: WPWebinar &#124; WordPress.org"))
-* **Issue fix:** [Human friendly error page](http://www.ipgeoblock.com/codex/customizing-the-response.html#human-friendly-error-page) now works properly. ([forum topic](https://wordpress.org/support/topic/problem-with-permalinks-51/ "Topic: Problem with Permalinks &#124; WordPress.org"))
-* **Issue fix:** Fix the conflict with WP hide & Security Enhancer. ([forum topic](https://wordpress.org/support/topic/problem-with-permalinks-51/ "Topic: Problem with Permalinks &#124; WordPress.org"))
-* **Issue fix:** Hotfix [WordPress File Delete to Code Execution](https://blog.ripstech.com/2018/wordpress-file-delete-to-code-execution/ "WARNING: WordPress File Delete to Code Execution") by RIPS Technologies.
+* **Fix issue:** Unexpected blocking cause by an extra slash at the end of `$_SERVER['DOCUMENT_ROOT']` that might be added by server's configuration. ([forum topic](https://wordpress.org/support/topic/wpwebinar/ "Topic: WPWebinar &#124; WordPress.org"))
+* **Fix issue:** [Human friendly error page](http://www.ipgeoblock.com/codex/customizing-the-response.html#human-friendly-error-page) now works properly. ([forum topic](https://wordpress.org/support/topic/problem-with-permalinks-51/ "Topic: Problem with Permalinks &#124; WordPress.org"))
+* **Fix issue:** Fix the conflict with WP hide & Security Enhancer. ([forum topic](https://wordpress.org/support/topic/problem-with-permalinks-51/ "Topic: Problem with Permalinks &#124; WordPress.org"))
+* **Fix issue:** Hotfix [WordPress File Delete to Code Execution](https://blog.ripstech.com/2018/wordpress-file-delete-to-code-execution/ "WARNING: WordPress File Delete to Code Execution") by RIPS Technologies.
 
 = 3.0.12 =
 * **Improvement:** Enhance "Privacy and record settings" where "Expiration time [sec] for Logs" can be specified.

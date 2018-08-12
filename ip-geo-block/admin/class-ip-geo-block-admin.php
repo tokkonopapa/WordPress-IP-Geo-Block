@@ -39,6 +39,9 @@ class IP_Geo_Block_Admin {
 		// Load plugin text domain and add body class
 		add_action( 'init', array( $this, 'admin_init' ) );
 
+		// Add suggest text for inclusion in the site's privacy policy. @since 4.9.6
+		// add_action( 'admin_init', array( $this, 'add_privacy_policy' ) );
+
 		// Setup a nonce to validate authentication.
 		add_filter( 'wp_redirect', array( $this, 'add_redirect_nonce' ), 10, 2 );
 	}
@@ -353,6 +356,17 @@ class IP_Geo_Block_Admin {
 			array( 'settings' => '<a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( $settings['network_wide'] ) ) ) . '">' . __( 'Settings' ) . '</a>' ),
 			$links
 		);
+	}
+
+	/**
+	 * Add suggest text for inclusion in the site's privacy policy. @since 4.9.6
+	 *
+	 * /wp-admin/tools.php?wp-privacy-policy-guide
+	 * https://developer.wordpress.org/plugins/privacy/privacy-related-options-hooks-and-capabilities/
+	 */
+	public function add_privacy_policy() {
+		if ( function_exists( 'wp_add_privacy_policy_content' ) )
+			wp_add_privacy_policy_content( 'IP Geo Block', __( 'suggested text.', 'ip-geo-block' ) );
 	}
 
 	/**
@@ -729,7 +743,7 @@ endif;
 	<p class="ip-geo-block-navi-link">[ <a id="ip-geo-block-toggle-sections" href="#!"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]
 <?php if ( 4 === $tab ) { /* Logs tab */ ?>
 	<input id="ip-geo-block-live-update" type="checkbox"<?php checked( isset( $cookie[4][1] ) && 'o' === $cookie[4][1] ); disabled( $settings['validation']['reclogs'] && extension_loaded( 'pdo_sqlite' ), FALSE ); ?> /><label for="ip-geo-block-live-update">
-		<dfn title="<?php _e( 'Independent of &#8220;Statistics and Logs settings&#8221;, you can see all the requests validated by this plugin in almost real time.', 'ip-geo-block' ); ?>"><?php _e( 'Live update', 'ip-geo-block' ); ?></dfn>
+		<dfn title="<?php _e( 'Independent of &#8220;Privacy and record settings&#8221;, you can see all the requests validated by this plugin in almost real time.', 'ip-geo-block' ); ?>"><?php _e( 'Live update', 'ip-geo-block' ); ?></dfn>
 	</label>
 <?php } elseif (5 === $tab ) { /* Site List tab */ ?>
 	<input id="ip-geo-block-open-new" type="checkbox"<?php checked( isset( $cookie[5][1] ) && 'o' === $cookie[5][1] );?> /><label for="ip-geo-block-open-new">
@@ -1076,7 +1090,7 @@ endif;
 	// Initialize not on the form (mainly unchecked checkbox)
 	public function preprocess_options( $output, $default ) {
 		// initialize checkboxes not in the form (added after 2.0.0, just in case)
-		foreach ( array( 'providers', 'save_statistics', 'cache_hold', 'anonymize', 'network_wide', 'clean_uninstall' ) as $key ) {
+		foreach ( array( 'providers', 'save_statistics', 'cache_hold', 'anonymize', 'restrict_api', 'network_wide', 'clean_uninstall' ) as $key ) {
 			$output[ $key ] = is_array( $default[ $key ] ) ? array() : 0;
 		}
 
@@ -1200,6 +1214,14 @@ endif;
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
 			IP_Geo_Block_Cron::stop_update_db();
 		}
+
+		// expiration time [days]
+		if ( version_compare( $output['version'], '3.0.13' ) < 0 )
+			$output['validation']['explogs'] /= DAY_IN_SECONDS;
+		$output['validation']['explogs'] = min( 365, max( 1, $output['validation']['explogs'] ) );
+
+		// reset the version number
+		$output['version'] = $default['version'];
 
 		return $output;
 	}
@@ -1501,8 +1523,8 @@ endif;
 			foreach ( array_unique( (array)$which[ $src ] ) as $val ) {
 				// replace anonymized IP address with CIDR (IPv4:256, IPv6:4096)
 				$val = preg_replace(
-					array( '/\.\*\*\*.*$/', '/\*\*\*.*$/' ),
-					array( '.0/24',         '000/116'     ),
+					array( '/\.\*\*\*.*$/', '/\*\*\*.*$/', '/:000\/116$/' ),
+					array( '.0/24',         '000/116',     '::/116'       ),
 					$val
 				);
 				if ( ( filter_var( preg_replace( '/\/\d+$/', '', $val ), FILTER_VALIDATE_IP ) || preg_match( '/^AS\d+$/', $val ) ) &&

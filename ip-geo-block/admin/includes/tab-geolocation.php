@@ -39,7 +39,7 @@ class IP_Geo_Block_Admin_Tab {
 		$provider = array_keys( $providers );
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Geolocation service', 'ip-geo-block' ),
+			__( 'Geolocation API', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -83,7 +83,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'anonymize';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="IP address is always encrypted on recording in cache and logs. Moreover, this option makes the IP address anonymous and restricted on sending to the 3rd parties such as geolocation APIs or whois service.">Anonymize IP address and restrict 3rd party APIs</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="IP address is always encrypted on recording in Cache and Logs. Moreover, this option replaces the end of IP address with &#8220;***&#8221; to make it anonymous.">Anonymize IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -91,14 +91,15 @@ class IP_Geo_Block_Admin_Tab {
 				'type' => 'checkbox',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => ! empty( $options[ $field ] ) ? TRUE : FALSE,
+				'value' => ( ! empty( $options[ $field ] ) || ! empty( $options['restrict_api'] ) ) ? TRUE : FALSE,
 			)
 		);
 
+		// Search geolocation
 		$field = 'get_location';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Find geolocation', 'ip-geo-block' ),
+			__( 'Search geolocation', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

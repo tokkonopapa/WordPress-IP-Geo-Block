@@ -90,11 +90,7 @@ class IP_Geo_Block_Admin_Ajax {
 			$insert_value = array( $insert_value );
 
 		$position = is_null( $position ) ? count( $base_array ) : intval( $position );
-
-		$base_array = array_merge(
-			array_splice( $base_array, 0, $position ),
-			$insert_value, $base_array
-		);
+		$base_array = array_merge( array_splice( $base_array, 0, $position ), $insert_value, $base_array );
 	}
 
 	/**
@@ -120,7 +116,8 @@ class IP_Geo_Block_Admin_Ajax {
 		) ) . PHP_EOL;
 
 		foreach ( IP_Geo_Block_Logs::restore_logs( $which ) as $data ) {
-			$hook = array_shift( $data );
+			$hook = array_shift( $data ); // remove `No`
+			$hook = array_shift( $data ); // extract `hook`
 			self::array_insert( $data, $hook, 3 );
 			$data[0] = IP_Geo_Block_Util::localdate( $data[0], 'Y-m-d H:i:s' );
 			$data[7] = str_replace( ',', '‚', $data[7] ); // &#044; --> &#130;
@@ -149,11 +146,12 @@ class IP_Geo_Block_Admin_Ajax {
 		$res = array();
 
 		foreach ( $rows as $row ) {
+			array_shift( $row ); // remove `No`
 			$row = array_map( 'esc_html', $row );
 
 			if ( $options['anonymize'] ) {
-				$row[2] = IP_Geo_Block_Util::anonymize_ip( $row[2] );
-				$row[8] = IP_Geo_Block_Util::anonymize_ip( $row[8] );
+				$row[2] = IP_Geo_Block_Util::anonymize_ip( $row[2], TRUE  );
+				$row[8] = IP_Geo_Block_Util::anonymize_ip( $row[8], FALSE );
 			}
 
 			$res[] = array(
@@ -248,8 +246,8 @@ class IP_Geo_Block_Admin_Ajax {
 
 		foreach ( IP_Geo_Block_Logs::restore_cache() as $key => $val ) {
 			if ( $anonymize ) {
-				$key         = IP_Geo_Block_Util::anonymize_ip( $key         );
-				$val['host'] = IP_Geo_Block_Util::anonymize_ip( $val['host'] );
+				$key         = IP_Geo_Block_Util::anonymize_ip( $key,         TRUE  );
+				$val['host'] = IP_Geo_Block_Util::anonymize_ip( $val['host'], FALSE );
 			}
 
 			$csv .= implode( ',', array(
@@ -284,8 +282,8 @@ class IP_Geo_Block_Admin_Ajax {
 
 		foreach ( IP_Geo_Block_Logs::restore_cache() as $key => $val ) {
 			if ( $anonymize ) {
-				$key         = IP_Geo_Block_Util::anonymize_ip( $key         );
-				$val['host'] = IP_Geo_Block_Util::anonymize_ip( $val['host'] );
+				$key         = IP_Geo_Block_Util::anonymize_ip( $key,         TRUE  );
+				$val['host'] = IP_Geo_Block_Util::anonymize_ip( $val['host'], FALSE );
 			}
 
 			$res[] = array(
@@ -428,7 +426,6 @@ endif; // TEST_RESTORE_NETWORK
 
 		// Convert json to setting data
 		$input = self::json_to_settings( $json );
-		unset( $input['version'] );
 
 		// Integrate posted data into current settings because if can be a part of hole data
 		$input = $parent->array_replace_recursive(
@@ -517,6 +514,7 @@ endif; // TEST_RESTORE_NETWORK
 			'[response_code]',
 			'[response_msg]',            // 3.0.0
 			'[redirect_uri]',            // 3.0.0
+			'[restrict_api]',            // 3.0.13
 			'[validation][timing]',      // 2.2.9
 			'[validation][proxy]',
 			'[validation][comment]',
@@ -564,6 +562,7 @@ endif; // TEST_RESTORE_NETWORK
 			'[public][simulate]',        // 3.0.0
 			'[public][dnslkup]',         // 3.0.3
 			'[public][response_code]',   // 3.0.3
+			'[public][response_msg]',    // 3.0.3
 			'[public][redirect_uri]',    // 3.0.3
 			'[public][behavior]',        // 3.0.10
 			'[behavior][time]',          // 3.0.10
@@ -766,7 +765,6 @@ endif; // TEST_RESTORE_NETWORK
 					$result += array( $matches[1] => $which );
 				}
 			}
-			break;
 		}
 
 		return $result;
@@ -777,25 +775,22 @@ endif; // TEST_RESTORE_NETWORK
 	 *
 	 */
 	public static function find_exceptions( $target ) {
-		$res = array();
-
 		switch ( $target ) {
 		  case 'find-admin':
+			$res = array();
 			foreach ( array( 'action', 'page' ) as $which ) {
 				$res += self::get_blocked_queries( $which );
 			}
-			break;
+			return $res;
 
 		  case 'find-plugins':
-			$res = self::get_blocked_queries( 'plugins' );
-			break;
+			return self::get_blocked_queries( 'plugins' );
 
 		  case 'find-themes':
-			$res = self::get_blocked_queries( 'themes' );
-			break;
+			return self::get_blocked_queries( 'themes' );
 		}
 
-		return $res;
+		return array();
 	}
 
 	/**
@@ -812,9 +807,23 @@ endif; // TEST_RESTORE_NETWORK
 		$val = IP_Geo_Block_Lkup::gethostbyaddr( '8.8.8.8' );
 		$key = microtime( TRUE ) - $key;
 
+		// MySQL (supress WordPress error: Unknown system variable 'block_encryption_mode')
+		$buf = @ini_set( 'output_buffering', 0 );
+		$dsp = @ini_set( 'display_errors', 0 );
+		$log = @ini_set( 'error_log', '/' . 'dev' . '/' . 'null' );
+		$err = @error_reporting( 0 );
+		global $wpdb;
+		$ver = $wpdb->get_var( 'SELECT @@GLOBAL.version' );
+		$bem = $wpdb->get_var( 'SELECT @@GLOBAL.block_encryption_mode' ); // `aes-128-ecb` @since MySQL 5.6.17
+		@ini_set( 'output_buffering', $buf );
+		@ini_set( 'display_errors', $dsp );
+		@ini_set( 'error_log', $log );
+		@error_reporting( $err );
+
 		// Server, PHP, WordPress
 		$res = array(
 			'Server:'      => $_SERVER['SERVER_SOFTWARE'],
+			'MySQL:'       => $ver . ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG && $bem ? ' (' . $bem . ')' : '' ),
 			'PHP:'         => PHP_VERSION,
 			'PHP SAPI:'    => php_sapi_name(),
 			'WordPress:'   => $GLOBALS['wp_version'],
@@ -826,7 +835,8 @@ endif; // TEST_RESTORE_NETWORK
 			'ZipArchive:'  => class_exists( 'ZipArchive', FALSE ) ? 'yes' : 'no',
 			'PECL phar:'   => class_exists( 'PharData',   FALSE ) ? 'yes' : 'no',
 			'BC Math:'     => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
-			'mb_strcut:'   => function_exists( 'mb_strcut' ) ? 'yes' : 'no',
+			'mb_strcut:'   => function_exists( 'mb_strcut' ) ? 'yes' : 'no', // @since PHP 4.0.6
+			'OpenSSL:'     => function_exists( 'openssl_cipher_iv_length' ) ? 'yes' : 'no', // @since PHP 5.3.3
 			'SQLite(PDO):' => extension_loaded( 'pdo_sqlite' ) ? 'yes' : 'no',
 			'DNS lookup:'  => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),
 			'User agent:'  => $_SERVER['HTTP_USER_AGENT'],
