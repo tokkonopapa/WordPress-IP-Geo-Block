@@ -643,7 +643,6 @@ endif; // TEST_RESTORE_NETWORK
 							$json[ $prfx.'['.$m[1].']['.$m[2].']' ] = implode( ',', $input[ $m[1] ][ $m[2] ] );
 						}
 					}
-					break;
 				}
 			}
 		}
@@ -810,16 +809,17 @@ endif; // TEST_RESTORE_NETWORK
 		$val = IP_Geo_Block_Lkup::gethostbyaddr( '8.8.8.8' );
 		$key = microtime( TRUE ) - $key;
 
-		// MySQL
-		// Supress WordPress error: Unknown system variable 'block_encryption_mode'
-		$buf = @ini_set( 'output_buffering', FALSE );
-		$dsp = @ini_set( 'display_errors', FALSE );
-		$err = @error_reporting( FALSE );
+		// MySQL (supress WordPress error: Unknown system variable 'block_encryption_mode')
+		$buf = @ini_set( 'output_buffering', 0 );
+		$dsp = @ini_set( 'display_errors', 0 );
+		$log = @ini_set( 'error_log', '/' . 'dev' . '/' . 'null' );
+		$err = @error_reporting( 0 );
 		global $wpdb;
 		$ver = $wpdb->get_var( 'SELECT @@GLOBAL.version' );
 		$bem = $wpdb->get_var( 'SELECT @@GLOBAL.block_encryption_mode' ); // `aes-128-ecb` @since MySQL 5.6.17
 		@ini_set( 'output_buffering', $buf );
 		@ini_set( 'display_errors', $dsp );
+		@ini_set( 'error_log', $log );
 		@error_reporting( $err );
 
 		// Server, PHP, WordPress
