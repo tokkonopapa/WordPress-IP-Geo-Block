@@ -13,9 +13,9 @@
 define( 'IP_GEO_BLOCK_MAX_STR_LEN', 255 );
 define( 'IP_GEO_BLOCK_MAX_BIN_LEN', 512 );
 
-// cipher mode and method
+// Cipher mode and type
 define( 'IP_GEO_BLOCK_CIPHER_MODE', 2 ); // 0:before 3.0.13, 1:mysql default, 2:openssl
-define( 'IP_GEO_BLOCK_CIPHER_METHOD', 'AES-256-CBC' ); // for openssl
+define( 'IP_GEO_BLOCK_CIPHER_TYPE', 'AES-256-CBC' ); // for openssl
 
 class IP_Geo_Block_Logs {
 
@@ -152,11 +152,11 @@ class IP_Geo_Block_Logs {
 	}
 
 	private static function decrypt( $data ) {
-		return openssl_decrypt( $data, IP_GEO_BLOCK_CIPHER_METHOD, self::$cipher['key'], OPENSSL_RAW_DATA, self::$cipher['iv'] ); // @since PHP 5.3.0
+		return openssl_decrypt( $data, IP_GEO_BLOCK_CIPHER_TYPE, self::$cipher['key'], OPENSSL_RAW_DATA, self::$cipher['iv'] ); // @since PHP 5.3.0
 	}
 
 	private static function encrypt( $data ) {
-		return openssl_encrypt( $data, IP_GEO_BLOCK_CIPHER_METHOD, self::$cipher['key'], OPENSSL_RAW_DATA, self::$cipher['iv'] ); // @since PHP 5.3.0
+		return openssl_encrypt( $data, IP_GEO_BLOCK_CIPHER_TYPE, self::$cipher['key'], OPENSSL_RAW_DATA, self::$cipher['iv'] ); // @since PHP 5.3.0
 	}
 
 	private static function encrypt_ip( $ip ) {
