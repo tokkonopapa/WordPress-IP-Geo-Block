@@ -825,7 +825,7 @@ endif; // TEST_RESTORE_NETWORK
 		// Server, PHP, WordPress
 		$res = array(
 			'Server:'      => $_SERVER['SERVER_SOFTWARE'],
-			'MySQL:'       => $ver . ( $bem ? ' (' . $bem . ')' : '' ),
+			'MySQL:'       => $ver . ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG && $bem ? ' (' . $bem . ')' : '' ),
 			'PHP:'         => PHP_VERSION,
 			'PHP SAPI:'    => php_sapi_name(),
 			'WordPress:'   => $GLOBALS['wp_version'],
