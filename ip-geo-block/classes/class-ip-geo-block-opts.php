@@ -414,14 +414,9 @@ class IP_Geo_Block_Opts {
 				IP_Geo_Block_Logs::reset_sqlite_db();
 			}
 
-			if ( version_compare( $version, '3.0.12' ) < 0 ) {
-				$settings['validation']['maxlogs'] = $default['validation']['maxlogs'];
-				$settings['validation']['explogs'] = $default['validation']['explogs'];
-			} else if ( version_compare( $version, '3.0.13' ) < 0 ) {
-				$settings['validation']['explogs'] /= DAY_IN_SECONDS;
-			}
-
 			if ( version_compare( $version, '3.0.13' ) < 0 ) {
+				$settings['validation'  ]['maxlogs'] = $default['validation']['maxlogs'];
+				$settings['validation'  ]['explogs'] = $default['validation']['explogs'];
 				$settings['restrict_api'] = $settings['anonymize'];
 				IP_Geo_Block_Logs::upgrade( $version );
 			}
@@ -483,8 +478,7 @@ class IP_Geo_Block_Opts {
 			$dir = wp_upload_dir();
 			$dir = $dir['basedir'];
 
-			if ( ! @is_writable( $dir ) ) {
-				// wp-content/plugins/ip-geo-block
+			if ( ! @is_writable( $dir ) ) { // wp-content/plugins/ip-geo-block
 				$dir = @is_writable( IP_GEO_BLOCK_PATH ) ? IP_GEO_BLOCK_PATH : NULL;
 			}
 		}

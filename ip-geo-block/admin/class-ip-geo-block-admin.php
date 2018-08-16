@@ -1218,7 +1218,7 @@ endif;
 		// expiration time [days]
 		if ( version_compare( $output['version'], '3.0.13' ) < 0 )
 			$output['validation']['explogs'] /= DAY_IN_SECONDS;
-		$output['validation']['explogs'] = min( 365, max( 1, $output['validation']['explogs'] ) );
+		$output['validation']['explogs'] = min( 365, max( 1, (int)$output['validation']['explogs'] ) );
 
 		// reset the version number
 		$output['version'] = $default['version'];

@@ -584,8 +584,14 @@ class IP_Geo_Block_Util {
 	public static function is_user_logged_in() {
 		static $logged_in = NULL;
 
-		if ( NULL === $logged_in )
-			$logged_in = ( did_action( 'init' ) ? is_user_logged_in() /* @since 2.0.0 */ : ( ( $user = self::validate_auth_cookie() ) ? $user->exists() /* @since 3.4.0 */ : FALSE ) );
+		if ( NULL === $logged_in ) {
+			if ( did_action( 'init' ) ) {
+				$logged_in = is_user_logged_in(); // @since 2.0.0
+			} else {
+				$user = self::validate_auth_cookie();
+				$logged_in = $user ? $user->exists() : FALSE; // @since 3.4.0
+			}
+		}
 
 		return $logged_in;
 	}
@@ -599,8 +605,14 @@ class IP_Geo_Block_Util {
 	public static function get_current_user_id() {
 		static $user_id = NULL;
 
-		if ( NULL === $user_id )
-			$user_id = ( did_action( 'init' ) ? get_current_user_id() /* @since MU 3.0.0 */ : ( ( $user = self::validate_auth_cookie() ) ? $user->ID /* @since 2.0.0 */ : 0 ) );
+		if ( NULL === $user_id ) {
+			if ( did_action( 'init' ) ) {
+				$user_id = get_current_user_id(); // @since MU 3.0.0
+			} else {
+				$user = self::validate_auth_cookie();
+				$user_id = $user ? $user->ID : 0; // @since 2.0.0
+			}
+		}
 
 		return $user_id;
 	}
@@ -937,7 +949,7 @@ class IP_Geo_Block_Util {
 					'/([0-9]{9})[0-9]{3}([^0-9]?)/',
 					'/([0-9]{1,3}[-\.][0-9]{1,3}[-\.][0-9]{1,3}[-\.])[0-9]+([^0-9]?)/',
 					// loose pattern for IPv6
-					'/((?:[0-9a-f:]+[-:]+)+)[0-9a-f:\*]+([^0-9a-f]?)/i',
+					'/((?:[0-9a-f:]+[-:]+)+)[0-9a-f:\*]{2,}([^0-9a-f]?)/i',
 				),
 				'$1***$2',
 				$subject

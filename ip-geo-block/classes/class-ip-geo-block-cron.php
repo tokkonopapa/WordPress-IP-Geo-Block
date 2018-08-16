@@ -180,7 +180,7 @@ class IP_Geo_Block_Cron {
 		self::stop_cache_gc();
 
 		IP_Geo_Block_Logs::delete_expired( array(
-			(int)$settings['validation']['explogs'] * DAY_IN_SECONDS,
+			min( 365, max( 1, (int)$settings['validation']['explogs'] ) ) * DAY_IN_SECONDS,
 			(int)$settings['cache_time']
 		) );
 
