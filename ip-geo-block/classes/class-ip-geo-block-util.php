@@ -822,7 +822,7 @@ class IP_Geo_Block_Util {
 	 *
 	 * @param  string $vars comma separated keys in $_SERVER for http header ('HTTP_...')
 	 * @return string $ip   IP address
-	 * @link   http://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-headers.html
+	 * @link   https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-headers.html
 	 * @link   https://github.com/zendframework/zend-http/blob/master/src/PhpEnvironment/RemoteAddress.php
 	 */
 	public static function get_client_ip( $vars = NULL ) {
@@ -960,24 +960,24 @@ class IP_Geo_Block_Util {
 	 * Load and show theme template
 	 *
 	 */
- 	private static $theme_template = NULL;
+	private static $theme_template = NULL;
 
-	public static function show_theme_template( $type, $settings ) {
-		if ( ( $action = current_filter() ) /* @since 2.5.0 - FALSE, `plugins_loaded` or `wp` */ && (
-		     file_exists( get_stylesheet_directory() . '/' . $type . '.php' ) /* child  theme */ ||
-		     file_exists( get_template_directory()   . '/' . $type . '.php' ) /* parent theme */ ) ) {
-			// keep type of theme template
-			self::$theme_template = $type;
-
- 			if ( 'wp' === $action ) // action hook `wp` is too late to include the template file directly
-				add_filter( 'template_include', 'IP_Geo_Block_Util::load_theme_template', $settings['priority'] );
-			else
-				add_action( 'init',             'IP_Geo_Block_Util::load_theme_template', $settings['priority'] );
-
-			return TRUE;
-		} else {
-			return FALSE;
+	public static function show_theme_template( $code, $settings ) {
+		if ( file_exists( $file = get_stylesheet_directory() . '/' . $code . '.php' ) /* child  theme */ ||
+		     file_exists( $file = get_template_directory()   . '/' . $code . '.php' ) /* parent theme */ ) {
+			$action = current_filter() or // @since 2.5.0 - FALSE in case the validation timing is "mu-plugins"
+			$action = ( '<?php' !== file_get_contents( $file, FALSE, NULL, 0, 5 ) ? 'plugins_loaded' : FALSE );
+			if ( $action ) { // `plugins_loaded`, `wp` or FALSE
+				self::$theme_template = $file; // keep the path to theme template
+				if ( 'wp' === $action ) // it is too late to include the template file directly
+					add_filter( 'template_include', 'IP_Geo_Block_Util::load_theme_template', $settings['priority'] );
+				else
+					add_action( 'init',             'IP_Geo_Block_Util::load_theme_template', $settings['priority'] );
+				return TRUE;
+			}
 		}
+
+		return FALSE;
 	}
 
 	public static function load_theme_template( $template = FALSE ) {
@@ -987,9 +987,9 @@ class IP_Geo_Block_Util {
 		status_header( self::$theme_template ); // @since 2.0.0
 
 		if ( $template ) {
-			return locate_template( array( self::$theme_template . '.php' ) ); // @since 2.7.0 in wp-includes/template.php
+			return self::$theme_template; // @since 3.0.0 load template at 'template_include' in wp-includes/template-loader.php
 		} else {
-			@include locate_template( array( self::$theme_template . '.php' ) );
+			@include self::$theme_template; // include the template file directly
 			exit;
 		}
 	}
