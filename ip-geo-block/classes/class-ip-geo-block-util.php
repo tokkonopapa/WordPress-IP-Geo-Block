@@ -965,14 +965,16 @@ class IP_Geo_Block_Util {
 	public static function show_theme_template( $code, $settings ) {
 		if ( file_exists( $file = get_stylesheet_directory() . '/' . $code . '.php' ) /* child  theme */ ||
 		     file_exists( $file = get_template_directory()   . '/' . $code . '.php' ) /* parent theme */ ) {
+
 			$action = current_filter() or // @since 2.5.0 - FALSE in case the validation timing is "mu-plugins"
 			$action = ( '<?php' !== file_get_contents( $file, FALSE, NULL, 0, 5 ) ? 'plugins_loaded' : FALSE );
+
 			if ( $action ) { // `plugins_loaded`, `wp` or FALSE
 				self::$theme_template = $file; // keep the path to theme template
-				if ( 'wp' === $action ) // it is too late to include the template file directly
-					add_filter( 'template_include', 'IP_Geo_Block_Util::load_theme_template', $settings['priority'] );
-				else
-					add_action( 'init',             'IP_Geo_Block_Util::load_theme_template', $settings['priority'] );
+				add_filter(  // `wp` is too late to include the template directly
+					'wp' === $action ? 'template_include' : 'init',
+					'IP_Geo_Block_Util::load_theme_template', $settings['priority']
+				);
 				return TRUE;
 			}
 		}
@@ -987,9 +989,9 @@ class IP_Geo_Block_Util {
 		status_header( self::$theme_template ); // @since 2.0.0
 
 		if ( $template ) {
-			return self::$theme_template; // @since 3.0.0 load template at 'template_include' in wp-includes/template-loader.php
+			return self::$theme_template; // @since 3.0.0 'template_include' in wp-includes/template-loader.php
 		} else {
-			@include self::$theme_template; // include the template file directly
+			@include self::$theme_template; // include the template directly
 			exit;
 		}
 	}
