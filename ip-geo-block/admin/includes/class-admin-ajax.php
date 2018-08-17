@@ -149,9 +149,9 @@ class IP_Geo_Block_Admin_Ajax {
 			array_shift( $row ); // remove `No`
 			$row = array_map( 'esc_html', $row );
 
-			if ( $options['anonymize'] ) {
-				$row[2] = IP_Geo_Block_Util::anonymize_ip( $row[2], TRUE  );
-				$row[8] = IP_Geo_Block_Util::anonymize_ip( $row[8], FALSE );
+			if ( $options['anonymize'] && FALSE === strpos( $row[2], '***' ) ) {
+				$row[2] =  IP_Geo_Block_Util::anonymize_ip( $row[2], TRUE  );
+				$row[8] =  IP_Geo_Block_Util::anonymize_ip( $row[8], FALSE );
 			}
 
 			$res[] = array(
