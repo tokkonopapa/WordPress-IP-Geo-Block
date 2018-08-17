@@ -1863,7 +1863,16 @@
 				if (ip) {
 					// Anonymize IP address
 					if ($(ID('@', 'anonymize')).prop('checked')) {
-						ip = ip.replace(/([\.\:])\w{1,4}$/, '$1' + '0');
+						if (/[^0-9a-f\.:]/.test(ip)) {
+							warning(null, 'illegal format.');
+							return false;
+						} else if (ip.indexOf('.') !== -1) { // in case of IPv4
+							ip = ip.replace(/\.\w$/, '.0');
+						} else { // in case of IPv6
+							ip = ip.split(':'); // 2001:db80:abcd:0012:0000:0000:0000:0000
+							ip = ip.slice(0, 3).join(':') + '::'; // mask the interface ID
+							ip = ip.replace(/:{3,}/, '::');
+						}
 						$(ID('@', 'ip_address')).val(ip);
 					}
 
