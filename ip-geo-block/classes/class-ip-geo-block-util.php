@@ -942,7 +942,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function anonymize_ip( $subject, $strict = TRUE ) {
 		return $strict ?
-			preg_replace( '/\w{1,3}$/', '***', $subject ) :
+			preg_replace( '/[0-9a-f:]{1,3}$/', '***', $subject ) :
 			preg_replace(
 				array(
 					// loose pattern for IPv4
