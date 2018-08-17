@@ -365,7 +365,7 @@
 
 		for(i = 0; i < n; ++i) {
 			j = i * size;
-			r.push(arr.slice(j, j + size));
+			r.push(arr.slice(j, j + size)); // IE >= 9
 		}
 
 		return r;
@@ -1870,7 +1870,7 @@
 							ip = ip.replace(/\.\w+$/, '.0');
 						} else { // in case of IPv6
 							ip = ip.split(':'); // 2001:db80:abcd:0012:0000:0000:0000:0000
-							ip = ip.slice(0, 3).join(':') + '::'; // mask the interface ID
+							ip = ip.splice(0, 4).join(':') + '::'; // mask the interface ID
 							ip = ip.replace(/:{3,}/, '::');
 						}
 						$(ID('@', 'ip_address')).val(ip);
