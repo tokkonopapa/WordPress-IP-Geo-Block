@@ -958,39 +958,35 @@ class IP_Geo_Block_Util {
 	 * Load and show theme template
 	 *
 	 */
-	private static $theme_template = NULL;
+	private static $theme_template = array();
 
 	public static function show_theme_template( $code, $settings ) {
 		if ( file_exists( $file = get_stylesheet_directory() . '/' . $code . '.php' ) /* child  theme */ ||
 		     file_exists( $file = get_template_directory()   . '/' . $code . '.php' ) /* parent theme */ ) {
+			// keep the response code and the template file
+			self::$theme_template = array( 'code' => $code, 'file' => $file );
 
-			$action = current_filter() or // @since 2.5.0 - FALSE in case the validation timing is `mu-plugins`
-			$action = ( '<?php' !== file_get_contents( $file, FALSE, NULL, 0, 5 ) ? 'plugins_loaded' : FALSE );
-
-			if ( $action ) { // `plugins_loaded`, `wp` or FALSE
-				self::$theme_template = $file; // keep the path to theme template
-				add_filter(  // `wp` is too late to include the template directly
-					'wp' === $action ? 'template_include' : 'init',
+			// when the validation timing is `init`
+			if ( $action = current_filter() ) { // `plugins_loaded`, `wp` or FALSE
+				add_filter( // `wp` (on front-end target) is too late to apply `init`
+					'wp' === $action ? 'template_include' /* @since 3.0.0 */ : 'init',
 					'IP_Geo_Block_Util::load_theme_template', $settings['priority']
 				);
-				return TRUE;
+				return TRUE; // load template at the specified action or filter
+			}
+
+			// when the validation timing is `mu-plugins`
+			elseif ( '<?php' !== file_get_contents( $file, FALSE, NULL, 0, 5 ) ) {
+				self::load_theme_template(); // load template and die immediately
 			}
 		}
 
-		return FALSE;
+		return FALSE; // die with wp_die() immediately
 	}
 
 	public static function load_theme_template( $template = FALSE ) {
-		global $wp_query;
-		$wp_query->set_404(); // for stylesheet
-		$wp_query->is_404 = ( 404 === self::$theme_template );
-		status_header( self::$theme_template ); // @since 2.0.0
-
-		if ( $template ) {
-			return self::$theme_template; // @since 3.0.0 `template_include` in wp-includes/template-loader.php
-		} else {
-			@include self::$theme_template; // include the template directly
-			exit;
-		}
+		status_header( self::$theme_template['code'] ); // @since 2.0.0
+		'HEAD' !== $_SERVER['REQUEST_METHOD'] and include self::$theme_template['file'];
+		exit;
 	}
 }
