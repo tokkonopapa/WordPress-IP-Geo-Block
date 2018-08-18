@@ -945,11 +945,11 @@ class IP_Geo_Block_Util {
 			preg_replace( '/(:)*[0-9a-f\*]{0,4}$/', '$1***', $subject, 1 ) :
 			preg_replace(
 				array(
-					'/([0-9a-f]{3,})[0-9a-f]{3,}([^0-9]?)/',                // loose pattern for IPv[4|6]
-					'/((?:[0-9]{1,3}[-Xx_\.]){3,})[0-9]+([^0-9]?)/',        // loose pattern for IPv4
-					'/((?:[0-9a-f:]+[-:]+)+)[0-9a-f:\*]{2,}([^0-9a-f]?)/i', // loose pattern for IPv6
+					'/([0-9a-f]{3,})[0-9a-f]{3,}/',           // loose pattern for IPv[4|6]
+					'/((?:[0-9]{1,3}[-_x\.]){3,})[0-9]+/',    // loose pattern for IPv4
+					'/((?:[0-9a-f]+[-:]+)+)[0-9a-f:\*]{2,}/', // loose pattern for IPv6
 				),
-				'$1***$2',
+				'$1***',
 				$subject
 			);
 	}
