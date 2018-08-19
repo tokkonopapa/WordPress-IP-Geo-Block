@@ -704,8 +704,8 @@ endif; // TEST_RESTORE_NETWORK
 	}
 
 	// Fallback function for PHP 5.3 and under
-	// @link http://qiita.com/keromichan16/items/5ff45a77fb0d48e046cc
-	// @link http://stackoverflow.com/questions/16498286/why-does-the-php-json-encode-function-convert-utf-8-strings-to-hexadecimal-entit/
+	// @link https://qiita.com/keromichan16/items/5ff45a77fb0d48e046cc
+	// @link https://stackoverflow.com/questions/16498286/why-does-the-php-json-encode-function-convert-utf-8-strings-to-hexadecimal-entit/
 	private static function json_unescaped_unicode( $input ) {
 		return preg_replace_callback(
 			'/(?:\\\\u[0-9a-zA-Z]{4})++/',

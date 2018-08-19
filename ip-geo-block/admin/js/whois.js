@@ -46,7 +46,7 @@
 			})
 
 			.done(function (data, textStatus, jqXHR) {
-				// http://stackoverflow.com/questions/722668/traverse-all-the-nodes-of-a-json-object-tree-with-javascript#answer-722676
+				// https://stackoverflow.com/questions/722668/traverse-all-the-nodes-of-a-json-object-tree-with-javascript#answer-722676
 				function traverse(key, value) {
 					if (value && typeof value === 'object') {
 						if (value.errormessage) {
@@ -79,7 +79,7 @@
 
 							if (value.link) {
 								if ((value['referenced-type'] || false) && 'aut-num' === value['referenced-type']) {
-									value.value += ' [ <a href="http://ipinfo.io/' + escapeHTML(value.value) + '" target=_blank>Search on ipinfo.io</a> ]';
+									value.value += ' [ <a href="https://ipinfo.io/' + escapeHTML(value.value) + '" target=_blank>Search on ipinfo.io</a> ]';
 								} else {
 									value.value = '<a href="' + escapeHTML(value.link.href) + '.json" target=_blank>' + escapeHTML(value.value) + '</a>';
 								}

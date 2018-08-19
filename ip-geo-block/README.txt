@@ -48,7 +48,7 @@ After several days of installation, you'll be supprised to find many malicious o
   When you click an external hyperlink on admin screens, http referrer will be eliminated to hide a footprint of your site.
 
 * **Multiple source of IP Geolocation databases:**  
-  [MaxMind GeoLite2 free databases](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") (it requires PHP 5.4.0+) and [IP2Location LITE databases](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Also free Geolocation REST APIs and whois information can be available for audit purposes.  
+  [MaxMind GeoLite2 free databases](https://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") (it requires PHP 5.4.0+) and [IP2Location LITE databases](https://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Also free Geolocation REST APIs and whois information can be available for audit purposes.  
   Father more, [dedicated API class libraries](https://www.ipgeoblock.com/article/api-class-library.html "CloudFlare & CloudFront API class library | IP Geo Block") can be installed for CloudFlare and CloudFront as a reverse proxy service.
 
 * **Customizing response:**  
@@ -73,13 +73,13 @@ After several days of installation, you'll be supprised to find many malicious o
 
 = Attribution =
 
-This package includes GeoLite2 library distributed by MaxMind, available from [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") (it requires PHP 5.4.0+), and also includes IP2Location open source libraries available from [IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
+This package includes GeoLite2 library distributed by MaxMind, available from [MaxMind](https://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") (it requires PHP 5.4.0+), and also includes IP2Location open source libraries available from [IP2Location](https://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
 
 Also thanks for providing the following great services and REST APIs for free.
 
 * [https://ipdata.co/](https://ipdata.co/ "ipdata.co - IP Geolocation and Threat Data API") (IPv4, IPv6 / free)
 * [https://ipinfo.io/](https://ipinfo.io/ "IP Address API and Data Solutions") (IPv4, IPv6 / free)
-* [http://geoip.nekudo.com/](http://geoip.nekudo.com/ "Free IP GeoLocation/GeoIp API - geoip.nekudo.com") (IPv4, IPv6 / free)
+* [https://geoip.nekudo.com/](https://geoip.nekudo.com/ "Free IP GeoLocation/GeoIp API - geoip.nekudo.com") (IPv4, IPv6 / free)
 * [http://geoiplookup.net/](http://geoiplookup.net/ "What Is My IP Address | GeoIP Lookup") (IPv4, IPv6 / free)
 * [http://ip-api.com/](http://ip-api.com/ "IP-API.com - Free Geolocation API") (IPv4, IPv6 / free for non-commercial use)
 * [https://ipinfodb.com/](https://ipinfodb.com/ "Free IP Geolocation Tools and API| IPInfoDB") (IPv4, IPv6 / free for registered user, need API key)
@@ -110,7 +110,7 @@ or following descriptions for your best setup.
   Choose either `White list` (recommended) or `Black list` to specify the countries from which you want to pass or block.
 
 * **Whitelist/Blacklist of country code**  
-  Specify the country code with two letters (see [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")). Each of them should be separated by comma.
+  Specify the country code with two letters (see [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")). Each of them should be separated by comma.
 
 * **Use Autonomous System Number (ASN)**  
   It enables you to use "AS number" in the whitelist and blacklist of extra IP addresses to specify a group of IP networks.
@@ -128,7 +128,7 @@ or following descriptions for your best setup.
   It restricts the file types on upload to block malware and backdoor via both back-end and front-end.
 
 * **Response code**  
-  Choose one of the [response code](http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1") to be sent when it blocks a comment.
+  Choose one of the [response code](https://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1") to be sent when it blocks a comment.
   The 2xx code will lead to your top page, the 3xx code will redirect to [Black Hole Server](http://blackhole.webpagetest.org/), the 4xx code will lead to WordPress error page, and the 5xx will pretend an server error.
 
 * **Max number of failed login attempts per IP address**  
@@ -186,7 +186,7 @@ or following descriptions for your best setup.
 = Geolocation API settings =
 
 * **API selection and key settings**  
-  If you wish to use `IPInfoDB`, you should register at [their site](http://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") to get a free API key and set it into the textfield. And `ip-api.com` and `Smart-IP.net` require non-commercial use.
+  If you wish to use `IPInfoDB`, you should register at [their site](https://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") to get a free API key and set it into the textfield. And `ip-api.com` and `Smart-IP.net` require non-commercial use.
 
 = Local database settings settings =
 
@@ -279,7 +279,7 @@ For more details, please refer to some documents at "[Blocking on front-end](htt
 
 Absolutely, YES.
 
-Sometimes, a Wordfence Security user would report this type of claim when he/she found some accesses in its Live traffic view. But please don't worry. Before WordPress runs, Wordfence cleverly filters out malicious requests to your site using <a href="http://php.net/manual/en/ini.core.php#ini.auto-prepend-file" title="PHP: Description of core php.ini directives - Manual">auto_prepend_file</a> directive to include PHP based Web Application Firewall. Then this plugin validates the rest of the requests that pass over Wordfence because those were not in WAF rules, especially you enables "**Prevent Zero-day Exploit**".
+Sometimes, a Wordfence Security user would report this type of claim when he/she found some accesses in its Live traffic view. But please don't worry. Before WordPress runs, Wordfence cleverly filters out malicious requests to your site using <a href="https://php.net/manual/en/ini.core.php#ini.auto-prepend-file" title="PHP: Description of core php.ini directives - Manual">auto_prepend_file</a> directive to include PHP based Web Application Firewall. Then this plugin validates the rest of the requests that pass over Wordfence because those were not in WAF rules, especially you enables "**Prevent Zero-day Exploit**".
 
 It would also possibly be caused by the accuracy of country code in the geolocation databases. Actually, there is a case that a same IP address has different country code.
 
@@ -383,6 +383,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 == Changelog ==
 
 = 3.0.14 =
+* **Improvement:** All the http had been replaced to https if possible.
 * **New feature:** Add a filter hook `ip-geo-block-logs`. ([forum topic](https://wordpress.org/support/topic/request-log-filtering/ "Topic: Request: Log filtering &#124; WordPress.org"))
 * **New feature:** Load `drop-in-admin.php` in Geolocation API library folder if it exists.
 
@@ -601,7 +602,7 @@ This is a maintenance release addressing some issues.
 * **New feature:** Add "Exceptions" for "Admin ajax/post" to specify the name of action which causes undesired blocking (typically on the public facing pages).
 * **Improvement:** Add "Disable" to "Max number of failed login attempts per IP address" to avoid conflict with other similar plugin.
 * **Improvement:** Update geolocation database libraries to 1.1.7 for better compatibility on some platform.
-* **Trial feature:** Add custom action hook `ip-geo-block-send-response`. This is useful to control firewall via [fail2ban](http://www.fail2ban.org/ "Fail2ban") like [WP fail2ban](https://wordpress.org/plugins/wp-fail2ban/ "WP fail2ban - WordPress Plugins").
+* **Trial feature:** Add custom action hook `ip-geo-block-send-response`. This is useful to control firewall via [fail2ban](https://www.fail2ban.org/ "Fail2ban") like [WP fail2ban](https://wordpress.org/plugins/wp-fail2ban/ "WP fail2ban - WordPress Plugins").
 * See some details at [release 3.0.2](https://www.ipgeoblock.com/changelog/release-3.0.2.html "3.0.2 Release Note | IP Geo Block").
 
 = 3.0.1.2 =
@@ -736,7 +737,7 @@ Sorry for frequent update.
 
 = 2.2.1 =
 * **Enhancement:** In previous version, local geolocation databases will always be removed and downloaded again at every upgrading. Now, the class library for Maxmind and IP2Location have become independent of this plugin and you can put them outside this plugin in order to cut the above useless process. The library can be available from [WordPress-IP-Geo-API](https://github.com/tokkonopapa/WordPress-IP-Geo-API).
-* **Deprecated:** Cooperation with IP2Location plugins such as [IP2Location Tags](http://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"), [IP2Location Variables](http://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"), [IP2Location Country Blocker](http://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins") is out of use. Instead of it, free [IP2Location LITE databases for IPv4 and IPv6](http://lite.ip2location.com/ "Free IP Geolocation Database") will be downloaded.
+* **Deprecated:** Cooperation with IP2Location plugins such as [IP2Location Tags](https://wordpress.org/plugins/ip2location-tags/ "WordPress - IP2Location Tags - WordPress Plugins"), [IP2Location Variables](https://wordpress.org/plugins/ip2location-variables/ "WordPress - IP2Location Variables - WordPress Plugins"), [IP2Location Country Blocker](https://wordpress.org/plugins/ip2location-country-blocker/ "WordPress - IP2Location Country Blocker - WordPress Plugins") is out of use. Instead of it, free [IP2Location LITE databases for IPv4 and IPv6](https://lite.ip2location.com/ "Free IP Geolocation Database") will be downloaded.
 * **Improvement:** Improved connectivity with Jetpack.
 * **Improvement:** Improved immediacy of downloading databases at upgrading.
 * **Improvement:** Replaced a terminated RESTful API service with a new stuff.
@@ -833,7 +834,7 @@ This is a maintenance release.
 * Also added the filter hook `ip-geo-block-admin-actions` for safe actions on back-end.
 
 = 2.0.2 =
-* **New feature:** Include `wp-admin/admin-post.php` as a validation target in the `Admin area`. This feature is to protect against a vulnerability such as [Analysis of the Fancybox-For-WordPress Vulnerability](http://blog.sucuri.net/2015/02/analysis-of-the-fancybox-for-wordpress-vulnerability.html) on Sucuri Blog.
+* **New feature:** Include `wp-admin/admin-post.php` as a validation target in the `Admin area`. This feature is to protect against a vulnerability such as [Analysis of the Fancybox-For-WordPress Vulnerability](https://blog.sucuri.net/2015/02/analysis-of-the-fancybox-for-wordpress-vulnerability.html) on Sucuri Blog.
 * Added a sample code snippet as a use case for 'Give ajax permission in case of safe actions on front facing page'. See Example 10 in `sample.php`.
 
 = 2.0.1 =

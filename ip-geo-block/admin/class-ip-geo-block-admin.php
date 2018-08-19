@@ -933,10 +933,10 @@ endif;
 	 *
 	 * @param array $input The values to be validated.
 	 *
-	 * @link http://codex.wordpress.org/Validating_Sanitizing_and_Escaping_User_Data
-	 * @link http://codex.wordpress.org/Function_Reference/sanitize_option
-	 * @link http://codex.wordpress.org/Function_Reference/sanitize_text_field
-	 * @link http://codex.wordpress.org/Plugin_API/Filter_Reference/sanitize_option_$option
+	 * @link https://codex.wordpress.org/Validating_Sanitizing_and_Escaping_User_Data
+	 * @link https://codex.wordpress.org/Function_Reference/sanitize_option
+	 * @link https://codex.wordpress.org/Function_Reference/sanitize_text_field
+	 * @link https://codex.wordpress.org/Plugin_API/Filter_Reference/sanitize_option_$option
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
 	public function sanitize_options( $input ) {
@@ -1229,8 +1229,8 @@ endif;
 	/**
 	 * A fallback function of array_replace_recursive() before PHP 5.3.
 	 *
-	 * @link http://php.net/manual/en/function.array-replace-recursive.php#92574
-	 * @link http://php.net/manual/en/function.array-replace-recursive.php#109390
+	 * @link https://php.net/manual/en/function.array-replace-recursive.php#92574
+	 * @link https://php.net/manual/en/function.array-replace-recursive.php#109390
 	 */
 	public function array_replace_recursive() {
 		if ( function_exists( 'array_replace_recursive' ) ) {
@@ -1399,9 +1399,9 @@ endif;
 	/**
 	 * Ajax callback function
 	 *
-	 * @link http://codex.wordpress.org/AJAX_in_Plugins
-	 * @link http://codex.wordpress.org/Function_Reference/check_ajax_referer
-	 * @link http://core.trac.wordpress.org/browser/trunk/wp-admin/admin-ajax.php
+	 * @link https://codex.wordpress.org/AJAX_in_Plugins
+	 * @link https://codex.wordpress.org/Function_Reference/check_ajax_referer
+	 * @link https://core.trac.wordpress.org/browser/trunk/wp-admin/admin-ajax.php
 	 */
 	public function admin_ajax_callback() {
 		// Check request origin, nonce, capability.

@@ -13,7 +13,7 @@ namespace GeoIp2\Record;
  * confidence that the country is correct. This attribute is only available
  * from the Insights service and the GeoIP2 Enterprise database.
  * @property-read int|null $geonameId The GeoName ID for the country.
- * @property-read string|null $isoCode The {@link http://en.wikipedia.org/wiki/ISO_3166-1
+ * @property-read string|null $isoCode The {@link https://en.wikipedia.org/wiki/ISO_3166-1
  * two-character ISO 3166-1 alpha code} for the country.
  * @property-read string|null $name The name of the country based on the locales list
  * passed to the constructor.

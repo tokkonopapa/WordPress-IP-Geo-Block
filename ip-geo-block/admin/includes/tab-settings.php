@@ -11,7 +11,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		/**
 		 * Register a setting and its sanitization callback.
-		 * @link http://codex.wordpress.org/Function_Reference/register_setting
+		 * @link https://codex.wordpress.org/Function_Reference/register_setting
 		 *
 		 * register_setting( $option_group, $option_name, $sanitize_callback );
 		 * @param string $option_group A settings group name.
@@ -27,7 +27,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		/**
 		 * Add new section to a new page inside the existing page.
-		 * @link http://codex.wordpress.org/Function_Reference/add_settings_section
+		 * @link https://codex.wordpress.org/Function_Reference/add_settings_section
 		 *
 		 * add_settings_section( $id, $title, $callback, $page );
 		 * @param string $id String for use in the 'id' attribute of tags.
@@ -48,7 +48,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		/**
 		 * Register a settings field to the settings page and section.
-		 * @link http://codex.wordpress.org/Function_Reference/add_settings_field
+		 * @link https://codex.wordpress.org/Function_Reference/add_settings_field
 		 *
 		 * add_settings_field( $id, $title, $callback, $page, $section, $args );
 		 * @param string $id String for use in the 'id' attribute of tags.
@@ -107,8 +107,8 @@ endif;
 
 		$rule_desc = array(
 			__( 'Please select either &#8220;Whitelist&#8221; or &#8220;Blacklist&#8221;.', 'ip-geo-block' ),
-			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Whitelist of country code</dfn>', 'ip-geo-block' ) . '<br />(<a rel="noreferrer" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia">ISO 3166-1 alpha-2</a>)',
-			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Blacklist of country code</dfn>', 'ip-geo-block' ) . '<br />(<a rel="noreferrer" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia">ISO 3166-1 alpha-2</a>)',
+			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Whitelist of country code</dfn>', 'ip-geo-block' ) . '<br />(<a rel="noreferrer" href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia">ISO 3166-1 alpha-2</a>)',
+			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Blacklist of country code</dfn>', 'ip-geo-block' ) . '<br />(<a rel="noreferrer" href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia">ISO 3166-1 alpha-2</a>)',
 		);
 
 		$comma = array(
@@ -352,7 +352,7 @@ endif;
 		$field = 'response_code';
 		add_settings_field(
 			$option_name.'_'.$field,
-			sprintf( __( '<dfn title="You can put your original 403.php and so on into your theme directory.">Response code</dfn> %s', 'ip-geo-block' ), '(<a rel="noreferrer" href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1">RFC 2616</a>)' ),
+			sprintf( __( '<dfn title="You can put your original 403.php and so on into your theme directory.">Response code</dfn> %s', 'ip-geo-block' ), '(<a rel="noreferrer" href="https://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1">RFC 2616</a>)' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -846,7 +846,7 @@ endif;
 		$key = 'response_code';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			sprintf( __( '<dfn title="You can configure a different response code from the Back-end. This is useful to prevent violation against your affiliate program.">Response code</dfn> %s', 'ip-geo-block' ), '(<a rel="noreferrer" href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1">RFC 2616</a>)' ),
+			sprintf( __( '<dfn title="You can configure a different response code from the Back-end. This is useful to prevent violation against your affiliate program.">Response code</dfn> %s', 'ip-geo-block' ), '(<a rel="noreferrer" href="https://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1">RFC 2616</a>)' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

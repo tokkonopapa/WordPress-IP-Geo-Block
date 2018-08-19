@@ -11,7 +11,7 @@
  * @copyright 2013-2018 tokkonopapa
  *
  * Plugin Name:       IP Geo Block (mu)
- * Plugin URI:        http://wordpress.org/plugins/ip-geo-block/
+ * Plugin URI:        https://wordpress.org/plugins/ip-geo-block/
  * Description:       It blocks any spams, login attempts and malicious access to the admin area posted from outside your nation, and also prevents zero-day exploit.
  * Version:           3.0.0
  * Author:            tokkonopapa

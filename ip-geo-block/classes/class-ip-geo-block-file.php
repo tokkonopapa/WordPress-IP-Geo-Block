@@ -273,7 +273,7 @@ if (0) {
 		if ( empty( $wp_filesystem ) )
 			return array();
 
-		// http://php.net/manual/en/function.file.php#refsect1-function.file-returnvalues
+		// https://php.net/manual/en/function.file.php#refsect1-function.file-returnvalues
 		@ini_set( 'auto_detect_line_endings', TRUE );
 
 		if ( ! $this->is_file( $file ) || ! $this->is_readable( $file ) )

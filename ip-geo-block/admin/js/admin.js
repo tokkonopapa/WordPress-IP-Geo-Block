@@ -489,11 +489,11 @@
 					}
 
 					// https://stackoverflow.com/questions/12701772/insert-links-into-google-charts-api-data
-					n = 'http://www.w3.org/1999/xlink';
+					n = 'https://www.w3.org/1999/xlink';
 					$id.find('text').each(function (i, elm) {
 						p = elm.parentNode;
 						if ('g' === p.tagName.toLowerCase() && -1 !== (i = inArray(elm.textContent, info))) {
-							a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+							a = document.createElementNS('https://www.w3.org/2000/svg', 'a');
 							a.setAttributeNS(n, 'xlink:href', info[i].link);
 							a.setAttributeNS(n, 'title', info[i].label);
 							a.setAttribute('target', mode ? '_blank' : '_self');

@@ -488,7 +488,7 @@ class IP_Geo_Block_Opts {
 		) . IP_Geo_Block::GEOAPI_NAME; // must add `ip-geo-api` for basename
 	}
 
-	// http://php.net/manual/function.copy.php#91010
+	// https://php.net/manual/function.copy.php#91010
 	private static function recurse_copy( $src, $dst ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'recurse_copy' );

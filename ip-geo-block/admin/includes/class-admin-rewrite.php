@@ -67,7 +67,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	);
 
 	private function __construct() {
-		// http://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
+		// https://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
 		$this->doc_root = str_replace( DIRECTORY_SEPARATOR, '/', str_replace( $_SERVER['SCRIPT_NAME'], '',  $_SERVER['SCRIPT_FILENAME'] ) );
 		$this->base_uri = str_replace( $this->doc_root,     '',  str_replace( DIRECTORY_SEPARATOR,     '/', IP_GEO_BLOCK_PATH           ) );
 

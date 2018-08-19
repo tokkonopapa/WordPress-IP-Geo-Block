@@ -16,12 +16,12 @@ class_exists( 'IP_Geo_Block_API', FALSE ) or die;
  *
  * https://www.maxmind.com/en/open-source-data-and-api-for-ip-geolocation
  * https://stackoverflow.com/questions/9416508/php-untar-gz-without-exec
- * http://php.net/manual/phardata.extractto.php
+ * https://php.net/manual/phardata.extractto.php
  */
 define( 'IP_GEO_BLOCK_GEOLITE2_DB_IP',    'GeoLite2-Country.mmdb' );
 define( 'IP_GEO_BLOCK_GEOLITE2_DB_ASN',   'GeoLite2-ASN.mmdb'     );
-define( 'IP_GEO_BLOCK_GEOLITE2_ZIP_IP',   'http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz' );
-define( 'IP_GEO_BLOCK_GEOLITE2_ZIP_ASN',  'http://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz'     );
+define( 'IP_GEO_BLOCK_GEOLITE2_ZIP_IP',   'https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz' );
+define( 'IP_GEO_BLOCK_GEOLITE2_ZIP_ASN',  'https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz'     );
 define( 'IP_GEO_BLOCK_GEOLITE2_DOWNLOAD', 'https://dev.maxmind.com/geoip/geoip2/geolite2/' );
 
 /**
@@ -135,7 +135,7 @@ endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] )
 	}
 
 	public function get_attribution() {
-		return 'This product includes GeoLite2 data created by MaxMind, available from <a class="ip-geo-block-link" href="http://www.maxmind.com" rel=noreferrer target=_blank>http://www.maxmind.com</a>. (<a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons &mdash; Attribution-ShareAlike 4.0 International &mdash; CC BY-SA 4.0" rel=noreferrer target=_blank>CC BY-SA 4.0</a>)';
+		return 'This product includes GeoLite2 data created by MaxMind, available from <a class="ip-geo-block-link" href="https://www.maxmind.com" rel=noreferrer target=_blank>https://www.maxmind.com</a>. (<a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons &mdash; Attribution-ShareAlike 4.0 International &mdash; CC BY-SA 4.0" rel=noreferrer target=_blank>CC BY-SA 4.0</a>)';
 	}
 
 	public function add_settings_field( $field, $section, $option_slug, $option_name, $options, $callback, $str_path, $str_last ) {

@@ -17,15 +17,15 @@ class_exists( 'IP_Geo_Block_API', FALSE ) or die;
  */
 define( 'IP_GEO_BLOCK_IP2LOC_IPV4_DAT', 'IP2LOCATION-LITE-DB1.BIN' );
 define( 'IP_GEO_BLOCK_IP2LOC_IPV6_DAT', 'IP2LOCATION-LITE-DB1.IPV6.BIN' );
-define( 'IP_GEO_BLOCK_IP2LOC_IPV4_ZIP', 'http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.BIN.ZIP' );
-define( 'IP_GEO_BLOCK_IP2LOC_IPV6_ZIP', 'http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.IPV6.BIN.ZIP' );
-define( 'IP_GEO_BLOCK_IP2LOC_DOWNLOAD', 'http://lite.ip2location.com/database/ip-country' );
+define( 'IP_GEO_BLOCK_IP2LOC_IPV4_ZIP', 'https://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.BIN.ZIP' );
+define( 'IP_GEO_BLOCK_IP2LOC_IPV6_ZIP', 'https://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.IPV6.BIN.ZIP' );
+define( 'IP_GEO_BLOCK_IP2LOC_DOWNLOAD', 'https://lite.ip2location.com/database/ip-country' );
 
 /**
  * Class for IP2Location
  *
- * URL         : http://www.ip2location.com/
- * Term of use : http://www.ip2location.com/terms
+ * URL         : https://www.ip2location.com/
+ * Term of use : https://www.ip2location.com/terms
  * Licence fee : Creative Commons Attribution-ShareAlike 4.0 Unported License
  * Input type  : IP address (IPv4)
  * Output type : array
@@ -142,7 +142,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	}
 
 	public function get_attribution() {
-		return 'This site or product includes IP2Location LITE data available from <a class="ip-geo-block-link" href="http://www.ip2location.com" rel=noreferrer target=_blank>http://www.ip2location.com</a>. (<a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons &mdash; Attribution-ShareAlike 4.0 International &mdash; CC BY-SA 4.0" rel=noreferrer target=_blank>CC BY-SA 4.0</a>)';
+		return 'This site or product includes IP2Location LITE data available from <a class="ip-geo-block-link" href="https://www.ip2location.com" rel=noreferrer target=_blank>https://www.ip2location.com</a>. (<a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons &mdash; Attribution-ShareAlike 4.0 International &mdash; CC BY-SA 4.0" rel=noreferrer target=_blank>CC BY-SA 4.0</a>)';
 	}
 
 	public function add_settings_field( $field, $section, $option_slug, $option_name, $options, $callback, $str_path, $str_last ) {
@@ -216,6 +216,6 @@ IP_Geo_Block_Provider::register_addon( array(
 	'IP2Location' => array(
 		'key'  => NULL,
 		'type' => 'IPv4, IPv6 / LGPLv3',
-		'link' => '<a class="ip-geo-block-link" href="http://lite.ip2location.com/" title="Free IP Geolocation Database" rel=noreferrer target=_blank>http://lite.ip2location.com/</a>&nbsp;(IPv4, IPv6 / LGPLv3)',
+		'link' => '<a class="ip-geo-block-link" href="https://lite.ip2location.com/" title="Free IP Geolocation Database" rel=noreferrer target=_blank>https://lite.ip2location.com/</a>&nbsp;(IPv4, IPv6 / LGPLv3)',
 	),
 ) );

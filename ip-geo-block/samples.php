@@ -302,11 +302,11 @@ add_filter( 'ip-geo-block-maxmind-dir', 'my_maxmind_dir' );
  * @return string $url replaced url to zip file
  */
 function my_maxmind_ipv4( $url ) {
-	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
+	return 'https://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
 }
 
 function my_maxmind_ipv6( $url ) {
-	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCityv6-beta/GeoLiteCityv6.dat.gz';
+	return 'https://geolite.maxmind.com/download/geoip/database/GeoLiteCityv6-beta/GeoLiteCityv6.dat.gz';
 }
 
 add_filter( 'ip-geo-block-maxmind-zip-ipv4', 'my_maxmind_ipv4' );

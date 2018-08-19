@@ -147,7 +147,7 @@ class IP_Geo_Block_Util {
 	/**
 	 * Convert back to string from a parsed url.
 	 *
-	 * @source http://php.net/manual/en/function.parse-url.php#106731
+	 * @source https://php.net/manual/en/function.parse-url.php#106731
 	 */
 	private static function unparse_url( $url ) {
 		$scheme   = isset( $url['scheme'  ] ) ?       $url['scheme'  ] . '://' : '';
@@ -372,8 +372,8 @@ class IP_Geo_Block_Util {
 	 * WP alternative function of hash_equals() for mu-plugins
 	 *
 	 * Timing attack safe string comparison.
-	 * @source http://php.net/manual/en/function.hash-equals.php#115635
-	 * @see http://php.net/manual/en/language.operators.increment.php
+	 * @source https://php.net/manual/en/function.hash-equals.php#115635
+	 * @see https://php.net/manual/en/language.operators.increment.php
 	 * @see wp-includes/compat.php
 	 */
 	private static function hash_equals( $a, $b ) {
@@ -398,7 +398,7 @@ class IP_Geo_Block_Util {
 	 * WP alternative function of hash_hmac() for mu-plugins
 	 *
 	 * Generate a keyed hash value using the HMAC method.
-	 * @source http://php.net/manual/en/function.hash-hmac.php#93440
+	 * @source https://php.net/manual/en/function.hash-hmac.php#93440
 	 */
 	public static function hash_hmac( $algo, $data, $key, $raw_output = FALSE ) {
 		// PHP 5 >= 5.1.2, PECL hash >= 1.1 or wp-includes/compat.php
@@ -690,7 +690,7 @@ class IP_Geo_Block_Util {
 	/**
 	 * Arrange $_FILES array
 	 *
-	 * @see http://php.net/manual/features.file-upload.multiple.php#53240
+	 * @see https://php.net/manual/features.file-upload.multiple.php#53240
 	 */
 	public static function arrange_files( $files ) {
 		if ( ! is_array( $files['name'] ) )
@@ -873,14 +873,14 @@ class IP_Geo_Block_Util {
 	 * 192.168.0.0/16 reserved for Private-Use Networks [RFC1918]
 	 */
 	public static function is_private_ip( $ip ) {
-		// http://php.net/manual/en/filter.filters.flags.php
+		// https://php.net/manual/en/filter.filters.flags.php
 		return ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE );
 	}
 
 	/**
 	 * Get IP address of the host server
 	 *
-	 * @link http://php.net/manual/en/reserved.variables.server.php#88418
+	 * @link https://php.net/manual/en/reserved.variables.server.php#88418
 	 */
 	public static function get_server_ip() {
 		return isset( $_SERVER['SERVER_ADDR'] ) ? $_SERVER['SERVER_ADDR'] : ( (int)self::is_IIS() >= 7 ?

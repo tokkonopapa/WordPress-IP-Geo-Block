@@ -338,7 +338,7 @@ class IP_Geo_Block_Logs {
 	/**
 	 * Truncate string as utf8
 	 *
-	 * @see http://jetpack.wp-a2z.org/oik_api/mbstring_binary_safe_encoding/
+	 * @see https://jetpack.wp-a2z.org/oik_api/mbstring_binary_safe_encoding/
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/functions.php
 	 */
@@ -516,8 +516,8 @@ class IP_Geo_Block_Logs {
 	 *
 	 * The absolute path to the database can be set via filter hook `ip-geo-block-live-log`.
 	 *
-	 * @see http://php.net/manual/en/pdo.connections.php
-	 * @see http://php.net/manual/en/features.persistent-connections.php
+	 * @see https://php.net/manual/en/pdo.connections.php
+	 * @see https://php.net/manual/en/features.persistent-connections.php
 	 * @see https://www.sqlite.org/sharedcache.html#shared_cache_and_in_memory_databases
 	 *
 	 * @param int $id ID of the blog
@@ -700,7 +700,7 @@ class IP_Geo_Block_Logs {
 				self::$stm = self::$pdo->prepare( // possibly throw an PDOException
 					'INSERT INTO ' . self::TABLE_LOGS . ' (blog_id, time, ip, asn, hook, auth, code, result, method, user_agent, headers, data) ' .
 					'VALUES      ' .                    ' (      ?,    ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,          ?,       ?,    ?);'
-				); // example: http://php.net/manual/en/pdo.lobs.php
+				); // example: https://php.net/manual/en/pdo.lobs.php
 				self::$stm->bindParam(  1, $id,                      PDO::PARAM_INT );
 				self::$stm->bindParam(  2, $_SERVER['REQUEST_TIME'], PDO::PARAM_INT );
 				self::$stm->bindParam(  3, $validate['ip'],          PDO::PARAM_STR );

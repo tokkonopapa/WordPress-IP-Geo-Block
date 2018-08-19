@@ -235,7 +235,7 @@ class IP_Geo_Block {
 	/**
 	 * Setup the http header.
 	 *
-	 * @see http://codex.wordpress.org/Function_Reference/wp_remote_get
+	 * @see https://codex.wordpress.org/Function_Reference/wp_remote_get
 	 */
 	public static function get_request_headers( $settings ) {
 		return apply_filters( self::PLUGIN_NAME . '-headers', array(
