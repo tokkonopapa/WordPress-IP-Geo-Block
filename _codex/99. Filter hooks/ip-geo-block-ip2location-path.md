@@ -40,6 +40,6 @@ add_filter( 'ip-geo-block-ip2location-path', 'my_ip2location_path' );
 1.2.0
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[IP2Location]:  http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location"
+[IP2Location]:  https://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location"
 [IP2Tag]:       https://wordpress.org/plugins/ip2location-tags/ "WordPress › IP2Location Tags « WordPress Plugins"
 [IP2Free]:      https://www.ip2location.com/free/plugins "Free Plugins | IP2Location.com"

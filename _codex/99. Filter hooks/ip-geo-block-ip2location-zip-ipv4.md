@@ -19,7 +19,7 @@ downloaded by ZIP format.
 ### Parameters ###
 
 - $url  
-  (string) `http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.BIN.ZIP`
+  (string) `https://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.BIN.ZIP`
 
 {% include alert-drop-in.html %}
 

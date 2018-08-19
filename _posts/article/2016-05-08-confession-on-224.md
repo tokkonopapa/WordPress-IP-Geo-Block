@@ -134,13 +134,13 @@ return to the stable version if something happens <span class="emoji">
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [HandmadeTool]: https://github.com/tokkonopapa/WordPress-IP-Geo-Block/tree/master/test "WordPress Post Simulator"
-[EMERGENCY]:    http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block"
+[EMERGENCY]:    {{ '/codex/what-should-i-do-when-i-m-locked-out.html' | prepend: site.baseurl }} "What should I do when I'm locked out? | IP Geo Block"
 [MyRealSite]:   http://tokkono.cute.coocan.jp/blog/slow/ "Slow…"
 [FPD-OWASP]:    https://www.owasp.org/index.php/Full_Path_Disclosure "Full Path Disclosure - OWASP"
-[STRPOS]:       http://php.net/manual/en/function.strpos.php "PHP: strpos - Manual"
+[STRPOS]:       https://php.net/manual/en/function.strpos.php "PHP: strpos - Manual"
 [SELF-SSL]:     https://en.wikipedia.org/wiki/Self-signed_certificate "Self-signed certificate - Wikipedia, the free encyclopedia"
 [MAMP-PRO]:     https://www.mamp.info/en/mamp-pro/ "MAMP & MAMP PRO - One PC - multiple Servers"
 [LICENSE]:      https://plugins.svn.wordpress.org/ip-geo-block/trunk/LICENSE.txt
-[UnitTest]:     http://wp-cli.org/docs/plugin-unit-tests/ "Plugin unit tests | WP-CLI"
+[UnitTest]:     https://wp-cli.org/docs/plugin-unit-tests/ "Plugin unit tests | WP-CLI"
 [JCKUFFNER]:    https://wordpress.org/support/topic/error-after-update-to-newest-version#post-8299577 "WordPress › Support » Error after Update to newest version"
 [BetaTester]:   https://wordpress.org/plugins/wordpress-beta-tester/ "WordPress Beta Tester - WordPress Plugins"

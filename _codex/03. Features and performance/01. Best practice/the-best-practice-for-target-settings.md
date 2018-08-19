@@ -163,7 +163,7 @@ If you have something to ask, please feel free to open your issue at the
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [XML-RPC]:      https://en.wikipedia.org/wiki/XML-RPC "XML-RPC - Wikipedia, the free encyclopedia"
-[pingbacks]:    http://codex.wordpress.org/Introduction_to_Blogging#Pingbacks "Introduction to Blogging « WordPress Codex"
+[pingbacks]:    https://codex.wordpress.org/Introduction_to_Blogging#Pingbacks "Introduction to Blogging « WordPress Codex"
 [MobileApp]:    https://apps.wordpress.org/ "WordPress.org Mobile Apps"
 [Jetpack]:      https://wordpress.org/support/topic/disabling-xml-rpc-may-damage-jetpack "WordPress › Support » Disabling XML-RPC may damage JetPack?"
 [DIS-XMLRPC]:   https://wordpress.org/plugins/disable-xml-rpc/ "WordPress › Disable XML-RPC « WordPress Plugins"
@@ -176,4 +176,4 @@ If you have something to ask, please feel free to open your issue at the
 [AnalysisVec]:  {{ '/codex/analysis-of-attack-vectors.html'  | prepend: site.baseurl }} "Analysis of Attack Vectors | IP Geo Block"
 [PreventExp]:   {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
 [Apache]:       https://httpd.apache.org/ "Welcome! - The Apache HTTP Server Project"
-[Release223]:   http://www.ipgeoblock.com/changelog/release-2.2.3.html "The best practice of target settings | IP Geo Block"
+[Release223]:   https://www.ipgeoblock.com/changelog/release-2.2.3.html "The best practice of target settings | IP Geo Block"

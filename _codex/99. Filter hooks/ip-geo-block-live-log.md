@@ -49,5 +49,5 @@ as an DSN, then "Live update" would not work properly because
 - [PDO_SQLITE DSN][SQLITE_DSN]
 
 [WP-GET-TMP]:   https://developer.wordpress.org/reference/functions/get_temp_dir/ "get_temp_dir() | Function | WordPress Developer Resources"
-[PDO_SQLITE]:   http://php.net/manual/en/ref.pdo-sqlite.php "PHP: SQLite (PDO) - Manual"
-[SQLITE_DSN]:   http://php.net/manual/en/ref.pdo-sqlite.connection.php "PHP: PDO_SQLITE DSN - Manual"
+[PDO_SQLITE]:   https://php.net/manual/en/ref.pdo-sqlite.php "PHP: SQLite (PDO) - Manual"
+[SQLITE_DSN]:   https://php.net/manual/en/ref.pdo-sqlite.connection.php "PHP: PDO_SQLITE DSN - Manual"

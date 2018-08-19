@@ -3,7 +3,7 @@ A WordPress plugin that will blocks any comment, pingback and trackback spams  p
 
 ### Remote ###
 
-http://www.ipgeoblock.com/
+https://www.ipgeoblock.com/
 
 ### Local ###
 

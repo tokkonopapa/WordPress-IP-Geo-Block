@@ -133,7 +133,7 @@ RewriteRule ^.*\.php$ rewrite.php [L]
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [WP_FILESYS]:   https://codex.wordpress.org/Editing_wp-config.php#WordPress_Upgrade_Constants "Editing wp-config.php &laquo; WordPress Codex"
 [Maxmind]:      https://www.maxmind.com/ "IP Geolocation and Online Fraud Prevention | MaxMind"
-[IP2Location]:  http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location"
+[IP2Location]:  https://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location"
 [GitGeoAPI]:    https://github.com/tokkonopapa/WordPress-IP-Geo-API "GitHub - tokkonopapa/WordPress-IP-Geo-API: A class library for WordPress plugin IP Geo Block to handle geolocation database of Maxmind and IP2Location."
 [GitGeoAPIZIP]: https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip
 [PreventExp]:   {{ '/article/exposure-of-wp-config-php.html' | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"

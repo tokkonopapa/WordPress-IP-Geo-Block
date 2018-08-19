@@ -1,14 +1,14 @@
 # Site settings
 title: IP Geo Block
 description: A WordPress Geo-blocking plugin with Zero-day Exploit Prevention
-#A WordPress plugin that will blocks any comment, pingback and 
+# A WordPress plugin that will blocks any comment, pingback and 
 # trackback spams posted from outside your nation.
 # And it will also protect against malicious access to the login form, admin 
 # area and XML-RPC from undesired countries with zero-day exploit prevention.
 
 # base url and sub path
 # for local: jekyll serve --drafts --baseurl '' --incremental --watch
-baseurl: "http://www.ipgeoblock.com"
+baseurl: "//www.ipgeoblock.com"
 
 permalink: none
 

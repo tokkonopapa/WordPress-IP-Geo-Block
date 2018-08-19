@@ -911,7 +911,7 @@ return function (global, window, document, undefined) {
         };
     }
 
-    /* Bezier curve function generator. Copyright Gaetan Renaudeau. MIT License: http://en.wikipedia.org/wiki/MIT_License */
+    /* Bezier curve function generator. Copyright Gaetan Renaudeau. MIT License: https://en.wikipedia.org/wiki/MIT_License */
     function generateBezier (mX1, mY1, mX2, mY2) {
         var NEWTON_ITERATIONS = 4,
             NEWTON_MIN_SLOPE = 0.001,
@@ -1036,7 +1036,7 @@ return function (global, window, document, undefined) {
         return f;
     }
 
-    /* Runge-Kutta spring physics function generator. Adapted from Framer.js, copyright Koen Bok. MIT License: http://en.wikipedia.org/wiki/MIT_License */
+    /* Runge-Kutta spring physics function generator. Adapted from Framer.js, copyright Koen Bok. MIT License: https://en.wikipedia.org/wiki/MIT_License */
     /* Given a tension, friction, and duration, a simulation at 60FPS will first run without a defined duration in order to calculate the full path. A second pass
        then adjusts the time delta -- using the relation between actual time and duration -- to calculate the path for the duration-constrained animation. */
     var generateSpringRK4 = (function () {
@@ -1574,7 +1574,7 @@ return function (global, window, document, undefined) {
                                         case "scale":
                                             /* Chrome on Android has a bug in which scaled elements blur if their initial scale
                                                value is below 1 (which can happen with forcefeeding). Thus, we detect a yet-unset scale property
-                                               and ensure that its first value is always 1. More info: http://stackoverflow.com/questions/10417890/css3-animations-with-transform-causes-blurred-elements-on-webkit/10417962#10417962 */
+                                               and ensure that its first value is always 1. More info: https://stackoverflow.com/questions/10417890/css3-animations-with-transform-causes-blurred-elements-on-webkit/10417962#10417962 */
                                             if (Velocity.State.isAndroid && Data(element).transformCache[transformName] === undefined && propertyValue < 1) {
                                                 propertyValue = 1;
                                             }
@@ -1749,7 +1749,7 @@ return function (global, window, document, undefined) {
         ************************/
 
         Values: {
-            /* Hex to RGB conversion. Copyright Tim Down: http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb */
+            /* Hex to RGB conversion. Copyright Tim Down: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb */
             hexToRgb: function (hex) {
                 var shortformRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
                     longformRegex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i,
@@ -3218,7 +3218,7 @@ return function (global, window, document, undefined) {
                                 unitRatios = {};
 
                             if (!sameEmRatio || !samePercentRatio) {
-                                var dummy = Data(element).isSVG ? document.createElementNS("http://www.w3.org/2000/svg", "rect") : document.createElement("div");
+                                var dummy = Data(element).isSVG ? document.createElementNS("https://www.w3.org/2000/svg", "rect") : document.createElement("div");
 
                                 Velocity.init(dummy);
                                 sameRatioIndicators.myParent.appendChild(dummy);
@@ -3475,7 +3475,7 @@ return function (global, window, document, undefined) {
             /* Note: When an element set is being subjected to a non-parallel Velocity call, the animation will not begin until
                each one of the elements in the set has reached the end of its individually pre-existing queue chain. */
             /* Note: Unfortunately, most people don't fully grasp jQuery's powerful, yet quirky, $.queue() function.
-               Lean more here: http://stackoverflow.com/questions/1058158/can-somebody-explain-jquery-queue-to-me */
+               Lean more here: https://stackoverflow.com/questions/1058158/can-somebody-explain-jquery-queue-to-me */
             if ((opts.queue === "" || opts.queue === "fx") && $.queue(element)[0] !== "inprogress") {
                 $.dequeue(element);
             }
@@ -3972,7 +3972,7 @@ return function (global, window, document, undefined) {
         ************************/
 
         /* Since this call is complete, set it to false so that the rAF tick skips it. This array is later compacted via compactSparseArray().
-          (For performance reasons, the call is set to false instead of being deleted from the array: http://www.html5rocks.com/en/tutorials/speed/v8/) */
+          (For performance reasons, the call is set to false instead of being deleted from the array: https://www.html5rocks.com/en/tutorials/speed/v8/) */
         Velocity.State.calls[callIndex] = false;
 
         /* Iterate through the calls array to determine if this was the final in-progress animation.
@@ -4110,7 +4110,7 @@ Velocity, however, doesn't make this distinction. Thus, converting to or from th
 will produce an inaccurate conversion value. The same issue exists with the cx/cy attributes of SVG circles and ellipses. */
 
 /*! Hammer.JS - v2.0.6 - 2015-12-23
- * http://hammerjs.github.io/
+ * https://hammerjs.github.io/
  *
  * Copyright (c) 2015 Jorik Tangelder;
  * Licensed under the  license */

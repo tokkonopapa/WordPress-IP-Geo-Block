@@ -14,7 +14,7 @@ iframed.js includes two method.
 
 Usage
 -----
-See samples on [gh-pages](http://tokkonopapa.github.io/iframed.js/).
+See samples on [gh-pages](https://tokkonopapa.github.io/iframed.js/).
 
 ### Asynchronous loading ###
 
@@ -69,4 +69,4 @@ License
 Copyright &copy; 2012 tokkonopapa  
 Free to use and abuse under the [MIT license][MIT].
  
-[MIT]: http://www.opensource.org/licenses/mit-license.php
+[MIT]: https://www.opensource.org/licenses/mit-license.php

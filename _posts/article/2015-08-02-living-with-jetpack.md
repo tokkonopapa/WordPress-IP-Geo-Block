@@ -54,9 +54,9 @@ So the conflict never happnes <span class="emoji">
 </span>.
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[Jetpack.me]:   http://jetpack.me/ "Jetpack for WordPress"
+[Jetpack.me]:   https://jetpack.me/ "Jetpack for WordPress"
 [Jetpack.wp]:   https://wordpress.org/plugins/jetpack/ "WordPress › Jetpack by WordPress.com « WordPress Plugins"
-[JPP]: http://jetpack.me/support/security-features/ "Security Features - Jetpack for WordPress"
+[JPP]: https://jetpack.me/support/security-features/ "Security Features - Jetpack for WordPress"
 [LLA]: https://wordpress.org/plugins/limit-login-attempts/ "WordPress › Limit Login Attempts « WordPress Plugins"
 [WFS]: https://wordpress.org/plugins/wordfence/ "WordPress › Wordfence Security « WordPress Plugins"
 [BPS]: https://wordpress.org/plugins/bulletproof-security/ "WordPress › BulletProof Security « WordPress Plugins" 

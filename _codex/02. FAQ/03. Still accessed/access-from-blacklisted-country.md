@@ -69,5 +69,5 @@ Find more details at [Validation timing][Validation].
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [Wordfence]:    https://wordpress.org/plugins/wordfence/ "Wordfence Security &mdash; WordPress Plugins"
-[AUTO_PREPEND]: http://php.net/manual/en/ini.core.php#ini.auto-prepend-file "PHP: Description of core php.ini directives - Manual"
+[AUTO_PREPEND]: https://php.net/manual/en/ini.core.php#ini.auto-prepend-file "PHP: Description of core php.ini directives - Manual"
 [Validation]:   {{ '/codex/validation-timing.html' | prepend: site.baseurl }} "Validation timing | IP Geo Block"

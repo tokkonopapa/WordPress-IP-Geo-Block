@@ -152,7 +152,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7879" title="WP Business Intelligence Lite &lt;= 1.6.1 - SQL Injection">WP Business Intelligence Lite</a></td>
         <td class="left-align">&lt;= 1.6.1</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
-        <td><abbr title="Plugin Direct including wp-load.php"><a href="http://packetstormsecurity.com/files/131228/">PD+</a></abbr></td>
+        <td><abbr title="Plugin Direct including wp-load.php"><a href="https://packetstormsecurity.com/files/131228/">PD+</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -184,7 +184,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7866" title="Aspose Cloud eBook Generator - File Download">Aspose Cloud eBook Generator</a></td>
         <td class="left-align">&lt;= 1.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
-        <td><abbr title="Plugin Direct for anonymous user"><a href="http://packetstormsecurity.com/files/131040/">PD-</a></abbr></td>
+        <td><abbr title="Plugin Direct for anonymous user"><a href="https://packetstormsecurity.com/files/131040/">PD-</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -208,7 +208,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7817" title="WP-ViperGB 1.3.10 - XSS Weakness and CSRF">WP-ViperGB</a></td>
         <td class="left-align">&lt;= 1.3.10</td>
         <td><abbr title="Cross Site Scripting">XSS</abbr>, <abbr title="Cross-Site Request Forgery">CSRF</abbr></td>
-        <td><abbr title="Admin area"><a href="http://packetstormsecurity.com/files/129501">AA</a></abbr></td>
+        <td><abbr title="Admin area"><a href="https://packetstormsecurity.com/files/129501">AA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -216,7 +216,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7794" title="WordPress Survey & Poll &lt;= 1.1.7 - Blind SQL Injection">WordPress Survey & Poll</a></td>
         <td class="left-align">&lt;= 1.1.7</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
-        <td><abbr title="Ajax/Post for admin"><a href="http://packetstormsecurity.com/files/130381/">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post for admin"><a href="https://packetstormsecurity.com/files/130381/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -224,7 +224,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7814" title="WP Media Cleaner &lt;= 2.2.6 - Cross-Site Scripting (XSS)">WP Media Cleaner</a></td>
         <td class="left-align">&lt;= 2.2.6</td>
         <td><abbr title="Cross-Site Scripting">XSS</abbr></td>
-        <td><abbr title="Admin area"><a href="http://packetstormsecurity.com/files/130576/">AA</a></abbr></td>
+        <td><abbr title="Admin area"><a href="https://packetstormsecurity.com/files/130576/">AA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -240,7 +240,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7896" title="N-Media Website Contact Form with File Upload &lt;= 1.3.4 - Arbitrary File Upload">N-Media Website Contact Form</a></td>
         <td class="left-align">&lt;= 1.3.4</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
-        <td><abbr title="Ajax/Post for privilege and no-privilege user"><a href="http://packetstormsecurity.com/files/131413/">AX+</a></abbr></td>
+        <td><abbr title="Ajax/Post for privilege and no-privilege user"><a href="https://packetstormsecurity.com/files/131413/">AX+</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -248,7 +248,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7901" title="Tune Library &lt;= 1.5.4 - SQL Injection">Tune Library</a></td>
         <td class="left-align">&lt;= 1.5.4</td>
         <td><abbr title="SQL Injection">SQLI</abbr></td>
-        <td><abbr title="Front End"><a href="http://packetstormsecurity.com/files/131558/">FE</a></abbr></td>
+        <td><abbr title="Front End"><a href="https://packetstormsecurity.com/files/131558/">FE</a></abbr></td>
         <td><span class="label label-warning">OK</span></td>
         <td><span class="label label-danger">NG</span></td>
       </tr>
@@ -256,7 +256,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7791" title="Redirection Page &lt;= 1.2 - CSRF/XSS">Redirection Page</a></td>
         <td class="left-align">&lt;= 1.2</td>
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr>, <abbr title="Cross-Site Scripting">XSS</abbr></td>
-        <td><abbr title="Admin area"><a href="http://packetstormsecurity.com/files/130314/">AA</a></abbr></td>
+        <td><abbr title="Admin area"><a href="https://packetstormsecurity.com/files/130314/">AA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -264,7 +264,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7884" title="PHP Event Calendar &lt;= 1.5 - Arbitrary File Upload">PHP Event Calendar</a></td>
         <td class="left-align">&lt;= 1.5</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr></td>
-        <td><abbr title="Plugin Direct for admin"><a href="http://packetstormsecurity.com/files/131277/">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct for admin"><a href="https://packetstormsecurity.com/files/131277/">PD</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -280,7 +280,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7792" title="Mobile Domain &lt;= 1.5.2 - CSRF/XSS">Mobile Domain</a></td>
         <td class="left-align">&lt;= 1.5.2</td>
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr>, <abbr title="Cross-Site Scripting">XSS</abbr></td>
-        <td><abbr title="Admin area"><a href="http://packetstormsecurity.com/files/130316/">AA</a></abbr></td>
+        <td><abbr title="Admin area"><a href="https://packetstormsecurity.com/files/130316/">AA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -288,7 +288,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7935" title="MailChimp Subscribe Form &lt;= 1.1 - Email Field Remote PHP Code Execution">MailChimp Subscribe Form</a></td>
         <td class="left-align">&lt;= 1.1</td>
         <td><abbr title="Remote Code Execution">RCE</abbr></td>
-        <td><abbr title="Plugin Direct for admin"><a href="http://plugins.svn.wordpress.org/mailchimp-subscribe-sm/tags/1.1/data.php">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct for admin"><a href="https://plugins.svn.wordpress.org/mailchimp-subscribe-sm/tags/1.1/data.php">PD</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -312,7 +312,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7864" title="InBoundio Marketing Plugin &lt;= 2.0.3 - Shell Upload">InBoundio Marketing</a></td>
         <td class="left-align">&lt;= 2.0.3</td>
         <td><abbr title="Remote File Upload">RFU</abbr></td>
-        <td><abbr title="Plugin Direct for admin"><a href="http://packetstormsecurity.com/files/130957/">PD</a></abbr></td>
+        <td><abbr title="Plugin Direct for admin"><a href="https://packetstormsecurity.com/files/130957/">PD</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -320,7 +320,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7796" title="Image Metadata Cruncher - Multiple XSS">Image Metadata Cruncher</a></td>
         <td class="left-align">&lt;= 1.8</td>
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr>, <abbr title="Cross-Site Scripting">XSS</abbr></td>
-        <td><abbr title="Admin area"><a href="http://www.securityfocus.com/archive/1/archive/1/534718/100/0/threaded">AA</a></abbr></td>
+        <td><abbr title="Admin area"><a href="https://www.securityfocus.com/archive/1/archive/1/534718/100/0/threaded">AA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -328,7 +328,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7812" title="CrossSlide jQuery Plugin &lt;= 2.0.5 - Stored XSS &amp; CSRF">CrossSlide jQuery</a></td>
         <td class="left-align">&lt;= 2.0.5</td>
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr>, <abbr title="Cross-Site Scripting">XSS</abbr></td>
-        <td><abbr title="Admin area"><a href="http://packetstormsecurity.com/files/130313/">AA</a></abbr></td>
+        <td><abbr title="Admin area"><a href="https://packetstormsecurity.com/files/130313/">AA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -336,7 +336,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7876" title="Aspose PDF Exporter - Arbitrary File Download">Aspose PDF Exporter</a></td>
         <td class="left-align">&lt; 2.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
-        <td><abbr title="Plugin Direct for anonymous user"><a href="http://packetstormsecurity.com/files/131161/">PD-</a></abbr></td>
+        <td><abbr title="Plugin Direct for anonymous user"><a href="https://packetstormsecurity.com/files/131161/">PD-</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -344,7 +344,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7877" title="Aspose Importer and Exporter 1.0 - Arbitrary File Download">Aspose Importer &amp; Exporter</a></td>
         <td class="left-align">&lt;= 1.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
-        <td><abbr title="Plugin Direct for anonymous user"><a href="http://packetstormsecurity.com/files/131162/">PD-</a></abbr></td>
+        <td><abbr title="Plugin Direct for anonymous user"><a href="https://packetstormsecurity.com/files/131162/">PD-</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -352,7 +352,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7869" title="Aspose DOC Exporter 1.0 - Arbitrary File Download">Aspose DOC Exporter</a></td>
         <td class="left-align">&lt;= 1.0</td>
         <td><abbr title="Local File Inclusion">LFI</abbr></td>
-        <td><abbr title="Plugin Direct for anonymous user"><a href="http://packetstormsecurity.com/files/131167/">PD-</a></abbr></td>
+        <td><abbr title="Plugin Direct for anonymous user"><a href="https://packetstormsecurity.com/files/131167/">PD-</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -384,7 +384,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7809" title="WP All Import &lt;= 3.2.3 - RCE">WP All Import</a></td>
         <td class="left-align">&lt;= 3.2.3</td>
         <td><abbr title="Remote Code Execution">RCE</abbr></td>
-        <td><abbr title="Ajax/Post for admin"><a href="http://packetstormsecurity.com/files/130596/">AX</a></abbr></td>
+        <td><abbr title="Ajax/Post for admin"><a href="https://packetstormsecurity.com/files/130596/">AX</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -456,7 +456,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7882" title="Simple Ads Manager &lt;= 2.5.94 - Arbitrary File Upload & SQL Injection">Simple Ads Manager</a></td>
         <td class="left-align">&lt;= 2.5.94</td>
         <td><abbr title="Arbitrary File Upload">AFU</abbr>, <abbr title="SQL Injection">SQLI</abbr></td>
-        <td><abbr title="Plugin Direct including wp-load.php"><a href="http://packetstormsecurity.com/files/131282/">PD+</a></abbr></td>
+        <td><abbr title="Plugin Direct including wp-load.php"><a href="https://packetstormsecurity.com/files/131282/">PD+</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -520,7 +520,7 @@ inline: <script>
         <td class="left-align"><a href="https://wpvulndb.com/vulnerabilities/7905" title="MiwoFTP - File & Folder Manager &lt;= 1.0.5 - Multiple Vulnerabilities">MiwoFTP</a></td>
         <td class="left-align">&lt;= 1.0.5</td>
         <td><abbr title="Cross-Site Request Forgery">CSRF</abbr>, <abbr title="Cross-Site Scripting">XSS</abbr></td>
-        <td><abbr title="Admin area"><a href="http://packetstormsecurity.com/files/131436/">AA</a></abbr></td>
+        <td><abbr title="Admin area"><a href="https://packetstormsecurity.com/files/131436/">AA</a></abbr></td>
         <td><span class="label label-success">OK</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>

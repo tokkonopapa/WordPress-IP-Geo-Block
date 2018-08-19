@@ -233,8 +233,8 @@ footer.page-footer .footer-copyright {
   margin: auto 0.15em;
 }
 
-/*********************************************/
-/* Hover.css http://ianlunn.github.io/Hover/ */
+/**********************************************/
+/* Hover.css https://ianlunn.github.io/Hover/ */
 /* Pop */
 @-webkit-keyframes hvr-effect {
   50% {
@@ -645,8 +645,8 @@ table th.sort-up:after {
 /**
  * pygments for github.css
  *
- * @link: http://stackoverflow.com/questions/11093233/how-to-support-scrolling-when-using-pygments-with-jekyll
- * @link: http://inteist.com/pygments-theme-for-jekyll-monokai/
+ * @link: https://stackoverflow.com/questions/11093233/how-to-support-scrolling-when-using-pygments-with-jekyll
+ * @link: https://inteist.com/pygments-theme-for-jekyll-monokai/
  */
 .highlight {
   margin: 0;

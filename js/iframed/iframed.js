@@ -10,7 +10,7 @@
  *
  * Copyright 2013, tokkonopapa
  * Free to use and abuse under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
+ * https://www.opensource.org/licenses/mit-license.php
  */
 
 /*
@@ -108,7 +108,7 @@ function createIframe(id, script_src, style, min_height, stylesheet) {
 	}
 
 	// Use static iframe
-	// @link http://code.google.com/p/browsersec/wiki/Part2#Same-origin_policy_for_DOM_access
+	// @link https://code.google.com/p/browsersec/wiki/Part2#Same-origin_policy_for_DOM_access
 	else if (('dynamic' !== _iframed.mode && isStatic) || ('static' === _iframed.mode)) {
 		iframe.src = _iframed.path;
 		document.getElementById(id).appendChild(iframe);

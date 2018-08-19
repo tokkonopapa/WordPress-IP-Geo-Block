@@ -89,12 +89,12 @@ a sample of `403.php` in [Twenty Twelve][TwentyTwelve] with
 - [ip-geo-block-xxxxx-status][CodexStatus]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[StatusCode]:   http://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
-[Refresh]:      http://stackoverflow.com/questions/283752/refresh-http-header "'Refresh' HTTP header - Stack Overflow"
+[StatusCode]:   https://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1"
+[Refresh]:      https://stackoverflow.com/questions/283752/refresh-http-header "'Refresh' HTTP header - Stack Overflow"
 [W3C-Refresh]:  https://www.w3.org/TR/WCAG10-HTML-TECHS/#meta-element "HTML Techniques for Web Content Accessibility Guidelines 1.0"
 [RefreshIssue]: https://www.w3.org/QA/Tips/reback "Use standard redirects - don't break the back button! - Quality Web Tips"
 [HOME-URL]:     https://codex.wordpress.org/Function_Reference/home_url "Function Reference/home url &laquo; WordPress Codex"
-[BlackHole]:    http://blackhole.webpagetest.org/ "blackhole.webpagetest.org"
+[BlackHole]:    https://blackhole.webpagetest.org/ "blackhole.webpagetest.org"
 [WP_DIE]:       https://codex.wordpress.org/Function_Reference/wp_die "Function Reference/wp die « WordPress Codex"
 [GetStatus]:    https://developer.wordpress.org/reference/functions/get_status_header_desc/ "WordPress › get_status_header_desc() | Function | WordPress Developer Resources"
 [TwentyTwelve]: https://wordpress.org/themes/twentytwelve/ "WordPress › Twenty Twelve « Free WordPress Themes"

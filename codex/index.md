@@ -28,7 +28,7 @@ style: ".other-things { display: none }"
     </ul>
 
 <script>var GOOG_FIXURL_LANG = 'en', GOOG_FIXURL_SITE = location.host;</script>
-<script src="http://linkhelp.clients.google.com/tbproxy/lh/wm/fixurl.js"></script>
+<script src="https://linkhelp.clients.google.com/tbproxy/lh/wm/fixurl.js"></script>
 
   </div>
 </div>

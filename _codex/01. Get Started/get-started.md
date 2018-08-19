@@ -101,6 +101,6 @@ In this case, you had better to prioritize the country code by Maxmind.
 [BlockFront]:   {{ '/codex/#blocking-on-front-end'                     | prepend: site.baseurl }} "Blocking on front-end | IP Geo Block"
 [HowToRecover]: {{ '/codex/what-should-i-do-when-i-m-locked-out.html'  | prepend: site.baseurl }} "What should I do when I'm locked out? | IP Geo Block"
 [BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
-[DifferentCC]:  http://www.ipgeoblock.com/changelog/release-2.1.5.html "2.1.5 Release Note | IP Geo Block"
+[DifferentCC]:  {{ '/changelog/release-2.1.5.html'                     | prepend: site.baseurl }} "2.1.5 Release Note | IP Geo Block"
 [Euroregion]:   https://en.wikipedia.org/wiki/Euroregion "Euroregion - Wikipedia, the free encyclopedia"
 [Forum]:        https://wordpress.org/support/topic/locked-out-due-to-eu-vs-country "WordPress &#8250; Support &raquo; [resolved] Locked out due to EU vs. Country"

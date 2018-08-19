@@ -36,7 +36,7 @@ function my_google_jsapi( $url ) {
     return 'https://www.google.cn/jsapi';
 }
 function my_google_maps( $url ) {
-    return 'http://maps.google.cn/maps/api/js';
+    return 'https://maps.google.cn/maps/api/js';
 }
 add_filter( 'google-jsapi', 'my_google_jsapi' );
 add_filter( 'google-maps',  'my_google_maps'  );

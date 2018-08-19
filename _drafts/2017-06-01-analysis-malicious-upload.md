@@ -256,7 +256,7 @@ Attack Vector = Type x Path
         <td class="left-align" data-value="2016-02-08"><a href="https://wpvulndb.com/vulnerabilities/8386" title="WP User Frontend &lt;= 2.3.10 - Unrestricted File Upload">WP User Frontend</a></td>
         <td class="left-align">&lt;= 2.3.10</td>
         <td><abbr title="Unrestricted File Upload">UFU</abbr></td>
-        <td><abbr title="Admin ajax/post for logged-in and not-logged-in user"><a href="http://www.securityfocus.com/archive/1/537479">AX*</a></abbr></td>
+        <td><abbr title="Admin ajax/post for logged-in and not-logged-in user"><a href="https://www.securityfocus.com/archive/1/537479">AX*</a></abbr></td>
         <td><span class="label label-danger">NG</span></td>
         <td><span class="label label-success">OK</span></td>
       </tr>
@@ -359,11 +359,11 @@ https://plugins.trac.wordpress.org/log/ [slub]
 https://cwe.mitre.org/data/definitions/434.html
 
 polyglot
-http://lcamtuf.coredump.cx/squirrel/ http://stackoverflow.com/questions/11587119/is-this-a-web-page-or-an-image
+http://lcamtuf.coredump.cx/squirrel/ https://stackoverflow.com/questions/11587119/is-this-a-web-page-or-an-image
 http://www.thinkfu.com/blog/gifjavascript-polyglots
 https://library.naist.jp/mylimedio/dllimedio/show.cgi?bookid=100061971&oldid=117155
 https://www.owasp.org/images/6/6b/PHPMagicTricks-TypeJuggling.pdf
-http://blog.tunnelshade.in/2015/06/stegosploit-fun.html
+https://blog.tunnelshade.in/2015/06/stegosploit-fun.html
 https://conference.hitb.org/hitbsecconf2015ams/wp-content/uploads/2015/02/D1T1-Saumil-Shah-Stegosploit-Hacking-with-Pictures.pdf
 https://bini.tech/wordpress-remote-upload-unrestricted-file-upload/
 

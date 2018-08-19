@@ -100,7 +100,7 @@ Here are the descriptions:
 - [ip-geo-block-xxxxx][Validation]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[RFC2616-SEC9]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html "HTTP/1.1: Method Definitions"
+[RFC2616-SEC9]: https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html "HTTP/1.1: Method Definitions"
 [BackupDir]:    {{ '/codex/ip-geo-block-backup-dir.html' | prepend: site.baseurl }} 'ip-geo-block-backup-dir | IP Geo Block'
 [Validation]:   {{ '/codex/ip-geo-block-xxxxx.html'      | prepend: site.baseurl }} 'ip-geo-block-xxxxx | IP Geo Block'
-[PHP-UPLOADS]:  http://php.net/manual/features.file-upload.post-method.php 'PHP: POST method uploads - Manual'
+[PHP-UPLOADS]:  https://php.net/manual/features.file-upload.post-method.php 'PHP: POST method uploads - Manual'

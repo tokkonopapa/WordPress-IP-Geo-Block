@@ -63,7 +63,7 @@ Please refer to [CloudFlare & CloudFront API class library][APILibrary].
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [Maxmind]:      https://www.maxmind.com/ "IP Geolocation and Online Fraud Prevention | MaxMind"
-[IP2Location]:  http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location"
+[IP2Location]:  https://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location"
 [GitGeoAPI]:    https://github.com/tokkonopapa/WordPress-IP-Geo-API "GitHub - tokkonopapa/WordPress-IP-Geo-API: A class library combined with WordPress plugin IP Geo Block to handle geo-location database of Maxmind and IP2Location."
 [Permission]:   {{ '/codex/how-to-fix-permission-troubles.html' | prepend: site.baseurl }} "How can I fix permission troubles? | IP Geo Block"
 [MaxmindIPv4]:  {{ '/codex/ip-geo-block-maxmind-zip-ipv4.html'  | prepend: site.baseurl }} "ip-geo-block-maxmind-zip-ipv4 | IP Geo Block"

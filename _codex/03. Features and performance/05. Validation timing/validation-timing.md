@@ -126,7 +126,7 @@ can see, the number of requests have become to be handled more than twice with
 - [Customizing the response][CustomRes]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[ApacheBench]:  http://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool - Apache HTTP Server Version 2.4"
+[ApacheBench]:  https://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool - Apache HTTP Server Version 2.4"
 [MU-plugins]:   https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex"
 [ActionHook]:   https://codex.wordpress.org/Plugin_API/Action_Reference "Plugin API/Action Reference &laquo; WordPress Codex"
 [WP-ZEP]:       {{ '/article/how-wpzep-works.html'                                   | prepend: site.baseurl }} "How does WP-ZEP prevent zero-day attack?"

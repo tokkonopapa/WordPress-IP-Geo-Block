@@ -10,7 +10,7 @@ inline:
 
 ### Conditions ###
 - **Server:**  
-  Apache on a [shared hosting server](http://homepage.nifty.com/ "LaCoocan").  
+  Apache on a [shared hosting server](https://homepage.nifty.com/ "LaCoocan").  
   WordPress 4.6.1-ja / Theme: Twenty Twelve  
   PHP: PHP-5.2.14 (it's too old!!) / MySQL-5.5.21
 

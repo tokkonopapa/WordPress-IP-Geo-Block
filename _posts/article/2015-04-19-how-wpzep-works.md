@@ -232,12 +232,12 @@ other plugins while playing a certain degree of role by itself <span class="emoj
 ![emoji](https://assets-cdn.github.com/images/icons/emoji/unicode/1f47b.png)
 </span>.
 
-[WhySoMany]:           http://www.ipgeoblock.com/article/why-so-vulnerable.html "Why so many WordPress plugins vulnerable? | IP Geo Block"
 [CryptNonce]:          https://en.wikipedia.org/wiki/Cryptographic_nonce "Cryptographic nonce - Wikipedia, the free encyclopedia"
 [IP-Geo-Block]:        https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[Stack-Exchange]:      http://wordpress.stackexchange.com/questions/10500/how-do-i-best-handle-custom-plugin-page-actions "wp admin - How do i best handle custom plugin page actions? - WordPress Development Stack Exchange"
+[Stack-Exchange]:      https://wordpress.stackexchange.com/questions/10500/how-do-i-best-handle-custom-plugin-page-actions "wp admin - How do i best handle custom plugin page actions? - WordPress Development Stack Exchange"
 [Sub-Level-Menu]:      https://codex.wordpress.org/Administration_Menus#Sub-Level_Menus "Administration Menus « WordPress Codex"
 [Slider-Revolution]:   https://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog"
-[PrivilegeEscalation]: http://en.wikipedia.org/wiki/Privilege_escalation "Privilege escalation - Wikipedia, the free encyclopedia"
+[PrivilegeEscalation]: https://en.wikipedia.org/wiki/Privilege_escalation "Privilege escalation - Wikipedia, the free encyclopedia"
 [WordPressNonces]:     https://codex.wordpress.org/WordPress_Nonces "WordPress Nonces « WordPress Codex"
-[Release220]:          {{ '/changelog/release-2.2.0.html' | prepend: site.baseurl }} "2.2.0 Release Note | IP Geo Block"
+[WhySoMany]:           {{ '/article/why-so-vulnerable.html' | prepend: site.baseurl }} "Why so many WordPress plugins vulnerable? | IP Geo Block"
+[Release220]:          {{ '/changelog/release-2.2.0.html'   | prepend: site.baseurl }} "2.2.0 Release Note | IP Geo Block"
