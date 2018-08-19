@@ -1252,11 +1252,11 @@ endif;
 		);
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		// Maximum entries of Logs
+		// Maximum entries in Logs
 		$key = 'maxlogs';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			'<div class="ip-geo-block-subitem">' . __( 'Maximum entries of &#8220;Logs&#8221;', 'ip-geo-block' ) . '</div>',
+			'<div class="ip-geo-block-subitem">' . __( 'Maximum entries in &#8220;Logs&#8221;', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

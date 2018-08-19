@@ -1327,7 +1327,7 @@ msgstr ""
 "</dfn>"
 
 #: admin/includes/tab-settings.php:1259
-msgid "Maximum entries of &#8220;Logs&#8221;"
+msgid "Maximum entries in &#8220;Logs&#8221;"
 msgstr "記録するログの最大エントリ数"
 
 #: admin/includes/tab-settings.php:1276

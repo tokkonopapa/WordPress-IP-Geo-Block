@@ -179,7 +179,9 @@ class IP_Geo_Block_Admin_Ajax {
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
 	public static function restore_logs( $which ) {
-		return array( 'data' => self::format_logs( IP_Geo_Block_Logs::restore_logs( $which ) ) ); // DataTables requires `data`
+		return array( 'data' => self::format_logs(
+			apply_filters( IP_Geo_Block::PLUGIN_NAME . '-logs', IP_Geo_Block_Logs::restore_logs( $which ) )
+		) ); // DataTables requires `data`
 	}
 
 	/**

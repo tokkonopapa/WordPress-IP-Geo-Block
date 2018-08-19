@@ -1167,7 +1167,7 @@ msgid ""
 msgstr ""
 
 #: admin/includes/tab-settings.php:1259
-msgid "Maximum entries of &#8220;Logs&#8221;"
+msgid "Maximum entries in &#8220;Logs&#8221;"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1276

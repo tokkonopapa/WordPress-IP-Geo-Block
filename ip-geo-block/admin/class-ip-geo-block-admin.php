@@ -59,6 +59,10 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function admin_init() {
+		// include drop in for admin if it exists
+		$settings = IP_Geo_Block::get_option();
+		file_exists( $file = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in-admin.php' ) and include( $file );
+
 		// Add the options page and menu item.
 		add_action( 'admin_menu',                 array( $this, 'setup_admin_page'    ) );
 		add_action( 'admin_post_ip_geo_block',    array( $this, 'admin_ajax_callback' ) );
@@ -161,17 +165,14 @@ class IP_Geo_Block_Admin {
 	 */
 	public function create_blog( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
 		defined( 'IP_GEO_BLOCK_DEBUG' ) and IP_GEO_BLOCK_DEBUG and assert( is_main_site(), 'Not main blog.' );
-
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php';
-
-		// Get option of main blog.
-		$settings = IP_Geo_Block::get_option();
 
 		// Switch to the new blog and initialize.
 		switch_to_blog( $blog_id );
 		IP_Geo_Block_Activate::activate_blog();
 
 		// Copy option from main blog.
+		$settings = IP_Geo_Block::get_option();
 		if ( $this->is_network && $settings['network_wide'] )
 			update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
@@ -419,9 +420,7 @@ class IP_Geo_Block_Admin {
 	 * Register the administration menu into the WordPress Dashboard menu.
 	 *
 	 */
-	private function add_plugin_admin_menu() {
-		$settings = IP_Geo_Block::get_option();
-
+	private function add_plugin_admin_menu( $settings ) {
 		// Network wide or not
 		$admin_menu = ( 'admin_menu' === current_filter() ); // @since: 2.5 `admin_menu` or `network_admin_menu`
 
@@ -503,8 +502,7 @@ class IP_Geo_Block_Admin {
 	 * Diagnosis of admin settings.
 	 *
 	 */
-	private function diagnose_admin_screen() {
-		$settings = IP_Geo_Block::get_option();
+	private function diagnose_admin_screen( $settings ) {
 		$updating = get_transient( IP_Geo_Block::CRON_NAME );
 		$adminurl = $this->dashboard_url( $this->is_network && $settings['network_wide'] );
 
@@ -594,12 +592,14 @@ endif;
 	 *
 	 */
 	public function setup_admin_page() {
+		$settings = IP_Geo_Block::get_option();
+
 		// Register the administration menu.
-		$this->add_plugin_admin_menu();
+		$this->add_plugin_admin_menu( $settings );
 
 		// Avoid multiple validation.
-		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] )
-			$this->diagnose_admin_screen();
+		if ( 'GET' === $_SERVER['REQUEST_METHOD'] )
+			$this->diagnose_admin_screen( $settings );
 
 		// Register settings page only if it is needed.
 		if ( ( isset( $_GET ['page'       ] ) && IP_Geo_Block::PLUGIN_NAME === $_GET ['page'       ] ) ||

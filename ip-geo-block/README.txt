@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.8
-Stable tag: 3.0.13
+Stable tag: 3.0.14a
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -381,6 +381,10 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.14 =
+* **New feature:** Add a filter hook `ip-geo-block-logs`. ([forum topic](https://wordpress.org/support/topic/request-log-filtering/ "Topic: Request: Log filtering &#124; WordPress.org"))
+* **New feature:** Load `drop-in-admin.php` in Geolocation API library folder if it exists.
 
 = 3.0.13 =
 * **Deprecate:** Remove the hotfix in 3.0.12.1 because of [WordPress 4.9.7 Security and Maintenance Release](https://wordpress.org/news/2018/07/wordpress-4-9-7-security-and-maintenance-release/ "WordPress 4.9.7 Security and Maintenance Release").

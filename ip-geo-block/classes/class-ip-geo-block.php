@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.13';
+	const VERSION = '3.0.14a';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -267,8 +267,9 @@ class IP_Geo_Block {
 	 * Return true if the validation result is passed.
 	 *
 	 */
-	public static function is_passed ( $result ) { return 0 === strncmp( 'pass', $result, 4 ); }
-	public static function is_blocked( $result ) { return 0 !== strncmp( 'pass', $result, 4 ); }
+	public static function is_passed ( $result )      { return 0 === strncmp( 'pass', $result, 4 );       }
+	public static function is_blocked( $result )      { return 0 !== strncmp( 'pass', $result, 4 );       }
+	public static function is_listed ( $code, $list ) { return $list && FALSE !== strpos( $list, $code ); }
 
 	/**
 	 * Build a validation result for the current user.
@@ -557,7 +558,6 @@ class IP_Geo_Block {
 	private function check_exceptions( $action, $page, $exceptions = array() ) {
 		$in_action = in_array( $action, $exceptions, TRUE );
 		$in_page   = in_array( $page,   $exceptions, TRUE );
-
 		return ( ( $action xor $page ) && ( ! $in_action and ! $in_page ) ) ||
 		       ( ( $action and $page ) && ( ! $in_action or  ! $in_page ) ) ? FALSE : TRUE;
 	}
@@ -866,9 +866,9 @@ class IP_Geo_Block {
 	public function check_behavior( $validate, $settings ) {
 		// check if page view with a short period time is under the threshold
 		$cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr );
-		if ( $cache && $cache['view'] >= $settings['behavior']['view'] && $_SERVER['REQUEST_TIME'] - $cache['last'] <= $settings['behavior']['time'] ) {
+
+		if ( $cache && $cache['view'] >= $settings['behavior']['view'] && $_SERVER['REQUEST_TIME'] - $cache['last'] <= $settings['behavior']['time'] )
 			return $validate + array( 'result' => 'badbot' ); // can't overwrite existing result
-		}
 
 		return $validate;
 	}
