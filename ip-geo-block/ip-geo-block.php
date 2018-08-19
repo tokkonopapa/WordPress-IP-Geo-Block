@@ -7,7 +7,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
+ * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  *
  * Plugin Name:       IP Geo Block
@@ -15,7 +15,7 @@
  * Description:       It blocks any spams, login attempts and malicious access to the admin area posted from outside your nation, and also prevents zero-day exploit.
  * Version:           3.0.14a
  * Author:            tokkonopapa
- * Author URI:        http://www.ipgeoblock.com/
+ * Author URI:        https://www.ipgeoblock.com/
  * Text Domain:       ip-geo-block
  * License:           GPL-3.0
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.txt

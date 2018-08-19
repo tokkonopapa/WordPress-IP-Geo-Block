@@ -33,7 +33,7 @@ After several days of installation, you'll be supprised to find many malicious o
   In order to prevent hacking through the login form and XML-RPC by brute-force and the reverse-brute-force attacks, the number of login attempts will be limited per IP address even from the permitted countries.
 
 * **Minimize server load against brute-force attacks:**  
-  You can configure this plugin as a [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex") so that this plugin can be loaded prior to regular plugins. It can massively [reduce the load on server](http://www.ipgeoblock.com/codex/validation-timing.html "Validation timing | IP Geo Block").
+  You can configure this plugin as a [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex") so that this plugin can be loaded prior to regular plugins. It can massively [reduce the load on server](https://www.ipgeoblock.com/codex/validation-timing.html "Validation timing | IP Geo Block").
 
 * **Prevent malicious down/uploading:**  
   A malicious request such as exposing `wp-config.php` or uploading malwares via vulnerable plugins/themes can be blocked.
@@ -49,7 +49,7 @@ After several days of installation, you'll be supprised to find many malicious o
 
 * **Multiple source of IP Geolocation databases:**  
   [MaxMind GeoLite2 free databases](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention") (it requires PHP 5.4.0+) and [IP2Location LITE databases](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") can be installed in this plugin. Also free Geolocation REST APIs and whois information can be available for audit purposes.  
-  Father more, [dedicated API class libraries](http://www.ipgeoblock.com/article/api-class-library.html "CloudFlare & CloudFront API class library | IP Geo Block") can be installed for CloudFlare and CloudFront as a reverse proxy service.
+  Father more, [dedicated API class libraries](https://www.ipgeoblock.com/article/api-class-library.html "CloudFlare & CloudFront API class library | IP Geo Block") can be installed for CloudFlare and CloudFront as a reverse proxy service.
 
 * **Customizing response:**  
   HTTP response code can be selectable as `403 Forbidden` to deny access pages, `404 Not Found` to hide pages or even `200 OK` to redirect to the top page.
@@ -59,14 +59,14 @@ After several days of installation, you'll be supprised to find many malicious o
   Validation logs for useful information to audit attack patterns can be manageable.
 
 * **Cooperation with full spec security plugin:**  
-  This plugin is lite enough to be able to cooperate with other full spec security plugin such as [Wordfence Security](https://wordpress.org/plugins/wordfence/ "Wordfence Security &mdash; WordPress Plugins"). See [this report](http://www.ipgeoblock.com/codex/page-speed-performance.html "Page speed performance | IP Geo Block") about page speed performance.
+  This plugin is lite enough to be able to cooperate with other full spec security plugin such as [Wordfence Security](https://wordpress.org/plugins/wordfence/ "Wordfence Security &mdash; WordPress Plugins"). See [this report](https://www.ipgeoblock.com/codex/page-speed-performance.html "Page speed performance | IP Geo Block") about page speed performance.
 
 * **Extendability:**  
-  You can customize the behavior of this plugin via `add_filter()` with [pre-defined filter hook](http://www.ipgeoblock.com/codex/ "Codex | IP Geo Block"). See various use cases in [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub") bundled within this package.
+  You can customize the behavior of this plugin via `add_filter()` with [pre-defined filter hook](https://www.ipgeoblock.com/codex/ "Codex | IP Geo Block"). See various use cases in [samples.php](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/blob/master/ip-geo-block/samples.php "WordPress-IP-Geo-Block/samples.php at master - tokkonopapa/WordPress-IP-Geo-Block - GitHub") bundled within this package.
   You can also get the extension [IP Geo Allow](https://github.com/ddur/WordPress-IP-Geo-Allow "GitHub - ddur/WordPress-IP-Geo-Allow: WordPress Plugin Exension for WordPress-IP-Geo-Block Plugin") by [Dragan](https://github.com/ddur "ddur (Dragan) - GitHub"). It makes admin screens strictly private with more flexible way than specifying IP addresses.
 
 * **Self blocking prevention and easy rescue:**  
-  Website owners do not prefer themselves to be blocked. This plugin prevents such a sad thing unless you force it. And futhermore, if such a situation occurs, you can [rescue yourself](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block") easily.
+  Website owners do not prefer themselves to be blocked. This plugin prevents such a sad thing unless you force it. And futhermore, if such a situation occurs, you can [rescue yourself](https://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block") easily.
 
 * **Clean uninstallation:**  
   Nothing is left in your precious mySQL database after uninstallation. So you can feel free to install and activate to make a trial of this plugin's functionality.
@@ -89,7 +89,7 @@ Also thanks for providing the following great services and REST APIs for free.
 
 Development of this plugin is promoted at [WordPress-IP-Geo-Block](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub") and class libraries to handle geo-location database are developed separately as "add-in"s at [WordPress-IP-Geo-API](https://github.com/tokkonopapa/WordPress-IP-Geo-API "tokkonopapa/WordPress-IP-Geo-API - GitHub").
 
-All contributions will always be welcome. Or visit my [development blog](http://www.ipgeoblock.com/ "IP Geo Block").
+All contributions will always be welcome. Or visit my [development blog](https://www.ipgeoblock.com/ "IP Geo Block").
 
 == Installation ==
 
@@ -101,7 +101,7 @@ All contributions will always be welcome. Or visit my [development blog](http://
 4. Activate the plugin on the Plugin dashboard
 5. Try 'Best for Back-end' button for easy setup at the bottom of this plugin's setting page.
 
-Please refer to [the document](http://www.ipgeoblock.com/codex/ "Codex | IP Geo Block") 
+Please refer to [the document](https://www.ipgeoblock.com/codex/ "Codex | IP Geo Block") 
 or following descriptions for your best setup.
 
 = Validation rule settings =
@@ -242,7 +242,7 @@ or following descriptions for your best setup.
 
 = Does the site using this plugin comply with GDPR? =
 
-Using this plugin itself should not be the problem, because from version 3.0.11 IP addresses in logs and cache of this plugin are encrypted by default in preparation for personal data breach. It also not only provides a way to manually erase them but also has the functionality to remove them when those are exceeded a certain amount/time. The option "Privacy friendly" helps you to restrict sending the ip address to the 3rd parties such as geolocation APIs and whois service equipped in this plugin. However, these functions are part of the requirements that GDPR requires and do not guarantee that the site is compliant with GDPR. Refer to [3.0.11 release note](http://www.ipgeoblock.com/changelog/release-3.0.11.html) for details.
+Using this plugin itself should not be the problem, because from version 3.0.11 IP addresses in logs and cache of this plugin are encrypted by default in preparation for personal data breach. It also not only provides a way to manually erase them but also has the functionality to remove them when those are exceeded a certain amount/time. The option "Privacy friendly" helps you to restrict sending the ip address to the 3rd parties such as geolocation APIs and whois service equipped in this plugin. However, these functions are part of the requirements that GDPR requires and do not guarantee that the site is compliant with GDPR. Refer to [3.0.11 release note](https://www.ipgeoblock.com/changelog/release-3.0.11.html) for details.
 
 = Does this plugin support multisite? =
 
@@ -273,7 +273,7 @@ Other plugins adopting `mod_rewrite` (e.g. WP Fastest Cache) or `advanced-cache.
 
 Thus your site would have less risk against the exploiting via vulnerable plugins and themes.
 
-For more details, please refer to some documents at "[Blocking on front-end](http://www.ipgeoblock.com/codex/#blocking-on-front-end 'Codex | IP Geo Block')".
+For more details, please refer to some documents at "[Blocking on front-end](https://www.ipgeoblock.com/codex/#blocking-on-front-end 'Codex | IP Geo Block')".
 
 = I still have access from blacklisted country. Does it work correctly? =
 
@@ -283,7 +283,7 @@ Sometimes, a Wordfence Security user would report this type of claim when he/she
 
 It would also possibly be caused by the accuracy of country code in the geolocation databases. Actually, there is a case that a same IP address has different country code.
 
-For more detail, please refer to "[I still have access from blacklisted country.](http://www.ipgeoblock.com/codex/access-from-blacklisted-country.html 'I still have access from blacklisted country. | IP Geo Block')".
+For more detail, please refer to "[I still have access from blacklisted country.](https://www.ipgeoblock.com/codex/access-from-blacklisted-country.html 'I still have access from blacklisted country. | IP Geo Block')".
 
 = How can I test this plugin works? =
 
@@ -293,7 +293,7 @@ Another one is to use [http header browser addon](https://www.google.com/search?
 
 You can add an IP address to the `X-Forwarded-For` header to emulate the access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
 
-See more details at "[How to test prevention of attacks](http://www.ipgeoblock.com/codex/#how-to-test-prevention-of-attacks 'Codex | IP Geo Block')".
+See more details at "[How to test prevention of attacks](https://www.ipgeoblock.com/codex/#how-to-test-prevention-of-attacks 'Codex | IP Geo Block')".
 
 = I'm locked out! What shall I do? =
 
@@ -319,7 +319,7 @@ After saving and uploading it to `/wp-content/plugins/ip-geo-block/` on your ser
 
 Remember that you should upload the original one after re-configuration to deactivate this feature.
 
-[This document](http://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block") can also help you.
+[This document](https://www.ipgeoblock.com/codex/what-should-i-do-when-i-m-locked-out.html "What should I do when I'm locked out? | IP Geo Block") can also help you.
 
 = Do I have to turn on all the selection to enhance security? =
 
@@ -337,7 +337,7 @@ Yes. Roughly speaking, the strategy of this plugin has been constructed as follo
 - **Bad signatures in query**  
   It blocks the request which has not been covered in the above three.
 
-Please try "**Best for Back-end**" button at the bottom of this plugin's setting page for easy setup. And also see more details in "[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html 'The best practice of target settings | IP Geo Block')".
+Please try "**Best for Back-end**" button at the bottom of this plugin's setting page for easy setup. And also see more details in "[The best practice of target settings](https://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html 'The best practice of target settings | IP Geo Block')".
 
 = Does this plugin validate all the requests? =
 
@@ -347,17 +347,17 @@ But there're exceptions: When you enable "**Force to load WP core**" for **Plugi
 
 = How to resolve "Sorry, your request cannot be accepted."? =
 
-If you encounter this message, please refer to [this document](http://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;Sorry, your request cannot be accepted&rdquo; ? | IP Geo Block") to resolve your blocking issue.
+If you encounter this message, please refer to [this document](https://www.ipgeoblock.com/codex/you-are-not-allowed-to-access.html "Why &ldquo;Sorry, your request cannot be accepted&rdquo; ? | IP Geo Block") to resolve your blocking issue.
 
 If you can't solve your issue, please let me know about it on the [support forum](https://wordpress.org/support/plugin/ip-geo-block/ "View: Plugin Support &laquo;  WordPress.org Forums"). Your logs in this plugin and "**Installation information**" at "**Plugin settings**" will be a great help to resolve the issue.
 
 = How can I fix "Unable to write" error? =
 
-When you enable "**Force to load WP core**" options, this plugin will try to configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` directory in order to protect your site against the malicous attacks to the [OMG plugins and themes](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php | IP Geo Block").
+When you enable "**Force to load WP core**" options, this plugin will try to configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` directory in order to protect your site against the malicous attacks to the [OMG plugins and themes](https://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php | IP Geo Block").
 
 But some servers doesn't give read / write permission against `.htaccess` to WordPress. In this case, you can configure `.htaccess` files by your own hand instead of enabling "**Force to load WP core**" options.
 
-Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')" in order to fix this error.
+Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')" in order to fix this error.
 
 == Other Notes ==
 
@@ -397,7 +397,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 
 = 3.0.12.1 =
 * **Fix issue:** Unexpected blocking cause by an extra slash at the end of `$_SERVER['DOCUMENT_ROOT']` that might be added by server's configuration. ([forum topic](https://wordpress.org/support/topic/wpwebinar/ "Topic: WPWebinar &#124; WordPress.org"))
-* **Fix issue:** [Human friendly error page](http://www.ipgeoblock.com/codex/customizing-the-response.html#human-friendly-error-page) now works properly. ([forum topic](https://wordpress.org/support/topic/problem-with-permalinks-51/ "Topic: Problem with Permalinks &#124; WordPress.org"))
+* **Fix issue:** [Human friendly error page](https://www.ipgeoblock.com/codex/customizing-the-response.html#human-friendly-error-page) now works properly. ([forum topic](https://wordpress.org/support/topic/problem-with-permalinks-51/ "Topic: Problem with Permalinks &#124; WordPress.org"))
 * **Fix issue:** Fix the conflict with WP hide & Security Enhancer. ([forum topic](https://wordpress.org/support/topic/problem-with-permalinks-51/ "Topic: Problem with Permalinks &#124; WordPress.org"))
 * **Fix issue:** Hotfix [WordPress File Delete to Code Execution](https://blog.ripstech.com/2018/wordpress-file-delete-to-code-execution/ "WARNING: WordPress File Delete to Code Execution") by RIPS Technologies.
 
@@ -411,7 +411,7 @@ Please refer to "[How can I fix permission troubles?](http://www.ipgeoblock.com/
 * **Improvement:** Update geolocation APIs and add a new one.
 * **Improvement:** Change the JavaScript compressor from Google Closure Compiler to UglifyJS 2 to prevent "Uncaught TypeError: Cannot read property ‘toLowerCase’ of undefined" in a certain environment.
 * **Fix:** Fix the issue that blocking occurred immediately instead of displaying the login page again when login failed, even the number of times did not exceed the limit.
-* See [3.0.11 release note](http://www.ipgeoblock.com/changelog/release-3.0.11.html) for some details.
+* See [3.0.11 release note](https://www.ipgeoblock.com/changelog/release-3.0.11.html) for some details.
 
 = 3.0.10.4 =
 * **Fix:** JavaScript error caused by bad handling form tag without method property. This error was happened with Wordfence Live Traffic.
@@ -451,7 +451,7 @@ If you still find the error "/plugins/ip-geo-block/classes/class-ip-geo-block-lo
 * **Maintenance:** Change the priority order of local geolocation databases.
 * **Bug fix:** Fix the issue that the target action for login form on settings tab could not unchecked on saving changes.
 * **Bug fix:** Fix some other minor bugs.
-* See [3.0.9 release note](http://www.ipgeoblock.com/changelog/release-3.0.9.html "3.0.9 Release Note | IP Geo Block") for some details.
+* See [3.0.9 release note](https://www.ipgeoblock.com/changelog/release-3.0.9.html "3.0.9 Release Note | IP Geo Block") for some details.
 
 = 3.0.8 =
 * **Improvement:** Use both Maxmind Legacy and GeoLite2 databases parallely.
@@ -484,14 +484,14 @@ Sorry for frequent update but the following bug should be fixed.
 * **Bug fix:** Fix the bug using php short open tag on "Logs" tab.
 * **Bug fix:** Fix the bug related to absolute path in filesystem on windows system.
 * **Bug fix:** Fix the issue that "Auto updating (once a month)" could not be disabled.
-* See [3.0.6 release note](http://www.ipgeoblock.com/changelog/release-3.0.6.html "3.0.6 Release Note | IP Geo Block") for some details.
+* See [3.0.6 release note](https://www.ipgeoblock.com/changelog/release-3.0.6.html "3.0.6 Release Note | IP Geo Block") for some details.
 
 = 3.0.5 =
 * **New feature:** Add "Live update" mode on "Logs" tab.
 * **Improvement:** List all the IP addresses in cache are now displayed and manageable on "Statistics" tab.
 * **Improvement:** Add "Either blocked or passed" as a new condition for recording logs. It enables to verify the requests "passed" from the blacklisted countries or the countries not in the whitelist.
 * **Improvement:** Add two new filter hooks to utilize Google APIs from native domain in China.
-* See [3.0.5 release note](http://www.ipgeoblock.com/changelog/release-3.0.5.html "3.0.5 Release Note | IP Geo Block") for some details.
+* See [3.0.5 release note](https://www.ipgeoblock.com/changelog/release-3.0.5.html "3.0.5 Release Note | IP Geo Block") for some details.
 
 = 3.0.4.6 =
 * **Bug fix:** Fix the issue that the emergent functionality didn't work when the number of login attempts reached to the limit.
@@ -534,7 +534,7 @@ Thank you all for taking your time again since last update.
 * **Improvement:** Inhibit to embed a special nonce into links when WP-ZEP is disabled at each target. This may improve compatibility with some plugins and themes.
 * **Bug fix:** Fix the issue of verifying file upload. It could not handle multiple files. ([@](https://wordpress.org/support/topic/incompatible-with-awesome-support-plugin/#post-9403708 "Topic: incompatible with Awesome Support plugin &laquo; WordPress.org Forums"))
 * **Bug fix:** Fix the issue of illegal click event handling on anchor tag without href. ([@](https://wordpress.org/support/topic/pagebuilder-broken-by-ipgeoblock-v3-0-3-4/ "Topic: Pagebuilder broken by IPGeoblock v3.0.3.4 &laquo; WordPress.org Forums"))
-* See [3.0.4 release note](http://www.ipgeoblock.com/changelog/release-3.0.4.html "3.0.4 Release Note | IP Geo Block") for some details.
+* See [3.0.4 release note](https://www.ipgeoblock.com/changelog/release-3.0.4.html "3.0.4 Release Note | IP Geo Block") for some details.
 
 = 3.0.3.4 =
 * **Improvement:** Some minor refactoring for the future release.
@@ -577,7 +577,7 @@ This is a maintenance release addressing various internal improvement.
 * **Improvement:** Better handling of server and private IP address.
 * **Bug fix:** Fix the bug of "Export/Import settings". **Please export json file again if you hold it as backup purpose** because some of settings data might be incompatible.
 * **Bug fix:** Fix the bug of "Password Reset" caused by miss-spelling "resetpasss".
-* See some details at [release 3.0.3](http://www.ipgeoblock.com/changelog/release-3.0.3.html "3.0.3 Release Note | IP Geo Block").
+* See some details at [release 3.0.3](https://www.ipgeoblock.com/changelog/release-3.0.3.html "3.0.3 Release Note | IP Geo Block").
 
 = 3.0.2.2 =
 * **Improvement:** Change the behavior of "Referrer Suppressor" not to open a new window on public facing pages.
@@ -602,7 +602,7 @@ This is a maintenance release addressing some issues.
 * **Improvement:** Add "Disable" to "Max number of failed login attempts per IP address" to avoid conflict with other similar plugin.
 * **Improvement:** Update geolocation database libraries to 1.1.7 for better compatibility on some platform.
 * **Trial feature:** Add custom action hook `ip-geo-block-send-response`. This is useful to control firewall via [fail2ban](http://www.fail2ban.org/ "Fail2ban") like [WP fail2ban](https://wordpress.org/plugins/wp-fail2ban/ "WP fail2ban - WordPress Plugins").
-* See some details at [release 3.0.2](http://www.ipgeoblock.com/changelog/release-3.0.2.html "3.0.2 Release Note | IP Geo Block").
+* See some details at [release 3.0.2](https://www.ipgeoblock.com/changelog/release-3.0.2.html "3.0.2 Release Note | IP Geo Block").
 
 = 3.0.1.2 =
 * **Bug fix:** Fix the blocking issue in some environments when upgrading from 2.2.9.1 to 3.0.0.
@@ -630,7 +630,7 @@ This is a maintenance release addressing some issues.
 * **Improvement:** Better compatibility with some plugins, themes and widgets.
 * **Improvement:** Deferred execution of SQL command to improve the response.
 * **Improvement:** Make the response compatible with WP original when it is requested by GET method.
-* See some details at [release 3.0.0](http://www.ipgeoblock.com/changelog/release-3.0.0.html "3.0.0 Release Note | IP Geo Block").
+* See some details at [release 3.0.0](https://www.ipgeoblock.com/changelog/release-3.0.0.html "3.0.0 Release Note | IP Geo Block").
 
 = 2.2.9.1 =
 * **Bug fix:** Blocking Wordfence scanning. ([@](https://wordpress.org/support/topic/wordfence-conflict-2/ "WordFence Conflict"))
@@ -643,7 +643,7 @@ This is a maintenance release addressing some issues.
 * **New feature:** A new option that makes this plugin configured as a "Must-use plugin". It can massively reduce the server load especially against brute-force attacks because it initiates this plugin prior to other typical plugins.
 * **Improvement:** Validation of a certain signature against XSS is internally added to "Bad signature in query" by default.
 * **Improvement:** Improved compatibility with PHP 7 (Thanks to [FireMyst](https://wordpress.org/support/topic/plans-for-php-7-compatiblity/ "Topic: Plans for PHP 7 compatiblity? &laquo; WordPress.org Forums")).
-* Find details in [2.2.9 Release Note](http://www.ipgeoblock.com/changelog/release-2.2.9.html "2.2.9 Release Note").
+* Find details in [2.2.9 Release Note](https://www.ipgeoblock.com/changelog/release-2.2.9.html "2.2.9 Release Note").
 
 = 2.2.8.2 =
 * **Bug fix:** Fixed the mismatched internal version number.
@@ -656,19 +656,19 @@ This is a maintenance release addressing some issues.
 * **Bug fix:** Fixed the issue of stripping some required characters for Google maps API key.
 * **New feature:** Whois database Lookup for IP address on search tab.
 * **Update:** Updated geolocation API libraries and services.
-* Find more details in [2.2.8 Release Note](http://www.ipgeoblock.com/changelog/release-2.2.8.html "2.2.8 Release Note").
+* Find more details in [2.2.8 Release Note](https://www.ipgeoblock.com/changelog/release-2.2.8.html "2.2.8 Release Note").
 
 = 2.2.7 =
 * **Bug fix:** Fix inadequate validation of "**Bad signatures in query**".
 * **Improvement:** Add fallback for Google Maps API key ([@](https://wordpress.org/support/topic/226-problem-with-search-resp-google-maps "WordPress &#8250; Support &raquo; [2.2.6] Problem with SEARCH resp. Google Maps")) and corruption of "Bad signatures" ([@](https://wordpress.org/support/topic/226-problem-with-bad-signatures-in-query "WordPress &#8250; Support &raquo; [2.2.6] Problem with &quot;Bad signatures in query&quot;")).
 * **Update:** Update geolocation service api.
-* Find details about Google Maps API in [2.2.7 Release Note](http://www.ipgeoblock.com/changelog/release-2.2.7.html "2.2.7 Release Note").
+* Find details about Google Maps API in [2.2.7 Release Note](https://www.ipgeoblock.com/changelog/release-2.2.7.html "2.2.7 Release Note").
 
 = 2.2.6 =
 * **New feature:** Add saving csv file of logs in "Logs" tab.
 * **New feature:** Add filter hook `ip-geo-block-record-log` to control over the conditions of recording in more detail.
 * **Bug fix:** Fixed the issue that "Exceptions" for Plugins/Themes area does not work properly. Please confirm your settings again.
-* See details at [release 2.2.6](http://www.ipgeoblock.com/changelog/release-2.2.6.html "2.2.6 Release Note").
+* See details at [release 2.2.6](https://www.ipgeoblock.com/changelog/release-2.2.6.html "2.2.6 Release Note").
 
 = 2.2.5 =
 * **New feature:** On the settings page, you can specify the pliugin or theme which would cause undesired blocking in order to exclude it from the validation target without embedding any codes into `functions.php`.
@@ -693,7 +693,7 @@ Sorry for frequent updating.
 * **Improvement:** Made the logout url compatible with [Rename wp-login.php](https://wordpress.org/plugins/rename-wp-login/).
 * **Improvement:** Made condition of validation more strictly at admin diagnosis to prevent unnecessary notice of self blocking. ([@](https://wordpress.org/support/topic/youll-be-blocked-after-you-log-out-notice-doesnt-disappear "[resolved] &quot;You'll be blocked after you log out&quot; notice doesn't disappear"))
 * **Improvement:** Improved some of UI. ([@](https://wordpress.org/support/topic/possible-to-select-which-countries-are-blocked "[resolved] Possible to select which countries are blocked?"), [@](https://wordpress.org/support/topic/ip-geo-block-black-list "IP Geo Block Black List"))
-* See some details at [release 2.2.4](http://www.ipgeoblock.com/changelog/release-2.2.4.html "2.2.4 Release Note").
+* See some details at [release 2.2.4](https://www.ipgeoblock.com/changelog/release-2.2.4.html "2.2.4 Release Note").
 
 = 2.2.3.1 =
 * **Bug fix:** Fixed the issue that disabled validation target was still blocked by country. ([@](https://wordpress.org/support/topic/logs-whitelist-comments-still-blocked "[resolved] logs whitelist comments still blocked?"))
@@ -707,7 +707,7 @@ Sorry for frequent updating.
 * **Improvement:** Prevent self blocking caused by irrelevant signature. ([@](https://wordpress.org/support/topic/works-too-well-blocked-my-wp-admin-myself "[resolved] Works too well - Blocked my wp-admin myself"))
 * **Bug fix:** Fixed the issue of conflicting with certain plugins due to the irrelevant handling of js event. ([@](https://wordpress.org/support/topic/cannot-edit-pages-when-ip-geo-block-is-enabled "[resolved] Cannot edit pages when ip-geo-block is enabled."))
 * **New feature:** Add "Blocked per day" graph for the daily statistics.
-* See some details at [2.2.3 release note](http://www.ipgeoblock.com/changelog/release-2.2.3.html "2.2.3 Release Note").
+* See some details at [2.2.3 release note](https://www.ipgeoblock.com/changelog/release-2.2.3.html "2.2.3 Release Note").
 
 = 2.2.2.3 =
 Sorry for frequent update again but the following obvious bugs should be fixed.
@@ -729,7 +729,7 @@ Sorry for frequent update.
 * **Improvement:** In the previous version, the statistical data was recorded into `wp_options`. It caused the uncertainty of recording especially in case of burst attacks. Now the data will be recorded in an independent table to improve this issue.
 * **Bug fix:** Fixed conflict with NextGEN Gallary Pro. Thanks to [bodowewer](https://wordpress.org/support/profile/bodowewer).
 * **Bug fix:** Fixed some filter hooks that did not work as intended.
-* See more details at [2.2.2 release note](http://www.ipgeoblock.com/changelog/release-2.2.2.html "2.2.2 Release Note").
+* See more details at [2.2.2 release note](https://www.ipgeoblock.com/changelog/release-2.2.2.html "2.2.2 Release Note").
 
 = 2.2.1.1 =
 * **Bug fix:** Fixed "open_basedir restriction" issue caused by `file_exists()`.
@@ -756,7 +756,7 @@ Sorry for frequent update.
 * **New feature:** Malicious signatures to prevent disclosing the important files via vulnerable plugins or themes. A malicious request to try to expose `wp-config.php` or `passwd` can be blocked.
 * **New feature:** Add privacy considerations related to IP address. Add **Anonymize IP address** at **Record settings**.
 * **Bug fix:** Fix the issue that spaces in **Text message on comment form** are deleted.
-* See details at [2.2.0 release note](http://www.ipgeoblock.com/changelog/release-2.2.0.html "2.2.0 Release Note").
+* See details at [2.2.0 release note](https://www.ipgeoblock.com/changelog/release-2.2.0.html "2.2.0 Release Note").
 
 = 2.1.5.1 =
 * **Bug fix:** Fixed the issue that the Blacklist did not work properly. Thanks to TJayYay for reporting this issue at [support forum](https://wordpress.org/support/topic/hackers-from-country-in-blocked-list-of-countries-trying-to-login "WordPress &rsaquo; Support &raquo; Hackers from country in Blocked List of Countries trying to login").
@@ -766,13 +766,13 @@ Sorry for frequent update.
 * **New feature:** Add pie chart to display statistics of "Blocked by country".
 * **Enhancement:** WP-ZEP is reinforced against CSRF.
 * **Bug fix:** Fix illegal handling of the fragment in a link.
-* See details at [2.1.5 release note](http://www.ipgeoblock.com/changelog/release-2.1.5.html "2.1.5 Release Note").
+* See details at [2.1.5 release note](https://www.ipgeoblock.com/changelog/release-2.1.5.html "2.1.5 Release Note").
 
 = 2.1.4 =
 * **Bug fix:** Fix the issue that this plugin broke functionality of a certain plugin. Thanks to **opsec** for reporting this issue at [support forum](https://wordpress.org/support/topic/blocks-saves-in-types-or-any-plugins-from-wp-typescom "WordPress &rsaquo; Support &raquo; Blocks saves in Types or any plugins from wp-types.com").
 * **Improvement:** Add checking process for validation rule to prevent being blocked itself. Thanks to **internationals** for proposing at [support forum](https://wordpress.org/support/topic/locked-out-due-to-eu-vs-country "WordPress &rsaquo; Support &raquo; Locked out due to EU vs. Country")
 * **Improvement:** Arrage the order of setting sections to focus the goal of this plugin.
-* See details at [2.1.4 release note](http://www.ipgeoblock.com/changelog/release-2.1.4.html "2.1.4 Release Note").
+* See details at [2.1.4 release note](https://www.ipgeoblock.com/changelog/release-2.1.4.html "2.1.4 Release Note").
 
 = 2.1.3 =
 * **New feature:** Add "show" / "hide" at each section on the "Settings" tab.
@@ -781,7 +781,7 @@ Sorry for frequent update.
 * **Improvement:** Improved the compatibility with Autoptimize.
 * **Bug fix:** Fix the issue related to showing featured themes on dashboard.
 * **Bug fix:** Fix minor bug in `rewrite.php` for the advanced use case.
-* See details at [2.1.3 release note](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note").
+* See details at [2.1.3 release note](https://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note").
 
 = 2.1.2 =
 This is a maintenance release.
@@ -792,16 +792,16 @@ This is a maintenance release.
 * **Improvement:** Hide checking the existence of log db behind the symbol `IP_GEO_BLOCK_DEBUG` to reduce 1 query on admin screen.
 * **Improvement:** Add alternative functions of BCMath extension to avoid `PHP Fatal error: Call to undefined function` in `IP2Location.php` when IPv6 is specified.
 * **Improvement:** Use MaxMind database at the activating process not to be locked out by means of inconsistency of database at the activation and after.
-* See more details at [2.1.2 release note](http://www.ipgeoblock.com/changelog/release-2.1.2.html "2.1.2 Release Note").
+* See more details at [2.1.2 release note](https://www.ipgeoblock.com/changelog/release-2.1.2.html "2.1.2 Release Note").
 
 = 2.1.1 =
 * **New feature:** Added `Block by country (register, lost password)` at `Login form` on `Settings` tab in order to accept the registered users as membership from anywhere but block the request of new user ragistration and lost password by the country code. Is't suitable for BuddyPress and bbPress.
 * **Improvement:** Added showing the custom error page for http response code 4xx and 5xx. For example the `403.php` in the theme template directory or in the child theme directory is used if it exists. And new filter hooks `ip-geo-block-(comment|xmlrpc|login|admin)-(status|reason)` are available to customize the response code and reason for human.
 * **Obsoleted:** Obsoleted the filter hooks `ip-geo-block-(admin-actions|admin-pages|wp-content)`. Alternatively new filter hooks `ip-geo-block-bypass-(admins|plugins|themes)` are added to bypass WP-ZEP.
-* Find out more details in the [2.1.1 release note](http://www.ipgeoblock.com/changelog/release-2.1.1.html "2.1.1 Release Note").
+* Find out more details in the [2.1.1 release note](https://www.ipgeoblock.com/changelog/release-2.1.1.html "2.1.1 Release Note").
 
 = 2.1.0 =
-* **New feature:** Expanded the operating range of ZP-ZEP, that includes admin area, plugins area, themes area. Now it can prevent a direct malicios attack to the file in plugins and themes area. Please go to the "Validation Settings" on "Settings" tab and check it. Also check my article in "[Analysis of Attack Vector against WP Plugins](http://www.ipgeoblock.com/article/analysis-attack-vector.html)".
+* **New feature:** Expanded the operating range of ZP-ZEP, that includes admin area, plugins area, themes area. Now it can prevent a direct malicios attack to the file in plugins and themes area. Please go to the "Validation Settings" on "Settings" tab and check it. Also check my article in "[Analysis of Attack Vector against WP Plugins](https://www.ipgeoblock.com/article/analysis-attack-vector.html)".
 * **Bug fix:** Fixed the issue that action hook `ip-geo-block-backup-dir` did not work correctly because the order of argument was mismatched.
 * **Bug fix:** Fixed the issue that a record including utf8 4 bytes character in its columns was not logged into DB in WordPress 4.2.
 * **Improvement:** Fixed the issue that Referrer Suppressor do nothing with a new element which is added into DOM after DOM ready. The event handler is now delegated at the `body`.
@@ -811,7 +811,7 @@ This is a maintenance release.
 * Added re-creating DB table for validation logs in case of accidentally failed at activation process.
 * The time of day is shown with local time by adding GMT offset based on the time zone setting.
 * Optimized resource loading and settings to avoid redundancy.
-* See details at [this plugin's blog](http://www.ipgeoblock.com/changelog/release-2.0.8.html "2.0.8 Release Note").
+* See details at [this plugin's blog](https://www.ipgeoblock.com/changelog/release-2.0.8.html "2.0.8 Release Note").
 
 = 2.0.7 =
 * Avoid JavaScript error which occurs if an anchor link has no `href`.

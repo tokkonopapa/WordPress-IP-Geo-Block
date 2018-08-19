@@ -166,7 +166,7 @@ class IP_Geo_Block_Admin_Rewrite {
 			if ( ! $fs->is_readable( $file ) ) {
 				return new WP_Error( 'Error',
 					sprintf( __( 'Unable to read <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $file ) . ' ' .
-					sprintf( __( 'Or please refer to %s to set it manually.', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How to fix permission troubles? | IP Geo Block">How to fix permission troubles?</a>' )
+					sprintf( __( 'Or please refer to %s to set it manually.', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How to fix permission troubles? | IP Geo Block">How to fix permission troubles?</a>' )
 				);
 			}
 		}
@@ -192,7 +192,7 @@ class IP_Geo_Block_Admin_Rewrite {
 		if ( ! $file || FALSE === $fs->put_contents( $file, implode( PHP_EOL, $content ) ) ) {
 			$this->show_message(
 				sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), $file ) . ' ' .
-				sprintf( __( 'Or please refer to %s to set it manually.', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How to fix permission troubles? | IP Geo Block">How to fix permission troubles?</a>' )
+				sprintf( __( 'Or please refer to %s to set it manually.', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How to fix permission troubles? | IP Geo Block">How to fix permission troubles?</a>' )
 			);
 			return FALSE;
 		}

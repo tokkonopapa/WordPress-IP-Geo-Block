@@ -194,7 +194,7 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => 1 === (int)$options[ $field ][ $key ],
-				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Some useful tools to find ASN are introduced in &#8220;%s&#8221;.', 'ip-geo-block' ), '<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/utilizing-asnumber.html" title="Utilizing AS number | IP Geo Block">Utilizing AS number</a>' ) . '</p>',
+				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Some useful tools to find ASN are introduced in &#8220;%s&#8221;.', 'ip-geo-block' ), '<a rel="noreferrer" href="https://www.ipgeoblock.com/codex/utilizing-asnumber.html" title="Utilizing AS number | IP Geo Block">Utilizing AS number</a>' ) . '</p>',
 			)
 		);
 
@@ -436,7 +436,7 @@ endif;
 				),
 				'desc' => array(
 					 0 => __( 'Validate at &#8220;init&#8221; action hook in the same manner as typical plugins.', 'ip-geo-block' ),
-					 1 => __( 'Validate at an earlier phase than other typical plugins. It can reduce load on server but has <a rel=\'noreferrer\' href=\'http://www.ipgeoblock.com/codex/validation-timing.html\' title=\'Validation timing | IP Geo Block\'>some restrictions</a>.', 'ip-geo-block' ),
+					 1 => __( 'Validate at an earlier phase than other typical plugins. It can reduce load on server but has <a rel=\'noreferrer\' href=\'https://www.ipgeoblock.com/codex/validation-timing.html\' title=\'Validation timing | IP Geo Block\'>some restrictions</a>.', 'ip-geo-block' ),
 				),
 			)
 		);
@@ -763,7 +763,7 @@ endif;
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-public',
-			array( __( 'Front-end target settings', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/overview.html" title="Overview | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>'),
+			array( __( 'Front-end target settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/overview.html" title="Overview | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>'),
 			array( __CLASS__, 'note_public' ),
 			$option_slug
 		);
@@ -1415,14 +1415,14 @@ endif;
 		 *----------------------------------------*/
 		if ( empty( $providers ) ) {
 			$context->add_admin_notice( 'error', sprintf(
-				__( 'Can not find Geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
+				__( 'Can not find Geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="https://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
 				apply_filters( 'ip-geo-block-api-dir', basename( WP_CONTENT_DIR ) )
 			) );
 		}
 
 		add_settings_section(
 			$section = $plugin_slug . '-database',
-			array( __( 'Local database settings', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/geolocation-api-library.html" title="Geolocation API library | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>'),
+			array( __( 'Local database settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/geolocation-api-library.html" title="Geolocation API library | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>'),
 			array( __CLASS__, 'note_database' ),
 			$option_slug
 		);
@@ -1677,8 +1677,8 @@ endif;
 	public static function note_target() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'To enhance the protection ability, please refer to &#8220;<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html" title="The best practice for target settings | IP Geo Block">The best practice for target settings</a>&#8221;.', 'ip-geo-block' ), '</li>', "\n",
-				'<li>', __( 'If you have any troubles with these, please check FAQ at <a rel="noreferrer" href="https://wordpress.org/plugins/ip-geo-block/faq/" title="IP Geo Block &mdash; WordPress Plugins">WordPress.org</a> and <a rel="noreferrer" href="http://www.ipgeoblock.com/codex/#faq" title="Codex | IP Geo Block">Codex</a>.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'To enhance the protection ability, please refer to &#8220;<a rel="noreferrer" href="https://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html" title="The best practice for target settings | IP Geo Block">The best practice for target settings</a>&#8221;.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'If you have any troubles with these, please check FAQ at <a rel="noreferrer" href="https://wordpress.org/plugins/ip-geo-block/faq/" title="IP Geo Block &mdash; WordPress Plugins">WordPress.org</a> and <a rel="noreferrer" href="https://www.ipgeoblock.com/codex/#faq" title="Codex | IP Geo Block">Codex</a>.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 
@@ -1703,7 +1703,7 @@ endif;
 	public static function note_public() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/#blocking-on-front-end" title="Codex | IP Geo Block">Blocking on front-end</a>&#8221; for details, including restrictions on cache plugin.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="https://www.ipgeoblock.com/codex/#blocking-on-front-end" title="Codex | IP Geo Block">Blocking on front-end</a>&#8221; for details, including restrictions on cache plugin.', 'ip-geo-block' ), '</li>', "\n",
 				'<li>', __( 'If you find any issues or have something to suggest, please feel free to open an issue at <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a>.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
@@ -1711,7 +1711,7 @@ endif;
 	public static function note_privacy() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="http://www.ipgeoblock.com/codex/record-settings-and-logs.html" title="Codex | IP Geo Block">Record settings and logs</a>&#8221; for details.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="https://www.ipgeoblock.com/codex/record-settings-and-logs.html" title="Codex | IP Geo Block">Record settings and logs</a>&#8221; for details.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 
