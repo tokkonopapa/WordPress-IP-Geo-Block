@@ -8,7 +8,7 @@ description: A WordPress Geo-blocking plugin with Zero-day Exploit Prevention
 
 # base url and sub path
 # for local: jekyll serve --drafts --baseurl '' --incremental --watch
-baseurl: "//www.ipgeoblock.com"
+baseurl: "https://www.ipgeoblock.com"
 
 permalink: none
 
