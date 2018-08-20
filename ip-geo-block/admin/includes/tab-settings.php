@@ -9,6 +9,17 @@ class IP_Geo_Block_Admin_Tab {
 		$options = IP_Geo_Block::get_option();
 		$plugin_slug = IP_Geo_Block::PLUGIN_NAME; // 'ip-geo-block'
 
+		// common descriptions
+		$common = array(
+			'<span class="ip-geo-block-sup">' . __( '(comma separated)', 'ip-geo-block' ) . '</span>',
+			'<span class="ip-geo-block-sup">' . __( '(comma or RET separated)', 'ip-geo-block' ) . '</span>',
+			'<span title="' . __( 'Toggle selection', 'ip-geo-block' ) . '"></span>',
+			'<span title="' . __( 'Find blocked requests in &#8220;Logs&#8220;', 'ip-geo-block' ) . '"></span>',
+			__( 'Help', 'ip-geo-block' ),
+			__( 'Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="ip-geo-block-icon ip-geo-block-icon-alert" title="This button is just a sample."><span></span></a>&#8221; button (if exists) attached to the following list to confirm that the blocked request is not malicious.', 'ip-geo-block' ),
+			__( 'Open CIDR calculator for IPv4 / IPv6.', 'ip-geo-block' ),
+		);
+
 		/**
 		 * Register a setting and its sanitization callback.
 		 * @link https://codex.wordpress.org/Function_Reference/register_setting
@@ -41,7 +52,7 @@ class IP_Geo_Block_Admin_Tab {
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-validation-rule',
-			__( 'Validation rule settings', 'ip-geo-block' ),
+			array( __( 'Validation rule settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/validation-rule-settings.html" title="Validation rule settings | IP Geo Block">' . $common[4] . '</a>' ),
 			NULL,
 			$option_slug
 		);
@@ -111,15 +122,6 @@ endif;
 			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. The special code &#8220;XX&#8221; is assigned as private IP address including localhost. And &#8220;ZZ&#8221; is for unknown IP address (i.e. not in the geolocation databases). Please use &#8220;YY&#8221; if you need the code that does not correspond to any of the countries.">Blacklist of country code</dfn>', 'ip-geo-block' ) . '<br />(<a rel="noreferrer" href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia">ISO 3166-1 alpha-2</a>)',
 		);
 
-		$comma = array(
-			'<span class="ip-geo-block-sup">' . __( '(comma separated)', 'ip-geo-block' ) . '</span>',
-			'<span class="ip-geo-block-sup">' . __( '(comma or RET separated)', 'ip-geo-block' ) . '</span>',
-			'<span title="' . __( 'Toggle selection', 'ip-geo-block' ) . '"></span>',
-			'<span title="' . __( 'Find blocked requests in &#8220;Logs&#8220;', 'ip-geo-block' ) . '"></span>',
-			__( 'Before adding as &#8220;Exception&#8221;, please click on &#8220;<a class="ip-geo-block-icon ip-geo-block-icon-alert" title="This button is just a sample."><span></span></a>&#8221; button (if exists) attached to the following list to confirm that the blocked request is not malicious.', 'ip-geo-block' ),
-			__( 'Open CIDR calculator for IPv4 / IPv6.', 'ip-geo-block' ),
-		);
-
 		// Matching rule
 		$field = 'matching_rule';
 		add_settings_field(
@@ -156,7 +158,7 @@ endif;
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
-				'after' => $comma[0],
+				'after' => $common[0],
 				'class' => $options['matching_rule'] == 0 ? '' : 'ip-geo-block-hide',
 			)
 		);
@@ -173,7 +175,7 @@ endif;
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
-				'after' => $comma[0],
+				'after' => $common[0],
 				'class' => $options['matching_rule'] == 1 ? '' : 'ip-geo-block-hide',
 			)
 		);
@@ -206,7 +208,7 @@ endif;
 			__( '<dfn title="e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, &#8220;69.46.36.0/27&#8221; for WordFence server or &#8220;AS32934&#8221; for Facebook.">Whitelist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
 			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
 			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
-			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="ip-geo-block-icon-calc"></span></a>',
+			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $common[6] . '"><span class="ip-geo-block-icon-calc"></span></a>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -217,7 +219,7 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'placeholder' => '192.168.0.0/16,2001:db8::/96,AS1234',
-				'after' => $comma[1],
+				'after' => $common[1],
 			)
 		);
 
@@ -228,7 +230,7 @@ endif;
 			__( '<dfn title="Server level access control is recommended (e.g. .htaccess).">Blacklist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
 			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
 			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
-			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $comma[5] . '"><span class="ip-geo-block-icon ip-geo-block-icon-calc"></span></a>',
+			'<a class="ip-geo-block-icon ip-geo-block-icon-cidr" title="' . $common[6] . '"><span class="ip-geo-block-icon ip-geo-block-icon-calc"></span></a>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -239,7 +241,7 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'placeholder' => '192.168.0.0/16,2001:db8::/96,AS1234',
-				'after' => $comma[1],
+				'after' => $common[1],
 			)
 		);
 
@@ -259,7 +261,7 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'placeholder' => IP_Geo_Block_Util::get_proxy_var(),
-				'after' => $comma[0],
+				'after' => $common[0],
 			)
 		);
 
@@ -276,12 +278,12 @@ endif;
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
-				'after' => $comma[1],
+				'after' => $common[1],
 			)
 		);
 
 		// Prevent malicious upload - white list of file extention and MIME type
-		$list = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Select allowed MIME type.">Whitelist of allowed MIME type</dfn>', 'ip-geo-block' ) . "<a class=\"ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide\">" . $comma[2] . "</a>\n<li class=\"ip-geo-block-hide\"><ul class=\"ip-geo-block-float\">\n";
+		$list = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Select allowed MIME type.">Whitelist of allowed MIME type</dfn>', 'ip-geo-block' ) . "<a class=\"ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide\">" . $common[2] . "</a>\n<li class=\"ip-geo-block-hide\"><ul class=\"ip-geo-block-float\">\n";
 
 		// get_allowed_mime_types() in wp-includes/functions.php @since 2.8.6
 		foreach ( IP_Geo_Block_Util::get_allowed_mime_types() as $key => $val ) {
@@ -297,7 +299,7 @@ endif;
 
 		// Verify capability
 		$list .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the capabilities to be verified. Depending on the particular type of uploader, certain capability may be required. Default is &#8220;upload_files&#8221; for Administrator, Editor and Author. This verification will be skipped if empty.">Capabilities to be verified</dfn>', 'ip-geo-block' ) . '&nbsp;<span class="ip-geo-block-desc">' . __( '( See &#8220;<a rel="noreferrer" href="https://codex.wordpress.org/Roles_and_Capabilities" title="Roles and Capabilities &laquo; WordPress Codex">Roles and Capabilities</a>&#8221; )', 'ip-geo-block' ) . '</span>' . "\n";
-		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_mimetype_capability" name="ip_geo_block_settings[mimetype][capability]" class="regular-text code" placeholder="upload_files" value="' . esc_attr( implode( ',', $options['mimetype']['capability'] ) ) . '" />' . $comma[0] . '</li></ul></li></ul>';
+		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_mimetype_capability" name="ip_geo_block_settings[mimetype][capability]" class="regular-text code" placeholder="upload_files" value="' . esc_attr( implode( ',', $options['mimetype']['capability'] ) ) . '" />' . $common[0] . '</li></ul></li></ul>';
 
 		// Prevent malicious file uploading
 		$field = 'validation';
@@ -446,7 +448,7 @@ endif;
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-validation-target',
-			__( 'Back-end target settings', 'ip-geo-block' ),
+			array( __( 'Back-end target settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/back-end-target-settings.html" title="Back-end target settings | IP Geo Block">' . $common[4] . '</a>' ),
 			array( __CLASS__, 'note_target' ),
 			$option_slug
 		);
@@ -531,7 +533,7 @@ endif;
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'text' => __( 'Block by country', 'ip-geo-block' ),
-				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual action as a blocking target.">Target actions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $list . "</ul></li></ul>\n",
+				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual action as a blocking target.">Target actions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $common[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $list . "</ul></li></ul>\n",
 			)
 		);
 
@@ -605,11 +607,11 @@ endif;
 				'after' =>
 					'<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . "\n" .
 					'	<dfn title="' . __( 'Specify the action name (&#8220;action=&hellip;&#8221;) or the page name (&#8220;page=&hellip;&#8221;) to prevent unintended blocking caused by &#8220;Block by country&#8221; (for non logged-in user) and &#8220;Prevent Zero-day Exploit&#8221; (for logged-in user).', 'ip-geo-block' ) . '">' . __( 'Exceptions', 'ip-geo-block' ) . "</dfn>\n" .
-					'	<a class="ip-geo-block-hide ip-geo-block-icon ip-geo-block-icon-unlock"><span title="' . __( 'Toggle with non logged-in user', 'ip-geo-block' ) . '"></span></a><a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide" data-target="admin">' . $comma[2] . '</a><a class="ip-geo-block-icon ip-geo-block-icon-find ip-geo-block-hide" data-target="admin">' . $comma[3] . "</a>\n" .
+					'	<a class="ip-geo-block-hide ip-geo-block-icon ip-geo-block-icon-unlock"><span title="' . __( 'Toggle with non logged-in user', 'ip-geo-block' ) . '"></span></a><a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide" data-target="admin">' . $common[2] . '</a><a class="ip-geo-block-icon ip-geo-block-icon-find ip-geo-block-hide" data-target="admin">' . $common[3] . "</a>\n" .
 					'	<li class="ip-geo-block-hide">' . "\n" .
-					'		<input class="regular-text code" id="ip_geo_block_settings_exception_admin" name="ip_geo_block_settings[exception][admin]" type="text" value="' . esc_attr( implode( ',', $options['exception']['admin'] ) ) . '">' . $comma[0] . "\n" .
+					'		<input class="regular-text code" id="ip_geo_block_settings_exception_admin" name="ip_geo_block_settings[exception][admin]" type="text" value="' . esc_attr( implode( ',', $options['exception']['admin'] ) ) . '">' . $common[0] . "\n" .
 					'		<h4>' . __( 'Candidate actions/pages', 'ip-geo-block' ) . "</h4>\n" .
-					'		<p class="ip-geo-block-find-desc">' . $comma[4] . '<span id="ip-geo-block-find-admin"></span></p>' . "\n" .
+					'		<p class="ip-geo-block-find-desc">' . $common[5] . '<span id="ip-geo-block-find-admin"></span></p>' . "\n" .
 					'	</li>' . "\n" .
 					'	<li class="ip-geo-block-hide">' . "\n" .
 					'		<ul class="ip-geo-block-list-exceptions" id="ip-geo-block-list-admin">' . "\n" .
@@ -684,9 +686,9 @@ endif;
 				'after' => $tmp .
 					'<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . "\n" .
 					'	<dfn title="' . $desc[1] . '">' . __( 'Exceptions', 'ip-geo-block' ) . "</dfn>\n" .
-					'	<a class="ip-geo-block-hide ip-geo-block-icon ip-geo-block-icon-cycle">' . $comma[2] . '</a><a class="ip-geo-block-icon ip-geo-block-icon-find ip-geo-block-hide" data-target="plugins">' . $comma[3] . "</a>\n" .
+					'	<a class="ip-geo-block-hide ip-geo-block-icon ip-geo-block-icon-cycle">' . $common[2] . '</a><a class="ip-geo-block-icon ip-geo-block-icon-find ip-geo-block-hide" data-target="plugins">' . $common[3] . "</a>\n" .
 					'	<li class="ip-geo-block-hide">' . "\n" .
-					'		<p class="ip-geo-block-find-desc">' . $comma[4] . '<span id="ip-geo-block-find-plugins"></span></p>' . "\n" .
+					'		<p class="ip-geo-block-find-desc">' . $common[5] . '<span id="ip-geo-block-find-plugins"></span></p>' . "\n" .
 					'	</li>' . "\n" .
 					'	<li class="ip-geo-block-hide">' . "\n" .
 					'		<ul class="ip-geo-block-list-exceptions" id="ip-geo-block-list-plugins">' . "\n" .
@@ -745,9 +747,9 @@ endif;
 				'after' => $tmp .
 					'<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . "\n" .
 					'	<dfn title="' . $desc[1] . '">' . __( 'Exceptions', 'ip-geo-block' ) . "</dfn>\n" .
-					'	<a class="ip-geo-block-hide ip-geo-block-icon ip-geo-block-icon-cycle">' . $comma[2] . '</a><a class="ip-geo-block-icon ip-geo-block-icon-find ip-geo-block-hide" data-target="themes">' . $comma[3] . "</a>\n" .
+					'	<a class="ip-geo-block-hide ip-geo-block-icon ip-geo-block-icon-cycle">' . $common[2] . '</a><a class="ip-geo-block-icon ip-geo-block-icon-find ip-geo-block-hide" data-target="themes">' . $common[3] . "</a>\n" .
 					'	<li class="ip-geo-block-hide">' . "\n" .
-					'		<p class="ip-geo-block-find-desc">' . $comma[4] . '<span id="ip-geo-block-find-themes"></span></p>' . "\n" .
+					'		<p class="ip-geo-block-find-desc">' . $common[5] . '<span id="ip-geo-block-find-themes"></span></p>' . "\n" .
 					'	</li>' . "\n" .
 					'	<li class="ip-geo-block-hide">' . "\n" .
 					'		<ul class="ip-geo-block-list-exceptions" id="ip-geo-block-list-themes">' . "\n" .
@@ -763,7 +765,7 @@ endif;
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-public',
-			array( __( 'Front-end target settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/overview.html" title="Overview | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>'),
+			array( __( 'Front-end target settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/front-end-target-settings.html" title="Front-end target settings | IP Geo Block">' . $common[4] . '</a>' ),
 			array( __CLASS__, 'note_public' ),
 			$option_slug
 		);
@@ -819,7 +821,7 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'after' => $comma[0],
+				'after' => $common[0],
 				'class' => $options[ $field ]['matching_rule'] == 0 ? '' : 'ip-geo-block-hide',
 			)
 		);
@@ -837,7 +839,7 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'after' => $comma[0],
+				'after' => $common[0],
 				'class' => $options[ $field ]['matching_rule'] == 1 ? '' : 'ip-geo-block-hide',
 			)
 		);
@@ -912,7 +914,7 @@ endif;
 		);
 
 		// List of page
-		$exception = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual page as a blocking target.">Page</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
+		$exception = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual page as a blocking target.">Page</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $common[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_pages();
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -924,7 +926,7 @@ endif;
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// List of post type
-		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual post type on a single page as a blocking target.">Post type</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
+		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual post type on a single page as a blocking target.">Post type</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $common[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_post_types( array( 'public' => TRUE ) );
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -936,7 +938,7 @@ endif;
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// List of category
-		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual category on a single page or archive page as a blocking target.">Category</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
+		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual category on a single page or archive page as a blocking target.">Category</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $common[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_categories( array( 'hide_empty' => FALSE ) );
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -948,7 +950,7 @@ endif;
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// List of tag
-		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual tag on a single page or archive page as a blocking target.">Tag</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $comma[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
+		$exception .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual tag on a single page or archive page as a blocking target.">Tag</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $common[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n";
 		$tmp = get_tags( array( 'hide_empty' => FALSE ) );
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
@@ -1024,7 +1026,7 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'after' => $comma[1],
+				'after' => $common[1],
 			)
 		);
 
@@ -1043,7 +1045,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'field' => $key,
 				'sub-field' => $field,
 				'value' => implode( ',', $options[ $key ][ $field ] ),
-				'after' => $comma[0],
+				'after' => $common[0],
 			)
 		);
 endif;
@@ -1087,7 +1089,7 @@ endif;
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-recording',
-			__( 'Privacy and record settings', 'ip-geo-block' ),
+			array( __( 'Privacy and record settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/privacy-and-record-settings.html" title="Privacy and record settings | IP Geo Block">' . $common[4] . '</a>' ),
 			array( __CLASS__, 'note_privacy' ),
 			$option_slug
 		);
@@ -1247,7 +1249,7 @@ endif;
 				'field' => $field,
 				'sub-field' => 'postkey',
 				'value' => $options[ $field ]['postkey'],
-				'after' => $comma[0],
+				'after' => $common[0],
 			)
 		);
 
@@ -1356,7 +1358,7 @@ endif;
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-provider',
-			__( 'Geolocation API settings', 'ip-geo-block' ),
+			array( __( 'Geolocation API settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/geolocation-api-settings.html" title="Geolocation API settings | IP Geo Block">' . $common[4] . '</a>' ),
 			array( __CLASS__, 'note_services' ),
 			$option_slug
 		);
@@ -1422,7 +1424,7 @@ endif;
 
 		add_settings_section(
 			$section = $plugin_slug . '-database',
-			array( __( 'Local database settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/geolocation-api-library.html" title="Geolocation API library | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>'),
+			array( __( 'Local database settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/geolocation-api-library.html" title="Geolocation API library | IP Geo Block">' . $common[4] . '</a>' ),
 			array( __CLASS__, 'note_database' ),
 			$option_slug
 		);
@@ -1497,7 +1499,7 @@ endif;
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-submission',
-			__( 'Submission settings', 'ip-geo-block' ),
+			array( __( 'Submission settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/submission-settings.html" title="Submission settings | IP Geo Block">' . $common[4] . '</a>' ),
 			NULL,
 			$option_slug
 		);
@@ -1534,7 +1536,7 @@ endif;
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-others',
-			__( 'Plugin settings', 'ip-geo-block' ),
+			array( __( 'Plugin settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/plugin-settings.html" title="Plugin settings | IP Geo Block">' . $common[4] . '</a>' ),
 			NULL,
 			$option_slug
 		);
