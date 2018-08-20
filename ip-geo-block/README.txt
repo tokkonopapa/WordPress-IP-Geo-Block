@@ -385,8 +385,8 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 = 3.0.14 =
 * **Fix issue:** Fix malformed handling of anonymized IP address of IPv6 on clicking a link or applying bulk actions.
 * **Improvement:** All the http had been replaced to https if possible.
-* **New feature:** Add a filter hook `ip-geo-block-logs`. ([forum topic](https://wordpress.org/support/topic/request-log-filtering/ "Topic: Request: Log filtering &#124; WordPress.org"))
-* **New feature:** Load `drop-in-admin.php` in Geolocation API library folder if it exists.
+* **New feature:** Introduce a new filter hook `ip-geo-block-logs`. ([forum topic](https://wordpress.org/support/topic/request-log-filtering/ "Topic: Request: Log filtering &#124; WordPress.org"))
+* **New feature:** Introduce a new drop-in file `drop-in-admin.php` in Geolocation API library folder.
 
 = 3.0.13 =
 * **Deprecate:** Remove the hotfix in 3.0.12.1 because of [WordPress 4.9.7 Security and Maintenance Release](https://wordpress.org/news/2018/07/wordpress-4-9-7-security-and-maintenance-release/ "WordPress 4.9.7 Security and Maintenance Release").
