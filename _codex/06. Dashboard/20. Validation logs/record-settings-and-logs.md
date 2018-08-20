@@ -1,14 +1,13 @@
 ---
 layout: page
 category: codex
-section: Features and performance
-title: Record settings and logs
-excerpt: Record settings and logs
+section: Dashboard
+title: Validation logs
+excerpt: Validation logs
 ---
 
-"**$_POST keys to be recorded with their values in logs**" at 
-"**Record settings**" is useful when you want to investigate the content 
-blocked by this plugin.
+This plugin keeps validation logs when **Record “Logs”** in [**Privacy and 
+record settings**][Privacy] section on **Settings** tab is enabled.
 
 <!--more-->
 
@@ -101,6 +100,7 @@ Here are the descriptions:
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [RFC2616-SEC9]: https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html "HTTP/1.1: Method Definitions"
-[BackupDir]:    {{ '/codex/ip-geo-block-backup-dir.html' | prepend: site.baseurl }} 'ip-geo-block-backup-dir | IP Geo Block'
-[Validation]:   {{ '/codex/ip-geo-block-xxxxx.html'      | prepend: site.baseurl }} 'ip-geo-block-xxxxx | IP Geo Block'
+[BackupDir]:    {{ '/codex/ip-geo-block-backup-dir.html'     | prepend: site.baseurl }} 'ip-geo-block-backup-dir | IP Geo Block'
+[Validation]:   {{ '/codex/ip-geo-block-xxxxx.html'          | prepend: site.baseurl }} 'ip-geo-block-xxxxx | IP Geo Block'
+[Privacy]:      {{ '/codex/privacy-and-record-settings.html' | prepend: site.baseurl }} 'Privacy and record settings | IP Geo Block'
 [PHP-UPLOADS]:  https://php.net/manual/features.file-upload.post-method.php 'PHP: POST method uploads - Manual'
