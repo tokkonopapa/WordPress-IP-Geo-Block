@@ -55,8 +55,8 @@ class IP_Geo_Block_Admin_Tab {
 		// preset IP address
 		if ( isset( $_GET['s'] ) ) {
 			$list = preg_replace(
-				array( '/\.\*+$/', '/:\w*\*+$/' ),
-				array( '.0',       '::'         ),
+				array( '/\.\*+$/', '/:\w*\*+$/', '/(::.*)::$/' ),
+				array( '.0',       '::',         '$1'          ),
 				trim( $_GET['s'] )
 			); // de-anonymize if `***` exists
 			$list = filter_var( $list, FILTER_VALIDATE_IP ) ? $list : '';

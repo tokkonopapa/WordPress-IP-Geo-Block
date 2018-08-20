@@ -1870,7 +1870,10 @@
 							ip = ip.replace(/\.\w+$/, '.0');
 						} else { // in case of IPv6
 							ip = ip.split(':'); // 2001:db80:abcd:0012:0000:0000:0000:0000
-							ip = ip.splice(0, 4).join(':') + '::'; // mask the interface ID
+							ip = ip.splice(0, 4).join(':');
+							if (-1 === ip.indexOf('::')) {
+								ip += '::'; // mask the interface ID
+							}
 							ip = ip.replace(/:{3,}/, '::');
 						}
 						$(ID('@', 'ip_address')).val(ip);
