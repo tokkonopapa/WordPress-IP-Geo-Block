@@ -12,7 +12,7 @@ posted from the specific countries, and also prevents zero-day exploit.
 
 ### Dependency:
 
-[IP Geo API 1.1.12][IPGeoAPI]
+[IP Geo API 1.1.13][IPGeoAPI]
 
 ### Requirement:
 
@@ -45,12 +45,12 @@ This plugin is licensed under the GPL v3.
 [IPGB]:       https://wordpress.org/plugins/ip-geo-block/ "IP Geo Block — WordPress Plugins"
 [Ipdata]:     https://ipdata.co/ "ipdata.co - IP Geolocation and Threat Data API"
 [ipinfo]:     https://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details"
-[Nekudo]:     http://geoip.nekudo.com/ "eoip.nekudo.com | Free IP geolocation API"
+[Nekudo]:     https://geoip.nekudo.com/ "eoip.nekudo.com | Free IP geolocation API"
 [geoiplkup]:  http://geoiplookup.net/ "What Is My IP Address | GeoIP Lookup"
 [ipapi]:      http://ip-api.com/ "IP-API.com - Free Geolocation API"
 [ipstack]:    https://ipstack.com/ "ipstack - Free IP Geolocation API"
 [IPInfoDB]:   https://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools"
-[geoplugin]:  http://www.geoplugin.com/ "geoPlugin to geolocate your visitors"
+[geoplugin]:  https://www.geoplugin.com/ "geoPlugin to geolocate your visitors"
 [Xhanch]:     http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API - IP Get Detail | Xhanch Studio"
 [MaxMind]:    https://www.maxmind.com/ "MaxMind - IP Geolocation and Online Fraud Prevention"
 [IP2Loc]:     https://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location"
