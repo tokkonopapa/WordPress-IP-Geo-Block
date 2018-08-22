@@ -538,17 +538,27 @@ class IP_Geo_Block {
 		$action = isset( $_GET['key'] ) ? 'resetpass' : ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'login' );
 		$action = 'retrievepassword' === $action ? 'lostpassword' : ( 'rp' === $action ? 'resetpass' : $action );
 
-		$settings = self::get_option();
-		$list = $settings['login_action'];
+		// validate emergency login key
+		if ( 'login' === $action && isset( $_GET[ self::PLUGIN_NAME . '-key' ] ) ) {
+			if ( $src = get_option( IP_Geo_Block::OPTION_NAME . '_key' ) ) {
+				$dst = IP_Geo_Block_Util::hash_hmac(
+					function_exists( 'hash' ) ? 'sha256' /* 32 bytes (256 bits) */ : 'sha1' /* 20 bytes (160 bits) */,
+					$_GET[ self::PLUGIN_NAME . '-key' ], NONCE_SALT, TRUE
+				);
+				if ( IP_Geo_Block_Util::hash_equals( hex2bin( $src['hash'] ), $dst ) )
+					return; // validation is OK
+			}
+		}
 
 		// the same rule should be applied to login and logout
-		! empty( $list['login'] ) and $list['logout'] = TRUE;
+		$settings = self::get_option();
+		! empty( $settings['login_action']['login'] ) and $settings['login_action']['logout'] = TRUE;
 
 		// avoid conflict with WP Limit Login Attempts (wp-includes/pluggable.php @since 2.5.0)
 		! empty( $_POST ) and add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
 
 		// enables to skip validation of country on login/out except BuddyPress signup
-		$this->validate_ip( 'login', $settings, ! empty( $list[ $action ] ) || 'bp_' === substr( current_filter(), 0, 3 ) );
+		$this->validate_ip( 'login', $settings, ! empty( $settings['login_action'][ $action ] ) || 'bp_' === substr( current_filter(), 0, 3 ) );
 	}
 
 	/**

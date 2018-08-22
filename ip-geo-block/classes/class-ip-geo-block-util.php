@@ -376,7 +376,7 @@ class IP_Geo_Block_Util {
 	 * @see https://php.net/manual/en/language.operators.increment.php
 	 * @see wp-includes/compat.php
 	 */
-	private static function hash_equals( $a, $b ) {
+	public static function hash_equals( $a, $b ) {
 		// PHP 5 >= 5.6.0 or wp-includes/compat.php
 		if ( function_exists( 'hash_equals' ) )
 			return hash_equals( $a, $b );
@@ -966,16 +966,16 @@ class IP_Geo_Block_Util {
 			// keep the response code and the template file
 			self::$theme_template = array( 'code' => $code, 'file' => $file );
 
-			// when the validation timing is `init`
+			// case 1: validation timing is `init`
 			if ( $action = current_filter() ) { // `plugins_loaded`, `wp` or FALSE
-				add_filter( // `wp` (on front-end target) is too late to apply `init`
-					'wp' === $action ? 'template_include' /* @since 3.0.0 */ : 'init',
+				add_action( // `wp` (on front-end target) is too late to apply `init`
+					'wp' === $action ? 'template_redirect' : 'init',
 					'IP_Geo_Block_Util::load_theme_template', $settings['priority']
 				);
-				return TRUE; // load template at the specified action or filter
+				return TRUE; // load template at the specified action
 			}
 
-			// when the validation timing is `mu-plugins`
+			// case 2: validation timing is `mu-plugins`
 			elseif ( '<?php' !== file_get_contents( $file, FALSE, NULL, 0, 5 ) ) {
 				self::load_theme_template(); // load template and die immediately
 			}
@@ -985,8 +985,46 @@ class IP_Geo_Block_Util {
 	}
 
 	public static function load_theme_template( $template = FALSE ) {
+		global $wp_query;
+		if ( $wp_query )
+			$wp_query->set_404(); // for stylesheet
+
 		status_header( self::$theme_template['code'] ); // @since 2.0.0
+
+		// avoid loading template for HEAD requests because of performance bump. See #14348.
 		'HEAD' !== $_SERVER['REQUEST_METHOD'] and include self::$theme_template['file'];
 		exit;
 	}
+
+	/**
+	 * Generates cryptographically secure pseudo-random bytes
+	 *
+	 */
+	public static function random_bytes( $length = 64 ) {
+		if ( PHP_VERSION_ID < 70000 )
+			require_once IP_GEO_BLOCK_PATH . 'includes/random_compat/random.php';
+
+		// align length
+		$length = max( 64, $length ) - ( $length % 2 );
+
+		try {
+			$str = bin2hex( random_bytes( $length / 2 ) );
+		} catch ( TypeError $e ) {
+			$str = NULL;
+		} catch ( Exception $e ) {
+			$str = NULL;
+		}
+
+		if ( empty( $str ) && function_exists( 'openssl_random_pseudo_bytes' ) )
+			$str = bin2hex( openssl_random_pseudo_bytes( $length / 2 ) );
+
+		if ( empty( $str ) ) {
+			for( $i = 0; $i < $length; $i++ ) {
+				$str .= chr( ( mt_rand( 1, 36 ) <= 26 ) ? mt_rand( 97, 122 ) : mt_rand( 48, 57 ) );
+			}
+		}
+
+		return $str;
+	}
+
 }

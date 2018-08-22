@@ -935,7 +935,7 @@
 
 		// Clear all
 		$(ID('@', 'clear_all')).off('click').on('click', function (/*event*/) {
-			confirm(ip_geo_block.msg[tabNo === 1 ? 4 : 5], function () {
+			confirm(ip_geo_block.msg[0], function () {
 				ajax_clear(tabNo === 1 ? 'cache' : 'logs', null);
 			});
 			return false;
@@ -1455,17 +1455,46 @@
 				return false;
 			});
 
-			// Manipulate DB table for validation logs
-			$(ID('@', 'create_table')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.msg[1], function () {
-					ajax_table('create-table');
+			// Emergency login link
+			$(ID('@', 'login_link')).on('click', function (/*event*/) {
+				ajax_post('login-link', {
+					cmd: 'generate-link'
+				}, function (data) {
+					var elem = $(ID('@', 'login_link')).val(ip_geo_block.msg[4]); // Update existing link
+					elem.siblings(ID('.', 'desc')).remove(); // remove an existing link to a login page
+					if (elem.siblings(ID('#', 'delete-link')).length === 0) {
+						elem.after(
+							'<span>&nbsp;</span>',
+							'<input type="button" id="' + ID('$', 'delete-link') + '" class="button-secondary" value="' + ip_geo_block.msg[5] + '">' // Delete existing link
+						);
+					}
+					$('<p class="ip-geo-block-desc"></p>').appendTo(elem.parent())
+					.append(
+						'Please add the following link to favorites / bookmarks in your browser : ',
+						'<a href="' + data.link + '" title="' + ip_geo_block.msg[1] + '" target=_blank>' + data.link + '</a></p>'
+					);
 				});
 				return false;
 			});
 
-			$(ID('@', 'delete_table')).on('click', function (/*event*/) {
+			$(document).on("click", ID('#', 'delete-link'), function (/*event*/) {
+				confirm(ip_geo_block.msg[0], function () {
+					ajax_post('login-link', {
+						cmd: 'delete-link'
+					}, function (data) {
+						var elem = $(ID('@', 'login_link'));
+						elem.val(ip_geo_block.msg[3]); // Generate new link
+						elem.nextAll().remove();
+						$('<div id="ip-geo-block-login-link">').appendTo(elem.parent());
+					});
+				});
+				return false;
+			});
+
+			// Manipulate DB table for validation logs
+			$(ID('@', 'init_table')).on('click', function (/*event*/) {
 				confirm(ip_geo_block.msg[2], function () {
-					ajax_table('delete-table');
+					ajax_table('init-table');
 				});
 				return false;
 			});
@@ -1581,7 +1610,7 @@
 
 			// Statistics of validation
 			$(ID('@', 'clear_statistics')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.msg[3], function () {
+				confirm(ip_geo_block.msg[0], function () {
 					ajax_clear('statistics', null);
 				});
 				return false;
@@ -1589,7 +1618,7 @@
 
 			// Statistics in logs
 			$(ID('@', 'clear_logs')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.msg[5], function () {
+				confirm(ip_geo_block.msg[0], function () {
 					ajax_clear('logs', null);
 				});
 				return false;

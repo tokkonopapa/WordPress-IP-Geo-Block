@@ -284,12 +284,12 @@ class IP_Geo_Block_Admin {
 				'url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => IP_Geo_Block_Util::create_nonce( $this->get_ajax_action() ),
 				'msg' => array(
-					/* [ 0] */ __( 'Import settings ?',           'ip-geo-block' ),
-					/* [ 1] */ __( 'Create table ?',              'ip-geo-block' ),
-					/* [ 2] */ __( 'Delete table ?',              'ip-geo-block' ),
-					/* [ 3] */ __( 'Clear statistics ?',          'ip-geo-block' ),
-					/* [ 4] */ __( 'Clear cache ?',               'ip-geo-block' ),
-					/* [ 5] */ __( 'Clear logs ?',                'ip-geo-block' ),
+					/* [ 0] */ __( 'Are you sure ?',              'ip-geo-block' ),
+					/* [ 1] */ __( 'Open in a new window.',       'ip-geo-block' ),
+					/* [ 2] */ __( 'Initialize DB tables ?',      'ip-geo-block' ),
+					/* [ 3] */ __( 'Generate new link',           'ip-geo-block' ),
+					/* [ 4] */ __( 'Update existing link',        'ip-geo-block' ),
+					/* [ 5] */ __( 'Delete existing link',        'ip-geo-block' ),
 					/* [ 6] */ __( 'ajax for logged-in user',     'ip-geo-block' ),
 					/* [ 7] */ __( 'ajax for non logged-in user', 'ip-geo-block' ),
 					/* [ 8] */ __( '[Found: %d]',                 'ip-geo-block' ),
@@ -1483,6 +1483,25 @@ endif;
 			}
 			break;
 
+		  case 'generate-link': // Generate new link
+			$link = IP_Geo_Block_Util::random_bytes();
+			$hash = IP_Geo_Block_Util::hash_hmac(
+				function_exists( 'hash' ) ? 'sha256' /* 32 bytes (256 bits) */ : 'sha1' /* 20 bytes (160 bits) */,
+				$link, NONCE_SALT, TRUE
+			);
+			update_option( IP_Geo_Block::OPTION_NAME . '_key', array(
+				'hash' => bin2hex( $hash ),
+				'verify' => md5( $hash ),
+			) );
+			$res = array(
+				'link' => add_query_arg( IP_Geo_Block::PLUGIN_NAME . '-key', $link, wp_login_url() )
+			);
+			break;
+
+		  case 'delete-link': // Delete existing link
+			update_option( IP_Geo_Block::OPTION_NAME . '_key', NULL );
+			break;
+
 		  case 'show-info': // Show system and debug information
 			$res = IP_Geo_Block_Admin_Ajax::get_wp_info();
 			break;
@@ -1577,18 +1596,13 @@ endif;
 			$res = IP_Geo_Block_Admin_Ajax::find_exceptions( $cmd );
 			break;
 
-		  case 'create-table':
-		  case 'delete-table':
+		  case 'init-table':
 			// Need to define `IP_GEO_BLOCK_DEBUG` to true
-			if ( 'create-table' === $cmd )
-				IP_Geo_Block_Logs::create_tables();
-			else
-				IP_Geo_Block_Logs::delete_tables();
-
+			IP_Geo_Block_Logs::delete_tables();
+			IP_Geo_Block_Logs::create_tables();
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 			);
-			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

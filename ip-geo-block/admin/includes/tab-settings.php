@@ -1563,6 +1563,24 @@ if ( IP_GEO_BLOCK_NETWORK ):
 			);
 		}
 endif;
+		// Emergency login link
+		$field = 'login_link';
+		$key = get_option( IP_Geo_Block::OPTION_NAME . '_key' );
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="You can access to the login form at emergency with a specific key.">Emergency login link</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'button',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => empty( $key['hash'] ) ? __( 'Generate new link', 'ip-geo-block' ) :  __( 'Update existing link', 'ip-geo-block' ),
+				'after' => empty( $key['hash'] ) ? '<div id="ip-geo-block-login-link"></div>' : ' <input type="button" class="button-secondary" id="ip-geo-block-delete-link" value="' . __( 'Delete existing link', 'ip-geo-block' ) . '"> <div id="ip-geo-block-login-link"></div>',
+			)
+		);
+
 		// Google Maps API key
 		$field = 'api_key';
 		$key = 'GoogleMap';
@@ -1619,10 +1637,10 @@ endif;
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		// Manipulate DB table for validation logs
-		$field = 'delete_table';
+		$field = 'init_table';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Delete DB tables for this plugin', 'ip-geo-block' ),
+			__( 'DB tables for this plugin', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1630,24 +1648,8 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'type' => 'button',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => __( 'Delete now', 'ip-geo-block' ),
-				'after' => '<div id="ip-geo-block-delete-table"></div>',
-			)
-		);
-
-		$field = 'create_table';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( 'Create DB tables for this plugin', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'button',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => __( 'Create now', 'ip-geo-block' ),
-				'after' => '<div id="ip-geo-block-create-table"></div>',
+				'value' => __( 'Initialize now', 'ip-geo-block' ),
+				'after' => '<div id="ip-geo-block-init-table"></div>',
 			)
 		);
 endif;
