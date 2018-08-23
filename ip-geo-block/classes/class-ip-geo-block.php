@@ -443,12 +443,12 @@ class IP_Geo_Block {
 		//               9 check_behavior (high), check_ua (low)
 		// priority low 10 check_page (high), validate_country (low)
 		$var = self::PLUGIN_NAME . '-' . $hook;
-		$settings['validation' ]['mimetype'  ] and add_filter( $var, array( $this, 'check_upload'    ), 5, 2 );
-		$check_auth                            and add_filter( $var, array( $this, 'check_auth'      ), 6, 2 );
+		$settings['validation' ]['mimetype'  ]  and add_filter( $var, array( $this, 'check_upload'    ), 5, 2 );
+		$check_auth                             and add_filter( $var, array( $this, 'check_auth'      ), 6, 2 );
 		$settings['extra_ips'  ] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
-		$settings['extra_ips'  ]['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
-		$settings['extra_ips'  ]['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
-		$settings['login_fails'] >= 0          and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
+		$settings['extra_ips'  ]['black_list']  and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
+		$settings['extra_ips'  ]['white_list']  and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
+		$settings['login_fails'] >= 0 && $block and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
 
 		// make valid provider name list
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings );
