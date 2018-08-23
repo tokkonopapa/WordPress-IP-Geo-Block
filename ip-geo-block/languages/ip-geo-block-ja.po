@@ -47,7 +47,7 @@ msgstr "リンクを無効化する"
 #: admin/class-ip-geo-block-admin.php:292
 msgid ""
 "Please add the following link to favorites / bookmarks in your browser : "
-msgstr "以下のリンクをブラウザのお気に入り／ブックマークに追加してください："
+msgstr "次のリンクをブラウザのお気に入り／ブックマークに追加して下さい : "
 
 #: admin/class-ip-geo-block-admin.php:293
 msgid "ajax for logged-in user"
