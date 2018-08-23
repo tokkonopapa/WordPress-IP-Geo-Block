@@ -481,7 +481,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			'asn'  => $validate['asn' ], // @since 3.0.4
 			'code' => $validate['code'],
 			'auth' => $validate['auth'], // get_current_user_id() > 0
-			'fail' => $validate['auth'] ? 0 : $fail,
+			'fail' => $fail, // $validate['auth'] ? 0 : $fail,
 			'call' => $settings['save_statistics'] ? $call : 0,
 			'last' => $last,
 			'view' => $view,

@@ -286,10 +286,10 @@ class IP_Geo_Block_Admin {
 				'msg' => array(
 					/* [ 0] */ __( 'Are you sure ?',              'ip-geo-block' ),
 					/* [ 1] */ __( 'Open in a new window.',       'ip-geo-block' ),
-					/* [ 2] */ __( 'Initialize DB tables ?',      'ip-geo-block' ),
-					/* [ 3] */ __( 'Generate new link',           'ip-geo-block' ),
-					/* [ 4] */ __( 'Update existing link',        'ip-geo-block' ),
-					/* [ 5] */ __( 'Delete existing link',        'ip-geo-block' ),
+					/* [ 2] */ __( 'Spare',                       'ip-geo-block' ),
+					/* [ 3] */ __( 'Generate a new link',         'ip-geo-block' ),
+					/* [ 4] */ __( 'Invalidate the link',         'ip-geo-block' ),
+					/* [ 5] */ __( 'Please add the following link to favorites / bookmarks in your browser : ', 'ip-geo-block' ),
 					/* [ 6] */ __( 'ajax for logged-in user',     'ip-geo-block' ),
 					/* [ 7] */ __( 'ajax for non logged-in user', 'ip-geo-block' ),
 					/* [ 8] */ __( '[Found: %d]',                 'ip-geo-block' ),
@@ -915,7 +915,7 @@ endif;
 
 		  case 'button': ?>
 <input type="button" class="button-secondary" id="<?php echo $id; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"
-<?php disabled( ! empty( $args['disabled'] ) ); ?>/>
+<?php disabled( ! empty( $args['disabled'] ) ); if ( isset( $args['data'] ) ) echo 'data-value="', $args['data'], '"'; ?>/>
 <?php
 			break;
 
@@ -1484,22 +1484,11 @@ endif;
 			break;
 
 		  case 'generate-link': // Generate new link
-			$link = IP_Geo_Block_Util::random_bytes();
-			$hash = IP_Geo_Block_Util::hash_hmac(
-				function_exists( 'hash' ) ? 'sha256' /* 32 bytes (256 bits) */ : 'sha1' /* 20 bytes (160 bits) */,
-				$link, NONCE_SALT, TRUE
-			);
-			update_option( IP_Geo_Block::OPTION_NAME . '_key', array(
-				'hash' => bin2hex( $hash ),
-				'verify' => md5( $hash ),
-			) );
-			$res = array(
-				'link' => add_query_arg( IP_Geo_Block::PLUGIN_NAME . '-key', $link, wp_login_url() )
-			);
+			$res = array( 'link' => IP_Geo_Block_Util::generate_link() );
 			break;
 
 		  case 'delete-link': // Delete existing link
-			update_option( IP_Geo_Block::OPTION_NAME . '_key', NULL );
+			IP_Geo_Block_Util::delete_link();
 			break;
 
 		  case 'show-info': // Show system and debug information
@@ -1557,9 +1546,7 @@ endif;
 			else
 				update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
-			$res = array(
-				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
-			);
+			$res = array( 'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME );
 			break;
 
 		  case 'restore-network': // Restore blocked per target in logs
@@ -1600,9 +1587,8 @@ endif;
 			// Need to define `IP_GEO_BLOCK_DEBUG` to true
 			IP_Geo_Block_Logs::delete_tables();
 			IP_Geo_Block_Logs::create_tables();
-			$res = array(
-				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
-			);
+			$res = array( 'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME );
+			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

@@ -1565,7 +1565,7 @@ if ( IP_GEO_BLOCK_NETWORK ):
 endif;
 		// Emergency login link
 		$field = 'login_link';
-		$key = get_option( IP_Geo_Block::OPTION_NAME . '_key' );
+		$key = IP_Geo_Block_Util::get_link();
 		add_settings_field(
 			$option_name.'_'.$field,
 			__( '<dfn title="You can access to the login form at emergency with a specific key.">Emergency login link</dfn>', 'ip-geo-block' ),
@@ -1576,8 +1576,9 @@ endif;
 				'type' => 'button',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => empty( $key['hash'] ) ? __( 'Generate new link', 'ip-geo-block' ) :  __( 'Update existing link', 'ip-geo-block' ),
-				'after' => empty( $key['hash'] ) ? '<div id="ip-geo-block-login-link"></div>' : ' <input type="button" class="button-secondary" id="ip-geo-block-delete-link" value="' . __( 'Delete existing link', 'ip-geo-block' ) . '"> <div id="ip-geo-block-login-link"></div>',
+				'value' => empty( $key ) ? __( 'Generate a new link', 'ip-geo-block' ) :  __( 'Invalidate the link', 'ip-geo-block' ),
+				'data'  => empty( $key ) ? 'generate' : 'delete',
+				'after' => '<div id="ip-geo-block-login-link"></div>',
 			)
 		);
 

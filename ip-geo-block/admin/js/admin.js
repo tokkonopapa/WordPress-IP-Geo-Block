@@ -1457,43 +1457,37 @@
 
 			// Emergency login link
 			$(ID('@', 'login_link')).on('click', function (/*event*/) {
-				ajax_post('login-link', {
-					cmd: 'generate-link'
-				}, function (data) {
-					var elem = $(ID('@', 'login_link')).val(ip_geo_block.msg[4]); // Update existing link
-					elem.siblings(ID('.', 'desc')).remove(); // remove an existing link to a login page
-					if (elem.siblings(ID('#', 'delete-link')).length === 0) {
-						elem.after(
-							'<span>&nbsp;</span>',
-							'<input type="button" id="' + ID('$', 'delete-link') + '" class="button-secondary" value="' + ip_geo_block.msg[5] + '">' // Delete existing link
-						);
-					}
-					$('<p class="ip-geo-block-desc"></p>').appendTo(elem.parent())
-					.append(
-						'Please add the following link to favorites / bookmarks in your browser : ',
-						'<a href="' + data.link + '" title="' + ip_geo_block.msg[1] + '" target=_blank>' + data.link + '</a></p>'
-					);
-				});
-				return false;
-			});
-
-			$(document).on("click", ID('#', 'delete-link'), function (/*event*/) {
-				confirm(ip_geo_block.msg[0], function () {
+				var $this = $(this);
+				if ( 'generate' === $this.data('value') ) {
 					ajax_post('login-link', {
-						cmd: 'delete-link'
+						cmd: 'generate-link'
 					}, function (data) {
-						var elem = $(ID('@', 'login_link'));
-						elem.val(ip_geo_block.msg[3]); // Generate new link
-						elem.nextAll().remove();
-						$('<div id="ip-geo-block-login-link">').appendTo(elem.parent());
+						$this.val(ip_geo_block.msg[4]).data('value', 'delete');
+						$this.nextAll(ID('.', 'desc')).remove();
+						$('<p class="ip-geo-block-desc"></p>')
+						.appendTo($this.parent())
+						.append(
+							ip_geo_block.msg[5],
+							'<a href="' + data.link + '" title="' + ip_geo_block.msg[1] + '" target=_blank>' + data.link + '</a></p>'
+						);
 					});
-				});
+				} else {
+					confirm(ip_geo_block.msg[0], function () {
+						ajax_post('login-link', {
+							cmd: 'delete-link'
+						}, function (data) {
+							$this.val(ip_geo_block.msg[3]).data('value', 'generate');
+							$this.nextAll().remove();
+							$('<div id="ip-geo-block-login-link">').appendTo($this.parent());
+						});
+					});
+				}
 				return false;
 			});
 
 			// Manipulate DB table for validation logs
 			$(ID('@', 'init_table')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.msg[2], function () {
+				confirm(ip_geo_block.msg[0], function () {
 					ajax_table('init-table');
 				});
 				return false;

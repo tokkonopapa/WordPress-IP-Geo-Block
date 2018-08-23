@@ -376,7 +376,7 @@ class IP_Geo_Block_Util {
 	 * @see https://php.net/manual/en/language.operators.increment.php
 	 * @see wp-includes/compat.php
 	 */
-	public static function hash_equals( $a, $b ) {
+	private static function hash_equals( $a, $b ) {
 		// PHP 5 >= 5.6.0 or wp-includes/compat.php
 		if ( function_exists( 'hash_equals' ) )
 			return hash_equals( $a, $b );
@@ -1000,7 +1000,7 @@ class IP_Geo_Block_Util {
 	 * Generates cryptographically secure pseudo-random bytes
 	 *
 	 */
-	public static function random_bytes( $length = 64 ) {
+	private static function random_bytes( $length = 64 ) {
 		if ( PHP_VERSION_ID < 70000 )
 			require_once IP_GEO_BLOCK_PATH . 'includes/random_compat/random.php';
 
@@ -1025,6 +1025,46 @@ class IP_Geo_Block_Util {
 		}
 
 		return $str;
+	}
+
+	/**
+	 * Manipulate emergency login link
+	 *
+	 */
+	private static function hash_link( $link ) {
+		return self::hash_hmac(
+			function_exists( 'hash' ) ? 'sha256' /* 32 bytes (256 bits) */ : 'sha1' /* 20 bytes (160 bits) */,
+			$link, NONCE_SALT, TRUE
+		);
+	}
+
+	public static function generate_link() {
+		$link = self::random_bytes();
+		$hash = self::hash_link( $link );
+
+		$ext = get_option( IP_Geo_Block::OPTION_NAME . '_ext' ) or $ext = array();
+		$ext['login'] = array(
+			'link' => bin2hex( $hash ),
+			'hash' => bin2hex( self::hash_link( $hash ) ),
+		);
+		update_option( IP_Geo_Block::OPTION_NAME . '_ext', $ext );
+
+		return add_query_arg( IP_Geo_Block::PLUGIN_NAME . '-key', $link, wp_login_url() );
+	}
+
+	public static function delete_link() {
+		$ext = get_option( IP_Geo_Block::OPTION_NAME . '_ext' );
+		! empty( $ext['login'] ) and $ext['login'] = array();
+		update_option( IP_Geo_Block::OPTION_NAME . '_ext', $ext );
+	}
+
+	public static function verify_link( $link ) {
+		return self::hash_equals( hex2bin( self::get_link() ), self::hash_link( $link ) );
+	}
+
+	public static function get_link() {
+		$ext = get_option( IP_Geo_Block::OPTION_NAME . '_ext' );
+		return ! empty( $ext['login']['link'] ) ? $ext['login']['link'] : FALSE;
 	}
 
 }
