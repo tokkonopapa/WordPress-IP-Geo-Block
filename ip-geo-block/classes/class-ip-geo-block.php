@@ -182,7 +182,7 @@ class IP_Geo_Block {
 
 	// get optional values from wp options
 	public static function get_option() {
-		return FALSE !== ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
+		return ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
 	}
 
 	// get the WordPress path of validation target
@@ -267,9 +267,9 @@ class IP_Geo_Block {
 	 * Return true if the validation result is passed.
 	 *
 	 */
-	public static function is_passed ( $result )      { return 0 === strncmp( 'pass', $result, 4 );       }
-	public static function is_blocked( $result )      { return 0 !== strncmp( 'pass', $result, 4 );       }
-	public static function is_listed ( $code, $list ) { return $list && FALSE !== strpos( $list, $code ); }
+	public static function is_passed ( $result )      { return 0 === strncmp( 'pass', $result, 4 );      }
+	public static function is_blocked( $result )      { return 0 !== strncmp( 'pass', $result, 4 );      }
+	public static function is_listed ( $code, $list ) { return FALSE !== strpos( $list, (string)$code ); }
 
 	/**
 	 * Build a validation result for the current user.
@@ -533,7 +533,7 @@ class IP_Geo_Block {
 	 * Validate on login.
 	 *
 	 */
- 	public function filter_login_key( $url, $path, $scheme, $blog_id ) {
+ 	public function filter_login_url( $url, $path, $scheme, $blog_id ) {
  		if ( isset( $this->login_key ) && FALSE !== strpos( $url, $this->request_uri ) )
 			$url = esc_url( add_query_arg( self::PLUGIN_NAME . '-key', $this->login_key, $url ) );
 
@@ -556,9 +556,11 @@ class IP_Geo_Block {
 		if ( 'login' === $action && ! empty( $_REQUEST[ self::PLUGIN_NAME . '-key' ] ) &&
 		     IP_Geo_Block_Util::verify_link( $_REQUEST[ self::PLUGIN_NAME . '-key' ] ) ) {
 			$this->login_key = sanitize_key( $_REQUEST[ self::PLUGIN_NAME . '-key' ] );
-			has_filter( 'site_url', array( $this, 'filter_login_key' ) ) or
-			add_filter( 'site_url', array( $this, 'filter_login_key' ), 10, 4 );
-			$settings['login_action']['login'] = FALSE; // skip blocking
+
+			// add the verified key to the url in login form
+			has_filter( 'site_url', array( $this, 'filter_login_url' ) ) or
+			add_filter( 'site_url', array( $this, 'filter_login_url' ), 10, 4 );
+			$settings['login_action']['login'] = FALSE; // skip blocking in validate_ip()
 		}
 
 		// enables to skip validation of country on login/out except BuddyPress signup

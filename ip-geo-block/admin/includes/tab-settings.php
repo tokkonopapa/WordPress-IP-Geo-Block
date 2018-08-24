@@ -141,7 +141,7 @@ endif;
 					 0 => __( 'A request from which the country code or IP address is <strong>NOT</strong> in the whitelist will be blocked.', 'ip-geo-block' ),
 					 1 => __( 'A request from which the country code or IP address is in the blacklist will be blocked.', 'ip-geo-block' ),
 				),
-				'before' => '<input type="hidden" name="ip_geo_block_settings[version]" value="' . esc_html( $options['version'] ) . '" />',
+				'before' => '<input type="hidden" name="ip_geo_block_settings[version]" value="' . IP_Geo_Block::VERSION . '" />',
 			)
 		);
 
@@ -329,7 +329,7 @@ endif;
 		$field = 'login_fails';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221;. Lockout period is defined as expiration time of &#8220;IP address Cache&#8221; in &#8220;Privacy and record settings&#8221; section.">Max number of failed login attempts per IP address</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221; when &#8220;IP address cache&#8221; in &#8220;Privacy and record settings&#8221; section is enabled. Lockout period is the same as expiration time of the cache.">Max number of failed login attempts per IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -628,7 +628,7 @@ endif;
 			__( 'Select the item which causes unintended blocking in order to exclude from the validation target. Grayed item indicates &#8220;INACTIVE&#8221;.', 'ip-geo-block' ),
 			__( 'It configures &#8220;%s&#8221; to validate a direct request to the PHP file which does not load WordPress core. Make sure to deny direct access to the hidden files beginning with a dot by the server\'s configuration.', 'ip-geo-block' ),
 			__( 'Sorry, but your server type is not supported.', 'ip-geo-block' ),
-			__( 'You need to click the &#8220;Save Changes&#8221; button for imported settings to take effect.', 'ip-geo-block' ),
+			__( 'You need to click &#8220;Save Changes&#8221; button for imported settings to take effect.', 'ip-geo-block' ),
 		);
 
 		// Set rewrite condition
@@ -1126,11 +1126,11 @@ endif;
 			)
 		);
 
-		// Record "Statistics"
+		// Record Statistics of validation
 		$field = 'save_statistics';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="This option enables to record the number blocked countries and the number of blocked requests per day.">Record &#8220;Statistics&#8221;</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option enables to record the number blocked countries and the number of blocked requests per day.">Record &#8220;Statistics of validation&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1161,11 +1161,11 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		);
 endif;
 
-		// Record IP address Cache
+		// Record IP address cache
 		$field = 'cache_hold';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="This option enables to record the IP address, country code and failure counter of login attempts into the cache on database to minimize the impact on site speed.">Record &#8220;IP address Cache&#8221;</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option enables to record the IP address, country code and failure counter of login attempts into the cache on database to minimize the impact on site speed.">Record &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1193,11 +1193,11 @@ endif;
 			)
 		);
 
-		// Record "Logs"
+		// Record Validation logs
 		$field = 'validation';
 		add_settings_field(
 			$option_name.'_'.$field.'_reclogs',
-			__( '<dfn title="This option enables to record the validation logs including IP addresses.">Record &#8220;Logs&#8221;</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option enables to record the validation logs including IP addresses.">Record &#8220;Validation logs&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1324,7 +1324,7 @@ endif;
 		$field = 'cache_time_gc';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries in &#8220;IP address Cache&#8221; and &#8220;Logs&#8221;.">Interval [sec] to cleanup expired entries of IP address</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries in &#8220;IP address cache&#8221; and &#8220;Logs&#8221;.">Interval [sec] to cleanup expired entries of IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1379,7 +1379,7 @@ endif;
 		$field = 'providers';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="IP address Cache and local databases are scanned at the top priority.">API selection and key settings</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="IP address cache and local databases are scanned at the top priority.">API selection and key settings</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1568,15 +1568,15 @@ endif;
 		$key = IP_Geo_Block_Util::get_link();
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="You can access to the login form at emergency with a specific key.">Emergency login link</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="You can access to the login form with a specific key at emergency. Please add the generated link to favorites / bookmarks in your browser as this plugin does not keep the key itself.">Emergency login link</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
 				'type' => 'none',
 				'before' => empty( $key ) ?
-					'<a class="button-secondary ip-geo-block-hilight" id="ip-geo-block-login-link" title="' . __( '', 'ip-geo-block' ) . '" href="#!">'. __( 'Generate a new link', 'ip-geo-block' ) . '</a>&nbsp;' :
-					'<a class="button-secondary'                  .'" id="ip-geo-block-login-link" title="' . __( '', 'ip-geo-block' ) . '" href="#!">'. __( 'Invalidate the link', 'ip-geo-block' ) . '</a>&nbsp;',
+					'<a class="button-secondary ip-geo-block-primary" id="ip-geo-block-login-link" href="#!">'. __( 'Generate new link',   'ip-geo-block' ) . '</a>&nbsp;' :
+					'<a class="button-secondary'                  .'" id="ip-geo-block-login-link" href="#!">'. __( 'Delete current link', 'ip-geo-block' ) . '</a>&nbsp;',
 				'after' => '<div id="ip-geo-block-login-loading"></div>',
 			)
 		);
@@ -1629,14 +1629,14 @@ endif;
 			array(
 				'type' => 'none',
 				'before' =>
-					'<a class="button-secondary" id="ip-geo-block-default" title="' . __( 'Import the default settings to revert to the &#8220;Right after installing&#8221; state', 'ip-geo-block' ) . '" href="#!">' . __( 'Default settings', 'ip-geo-block' ) . '</a>&nbsp;' .
-					'<a class="button-secondary" id="ip-geo-block-preferred" title="' . __( 'Import the preferred settings mainly by enabling Zero-day Exploit Prevention for the &#8220;Back-end target settings&#8221;', 'ip-geo-block' ) . '" href="#!">' . __( 'Best for Back-end', 'ip-geo-block' ) . '</a>',
+					'<a class="button-secondary"'                  .' id="ip-geo-block-default" title="' . __( 'Import the default settings to revert to the &#8220;Right after installing&#8221; state', 'ip-geo-block' ) . '" href="#!">' . __( 'Default settings', 'ip-geo-block' ) . '</a>&nbsp;' .
+					'<a class="button-secondary ip-geo-block-primary" id="ip-geo-block-preferred" title="' . __( 'Import the preferred settings mainly by enabling Zero-day Exploit Prevention for the &#8220;Back-end target settings&#8221;', 'ip-geo-block' ) . '" href="#!">' . __( 'Best for Back-end', 'ip-geo-block' ) . '</a>',
 				'after' => '<div id="ip-geo-block-pre-defined"></div>',
 			)
 		);
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		// Manipulate DB table for validation logs
+		// DB tables for this plugin
 		$field = 'init_table';
 		add_settings_field(
 			$option_name.'_'.$field,
@@ -1658,14 +1658,14 @@ endif;
 		$field = 'show-info';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="When you have some unexpected blocking experiences, please press the button to find the blocked requests at the end of dumped information which may help you to solve the issues.">Diagnostic information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a> ]', 'ip-geo-block' ),
+			__( '<dfn title="When you have some unexpected blocking experiences, please press the button to find the blocked requests at the end of dumped information which may help you to solve the issues.">Diagnostic information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="[IP Geo Block] Support | WordPress.org">support forum</a> ]', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
 				'type' => 'none',
 				'before' =>
-					'<a class="button-secondary" id="ip-geo-block-show-info" title="' . __( 'Please copy &amp; paste when submitting your issue to support forum.', 'ip-geo-block' ) . '" href="#!">' . __( 'Show information', 'ip-geo-block' ) . '</a>&nbsp;',
+					'<a class="button-secondary" id="ip-geo-block-show-info" title="' . __( 'Please copy &amp; paste when submitting your issue to support forum', 'ip-geo-block' ) . '" href="#!">' . __( 'Show information', 'ip-geo-block' ) . '</a>&nbsp;',
 				'after' => '<div id="ip-geo-block-wp-info"></div>',
 			)
 		);
@@ -1708,7 +1708,7 @@ endif;
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
 				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="https://www.ipgeoblock.com/codex/#blocking-on-front-end" title="Codex | IP Geo Block">Blocking on front-end</a>&#8221; for details, including restrictions on cache plugin.', 'ip-geo-block' ), '</li>', "\n",
-				'<li>', __( 'If you find any issues or have something to suggest, please feel free to open an issue at <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block">support forum</a>.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'If you find any issues or have something to suggest, please feel free to open an issue at <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="[IP Geo Block] Support | WordPress.org">support forum</a>.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 

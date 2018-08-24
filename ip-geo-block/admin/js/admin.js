@@ -79,11 +79,11 @@
 	}
 
 	function warning(status, msg, cmd) {
-		window.alert(stripTag(msg || ip_geo_block.msg[12].replace('%s', cmd) + ' (' + status + ')'));
+		window.alert(stripTag(msg || ip_geo_block.msg[11].replace('%s', cmd) + ' (' + status + ')'));
 	}
 
 	function notice_html5() {
-		warning(null, stripTag(ip_geo_block.msg[10]));
+		warning(null, stripTag(ip_geo_block.msg[9]));
 	}
 
 	function redirect(page, tab) {
@@ -883,7 +883,7 @@
 			if (!cmd) {
 				return false;
 			} else if (!cells.length) {
-				warning(null, ip_geo_block.msg[11]);
+				warning(null, ip_geo_block.msg[10]);
 				return false;
 			}
 
@@ -1153,10 +1153,10 @@
 							j.appendChild(i);
 
 							if (1 & data[key]) {
-								j.appendChild(add_icon(dfn, span, ip_geo_block.msg[6], 'lock'));
+								j.appendChild(add_icon(dfn, span, ip_geo_block.msg[5], 'lock'));
 							}
 							if (2 & data[key]) {
-								j.appendChild(add_icon(dfn, span, ip_geo_block.msg[7], 'unlock'));
+								j.appendChild(add_icon(dfn, span, ip_geo_block.msg[6], 'unlock'));
 							}
 
 							$this.append(j);
@@ -1213,7 +1213,7 @@
 				$(ID('.', 'icon-find')).on('click', function (/*event*/) {
 					var $this  = $(this),
 					    list = [], n = 0, key, ext, id, s,
-					    title  = stripTag(ip_geo_block.msg[9]),
+					    title  = stripTag(ip_geo_block.msg[8]),
 					    target = stripTag($this.data('target')); // `admin`, `plugins`, `themes`
 
 					// show description
@@ -1266,7 +1266,7 @@
 						// update status of checkbox
 						$(ID('@', 'exception_' + target)).trigger('change');
 						$(ID('#', 'find-' + target)).append(
-							' ' + '<span class="ip-geo-block-warn">' + stripTag(ip_geo_block.msg[8].replace('%d', n)) + '</span>'
+							' ' + '<span class="ip-geo-block-warn">' + stripTag(ip_geo_block.msg[7].replace('%d', n)) + '</span>'
 						);
 					});
 
@@ -1457,17 +1457,17 @@
 
 			// Emergency login link
 			$(ID('#', 'login-link')).on('click', function (/*event*/) {
-				var $this = $(this), type = ID('$', 'hilight');
+				var $this = $(this), type = ID('$', 'primary');
 				if ($this.hasClass(type)) {
 					ajax_post('login-loading', {
 						cmd: 'generate-link'
 					}, function (data) {
-						$this.text(ip_geo_block.msg[4]);
+						$this.text(ip_geo_block.msg[3]);
 						$this.removeClass(type).nextAll(ID('.', 'desc')).remove();
 						$('<p class="ip-geo-block-desc"></p>')
 						.appendTo($this.parent())
 						.append(
-							ip_geo_block.msg[5],
+							ip_geo_block.msg[4],
 							'<a href="' + data.link + '" title="' + ip_geo_block.msg[1] + '" target=_blank>' + data.link + '</a></p>'
 						);
 					});
@@ -1476,7 +1476,7 @@
 						ajax_post('login-loading', {
 							cmd: 'delete-link'
 						}, function (data) {
-							$this.text(ip_geo_block.msg[3]);
+							$this.text(ip_geo_block.msg[2]);
 							$this.addClass(type).nextAll(ID('.', 'desc')).remove();
 						});
 					});

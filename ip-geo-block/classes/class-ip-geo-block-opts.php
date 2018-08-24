@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.13',// Version of this table (not package)
+		'version'         => '3.0.14',// Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -190,6 +190,11 @@ class IP_Geo_Block_Opts {
 		),
 		// since version 3.0.13
 		'restrict_api'    => TRUE,       // Do not send IP address to external APIs
+		// since version 3.0.14
+		'login_link'      => array(
+			'link'           => NULL,    // key of login link
+			'hash'           => NULL,    // hash of 'link'
+		),
 	);
 
 	/**
@@ -420,6 +425,9 @@ class IP_Geo_Block_Opts {
 				$settings['restrict_api'] = $settings['anonymize'];
 				IP_Geo_Block_Logs::upgrade( $version );
 			}
+
+			if ( version_compare( $version, '3.0.14' ) < 0 )
+				$settings['login_link'] = $default['login_link'];
 
 			// update package version number
 			$settings['version'] = IP_Geo_Block::VERSION;

@@ -171,7 +171,7 @@ endif; // $options['validation']['reclogs']
 	public static function warn_accesslog() {
 		$context = IP_Geo_Block_Admin::get_instance();
 		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 3 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-3' );
-		echo '<p style="padding:0 1em">', sprintf( __( '[ %sRecord &#8220;Logs&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '">', '</a>' ), '</p>', "\n";
+		echo '<p style="padding:0 1em">', sprintf( __( '[ %sRecord &#8220;Validation logs&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '">', '</a>' ), '</p>', "\n";
 		echo '<p style="padding:0 1em">', __( 'Please set the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
 	}
 

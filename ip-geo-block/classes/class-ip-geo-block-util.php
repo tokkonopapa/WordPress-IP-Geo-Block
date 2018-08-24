@@ -1042,20 +1042,20 @@ class IP_Geo_Block_Util {
 		$link = self::random_bytes();
 		$hash = self::hash_link( $link );
 
-		$ext = get_option( IP_Geo_Block::OPTION_NAME . '_ext' ) or $ext = array();
-		$ext['login'] = array(
+		$settings = IP_Geo_Block::get_option();
+		$settings['login_link'] = array(
 			'link' => bin2hex( $hash ),
 			'hash' => bin2hex( self::hash_link( $hash ) ),
 		);
-		update_option( IP_Geo_Block::OPTION_NAME . '_ext', $ext );
 
+		update_option( IP_Geo_Block::OPTION_NAME, $settings );
 		return add_query_arg( IP_Geo_Block::PLUGIN_NAME . '-key', $link, wp_login_url() );
 	}
 
 	public static function delete_link() {
-		$ext = get_option( IP_Geo_Block::OPTION_NAME . '_ext' );
-		! empty( $ext['login'] ) and $ext['login'] = array();
-		update_option( IP_Geo_Block::OPTION_NAME . '_ext', $ext );
+		$settings = IP_Geo_Block::get_option();
+		$settings['login_link'] = array();
+		update_option( IP_Geo_Block::OPTION_NAME, $settings );
 	}
 
 	public static function verify_link( $link ) {
@@ -1063,8 +1063,8 @@ class IP_Geo_Block_Util {
 	}
 
 	public static function get_link() {
-		$ext = get_option( IP_Geo_Block::OPTION_NAME . '_ext' );
-		return ! empty( $ext['login']['link'] ) ? $ext['login']['link'] : FALSE;
+		$settings = IP_Geo_Block::get_option();
+		return ! empty( $settings['login_link']['link'] ) ? $settings['login_link']['link'] : FALSE;
 	}
 
 }

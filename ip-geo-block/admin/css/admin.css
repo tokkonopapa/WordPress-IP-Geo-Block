@@ -213,6 +213,16 @@ input[id*="ip_geo_block_settings_providers"] + label {
     color: #2786C2;
     display: inline-block;
 }
+.ip-geo-block-primary {
+    color: #fff !important;;
+    background: #00838f !important;
+    border-color: #00707a !important;
+    text-shadow: none; /* for WordPress 3.7.21 */
+}
+.ip-geo-block-primary:hover {
+    background-color: #00919e !important;
+    border-color: #00525a !important;
+}
 
 /* Loading image */
 .ip-geo-block-loading,
@@ -332,18 +342,6 @@ table.ip-geo-block-table td:first-child {
     word-wrap: normal;
     word-break: normal;
     white-space: pre;
-}
-#ip-geo-block-preferred,
-.ip-geo-block-hilight {
-    color: #fff !important;;
-    background: #00838f !important;
-    border-color: #00707a !important;
-    text-shadow: none; /* for WordPress 3.7.21 */
-}
-#ip-geo-block-preferred:hover,
-.ip-geo-block-hilight:hover {
-    background-color: #00919e !important;
-    border-color: #00525a !important;
 }
 #ip-geo-block-back-to-top {
     margin:0;
