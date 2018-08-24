@@ -333,13 +333,15 @@ table.ip-geo-block-table td:first-child {
     word-break: normal;
     white-space: pre;
 }
-#ip-geo-block-preferred {
-    color: #fff;
+#ip-geo-block-preferred,
+.ip-geo-block-hilight {
+    color: #fff !important;;
     background: #00838f !important;
     border-color: #00707a !important;
     text-shadow: none; /* for WordPress 3.7.21 */
 }
-#ip-geo-block-preferred:hover {
+#ip-geo-block-preferred:hover,
+.ip-geo-block-hilight:hover {
     background-color: #00919e !important;
     border-color: #00525a !important;
 }

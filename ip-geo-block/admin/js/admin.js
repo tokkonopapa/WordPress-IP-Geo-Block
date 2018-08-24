@@ -1456,14 +1456,14 @@
 			});
 
 			// Emergency login link
-			$(ID('@', 'login_link')).on('click', function (/*event*/) {
-				var $this = $(this);
-				if ( 'generate' === $this.data('value') ) {
-					ajax_post('login-link', {
+			$(ID('#', 'login-link')).on('click', function (/*event*/) {
+				var $this = $(this), type = ID('$', 'hilight');
+				if ($this.hasClass(type)) {
+					ajax_post('login-loading', {
 						cmd: 'generate-link'
 					}, function (data) {
-						$this.val(ip_geo_block.msg[4]).data('value', 'delete');
-						$this.nextAll(ID('.', 'desc')).remove();
+						$this.text(ip_geo_block.msg[4]);
+						$this.removeClass(type).nextAll(ID('.', 'desc')).remove();
 						$('<p class="ip-geo-block-desc"></p>')
 						.appendTo($this.parent())
 						.append(
@@ -1473,12 +1473,11 @@
 					});
 				} else {
 					confirm(ip_geo_block.msg[0], function () {
-						ajax_post('login-link', {
+						ajax_post('login-loading', {
 							cmd: 'delete-link'
 						}, function (data) {
-							$this.val(ip_geo_block.msg[3]).data('value', 'generate');
-							$this.nextAll().remove();
-							$('<div id="ip-geo-block-login-link">').appendTo($this.parent());
+							$this.text(ip_geo_block.msg[3]);
+							$this.addClass(type).nextAll(ID('.', 'desc')).remove();
 						});
 					});
 				}
