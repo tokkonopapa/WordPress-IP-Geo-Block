@@ -580,6 +580,16 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			}
 		}
 endif;
+		// Check consistency of emergency login link
+		if ( $settings['login_link']['link'] && ! IP_Geo_Block_Util::verify_link( $settings['login_link']['link'], $settings['login_link']['hash'] ) ) {
+			self::add_admin_notice( 'error',
+				sprintf(
+					__( 'Emergency login link is outdated. Please delete it once and generate again at &#8220;%sPlugin settings%s&#8221; section. Also do not forget to update favorites / bookmarks in your browser.', 'ip-geo-block' ),
+					'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 7 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-7' ) . '">', '</a></strong>'
+				)
+			);
+		}
+
 		// Check activation of IP Geo Allow
 		if ( $settings['validation']['timing'] && is_plugin_active( 'ip-geo-allow/index.php' ) ) {
 			self::add_admin_notice( 'error',

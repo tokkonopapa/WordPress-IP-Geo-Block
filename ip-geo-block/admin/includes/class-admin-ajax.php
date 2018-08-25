@@ -511,6 +511,7 @@ endif; // TEST_RESTORE_NETWORK
 			'[extra_ips][white_list]',
 			'[extra_ips][black_list]',
 			'[anonymize]',
+			'[restrict_api]',            // 3.0.13
 			'[signature]',
 			'[login_fails]',
 			'[response_code]',
@@ -642,7 +643,6 @@ endif; // TEST_RESTORE_NETWORK
 							$json[ $prfx.'['.$m[1].']['.$m[2].']' ] = implode( ',', $input[ $m[1] ][ $m[2] ] );
 						}
 					}
-					break;
 				}
 			}
 		}

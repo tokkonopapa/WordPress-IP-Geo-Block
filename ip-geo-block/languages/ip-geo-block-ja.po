@@ -33,7 +33,7 @@ msgid "Are you sure ?"
 msgstr "実行してもよいですか？"
 
 #: admin/class-ip-geo-block-admin.php:288
-#: admin/class-ip-geo-block-admin.php:751
+#: admin/class-ip-geo-block-admin.php:761
 msgid "Open a new window"
 msgstr "別窓で開く"
 
@@ -77,7 +77,7 @@ msgid "The selected row cannot be found in the visible area."
 msgstr "可視領域に選択された行が見つかりません。"
 
 #: admin/class-ip-geo-block-admin.php:298
-#: admin/class-ip-geo-block-admin.php:1528
+#: admin/class-ip-geo-block-admin.php:1538
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr "Ajaxコマンド `%s` の実行中にエラーが発生しました。"
@@ -166,7 +166,7 @@ msgstr "開発に参加"
 
 #: admin/class-ip-geo-block-admin.php:356
 #: admin/class-ip-geo-block-admin.php:474
-#: admin/class-ip-geo-block-admin.php:693
+#: admin/class-ip-geo-block-admin.php:703
 msgid "Settings"
 msgstr "設定"
 
@@ -180,7 +180,7 @@ msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
 #: admin/class-ip-geo-block-admin.php:484
-#: admin/class-ip-geo-block-admin.php:698
+#: admin/class-ip-geo-block-admin.php:708
 msgid "Site List"
 msgstr "サイト一覧"
 
@@ -262,7 +262,17 @@ msgstr ""
 "キャッシュの統計%s］でキャッシュされているあなたのIPアドレスを削除して下さ"
 "い。"
 
-#: admin/class-ip-geo-block-admin.php:586
+#: admin/class-ip-geo-block-admin.php:587
+#, php-format
+msgid ""
+"Emergency login link is outdated. Please delete it once and generate again "
+"at &#8220;%sPlugin settings%s&#8221; section. Also do not forget to update "
+"favorites / bookmarks in your browser."
+msgstr ""
+"緊急ログインリンクが古くなっています。［%sプラグインの設定%s］で一度削除してから再度生成して"
+"ください。 またブラウザのお気に入り/ブックマークも忘れずに更新して下さい。"
+
+#: admin/class-ip-geo-block-admin.php:596
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
@@ -272,32 +282,32 @@ msgstr ""
 "択されていますが、<strong>IP Geo Allow</strong> と互換性がありません。"
 "「&#8220;init&#8221; アクション・フック」を選択してください。"
 
-#: admin/class-ip-geo-block-admin.php:694
+#: admin/class-ip-geo-block-admin.php:704
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:695
+#: admin/class-ip-geo-block-admin.php:705
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:696
+#: admin/class-ip-geo-block-admin.php:706
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:697
+#: admin/class-ip-geo-block-admin.php:707
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:714
-#: admin/class-ip-geo-block-admin.php:731
+#: admin/class-ip-geo-block-admin.php:724
+#: admin/class-ip-geo-block-admin.php:741
 msgid "Network wide"
 msgstr "ネットワーク管理"
 
-#: admin/class-ip-geo-block-admin.php:744
+#: admin/class-ip-geo-block-admin.php:754
 msgid "Toggle all"
 msgstr "全てを開閉"
 
-#: admin/class-ip-geo-block-admin.php:747
+#: admin/class-ip-geo-block-admin.php:757
 msgid ""
 "Independent of &#8220;Privacy and record settings&#8221;, you can see all "
 "the requests validated by this plugin in almost real time."
@@ -305,19 +315,19 @@ msgstr ""
 "［プライバシーと記録の設定］にかかわらず、このプラグインによる検証結果のすべ"
 "てを、ほぼリアルタイムに表示します。"
 
-#: admin/class-ip-geo-block-admin.php:747 admin/includes/tab-accesslog.php:39
+#: admin/class-ip-geo-block-admin.php:757 admin/includes/tab-accesslog.php:39
 msgid "Live update"
 msgstr "ライブアップデート"
 
-#: admin/class-ip-geo-block-admin.php:751
+#: admin/class-ip-geo-block-admin.php:761
 msgid "Open a new window on clicking the link in the chart."
 msgstr "チャート内のリンクをクリックすると、新しいウィンドウが開きます。"
 
-#: admin/class-ip-geo-block-admin.php:774
+#: admin/class-ip-geo-block-admin.php:784
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:775
+#: admin/class-ip-geo-block-admin.php:785
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"https://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -327,23 +337,23 @@ msgstr ""
 "html\" title=\"Referer Checker\">参照元を残さずにリンク先にリダイレクトできま"
 "す</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:780
+#: admin/class-ip-geo-block-admin.php:790
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: admin/class-ip-geo-block-admin.php:872
+#: admin/class-ip-geo-block-admin.php:882
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:887
+#: admin/class-ip-geo-block-admin.php:897
 msgid "Select one"
 msgstr "何れかを選択"
 
-#: admin/class-ip-geo-block-admin.php:1310
+#: admin/class-ip-geo-block-admin.php:1320
 msgid "You do not have sufficient permissions to access this page."
 msgstr "このページにアクセスするための十分な権限がありません。"
 
-#: admin/class-ip-geo-block-admin.php:1337
+#: admin/class-ip-geo-block-admin.php:1347
 #: admin/includes/class-admin-rewrite.php:194
 #: classes/class-ip-geo-block-cron.php:217
 #: classes/class-ip-geo-block-cron.php:321
@@ -353,7 +363,7 @@ msgstr "このページにアクセスするための十分な権限がありま
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr "<code>%s</code> に書き込めません。パーミッションをチェックして下さい。"
 
-#: admin/class-ip-geo-block-admin.php:1367
+#: admin/class-ip-geo-block-admin.php:1377
 msgid "Settings saved."
 msgstr "設定を保存しました。"
 

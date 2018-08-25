@@ -19,11 +19,8 @@ class IP_Geo_Block_Util {
 		static $offset = NULL;
 		static $format = NULL;
 
-		if ( NULL === $offset )
-			$offset = wp_timezone_override_offset() * HOUR_IN_SECONDS;
-
-		if ( NULL === $format )
-			$format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+		NULL === $offset and $offset = wp_timezone_override_offset() * HOUR_IN_SECONDS;
+		NULL === $format and $format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
 		return date_i18n( $fmt ? $fmt : $format, $timestamp ? (int)$timestamp + $offset : FALSE );
 	}
@@ -1040,11 +1037,16 @@ class IP_Geo_Block_Util {
 
 	public static function generate_link() {
 		$link = self::random_bytes();
-		$hash = self::hash_link( $link );
+		$hash = bin2hex( self::hash_link( $link ) );
 
+		/**
+		 * Verify the consistency of `self::hash_hmac()`
+		 *   key from external: self::verify_link( $link )
+		 *   key from internal: self::verify_link( 'link', 'hash' )
+		 */
 		$settings = IP_Geo_Block::get_option();
 		$settings['login_link'] = array(
-			'link' => bin2hex( $hash ),
+			'link' => $hash,
 			'hash' => bin2hex( self::hash_link( $hash ) ),
 		);
 
@@ -1054,17 +1056,17 @@ class IP_Geo_Block_Util {
 
 	public static function delete_link() {
 		$settings = IP_Geo_Block::get_option();
-		$settings['login_link'] = array();
+		$settings['login_link'] = array( 'link' => NULL, 'hash' => NULL );
 		update_option( IP_Geo_Block::OPTION_NAME, $settings );
-	}
-
-	public static function verify_link( $link ) {
-		return self::hash_equals( hex2bin( self::get_link() ), self::hash_link( $link ) );
 	}
 
 	public static function get_link() {
 		$settings = IP_Geo_Block::get_option();
-		return ! empty( $settings['login_link']['link'] ) ? $settings['login_link']['link'] : FALSE;
+		return $settings['login_link']['link'] ? $settings['login_link']['link'] : FALSE;
+	}
+
+	public static function verify_link( $link, $hash = NULL ) {
+		return self::hash_equals( self::hash_link( $link ), hex2bin( $hash ? $hash : self::get_link() ) );
 	}
 
 }

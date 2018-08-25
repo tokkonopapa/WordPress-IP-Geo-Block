@@ -141,7 +141,7 @@ endif;
 					 0 => __( 'A request from which the country code or IP address is <strong>NOT</strong> in the whitelist will be blocked.', 'ip-geo-block' ),
 					 1 => __( 'A request from which the country code or IP address is in the blacklist will be blocked.', 'ip-geo-block' ),
 				),
-				'before' => '<input type="hidden" name="ip_geo_block_settings[version]" value="' . IP_Geo_Block::VERSION . '" />',
+				'before' => '<input type="hidden" name="ip_geo_block_settings[version]" value="' . esc_html( $options['version'] ) . '" />',
 			)
 		);
 
