@@ -269,8 +269,9 @@ msgid ""
 "at &#8220;%sPlugin settings%s&#8221; section. Also do not forget to update "
 "favorites / bookmarks in your browser."
 msgstr ""
-"緊急ログインリンクが古くなっています。［%sプラグインの設定%s］で一度削除してから再度生成して"
-"ください。 またブラウザのお気に入り/ブックマークも忘れずに更新して下さい。"
+"緊急ログイン・リンクが古くなっています。［%sプラグインの設定%s］で一度削除し"
+"てから再度生成してください。 またブラウザのお気に入り/ブックマークも忘れずに"
+"更新して下さい。"
 
 #: admin/class-ip-geo-block-admin.php:596
 msgid ""
