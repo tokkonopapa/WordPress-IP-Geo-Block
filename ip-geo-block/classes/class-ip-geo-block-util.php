@@ -834,7 +834,7 @@ class IP_Geo_Block_Util {
 			}
 		}
 
-		return isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+		return isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1'; // for CLI
 	}
 
 	/**
@@ -913,8 +913,8 @@ class IP_Geo_Block_Util {
 				$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
 			}
 		}
-		unset( $installed['ip_geo_block'] );
 
+		unset( $installed['ip_geo_block'] );
 		return $installed;
 	}
 
