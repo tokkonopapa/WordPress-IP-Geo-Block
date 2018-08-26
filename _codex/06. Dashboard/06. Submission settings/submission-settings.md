@@ -1,5 +1,6 @@
 ---
 layout: page
+language: en
 category: codex
 section: Dashboard
 title: Submission settings

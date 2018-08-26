@@ -1,9 +1,9 @@
 ---
 layout: page
+language: en
 category: codex
 section: Dashboard
 title: Validation logs
-excerpt: Validation logs
 ---
 
 This plugin keeps validation logs when **Record “Logs”** in [**Privacy and 

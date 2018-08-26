@@ -7,6 +7,17 @@
 
   <link rel="canonical" href="{{ page.url | replace: 'index.html', '' | prepend: site.baseurl }}">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ '/feed.xml' | prepend: site.baseurl }}">
+{% if page.language != 'ja' and page.previous.language == 'ja' %}
+  <link rel="alternate" hreflang="ja" href="{{ page.previous.url }}" id="lang" />
+{% elsif page.language == 'ja' and page.next.language != 'ja' %}
+  <link rel="alternate" hreflang="en" href="{{ page.next.url }}" id="lang" />
+{% endif %}
+  <script>
+  if (-1 !== location.href.indexOf('ipgeoblock.com')) {
+      var link = document.getElementById('lang'), lang = window.navigator.userLanguage || window.navigator.language;
+      lang = lang.indexOf('ja') !== -1 ? 'ja' : 'en'; if (link && link.hreflang === lang) location.href = link.href;
+  }
+  </script>
 
   <!-- CSS https://design.google.com/icons/ -->
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,700">

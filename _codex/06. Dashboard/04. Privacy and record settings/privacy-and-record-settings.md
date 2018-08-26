@@ -1,5 +1,6 @@
 ---
 layout: page
+language: en
 category: codex
 section: Dashboard
 title: Privacy and record settings

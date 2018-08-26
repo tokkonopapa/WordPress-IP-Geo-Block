@@ -13,7 +13,7 @@ style: ".other-things { display: none }"
 {% assign section = false %}
     <ul id="codex" class="icon icon-fore">
 {% for post in site.codex %}
-  {% unless post.language and post.language != 'en' %}
+  {% if post.language == page.language or post.language == 'en' %}
     {% if post.section and post.section != section %}
       {% assign section = post.section %}
       <li class="icon-folder-open"><span class="list-title" id="{{ post.section | slugify }}">{{ post.section | capitalize }}</span><ul class="icon">
@@ -25,7 +25,7 @@ style: ".other-things { display: none }"
       </ul></li>
       {% assign section = false %}
     {% endif %}
-  {% endunless %}
+  {% endif %}
 {% endfor %}
     </ul>
 

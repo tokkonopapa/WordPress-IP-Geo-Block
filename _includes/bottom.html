@@ -14,6 +14,7 @@ if (document.getElementById('disqus_thread') &&
   })();
 }
 </script>
+<!-- Google Analytics -->
 <script>
 if (location.hostname.indexOf('ipgeoblock') >= 0) {
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -24,7 +25,7 @@ if (location.hostname.indexOf('ipgeoblock') >= 0) {
   ga('send', 'pageview');
 }
 </script>
-<!-- scripts -->
+<!-- main scripts -->
 <script src="{{ '/js/script.min.js' | prepend: site.baseurl }}"></script>
 {% if page.script %}{% for script in page.script %}
 <script src="{{ script | prepend: site.baseurl }}"></script>

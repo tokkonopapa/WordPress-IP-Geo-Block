@@ -52,6 +52,10 @@ Specify the IP address group or AS number to block or pass, prior to validating
 the country code. "**CIDR calculator forIPv4 / IPv6**" can help you to get the 
 range of IP addresses that can be expressed simply as [CIDR][CIDR] notation.
 
+![CIDR calculator for IPv4/IPv6]({{ '/img/2018-03/CIDR-Calculator.png' | prepend: site.baseurl }}
+ "CIDR calculator for IPv4/IPv6"
+)
+
 #### $_SERVER keys to retrieve extra IP addresses ####
 
 In the case of a request via a proxy server, the IP addresses of multiple 
