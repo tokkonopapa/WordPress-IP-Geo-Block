@@ -1,9 +1,9 @@
 ---
 layout: page
-language: en
+language: ja
 category: codex
 section: Dashboard
-title: Back-end target settings
+title: バックエンドの設定
 ---
 
 <!--more-->
