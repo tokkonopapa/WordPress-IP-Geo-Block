@@ -21,21 +21,21 @@ layout: default
 
     <footer class="post-footer">
       <ul class="row">
-{% unless page.previous.language or page.previous.language == page.language %}
+{% if page.previous.language == page.language or page.previous.language == page.none %}
     {% assign post = page.previous %}
 {% else %}
     {% assign post = page.previous.previous %}
-{% endunless %}
+{% endif %}
 {% if post.url %}
         <li class="col s6 left">
           <a class="prev" href="{{ post.url }}" title="Previous page">&laquo; {{ post.title }}</a>
         </li>
 {% endif %}
-{% unless page.next.language or page.next.language == page.language %}
+{% if page.next.language == page.language or page.next.language == page.none %}
     {% assign post = page.next %}
 {% else %}
     {% assign post = page.next.next %}
-{% endunless %}
+{% endif %}
 {% if post.next.url %}
         <li class="col s6 right">
           <a class="next" href="{{ post.url }}" title="Next page">{{ post.title }} &raquo;</a>
