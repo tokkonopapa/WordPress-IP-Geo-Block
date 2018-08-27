@@ -9,16 +9,29 @@
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ '/feed.xml' | prepend: site.baseurl }}">
 {% if page.language != 'ja' and page.previous.language == 'ja' %}
   <link rel="alternate" hreflang="ja" href="{{ page.previous.url }}" id="lang" />
-{% elsif page.language == 'ja' and page.next.language != 'ja' %}
-  <link rel="alternate" hreflang="en" href="{{ page.next.url }}" id="lang" />
-{% endif %}
+  <link rel="alternate" hreflang="en" href="{{ page.url }}" id="A" />
+  <link rel="alternate" hreflang="x-default" href="{{ page.url }}" />
   <script>
-  if (-1 !== location.href.indexOf('ipgeoblock.com')) {
-      var link = document.getElementById('lang'), lang = window.navigator.userLanguage || window.navigator.language;
-      lang = lang.indexOf('ja') !== -1 ? 'ja' : 'en'; if (link && link.hreflang === lang) location.href = link.href;
-  }
-  </script>
-
+    var link = document.getElementById('lang');
+    if (link && !window.location.search) {
+        var lang = ((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
+        if (lang === link.hreflang && lang !== (-1 !== window.location.href.indexOf('-' + lang + '.') ? 'ja' : 'en')) {
+            window.location.href = link.href + window.location.hash;
+        }
+    }
+  </script>{% elsif page.language == 'ja' and page.next.language != 'ja' %}
+  <link rel="alternate" hreflang="ja" href="{{ page.url }}" id="lang" />
+  <link rel="alternate" hreflang="en" href="{{ page.next.url }}" id="B" />
+  <link rel="alternate" hreflang="x-default" href="{{ page.next.url }}" />
+  <script>
+    var link = document.getElementById('lang');
+    if (link && !window.location.search) {
+        var lang = ((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
+        if (lang === link.hreflang && lang !== (-1 !== window.location.href.indexOf('-' + lang + '.') ? 'ja' : 'en')) {
+            window.location.href = link.href + window.location.hash;
+        }
+    }
+  </script>{% endif %}
   <!-- CSS https://design.google.com/icons/ -->
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,700">
   <link rel="stylesheet" href="{{ '/css/style.min.css' | prepend: site.baseurl }}" type="text/css">

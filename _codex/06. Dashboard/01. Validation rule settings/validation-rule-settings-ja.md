@@ -46,10 +46,10 @@ title: 検証ルールの設定
 
 国コードの検証に先立って、遮断または通過させるIPアドレス群やAS番号を指定します。連続する
 IPアドレスは [CIDR][CIDR] というシンプルな表現が可能なので、
-「**IPv4/IPv6 CIDR変換電卓**」を活用して所望のアドレス群を設定して下さい。
+「**IPv4/IPv6用CIDR変換電卓**」を活用して所望のアドレス群を設定して下さい。
 
-![IPv4/IPv6 CIDR変換電卓]({{ '/img/2018-03/CIDR-Calculator.png' | prepend: site.baseurl }}
- "IPv4/IPv6 CIDR変換電卓"
+![IPv4/IPv6用CIDR変換電卓]({{ '/img/2018-03/CIDR-Calculator.png' | prepend: site.baseurl }}
+ "IPv4/IPv6用CIDR変換電卓"
 )
 
 #### IPアドレスを追加抽出する $_SERVER のキー ####
