@@ -115,6 +115,7 @@ class IP_Geo_Block_Admin {
 		$urls = array( wp_login_url() );
 
 		// avoid multiple redirection caused by WP hide 1.4.9.1
+		require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
 		if ( is_plugin_active( 'wp-hide-security-enhancer/wp-hide.php' ) )
 			$urls[] = 'options-permalink.php';
 
@@ -253,10 +254,12 @@ class IP_Geo_Block_Admin {
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 			}
+
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-whois-js',
 				plugins_url( $release ? 'js/whois.min.js' : 'js/whois.js', __FILE__ ),
 				$dependency, IP_Geo_Block::VERSION, $footer
 			);
+			break;
 		}
 
 		// css for option page
@@ -1599,6 +1602,7 @@ endif;
 			IP_Geo_Block_Logs::delete_tables();
 			IP_Geo_Block_Logs::create_tables();
 			$res = array( 'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME );
+			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

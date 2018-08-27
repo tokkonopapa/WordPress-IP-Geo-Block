@@ -605,7 +605,7 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:20
 msgid "Open CIDR calculator for IPv4 / IPv6."
-msgstr "IPv4/IPv6用CIDR変換プログラムを開きます。"
+msgstr "IPv4/IPv6用CIDR変換電卓を開きます。"
 
 #: admin/includes/tab-settings.php:55
 msgid "Validation rule settings"

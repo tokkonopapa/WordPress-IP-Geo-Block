@@ -83,8 +83,8 @@ class IP_Geo_Block_Cron {
 
 				// update matching rule immediately
 				if ( $immediate && 'done' !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
-					$validate = IP_Geo_Block::get_geolocation( $ip, array( $provider ) );
-					$validate = IP_Geo_Block::validate_country( 'cron', $validate, $settings );
+					$context  = IP_Geo_Block::get_instance();
+					$validate = $context->validate_ip( 'admin', $settings );
 
 					if ( 'ZZ' === $validate['code'] )
 						continue;
