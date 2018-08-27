@@ -1,7 +1,7 @@
 <!-- Disqus -->
 <script type="text/javascript">
 if (document.getElementById('disqus_thread') && location.hostname.indexOf('ipgeoblock') >= 0) {
-  var disqus_shortname = 'ip-geo-block';
+  var disqus_shortname = 'ip-geo-block' + ((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? '-ja' : '');
   (function() {
     var add = function(disqus_script) {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
