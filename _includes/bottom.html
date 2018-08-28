@@ -10,7 +10,7 @@ if (document.getElementById('disqus_thread') && location.hostname.indexOf('ipgeo
     }
     return '';
   })();
-  var disqus_shortname = 'ip-geo-block' + (canonical.indexOf('.ja.html') >= 0 ? '-jp' : '');
+  var disqus_shortname = 'ip-geo-block' + (canonical.indexOf('-ja.html') >= 0 ? '-jp' : '');
   (function() {
     var add = function(disqus_script) {
       var doc = document, dsq = doc.createElement('script');
