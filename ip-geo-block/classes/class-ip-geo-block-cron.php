@@ -64,6 +64,7 @@ class IP_Geo_Block_Cron {
 		$ip = IP_Geo_Block::get_ip_address( $settings = IP_Geo_Block::get_option() );
 		add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
 
+		$context  = IP_Geo_Block::get_instance();
 		$args = IP_Geo_Block::get_request_headers( $settings );
 
 		// download database files (higher priority order)
@@ -83,7 +84,6 @@ class IP_Geo_Block_Cron {
 
 				// update matching rule immediately
 				if ( $immediate && 'done' !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
-					$context  = IP_Geo_Block::get_instance();
 					$validate = $context->validate_ip( 'admin', $settings );
 
 					if ( 'ZZ' === $validate['code'] )
