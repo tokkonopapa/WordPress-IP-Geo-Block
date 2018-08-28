@@ -1,7 +1,16 @@
 <!-- Disqus -->
 <script type="text/javascript">
 if (document.getElementById('disqus_thread') && location.hostname.indexOf('ipgeoblock') >= 0) {
-  var disqus_shortname = 'ip-geo-block' + (document.getElementById('lang-switch').checked ? '-jp' : '');
+  var canonical = (function () {
+    var links = document.getElementsByTagName("link");
+    for (var i = 0; i < links.length; i++) {
+      if (links[i].rel && links[i].rel.toLowerCase() === "canonical") {
+        return links[i].href;
+      }
+    }
+    return '';
+  })();
+  var disqus_shortname = 'ip-geo-block' + (canonical.indexOf('.ja.html') >= 0 ? '-jp' : '');
   (function() {
     var add = function(disqus_script) {
       var doc = document, dsq = doc.createElement('script');
