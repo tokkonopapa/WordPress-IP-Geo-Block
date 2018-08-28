@@ -29,12 +29,43 @@
       { selector: '#scroll-fire3', offset: 50, callback: 'Materialize.showScrolled("#scroll-fire3")' }
     ]);
 
+    // language switcher
+    var lang = document.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/, "$1") ||
+        ((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
+
+    $('#lang-switch').prop('checked', (lang === 'ja')).on('change', function () {
+      var page = $('link[rel=canonical]').attr('href').indexOf('-ja.html') !== -1 ? 'ja' : 'en',
+          prop = $(this).prop("checked") ? 'ja' : 'en'; // false: En(left), true: Ja(right)
+      if (page !== lang || prop !== lang) {
+        document.cookie = 'lang=' + prop + '; path=/';
+        lang = $('#' + ('ja' === prop ? 'lang' : 'lang-x')).attr('href');
+        if (lang) {
+          window.location.href = lang;
+        }
+      }
+    }).trigger('change');
+
     $(window).on('load', function() {
         var hash = window.location.hash || null;
         if (hash) {
             window.location.hash = '';
             window.location.hash = hash;
         }
+    });
+
+    // cookie
+    window.addEventListener("load", function() {
+      window.cookieconsent.initialise({
+        palette: {
+          popup: {
+            background: "#252e39"
+          },
+          button: {
+            background: "#14a7d0"
+          }
+        },
+        theme: "classic"
+      })
     });
   }); // end of document ready
 })(jQuery); // end of jQuery name space

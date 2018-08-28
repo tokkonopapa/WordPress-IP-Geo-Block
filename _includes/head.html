@@ -8,33 +8,20 @@
   <link rel="canonical" href="{{ page.url | replace: 'index.html', '' | prepend: site.baseurl }}">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ '/feed.xml' | prepend: site.baseurl }}">
 {% if page.language != 'ja' and page.previous.language == 'ja' %}
+  <!-- language switcher -->
   <link rel="alternate" hreflang="ja" href="{{ page.previous.url }}" id="lang" />
-  <link rel="alternate" hreflang="en" href="{{ page.url }}" id="A" />
-  <link rel="alternate" hreflang="x-default" href="{{ page.url }}" />
-  <script>
-    var link = document.getElementById('lang');
-    if (link && !window.location.search) {
-        var lang = ((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
-        if (lang === link.hreflang && lang !== (-1 !== window.location.href.indexOf('-' + lang + '.') ? 'ja' : 'en')) {
-            window.location.href = link.href + window.location.hash;
-        }
-    }
-  </script>{% elsif page.language == 'ja' and page.next.language != 'ja' %}
+  <link rel="alternate" hreflang="en" href="{{ page.url }}" />
+  <link rel="alternate" hreflang="x-default" href="{{ page.url }}" id="lang-x" />
+  <script>!function(e,n){var o=n.getElementById("lang"),a=n.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/,"$1");o&&a===o.hreflang&&a!==(-1!==e.location.href.indexOf("-"+a+".")?"ja":"en")&&(n.cookie="lang="+a+"; path=/",e.location.href=o.href+e.location.hash)}(window,document);</script>{% elsif page.language == 'ja' and page.next.language != 'ja' %}
+  <!-- language switcher -->
   <link rel="alternate" hreflang="ja" href="{{ page.url }}" id="lang" />
-  <link rel="alternate" hreflang="en" href="{{ page.next.url }}" id="B" />
-  <link rel="alternate" hreflang="x-default" href="{{ page.next.url }}" />
-  <script>
-    var link = document.getElementById('lang');
-    if (link && !window.location.search) {
-        var lang = ((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
-        if (lang === link.hreflang && lang !== (-1 !== window.location.href.indexOf('-' + lang + '.') ? 'ja' : 'en')) {
-            window.location.href = link.href + window.location.hash;
-        }
-    }
-  </script>{% endif %}
+  <link rel="alternate" hreflang="en" href="{{ page.next.url }}" />
+  <link rel="alternate" hreflang="x-default" href="{{ page.next.url }}" id="lang-x" />
+  <script>!function(e,n){var o=n.getElementById("lang"),a=n.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/,"$1");o&&a===o.hreflang&&a!==(-1!==e.location.href.indexOf("-"+a+".")?"ja":"en")&&(n.cookie="lang="+a+"; path=/",e.location.href=o.href+e.location.hash)}(window,document);</script>{% endif %}
   <!-- CSS https://design.google.com/icons/ -->
-  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,700">
-  <link rel="stylesheet" href="{{ '/css/style.min.css' | prepend: site.baseurl }}" type="text/css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,700" />
+  <link rel="stylesheet" href="{{ '/css/style.min.css' | prepend: site.baseurl }}" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
   <link rel="icon" href="{{ '/img/favicon.ico' | prepend: site.baseurl }}">
 {% if page.style %}{% for style in page.style %}
   <style>
