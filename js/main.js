@@ -47,13 +47,13 @@
 		]);
 
 		// language switcher
-		var lang = document.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/, "$1") ||
-			((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
+		var page = $('link[rel=canonical]').attr('href').indexOf('-ja.html') !== -1 ? 'ja' : 'en',
+		    lang = document.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/, "$1") ||
+		    ((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
 
-		$('#lang-switch').prop('checked', (lang === 'ja')).on('change', function() {
-			var page = $('link[rel=canonical]').attr('href').indexOf('-ja.html') !== -1 ? 'ja' : 'en',
-				prop = $(this).prop("checked") ? 'ja' : 'en'; // false: En(left), true: Ja(right)
-			if (page !== lang || prop !== lang) {
+		$('#lang-switch').prop('checked', (page === 'ja' && lang === 'ja')).on('change', function() {
+			var prop = $(this).prop("checked") ? 'ja' : 'en'; // false: En(left), true: Ja(right)
+			if (prop !== lang || page !== lang) {
 				document.cookie = 'lang=' + prop + '; path=/';
 				lang = $('#' + ('ja' === prop ? 'lang' : 'lang-x')).attr('href');
 				if (lang) {
