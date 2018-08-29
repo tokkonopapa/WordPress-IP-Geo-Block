@@ -459,6 +459,96 @@ a.label:focus {
   font-weight: 700;
 }
 
+/**
+ * cookie consent
+ */
+.consent {
+  color: #fff;
+  background-color: #000;
+  padding: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 100%;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  position: fixed;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-size: 14px;
+  line-height: 1.4em;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  z-index: 9999;
+  opacity: 0;
+}
+.consent-show {
+  opacity: 1;
+  transition: opacity 1s ease;
+}
+.consent-hide {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.consent-msg {
+  margin-left: 1em;
+  display: block;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  max-width: 100%;
+  margin-right: 1em;
+  font-size: inherit;
+  line-height: inherit;
+}
+.consent-msg a {
+  color: #fff;
+  opacity: 0.8;
+  display: inline-block;
+  padding: 0.2em;
+  margin-left: 0.2em;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.consent-msg a:hover {
+  opacity: 1.0;
+}
+.compliance {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-line-pack: justify;
+  align-content: space-between;
+  font-size: inherit;
+  line-height: inherit;
+}
+.compliance a {
+  margin: 0;
+  padding: 0.8em 1.8em;
+  height: 100%;
+  color: #000;
+  border-color: transparent;
+  background-color: #f1d600;
+  display: block;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: 700;
+  border-width: 2px;
+  border-style: solid;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+}
+.compliance a:hover {
+  text-decoration: underline;
+  background-color: #fffc26;
+}
+
 code,
 kbd,
 pre,
@@ -647,13 +737,6 @@ table th.sort-up:after {
 }
 #goog-wm-sb:hover {
   box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
-}
-
-/**
- * https://cookieconsent.insites.com/
- */
-.cc-theme-classic .cc-btn {
-  border-radius: 2px !important;
 }
 
 /**

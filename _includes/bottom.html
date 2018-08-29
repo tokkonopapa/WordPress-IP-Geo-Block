@@ -27,9 +27,7 @@ if (location.hostname.indexOf('ipgeoblock') >= 0) {
 }
 </script>
 <!-- main scripts -->
-<script src="{{ '/js/script.min.js' | prepend: site.baseurl }}" async></script>
+<script src="{{ '/js/script.min.js' | prepend: site.baseurl }}"></script>
 {% if page.script %}{% for script in page.script %}
 <script src="{{ script | prepend: site.baseurl }}"></script>
 {% endfor %}{% endif %}{% if page.inline %}{{ page.inline }}{% endif %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
-<script>window.addEventListener("load",function(){window.cookieconsent.initialise({palette:{popup:{background:"#000"},button:{background:"#f1d600"}},theme:"edgeless"})});</script>

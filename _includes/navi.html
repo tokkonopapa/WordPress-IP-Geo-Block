@@ -1,3 +1,14 @@
+  <!-- cookie consent -->
+  <div class="consent">
+    <span class="consent-msg">
+      This website uses cookies to ensure you get the best experience on this website. 
+      <a class="" href="" rel="noopener noreferrer nofollow" target="_blank">Privacy policy</a>
+    </span>
+    <div class="compliance">
+      <a class="">Got it!</a>
+    </div>
+  </div>
+
   <!-- navigation -->
   <nav class="cyan darken-3">
     <div class="nav-wrapper container">
@@ -5,14 +16,15 @@
         <a id="logo-container" href="{{ '/' | prepend: site.baseurl }}" class="brand-logo">IP Geo Block</a>
       </h1>
 
-      <div class="switch right" title="Change language">
+      <div class="switch right" title="Change language" style="margin-left:12px">
         <label>
-          <span class="lang-label">E</span>
+          <span class="lang-label">En</span>
           <input id="lang-switch" type="checkbox" style="display:none">
           <span class="lever"></span>
-          <span class="lang-label">J</span>
+          <span class="lang-label">Ja</span>
         </label>
       </div>
+      <script>document.getElementById('lang-switch').checked = (document.getElementById('canonical').href.indexOf('-ja.') >= 0 ? true : false);</script>
 
       <ul class="right hide-on-med-and-down">
         <li><a href="{{ '/blog/'         | prepend: site.baseurl }}">Blog</a></li>
