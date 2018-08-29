@@ -4908,7 +4908,8 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(0, 0, 0, 0.08);
 }
 
-.switch label input[type=checkbox]:checked + .lever:after {
+.switch-on label input[type=checkbox]         + .lever:after,
+.switch    label input[type=checkbox]:checked + .lever:after {
   left: 16px;
 }
 

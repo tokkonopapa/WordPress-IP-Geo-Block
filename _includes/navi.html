@@ -16,7 +16,7 @@
         <a id="logo-container" href="{{ '/' | prepend: site.baseurl }}" class="brand-logo">IP Geo Block</a>
       </h1>
 
-      <div class="switch right" title="Change language" style="margin-left:12px">
+      <div class="switch right" id="switch-container" title="Change language" style="margin-left:12px">
         <label>
           <span class="lang-label">En</span>
           <input id="lang-switch" type="checkbox" style="display:none">
@@ -24,7 +24,7 @@
           <span class="lang-label">Ja</span>
         </label>
       </div>
-      <script>function(a,e){var n=e.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/,"$1")||(-1!==(a.navigator.userLanguage||a.navigator.language).indexOf("ja")?"ja":"en");e.getElementById("lang-switch").checked="ja"===n}(window,document);</script>
+      <script>(function(a,b){"ja"===(b.cookie.replace(/(?:(?:^|.*;\s*)lang\s*=\s*([^;]*).*$)|^.*$/,"$1")||(-1!==(a.navigator.userLanguage||a.navigator.language).indexOf("ja")?"ja":"en"))&&b.getElementById("switch-container").classList.add("switch-on")})(window,document);</script>
 
       <ul class="right hide-on-med-and-down">
         <li><a href="{{ '/blog/'         | prepend: site.baseurl }}">Blog</a></li>

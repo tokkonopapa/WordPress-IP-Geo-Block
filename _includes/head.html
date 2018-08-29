@@ -12,12 +12,12 @@
   <link rel="alternate" hreflang="ja" href="{{ page.previous.url }}" id="lang">
   <link rel="alternate" hreflang="en" href="{{ page.url }}">
   <link rel="alternate" hreflang="x-default" href="{{ page.url }}" id="lang-x">
-  <script>function(a,e){var n=e.getElementById("lang"),o=-1!==e.getElementById("canonical").href.indexOf("-ja.")?"ja":"en",g=e.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/,"$1")||(-1!==(a.navigator.userLanguage||a.navigator.language).indexOf("ja")?"ja":"en");n&&o!==g&&(e.cookie="lang="+g+"; path=/",a.location.href=n.href+a.location.hash)}(window,document);</script>{% elsif page.language == 'ja' and page.next.language != 'ja' %}
+  <script>(function(a,b){var c=b.getElementById("lang"),e=-1!==b.getElementById("canonical").href.indexOf("-ja.")?"ja":"en",d=b.cookie.replace(/(?:(?:^|.*;\s*)lang\s*=\s*([^;]*).*$)|^.*$/,"$1")||(-1!==(a.navigator.userLanguage||a.navigator.language).indexOf("ja")?"ja":"en");c&&e!==d&&(b.cookie="lang="+d+"; path=/",a.location.href=c.href+a.location.hash)})(window,document);</script>{% elsif page.language == 'ja' and page.next.language != 'ja' %}
   <!-- language switcher -->
   <link rel="alternate" hreflang="ja" href="{{ page.url }}" id="lang">
   <link rel="alternate" hreflang="en" href="{{ page.next.url }}">
   <link rel="alternate" hreflang="x-default" href="{{ page.next.url }}" id="lang-x">
-  <script>function(a,e){var n=e.getElementById("lang"),o=-1!==e.getElementById("canonical").href.indexOf("-ja.")?"ja":"en",g=e.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/,"$1")||(-1!==(a.navigator.userLanguage||a.navigator.language).indexOf("ja")?"ja":"en");n&&o!==g&&(e.cookie="lang="+g+"; path=/",a.location.href=n.href+a.location.hash)}(window,document);</script>{% endif %}
+  <script>(function(a,b){var c=b.getElementById("lang"),e=-1!==b.getElementById("canonical").href.indexOf("-ja.")?"ja":"en",d=b.cookie.replace(/(?:(?:^|.*;\s*)lang\s*=\s*([^;]*).*$)|^.*$/,"$1")||(-1!==(a.navigator.userLanguage||a.navigator.language).indexOf("ja")?"ja":"en");c&&e!==d&&(b.cookie="lang="+d+"; path=/",a.location.href=c.href+a.location.hash)})(window,document);</script>{% endif %}
   <!-- CSS https://design.google.com/icons/ -->
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,700">
   <link rel="stylesheet" href="{{ '/css/style.min.css' | prepend: site.baseurl }}">

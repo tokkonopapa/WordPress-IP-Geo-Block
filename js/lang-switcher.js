@@ -12,5 +12,7 @@
     // navi.html
     (function(win, doc) {
         var lang = doc.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/, "$1") || ((win.navigator.userLanguage || win.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
-        doc.getElementById('lang-switch').checked = 'ja' === lang;
+        if ('ja' === lang) {
+            doc.getElementById('switch-container').classList.add('switch-on');
+        }
     })(window, document);

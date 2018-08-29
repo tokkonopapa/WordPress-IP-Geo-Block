@@ -7,6 +7,42 @@
 			$('#sidenav-overlay').trigger('click');
 		});
 
+		// language switcher
+		$('#switch-container').removeClass('switch-on'); // remove class added in navi.html
+
+		var page = $('link[rel=canonical]').attr('href').indexOf('-ja.') !== -1 ? 'ja' : 'en',
+		    lang = document.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/, "$1") ||
+		           ((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
+
+		$('#lang-switch').prop('checked', lang === 'ja').on('change', function() {
+			var prop = $(this).prop("checked") ? 'ja' : 'en'; // false: En(left), true: Ja(right)
+			document.cookie = 'lang=' + prop + '; path=/';
+			if (prop !== page) {
+				lang = $('#' + ('ja' === prop ? 'lang' : 'lang-x')).attr('href');
+				if (lang) {
+					window.location.href = lang;
+				}
+			}
+		}).trigger('change');
+
+		// consent
+		if (!document.cookie.replace(/(?:(?:^|.*;\s*)consent\s*\=\s*([^;]*).*$)|^.*$/, "$1")) {
+			$('.consent').addClass('consent-show');
+		}
+
+		$('.compliance').on('click', 'a', function() {
+			document.cookie = 'consent=gotit; max-age=31536000; path=/';
+			$('.consent').addClass('consent-hide');
+		});
+
+		$(window).on('load', function() {
+			var hash = window.location.hash || null;
+			if (hash) {
+				window.location.hash = '';
+				window.location.hash = hash;
+			}
+		});
+
 		// Horizontal staggered list
 		Materialize.showScrolled = function(selector) {
 			var time = 0;
@@ -46,38 +82,5 @@
 			}
 		]);
 
-		// language switcher
-		var page = $('link[rel=canonical]').attr('href').indexOf('-ja.') !== -1 ? 'ja' : 'en',
-		    lang = document.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/, "$1") ||
-		           ((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
-
-		$('#lang-switch').prop('checked', lang === 'ja').on('change', function() {
-			var prop = $(this).prop("checked") ? 'ja' : 'en'; // false: En(left), true: Ja(right)
-			if (prop !== page) {
-				document.cookie = 'lang=' + prop + '; path=/';
-				lang = $('#' + ('ja' === prop ? 'lang' : 'lang-x')).attr('href');
-				if (lang) {
-					window.location.href = lang;
-				}
-			}
-		}).trigger('change');
-
-		// consent
-		if (!document.cookie.replace(/(?:(?:^|.*;\s*)consent\s*\=\s*([^;]*).*$)|^.*$/, "$1")) {
-			$('.consent').addClass('consent-show');
-		}
-
-		$('.compliance').on('click', 'a', function() {
-			document.cookie = 'consent=gotit; max-age=31536000; path=/';
-			$('.consent').addClass('consent-hide');
-		});
-
-		$(window).on('load', function() {
-			var hash = window.location.hash || null;
-			if (hash) {
-				window.location.hash = '';
-				window.location.hash = hash;
-			}
-		});
 	}); // end of document ready
 })(jQuery); // end of jQuery name space
