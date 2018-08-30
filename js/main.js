@@ -4,7 +4,7 @@
 	 *
 	 */
  	var preferred = document.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/, "$1") || ((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
-
+console.log(preferred);
 	/**
 	 * Disqus
 	 *
