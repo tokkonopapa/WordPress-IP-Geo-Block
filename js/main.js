@@ -13,7 +13,7 @@
 		var dsq = document.createElement('script');
 		dsq.type = 'text/javascript';
 		dsq.async = true;
-		dsq.src = 'https://ip-geo-block' + (preferred === 'ja' ? '-jp' : '') + '.disqus.com/' + script;
+		dsq.src = '//ip-geo-block' + (preferred === 'ja' ? '-jp' : '') + '.disqus.com/' + script;
 		dsq.setAttribute('data-timestamp', +new Date());
 		(document.head || document.body).appendChild(dsq);
 	}
