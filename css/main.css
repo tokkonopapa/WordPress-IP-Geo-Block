@@ -43,9 +43,6 @@ h1#logo a {
   h1#logo a {
     padding-left: 0;
   }
-  .lang-label {
-    display: none;
-  }
 }
 
 a:active,
@@ -456,7 +453,12 @@ a.label:focus {
 }
 
 .lang-label {
-  font-weight: 700;
+    font-weight: 700;
+}
+@media only screen and (max-width:320px) {
+  .lang-label {
+    display: none;
+  }
 }
 
 /**
