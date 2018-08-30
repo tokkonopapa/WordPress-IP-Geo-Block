@@ -3,8 +3,8 @@
 	 * Preferred language
 	 *
 	 */
- 	var preferred = document.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/, "$1") || ((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
-console.log(preferred);
+	var preferred = document.cookie.replace(/(?:(?:^|.*;\s*)lang\s*\=\s*([^;]*).*$)|^.*$/, "$1") || ((window.navigator.userLanguage || window.navigator.language).indexOf('ja') !== -1 ? 'ja' : 'en');
+
 	/**
 	 * Disqus
 	 *
@@ -13,7 +13,7 @@ console.log(preferred);
 		var dsq = document.createElement('script');
 		dsq.type = 'text/javascript';
 		dsq.async = true;
-		dsq.src = 'https://ip-geo-block' + (preferred === 'jp' ? '-jp' : '') + '.disqus.com/' + script;
+		dsq.src = 'https://ip-geo-block' + (preferred === 'ja' ? '-jp' : '') + '.disqus.com/' + script;
 		dsq.setAttribute('data-timestamp', +new Date());
 		(document.head || document.body).appendChild(dsq);
 	}
