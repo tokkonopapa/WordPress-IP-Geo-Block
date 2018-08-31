@@ -455,7 +455,7 @@ a.label:focus {
 .lang-label {
     font-weight: 700;
 }
-@media only screen and (max-width:320px) {
+@media only screen and (max-width:375px) { /* iPhone6 vertical */
   .lang-label {
     display: none;
   }
