@@ -53,7 +53,7 @@ You can find how to manage cookies in mager browsers:
 
 #### Contact ####
 
-**Email:** tokkonopapa@yahoo.com
+**Email:** {{ site.email }}
 
 [Chrome]:          https://support.google.com/chrome/answer/95647?hl=en "Clear, enable, and manage cookies in Chrome - Computer - Google Chrome Help"
 [Microsoft]:       https://support.microsoft.com/en-us/help/17442/windows-internet-explorer-delete-manage-cookies "Delete and manage cookies"
@@ -67,4 +67,3 @@ You can find how to manage cookies in mager browsers:
 [DisqusSystem]:    https://help.disqus.com/what-is-disqus/what-is-disqus "What is Disqus? | Disqus"
 [DisqusCookies]:   https://help.disqus.com/user-profile/use-of-cookies "Use of cookies | Disqus"
 [DisqusPrivacy]:   https://help.disqus.com/terms-and-policies/disqus-privacy-policy "Disqus Privacy Policy | Disqus"
-
