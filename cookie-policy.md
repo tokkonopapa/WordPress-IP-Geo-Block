@@ -53,7 +53,7 @@ You can find how to manage cookies in mager browsers:
 
 #### Contact ####
 
-Email: tokkonopapa@yahoo.com
+**Email:** tokkonopapa@yahoo.com
 
 [Chrome]:          https://support.google.com/chrome/answer/95647?hl=en "Clear, enable, and manage cookies in Chrome - Computer - Google Chrome Help"
 [Microsoft]:       https://support.microsoft.com/en-us/help/17442/windows-internet-explorer-delete-manage-cookies "Delete and manage cookies"
