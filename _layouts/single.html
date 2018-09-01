@@ -1,0 +1,34 @@
+---
+layout: default
+---
+<div class="container">
+  <div class="section">
+
+    <div class="breadcrumb">
+      <a href="{{ '/'      | prepend: site.baseurl }}" title="Top">Top</a> &raquo;
+    </div>
+
+    <header class="post-header">
+      <h2 class="blog-post-title">{{ page.title }}</h2>
+      <p class="blog-post-meta">{{ page.date | date: "%b %-d, %Y" }}{% if page.author %}{{ page.author }}{% endif %}{% if page.meta %}{{ page.meta }}{% endif %}</p>
+    </header>
+
+{{ content }}
+
+    <footer class="post-footer">
+      <ul class="row">
+{% if page.previous.url %}
+        <li class="col s6 left">
+          <a class="prev" href="{{ page.previous.url }}" title="Older post">&laquo; {{ page.previous.title }}</a>
+        </li>
+{% endif %}
+{% if page.next.url %}
+        <li class="col s6 right">
+          <a class="next" href="{{ page.next.url }}" title="Newer post">{{ page.next.title }} &raquo;</a>
+        </li>
+{% endif %}
+      </ul>
+    </footer>
+
+  </div>
+</div>
