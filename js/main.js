@@ -55,12 +55,12 @@
 	}).trigger('change');
 
 	// consent
-	if (!document.cookie.replace(/(?:(?:^|.*;\s*)consent\s*\=\s*([^;]*).*$)|^.*$/, "$1")) {
+	if (!document.cookie.replace(/(?:(?:^|.*;\s*)cookie\s*\=\s*([^;]*).*$)|^.*$/, "$1")) {
 		$('.consent').addClass('consent-show');
 	}
 
 	$('.compliance').on('click', 'a', function() {
-		document.cookie = 'consent=true; max-age=31536000; path=/';
+		document.cookie = 'cookie=true; max-age=31536000; path=/';
 		$('.consent').addClass('consent-hide');
 	});
 
