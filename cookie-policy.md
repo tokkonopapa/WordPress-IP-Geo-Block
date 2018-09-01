@@ -25,7 +25,7 @@ You can find how to manage cookies in mager browsers:
 
 #### How this website use cookies ####
 
-###### 1st Party Cookies ######
+##### 1st Party Cookies #####
 
 - `lang`  
   Every brower can set [language preferences][LangPrefer]. This website fetches
