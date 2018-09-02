@@ -517,7 +517,6 @@ endif; // TEST_RESTORE_NETWORK
 			'[response_code]',
 			'[response_msg]',            // 3.0.0
 			'[redirect_uri]',            // 3.0.0
-			'[restrict_api]',            // 3.0.13
 			'[validation][timing]',      // 2.2.9
 			'[validation][proxy]',
 			'[validation][comment]',
@@ -643,6 +642,7 @@ endif; // TEST_RESTORE_NETWORK
 							$json[ $prfx.'['.$m[1].']['.$m[2].']' ] = implode( ',', $input[ $m[1] ][ $m[2] ] );
 						}
 					}
+					break;
 				}
 			}
 		}
@@ -838,7 +838,7 @@ endif; // TEST_RESTORE_NETWORK
 			'PECL phar:'   => class_exists( 'PharData',   FALSE ) ? 'yes' : 'no',
 			'BC Math:'     => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
 			'mb_strcut:'   => function_exists( 'mb_strcut' ) ? 'yes' : 'no', // @since PHP 4.0.6
-			'OpenSSL:'     => function_exists( 'openssl_cipher_iv_length' ) ? 'yes' : 'no', // @since PHP 5.3.3
+			'OpenSSL:'     => defined( 'OPENSSL_RAW_DATA'  ) ? 'yes' : 'no', // @since PHP 5.3.3
 			'SQLite(PDO):' => extension_loaded( 'pdo_sqlite' ) ? 'yes' : 'no',
 			'DNS lookup:'  => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),
 			'User agent:'  => $_SERVER['HTTP_USER_AGENT'],
