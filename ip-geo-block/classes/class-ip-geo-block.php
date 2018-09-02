@@ -611,8 +611,8 @@ class IP_Geo_Block {
 		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array(), $settings ), array(
 			// in wp-admin js/widget.js, includes/template.php, async-upload.php, plugins.php, PHP Compatibility Checker
 			'heartbeat', 'save-widget', 'wp-compression-test', 'upload-attachment', 'deactivate', 'imgedit-preview', 'wpephpcompat_start_test',
-			// bbPress, Anti-Malware Security and Brute-Force Firewall, Jetpack page & action
-			'bp_avatar_upload', 'GOTMLS_logintime', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate',
+			// bbPress, Anti-Malware Security and Brute-Force Firewall, Jetpack page & action, Email Subscribers & Newsletters by Icegram
+			'bp_avatar_upload', 'GOTMLS_logintime', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', 'es_sendemail',
 		) );
 
 		// skip validation of country code and WP-ZEP if exceptions matches action or page

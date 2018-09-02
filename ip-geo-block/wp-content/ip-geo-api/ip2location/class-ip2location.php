@@ -142,7 +142,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	}
 
 	public function get_attribution() {
-		return 'This site or product includes IP2Location LITE data available from <a class="ip-geo-block-link" href="https://www.ip2location.com" rel=noreferrer target=_blank>https://www.ip2location.com</a>. (<a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons &mdash; Attribution-ShareAlike 4.0 International &mdash; CC BY-SA 4.0" rel=noreferrer target=_blank>CC BY-SA 4.0</a>)';
+		return 'This site or product includes IP2Location LITE data available from <a class="ip-geo-block-link" href="https://lite.ip2location.com" rel=noreferrer target=_blank>https://lite.ip2location.com</a>. (<a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons &mdash; Attribution-ShareAlike 4.0 International &mdash; CC BY-SA 4.0" rel=noreferrer target=_blank>CC BY-SA 4.0</a>)';
 	}
 
 	public function add_settings_field( $field, $section, $option_slug, $option_name, $options, $callback, $str_path, $str_last ) {

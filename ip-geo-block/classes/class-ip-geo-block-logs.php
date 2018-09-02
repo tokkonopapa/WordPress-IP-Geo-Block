@@ -124,7 +124,7 @@ class IP_Geo_Block_Logs {
 	 * @return array actual mode and cipher key
 	 */
 	private static function cipher_mode_key( $mode = IP_GEO_BLOCK_CIPHER_MODE ) {
-		$mode and $mode = function_exists( 'openssl_cipher_iv_length' ) ? $mode : 1; // @since PHP 5.3.3
+		$mode and $mode = defined( 'OPENSSL_RAW_DATA' ) ? $mode : 1; // @since PHP 5.3.3
 
 		if ( empty( self::$cipher['mode'] ) ) {
 			// openssl

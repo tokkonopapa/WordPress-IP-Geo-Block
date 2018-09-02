@@ -10,7 +10,7 @@
  */
 class_exists( 'IP_Geo_Block_API', FALSE ) or die;
 
-if ( version_compare( PHP_VERSION, '5.4.0' ) >= 0 ):
+if ( PHP_VERSION_ID >= 50400 ): // @since PHP 5.2.7 (WordPress 3.7 requires PHP 5.2.4)
 
 require_once dirname( __FILE__ ) . '/class-maxmind-geolite2.php';
 
