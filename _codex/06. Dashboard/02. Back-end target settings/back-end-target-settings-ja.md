@@ -6,9 +6,9 @@ section: Dashboard
 title: バックエンドの設定
 ---
 
-WordPress には、サイトに何らかの影響を与える重要なバックエンドへの入口（エンドポイント）が
-あります。このセクションでは、それらのうち特に重要な入口に対するリクエストを検証するための
-ルールを設定します。
+WordPress には、サイトに何らかの影響を及ぼす重要なバックエンドへの入口、即ちエンドポイントが
+あります。このセクションでは、特に重要なエンドポイントに対するリクエストを検証するルールを設定
+します。
 
 <!--more-->
 
@@ -21,8 +21,8 @@ WordPress には、サイトに何らかの影響を与える重要なバック�
 `xmlrpc.php` へのリクエストを検証します。
 
 プラグイン [Jetpack by WordPress.com][Jetpack] は、米国のサーバーからこのエンドポイント
-にアクセスします。このため `US` が 「[**国コードのホワイトリスト**][CountryList] に含まれ
-ない、またはブラックリストに含まれる場合、WordPress.com との連携が機能しません。
+にアクセスします。このため国コード `US` が 「[**国コードのホワイトリスト**][CountryList] 
+に含まれない、またはブラックリストに含まれる場合、WordPress.com との連携が機能しません。
 
 [JetpackサーバーのIPアドレス][JetpackHost]、または [Automattic, Inc][Automattic] の 
 AS番号 [AS2635][AS2635] を「[**国コードに優先して検証するIPアドレスのホワイトリスト**]
@@ -32,24 +32,24 @@ AS番号 [AS2635][AS2635] を「[**国コードに優先して検証するIPア�
 
 `wp-login.php` へのアクセスを検証します。
 
-ログインだけでなく、ユーザー登録や [パスワードで保護されたページ][PassProtect] へのアクセス
-など、アクション別に指定することができます。
+ユーザー登録や [パスワードで保護されたページ][PassProtect] へのアクセスなど、ログイン・
+フォームに指定されるアクション毎に設定することができます。
 
 #### 管理領域 ####
 
 `wp-admin/*.php` へのアクセスを検証します。
 
-この領域へのリクエストは、ログイン・ページへのリダイレクトが発生したり（未認証の場合）、テーマ
-やプラグインの脆弱性を突いた攻撃によりサイトに意図しない影響を与える（認証済みの場合）などが
-起き得ます。「**ゼロデイ攻撃を遮断**」を有効にすることで、これらの攻撃を防御できます。
+この領域へのリクエストは、ログイン・ページへのリダイレクトが発生したり、テーマやプラグインの
+脆弱性を突き、重要な情報を盗む・悪意のあるコードを設置するなど、攻撃のエンドポイントになり得
+ます。「**ゼロデイ攻撃を遮断**」を有効にすることで、これらの攻撃を防御できます。
 
 #### 管理領域 ajax/post ####
 
 特に `wp-admin/admin-ajax.php` と `wp-admin/admin-post.php` へのリクエストを検証
 します。
 
-これらのエンドポイントは、テーマやプラグインが固有の処理を行うための WordPress 標準の
-インターフェースとして使われますが、関連する脆弱性も多数見つかっています。
+これらのエンドポイントは、WordPress 標準のインターフェースとして、テーマやプラグインが固有の
+処理を行うために使われますが、関連する脆弱性も多数見つかっています。
 「**ゼロデイ攻撃を遮断**」は、これらの脆弱性を攻撃対象とするリクエストを遮断するができます。
 
 「**ゼロデイ攻撃を遮断**」の有効時、テーマやプラグインの作り方によっては意図しない遮断が発生
@@ -65,7 +65,7 @@ AS番号 [AS2635][AS2635] を「[**国コードに優先して検証するIPア�
 
 特に鍵アイコン <span class="emoji">
 ![Unlock icon]({{ '/img/2017-08/lock.png' | prepend: site.baseurl }})
-</span> だけが付いたアクションは管理者専用です。例外に指定する際は注意が必要です。
+</span> だけが付いたアクションは管理者専用ですので、指定の際は注意が必要です。
 
 ![Find blocked request button]({{ '/img/2018-01/FindLogsButton.png' | prepend: site.baseurl }}
  "Find blocked request button"
@@ -76,12 +76,11 @@ AS番号 [AS2635][AS2635] を「[**国コードに優先して検証するIPア�
 `wp-content/plugins/⋯/*.php` へのリクエストを遮断します。
 
 プラグインの中には、直接プラグイン直下のPHPを呼び出す様にプログラムされている場合があります。
-このようなプラグインにも[脆弱性が多数見つかっている][ExposeWPConf]ため、これらを攻撃対象と
-するリクエストを遮断する「**ゼロデイ攻撃を遮断**」が選択可能です。
+[TimThumb][TimThumb] や [脆弱性のあるプラグインやテーマ][ExposeWPConf] に対する攻撃を
+遮断する「**ゼロデイ攻撃を遮断**」が選択可能です。
 
-また WordPress とは無関係に、単独で実行されるようプログラムされたタイプのプラグインもあり、
-本プラグインによる検証が実行されません。このような場合に備えて「**WPコアの読み込みを強制**」
-を指定できます。
+また WordPress とは無関係に実行できるようプログラムされたプラグインもあり、本プラグインの検証
+が実行されません。このような場合に備え、「**WPコアの読み込みを強制**」が指定可能です。
 
 「**例外**」は「**管理領域 ajax/post**」とほぼ同様ですが、プラグイン単位で指定します。
 
@@ -98,6 +97,7 @@ AS番号 [AS2635][AS2635] を「[**国コードに優先して検証するIPア�
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
+[TimThumb]:     https://blog.sucuri.net/2014/06/timthumb-webshot-code-execution-exploit-0-day.html "TimThumb WebShot Code Execution Exploit (Zeroday)"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
 [Jetpack]:      https://wordpress.org/plugins/jetpack/ "Jetpack by WordPress.com &#124; WordPress.org"
 [CountryList]:  {{ '/codex/validation-rule-settings-ja.html#国コードのホワイトリストブラックリスト' | prepend: site.baseurl }} "検証ルールの設定 | IP Geo Block"

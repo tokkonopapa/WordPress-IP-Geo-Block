@@ -29,8 +29,8 @@ You can find how to manage cookies in mager browsers:
 
 - `lang`  
   Every brower can set [language preferences][LangPrefer]. This website fetches
-  your 1st language preference to navigate you to the apropriate pages. It will
-  be deleted if you close your browser.
+  your 1st language preference temporarily to navigate you to the apropriate 
+  pages. It will be deleted if you close your browser.
 
 - `cookie`
   It keeps positive value if your browser accepts cookie. It expires next one 
