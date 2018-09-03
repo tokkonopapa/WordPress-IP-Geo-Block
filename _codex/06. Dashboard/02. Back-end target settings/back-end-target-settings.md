@@ -6,9 +6,9 @@ section: Dashboard
 title: Back-end target settings
 ---
 
-WordPress has important backend entrances (e.g. endpoint) that has some impact 
-on the site. In this section, you can set up rules to validate requests for 
-particularly important entrances of them.
+WordPress has many important backend entrances (i.e. endpoint) that will 
+affect on the website. In this section, you can set up rules to validate 
+requests for particularly important endpoints of them.
 
 <!--more-->
 
@@ -21,9 +21,9 @@ It validates requests to `wp-comments-post.php`.
 It validates requests to `xmlrpc.php`.
 
 The plugin [Jetpack by WordPress.com][Jetpack] will access this endpoint from 
-the servers in United States. Therefore, cooperation with WordPress.com does 
-not work if the country code `US` is not in the "[**Whitelist of country code**]
-[CountryList]" or is in the blacklist.
+their servers in United States. Therefore, cooperation with WordPress.com does
+not work if the country code `US` is not in "[**Whitelist of country code**]
+[CountryList]" or not in the blacklist.
 
 In such a case, please put [IP addresses of Jetpack servers][JetpackHost] 
 or the AS number [AS2635][AS2635] of [Automattic, Inc][Automattic] into 
@@ -34,15 +34,15 @@ or the AS number [AS2635][AS2635] of [Automattic, Inc][Automattic] into
 It validates requests to `wp-login.php`.
 
 In addition to login, you can enable each action such as user registration, 
-[password protected page][PassProtect], etc.
+[password protected page][PassProtect] and so on.
 
 #### Admin area ####
 
 It validates requests to `wp-admin/*.php`.
 
-Requests to this area would cause redirection to the login page (in case of 
-unauthenticated), or unintentional affects on the site due to attacks that 
-exploit vulnerabilities in themes and plugins (in case of being authenticated).
+Requests to this area would cause a redirection to the login page or 
+unintentional affects on the website due to attacks that exploit 
+vulnerabilities in themes and plugins (in case of being authenticated).
 You can enable "**Prevent Zero-day Exploit**" to defend these attacks.
 
 #### Admin ajax/post ####
@@ -51,8 +51,8 @@ It validates requests especially to `wp-admin/admin-ajax.php` and
 `wp-admin/admin-post.php`.
 
 These endpoints are WordPress standard interfaces to perform specific tasks.
-And many themes and plugins that include vulnerabilities related to those 
-endpoints have been outthere.
+But many vulnerable themes and plugins were out there due to the lack of 
+secure coding to use these endpoints.
 
 You can select ether "**Block by country**" or "**Prevent Zero-day Exploit**" 
 to block requests targeted at those vulnerabilities.
@@ -81,16 +81,16 @@ Special care must be taken when you specify actions with only a "Lock icon"
 
 It validates requests to `wp-content/plugins/⋯/*.php`.
 
-Some plugins may be programmed to call PHP directly under the plugin directly.
+Some plugins may be programmed to call PHP directly under the own directly.
 Since many vulnerabilities are found in such plugins, it is possible to select 
 "**Prevent Zero-day Exploit**" to block attacks aimed at those vulnerabilities.
 
-Also there are certain types of plugins which run a PHP file independently 
-regardless of WordPress. This ends not to perform validation. In this case 
-you can specify "**Force to load WP core**".
+Also there are certain types of plugins which execute a PHP file independently 
+of WordPress. This ends not to perform validation by this plugin. For such a 
+case, you can specify "**Force to load WP core**".
 
-"**Exception**" is almost the same as "**Admin ajax/post**", but plugin should 
-be specified.
+"**Exception**" is almost the same as "**Admin ajax/post**", but plugin name 
+should be specified.
 
 #### Themes area ####
 

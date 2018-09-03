@@ -15,40 +15,39 @@ In this section, such validation rules and behavior at blocking are described.
 #### Your IP address / Country ####
 
 The information shown here is your IP address and country code recognized by 
-this plugin. The "**Scan country code**" button searches and displays the 
-country code of your IP address from multiple geolocation databases. In rare 
-cases, databases may indicate different country codes. If an incorrect country 
-code is showen, it is a good idea to uncheck the database at "**Geolocation 
+this plugin. The "**Scan country code**" button derives the country code based
+on the IP address from multiple geolocation databases. In rare cases, some 
+databases may indicate different country codes. If you found an inconsistent 
+country code, it's good to select only applicable databases at "**Geolocation 
 API settings**".
 
 Also, if your country code is shown as `XX (Private)`, it means that your 
-server is placed behind some reverse proxy server or load balancer. In such 
-a case, please put some appropriate keys acquired by PHP and corresponding 
-to the HTTP header field, such as [`HTTP_X_FOWARDED_FOR`][X-Forwarded], into 
-"**$_SERVER keys to retrieve extra IP addresses**" described later so that a 
-public IP address can be retrieved.
+server is placed behind a reverse proxy server / a load balancer or inside a 
+LAN. In such a case, please put an appropriate key, corresponding to the HTTP 
+header field wihch is acquired by PHP such as 
+[`HTTP_X_FOWARDED_FOR`][X-Forwarded], into "**$_SERVER keys to retrieve extra 
+IP addresses**" described later so that a public IP address can be retrieved.
 
 #### Matching rule ####
 
-Select either `Whitelist` or `Blacklist`. With this selection, the display 
-titles and text boxe in the next section change.
+Select either `Whitelist` or `Blacklist`. With this selection, the titles and 
+text boxe in the next section are changed.
 
 #### [Whitelist|Blacklist] of country code ####
 
 Specify the country code according to the selection of "**Matching rule**" 
-with two letters of the alphabet. Please use the code defined by [ISO 3166-1 
-alpha-2][ISO-3166-1].
+with two letters of the alphabet defined by [ISO 3166-1 alpha-2][ISO-3166-1].
 
 #### Use Autonomous System Number ####
 
 [ASN][AS-Number] is the number assigned to the group of IP addresses. For 
 example, Facebook has many IP addresses, and [AS32934][AS32934] is assigned.
-Activating this setting will allow you to specify a group of IP addresses for 
-a specific organization all in one piece.
+Activating this will allow you to specify a group of IP addresses all in one 
+piece for a specific organization.
 
 #### [Whitelist|Blacklist] of extra IP addresses prior to country code ####
 
-Specify the IP address group or AS number to block or pass, prior to validating
+Specify IP addresses or AS number to be blocked or passed, prior to validating 
 the country code. "**CIDR calculator forIPv4 / IPv6**" can help you to get the 
 range of IP addresses that can be expressed simply as [CIDR][CIDR] notation.
 
@@ -59,19 +58,20 @@ range of IP addresses that can be expressed simply as [CIDR][CIDR] notation.
 #### $_SERVER keys to retrieve extra IP addresses ####
 
 In the case of a request via a proxy server, the IP addresses of multiple 
-servers may be passed through in a specific HTTP field. In order to validate 
-all such IP addresses, you can set up some keys acquired by PHP such as 
-`HTTP_X_FORWARDED_FOR`, `HTTP_CLIENT_IP` and so on.
+servers may be passed through in some specific HTTP fields. In order to 
+validate all such IP addresses, you can set up some keys acquired by PHP 
+such as `HTTP_X_FORWARDED_FOR`, `HTTP_CLIENT_IP` and so on.
 
 #### Bad signatures in query ####
 
-Specify a malicious string (excluding comments and article postings) to be 
-scanned from the requested query in order to block a malicious request.
+Specify malicious strings to be scanned from the requested query in order to 
+block a malicious request. This validation excludes the contents of comments 
+and articles.
 
 #### Prevent malicious file uploading ####
 
-Set up rules to prevent uploading of malicious files targeted at plugins and 
-theme vulnerabilities.
+This configures some rules to prevent uploading of malicious files targeted 
+at plugins and theme vulnerabilities.
 
 - **Verify file extension and MIME type**  
   Select the white list of MIME type to be permitted.
@@ -80,8 +80,8 @@ theme vulnerabilities.
   Put the black list of prohibited file extension.
 
 - **Capabilities to be verified**  
-  Put up the necessary capabilities for uploading.
-  See [Roles and Capabilities][Roles] for details.
+  Put the necessary capabilities for uploading. See 
+  [Roles and Capabilities][Roles] for details.
 
 #### Max number of failed login attempts per IP address ####
 
@@ -94,22 +94,23 @@ Specify the [HTTP status code][HTTP-Status] for response on blocking. Set the
 followings according to your selection.
 
 - **Redirect URL**  
-  For 2XX and 3XX, specify the redirect destination URL (default is 
+  For 2XX and 3XX, specify the destination URL to be redirected (default is 
   [blackhole.webpagetest.org][Blackhole]).
 
 - **Response message**  
-  For 4XX and 5XX, specify a message displayed by a simple interface of 
-  [`wp_die()`][WP-DIE]. A [human-friendly error page][Error-Page] can be 
-  configured separately based on the theme template such as `404.php`.
+  For 4XX and 5XX, specify a message displayed on a simple interface by 
+  [`wp_die()`][WP-DIE]. Instead of this message, you can setup a 
+  [human-friendly error page][Error-Page] based on the theme template such as 
+  `404.php` can be configured.
 
 #### Validation timing ####
 
 Specify when this plugin will perform the validation.
 
-Normally, the timing when the plugin can safely be initialized is 
-[`init` action hook][Action-Hook]. But since it is after loading the theme 
-and all the activated plugins, it takes unnecessary server load in case of 
-blocking. In order to avoid this waste, you can select it as `muplugins_loaded`.
+Normally, the timing when the plugin can safely be initialized may be [`init` 
+action hook][Action-Hook]. But since it is after loading the theme and all 
+the activated plugins, it takes unnecessary server load in case of blocking.
+In order to avoid such waste, you can select it as `muplugins_loaded`.
 
 ### See also ###
 
