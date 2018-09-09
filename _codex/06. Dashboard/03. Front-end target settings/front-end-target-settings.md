@@ -6,16 +6,18 @@ section: Dashboard
 title: Front-end target settings
 ---
 
-This plugin has a function that blocks access to the public facing pages (aka 
-front-end) from undesired countries.
+In this section you can set up rules to block access to the public facing pages
+(aka front-end) from undesired countries.
 
-This feature would definitely reduce the risk of your website being hacked by 
-malicious requests to the front-end, and also reduce comment spams because 
-spammers (or bots) always must get the form on front-end page before they post
-spam text. On the other hand, it's difficult to distinguish such requests from
-all the requests when you don't want [regional content restrictions][GeoBlock].
+For spammers, this plugin can reduce both the load on the server and the amount
+of comment spams by preventing comment form acquisition on the front-end.
+Against attacks targeted at vulnerabilities in themes and plugins, this plugin 
+can also reduce the risk of hacking sites such as malware installation.
 
-In this section, you can find some solutions to fit your demands.
+In general, it is difficult to filter only malicious requests from all requests
+unless you [restrict content by region][GeoBlock], but with the combination of 
+rules in "[**Validation rule settings**][RuleSettings]", unnecessary traffic 
+for your site and risks can be reduced considerably.
 
 ![Front-end target settings]({{ '/img/2016-08/FrontEndSettings.png' | prepend: site.baseurl }}
  "Front-end target settings"
@@ -23,7 +25,11 @@ In this section, you can find some solutions to fit your demands.
 
 ### Public facing pages ###
 
-Turn on "**Enable blocking**" if you want to block something on the front-end.
+Turn on "**Block by country**" when you do not want traffic from the specific 
+countries. Even when you enable this option, "**Whitelist/Blacklist of extra 
+IP addresses prior to country code**", "**Bad signatures in query**" and 
+"**Prevent malicious file uploading**" in "[**Validation rule settings**]
+[RuleSettings]" section are effective.
 
 ### Matching rule ###
 
@@ -34,44 +40,61 @@ You can select one of these:
 - **Blacklist**
 
 When you select **Whitelist** or **Blacklist**, you can configure a different 
-set of country code from "[**Validation rule settings**][RuleSettings]" 
-section.
+set of country code and response code from "[**Validation rule settings**]
+[RuleSettings]" section.
 
-You can leave the text box of "**Witelist**" or "**Blacklist**" empty if you 
-don't want [Geo-Blocking][GeoBlockEU]. In this case, only a set of rules under
-"**UA string and qualification**" is applied.
+If blocking by country is inappropriate for your site or if you want to block 
+only specific bots and crawlers, you can leave "**Whitelist of country code**"
+empty to apply only a set of rules under "**UA string and qualification**".
+
+![Additional 3 options]({{ '/img/2016-08/FrontEndMatchingRule.png' | prepend: site.baseurl }}
+ "Additional 3 options"
+)
 
 ### Validation target ###
 
 You can select one of the followings:
 
 - **All requests**  
-  Every request to the front-end will be validated as a blocking target.
-  This can be compatible with [some caching plugins under a certain condition]
-  [LivingCache].
+Every request to the front-end will be validated as a blocking target. This can
+be compatible with [some caching plugins under certain conditions][LivingCache].
 
 - **Specify the targets**  
-  You can specify the requests for the page, post type, category and tag on a 
-  single page or archive page as a blocking target. This ignores the setting 
-  of "**Validation timing**" and thus it's always deferred util "wp" action 
-  hook fires. Note that this would lose the compatibility with page caching.  
+You can specify the requests for the __page__, __post type__, __category__ 
+and __tag__ on a single page or archive page as a blocking target. This ignores
+the setting of "[**Validation timing**][TimingRule]" to get those information 
+from the requested URL. That means the validation is always deferred util [`wp`
+action hook][ActionHookWP] fires, and also lose the compatibility with page 
+caching.
   
   ![Validation target]({{ '/img/2016-11/ValidationTarget.png' | prepend: site.baseurl }}
    "Validation target"
   )  
   
-  Also note that even when you enable all the targets, attackers still can 
-  access to your top page because those are not a single or archive page.
-  So if you want to block any requests from undesired country including your 
-  top page, you should select "**All requests**".
+  <div class="alert alert-info">
+    <strong>Note:</strong>
+    Even if you specify all the targets here, attacker can still access the TOP
+    page because it belongs to neither single page nor archive page. Therefore,
+    when you intend to validate all requests, you should select "<strong>All
+    requests</strong>".
+  </div>
+
+### Block badly-behaved bots and crawlers ###
+
+Block badly-behaved bots and crawlers that repeat many requests in a short time.
+Make sure to specify the observation period and the number of page requests to 
+the extent that impatient visitors do not feel uncomfortable.
+
+![Block badly-behaved bots and crawlers]({{ '/img/2016-08/FrontEndBadBehave.png' | prepend: site.baseurl }}
+ "Block badly-behaved bots and crawlers"
+)
 
 ### UA string and qualification ###
-
-In addition to the maching rule for country blocking, you must be sure to 
-grant permission to search engine bots or crawlers such as google, yahoo and 
-being. This feature is possible to fulfill your wishes by giving a pair of 
-"**UA string**" and "**qualification**" separated by an applicable rule which 
-can be "`:`" (pass) or "`#`" (block).
+You can configure the rules to qualify valuable bots and crawlers such as 
+google, yahoo and being OR the rules to block unwanted requests that can 
+not be blocked by country code, giving a pair of "**UA string**" and
+"**qualification**" separated by an applicable behavior which can be "`:`"
+(pass) or "`#`" (block).
 
 ![UA string and qualification]({{ '/img/2016-08/UA-Qualify.png' | prepend: site.baseurl }}
  "UA string and qualification"
@@ -79,11 +102,17 @@ can be "`:`" (pass) or "`#`" (block).
 
 See "[UA string and qualification][UA-Qualify]" for more details.
 
+#### Reverse DNS lookup ####
+
+In order to make use of `HOST` in "**qualification**", you should specify this 
+option to get the host name corresponding the IP address. If it is disabled, 
+`HOST` and <code>HOST=&hellip;</code> shall always be deemed as TRUE.
+
 ### Simulation mode ###
 
-This feature enables to simulate validation without deployment of blocking on 
-front-end. The results can be found at "**Pubic facing pages**" in Logs. It's 
-useful to check which pages would be blocked or passed.
+This option enables to simulate validation without deployment of blocking on 
+front-end. The results can be found on "**Logs**" tag so that you can check in 
+advance which pages would be blocked or passed.
 
 ![Logs for public faicing pages]({{ '/img/2016-08/Logs-Public.png' | prepend: site.baseurl }}
  "Logs for public faicing pages"
@@ -96,9 +125,11 @@ useful to check which pages would be blocked or passed.
 - [UA string and qualification][UA-Qualify]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
-[LivingCache]:  {{ '/codex/living-with-caching-plugin.html'            | prepend: site.baseurl }} "Living with caching plugin | IP Geo Block"
-[UA-Qualify]:   {{ '/codex/ua-string-and-qualification.html'           | prepend: site.baseurl }} "UA string and qualification | IP Geo Block"
+[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html'        | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
+[LivingCache]:  {{ '/codex/living-with-caching-plugin.html'                   | prepend: site.baseurl }} "Living with caching plugin | IP Geo Block"
+[UA-Qualify]:   {{ '/codex/ua-string-and-qualification.html'                  | prepend: site.baseurl }} "UA string and qualification | IP Geo Block"
+[RuleSettings]: {{ '/codex/validation-rule-settings.html'                     | prepend: site.baseurl }} "Validation rule settings | IP Geo Block"
+[TimingRule]:   {{ '/codex/validation-rule-settings.html#validation-timing'   | prepend: site.baseurl }} "Validation rule settings | IP Geo Block"
+[ActionHookWP]: https://codex.wordpress.org/Plugin_API/Action_Reference/wp "Plugin API/Action Reference/wp &laquo; WordPress Codex"
 [GeoBlock]:     https://en.wikipedia.org/wiki/Geo-blocking "Geo-blocking - Wikipedia"
 [GeoBlockEU]:   https://ec.europa.eu/digital-single-market/en/faq/geo-blocking "Geo-blocking | Digital Single Market"
-[RuleSettings]: {{ '/codex/validation-rule-settings.html'              | prepend: site.baseurl }} "Validation rule settings | IP Geo Block"

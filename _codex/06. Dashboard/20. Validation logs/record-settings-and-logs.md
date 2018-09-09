@@ -91,7 +91,7 @@ Here are the descriptions:
 | failed        | blocked by failed login attempt                  |
 | limited       | blocked by excess of limit login attempt         |
 | upload        | blocked by forbidden MIME type                   |
-| *             | found unexpected attached files                  |
+| ^             | found unexpected attached files                  |
 
 ### See also ###
 
