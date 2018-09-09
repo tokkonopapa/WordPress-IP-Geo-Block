@@ -98,8 +98,7 @@ title: フロントエンドの設定
 
 詳しくは "[UA string and qualification][UA-Qualify]" を参照してください。
 
-#### DNS 逆引き ####
-
+- **DNS 逆引き**  
 「**条件**」中の `HOST` にホスト名（の一部）を指定可能にするためには、この
 オプションを有効にします。無効の場合、`HOST` 及び <code>HOST=&hellip;</code>は
 常に「真」に評価されます。

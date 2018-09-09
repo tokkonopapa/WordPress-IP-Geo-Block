@@ -102,8 +102,7 @@ not be blocked by country code, giving a pair of "**UA string**" and
 
 See "[UA string and qualification][UA-Qualify]" for more details.
 
-#### Reverse DNS lookup ####
-
+- **Reverse DNS lookup**  
 In order to make use of `HOST` in "**qualification**", you should specify this 
 option to get the host name corresponding the IP address. If it is disabled, 
 `HOST` and <code>HOST=&hellip;</code> shall always be deemed as TRUE.
