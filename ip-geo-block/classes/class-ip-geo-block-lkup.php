@@ -63,17 +63,17 @@ class IP_Geo_Block_Lkup {
 	 *
 	 */
 	public static function gethostbyaddr( $ip ) {
-		if ( ! empty( $_SERVER['REMOTE_HOST'] ) && $_SERVER['REMOTE_HOST'] !== $ip )
+		if ( ! empty( $_SERVER['REMOTE_HOST'] ) )
 			return $_SERVER['REMOTE_HOST'];
 
 		// array( 'nameservers' => array( '8.8.8.8', '8.8.4.4' ) ) // Google public DNS
 		// array( 'nameservers' => array( '1.1.1.1', '1.0.0.1' ) ) // APNIC public DNS
-		$server = array( 'nameservers' => apply_filters( IP_GEO_BLOCK::PLUGIN_NAME . '-dns-resolver', array() ) );
-		if ( ! empty( $server['nameservers'] ) ) {
+		$servers = array( 'nameservers' => apply_filters( IP_GEO_BLOCK::PLUGIN_NAME . '-dns', array() ) );
+		if ( ! empty( $servers['nameservers'] ) ) {
 			set_include_path( IP_GEO_BLOCK_PATH . 'includes' . PATH_SEPARATOR . get_include_path() );
 			require_once IP_GEO_BLOCK_PATH . 'includes/Net/DNS2.php';
 
-			$r = new Net_DNS2_Resolver( $server );
+			$r = new Net_DNS2_Resolver( $servers );
 
 			try {
 				$result = $r->query( $ip, 'PTR' );
@@ -89,16 +89,14 @@ class IP_Geo_Block_Lkup {
 					}
 				}
 			}
-
-			return $ip;
 		}
 
 		// available on Windows platforms after PHP 5.3.0
 		if ( function_exists( 'gethostbyaddr' ) )
-			return @gethostbyaddr( $ip );
+			$host = @gethostbyaddr( $ip );
 
 		// if not available
-		if ( function_exists( 'dns_get_record' ) ) {
+		if ( empty( $host ) && function_exists( 'dns_get_record' ) ) {
 			// generate in-addr.arpa notation
 			if ( FALSE !== filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 				$ptr = implode( ".", array_reverse( explode( ".", $ip ) ) ) . ".in-addr.arpa";
@@ -114,7 +112,7 @@ class IP_Geo_Block_Lkup {
 			}
 		}
 
-		return $ip;
+		return empty( $host ) ? $ip : $host;
 	}
 
 }

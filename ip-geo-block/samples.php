@@ -402,3 +402,17 @@ function my_record_logs( $record, $hook, $validate ) {
 }
 
 add_filter( 'ip-geo-block-record-logs', 'my_record_logs', 10, 3 );
+
+/**
+ * Example 19: Specify the domain name server for reverse DNS lookup
+ * Use case: Speed up reverse DNS lookup when it is slow
+ *
+ * @param  array $servers empty array
+ * @return array $servers array of primary and secondary servers
+ */
+function my_gethostbyaddr( $servers ) {
+	return array( '1.1.1.1', '1.0.0.1' ); // APNIC  public DNS (faster)
+//	return array( '8.8.8.8', '8.8.4.4' ); // Google public DNS (slower)
+}
+
+add_filter( 'ip-geo-block-dns', 'my_gethostbyaddr' );

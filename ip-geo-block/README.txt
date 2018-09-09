@@ -389,7 +389,8 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 * **Fix issue:** Fix the issue of undefined symbol for openssl in PHP 5.3.5 and under.
 * **Improvement:** Provide help links on "Settings" tab.
 * **Improvement:** All the http had been replaced to https if possible.
-* **New feature:** Introduce an emergency login link.
+* **New feature:** Introduce an emergency login link in "Plugins settings" section.
+* **New feature:** Introduce a new filter hook `ip-geo-block-dns` to specify the primary and secondary domain name servers for reverse DNS lookup.
 * **New feature:** Introduce a new filter hook `ip-geo-block-logs`. ([forum topic](https://wordpress.org/support/topic/request-log-filtering/ "Topic: Request: Log filtering &#124; WordPress.org"))
 * **New feature:** Introduce a new drop-in file `drop-in-admin.php` in Geolocation API library folder.
 
