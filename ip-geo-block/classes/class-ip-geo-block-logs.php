@@ -620,7 +620,7 @@ class IP_Geo_Block_Logs {
 
 		// mark if malicious upload exists
 		if ( isset( $validate['upload'] ) )
-			$validate['result'] .= '*';
+			$validate['result'] .= '^';
 
 		// anonymize ip address
 		if ( $settings['anonymize'] )

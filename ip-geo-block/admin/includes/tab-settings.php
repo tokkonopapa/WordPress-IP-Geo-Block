@@ -986,6 +986,26 @@ endif;
 			)
 		);
 
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		// Excluded action
+		$key = 'exception';
+		add_settings_field(
+			$option_name.'_'.$key.'_'.$field,
+			'<dfn title="' . __( 'Specify the name of actions as exception that is invariably blocked.', 'ip-geo-block' ) . '">' . __( 'Excluded actions', 'ip-geo-block' ) . '</dfn>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $key,
+				'sub-field' => $field,
+				'value' => implode( ',', $options[ $key ][ $field ] ),
+				'after' => $common[0],
+			)
+		);
+endif;
+
 		// Badly-behaved bots and crawlers
 		$exception  = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the frequency of request for certain period of time.">Blocking condition</dfn>', 'ip-geo-block' ) . "\n<li class=\"ip-geo-block-hide\"><ul>\n<li>";
 		$exception .= sprintf(
@@ -1030,31 +1050,11 @@ endif;
 			)
 		);
 
-if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		// Excluded action
-		$key = 'exception';
-		add_settings_field(
-			$option_name.'_'.$key.'_'.$field,
-			'<dfn title="' . __( 'Specify the name of actions as exception that is invariably blocked.', 'ip-geo-block' ) . '">' . __( 'Excluded actions', 'ip-geo-block' ) . '</dfn>',
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => $key,
-				'sub-field' => $field,
-				'value' => implode( ',', $options[ $key ][ $field ] ),
-				'after' => $common[0],
-			)
-		);
-endif;
-
-		// DNS reverse lookup
+		// Reverse DNS lookup
 		$key = 'dnslkup';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			'<dfn title="' . __( 'It enables to verify the host by reverse DNS lookup which would spend some server resources. If it is disabled, &#8220;HOST&#8221; and &#8220;HOST=&hellip;&#8221;in &#8220;UA string and qualification&#8221; will always return &#8220;true&#8221;.', 'ip-geo-block' ) . '">' . __( 'DNS reverse lookup', 'ip-geo-block' ) . '</dfn>',
+			'<div class="ip-geo-block-subitem"><dfn title="' . __( 'It enables to verify the host by reverse DNS lookup which would spend some server resources. If it is disabled, &#8220;HOST&#8221; and &#8220;HOST=&hellip;&#8221;in &#8220;UA string and qualification&#8221; will always return &#8220;true&#8221;.', 'ip-geo-block' ) . '">' . __( 'Reverse DNS lookup', 'ip-geo-block' ) . '</dfn></div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
