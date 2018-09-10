@@ -96,7 +96,7 @@ switch ( $components['host'] ) {
 ### See also ###
 
 - [Validation timing][ValidateTime]
-- [Geolocation API library][GeoAPIFolder]
+- [Local database settings][GeoAPIFolder]
 - [Customizing the response][CustomRes]
 - [Filter hooks][FilterHooks]
 
@@ -105,6 +105,6 @@ switch ( $components['host'] ) {
 [ActionHook]:   https://codex.wordpress.org/Plugin_API/Action_Reference "Plugin API/Action Reference &laquo; WordPress Codex"
 [ValidateTime]: {{ '/codex/validation-timing.html'              | prepend: site.baseurl }} "Validation timing | IP Geo Block"
 [Restrictions]: {{ '/codex/validation-timing.html#restrictions' | prepend: site.baseurl }} "Validation timing | IP Geo Block"
-[GeoAPIFolder]: {{ '/codex/geolocation-api-library.html'        | prepend: site.baseurl }} "Geolocation API library | IP Geo Block"
+[GeoAPIFolder]: {{ '/codex/geolocation-api-library.html'        | prepend: site.baseurl }} "Local database settings | IP Geo Block"
 [FilterHooks]:  {{ '/codex/#filter-hooks'                       | prepend: site.baseurl }} "Filter hooks | IP Geo Block"
 [CustomRes]:    {{ '/codex/customizing-the-response.html'       | prepend: site.baseurl }} "Customizing the response | IP Geo Block"

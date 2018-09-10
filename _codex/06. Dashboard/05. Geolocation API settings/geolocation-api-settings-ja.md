@@ -57,12 +57,12 @@ __IP2Location__ と表記します。
 
 ### 参考情報 ###
 
-- [Geolocation API library][GeoAPILib]
+- [Local database settings][GeoAPILib]
 - [Prevent exposure of wp-config.php][ExposeWPConf]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
-[GeoAPILib]:    {{ '/codex/geolocation-api-library.html'               | prepend: site.baseurl }} "Geolocation API library | IP Geo Block"
+[GeoAPILib]:    {{ '/codex/geolocation-api-library.html'               | prepend: site.baseurl }} "Local database settings | IP Geo Block"
 [MaxMind]:      https://www.maxmind.com/ "IP Geolocation and Online Fraud Prevention | MaxMind"
 [GeoLite2]:     https://dev.maxmind.com/geoip/geoip2/geolite2/ "GeoLite2 Free Downloadable Databases &laquo; MaxMind Developer Site"
 [GeoLegacy]:    https://dev.maxmind.com/geoip/legacy/geolite/ "GeoLite Legacy Downloadable Databases &laquo; MaxMind Developer Site"
