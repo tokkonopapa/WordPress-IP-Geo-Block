@@ -185,8 +185,8 @@ class IP_Geo_Block_Opts {
 		),
 		// since version 3.0.10
 		'behavior'        => array(
-			'time'           => 10,      // More than 12 page view in 10 seconds
-			'view'           => 12,      // More than 12 page view in 10 seconds
+			'time'           =>  5,      // More than 10 page view in 5 seconds
+			'view'           => 10,      // More than 10 page view in 5 seconds
 		),
 		// since version 3.0.13
 		'restrict_api'    => TRUE,       // Do not send IP address to external APIs

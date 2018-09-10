@@ -63,9 +63,6 @@ class IP_Geo_Block_Lkup {
 	 *
 	 */
 	public static function gethostbyaddr( $ip ) {
-		if ( ! empty( $_SERVER['REMOTE_HOST'] ) )
-			return $_SERVER['REMOTE_HOST'];
-
 		// array( 'nameservers' => array( '8.8.8.8', '8.8.4.4' ) ) // Google public DNS
 		// array( 'nameservers' => array( '1.1.1.1', '1.0.0.1' ) ) // APNIC public DNS
 		$servers = array( 'nameservers' => apply_filters( IP_GEO_BLOCK::PLUGIN_NAME . '-dns', array() ) );
