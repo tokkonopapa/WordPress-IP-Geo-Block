@@ -1,9 +1,9 @@
 ---
 layout: page
+language: en
 category: codex
-section: Features and performance
-title: Geolocation API library
-excerpt: Geolocation API library
+section: Dashboard
+title: Local database settings
 ---
 
 [IP Geo Block][IP-Geo-Block] has multi source of geolocation database not only 

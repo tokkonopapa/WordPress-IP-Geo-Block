@@ -25,7 +25,7 @@ not be sent to the external geolocation APIs.
 
 Statistical data such as **Blocked**, **Blocked by countries**, **Blocked per 
 day**, **Blocked by type of IP address**, **Average response time of each API**
-and display graphically on "**Statistics**" tab.
+and display graphically on "**Statistics**" screen.
 
 ![Statistics of validation]({{ '/img/2018-09/ValidationStat.png' | prepend: site.baseurl }}
  "Statistics of validation"
@@ -45,7 +45,8 @@ validation at high speed.
 )
 
 - **Expiration time [sec] for each entry**  
-Specify the time to hold the cache in seconds. The default is 3600 seconds.  
+Specify the time to hold the cache in seconds. The default is 3600 seconds 
+(1 hour).  
   
   If the number of login failures exceeds "[**Max number of failed login 
   attempts per IP address**][LoginFail]", access to the login form will be 
@@ -67,12 +68,28 @@ screen.
 )
 
 - **Expiration time [days] for each entry**  
+Each entry in Logs is deleted automatically when it expires at this option or 
+when it exceeds the maximum number of entries (500 by default).
 
 - **$_POST key to record with value**  
+When this plugin fetches a request by HTTP method `POST`, the data in the 
+message body corresponding to the specified key is expanded and recorded 
+securely. In the following example, `log` for login name and `pwd` for 
+password are recorded when those are posted to the login form.
+
+![$_POST data]({{ '/img/2018-09/PostData.png' | prepend: site.baseurl }}
+ "$_POST data"
+)
 
 ### Interval [sec] to cleanup expired entries of IP address ###
 
+This option specifies the period to remove the expired entries in the IP 
+address cache and verification log. The default is 900 seconds (15 minutes).
+
 ### Remove all settings and records at uninstallation ###
+
+When uninstalling, it removes all the data including the recorded IP addresses 
+from the database as well as setting of this plugin.
 
 ### See also ###
 
@@ -80,8 +97,8 @@ screen.
 - [Prevent exposure of wp-config.php][ExposeWPConf]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [LoginFail]:    {{ '/codex/validation-rule-settings.html#max-number-of-failed-login-attempts-per-ip-address' | prepend: site.baseurl }} "Validation rule settings | IP Geo Block"
+[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
 [GDPR]:         https://en.wikipedia.org/wiki/General_Data_Protection_Regulation "General Data Protection Regulation - Wikipedia"
 [PII]:          https://en.wikipedia.org/wiki/Personally_identifiable_information "Personally identifiable information - Wikipedia"
