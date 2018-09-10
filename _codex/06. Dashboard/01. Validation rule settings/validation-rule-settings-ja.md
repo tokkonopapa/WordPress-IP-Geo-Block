@@ -85,8 +85,9 @@ PHPで取得可能なキーを設定します。
 
 #### IPアドレス当たりのログイン試行可能回数 ####
 
-ログイン試行可能な最大回数を設定します。後述する「**プライバシーと記録の設定**」
-の「**IPアドレスをキャッシュに記録**」を有効化する必要があります。
+ログイン試行可能な最大回数を設定します。「[**プライバシーと記録の設定**]
+[Privacy]」の「[**IPアドレスをキャッシュに記録**][IPCache]」を有効化する
+必要があります。
 
 #### レスポンス・コード ####
 
@@ -117,6 +118,9 @@ PHPで取得可能なキーを設定します。
 - [Prevent exposure of wp-config.php][ExposeWPConf]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
+[Error-Page]:   {{ '/codex/customizing-the-response.html#human-friendly-error-page'          | prepend: site.baseurl }} "Response code and message | IP Geo Block"
+[IPCache]:      {{ '/codex/privacy-and-record-settings-ja.html#ipアドレスをキャッシュに記録' | prepend: site.baseurl }} "Privacy and record settings | IP Geo Block"
+[Privacy]:      {{ '/codex/privacy-and-record-settings-ja.html'        | prepend: site.baseurl }} "プライバシーと記録の設定 | IP Geo Block"
 [BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
 [ISO-3166-1]:   https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "Officially assigned code elements - Wikipedia"
@@ -128,6 +132,5 @@ PHPで取得可能なキーを設定します。
 [Roles]:        https://codex.wordpress.org/Roles_and_Capabilities "Roles and Capabilities &laquo; WordPress Codex"
 [HTTP-Status]:  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes "List of HTTP status codes - Wikipedia"
 [WP-DIE]:       https://codex.wordpress.org/Function_Reference/wp_die "Function Reference/wp die &laquo; WordPress Codex"
-[Error-Page]:   {{ '/codex/customizing-the-response.html#human-friendly-error-page' | prepend: site.baseurl }} "Response code and message | IP Geo Block"
 [Action-Hook]:  https://codex.wordpress.org/Plugin_API/Action_Reference "Plugin API/Action Reference &laquo; WordPress Codex"
 [Blackhole]:    http://blog.patrickmeenan.com/2011/10/testing-for-frontend-spof.html "Performance Matters: Testing for Frontend SPOF"

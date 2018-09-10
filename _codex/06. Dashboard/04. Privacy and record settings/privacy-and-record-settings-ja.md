@@ -32,13 +32,31 @@ title: プライバシーと記録の設定
 
 ### IPアドレスをキャッシュに記録 ###
 
+このプラグインでは、国コード、ホスト名、ログイン失敗回数などを IP アドレスに
+紐付けて検証を実行します。このオプションを有効にすると、これらを一定期間、
+キャッシュに保持し、国コードやホスト名の重複検索を避け、サーバー負荷を減らすと
+共に高速に動作させることができます。
+
 ![キャッシュの統計]({{ '/img/2018-09/IPAddressCache.png' | prepend: site.baseurl }}
  "キャッシュの統計"
 )
 
 - **各エントリーの有効期間 ［秒］**  
+キャッシュを保持する時間を秒単位で指定します。デフォルトは3600秒です。  
+  
+  ログイン失敗回数が「[**IPアドレス当たりのログイン試行可能回数**][LoginFail]」
+  を超えた場合、この期間だけログイン・フォームへのアクセスが遮断されます。
+  この制限を解除するには、IP アドレスを選択し、「**選択して実行**」から
+  「**指定のIPアドレスでエントリを削除**」を実行してください。
+  
+  ![指定のIPアドレスでエントリを削除]({{ '/img/2018-09/LoginFailure.png' | prepend: site.baseurl }}
+   "指定のIPアドレスでエントリを削除"
+  )
 
 ### 検証のログを記録 ###
+
+このオプションを有効にすると、「ログ」の画面で検証結果の履歴を閲覧することが
+できるようになります。
 
 ![検証のログ]({{ '/img/2018-09/ValidationLogs.png' | prepend: site.baseurl }}
  "検証のログ"
@@ -60,5 +78,6 @@ title: プライバシーと記録の設定
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
+[LoginFail]:    {{ '/codex/validation-rule-settings-ja.html#ipアドレス当たりのログイン試行可能回数' | prepend: site.baseurl }} "検証ルールの設定 | IP Geo Block"
 [GDPR]:         https://en.wikipedia.org/wiki/General_Data_Protection_Regulation "General Data Protection Regulation - Wikipedia"
 [PII]:          https://en.wikipedia.org/wiki/Personally_identifiable_information "Personally identifiable information - Wikipedia"

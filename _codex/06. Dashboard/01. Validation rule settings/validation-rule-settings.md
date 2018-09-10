@@ -64,9 +64,9 @@ such as `HTTP_X_FORWARDED_FOR`, `HTTP_CLIENT_IP` and so on.
 
 #### Bad signatures in query ####
 
-Specify malicious strings to be scanned from the requested query in order to 
-block a malicious request. This validation excludes the contents of comments 
-and articles.
+Specify malicious strings to be scanned from the requested [query][Query] in 
+order to block a malicious request. This validation excludes the contents of 
+comments and articles.
 
 #### Prevent malicious file uploading ####
 
@@ -85,8 +85,9 @@ at plugins and theme vulnerabilities.
 
 #### Max number of failed login attempts per IP address ####
 
-Select the maximum number of possible login attempts. It is necessary to enable
-"**Record “IP address cache”**" in "**Privacy and record settings**" section.
+Select the maximum number of possible login attempts. "[**Record “IP address
+cache”**][IPCache]" should be enabled in "[**Privacy and record settings**]
+[Privacy]" section.
 
 #### Response code ####
 
@@ -118,16 +119,19 @@ In order to avoid such waste, you can select it as `muplugins_loaded`.
 - [Prevent exposure of wp-config.php][ExposeWPConf]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
+[Error-Page]:   {{ '/codex/customizing-the-response.html#human-friendly-error-page'  | prepend: site.baseurl }} "Response code and message | IP Geo Block"
+[IPCache]:      {{ '/codex/privacy-and-record-settings.html#record-ip-address-cache' | prepend: site.baseurl }} "Privacy and record settings | IP Geo Block"
+[Privacy]:      {{ '/codex/privacy-and-record-settings.html'           | prepend: site.baseurl }} "Privacy and record settings | IP Geo Block"
 [BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
 [ISO-3166-1]:   https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "Officially assigned code elements - Wikipedia"
 [AS-Number]:    https://en.wikipedia.org/wiki/Autonomous_system_(Internet) "Autonomous system (Internet) - Wikipedia"
 [AS32934]:      https://ipinfo.io/AS32934 "AS32934 Facebook, Inc. - ipinfo.io"
 [CIDR]:         https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia"
+[Query]:        https://en.wikipedia.org/wiki/Query "Query - Wikipedia"
 [X-Forwarded]:  https://en.wikipedia.org/wiki/X-Forwarded-For "X-Forwarded-For - Wikipedia"
 [Roles]:        https://codex.wordpress.org/Roles_and_Capabilities "Roles and Capabilities &laquo; WordPress Codex"
 [HTTP-Status]:  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes "List of HTTP status codes - Wikipedia"
 [WP-DIE]:       https://codex.wordpress.org/Function_Reference/wp_die "Function Reference/wp die &laquo; WordPress Codex"
-[Error-Page]:   {{ '/codex/customizing-the-response.html#human-friendly-error-page' | prepend: site.baseurl }} "Response code and message | IP Geo Block"
 [Action-Hook]:  https://codex.wordpress.org/Plugin_API/Action_Reference "Plugin API/Action Reference &laquo; WordPress Codex"
 [Blackhole]:    http://blog.patrickmeenan.com/2011/10/testing-for-frontend-spof.html "Performance Matters: Testing for Frontend SPOF"

@@ -34,11 +34,28 @@ and display graphically on "**Statistics**" tab.
 
 ### Record "IP address cache" ###
 
+This plugin executes the validation by associating an IP address with its 
+country code, host name and login failure count. If you enable this option, you
+can keep them in cache for a certain period of time to avoid duplicate searches
+of country codes and host names. This can reduce server load and perform the 
+validation at high speed.
+
 ![Statistics in IP address cache]({{ '/img/2018-09/IPAddressCache.png' | prepend: site.baseurl }}
  "Statistics in IP address cache"
 )
 
 - **Expiration time [sec] for each entry**  
+Specify the time to hold the cache in seconds. The default is 3600 seconds.  
+  
+  If the number of login failures exceeds "[**Max number of failed login 
+  attempts per IP address**][LoginFail]", access to the login form will be 
+  blocked for this period. To salvage someone from this accident, please 
+  select the corresponding IP address and apply "**Remove entries by IP 
+  address**".
+  
+  ![Remove entries by IP address]({{ '/img/2018-09/LoginFailure.png' | prepend: site.baseurl }}
+   "Remove entries by IP address"
+  )
 
 ### Record "Validation logs" ###
 
@@ -61,6 +78,7 @@ and display graphically on "**Statistics**" tab.
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
+[LoginFail]:    {{ '/codex/validation-rule-settings.html#max-number-of-failed-login-attempts-per-ip-address' | prepend: site.baseurl }} "Validation rule settings | IP Geo Block"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
 [GDPR]:         https://en.wikipedia.org/wiki/General_Data_Protection_Regulation "General Data Protection Regulation - Wikipedia"
 [PII]:          https://en.wikipedia.org/wiki/Personally_identifiable_information "Personally identifiable information - Wikipedia"
