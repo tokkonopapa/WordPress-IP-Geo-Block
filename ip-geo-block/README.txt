@@ -385,7 +385,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 = 3.0.14 =
 * **Fix issue:** Fix wrong handling of anonymized IPv6 on clicking a link or applying bulk actions.
 * **Fix issue:** Fix the issue that added a server's country code which was not in "Whitelist of country code" but its IP address was in "Whitelist of extra IP addresses prior to country code" on activation. ([forum topic](https://wordpress.org/support/topic/possible-bug-disabling-enabling-adds-us-to-whitelist-country-code/ "Topic: Possible bug: disabling/enabling adds &#8220;,US&#8221; to whitelist country code &#124;  WordPress.org"))
-* **Fix issue:** Fix the issue of "Fatal error: Call to undefined function" which caused 500 Internal error on admin screen with a certain condition.
+* **Fix issue:** Fix the issue of "Fatal error: Call to undefined function" which caused 500 Internal error on admin screen under a certain condition.
 * **Fix issue:** Fix the issue of undefined symbol for openssl in PHP 5.3.5 and under.
 * **Improvement:** Provide help links on "Settings" tab.
 * **Improvement:** All the http had been replaced to https if possible.
