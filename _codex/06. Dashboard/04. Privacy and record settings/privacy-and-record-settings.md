@@ -59,6 +59,9 @@ Specify the time to hold the cache in seconds. The default is 3600 seconds.
 
 ### Record "Validation logs" ###
 
+This option enables you to view the history of validation results on "**Logs**"
+screen.
+
 ![Validation logs]({{ '/img/2018-09/ValidationLogs.png' | prepend: site.baseurl }}
  "Validation logs"
 )
