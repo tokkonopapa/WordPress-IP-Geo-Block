@@ -154,7 +154,7 @@ input[id*="ip_geo_block_settings_providers"] + label {
 
 /* Folding */
 .ip-geo-block-settings-folding {
-    margin: 0.5em 0;
+    margin: 0.5em 0 0;
 }
 .ip-geo-block-settings-folding ul {
     margin-bottom: 0;
@@ -906,7 +906,7 @@ mark {
 
 /* sub items in settings */
 .ip-geo-block-subitem {
-  margin-left:1.7em
+  margin-left: 1.7em
 }
 .ip-geo-block-subitem:before {
   content: "\00bb"; /* &raquo; */
@@ -915,6 +915,10 @@ mark {
 }
 .ip-geo-block-subitem dfn {
   vertical-align: middle;
+}
+.ip-geo-block-subitem-parent th,
+.ip-geo-block-subitem-parent td {
+  padding-top: 0;
 }
 
 /* placeholder */

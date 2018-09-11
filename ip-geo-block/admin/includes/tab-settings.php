@@ -325,31 +325,6 @@ endif;
 			)
 		);
 
-		// Max number of failed login attempts per IP address
-		$field = 'login_fails';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( '<dfn title="This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221; when &#8220;IP address cache&#8221; in &#8220;Privacy and record settings&#8221; section is enabled. Lockout period is the same as expiration time of the cache.">Max number of failed login attempts per IP address</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'select',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
-				'list' => array(
-					-1 => 'Disable',
-					 0 =>  0,
-					 1 =>  1,
-					 3 =>  3,
-					 5 =>  5,
-					 7 =>  7,
-					10 => 10,
-				),
-			)
-		);
-
 		// Response code (RFC 2616)
 		$field = 'response_code';
 		add_settings_field(
@@ -483,7 +458,36 @@ endif;
 			)
 		);
 
+		$val = $GLOBALS['allowedtags'];
+		unset( $val['blockquote'] );
+
+		// Message on comment form
+		$field = 'comment';
+		add_settings_field(
+			$option_name.'_'.$field,
+			'<div class="ip-geo-block-subitem"><dfn title="' . __( 'The whole will be wrapped by &lt;p&gt; tag. Allowed tags: ', 'ip-geo-block' ) . implode( ', ', array_keys( $val ) ) . '">' . __( 'Message on comment form', 'ip-geo-block' ) . '</dfn></div>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select-text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => 'pos',
+				'txt-field' => 'msg',
+				'value' => $options[ $field ]['pos'],
+				'class' => 'ip-geo-block-subitem-parent',
+				'list' => array(
+					0 => __( 'None',   'ip-geo-block' ),
+					1 => __( 'Top',    'ip-geo-block' ),
+					2 => __( 'Bottom', 'ip-geo-block' ),
+				),
+				'text' => $options[ $field ]['msg'], // escaped by esc_attr() at 'text'
+			)
+		);
+
 		// XML-RPC
+		$field = 'validation';
 		$key = 'xmlrpc';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
@@ -545,6 +549,32 @@ endif;
 		$desc = array(
 			1 => __( 'It will block a request related to the services for both public facing pages and the dashboard.', 'ip-geo-block' ),
 			2 => __( 'Regardless of the country code, it will block a malicious request related to the services only for the dashboard.', 'ip-geo-block' ),
+		);
+
+		// Max failed login attempts per IP address
+		$field = 'login_fails';
+		add_settings_field(
+			$option_name.'_'.$field,
+			'<div class="ip-geo-block-subitem"><dfn title="' . __( 'This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221; when &#8220;IP address cache&#8221; in &#8220;Privacy and record settings&#8221; section is enabled. Lockout period is the same as expiration time of the cache.', 'ip-geo-block' ) . '">' . __( 'Max failed login attempts per IP address', 'ip-geo-block' ) . '</dfn></div>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+				'class' => 'ip-geo-block-subitem-parent',
+				'list' => array(
+					-1 => 'Disable',
+					 0 =>  0,
+					 1 =>  1,
+					 3 =>  3,
+					 5 =>  5,
+					 7 =>  7,
+					10 => 10,
+				),
+			)
 		);
 
 		// Admin area
@@ -1064,6 +1094,7 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
+				'class' => 'ip-geo-block-subitem-parent',
 			)
 		);
 
@@ -1157,6 +1188,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
+				'class' => 'ip-geo-block-subitem-parent',
 			)
 		);
 endif;
@@ -1190,6 +1222,7 @@ endif;
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
+				'class' => 'ip-geo-block-subitem-parent',
 			)
 		);
 
@@ -1233,6 +1266,7 @@ endif;
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
+				'class' => 'ip-geo-block-subitem-parent',
 			)
 		);
 
@@ -1250,6 +1284,7 @@ endif;
 				'sub-field' => 'postkey',
 				'value' => $options[ $field ]['postkey'],
 				'after' => $common[0],
+				'class' => 'ip-geo-block-subitem-parent',
 			)
 		);
 
@@ -1268,6 +1303,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
+				'class' => 'ip-geo-block-subitem-parent',
 			)
 		);
 
@@ -1285,6 +1321,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'field' => $field,
 				'sub-field' => 'in_memory',
 				'value' => extension_loaded( 'pdo_sqlite' ) ? $options[ $field ]['in_memory'] : -1,
+				'class' => 'ip-geo-block-subitem-parent',
 				'list' => array(
 					-1 => NULL,
 					 0 => __( 'Ordinary file', 'ip-geo-block' ),
@@ -1312,6 +1349,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'field' => $field,
 				'value' => __( 'Reset now', 'ip-geo-block' ),
 				'after' => '<div id="ip-geo-block-reset-live"></div>',
+				'class' => 'ip-geo-block-subitem-parent',
 			)
 		);
 endif;
@@ -1491,43 +1529,6 @@ endif;
 				'value' => __( 'Download now', 'ip-geo-block' ),
 				'disabled' => empty( $providers ),
 				'after' => '<div id="ip-geo-block-download"></div>',
-			)
-		);
-
-		/*----------------------------------------*
-		 * Submission settings
-		 *----------------------------------------*/
-		add_settings_section(
-			$section = $plugin_slug . '-submission',
-			array( __( 'Submission settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/submission-settings.html" title="Submission settings | IP Geo Block">' . $common[4] . '</a>' ),
-			NULL,
-			$option_slug
-		);
-
-		$val = $GLOBALS['allowedtags'];
-		unset( $val['blockquote'] );
-
-		// Message on comment form
-		$field = 'comment';
-		add_settings_field(
-			$option_name.'_'.$field,
-			'<dfn title="' . __( 'The whole will be wrapped by &lt;p&gt; tag. Allowed tags: ', 'ip-geo-block' ) . implode( ', ', array_keys( $val ) ) . '">' . __( 'Message on comment form', 'ip-geo-block' ) . '</dfn>',
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'select-text',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => 'pos',
-				'txt-field' => 'msg',
-				'value' => $options[ $field ]['pos'],
-				'list' => array(
-					0 => __( 'None',   'ip-geo-block' ),
-					1 => __( 'Top',    'ip-geo-block' ),
-					2 => __( 'Bottom', 'ip-geo-block' ),
-				),
-				'text' => $options[ $field ]['msg'], // escaped by esc_attr() at 'text'
 			)
 		);
 
