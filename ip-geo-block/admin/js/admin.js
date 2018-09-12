@@ -175,8 +175,9 @@
 
 	// Show/Hide descendant elements
 	function show_descendants($this, $elem, mask) {
-		var stat = (0 === $this.prop('type').indexOf('checkbox') && $this.is(':checked')) ||
-		           (0 === $this.prop('type').indexOf('select'  ) && '0' !== $this.val());
+		var prop = $this.prop('type') || '',
+		    stat = (0 === prop.indexOf('checkbox') && $this.is(':checked')) ||
+		           (0 === prop.indexOf('select'  ) && '0' !== $this.val());
 
 		// checkbox
 		$this.siblings('input[name^="' + ID('%', 'settings') + '"]:checkbox').prop('disabled', !stat);

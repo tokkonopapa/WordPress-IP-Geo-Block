@@ -154,7 +154,7 @@ input[id*="ip_geo_block_settings_providers"] + label {
 
 /* Folding */
 .ip-geo-block-settings-folding {
-    margin: 0.5em 0 0;
+    margin: 0.5em 0;
 }
 .ip-geo-block-settings-folding ul {
     margin-bottom: 0;

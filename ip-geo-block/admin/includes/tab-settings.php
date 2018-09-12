@@ -578,6 +578,7 @@ endif;
 		);
 
 		// Admin area
+		$field = 'validation';
 		$key = 'admin';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
