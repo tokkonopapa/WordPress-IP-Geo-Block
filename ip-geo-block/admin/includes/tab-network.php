@@ -56,9 +56,8 @@ class IP_Geo_Block_Admin_Tab {
 		$html .= '">' . __( 'Apply', 'ip-geo-block' ) . '</a></li>';
 		$html .= '</ul>';
 
-		$field = 'chart-size';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_chart-size',
 			__( 'Chart display layout', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -86,9 +85,8 @@ class IP_Geo_Block_Admin_Tab {
 			      . ($key == self::$controls['time'] ? ' checked="checked"' : '') . ' />' . $val . '</label></li>' . "\n";
 		}
 
-		$field = 'select_duration';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_select_duration',
 			__( 'Duration to retrieve', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,

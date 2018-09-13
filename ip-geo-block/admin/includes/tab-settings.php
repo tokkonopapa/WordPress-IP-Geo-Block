@@ -72,9 +72,8 @@ class IP_Geo_Block_Admin_Tab {
 		// Get the country code of client
 		$key = IP_Geo_Block::get_geolocation( $val = IP_Geo_Block::get_ip_address( $options ) );
 
-		$field = 'ip_client';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_ip_client',
 			__( '<dfn title="You can confirm the appropriate Geolocation APIs and country code by referring &#8220;Scan country code&#8221;.">Your IP address / Country</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -82,9 +81,9 @@ class IP_Geo_Block_Admin_Tab {
 			array(
 				'type' => 'html',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'ip_client',
 				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ) . '</span>',
-				'after' => '&nbsp;<a class="button-secondary" id="ip-geo-block-scan-' . $field . '" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="#!">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-' . $field . '"></div>',
+				'after' => '&nbsp;<a class="button-secondary" id="ip-geo-block-scan-ip_client" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="#!">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-ip_client"></div>',
 			)
 		);
 
@@ -92,9 +91,8 @@ if ( $key = IP_Geo_Block_Util::get_server_ip() && $key !== $val && ! IP_Geo_Bloc
 		// Get the country code of server
 		$key = IP_Geo_Block::get_geolocation( $_SERVER['SERVER_ADDR'] );
 
-		$field = 'ip_server';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_ip_server',
 			__( '<dfn title="You can confirm the appropriate Geolocation APIs and country code by referring &#8220;Scan country code&#8221;.">Server IP address / Country</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -102,9 +100,9 @@ if ( $key = IP_Geo_Block_Util::get_server_ip() && $key !== $val && ! IP_Geo_Bloc
 			array(
 				'type' => 'html',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'ip_server',
 				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ) . '</span>',
-				'after' => '&nbsp;<a class="button-secondary" id="ip-geo-block-scan-' . $field . '" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="#!">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-' . $field . '"></div>',
+				'after' => '&nbsp;<a class="button-secondary" id="ip-geo-block-scan-ip_server" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="#!">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-ip_server"></div>',
 			)
 		);
 endif;
@@ -123,9 +121,8 @@ endif;
 		);
 
 		// Matching rule
-		$field = 'matching_rule';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_matching_rule',
 			'<dfn title="' . $rule_desc[0] . '">' . __( 'Matching rule', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -133,8 +130,8 @@ endif;
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'matching_rule',
+				'value' => $options['matching_rule'],
 				'list' => $rule,
 				'desc' => array(
 					-1 => $rule_desc[0],
@@ -146,9 +143,8 @@ endif;
 		);
 
 		// Country code for matching rule (ISO 3166-1 alpha-2)
-		$field = 'white_list';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_white_list',
 			$rule_desc[1],
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -156,16 +152,15 @@ endif;
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'white_list',
+				'value' => $options['white_list'],
 				'after' => $common[0],
 				'class' => $options['matching_rule'] == 0 ? '' : 'ip-geo-block-hide',
 			)
 		);
 
-		$field = 'black_list';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_black_list',
 			$rule_desc[2],
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -173,18 +168,16 @@ endif;
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'black_list',
+				'value' => $options['black_list'],
 				'after' => $common[0],
 				'class' => $options['matching_rule'] == 1 ? '' : 'ip-geo-block-hide',
 			)
 		);
 
 		// Use AS number
-		$field = 'Maxmind';
-		$key = 'use_asn';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_Maxmind_use_asn',
 			__( '<dfn title="It enables utilizing &#8220;AS number&#8221; in the &#8220;Whitelist/Blacklist of extra IP addresses&#8221; to specify a group of IP networks.">Use Autonomous System Number</dfn>', 'ip-geo-block' ) .
 			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)',
 			array( $context, 'callback_field' ),
@@ -193,18 +186,16 @@ endif;
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => 1 === (int)$options[ $field ][ $key ],
+				'field' => 'Maxmind',
+				'sub-field' => 'use_asn',
+				'value' => 1 === (int)$options['Maxmind']['use_asn'],
 				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Some useful tools to find ASN are introduced in &#8220;%s&#8221;.', 'ip-geo-block' ), '<a rel="noreferrer" href="https://www.ipgeoblock.com/codex/utilizing-asnumber.html" title="Utilizing AS number | IP Geo Block">Utilizing AS number</a>' ) . '</p>',
 			)
 		);
 
 		// White list of extra IP addresses prior to country code (CIDR, ASN)
-		$field = 'extra_ips';
-		$key = 'white_list';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_extra_ips_white_list',
 			__( '<dfn title="e.g. &#8220;192.0.64.0/18&#8221; for Jetpack server, &#8220;69.46.36.0/27&#8221; for WordFence server or &#8220;AS32934&#8221; for Facebook.">Whitelist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
 			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
 			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
@@ -215,18 +206,17 @@ endif;
 			array(
 				'type' => 'textarea',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'extra_ips',
+				'sub-field' => 'white_list',
+				'value' => $options['extra_ips']['white_list'],
 				'placeholder' => '192.168.0.0/16,2001:db8::/96,AS1234',
 				'after' => $common[1],
 			)
 		);
 
 		// Black list of extra IP addresses prior to country code (CIDR, ASN)
-		$key = 'black_list';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_extra_ips_black_list',
 			__( '<dfn title="Server level access control is recommended (e.g. .htaccess).">Blacklist of extra IP addresses prior to country code</dfn>', 'ip-geo-block' ) .
 			' (<a rel="noreferrer" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Classless Inter-Domain Routing - Wikipedia">CIDR</a>' .
 			', <a rel="noreferrer" href="https://en.wikipedia.org/wiki/Autonomous_system_(Internet)"   title="Autonomous system (Internet) - Wikipedia">ASN</a>)' .
@@ -237,19 +227,17 @@ endif;
 			array(
 				'type' => 'textarea',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'extra_ips',
+				'sub-field' => 'black_list',
+				'value' => $options['extra_ips']['black_list'],
 				'placeholder' => '192.168.0.0/16,2001:db8::/96,AS1234',
 				'after' => $common[1],
 			)
 		);
 
 		// $_SERVER keys to retrieve extra IP addresses
-		$field = 'validation';
-		$key = 'proxy';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_validation_proxy',
 			__( '<dfn title="If your server is placed behind the proxy server or the load balancing server, you need to put the appropriate key such as &#8220;HTTP_X_FORWARDED_FOR&#8221;, &#8220;HTTP_X_REAL_IP&#8221; or something like that to retrieve the client IP address.">$_SERVER keys to retrieve extra IP addresses</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -257,18 +245,17 @@ endif;
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'proxy',
+				'value' => $options['validation']['proxy'],
 				'placeholder' => IP_Geo_Block_Util::get_proxy_var(),
 				'after' => $common[0],
 			)
 		);
 
 		// Bad signatures
-		$field = 'signature';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_signature',
 			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a class="ip-geo-block-icon ip-geo-block-icon-cycle" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span></span></a>)</nobr>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -276,8 +263,8 @@ endif;
 			array(
 				'type' => 'textarea',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'signature',
+				'value' => $options['signature'],
 				'after' => $common[1],
 			)
 		);
@@ -302,10 +289,8 @@ endif;
 		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_mimetype_capability" name="ip_geo_block_settings[mimetype][capability]" class="regular-text code" placeholder="upload_files" value="' . esc_attr( implode( ',', $options['mimetype']['capability'] ) ) . '" />' . $common[0] . '</li></ul></li></ul>';
 
 		// Prevent malicious file uploading
-		$field = 'validation';
-		$key = 'mimetype';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_validation_mimetype',
 			__( '<dfn title="It restricts the file types on upload in order to block malware and backdoor via both back-end and front-end. Please consider to select &#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation timing&#8221; so that other staff would not fetch the uploaded files before this validation.">Prevent malicious file uploading</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -313,9 +298,9 @@ endif;
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'mimetype',
+				'value' => $options['validation']['mimetype'],
 				'list' => array(
 					0 => __( 'Disable',                             'ip-geo-block' ),
 					1 => __( 'Verify file extension and MIME type', 'ip-geo-block' ),
@@ -326,9 +311,8 @@ endif;
 		);
 
 		// Response code (RFC 2616)
-		$field = 'response_code';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_response_code',
 			sprintf( __( '<dfn title="You can put your original 403.php and so on into your theme directory.">Response code</dfn> %s', 'ip-geo-block' ), '(<a rel="noreferrer" href="https://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1">RFC 2616</a>)' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -336,8 +320,8 @@ endif;
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'response_code',
+				'value' => $options['response_code'],
 				'list' => array(
 					200 => '200 OK',
 					301 => '301 Moved Permanently',
@@ -356,9 +340,8 @@ endif;
 		);
 
 		// Redirect URI
-		$field = 'redirect_uri';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_redirect_uri',
 			__( '<dfn title="Specify the URL for response code 2xx and 3xx. If it is pointed to a public facing page, visitors would not be blocked on the page to prevent loop of redirection even when you enable [Block by country] in [Front-end target settings] section. Empty URL is altered to your home.">Redirect URL</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -366,17 +349,16 @@ endif;
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'redirect_uri',
+				'value' => $options['redirect_uri'],
 				'class' => $options['response_code'] < 400 ? '' : 'ip-geo-block-hide',
 				'placeholder' => '/about/',
 			)
 		);
 
 		// Response message
-		$field = 'response_msg';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_response_msg',
 			__( '<dfn title="Specify the message for response code 4xx and 5xx.">Response message</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -384,19 +366,17 @@ endif;
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'response_msg',
+				'value' => $options['response_msg'],
 				'class' => $options['response_code'] >= 400 ? '' : 'ip-geo-block-hide',
 			)
 		);
 
 		// Validation timing
-		$field = 'validation';
-		$key = 'timing';
-		$options[ $field ][ $key ] = IP_Geo_Block_Opts::get_validation_timing();
+		$options['validation']['timing'] = IP_Geo_Block_Opts::get_validation_timing();
 
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_validation_timing',
 			'<dfn title="' . __( 'Select when to run the validation.', 'ip-geo-block' ) . '">' . __( 'Validation timing', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -404,9 +384,9 @@ endif;
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'timing',
+				'value' => $options['validation']['timing'],
 				'list' => array(
 					 0 => __( '&#8220;init&#8221; action hook',                 'ip-geo-block' ),
 					 1 => __( '&#8220;mu-plugins&#8221; (ip-geo-block-mu.php)', 'ip-geo-block' ),
@@ -440,20 +420,18 @@ endif;
 		);
 
 		// Comment post
-		$field = 'validation';
-		$key = 'comment';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			$target[ $key ],
+			$option_name.'_validation_comment',
+			$target['comment'],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'comment',
+				'value' => $options['validation']['comment'],
 				'text' => __( 'Block by country', 'ip-geo-block' ),
 			)
 		);
@@ -462,9 +440,8 @@ endif;
 		unset( $val['blockquote'] );
 
 		// Message on comment form
-		$field = 'comment';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_comment',
 			'<div class="ip-geo-block-subitem"><dfn title="' . __( 'The whole will be wrapped by &lt;p&gt; tag. Allowed tags: ', 'ip-geo-block' ) . implode( ', ', array_keys( $val ) ) . '">' . __( 'Message on comment form', 'ip-geo-block' ) . '</dfn></div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -472,35 +449,33 @@ endif;
 			array(
 				'type' => 'select-text',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'comment',
 				'sub-field' => 'pos',
 				'txt-field' => 'msg',
-				'value' => $options[ $field ]['pos'],
+				'value' => $options['comment']['pos'],
 				'class' => 'ip-geo-block-subitem-parent',
 				'list' => array(
 					0 => __( 'None',   'ip-geo-block' ),
 					1 => __( 'Top',    'ip-geo-block' ),
 					2 => __( 'Bottom', 'ip-geo-block' ),
 				),
-				'text' => $options[ $field ]['msg'], // escaped by esc_attr() at 'text'
+				'text' => $options['comment']['msg'], // escaped by esc_attr() at 'text'
 			)
 		);
 
 		// XML-RPC
-		$field = 'validation';
-		$key = 'xmlrpc';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			$target[ $key ],
+			$option_name.'_validation_xmlrpc',
+			$target['xmlrpc'],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'xmlrpc',
+				'value' => $options['validation']['xmlrpc'],
 				'list' => array(
 					0 => __( 'Disable',          'ip-geo-block' ),
 					1 => __( 'Block by country', 'ip-geo-block' ),
@@ -523,19 +498,18 @@ endif;
 		}
 
 		// Login form
-		$key = 'login';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			$target[ $key ],
+			$option_name.'_validation_login',
+			$target['login'],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'login',
+				'value' => $options['validation']['login'],
 				'text' => __( 'Block by country', 'ip-geo-block' ),
 				'after' => '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the individual action as a blocking target.">Target actions</dfn>', 'ip-geo-block' ) . '<a class="ip-geo-block-icon ip-geo-block-icon-cycle ip-geo-block-hide">' . $common[2] . '</a>' . "\n<li class=\"ip-geo-block-hide\"><ul>\n" . $list . "</ul></li></ul>\n",
 			)
@@ -552,9 +526,8 @@ endif;
 		);
 
 		// Max failed login attempts per IP address
-		$field = 'login_fails';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_login_fails',
 			'<div class="ip-geo-block-subitem"><dfn title="' . __( 'This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221; when &#8220;IP address cache&#8221; in &#8220;Privacy and record settings&#8221; section is enabled. Lockout period is the same as expiration time of the cache.', 'ip-geo-block' ) . '">' . __( 'Max failed login attempts per IP address', 'ip-geo-block' ) . '</dfn></div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -562,8 +535,8 @@ endif;
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'login_fails',
+				'value' => $options['login_fails'],
 				'class' => 'ip-geo-block-subitem-parent',
 				'list' => array(
 					-1 => 'Disable',
@@ -578,20 +551,18 @@ endif;
 		);
 
 		// Admin area
-		$field = 'validation';
-		$key = 'admin';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			$target[ $key ],
+			$option_name.'_validation_admin',
+			$target['admin'],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
 				'type' => 'checkboxes',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'admin',
+				'value' => $options['validation']['admin'],
 				'list' => $list,
 				'desc' => $desc,
 			)
@@ -616,13 +587,11 @@ endif;
 				. '</li>' . "\n";
 		}
 
-		$path = IP_Geo_Block::get_wp_path();
-
 		// Admin ajax/post
-		$key = 'ajax';
-		$val = esc_html( substr( $path['admin'], 1 ) );
+		$path = IP_Geo_Block::get_wp_path();
+		$val  = esc_html( substr( $path['admin'], 1 ) );
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_validation_ajax',
 			sprintf( $dfn, $val.'admin-(ajax|post).php', __( 'Admin ajax/post', 'ip-geo-block' ) ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -630,9 +599,9 @@ endif;
 			array(
 				'type' => 'checkboxes',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'ajax',
+				'value' => $options['validation']['ajax'],
 				'list' => $list,
 				'desc' => $desc,
 				'after' =>
@@ -687,19 +656,18 @@ endif;
 		}
 
 		// Plugins area
-		$key = 'plugins';
-		$val = esc_html( $path[ $key ] );
-		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
-			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
-			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
-			. disabled( $options['rewrite'][ $key ], -1, FALSE ) . ' />'
-			. '<label for="ip_geo_block_settings_rewrite_' . $key . '"><dfn title="'
+		$val = esc_html( $path['plugins'] );
+		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_plugins'
+			. '" name="ip_geo_block_settings[rewrite][plugins]" '
+			. ' value="1"' . checked( $options['rewrite']['plugins'], TRUE, FALSE )
+			. disabled( $options['rewrite']['plugins'], -1, FALSE ) . ' />'
+			. '<label for="ip_geo_block_settings_rewrite_plugins"><dfn title="'
 			. ( $config ? sprintf( $desc[2], $val . $config ) : $desc[3] )
 			. '">' . __( 'Force to load WP core', 'ip-geo-block' )
 			. '</dfn></label><br />';
 
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_validation_plugins',
 			sprintf( $dfn, $val.'&hellip;/*.php', __( 'Plugins area', 'ip-geo-block' ) ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -707,9 +675,9 @@ endif;
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'plugins',
+				'value' => $options['validation']['plugins'],
 				'list' => $list,
 				'desc' => array(
 					2 => sprintf( $desc[0], $val ),
@@ -748,19 +716,18 @@ endif;
 		}
 
 		// Themes area
-		$key = 'themes';
-		$val = esc_html( $path[ $key ] );
-		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
-			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
-			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
-			. disabled( $options['rewrite'][ $key ], -1, FALSE ) . ' />'
-			. '<label for="ip_geo_block_settings_rewrite_' . $key . '"><dfn title="'
+		$val = esc_html( $path['themes'] );
+		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_themes'
+			. '" name="ip_geo_block_settings[rewrite][themes]" '
+			. ' value="1"' . checked( $options['rewrite']['themes'], TRUE, FALSE )
+			. disabled( $options['rewrite']['themes'], -1, FALSE ) . ' />'
+			. '<label for="ip_geo_block_settings_rewrite_themes"><dfn title="'
 			. ( $config ? sprintf( $desc[2], $val . $config ) : $desc[3] )
 			. '">' . __( 'Force to load WP core', 'ip-geo-block' )
 			. '</dfn></label><br />';
 
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_validation_themes',
 			sprintf( $dfn, $val.'&hellip;/*.php', __( 'Themes area', 'ip-geo-block' ) ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -768,9 +735,9 @@ endif;
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'themes',
+				'value' => $options['validation']['themes'],
 				'list' => $list,
 				'desc' => array(
 					2 => sprintf( $desc[0], $val ),
@@ -802,28 +769,25 @@ endif;
 		);
 
 		// Public facing pages
-		$key = 'public';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			$target[ $key ],
+			$option_name.'_validation_public',
+			$target['public'],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'public',
+				'value' => $options['validation']['public'],
 				'text' => __( 'Block by country', 'ip-geo-block' ),
 			)
 		);
 
 		// Matching rule
-		$field = 'public';
-		$key = 'matching_rule';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_public_matching_rule',
 			'<dfn title="' . $rule_desc[0] . '">' . __( 'Matching rule', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -831,17 +795,16 @@ endif;
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'public',
+				'sub-field' => 'matching_rule',
+				'value' => $options['public']['matching_rule'],
 				'list' => array( -1 => __( 'Follow &#8220;Validation rule settings&#8221;', 'ip-geo-block' ) ) + $rule,
 			)
 		);
 
 		// Country code for matching rule (ISO 3166-1 alpha-2)
-		$key = 'white_list';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_public_white_list',
 			$rule_desc[1],
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -849,17 +812,16 @@ endif;
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'public',
+				'sub-field' => 'white_list',
+				'value' => $options['public']['white_list'],
 				'after' => $common[0],
-				'class' => $options[ $field ]['matching_rule'] == 0 ? '' : 'ip-geo-block-hide',
+				'class' => $options['public']['matching_rule'] == 0 ? '' : 'ip-geo-block-hide',
 			)
 		);
 
-		$key = 'black_list';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_public_black_list',
 			$rule_desc[2],
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -867,18 +829,17 @@ endif;
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'public',
+				'sub-field' => 'black_list',
+				'value' => $options['public']['black_list'],
 				'after' => $common[0],
-				'class' => $options[ $field ]['matching_rule'] == 1 ? '' : 'ip-geo-block-hide',
+				'class' => $options['public']['matching_rule'] == 1 ? '' : 'ip-geo-block-hide',
 			)
 		);
 
 		// Response code (RFC 2616)
-		$key = 'response_code';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_public_response_code',
 			sprintf( __( '<dfn title="You can configure a different response code from the Back-end. This is useful to prevent violation against your affiliate program.">Response code</dfn> %s', 'ip-geo-block' ), '(<a rel="noreferrer" href="https://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1">RFC 2616</a>)' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -886,9 +847,9 @@ endif;
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'public',
+				'sub-field' => 'response_code',
+				'value' => $options['public']['response_code'],
 				'list' => array(
 					200 => '200 OK',
 					301 => '301 Moved Permanently',
@@ -903,14 +864,13 @@ endif;
 					500 => '500 Internal Server Error',
 					503 => '503 Service Unavailable',
 				),
-				'class' => $options[ $field ]['matching_rule'] == -1 ? 'ip-geo-block-hide' :'',
+				'class' => $options['public']['matching_rule'] == -1 ? 'ip-geo-block-hide' :'',
 			)
 		);
 
 		// Redirect URI
-		$key = 'redirect_uri';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_public_redirect_uri',
 			__( '<dfn title="Specify the URL for response code 2xx and 3xx. If it is pointed to a public facing page, visitors would not be blocked on the page to prevent loop of redirection even when you enable [Block by country] in [Front-end target settings] section. Empty URL is altered to your home.">Redirect URL</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -918,18 +878,17 @@ endif;
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-				'class' => $options[ $field ]['matching_rule'] != -1 && $options[ $field ]['response_code'] < 400 ? '' : 'ip-geo-block-hide',
+				'field' => 'public',
+				'sub-field' => 'redirect_uri',
+				'value' => $options['public']['redirect_uri' ],
+				'class' => $options['public']['matching_rule'] != -1 && $options['public']['response_code'] < 400 ? '' : 'ip-geo-block-hide',
 				'placeholder' => '/about/',
 			)
 		);
 
 		// Response message
-		$key = 'response_msg';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_public_response_msg',
 			__( '<dfn title="Specify the message for response code 4xx and 5xx.">Response message</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -937,10 +896,10 @@ endif;
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-				'class' => $options[ $field ]['matching_rule'] != -1 && $options[ $field ]['response_code'] >= 400 ? '' : 'ip-geo-block-hide',
+				'field' => 'public',
+				'sub-field' => 'response_msg',
+				'value' => $options['public']['response_msg' ],
+				'class' => $options['public']['matching_rule'] != -1 && $options['public']['response_code'] >= 400 ? '' : 'ip-geo-block-hide',
 			)
 		);
 
@@ -950,7 +909,7 @@ endif;
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
 				$val = esc_attr( $key->post_name );
-				$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_public_target_pages_' . $val . '" name="ip_geo_block_settings[public][target_pages][' . $val . ']" value="1"' . checked( isset( $options[ $field ]['target_pages'][ $val ] ), TRUE, FALSE ) . ' />';
+				$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_public_target_pages_' . $val . '" name="ip_geo_block_settings[public][target_pages][' . $val . ']" value="1"' . checked( isset( $options['public']['target_pages'][ $val ] ), TRUE, FALSE ) . ' />';
 				$exception .= '<label for="ip_geo_block_settings_public_target_pages_' . $val . '">' . esc_html( $key->post_title ) . '</label></li>' . "\n";
 			}
 		}
@@ -962,7 +921,7 @@ endif;
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
 				$val = esc_attr( $key );
-				$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_public_target_posts_' . $val . '" name="ip_geo_block_settings[public][target_posts][' . $val . ']" value="1"' . checked( isset( $options[ $field ]['target_posts'][ $val ] ), TRUE, FALSE ) . ' />';
+				$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_public_target_posts_' . $val . '" name="ip_geo_block_settings[public][target_posts][' . $val . ']" value="1"' . checked( isset( $options['public']['target_posts'][ $val ] ), TRUE, FALSE ) . ' />';
 				$exception .= '<label for="ip_geo_block_settings_public_target_posts_' . $val . '">' . esc_html( $key ) . '</label></li>' . "\n";
 			}
 		}
@@ -974,7 +933,7 @@ endif;
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
 				$val = esc_attr( $key->slug );
-				$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_public_target_cates_' . $val . '" name="ip_geo_block_settings[public][target_cates][' . $val . ']" value="1"' . checked( isset( $options[ $field ]['target_cates'][ $val ] ), TRUE, FALSE ) . ' />';
+				$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_public_target_cates_' . $val . '" name="ip_geo_block_settings[public][target_cates][' . $val . ']" value="1"' . checked( isset( $options['public']['target_cates'][ $val ] ), TRUE, FALSE ) . ' />';
 				$exception .= '<label for="ip_geo_block_settings_public_target_cates_' . $val . '">' . esc_html( $key->name ) . '</label></li>' . "\n";
 			}
 		}
@@ -986,16 +945,15 @@ endif;
 		if ( ! empty( $tmp ) ) {
 			foreach ( $tmp as $key ) {
 				$val = esc_attr( $key->slug );
-				$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_public_target_tags_' . $val . '" name="ip_geo_block_settings[public][target_tags][' . $val . ']" value="1"' . checked( isset( $options[ $field ]['target_tags'][ $val ] ), TRUE, FALSE ) . ' />';
+				$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_public_target_tags_' . $val . '" name="ip_geo_block_settings[public][target_tags][' . $val . ']" value="1"' . checked( isset( $options['public']['target_tags'][ $val ] ), TRUE, FALSE ) . ' />';
 				$exception .= '<label for="ip_geo_block_settings_public_target_tags_' . $val . '">' . esc_html( $key->name ) . '</label></li>' . "\n";
 			}
 		}
 		$exception .= '</ul></li></ul>' . "\n";
 
 		// Validation target
-		$key = 'target_rule';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_public_target_rule',
 			'<dfn title="' . __( 'Specify the validation target on front-end.', 'ip-geo-block' ) . '">' . __( 'Validation target', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1003,9 +961,9 @@ endif;
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'public',
+				'sub-field' => 'target_rule',
+				'value' => $options['public']['target_rule'],
 				'list' => array(
 					0 => __( 'All requests', 'ip-geo-block' ),
 					1 => __( 'Specify the targets', 'ip-geo-block' ),
@@ -1019,9 +977,8 @@ endif;
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		// Excluded action
-		$key = 'exception';
 		add_settings_field(
-			$option_name.'_'.$key.'_'.$field,
+			$option_name.'_exception_public',
 			'<dfn title="' . __( 'Specify the name of actions as exception that is invariably blocked.', 'ip-geo-block' ) . '">' . __( 'Excluded actions', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1029,9 +986,9 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $key,
-				'sub-field' => $field,
-				'value' => implode( ',', $options[ $key ][ $field ] ),
+				'field' => 'exception',
+				'sub-field' => 'public',
+				'value' => implode( ',', $options['exception']['public'] ),
 				'after' => $common[0],
 			)
 		);
@@ -1046,9 +1003,8 @@ endif;
 		);
 		$exception .= "</li>\n</ul></li></ul>\n";
 
-		$key = 'behavior';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_public_behavior',
 			__( '<dfn title="It will validate the frequency of request.">Block badly-behaved bots and crawlers</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1056,17 +1012,16 @@ endif;
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'public',
+				'sub-field' => 'behavior',
+				'value' => $options['public']['behavior'],
 				'after' => $exception,
 			)
 		);
 
 		// UA string and qualification
-		$key = 'ua_list';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_public_ua_list',
 			'<dfn title="' . __( 'A part of user agent string and a qualification connected with a separator that indicates an applicable rule and can be &#8220;:&#8221; (pass) or &#8220;#&#8221; (block). A &#8220;qualification&#8221; can be &#8220;DNS&#8221;, &#8220;FEED&#8221;, country code or IP address with CIDR. A negative operator &#8220;!&#8221; can be placed just before a &#8220;qualification&#8221;.', 'ip-geo-block' ) . '">' . __( 'UA string and qualification', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1074,17 +1029,16 @@ endif;
 			array(
 				'type' => 'textarea',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'public',
+				'sub-field' => 'ua_list',
+				'value' => $options['public']['ua_list'],
 				'after' => $common[1],
 			)
 		);
 
 		// Reverse DNS lookup
-		$key = 'dnslkup';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_public_dnslkup',
 			'<div class="ip-geo-block-subitem"><dfn title="' . __( 'It enables to verify the host by reverse DNS lookup which would spend some server resources. If it is disabled, &#8220;HOST&#8221; and &#8220;HOST=&hellip;&#8221;in &#8220;UA string and qualification&#8221; will always return &#8220;true&#8221;.', 'ip-geo-block' ) . '">' . __( 'Reverse DNS lookup', 'ip-geo-block' ) . '</dfn></div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1092,17 +1046,16 @@ endif;
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'public',
+				'sub-field' => 'dnslkup',
+				'value' => $options['public']['dnslkup'],
 				'class' => 'ip-geo-block-subitem-parent',
 			)
 		);
 
 		// Simulation mode
-		$key = 'simulate';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_public_simulate',
 			'<dfn title="' . __( 'It enables to simulate validation without deployment. The results can be found as &#8220;public&#8221; in Logs.', 'ip-geo-block' ) . '">' . __( 'Simulation mode', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1110,9 +1063,9 @@ endif;
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'public',
+				'sub-field' => 'simulate',
+				'value' => $options['public']['simulate'],
 			)
 		);
 
@@ -1127,9 +1080,8 @@ endif;
 		);
 
 		// Anonymize IP address
-		$field = 'anonymize';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_anonymize',
 			__( '<dfn title="IP address is always encrypted on recording in Cache and Logs. Moreover, this option replaces the end of IP address with &#8220;***&#8221; to make it anonymous.">Anonymize IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1137,15 +1089,14 @@ endif;
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => ! empty( $options[ $field ] ),
+				'field' => 'anonymize',
+				'value' => ! empty( $options['anonymize'] ),
 			)
 		);
 
 		// Do not send IP address to external APIs
-		$field = 'restrict_api';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_restrict_api',
 			__( '<dfn title="This option restricts not to send IP address to the external Geolocation APIs.">Do not send IP address to external APIs</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1153,15 +1104,14 @@ endif;
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => ! empty( $options[ $field ] ),
+				'field' => 'restrict_api',
+				'value' => ! empty( $options['restrict_api'] ),
 			)
 		);
 
 		// Record Statistics of validation
-		$field = 'save_statistics';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_save_statistics',
 			__( '<dfn title="This option enables to record the number blocked countries and the number of blocked requests per day.">Record &#8220;Statistics of validation&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1169,16 +1119,14 @@ endif;
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'save_statistics',
+				'value' => $options['save_statistics'],
 			)
 		);
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		$field = 'validation';
-		$key = 'recdays';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_validation_recdays',
 			'<div class="ip-geo-block-subitem">' . __( 'Maximum period for &#8220;Statistics&#8221; [days]', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1186,18 +1134,17 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'recdays',
+				'value' => $options['validation']['recdays'],
 				'class' => 'ip-geo-block-subitem-parent',
 			)
 		);
 endif;
 
 		// Record IP address cache
-		$field = 'cache_hold';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_cache_hold',
 			__( '<dfn title="This option enables to record the IP address, country code and failure counter of login attempts into the cache on database to minimize the impact on site speed.">Record &#8220;IP address cache&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1205,15 +1152,14 @@ endif;
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'cache_hold',
+				'value' => $options['cache_hold'],
 			)
 		);
 
 		// Expiration time [sec] for each entry
-		$field = 'cache_time';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_cache_time',
 			'<div class="ip-geo-block-subitem">' . __( '<dfn title="If user authentication fails consecutively beyond &#8220;Max number of failed login attempts per IP address&#8221;, subsequent login will also be prohibited for this period.">Expiration time [sec] for each entry</dfn>', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1221,16 +1167,15 @@ endif;
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'cache_time',
+				'value' => $options['cache_time'],
 				'class' => 'ip-geo-block-subitem-parent',
 			)
 		);
 
 		// Record Validation logs
-		$field = 'validation';
 		add_settings_field(
-			$option_name.'_'.$field.'_reclogs',
+			$option_name.'_validation_reclogs',
 			__( '<dfn title="This option enables to record the validation logs including IP addresses.">Record &#8220;Validation logs&#8221;</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1238,9 +1183,9 @@ endif;
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'validation',
 				'sub-field' => 'reclogs',
-				'value' => $options[ $field ]['reclogs'],
+				'value' => $options['validation']['reclogs'],
 				'list' => array(
 					0 => __( 'Disable',                 'ip-geo-block' ),
 					1 => __( 'When blocked',            'ip-geo-block' ),
@@ -1254,26 +1199,25 @@ endif;
 		);
 
 		// Expiration time [days] for each entry
-		$key = 'explogs';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			'<div class="ip-geo-block-subitem">' . sprintf( __( '<dfn title="The maximum number of entries in the logs is also limited to %d.">Expiration time [days] for each entry</dfn>', 'ip-geo-block' ), $options[ $field ]['maxlogs'] ) . '</div>',
+			$option_name.'_validation_explogs',
+			'<div class="ip-geo-block-subitem">' . sprintf( __( '<dfn title="The maximum number of entries in the logs is also limited to %d.">Expiration time [days] for each entry</dfn>', 'ip-geo-block' ), $options['validation']['maxlogs'] ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'explogs',
+				'value' => $options['validation']['explogs'],
 				'class' => 'ip-geo-block-subitem-parent',
 			)
 		);
 
 		// $_POST key to record with value
 		add_settings_field(
-			$option_name.'_'.$field.'_postkey',
+			$option_name.'_validation_postkey',
 			'<div class="ip-geo-block-subitem">' . __( '<dfn title="e.g. action, comment, log, pwd, FILES">$_POST key to record with value</dfn>', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1281,9 +1225,9 @@ endif;
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'validation',
 				'sub-field' => 'postkey',
-				'value' => $options[ $field ]['postkey'],
+				'value' => $options['validation']['postkey'],
 				'after' => $common[0],
 				'class' => 'ip-geo-block-subitem-parent',
 			)
@@ -1291,9 +1235,8 @@ endif;
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		// Maximum entries in Logs
-		$key = 'maxlogs';
 		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
+			$option_name.'_validation_maxlogs',
 			'<div class="ip-geo-block-subitem">' . __( 'Maximum entries in &#8220;Logs&#8221;', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1301,17 +1244,16 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
+				'field' => 'validation',
+				'sub-field' => 'maxlogs',
+				'value' => $options['validation']['maxlogs'],
 				'class' => 'ip-geo-block-subitem-parent',
 			)
 		);
 
 		// Live update
-		$field = 'live_update';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_live_update',
 			'<div class="ip-geo-block-subitem">' . __( '<dfn title="Select SQLite database source.">Database source of SQLite for &#8220;Live update&#8221;</dfn>', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1319,9 +1261,9 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'live_update',
 				'sub-field' => 'in_memory',
-				'value' => extension_loaded( 'pdo_sqlite' ) ? $options[ $field ]['in_memory'] : -1,
+				'value' => extension_loaded( 'pdo_sqlite' ) ? $options['live_update']['in_memory'] : -1,
 				'class' => 'ip-geo-block-subitem-parent',
 				'list' => array(
 					-1 => NULL,
@@ -1337,9 +1279,8 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		);
 
 		// Reset data source of live log
-		$field = 'reset_live';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_reset_live',
 			'<div class="ip-geo-block-subitem">' . __( 'Reset database source of &#8220;Live update&#8221;', 'ip-geo-block' ) . '</div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1347,7 +1288,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			array(
 				'type' => 'button',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'reset_live',
 				'value' => __( 'Reset now', 'ip-geo-block' ),
 				'after' => '<div id="ip-geo-block-reset-live"></div>',
 				'class' => 'ip-geo-block-subitem-parent',
@@ -1360,9 +1301,8 @@ endif;
 		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '<span class="ip-geo-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-geo-block' ). '</span>';
 
 		// Interval [sec] to cleanup expired entries of IP address
-		$field = 'cache_time_gc';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_cache_time_gc',
 			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries in &#8220;IP address cache&#8221; and &#8220;Logs&#8221;.">Interval [sec] to cleanup expired entries of IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1370,16 +1310,15 @@ endif;
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'cache_time_gc',
+				'value' => $options['cache_time_gc'],
 				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>',
 			)
 		);
 
 		// Remove all settings and records at uninstallation
-		$field = 'clean_uninstall';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_clean_uninstall',
 			__( 'Remove all settings and records at uninstallation', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1387,8 +1326,8 @@ endif;
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'clean_uninstall',
+				'value' => $options['clean_uninstall'],
 			)
 		);
 
@@ -1415,9 +1354,8 @@ endif;
 		}
 
 		// API selection and key settings
-		$field = 'providers';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_providers',
 			__( '<dfn title="IP address cache and local databases are scanned at the top priority.">API selection and key settings</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1425,8 +1363,8 @@ endif;
 			array(
 				'type' => 'check-provider',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'providers',
+				'value' => $options['providers'],
 				'local' => $providers,
 				'providers' => $provider,
 				'titles' => IP_Geo_Block_Provider::get_providers( 'type' ),
@@ -1435,9 +1373,8 @@ endif;
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		// Timeout for network API
-		$field = 'timeout';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_timeout',
 			__( 'Timeout for network API [sec]', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1445,8 +1382,8 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
+				'field' => 'timeout',
+				'value' => $options['timeout'],
 			)
 		);
 endif;
@@ -1498,9 +1435,8 @@ endif;
 		$tmp = $tmp ? IP_Geo_Block_Util::localdate( $tmp ) : '<span class="ip-geo-block-warn">' . __( 'Task could not be found in WP-Cron. Please try to deactivate this plugin once and activate again.', 'ip-geo-block' ). '</span>';
 
 		// Auto updating (once a month)
-		$field = 'update';
 		add_settings_field(
-			$option_name.'_'.$field.'_auto',
+			$option_name.'_update_auto',
 			__( 'Auto updating (once a month)', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1508,17 +1444,17 @@ endif;
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'update',
 				'sub-field' => 'auto',
-				'value' => $options[ $field ]['auto'],
+				'value' => $options['update']['auto'],
 				'disabled' => empty( $providers ),
-				'after' => $options[ $field ]['auto'] ? '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>' : '',
+				'after' => $options['update']['auto'] ? '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>' : '',
 			)
 		);
 
 		// Download database
 		add_settings_field(
-			$option_name.'_'.$field.'_download',
+			$option_name.'_update_download',
 			__( 'Download database', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1526,7 +1462,7 @@ endif;
 			array(
 				'type' => 'button',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'update',
 				'value' => __( 'Download now', 'ip-geo-block' ),
 				'disabled' => empty( $providers ),
 				'after' => '<div id="ip-geo-block-download"></div>',
@@ -1548,9 +1484,8 @@ if ( IP_GEO_BLOCK_NETWORK ):
 			add_action( 'network_admin_edit_' . IP_Geo_Block::PLUGIN_NAME, array( $context, 'validate_network_settings' ) );
 
 			// Network wide configuration
-			$field = 'network_wide';
 			add_settings_field(
-				$option_name.'_'.$field,
+				$option_name.'_network_wide',
 				__( '<dfn title="Synchronize all settings over the network wide.">Network wide settings</dfn>', 'ip-geo-block' ),
 				array( $context, 'callback_field' ),
 				$option_slug,
@@ -1558,18 +1493,17 @@ if ( IP_GEO_BLOCK_NETWORK ):
 				array(
 					'type' => 'checkbox',
 					'option' => $option_name,
-					'field' => $field,
-					'value' => $options[ $field ],
+					'field' => 'network_wide',
+					'value' => $options['network_wide'],
 					'disabled' => ! current_user_can( 'manage_network_options' ),
 				)
 			);
 		}
 endif;
 		// Emergency login link
-		$field = 'login_link';
 		$key = IP_Geo_Block_Util::get_link();
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_login_link',
 			__( '<dfn title="You can access to the login form with a specific key at emergency. Please add the generated link to favorites / bookmarks in your browser as this plugin does not keep the key itself.">Emergency login link</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1584,11 +1518,9 @@ endif;
 		);
 
 		// Google Maps API key
-		$field = 'api_key';
-		$key = 'GoogleMap';
-		if ( 'default' !== $options[ $field ][ $key ] or defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
+		if ( 'default' !== $options['api_key']['GoogleMap'] or defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 			add_settings_field(
-				$option_name.'_'.$field,
+				$option_name.'_api_key',
 				__( '<dfn title="Valid key for Google Maps JavaScript API">Google Maps API key</dfn>', 'ip-geo-block' ),
 				array( $context, 'callback_field' ),
 				$option_slug,
@@ -1596,17 +1528,16 @@ endif;
 				array(
 					'type' => 'text',
 					'option' => $option_name,
-					'field' => $field,
-					'sub-field' => $key,
-					'value' => $options[ $field ][ $key ],
+					'field' => 'api_key',
+					'sub-field' => 'GoogleMap',
+					'value' => $options['api_key']['GoogleMap'],
 				)
 			);
 		}
 
 		// Export / Import settings
-		$field = 'export-import';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_export-import',
 			sprintf( '<dfn title="%s">' . __( 'Export / Import settings', 'ip-geo-block' ) . '</dfn>', $desc[4] ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1621,9 +1552,8 @@ endif;
 		);
 
 		// Pre-defined settings
-		$field = 'pre-defined';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_pre-defined',
 			sprintf( '<dfn title="%s">' . __( 'Import pre-defined settings', 'ip-geo-block' ) . '</dfn>', $desc[4] ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1639,9 +1569,8 @@ endif;
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		// DB tables for this plugin
-		$field = 'init_table';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_init_table',
 			__( 'DB tables for this plugin', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -1649,7 +1578,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			array(
 				'type' => 'button',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'init_table',
 				'value' => __( 'Initialize now', 'ip-geo-block' ),
 				'after' => '<div id="ip-geo-block-init-table"></div>',
 			)
@@ -1657,9 +1586,8 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 endif;
 
 		// Diagnostic information
-		$field = 'show-info';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_show-info',
 			__( '<dfn title="When you have some unexpected blocking experiences, please press the button to find the blocked requests at the end of dumped information which may help you to solve the issues.">Diagnostic information</dfn><br />[ <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="[IP Geo Block] Support | WordPress.org">support forum</a> ]', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,

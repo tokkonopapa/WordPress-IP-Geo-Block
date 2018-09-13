@@ -35,10 +35,9 @@ class IP_Geo_Block_Admin_Tab {
 		$cookie = $context->get_cookie();
 		$cookie = empty( $cookie[ $tab ] ) ? 0 : (int)end( $cookie[ $tab ] );
 
-		$field = 'service';
 		$provider = array_keys( $providers );
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_service',
 			__( 'Geolocation API', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -46,7 +45,7 @@ class IP_Geo_Block_Admin_Tab {
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'service',
 				'value' => $provider[ $cookie ],
 				'list' => $list,
 			)
@@ -64,9 +63,8 @@ class IP_Geo_Block_Admin_Tab {
 			$list = '';
 		}
 
-		$field = 'ip_address';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_ip_address',
 			__( 'IP address', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -74,15 +72,14 @@ class IP_Geo_Block_Admin_Tab {
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'ip_address',
 				'value' => $list,
 			)
 		);
 
 		// Anonymize IP address
-		$field = 'anonymize';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_anonymize',
 			__( '<dfn title="IP address is always encrypted on recording in Cache and Logs. Moreover, this option replaces the end of IP address with &#8220;***&#8221; to make it anonymous.">Anonymize IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -90,15 +87,14 @@ class IP_Geo_Block_Admin_Tab {
 			array(
 				'type' => 'checkbox',
 				'option' => $option_name,
-				'field' => $field,
-				'value' => ( ! empty( $options[ $field ] ) || ! empty( $options['restrict_api'] ) ) ? TRUE : FALSE,
+				'field' => 'anonymize',
+				'value' => ( ! empty( $options['anonymize'] ) || ! empty( $options['restrict_api'] ) ) ? TRUE : FALSE,
 			)
 		);
 
 		// Search geolocation
-		$field = 'get_location';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_get_location',
 			__( 'Search geolocation', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -106,7 +102,7 @@ class IP_Geo_Block_Admin_Tab {
 			array(
 				'type' => 'button',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'get_location',
 				'value' => __( 'Search now', 'ip-geo-block' ),
 				'after' => '<div id="ip-geo-block-loading"></div>',
 			)
