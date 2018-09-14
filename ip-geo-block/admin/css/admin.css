@@ -227,11 +227,11 @@ input[id*="ip_geo_block_settings_providers"] + label {
 /* Loading image */
 .ip-geo-block-loading,
 #ip-geo-block-live-loading {
+    height: 16px;
+    width: 16px;
     background-size: 16px 16px;
     background-position: center center;
     background-repeat: no-repeat;
-    height: 16px;
-    width: 16px;
     margin-left: 1em;
     margin-top: 0.2em;
     display: inline-block;
@@ -863,7 +863,7 @@ mark {
     display: block;
     height: 1em;
     width: 1em;
-    background: radial-gradient(#0073aa, #72777c);
+    background: #0073aa;
     border-radius: 50%;
     position: absolute;
     top: 0;
@@ -895,8 +895,8 @@ mark {
     transform: rotate(180deg);
 }
 .ip-geo-block-live-timer > div:last-child:before {
-    /* older webkit seems buggy with zero so use 0.00001 */
-    transform: rotate(0.00001deg);
+    /* older webkit seems buggy with zero so use 0.00001 if you notice something strange */
+    transform: rotate(0deg);
     animation: 30s spin-timer linear 30s forwards;
 }
 @keyframes spin-timer {
