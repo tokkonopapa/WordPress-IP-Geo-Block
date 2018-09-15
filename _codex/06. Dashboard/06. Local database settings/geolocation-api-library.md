@@ -6,24 +6,26 @@ section: Dashboard
 title: Local database settings
 ---
 
-[IP Geo Block][IP-Geo-Block] has multi source of geolocation database not only 
-via internet but also on site DBs that are distributed from [Maxmind][Maxmind] 
-and [IP2location][IP2location]. These on site DBs are managed by the dedicated 
-class libraries named [IP Geo API][GitGeoAPI] which has been separately 
-developed as an another project.
+This plugin has multiple IP address geolocation databases distributed by 
+[Maxmind][Maxmind] and [IP2location][IP2location]. Utilizing multiple data 
+sources is an important mechanism that can complement each other when data 
+is missing. These databases are managed by the Geolocation API library named 
+[IP Geo API][GitGeoAPI] which which has been separately developed as an another
+project.
 
-### Location of IP Geo API ###
+### Geolocation API Library ###
 
-IP Geo API can be installed one of the following folders:
+IP Geo API can be installed with the geolocation databases in one of the 
+following directories:
 
 1. `/wp-content/ip-geo-api/`
 2. `/wp-content/uploads/ip-geo-api/`
 3. `/wp-content/plugins/ip-geo-block/ip-geo-api/`
 
-Its location depends on the permission of your WordPress tree. Actual location 
-can be found at "**Local database settings**" section. If you find it to be the
-3rd one, please consider to change to another location, because at every time 
-this plugin updates, files in it will be removed.
+The actual storage location depends on the permission setting of the WordPress 
+tree. If you find it’s 3. then it is necessary to adjust the permissions so 
+that it becomes 1 or 2. to prevent the geolocation databases being removed on 
+updating this plugin.
 
 ![Local database settings]({{ '/img/2017-03/LocalDatabaseSettings.png' | prepend: site.baseurl }}
  "Local database settings"
@@ -37,29 +39,30 @@ security configurations.
  "Error of IP Geo API"
 )
 
-In this case, you have to install the library by your own hand. Please find how 
-to do it in the codex "[How can I fix permission troubles?][Permission]".
+In this case, you have to install [IP Geo API][GitGeoAPI] by your own hand and 
+once deactivate this plugin then activate it again. Please find how to do it 
+in the codex "[How can I fix permission troubles?][Permission]".
 
-### Type of database ###
+### Type of geolocation database ###
 
-This library provides the functionality of retrieving a country code from an 
-IP address. You can get only a country code by default. But when you switch 
-the type of database to another, you will be able to get the city name, 
-coodinates of longitude and latitude.
+In the location information database downloaded by default, only the IP address
+and the corresponding country code are stored. But when you switch the type of 
+database to another, you will be able to get the city name, coodinates of 
+longitude and latitude.
 
 Please refer to
 [ip-geo-block-maxmind-zip-ipv4][MaxmindIPv4] and 
 [ip-geo-block-maxmind-zip-ipv6][MaxmindIPv6] to know how to change the source 
 of databases.
 
-### CloudFlare & CloudFront API class library ###
+### CloudFlare & CloudFront API library ###
 
-If you are a user of [CloudFlare][CloudFlare] or [CloudFront][CloudFront] as a 
-reverse proxy service, you might want to make use of the country code in their 
-special offered environment variables.
+If you are using a reverse proxy or load balancing service provided by 
+[CloudFlare][CloudFlare] or [CloudFront][CloudFront], you can obtain the 
+country code of the access source through special environment variables.
 
-Yes, you can do that if you install additional API library for those service.
-Please refer to [CloudFlare & CloudFront API class library][APILibrary].
+To use this, it is necessary to install a dedicated API library. Please 
+refer to [CloudFlare & CloudFront API class library][APILibrary].
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [Maxmind]:      https://www.maxmind.com/ "IP Geolocation and Online Fraud Prevention | MaxMind"
