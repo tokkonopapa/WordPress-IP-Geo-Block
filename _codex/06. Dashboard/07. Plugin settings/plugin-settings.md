@@ -73,11 +73,13 @@ In particular, if there is a conflict with other plugin, please push
 the log and add it at the end of the information like follows:
 
 {% highlight text %}
+- 2018-09-15 09:14:51 wp-zep  GET:/wp-admin/admin-ajax.php?action=ipgb-tester-admin-ajax(HTTP_REFERER=http://localhost/,HTTP_DNT=1,HTTP_UPGRADE_INSECURE_REQUESTS=1,HTTP_X_FORWARDED_FOR=192.168.0.***)
+- 2018-09-15 07:11:12 limited GET:/wp-login.php(HTTP_UPGRADE_INSECURE_REQUESTS=1,HTTP_X_FORWARDED_FOR=192.168.0.***)
+- 2018-09-15 07:10:13 limited GET:/(HTTP_REFERER=http://localhost/wp-login.php,HTTP_DNT=1,HTTP_UPGRADE_INSECURE_REQUESTS=1,HTTP_X_FORWARDED_FOR=192.168.0.***)
+- 2018-09-15 07:10:09 limited POST:/wp-login.php(HTTP_REFERER=http://localhost/wp-login.php,HTTP_DNT=1,HTTP_UPGRADE_INSECURE_REQUESTS=1,HTTP_X_FORWARDED_FOR=192.168.0.***)
+- 2018-09-15 07:10:02 failed  POST:/wp-login.php(HTTP_REFERER=http://localhost/wp-login.php,HTTP_DNT=1,HTTP_UPGRADE_INSECURE_REQUESTS=1,HTTP_X_FORWARDED_FOR=192.168.0.***)
+- 2018-09-15 07:09:19 blocked GET:/wp-login.php(HTTP_DNT=1,HTTP_UPGRADE_INSECURE_REQUESTS=1,HTTP_X_FORWARDED_FOR=192.168.0.***)
 - 2018-09-15 06:22:52 wp-zep  GET:/wp-content/plugins/ip-geo-block/samples.php?file=../../../wp-config.php(HTTP_REFERER=http://localhost/blog/2018/07/29/hello-world/,HTTP_DNT=1,HTTP_UPGRADE_INSECURE_REQUESTS=1,HTTP_X_FORWARDED_FOR=192.168.0.***)
-- 2018-09-15 06:22:46 wp-zep  GET:/wp-content/plugins/ip-geo-block/samples.php(HTTP_REFERER=http://localhost/blog/2018/07/29/hello-world/,HTTP_DNT=1,HTTP_UPGRADE_INSECURE_REQUESTS=1,HTTP_X_FORWARDED_FOR=192.168.0.***)
-- 2018-09-15 06:22:42 wp-zep  GET:/wp-admin/admin-ajax.php?action=my-ajax&file=../../../wp-config.php(HTTP_REFERER=http://localhost/blog/2018/07/29/hello-world/,HTTP_DNT=1,HTTP_UPGRADE_INSECURE_REQUESTS=1,HTTP_X_FORWARDED_FOR=192.168.0.***)
-- 2018-09-15 06:22:39 wp-zep  GET:/wp-admin/admin-ajax.php?action=my-ajax(HTTP_REFERER=http://localhost/blog/2018/07/29/hello-world/,HTTP_DNT=1,HTTP_UPGRADE_INSECURE_REQUESTS=1,HTTP_X_FORWARDED_FOR=192.168.0.***)
-- 2018-09-15 06:22:34 wp-zep  GET:/wp-admin/admin-ajax.php?action=ipgb-tester-admin-ajax(HTTP_REFERER=http://localhost/blog/2018/07/29/hello-world/,HTTP_DNT=1,HTTP_UPGRADE_INSECURE_REQUESTS=1,HTTP_X_FORWARDED_FOR=192.168.0.***)
 {% endhighlight %}
 
 Those information can help greatly to solve the issues. Please provide them by 
