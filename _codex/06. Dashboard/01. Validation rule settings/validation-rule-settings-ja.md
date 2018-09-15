@@ -83,12 +83,6 @@ PHPで取得可能なキーを設定します。
   アップロードに必要な権限を設定します。詳しくは [Roles and Capabilities][Roles] 
   を参照して下さい。
 
-#### IPアドレス当たりのログイン試行可能回数 ####
-
-ログイン試行可能な最大回数を設定します。「[**プライバシーと記録の設定**]
-[Privacy]」の「[**IPアドレスをキャッシュに記録**][IPCache]」を有効化する
-必要があります。
-
 #### レスポンス・コード ####
 
 遮断時に応答する [HTTPステータスコード][HTTP-Status] を指定します。選択に応じて
@@ -105,7 +99,7 @@ PHPで取得可能なキーを設定します。
 
 #### 検証のタイミング ####
 
-このプラグインによる検証が実行されるタイミングを指定します。
+このプラグインによる検証の実行タイミングを指定します。
 
 通常、プラグインの安全な実行タイミングは [アクション・フック][Action-Hook] の 
 `init` ですが、テーマやプラグインの読み込み後となるため、遮断時には無駄な
@@ -120,7 +114,6 @@ PHPで取得可能なキーを設定します。
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [Error-Page]:   {{ '/codex/customizing-the-response.html#human-friendly-error-page'          | prepend: site.baseurl }} "Response code and message | IP Geo Block"
 [IPCache]:      {{ '/codex/privacy-and-record-settings-ja.html#ipアドレスをキャッシュに記録' | prepend: site.baseurl }} "Privacy and record settings | IP Geo Block"
-[Privacy]:      {{ '/codex/privacy-and-record-settings-ja.html'        | prepend: site.baseurl }} "プライバシーと記録の設定 | IP Geo Block"
 [BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
 [ISO-3166-1]:   https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "Officially assigned code elements - Wikipedia"

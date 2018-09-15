@@ -83,12 +83,6 @@ at plugins and theme vulnerabilities.
   Put the necessary capabilities for uploading. See 
   [Roles and Capabilities][Roles] for details.
 
-#### Max number of failed login attempts per IP address ####
-
-Select the maximum number of possible login attempts. "[**Record “IP address
-cache”**][IPCache]" should be enabled in "[**Privacy and record settings**]
-[Privacy]" section.
-
 #### Response code ####
 
 Specify the [HTTP status code][HTTP-Status] for response on blocking. Set the 
@@ -121,7 +115,6 @@ In order to avoid such waste, you can select it as `muplugins_loaded`.
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
 [Error-Page]:   {{ '/codex/customizing-the-response.html#human-friendly-error-page'  | prepend: site.baseurl }} "Response code and message | IP Geo Block"
 [IPCache]:      {{ '/codex/privacy-and-record-settings.html#record-ip-address-cache' | prepend: site.baseurl }} "Privacy and record settings | IP Geo Block"
-[Privacy]:      {{ '/codex/privacy-and-record-settings.html'           | prepend: site.baseurl }} "Privacy and record settings | IP Geo Block"
 [BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
 [ISO-3166-1]:   https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "Officially assigned code elements - Wikipedia"

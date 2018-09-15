@@ -16,6 +16,12 @@ requests for particularly important endpoints among them.
 
 It validates requests to `wp-comments-post.php`.
 
+- **Message on comment form**  
+You can put the specified message at the point where template action hook 
+[`comment_form`][HookComment] or [`comment_form_top`][HookCommTop] is fired.
+The following tags are allowed: `<a>`, `<abbr>`, `<acronym>`, `<b>`, `<cite>`,
+`<code>`, `<del>`, `<em>`, `<i>`, `<q>`, `<s>`, `<strike>`, `<strong>`
+
 #### XML-RPC ####
 
 It validates requests to `xmlrpc.php`.
@@ -36,6 +42,11 @@ It validates requests to `wp-login.php`.
 - **Target actions**  
 In addition to login, you can enable actions such as user registration, 
 [password protected page][PassProtect] and so on.
+
+- **Max number of failed login attempts per IP address**  
+Select the maximum number of possible login attempts. "[**Record “IP address
+cache”**][IPCache]" should be enabled in "[**Privacy and record settings**]
+[Privacy]" section.
 
 #### Admin area ####
 
@@ -116,12 +127,15 @@ It validates requests to `wp-content/themes/⋯/*.php`.
 - [Prevent exposure of wp-config.php][ExposeWPConf]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
-[TimThumb]:     https://blog.sucuri.net/2014/06/timthumb-webshot-code-execution-exploit-0-day.html "TimThumb WebShot Code Execution Exploit (Zeroday)"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
+[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
+[Privacy]:      {{ '/codex/privacy-and-record-settings.html'           | prepend: site.baseurl }} "Privacy and record settings | IP Geo Block"
+[CountryList]:  {{ '/codex/validation-rule-settings.html#whitelistblacklist-of-country-code'                             | prepend: site.baseurl }} "Validation rule settings | IP Geo Block"
+[IP-Whitelist]: {{ '/codex/validation-rule-settings.html#whitelistblacklist-of-extra-ip-addresses-prior-to-country-code' | prepend: site.baseurl }} "Validation rule settings | IP Geo Block"
+[TimThumb]:     https://blog.sucuri.net/2014/06/timthumb-webshot-code-execution-exploit-0-day.html "TimThumb WebShot Code Execution Exploit (Zeroday)"
+[HookComment]:  https://developer.wordpress.org/reference/hooks/comment_form/ "comment_form | Hook | WordPress Developer Resources"
+[HookCommTop]:  https://developer.wordpress.org/reference/hooks/comment_form_top/ "comment_form_top | Hook | WordPress Developer Resources"
 [Jetpack]:      https://wordpress.org/plugins/jetpack/ "Jetpack by WordPress.com &#124; WordPress.org"
-[CountryList]:  {{ '/codex/validation-rule-settings-ja.html#国コードのホワイトリストブラックリスト' | prepend: site.baseurl }} "検証ルールの設定 | IP Geo Block"
-[IP-Whitelist]: {{ '/codex/validation-rule-settings-ja.html#国コードに優先して検証するipアドレスのホワイトリストブラックリスト' | prepend: site.baseurl }} "検証ルールの設定 | IP Geo Block"
 [JetpackHost]:  https://github.com/Automattic/jetpack/issues/1719 "Automattic IP Ranges: offer IP list via API endpoint. - Issue #1719 - Automattic/jetpack"
 [Automattic]:   https://automattic.com/ "Automattic"
 [AS2635]:       https://ipinfo.io/AS2635 "AS2635 Automattic, Inc - ipinfo.io"

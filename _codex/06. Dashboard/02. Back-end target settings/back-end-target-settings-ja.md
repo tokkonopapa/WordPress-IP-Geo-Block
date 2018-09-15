@@ -16,6 +16,13 @@ WordPress には、サイトに何らかの影響を及ぼす重要なバック�
 
 `wp-comments-post.php` へのリクエストを検証します。
 
+- **投稿フォーム上のメッセージ**  
+テンプレートのアクション・フック [`comment_form`][HookComment] または
+[`comment_form_top`][HookCommTop] をトリガーに、投稿フォーム上に出力する
+メッセージを設定します。以下のタグが使用可能です：`<a>`, `<abbr>`, `<acronym>`,
+`<b>`, `<cite>`, `<code>`, `<del>`, `<em>`, `<i>`, `<q>`, `<s>`, `<strike>`,
+`<strong>`
+
 #### XML-RPC ####
 
 `xmlrpc.php` へのリクエストを検証します。
@@ -36,6 +43,11 @@ WordPress には、サイトに何らかの影響を及ぼす重要なバック�
 - **対象アクション**  
 ユーザー登録や[パスワードで保護されたページ][PassProtect]へのアクセスなど、
 ログイン・フォームに関連するアクション毎に設定することができます。
+
+- **IPアドレス当たりのログイン試行可能回数**  
+ログイン試行可能な最大回数を設定します。「[**プライバシーと記録の設定**]
+[Privacy]」の「[**IPアドレスをキャッシュに記録**][IPCache]」を有効化する
+必要があります。
 
 #### 管理領域 ####
 
@@ -112,12 +124,15 @@ WordPress には、サイトに何らかの影響を及ぼす重要なバック�
 - [Prevent exposure of wp-config.php][ExposeWPConf]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
-[TimThumb]:     https://blog.sucuri.net/2014/06/timthumb-webshot-code-execution-exploit-0-day.html "TimThumb WebShot Code Execution Exploit (Zeroday)"
 [ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
-[Jetpack]:      https://wordpress.org/plugins/jetpack/ "Jetpack by WordPress.com &#124; WordPress.org"
-[CountryList]:  {{ '/codex/validation-rule-settings-ja.html#国コードのホワイトリストブラックリスト' | prepend: site.baseurl }} "検証ルールの設定 | IP Geo Block"
+[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
+[Privacy]:      {{ '/codex/privacy-and-record-settings.html'           | prepend: site.baseurl }} "Privacy and record settings | IP Geo Block"
+[CountryList]:  {{ '/codex/validation-rule-settings-ja.html#国コードのホワイトリストブラックリスト'                             | prepend: site.baseurl }} "検証ルールの設定 | IP Geo Block"
 [IP-Whitelist]: {{ '/codex/validation-rule-settings-ja.html#国コードに優先して検証するipアドレスのホワイトリストブラックリスト' | prepend: site.baseurl }} "検証ルールの設定 | IP Geo Block"
+[TimThumb]:     https://blog.sucuri.net/2014/06/timthumb-webshot-code-execution-exploit-0-day.html "TimThumb WebShot Code Execution Exploit (Zeroday)"
+[HookComment]:  https://developer.wordpress.org/reference/hooks/comment_form/ "comment_form | Hook | WordPress Developer Resources"
+[HookCommTop]:  https://developer.wordpress.org/reference/hooks/comment_form_top/ "comment_form_top | Hook | WordPress Developer Resources"
+[Jetpack]:      https://wordpress.org/plugins/jetpack/ "Jetpack by WordPress.com &#124; WordPress.org"
 [JetpackHost]:  https://github.com/Automattic/jetpack/issues/1719 "Automattic IP Ranges: offer IP list via API endpoint. - Issue #1719 - Automattic/jetpack"
 [Automattic]:   https://automattic.com/ "Automattic"
 [AS2635]:       https://ipinfo.io/AS2635 "AS2635 Automattic, Inc - ipinfo.io"
