@@ -890,7 +890,7 @@ msgstr "国コードで遮断"
 
 #: admin/includes/tab-settings.php:445
 msgid "The whole will be wrapped by &lt;p&gt; tag. Allowed tags: "
-msgstr ""
+msgstr "全体を &lt;p&gt; タグで囲みます。使用可能タグ："
 
 #: admin/includes/tab-settings.php:445
 msgid "Message on comment form"
