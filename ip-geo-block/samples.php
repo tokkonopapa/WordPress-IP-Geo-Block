@@ -405,7 +405,7 @@ add_filter( 'ip-geo-block-record-logs', 'my_record_logs', 10, 3 );
 
 /**
  * Example 19: Specify the domain name server for reverse DNS lookup
- * Use case: Speed up reverse DNS lookup when it is slow
+ * Use case: Speed up reverse DNS lookup when on-site service is slow
  *
  * @param  array $servers empty array
  * @return array $servers array of primary and secondary servers

@@ -1066,7 +1066,7 @@ class IP_Geo_Block_Util {
 	}
 
 	public static function verify_link( $link, $hash = NULL ) {
-		return self::hash_equals( self::hash_link( $link ), hex2bin( $hash ? $hash : self::get_link() ) );
+		return self::hash_equals( self::hash_link( $link ), pack( 'H*', $hash ? $hash : self::get_link() ) ); // hex2bin() for PHP 5.4+
 	}
 
 }
