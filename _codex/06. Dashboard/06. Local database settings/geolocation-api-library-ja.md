@@ -70,4 +70,3 @@ IP Geo API は、位置情報データベースと共に、次のいずれかの
 [APILibrary]:   {{ '/article/api-class-library.html'            | prepend: site.baseurl }} "CloudFlare & CloudFront API class library | IP Geo Block"
 [CloudFlare]:   https://www.cloudflare.com/ "Cloudflare - The Web Performance & Security Company | Cloudflare"
 [CloudFront]:   https://aws.amazon.com/cloudfront/ "Amazon CloudFront – Content Delivery Network (CDN)"
-
