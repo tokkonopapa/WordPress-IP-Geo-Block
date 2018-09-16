@@ -5,7 +5,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
+ * @link      https://www.ipgeoblock.com/
  * @link      https://codex.wordpress.org/Filesystem_API
  * @copyright 2013-2018 tokkonopapa
  */
@@ -273,7 +273,7 @@ if (0) {
 		if ( empty( $wp_filesystem ) )
 			return array();
 
-		// http://php.net/manual/en/function.file.php#refsect1-function.file-returnvalues
+		// https://php.net/manual/en/function.file.php#refsect1-function.file-returnvalues
 		@ini_set( 'auto_detect_line_endings', TRUE );
 
 		if ( ! $this->is_file( $file ) || ! $this->is_readable( $file ) )

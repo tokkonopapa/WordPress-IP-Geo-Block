@@ -5,7 +5,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
+ * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
 
@@ -124,7 +124,7 @@ class IP_Geo_Block_Logs {
 	 * @return array actual mode and cipher key
 	 */
 	private static function cipher_mode_key( $mode = IP_GEO_BLOCK_CIPHER_MODE ) {
-		$mode and $mode = function_exists( 'openssl_cipher_iv_length' ) ? $mode : 1; // @since PHP 5.3.3
+		$mode and $mode = defined( 'OPENSSL_RAW_DATA' ) ? $mode : 1; // @since PHP 5.3.3
 
 		if ( empty( self::$cipher['mode'] ) ) {
 			// openssl
@@ -338,7 +338,7 @@ class IP_Geo_Block_Logs {
 	/**
 	 * Truncate string as utf8
 	 *
-	 * @see http://jetpack.wp-a2z.org/oik_api/mbstring_binary_safe_encoding/
+	 * @see https://jetpack.wp-a2z.org/oik_api/mbstring_binary_safe_encoding/
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/functions.php
 	 */
@@ -516,8 +516,8 @@ class IP_Geo_Block_Logs {
 	 *
 	 * The absolute path to the database can be set via filter hook `ip-geo-block-live-log`.
 	 *
-	 * @see http://php.net/manual/en/pdo.connections.php
-	 * @see http://php.net/manual/en/features.persistent-connections.php
+	 * @see https://php.net/manual/en/pdo.connections.php
+	 * @see https://php.net/manual/en/features.persistent-connections.php
 	 * @see https://www.sqlite.org/sharedcache.html#shared_cache_and_in_memory_databases
 	 *
 	 * @param int $id ID of the blog
@@ -620,7 +620,7 @@ class IP_Geo_Block_Logs {
 
 		// mark if malicious upload exists
 		if ( isset( $validate['upload'] ) )
-			$validate['result'] .= '*';
+			$validate['result'] .= '^';
 
 		// anonymize ip address
 		if ( $settings['anonymize'] )
@@ -700,7 +700,7 @@ class IP_Geo_Block_Logs {
 				self::$stm = self::$pdo->prepare( // possibly throw an PDOException
 					'INSERT INTO ' . self::TABLE_LOGS . ' (blog_id, time, ip, asn, hook, auth, code, result, method, user_agent, headers, data) ' .
 					'VALUES      ' .                    ' (      ?,    ?,  ?,   ?,    ?,    ?,    ?,      ?,      ?,          ?,       ?,    ?);'
-				); // example: http://php.net/manual/en/pdo.lobs.php
+				); // example: https://php.net/manual/en/pdo.lobs.php
 				self::$stm->bindParam(  1, $id,                      PDO::PARAM_INT );
 				self::$stm->bindParam(  2, $_SERVER['REQUEST_TIME'], PDO::PARAM_INT );
 				self::$stm->bindParam(  3, $validate['ip'],          PDO::PARAM_STR );

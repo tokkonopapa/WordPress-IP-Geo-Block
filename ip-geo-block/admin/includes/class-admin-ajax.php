@@ -149,9 +149,9 @@ class IP_Geo_Block_Admin_Ajax {
 			array_shift( $row ); // remove `No`
 			$row = array_map( 'esc_html', $row );
 
-			if ( $options['anonymize'] ) {
-				$row[2] = IP_Geo_Block_Util::anonymize_ip( $row[2], TRUE  );
-				$row[8] = IP_Geo_Block_Util::anonymize_ip( $row[8], FALSE );
+			if ( $options['anonymize'] && FALSE === strpos( $row[2], '***' ) ) {
+				$row[2] =  IP_Geo_Block_Util::anonymize_ip( $row[2], TRUE  );
+				$row[8] =  IP_Geo_Block_Util::anonymize_ip( $row[8], FALSE );
 			}
 
 			$res[] = array(
@@ -179,7 +179,9 @@ class IP_Geo_Block_Admin_Ajax {
 	 * @param string $which 'comment', 'xmlrpc', 'login', 'admin' or 'public'
 	 */
 	public static function restore_logs( $which ) {
-		return array( 'data' => self::format_logs( IP_Geo_Block_Logs::restore_logs( $which ) ) ); // DataTables requires `data`
+		return array( 'data' => self::format_logs(
+			apply_filters( IP_Geo_Block::PLUGIN_NAME . '-logs', IP_Geo_Block_Logs::restore_logs( $which ) )
+		) ); // DataTables requires `data`
 	}
 
 	/**
@@ -509,12 +511,12 @@ endif; // TEST_RESTORE_NETWORK
 			'[extra_ips][white_list]',
 			'[extra_ips][black_list]',
 			'[anonymize]',
+			'[restrict_api]',            // 3.0.13
 			'[signature]',
 			'[login_fails]',
 			'[response_code]',
 			'[response_msg]',            // 3.0.0
 			'[redirect_uri]',            // 3.0.0
-			'[restrict_api]',            // 3.0.13
 			'[validation][timing]',      // 2.2.9
 			'[validation][proxy]',
 			'[validation][comment]',
@@ -702,8 +704,8 @@ endif; // TEST_RESTORE_NETWORK
 	}
 
 	// Fallback function for PHP 5.3 and under
-	// @link http://qiita.com/keromichan16/items/5ff45a77fb0d48e046cc
-	// @link http://stackoverflow.com/questions/16498286/why-does-the-php-json-encode-function-convert-utf-8-strings-to-hexadecimal-entit/
+	// @link https://qiita.com/keromichan16/items/5ff45a77fb0d48e046cc
+	// @link https://stackoverflow.com/questions/16498286/why-does-the-php-json-encode-function-convert-utf-8-strings-to-hexadecimal-entit/
 	private static function json_unescaped_unicode( $input ) {
 		return preg_replace_callback(
 			'/(?:\\\\u[0-9a-zA-Z]{4})++/',
@@ -836,7 +838,7 @@ endif; // TEST_RESTORE_NETWORK
 			'PECL phar:'   => class_exists( 'PharData',   FALSE ) ? 'yes' : 'no',
 			'BC Math:'     => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
 			'mb_strcut:'   => function_exists( 'mb_strcut' ) ? 'yes' : 'no', // @since PHP 4.0.6
-			'OpenSSL:'     => function_exists( 'openssl_cipher_iv_length' ) ? 'yes' : 'no', // @since PHP 5.3.3
+			'OpenSSL:'     => defined( 'OPENSSL_RAW_DATA'  ) ? 'yes' : 'no', // @since PHP 5.3.3
 			'SQLite(PDO):' => extension_loaded( 'pdo_sqlite' ) ? 'yes' : 'no',
 			'DNS lookup:'  => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),
 			'User agent:'  => $_SERVER['HTTP_USER_AGENT'],

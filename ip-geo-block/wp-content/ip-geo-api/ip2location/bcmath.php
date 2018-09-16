@@ -34,7 +34,7 @@ else: // extension_loaded('gmp')
 if ( ! function_exists('bcadd') ):
 /**
  * bcadd — Add two arbitrary precision numbers.
- * @link http://php.net/manual/en/function.bcadd.php
+ * @link https://php.net/manual/en/function.bcadd.php
  */
 function bcadd($Num1='0',$Num2='0',$Scale=null) {
   // check if they're valid positive numbers, extract the whole numbers and decimals
@@ -90,7 +90,7 @@ endif; // ! function_exists('bcadd')
 if ( ! function_exists('bcsub') ):
 /**
  * bcsub — Subtract one arbitrary precision number from another.
- * @link http://php.net/manual/en/function.bcsub.php
+ * @link https://php.net/manual/en/function.bcsub.php
  */
 function bcsub($Num1='0',$Num2='0',$Scale=null) {
   // check if they're valid positive numbers, extract the whole numbers and decimals
@@ -146,7 +146,7 @@ endif;  // ! function_exists('bcsub')
 if ( ! function_exists('bcmul') ):
 /**
  * bcmul — Multiply two arbitrary precision numbers.
- * @link http://php.net/manual/en/function.bcmul.php
+ * @link https://php.net/manual/en/function.bcmul.php
  */
 function bcmul($Num1='0',$Num2='0') {
   // check if they're both plain numbers
@@ -200,7 +200,7 @@ endif; // ! function_exists('bcmul')
 if ( ! function_exists('bcpow') ):
 /**
  * bcpow — Raise an arbitrary precision number to another.
- * @link http://php.net/manual/en/function.bcmul.php
+ * @link https://php.net/manual/en/function.bcmul.php
  */
 function bcpow($num, $power) {
     $awnser = "1";

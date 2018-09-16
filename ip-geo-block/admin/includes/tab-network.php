@@ -56,9 +56,8 @@ class IP_Geo_Block_Admin_Tab {
 		$html .= '">' . __( 'Apply', 'ip-geo-block' ) . '</a></li>';
 		$html .= '</ul>';
 
-		$field = 'chart-size';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_chart-size',
 			__( 'Chart display layout', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -86,9 +85,8 @@ class IP_Geo_Block_Admin_Tab {
 			      . ($key == self::$controls['time'] ? ' checked="checked"' : '') . ' />' . $val . '</label></li>' . "\n";
 		}
 
-		$field = 'select_duration';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_select_duration',
 			__( 'Duration to retrieve', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -111,7 +109,7 @@ class IP_Geo_Block_Admin_Tab {
 		if ( self::$controls['warn'] ) {
 			$context = IP_Geo_Block_Admin::get_instance();
 			$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 5 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-5' );
-			echo '<p style="padding:0 1em">', sprintf( __( '[ %sRecord &#8220;Logs&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '"><strong>', '</strong></a>' ), '</p>', "\n";
+			echo '<p style="padding:0 1em">', sprintf( __( '[ %sRecord &#8220;Validation logs&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '"><strong>', '</strong></a>' ), '</p>', "\n";
 			echo '<p style="padding:0 1em">', __( 'Please set the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
 		}
 

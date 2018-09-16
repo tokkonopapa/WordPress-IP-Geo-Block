@@ -5,7 +5,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
+ * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  *
  * THIS IS FOR THE ADVANCED USERS:
@@ -104,25 +104,25 @@ class IP_Geo_Block_Rewrite {
 		// get document root
 		// Note: super global can not be infected even when `register_globals` is on.
 		// @see wp-admin/network.php, get_home_path() in wp-admin/includes/file.php
-		// @link http://php.net/manual/en/security.globals.php
-		// @link http://php.net/manual/en/reserved.variables.php#63831
-		// @link http://blog.fyneworks.com/2007/08/php-documentroot-in-iis-windows-servers.html
-		// @link http://stackoverflow.com/questions/11893832/is-it-a-good-idea-to-use-serverdocument-root-in-includes
+		// @link https://php.net/manual/en/security.globals.php
+		// @link https://php.net/manual/en/reserved.variables.php#63831
+		// @link https://blog.fyneworks.com/2007/08/php-documentroot-in-iis-windows-servers.html
+		// @link https://stackoverflow.com/questions/11893832/is-it-a-good-idea-to-use-serverdocument-root-in-includes
 		// @link http://community.sitepoint.com/t/-server-document-root-injection-vulnerability/5274
-		// @link http://www.securityfocus.com/archive/1/476274/100/0/threaded
-		// @link http://www.securityfocus.com/archive/1/476437/100/0/threaded
+		// @link https://www.securityfocus.com/archive/1/476274/100/0/threaded
+		// @link https://www.securityfocus.com/archive/1/476437/100/0/threaded
 		$root = ! empty( $_SERVER['DOCUMENT_ROOT'] ) ?
 			$_SERVER['DOCUMENT_ROOT'] :
 			substr( $_SERVER['SCRIPT_FILENAME'], 0, -strlen( $_SERVER['SCRIPT_NAME'] ) );
 
 		// get absolute path of requested uri
-		// @link http://davidwalsh.name/iis-php-server-request_uri
+		// @link https://davidwalsh.name/iis-php-server-request_uri
 		$path = ( $root = self::normalize_path( $root ) ) . parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
 
 		// while malicios URI may be intercepted by the server,
 		// null byte attack should be invalidated just in case.
 		// Note: is_file(), is_readable(), file_exists() need a valid path.
-		// @link http://php.net/releases/5_3_4.php, https://bugs.php.net/bug.php?id=39863
+		// @link https://php.net/releases/5_3_4.php, https://bugs.php.net/bug.php?id=39863
 		// @example $path = "/etc/passwd\0.php"; is_file( $path ) === true (5.2.14), false (5.4.4)
 		$path = self::realpath( str_replace( "\0", '', $path ) );
 

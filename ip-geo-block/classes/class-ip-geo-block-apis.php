@@ -5,7 +5,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
+ * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
 
@@ -84,7 +84,7 @@ abstract class IP_Geo_Block_API {
 		// build query
 		$tmp = self::build_url( $ip, $template );
 
-		// http://codex.wordpress.org/Function_Reference/wp_remote_get
+		// https://codex.wordpress.org/Function_Reference/wp_remote_get
 		$res = @wp_remote_get( $tmp, $args ); // @since 2.7
 		if ( is_wp_error( $res ) )
 			return array( 'errorMessage' => $res->get_error_message() );
@@ -233,14 +233,14 @@ class IP_Geo_Block_API_Ipdataco extends IP_Geo_Block_API {
  * Term of use : https://ipstack.com/terms
  * Licence fee : free for registered user
  * Rate limit  : 10,000 queries per month
- * Sample URL  : http://api.ipstack.com/186.116.207.169?access_key=YOUR_ACCESS_KEY&output=json&legacy=1
+ * Sample URL  : https://api.ipstack.com/186.116.207.169?access_key=YOUR_ACCESS_KEY&output=json&legacy=1
  * Input type  : IP address (IPv4, IPv6) / domain name
  * Output type : json, xml
  */
 class IP_Geo_Block_API_ipstack extends IP_Geo_Block_API {
 	protected $template = array(
 		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'http://api.ipstack.com/%API_IP%?access_key=%API_KEY%&output=%API_FORMAT%&legacy=1',
+		'url' => 'https://api.ipstack.com/%API_IP%?access_key=%API_KEY%&output=%API_FORMAT%&legacy=1',
 		'api' => array(
 			'%API_FORMAT%' => 'json',
 		),
@@ -305,7 +305,7 @@ class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
 /**
  * Class for Nekudo
  *
- * URL         : http://geoip.nekudo.com/
+ * URL         : https://geoip.nekudo.com/
  * Term of use : https://nekudo.com/blog/new-project-shiny-geoip
  * Licence fee : free to use the API
  * Rate limit  : none
@@ -406,15 +406,15 @@ class IP_Geo_Block_API_ipapicom extends IP_Geo_Block_API {
  * Term of use :
  * Licence fee : free (need to regist to get API key)
  * Rate limit  : 2 queries/second for registered user
- * Sample URL  : http://api.ipinfodb.com/v3/ip-city/?key=...&format=xml&ip=124.83.187.140
- * Sample URL  : http://api.ipinfodb.com/v3/ip-country/?key=...&format=xml&ip=yahoo.co.jp
+ * Sample URL  : https://api.ipinfodb.com/v3/ip-city/?key=...&format=xml&ip=124.83.187.140
+ * Sample URL  : https://api.ipinfodb.com/v3/ip-country/?key=...&format=xml&ip=yahoo.co.jp
  * Input type  : IP address (IPv4, IPv6) / domain name
  * Output type : json, xml
  */
 class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
 	protected $template = array(
 		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'http://api.ipinfodb.com/v3/%API_OPTION%/?key=%API_KEY%&format=%API_FORMAT%&ip=%API_IP%',
+		'url' => 'https://api.ipinfodb.com/v3/%API_OPTION%/?key=%API_KEY%&format=%API_FORMAT%&ip=%API_IP%',
 		'api' => array(
 			'%API_FORMAT%' => 'xml',
 			'%API_OPTION%' => 'ip-city',
@@ -481,7 +481,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			'asn'  => $validate['asn' ], // @since 3.0.4
 			'code' => $validate['code'],
 			'auth' => $validate['auth'], // get_current_user_id() > 0
-			'fail' => $validate['auth'] ? 0 : $fail,
+			'fail' => $fail, // $validate['auth'] ? 0 : $fail,
 			'call' => $settings['save_statistics'] ? $call : 0,
 			'last' => $last,
 			'view' => $view,
@@ -533,7 +533,7 @@ class IP_Geo_Block_Provider {
 		'Nekudo' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="http://geoip.nekudo.com/" title="geoip.nekudo.com | Free IP to geolocation API">http://geoip.nekudo.com/</a>&nbsp;(IPv4, IPv6 / free)',
+			'link' => '<a rel="noreferrer" href="https://geoip.nekudo.com/" title="geoip.nekudo.com | Free IP to geolocation API">https://geoip.nekudo.com/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
 		'GeoIPLookup' => array(

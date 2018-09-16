@@ -354,7 +354,7 @@ class Net_DNS2
         // only auto-load our classes
         //
         if (strncmp($name, 'Net_DNS2', 8) == 0) {
-
+//if(!in_array($name,array('Net_DNS2_RR_SOA', 'Net_DNS2_RR_CNAME', 'Net_DNS2_Exception', 'Net_DNS2_Resolver','Net_DNS2_Socket','Net_DNS2_Packet_Request','Net_DNS2_Packet','Net_DNS2_Header','Net_DNS2_Lookups','Net_DNS2_Question','Net_DNS2_Socket_Sockets','Net_DNS2_Packet_Response','Net_DNS2_RR','Net_DNS2_RR_PTR'))) debug_log($name);//in_array( $name, array( 'Net_DNS2_Resolver', 'Net_DNS2_Socket', 'Net_DNS2_Packet_Request', 'Net_DNS2_Packet', 'Net_DNS2_Header', 'Net_DNS2_Lookups', 'Net_DNS2_Question', 'Net_DNS2_Socket_Sockets', 'Net_DNS2_Packet_Response', 'Net_DNS2_RR', 'Net_DNS2_RR_PTR', 'Net_DNS2_RR_SOA', 'Net_DNS2_RR_CNAME', 'Net_DNS2_RR_OPT', 'Net_DNS2_RR_SIG', 'Net_DNS2_RR_TSIG', 'Net_DNS2_Exception' ) ) and debug_log($name);
             include str_replace('_', '/', $name) . '.php';
         }
 

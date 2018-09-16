@@ -16,7 +16,7 @@ class IP_Geo_Block_Admin_Tab {
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-logs',
-			array( __( 'Validation logs', 'ip-geo-block' ), '<a href="http://www.ipgeoblock.com/codex/record-settings-and-logs.html" title="Record settings and logs | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>' ),
+			array( __( 'Validation logs', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/record-settings-and-logs.html" title="Validation logs | IP Geo Block">' . __( 'Help', 'ip-geo-block' ) . '</a>' ),
 			( $options['validation']['reclogs'] ?
 				array( __CLASS__, 'validation_logs' ) :
 				array( __CLASS__, 'warn_accesslog'  )
@@ -33,9 +33,8 @@ if ( $options['validation']['reclogs'] ):
 		$html .= '</ul>';
 
 		// Live update
-		$field = 'live-log';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_live-log',
 			__( 'Live update', 'ip-geo-block' ) . '<div id="ip-geo-block-live-loading"><div></div><div></div></div>',
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -43,7 +42,7 @@ if ( $options['validation']['reclogs'] ):
 			array(
 				'type' => 'html',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'live-log',
 				'value' => $html,
 				'class' => isset( $cookie[ $tab ][1] ) && $cookie[ $tab ][1] === 'o' ? '' : 'ip-geo-block-hide',
 			)
@@ -65,9 +64,8 @@ if ( $options['validation']['reclogs'] ):
 		}
 
 		// Select target
-		$field = 'select_target';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_select_target',
 			__( 'Select target', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -75,15 +73,14 @@ if ( $options['validation']['reclogs'] ):
 			array(
 				'type' => 'html',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'select_target',
 				'value' => '<ul id="' . $plugin_slug . '-select-target">' . $html . '</ul>',
 			)
 		);
 
 		// Search in logs
-		$field = 'search_filter';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_search_filter',
 			__( 'Search in logs', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -91,16 +88,15 @@ if ( $options['validation']['reclogs'] ):
 			array(
 				'type' => 'text',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'search_filter',
 				'value' => isset( $_GET['s'] ) ? esc_html( $_GET['s'] ) : '', // preset filter
 				'after' => '<a class="button button-secondary" id="ip-geo-block-reset-filter" title="' . __( 'Reset', 'ip-geo-block' ) . '" href="#!">'. __( 'Reset', 'ip-geo-block' ) . '</a>',
 			)
 		);
 
 		// Bulk action
-		$field = 'bulk_action';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_bulk_action',
 			__( 'Bulk action', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -108,7 +104,7 @@ if ( $options['validation']['reclogs'] ):
 			array(
 				'type' => 'select',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'bulk_action',
 				'value' => 0,
 				'list' => array(
 					0 => NULL,
@@ -123,9 +119,8 @@ if ( $options['validation']['reclogs'] ):
 		);
 
 		// Clear logs
-		$field = 'clear_all';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_clear_all',
 			__( 'Clear logs', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -133,7 +128,7 @@ if ( $options['validation']['reclogs'] ):
 			array(
 				'type' => 'button',
 				'option' => $option_name,
-				'field' => $field,
+				'field' => 'clear_all',
 				'value' => __( 'Clear all', 'ip-geo-block' ),
 				'after' => '<div id="'.$plugin_slug.'-logs"></div>',
 				'class' => empty( $cookie[ $tab ][1] ) || $cookie[ $tab ][1] !== 'o' ? '' : 'ip-geo-block-hide',
@@ -141,9 +136,8 @@ if ( $options['validation']['reclogs'] ):
 		);
 
 		// Export logs
-		$field = 'export_logs';
 		add_settings_field(
-			$option_name.'_'.$field,
+			$option_name.'_export_logs',
 			__( 'Export logs', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
@@ -171,7 +165,7 @@ endif; // $options['validation']['reclogs']
 	public static function warn_accesslog() {
 		$context = IP_Geo_Block_Admin::get_instance();
 		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 3 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-3' );
-		echo '<p style="padding:0 1em">', sprintf( __( '[ %sRecord &#8220;Logs&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '">', '</a>' ), '</p>', "\n";
+		echo '<p style="padding:0 1em">', sprintf( __( '[ %sRecord &#8220;Validation logs&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '">', '</a>' ), '</p>', "\n";
 		echo '<p style="padding:0 1em">', __( 'Please set the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
 	}
 

@@ -5,7 +5,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
+ * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
 
@@ -19,11 +19,8 @@ class IP_Geo_Block_Util {
 		static $offset = NULL;
 		static $format = NULL;
 
-		if ( NULL === $offset )
-			$offset = wp_timezone_override_offset() * HOUR_IN_SECONDS;
-
-		if ( NULL === $format )
-			$format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+		NULL === $offset and $offset = wp_timezone_override_offset() * HOUR_IN_SECONDS;
+		NULL === $format and $format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
 		return date_i18n( $fmt ? $fmt : $format, $timestamp ? (int)$timestamp + $offset : FALSE );
 	}
@@ -147,7 +144,7 @@ class IP_Geo_Block_Util {
 	/**
 	 * Convert back to string from a parsed url.
 	 *
-	 * @source http://php.net/manual/en/function.parse-url.php#106731
+	 * @source https://php.net/manual/en/function.parse-url.php#106731
 	 */
 	private static function unparse_url( $url ) {
 		$scheme   = isset( $url['scheme'  ] ) ?       $url['scheme'  ] . '://' : '';
@@ -372,8 +369,8 @@ class IP_Geo_Block_Util {
 	 * WP alternative function of hash_equals() for mu-plugins
 	 *
 	 * Timing attack safe string comparison.
-	 * @source http://php.net/manual/en/function.hash-equals.php#115635
-	 * @see http://php.net/manual/en/language.operators.increment.php
+	 * @source https://php.net/manual/en/function.hash-equals.php#115635
+	 * @see https://php.net/manual/en/language.operators.increment.php
 	 * @see wp-includes/compat.php
 	 */
 	private static function hash_equals( $a, $b ) {
@@ -398,7 +395,7 @@ class IP_Geo_Block_Util {
 	 * WP alternative function of hash_hmac() for mu-plugins
 	 *
 	 * Generate a keyed hash value using the HMAC method.
-	 * @source http://php.net/manual/en/function.hash-hmac.php#93440
+	 * @source https://php.net/manual/en/function.hash-hmac.php#93440
 	 */
 	public static function hash_hmac( $algo, $data, $key, $raw_output = FALSE ) {
 		// PHP 5 >= 5.1.2, PECL hash >= 1.1 or wp-includes/compat.php
@@ -584,8 +581,14 @@ class IP_Geo_Block_Util {
 	public static function is_user_logged_in() {
 		static $logged_in = NULL;
 
-		if ( NULL === $logged_in )
-			$logged_in = ( did_action( 'init' ) ? is_user_logged_in() /* @since 2.0.0 */ : ( ( $user = self::validate_auth_cookie() ) ? $user->exists() /* @since 3.4.0 */ : FALSE ) );
+		if ( NULL === $logged_in ) {
+			if ( did_action( 'init' ) ) {
+				$logged_in = is_user_logged_in(); // @since 2.0.0
+			} else {
+				$user = self::validate_auth_cookie();
+				$logged_in = $user ? $user->exists() : FALSE; // @since 3.4.0
+			}
+		}
 
 		return $logged_in;
 	}
@@ -599,8 +602,14 @@ class IP_Geo_Block_Util {
 	public static function get_current_user_id() {
 		static $user_id = NULL;
 
-		if ( NULL === $user_id )
-			$user_id = ( did_action( 'init' ) ? get_current_user_id() /* @since MU 3.0.0 */ : ( ( $user = self::validate_auth_cookie() ) ? $user->ID /* @since 2.0.0 */ : 0 ) );
+		if ( NULL === $user_id ) {
+			if ( did_action( 'init' ) ) {
+				$user_id = get_current_user_id(); // @since MU 3.0.0
+			} else {
+				$user = self::validate_auth_cookie();
+				$user_id = $user ? $user->ID : 0; // @since 2.0.0
+			}
+		}
 
 		return $user_id;
 	}
@@ -678,7 +687,7 @@ class IP_Geo_Block_Util {
 	/**
 	 * Arrange $_FILES array
 	 *
-	 * @see http://php.net/manual/features.file-upload.multiple.php#53240
+	 * @see https://php.net/manual/features.file-upload.multiple.php#53240
 	 */
 	public static function arrange_files( $files ) {
 		if ( ! is_array( $files['name'] ) )
@@ -810,7 +819,7 @@ class IP_Geo_Block_Util {
 	 *
 	 * @param  string $vars comma separated keys in $_SERVER for http header ('HTTP_...')
 	 * @return string $ip   IP address
-	 * @link   http://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-headers.html
+	 * @link   https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-headers.html
 	 * @link   https://github.com/zendframework/zend-http/blob/master/src/PhpEnvironment/RemoteAddress.php
 	 */
 	public static function get_client_ip( $vars = NULL ) {
@@ -825,7 +834,7 @@ class IP_Geo_Block_Util {
 			}
 		}
 
-		return isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+		return isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1'; // for CLI
 	}
 
 	/**
@@ -861,14 +870,14 @@ class IP_Geo_Block_Util {
 	 * 192.168.0.0/16 reserved for Private-Use Networks [RFC1918]
 	 */
 	public static function is_private_ip( $ip ) {
-		// http://php.net/manual/en/filter.filters.flags.php
+		// https://php.net/manual/en/filter.filters.flags.php
 		return ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE );
 	}
 
 	/**
 	 * Get IP address of the host server
 	 *
-	 * @link http://php.net/manual/en/reserved.variables.server.php#88418
+	 * @link https://php.net/manual/en/reserved.variables.server.php#88418
 	 */
 	public static function get_server_ip() {
 		return isset( $_SERVER['SERVER_ADDR'] ) ? $_SERVER['SERVER_ADDR'] : ( (int)self::is_IIS() >= 7 ?
@@ -904,8 +913,8 @@ class IP_Geo_Block_Util {
 				$installed[ $key ] = isset( $installed[ $key ] ) ? $installed[ $key ] | $val : $val;
 			}
 		}
-		unset( $installed['ip_geo_block'] );
 
+		unset( $installed['ip_geo_block'] );
 		return $installed;
 	}
 
@@ -930,16 +939,14 @@ class IP_Geo_Block_Util {
 	 */
 	public static function anonymize_ip( $subject, $strict = TRUE ) {
 		return $strict ?
-			preg_replace( '/\w{1,3}$/', '***', $subject ) :
+			preg_replace( '/(:)*[0-9a-f\*]{0,4}$/', '$1***', $subject, 1 ) :
 			preg_replace(
 				array(
-					// loose pattern for IPv4
-					'/([0-9]{9})[0-9]{3}([^0-9]?)/',
-					'/([0-9]{1,3}[-\.][0-9]{1,3}[-\.][0-9]{1,3}[-\.])[0-9]+([^0-9]?)/',
-					// loose pattern for IPv6
-					'/((?:[0-9a-f:]+[-:]+)+)[0-9a-f:\*]+([^0-9a-f]?)/i',
+					'/([0-9a-f]{3,})[0-9a-f]{3,}/',           // loose pattern for IPv[4|6]
+					'/((?:[0-9]{1,3}[-_x\.]){3,})[0-9]+/',    // loose pattern for IPv4
+					'/((?:[0-9a-f]+[-:]+)+)[0-9a-f:\*]{2,}/', // loose pattern for IPv6
 				),
-				'$1***$2',
+				'$1***',
 				$subject
 			);
 	}
@@ -948,37 +955,118 @@ class IP_Geo_Block_Util {
 	 * Load and show theme template
 	 *
 	 */
- 	private static $theme_template = NULL;
+	private static $theme_template = array();
 
-	public static function show_theme_template( $type, $settings ) {
-		if ( ( $action = current_filter() ) /* @since 2.5.0 - FALSE, `plugins_loaded` or `wp` */ && (
-		     file_exists( get_stylesheet_directory() . '/' . $type . '.php' ) /* child  theme */ ||
-		     file_exists( get_template_directory()   . '/' . $type . '.php' ) /* parent theme */ ) ) {
-			// keep type of theme template
-			self::$theme_template = $type;
+	public static function show_theme_template( $code, $settings ) {
+		if ( file_exists( $file = get_stylesheet_directory() . '/' . $code . '.php' ) /* child  theme */ ||
+		     file_exists( $file = get_template_directory()   . '/' . $code . '.php' ) /* parent theme */ ) {
+			// keep the response code and the template file
+			self::$theme_template = array( 'code' => $code, 'file' => $file );
 
- 			if ( 'wp' === $action ) // action hook `wp` is too late to include the template file directly
-				add_filter( 'template_include', 'IP_Geo_Block_Util::load_theme_template', $settings['priority'] );
-			else
-				add_action( 'init',             'IP_Geo_Block_Util::load_theme_template', $settings['priority'] );
+			// case 1: validation timing is `init`
+			if ( $action = current_filter() ) { // `plugins_loaded`, `wp` or FALSE
+				add_action( // `wp` (on front-end target) is too late to apply `init`
+					'wp' === $action ? 'template_redirect' : 'init',
+					'IP_Geo_Block_Util::load_theme_template', $settings['priority']
+				);
+				return TRUE; // load template at the specified action
+			}
 
-			return TRUE;
-		} else {
-			return FALSE;
+			// case 2: validation timing is `mu-plugins`
+			elseif ( '<?php' !== file_get_contents( $file, FALSE, NULL, 0, 5 ) ) {
+				self::load_theme_template(); // load template and die immediately
+			}
 		}
+
+		return FALSE; // die with wp_die() immediately
 	}
 
 	public static function load_theme_template( $template = FALSE ) {
 		global $wp_query;
-		$wp_query->set_404(); // for stylesheet
-		$wp_query->is_404 = ( 404 === self::$theme_template );
-		status_header( self::$theme_template ); // @since 2.0.0
+		if ( $wp_query )
+			$wp_query->set_404(); // for stylesheet
 
-		if ( $template ) {
-			return locate_template( array( self::$theme_template . '.php' ) ); // @since 2.7.0 in wp-includes/template.php
-		} else {
-			@include locate_template( array( self::$theme_template . '.php' ) );
-			exit;
-		}
+		status_header( self::$theme_template['code'] ); // @since 2.0.0
+
+		// avoid loading template for HEAD requests because of performance bump. See #14348.
+		'HEAD' !== $_SERVER['REQUEST_METHOD'] and include self::$theme_template['file'];
+		exit;
 	}
+
+	/**
+	 * Generates cryptographically secure pseudo-random bytes
+	 *
+	 */
+	private static function random_bytes( $length = 64 ) {
+		if ( PHP_VERSION_ID < 70000 )
+			require_once IP_GEO_BLOCK_PATH . 'includes/random_compat/random.php';
+
+		// align length
+		$length = max( 64, $length ) - ( $length % 2 );
+
+		try {
+			$str = bin2hex( random_bytes( $length / 2 ) );
+		} catch ( TypeError $e ) {
+			$str = NULL;
+		} catch ( Exception $e ) {
+			$str = NULL;
+		}
+
+		if ( empty( $str ) && function_exists( 'openssl_random_pseudo_bytes' ) )
+			$str = bin2hex( openssl_random_pseudo_bytes( $length / 2 ) );
+
+		if ( empty( $str ) ) {
+			for( $i = 0; $i < $length; $i++ ) {
+				$str .= chr( ( mt_rand( 1, 36 ) <= 26 ) ? mt_rand( 97, 122 ) : mt_rand( 48, 57 ) );
+			}
+		}
+
+		return $str;
+	}
+
+	/**
+	 * Manipulate emergency login link
+	 *
+	 */
+	private static function hash_link( $link ) {
+		return self::hash_hmac(
+			function_exists( 'hash' ) ? 'sha256' /* 32 bytes (256 bits) */ : 'sha1' /* 20 bytes (160 bits) */,
+			$link, NONCE_SALT, TRUE
+		);
+	}
+
+	public static function generate_link() {
+		$link = self::random_bytes();
+		$hash = bin2hex( self::hash_link( $link ) );
+
+		/**
+		 * Verify the consistency of `self::hash_hmac()`
+		 *   key from external: self::verify_link( $link )
+		 *   key from internal: self::verify_link( 'link', 'hash' )
+		 */
+		$settings = IP_Geo_Block::get_option();
+		$settings['login_link'] = array(
+			'link' => $hash,
+			'hash' => bin2hex( self::hash_link( $hash ) ),
+		);
+
+		update_option( IP_Geo_Block::OPTION_NAME, $settings );
+		return add_query_arg( IP_Geo_Block::PLUGIN_NAME . '-key', $link, wp_login_url() );
+	}
+
+	public static function delete_link() {
+		$settings = IP_Geo_Block::get_option();
+		$settings['login_link'] = array( 'link' => NULL, 'hash' => NULL );
+		update_option( IP_Geo_Block::OPTION_NAME, $settings );
+	}
+
+	public static function get_link() {
+		$settings = IP_Geo_Block::get_option();
+		return $settings['login_link']['link'] ? $settings['login_link']['link'] : FALSE;
+	}
+
+	public static function verify_link( $link, $hash = NULL ) {
+		return self::hash_equals( self::hash_link( $link ), pack( 'H*', $hash ? $hash : self::get_link() ) ); // hex2bin() for PHP 5.4+
+	}
+
 }

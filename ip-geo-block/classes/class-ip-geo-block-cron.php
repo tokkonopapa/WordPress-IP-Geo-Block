@@ -5,7 +5,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
+ * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
 require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
@@ -64,6 +64,7 @@ class IP_Geo_Block_Cron {
 		$ip = IP_Geo_Block::get_ip_address( $settings = IP_Geo_Block::get_option() );
 		add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
 
+		$context  = IP_Geo_Block::get_instance();
 		$args = IP_Geo_Block::get_request_headers( $settings );
 
 		// download database files (higher priority order)
@@ -83,8 +84,7 @@ class IP_Geo_Block_Cron {
 
 				// update matching rule immediately
 				if ( $immediate && 'done' !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
-					$validate = IP_Geo_Block::get_geolocation( $ip, array( $provider ) );
-					$validate = IP_Geo_Block::validate_country( 'cron', $validate, $settings );
+					$validate = $context->validate_ip( 'admin', $settings );
 
 					if ( 'ZZ' === $validate['code'] )
 						continue;
@@ -180,7 +180,7 @@ class IP_Geo_Block_Cron {
 		self::stop_cache_gc();
 
 		IP_Geo_Block_Logs::delete_expired( array(
-			(int)$settings['validation']['explogs'] * DAY_IN_SECONDS,
+			min( 365, max( 1, (int)$settings['validation']['explogs'] ) ) * DAY_IN_SECONDS,
 			(int)$settings['cache_time']
 		) );
 

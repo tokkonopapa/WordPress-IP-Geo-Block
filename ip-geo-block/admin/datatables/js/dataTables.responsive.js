@@ -12,13 +12,13 @@
  * @copyright   Copyright 2014-2016 SpryMedia Ltd.
  *
  * This source file is free software, available under the following license:
- *   MIT license - http://datatables.net/license/mit
+ *   MIT license - https://datatables.net/license/mit
  *
  * This source file is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license files for details.
  *
- * For details please refer to: http://www.datatables.net
+ * For details please refer to: https://www.datatables.net
  */
 (function( factory ){
 	if ( typeof define === 'function' && define.amd ) {
@@ -152,7 +152,7 @@ $.extend( Responsive.prototype, {
 		// resize
 		$(window).on( 'resize.dtr orientationchange.dtr', DataTable.util.throttle( function () {
 			// iOS has a bug whereby resize can fire when only scrolling
-			// See: http://stackoverflow.com/questions/8898412
+			// See: https://stackoverflow.com/questions/8898412
 			var width = $(window).width();
 
 			if ( width !== oldWindowWidth ) {

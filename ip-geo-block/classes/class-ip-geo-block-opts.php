@@ -5,7 +5,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
+ * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
 
@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.13',// Version of this table (not package)
+		'version'         => '3.0.14',// Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -185,11 +185,16 @@ class IP_Geo_Block_Opts {
 		),
 		// since version 3.0.10
 		'behavior'        => array(
-			'time'           => 10,      // More than 10 page view in 10 seconds
-			'view'           => 10,      // More than 10 page view in 10 seconds
+			'view'           => 7,       // More than 7 page view in 5 seconds
+			'time'           => 5,       // More than 7 page view in 5 seconds
 		),
 		// since version 3.0.13
 		'restrict_api'    => TRUE,       // Do not send IP address to external APIs
+		// since version 3.0.14
+		'login_link'      => array(
+			'link'           => NULL,    // key of login link
+			'hash'           => NULL,    // hash of 'link'
+		),
 	);
 
 	/**
@@ -414,25 +419,23 @@ class IP_Geo_Block_Opts {
 				IP_Geo_Block_Logs::reset_sqlite_db();
 			}
 
-			if ( version_compare( $version, '3.0.12' ) < 0 ) {
-				$settings['validation']['maxlogs'] = $default['validation']['maxlogs'];
-				$settings['validation']['explogs'] = $default['validation']['explogs'];
-			} else if ( version_compare( $version, '3.0.13' ) < 0 ) {
-				$settings['validation']['explogs'] /= DAY_IN_SECONDS;
-			}
-
 			if ( version_compare( $version, '3.0.13' ) < 0 ) {
+				$settings['validation'  ]['maxlogs'] = $default['validation']['maxlogs'];
+				$settings['validation'  ]['explogs'] = $default['validation']['explogs'];
 				$settings['restrict_api'] = $settings['anonymize'];
 				IP_Geo_Block_Logs::upgrade( $version );
 			}
+
+			if ( version_compare( $version, '3.0.14' ) < 0 )
+				$settings['login_link'] = $default['login_link'];
 
 			// update package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
 
-		// install addons for IP Geolocation database API ver. 1.1.12
+		// install addons for IP Geolocation database API ver. 1.1.13
 		$providers = IP_Geo_Block_Provider::get_addons();
-		if ( empty( $providers ) || ! $settings['api_dir'] || ! file_exists( $settings['api_dir'] ) || version_compare( $version, '3.0.9' ) < 0 )
+		if ( empty( $providers ) || ! $settings['api_dir'] || ! file_exists( $settings['api_dir'] ) || version_compare( $version, '3.0.14' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
@@ -483,8 +486,7 @@ class IP_Geo_Block_Opts {
 			$dir = wp_upload_dir();
 			$dir = $dir['basedir'];
 
-			if ( ! @is_writable( $dir ) ) {
-				// wp-content/plugins/ip-geo-block
+			if ( ! @is_writable( $dir ) ) { // wp-content/plugins/ip-geo-block
 				$dir = @is_writable( IP_GEO_BLOCK_PATH ) ? IP_GEO_BLOCK_PATH : NULL;
 			}
 		}
@@ -494,7 +496,7 @@ class IP_Geo_Block_Opts {
 		) . IP_Geo_Block::GEOAPI_NAME; // must add `ip-geo-api` for basename
 	}
 
-	// http://php.net/manual/function.copy.php#91010
+	// https://php.net/manual/function.copy.php#91010
 	private static function recurse_copy( $src, $dst ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'recurse_copy' );

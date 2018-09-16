@@ -5,7 +5,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
+ * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
 define( 'IP_GEO_BLOCK_NETWORK', FALSE );
@@ -59,6 +59,10 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function admin_init() {
+		// include drop in for admin if it exists
+		$settings = IP_Geo_Block::get_option();
+		file_exists( $file = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in-admin.php' ) and include( $file );
+
 		// Add the options page and menu item.
 		add_action( 'admin_menu',                 array( $this, 'setup_admin_page'    ) );
 		add_action( 'admin_post_ip_geo_block',    array( $this, 'admin_ajax_callback' ) );
@@ -111,6 +115,7 @@ class IP_Geo_Block_Admin {
 		$urls = array( wp_login_url() );
 
 		// avoid multiple redirection caused by WP hide 1.4.9.1
+		require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
 		if ( is_plugin_active( 'wp-hide-security-enhancer/wp-hide.php' ) )
 			$urls[] = 'options-permalink.php';
 
@@ -161,17 +166,14 @@ class IP_Geo_Block_Admin {
 	 */
 	public function create_blog( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
 		defined( 'IP_GEO_BLOCK_DEBUG' ) and IP_GEO_BLOCK_DEBUG and assert( is_main_site(), 'Not main blog.' );
-
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php';
-
-		// Get option of main blog.
-		$settings = IP_Geo_Block::get_option();
 
 		// Switch to the new blog and initialize.
 		switch_to_blog( $blog_id );
 		IP_Geo_Block_Activate::activate_blog();
 
 		// Copy option from main blog.
+		$settings = IP_Geo_Block::get_option();
 		if ( $this->is_network && $settings['network_wide'] )
 			update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
@@ -252,10 +254,12 @@ class IP_Geo_Block_Admin {
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 			}
+
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-whois-js',
 				plugins_url( $release ? 'js/whois.min.js' : 'js/whois.js', __FILE__ ),
 				$dependency, IP_Geo_Block::VERSION, $footer
 			);
+			break;
 		}
 
 		// css for option page
@@ -283,19 +287,18 @@ class IP_Geo_Block_Admin {
 				'url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => IP_Geo_Block_Util::create_nonce( $this->get_ajax_action() ),
 				'msg' => array(
-					/* [ 0] */ __( 'Import settings ?',           'ip-geo-block' ),
-					/* [ 1] */ __( 'Create table ?',              'ip-geo-block' ),
-					/* [ 2] */ __( 'Delete table ?',              'ip-geo-block' ),
-					/* [ 3] */ __( 'Clear statistics ?',          'ip-geo-block' ),
-					/* [ 4] */ __( 'Clear cache ?',               'ip-geo-block' ),
-					/* [ 5] */ __( 'Clear logs ?',                'ip-geo-block' ),
-					/* [ 6] */ __( 'ajax for logged-in user',     'ip-geo-block' ),
-					/* [ 7] */ __( 'ajax for non logged-in user', 'ip-geo-block' ),
-					/* [ 8] */ __( '[Found: %d]',                 'ip-geo-block' ),
-					/* [ 9] */ __( 'Find and verify `%s` on &#8220;Logs&#8221; tab.',          'ip-geo-block' ),
-					/* [10] */ __( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
-					/* [11] */ __( 'The selected row cannot be found in the visible area.',    'ip-geo-block' ),
-					/* [12] */ __( 'An error occurred while executing the ajax command `%s`.', 'ip-geo-block' ),
+					/* [ 0] */ __( 'Are you sure ?',              'ip-geo-block' ),
+					/* [ 1] */ __( 'Open a new window',           'ip-geo-block' ),
+					/* [ 2] */ __( 'Generate new link',           'ip-geo-block' ),
+					/* [ 3] */ __( 'Delete current link',         'ip-geo-block' ),
+					/* [ 4] */ __( 'Please add the following link to favorites / bookmarks in your browser : ', 'ip-geo-block' ),
+					/* [ 5] */ __( 'ajax for logged-in user',     'ip-geo-block' ),
+					/* [ 6] */ __( 'ajax for non logged-in user', 'ip-geo-block' ),
+					/* [ 7] */ __( '[Found: %d]',                 'ip-geo-block' ),
+					/* [ 8] */ __( 'Find and verify `%s` on &#8220;Logs&#8221; tab.',          'ip-geo-block' ),
+					/* [ 9] */ __( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
+					/* [10] */ __( 'The selected row cannot be found in the visible area.',    'ip-geo-block' ),
+					/* [11] */ __( 'An error occurred while executing the ajax command `%s`.', 'ip-geo-block' ),
 				),
 				'i18n' => array(
 					/* [ 0] */ '<div class="ip-geo-block-loading"></div>',
@@ -419,9 +422,7 @@ class IP_Geo_Block_Admin {
 	 * Register the administration menu into the WordPress Dashboard menu.
 	 *
 	 */
-	private function add_plugin_admin_menu() {
-		$settings = IP_Geo_Block::get_option();
-
+	private function add_plugin_admin_menu( $settings ) {
 		// Network wide or not
 		$admin_menu = ( 'admin_menu' === current_filter() ); // @since: 2.5 `admin_menu` or `network_admin_menu`
 
@@ -468,6 +469,7 @@ class IP_Geo_Block_Admin {
 				array( $this, 'display_plugin_admin_page' )
 				//, 'dashicons-admin-site' // or 'data:image/svg+xml;base64...'
 			);
+
 			if ( $settings['network_wide'] ) {
 				add_submenu_page(
 					IP_Geo_Block::PLUGIN_NAME,
@@ -478,6 +480,7 @@ class IP_Geo_Block_Admin {
 					array( $this, 'display_plugin_admin_page' )
 				);
 			}
+
 			add_submenu_page(
 				IP_Geo_Block::PLUGIN_NAME,
 				__( 'IP Geo Block', 'ip-geo-block' ),
@@ -503,8 +506,7 @@ class IP_Geo_Block_Admin {
 	 * Diagnosis of admin settings.
 	 *
 	 */
-	private function diagnose_admin_screen() {
-		$settings = IP_Geo_Block::get_option();
+	private function diagnose_admin_screen( $settings ) {
 		$updating = get_transient( IP_Geo_Block::CRON_NAME );
 		$adminurl = $this->dashboard_url( $this->is_network && $settings['network_wide'] );
 
@@ -544,8 +546,9 @@ class IP_Geo_Block_Admin {
 				self::add_admin_notice( 'error',
 					__( 'Once you logout, you will be unable to login again because the number of login attempts reaches the limit.', 'ip-geo-block' ) . ' ' .
 					sprintf(
-						__( 'Please execute "<strong>Clear cache</strong>" on <a href="%s">Statistics tab</a> to prevent locking yourself out.', 'ip-geo-block' ),
-						esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ), $adminurl ) )
+						__( 'Please remove your IP address in &#8220;%1$sStatistics in IP address cache%2$s&#8221; on &#8220;%3$sStatistics%4$s&#8221; tab to prevent locking yourself out.', 'ip-geo-block' ),
+						'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1, 'sec' => 2 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-2' ) . '">', '</a></strong>',
+						'<strong>', '</strong>'
 					)
 				);
 				break;
@@ -569,7 +572,6 @@ class IP_Geo_Block_Admin {
 						)
 					)
 				);
-				break;
 			}
 		}
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
@@ -581,6 +583,16 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 			}
 		}
 endif;
+		// Check consistency of emergency login link
+		if ( $settings['login_link']['link'] && ! IP_Geo_Block_Util::verify_link( $settings['login_link']['link'], $settings['login_link']['hash'] ) ) {
+			self::add_admin_notice( 'error',
+				sprintf(
+					__( 'Emergency login link is outdated. Please delete it once and generate again at &#8220;%sPlugin settings%s&#8221; section. Also do not forget to update favorites / bookmarks in your browser.', 'ip-geo-block' ),
+					'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 7 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-7' ) . '">', '</a></strong>'
+				)
+			);
+		}
+
 		// Check activation of IP Geo Allow
 		if ( $settings['validation']['timing'] && is_plugin_active( 'ip-geo-allow/index.php' ) ) {
 			self::add_admin_notice( 'error',
@@ -594,12 +606,14 @@ endif;
 	 *
 	 */
 	public function setup_admin_page() {
+		$settings = IP_Geo_Block::get_option();
+
 		// Register the administration menu.
-		$this->add_plugin_admin_menu();
+		$this->add_plugin_admin_menu( $settings );
 
 		// Avoid multiple validation.
-		if ( 'POST' !== $_SERVER['REQUEST_METHOD'] )
-			$this->diagnose_admin_screen();
+		if ( 'GET' === $_SERVER['REQUEST_METHOD'] )
+			$this->diagnose_admin_screen( $settings );
 
 		// Register settings page only if it is needed.
 		if ( ( isset( $_GET ['page'       ] ) && IP_Geo_Block::PLUGIN_NAME === $_GET ['page'       ] ) ||
@@ -771,7 +785,7 @@ endif;
 	}
 	echo '<p>', implode( '<br />', $tab ), "</p>\n";
 	echo '<p>', __( 'Thanks for providing these great services for free.', 'ip-geo-block' ), "<br />\n";
-	echo __( '(Most browsers will redirect you to each site <a href="http://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', 'ip-geo-block' ), "</p>\n";
+	echo __( '(Most browsers will redirect you to each site <a href="https://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', 'ip-geo-block' ), "</p>\n";
 } ?>
 <?php if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 	echo '<p>', get_num_queries(), ' queries. ', timer_stop(0), ' seconds. ', memory_get_usage(), " bytes.</p>\n";
@@ -933,10 +947,10 @@ endif;
 	 *
 	 * @param array $input The values to be validated.
 	 *
-	 * @link http://codex.wordpress.org/Validating_Sanitizing_and_Escaping_User_Data
-	 * @link http://codex.wordpress.org/Function_Reference/sanitize_option
-	 * @link http://codex.wordpress.org/Function_Reference/sanitize_text_field
-	 * @link http://codex.wordpress.org/Plugin_API/Filter_Reference/sanitize_option_$option
+	 * @link https://codex.wordpress.org/Validating_Sanitizing_and_Escaping_User_Data
+	 * @link https://codex.wordpress.org/Function_Reference/sanitize_option
+	 * @link https://codex.wordpress.org/Function_Reference/sanitize_text_field
+	 * @link https://codex.wordpress.org/Plugin_API/Filter_Reference/sanitize_option_$option
 	 * @link https://core.trac.wordpress.org/browser/trunk/src/wp-includes/formatting.php
 	 */
 	public function sanitize_options( $input ) {
@@ -1117,6 +1131,9 @@ endif;
 			$output['public'][ $key ] = is_array( $default['public'][ $key ] ) ?  array() : FALSE;
 		}
 
+		// disabled in case IP address cache is disabled
+		empty( $output['cache_hold'] ) and $output['login_fails'] = -1;
+
 		// 3.0.4 AS number, 3.0.6 Auto updating of DB files, 3.0.8 Geolite2
 		$output['Maxmind']['use_asn'] = $output['Geolite2']['use_asn'] = $output['update']['auto'] = FALSE;
 
@@ -1218,10 +1235,7 @@ endif;
 		// expiration time [days]
 		if ( version_compare( $output['version'], '3.0.13' ) < 0 )
 			$output['validation']['explogs'] /= DAY_IN_SECONDS;
-		$output['validation']['explogs'] = min( 365, max( 1, $output['validation']['explogs'] ) );
-
-		// reset the version number
-		$output['version'] = $default['version'];
+		$output['validation']['explogs'] = min( 365, max( 1, (int)$output['validation']['explogs'] ) );
 
 		return $output;
 	}
@@ -1229,8 +1243,8 @@ endif;
 	/**
 	 * A fallback function of array_replace_recursive() before PHP 5.3.
 	 *
-	 * @link http://php.net/manual/en/function.array-replace-recursive.php#92574
-	 * @link http://php.net/manual/en/function.array-replace-recursive.php#109390
+	 * @link https://php.net/manual/en/function.array-replace-recursive.php#92574
+	 * @link https://php.net/manual/en/function.array-replace-recursive.php#109390
 	 */
 	public function array_replace_recursive() {
 		if ( function_exists( 'array_replace_recursive' ) ) {
@@ -1399,15 +1413,15 @@ endif;
 	/**
 	 * Ajax callback function
 	 *
-	 * @link http://codex.wordpress.org/AJAX_in_Plugins
-	 * @link http://codex.wordpress.org/Function_Reference/check_ajax_referer
-	 * @link http://core.trac.wordpress.org/browser/trunk/wp-admin/admin-ajax.php
+	 * @link https://codex.wordpress.org/AJAX_in_Plugins
+	 * @link https://codex.wordpress.org/Function_Reference/check_ajax_referer
+	 * @link https://core.trac.wordpress.org/browser/trunk/wp-admin/admin-ajax.php
 	 */
 	public function admin_ajax_callback() {
+		require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php';
+
 		// Check request origin, nonce, capability.
 		$this->check_admin_post( TRUE );
-
-		require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php';
 
 		// `$which` and `$cmd` should be restricted by whitelist in each function
 		$settings = IP_Geo_Block::get_option();
@@ -1483,6 +1497,14 @@ endif;
 			}
 			break;
 
+		  case 'generate-link': // Generate new link
+			$res = array( 'link' => IP_Geo_Block_Util::generate_link() );
+			break;
+
+		  case 'delete-link': // Delete existing link
+			IP_Geo_Block_Util::delete_link();
+			break;
+
 		  case 'show-info': // Show system and debug information
 			$res = IP_Geo_Block_Admin_Ajax::get_wp_info();
 			break;
@@ -1523,9 +1545,9 @@ endif;
 			foreach ( array_unique( (array)$which[ $src ] ) as $val ) {
 				// replace anonymized IP address with CIDR (IPv4:256, IPv6:4096)
 				$val = preg_replace(
-					array( '/\.\*\*\*.*$/', '/\*\*\*.*$/', '/:000\/116$/' ),
-					array( '.0/24',         '000/116',     '::/116'       ),
-					$val
+					array( '/\.\*\*\*$/', '/:\w*\*\*\*$/', '/(::.*)::\/116$/' ),
+					array( '.0/24',       '::/116',        '$1/116'           ),
+					trim( $val )
 				);
 				if ( ( filter_var( preg_replace( '/\/\d+$/', '', $val ), FILTER_VALIDATE_IP ) || preg_match( '/^AS\d+$/', $val ) ) &&
 				     ( FALSE === strpos( $settings['extra_ips'][ $dst ], $val ) ) ) {
@@ -1538,9 +1560,7 @@ endif;
 			else
 				update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
-			$res = array(
-				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
-			);
+			$res = array( 'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME );
 			break;
 
 		  case 'restore-network': // Restore blocked per target in logs
@@ -1577,17 +1597,11 @@ endif;
 			$res = IP_Geo_Block_Admin_Ajax::find_exceptions( $cmd );
 			break;
 
-		  case 'create-table':
-		  case 'delete-table':
+		  case 'init-table':
 			// Need to define `IP_GEO_BLOCK_DEBUG` to true
-			if ( 'create-table' === $cmd )
-				IP_Geo_Block_Logs::create_tables();
-			else
-				IP_Geo_Block_Logs::delete_tables();
-
-			$res = array(
-				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
-			);
+			IP_Geo_Block_Logs::delete_tables();
+			IP_Geo_Block_Logs::create_tables();
+			$res = array( 'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME );
 			break;
 		}
 

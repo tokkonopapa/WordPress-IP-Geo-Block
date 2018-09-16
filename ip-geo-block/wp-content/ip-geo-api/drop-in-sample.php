@@ -7,8 +7,8 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
- * @see       http://www.ipgeoblock.com/codex/#filter-hooks
+ * @link      https://www.ipgeoblock.com/
+ * @see       https://www.ipgeoblock.com/codex/#filter-hooks
  * @example   Use `IP_Geo_Block::add_filter()` instead of `add_filter()`
  */
 class_exists( 'IP_Geo_Block', FALSE ) or die;

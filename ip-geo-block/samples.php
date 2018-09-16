@@ -5,7 +5,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
+ * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
 /* Start loading wp-load.php */
@@ -302,11 +302,11 @@ add_filter( 'ip-geo-block-maxmind-dir', 'my_maxmind_dir' );
  * @return string $url replaced url to zip file
  */
 function my_maxmind_ipv4( $url ) {
-	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
+	return 'https://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
 }
 
 function my_maxmind_ipv6( $url ) {
-	return 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCityv6-beta/GeoLiteCityv6.dat.gz';
+	return 'https://geolite.maxmind.com/download/geoip/database/GeoLiteCityv6-beta/GeoLiteCityv6.dat.gz';
 }
 
 add_filter( 'ip-geo-block-maxmind-zip-ipv4', 'my_maxmind_ipv4' );
@@ -402,3 +402,17 @@ function my_record_logs( $record, $hook, $validate ) {
 }
 
 add_filter( 'ip-geo-block-record-logs', 'my_record_logs', 10, 3 );
+
+/**
+ * Example 19: Specify the domain name server for reverse DNS lookup
+ * Use case: Speed up reverse DNS lookup when on-site service is slow
+ *
+ * @param  array $servers empty array
+ * @return array $servers array of primary and secondary servers
+ */
+function my_gethostbyaddr( $servers ) {
+	return array( '1.1.1.1', '1.0.0.1' ); // APNIC  public DNS (faster)
+//	return array( '8.8.8.8', '8.8.4.4' ); // Google public DNS (slower)
+}
+
+add_filter( 'ip-geo-block-dns', 'my_gethostbyaddr' );

@@ -79,11 +79,11 @@
 	}
 
 	function warning(status, msg, cmd) {
-		window.alert(stripTag(msg || ip_geo_block.msg[12].replace('%s', cmd) + ' (' + status + ')'));
+		window.alert(stripTag(msg || ip_geo_block.msg[11].replace('%s', cmd) + ' (' + status + ')'));
 	}
 
 	function notice_html5() {
-		warning(null, stripTag(ip_geo_block.msg[10]));
+		warning(null, stripTag(ip_geo_block.msg[9]));
 	}
 
 	function redirect(page, tab) {
@@ -175,8 +175,9 @@
 
 	// Show/Hide descendant elements
 	function show_descendants($this, $elem, mask) {
-		var stat = (0 === $this.prop('type').indexOf('checkbox') && $this.is(':checked')) ||
-		           (0 === $this.prop('type').indexOf('select'  ) && '0' !== $this.val());
+		var prop = $this.prop('type') || '',
+		    stat = (0 === prop.indexOf('checkbox') && $this.is(':checked')) ||
+		           (0 === prop.indexOf('select'  ) && '0' !== $this.val());
 
 		// checkbox
 		$this.siblings('input[name^="' + ID('%', 'settings') + '"]:checkbox').prop('disabled', !stat);
@@ -365,7 +366,7 @@
 
 		for(i = 0; i < n; ++i) {
 			j = i * size;
-			r.push(arr.slice(j, j + size));
+			r.push(arr.slice(j, j + size)); // IE >= 9
 		}
 
 		return r;
@@ -489,11 +490,11 @@
 					}
 
 					// https://stackoverflow.com/questions/12701772/insert-links-into-google-charts-api-data
-					n = 'http://www.w3.org/1999/xlink';
+					n = 'https://www.w3.org/1999/xlink';
 					$id.find('text').each(function (i, elm) {
 						p = elm.parentNode;
 						if ('g' === p.tagName.toLowerCase() && -1 !== (i = inArray(elm.textContent, info))) {
-							a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+							a = document.createElementNS('https://www.w3.org/2000/svg', 'a');
 							a.setAttributeNS(n, 'xlink:href', info[i].link);
 							a.setAttributeNS(n, 'title', info[i].label);
 							a.setAttribute('target', mode ? '_blank' : '_self');
@@ -883,7 +884,7 @@
 			if (!cmd) {
 				return false;
 			} else if (!cells.length) {
-				warning(null, ip_geo_block.msg[11]);
+				warning(null, ip_geo_block.msg[10]);
 				return false;
 			}
 
@@ -935,7 +936,7 @@
 
 		// Clear all
 		$(ID('@', 'clear_all')).off('click').on('click', function (/*event*/) {
-			confirm(ip_geo_block.msg[tabNo === 1 ? 4 : 5], function () {
+			confirm(ip_geo_block.msg[0], function () {
 				ajax_clear(tabNo === 1 ? 'cache' : 'logs', null);
 			});
 			return false;
@@ -1153,10 +1154,10 @@
 							j.appendChild(i);
 
 							if (1 & data[key]) {
-								j.appendChild(add_icon(dfn, span, ip_geo_block.msg[6], 'lock'));
+								j.appendChild(add_icon(dfn, span, ip_geo_block.msg[5], 'lock'));
 							}
 							if (2 & data[key]) {
-								j.appendChild(add_icon(dfn, span, ip_geo_block.msg[7], 'unlock'));
+								j.appendChild(add_icon(dfn, span, ip_geo_block.msg[6], 'unlock'));
 							}
 
 							$this.append(j);
@@ -1213,7 +1214,7 @@
 				$(ID('.', 'icon-find')).on('click', function (/*event*/) {
 					var $this  = $(this),
 					    list = [], n = 0, key, ext, id, s,
-					    title  = stripTag(ip_geo_block.msg[9]),
+					    title  = stripTag(ip_geo_block.msg[8]),
 					    target = stripTag($this.data('target')); // `admin`, `plugins`, `themes`
 
 					// show description
@@ -1266,7 +1267,7 @@
 						// update status of checkbox
 						$(ID('@', 'exception_' + target)).trigger('change');
 						$(ID('#', 'find-' + target)).append(
-							' ' + '<span class="ip-geo-block-warn">' + stripTag(ip_geo_block.msg[8].replace('%d', n)) + '</span>'
+							' ' + '<span class="ip-geo-block-warn">' + stripTag(ip_geo_block.msg[7].replace('%d', n)) + '</span>'
 						);
 					});
 
@@ -1455,17 +1456,39 @@
 				return false;
 			});
 
-			// Manipulate DB table for validation logs
-			$(ID('@', 'create_table')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.msg[1], function () {
-					ajax_table('create-table');
-				});
+			// Emergency login link
+			$(ID('#', 'login-link')).on('click', function (/*event*/) {
+				var $this = $(this), type = ID('$', 'primary');
+				if ($this.hasClass(type)) {
+					ajax_post('login-loading', {
+						cmd: 'generate-link'
+					}, function (data) {
+						$this.text(ip_geo_block.msg[3]);
+						$this.removeClass(type).nextAll(ID('.', 'desc')).remove();
+						$('<p class="ip-geo-block-desc"></p>')
+						.appendTo($this.parent())
+						.append(
+							ip_geo_block.msg[4],
+							'<a href="' + data.link + '" title="' + ip_geo_block.msg[1] + '" target=_blank>' + data.link + '</a></p>'
+						);
+					});
+				} else {
+					confirm(ip_geo_block.msg[0], function () {
+						ajax_post('login-loading', {
+							cmd: 'delete-link'
+						}, function (data) {
+							$this.text(ip_geo_block.msg[2]);
+							$this.addClass(type).nextAll(ID('.', 'desc')).remove();
+						});
+					});
+				}
 				return false;
 			});
 
-			$(ID('@', 'delete_table')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.msg[2], function () {
-					ajax_table('delete-table');
+			// Manipulate DB table for validation logs
+			$(ID('@', 'init_table')).on('click', function (/*event*/) {
+				confirm(ip_geo_block.msg[0], function () {
+					ajax_table('init-table');
 				});
 				return false;
 			});
@@ -1581,7 +1604,7 @@
 
 			// Statistics of validation
 			$(ID('@', 'clear_statistics')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.msg[3], function () {
+				confirm(ip_geo_block.msg[0], function () {
 					ajax_clear('statistics', null);
 				});
 				return false;
@@ -1589,7 +1612,7 @@
 
 			// Statistics in logs
 			$(ID('@', 'clear_logs')).on('click', function (/*event*/) {
-				confirm(ip_geo_block.msg[5], function () {
+				confirm(ip_geo_block.msg[0], function () {
 					ajax_clear('logs', null);
 				});
 				return false;
@@ -1863,7 +1886,19 @@
 				if (ip) {
 					// Anonymize IP address
 					if ($(ID('@', 'anonymize')).prop('checked')) {
-						ip = ip.replace(/([\.\:])\w{1,4}$/, '$1' + '0');
+						if (/[^0-9a-f\.:]/.test(ip)) {
+							warning(null, 'illegal format.');
+							return false;
+						} else if (ip.indexOf('.') !== -1) { // in case of IPv4
+							ip = ip.replace(/\.\w+$/, '.0');
+						} else { // in case of IPv6
+							ip = ip.split(':'); // 2001:db80:abcd:0012:0000:0000:0000:0000
+							ip = ip.splice(0, 4).join(':');
+							if (-1 === ip.indexOf('::')) {
+								ip += '::'; // mask the interface ID
+							}
+							ip = ip.replace(/:{3,}/, '::');
+						}
 						$(ID('@', 'ip_address')).val(ip);
 					}
 

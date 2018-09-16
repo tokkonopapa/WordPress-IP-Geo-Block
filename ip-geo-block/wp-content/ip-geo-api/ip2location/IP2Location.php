@@ -2,7 +2,7 @@
 /**
  * This is the modified version for IP Geo Block
  * based on IP2Location PHP Module Version: 7.0.0
- * from http://www.ip2location.com/developers/php
+ * from https://www.ip2location.com/developers/php
  */
 
 /**
@@ -20,7 +20,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; If not, see <http://www.gnu.org/licenses/>.
+ * License along with this library; If not, see <https://www.gnu.org/licenses/>.
  */
 
 class IP2LocationRecord {

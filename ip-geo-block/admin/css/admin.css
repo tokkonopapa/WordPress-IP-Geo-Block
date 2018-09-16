@@ -213,22 +213,32 @@ input[id*="ip_geo_block_settings_providers"] + label {
     color: #2786C2;
     display: inline-block;
 }
+.ip-geo-block-primary {
+    color: #fff !important;;
+    background: #00838f !important;
+    border-color: #00707a !important;
+    text-shadow: none; /* for WordPress 3.7.21 */
+}
+.ip-geo-block-primary:hover {
+    background-color: #00919e !important;
+    border-color: #00525a !important;
+}
 
 /* Loading image */
 .ip-geo-block-loading,
 #ip-geo-block-live-loading {
+    height: 16px;
+    width: 16px;
     background-size: 16px 16px;
     background-position: center center;
     background-repeat: no-repeat;
-    height: 16px;
-    width: 16px;
     margin-left: 1em;
     margin-top: 0.2em;
     display: inline-block;
     vertical-align: top;
 }
 .ip-geo-block-loading {
-    background-image: url(data:image/gif;base64,R0lGODlhEAAQAPIGAAAAAMLCwkJCQpKSkmJiYoKCgv///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAGACwAAAAAEAAQAAADM2i63P4wyklrC0IEKgAQnAdOmGYFBLExwboQWcG2rlHEwTDQLUsUOd2mBxkUCgNKa+dIAAAh+QQJCgAGACwAAAIACgAOAAADLWgWIqHQCABEVLPe1R4MBOFFRFNsRUNsYDFewTC8iixvQ1EMyxjEvyBLODQkAAAh+QQJCgAGACwAAAAACgAOAAADLWi6IRJrCQCECoU0ag1xxeBARuEQ0UUU5DUM7fK+qTEUYR0EcM3Ev51uB7wAEwAh+QQJCgAGACwAAAAADgAKAAADLWi6URQrLiJEkSaM0eqrkLFtAVEEAgAIylAUQ5SuSqCFNZjhWG3zmB8wOJQkAAAh+QQJCgAGACwCAAAADgAKAAADK2hqMRMrLuekCnCU8gqBDCZ2glBcYkSUxIJJgQdaUVDOtAAAAr3oPN/llgAAIfkECQoABgAsBgAAAAoADgAAAytoEdauiz0Yx5BQFTvN2EMXWNgUFETZFIJQdERLiGgZtKohAIDQ7T0RrpEAACH5BAkKAAYALAYAAgAKAA4AAAMqaKoR+609Fie1K4zhZiibNRSg1XAQUXQPIQgE835voQgAIARqh+ummSUBACH5BAUKAAYALAIABgAOAAoAAAMsaLpsES2+F9mEddEgBFbBMGACAAiMOCrlGRBFWBQD2L0dYYjfUuQZEKynSAAAOw==);
+    background-image: url(data:image/gif;base64,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);
 }
 
 /* Google Map infomation window */
@@ -332,16 +342,6 @@ table.ip-geo-block-table td:first-child {
     word-wrap: normal;
     word-break: normal;
     white-space: pre;
-}
-#ip-geo-block-preferred {
-    color: #fff;
-    background: #00838f !important;
-    border-color: #00707a !important;
-    text-shadow: none; /* for WordPress 3.7.21 */
-}
-#ip-geo-block-preferred:hover {
-    background-color: #00919e !important;
-    border-color: #00525a !important;
 }
 #ip-geo-block-back-to-top {
     margin:0;
@@ -863,7 +863,7 @@ mark {
     display: block;
     height: 1em;
     width: 1em;
-    background: radial-gradient(#0073aa, #72777c);
+    background: #0073aa;
     border-radius: 50%;
     position: absolute;
     top: 0;
@@ -895,8 +895,8 @@ mark {
     transform: rotate(180deg);
 }
 .ip-geo-block-live-timer > div:last-child:before {
-    /* older webkit seems buggy with zero so use 0.00001 */
-    transform: rotate(0.00001deg);
+    /* older webkit seems buggy with zero so use 0.00001 if you notice something strange */
+    transform: rotate(0deg);
     animation: 30s spin-timer linear 30s forwards;
 }
 @keyframes spin-timer {
@@ -906,7 +906,7 @@ mark {
 
 /* sub items in settings */
 .ip-geo-block-subitem {
-  margin-left:1.7em
+  margin-left: 1.7em
 }
 .ip-geo-block-subitem:before {
   content: "\00bb"; /* &raquo; */
@@ -915,6 +915,10 @@ mark {
 }
 .ip-geo-block-subitem dfn {
   vertical-align: middle;
+}
+.ip-geo-block-subitem-parent th,
+.ip-geo-block-subitem-parent td {
+  padding-top: 0;
 }
 
 /* placeholder */

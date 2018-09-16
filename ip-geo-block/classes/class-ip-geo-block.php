@@ -5,7 +5,7 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
+ * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
 
@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.13';
+	const VERSION = '3.0.14';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -182,7 +182,7 @@ class IP_Geo_Block {
 
 	// get optional values from wp options
 	public static function get_option() {
-		return FALSE !== ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
+		return ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
 	}
 
 	// get the WordPress path of validation target
@@ -235,7 +235,7 @@ class IP_Geo_Block {
 	/**
 	 * Setup the http header.
 	 *
-	 * @see http://codex.wordpress.org/Function_Reference/wp_remote_get
+	 * @see https://codex.wordpress.org/Function_Reference/wp_remote_get
 	 */
 	public static function get_request_headers( $settings ) {
 		return apply_filters( self::PLUGIN_NAME . '-headers', array(
@@ -267,8 +267,9 @@ class IP_Geo_Block {
 	 * Return true if the validation result is passed.
 	 *
 	 */
-	public static function is_passed ( $result ) { return 0 === strncmp( 'pass', $result, 4 ); }
-	public static function is_blocked( $result ) { return 0 !== strncmp( 'pass', $result, 4 ); }
+	public static function is_passed ( $result )      { return 0 === strncmp( 'pass', $result, 4 );      }
+	public static function is_blocked( $result )      { return 0 !== strncmp( 'pass', $result, 4 );      }
+	public static function is_listed ( $code, $list ) { return FALSE !== strpos( $list, (string)$code ); }
 
 	/**
 	 * Build a validation result for the current user.
@@ -442,12 +443,12 @@ class IP_Geo_Block {
 		//               9 check_behavior (high), check_ua (low)
 		// priority low 10 check_page (high), validate_country (low)
 		$var = self::PLUGIN_NAME . '-' . $hook;
-		$settings['validation' ]['mimetype'  ] and add_filter( $var, array( $this, 'check_upload'    ), 5, 2 );
-		$check_auth                            and add_filter( $var, array( $this, 'check_auth'      ), 6, 2 );
+		$settings['validation' ]['mimetype'  ]  and add_filter( $var, array( $this, 'check_upload'    ), 5, 2 );
+		$check_auth                             and add_filter( $var, array( $this, 'check_auth'      ), 6, 2 );
 		$settings['extra_ips'  ] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
-		$settings['extra_ips'  ]['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
-		$settings['extra_ips'  ]['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
-		$settings['login_fails'] >= 0          and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
+		$settings['extra_ips'  ]['black_list']  and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
+		$settings['extra_ips'  ]['white_list']  and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
+		$settings['login_fails'] >= 0 && $block and add_filter( $var, array( $this, 'check_fail'      ), 8, 2 );
 
 		// make valid provider name list
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings );
@@ -532,22 +533,38 @@ class IP_Geo_Block {
 	 * Validate on login.
 	 *
 	 */
+ 	public function filter_login_url( $url, $path, $scheme, $blog_id ) {
+ 		if ( isset( $this->login_key ) && FALSE !== strpos( $url, $this->request_uri ) )
+			$url = esc_url( add_query_arg( self::PLUGIN_NAME . '-key', $this->login_key, $url ) );
+
+ 		return $url;
+ 	}
+
 	public function validate_login() {
 		// parse action
 		$action = isset( $_GET['key'] ) ? 'resetpass' : ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'login' );
 		$action = 'retrievepassword' === $action ? 'lostpassword' : ( 'rp' === $action ? 'resetpass' : $action );
-
 		$settings = self::get_option();
-		$list = $settings['login_action'];
 
 		// the same rule should be applied to login and logout
-		! empty( $list['login'] ) and $list['logout'] = TRUE;
+		! empty( $settings['login_action']['login'] ) and $settings['login_action']['logout'] = TRUE;
 
 		// avoid conflict with WP Limit Login Attempts (wp-includes/pluggable.php @since 2.5.0)
 		! empty( $_POST ) and add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
 
+		// verify emergency login key
+		if ( 'login' === $action && ! empty( $_REQUEST[ self::PLUGIN_NAME . '-key' ] ) &&
+		     IP_Geo_Block_Util::verify_link( $_REQUEST[ self::PLUGIN_NAME . '-key' ] ) ) {
+			$this->login_key = sanitize_key( $_REQUEST[ self::PLUGIN_NAME . '-key' ] );
+
+			// add the verified key to the url in login form
+			has_filter( 'site_url', array( $this, 'filter_login_url' ) ) or
+			add_filter( 'site_url', array( $this, 'filter_login_url' ), 10, 4 );
+			$settings['login_action']['login'] = FALSE; // skip blocking in validate_ip()
+		}
+
 		// enables to skip validation of country on login/out except BuddyPress signup
-		$this->validate_ip( 'login', $settings, ! empty( $list[ $action ] ) || 'bp_' === substr( current_filter(), 0, 3 ) );
+		$this->validate_ip( 'login', $settings, ! empty( $settings['login_action'][ $action ] ) || 'bp_' === substr( current_filter(), 0, 3 ) );
 	}
 
 	/**
@@ -557,7 +574,6 @@ class IP_Geo_Block {
 	private function check_exceptions( $action, $page, $exceptions = array() ) {
 		$in_action = in_array( $action, $exceptions, TRUE );
 		$in_page   = in_array( $page,   $exceptions, TRUE );
-
 		return ( ( $action xor $page ) && ( ! $in_action and ! $in_page ) ) ||
 		       ( ( $action and $page ) && ( ! $in_action or  ! $in_page ) ) ? FALSE : TRUE;
 	}
@@ -595,8 +611,8 @@ class IP_Geo_Block {
 		$list = array_merge( apply_filters( self::PLUGIN_NAME . '-bypass-admins', array(), $settings ), array(
 			// in wp-admin js/widget.js, includes/template.php, async-upload.php, plugins.php, PHP Compatibility Checker
 			'heartbeat', 'save-widget', 'wp-compression-test', 'upload-attachment', 'deactivate', 'imgedit-preview', 'wpephpcompat_start_test',
-			// bbPress, Anti-Malware Security and Brute-Force Firewall, Jetpack page & action
-			'bp_avatar_upload', 'GOTMLS_logintime', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate',
+			// bbPress, Anti-Malware Security and Brute-Force Firewall, Jetpack page & action, Email Subscribers & Newsletters by Icegram
+			'bp_avatar_upload', 'GOTMLS_logintime', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', 'es_sendemail',
 		) );
 
 		// skip validation of country code and WP-ZEP if exceptions matches action or page
@@ -866,9 +882,9 @@ class IP_Geo_Block {
 	public function check_behavior( $validate, $settings ) {
 		// check if page view with a short period time is under the threshold
 		$cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr );
-		if ( $cache && $cache['view'] >= $settings['behavior']['view'] && $_SERVER['REQUEST_TIME'] - $cache['last'] <= $settings['behavior']['time'] ) {
+
+		if ( $cache && $cache['view'] >= $settings['behavior']['view'] && $_SERVER['REQUEST_TIME'] - $cache['last'] <= $settings['behavior']['time'] )
 			return $validate + array( 'result' => 'badbot' ); // can't overwrite existing result
-		}
 
 		return $validate;
 	}

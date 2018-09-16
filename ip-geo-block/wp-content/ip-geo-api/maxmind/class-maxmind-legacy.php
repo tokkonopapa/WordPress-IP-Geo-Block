@@ -2,10 +2,10 @@
 /**
  * IP Geo Block API class library for Maxmind
  *
- * @version   1.1.12
+ * @version   1.1.13
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
- * @link      http://www.ipgeoblock.com/
+ * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
 
@@ -20,18 +20,18 @@ define( 'IP_GEO_BLOCK_MAXMIND_IPV6_DAT', 'GeoIPv6.dat' );
 define( 'IP_GEO_BLOCK_MAXMIND_ASN4_DAT', 'GeoIPASNum.dat' );
 define( 'IP_GEO_BLOCK_MAXMIND_ASN6_DAT', 'GeoIPASNumv6.dat' );
 
-define( 'IP_GEO_BLOCK_MAXMIND_IPV4_ZIP', 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz' );
-define( 'IP_GEO_BLOCK_MAXMIND_IPV6_ZIP', 'http://geolite.maxmind.com/download/geoip/database/GeoIPv6.dat.gz' );
-define( 'IP_GEO_BLOCK_MAXMIND_ASN4_ZIP', 'http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz' );
-define( 'IP_GEO_BLOCK_MAXMIND_ASN6_ZIP', 'http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNumv6.dat.gz' );
+define( 'IP_GEO_BLOCK_MAXMIND_IPV4_ZIP', 'https://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz' );
+define( 'IP_GEO_BLOCK_MAXMIND_IPV6_ZIP', 'https://geolite.maxmind.com/download/geoip/database/GeoIPv6.dat.gz' );
+define( 'IP_GEO_BLOCK_MAXMIND_ASN4_ZIP', 'https://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz' );
+define( 'IP_GEO_BLOCK_MAXMIND_ASN6_ZIP', 'https://download.maxmind.com/download/geoip/database/asnum/GeoIPASNumv6.dat.gz' );
 
-define( 'IP_GEO_BLOCK_MAXMIND_DOWNLOAD', 'http://dev.maxmind.com/geoip/legacy/geolite/' );
+define( 'IP_GEO_BLOCK_MAXMIND_DOWNLOAD', 'https://dev.maxmind.com/geoip/legacy/geolite/' );
 
 /**
  * Class for Maxmind
  *
- * URL         : http://dev.maxmind.com/geoip/legacy/geolite/
- * Term of use : http://dev.maxmind.com/geoip/legacy/geolite/#License
+ * URL         : https://dev.maxmind.com/geoip/legacy/geolite/
+ * Term of use : https://dev.maxmind.com/geoip/legacy/geolite/#License
  * Licence fee : Creative Commons Attribution-ShareAlike 3.0 Unported License
  * Input type  : IP address (IPv4, IPv6)
  * Output type : array
@@ -219,7 +219,7 @@ endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] )
 	}
 
 	public function get_attribution() {
-		return 'This product includes GeoLite data created by MaxMind, available from <a class="ip-geo-block-link" href="http://www.maxmind.com" rel=noreferrer target=_blank>http://www.maxmind.com</a>. (<a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons &mdash; Attribution-ShareAlike 4.0 International &mdash; CC BY-SA 4.0" rel=noreferrer target=_blank>CC BY-SA 4.0</a>)';
+		return 'This product includes GeoLite data created by MaxMind, available from <a class="ip-geo-block-link" href="https://www.maxmind.com" rel=noreferrer target=_blank>https://www.maxmind.com</a>. (<a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons &mdash; Attribution-ShareAlike 4.0 International &mdash; CC BY-SA 4.0" rel=noreferrer target=_blank>CC BY-SA 4.0</a>)';
 	}
 
 	public function add_settings_field( $field, $section, $option_slug, $option_name, $options, $callback, $str_path, $str_last ) {
@@ -354,6 +354,6 @@ IP_Geo_Block_Provider::register_addon( array(
 	'Maxmind' => array(
 		'key'  => NULL,
 		'type' => 'IPv4, IPv6 / LGPLv2',
-		'link' => '<a class="ip-geo-block-link" href="http://dev.maxmind.com/geoip/" title="GeoIP Products &laquo; Maxmind Developer Site" rel=noreferrer target=_blank>http://dev.maxmind.com/geoip/</a>&nbsp;(IPv4, IPv6 / LGPLv2)',
+		'link' => '<a class="ip-geo-block-link" href="https://dev.maxmind.com/geoip/" title="GeoIP Products &laquo; Maxmind Developer Site" rel=noreferrer target=_blank>https://dev.maxmind.com/geoip/</a>&nbsp;(IPv4, IPv6 / LGPLv2)',
 	),
 ) );
