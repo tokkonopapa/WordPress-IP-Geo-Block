@@ -8,7 +8,7 @@
  * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
-define( 'IP_GEO_BLOCK_NETWORK', FALSE );
+define( 'IP_GEO_BLOCK_NETWORK', TRUE );
 
 class IP_Geo_Block_Admin {
 
@@ -225,10 +225,10 @@ class IP_Geo_Block_Admin {
 				break;
 
 		  case 5: /* Site list */
-			// js for google chart
+			// js for google charts
 			wp_register_script(
 				$addon = IP_Geo_Block::PLUGIN_NAME . '-google-chart',
-				apply_filters( 'google-jsapi', 'https://www.google.com/jsapi' ), array(), NULL, $footer
+				apply_filters( 'google-charts', 'https://www.gstatic.com/charts/loader.js' ), array(), NULL, $footer
 			);
 			wp_enqueue_script( $addon );
 			break;
@@ -237,7 +237,7 @@ class IP_Geo_Block_Admin {
 			// Google Map in China
 			$geo = IP_Geo_Block::get_geolocation();
 			if ( isset( $geo['code'] ) && 'CN' === $geo['code'] ) {
-				add_filter( 'google-jsapi',      array( $this, 'google_jsapi_cn'      ) );
+				add_filter( 'google-charts',     array( $this, 'google_charts_cn'     ) );
 				add_filter( 'google-maps',       array( $this, 'google_maps_cn'       ) );
 				add_filter( 'google-maps-nokey', array( $this, 'google_maps_nokey_cn' ) );
 			}
@@ -330,9 +330,9 @@ class IP_Geo_Block_Admin {
 	 * Google Map in China
 	 *
 	 */
-	public function google_jsapi_cn     ( $url ) { return 'https://www.google.cn/jsapi';  }
-	public function google_maps_cn      ( $url ) { return '//maps.google.cn/maps/api/js'; }
-	public function google_maps_nokey_cn( $url ) { return '//maps.google.cn/maps';        }
+	public function google_charts_cn    ( $url ) { return 'https://www.gstatic.cn/charts/loader.js'; }
+	public function google_maps_cn      ( $url ) { return '//maps.google.cn/maps/api/js';            }
+	public function google_maps_nokey_cn( $url ) { return '//maps.google.cn/maps';                   }
 
 	/**
 	 * Add plugin meta links

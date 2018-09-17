@@ -1518,22 +1518,20 @@ endif;
 		);
 
 		// Google Maps API key
-		if ( 'default' !== $options['api_key']['GoogleMap'] or defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
-			add_settings_field(
-				$option_name.'_api_key',
-				__( '<dfn title="Valid key for Google Maps JavaScript API">Google Maps API key</dfn>', 'ip-geo-block' ),
-				array( $context, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'text',
-					'option' => $option_name,
-					'field' => 'api_key',
-					'sub-field' => 'GoogleMap',
-					'value' => $options['api_key']['GoogleMap'],
-				)
-			);
-		}
+		add_settings_field(
+			$option_name.'_api_key',
+			__( '<dfn title="Valid key for Google Maps JavaScript API">Google Maps API key</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => 'api_key',
+				'sub-field' => 'GoogleMap',
+				'value' => $options['api_key']['GoogleMap'],
+			)
+		);
 
 		// Export / Import settings
 		add_settings_field(

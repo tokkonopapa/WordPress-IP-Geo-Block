@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 4.9.8
-Stable tag: 3.0.14
+Stable tag: 3.0.15a
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -381,6 +381,11 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.15 =
+* **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog.
+* **Improvement:** Update google charts based on the [release note](https://developers.google.com/chart/interactive/docs/release_notes "Google Charts Release Notes &nbsp;|&nbsp; Charts | Google Developers").
+* **Improvement:** Always show "Google Maps API key" text box in "Plugin settings" section. If you empty and save it, Google Maps API will no longer be used and a simple map will appear on "Search" tab.
 
 = 3.0.14 =
 * **Fix issue:** Fix wrong handling of anonymized IPv6 on clicking a link or applying bulk actions.
