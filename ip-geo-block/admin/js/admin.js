@@ -677,11 +677,7 @@
 		var cookie = loadCookie(tabNo);
 
 		// Click event handler to show/hide form-table
-		$('form').on('click', 'h2,h3 a', function (/*event*/) {
-			window.open(this.href, null);
-			return false;
-		})
-		.on('click', 'h2,h3', function (/*event*/) {
+		$(document).on('click', 'form>h2,h3', function (/*event*/) {
 			toggleSection($(this), tabNo, cookie);
 			return false;
 		});
@@ -1922,12 +1918,10 @@
 							'</fieldset>'
 						).fadeIn('slow');
 
-						$(ID('#', 'whois-title')).on('click', function (/*event*/) {
-							var $this = $(this);
-							$this.parent().nextAll().toggle();
-							$this.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
-							return false;
-						});
+						// keep closing
+						if ('x' === cookie[tabNo][1]) {
+							$(ID('#', 'whois-title')).trigger('click');
+						}
 					});
 
 					// Show map

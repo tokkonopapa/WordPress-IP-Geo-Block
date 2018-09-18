@@ -56,6 +56,9 @@ function gm_authFailure() {
 				this.m.setZoom(j || this.o.zoom);
 				return this.e;
 			},
+			getZoom: function () {
+				return this.m.getZoom();
+			},
 			showMarker: function (l, k) {
 				var j = this.q[l];
 				if (j && j.w) {
