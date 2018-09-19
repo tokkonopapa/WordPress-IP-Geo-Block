@@ -875,7 +875,7 @@
 			    texp = /(<([^>]+)>)/ig,              // regular expression to strip tag
 			    hexp = /data-hash=[\W]([\w]+)[\W]/i, // regular expression to extract hash
 			    data = { IP: [], AS: [] },           // IP address and AS number
-			    hash, cell, cells = $('table' + ID('.', 'dataTable')).find('td>input:checked');
+			    hash, cell, cells = table.$('input:checked'); // checked entry in table
 
 			if (!cmd) {
 				return false;
