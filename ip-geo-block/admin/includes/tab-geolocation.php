@@ -12,9 +12,8 @@ class IP_Geo_Block_Admin_Tab {
 		/*----------------------------------------*
 		 * Geolocation
 		 *----------------------------------------*/
-		$section = IP_Geo_Block::PLUGIN_NAME . '-search';
 		add_settings_section(
-			$section,
+			$section = IP_Geo_Block::PLUGIN_NAME . '-search',
 			__( 'Search IP address geolocation', 'ip-geo-block' ),
 			NULL,
 			$option_slug
@@ -44,6 +43,7 @@ class IP_Geo_Block_Admin_Tab {
 			$section,
 			array(
 				'type' => 'select',
+				'attr' => 'multiple="multiple"',
 				'option' => $option_name,
 				'field' => 'service',
 				'value' => $provider[ $cookie ],

@@ -890,7 +890,7 @@ endif;
 		  case 'select':
 		  case 'select-text':
 			$desc = '';
-			echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\">\n";
+			echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\" ", (isset( $args['attr'] ) ? esc_attr( $args['attr'] ) : ''), ">\n";
 			foreach ( $args['list'] as $key => $val ) {
 				echo "\t<option value=\"$key\"", ( NULL === $val ? ' selected disabled' : selected( $args['value'], $key, FALSE ) );
 				if ( isset( $args['desc'][ $key ] ) ) {
