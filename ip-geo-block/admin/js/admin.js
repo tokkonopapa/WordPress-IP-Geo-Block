@@ -1971,6 +1971,10 @@
 							$this.parent().children('a').removeClass('nav-tab-active');
 							$this.addClass('nav-tab-active');
 
+							// last focused index
+							cookie[tabNo][2] = $this.data('index');
+							saveCookie(cookie);
+
 							for (key in json) {
 								if (json.hasOwnProperty(key)) {
 									key = stripTag(key);
@@ -2009,10 +2013,6 @@
 									'</ul>'
 								);
 							}
-
-							// last focused index
-							cookie[tabNo][2] = $this.data('index');
-							saveCookie(cookie);
 						}).find('.nav-tab-active').trigger('click');
 					}, [obj]);
 				}
