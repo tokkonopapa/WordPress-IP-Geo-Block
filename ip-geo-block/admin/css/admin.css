@@ -246,6 +246,19 @@ input[id*="ip_geo_block_settings_providers"] + label {
     height: 400px;
     margin: 1em auto;
 }
+#ip-geo-block-apis div.nav-tab-wrapper {
+    padding-top: 0;
+    margin-bottom: 1em;
+}
+#ip-geo-block-geoinfo {
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+#ip-geo-block-geoinfo ul {
+    margin-top: 0;
+    margin-left: 1em;
+}
 .gm-style-iw {
     width: 18em;
     height: auto !important;

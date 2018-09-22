@@ -773,8 +773,9 @@ endif;
 ?>
 	</form>
 <?php if ( 2 === $tab ) { /* Search tab */ ?>
-	<div id="ip-geo-block-whois"></div>
+	<div id="ip-geo-block-apis"></div>
 	<div id="ip-geo-block-map"></div>
+	<div id="ip-geo-block-whois"></div>
 <?php } elseif ( 3 === $tab ) { /* Attribute tab */
 	// show attribution (higher priority order)
 	$tab = array();
@@ -892,7 +893,7 @@ endif;
 			$desc = '';
 			echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\" ", (isset( $args['attr'] ) ? esc_attr( $args['attr'] ) : ''), ">\n";
 			foreach ( $args['list'] as $key => $val ) {
-				echo "\t<option value=\"$key\"", ( NULL === $val ? ' selected disabled' : selected( $args['value'], $key, FALSE ) );
+				echo "\t<option value=\"$key\"", NULL === $val ? ' selected disabled' : ( is_array( $args['value'] ) ? selected( in_array( $key, $args['value'] ), TRUE, FALSE ) : selected( $args['value'], $key, FALSE ) );
 				if ( isset( $args['desc'][ $key ] ) ) {
 					echo ' data-desc="', $args['desc'][ $key ], '"';
 					$key === $args['value'] and $desc = $args['desc'][ $key ];
@@ -1435,7 +1436,12 @@ endif;
 			break;
 
 		  case 'search': // Get geolocation by IP
-			$res = IP_Geo_Block_Admin_Ajax::search_ip( $which );
+			if ( $which ) {
+				$res = array();
+				foreach ( $which as $cmd ) {
+					$res[ $cmd ] = IP_Geo_Block_Admin_Ajax::search_ip( $cmd );
+				}
+			}
 			break;
 
 		  case 'scan-code': // Fetch providers to get country code

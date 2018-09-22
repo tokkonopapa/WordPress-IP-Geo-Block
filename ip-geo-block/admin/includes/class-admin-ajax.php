@@ -40,9 +40,9 @@ class IP_Geo_Block_Admin_Ajax {
 			}
 
 			$tmp = microtime( TRUE );
-			$res['host'] = esc_html( IP_Geo_Block_Lkup::gethostbyaddr( $ip ) );
+			$res['host (DNS)'] = esc_html( IP_Geo_Block_Lkup::gethostbyaddr( $ip ) );
 			$tmp = microtime( TRUE ) - $tmp;
-			$res['DNS lookup'] = sprintf( '%.1f [msec]', $tmp * 1000.0 );
+			$res['host (DNS)'] .= sprintf( ' (%.1f [msec])', $tmp * 1000.0 );
 		}
 
 		return $res;

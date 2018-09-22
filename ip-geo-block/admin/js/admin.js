@@ -28,7 +28,7 @@
 	}
 
 	function escapeHTML(str) {
-		return str.toString().replace(/[&<>"']/g, function (match) {
+		return str.toString().replace(/[&<>"']/g, function (match) { //'"
 			return {
 				'&': '&amp;',
 				'<': '&lt;',
@@ -615,7 +615,7 @@
 
 		for (i in cookie) {
 			if(cookie.hasOwnProperty(i)) {
-				cookie[i] = cookie[i].replace(/[^ox\d]/g, '').split(''); // string (ooo...) to array (n)
+				cookie[i] = cookie[i].replace(/[^ox\d]/ig, '').split(''); // string (ooo...) to array (n)
 			}
 		}
 
@@ -635,9 +635,9 @@
 			if ('undefined' !== typeof obj) {
 				n = obj.length;
 				if (n) {
-					c[i] = (obj[0] || 'o');
+					c[i] = (obj[0] || 'o').toString();
 					for (j = 1; j < n; ++j) {
-						c[i] += (obj[j] || 'o');
+						c[i] += (obj[j] || 'o').toString();
 					}
 				}
 			}
@@ -1028,7 +1028,7 @@
 					parent.show('slow');
 				});
 
-				return false;
+				return false; //
 			});
 
 			// Matching rule
@@ -1869,14 +1869,27 @@
 			}
 
 			// Set selected provider to cookie
+			var options = [];
 			$('select[id^="' + ID('!', 'service') + '"]').on('change', function (/*event*/) {
-				cookie[tabNo][3] = $(this).prop('selectedIndex');
+				// make selected options in cookie
+				$(this).children('option').each(function (i, elm) {
+					options[$(elm).text()] = i;
+					cookie[tabNo][3 + i] = $(elm).prop('selected') ? 'o' : 'x';
+				});
+
+				// if selected options does not include the focused index, update it
+				if ('o' !== cookie[tabNo][3 + (parseInt(cookie[tabNo][2]) || 0)]) {
+					cookie[tabNo][2] = $(this).prop('selectedIndex');
+				}
+
 				saveCookie(cookie);
 			}).change();
 
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (/*event*/) {
-				var whois = $(ID('#', 'whois')), obj,
+				var whois = $(ID('#', 'whois'  )),
+				    apis  = $(ID('#', 'apis'   )),
+				    list  = $(ID('@', 'service')).val(), obj,
 				    ip = $.trim($(ID('@', 'ip_address')).val());
 
 				if (ip) {
@@ -1899,6 +1912,7 @@
 					}
 
 					whois.hide().empty();
+					apis.hide().empty();
 
 					// Get whois data
 					obj = $.whois(ip, function (data) {
@@ -1928,52 +1942,78 @@
 					ajax_post('loading', {
 						cmd: 'search',
 						ip: ip,
-						which: $(ID('@', 'service')).val()
+						which: list
 					}, function (data) {
-						var key, info = '',
-						    latitude  = stripTag(data.latitude  || '0'),
-						    longitude = stripTag(data.longitude || '0'),
-						    zoom = (data.latitude || data.longitude) ? 8 : 2;
+						var key, tabs = '',
+						c = parseInt(cookie[tabNo][2]) || 0;
 
 						for (key in data) {
 							if (data.hasOwnProperty(key)) {
-								key = stripTag(key);
-								info +=
-									'<li>' +
-										'<span class="' + ID('title' ) + '">' + key + ' : </span>' +
-										'<span class="' + ID('result') + '">' + stripTag(data[key]) + '</span>' +
-									'</li>';
+								tabs += '<a href="#!" class="nav-tab' + (options[key] === c ? ' nav-tab-active' : '')
+								+ '" data-index="' + options[key] + '" data-api=\'' + stripTag(JSON.stringify(data[key]))
+								+ '\'>' + key + '</a>';
 							}
 						}
 
-						if ('object' === typeof window.google) {
-							map.GmapRS('addMarker', {
-								latitude: latitude,
-								longitude: longitude,
-								title: ip,
-								content: '<ul>' + info + '</ul>',
-								show: true,
-								zoom: zoom
-							});
-						} else {
-							map.css({
-								height: '600px',
-								backgroundColor: 'transparent'
-							}).empty().html(
-								'<ul style="margin-top:0; margin-left:1em;">' +
-									'<li>' +
-										'<span class="' + ID('title' ) + '">' + 'IP address' + ' : </span>' +
-										'<span class="' + ID('result') + '">' + stripTag(ip) + '</span>' +
-									'</li>' +
-									info +
-									/*'<li>' +
-										'<span class="' + ID('title' ) + '">' + 'show map' + ' : </span>' +
-										'<span class="' + ID('result') + '">' + '<a href="//maps.google.com/maps?q=' + latitude + ',' + longitude + '">Click here</a>' + '</span>' +
-									'</li>' +*/
-								'</ul>'
-								+ '<iframe src="//maps.google.com/maps?q=' + latitude + ',' + longitude + '&z=' + zoom + '&output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
-							);
-						}
+						apis.html(
+							'<div class="nav-tab-wrapper">' + tabs + '</div>' +
+							'<div id="ip-geo-block-geoinfo"></div>'
+						).fadeIn('slow')
+
+						// change APIs tab
+						.on('click', 'a', function () {
+							var $this = $(this),
+							    key, json = $(this).data('api'), info = '',
+							    latitude  = stripTag(json.latitude  || '0'),
+							    longitude = stripTag(json.longitude || '0'),
+							    zoom = (json.latitude || json.longitude) ? 7 : 2;
+
+							$this.parent().children('a').removeClass('nav-tab-active');
+							$this.addClass('nav-tab-active');
+
+							for (key in json) {
+								if (json.hasOwnProperty(key)) {
+									key = stripTag(key);
+									info +=
+										'<li>' +
+											'<span class="' + ID('title' ) + '">' + key + ' : </span>' +
+											'<span class="' + ID('result') + '">' + stripTag(json[key]) + '</span>' +
+										'</li>';
+								}
+							}
+
+							if ('object' === typeof window.google) {
+								map.GmapRS('deleteMarkers').GmapRS('addMarker', {
+									latitude: latitude,
+									longitude: longitude,
+									title: ip,
+									content: '<ul>' + info + '</ul>',
+									show: true,
+									zoom: zoom
+								});
+							} else {
+								map.empty().html(
+									'<iframe src="' + ip_geo_block.altgmap + '?q=' + latitude + ',' + longitude + '&z=' + zoom + '&output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
+								);
+								$(ID('#', 'geoinfo')).html(
+									'<ul>' +
+										//'<li>' +
+										//	'<span class="' + ID('title' ) + '">' + 'IP address' + ' : </span>' +
+										//	'<span class="' + ID('result') + '">' + stripTag(ip) + '</span>' +
+										//'</li>' +
+										//'<li>' +
+										//	'<span class="' + ID('title' ) + '">' + 'show map' + ' : </span>' +
+										//	'<span class="' + ID('result') + '">' + '<a href="//maps.google.com/maps?q=' + latitude + ',' + longitude + '">Click here</a>' + '</span>' +
+										//'</li>' +
+										info +
+									'</ul>'
+								);
+							}
+
+							// last focused index
+							cookie[tabNo][2] = $this.data('index');
+							saveCookie(cookie);
+						}).find('.nav-tab-active').trigger('click');
 					}, [obj]);
 				}
 
