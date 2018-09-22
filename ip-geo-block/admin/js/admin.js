@@ -1061,7 +1061,7 @@
 			// Show/Hide folding list at prevent malicious upload
 			$(ID('@', 'validation_mimetype')).on('change', function (event) {
 				var $this = $(this),
-				    stat = parseInt($this.val(), 10);
+				    stat = Number($this.val());
 				$this.nextAll(ID('.', 'settings-folding')).each(function (i, obj) {
 					fold_elements($(obj), (stat === i + 1) || (stat && 2 === i));
 				});
@@ -1076,7 +1076,7 @@
 
 				// only for Front-end target settings
 				if (0 <= $this.attr('name').indexOf('public')) {
-					if (-1 === parseInt($(ID('@', 'public_matching_rule')).val(), 10)) {
+					if (-1 === Number($(ID('@', 'public_matching_rule')).val())) {
 						elm.each(function (index) {
 							if (1 >= index) {
 								$(this).hide();
@@ -1590,7 +1590,7 @@
 					});
 				} else {
 					$li.sort(function (a, b) {
-						return parseInt($(a).text().replace(/^.*\((\d+)\)$/, '$1'), 10) <= parseInt($(b).text().replace(/^.*\((\d+)\)$/, '$1'), 10);
+						return Number($(a).text().replace(/^.*\((\d+)\)$/, '$1')) <= Number($(b).text().replace(/^.*\((\d+)\)$/, '$1'));
 					});
 				}
 
@@ -1878,7 +1878,7 @@
 				});
 
 				// if selected options does not include the focused index, update it
-				if ('o' !== cookie[tabNo][3 + (parseInt(cookie[tabNo][2]) || 0)]) {
+				if ('o' !== cookie[tabNo][3 + (Number(cookie[tabNo][2]) || 0)]) {
 					cookie[tabNo][2] = $(this).prop('selectedIndex');
 				}
 
@@ -1945,7 +1945,7 @@
 						which: list
 					}, function (data) {
 						var key, tabs = '',
-						c = parseInt(cookie[tabNo][2]) || 0;
+						c = Number(cookie[tabNo][2]) || 0;
 
 						for (key in data) {
 							if (data.hasOwnProperty(key)) {

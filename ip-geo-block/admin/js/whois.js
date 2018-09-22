@@ -85,7 +85,7 @@
 								}
 							}
 
-							else if (value.value.match(/AS\d*/)) {
+							else if (value.value.match(/^AS\d+$/)) {
 								value.value += ' [ <a href="https://ipinfo.io/' + escapeHTML(value.value) + '" target=_blank>Search on ipinfo.io</a> ]';
 							}
 
