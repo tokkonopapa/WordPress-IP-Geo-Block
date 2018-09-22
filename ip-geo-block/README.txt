@@ -387,6 +387,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 * **Improvement:** Update google charts based on the [release note](https://developers.google.com/chart/interactive/docs/release_notes "Google Charts Release Notes &nbsp;|&nbsp; Charts | Google Developers").
 * **Improvement:** Always show "Google Maps API key" text box in "Plugin settings" section. If you empty and save it, Google Maps API will no longer be used and a simple map will appear on "Search" tab.
 * **Improvement:** Multiple IPs in the table can be selected across the pages for bulk action.
+* **Improvement:** Follow the change the RIPE whois format related to AS number.
 
 = 3.0.14 =
 * **Fix issue:** Fix wrong handling of anonymized IPv6 on clicking a link or applying bulk actions.

@@ -28,7 +28,7 @@
 //				app = 'https://apps.db.ripe.net/search/lookup.html?source=%SRC%&key=%KEY%&type=%TYPE%';
 
 			function escapeHTML(str) {
-				return str ? str.toString().replace(/[&<>"']/g, function (match) {
+				return str ? str.toString().replace(/[&<>"']/g, function (match) { //'"
 					return {
 						'&': '&amp;',
 						'<': '&lt;',
@@ -83,6 +83,10 @@
 								} else {
 									value.value = '<a href="' + escapeHTML(value.link.href) + '.json" target=_blank>' + escapeHTML(value.value) + '</a>';
 								}
+							}
+
+							else if (value.value.match(/AS\d*/)) {
+								value.value += ' [ <a href="https://ipinfo.io/' + escapeHTML(value.value) + '" target=_blank>Search on ipinfo.io</a> ]';
 							}
 
 							else if ('remarks' === value.name) {
