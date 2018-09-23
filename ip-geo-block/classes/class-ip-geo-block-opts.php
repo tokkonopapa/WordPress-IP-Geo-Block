@@ -452,17 +452,24 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static function install_api( $settings ) {
-		$src = IP_GEO_BLOCK_PATH . 'wp-content/' . IP_Geo_Block::GEOAPI_NAME;
-		$dst = self::get_api_dir( $settings );
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( 'install_api' );
+
+		$src = IP_Geo_Block_Util::slashit( IP_GEO_BLOCK_PATH . 'wp-content/' . IP_Geo_Block::GEOAPI_NAME );
+		$dst = IP_Geo_Block_Util::slashit( self::get_api_dir( $settings ) );
 
 		if ( $src !== $dst ) {
-			try {
-				if ( FALSE === self::recurse_copy( $src, $dst ) )
-					throw new Exception();
-			} catch ( Exception $e ) {
-				if ( class_exists( 'IP_Geo_Block_Admin', FALSE ) )
-					IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), '<code>' . $dst . '</code>' ) );
+			! $fs->is_dir( $dst )
+				$fs->mkdir( $dst );
 
+			$result = copy_dir( $src, $dst );
+
+			if ( is_wp_error( $result ) ) {
+				if ( class_exists( 'IP_Geo_Block_Admin', FALSE ) ) {
+					IP_Geo_Block_Admin::add_admin_notice( 'error',
+						sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), '<code>' . $dst . '</code>' )
+					);
+				}
 				return NULL;
 			}
 		}
@@ -470,9 +477,9 @@ class IP_Geo_Block_Opts {
 		return $dst;
 	}
 
-	public static function delete_api( $settings ) {
+	public static function uninstall_api( $settings ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'delete_api' );
+		$fs = IP_Geo_Block_FS::init( 'uninstall_api' );
 
 		return $fs->delete( self::get_api_dir( $settings ), TRUE ); // $recursive = true
 	}
@@ -494,35 +501,6 @@ class IP_Geo_Block_Opts {
 		return IP_Geo_Block_Util::slashit(
 			apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', $dir )
 		) . IP_Geo_Block::GEOAPI_NAME; // must add `ip-geo-api` for basename
-	}
-
-	// https://php.net/manual/function.copy.php#91010
-	private static function recurse_copy( $src, $dst ) {
-		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'recurse_copy' );
-
-		$src = IP_Geo_Block_Util::slashit( $src );
-		$dst = IP_Geo_Block_Util::slashit( $dst );
-
-		! $fs->is_dir( $dst ) and $fs->mkdir( $dst );
-
-		if ( $dir = @opendir( $src ) ) {
-			while( FALSE !== ( $file = readdir( $dir ) ) ) {
-				if ( '.' !== $file && '..' !== $file ) {
-					if ( $fs->is_dir( $src.$file ) ) {
-						if ( FALSE === self::recurse_copy( $src.$file, $dst.$file ) )
-							return FALSE;
-					} else {
-						if ( FALSE === $fs->copy( $src.$file, $dst.$file, TRUE ) )
-							return FALSE;
-					}
-				}
-			}
-
-			closedir( $dir );
-		}
-
-		return TRUE;
 	}
 
 	/**
