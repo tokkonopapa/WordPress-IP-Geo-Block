@@ -1892,7 +1892,7 @@
 				    list  = $(ID('@', 'service')).val(), obj,
 				    ip = $.trim($(ID('@', 'ip_address')).val());
 
-				if (ip) {
+				if (ip && list) {
 					// Anonymize IP address
 					if ($(ID('@', 'anonymize')).prop('checked')) {
 						if (/[^0-9a-f\.:]/.test(ip)) {
