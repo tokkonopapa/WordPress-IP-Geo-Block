@@ -383,7 +383,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 == Changelog ==
 
 = 3.0.15 =
-* **Fix issue:** Fix the bug of illegal path to the bundled geolocation api directory.
+* **Fix issue:** Fix the bug of wrong path to the bundled Geolocation API library when it's failed to install.
 * **Fix issue:** Fix the issue that https in ipstack.com is available only for premiums users.
 * **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog.
 * **Improvement:** Update google charts based on the [release note](https://developers.google.com/chart/interactive/docs/release_notes "Google Charts Release Notes &nbsp;|&nbsp; Charts | Google Developers").

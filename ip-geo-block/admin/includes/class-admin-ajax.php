@@ -363,7 +363,7 @@ if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
 
 				// link over network
 				$count[ $name ]['link'] = esc_url( add_query_arg(
-					array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ),
+					array( 'page' => IP_Geo_Block::PLUGIN_NAME ),
 					admin_url( 'options-general.php' )
 				) );
 

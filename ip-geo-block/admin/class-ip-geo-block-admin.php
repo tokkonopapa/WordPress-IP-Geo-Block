@@ -423,18 +423,18 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	private function add_plugin_admin_menu( $settings ) {
-		// Network wide or not
-		$admin_menu = ( 'admin_menu' === current_filter() ); // @since: 2.5 `admin_menu` or `network_admin_menu`
-
-		// Verify tab number
-		if ( $this->is_network &= $settings['network_wide'] ) {
-			if ( $admin_menu ) {
+		// Control tab number
+		// `admin_menu` or `network_admin_menu` @since: 2.5
+		if ( $admin_menu = ( 'admin_menu' === current_filter() ) ) {
+			if ( $this->is_network && $settings['network_wide'] )
 				$this->admin_tab = min( 4, max( 1, $this->admin_tab ) );
-			} elseif ( ! in_array( $this->admin_tab, array( 0, 5 ), TRUE ) ) {
-				$this->admin_tab = 0;
-			}
+			else
+				$this->admin_tab = min( 4, max( 0, $this->admin_tab ) );
 		} else {
-			$this->admin_tab = min( 4, $this->admin_tab ); // exclude `Site List`
+			if ( $this->is_network && $settings['network_wide'] )
+				$this->admin_tab = in_array( $this->admin_tab, array( 0, 5 ), TRUE ) ? $this->admin_tab : 0;
+			else
+				$this->admin_tab = 5;
 		}
 
 		if ( $admin_menu ) {
@@ -572,6 +572,7 @@ class IP_Geo_Block_Admin {
 						)
 					)
 				);
+				break;
 			}
 		}
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
@@ -736,8 +737,7 @@ endif;
 			$action = 'edit.php?action=' . IP_Geo_Block::PLUGIN_NAME;
 			if ( $this->is_network ) {
 				if ( ! $settings['network_wide'] ) {
-					$tab = 5;          // forct to Site List
-					unset( $tabs[0] ); // Settings
+					unset( $tabs[0] ); // remove Settings
 				}
 				unset( $tabs[1], $tabs[4], $tabs[2], $tabs[3] ); // Statistics, Logs, Search, Attribution
 				$title .= ' <span class="ip-geo-block-menu-link">';
