@@ -459,7 +459,7 @@ class IP_Geo_Block_Opts {
 		$dst = IP_Geo_Block_Util::slashit( self::get_api_dir( $settings ) );
 
 		if ( $src !== $dst ) {
-			! $fs->is_dir( $dst )
+			if ( ! $fs->exists( $dst ) )
 				$fs->mkdir( $dst );
 
 			$result = copy_dir( $src, $dst );

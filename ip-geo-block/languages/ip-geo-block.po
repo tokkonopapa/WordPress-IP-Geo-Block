@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.14\n"
+"Project-Id-Version: IP Geo Block 3.0.15\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-09-14 22:01+0900\n"
-"PO-Revision-Date: 2018-09-14 22:03+0900\n"
+"POT-Creation-Date: 2018-09-23 11:26+0900\n"
+"PO-Revision-Date: 2018-09-23 11:28+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -71,11 +71,11 @@ msgid "This feature is available with HTML5 compliant browsers."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:300
-msgid "The selected row cannot be found in the visible area."
+msgid "The selected row cannot be found in the table."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:301
-#: admin/class-ip-geo-block-admin.php:1541
+#: admin/class-ip-geo-block-admin.php:1547
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr ""
@@ -91,7 +91,7 @@ msgstr ""
 #: admin/class-ip-geo-block-admin.php:307
 #: admin/includes/class-admin-ajax.php:107
 #: admin/includes/class-admin-ajax.php:240
-#: admin/includes/tab-geolocation.php:68
+#: admin/includes/tab-geolocation.php:72
 msgid "IP address"
 msgstr ""
 
@@ -298,44 +298,44 @@ msgstr ""
 msgid "Open a new window on clicking the link in the chart."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:787
+#: admin/class-ip-geo-block-admin.php:788
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:788
+#: admin/class-ip-geo-block-admin.php:789
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"https://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:793
+#: admin/class-ip-geo-block-admin.php:794
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:885
+#: admin/class-ip-geo-block-admin.php:886
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:900
+#: admin/class-ip-geo-block-admin.php:901
 msgid "Select one"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1323
+#: admin/class-ip-geo-block-admin.php:1324
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1350
+#: admin/class-ip-geo-block-admin.php:1351
 #: admin/includes/class-admin-rewrite.php:194
 #: classes/class-ip-geo-block-cron.php:217
 #: classes/class-ip-geo-block-cron.php:321
 #: classes/class-ip-geo-block-cron.php:395
-#: classes/class-ip-geo-block-opts.php:464
+#: classes/class-ip-geo-block-opts.php:470
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:1380
+#: admin/class-ip-geo-block-admin.php:1381
 msgid "Settings saved."
 msgstr ""
 
@@ -463,7 +463,7 @@ msgstr ""
 msgid "Export logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:147 admin/includes/tab-settings.php:1548
+#: admin/includes/tab-accesslog.php:147 admin/includes/tab-settings.php:1546
 #: admin/includes/tab-statistics.php:283
 msgid "Export to the local file"
 msgstr ""
@@ -488,26 +488,26 @@ msgstr ""
 msgid "Attribution links"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:18
+#: admin/includes/tab-geolocation.php:17
 msgid "Search IP address geolocation"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:41
+#: admin/includes/tab-geolocation.php:44
 msgid "Geolocation API"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:83 admin/includes/tab-settings.php:1085
+#: admin/includes/tab-geolocation.php:87 admin/includes/tab-settings.php:1085
 msgid ""
 "<dfn title=\"IP address is always encrypted on recording in Cache and Logs. "
 "Moreover, this option replaces the end of IP address with &#8220;***&#8221; "
 "to make it anonymous.\">Anonymize IP address</dfn>"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:98
+#: admin/includes/tab-geolocation.php:102
 msgid "Search geolocation"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:106
+#: admin/includes/tab-geolocation.php:110
 msgid "Search now"
 msgstr ""
 
@@ -1328,61 +1328,61 @@ msgid ""
 "dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1524
+#: admin/includes/tab-settings.php:1523
 msgid ""
 "<dfn title=\"Valid key for Google Maps JavaScript API\">Google Maps API key</"
 "dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1541
+#: admin/includes/tab-settings.php:1539
 msgid "Export / Import settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1548
+#: admin/includes/tab-settings.php:1546
 msgid "Export settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1549
+#: admin/includes/tab-settings.php:1547
 msgid "Import from the local file"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1549
+#: admin/includes/tab-settings.php:1547
 msgid "Import settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1557
+#: admin/includes/tab-settings.php:1555
 msgid "Import pre-defined settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1564
+#: admin/includes/tab-settings.php:1562
 msgid ""
 "Import the default settings to revert to the &#8220;Right after "
 "installing&#8221; state"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1564
+#: admin/includes/tab-settings.php:1562
 msgid "Default settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1565
+#: admin/includes/tab-settings.php:1563
 msgid ""
 "Import the preferred settings mainly by enabling Zero-day Exploit Prevention "
 "for the &#8220;Back-end target settings&#8221;"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1565
+#: admin/includes/tab-settings.php:1563
 msgid "Best for Back-end"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1574
+#: admin/includes/tab-settings.php:1572
 msgid "DB tables for this plugin"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1582
+#: admin/includes/tab-settings.php:1580
 msgid "Initialize now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1591
+#: admin/includes/tab-settings.php:1589
 msgid ""
 "<dfn title=\"When you have some unexpected blocking experiences, please "
 "press the button to find the blocked requests at the end of dumped "
@@ -1392,15 +1392,15 @@ msgid ""
 "\">support forum</a> ]"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1598
+#: admin/includes/tab-settings.php:1596
 msgid "Please copy &amp; paste when submitting your issue to support forum"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1598
+#: admin/includes/tab-settings.php:1596
 msgid "Show information"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1614
+#: admin/includes/tab-settings.php:1612
 msgid ""
 "To enhance the protection ability, please refer to &#8220;<a rel=\"noreferrer"
 "\" href=\"https://www.ipgeoblock.com/codex/the-best-practice-for-target-"
@@ -1408,7 +1408,7 @@ msgid ""
 "\">The best practice for target settings</a>&#8221;."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1615
+#: admin/includes/tab-settings.php:1613
 msgid ""
 "If you have any troubles with these, please check FAQ at <a rel=\"noreferrer"
 "\" href=\"https://wordpress.org/plugins/ip-geo-block/faq/\" title=\"IP Geo "
@@ -1417,26 +1417,26 @@ msgid ""
 "Block\">Codex</a>."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1622
+#: admin/includes/tab-settings.php:1620
 msgid ""
 "While Geolite2 / Maxmind and IP2Location will fetch the local databases, "
 "others will pass an IP address to the 3rd parties' API via HTTP."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1623
+#: admin/includes/tab-settings.php:1621
 msgid ""
 "Please select the appropriate APIs to fit the privacy law / regulation in "
 "your country / region."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1632
+#: admin/includes/tab-settings.php:1630
 #, php-format
 msgid ""
 "Maxmind GeoLite2 databases and APIs need PHP version 5.4.0+ and %sPECL phar "
 "2.0.0+%s."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1640
+#: admin/includes/tab-settings.php:1638
 msgid ""
 "Please refer to the document &#8220;<a rel=\"noreferrer\" href=\"https://www."
 "ipgeoblock.com/codex/#blocking-on-front-end\" title=\"Codex | IP Geo Block"
@@ -1444,7 +1444,7 @@ msgid ""
 "cache plugin."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1641
+#: admin/includes/tab-settings.php:1639
 msgid ""
 "If you find any issues or have something to suggest, please feel free to "
 "open an issue at <a rel=\"noreferrer\" href=\"https://wordpress.org/support/"
@@ -1452,7 +1452,7 @@ msgid ""
 "\">support forum</a>."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1648
+#: admin/includes/tab-settings.php:1646
 msgid ""
 "Please refer to the document &#8220;<a rel=\"noreferrer\" href=\"https://www."
 "ipgeoblock.com/codex/record-settings-and-logs.html\" title=\"Codex | IP Geo "

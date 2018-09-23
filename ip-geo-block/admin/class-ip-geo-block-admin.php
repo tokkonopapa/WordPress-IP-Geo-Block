@@ -297,7 +297,7 @@ class IP_Geo_Block_Admin {
 					/* [ 7] */ __( '[Found: %d]',                 'ip-geo-block' ),
 					/* [ 8] */ __( 'Find and verify `%s` on &#8220;Logs&#8221; tab.',          'ip-geo-block' ),
 					/* [ 9] */ __( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
-					/* [10] */ __( 'The selected row cannot be found in the visible area.',    'ip-geo-block' ),
+					/* [10] */ __( 'The selected row cannot be found in the table.',           'ip-geo-block' ),
 					/* [11] */ __( 'An error occurred while executing the ajax command `%s`.', 'ip-geo-block' ),
 				),
 				'i18n' => array(
