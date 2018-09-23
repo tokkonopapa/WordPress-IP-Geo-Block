@@ -384,6 +384,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 
 = 3.0.15 =
 * **Fix issue:** Fix the bug of illegal path to the bundled geolocation api directory.
+* **Fix issue:** Fix the issue that https in ipstack.com is available only for premiums users.
 * **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog.
 * **Improvement:** Update google charts based on the [release note](https://developers.google.com/chart/interactive/docs/release_notes "Google Charts Release Notes &nbsp;|&nbsp; Charts | Google Developers").
 * **Improvement:** Always show "Google Maps API key" text box in "Plugin settings" section. If you empty and save it, Google Maps API will no longer be used and a simple map will appear on "Search" tab.

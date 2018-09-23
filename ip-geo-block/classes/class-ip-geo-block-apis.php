@@ -232,15 +232,15 @@ class IP_Geo_Block_API_Ipdataco extends IP_Geo_Block_API {
  * URL         : https://ipstack.com/
  * Term of use : https://ipstack.com/terms
  * Licence fee : free for registered user
- * Rate limit  : 10,000 queries per month
- * Sample URL  : https://api.ipstack.com/186.116.207.169?access_key=YOUR_ACCESS_KEY&output=json&legacy=1
+ * Rate limit  : 10,000 queries per month for free (https can be available for premium users)
+ * Sample URL  : http://api.ipstack.com/186.116.207.169?access_key=YOUR_ACCESS_KEY&output=json&legacy=1
  * Input type  : IP address (IPv4, IPv6) / domain name
  * Output type : json, xml
  */
 class IP_Geo_Block_API_ipstack extends IP_Geo_Block_API {
 	protected $template = array(
 		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'https://api.ipstack.com/%API_IP%?access_key=%API_KEY%&output=%API_FORMAT%&legacy=1',
+		'url' => 'http://api.ipstack.com/%API_IP%?access_key=%API_KEY%&output=%API_FORMAT%',
 		'api' => array(
 			'%API_FORMAT%' => 'json',
 		),
