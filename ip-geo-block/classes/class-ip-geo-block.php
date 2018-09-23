@@ -440,7 +440,7 @@ class IP_Geo_Block {
 		//               6 check_auth
 		//               7 check_ips_black (high), check_ips_white (low)
 		//               8 check_fail
-		//               9 check_behavior (high), check_ua (low)
+		//               9 check_ua (high), check_behavior (low)
 		// priority low 10 check_page (high), validate_country (low)
 		$var = self::PLUGIN_NAME . '-' . $hook;
 		$settings['validation' ]['mimetype'  ]  and add_filter( $var, array( $this, 'check_upload'    ), 5, 2 );
@@ -866,11 +866,11 @@ class IP_Geo_Block {
 			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_page' ), 10, 2 );
 		}
 
-		// validate bad behavior by bots and crawlers
-		$public['behavior'] and add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_behavior' ), 9, 2 );
-
 		// validate undesired user agent
 		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_ua' ), 9, 2 );
+
+		// validate bad behavior by bots and crawlers
+		$public['behavior'] and add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_behavior' ), 9, 2 );
 
 		// retrieve IP address of visitor via proxy services
 		add_filter( self::PLUGIN_NAME . '-ip-addr', array( 'IP_Geo_Block_Util', 'get_proxy_ip' ), 20, 1 );

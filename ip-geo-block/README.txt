@@ -386,6 +386,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 * **Fix issue:** Fix the bug of wrong path to the bundled Geolocation API library when it's failed to install.
 * **Fix issue:** Fix the issue that https in ipstack.com is available only for premiums users.
 * **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog.
+* **Improvement:** Make the priofity of "UA string and qualification" is higher than that of "Block badly-behaved bots and crawlers" on public facing pages.
 * **Improvement:** Update google charts based on the [release note](https://developers.google.com/chart/interactive/docs/release_notes "Google Charts Release Notes &nbsp;|&nbsp; Charts | Google Developers").
 * **Improvement:** Always show "Google Maps API key" text box in "Plugin settings" section. If you empty and save it, Google Maps API will no longer be used and a simple map will appear on "Search" tab.
 * **Improvement:** Multiple IPs in the table can be selected across the pages for bulk action.
