@@ -1436,11 +1436,9 @@ endif;
 			break;
 
 		  case 'search': // Get geolocation by IP
-			if ( $which ) {
-				$res = array();
-				foreach ( $which as $cmd ) {
-					$res[ $cmd ] = IP_Geo_Block_Admin_Ajax::search_ip( $cmd );
-				}
+			$res = array();
+			foreach ( (array)$which as $cmd ) {
+				$res[ $cmd ] = IP_Geo_Block_Admin_Ajax::search_ip( $cmd );
 			}
 			break;
 
