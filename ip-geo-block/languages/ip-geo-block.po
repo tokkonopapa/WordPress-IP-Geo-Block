@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.15\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-09-23 11:26+0900\n"
-"PO-Revision-Date: 2018-09-23 11:28+0900\n"
+"POT-Creation-Date: 2018-09-24 22:22+0900\n"
+"PO-Revision-Date: 2018-09-24 22:24+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -75,7 +75,7 @@ msgid "The selected row cannot be found in the table."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:301
-#: admin/class-ip-geo-block-admin.php:1547
+#: admin/class-ip-geo-block-admin.php:1545
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr ""
@@ -91,7 +91,7 @@ msgstr ""
 #: admin/class-ip-geo-block-admin.php:307
 #: admin/includes/class-admin-ajax.php:107
 #: admin/includes/class-admin-ajax.php:240
-#: admin/includes/tab-geolocation.php:72
+#: admin/includes/tab-geolocation.php:74
 msgid "IP address"
 msgstr ""
 
@@ -164,7 +164,7 @@ msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:359
 #: admin/class-ip-geo-block-admin.php:477
-#: admin/class-ip-geo-block-admin.php:706
+#: admin/class-ip-geo-block-admin.php:707
 msgid "Settings"
 msgstr ""
 
@@ -178,7 +178,7 @@ msgid "IP Geo Block"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:487
-#: admin/class-ip-geo-block-admin.php:711
+#: admin/class-ip-geo-block-admin.php:712
 msgid "Site List"
 msgstr ""
 
@@ -244,7 +244,7 @@ msgid ""
 "%sStatistics in cache%s&#8221; section."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:590
+#: admin/class-ip-geo-block-admin.php:591
 #, php-format
 msgid ""
 "Emergency login link is outdated. Please delete it once and generate again "
@@ -252,30 +252,30 @@ msgid ""
 "favorites / bookmarks in your browser."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:599
+#: admin/class-ip-geo-block-admin.php:600
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
 "select &#8220;init&#8221; action hook."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:707
+#: admin/class-ip-geo-block-admin.php:708
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:708
+#: admin/class-ip-geo-block-admin.php:709
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:709
+#: admin/class-ip-geo-block-admin.php:710
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:710
+#: admin/class-ip-geo-block-admin.php:711
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:727
+#: admin/class-ip-geo-block-admin.php:728
 #: admin/class-ip-geo-block-admin.php:744
 msgid "Network wide"
 msgstr ""
@@ -492,22 +492,22 @@ msgstr ""
 msgid "Search IP address geolocation"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:44
+#: admin/includes/tab-geolocation.php:46
 msgid "Geolocation API"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:87 admin/includes/tab-settings.php:1085
+#: admin/includes/tab-geolocation.php:89 admin/includes/tab-settings.php:1085
 msgid ""
 "<dfn title=\"IP address is always encrypted on recording in Cache and Logs. "
 "Moreover, this option replaces the end of IP address with &#8220;***&#8221; "
 "to make it anonymous.\">Anonymize IP address</dfn>"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:102
+#: admin/includes/tab-geolocation.php:104
 msgid "Search geolocation"
 msgstr ""
 
-#: admin/includes/tab-geolocation.php:110
+#: admin/includes/tab-geolocation.php:112
 msgid "Search now"
 msgstr ""
 
@@ -1330,8 +1330,9 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:1523
 msgid ""
-"<dfn title=\"Valid key for Google Maps JavaScript API\">Google Maps API key</"
-"dfn>"
+"<dfn title=\"Valid key for Google Maps JavaScript API. A free tier has limit "
+"even if it's &#8220;default&#8221;. Maps Embed API without key can be "
+"available in case of empty.\">Google Maps API key</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1539

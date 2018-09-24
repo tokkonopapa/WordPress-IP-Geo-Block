@@ -744,23 +744,20 @@
 	/*--------------------------------------------------
 	 * DataTables for tab 1 (Statistics) and 4 (Logs)
 	 *--------------------------------------------------*/
-	function initTable(tabNo, control, options) {
-		$.extend(true, $.fn.dataTable.defaults, options, {
-			// DOM
-			dom: 'tp',
+	function initTable(tabNo, control, options, cookie) {
+		// get page length from cookie
+		var length = (Number(cookie[tabNo][1 === tabNo ? 3 : 2]) || 0);
+		length = [10, 25, 50, 100][length];
 
-			// Server side
-			serverSide: false,
+		$.extend(true, $.fn.dataTable.defaults, options, {
+			// DOM position (t:table, l:length menu, p:pagenate)
+			dom: 'tlp',
 
 			// Client behavior
+			serverSide: false,
 			autoWidth: false,
 			processing: true,
 			deferRender: true,
-			deferLoading: 10,
-
-			// Interface
-			info: false,
-			lengthChange: false,
 
 			// Language
 			language: {
@@ -768,6 +765,7 @@
 				loadingRecords: ip_geo_block.i18n[0],
 				processing:     ip_geo_block.i18n[0],
 				zeroRecords:    ip_geo_block.i18n[2],
+				lengthMenu:     '_MENU_',
 				paginate: {
 					first:    '&laquo;',
 					last:     '&raquo;',
@@ -795,9 +793,10 @@
 				}
 			],
 
-			// Pagenation
+			// Pagenation, Page length (initial)
 			pagingType: 'full_numbers', // or 'simple_numbers'
-			pageLength: 10,
+			lengthMenu: [10, 25, 50, 100],
+			pageLength: length,
 
 			// scroller
 			scroller: true,
@@ -962,6 +961,12 @@
 
 			window.open(window.location.pathname + '?' + j.join('&'), '_blank');
 			return false;
+		});
+
+		// save cookie when length menu is changed
+		$(ID('#', control.tableID)).on('length.dt', function (e, settings, len) {
+			cookie[tabNo][1 === tabNo ? 3 : 2] = ({10:0, 25:1, 50:2, 100:3}[len] || 0);
+			saveCookie(cookie);
 		});
 
 		return table;
@@ -1644,7 +1649,7 @@
 					{ responsivePriority:  5, targets: 7 }, // Elapsed[sec]
 					{ className: "all",       targets: [0, 1, 2, 5] } // always visible
 				]
-			});
+			}, cookie);
 
 			// Export cache
 			add_hidden_form('export-cache');
@@ -1828,7 +1833,7 @@
 
 				// Re-initialize DataTables
 				$(ID('#', 'live-log-stop')).trigger('click');
-				table = initTable(tabNo, control, options);
+				table = initTable(tabNo, control, options, cookie);
 				return false;
 			}).trigger('change');
 

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.15\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-09-23 11:26+0900\n"
-"PO-Revision-Date: 2018-09-23 11:28+0900\n"
+"POT-Creation-Date: 2018-09-24 22:22+0900\n"
+"PO-Revision-Date: 2018-09-24 22:24+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -77,7 +77,7 @@ msgid "The selected row cannot be found in the table."
 msgstr "テーブル中に選択された行が見つかりません。"
 
 #: admin/class-ip-geo-block-admin.php:301
-#: admin/class-ip-geo-block-admin.php:1547
+#: admin/class-ip-geo-block-admin.php:1545
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr "Ajaxコマンド `%s` の実行中にエラーが発生しました。"
@@ -93,7 +93,7 @@ msgstr "一致するレコードがありません"
 #: admin/class-ip-geo-block-admin.php:307
 #: admin/includes/class-admin-ajax.php:107
 #: admin/includes/class-admin-ajax.php:240
-#: admin/includes/tab-geolocation.php:72
+#: admin/includes/tab-geolocation.php:74
 msgid "IP address"
 msgstr "IPアドレス"
 
@@ -166,7 +166,7 @@ msgstr "開発に参加"
 
 #: admin/class-ip-geo-block-admin.php:359
 #: admin/class-ip-geo-block-admin.php:477
-#: admin/class-ip-geo-block-admin.php:706
+#: admin/class-ip-geo-block-admin.php:707
 msgid "Settings"
 msgstr "設定"
 
@@ -180,7 +180,7 @@ msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
 #: admin/class-ip-geo-block-admin.php:487
-#: admin/class-ip-geo-block-admin.php:711
+#: admin/class-ip-geo-block-admin.php:712
 msgid "Site List"
 msgstr "サイト一覧"
 
@@ -260,7 +260,7 @@ msgstr ""
 "［%sローカル・データベースの設定%s］で位置情報データベースを確認し、［%sキャッシュの統計%s］でキャッ"
 "シュされているあなたのIPアドレスを削除して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:590
+#: admin/class-ip-geo-block-admin.php:591
 #, php-format
 msgid ""
 "Emergency login link is outdated. Please delete it once and generate again "
@@ -270,7 +270,7 @@ msgstr ""
 "緊急ログイン・リンクが古くなっています。［%sプラグインの設定%s］で一度削除してから再度生成してくださ"
 "い。 またブラウザのお気に入り/ブックマークも忘れずに更新して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:599
+#: admin/class-ip-geo-block-admin.php:600
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
@@ -280,23 +280,23 @@ msgstr ""
 "<strong>IP Geo Allow</strong> と互換性がありません。「&#8220;init&#8221; アクション・フック」を選択し"
 "てください。"
 
-#: admin/class-ip-geo-block-admin.php:707
+#: admin/class-ip-geo-block-admin.php:708
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:708
+#: admin/class-ip-geo-block-admin.php:709
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:709
+#: admin/class-ip-geo-block-admin.php:710
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:710
+#: admin/class-ip-geo-block-admin.php:711
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:727
+#: admin/class-ip-geo-block-admin.php:728
 #: admin/class-ip-geo-block-admin.php:744
 msgid "Network wide"
 msgstr "ネットワーク管理"
@@ -517,11 +517,11 @@ msgstr "リンク"
 msgid "Search IP address geolocation"
 msgstr "IPアドレスの位置情報を検索"
 
-#: admin/includes/tab-geolocation.php:44
+#: admin/includes/tab-geolocation.php:46
 msgid "Geolocation API"
 msgstr "位置情報API"
 
-#: admin/includes/tab-geolocation.php:87 admin/includes/tab-settings.php:1085
+#: admin/includes/tab-geolocation.php:89 admin/includes/tab-settings.php:1085
 msgid ""
 "<dfn title=\"IP address is always encrypted on recording in Cache and Logs. "
 "Moreover, this option replaces the end of IP address with &#8220;***&#8221; "
@@ -530,11 +530,11 @@ msgstr ""
 "<dfn title=\"IPアドレスは、常に暗号化されてキャッシュとログに記録されます。このオプションはさらに、IP"
 "アドレスの末尾を「***」に置き換えて匿名化します。\">IPアドレスを匿名化する</dfn>"
 
-#: admin/includes/tab-geolocation.php:102
+#: admin/includes/tab-geolocation.php:104
 msgid "Search geolocation"
 msgstr "位置情報の検索"
 
-#: admin/includes/tab-geolocation.php:110
+#: admin/includes/tab-geolocation.php:112
 msgid "Search now"
 msgstr "今すぐ検索"
 
@@ -1453,9 +1453,12 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:1523
 msgid ""
-"<dfn title=\"Valid key for Google Maps JavaScript API\">Google Maps API key</"
-"dfn>"
-msgstr "<dfn title=\"Google Maps JavaScript API に有効なキー\">Google Maps API キー</dfn>"
+"<dfn title=\"Valid key for Google Maps JavaScript API. A free tier has limit "
+"even if it's &#8220;default&#8221;. Maps Embed API without key can be "
+"available in case of empty.\">Google Maps API key</dfn>"
+msgstr ""
+"<dfn title=\"Google Maps JavaScript API の有効なキー。「default」であっても一定の使用制限があります。空欄にするとキーなしの Maps Embed API が使"
+"用可能です。\">Google Maps API キー</dfn>"
 
 #: admin/includes/tab-settings.php:1539
 msgid "Export / Import settings"
