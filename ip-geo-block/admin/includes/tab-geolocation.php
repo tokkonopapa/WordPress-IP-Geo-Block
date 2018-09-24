@@ -34,7 +34,7 @@ class IP_Geo_Block_Admin_Tab {
 		$providers = array_keys( $providers );
 		$cookie = $context->get_cookie();
 		if ( isset( $cookie[ $tab ] ) ) {
-			foreach ( array_slice( $cookie[ $tab ], 3 ) as $key => $val ) {
+			foreach ( array_slice( (array)$cookie[ $tab ], 3 ) as $key => $val ) {
 				if ( 'o' === $val ) {
 					$provider[] = $providers[ $key ];
 				}
