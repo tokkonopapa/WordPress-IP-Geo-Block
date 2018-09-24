@@ -73,8 +73,8 @@ class IP_Geo_Block_Admin {
 			add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_request' ), 10, 2 );
 
 		if ( is_multisite() ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
-			$this->is_network = is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) && current_user_can( 'manage_network_options' );
+			// require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
+			$this->is_network = /*is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) &&*/ current_user_can( 'manage_network_options' );
 
 			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
 			add_action( 'wpmu_new_blog',      array( $this, 'create_blog' ), 10, 6 ); // on creating a new blog @since MU

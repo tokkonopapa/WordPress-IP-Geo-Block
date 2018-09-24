@@ -728,6 +728,7 @@ div[class*="ip-geo-block"] .dataTables_wrapper .dataTables_paginate {
     float: none;
     text-align: center;
     margin-bottom: 1em;
+    margin-top: 0 !important;
 }
 @media screen and (min-width:640px) {
     div[class*="ip-geo-block"] .dataTables_wrapper .dataTables_paginate {

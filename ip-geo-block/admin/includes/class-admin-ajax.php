@@ -308,7 +308,18 @@ class IP_Geo_Block_Admin_Ajax {
 	 */
 	public static function get_network_count() {
 if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
-		return get_blog_count(); // get_sites( array( 'count' => TRUE ) ) @since 4.6
+		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
+			return get_blog_count(); // get_sites( array( 'count' => TRUE ) ) @since 4.6
+		} else {
+			$count = 0;
+			global $wpdb;
+			foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
+				switch_to_blog( $id );
+				is_plugin_active( IP_GEO_BLOCK_BASE ) and ++$count;
+				restore_current_blog();
+			}
+			return $count;
+		}
 else:
 		return TEST_NETWORK_BLOG_COUNT;
 endif;
@@ -349,7 +360,7 @@ if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
 		foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
 			switch_to_blog( $id );
 
-			if ( $offset <= $i && $i < $length ) {
+			if ( is_plugin_active( IP_GEO_BLOCK_BASE ) && $offset <= $i && $i < $length ) {
 				// array of ( `time`, `ip`, `hook`, `code`, `method`, `data` )
 				$name = get_bloginfo( 'name' );
 				$logs = IP_Geo_Block_Logs::get_recent_logs( $duration );
@@ -366,9 +377,9 @@ if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
 					array( 'page' => IP_Geo_Block::PLUGIN_NAME ),
 					admin_url( 'options-general.php' )
 				) );
-
-				restore_current_blog();
 			}
+
+			restore_current_blog();
 		}
 else:
 		for ( $i = 0; $i < TEST_NETWORK_BLOG_COUNT; ++$i ) {
@@ -767,6 +778,7 @@ endif; // TEST_RESTORE_NETWORK
 					$result += array( $matches[1] => $which );
 				}
 			}
+			break;
 		}
 
 		return $result;
