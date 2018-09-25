@@ -679,7 +679,7 @@ if ( class_exists( 'IP_Geo_Block', FALSE ) ) {
 
 	// If not exists then use bundled API
 	if ( ! is_dir( $dir ) )
-		$dir = IP_GEO_BLOCK_PATH . 'wp-content/' . IP_Geo_Block::GEOAPI_NAME;
+		$dir = IP_GEO_BLOCK_PATH . IP_Geo_Block::GEOAPI_NAME;
 
 	// Scan API directory
 	$dir = IP_Geo_Block_Util::slashit( $dir );
