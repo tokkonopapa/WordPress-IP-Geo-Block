@@ -73,12 +73,12 @@ class IP_Geo_Block_Admin {
 			add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_request' ), 10, 2 );
 
 		if ( is_multisite() ) {
-			// require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
-			$this->is_network = /*is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) &&*/ current_user_can( 'manage_network_options' );
-
+			$this->is_network = current_user_can( 'manage_network_options' );
 			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
-			add_action( 'wpmu_new_blog',      array( $this, 'create_blog' ), 10, 6 ); // on creating a new blog @since MU
-			add_action( 'delete_blog',        array( $this, 'delete_blog' ), 10, 2 ); // on deleting an old blog @since 3.0.0
+			if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) { // @since 3.0.0
+				add_action( 'wpmu_new_blog', array( $this, 'create_blog' ), 10, 6 ); // on creating a new blog @since MU
+				add_action( 'delete_blog',   array( $this, 'delete_blog' ), 10, 2 ); // on deleting an old blog @since 3.0.0
+			}
 		}
 
 		// loads a plugin’s translated strings.
@@ -168,12 +168,14 @@ class IP_Geo_Block_Admin {
 		defined( 'IP_GEO_BLOCK_DEBUG' ) and IP_GEO_BLOCK_DEBUG and assert( is_main_site(), 'Not main blog.' );
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php';
 
+		// get options on main blog
+		$settings = IP_Geo_Block::get_option();
+
 		// Switch to the new blog and initialize.
 		switch_to_blog( $blog_id );
 		IP_Geo_Block_Activate::activate_blog();
 
 		// Copy option from main blog.
-		$settings = IP_Geo_Block::get_option();
 		if ( $this->is_network && $settings['network_wide'] )
 			update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
@@ -437,7 +439,7 @@ class IP_Geo_Block_Admin {
 				$this->admin_tab = 5;
 		}
 
-		if ( $admin_menu ) {
+		if ( $admin_menu && $settings['network_wide'] ) {
 			// `settings-updated` would be added just after settings updated.
 			if ( ! empty( $_REQUEST['settings-updated'] ) && $this->is_network &&
 			     ! empty( $_REQUEST['page'] ) && IP_Geo_Block::PLUGIN_NAME === $_REQUEST['page'] ) {

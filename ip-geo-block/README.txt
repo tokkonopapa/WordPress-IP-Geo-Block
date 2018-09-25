@@ -393,6 +393,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 * **Improvement:** Add UI to select the number of entries per page on IP address tables.
 * **Improvement:** Multiple entries on IP address tables can be selected across the pages for bulk action.
 * **Improvement:** Multiple Geolocation APIs can be selected on "Search" tab.
+* **Improvement:** The country code of admin should not be cached if it's `ZZ` during initialization process.
 
 = 3.0.14 =
 * **Fix issue:** Fix wrong handling of anonymized IPv6 on clicking a link or applying bulk actions.

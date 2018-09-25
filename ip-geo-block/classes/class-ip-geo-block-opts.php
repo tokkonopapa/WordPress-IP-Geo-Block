@@ -429,6 +429,11 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '3.0.14' ) < 0 )
 				$settings['login_link'] = $default['login_link'];
 
+			if ( version_compare( $version, '3.0.15' ) < 0 ) {
+				IP_Geo_Block_Logs::delete_tables( IP_Geo_Block::CACHE_NAME );
+				IP_Geo_Block_Logs::create_tables();
+			}
+
 			// update package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
 		}
@@ -459,8 +464,7 @@ class IP_Geo_Block_Opts {
 		$dst = IP_Geo_Block_Util::slashit( self::get_api_dir( $settings ) );
 
 		if ( $src !== $dst ) {
-			if ( ! $fs->exists( $dst ) )
-				$fs->mkdir( $dst );
+			$fs->exists( $dst ) or $fs->mkdir( $dst );
 
 			$result = copy_dir( $src, $dst );
 
