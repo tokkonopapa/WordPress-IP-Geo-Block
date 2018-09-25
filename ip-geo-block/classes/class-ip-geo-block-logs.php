@@ -67,8 +67,8 @@ class IP_Geo_Block_Logs {
 			`headers` varbinary("  . IP_GEO_BLOCK_MAX_BIN_LEN . ") NULL,
 			`data` text NULL,
 			PRIMARY KEY  (`No`),
-			KEY  `time` (`time`),
-			KEY  `hook` (`hook`)
+			KEY `time` (`time`),
+			KEY `hook` (`hook`)
 		) $charset_collate";
 		$result = dbDelta( $sql );
 
@@ -103,7 +103,7 @@ class IP_Geo_Block_Logs {
 			`view` int(10) unsigned NOT NULL DEFAULT 0,
 			`host` varbinary(512) NULL,
 			PRIMARY KEY  (`No`),
-			UNIQUE KEY  `ip` (`ip`)
+			UNIQUE KEY `ip` (`ip`)
 		) $charset_collate";
 		$result = dbDelta( $sql );
 
