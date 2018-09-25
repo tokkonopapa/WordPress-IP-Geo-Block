@@ -93,7 +93,7 @@ class IP_Geo_Block_Logs {
 			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			`time` int(10) unsigned NOT NULL DEFAULT 0,
 			`hook` varchar(8) NOT NULL,
-			`ip` varbinary(96) UNIQUE NOT NULL,
+			`ip` varbinary(96) NOT NULL,
 			`asn` varchar(8) NULL,
 			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
 			`auth` int(10) unsigned NOT NULL DEFAULT 0,
@@ -102,7 +102,8 @@ class IP_Geo_Block_Logs {
 			`last` int(10) unsigned NOT NULL DEFAULT 0,
 			`view` int(10) unsigned NOT NULL DEFAULT 0,
 			`host` varbinary(512) NULL,
-			PRIMARY KEY  (`No`)
+			PRIMARY KEY  (`No`),
+			UNIQUE KEY `ip` (`ip`)
 		) $charset_collate";
 		$result = dbDelta( $sql );
 
