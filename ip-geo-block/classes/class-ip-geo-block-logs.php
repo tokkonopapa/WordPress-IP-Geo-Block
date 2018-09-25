@@ -91,16 +91,16 @@ class IP_Geo_Block_Logs {
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 		$sql = "CREATE TABLE $table (
 			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-			`time` int(10) unsigned NOT NULL DEFAULT 0,
+			`time` int(10) unsigned NOT NULL DEFAULT '0',
 			`hook` varchar(8) NOT NULL,
 			`ip` varbinary(96) NOT NULL,
 			`asn` varchar(8) NULL,
 			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
-			`auth` int(10) unsigned NOT NULL DEFAULT 0,
-			`fail` int(10) unsigned NOT NULL DEFAULT 0,
-			`call` int(10) unsigned NOT NULL DEFAULT 0,
-			`last` int(10) unsigned NOT NULL DEFAULT 0,
-			`view` int(10) unsigned NOT NULL DEFAULT 0,
+			`auth` int(10) unsigned NOT NULL DEFAULT '0',
+			`fail` int(10) unsigned NOT NULL DEFAULT '0',
+			`call` int(10) unsigned NOT NULL DEFAULT '0',
+			`last` int(10) unsigned NOT NULL DEFAULT '0',
+			`view` int(10) unsigned NOT NULL DEFAULT '0',
 			`host` varbinary(512) NULL,
 			PRIMARY KEY  (`No`),
 			UNIQUE KEY `ip` (`ip`)

@@ -6,8 +6,6 @@
  * This software is released under the MIT License.
  */
 (function ($, window, document) {
-	'use strict';
-
 	// External variables
 	var skip_error = false,
 	    timer_stack = [],

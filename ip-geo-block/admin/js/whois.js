@@ -14,8 +14,6 @@
  * @link https://github.com/RIPE-NCC/whois/wiki/WHOIS-REST-API-search
  */
 (function ($) {
-	'use strict';
-
 	$.extend({
 		whois: function (query, callback) {
 			/**

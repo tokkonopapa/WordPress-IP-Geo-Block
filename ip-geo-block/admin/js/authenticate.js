@@ -5,8 +5,6 @@
  * This software is released under the MIT License.
  */
 (function ($, window, document) {
-	'use strict';
-
 	var auth = IP_GEO_BLOCK_AUTH, wpzep = {
 		init: false,
 		name: 'ip-geo-block-auth-nonce'

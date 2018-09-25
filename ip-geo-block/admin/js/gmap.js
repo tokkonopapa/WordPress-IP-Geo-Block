@@ -7,12 +7,10 @@
  */
 // https://developers.google.com/maps/documentation/javascript/events?hl=en#auth-errors
 function gm_authFailure() {
-	'use strict';
 	jQuery(window).trigger('ip-geo-block-gmap-error');
 }
 
 (function ($) {
-	'use strict';
 	$(function ($) {
 		if ('undefined' === typeof google) {
 			return;
