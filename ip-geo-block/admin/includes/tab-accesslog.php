@@ -44,7 +44,7 @@ if ( $options['validation']['reclogs'] ):
 				'option' => $option_name,
 				'field' => 'live-log',
 				'value' => $html,
-				'class' => isset( $cookie[ $tab ][1] ) && $cookie[ $tab ][1] === 'o' ? '' : 'ip-geo-block-hide',
+				'class' => extension_loaded( 'pdo_sqlite' ) && isset( $cookie[ $tab ][1] ) && $cookie[ $tab ][1] === 'o' ? '' : 'ip-geo-block-hide',
 			)
 		);
 

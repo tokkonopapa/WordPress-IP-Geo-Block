@@ -72,7 +72,7 @@ class IP_Geo_Block_Admin_Ajax {
 						FALSE === $ret ? __( 'n/a', 'ip-geo-block' ) : (
 						! empty( $ret['errorMessage'] ) ? $ret['errorMessage'] : (
 						! empty( $ret['countryCode' ] ) ? $ret['countryCode' ] :
-						__( 'UNKNOWN', 'ip-geo-block' ) ) )
+						__( 'n/a', 'ip-geo-block' ) ) )
 					),
 				);
 			}

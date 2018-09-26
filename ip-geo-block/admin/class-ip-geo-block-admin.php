@@ -24,8 +24,8 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	private static $instance = NULL;
+	private $is_network_admin = NULL;
 	private $admin_tab = 0;
-	private $is_network = NULL;
 
 	/**
 	 * Initialize the plugin by loading admin scripts & styles
@@ -73,7 +73,7 @@ class IP_Geo_Block_Admin {
 			add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_request' ), 10, 2 );
 
 		if ( is_multisite() ) {
-			$this->is_network = current_user_can( 'manage_network_options' );
+			$this->is_network_admin = current_user_can( 'manage_network_options' );
 			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
 			if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) { // @since 3.0.0
 				add_action( 'wpmu_new_blog', array( $this, 'create_blog' ), 10, 6 ); // on creating a new blog @since MU
@@ -176,7 +176,7 @@ class IP_Geo_Block_Admin {
 		IP_Geo_Block_Activate::activate_blog();
 
 		// Copy option from main blog.
-		if ( $this->is_network && $settings['network_wide'] )
+		if ( $this->is_network_admin && $settings['network_wide'] )
 			update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
 		// Restore the main blog.
@@ -417,7 +417,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function dashboard_url( $network = NULL ) {
-		return ( is_null( $network ) ? $this->is_network : $network ) ? network_admin_url( 'admin.php' /*'settings.php'*/ ) : admin_url( 'options-general.php' );
+		return ( is_null( $network ) ? $this->is_network_admin : $network ) ? network_admin_url( 'admin.php' /*'settings.php'*/ ) : admin_url( 'options-general.php' );
 	}
 
 	/**
@@ -428,21 +428,21 @@ class IP_Geo_Block_Admin {
 		// Control tab number
 		// `admin_menu` or `network_admin_menu` @since: 2.5
 		if ( $admin_menu = ( 'admin_menu' === current_filter() ) ) {
-			if ( $this->is_network && $settings['network_wide'] )
+			if ( $this->is_network_admin && $settings['network_wide'] )
 				$this->admin_tab = min( 4, max( 1, $this->admin_tab ) );
 			else
 				$this->admin_tab = min( 4, max( 0, $this->admin_tab ) );
 		} else {
-			if ( $this->is_network && $settings['network_wide'] )
+			if ( $this->is_network_admin && $settings['network_wide'] )
 				$this->admin_tab = in_array( $this->admin_tab, array( 0, 5 ), TRUE ) ? $this->admin_tab : 0;
 			else
 				$this->admin_tab = 5;
 		}
 
-		if ( $admin_menu && $settings['network_wide'] ) {
+		if ( $admin_menu ) {
 			// `settings-updated` would be added just after settings updated.
-			if ( ! empty( $_REQUEST['settings-updated'] ) && $this->is_network &&
-			     ! empty( $_REQUEST['page'] ) && IP_Geo_Block::PLUGIN_NAME === $_REQUEST['page'] ) {
+			if ( ! empty( $_REQUEST['page'] ) && IP_Geo_Block::PLUGIN_NAME === $_REQUEST['page'] &&
+			     ! empty( $_REQUEST['settings-updated'] ) && $this->is_network_admin && $settings['network_wide'] ) {
 				$this->update_multisite_settings( $settings );
 				wp_safe_redirect( esc_url_raw( add_query_arg(
 					array( 'page' => IP_Geo_Block::PLUGIN_NAME ),
@@ -461,7 +461,7 @@ class IP_Geo_Block_Admin {
 			);
 		}
 
-		elseif ( IP_GEO_BLOCK_NETWORK && $this->is_network ) {
+		elseif ( IP_GEO_BLOCK_NETWORK && $this->is_network_admin ) {
 			// Add a settings page for this plugin to the Settings menu.
 			$hook = add_menu_page(
 				__( 'IP Geo Block', 'ip-geo-block' ),
@@ -510,7 +510,7 @@ class IP_Geo_Block_Admin {
 	 */
 	private function diagnose_admin_screen( $settings ) {
 		$updating = get_transient( IP_Geo_Block::CRON_NAME );
-		$adminurl = $this->dashboard_url( $this->is_network && $settings['network_wide'] );
+		$adminurl = $this->dashboard_url( $this->is_network_admin && $settings['network_wide'] );
 
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7.0' ) < 0 )
@@ -722,7 +722,7 @@ endif;
 		if ( 'options-general.php' === $GLOBALS['pagenow'] ) {
 			$action = 'options.php';
 			unset( $tabs[5] ); // Site List
-			if ( IP_GEO_BLOCK_NETWORK && $this->is_network ) {
+			if ( IP_GEO_BLOCK_NETWORK && $this->is_network_admin ) {
 				if ( $settings['network_wide'] ) {
 					unset( $tabs[0] ); // Settings
 				}
@@ -737,7 +737,7 @@ endif;
 			// `edit.php` is an action handler for Multisite administration panels.
 			// `edit.php` ==> do action `network_admin_edit_IP_GEO_BLOCK` ==> `validate_network_settings()`
 			$action = 'edit.php?action=' . IP_Geo_Block::PLUGIN_NAME;
-			if ( $this->is_network ) {
+			if ( $this->is_network_admin ) {
 				if ( ! $settings['network_wide'] ) {
 					unset( $tabs[0] ); // remove Settings
 				}
@@ -1561,7 +1561,7 @@ endif;
 				}
 			}
 
-			if ( $this->is_network && $settings['network_wide'] )
+			if ( $this->is_network_admin && $settings['network_wide'] )
 				$this->update_multisite_settings( $settings );
 			else
 				update_option( IP_Geo_Block::OPTION_NAME, $settings );

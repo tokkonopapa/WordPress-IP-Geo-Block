@@ -82,7 +82,7 @@ class IP_Geo_Block_Admin_Tab {
 				'type' => 'html',
 				'option' => $option_name,
 				'field' => 'ip_client',
-				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ) . '</span>',
+				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'n/a', 'ip-geo-block' ) ) ) . '</span>',
 				'after' => '&nbsp;<a class="button-secondary" id="ip-geo-block-scan-ip_client" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="#!">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-ip_client"></div>',
 			)
 		);
@@ -101,7 +101,7 @@ if ( $key = IP_Geo_Block_Util::get_server_ip() && $key !== $val && ! IP_Geo_Bloc
 				'type' => 'html',
 				'option' => $option_name,
 				'field' => 'ip_server',
-				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ) . '</span>',
+				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'n/a', 'ip-geo-block' ) ) ) . '</span>',
 				'after' => '&nbsp;<a class="button-secondary" id="ip-geo-block-scan-ip_server" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="#!">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-ip_server"></div>',
 			)
 		);

@@ -90,22 +90,26 @@ class IP_Geo_Block_Logs {
 		// for IP address cache
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 		$sql = "CREATE TABLE $table (
-			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-			`time` int(10) unsigned NOT NULL DEFAULT '0',
-			`hook` varchar(8) NOT NULL,
-			`ip` varbinary(96) NOT NULL,
-			`asn` varchar(8) NULL,
-			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
-			`auth` int(10) unsigned NOT NULL DEFAULT '0',
-			`fail` int(10) unsigned NOT NULL DEFAULT '0',
-			`call` int(10) unsigned NOT NULL DEFAULT '0',
-			`last` int(10) unsigned NOT NULL DEFAULT '0',
-			`view` int(10) unsigned NOT NULL DEFAULT '0',
-			`host` varbinary(512) NULL,
-			PRIMARY KEY  (`No`),
-			UNIQUE KEY `ip` (`ip`)
+			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			time int(10) unsigned NOT NULL DEFAULT 0,
+			hook varchar(8) NOT NULL,
+			ip varbinary(96) UNIQUE NOT NULL,
+			asn varchar(8) NULL,
+			code varchar(2) NOT NULL DEFAULT 'ZZ',
+			auth int(10) unsigned NOT NULL DEFAULT 0,
+			fail int(10) unsigned NOT NULL DEFAULT 0,
+			last int(10) unsigned NOT NULL DEFAULT 0,
+			view int(10) unsigned NOT NULL DEFAULT 0,
+			host varbinary(512) NULL,
+			PRIMARY KEY  (No)
 		) $charset_collate";
 		$result = dbDelta( $sql );
+
+		// dbDelta() parses `call` field as `CALL` statement. So alter it after init @since 3.0.10
+		if ( ! $wpdb->query( "DESCRIBE `$table` `call`" ) ) {
+			$wpdb->query( "ALTER TABLE `$table` ADD `call` int(10) unsigned NOT NULL DEFAULT 0 AFTER `fail`" )
+			or self::error( __LINE__ );
+		}
 
 		return TRUE;
 	}
