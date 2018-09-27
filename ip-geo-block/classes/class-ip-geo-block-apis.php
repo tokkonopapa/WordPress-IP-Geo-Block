@@ -586,11 +586,11 @@ class IP_Geo_Block_Provider {
 		self::$internals += $api;
 	}
 
-	public static function get_addons( $providers = array() ) {
+	public static function get_addons( $providers = array(), $force = FALSE ) {
 		$apis = array();
 
 		foreach ( self::$internals as $key => $val ) {
-			if ( 'Cache' !== $key && ( ! isset( $providers[ $key ] ) || ! empty( $providers[ $key ] ) ) )
+			if ( 'Cache' !== $key && ( $force || ! isset( $providers[ $key ] ) || ! empty( $providers[ $key ] ) ) )
 				$apis[] = $key;
 		}
 

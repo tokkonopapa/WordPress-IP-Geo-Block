@@ -384,6 +384,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 
 = 3.0.15 =
 * **Fix issue:** Fix the bug of wrong path to the bundled Geolocation API library when it's failed to install.
+* **Fix issue:** Fix the issue that "Can not find Geolocation API libraries" error would always appear when once Geolite2, Maxmind and IP2Location were unselected.
 * **Fix issue:** Fix the issue that https in ipstack.com is available only for premiums users.
 * **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog.
 * **Improvement:** Make the priofity of "UA string and qualification" is higher than that of "Block badly-behaved bots and crawlers" on public facing pages.

@@ -1343,7 +1343,7 @@ endif;
 
 		// Local DBs and APIs
 		$provider  = IP_Geo_Block_Provider::get_providers( 'key' ); // all available providers
-		$providers = IP_Geo_Block_Provider::get_addons( $options['providers'] ); // only local
+		$providers = IP_Geo_Block_Provider::get_addons( $options['providers'], TRUE ); // only local
 
 		// Disable 3rd parties API
 		if ( ! empty( $options['restrict_api'] ) ) {
