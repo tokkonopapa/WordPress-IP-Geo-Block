@@ -26,6 +26,7 @@ class IP_Geo_Block_Admin_Tab {
 
 if ( $options['validation']['reclogs'] ):
 
+if ( extension_loaded( 'pdo_sqlite' ) ):
 		$html  = '<ul id="ip-geo-block-live-log">';
 		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-start" value="start"><label for="ip-geo-block-live-log-start" title="Start"><span class="ip-geo-block-icon-play"></span></label></li>';
 		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-pause" value="pause"><label for="ip-geo-block-live-log-pause" title="Pause"><span class="ip-geo-block-icon-pause"></span></label></li>';
@@ -44,9 +45,10 @@ if ( $options['validation']['reclogs'] ):
 				'option' => $option_name,
 				'field' => 'live-log',
 				'value' => $html,
-				'class' => extension_loaded( 'pdo_sqlite' ) && isset( $cookie[ $tab ][1] ) && $cookie[ $tab ][1] === 'o' ? '' : 'ip-geo-block-hide',
+				'class' => isset( $cookie[ $tab ][1] ) && $cookie[ $tab ][1] === 'o' ? '' : 'ip-geo-block-hide',
 			)
 		);
+endif; // extension_loaded( 'pdo_sqlite' )
 
 		// make a list of target (same as in tab-accesslog.php)
 		$target = array(

@@ -456,7 +456,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 		if ( $cache ) {
 			$fail = $cache['fail'] + ( 'failed' === $validate['result'] ? 1 : 0 );
-			$call = $cache['call'] + ( 'failed' !== $validate['result'] ? 1 : 0 );
+			$call = $cache['reqs'] + ( 'failed' !== $validate['result'] ? 1 : 0 );
 			$last = $cache['last'];
 			$view = $cache['view'];
 		} else { // if new cache then reset these values
@@ -482,7 +482,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			'code' => $validate['code'],
 			'auth' => $validate['auth'], // get_current_user_id() > 0
 			'fail' => $fail, // $validate['auth'] ? 0 : $fail,
-			'call' => $settings['save_statistics'] ? $call : 0,
+			'reqs' => $settings['save_statistics'] ? $call : 0,
 			'last' => $last,
 			'view' => $view,
 			'host' => isset( $validate['host'] ) && $validate['host'] !== $ip ? $validate['host'] : '',
@@ -638,31 +638,6 @@ class IP_Geo_Block_Provider {
 		}
 
 		return $list;
-	}
-
-	/**
-	 * Check status of provider selection
-	 *
-	 */
-	public static function diag_providers( $settings = NULL ) {
-		if ( ! $settings ) {
-			$settings = IP_Geo_Block::get_option();
-			$settings = $settings['providers'];
-		}
-
-		$field = 0;
-		foreach ( self::get_providers( 'key' ) as $key => $val ) {
-			if ( ( NULL   === $val   && ! isset( $settings[ $key ] ) ) ||
-			     ( FALSE  === $val   && ! empty( $settings[ $key ] ) ) ||
-			     ( is_string( $val ) && ! empty( $settings[ $key ] ) ) ) {
-				++$field;
-			}
-		}
-
-		if ( 0 === $field )
-			return __( 'You need to select at least one IP Geolocation API. Otherwise <strong>you\'ll be blocked</strong> after the cache expires.', 'ip-geo-block' );
-
-		return NULL;
 	}
 
 }

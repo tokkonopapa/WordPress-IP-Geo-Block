@@ -1391,13 +1391,6 @@ endif;
 		/*----------------------------------------*
 		 * Local database settings
 		 *----------------------------------------*/
-		if ( empty( $providers ) ) {
-			$context->add_admin_notice( 'error', sprintf(
-				__( 'Can not find Geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="https://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
-				apply_filters( 'ip-geo-block-api-dir', basename( WP_CONTENT_DIR ) )
-			) );
-		}
-
 		add_settings_section(
 			$section = $plugin_slug . '-database',
 			array( __( 'Local database settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/geolocation-api-library.html" title="Geolocation API library | IP Geo Block">' . $common[4] . '</a>' ),

@@ -516,6 +516,33 @@ class IP_Geo_Block_Admin {
 		if ( version_compare( get_bloginfo( 'version' ), '3.7.0' ) < 0 )
 			self::add_admin_notice( 'error', __( 'You need WordPress 3.7+.', 'ip-geo-block' ) );
 
+		if ( ! $settings['api_dir'] || ! file_exists( $settings['api_dir'] ) ) {
+			$this->add_admin_notice( 'error', sprintf(
+				__( 'Can not load Geolocation API libraries from <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="https://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
+				apply_filters( 'ip-geo-block-api-dir', $settings['api_dir'] ? $settings['api_dir'] : basename( WP_CONTENT_DIR ) )
+			) );
+		}
+
+		else {
+			$providers = IP_Geo_Block_Provider::get_valid_providers( $settings, FALSE, FALSE, TRUE );
+			if ( empty( $providers ) ) {
+				$this->add_admin_notice( 'error', sprintf(
+				__( 'You should select at least one API at <a href="%s">Geolocation API settings</a>. Otherwise <strong>you\'ll be blocked</strong> after the cache expires.', 'ip-geo-block' ),
+				esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4'
+				) );
+			}
+
+			else {
+				$providers = IP_Geo_Block_Provider::get_addons( $settings['providers'] );
+				if ( empty( $providers ) ) {
+					$this->add_admin_notice( 'error', sprintf(
+					__( 'You should select at least one API for local database at <a href="%s">Geolocation API settings</a>. Otherwise access to the external API may slow down the site.', 'ip-geo-block' ),
+						esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4'
+					) );
+				}
+			}
+		}
+
 		// Check consistency of matching rule
 		if ( -1 === (int)$settings['matching_rule'] ) {
 			if ( FALSE !== $updating ) {
@@ -1007,10 +1034,6 @@ endif;
 							isset( $input[ $key ][ $provider ] ) ? sanitize_text_field( $input[ $key ][ $provider ] ) : '';
 					}
 				}
-
-				// Check providers setting
-				if ( $error = IP_Geo_Block_Provider::diag_providers( $output[ $key ] ) )
-					self::add_admin_notice( 'error', $error );
 				break;
 
 			  case 'comment':
@@ -1389,6 +1412,7 @@ endif;
 				$this->dashboard_url( ! empty( $_POST[ $option ]['network_wide'] ) )
 			)
 		) );
+
 		exit;
 	}
 

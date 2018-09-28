@@ -258,7 +258,7 @@ class IP_Geo_Block_Admin_Ajax {
 				/* AS number       */ $val['asn' ],
 				/* Host name       */ $val['host'],
 				/* Target          */ $val['hook'],
-				/* Failure / Total */ sprintf( '%d / %d', (int)$val['fail'], (int)$val['call'] ),
+				/* Failure / Total */ sprintf( '%d / %d', (int)$val['fail'], (int)$val['reqs'] ),
 				/* Elapsed[sec]    */ $time - (int)$val['time'],
 			) ) . PHP_EOL;
 		}
@@ -295,7 +295,7 @@ class IP_Geo_Block_Admin_Ajax {
 				/* AS number    */ '<span>' . esc_html( $val['asn' ] ) . '</span>',
 				/* Host name    */ '<span>' . esc_html( $val['host'] ) . '</span>',
 				/* Target       */ '<span>' . esc_html( $val['hook'] ) . '</span>',
-				/* Fails/Calls  */ '<span>' . sprintf( '%d / %d', (int)$val['fail'], (int)$val['call'] ) . '</span>',
+				/* Fails/Calls  */ '<span>' . sprintf( '%d / %d', (int)$val['fail'], (int)$val['reqs'] ) . '</span>',
 				/* Elapsed[sec] */ '<span>' . ( $time - (int)$val['time'] ) . '</span>',
 			);
 		}
