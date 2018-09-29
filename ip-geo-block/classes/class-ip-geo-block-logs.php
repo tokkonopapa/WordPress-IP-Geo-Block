@@ -46,40 +46,38 @@ class IP_Geo_Block_Logs {
 	 * @internal creating mixed storage engine may cause troubles with some plugins.
 	 */
 	public static function create_tables() {
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate(); // @since 3.5.0
 
 		// for logs
 		$table = $wpdb->prefix . self::TABLE_LOGS;
-		$sql = "CREATE TABLE $table (
-			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-			time int(10) unsigned NOT NULL DEFAULT 0,
-			ip varbinary(96) NOT NULL,
-			asn varchar(8) NULL,
-			hook varchar(8) NOT NULL,
-			auth int(10) unsigned NOT NULL DEFAULT 0,
-			code varchar(2) NOT NULL DEFAULT 'ZZ',
-			result varchar(8) NULL,
-			method varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
-			user_agent varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
-			headers varbinary("  . IP_GEO_BLOCK_MAX_BIN_LEN . ") NULL,
-			data text NULL,
-			PRIMARY KEY  (No),
-			KEY time (time),
-			KEY hook (hook)
+		$sql = "CREATE TABLE IF NOT EXISTS `$table` (
+			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			`time` int(10) unsigned NOT NULL DEFAULT '0',
+			`ip` varbinary(96) NOT NULL,
+			`asn` varchar(8) NULL,
+			`hook` varchar(8) NOT NULL,
+			`auth` int(10) unsigned NOT NULL DEFAULT '0',
+			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
+			`result` varchar(8) NULL,
+			`method` varchar("     . IP_GEO_BLOCK_MAX_STR_LEN . ") NOT NULL,
+			`user_agent` varchar(" . IP_GEO_BLOCK_MAX_STR_LEN . ") NULL,
+			`headers` varbinary("  . IP_GEO_BLOCK_MAX_BIN_LEN . ") NULL,
+			`data` text NULL,
+			PRIMARY KEY  (`No`),
+			KEY `time` (`time`),
+			KEY `hook` (`hook`)
 		) $charset_collate";
-		$result = dbDelta( $sql );
+		$wpdb->query( $sql ) or self::error( __LINE__ );
 
 		// for statistics
 		$table = $wpdb->prefix . self::TABLE_STAT;
-		$sql = "CREATE TABLE $table (
-			No tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
-			data longtext NULL,
-			PRIMARY KEY  (No)
+		$sql = "CREATE TABLE IF NOT EXISTS `$table` (
+			`No` tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
+			`data` longtext NULL,
+			PRIMARY KEY  (`No`)
 		) $charset_collate";
-		$result = dbDelta( $sql );
+		$wpdb->query( $sql ) or self::error( __LINE__ );
 
 		// Create 1 record if not exists
 		$sql = $wpdb->prepare(
@@ -89,22 +87,22 @@ class IP_Geo_Block_Logs {
 
 		// for IP address cache
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
-		$sql = "CREATE TABLE $table (
-			No bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-			time int(10) unsigned NOT NULL DEFAULT 0,
-			hook varchar(8) NOT NULL,
-			ip varbinary(96) UNIQUE NOT NULL,
-			asn varchar(8) NULL,
-			code varchar(2) NOT NULL DEFAULT 'ZZ',
-			auth int(10) unsigned NOT NULL DEFAULT 0,
-			fail int(10) unsigned NOT NULL DEFAULT 0,
-			reqs int(10) unsigned NOT NULL DEFAULT 0,
-			last int(10) unsigned NOT NULL DEFAULT 0,
-			view int(10) unsigned NOT NULL DEFAULT 0,
-			host varbinary(512) NULL,
-			PRIMARY KEY  (No)
+		$sql = "CREATE TABLE IF NOT EXISTS `$table` (
+			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			`time` int(10) unsigned NOT NULL DEFAULT '0',
+			`hook` varchar(8) NOT NULL,
+			`ip` varbinary(96) UNIQUE NOT NULL,
+			`asn` varchar(8) NULL,
+			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
+			`auth` int(10) unsigned NOT NULL DEFAULT '0',
+			`fail` int(10) unsigned NOT NULL DEFAULT '0',
+			`reqs` int(10) unsigned NOT NULL DEFAULT '0',
+			`last` int(10) unsigned NOT NULL DEFAULT '0',
+			`view` int(10) unsigned NOT NULL DEFAULT '0',
+			`host` varbinary(512) NULL,
+			PRIMARY KEY  (`No`)
 		) $charset_collate";
-		$result = dbDelta( $sql );
+		$wpdb->query( $sql ) or self::error( __LINE__ );
 
 		return TRUE;
 	}
