@@ -8,7 +8,7 @@
  * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
-define( 'IP_GEO_BLOCK_NETWORK', TRUE );
+define( 'IP_GEO_BLOCK_NETWORK', FALSE );
 
 class IP_Geo_Block_Admin {
 
@@ -73,6 +73,7 @@ class IP_Geo_Block_Admin {
 			add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_request' ), 10, 2 );
 
 		if ( is_multisite() ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
 			$this->is_network_admin = current_user_can( 'manage_network_options' );
 			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
 			if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) { // @since 3.0.0

@@ -423,14 +423,13 @@ class IP_Geo_Block_Opts {
 				$settings['validation'  ]['maxlogs'] = $default['validation']['maxlogs'];
 				$settings['validation'  ]['explogs'] = $default['validation']['explogs'];
 				$settings['restrict_api'] = $settings['anonymize'];
-				IP_Geo_Block_Logs::upgrade();
 			}
 
 			if ( version_compare( $version, '3.0.14' ) < 0 )
 				$settings['login_link'] = $default['login_link'];
 
 			if ( version_compare( $version, '3.0.15' ) < 0 )
-				IP_Geo_Block_Logs::upgrade();
+				IP_Geo_Block_Logs::upgrade( $version );
 
 			// update package version number
 			$settings['version'] = IP_Geo_Block::VERSION;
@@ -513,7 +512,6 @@ class IP_Geo_Block_Opts {
 		if ( file_exists( $src = WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) ) {
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 			$fs = IP_Geo_Block_FS::init( 'remove_mu_plugin' );
-
 			return $fs->delete( $src ) ? TRUE : $src;
 		}
 

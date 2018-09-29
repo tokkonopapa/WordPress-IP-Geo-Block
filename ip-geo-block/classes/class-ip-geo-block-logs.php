@@ -113,9 +113,9 @@ class IP_Geo_Block_Logs {
 	 * Upgrade
 	 *
 	 */
- 	public static function upgrade() {
+ 	public static function upgrade( $version ) {
 		// AES 128 -> AES 256
-		if ( version_compare( IP_Geo_Block::VERSION, '3.0.13' ) < 0 ) {
+		if ( version_compare( $version, '3.0.13' ) < 0 ) {
 			// delete IP address cache
 			self::clear_cache();
 
@@ -153,7 +153,7 @@ class IP_Geo_Block_Logs {
 		}
 
 		// call -> reqs
-		if ( version_compare( IP_Geo_Block::VERSION, '3.0.15' ) < 0 ) {
+		if ( version_compare( $version, '3.0.15' ) < 0 ) {
 			self::delete_tables( IP_Geo_Block::CACHE_NAME );
 			self::create_tables();
 		}
