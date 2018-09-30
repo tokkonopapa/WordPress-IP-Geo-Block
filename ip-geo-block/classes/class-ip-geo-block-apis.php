@@ -529,7 +529,7 @@ class IP_Geo_Block_Provider {
 		'ipinfo.io' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="https://ipinfo.io/" title="IP Address API and Data Solutions">https://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free)',
+			'link' => '<a rel="noreferrer" href="https://ipinfo.io/" title="IP Address API and Data Solutions">https://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free up to 1000 requests daily)',
 		),
 
 		'Nekudo' => array(
@@ -553,7 +553,7 @@ class IP_Geo_Block_Provider {
 		'Ipdata.co' => array(
 			'key'  => '',
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="https://ipdata.co/" title="ipdata.co - IP Geolocation and Threat Data API">https://ipdata.co/</a>&nbsp;(IPv4, IPv6 / up to 1500 requests daily free for registered user)',
+			'link' => '<a rel="noreferrer" href="https://ipdata.co/" title="ipdata.co - IP Geolocation and Threat Data API">https://ipdata.co/</a>&nbsp;(IPv4, IPv6 / free up to 1500 requests daily for registered user)',
 		),
 
 		'ipstack' => array(

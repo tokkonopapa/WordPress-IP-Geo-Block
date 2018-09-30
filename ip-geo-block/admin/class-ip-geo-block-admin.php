@@ -597,7 +597,7 @@ class IP_Geo_Block_Admin {
 						) :
 						sprintf(
 							__( 'Please confirm your local geolocation databases at &#8220;%sLocal database settings%s&#8221; section and remove your IP address in cache at &#8220;%sStatistics in cache%s&#8221; section.', 'ip-geo-block' ),
-							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4' ) . '">', '</a></strong>',
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 5 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-5' ) . '">', '</a></strong>',
 							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1, 'sec' => 2 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-2' ) . '">', '</a></strong>'
 						)
 					)
@@ -615,7 +615,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		}
 endif;
 		// Check consistency of emergency login link
-		if ( $settings['login_link']['link'] && ! IP_Geo_Block_Util::verify_link( $settings['login_link']['link'], $settings['login_link']['hash'] ) ) {
+		if ( isset( $settings['login_link'] ) && $settings['login_link']['link'] && ! IP_Geo_Block_Util::verify_link( $settings['login_link']['link'], $settings['login_link']['hash'] ) ) {
 			self::add_admin_notice( 'error',
 				sprintf(
 					__( 'Emergency login link is outdated. Please delete it once and generate again at &#8220;%sPlugin settings%s&#8221; section. Also do not forget to update favorites / bookmarks in your browser.', 'ip-geo-block' ),
