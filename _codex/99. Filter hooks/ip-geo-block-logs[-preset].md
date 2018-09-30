@@ -128,6 +128,18 @@ And here's a sample of new UI "**Preset filters**".
  "Preset filters at Search in logs"
 )
 
+<div class="alert alert-info">
+  <strong>Note:</strong> In the above code snippet, some html entities such as
+  <code>&amp;sup1;</code> are used. Not all the entities are available but some
+  of those which are defined in
+  <a href="https://developer.wordpress.org/reference/functions/ent2ncr/"
+  title="ent2ncr() | Function | WordPress Developer Resources">ent2ncr()</a>
+  because all the text will be escaped by 
+  <a href="https://developer.wordpress.org/reference/functions/esc_html/"
+  title="esc_html() | Function | WordPress Developer Resources">esc_html()</a>
+  before rendering.
+</div>
+
 ### Since ###
 
 3.0.15
