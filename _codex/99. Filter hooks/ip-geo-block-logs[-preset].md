@@ -46,8 +46,9 @@ text box.
 
 ### Use case ###
 
-The following code snippet in your theme's `functions.php` can add an UI at 
-"**Search in logs**" corresponded to the filtered logs.
+The following code snippet in `drop-in-admin.php` placed at the directory of 
+[Geolocation API library][GeoAPI-Folder] can add an UI to "**Search in logs**"
+corresponded to the filtered logs.
 
 {% highlight javascript startinline %}
 /**
@@ -127,10 +128,9 @@ And here's a sample of new UI "**Preset filters**".
  "Preset filters at Search in logs"
 )
 
-{% include alert-drop-in.html %}
-
 ### Since ###
 
 3.0.15
 
-[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
+[IP-Geo-Block]:  https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
+[GeoAPI-Folder]: https://www.ipgeoblock.com/codex/geolocation-api-library.html#geolocation-api-library "Local database settings | IP Geo Block"
