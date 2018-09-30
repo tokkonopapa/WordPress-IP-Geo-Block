@@ -223,6 +223,13 @@ input[id*="ip_geo_block_settings_providers"] + label {
     background-color: #00919e !important;
     border-color: #00525a !important;
 }
+ul#ip-geo-block-logs-preset {
+    margin: 0.25em 0;
+}
+ul#ip-geo-block-logs-preset li {
+    float: left;
+    margin-right: 1em;
+}
 
 /* Loading image */
 .ip-geo-block-loading,

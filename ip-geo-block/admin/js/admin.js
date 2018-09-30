@@ -1835,6 +1835,14 @@
 				return false;
 			}).trigger('change');
 
+			// Preset filters
+			$(ID('#', 'logs-preset')).on('click', 'a', function (/*event*/) {
+				var value = $(this).data('value');
+				$(ID('@', 'search_filter')).val(value);
+				table.search(value, false, true, !/[A-Z]/.test(value)).draw();
+				return false;
+			});
+
 			// Export logs
 			add_hidden_form('export-logs');
 

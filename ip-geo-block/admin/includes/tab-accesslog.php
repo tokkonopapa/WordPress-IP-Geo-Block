@@ -96,6 +96,29 @@ endif; // extension_loaded( 'pdo_sqlite' )
 			)
 		);
 
+		// Preset filters
+		$filters = apply_filters( $plugin_slug . '-logs-preset', array() );
+		if ( ! empty( $filters ) ) {
+			$html = '<ul id="ip-geo-block-logs-preset">';
+			foreach ( $filters as $filter ) {
+				$html .= '<li><a href="#!" data-value="' . esc_attr( $filter['value'] ) . '">' . esc_html( $filter['title'] ) . '</a></li>';
+			}
+
+			add_settings_field(
+				$option_name.'_logs_preset',
+				'<div class="ip-geo-block-subitem">' . __( 'Preset filters', 'ip-geo-block' ) . '</div>',
+				array( $context, 'callback_field' ),
+				$option_slug,
+				$section,
+				array(
+					'type' => 'html',
+					'option' => $option_name,
+					'field' => 'logs_preset',
+					'value' => $html,
+				)
+			);
+		}
+
 		// Bulk action
 		add_settings_field(
 			$option_name.'_bulk_action',
