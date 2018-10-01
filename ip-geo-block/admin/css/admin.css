@@ -690,7 +690,7 @@ table.collapsed > tbody > tr.child > td.child > ul li span.dtr-data {
 /* Length menu */
 div[class*="ip-geo-block"] .dataTables_wrapper .dataTables_length {
     padding-top: 0.15em;
-    margin: 0.5em 0 0 0.75em;
+    margin: 0.5em 0 0 0.3em;
     position: relative;
     display: inline-block;
 }
@@ -738,6 +738,9 @@ div[class*="ip-geo-block"] .dataTables_wrapper .dataTables_paginate {
     margin-top: 0 !important;
 }
 @media screen and (min-width:640px) {
+    div[class*="ip-geo-block"] .dataTables_wrapper .dataTables_length {
+        margin: 0.5em 0 0 0.6em;
+    }
     div[class*="ip-geo-block"] .dataTables_wrapper .dataTables_paginate {
         position: relative;
         left: -2.25em;
