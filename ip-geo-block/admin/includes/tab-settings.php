@@ -1,5 +1,4 @@
 <?php
-require_once ABSPATH           . 'wp-admin/includes/plugin.php'; // for get_plugins()
 require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php';
 require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
 

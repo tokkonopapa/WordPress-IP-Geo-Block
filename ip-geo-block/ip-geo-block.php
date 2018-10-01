@@ -40,6 +40,7 @@ define( 'IP_GEO_BLOCK_BASE', plugin_basename( __FILE__ ) ); // @since 1.5
  * Load class
  *
  */
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
 require IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php';
 require IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php';
 require IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-load.php';
@@ -72,7 +73,6 @@ register_deactivation_hook( __FILE__, 'ip_geo_block_deactivate' );
 function ip_geo_block_update() {
 	$settings = IP_Geo_Block::get_option();
 	if ( version_compare( $settings['version'], IP_Geo_Block::VERSION ) < 0 ) {
-		require_once ABSPATH . 'wp-admin/includes/plugin.php'; // @since 3.0.0
 		ip_geo_block_activate( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) );
 	}
 }

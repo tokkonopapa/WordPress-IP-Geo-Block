@@ -29,7 +29,7 @@ if ( ! class_exists( 'IP_Geo_Block', FALSE ) ):
 /*----------------------------------------------------------------------------*
  * Detect plugin. For use on Front End only.
  *----------------------------------------------------------------------------*/
-include_once ABSPATH . 'wp-admin/includes/plugin.php';
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 $plugin = 'ip-geo-block/ip-geo-block.php';
 

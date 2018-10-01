@@ -73,7 +73,6 @@ class IP_Geo_Block_Admin {
 			add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_request' ), 10, 2 );
 
 		if ( is_multisite() ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
 			$this->is_network_admin = current_user_can( 'manage_network_options' );
 			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
 			if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) { // @since 3.0.0
@@ -116,7 +115,6 @@ class IP_Geo_Block_Admin {
 		$urls = array( wp_login_url() );
 
 		// avoid multiple redirection caused by WP hide 1.4.9.1
-		require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
 		if ( is_plugin_active( 'wp-hide-security-enhancer/wp-hide.php' ) )
 			$urls[] = 'options-permalink.php';
 
@@ -492,6 +490,7 @@ class IP_Geo_Block_Admin {
 				IP_Geo_Block::PLUGIN_NAME . '&amp;tab=5',
 				array( $this, 'display_plugin_admin_page' )
 			);
+
 			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-icons',
 				plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 					'css/admin-icons.min.css' : 'css/admin-icons.css', __FILE__

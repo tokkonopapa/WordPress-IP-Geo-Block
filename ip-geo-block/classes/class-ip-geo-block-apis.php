@@ -648,25 +648,25 @@ class IP_Geo_Block_Provider {
  */
 if ( class_exists( 'IP_Geo_Block', FALSE ) ) {
 
-	// Get absolute path to the geo-location API
-	$dir = IP_Geo_Block::get_option();
-	if ( $dir['api_dir'] ) {
-		$dir = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', $dir['api_dir'] );
+	// Avoid "The plugin does has no valid header" on activation under WP4.0
+	if ( is_plugin_active( IP_GEO_BLOCK_BASE ) ) {
+		// Get absolute path to the geo-location API
+		$dir = IP_Geo_Block::get_option();
+		if ( $dir['api_dir'] ) {
+			$dir = IP_Geo_Block_Util::slashit(
+				apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', $dir['api_dir'] )
+			);
 
-		// If not exists then use bundled API
-		if ( ! is_dir( $dir ) )
-			$dir = IP_GEO_BLOCK_PATH . 'wp-content/' . IP_Geo_Block::GEOAPI_NAME;
+			// Scan API directory
+			$plugins = is_dir( $dir ) ? scandir( $dir, defined( 'SCANDIR_SORT_DESCENDING' ) ? SCANDIR_SORT_DESCENDING : 1 ) : FALSE;
 
-		// Scan API directory
-		$dir = IP_Geo_Block_Util::slashit( $dir );
-		$plugins = is_dir( $dir ) ? scandir( $dir, 1 ) : FALSE; // SCANDIR_SORT_DESCENDING @since 5.4.0
-
-		// Load addons by heigher priority order
-		if ( FALSE !== $plugins ) {
-			$exclude = array( '.', '..' );
-			foreach ( $plugins as $plugin ) {
-				if ( ! in_array( $plugin, $exclude, TRUE ) && is_dir( $dir.$plugin ) ) {
-					@include $dir.$plugin.'/class-'.$plugin.'.php';
+			// Load addons by heigher priority order
+			if ( FALSE !== $plugins ) {
+				$exclude = array( '.', '..' );
+				foreach ( $plugins as $plugin ) {
+					if ( ! in_array( $plugin, $exclude, TRUE ) && is_dir( $dir.$plugin ) ) {
+						@include $dir.$plugin.'/class-'.$plugin.'.php';
+					}
 				}
 			}
 		}
