@@ -489,7 +489,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		);
 
 		// do not update cache while installing geolocation databases
-		if ( $settings['cache_hold'] && $validate['auth'] && 'ZZ' !== $validate['code'] )
+		if ( $settings['cache_hold'] && ( ! $validate['auth'] || ( $validate['auth'] && 'ZZ' !== $validate['code'] ) ) )
 			IP_Geo_Block_Logs::update_cache( $cache );
 
 		return self::$memcache[ $ip ] = $cache;
