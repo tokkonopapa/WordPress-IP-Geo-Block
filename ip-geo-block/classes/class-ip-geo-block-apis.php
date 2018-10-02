@@ -648,7 +648,7 @@ class IP_Geo_Block_Provider {
  */
 if ( class_exists( 'IP_Geo_Block', FALSE ) ) {
 
-	// Avoid "The plugin does has no valid header" on activation under WP4.0
+	// Avoid "The plugin does not have a valid header" on activation under WP4.0
 	if ( is_plugin_active( IP_GEO_BLOCK_BASE ) ) {
 		// Get absolute path to the geo-location API
 		$dir = IP_Geo_Block::get_option();

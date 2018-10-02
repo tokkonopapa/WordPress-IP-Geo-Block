@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.15\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-10-01 22:22+0900\n"
-"PO-Revision-Date: 2018-10-01 22:22+0900\n"
+"POT-Creation-Date: 2018-10-02 22:28+0900\n"
+"PO-Revision-Date: 2018-10-02 22:29+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -1418,63 +1418,23 @@ msgstr ""
 msgid "Show information"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1604
-msgid ""
-"To enhance the protection ability, please refer to &#8220;<a rel=\"noreferrer"
-"\" href=\"https://www.ipgeoblock.com/codex/the-best-practice-for-target-"
-"settings.html\" title=\"The best practice for target settings | IP Geo Block"
-"\">The best practice for target settings</a>&#8221;."
-msgstr ""
-
 #: admin/includes/tab-settings.php:1605
-msgid ""
-"If you have any troubles with these, please check FAQ at <a rel=\"noreferrer"
-"\" href=\"https://wordpress.org/plugins/ip-geo-block/faq/\" title=\"IP Geo "
-"Block &mdash; WordPress Plugins\">WordPress.org</a> and <a rel=\"noreferrer"
-"\" href=\"https://www.ipgeoblock.com/codex/#faq\" title=\"Codex | IP Geo "
-"Block\">Codex</a>."
-msgstr ""
-
-#: admin/includes/tab-settings.php:1612
 msgid ""
 "While Geolite2 / Maxmind and IP2Location will fetch the local databases, "
 "others will pass an IP address to the 3rd parties' API via HTTP."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1613
+#: admin/includes/tab-settings.php:1606
 msgid ""
 "Please select the appropriate APIs to fit the privacy law / regulation in "
 "your country / region."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1622
+#: admin/includes/tab-settings.php:1615
 #, php-format
 msgid ""
 "Maxmind GeoLite2 databases and APIs need PHP version 5.4.0+ and %sPECL phar "
 "2.0.0+%s."
-msgstr ""
-
-#: admin/includes/tab-settings.php:1630
-msgid ""
-"Please refer to the document &#8220;<a rel=\"noreferrer\" href=\"https://www."
-"ipgeoblock.com/codex/#blocking-on-front-end\" title=\"Codex | IP Geo Block"
-"\">Blocking on front-end</a>&#8221; for details, including restrictions on "
-"cache plugin."
-msgstr ""
-
-#: admin/includes/tab-settings.php:1631
-msgid ""
-"If you find any issues or have something to suggest, please feel free to "
-"open an issue at <a rel=\"noreferrer\" href=\"https://wordpress.org/support/"
-"plugin/ip-geo-block\" title=\"[IP Geo Block] Support | WordPress.org"
-"\">support forum</a>."
-msgstr ""
-
-#: admin/includes/tab-settings.php:1638
-msgid ""
-"Please refer to the document &#8220;<a rel=\"noreferrer\" href=\"https://www."
-"ipgeoblock.com/codex/record-settings-and-logs.html\" title=\"Codex | IP Geo "
-"Block\">Record settings and logs</a>&#8221; for details."
 msgstr ""
 
 #: admin/includes/tab-statistics.php:19
@@ -1632,7 +1592,7 @@ msgstr ""
 msgid "Database file does not exist."
 msgstr ""
 
-#: wp-content/mu-plugins/ip-geo-block-mu.php:70
+#: wp-content/mu-plugins/ip-geo-block-mu.php:72
 #, php-format
 msgid ""
 "Can't find IP Geo Block in your plugins directory. Please remove <code>%s</"

@@ -998,7 +998,7 @@ class IP_Geo_Block_Util {
 	 *
 	 */
 	private static function random_bytes( $length = 64 ) {
-		if ( PHP_VERSION_ID < 70000 )
+		if ( version_compare( PHP_VERSION, '7.0.0', '<' ) )
 			require_once IP_GEO_BLOCK_PATH . 'includes/random_compat/random.php';
 
 		// align length
