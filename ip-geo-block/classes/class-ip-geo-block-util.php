@@ -987,10 +987,16 @@ class IP_Geo_Block_Util {
 			$wp_query->set_404(); // for stylesheet
 
 		status_header( self::$theme_template['code'] ); // @since 2.0.0
+		add_filter( 'document_title_parts', 'IP_Geo_Block_Util::change_title' ); // @since 4.4.0
 
 		// avoid loading template for HEAD requests because of performance bump. See #14348.
 		'HEAD' !== $_SERVER['REQUEST_METHOD'] and include self::$theme_template['file'];
 		exit;
+	}
+
+	public static function change_title( $title_parts ) {
+		$title_parts['title'] = get_status_header_desc( self::$theme_template['code'] );
+		return $title_parts;
 	}
 
 	/**
