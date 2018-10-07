@@ -232,15 +232,15 @@ class IP_Geo_Block_API_Ipdataco extends IP_Geo_Block_API {
  * URL         : https://ipstack.com/
  * Term of use : https://ipstack.com/terms
  * Licence fee : free for registered user
- * Rate limit  : 10,000 queries per month
- * Sample URL  : https://api.ipstack.com/186.116.207.169?access_key=YOUR_ACCESS_KEY&output=json&legacy=1
+ * Rate limit  : 10,000 queries per month for free (https can be available for premium users)
+ * Sample URL  : http://api.ipstack.com/186.116.207.169?access_key=YOUR_ACCESS_KEY&output=json&legacy=1
  * Input type  : IP address (IPv4, IPv6) / domain name
  * Output type : json, xml
  */
 class IP_Geo_Block_API_ipstack extends IP_Geo_Block_API {
 	protected $template = array(
 		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'https://api.ipstack.com/%API_IP%?access_key=%API_KEY%&output=%API_FORMAT%&legacy=1',
+		'url' => 'http://api.ipstack.com/%API_IP%?access_key=%API_KEY%&output=%API_FORMAT%',
 		'api' => array(
 			'%API_FORMAT%' => 'json',
 		),
@@ -456,7 +456,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 		if ( $cache ) {
 			$fail = $cache['fail'] + ( 'failed' === $validate['result'] ? 1 : 0 );
-			$call = $cache['call'] + ( 'failed' !== $validate['result'] ? 1 : 0 );
+			$call = $cache['reqs'] + ( 'failed' !== $validate['result'] ? 1 : 0 );
 			$last = $cache['last'];
 			$view = $cache['view'];
 		} else { // if new cache then reset these values
@@ -482,13 +482,15 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 			'code' => $validate['code'],
 			'auth' => $validate['auth'], // get_current_user_id() > 0
 			'fail' => $fail, // $validate['auth'] ? 0 : $fail,
-			'call' => $settings['save_statistics'] ? $call : 0,
+			'reqs' => $settings['save_statistics'] ? $call : 0,
 			'last' => $last,
 			'view' => $view,
 			'host' => isset( $validate['host'] ) && $validate['host'] !== $ip ? $validate['host'] : '',
 		);
 
-		$settings['cache_hold'] and IP_Geo_Block_Logs::update_cache( $cache );
+		// do not update cache while installing geolocation databases
+		if ( $settings['cache_hold'] && ( ! $validate['auth'] || 'ZZ' !== $validate['code'] ) )
+			IP_Geo_Block_Logs::update_cache( $cache );
 
 		return self::$memcache[ $ip ] = $cache;
 	}
@@ -527,7 +529,7 @@ class IP_Geo_Block_Provider {
 		'ipinfo.io' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="https://ipinfo.io/" title="IP Address API and Data Solutions">https://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free)',
+			'link' => '<a rel="noreferrer" href="https://ipinfo.io/" title="IP Address API and Data Solutions">https://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free up to 1000 requests daily)',
 		),
 
 		'Nekudo' => array(
@@ -551,7 +553,7 @@ class IP_Geo_Block_Provider {
 		'Ipdata.co' => array(
 			'key'  => '',
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="https://ipdata.co/" title="ipdata.co - IP Geolocation and Threat Data API">https://ipdata.co/</a>&nbsp;(IPv4, IPv6 / up to 1500 requests daily free for registered user)',
+			'link' => '<a rel="noreferrer" href="https://ipdata.co/" title="ipdata.co - IP Geolocation and Threat Data API">https://ipdata.co/</a>&nbsp;(IPv4, IPv6 / free up to 1500 requests daily for registered user)',
 		),
 
 		'ipstack' => array(
@@ -584,11 +586,11 @@ class IP_Geo_Block_Provider {
 		self::$internals += $api;
 	}
 
-	public static function get_addons( $providers = array() ) {
+	public static function get_addons( $providers = array(), $force = FALSE ) {
 		$apis = array();
 
 		foreach ( self::$internals as $key => $val ) {
-			if ( 'Cache' !== $key && ( ! isset( $providers[ $key ] ) || ! empty( $providers[ $key ] ) ) )
+			if ( 'Cache' !== $key && ( $force || ! isset( $providers[ $key ] ) || ! empty( $providers[ $key ] ) ) )
 				$apis[] = $key;
 		}
 
@@ -638,31 +640,6 @@ class IP_Geo_Block_Provider {
 		return $list;
 	}
 
-	/**
-	 * Check status of provider selection
-	 *
-	 */
-	public static function diag_providers( $settings = NULL ) {
-		if ( ! $settings ) {
-			$settings = IP_Geo_Block::get_option();
-			$settings = $settings['providers'];
-		}
-
-		$field = 0;
-		foreach ( self::get_providers( 'key' ) as $key => $val ) {
-			if ( ( NULL   === $val   && ! isset( $settings[ $key ] ) ) ||
-			     ( FALSE  === $val   && ! empty( $settings[ $key ] ) ) ||
-			     ( is_string( $val ) && ! empty( $settings[ $key ] ) ) ) {
-				++$field;
-			}
-		}
-
-		if ( 0 === $field )
-			return __( 'You need to select at least one IP Geolocation API. Otherwise <strong>you\'ll be blocked</strong> after the cache expires.', 'ip-geo-block' );
-
-		return NULL;
-	}
-
 }
 
 /**
@@ -671,26 +648,26 @@ class IP_Geo_Block_Provider {
  */
 if ( class_exists( 'IP_Geo_Block', FALSE ) ) {
 
-	// Get absolute path to the geo-location API
-	$dir = IP_Geo_Block::get_option();
-	$dir = IP_Geo_Block_Util::slashit(
-		apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', dirname( $dir['api_dir'] ) )
-	) . IP_Geo_Block::GEOAPI_NAME;
+	// Avoid "The plugin does not have a valid header" on activation under WP4.0
+	if ( is_plugin_active( IP_GEO_BLOCK_BASE ) ) {
+		// Get absolute path to the geo-location API
+		$dir = IP_Geo_Block::get_option();
+		if ( $dir['api_dir'] ) {
+			$dir = IP_Geo_Block_Util::slashit(
+				apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', $dir['api_dir'] )
+			);
 
-	// If not exists then use bundled API
-	if ( ! is_dir( $dir ) )
-		$dir = IP_GEO_BLOCK_PATH . IP_Geo_Block::GEOAPI_NAME;
+			// Scan API directory
+			$plugins = is_dir( $dir ) ? scandir( $dir, defined( 'SCANDIR_SORT_DESCENDING' ) ? SCANDIR_SORT_DESCENDING : 1 ) : FALSE;
 
-	// Scan API directory
-	$dir = IP_Geo_Block_Util::slashit( $dir );
-	$plugins = is_dir( $dir ) ? scandir( $dir, 1 ) : FALSE; // SCANDIR_SORT_DESCENDING @since 5.4.0
-
-	// Load addons by heigher priority order
-	if ( FALSE !== $plugins ) {
-		$exclude = array( '.', '..' );
-		foreach ( $plugins as $plugin ) {
-			if ( ! in_array( $plugin, $exclude, TRUE ) && is_dir( $dir.$plugin ) ) {
-				@include $dir.$plugin.'/class-'.$plugin.'.php';
+			// Load addons by heigher priority order
+			if ( FALSE !== $plugins ) {
+				$exclude = array( '.', '..' );
+				foreach ( $plugins as $plugin ) {
+					if ( ! in_array( $plugin, $exclude, TRUE ) && is_dir( $dir.$plugin ) ) {
+						@include $dir.$plugin.'/class-'.$plugin.'.php';
+					}
+				}
 			}
 		}
 	}

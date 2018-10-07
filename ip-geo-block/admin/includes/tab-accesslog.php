@@ -26,6 +26,7 @@ class IP_Geo_Block_Admin_Tab {
 
 if ( $options['validation']['reclogs'] ):
 
+if ( extension_loaded( 'pdo_sqlite' ) ):
 		$html  = '<ul id="ip-geo-block-live-log">';
 		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-start" value="start"><label for="ip-geo-block-live-log-start" title="Start"><span class="ip-geo-block-icon-play"></span></label></li>';
 		$html .= '<li><input type="radio" name="ip-geo-block-live-log" id="ip-geo-block-live-log-pause" value="pause"><label for="ip-geo-block-live-log-pause" title="Pause"><span class="ip-geo-block-icon-pause"></span></label></li>';
@@ -47,6 +48,7 @@ if ( $options['validation']['reclogs'] ):
 				'class' => isset( $cookie[ $tab ][1] ) && $cookie[ $tab ][1] === 'o' ? '' : 'ip-geo-block-hide',
 			)
 		);
+endif; // extension_loaded( 'pdo_sqlite' )
 
 		// make a list of target (same as in tab-accesslog.php)
 		$target = array(
@@ -93,6 +95,29 @@ if ( $options['validation']['reclogs'] ):
 				'after' => '<a class="button button-secondary" id="ip-geo-block-reset-filter" title="' . __( 'Reset', 'ip-geo-block' ) . '" href="#!">'. __( 'Reset', 'ip-geo-block' ) . '</a>',
 			)
 		);
+
+		// Preset filters
+		$filters = apply_filters( $plugin_slug . '-logs-preset', array() );
+		if ( ! empty( $filters ) ) {
+			$html = '<ul id="ip-geo-block-logs-preset">';
+			foreach ( $filters as $filter ) {
+				$html .= '<li><a href="#!" data-value="' . esc_attr( $filter['value'] ) . '">' . esc_html( $filter['title'] ) . '</a></li>';
+			}
+
+			add_settings_field(
+				$option_name.'_logs_preset',
+				'<div class="ip-geo-block-subitem">' . __( 'Preset filters', 'ip-geo-block' ) . '</div>',
+				array( $context, 'callback_field' ),
+				$option_slug,
+				$section,
+				array(
+					'type' => 'html',
+					'option' => $option_name,
+					'field' => 'logs_preset',
+					'value' => $html,
+				)
+			);
+		}
 
 		// Bulk action
 		add_settings_field(

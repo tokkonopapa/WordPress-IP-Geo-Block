@@ -40,9 +40,9 @@ class IP_Geo_Block_Admin_Ajax {
 			}
 
 			$tmp = microtime( TRUE );
-			$res['host'] = esc_html( IP_Geo_Block_Lkup::gethostbyaddr( $ip ) );
+			$res['host (DNS)'] = esc_html( IP_Geo_Block_Lkup::gethostbyaddr( $ip ) );
 			$tmp = microtime( TRUE ) - $tmp;
-			$res['DNS lookup'] = sprintf( '%.1f [msec]', $tmp * 1000.0 );
+			$res['host (DNS)'] .= sprintf( ' (%.1f [msec])', $tmp * 1000.0 );
 		}
 
 		return $res;
@@ -72,7 +72,7 @@ class IP_Geo_Block_Admin_Ajax {
 						FALSE === $ret ? __( 'n/a', 'ip-geo-block' ) : (
 						! empty( $ret['errorMessage'] ) ? $ret['errorMessage'] : (
 						! empty( $ret['countryCode' ] ) ? $ret['countryCode' ] :
-						__( 'UNKNOWN', 'ip-geo-block' ) ) )
+						__( 'n/a', 'ip-geo-block' ) ) )
 					),
 				);
 			}
@@ -258,7 +258,7 @@ class IP_Geo_Block_Admin_Ajax {
 				/* AS number       */ $val['asn' ],
 				/* Host name       */ $val['host'],
 				/* Target          */ $val['hook'],
-				/* Failure / Total */ sprintf( '%d / %d', (int)$val['fail'], (int)$val['call'] ),
+				/* Failure / Total */ sprintf( '%d / %d', (int)$val['fail'], (int)$val['reqs'] ),
 				/* Elapsed[sec]    */ $time - (int)$val['time'],
 			) ) . PHP_EOL;
 		}
@@ -295,7 +295,7 @@ class IP_Geo_Block_Admin_Ajax {
 				/* AS number    */ '<span>' . esc_html( $val['asn' ] ) . '</span>',
 				/* Host name    */ '<span>' . esc_html( $val['host'] ) . '</span>',
 				/* Target       */ '<span>' . esc_html( $val['hook'] ) . '</span>',
-				/* Fails/Calls  */ '<span>' . sprintf( '%d / %d', (int)$val['fail'], (int)$val['call'] ) . '</span>',
+				/* Fails/Calls  */ '<span>' . sprintf( '%d / %d', (int)$val['fail'], (int)$val['reqs'] ) . '</span>',
 				/* Elapsed[sec] */ '<span>' . ( $time - (int)$val['time'] ) . '</span>',
 			);
 		}
@@ -308,7 +308,18 @@ class IP_Geo_Block_Admin_Ajax {
 	 */
 	public static function get_network_count() {
 if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
-		return get_blog_count(); // get_sites( array( 'count' => TRUE ) ) @since 4.6
+		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
+			return get_blog_count(); // get_sites( array( 'count' => TRUE ) ) @since 4.6
+		} else {
+			$count = 0;
+			global $wpdb;
+			foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
+				switch_to_blog( $id );
+				is_plugin_active( IP_GEO_BLOCK_BASE ) and ++$count;
+				restore_current_blog();
+			}
+			return $count;
+		}
 else:
 		return TEST_NETWORK_BLOG_COUNT;
 endif;
@@ -349,7 +360,7 @@ if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
 		foreach ( $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" ) as $id ) {
 			switch_to_blog( $id );
 
-			if ( $offset <= $i && $i < $length ) {
+			if ( is_plugin_active( IP_GEO_BLOCK_BASE ) && $offset <= $i && $i < $length ) {
 				// array of ( `time`, `ip`, `hook`, `code`, `method`, `data` )
 				$name = get_bloginfo( 'name' );
 				$logs = IP_Geo_Block_Logs::get_recent_logs( $duration );
@@ -363,12 +374,12 @@ if ( ! defined( 'TEST_RESTORE_NETWORK' ) or ! TEST_RESTORE_NETWORK ):
 
 				// link over network
 				$count[ $name ]['link'] = esc_url( add_query_arg(
-					array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1 ),
+					array( 'page' => IP_Geo_Block::PLUGIN_NAME ),
 					admin_url( 'options-general.php' )
 				) );
-
-				restore_current_blog();
 			}
+
+			restore_current_blog();
 		}
 else:
 		for ( $i = 0; $i < TEST_NETWORK_BLOG_COUNT; ++$i ) {
@@ -767,6 +778,7 @@ endif; // TEST_RESTORE_NETWORK
 					$result += array( $matches[1] => $which );
 				}
 			}
+			break;
 		}
 
 		return $result;

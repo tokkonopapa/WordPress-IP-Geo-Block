@@ -24,8 +24,8 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	private static $instance = NULL;
+	private $is_network_admin = NULL;
 	private $admin_tab = 0;
-	private $is_network = NULL;
 
 	/**
 	 * Initialize the plugin by loading admin scripts & styles
@@ -73,12 +73,12 @@ class IP_Geo_Block_Admin {
 			add_filter( IP_Geo_Block::PLUGIN_NAME . '-bypass-admins', array( $this, 'verify_request' ), 10, 2 );
 
 		if ( is_multisite() ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
-			$this->is_network = is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) && current_user_can( 'manage_network_options' );
-
+			$this->is_network_admin = current_user_can( 'manage_network_options' );
 			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
-			add_action( 'wpmu_new_blog',      array( $this, 'create_blog' ), 10, 6 ); // on creating a new blog @since MU
-			add_action( 'delete_blog',        array( $this, 'delete_blog' ), 10, 2 ); // on deleting an old blog @since 3.0.0
+			if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) { // @since 3.0.0
+				add_action( 'wpmu_new_blog', array( $this, 'create_blog' ), 10, 6 ); // on creating a new blog @since MU
+				add_action( 'delete_blog',   array( $this, 'delete_blog' ), 10, 2 ); // on deleting an old blog @since 3.0.0
+			}
 		}
 
 		// loads a plugin’s translated strings.
@@ -115,7 +115,6 @@ class IP_Geo_Block_Admin {
 		$urls = array( wp_login_url() );
 
 		// avoid multiple redirection caused by WP hide 1.4.9.1
-		require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
 		if ( is_plugin_active( 'wp-hide-security-enhancer/wp-hide.php' ) )
 			$urls[] = 'options-permalink.php';
 
@@ -168,13 +167,15 @@ class IP_Geo_Block_Admin {
 		defined( 'IP_GEO_BLOCK_DEBUG' ) and IP_GEO_BLOCK_DEBUG and assert( is_main_site(), 'Not main blog.' );
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php';
 
+		// get options on main blog
+		$settings = IP_Geo_Block::get_option();
+
 		// Switch to the new blog and initialize.
 		switch_to_blog( $blog_id );
 		IP_Geo_Block_Activate::activate_blog();
 
 		// Copy option from main blog.
-		$settings = IP_Geo_Block::get_option();
-		if ( $this->is_network && $settings['network_wide'] )
+		if ( $this->is_network_admin && $settings['network_wide'] )
 			update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
 		// Restore the main blog.
@@ -225,10 +226,10 @@ class IP_Geo_Block_Admin {
 				break;
 
 		  case 5: /* Site list */
-			// js for google chart
+			// js for google charts
 			wp_register_script(
 				$addon = IP_Geo_Block::PLUGIN_NAME . '-google-chart',
-				apply_filters( 'google-jsapi', 'https://www.google.com/jsapi' ), array(), NULL, $footer
+				apply_filters( 'google-charts', 'https://www.gstatic.com/charts/loader.js' ), array(), NULL, $footer
 			);
 			wp_enqueue_script( $addon );
 			break;
@@ -237,7 +238,7 @@ class IP_Geo_Block_Admin {
 			// Google Map in China
 			$geo = IP_Geo_Block::get_geolocation();
 			if ( isset( $geo['code'] ) && 'CN' === $geo['code'] ) {
-				add_filter( 'google-jsapi',      array( $this, 'google_jsapi_cn'      ) );
+				add_filter( 'google-charts',     array( $this, 'google_charts_cn'     ) );
 				add_filter( 'google-maps',       array( $this, 'google_maps_cn'       ) );
 				add_filter( 'google-maps-nokey', array( $this, 'google_maps_nokey_cn' ) );
 			}
@@ -297,7 +298,7 @@ class IP_Geo_Block_Admin {
 					/* [ 7] */ __( '[Found: %d]',                 'ip-geo-block' ),
 					/* [ 8] */ __( 'Find and verify `%s` on &#8220;Logs&#8221; tab.',          'ip-geo-block' ),
 					/* [ 9] */ __( 'This feature is available with HTML5 compliant browsers.', 'ip-geo-block' ),
-					/* [10] */ __( 'The selected row cannot be found in the visible area.',    'ip-geo-block' ),
+					/* [10] */ __( 'The selected row cannot be found in the table.',           'ip-geo-block' ),
 					/* [11] */ __( 'An error occurred while executing the ajax command `%s`.', 'ip-geo-block' ),
 				),
 				'i18n' => array(
@@ -330,9 +331,9 @@ class IP_Geo_Block_Admin {
 	 * Google Map in China
 	 *
 	 */
-	public function google_jsapi_cn     ( $url ) { return 'https://www.google.cn/jsapi';  }
-	public function google_maps_cn      ( $url ) { return '//maps.google.cn/maps/api/js'; }
-	public function google_maps_nokey_cn( $url ) { return '//maps.google.cn/maps';        }
+	public function google_charts_cn    ( $url ) { return 'https://www.gstatic.cn/charts/loader.js'; }
+	public function google_maps_cn      ( $url ) { return '//maps.google.cn/maps/api/js';            }
+	public function google_maps_nokey_cn( $url ) { return '//maps.google.cn/maps';                   }
 
 	/**
 	 * Add plugin meta links
@@ -415,7 +416,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function dashboard_url( $network = NULL ) {
-		return ( is_null( $network ) ? $this->is_network : $network ) ? network_admin_url( 'admin.php' /*'settings.php'*/ ) : admin_url( 'options-general.php' );
+		return ( is_null( $network ) ? $this->is_network_admin : $network ) ? network_admin_url( 'admin.php' /*'settings.php'*/ ) : admin_url( 'options-general.php' );
 	}
 
 	/**
@@ -423,24 +424,24 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	private function add_plugin_admin_menu( $settings ) {
-		// Network wide or not
-		$admin_menu = ( 'admin_menu' === current_filter() ); // @since: 2.5 `admin_menu` or `network_admin_menu`
-
-		// Verify tab number
-		if ( $this->is_network &= $settings['network_wide'] ) {
-			if ( $admin_menu ) {
+		// Control tab number
+		// `admin_menu` or `network_admin_menu` @since: 2.5
+		if ( $admin_menu = ( 'admin_menu' === current_filter() ) ) {
+			if ( $this->is_network_admin && $settings['network_wide'] )
 				$this->admin_tab = min( 4, max( 1, $this->admin_tab ) );
-			} elseif ( ! in_array( $this->admin_tab, array( 0, 5 ), TRUE ) ) {
-				$this->admin_tab = 0;
-			}
+			else
+				$this->admin_tab = min( 4, max( 0, $this->admin_tab ) );
 		} else {
-			$this->admin_tab = min( 4, $this->admin_tab ); // exclude `Site List`
+			if ( $this->is_network_admin && $settings['network_wide'] )
+				$this->admin_tab = in_array( $this->admin_tab, array( 0, 5 ), TRUE ) ? $this->admin_tab : 0;
+			else
+				$this->admin_tab = 5;
 		}
 
 		if ( $admin_menu ) {
 			// `settings-updated` would be added just after settings updated.
-			if ( ! empty( $_REQUEST['settings-updated'] ) && $this->is_network &&
-			     ! empty( $_REQUEST['page'] ) && IP_Geo_Block::PLUGIN_NAME === $_REQUEST['page'] ) {
+			if ( ! empty( $_REQUEST['page'] ) && IP_Geo_Block::PLUGIN_NAME === $_REQUEST['page'] &&
+			     ! empty( $_REQUEST['settings-updated'] ) && $this->is_network_admin && $settings['network_wide'] ) {
 				$this->update_multisite_settings( $settings );
 				wp_safe_redirect( esc_url_raw( add_query_arg(
 					array( 'page' => IP_Geo_Block::PLUGIN_NAME ),
@@ -459,7 +460,7 @@ class IP_Geo_Block_Admin {
 			);
 		}
 
-		elseif ( IP_GEO_BLOCK_NETWORK && $this->is_network ) {
+		elseif ( IP_GEO_BLOCK_NETWORK && $this->is_network_admin ) {
 			// Add a settings page for this plugin to the Settings menu.
 			$hook = add_menu_page(
 				__( 'IP Geo Block', 'ip-geo-block' ),
@@ -489,6 +490,7 @@ class IP_Geo_Block_Admin {
 				IP_Geo_Block::PLUGIN_NAME . '&amp;tab=5',
 				array( $this, 'display_plugin_admin_page' )
 			);
+
 			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-icons',
 				plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 					'css/admin-icons.min.css' : 'css/admin-icons.css', __FILE__
@@ -508,11 +510,38 @@ class IP_Geo_Block_Admin {
 	 */
 	private function diagnose_admin_screen( $settings ) {
 		$updating = get_transient( IP_Geo_Block::CRON_NAME );
-		$adminurl = $this->dashboard_url( $this->is_network && $settings['network_wide'] );
+		$adminurl = $this->dashboard_url( $this->is_network_admin && $settings['network_wide'] );
 
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7.0' ) < 0 )
 			self::add_admin_notice( 'error', __( 'You need WordPress 3.7+.', 'ip-geo-block' ) );
+
+		if ( ! $settings['api_dir'] || ! file_exists( $settings['api_dir'] ) ) {
+			$this->add_admin_notice( 'error', sprintf(
+				__( 'Can not load Geolocation API libraries from <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="https://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
+				apply_filters( 'ip-geo-block-api-dir', $settings['api_dir'] ? $settings['api_dir'] : basename( WP_CONTENT_DIR ) )
+			) );
+		}
+
+		else {
+			$providers = IP_Geo_Block_Provider::get_valid_providers( $settings, FALSE, FALSE, TRUE );
+			if ( empty( $providers ) ) {
+				$this->add_admin_notice( 'error', sprintf(
+				__( 'You should select at least one API at <a href="%s">Geolocation API settings</a>. Otherwise <strong>you\'ll be blocked</strong> after the cache expires.', 'ip-geo-block' ),
+				esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4'
+				) );
+			}
+
+			else {
+				$providers = IP_Geo_Block_Provider::get_addons( $settings['providers'] );
+				if ( empty( $providers ) ) {
+					$this->add_admin_notice( 'error', sprintf(
+					__( 'You should select at least one API for local database at <a href="%s">Geolocation API settings</a>. Otherwise access to the external API may slow down the site.', 'ip-geo-block' ),
+						esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4'
+					) );
+				}
+			}
+		}
 
 		// Check consistency of matching rule
 		if ( -1 === (int)$settings['matching_rule'] ) {
@@ -567,11 +596,12 @@ class IP_Geo_Block_Admin {
 						) :
 						sprintf(
 							__( 'Please confirm your local geolocation databases at &#8220;%sLocal database settings%s&#8221; section and remove your IP address in cache at &#8220;%sStatistics in cache%s&#8221; section.', 'ip-geo-block' ),
-							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4' ) . '">', '</a></strong>',
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 5 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-5' ) . '">', '</a></strong>',
 							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1, 'sec' => 2 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-2' ) . '">', '</a></strong>'
 						)
 					)
 				);
+				break;
 			}
 		}
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
@@ -584,7 +614,7 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		}
 endif;
 		// Check consistency of emergency login link
-		if ( $settings['login_link']['link'] && ! IP_Geo_Block_Util::verify_link( $settings['login_link']['link'], $settings['login_link']['hash'] ) ) {
+		if ( isset( $settings['login_link'] ) && $settings['login_link']['link'] && ! IP_Geo_Block_Util::verify_link( $settings['login_link']['link'], $settings['login_link']['hash'] ) ) {
 			self::add_admin_notice( 'error',
 				sprintf(
 					__( 'Emergency login link is outdated. Please delete it once and generate again at &#8220;%sPlugin settings%s&#8221; section. Also do not forget to update favorites / bookmarks in your browser.', 'ip-geo-block' ),
@@ -719,7 +749,7 @@ endif;
 		if ( 'options-general.php' === $GLOBALS['pagenow'] ) {
 			$action = 'options.php';
 			unset( $tabs[5] ); // Site List
-			if ( IP_GEO_BLOCK_NETWORK && $this->is_network ) {
+			if ( IP_GEO_BLOCK_NETWORK && $this->is_network_admin ) {
 				if ( $settings['network_wide'] ) {
 					unset( $tabs[0] ); // Settings
 				}
@@ -734,10 +764,9 @@ endif;
 			// `edit.php` is an action handler for Multisite administration panels.
 			// `edit.php` ==> do action `network_admin_edit_IP_GEO_BLOCK` ==> `validate_network_settings()`
 			$action = 'edit.php?action=' . IP_Geo_Block::PLUGIN_NAME;
-			if ( $this->is_network ) {
+			if ( $this->is_network_admin ) {
 				if ( ! $settings['network_wide'] ) {
-					$tab = 5;          // forct to Site List
-					unset( $tabs[0] ); // Settings
+					unset( $tabs[0] ); // remove Settings
 				}
 				unset( $tabs[1], $tabs[4], $tabs[2], $tabs[3] ); // Statistics, Logs, Search, Attribution
 				$title .= ' <span class="ip-geo-block-menu-link">';
@@ -773,8 +802,9 @@ endif;
 ?>
 	</form>
 <?php if ( 2 === $tab ) { /* Search tab */ ?>
-	<div id="ip-geo-block-whois"></div>
+	<div id="ip-geo-block-apis"></div>
 	<div id="ip-geo-block-map"></div>
+	<div id="ip-geo-block-whois"></div>
 <?php } elseif ( 3 === $tab ) { /* Attribute tab */
 	// show attribution (higher priority order)
 	$tab = array();
@@ -890,9 +920,9 @@ endif;
 		  case 'select':
 		  case 'select-text':
 			$desc = '';
-			echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\">\n";
+			echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\" ", (isset( $args['attr'] ) ? esc_attr( $args['attr'] ) : ''), ">\n";
 			foreach ( $args['list'] as $key => $val ) {
-				echo "\t<option value=\"$key\"", ( NULL === $val ? ' selected disabled' : selected( $args['value'], $key, FALSE ) );
+				echo "\t<option value=\"$key\"", NULL === $val ? ' selected disabled' : ( is_array( $args['value'] ) ? selected( in_array( $key, $args['value'] ), TRUE, FALSE ) : selected( $args['value'], $key, FALSE ) );
 				if ( isset( $args['desc'][ $key ] ) ) {
 					echo ' data-desc="', $args['desc'][ $key ], '"';
 					$key === $args['value'] and $desc = $args['desc'][ $key ];
@@ -1004,10 +1034,6 @@ endif;
 							isset( $input[ $key ][ $provider ] ) ? sanitize_text_field( $input[ $key ][ $provider ] ) : '';
 					}
 				}
-
-				// Check providers setting
-				if ( $error = IP_Geo_Block_Provider::diag_providers( $output[ $key ] ) )
-					self::add_admin_notice( 'error', $error );
 				break;
 
 			  case 'comment':
@@ -1386,6 +1412,7 @@ endif;
 				$this->dashboard_url( ! empty( $_POST[ $option ]['network_wide'] ) )
 			)
 		) );
+
 		exit;
 	}
 
@@ -1435,7 +1462,10 @@ endif;
 			break;
 
 		  case 'search': // Get geolocation by IP
-			$res = IP_Geo_Block_Admin_Ajax::search_ip( $which );
+			$res = array();
+			foreach ( (array)$which as $cmd ) {
+				$res[ $cmd ] = IP_Geo_Block_Admin_Ajax::search_ip( $cmd );
+			}
 			break;
 
 		  case 'scan-code': // Fetch providers to get country code
@@ -1555,7 +1585,7 @@ endif;
 				}
 			}
 
-			if ( $this->is_network && $settings['network_wide'] )
+			if ( $this->is_network_admin && $settings['network_wide'] )
 				$this->update_multisite_settings( $settings );
 			else
 				update_option( IP_Geo_Block::OPTION_NAME, $settings );

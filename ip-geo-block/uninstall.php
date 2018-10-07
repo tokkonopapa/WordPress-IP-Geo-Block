@@ -54,7 +54,7 @@ class IP_Geo_Block_Uninstall {
 			}
 		}
 
-		IP_Geo_Block_Opts::delete_api( $settings );
+		IP_Geo_Block_Opts::uninstall_api( $settings );
 		IP_Geo_Block_Opts::setup_validation_timing( FALSE );
 	}
 

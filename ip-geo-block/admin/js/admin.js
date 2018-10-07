@@ -6,8 +6,6 @@
  * This software is released under the MIT License.
  */
 (function ($, window, document) {
-	'use strict';
-
 	// External variables
 	var skip_error = false,
 	    timer_stack = [],
@@ -28,7 +26,7 @@
 	}
 
 	function escapeHTML(str) {
-		return str.toString().replace(/[&<>"']/g, function (match) {
+		return str.toString().replace(/[&<>"']/g, function (match) { //'"
 			return {
 				'&': '&amp;',
 				'<': '&lt;',
@@ -490,11 +488,11 @@
 					}
 
 					// https://stackoverflow.com/questions/12701772/insert-links-into-google-charts-api-data
-					n = 'https://www.w3.org/1999/xlink';
+					n = 'http://www.w3.org/1999/xlink';
 					$id.find('text').each(function (i, elm) {
 						p = elm.parentNode;
 						if ('g' === p.tagName.toLowerCase() && -1 !== (i = inArray(elm.textContent, info))) {
-							a = document.createElementNS('https://www.w3.org/2000/svg', 'a');
+							a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
 							a.setAttributeNS(n, 'xlink:href', info[i].link);
 							a.setAttributeNS(n, 'title', info[i].label);
 							a.setAttribute('target', mode ? '_blank' : '_self');
@@ -597,7 +595,7 @@
 			if (5 === tabNo) {
 				packages.push('bar');
 			}
-			window.google.load('visualization', '1', {
+			window.google.charts.load('current', {
 				packages: packages,
 				callback: function () {
 					drawChart(tabNo);
@@ -615,7 +613,7 @@
 
 		for (i in cookie) {
 			if(cookie.hasOwnProperty(i)) {
-				cookie[i] = cookie[i].replace(/[^ox\d]/g, '').split(''); // string (ooo...) to array (n)
+				cookie[i] = cookie[i].replace(/[^ox\d]/ig, '').split(''); // string (ooo...) to array (n)
 			}
 		}
 
@@ -635,9 +633,9 @@
 			if ('undefined' !== typeof obj) {
 				n = obj.length;
 				if (n) {
-					c[i] = (obj[0] || 'o');
+					c[i] = (obj[0] || 'o').toString();
 					for (j = 1; j < n; ++j) {
-						c[i] += (obj[j] || 'o');
+						c[i] += (obj[j] || 'o').toString();
 					}
 				}
 			}
@@ -677,11 +675,7 @@
 		var cookie = loadCookie(tabNo);
 
 		// Click event handler to show/hide form-table
-		$('form').on('click', 'h2,h3 a', function (/*event*/) {
-			window.open(this.href, null);
-			return false;
-		})
-		.on('click', 'h2,h3', function (/*event*/) {
+		$(document).on('click', 'form>h2,h3', function (/*event*/) {
 			toggleSection($(this), tabNo, cookie);
 			return false;
 		});
@@ -748,23 +742,20 @@
 	/*--------------------------------------------------
 	 * DataTables for tab 1 (Statistics) and 4 (Logs)
 	 *--------------------------------------------------*/
-	function initTable(tabNo, control, options) {
-		$.extend(true, $.fn.dataTable.defaults, options, {
-			// DOM
-			dom: 'tp',
+	function initTable(tabNo, control, options, cookie) {
+		// get page length from cookie
+		var length = (Number(cookie[tabNo][1 === tabNo ? 3 : 2]) || 0);
+		length = [10, 25, 50, 100][length];
 
-			// Server side
-			serverSide: false,
+		$.extend(true, $.fn.dataTable.defaults, options, {
+			// DOM position (t:table, l:length menu, p:pagenate)
+			dom: 'tlp',
 
 			// Client behavior
+			serverSide: false,
 			autoWidth: false,
 			processing: true,
 			deferRender: true,
-			deferLoading: 10,
-
-			// Interface
-			info: false,
-			lengthChange: false,
 
 			// Language
 			language: {
@@ -772,6 +763,7 @@
 				loadingRecords: ip_geo_block.i18n[0],
 				processing:     ip_geo_block.i18n[0],
 				zeroRecords:    ip_geo_block.i18n[2],
+				lengthMenu:     '_MENU_',
 				paginate: {
 					first:    '&laquo;',
 					last:     '&raquo;',
@@ -799,9 +791,10 @@
 				}
 			],
 
-			// Pagenation
+			// Pagenation, Page length (initial)
 			pagingType: 'full_numbers', // or 'simple_numbers'
-			pageLength: 10,
+			lengthMenu: [10, 25, 50, 100],
+			pageLength: length,
 
 			// scroller
 			scroller: true,
@@ -879,7 +872,7 @@
 			    texp = /(<([^>]+)>)/ig,              // regular expression to strip tag
 			    hexp = /data-hash=[\W]([\w]+)[\W]/i, // regular expression to extract hash
 			    data = { IP: [], AS: [] },           // IP address and AS number
-			    hash, cell, cells = $('table' + ID('.', 'dataTable')).find('td>input:checked');
+			    hash, cell, cells = table.$('input:checked'); // checked entry in table
 
 			if (!cmd) {
 				return false;
@@ -968,6 +961,12 @@
 			return false;
 		});
 
+		// save cookie when length menu is changed
+		$(ID('#', control.tableID)).on('length.dt', function (e, settings, len) {
+			cookie[tabNo][1 === tabNo ? 3 : 2] = ({10:0, 25:1, 50:2, 100:3}[len] || 0);
+			saveCookie(cookie);
+		});
+
 		return table;
 	}
 
@@ -1032,7 +1031,7 @@
 					parent.show('slow');
 				});
 
-				return false;
+				return false; //
 			});
 
 			// Matching rule
@@ -1065,7 +1064,7 @@
 			// Show/Hide folding list at prevent malicious upload
 			$(ID('@', 'validation_mimetype')).on('change', function (event) {
 				var $this = $(this),
-				    stat = parseInt($this.val(), 10);
+				    stat = Number($this.val());
 				$this.nextAll(ID('.', 'settings-folding')).each(function (i, obj) {
 					fold_elements($(obj), (stat === i + 1) || (stat && 2 === i));
 				});
@@ -1080,7 +1079,7 @@
 
 				// only for Front-end target settings
 				if (0 <= $this.attr('name').indexOf('public')) {
-					if (-1 === parseInt($(ID('@', 'public_matching_rule')).val(), 10)) {
+					if (-1 === Number($(ID('@', 'public_matching_rule')).val())) {
 						elm.each(function (index) {
 							if (1 >= index) {
 								$(this).hide();
@@ -1594,7 +1593,7 @@
 					});
 				} else {
 					$li.sort(function (a, b) {
-						return parseInt($(a).text().replace(/^.*\((\d+)\)$/, '$1'), 10) <= parseInt($(b).text().replace(/^.*\((\d+)\)$/, '$1'), 10);
+						return Number($(a).text().replace(/^.*\((\d+)\)$/, '$1')) <= Number($(b).text().replace(/^.*\((\d+)\)$/, '$1'));
 					});
 				}
 
@@ -1648,7 +1647,7 @@
 					{ responsivePriority:  5, targets: 7 }, // Elapsed[sec]
 					{ className: "all",       targets: [0, 1, 2, 5] } // always visible
 				]
-			});
+			}, cookie);
 
 			// Export cache
 			add_hidden_form('export-cache');
@@ -1832,9 +1831,17 @@
 
 				// Re-initialize DataTables
 				$(ID('#', 'live-log-stop')).trigger('click');
-				table = initTable(tabNo, control, options);
+				table = initTable(tabNo, control, options, cookie);
 				return false;
 			}).trigger('change');
+
+			// Preset filters
+			$(ID('#', 'logs-preset')).on('click', 'a', function (/*event*/) {
+				var value = $(this).data('value');
+				$(ID('@', 'search_filter')).val(value);
+				table.search(value, false, true, !/[A-Z]/.test(value)).draw();
+				return false;
+			});
 
 			// Export logs
 			add_hidden_form('export-logs');
@@ -1873,17 +1880,30 @@
 			}
 
 			// Set selected provider to cookie
+			var options = [];
 			$('select[id^="' + ID('!', 'service') + '"]').on('change', function (/*event*/) {
-				cookie[tabNo][3] = $(this).prop('selectedIndex');
+				// make selected options in cookie
+				$(this).children('option').each(function (i, elm) {
+					options[$(elm).text()] = i;
+					cookie[tabNo][3 + i] = $(elm).prop('selected') ? 'o' : 'x';
+				});
+
+				// if selected options does not include the focused index, update it
+				if ('o' !== cookie[tabNo][3 + (Number(cookie[tabNo][2]) || 0)]) {
+					cookie[tabNo][2] = $(this).prop('selectedIndex');
+				}
+
 				saveCookie(cookie);
 			}).change();
 
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (/*event*/) {
-				var whois = $(ID('#', 'whois')), obj,
+				var whois = $(ID('#', 'whois'  )),
+				    apis  = $(ID('#', 'apis'   )),
+				    list  = $(ID('@', 'service')).val(), obj,
 				    ip = $.trim($(ID('@', 'ip_address')).val());
 
-				if (ip) {
+				if (ip && list) {
 					// Anonymize IP address
 					if ($(ID('@', 'anonymize')).prop('checked')) {
 						if (/[^0-9a-f\.:]/.test(ip)) {
@@ -1903,6 +1923,7 @@
 					}
 
 					whois.hide().empty();
+					apis.hide().empty();
 
 					// Get whois data
 					obj = $.whois(ip, function (data) {
@@ -1922,64 +1943,88 @@
 							'</fieldset>'
 						).fadeIn('slow');
 
-						$(ID('#', 'whois-title')).on('click', function (/*event*/) {
-							var $this = $(this);
-							$this.parent().nextAll().toggle();
-							$this.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
-							return false;
-						});
+						// keep closing
+						if ('x' === cookie[tabNo][1]) {
+							$(ID('#', 'whois-title')).trigger('click');
+						}
 					});
 
 					// Show map
 					ajax_post('loading', {
 						cmd: 'search',
 						ip: ip,
-						which: $(ID('@', 'service')).val()
+						which: list
 					}, function (data) {
-						var key, info = '',
-						    latitude  = stripTag(data.latitude  || '0'),
-						    longitude = stripTag(data.longitude || '0'),
-						    zoom = (data.latitude || data.longitude) ? 8 : 2;
+						var key, tabs = '',
+						c = Number(cookie[tabNo][2]) || 0;
 
 						for (key in data) {
 							if (data.hasOwnProperty(key)) {
-								key = stripTag(key);
-								info +=
-									'<li>' +
-										'<span class="' + ID('title' ) + '">' + key + ' : </span>' +
-										'<span class="' + ID('result') + '">' + stripTag(data[key]) + '</span>' +
-									'</li>';
+								tabs += '<a href="#!" class="nav-tab' + (options[key] === c ? ' nav-tab-active' : '')
+								+ '" data-index="' + options[key] + '" data-api=\'' + stripTag(JSON.stringify(data[key]))
+								+ '\'>' + key + '</a>';
 							}
 						}
 
-						if ('object' === typeof window.google) {
-							map.GmapRS('addMarker', {
-								latitude: latitude,
-								longitude: longitude,
-								title: ip,
-								content: '<ul>' + info + '</ul>',
-								show: true,
-								zoom: zoom
-							});
-						} else {
-							map.css({
-								height: '600px',
-								backgroundColor: 'transparent'
-							}).empty().html(
-								'<ul style="margin-top:0; margin-left:1em;">' +
-									'<li>' +
-										'<span class="' + ID('title' ) + '">' + 'IP address' + ' : </span>' +
-										'<span class="' + ID('result') + '">' + stripTag(ip) + '</span>' +
-									'</li>' +
-									info +
-									/*'<li>' +
-										'<span class="' + ID('title' ) + '">' + 'show map' + ' : </span>' +
-										'<span class="' + ID('result') + '">' + '<a href="//maps.google.com/maps?q=' + latitude + ',' + longitude + '">Click here</a>' + '</span>' +
-									'</li>' +*/
-								'</ul>'
-								+ '<iframe src="//maps.google.com/maps?q=' + latitude + ',' + longitude + '&z=' + zoom + '&output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
-							);
-						}
+						apis.html(
+							'<div class="nav-tab-wrapper">' + tabs + '</div>' +
+							'<div id="ip-geo-block-geoinfo"></div>'
+						).fadeIn('slow')
+
+						// change APIs tab
+						.on('click', 'a', function () {
+							var $this = $(this),
+							    key, json = $(this).data('api'), info = '',
+							    latitude  = stripTag(json.latitude  || '0'),
+							    longitude = stripTag(json.longitude || '0'),
+							    zoom = (json.latitude || json.longitude) ? 7 : 2;
+
+							$this.parent().children('a').removeClass('nav-tab-active');
+							$this.addClass('nav-tab-active');
+
+							// last focused index
+							cookie[tabNo][2] = $this.data('index');
+							saveCookie(cookie);
+
+							for (key in json) {
+								if (json.hasOwnProperty(key)) {
+									key = stripTag(key);
+									info +=
+										'<li>' +
+											'<span class="' + ID('title' ) + '">' + key + ' : </span>' +
+											'<span class="' + ID('result') + '">' + stripTag(json[key]) + '</span>' +
+										'</li>';
+								}
+							}
+
+							if ('object' === typeof window.google) {
+								map.GmapRS('deleteMarkers').GmapRS('addMarker', {
+									latitude: latitude,
+									longitude: longitude,
+									title: ip,
+									content: '<ul>' + info + '</ul>',
+									show: true,
+									zoom: zoom
+								});
+							} else {
+								map.empty().html(
+									'<iframe src="' + ip_geo_block.altgmap + '?q=' + latitude + ',' + longitude + '&z=' + zoom + '&output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
+								);
+								$(ID('#', 'geoinfo')).html(
+									'<ul>' +
+										//'<li>' +
+										//	'<span class="' + ID('title' ) + '">' + 'IP address' + ' : </span>' +
+										//	'<span class="' + ID('result') + '">' + stripTag(ip) + '</span>' +
+										//'</li>' +
+										//'<li>' +
+										//	'<span class="' + ID('title' ) + '">' + 'show map' + ' : </span>' +
+										//	'<span class="' + ID('result') + '">' + '<a href="//maps.google.com/maps?q=' + latitude + ',' + longitude + '">Click here</a>' + '</span>' +
+										//'</li>' +
+										info +
+									'</ul>'
+								);
+							}
+						}).find('.nav-tab-active').trigger('click');
 					}, [obj]);
 				}
 

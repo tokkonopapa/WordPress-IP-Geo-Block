@@ -12,9 +12,8 @@ class IP_Geo_Block_Admin_Tab {
 		/*----------------------------------------*
 		 * Geolocation
 		 *----------------------------------------*/
-		$section = IP_Geo_Block::PLUGIN_NAME . '-search';
 		add_settings_section(
-			$section,
+			$section = IP_Geo_Block::PLUGIN_NAME . '-search',
 			__( 'Search IP address geolocation', 'ip-geo-block' ),
 			NULL,
 			$option_slug
@@ -23,7 +22,6 @@ class IP_Geo_Block_Admin_Tab {
 		// make providers list
 		$list = array();
 		$providers = IP_Geo_Block_Provider::get_providers( 'key' );
-
 		foreach ( $providers as $provider => $key ) {
 			if ( ! is_string( $key ) ||
 				 ! empty( $options['providers'][ $provider ] ) ) {
@@ -32,10 +30,17 @@ class IP_Geo_Block_Admin_Tab {
 		}
 
 		// get selected item
+		$provider  = array();
+		$providers = array_keys( $providers );
 		$cookie = $context->get_cookie();
-		$cookie = empty( $cookie[ $tab ] ) ? 0 : (int)end( $cookie[ $tab ] );
+		if ( isset( $cookie[ $tab ] ) ) {
+			foreach ( array_slice( (array)$cookie[ $tab ], 3 ) as $key => $val ) {
+				if ( 'o' === $val ) {
+					$provider[] = $providers[ $key ];
+				}
+			}
+		}
 
-		$provider = array_keys( $providers );
 		add_settings_field(
 			$option_name.'_service',
 			__( 'Geolocation API', 'ip-geo-block' ),
@@ -44,9 +49,10 @@ class IP_Geo_Block_Admin_Tab {
 			$section,
 			array(
 				'type' => 'select',
+				'attr' => 'multiple="multiple"',
 				'option' => $option_name,
 				'field' => 'service',
-				'value' => $provider[ $cookie ],
+				'value' => ! empty( $provider ) ? $provider : $providers[0],
 				'list' => $list,
 			)
 		);

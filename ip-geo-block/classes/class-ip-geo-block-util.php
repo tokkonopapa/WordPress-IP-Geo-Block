@@ -978,19 +978,27 @@ class IP_Geo_Block_Util {
 			}
 		}
 
+		// prevent to make a cached page. `set_404()` should not be used for `wp_dir()`.
+		global $wp_query; isset( $wp_query->is_404 ) and $wp_query->is_404 = TRUE;
+
 		return FALSE; // die with wp_die() immediately
 	}
 
 	public static function load_theme_template( $template = FALSE ) {
-		global $wp_query;
-		if ( $wp_query )
-			$wp_query->set_404(); // for stylesheet
+		global $wp_query; isset( $wp_query ) and $wp_query->set_404(); // for stylesheet
 
 		status_header( self::$theme_template['code'] ); // @since 2.0.0
+		add_filter( 'document_title_parts', 'IP_Geo_Block_Util::change_title' ); // @since 4.4.0
 
 		// avoid loading template for HEAD requests because of performance bump. See #14348.
 		'HEAD' !== $_SERVER['REQUEST_METHOD'] and include self::$theme_template['file'];
 		exit;
+	}
+
+	public static function change_title( $title_parts ) {
+		// change title from `Not Found` to the correct one.
+		$title_parts['title'] = get_status_header_desc( self::$theme_template['code'] );
+		return $title_parts;
 	}
 
 	/**
@@ -998,7 +1006,7 @@ class IP_Geo_Block_Util {
 	 *
 	 */
 	private static function random_bytes( $length = 64 ) {
-		if ( PHP_VERSION_ID < 70000 )
+		if ( version_compare( PHP_VERSION, '7.0.0', '<' ) )
 			require_once IP_GEO_BLOCK_PATH . 'includes/random_compat/random.php';
 
 		// align length

@@ -1,5 +1,4 @@
 <?php
-require_once ABSPATH           . 'wp-admin/includes/plugin.php'; // for get_plugins()
 require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php';
 require_once IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php';
 
@@ -82,7 +81,7 @@ class IP_Geo_Block_Admin_Tab {
 				'type' => 'html',
 				'option' => $option_name,
 				'field' => 'ip_client',
-				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ) . '</span>',
+				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'n/a', 'ip-geo-block' ) ) ) . '</span>',
 				'after' => '&nbsp;<a class="button-secondary" id="ip-geo-block-scan-ip_client" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="#!">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-ip_client"></div>',
 			)
 		);
@@ -101,7 +100,7 @@ if ( $key = IP_Geo_Block_Util::get_server_ip() && $key !== $val && ! IP_Geo_Bloc
 				'type' => 'html',
 				'option' => $option_name,
 				'field' => 'ip_server',
-				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'UNKNOWN', 'ip-geo-block' ) ) ) . '</span>',
+				'value' => '<span class="ip-geo-block-ip-addr">' . esc_html( $key['ip'] . ' / ' . ( $key['code'] && isset( $key['provider'] ) ? $key['code'] . ' (' . $key['provider'] . ')' : __( 'n/a', 'ip-geo-block' ) ) ) . '</span>',
 				'after' => '&nbsp;<a class="button-secondary" id="ip-geo-block-scan-ip_server" title="' . __( 'Scan all the APIs you selected at Geolocation API settings', 'ip-geo-block' ) . '" href="#!">' . __( 'Scan country code', 'ip-geo-block' ) . '</a><div id="ip-geo-block-scanning-ip_server"></div>',
 			)
 		);
@@ -1343,7 +1342,7 @@ endif;
 
 		// Local DBs and APIs
 		$provider  = IP_Geo_Block_Provider::get_providers( 'key' ); // all available providers
-		$providers = IP_Geo_Block_Provider::get_addons( $options['providers'] ); // only local
+		$providers = IP_Geo_Block_Provider::get_addons( $options['providers'], TRUE ); // only local
 
 		// Disable 3rd parties API
 		if ( ! empty( $options['restrict_api'] ) ) {
@@ -1391,13 +1390,6 @@ endif;
 		/*----------------------------------------*
 		 * Local database settings
 		 *----------------------------------------*/
-		if ( empty( $providers ) ) {
-			$context->add_admin_notice( 'error', sprintf(
-				__( 'Can not find Geolocation API libraries in <code>%s</code>. It seems to have failed downloading <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API/archive/master.zip" title="Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file">ZIP file</a> from <a rel="noreferrer" href="https://github.com/tokkonopapa/WordPress-IP-Geo-API" title="tokkonopapa/WordPress-IP-Geo-API - GitHub">WordPress-IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission according to <a rel="noreferrer" href="https://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html" title="How can I fix permission troubles? | IP Geo Block">this instruction</a>.', 'ip-geo-block' ),
-				apply_filters( 'ip-geo-block-api-dir', basename( WP_CONTENT_DIR ) )
-			) );
-		}
-
 		add_settings_section(
 			$section = $plugin_slug . '-database',
 			array( __( 'Local database settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/geolocation-api-library.html" title="Geolocation API library | IP Geo Block">' . $common[4] . '</a>' ),
@@ -1518,22 +1510,20 @@ endif;
 		);
 
 		// Google Maps API key
-		if ( 'default' !== $options['api_key']['GoogleMap'] or defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
-			add_settings_field(
-				$option_name.'_api_key',
-				__( '<dfn title="Valid key for Google Maps JavaScript API">Google Maps API key</dfn>', 'ip-geo-block' ),
-				array( $context, 'callback_field' ),
-				$option_slug,
-				$section,
-				array(
-					'type' => 'text',
-					'option' => $option_name,
-					'field' => 'api_key',
-					'sub-field' => 'GoogleMap',
-					'value' => $options['api_key']['GoogleMap'],
-				)
-			);
-		}
+		add_settings_field(
+			$option_name.'_api_key',
+			__( '<dfn title="Valid key for Google Maps JavaScript API. A free tier has limit even if it\'s &#8220;default&#8221;. Maps Embed API without key can be available in case of empty.">Google Maps API key</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => 'api_key',
+				'sub-field' => 'GoogleMap',
+				'value' => $options['api_key']['GoogleMap'],
+			)
+		);
 
 		// Export / Import settings
 		add_settings_field(
@@ -1605,15 +1595,8 @@ endif;
 	/**
 	 * Subsidiary note for the sections
 	 *
-	 * @param array $section settings of section added to admin pages
-	 * @param bool  $stat    TRUE:open ('o') or FALSE:close ('x')
 	 */
 	public static function note_target() {
-		echo
-			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'To enhance the protection ability, please refer to &#8220;<a rel="noreferrer" href="https://www.ipgeoblock.com/codex/the-best-practice-for-target-settings.html" title="The best practice for target settings | IP Geo Block">The best practice for target settings</a>&#8221;.', 'ip-geo-block' ), '</li>', "\n",
-				'<li>', __( 'If you have any troubles with these, please check FAQ at <a rel="noreferrer" href="https://wordpress.org/plugins/ip-geo-block/faq/" title="IP Geo Block &mdash; WordPress Plugins">WordPress.org</a> and <a rel="noreferrer" href="https://www.ipgeoblock.com/codex/#faq" title="Codex | IP Geo Block">Codex</a>.', 'ip-geo-block' ), '</li>', "\n",
-			'</ul>', "\n";
 	}
 
 	public static function note_services() {
@@ -1635,18 +1618,9 @@ endif;
 	}
 
 	public static function note_public() {
-		echo
-			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="https://www.ipgeoblock.com/codex/#blocking-on-front-end" title="Codex | IP Geo Block">Blocking on front-end</a>&#8221; for details, including restrictions on cache plugin.', 'ip-geo-block' ), '</li>', "\n",
-				'<li>', __( 'If you find any issues or have something to suggest, please feel free to open an issue at <a rel="noreferrer" href="https://wordpress.org/support/plugin/ip-geo-block" title="[IP Geo Block] Support | WordPress.org">support forum</a>.', 'ip-geo-block' ), '</li>', "\n",
-			'</ul>', "\n";
 	}
 
 	public static function note_privacy() {
-		echo
-			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'Please refer to the document &#8220;<a rel="noreferrer" href="https://www.ipgeoblock.com/codex/record-settings-and-logs.html" title="Codex | IP Geo Block">Record settings and logs</a>&#8221; for details.', 'ip-geo-block' ), '</li>', "\n",
-			'</ul>', "\n";
 	}
 
 }

@@ -8,7 +8,6 @@
  * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
-require_once ABSPATH . 'wp-admin/includes/plugin.php'; // is_plugin_active_for_network() @since 3.0.0
 
 class IP_Geo_Block_Cron {
 

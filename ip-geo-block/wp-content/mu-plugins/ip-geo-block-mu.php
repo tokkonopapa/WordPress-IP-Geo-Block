@@ -29,7 +29,7 @@ if ( ! class_exists( 'IP_Geo_Block', FALSE ) ):
 /*----------------------------------------------------------------------------*
  * Detect plugin. For use on Front End only.
  *----------------------------------------------------------------------------*/
-include_once ABSPATH . 'wp-admin/includes/plugin.php';
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 $plugin = 'ip-geo-block/ip-geo-block.php';
 
@@ -45,9 +45,11 @@ if ( is_plugin_active( $plugin ) || is_plugin_active_for_network( $plugin ) ) {
 		if ( version_compare( $plugin['version'], IP_Geo_Block::VERSION ) >= 0 && $plugin['matching_rule'] >= 0 ) {
 
 			// Remove instanciation
+			remove_action( 'plugins_loaded', 'ip_geo_block_update' );
 			remove_action( 'plugins_loaded', array( 'IP_Geo_Block', 'get_instance' ) );
 
-			// Instanciate immediately
+			// Upgrade then instanciate immediately
+			ip_geo_block_update();
 			IP_Geo_Block::get_instance();
 		}
 	}
