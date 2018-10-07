@@ -412,6 +412,7 @@ class IP_Geo_Block {
 				if ( IP_Geo_Block_Util::show_theme_template( $code, $settings ) ) {
 					return; // continue to show at `init`
 				} else {
+					global $wp_query; isset( $wp_query ) and $wp_query->is_404 = TRUE; // prevent to make a cached page
 					$hook = ( IP_Geo_Block_Util::is_user_logged_in() && 'admin' === $this->target_type );
 					wp_die( // get_dashboard_url() @since 3.1.0
 						IP_Geo_Block_Util::kses( $mesg ) . ( $hook ? "\n<p><a rel='nofollow' href='" . esc_url( get_dashboard_url( IP_Geo_Block_Util::get_current_user_id() ) ) . "'>&laquo; " . __( 'Dashboard' ) . "</a></p>" : '' ),

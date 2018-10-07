@@ -386,6 +386,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 * **Fix issue:** Fix the issue that "Can not find Geolocation API libraries" error would always appear when once Geolite2, Maxmind and IP2Location were unselected.
 * **Fix issue:** Fix the issue that https in ipstack.com is available only for premiums users.
 * **New feature:** Introduce a new filter hook [`ip-geo-block-logs-preset`](https://www.ipgeoblock.com/codex/ip-geo-block-logs-preset.html "ip-geo-block-logs[-preset] | IP Geo Block") that adds an UI of "Preset filters" at "Search in logs".
+* **Improvement:** Prevent to make a cached page by WP Fastest Cache on blocking when "Validation timing" is "init" action hook.
 * **Improvement:** Make the priofity of "UA string and qualification" is higher than that of "Block badly-behaved bots and crawlers" on public facing pages.
 * **Improvement:** Update google charts based on the [release note](https://developers.google.com/chart/interactive/docs/release_notes "Google Charts Release Notes &nbsp;|&nbsp; Charts | Google Developers").
 * **Improvement:** Always show "Google Maps API key" text box in "Plugin settings" section. If it is saved as empty, Google Maps API will no longer be used and a simple map will appear on "Search" tab.
