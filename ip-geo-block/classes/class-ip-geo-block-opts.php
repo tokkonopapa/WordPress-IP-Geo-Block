@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.15',// Version of this table (not package)
+		'version'         => '3.0.16',// Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -30,6 +30,7 @@ class IP_Geo_Block_Opts {
 		'response_code'   => 403,     // Response code
 		'save_statistics' => TRUE,    // Record validation statistics
 		'clean_uninstall' => TRUE,    // Remove all savings from DB
+		'simulate'        => FALSE,   // just simulate, never block
 		// since version 1.1
 		'cache_hold'      => TRUE,    // Record IP address cache
 		'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
@@ -163,7 +164,6 @@ class IP_Geo_Block_Opts {
 			'target_cates'   => array(), // blocking target of categories
 			'target_tags'    => array(), // blocking target of tags
 			'ua_list'        => "Google:HOST,bot:HOST,slurp:HOST\nspider:HOST,archive:HOST,*:FEED\nembed.ly:HOST,Twitterbot:US,Facebot:US",
-			'simulate'       => FALSE,   // just simulate, never block
 			// since version 3.0.3
 			'dnslkup'        => FALSE,   // use DNS reverse lookup
 			'response_code'  => 307,     // better for AdSense
@@ -391,9 +391,8 @@ class IP_Geo_Block_Opts {
 				}
 			}
 
-			if ( version_compare( $version, '3.0.5' ) < 0 ) {
+			if ( version_compare( $version, '3.0.5' ) < 0 )
 				$settings['live_update'] = $default['live_update'];
-			}
 
 			if ( version_compare( $version, '3.0.8' ) < 0 ) {
 				$settings['timeout' ] = $default['timeout'];
@@ -430,6 +429,15 @@ class IP_Geo_Block_Opts {
 
 			if ( version_compare( $version, '3.0.15' ) < 0 )
 				IP_Geo_Block_Logs::upgrade( $version );
+
+			if ( version_compare( $version, '3.0.16' ) < 0 ) {
+				if ( isset( $settings['public']['simulate'] ) ) {
+					$settings['simulate'] = $settings['public']['simulate'];
+					unset( $settings['public']['simulate'] );
+				} else {
+					$settings['simulate'] = $default['simulate'];
+				}
+			}
 
 			// update package version number
 			$settings['version'] = IP_Geo_Block::VERSION;

@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.15';
+	const VERSION = '3.0.16a';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -485,7 +485,7 @@ class IP_Geo_Block {
 				IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 
 			// send response code to refuse
-			if ( $block && $die )
+			if ( ! $settings['simulate'] && $block && $die )
 				$this->send_response( $hook, $validate, $settings );
 		}
 
@@ -876,7 +876,7 @@ class IP_Geo_Block {
 		add_filter( self::PLUGIN_NAME . '-ip-addr', array( 'IP_Geo_Block_Util', 'get_proxy_ip' ), 20, 1 );
 
 		// validate country by IP address (block: true, die: false)
-		$this->validate_ip( 'public', $settings, 1 & $settings['validation']['public'], ! $public['simulate'] );
+		$this->validate_ip( 'public', $settings, 1 & $settings['validation']['public'] );
 	}
 
 	public function check_behavior( $validate, $settings ) {

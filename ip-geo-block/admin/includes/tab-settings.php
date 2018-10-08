@@ -192,6 +192,24 @@ endif;
 			)
 		);
 
+		// $_SERVER keys to retrieve extra IP addresses
+		add_settings_field(
+			$option_name.'_validation_proxy',
+			__( '<dfn title="If your server is placed behind the proxy server or the load balancing server, you need to put the appropriate key such as &#8220;HTTP_X_FORWARDED_FOR&#8221;, &#8220;HTTP_X_REAL_IP&#8221; or something like that to retrieve the client IP address.">$_SERVER keys to retrieve extra IP addresses</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => 'validation',
+				'sub-field' => 'proxy',
+				'value' => $options['validation']['proxy'],
+				'placeholder' => IP_Geo_Block_Util::get_proxy_var(),
+				'after' => $common[0],
+			)
+		);
+
 		// White list of extra IP addresses prior to country code (CIDR, ASN)
 		add_settings_field(
 			$option_name.'_extra_ips_white_list',
@@ -231,24 +249,6 @@ endif;
 				'value' => $options['extra_ips']['black_list'],
 				'placeholder' => '192.168.0.0/16,2001:db8::/96,AS1234',
 				'after' => $common[1],
-			)
-		);
-
-		// $_SERVER keys to retrieve extra IP addresses
-		add_settings_field(
-			$option_name.'_validation_proxy',
-			__( '<dfn title="If your server is placed behind the proxy server or the load balancing server, you need to put the appropriate key such as &#8220;HTTP_X_FORWARDED_FOR&#8221;, &#8220;HTTP_X_REAL_IP&#8221; or something like that to retrieve the client IP address.">$_SERVER keys to retrieve extra IP addresses</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => 'validation',
-				'sub-field' => 'proxy',
-				'value' => $options['validation']['proxy'],
-				'placeholder' => IP_Geo_Block_Util::get_proxy_var(),
-				'after' => $common[0],
 			)
 		);
 
@@ -394,6 +394,21 @@ endif;
 					 0 => __( 'Validate at &#8220;init&#8221; action hook in the same manner as typical plugins.', 'ip-geo-block' ),
 					 1 => __( 'Validate at an earlier phase than other typical plugins. It can reduce load on server but has <a rel=\'noreferrer\' href=\'https://www.ipgeoblock.com/codex/validation-timing.html\' title=\'Validation timing | IP Geo Block\'>some restrictions</a>.', 'ip-geo-block' ),
 				),
+			)
+		);
+
+		// Simulation mode
+		add_settings_field(
+			$option_name.'_simulate',
+			'<dfn title="' . __( 'It enables to simulate validation without deployment. The results can be found as &#8220;public&#8221; in Logs.', 'ip-geo-block' ) . '">' . __( 'Simulation mode', 'ip-geo-block' ) . '</dfn>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => 'simulate',
+				'value' => isset( $options['simulate'] ) ? $options['simulate'] : FALSE,
 			)
 		);
 
@@ -1049,22 +1064,6 @@ endif;
 				'sub-field' => 'dnslkup',
 				'value' => $options['public']['dnslkup'],
 				'class' => 'ip-geo-block-subitem-parent',
-			)
-		);
-
-		// Simulation mode
-		add_settings_field(
-			$option_name.'_public_simulate',
-			'<dfn title="' . __( 'It enables to simulate validation without deployment. The results can be found as &#8220;public&#8221; in Logs.', 'ip-geo-block' ) . '">' . __( 'Simulation mode', 'ip-geo-block' ) . '</dfn>',
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => 'public',
-				'sub-field' => 'simulate',
-				'value' => $options['public']['simulate'],
 			)
 		);
 

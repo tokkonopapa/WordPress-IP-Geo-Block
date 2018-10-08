@@ -1130,7 +1130,7 @@ endif;
 	// Initialize not on the form (mainly unchecked checkbox)
 	public function preprocess_options( $output, $default ) {
 		// initialize checkboxes not in the form (added after 2.0.0, just in case)
-		foreach ( array( 'providers', 'save_statistics', 'cache_hold', 'anonymize', 'restrict_api', 'network_wide', 'clean_uninstall' ) as $key ) {
+		foreach ( array( 'providers', 'save_statistics', 'cache_hold', 'anonymize', 'restrict_api', 'network_wide', 'clean_uninstall', 'simulate' ) as $key ) {
 			$output[ $key ] = is_array( $default[ $key ] ) ? array() : 0;
 		}
 
@@ -1153,7 +1153,7 @@ endif;
 		}
 
 		// keep disabled checkboxes not in the form
-		foreach ( array( 'target_pages', 'target_posts', 'target_cates', 'target_tags', 'simulate', 'dnslkup', 'behavior' ) as $key ) {
+		foreach ( array( 'target_pages', 'target_posts', 'target_cates', 'target_tags', 'dnslkup', 'behavior' ) as $key ) {
 			$output['public'][ $key ] = is_array( $default['public'][ $key ] ) ?  array() : FALSE;
 		}
 

@@ -396,7 +396,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 *
 	 */
 	private function show_message( $msg ) {
-		if ( class_exists( 'IP_Geo_Block_Admin' ) )
+		if ( class_exists( 'IP_Geo_Block_Admin', FALSE ) )
 			IP_Geo_Block_Admin::add_admin_notice( 'error', $msg );
 	}
 
