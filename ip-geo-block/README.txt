@@ -246,7 +246,7 @@ Using this plugin itself should not be the problem, because from version 3.0.11 
 
 = Does this plugin support multisite? =
 
-It works on multisite, but there's no network setting at this moment.
+Yes. You can synchronize the settings with all the sites on the network when you activate on network and enable "**Network wide settings**" in "**Plugin settings**" section.
 
 = Does this plugin works well with caching? =
 
@@ -381,6 +381,10 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.16 =
+* **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog.
+* **Improvement:** Apply simulation mode to the back-end.
 
 = 3.0.15 =
 * **Fix issue:** Fix the issue that "Can not find Geolocation API libraries" error would always appear when once Geolite2, Maxmind and IP2Location were unselected.
