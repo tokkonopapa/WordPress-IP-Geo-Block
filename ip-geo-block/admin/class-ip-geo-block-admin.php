@@ -8,7 +8,7 @@
  * @link      https://www.ipgeoblock.com/
  * @copyright 2013-2018 tokkonopapa
  */
-define( 'IP_GEO_BLOCK_NETWORK', FALSE );
+define( 'IP_GEO_BLOCK_NETWORK', TRUE );
 
 class IP_Geo_Block_Admin {
 
@@ -43,7 +43,7 @@ class IP_Geo_Block_Admin {
 		// add_action( 'admin_init', array( $this, 'add_privacy_policy' ) );
 
 		// Setup a nonce to validate authentication.
-		add_filter( 'wp_redirect', array( $this, 'add_redirect_nonce' ), 10, 2 );
+		add_filter( 'wp_redirect', array( $this, 'add_redirect_nonce' ), 10, 2 ); // @since 2.1.0
 	}
 
 	/**
@@ -64,9 +64,9 @@ class IP_Geo_Block_Admin {
 		file_exists( $file = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in-admin.php' ) and include( $file );
 
 		// Add the options page and menu item.
-		add_action( 'admin_menu',                 array( $this, 'setup_admin_page'    ) );
-		add_action( 'admin_post_ip_geo_block',    array( $this, 'admin_ajax_callback' ) );
-		add_action( 'wp_ajax_ip_geo_block',       array( $this, 'admin_ajax_callback' ) );
+		add_action( 'admin_menu',                 array( $this, 'setup_admin_page'    ) ); // @since: 2.5.0
+		add_action( 'admin_post_ip_geo_block',    array( $this, 'admin_ajax_callback' ) ); // @since: 2.6.0
+		add_action( 'wp_ajax_ip_geo_block',       array( $this, 'admin_ajax_callback' ) ); // @since: 2.1.0
 		add_filter( 'wp_prepare_revision_for_js', array( $this, 'add_revision_nonce'  ), 10, 3 );
 
 		if ( IP_Geo_Block_Util::is_user_logged_in() )
@@ -74,8 +74,8 @@ class IP_Geo_Block_Admin {
 
 		if ( is_multisite() ) {
 			$this->is_network_admin = current_user_can( 'manage_network_options' );
-			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) );
-			if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) { // @since 3.0.0
+			add_action( 'network_admin_menu', array( $this, 'setup_admin_page' ) ); // @since: 2.5
+			if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) { // @since: 3.0.0
 				add_action( 'wpmu_new_blog', array( $this, 'create_blog' ), 10, 6 ); // on creating a new blog @since MU
 				add_action( 'delete_blog',   array( $this, 'delete_blog' ), 10, 2 ); // on deleting an old blog @since 3.0.0
 			}
@@ -425,7 +425,6 @@ class IP_Geo_Block_Admin {
 	 */
 	private function add_plugin_admin_menu( $settings ) {
 		// Control tab number
-		// `admin_menu` or `network_admin_menu` @since: 2.5
 		if ( $admin_menu = ( 'admin_menu' === current_filter() ) ) {
 			if ( $this->is_network_admin && $settings['network_wide'] )
 				$this->admin_tab = min( 4, max( 1, $this->admin_tab ) );
@@ -1120,6 +1119,7 @@ endif;
 					else {
 					}
 				}
+				break;
 			}
 		}
 
