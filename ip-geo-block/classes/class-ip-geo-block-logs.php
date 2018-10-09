@@ -686,7 +686,7 @@ class IP_Geo_Block_Logs {
 			}
 		}
 
-		if ( get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' ) ) {
+		if ( IP_Geo_Block::get_live_log() ) {
 			// skip self command
 			global $pagenow;
 			if ( 'admin-ajax.php' === $pagenow && isset( $_POST['action'] ) && 'ip_geo_block' === $_POST['action'] && isset( $_POST['cmd'] ) && 0 === strpos( $_POST['cmd'], 'live-' ) )

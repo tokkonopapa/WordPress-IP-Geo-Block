@@ -1469,7 +1469,7 @@ endif;
 			NULL,
 			$option_slug
 		);
-if ( IP_GEO_BLOCK_NETWORK ):
+if ( IP_GEO_BLOCK_NETWORK && FALSE ):
 		// @see https://vedovini.net/2015/10/using-the-wordpress-settings-api-with-network-admin-pages/
 		if ( is_main_site() && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			add_action( 'network_admin_edit_' . IP_Geo_Block::PLUGIN_NAME, array( $context, 'validate_network_settings' ) );

@@ -134,7 +134,7 @@ class IP_Geo_Block_Admin {
 	 */
 	public function add_revision_nonce( $revisions_data, $revision, $post ) {
 		$revisions_data['restoreUrl'] = add_query_arg(
-			$nonce = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce',
+			$nonce = IP_Geo_Block::get_auth_key(),
 			IP_Geo_Block_Util::create_nonce( $nonce ),
 			$revisions_data['restoreUrl']
 		);
@@ -1339,7 +1339,7 @@ endif;
 		$settings = IP_Geo_Block::get_option();
 		if ( (   $ajax and $settings['validation']['ajax' ] & 2 ) ||
 		     ( ! $ajax and $settings['validation']['admin'] & 2 ) ) {
-			$action = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
+			$action = IP_Geo_Block::get_auth_key();
 			$nonce &= IP_Geo_Block_Util::verify_nonce( IP_Geo_Block_Util::retrieve_nonce( $action ), $action );
 		}
 

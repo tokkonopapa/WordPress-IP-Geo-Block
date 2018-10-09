@@ -106,7 +106,7 @@ class IP_Geo_Block_Util {
 	public static function rebuild_nonce( $location, $retrieve = TRUE ) {
 		// check if the location is internal
 		$url = parse_url( $location );
-		$key = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
+		$key = IP_Geo_Block::get_auth_key();
 
 		if ( empty( $url['host'] ) || $url['host'] === parse_url( home_url(), PHP_URL_HOST ) ) {
 			if ( $retrieve ) {
@@ -956,6 +956,24 @@ class IP_Geo_Block_Util {
 	 *
 	 */
 	private static $theme_template = array();
+	
+	public static function show_human_readable( $hook, $code, $mesg, $settings ) {
+		$admin = ( self::is_user_logged_in() && 'admin' === $hook );
+
+		if ( ! $admin && self::show_theme_template( $code, $settings ) )
+			return TRUE;
+
+		else {
+			// prevent to make a cached page. `set_404()` should not be used for `wp_dir()`.
+			global $wp_query; isset( $wp_query->is_404 ) and $wp_query->is_404 = TRUE;
+
+			wp_die( // get_dashboard_url() @since 3.1.0
+				self::kses( $mesg ) . ( $admin ? "\n<p>&laquo; <a href='javascript:history.back()'>" . __( 'Back' ) . "</a> / <a rel='nofollow' href='" . esc_url( get_dashboard_url( self::get_current_user_id() ) ) . "'>" . __( 'Dashboard' ) . "</a></p>" : '' ),
+				get_status_header_desc( $code ), array( 'response' => $code, 'back_link' => ! $admin )
+			);
+			exit;
+		}
+	}
 
 	public static function show_theme_template( $code, $settings ) {
 		if ( file_exists( $file = get_stylesheet_directory() . '/' . $code . '.php' ) /* child  theme */ ||
@@ -977,9 +995,6 @@ class IP_Geo_Block_Util {
 				self::load_theme_template(); // load template and die immediately
 			}
 		}
-
-		// prevent to make a cached page. `set_404()` should not be used for `wp_dir()`.
-		global $wp_query; isset( $wp_query->is_404 ) and $wp_query->is_404 = TRUE;
 
 		return FALSE; // die with wp_die() immediately
 	}

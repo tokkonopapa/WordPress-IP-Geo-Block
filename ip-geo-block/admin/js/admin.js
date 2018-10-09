@@ -86,7 +86,7 @@
 
 	function redirect(page, tab) {
 		if (-1 !== window.location.href.indexOf(page)) {
-			window.location = stripTag(page) + (tab ? '&' + stripTag(tab) : '') + '&ip-geo-block-auth-nonce=' + ip_geo_block_auth.nonce;
+			window.location = stripTag(page) + (tab ? '&' + stripTag(tab) : '') + '&' + ip_geo_block_auth.key + '=' + ip_geo_block_auth.nonce;
 		}
 	}
 

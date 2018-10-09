@@ -27,8 +27,11 @@ class IP_Geo_Block {
 	 *
 	 */
 	private static $instance = NULL;
+	private static $auth_key = NULL;
+	private static $live_log = FALSE;
 	private static $wp_path = array();
 	private static $remote_addr = NULL;
+
 	private $pagenow = NULL;
 	private $request_uri = NULL;
 	private $target_type = NULL;
@@ -52,10 +55,13 @@ class IP_Geo_Block {
 		$settings = self::get_option();
 		$priority = $settings['priority'  ];
 		$validate = $settings['validation'];
-		$live_log = get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
 
 		// include drop in if it exists
 		file_exists( $key = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php' ) and include( $key );
+
+		// global settings after `drop-in.php`
+		self::$live_log = get_transient( self::PLUGIN_NAME . '-live-log' );
+		self::$auth_key = apply_filters( self::PLUGIN_NAME . '-auth-key', self::PLUGIN_NAME . '-auth-nonce' );
 
 		// normalize requested uri and page
 		$key = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
@@ -97,19 +103,19 @@ class IP_Geo_Block {
 
 		// analize core validation target (comment|xmlrpc|login|public)
 		elseif ( isset( $list[ $this->pagenow ] ) ) {
-			if ( $validate[ $list[ $this->pagenow ] ] || $live_log )
+			if ( $validate[ $list[ $this->pagenow ] ] || self::$live_log )
 				$loader->add_action( 'init', array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority );
 		}
 
 		// alternative of trackback
 		elseif ( 'POST' === $_SERVER['REQUEST_METHOD'] && 'trackback' === basename( $this->request_uri ) ) {
-			if ( $validate['comment'] || $live_log )
+			if ( $validate['comment'] || self::$live_log )
 				$loader->add_action( 'init', array( $this, 'validate_comment' ), $priority );
 		}
 
 		else {
 			// public facing pages
-			if ( $validate['public'] || ( ! empty( $_FILES ) && $validate['mimetype'] ) || $live_log /* && 'index.php' === $this->pagenow */ )
+			if ( $validate['public'] || ( ! empty( $_FILES ) && $validate['mimetype'] ) || self::$live_log /* && 'index.php' === $this->pagenow */ )
 				defined( 'DOING_CRON' ) or $loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
 
 			// message text on comment form
@@ -118,7 +124,7 @@ class IP_Geo_Block {
 				add_action( 'comment_form' . $key, array( $this, 'comment_form_message' ) );
 			}
 
-			if ( $validate['comment'] || $live_log ) {
+			if ( $validate['comment'] || self::$live_log ) {
 				add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), $priority ); // wp-comments-post.php @since 2.8.0
 				add_action( 'pre_trackback_post',  array( $this, 'validate_comment' ), $priority ); // wp-trackback.php @since 4.7.0
 				add_filter( 'preprocess_comment',  array( $this, 'validate_comment' ), $priority ); // wp-includes/comment.php @since 1.5.0
@@ -130,12 +136,12 @@ class IP_Geo_Block {
 				add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
 			}
 
-			if ( $validate['login'] || $live_log ) {
+			if ( $validate['login'] || self::$live_log ) {
 				// for hide/rename wp-login.php, BuddyPress: prevent registration and rendering form
 				add_action( 'login_init', array( $this, 'validate_login' ), $priority );
 
 				// only when block on front-end is disabled
-				if ( ! $validate['public'] || $live_log ) {
+				if ( ! $validate['public'] || self::$live_log ) {
 					add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
 					add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
 				}
@@ -171,6 +177,11 @@ class IP_Geo_Block {
 		return self::$instance ? self::$instance : ( self::$instance = new self );
 	}
 
+	// getter functions for the private values
+	public static function get_auth_key() { return self::$auth_key; }
+	public static function get_live_log() { return self::$live_log; }
+	public static function get_wp_path()  { return self::$wp_path;  }
+
 	/**
 	 * Optional values handlings.
 	 *
@@ -183,11 +194,6 @@ class IP_Geo_Block {
 	// get optional values from wp options
 	public static function get_option() {
 		return ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
-	}
-
-	// get the WordPress path of validation target
-	public static function get_wp_path() {
-		return self::$wp_path;
 	}
 
 	/**
@@ -206,8 +212,8 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function request_nonce( $args = array(), $url = '' ) {
-		if ( 0 === strpos( $url, admin_url() ) && empty( $args[ $handle = self::PLUGIN_NAME . '-auth-nonce' ] ) )
-			$args += array( $handle => IP_Geo_Block_Util::create_nonce( $handle ) );
+		if ( 0 === strpos( $url, admin_url() ) && empty( $args[ self::$auth_key ] ) )
+			$args += array( $handle => IP_Geo_Block_Util::create_nonce( self::$auth_key ) );
 
 		return $args;
 	}
@@ -219,7 +225,8 @@ class IP_Geo_Block {
 	public static function enqueue_nonce() {
 		if ( is_user_logged_in() ) {
 			$args['sites'] = IP_Geo_Block_Util::get_sites_of_user();
-			$args['nonce'] = IP_Geo_Block_Util::create_nonce( $handle = self::PLUGIN_NAME . '-auth-nonce' );
+			$args['key'  ] = self::$auth_key;
+			$args['nonce'] = IP_Geo_Block_Util::create_nonce( self::$auth_key );
 
 			// authentication
 			$script = plugins_url(
@@ -227,8 +234,8 @@ class IP_Geo_Block {
 				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_GEO_BLOCK_BASE
 			);
 
-			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
-			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $args + self::$wp_path );
+			wp_enqueue_script ( self::$auth_key, $script, array( 'jquery' ),  self::VERSION  );
+			wp_localize_script( self::$auth_key, 'IP_GEO_BLOCK_AUTH', $args + self::$wp_path );
 		}
 	}
 
@@ -409,15 +416,8 @@ class IP_Geo_Block {
 
 			// Show human readable page
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
-				if ( IP_Geo_Block_Util::show_theme_template( $code, $settings ) ) {
-					return; // continue to show at `init`
-				} else {
-					$hook = ( IP_Geo_Block_Util::is_user_logged_in() && 'admin' === $this->target_type );
-					wp_die( // get_dashboard_url() @since 3.1.0
-						IP_Geo_Block_Util::kses( $mesg ) . ( $hook ? "\n<p><a rel='nofollow' href='" . esc_url( get_dashboard_url( IP_Geo_Block_Util::get_current_user_id() ) ) . "'>&laquo; " . __( 'Dashboard' ) . "</a></p>" : '' ),
-						get_status_header_desc( $code ), array( 'response' => $code, 'back_link' => ! $hook )
-					);
-				}
+				if ( IP_Geo_Block_Util::show_human_readable( $hook, $code, $mesg, $settings ) )
+					return;
 			}
 			exit;
 		}
@@ -623,7 +623,7 @@ class IP_Geo_Block {
 		elseif ( ! $this->check_exceptions( $action, $page, $list ) ) {
 			if ( ( 2 & $rule ) && $zep ) {
 				// redirect if valid nonce in referer, otherwise register WP-ZEP (2: WP-ZEP)
-				IP_Geo_Block_Util::trace_nonce( self::PLUGIN_NAME . '-auth-nonce' );
+				IP_Geo_Block_Util::trace_nonce( self::$auth_key );
 				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 4, 2 );
 			}
 		}
@@ -663,7 +663,7 @@ class IP_Geo_Block {
 		elseif ( ! in_array( $name, $path, TRUE ) ) {
 			if ( 2 & $rule ) {
 				// redirect if valid nonce in referer, otherwise register WP-ZEP (2: WP-ZEP)
-				IP_Geo_Block_Util::trace_nonce( self::PLUGIN_NAME . '-auth-nonce' );
+				IP_Geo_Block_Util::trace_nonce( self::$auth_key );
 				add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 4, 2 );
 			}
 		}
@@ -738,8 +738,8 @@ class IP_Geo_Block {
 
 	public function check_nonce( $validate, $settings ) {
 		// should be passed when nonce is valid. can't overwrite existing result
-		$nonce = IP_Geo_Block_Util::retrieve_nonce( $action = self::PLUGIN_NAME . '-auth-nonce' );
-		return $validate + array( 'result' => IP_Geo_Block_Util::verify_nonce( $nonce, $action ) || 'XX' === $validate['code'] ? 'passed' : 'wp-zep' );
+		$nonce = IP_Geo_Block_Util::retrieve_nonce( self::$auth_key );
+		return $validate + array( 'result' => IP_Geo_Block_Util::verify_nonce( $nonce, self::$auth_key ) || 'XX' === $validate['code'] ? 'passed' : 'wp-zep' );
 	}
 
 	public function check_signature( $validate, $settings ) {

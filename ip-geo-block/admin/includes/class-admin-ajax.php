@@ -191,7 +191,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 */
 	public static function catch_live_log() {
 		$user = IP_Geo_Block_Util::get_current_user_id();
-		$auth = get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' );
+		$auth = IP_Geo_Block::get_live_log();
 
 		if ( $auth === FALSE || $user === (int)$auth ) {
 			set_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log', $user, IP_Geo_Block_Admin::TIMEOUT_LIVE_UPDATE );
@@ -887,7 +887,7 @@ endif; // TEST_RESTORE_NETWORK
 			if ( IP_Geo_Block::is_blocked( $val['result'] ) ) {
 				// hide port and nonce
 				$method = preg_replace( '/\[\d+\]/', '', $val['method'] );
-				$method = preg_replace( '/(' . IP_Geo_Block::PLUGIN_NAME . '-auth-nonce)(?:=|%3D)([\w]+)/', '$1=...', $method );
+				$method = preg_replace( '/(' . IP_Geo_Block::get_auth_key() . ')(?:=|%3D)([\w]+)/', '$1=...', $method );
 
 				// add post data
 				$query = array();
