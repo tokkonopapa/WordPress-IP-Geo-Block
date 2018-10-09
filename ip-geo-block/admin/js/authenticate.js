@@ -63,7 +63,7 @@
 		html = elem.innerHTML.replace(/["']/g, function (match) {
 			return {
 				'"': '&quot;',
-				"'": '&#39;'
+				"'": '&#39;' //"
 			}[match];
 		});
 		elem = '';
