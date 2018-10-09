@@ -461,6 +461,7 @@
 				if ('post' === ($this.attr('method') || '').toLowerCase()) {
 					$this.attr('action', add_query_nonce(action, auth.nonce));
 				} else {
+					// https://www.w3.org/TR/1999/REC-html401-19991224/types.html#type-name
 					$this.append('<input type="hidden" name="' + auth.key + '" value="' + auth.nonce + '">');
 				}
 			}
