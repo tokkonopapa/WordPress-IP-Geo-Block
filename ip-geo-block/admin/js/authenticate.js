@@ -205,7 +205,7 @@
 
 		// remove an old nonce
 		while (i-- > 0) {
-			if (wpzep.regexp.test(data[i])) {
+			if (data[i].indexOf(auth.key) === 0) { // or `wpzep.regexp.test(data[i])`
 				data.splice(i, 1);
 				break;
 			}

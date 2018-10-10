@@ -956,7 +956,7 @@ class IP_Geo_Block_Util {
 	 *
 	 */
 	private static $theme_template = array();
-	
+
 	public static function show_human_readable( $hook, $code, $mesg, $settings ) {
 		$admin = ( self::is_user_logged_in() && 'admin' === $hook );
 
