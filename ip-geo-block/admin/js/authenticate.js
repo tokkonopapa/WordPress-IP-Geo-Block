@@ -201,11 +201,13 @@
 			uri = parse_uri(uri || window.location.href);
 		}
 
-		var data = uri.query ? uri.query.split('&') : [], i = data.length;
+		var data = uri.query ? uri.query.split('&') : [],
+		    i = data.length,
+		    q = auth.key + '=';
 
 		// remove an old nonce
 		while (i-- > 0) {
-			if (data[i].indexOf(auth.key) === 0) { // or `wpzep.regexp.test(data[i])`
+			if (data[i].indexOf(q) === 0) { // or `wpzep.regexp.test(data[i])`
 				data.splice(i, 1);
 				break;
 			}
