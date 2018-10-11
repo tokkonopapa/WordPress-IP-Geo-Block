@@ -343,11 +343,11 @@ endif;
 		);
 
 		$time = array(
-			YEAR_IN_SECONDS,  // All
-			HOUR_IN_SECONDS,  // Latest 1 hour
-			DAY_IN_SECONDS,   // Latest 24 hours
-			WEEK_IN_SECONDS,  // Latest 1 week
-			MONTH_IN_SECONDS, // Latest 1 month
+			YEAR_IN_SECONDS,    // All
+			HOUR_IN_SECONDS,    // Latest 1 hour
+			DAY_IN_SECONDS,     // Latest 24 hours
+			WEEK_IN_SECONDS,    // Latest 1 week
+			30 * DAY_IN_SECONDS // Latest 1 month (MONTH_IN_SECONDS is since WP 4.4+)  
 		);
 
 		$i = 0;
