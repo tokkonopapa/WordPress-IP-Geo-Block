@@ -127,9 +127,10 @@ It validates requests to `wp-content/themes/⋯/*.php`.
 - [Prevent exposure of wp-config.php][ExposeWPConf]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
-[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
-[Privacy]:      {{ '/codex/privacy-and-record-settings.html'           | prepend: site.baseurl }} "Privacy and record settings | IP Geo Block"
+[ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'                                                             | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
+[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html'                                                   | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
+[Privacy]:      {{ '/codex/privacy-and-record-settings.html'                                                             | prepend: site.baseurl }} "Privacy and record settings | IP Geo Block"
+[IPCache]:      {{ '/codex/privacy-and-record-settings.html#record-ip-address-cache'                                     | prepend: site.baseurl }} "Privacy and record settings | IP Geo Block"
 [CountryList]:  {{ '/codex/validation-rule-settings.html#whitelistblacklist-of-country-code'                             | prepend: site.baseurl }} "Validation rule settings | IP Geo Block"
 [IP-Whitelist]: {{ '/codex/validation-rule-settings.html#whitelistblacklist-of-extra-ip-addresses-prior-to-country-code' | prepend: site.baseurl }} "Validation rule settings | IP Geo Block"
 [TimThumb]:     https://blog.sucuri.net/2014/06/timthumb-webshot-code-execution-exploit-0-day.html "TimThumb WebShot Code Execution Exploit (Zeroday)"

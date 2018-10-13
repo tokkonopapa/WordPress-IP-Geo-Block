@@ -124,9 +124,10 @@ WordPress には、サイトに何らかの影響を及ぼす重要なバック�
 - [Prevent exposure of wp-config.php][ExposeWPConf]
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'           | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
-[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html' | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
-[Privacy]:      {{ '/codex/privacy-and-record-settings.html'           | prepend: site.baseurl }} "Privacy and record settings | IP Geo Block"
+[ExposeWPConf]: {{ '/article/exposure-of-wp-config-php.html'                                                                    | prepend: site.baseurl }} "Prevent exposure of wp-config.php | IP Geo Block"
+[BestPractice]: {{ '/codex/the-best-practice-for-target-settings.html'                                                          | prepend: site.baseurl }} "The best practice of target settings | IP Geo Block"
+[Privacy]:      {{ '/codex/privacy-and-record-settings-ja.html'                                                                 | prepend: site.baseurl }} "プライバシーと記録の設定 | IP Geo Block"
+[IPCache]:      {{ '/codex/privacy-and-record-settings-ja.html#ipアドレスをキャッシュに記録'                                    | prepend: site.baseurl }} "プライバシーと記録の設定 | IP Geo Block"
 [CountryList]:  {{ '/codex/validation-rule-settings-ja.html#国コードのホワイトリストブラックリスト'                             | prepend: site.baseurl }} "検証ルールの設定 | IP Geo Block"
 [IP-Whitelist]: {{ '/codex/validation-rule-settings-ja.html#国コードに優先して検証するipアドレスのホワイトリストブラックリスト' | prepend: site.baseurl }} "検証ルールの設定 | IP Geo Block"
 [TimThumb]:     https://blog.sucuri.net/2014/06/timthumb-webshot-code-execution-exploit-0-day.html "TimThumb WebShot Code Execution Exploit (Zeroday)"
