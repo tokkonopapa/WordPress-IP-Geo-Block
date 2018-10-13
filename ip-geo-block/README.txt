@@ -383,8 +383,9 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 == Changelog ==
 
 = 3.0.16 =
-* **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog.
-* **Improvement:** Apply simulation mode to the back-end.
+* **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog on multisite.
+* **New feature:** Add "**Site List**" page at Network admin page to look through the status of sites on multisite.
+* **Improvement:** Apply simulation mode to not only the front-end but also to the back-end.
 
 = 3.0.15 =
 * **Fix issue:** Fix the issue that "Can not find Geolocation API libraries" error would always appear when once Geolite2, Maxmind and IP2Location were unselected.

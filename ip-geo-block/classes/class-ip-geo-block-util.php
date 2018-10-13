@@ -763,9 +763,10 @@ class IP_Geo_Block_Util {
 	 *
 	 */
 	public static function is_feed( $request_uri ) {
-		return isset( $_GET['feed'] ) ?
+		return /* function_exists( 'is_feed' ) ? is_feed() : */ ( isset( $_GET['feed'] ) ?
 			( preg_match( '!(?:comments-)?(?:feed|rss|rss2|rdf|atom)$!', $_GET['feed'] ) ? TRUE : FALSE ) :
-			( preg_match( '!(?:comments/)?(?:feed|rss|rss2|rdf|atom)/?$!', $request_uri ) ? TRUE : FALSE );
+			( preg_match( '!(?:comments/)?(?:feed|rss|rss2|rdf|atom)/?$!', $request_uri ) ? TRUE : FALSE )
+		);
 	}
 
 	/**
