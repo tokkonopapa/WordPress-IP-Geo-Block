@@ -1471,7 +1471,7 @@ endif;
 		);
 if ( IP_GEO_BLOCK_NETWORK && FALSE ):
 		// @see https://vedovini.net/2015/10/using-the-wordpress-settings-api-with-network-admin-pages/
-		if ( is_main_site() && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
+		if ( $context->is_network_admin() ) {
 			add_action( 'network_admin_edit_' . IP_Geo_Block::PLUGIN_NAME, array( $context, 'validate_network_settings' ) );
 
 			// Network wide configuration
@@ -1486,7 +1486,7 @@ if ( IP_GEO_BLOCK_NETWORK && FALSE ):
 					'option' => $option_name,
 					'field' => 'network_wide',
 					'value' => $options['network_wide'],
-					'disabled' => ! current_user_can( 'manage_network_options' ),
+					'disabled' => ! is_main_site(),
 				)
 			);
 		}

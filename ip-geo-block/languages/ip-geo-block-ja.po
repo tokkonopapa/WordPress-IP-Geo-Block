@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-10-13 11:01+0900\n"
-"PO-Revision-Date: 2018-10-13 11:05+0900\n"
+"POT-Creation-Date: 2018-10-14 18:20+0900\n"
+"PO-Revision-Date: 2018-10-14 18:26+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,167 +28,167 @@ msgstr ""
 "自国以外から投稿されるスパム、ログインフォーム、さらにゼロデイ攻撃を含む管理領域への悪意あるアクセス"
 "からサイトを守ります。"
 
-#: admin/class-ip-geo-block-admin.php:291
+#: admin/class-ip-geo-block-admin.php:297
 msgid "Are you sure ?"
 msgstr "実行してもよいですか？"
 
-#: admin/class-ip-geo-block-admin.php:292
-#: admin/class-ip-geo-block-admin.php:792
+#: admin/class-ip-geo-block-admin.php:298
+#: admin/class-ip-geo-block-admin.php:798
 msgid "Open a new window"
 msgstr "別窓で開く"
 
-#: admin/class-ip-geo-block-admin.php:293 admin/includes/tab-settings.php:1505
+#: admin/class-ip-geo-block-admin.php:299 admin/includes/tab-settings.php:1505
 msgid "Generate new link"
 msgstr "新しいリンクを生成"
 
-#: admin/class-ip-geo-block-admin.php:294 admin/includes/tab-settings.php:1506
+#: admin/class-ip-geo-block-admin.php:300 admin/includes/tab-settings.php:1506
 msgid "Delete current link"
 msgstr "生成したリンクを削除"
 
-#: admin/class-ip-geo-block-admin.php:295
+#: admin/class-ip-geo-block-admin.php:301
 msgid ""
 "Please add the following link to favorites / bookmarks in your browser : "
 msgstr "次のリンクをブラウザのお気に入り／ブックマークに追加して下さい : "
 
-#: admin/class-ip-geo-block-admin.php:296
+#: admin/class-ip-geo-block-admin.php:302
 msgid "ajax for logged-in user"
 msgstr "認証済ユーザー用 ajax"
 
-#: admin/class-ip-geo-block-admin.php:297
+#: admin/class-ip-geo-block-admin.php:303
 msgid "ajax for non logged-in user"
 msgstr "未認証ユーザー用 ajax"
 
-#: admin/class-ip-geo-block-admin.php:298
+#: admin/class-ip-geo-block-admin.php:304
 #, php-format
 msgid "[Found: %d]"
 msgstr "［見つかった数：%d］"
 
-#: admin/class-ip-geo-block-admin.php:299
+#: admin/class-ip-geo-block-admin.php:305
 #, php-format
 msgid "Find and verify `%s` on &#8220;Logs&#8221; tab."
 msgstr "ログから `%s` を検索し、検証して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:300
+#: admin/class-ip-geo-block-admin.php:306
 msgid "This feature is available with HTML5 compliant browsers."
 msgstr "HTML5準拠のブラウザでのみ機能します。"
 
-#: admin/class-ip-geo-block-admin.php:301
+#: admin/class-ip-geo-block-admin.php:307
 msgid "The selected row cannot be found in the table."
 msgstr "テーブル中に選択された行が見つかりません。"
 
-#: admin/class-ip-geo-block-admin.php:302
-#: admin/class-ip-geo-block-admin.php:1571
+#: admin/class-ip-geo-block-admin.php:308
+#: admin/class-ip-geo-block-admin.php:1577
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr "Ajaxコマンド `%s` の実行中にエラーが発生しました。"
 
-#: admin/class-ip-geo-block-admin.php:306
+#: admin/class-ip-geo-block-admin.php:312
 msgid "No data available in table"
 msgstr "テーブルにデータがありません"
 
-#: admin/class-ip-geo-block-admin.php:307
+#: admin/class-ip-geo-block-admin.php:313
 msgid "No matching records found"
 msgstr "一致するレコードがありません"
 
-#: admin/class-ip-geo-block-admin.php:308
+#: admin/class-ip-geo-block-admin.php:314
 #: admin/includes/class-admin-ajax.php:107
 #: admin/includes/class-admin-ajax.php:240
 #: admin/includes/tab-geolocation.php:74
 msgid "IP address"
 msgstr "IPアドレス"
 
-#: admin/class-ip-geo-block-admin.php:309
+#: admin/class-ip-geo-block-admin.php:315
 #: admin/includes/class-admin-ajax.php:108
 #: admin/includes/class-admin-ajax.php:241
 msgid "Code"
 msgstr "国"
 
-#: admin/class-ip-geo-block-admin.php:310
+#: admin/class-ip-geo-block-admin.php:316
 #: admin/includes/class-admin-ajax.php:109
 #: admin/includes/class-admin-ajax.php:242
 msgid "ASN"
 msgstr "AS番号"
 
-#: admin/class-ip-geo-block-admin.php:311
+#: admin/class-ip-geo-block-admin.php:317
 #: admin/includes/class-admin-ajax.php:243
 msgid "Host name"
 msgstr "ホスト名"
 
-#: admin/class-ip-geo-block-admin.php:312
+#: admin/class-ip-geo-block-admin.php:318
 #: admin/includes/class-admin-ajax.php:110
 #: admin/includes/class-admin-ajax.php:244
 msgid "Target"
 msgstr "検証対象"
 
-#: admin/class-ip-geo-block-admin.php:313
+#: admin/class-ip-geo-block-admin.php:319
 #: admin/includes/class-admin-ajax.php:245
 msgid "Failure / Total"
 msgstr "ログイン失敗／総計"
 
-#: admin/class-ip-geo-block-admin.php:314
+#: admin/class-ip-geo-block-admin.php:320
 #: admin/includes/class-admin-ajax.php:246
 msgid "Elapsed[sec]"
 msgstr "経過 [秒]"
 
-#: admin/class-ip-geo-block-admin.php:315
+#: admin/class-ip-geo-block-admin.php:321
 #: admin/includes/class-admin-ajax.php:106
 msgid "Time"
 msgstr "日時"
 
-#: admin/class-ip-geo-block-admin.php:316
+#: admin/class-ip-geo-block-admin.php:322
 #: admin/includes/class-admin-ajax.php:111
 msgid "Result"
 msgstr "検証結果"
 
-#: admin/class-ip-geo-block-admin.php:317
+#: admin/class-ip-geo-block-admin.php:323
 #: admin/includes/class-admin-ajax.php:112
 msgid "Request"
 msgstr "リクエスト"
 
-#: admin/class-ip-geo-block-admin.php:318
+#: admin/class-ip-geo-block-admin.php:324
 #: admin/includes/class-admin-ajax.php:113
 msgid "User agent"
 msgstr "ユーザー・エージェント"
 
-#: admin/class-ip-geo-block-admin.php:319
+#: admin/class-ip-geo-block-admin.php:325
 #: admin/includes/class-admin-ajax.php:114
 msgid "HTTP headers"
 msgstr "HTTP ヘッダー"
 
-#: admin/class-ip-geo-block-admin.php:320
+#: admin/class-ip-geo-block-admin.php:326
 #: admin/includes/class-admin-ajax.php:115
 msgid "$_POST data"
 msgstr "$_POST データ"
 
-#: admin/class-ip-geo-block-admin.php:346
+#: admin/class-ip-geo-block-admin.php:352
 msgid "Contribute on GitHub"
 msgstr "開発に参加"
 
-#: admin/class-ip-geo-block-admin.php:360
-#: admin/class-ip-geo-block-admin.php:477
-#: admin/class-ip-geo-block-admin.php:735
+#: admin/class-ip-geo-block-admin.php:366
+#: admin/class-ip-geo-block-admin.php:483
+#: admin/class-ip-geo-block-admin.php:741
 msgid "Settings"
 msgstr "設定"
 
-#: admin/class-ip-geo-block-admin.php:454
-#: admin/class-ip-geo-block-admin.php:455
-#: admin/class-ip-geo-block-admin.php:465
-#: admin/class-ip-geo-block-admin.php:466
-#: admin/class-ip-geo-block-admin.php:476
-#: admin/class-ip-geo-block-admin.php:486
+#: admin/class-ip-geo-block-admin.php:460
+#: admin/class-ip-geo-block-admin.php:461
+#: admin/class-ip-geo-block-admin.php:471
+#: admin/class-ip-geo-block-admin.php:472
+#: admin/class-ip-geo-block-admin.php:482
+#: admin/class-ip-geo-block-admin.php:492
 msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
-#: admin/class-ip-geo-block-admin.php:487
-#: admin/class-ip-geo-block-admin.php:740
-msgid "Site List"
+#: admin/class-ip-geo-block-admin.php:493
+#: admin/class-ip-geo-block-admin.php:746
+msgid "Sites list"
 msgstr "サイト一覧"
 
-#: admin/class-ip-geo-block-admin.php:516
+#: admin/class-ip-geo-block-admin.php:522
 msgid "You need WordPress 3.7+."
 msgstr "WordPress 3.7 以上が必要です。"
 
-#: admin/class-ip-geo-block-admin.php:520
+#: admin/class-ip-geo-block-admin.php:526
 #, php-format
 msgid ""
 "Can not load Geolocation API libraries from <code>%s</code>. It seems to "
@@ -211,7 +211,7 @@ msgstr ""
 "troubles? | IP Geo Block\">FAQ</a> を参照し、適切な書き込み権限と共に <code>ip-geo-api</code> をイン"
 "ストールしてください。"
 
-#: admin/class-ip-geo-block-admin.php:529
+#: admin/class-ip-geo-block-admin.php:535
 #, php-format
 msgid ""
 "You should select at least one API at <a href=\"%s\">Geolocation API "
@@ -221,7 +221,7 @@ msgstr ""
 "<a href=\"%s\">位置情報APIの設定</a>で、少なくとも1つ以上のAPIを選択して下さい。未選択の場合、キャッ"
 "シュの有効期限切れと共にロックアウトされます。"
 
-#: admin/class-ip-geo-block-admin.php:538
+#: admin/class-ip-geo-block-admin.php:544
 #, php-format
 msgid ""
 "You should select at least one API for local database at <a href=\"%s"
@@ -231,7 +231,7 @@ msgstr ""
 "<a href=\"%s\">位置情報APIの設定</a>で、ローカルデータベース用のAPIを少なくとも1つ以上選択して下さ"
 "い。未選択の場合、外部APIへのアクセスにより、サイトの応答性が悪くなります。"
 
-#: admin/class-ip-geo-block-admin.php:549
+#: admin/class-ip-geo-block-admin.php:555
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -241,7 +241,7 @@ msgstr ""
 "バックグラウンドで位置情報データベースをダウンロードしています。少しの間をおいた後、あなたの国コード"
 "と［<strong>マッチング規則</strong>］を［<a href=\"%s\">検証ルールの設定</a>］で確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:555
+#: admin/class-ip-geo-block-admin.php:561
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
@@ -250,11 +250,11 @@ msgstr ""
 "［<strong>マッチング規則</strong>］が正しく設定されていません。［<a href=\"%s\">検証ルールの設定</"
 "a>］を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:564
+#: admin/class-ip-geo-block-admin.php:570
 msgid "Local database and matching rule have been updated."
 msgstr "ローカル・データベースとマッチング規則を更新しました。"
 
-#: admin/class-ip-geo-block-admin.php:575
+#: admin/class-ip-geo-block-admin.php:581
 msgid ""
 "Once you logout, you will be unable to login again because the number of "
 "login attempts reaches the limit."
@@ -262,7 +262,7 @@ msgstr ""
 "あなたのIPアドレスのログイン試行可能回数がリミットに達したため、ログアウトすると再びログインする事が"
 "出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:577
+#: admin/class-ip-geo-block-admin.php:583
 #, php-format
 msgid ""
 "Please remove your IP address in &#8220;%1$sStatistics in IP address cache"
@@ -272,7 +272,7 @@ msgstr ""
 "［%3$s統計%4$s］タブの［%1$sIPアドレスのキャッシュ%2$s］から自身のIPアドレスを削除し、ロックアウトを"
 "回避してください。"
 
-#: admin/class-ip-geo-block-admin.php:588
+#: admin/class-ip-geo-block-admin.php:594
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is in the blacklist."
@@ -280,7 +280,7 @@ msgstr ""
 "あなたの国コードまたはIPアドレスがブラックリストに含まれているため、ログアウトすると再びログインする"
 "事が出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:589
+#: admin/class-ip-geo-block-admin.php:595
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is not in the whitelist."
@@ -288,12 +288,12 @@ msgstr ""
 "あなたの国コードまたはIPアドレスがホワイトリストに含まれていないため、ログアウトすると再びログインす"
 "る事が出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:593
+#: admin/class-ip-geo-block-admin.php:599
 #, php-format
 msgid "Please check your &#8220;%sValidation rule settings%s&#8221;."
 msgstr "［%s検証ルールの設定%s］を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:597
+#: admin/class-ip-geo-block-admin.php:603
 #, php-format
 msgid ""
 "Please confirm your local geolocation database files exist at &#8220;%sLocal "
@@ -303,7 +303,7 @@ msgstr ""
 "［%sローカル・データベースの設定%s］で位置情報データベース・ファイルの有無を確認して下さい。あるいは"
 "［%sキャッシュの統計%s］でキャッシュされているあなたのIPアドレスを削除して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:619
+#: admin/class-ip-geo-block-admin.php:625
 #, php-format
 msgid ""
 "Emergency login link is outdated. Please delete it once and generate again "
@@ -313,7 +313,7 @@ msgstr ""
 "緊急ログイン・リンクが古くなっています。［%sプラグインの設定%s］で一度削除してから再度生成してくださ"
 "い。 またブラウザのお気に入り/ブックマークも忘れずに更新して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:628
+#: admin/class-ip-geo-block-admin.php:634
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
@@ -323,32 +323,32 @@ msgstr ""
 "<strong>IP Geo Allow</strong> と互換性がありません。「&#8220;init&#8221; アクション・フック」を選択し"
 "てください。"
 
-#: admin/class-ip-geo-block-admin.php:736
+#: admin/class-ip-geo-block-admin.php:742
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:737
+#: admin/class-ip-geo-block-admin.php:743
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:738
+#: admin/class-ip-geo-block-admin.php:744
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:739
+#: admin/class-ip-geo-block-admin.php:745
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:756
-#: admin/class-ip-geo-block-admin.php:772
-msgid "Network wide"
+#: admin/class-ip-geo-block-admin.php:762
+#: admin/class-ip-geo-block-admin.php:778
+msgid "Network"
 msgstr "ネットワーク管理"
 
-#: admin/class-ip-geo-block-admin.php:785
+#: admin/class-ip-geo-block-admin.php:791
 msgid "Toggle all"
 msgstr "全てを開閉"
 
-#: admin/class-ip-geo-block-admin.php:788
+#: admin/class-ip-geo-block-admin.php:794
 msgid ""
 "Independent of &#8220;Privacy and record settings&#8221;, you can see all "
 "the requests validated by this plugin in almost real time."
@@ -356,19 +356,19 @@ msgstr ""
 "［プライバシーと記録の設定］にかかわらず、このプラグインによる検証結果のすべてを、ほぼリアルタイムに"
 "表示します。"
 
-#: admin/class-ip-geo-block-admin.php:788 admin/includes/tab-accesslog.php:39
+#: admin/class-ip-geo-block-admin.php:794 admin/includes/tab-accesslog.php:39
 msgid "Live update"
 msgstr "ライブアップデート"
 
-#: admin/class-ip-geo-block-admin.php:792
+#: admin/class-ip-geo-block-admin.php:798
 msgid "Open a new window on clicking the link in the chart."
 msgstr "チャート内のリンクをクリックすると、新しいウィンドウが開きます。"
 
-#: admin/class-ip-geo-block-admin.php:816
+#: admin/class-ip-geo-block-admin.php:822
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:817
+#: admin/class-ip-geo-block-admin.php:823
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"https://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -377,33 +377,33 @@ msgstr ""
 "（ほとんどのブラウザでは、<a href=\"https://www.ipgeoblock.com/etc/referer.html\" title=\"Referer "
 "Checker\">参照元を残さずにリンク先にリダイレクトできます</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:822
+#: admin/class-ip-geo-block-admin.php:828
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: admin/class-ip-geo-block-admin.php:914
+#: admin/class-ip-geo-block-admin.php:920
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:929
+#: admin/class-ip-geo-block-admin.php:935
 msgid "Select one"
 msgstr "何れかを選択"
 
-#: admin/class-ip-geo-block-admin.php:1349
+#: admin/class-ip-geo-block-admin.php:1355
 msgid "You do not have sufficient permissions to access this page."
 msgstr "このページにアクセスするための十分な権限がありません。"
 
-#: admin/class-ip-geo-block-admin.php:1376
+#: admin/class-ip-geo-block-admin.php:1382
 #: admin/includes/class-admin-rewrite.php:194
-#: classes/class-ip-geo-block-cron.php:216
-#: classes/class-ip-geo-block-cron.php:320
-#: classes/class-ip-geo-block-cron.php:394
+#: classes/class-ip-geo-block-cron.php:218
+#: classes/class-ip-geo-block-cron.php:322
+#: classes/class-ip-geo-block-cron.php:396
 #: classes/class-ip-geo-block-opts.php:479
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr "<code>%s</code> に書き込めません。パーミッションをチェックして下さい。"
 
-#: admin/class-ip-geo-block-admin.php:1406
+#: admin/class-ip-geo-block-admin.php:1412
 msgid "Settings saved."
 msgstr "設定を保存しました。"
 
@@ -425,8 +425,8 @@ msgid ""
 msgstr "%sは誤ったフォーマットです。該当行を削除し、再実行してください。"
 
 #: admin/includes/class-admin-rewrite.php:168
-#: classes/class-ip-geo-block-cron.php:211
-#: classes/class-ip-geo-block-cron.php:389
+#: classes/class-ip-geo-block-cron.php:213
+#: classes/class-ip-geo-block-cron.php:391
 #, php-format
 msgid "Unable to read <code>%s</code>. Please check the permission."
 msgstr "<code>%s</code> が読めません。パーミッションをチェックして下さい。"
@@ -1439,7 +1439,7 @@ msgstr "ローカル・データベースの設定"
 msgid "database"
 msgstr "ファイル"
 
-#: admin/includes/tab-settings.php:1409 classes/class-ip-geo-block-cron.php:418
+#: admin/includes/tab-settings.php:1409 classes/class-ip-geo-block-cron.php:420
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
@@ -1679,16 +1679,16 @@ msgstr "［%sIPアドレスをキャッシュに記録%s］が無効です。"
 msgid "Please set the proper condition to record IP address in cache."
 msgstr "キャッシュを利用しサイトの応答性を上げるためには、適切な条件を設定して下さい。"
 
-#: classes/class-ip-geo-block-cron.php:221
+#: classes/class-ip-geo-block-cron.php:223
 #, php-format
 msgid "Can't lock <code>%s</code>. Please try again after a while."
 msgstr "<code>%s</code> をロック出来ません。パーミッションをチェックして下さい。"
 
-#: classes/class-ip-geo-block-cron.php:300
+#: classes/class-ip-geo-block-cron.php:302
 msgid "Your database file is up-to-date."
 msgstr "データベース・ファイルは最新です。"
 
-#: classes/class-ip-geo-block-cron.php:399
+#: classes/class-ip-geo-block-cron.php:401
 msgid "gz or zip is not supported on your system."
 msgstr "gz または zip がサポートされていません。"
 
@@ -1730,10 +1730,6 @@ msgid ""
 "Column type in %s unmatched. Once de-activate this plugin, and then activate "
 "again."
 msgstr "%s 用のカラム型が一致しません。一旦このプラグインを無効化し、再度有効化して下さい。"
-
-#: classes/class-ip-geo-block-util.php:972
-msgid "Dashboard"
-msgstr "ダッシュボード"
 
 #: wp-content/ip-geo-api/ip2location/class-ip2location.php:151
 #: wp-content/ip-geo-api/maxmind/class-maxmind-geolite2.php:144
