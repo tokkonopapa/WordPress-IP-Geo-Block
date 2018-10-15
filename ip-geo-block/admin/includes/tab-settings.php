@@ -1617,6 +1617,10 @@ endif;
 	}
 
 	public static function note_public() {
+		echo
+			'<ul class="ip-geo-block-note">', "\n",
+				'<li>', sprintf( __( 'Please refer to "%sLiving with cache plugin%s" for compatibility with cache plugins.', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/living-with-caching-plugin.html" title="Living with caching plugin | IP Geo Block">', '</a>' ), '</li>', "\n",
+			'</ul>', "\n";
 	}
 
 	public static function note_privacy() {
