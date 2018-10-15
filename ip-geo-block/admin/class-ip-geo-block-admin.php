@@ -552,13 +552,13 @@ class IP_Geo_Block_Admin {
 		if ( -1 === (int)$settings['matching_rule'] ) {
 			if ( FALSE !== $updating ) {
 				self::add_admin_notice( 'notice-warning', sprintf(
-					__( 'Now downloading geolocation databases in background. After a little while, please check your country code and &#8220;<strong>Matching rule</strong>&#8221; at <a href="%s">Validation rule settings</a>.', 'ip-geo-block' ),
+					__( 'Now downloading geolocation databases in background. After a little while, please check your country code and &#8220;<strong>Matching rule</strong>&#8221; at <a href="%s">Validation rules and behavior</a>.', 'ip-geo-block' ),
 					esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $adminurl ) )
 				) );
 			}
 			else {
 				self::add_admin_notice( 'error', sprintf(
-					__( 'The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please confirm it at <a href="%s">Validation rule settings</a>.', 'ip-geo-block' ),
+					__( 'The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please confirm it at <a href="%s">Validation rules and behavior</a>.', 'ip-geo-block' ),
 					esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $adminurl ) )
 				) );
 			}
@@ -596,7 +596,7 @@ class IP_Geo_Block_Admin {
 					) . ' ' .
 					( 'ZZ' !== $validate['code'] ?
 						sprintf(
-							__( 'Please check your &#8220;%sValidation rule settings%s&#8221;.', 'ip-geo-block' ),
+							__( 'Please check your &#8220;%sValidation rules and behavior%s&#8221;.', 'ip-geo-block' ),
 							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 0 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-0' ) . '">', '</a></strong>'
 						) :
 						sprintf(

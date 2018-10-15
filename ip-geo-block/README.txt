@@ -104,7 +104,7 @@ All contributions will always be welcome. Or visit my [development blog](https:/
 Please refer to [the document](https://www.ipgeoblock.com/codex/ "Codex | IP Geo Block") 
 or following descriptions for your best setup.
 
-= Validation rule settings =
+= Validation rules and behavior =
 
 * **Matching rule**  
   Choose either `White list` (recommended) or `Black list` to specify the countries from which you want to pass or block.
@@ -370,7 +370,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 == Screenshots ==
 
 1. **IP Geo Plugin** - Settings tab
-2. **IP Geo Plugin** - Validation rule settings
+2. **IP Geo Plugin** - Validation rules and behavior
 3. **IP Geo Plugin** - Back-end target settings
 4. **IP Geo Plugin** - Front-end target settings
 5. **IP Geo Plugin** - Geolocation API settings
@@ -384,7 +384,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 
 = 3.0.16 =
 * **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog on multisite.
-* **New feature:** Add "**Site List**" page at Network admin page to look through the status of sites on multisite.
+* **New feature:** Add "**Sites list**" page at Network admin page to look through the status of the sites if this plugin is network activated on multisite.
 * **Improvement:** Apply simulation mode to not only the front-end but also to the back-end.
 
 = 3.0.15 =

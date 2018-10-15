@@ -47,11 +47,11 @@ class IP_Geo_Block_Admin_Tab {
 		 * @since 2.7.0
 		 */
 		/*----------------------------------------*
-		 * Validation rule settings
+		 * Validation rules and behavior
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-validation-rule',
-			array( __( 'Validation rule settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/validation-rule-settings.html" title="Validation rule settings | IP Geo Block">' . $common[4] . '</a>' ),
+			array( __( 'Validation rules and behavior', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/validation-rule-settings.html" title="Validation rules and behavior | IP Geo Block">' . $common[4] . '</a>' ),
 			NULL,
 			$option_slug
 		);
@@ -400,7 +400,7 @@ endif;
 		// Simulation mode
 		add_settings_field(
 			$option_name.'_simulate',
-			'<dfn title="' . __( 'It enables to simulate validation without deployment. The results can be found as &#8220;public&#8221; in Logs.', 'ip-geo-block' ) . '">' . __( 'Simulation mode', 'ip-geo-block' ) . '</dfn>',
+			'<dfn title="' . __( 'It enables to simulate the validation rules without actual blocking in order to check the behavior of this plugin. The results can be found on &#8220;Logs&#8221; tab.', 'ip-geo-block' ) . '">' . __( 'Simulation mode', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -812,7 +812,7 @@ endif;
 				'field' => 'public',
 				'sub-field' => 'matching_rule',
 				'value' => $options['public']['matching_rule'],
-				'list' => array( -1 => __( 'Follow &#8220;Validation rule settings&#8221;', 'ip-geo-block' ) ) + $rule,
+				'list' => array( -1 => __( 'Follow &#8220;Validation rules and behavior&#8221;', 'ip-geo-block' ) ) + $rule,
 			)
 		);
 

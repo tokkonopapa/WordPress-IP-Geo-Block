@@ -997,9 +997,9 @@
 			// Name of base class
 			var name = ID('%', 'settings');
 
-			/*---------------------------
-			 * Validation rule settings
-			 *---------------------------*/
+			/*--------------------------------
+			 * Validation rules and behavior
+			 *--------------------------------*/
 			// Scan your country code
 			$('[id^="' + ID('scan-') + '"]').on('click', function (/*event*/) {
 				var $this = $(this),

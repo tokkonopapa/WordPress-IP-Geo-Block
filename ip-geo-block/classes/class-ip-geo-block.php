@@ -213,7 +213,7 @@ class IP_Geo_Block {
 	 */
 	public function request_nonce( $args = array(), $url = '' ) {
 		if ( 0 === strpos( $url, admin_url() ) && empty( $args[ self::$auth_key ] ) )
-			$args += array( $handle => IP_Geo_Block_Util::create_nonce( self::$auth_key ) );
+			$args += array( self::$auth_key => IP_Geo_Block_Util::create_nonce( self::$auth_key ) );
 
 		return $args;
 	}
@@ -481,7 +481,7 @@ class IP_Geo_Block {
 			IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
 			// update statistics
-			if ( $settings['save_statistics'] )
+			if ( $settings['save_statistics'] && ! $validate['auth'] )
 				IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 
 			// send response code to refuse
@@ -648,7 +648,7 @@ class IP_Geo_Block {
 		preg_match( "!($path)($name)!", $this->request_uri, $name );
 		$name = empty( $name[2] ) ? $name[1] : $name[2];
 
-		// set validation rule by target (0: Bypass, 1: Block by country, 2: WP-ZEP)
+		// set validation rules by target (0: Bypass, 1: Block by country, 2: WP-ZEP)
 		$settings = self::get_option();
 		$rule = (int)$settings['validation'][ $type ];
 
@@ -845,7 +845,7 @@ class IP_Geo_Block {
 		$settings = self::get_option();
 		$public = $settings['public'];
 
-		// replace "Validation rule settings"
+		// replace validation rules
 		if ( $settings['validation']['public'] && -1 !== (int)$public['matching_rule'] ) {
 			foreach ( array( 'matching_rule', 'white_list', 'black_list', 'response_code', 'response_msg', 'redirect_uri' ) as $key ) {
 				$settings[ $key ] = $public[ $key ];

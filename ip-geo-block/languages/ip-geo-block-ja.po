@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-10-14 18:20+0900\n"
-"PO-Revision-Date: 2018-10-14 18:26+0900\n"
+"POT-Creation-Date: 2018-10-15 14:58+0900\n"
+"PO-Revision-Date: 2018-10-15 15:00+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -236,19 +236,20 @@ msgstr ""
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
 "please check your country code and &#8220;<strong>Matching rule</"
-"strong>&#8221; at <a href=\"%s\">Validation rule settings</a>."
+"strong>&#8221; at <a href=\"%s\">Validation rules and behavior</a>."
 msgstr ""
 "バックグラウンドで位置情報データベースをダウンロードしています。少しの間をおいた後、あなたの国コード"
-"と［<strong>マッチング規則</strong>］を［<a href=\"%s\">検証ルールの設定</a>］で確認して下さい。"
+"と［<strong>マッチング規則</strong>］を［<a href=\"%s\">検証ルールと振る舞いの設定</a>］で確認して下"
+"さい。"
 
 #: admin/class-ip-geo-block-admin.php:561
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
-"confirm it at <a href=\"%s\">Validation rule settings</a>."
+"confirm it at <a href=\"%s\">Validation rules and behavior</a>."
 msgstr ""
-"［<strong>マッチング規則</strong>］が正しく設定されていません。［<a href=\"%s\">検証ルールの設定</"
-"a>］を確認して下さい。"
+"［<strong>マッチング規則</strong>］が正しく設定されていません。［<a href=\"%s\">検証ルールと振る舞い"
+"の設定</a>］を確認して下さい。"
 
 #: admin/class-ip-geo-block-admin.php:570
 msgid "Local database and matching rule have been updated."
@@ -290,8 +291,8 @@ msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:599
 #, php-format
-msgid "Please check your &#8220;%sValidation rule settings%s&#8221;."
-msgstr "［%s検証ルールの設定%s］を確認して下さい。"
+msgid "Please check your &#8220;%sValidation rules and behavior%s&#8221;."
+msgstr "［%s検証ルールと振る舞いの設定%s］を確認して下さい。"
 
 #: admin/class-ip-geo-block-admin.php:603
 #, php-format
@@ -646,8 +647,8 @@ msgid "Open CIDR calculator for IPv4 / IPv6."
 msgstr "IPv4/IPv6用CIDR変換電卓を開きます。"
 
 #: admin/includes/tab-settings.php:54
-msgid "Validation rule settings"
-msgstr "検証ルールの設定"
+msgid "Validation rules and behavior"
+msgstr "検証ルールと振る舞いの設定"
 
 #: admin/includes/tab-settings.php:76
 msgid ""
@@ -914,9 +915,12 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:403
 msgid ""
-"It enables to simulate validation without deployment. The results can be "
-"found as &#8220;public&#8221; in Logs."
-msgstr "機能を有効にする事なくリクエストの検証をシミュレートします。結果はログで確認する事が出来ます。"
+"It enables to simulate the validation rules without actual blocking in order "
+"to check the behavior of this plugin. The results can be found on &#8220;"
+"Logs&#8221; tab."
+msgstr ""
+"このプラグインの動作を確認するために、実際に遮断させることなく検証ルールをシミュレートします。結果は"
+"ログで確認する事が出来ます。"
 
 #: admin/includes/tab-settings.php:403
 msgid "Simulation mode"
@@ -1136,8 +1140,8 @@ msgid "Front-end target settings"
 msgstr "フロントエンドの設定"
 
 #: admin/includes/tab-settings.php:815
-msgid "Follow &#8220;Validation rule settings&#8221;"
-msgstr "［検証ルールの設定］に従う"
+msgid "Follow &#8220;Validation rules and behavior&#8221;"
+msgstr "［検証ルールと振る舞いの設定］に従う"
 
 #: admin/includes/tab-settings.php:857
 #, php-format

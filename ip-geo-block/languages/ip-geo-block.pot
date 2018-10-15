@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-10-14 18:20+0900\n"
-"PO-Revision-Date: 2018-10-14 18:20+0900\n"
+"POT-Creation-Date: 2018-10-15 14:58+0900\n"
+"PO-Revision-Date: 2018-10-15 14:58+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -222,14 +222,14 @@ msgstr ""
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
 "please check your country code and &#8220;<strong>Matching rule</"
-"strong>&#8221; at <a href=\"%s\">Validation rule settings</a>."
+"strong>&#8221; at <a href=\"%s\">Validation rules and behavior</a>."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:561
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
-"confirm it at <a href=\"%s\">Validation rule settings</a>."
+"confirm it at <a href=\"%s\">Validation rules and behavior</a>."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:570
@@ -264,7 +264,7 @@ msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:599
 #, php-format
-msgid "Please check your &#8220;%sValidation rule settings%s&#8221;."
+msgid "Please check your &#8220;%sValidation rules and behavior%s&#8221;."
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:603
@@ -604,7 +604,7 @@ msgid "Open CIDR calculator for IPv4 / IPv6."
 msgstr ""
 
 #: admin/includes/tab-settings.php:54
-msgid "Validation rule settings"
+msgid "Validation rules and behavior"
 msgstr ""
 
 #: admin/includes/tab-settings.php:76
@@ -825,8 +825,9 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:403
 msgid ""
-"It enables to simulate validation without deployment. The results can be "
-"found as &#8220;public&#8221; in Logs."
+"It enables to simulate the validation rules without actual blocking in order "
+"to check the behavior of this plugin. The results can be found on &#8220;"
+"Logs&#8221; tab."
 msgstr ""
 
 #: admin/includes/tab-settings.php:403
@@ -1037,7 +1038,7 @@ msgid "Front-end target settings"
 msgstr ""
 
 #: admin/includes/tab-settings.php:815
-msgid "Follow &#8220;Validation rule settings&#8221;"
+msgid "Follow &#8220;Validation rules and behavior&#8221;"
 msgstr ""
 
 #: admin/includes/tab-settings.php:857
