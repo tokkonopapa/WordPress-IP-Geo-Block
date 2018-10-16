@@ -225,8 +225,8 @@ class IP_Geo_Block {
 	public static function enqueue_nonce() {
 		if ( is_user_logged_in() ) {
 			$args['sites'] = IP_Geo_Block_Util::get_sites_of_user();
-			$args['key'  ] = self::$auth_key;
 			$args['nonce'] = IP_Geo_Block_Util::create_nonce( self::$auth_key );
+			$args['key'  ] = self::$auth_key;
 
 			// authentication
 			$script = plugins_url(
@@ -409,7 +409,7 @@ class IP_Geo_Block {
 			status_header( $code ); // @since 2.0.0
 
 			// https://developers.google.com/webmasters/control-crawl-index/docs/robots_meta_tag
-			'public' !== $hook and header( 'X-Robots-Tag: noindex, nofollow', FALSE );
+			/*'public' !== $hook and*/ header( 'X-Robots-Tag: noindex, nofollow', FALSE );
 
 			if ( function_exists( 'trackback_response' ) )
 				trackback_response( $code, IP_Geo_Block_Util::kses( $mesg ) ); // @since 0.71
