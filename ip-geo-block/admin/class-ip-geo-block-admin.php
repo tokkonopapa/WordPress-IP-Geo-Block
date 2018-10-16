@@ -395,10 +395,10 @@ class IP_Geo_Block_Admin {
 					echo '<strong>IP Geo Block:</strong> ', IP_Geo_Block_Util::kses( $msg );
 				echo '</p></div>', "\n";
 			}
-		}
 
-		// delete all admin noties
-		delete_transient( $key );
+			// delete all admin noties
+			delete_transient( $key );
+		}
 	}
 
 	/**
