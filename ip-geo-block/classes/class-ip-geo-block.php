@@ -414,12 +414,20 @@ class IP_Geo_Block {
 			if ( function_exists( 'trackback_response' ) )
 				trackback_response( $code, IP_Geo_Block_Util::kses( $mesg ) ); // @since 0.71
 
-			// Show human readable page
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
-				if ( $this->show_human_readable( $hook, $code, $mesg, $settings ) )
+				$hook = ( IP_Geo_Block_Util::is_user_logged_in() && 'admin' === $hook );
+				if ( ! $hook && $this->show_theme_template( $code, $settings ) )
 					return;
+
+				// prevent to make a cached page. `set_404()` should not be used for `wp_die()`.
+				global $wp_query; isset( $wp_query->is_404 ) and $wp_query->is_404 = TRUE;
+
+				wp_die( // get_dashboard_url() @since 3.1.0
+					IP_Geo_Block_Util::kses( $mesg ) . ( $hook ? "\n<p>&laquo; <a href='javascript:history.back()'>" . __( 'Back' ) . "</a> / <a rel='nofollow' href='" . esc_url( get_dashboard_url( IP_Geo_Block_Util::get_current_user_id() ) ) . "'>" . __( 'Dashboard' ) . "</a></p>" : '' ),
+					get_status_header_desc( $code ), array( 'response' => $code, 'back_link' => ! $hook )
+				);
 			}
-			exit; // never executed
+			exit;
 		}
 	}
 
@@ -427,25 +435,7 @@ class IP_Geo_Block {
 	 * Load and show theme template
 	 *
 	 */
-	public function show_human_readable( $hook, $code, $mesg, $settings ) {
-		$admin = ( IP_Geo_Block_Util::is_user_logged_in() && 'admin' === $hook );
-
-		if ( ! $admin && $this->show_theme_template( $code, $settings ) )
-			return TRUE;
-
-		else {
-			// prevent to make a cached page. `set_404()` should not be used for `wp_dir()`.
-			global $wp_query; isset( $wp_query->is_404 ) and $wp_query->is_404 = TRUE;
-
-			wp_die( // get_dashboard_url() @since 3.1.0
-				IP_Geo_Block_Util::kses( $mesg ) . ( $admin ? "\n<p>&laquo; <a href='javascript:history.back()'>" . __( 'Back' ) . "</a> / <a rel='nofollow' href='" . esc_url( get_dashboard_url( IP_Geo_Block_Util::get_current_user_id() ) ) . "'>" . __( 'Dashboard' ) . "</a></p>" : '' ),
-				get_status_header_desc( $code ), array( 'response' => $code, 'back_link' => ! $admin )
-			);
-			exit;
-		}
-	}
-
-	public function show_theme_template( $code, $settings ) {
+	private function show_theme_template( $code, $settings ) {
 		if ( file_exists( $file = get_stylesheet_directory() . '/' . $code . '.php' ) /* child  theme */ ||
 		     file_exists( $file = get_template_directory()   . '/' . $code . '.php' ) /* parent theme */ ) {
 			// keep the response code and the template file
