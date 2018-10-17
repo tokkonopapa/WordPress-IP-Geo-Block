@@ -187,15 +187,13 @@ class IP_Geo_Block_Util {
 
 		// Nonce generated 0-12 hours ago
 		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
-		if ( self::hash_equals( $expected, (string)$nonce ) ) {
+		if ( self::hash_equals( $expected, (string)$nonce ) )
 			return 1;
-		}
 
 		// Nonce generated 12-24 hours ago
 		$expected = substr( self::hash_nonce( ( $exp - 1 ) . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
-		if ( self::hash_equals( $expected, (string)$nonce ) ) {
+		if ( self::hash_equals( $expected, (string)$nonce ) )
 			return 2;
-		}
 
 		// Invalid nonce
 		return FALSE;
@@ -777,6 +775,7 @@ class IP_Geo_Block_Util {
 	private static function is_IIS() {
 		$_is_apache = ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Apache' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'LiteSpeed' ) !== FALSE );
 		$_is_IIS = ! $_is_apache && ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer' ) !== FALSE );
+
 		return $_is_IIS ? substr( $_SERVER['SERVER_SOFTWARE'], strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS/' ) + 14 ) : FALSE;
 	}
 
@@ -953,70 +952,6 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
-	 * Load and show theme template
-	 *
-	 */
-	private static $theme_template = array();
-
-	public static function show_human_readable( $hook, $code, $mesg, $settings ) {
-		$admin = ( self::is_user_logged_in() && 'admin' === $hook );
-
-		if ( ! $admin && self::show_theme_template( $code, $settings ) )
-			return TRUE;
-
-		else {
-			// prevent to make a cached page. `set_404()` should not be used for `wp_dir()`.
-			global $wp_query; isset( $wp_query->is_404 ) and $wp_query->is_404 = TRUE;
-
-			wp_die( // get_dashboard_url() @since 3.1.0
-				self::kses( $mesg ) . ( $admin ? "\n<p>&laquo; <a href='javascript:history.back()'>" . __( 'Back' ) . "</a> / <a rel='nofollow' href='" . esc_url( get_dashboard_url( self::get_current_user_id() ) ) . "'>" . __( 'Dashboard' ) . "</a></p>" : '' ),
-				get_status_header_desc( $code ), array( 'response' => $code, 'back_link' => ! $admin )
-			);
-			exit;
-		}
-	}
-
-	public static function show_theme_template( $code, $settings ) {
-		if ( file_exists( $file = get_stylesheet_directory() . '/' . $code . '.php' ) /* child  theme */ ||
-		     file_exists( $file = get_template_directory()   . '/' . $code . '.php' ) /* parent theme */ ) {
-			// keep the response code and the template file
-			self::$theme_template = array( 'code' => $code, 'file' => $file );
-
-			// case 1: validation timing is `init`
-			if ( $action = current_filter() ) { // `plugins_loaded`, `wp` or FALSE
-				add_action( // `wp` (on front-end target) is too late to apply `init`
-					'wp' === $action ? 'template_redirect' : 'init',
-					'IP_Geo_Block_Util::load_theme_template', $settings['priority']
-				);
-				return TRUE; // load template at the specified action
-			}
-
-			// case 2: validation timing is `mu-plugins`
-			elseif ( '<?php' !== file_get_contents( $file, FALSE, NULL, 0, 5 ) ) {
-				self::load_theme_template(); // load template and die immediately
-			}
-		}
-
-		return FALSE; // die with wp_die() immediately
-	}
-
-	public static function load_theme_template( $template = FALSE ) {
-		global $wp_query; isset( $wp_query ) and $wp_query->set_404(); // for stylesheet
-
-		// change title from `Not Found` because of `set_404()` to the right one.
-		add_filter( 'document_title_parts', 'IP_Geo_Block_Util::change_title' ); // @since 4.4.0
-
-		// avoid loading template for HEAD requests because of performance bump. See #14348.
-		'HEAD' !== $_SERVER['REQUEST_METHOD'] and include self::$theme_template['file'];
-		exit;
-	}
-
-	public static function change_title( $title_parts ) {
-		$title_parts['title'] = get_status_header_desc( self::$theme_template['code'] );
-		return $title_parts;
-	}
-
-	/**
 	 * Generates cryptographically secure pseudo-random bytes
 	 *
 	 */
@@ -1058,6 +993,7 @@ class IP_Geo_Block_Util {
 		);
 	}
 
+	// used at `admin_ajax_callback()` in class-ip-geo-block-admin.php
 	public static function generate_link() {
 		$link = self::random_bytes();
 		$hash = bin2hex( self::hash_link( $link ) );
@@ -1077,17 +1013,20 @@ class IP_Geo_Block_Util {
 		return add_query_arg( IP_Geo_Block::PLUGIN_NAME . '-key', $link, wp_login_url() );
 	}
 
+	// used at `admin_ajax_callback()` in class-ip-geo-block-admin.php
 	public static function delete_link() {
 		$settings = IP_Geo_Block::get_option();
 		$settings['login_link'] = array( 'link' => NULL, 'hash' => NULL );
 		update_option( IP_Geo_Block::OPTION_NAME, $settings );
 	}
 
+	// used at `tab_setup()` in tab-settings.php
 	public static function get_link() {
 		$settings = IP_Geo_Block::get_option();
 		return $settings['login_link']['link'] ? $settings['login_link']['link'] : FALSE;
 	}
 
+	// used at `validate_login()` in class-ip-geo-block.php
 	public static function verify_link( $link, $hash = NULL ) {
 		return self::hash_equals( self::hash_link( $link ), pack( 'H*', $hash ? $hash : self::get_link() ) ); // hex2bin() for PHP 5.4+
 	}

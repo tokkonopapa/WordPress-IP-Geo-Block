@@ -386,6 +386,9 @@ class IP_Geo_Block {
 		defined( 'DONOTCACHEPAGE' ) or define( 'DONOTCACHEPAGE', TRUE );
 		nocache_headers(); // wp-includes/functions.php @since 2.0.0
 
+		// https://developers.google.com/webmasters/control-crawl-index/docs/robots_meta_tag
+		'public' === $hook and header( 'X-Robots-Tag: noindex, nofollow', FALSE );
+
 		if ( defined( 'XMLRPC_REQUEST' ) && 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 			status_header( 405 );
 			header( 'Content-Type: text/plain' );
@@ -408,19 +411,78 @@ class IP_Geo_Block {
 		  default: // 4xx Client Error, 5xx Server Error
 			status_header( $code ); // @since 2.0.0
 
-			// https://developers.google.com/webmasters/control-crawl-index/docs/robots_meta_tag
-			/*'public' !== $hook and*/ header( 'X-Robots-Tag: noindex, nofollow', FALSE );
-
 			if ( function_exists( 'trackback_response' ) )
 				trackback_response( $code, IP_Geo_Block_Util::kses( $mesg ) ); // @since 0.71
 
 			// Show human readable page
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
-				if ( IP_Geo_Block_Util::show_human_readable( $hook, $code, $mesg, $settings ) )
+				if ( $this->show_human_readable( $hook, $code, $mesg, $settings ) )
 					return;
 			}
+			exit; // never executed
+		}
+	}
+
+	/**
+	 * Load and show theme template
+	 *
+	 */
+	public function show_human_readable( $hook, $code, $mesg, $settings ) {
+		$admin = ( IP_Geo_Block_Util::is_user_logged_in() && 'admin' === $hook );
+
+		if ( ! $admin && $this->show_theme_template( $code, $settings ) )
+			return TRUE;
+
+		else {
+			// prevent to make a cached page. `set_404()` should not be used for `wp_dir()`.
+			global $wp_query; isset( $wp_query->is_404 ) and $wp_query->is_404 = TRUE;
+
+			wp_die( // get_dashboard_url() @since 3.1.0
+				IP_Geo_Block_Util::kses( $mesg ) . ( $admin ? "\n<p>&laquo; <a href='javascript:history.back()'>" . __( 'Back' ) . "</a> / <a rel='nofollow' href='" . esc_url( get_dashboard_url( IP_Geo_Block_Util::get_current_user_id() ) ) . "'>" . __( 'Dashboard' ) . "</a></p>" : '' ),
+				get_status_header_desc( $code ), array( 'response' => $code, 'back_link' => ! $admin )
+			);
 			exit;
 		}
+	}
+
+	public function show_theme_template( $code, $settings ) {
+		if ( file_exists( $file = get_stylesheet_directory() . '/' . $code . '.php' ) /* child  theme */ ||
+		     file_exists( $file = get_template_directory()   . '/' . $code . '.php' ) /* parent theme */ ) {
+			// keep the response code and the template file
+			$this->theme_template = array( 'code' => $code, 'file' => $file );
+
+			// case 1: validation timing is `init`
+			if ( $action = current_filter() ) { // `plugins_loaded`, `wp` or FALSE
+				add_action( // `wp` (on front-end target) is too late to apply `init`
+					'wp' === $action ? 'template_redirect' : 'init',
+					array( $this, 'load_theme_template' ), $settings['priority']
+				);
+				return TRUE; // load template at the specified action
+			}
+
+			// case 2: validation timing is `mu-plugins`
+			elseif ( '<?php' !== file_get_contents( $file, FALSE, NULL, 0, 5 ) ) {
+				$this->load_theme_template(); // load template and die immediately
+			}
+		}
+
+		return FALSE; // die with wp_die() immediately
+	}
+
+	public function load_theme_template( $template = FALSE ) {
+		global $wp_query; isset( $wp_query ) and $wp_query->set_404(); // for stylesheet
+
+		// change title from `Not Found` because of `set_404()` to the right one.
+		add_filter( 'document_title_parts', array( $this, 'change_title' ) ); // @since 4.4.0
+
+		// avoid loading template for HEAD requests because of performance bump. See #14348.
+		'HEAD' !== $_SERVER['REQUEST_METHOD'] and include $this->theme_template['file'];
+		exit;
+	}
+
+	public function change_title( $title_parts ) {
+		$title_parts['title'] = get_status_header_desc( $this->theme_template['code'] );
+		return $title_parts;
 	}
 
 	/**
