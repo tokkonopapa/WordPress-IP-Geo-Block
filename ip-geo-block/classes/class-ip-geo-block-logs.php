@@ -1012,8 +1012,8 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
-//		if ( ! $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) )
-//			return;
+		if ( ! $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) )
+			return;
 
 		$mode = self::cipher_mode_key();
 
