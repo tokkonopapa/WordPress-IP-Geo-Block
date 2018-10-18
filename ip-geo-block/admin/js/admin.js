@@ -1485,9 +1485,9 @@
 			});
 
 			// Manipulate DB table for validation logs
-			$(ID('@', 'init_table')).on('click', function (/*event*/) {
+			$(ID('@', 'diag_tables')).on('click', function (/*event*/) {
 				confirm(ip_geo_block.msg[0], function () {
-					ajax_table('init-table');
+					ajax_table('diag-tables');
 				});
 				return false;
 			});

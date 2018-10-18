@@ -1346,8 +1346,9 @@ endif;
 		// Disable 3rd parties API
 		if ( ! empty( $options['restrict_api'] ) ) {
 			foreach ( array_keys( $provider ) as $key ) {
-				if ( ! in_array( $key, $providers, TRUE ) )
+				if ( ! in_array( $key, $providers, TRUE ) ) {
 					$provider[ $key ] = is_string( $provider[ $key ] ) ? '-1' : -1;
+				}
 			}
 		}
 
@@ -1559,16 +1560,16 @@ endif;
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		// DB tables for this plugin
 		add_settings_field(
-			$option_name.'_init_table',
-			__( 'DB tables for this plugin', 'ip-geo-block' ),
+			$option_name.'_diag_tables',
+			__( 'Diagnose all DB tables', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
 				'type' => 'button',
 				'option' => $option_name,
-				'field' => 'init_table',
-				'value' => __( 'Initialize now', 'ip-geo-block' ),
+				'field' => 'diag_tables',
+				'value' => __( 'Diagnose now', 'ip-geo-block' ),
 				'after' => '<div id="ip-geo-block-init-table"></div>',
 			)
 		);

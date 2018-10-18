@@ -271,12 +271,21 @@ class IP_Geo_Block_Util {
 				return FALSE;
 
 			$cookie = $_COOKIE[ $cookie_name ];
+			$n = count( $cookie_elements = explode( '|', $cookie ) );
 
-			if ( count( $cookie_elements = explode( '|', $cookie ) ) !== 4 )
+			if ( 4 === $n ) { // @since 4.0.0
+				list( $username, $expiration, $token, $hmac ) = $cookie_elements;
+				$cache_cookie = compact( 'username', 'expiration', 'token', 'hmac', 'scheme' );
+			}
+
+			elseif ( 3 === $n ) { // @before 4.0.0
+				list( $username, $expiration, $hmac ) = $cookie_elements;
+				$cache_cookie = compact( 'username', 'expiration', 'hmac', 'scheme' );
+			}
+
+			else {
 				return FALSE;
-
-			list( $username, $expiration, $token, $hmac ) = $cookie_elements;
-			$cache_cookie = compact( 'username', 'expiration', 'token', 'hmac', 'scheme' );
+			}
 		}
 
 		return $cache_cookie;
@@ -319,7 +328,7 @@ class IP_Geo_Block_Util {
 			$scheme   = $cookie['scheme'];
 			$username = $cookie['username'];
 			$hmac     = $cookie['hmac'];
-			$token    = $cookie['token'];
+			$token    = isset( $cookie['token'] ) ? $cookie['token'] : NULL;
 			$expired  = $expiration = $cookie['expiration'];
 
 			// Allow a grace period for POST and Ajax requests
@@ -334,11 +343,18 @@ class IP_Geo_Block_Util {
 				return $cache_user = FALSE;
 
 			$pass_frag = substr( $cache_user->user_pass, 8, 4 );
-			$key = self::hash_nonce( $username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme );
 
-			// If ext/hash is not present, compat.php's hash_hmac() does not support sha256.
-			$algo = function_exists( 'hash' ) ? 'sha256' : 'sha1';
-			$hash = self::hash_hmac( $algo, $username . '|' . $expiration . '|' . $token, $key );
+			if ( is_null( $token ) ) { // @before 4.0.0
+				$key = self::hash_nonce( $username . $pass_frag . '|' . $expiration, $scheme );
+				$hash = hash_hmac( 'md5', $username . '|' . $expiration, $key );
+			}
+
+			else { // @since 4.0.0
+				// If ext/hash is not present, compat.php's hash_hmac() does not support sha256.
+				$key = self::hash_nonce( $username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme );
+				$algo = function_exists( 'hash' ) ? 'sha256' : 'sha1';
+				$hash = self::hash_hmac( $algo, $username . '|' . $expiration . '|' . $token, $key );
+			}
 
 			if ( ! self::hash_equals( $hash, $hmac ) )
 				return $cache_user = FALSE;

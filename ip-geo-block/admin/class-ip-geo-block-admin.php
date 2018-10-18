@@ -609,15 +609,7 @@ class IP_Geo_Block_Admin {
 				break;
 			}
 		}
-if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		// Check database tables
-		if ( $settings['cache_hold'] || $settings['validation']['reclogs'] ) {
-			if ( ( $warn =  IP_Geo_Block_Logs::diag_tables()   ) &&
-				 ( TRUE !== IP_Geo_Block_Logs::create_tables() ) ) {
-				self::add_admin_notice( 'notice-warning', $warn );
-			}
-		}
-endif;
+
 		// Check consistency of emergency login link
 		if ( isset( $settings['login_link'] ) && $settings['login_link']['link'] && ! IP_Geo_Block_Util::verify_link( $settings['login_link']['link'], $settings['login_link']['hash'] ) ) {
 			self::add_admin_notice( 'error',
@@ -1125,7 +1117,6 @@ endif;
 					else {
 					}
 				}
-				break;
 			}
 		}
 
@@ -1633,10 +1624,9 @@ endif;
 			$res = IP_Geo_Block_Admin_Ajax::find_exceptions( $cmd );
 			break;
 
-		  case 'init-table':
-			// Need to define `IP_GEO_BLOCK_DEBUG` to true
-			IP_Geo_Block_Logs::delete_tables();
-			IP_Geo_Block_Logs::create_tables();
+		  case 'diag-tables':
+			// Check database tables
+			IP_Geo_Block_Logs::diag_tables() or IP_Geo_Block_Logs::create_tables();
 			$res = array( 'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME );
 			break;
 		}

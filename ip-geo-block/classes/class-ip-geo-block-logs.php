@@ -232,17 +232,21 @@ class IP_Geo_Block_Logs {
 
 		foreach ( $tables as $table ) {
 			$table = $wpdb->prefix . $table;
-			if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table )
-				return sprintf( __( 'Creating a DB table %s had failed. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ), $table );
+			if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
+				self::error( __LINE__, sprintf( __( 'Creating a DB table %s had failed. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ), $table ) );
+				return FALSE;
+			}
 
 			$result = $wpdb->get_results( "SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$table'", ARRAY_A );
 			foreach ( empty( $result ) ? array() : $result as $col ) {
-				if ( in_array( $col['COLUMN_NAME'], array( 'ip', 'host' ), TRUE ) && 'varbinary' !== $col['DATA_TYPE'] )
-					return sprintf( __( 'Column type in %s unmatched. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ), $table );
+				if ( in_array( $col['COLUMN_NAME'], array( 'ip', 'host' ), TRUE ) && 'varbinary' !== $col['DATA_TYPE'] ) {
+					self::error( __LINE__, sprintf( __( 'Column type in %s unmatched. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ), $table ) );
+					return FALSE;
+				}
 			}
 		}
 
-		return NULL;
+		return TRUE;
 	}
 
 	/**
@@ -1008,8 +1012,8 @@ class IP_Geo_Block_Logs {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
-		if ( ! $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) )
-			return;
+//		if ( ! $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) )
+//			return;
 
 		$mode = self::cipher_mode_key();
 
