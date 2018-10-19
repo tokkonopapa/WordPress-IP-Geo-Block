@@ -1301,7 +1301,7 @@ endif;
 		// Interval [sec] to cleanup expired entries of IP address
 		add_settings_field(
 			$option_name.'_cache_time_gc',
-			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries in &#8220;IP address cache&#8221; and &#8220;Validation logs&#8221;.">Interval [sec] to cleanup expired entries of IP address</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries from &#8220;IP address cache&#8221; and &#8220;Validation logs&#8221;.">Interval [sec] to cleanup expired entries of IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
