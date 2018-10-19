@@ -655,7 +655,7 @@ class IP_Geo_Block_Admin {
 		}
 
 		// Register scripts for admin.
-		add_action( 'admin_enqueue_scripts', 'IP_Geo_Block::enqueue_nonce', 0 );
+		add_action( 'admin_enqueue_scripts', array( 'IP_Geo_Block', 'enqueue_nonce' ), 0 );
 
 		// Show admin notices at the place where it should be. @since 2.5.0
 		add_action( 'admin_notices',         array( $this, 'show_admin_notices' ) );

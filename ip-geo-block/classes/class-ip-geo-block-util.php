@@ -935,7 +935,7 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
-	 * Get the list of multisite
+	 * Get the list of multisite managed by the specific user
 	 *
 	 * This function should be called after 'init' hook is fired.
 	 */

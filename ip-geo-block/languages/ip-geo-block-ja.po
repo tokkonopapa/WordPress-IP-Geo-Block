@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-10-18 22:38+0900\n"
-"PO-Revision-Date: 2018-10-18 22:40+0900\n"
+"POT-Creation-Date: 2018-10-20 02:11+0900\n"
+"PO-Revision-Date: 2018-10-20 02:12+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1363,7 +1363,7 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:1268
 msgid "Ordinary file"
-msgstr "通常のファイル"
+msgstr "ファイル"
 
 #: admin/includes/tab-settings.php:1269
 msgid "In-Memory"
@@ -1404,11 +1404,11 @@ msgstr ""
 #: admin/includes/tab-settings.php:1304
 msgid ""
 "<dfn title=\"This option enables to schedule the WP-Cron event to remove the "
-"expired entries in &#8220;IP address cache&#8221; and &#8220;Logs&#8221;."
-"\">Interval [sec] to cleanup expired entries of IP address</dfn>"
+"expired entries in &#8220;IP address cache&#8221; and &#8220;Validation "
+"logs&#8221;.\">Interval [sec] to cleanup expired entries of IP address</dfn>"
 msgstr ""
-"<dfn title=\"このオプションは、有効期限の切れたIPアドレスのエントリーを削除するWP-Cronイベントの起動"
-"周期を設定します。\">ガベージコレクション周期［秒］</dfn>"
+"<dfn title=\"キャッシュとログから、有効期限の切れたIPアドレスのエントリーを削除するWP-Cronイベントの"
+"起動周期を設定します。\">ガベージコレクション周期［秒］</dfn>"
 
 #: admin/includes/tab-settings.php:1313 admin/includes/tab-settings.php:1443
 #, php-format
