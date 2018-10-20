@@ -385,6 +385,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 = 3.0.16 =
 * **Fix issue:** Fix the issue that some functions did not work properly when "Validation timing" was set as `"mu-plugins" (ip-geo-block-mu.php)` under some conditions before WP 4.0.
 * **New feature:** Add "**Sites list**" page at Network admin page to look through the status of the sites if this plugin is network activated on multisite.
+* **Improvement:** Support Swift Peformance Lite cache plugin with "Disk Cashe with PHP" caching mode.
 * **Improvement:** Apply simulation mode to not only the front-end but also to the back-end.
 * **Improvement:** Optimize SQL issuing to reduce some queries.
 
