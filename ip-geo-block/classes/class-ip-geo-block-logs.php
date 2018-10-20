@@ -633,16 +633,18 @@ class IP_Geo_Block_Logs {
 			$validate['ip'] = IP_Geo_Block_Util::anonymize_ip( $validate['ip'] );
 
 		if ( $record ) {
-			// count the number of rows for each hook
 			global $wpdb;
 			$table = $wpdb->prefix . self::TABLE_LOGS;
-			$count = (int)$wpdb->get_var( "SELECT count(*) FROM `$table`" );
 
-			// Can't start transaction on the assumption that the storage engine is innoDB.
-			// So there are some cases where logs are excessively deleted.
+			// limit the number of rows
+			// @see https://teratail.com/questions/14584
 			$sql = $wpdb->prepare(
-				"DELETE FROM `$table` ORDER BY `time` ASC LIMIT %d",
-				max( 0, $count - (int)$settings['validation']['maxlogs'] + 1 )
+				"DELETE FROM `$table` WHERE NOT EXISTS(
+					SELECT * FROM (
+						SELECT * FROM `$table` tab2 ORDER BY tab2.time DESC LIMIT %d
+					) tab3 WHERE $table.No = tab3.No
+				)",
+				$settings['validation']['maxlogs'] - 1
 			) and $wpdb->query( $sql ) or self::error( __LINE__ );
 
 			// insert into DB
