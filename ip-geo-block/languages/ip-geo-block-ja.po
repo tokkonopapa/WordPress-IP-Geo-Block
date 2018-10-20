@@ -1407,7 +1407,7 @@ msgid ""
 "expired entries from &#8220;IP address cache&#8221; and &#8220;Validation "
 "logs&#8221;.\">Interval [sec] to cleanup expired entries of IP address</dfn>"
 msgstr ""
-"<dfn title=\"キャッシュとログから、有効期限の切れたIPアドレスのエントリーを削除するWP-Cronイベントの"
+"<dfn title=\"キャッシュとログから有効期限の切れたIPアドレスのエントリーを削除する WP-Cron イベントの"
 "起動周期を設定します。\">ガベージコレクション周期［秒］</dfn>"
 
 #: admin/includes/tab-settings.php:1313 admin/includes/tab-settings.php:1443
