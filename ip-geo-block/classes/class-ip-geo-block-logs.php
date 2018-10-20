@@ -637,16 +637,26 @@ class IP_Geo_Block_Logs {
 			$table = $wpdb->prefix . self::TABLE_LOGS;
 
 			// limit the number of rows
+if (1):
+			// Can't start transaction on the assumption that the storage engine is innoDB.
+			// So there are some cases where logs are excessively deleted.
+			$count = (int)$wpdb->get_var( "SELECT count(*) FROM `$table`" );
+			$sql = $wpdb->prepare(
+				"DELETE FROM `$table` ORDER BY `No` ASC LIMIT %d",
+				max( 0, $count - (int)$settings['validation']['maxlogs'] + 1 )
+			) and $wpdb->query( $sql ) or self::error( __LINE__ );
+else:
+			// This SQL slows down on MySQL 5.7.23 and keeps +2 extra rows on MySQL 5.0.67
 			// @see https://teratail.com/questions/14584
 			$sql = $wpdb->prepare(
 				"DELETE FROM `$table` WHERE NOT EXISTS(
 					SELECT * FROM (
-						SELECT * FROM `$table` tab2 ORDER BY tab2.time DESC LIMIT %d
-					) tab3 WHERE $table.No = tab3.No
+						SELECT * FROM `$table` t2 ORDER BY t2.time DESC LIMIT %d
+					) t3 WHERE t3.No = $table.No 
 				)",
 				$settings['validation']['maxlogs'] - 1
 			) and $wpdb->query( $sql ) or self::error( __LINE__ );
-
+endif;
 			// insert into DB
 			if ( 2 === self::cipher_mode_key() ) {
 				$sql = $wpdb->prepare(
