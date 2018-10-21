@@ -5,8 +5,9 @@
  * Copyright (c) 2013-2018 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
-(function ($, window, document) {
+(function ($, window, document, undefined) {
 	// External variables
+	undefined = 'undefined';
 	var skip_error = false,
 	    timer_stack = [],
 	    window_width = $(window).width(),
@@ -22,7 +23,7 @@
 			'%': 'ip_geo_block_',
 			'!': 'ip_geo_block_settings_'
 		};
-		return 'undefined' !== typeof id ? keys[selector] + id : keys.$ + selector;
+		return undefined !== typeof id ? keys[selector] + id : keys.$ + selector;
 	}
 
 	function escapeHTML(str) {
@@ -49,7 +50,7 @@
 		var w = $(window).width();
 		if (w !== window_width) {
 			window_width = w;
-			if ('undefined' === typeof timer_stack[name]) {
+			if (undefined === typeof timer_stack[name]) {
 				timer_stack[name] = {id: false, callback: callback};
 			}
 			$(window).off('resize').on('resize', function (/*event*/) {
@@ -86,7 +87,7 @@
 
 	function redirect(page, tab) {
 		if (-1 !== window.location.href.indexOf(page)) {
-			window.location = stripTag(page) + (tab ? '&' + stripTag(tab) : '') + '&' + ip_geo_block_auth.key + '=' + ip_geo_block_auth.nonce;
+			window.location = stripTag(page) + (tab ? '&' + stripTag(tab) : '') + '&' + (ip_geo_block_auth.key ? (ip_geo_block_auth.key + '=' + ip_geo_block_auth.nonce) : '');
 		}
 	}
 
@@ -377,7 +378,7 @@
 		viewPie: [],
 		drawPie: function (id) {
 			var i, data;
-			if ('undefined' === typeof chart.dataPie[id]) {
+			if (undefined === typeof chart.dataPie[id]) {
 				i = chart.dataPie[id] = new window.google.visualization.DataTable();
 				i.addColumn('string', 'Country');
 				i.addColumn('number', 'Requests');
@@ -385,14 +386,14 @@
 				chart.dataPie[id].addRows(data);
 			}
 
-			if ('undefined' === typeof chart.viewPie[id]) {
+			if (undefined === typeof chart.viewPie[id]) {
 				chart.viewPie[id] = new window.google.visualization.PieChart(
 					document.getElementById(id)
 				);
 			}
 
-			if ('undefined' !== typeof chart.dataPie[id] &&
-			    'undefined' !== typeof chart.viewPie[id] &&
+			if (undefined !== typeof chart.dataPie[id] &&
+			    undefined !== typeof chart.viewPie[id] &&
 			    0 < (i = $('#' + id).width())) {
 				chart.viewPie[id].draw(chart.dataPie[id], {
 					backgroundColor: { fill: 'transparent' },
@@ -412,7 +413,7 @@
 		viewLine: [],
 		drawLine: function (id, datetype) {
 			var i, n, data;
-			if ('undefined' === typeof chart.dataLine[id]) {
+			if (undefined === typeof chart.dataLine[id]) {
 				i = chart.dataLine[id] = new window.google.visualization.DataTable();
 				i.addColumn(datetype, 'Date'   );
 				i.addColumn('number', 'comment');
@@ -428,14 +429,14 @@
 				chart.dataLine[id].addRows(data);
 			}
 
-			if ('undefined' === typeof chart.viewLine[id]) {
+			if (undefined === typeof chart.viewLine[id]) {
 				chart.viewLine[id] = new window.google.visualization.LineChart(
 					document.getElementById(id)
 				);
 			}
 
-			if ('undefined' !== typeof chart.dataLine[id] &&
-			    'undefined' !== typeof chart.viewLine[id] &&
+			if (undefined !== typeof chart.dataLine[id] &&
+			    undefined !== typeof chart.viewLine[id] &&
 			    0 < (i = $('#' + id).width())) {
 				chart.viewLine[id].draw(chart.dataLine[id], {
 					legend: { position: 'bottom' },
@@ -458,7 +459,7 @@
 		drawStacked: function (id) {
 			var i, w, data, range, $id = $('#' + id);
 
-			if ('undefined' === typeof chart.dataStacked[id]) {
+			if (undefined === typeof chart.dataStacked[id]) {
 				data = $.parseJSON($id.attr('data-' + id));
 				if (data) {
 					data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', { role: 'link' } ]);
@@ -466,7 +467,7 @@
 				}
 			}
 
-			if ('undefined' === typeof chart.viewStacked[id]) {
+			if (undefined === typeof chart.viewStacked[id]) {
 				chart.viewStacked[id] = new window.google.visualization.BarChart(
 					document.getElementById(id)
 				);
@@ -506,8 +507,8 @@
 			}
 
 			if (0 < (w = $id.width()) &&
-			    'undefined' !== typeof chart.dataStacked[id] &&
-			    'undefined' !== typeof chart.viewStacked[id]) {
+			    undefined !== typeof chart.dataStacked[id] &&
+			    undefined !== typeof chart.viewStacked[id]) {
 
 				i = ID('range');
 				range = $.parseJSON($('.' + i).attr('data-' + i));
@@ -555,7 +556,7 @@
 				data = array_chunk(data, row);
 
 				$(ID('.', 'network')).each(function (index, obj) {
-					if ('undefined' !== typeof data[index]) {
+					if (undefined !== typeof data[index]) {
 						id = $(obj).attr('id');
 						dt = chart.dataStacked[id];
 						n = Math.min(row, data[index].length);
@@ -609,7 +610,7 @@
 
 	// Load / Save cookie using wpCookies in wp-includes/js/utils.js
 	function loadCookie(tabNo) {
-		var i, cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash('ip-geo-block')) || [];
+		var i, cookie = (undefined !== typeof wpCookies && wpCookies.getHash('ip-geo-block')) || [];
 
 		for (i in cookie) {
 			if(cookie.hasOwnProperty(i)) {
@@ -617,7 +618,7 @@
 			}
 		}
 
-		if ('undefined' === typeof cookie[tabNo]) {
+		if (undefined === typeof cookie[tabNo]) {
 			cookie[tabNo] = [];
 		}
 
@@ -630,7 +631,7 @@
 
 		$.each(cookie, function(i, obj) {
 			c[i] = '';
-			if ('undefined' !== typeof obj) {
+			if (undefined !== typeof obj) {
 				n = obj.length;
 				if (n) {
 					c[i] = (obj[0] || 'o').toString();
@@ -642,7 +643,7 @@
 		});
 
 		// setHash( name, value, expires, path, domain, secure )
-		if ('undefined' !== typeof wpCookies) {
+		if (undefined !== typeof wpCookies) {
 			wpCookies.setHash(
 				'ip-geo-block', c, new Date(Date.now() + 2592000000), ip_geo_block_auth.home + ip_geo_block_auth.admin
 			);
@@ -902,7 +903,7 @@
 					cmd: cmd,
 					which: data
 				}, function (data) {
-					if ('undefined' !== typeof data.page) {
+					if (undefined !== typeof data.page) {
 						redirect(data.page, 'tab=' + tabNo);
 					} else if (data) {
 						table.ajax.reload();
@@ -1373,7 +1374,7 @@
 
 			// Export settings
 			$(ID('#', 'export')).on('click', function (/*event*/) {
-				if ('undefined' === typeof JSON) {
+				if (undefined === typeof JSON) {
 					notice_html5();
 					return false;
 				}
@@ -1394,7 +1395,7 @@
 
 			// Import settings
 			$(ID('#', 'file-dialog')).on('change', function (event) {
-				if ('undefined' === typeof window.FileReader) {
+				if (undefined === typeof window.FileReader) {
 					notice_html5();
 					return false;
 				}
@@ -1404,7 +1405,7 @@
 					readfile(file, function (data) {
 						data = JSON.parse(data);
 						id = name + '[signature]';
-						if ('undefined' !== typeof data[id]) {
+						if (undefined !== typeof data[id]) {
 							data[id] = encode_str(data[id]);
 						}
 						ajax_post('export-import', {

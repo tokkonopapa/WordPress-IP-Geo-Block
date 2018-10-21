@@ -21,9 +21,9 @@
 
 	// `theme-install.php` eats the query and set it to `request[browse]` as a parameter
 	theme_featured = function (data) {
-		var i = data.length;
+		var i = data.length, q = 'request%5Bbrowse%5D=' + auth.key;
 		while (i-- > 0) {
-			if (data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth') !== -1) {
+			if (data[i].indexOf(q) !== -1) {
 				data[i] = 'request%5Bbrowse%5D=featured'; // correct the parameter
 				break;
 			}

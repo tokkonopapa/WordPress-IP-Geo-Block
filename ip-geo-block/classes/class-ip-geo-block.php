@@ -222,13 +222,15 @@ class IP_Geo_Block {
 	 * Register and enqueue a nonce with a specific JavaScript.
 	 *
 	 */
-	public static function enqueue_nonce() {
+	public static function enqueue_nonce( $hook ) {
 		if ( is_user_logged_in() ) {
+			$settings = self::get_option();
+			$validate = $settings['validation'];
+
 			$args['sites'] = IP_Geo_Block_Util::get_sites_of_user();
 			$args['nonce'] = IP_Geo_Block_Util::create_nonce( self::$auth_key );
-			$args['key'  ] = self::$auth_key;
+			$args['key'  ] = $validate['admin'] & 2 || $validate['ajax'] & 2 || $validate['plugins'] & 2 || $validate['themes'] & 2 ? self::$auth_key : FALSE;
 
-			// authentication
 			$script = plugins_url(
 				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_GEO_BLOCK_BASE
