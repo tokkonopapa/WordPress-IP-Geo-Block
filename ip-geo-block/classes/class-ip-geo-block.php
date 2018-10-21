@@ -189,9 +189,7 @@ class IP_Geo_Block {
 
 	// get optional values from wp options.
 	public static function get_option() {
-		static $option = NULL;
-		$option or $option = get_option( self::OPTION_NAME ) or $option = self::get_default();
-		return $option;
+		return ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
 	}
 
 	/**
