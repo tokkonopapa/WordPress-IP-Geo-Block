@@ -37,7 +37,7 @@ class IP_Geo_Block {
 	private $target_type = NULL;
 
 	/**
-	 * Initialize the plugin
+	 * Initialize the plugin.
 	 *
 	 */
 	private function __construct() {
@@ -162,7 +162,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * I/F for registering custom fileter
+	 * I/F for registering custom fileter.
 	 *
 	 */
 	public static function add_filter( $tag, $function, $priority = 10, $args = 1 ) {
@@ -170,14 +170,10 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Return an instance of this class.
+	 * Getter functions for the private values.
 	 *
 	 */
-	public static function get_instance() {
-		return self::$instance ? self::$instance : ( self::$instance = new self );
-	}
-
-	// getter functions for the private values
+	public static function get_instance() { return self::$instance ? self::$instance : ( self::$instance = new self ); }
 	public static function get_auth_key() { return self::$auth_key; }
 	public static function get_live_log() { return self::$live_log; }
 	public static function get_wp_path()  { return self::$wp_path;  }
@@ -191,9 +187,11 @@ class IP_Geo_Block {
 		return IP_Geo_Block_Opts::get_default();
 	}
 
-	// get optional values from wp options
+	// get optional values from wp options.
 	public static function get_option() {
-		return ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
+		static $option = NULL;
+		$option or $option = get_option( self::OPTION_NAME ) or $option = self::get_default();
+		return $option;
 	}
 
 	/**
@@ -408,7 +406,7 @@ class IP_Geo_Block {
 				exit;
 			} else {
 				$code = 403; // avoid redirection loop
-			}
+			} // continue to default
 
 		  default: // 4xx Client Error, 5xx Server Error
 			status_header( $code ); // @since 2.0.0
