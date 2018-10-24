@@ -1010,7 +1010,7 @@ class IP_Geo_Block_Util {
 	}
 
 	// used at `admin_ajax_callback()` in class-ip-geo-block-admin.php
-	public static function generate_link() {
+	public static function generate_link( $context ) {
 		$link = self::random_bytes();
 		$hash = bin2hex( self::hash_link( $link ) );
 
@@ -1025,15 +1025,23 @@ class IP_Geo_Block_Util {
 			'hash' => bin2hex( self::hash_link( $hash ) ),
 		);
 
-		update_option( IP_Geo_Block::OPTION_NAME, $settings );
+		if ( $context->is_network_admin() && $settings['network_wide'] )
+			$context->update_multisite_settings( $settings );
+		else
+			IP_Geo_Block::update_option( $settings );
+
 		return add_query_arg( IP_Geo_Block::PLUGIN_NAME . '-key', $link, wp_login_url() );
 	}
 
 	// used at `admin_ajax_callback()` in class-ip-geo-block-admin.php
-	public static function delete_link() {
+	public static function delete_link( $context ) {
 		$settings = IP_Geo_Block::get_option();
 		$settings['login_link'] = array( 'link' => NULL, 'hash' => NULL );
-		update_option( IP_Geo_Block::OPTION_NAME, $settings );
+
+		if ( $context->is_network_admin() && $settings['network_wide'] )
+			$context->update_multisite_settings( $settings );
+		else
+			IP_Geo_Block::update_option( $settings );
 	}
 
 	// used at `tab_setup()` in tab-settings.php

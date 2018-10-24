@@ -132,20 +132,20 @@ class IP_Geo_Block_Cron {
 
 			foreach ( $blog_ids as $id ) {
 				switch_to_blog( $id );
-				$dst = IP_Geo_Block::get_option();
+				$dst = IP_Geo_Block::get_option( FALSE );
 
 				foreach ( $keys as $key ) {
 					$dst[ $key ] = $src[ $key ];
 				}
 
-				update_option( IP_Geo_Block::OPTION_NAME, $dst );
+				IP_Geo_Block::update_option( $dst, FALSE );
 				restore_current_blog();
 			}
 		}
 
 		// for single site
 		else {
-			update_option( IP_Geo_Block::OPTION_NAME, $src );
+			IP_Geo_Block::update_option( $src );
 		}
 	}
 

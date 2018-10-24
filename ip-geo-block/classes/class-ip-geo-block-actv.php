@@ -68,9 +68,9 @@ class IP_Geo_Block_Activate {
 
 				if ( $settings['network_wide'] ) {
 					// Copy settings of main site to individual site
-					$map = IP_Geo_Block::get_option();
+					$map = IP_Geo_Block::get_option( FALSE );
 					$settings['api_key']['GoogleMap'] = $map['api_key']['GoogleMap'];
-					update_option( IP_Geo_Block::OPTION_NAME, $settings );
+					IP_Geo_Block::update_option( $settings, FALSE );
 				}
 
 				// Initialize inidivisual site

@@ -182,7 +182,7 @@ class IP_Geo_Block_Admin {
 
 		// Copy option from main blog.
 		if ( $this->is_network_admin && $settings['network_wide'] )
-			update_option( IP_Geo_Block::OPTION_NAME, $settings );
+			IP_Geo_Block::update_option( $settings, FALSE );
 
 		// Restore the main blog.
 		restore_current_blog();
@@ -1425,9 +1425,9 @@ class IP_Geo_Block_Admin {
 
 		foreach ( $blog_ids as $id ) {
 			switch_to_blog( $id );
-			$map = IP_Geo_Block::get_option();
+			$map = IP_Geo_Block::get_option( FALSE );
 			$settings['api_key']['GoogleMap'] = $map['api_key']['GoogleMap'];
-			$ret &= update_option( IP_Geo_Block::OPTION_NAME, $settings );
+			$ret &= IP_Geo_Block::update_option( $settings, FALSE );
 			restore_current_blog();
 		}
 
@@ -1516,7 +1516,7 @@ class IP_Geo_Block_Admin {
 		  case 'gmap-error': // Reset Google Maps API key
 			if ( $settings['api_key']['GoogleMap'] === 'default' ) {
 				$settings['api_key']['GoogleMap'] = NULL;
-				update_option( IP_Geo_Block::OPTION_NAME, $settings );
+				IP_Geo_Block::update_option( $settings );
 				$res = array(
 					'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
 					'tab' => 'tab=2'
@@ -1525,11 +1525,11 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'generate-link': // Generate new link
-			$res = array( 'link' => IP_Geo_Block_Util::generate_link() );
+			$res = array( 'link' => IP_Geo_Block_Util::generate_link( $this ) );
 			break;
 
 		  case 'delete-link': // Delete existing link
-			IP_Geo_Block_Util::delete_link();
+			IP_Geo_Block_Util::delete_link( $this );
 			break;
 
 		  case 'show-info': // Show system and debug information
@@ -1585,7 +1585,7 @@ class IP_Geo_Block_Admin {
 			if ( $this->is_network_admin && $settings['network_wide'] )
 				$this->update_multisite_settings( $settings );
 			else
-				update_option( IP_Geo_Block::OPTION_NAME, $settings );
+				IP_Geo_Block::update_option( $settings );
 
 			$res = array( 'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME );
 			break;

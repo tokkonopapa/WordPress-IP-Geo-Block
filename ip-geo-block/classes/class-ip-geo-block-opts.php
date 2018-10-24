@@ -249,199 +249,189 @@ class IP_Geo_Block_Opts {
 	 * @since 3.0.3.1 This should be executed in admin context
 	 */
 	public static function upgrade() {
-		$default = self::get_default();
+		$default  = IP_Geo_Block::get_default();
+		$settings = IP_Geo_Block::get_option();
+		$version  = $settings['version'];
 
-		if ( FALSE === ( $settings = get_option( IP_Geo_Block::OPTION_NAME ) ) ) {
-			// save package version number
-			$version = $default['version'] = IP_Geo_Block::VERSION;
+		// refresh if it's too old
+		if ( version_compare( $version, '2.0.0' ) < 0 )
+			$settings = $default;
 
-			// create new option table
-			add_option( IP_Geo_Block::OPTION_NAME, $settings = $default );
+		if ( version_compare( $version, '2.1.0' ) < 0 ) {
+			foreach ( array( 'plugins', 'themes' ) as $tmp ) {
+				$settings['validation'][ $tmp ] = $default['validation'][ $tmp ];
+			}
 		}
 
-		else {
-			$version = $settings['version'];
-
-			// refresh if it's too old
-			if ( version_compare( $version, '2.0.0' ) < 0 )
-				$settings = $default;
-
-			if ( version_compare( $version, '2.1.0' ) < 0 ) {
-				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
-					$settings['validation'][ $tmp ] = $default['validation'][ $tmp ];
-				}
+		if ( version_compare( $version, '2.2.0' ) < 0 ) {
+			foreach ( array( 'anonymize', 'signature', 'extra_ips', 'rewrite' ) as $tmp ) {
+				$settings[ $tmp ] = $default[ $tmp ];
 			}
 
-			if ( version_compare( $version, '2.2.0' ) < 0 ) {
-				foreach ( array( 'anonymize', 'signature', 'extra_ips', 'rewrite' ) as $tmp ) {
-					$settings[ $tmp ] = $default[ $tmp ];
-				}
-
-				foreach ( array( 'admin', 'ajax' ) as $tmp ) {
-					if ( $settings['validation'][ $tmp ] == 2 )
-						$settings['validation'][ $tmp ] = 3; // WP-ZEP + Block by country
-				}
+			foreach ( array( 'admin', 'ajax' ) as $tmp ) {
+				if ( $settings['validation'][ $tmp ] == 2 )
+					$settings['validation'][ $tmp ] = 3; // WP-ZEP + Block by country
 			}
-
-			if ( version_compare( $version, '2.2.1' ) < 0 ) {
-				foreach ( array( 'Maxmind', 'IP2Location' ) as $tmp ) {
-					$settings[ $tmp ] = $default[ $tmp ];
-				}
-			}
-
-			if ( version_compare( $version, '2.2.2' ) < 0 ) {
-				$tmp = get_option( 'ip_geo_block_statistics' );
-				$tmp['daystats'] = array();
-				IP_Geo_Block_Logs::record_stat( $tmp );
-				delete_option( 'ip_geo_block_statistics' ); // @since 1.2.0
-
-				foreach ( array( 'maxmind', 'ip2location' ) as $tmp ) {
-					unset( $settings[ $tmp ] );
-				}
-			}
-
-			if ( version_compare( $version, '2.2.3' ) < 0 )
-				$settings['api_dir'] = $default['api_dir'];
-
-			if ( version_compare( $version, '2.2.5' ) < 0 ) {
-				// https://wordpress.org/support/topic/compatibility-with-ag-custom-admin
-				$arr = array();
-				foreach ( explode( ',', $settings['signature'] ) as $tmp ) {
-					$tmp = trim( $tmp );
-					if ( 'wp-config.php' === $tmp || 'passwd' === $tmp )
-						$tmp = '/' . $tmp;
-					array_push( $arr, $tmp );
-				}
-				$settings['signature'] = implode( ',', $arr );
-				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
-					$settings['exception'][ $tmp ] = $default['exception'][ $tmp ];
-				}
-			}
-
-			if ( version_compare( $version, '2.2.6' ) < 0 ) {
-				$settings['signature']               = str_replace( " ", "\n", $settings['signature'] );
-				$settings['extra_ips']['white_list'] = str_replace( " ", "\n", $settings['extra_ips']['white_list'] );
-				$settings['extra_ips']['black_list'] = str_replace( " ", "\n", $settings['extra_ips']['black_list'] );
-
-				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
-					$arr = array_keys( $settings['exception'][ $tmp ] );
-					if ( ! empty( $arr ) && ! is_numeric( $arr[0] ) )
-						$settings['exception'][ $tmp ] = $arr;
-				}
-			}
-
-			if ( version_compare( $version, '2.2.7' ) < 0 )
-				$settings['api_key'] = $default['api_key'];
-
-			if ( version_compare( $version, '2.2.8' ) < 0 ) {
-				$settings['login_action'] = $default['login_action'];
-				// Block by country (register, lost password)
-				if ( 2 === (int)$settings['validation']['login'] )
-					$settings['login_action']['login'] = FALSE;
-			}
-
-			if ( version_compare( $version, '2.2.9' ) < 0 ) {
-				$settings['validation']['timing' ] = $default['validation']['timing' ];
-				$settings['validation']['recdays'] = $default['validation']['recdays'];
-			}
-
-			if ( version_compare( $version, '3.0.0' ) < 0 ) {
-				foreach ( array( 'cache_time_gc', 'response_msg', 'redirect_uri', 'network_wide', 'public' ) as $tmp ) {
-					$settings[ $tmp ] = $default[ $tmp ];
-				}
-
-				foreach ( array( 'public', 'includes', 'uploads', 'languages' ) as $tmp ) {
-					$settings['validation'][ $tmp ] = $default['validation'][ $tmp ];
-					$settings['rewrite'   ][ $tmp ] = $default['rewrite'   ][ $tmp ];
-					$settings['exception' ][ $tmp ] = $default['exception' ][ $tmp ];
-				}
-
-				$settings['exception']['admin'] = $default['exception']['admin'];
-			}
-
-			if ( version_compare( $version, '3.0.1' ) < 0 )
-				delete_transient( IP_Geo_Block::CACHE_NAME ); // @since 2.8
-
-			if ( version_compare( $version, '3.0.3' ) < 0 ) {
-				$settings['exception'   ]['restapi'      ] = $default['exception' ]['restapi'      ];
-				$settings['validation'  ]['restapi'      ] = $default['validation']['restapi'      ];
-				$settings['validation'  ]['mimetype'     ] = $default['validation']['mimetype'     ];
-				$settings['public'      ]['redirect_uri' ] = $default['public'    ]['redirect_uri' ];
-				$settings['public'      ]['response_msg' ] = $default['public'    ]['response_msg' ];
-				$settings['public'      ]['response_code'] = $default['public'    ]['response_code'];
-				$settings['public'      ]['dnslkup'      ] = TRUE;
-				$settings['public'      ]['ua_list'      ] = str_replace( '*:HOST=embed.ly', 'embed.ly:HOST', $settings['public']['ua_list'] );
-				$settings['login_action']['resetpass'    ] = @$settings['login_action']['resetpasss'];
-				$settings['mimetype'    ] = $default['mimetype'];
-				unset(
-					$settings['rewrite'     ]['public'    ], // unused @3.0.0
-					$settings['rewrite'     ]['content'   ], // unused @3.0.0
-					$settings['login_action']['resetpasss']  // mis-spelled
-				);
-			}
-
-			if ( version_compare( $version, '3.0.4.1' ) < 0 ) {
-				if ( ! isset( $settings['Maxmind']['use_asn'] ) ) {
-					$settings['Maxmind' ]['use_asn'   ] = 0; // disable
-					$settings['Maxmind' ]['asn4_path' ] = $default['Maxmind' ]['asn4_path' ];
-					$settings['Maxmind' ]['asn4_last' ] = $default['Maxmind' ]['asn4_last' ];
-					$settings['Maxmind' ]['asn6_path' ] = $default['Maxmind' ]['asn6_path' ];
-					$settings['Maxmind' ]['asn6_last' ] = $default['Maxmind' ]['asn6_last' ];
-					$settings['mimetype']['capability'] = $default['mimetype']['capability'];
-				}
-			}
-
-			if ( version_compare( $version, '3.0.5' ) < 0 )
-				$settings['live_update'] = $default['live_update'];
-
-			if ( version_compare( $version, '3.0.8' ) < 0 ) {
-				$settings['timeout' ] = $default['timeout'];
-				$settings['Geolite2']['use_asn'] = $settings['Maxmind']['use_asn'];
-				foreach ( array( 'ip_path', 'ip_last', 'asn_path', 'asn_last' ) as $tmp ) {
-					$settings['Geolite2'][ $tmp ] = $default['Geolite2'][ $tmp ];
-				}
-			}
-
-			if ( version_compare( $version, '3.0.9' ) < 0 )
-				$settings['priority'] = $default['priority'];
-
-			if ( version_compare( $version, '3.0.10' ) < 0 ) {
-				$settings['behavior'] = $default['behavior'];
-				$settings['public'  ]['behavior'] = $default['public']['behavior'];
-			}
-
-			if ( version_compare( $version, '3.0.11' ) < 0 ) {
-				// change the size of some database columns
-				$settings['cache_hold'] = $default['cache_hold'];
-				IP_Geo_Block_Logs::delete_tables( IP_Geo_Block::CACHE_NAME );
-				IP_Geo_Block_Logs::create_tables();
-				IP_Geo_Block_Logs::reset_sqlite_db();
-			}
-
-			if ( version_compare( $version, '3.0.13' ) < 0 ) {
-				$settings['validation'  ]['maxlogs'] = $default['validation']['maxlogs'];
-				$settings['validation'  ]['explogs'] = $default['validation']['explogs'];
-				$settings['restrict_api'] = $settings['anonymize'];
-			}
-
-			if ( version_compare( $version, '3.0.14' ) < 0 )
-				$settings['login_link'] = $default['login_link'];
-
-			if ( version_compare( $version, '3.0.15' ) < 0 )
-				IP_Geo_Block_Logs::upgrade( $version );
-
-			if ( version_compare( $version, '3.0.16' ) < 0 ) {
-				if ( isset( $settings['public']['simulate'] ) ) {
-					$settings['simulate'] = $settings['public']['simulate'];
-					unset( $settings['public']['simulate'] );
-				} else {
-					$settings['simulate'] = $default['simulate'];
-				}
-			}
-
-			// update package version number
-			$settings['version'] = IP_Geo_Block::VERSION;
 		}
+
+		if ( version_compare( $version, '2.2.1' ) < 0 ) {
+			foreach ( array( 'Maxmind', 'IP2Location' ) as $tmp ) {
+				$settings[ $tmp ] = $default[ $tmp ];
+			}
+		}
+
+		if ( version_compare( $version, '2.2.2' ) < 0 ) {
+			$tmp = get_option( 'ip_geo_block_statistics' );
+			$tmp['daystats'] = array();
+			IP_Geo_Block_Logs::record_stat( $tmp );
+			delete_option( 'ip_geo_block_statistics' ); // @since 1.2.0
+
+			foreach ( array( 'maxmind', 'ip2location' ) as $tmp ) {
+				unset( $settings[ $tmp ] );
+			}
+		}
+
+		if ( version_compare( $version, '2.2.3' ) < 0 )
+			$settings['api_dir'] = $default['api_dir'];
+
+		if ( version_compare( $version, '2.2.5' ) < 0 ) {
+			// https://wordpress.org/support/topic/compatibility-with-ag-custom-admin
+			$arr = array();
+			foreach ( explode( ',', $settings['signature'] ) as $tmp ) {
+				$tmp = trim( $tmp );
+				if ( 'wp-config.php' === $tmp || 'passwd' === $tmp )
+					$tmp = '/' . $tmp;
+				array_push( $arr, $tmp );
+			}
+			$settings['signature'] = implode( ',', $arr );
+			foreach ( array( 'plugins', 'themes' ) as $tmp ) {
+				$settings['exception'][ $tmp ] = $default['exception'][ $tmp ];
+			}
+		}
+
+		if ( version_compare( $version, '2.2.6' ) < 0 ) {
+			$settings['signature']               = str_replace( " ", "\n", $settings['signature'] );
+			$settings['extra_ips']['white_list'] = str_replace( " ", "\n", $settings['extra_ips']['white_list'] );
+			$settings['extra_ips']['black_list'] = str_replace( " ", "\n", $settings['extra_ips']['black_list'] );
+
+			foreach ( array( 'plugins', 'themes' ) as $tmp ) {
+				$arr = array_keys( $settings['exception'][ $tmp ] );
+				if ( ! empty( $arr ) && ! is_numeric( $arr[0] ) )
+					$settings['exception'][ $tmp ] = $arr;
+			}
+		}
+
+		if ( version_compare( $version, '2.2.7' ) < 0 )
+			$settings['api_key'] = $default['api_key'];
+
+		if ( version_compare( $version, '2.2.8' ) < 0 ) {
+			$settings['login_action'] = $default['login_action'];
+			// Block by country (register, lost password)
+			if ( 2 === (int)$settings['validation']['login'] )
+				$settings['login_action']['login'] = FALSE;
+		}
+
+		if ( version_compare( $version, '2.2.9' ) < 0 ) {
+			$settings['validation']['timing' ] = $default['validation']['timing' ];
+			$settings['validation']['recdays'] = $default['validation']['recdays'];
+		}
+
+		if ( version_compare( $version, '3.0.0' ) < 0 ) {
+			foreach ( array( 'cache_time_gc', 'response_msg', 'redirect_uri', 'network_wide', 'public' ) as $tmp ) {
+				$settings[ $tmp ] = $default[ $tmp ];
+			}
+
+			foreach ( array( 'public', 'includes', 'uploads', 'languages' ) as $tmp ) {
+				$settings['validation'][ $tmp ] = $default['validation'][ $tmp ];
+				$settings['rewrite'   ][ $tmp ] = $default['rewrite'   ][ $tmp ];
+				$settings['exception' ][ $tmp ] = $default['exception' ][ $tmp ];
+			}
+
+			$settings['exception']['admin'] = $default['exception']['admin'];
+		}
+
+		if ( version_compare( $version, '3.0.1' ) < 0 )
+			delete_transient( IP_Geo_Block::CACHE_NAME ); // @since 2.8
+
+		if ( version_compare( $version, '3.0.3' ) < 0 ) {
+			$settings['exception'   ]['restapi'      ] = $default['exception' ]['restapi'      ];
+			$settings['validation'  ]['restapi'      ] = $default['validation']['restapi'      ];
+			$settings['validation'  ]['mimetype'     ] = $default['validation']['mimetype'     ];
+			$settings['public'      ]['redirect_uri' ] = $default['public'    ]['redirect_uri' ];
+			$settings['public'      ]['response_msg' ] = $default['public'    ]['response_msg' ];
+			$settings['public'      ]['response_code'] = $default['public'    ]['response_code'];
+			$settings['public'      ]['dnslkup'      ] = TRUE;
+			$settings['public'      ]['ua_list'      ] = str_replace( '*:HOST=embed.ly', 'embed.ly:HOST', $settings['public']['ua_list'] );
+			$settings['login_action']['resetpass'    ] = @$settings['login_action']['resetpasss'];
+			$settings['mimetype'    ] = $default['mimetype'];
+			unset(
+				$settings['rewrite'     ]['public'    ], // unused @3.0.0
+				$settings['rewrite'     ]['content'   ], // unused @3.0.0
+				$settings['login_action']['resetpasss']  // mis-spelled
+			);
+		}
+
+		if ( version_compare( $version, '3.0.4.1' ) < 0 ) {
+			if ( ! isset( $settings['Maxmind']['use_asn'] ) ) {
+				$settings['Maxmind' ]['use_asn'   ] = 0; // disable
+				$settings['Maxmind' ]['asn4_path' ] = $default['Maxmind' ]['asn4_path' ];
+				$settings['Maxmind' ]['asn4_last' ] = $default['Maxmind' ]['asn4_last' ];
+				$settings['Maxmind' ]['asn6_path' ] = $default['Maxmind' ]['asn6_path' ];
+				$settings['Maxmind' ]['asn6_last' ] = $default['Maxmind' ]['asn6_last' ];
+				$settings['mimetype']['capability'] = $default['mimetype']['capability'];
+			}
+		}
+
+		if ( version_compare( $version, '3.0.5' ) < 0 )
+			$settings['live_update'] = $default['live_update'];
+
+		if ( version_compare( $version, '3.0.8' ) < 0 ) {
+			$settings['timeout' ] = $default['timeout'];
+			$settings['Geolite2']['use_asn'] = $settings['Maxmind']['use_asn'];
+			foreach ( array( 'ip_path', 'ip_last', 'asn_path', 'asn_last' ) as $tmp ) {
+				$settings['Geolite2'][ $tmp ] = $default['Geolite2'][ $tmp ];
+			}
+		}
+
+		if ( version_compare( $version, '3.0.9' ) < 0 )
+			$settings['priority'] = $default['priority'];
+
+		if ( version_compare( $version, '3.0.10' ) < 0 ) {
+			$settings['behavior'] = $default['behavior'];
+			$settings['public'  ]['behavior'] = $default['public']['behavior'];
+		}
+
+		if ( version_compare( $version, '3.0.11' ) < 0 ) {
+			// change the size of some database columns
+			$settings['cache_hold'] = $default['cache_hold'];
+			IP_Geo_Block_Logs::delete_tables( IP_Geo_Block::CACHE_NAME );
+			IP_Geo_Block_Logs::create_tables();
+			IP_Geo_Block_Logs::reset_sqlite_db();
+		}
+
+		if ( version_compare( $version, '3.0.13' ) < 0 ) {
+			$settings['validation'  ]['maxlogs'] = $default['validation']['maxlogs'];
+			$settings['validation'  ]['explogs'] = $default['validation']['explogs'];
+			$settings['restrict_api'] = $settings['anonymize'];
+		}
+
+		if ( version_compare( $version, '3.0.14' ) < 0 )
+			$settings['login_link'] = $default['login_link'];
+
+		if ( version_compare( $version, '3.0.15' ) < 0 )
+			IP_Geo_Block_Logs::upgrade( $version );
+
+		if ( version_compare( $version, '3.0.16' ) < 0 ) {
+			if ( isset( $settings['public']['simulate'] ) ) {
+				$settings['simulate'] = $settings['public']['simulate'];
+				unset( $settings['public']['simulate'] );
+			} else {
+				$settings['simulate'] = $default['simulate'];
+			}
+		}
+
+		// update package version number
+		$settings['version'] = IP_Geo_Block::VERSION;
 
 		// install addons for IP Geolocation database API ver. 1.1.13
 		$providers = IP_Geo_Block_Provider::get_addons();
@@ -450,8 +440,8 @@ class IP_Geo_Block_Opts {
 
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
 
-		// update option table
-		update_option( IP_Geo_Block::OPTION_NAME, $settings );
+		// update (or create if it does not exist) option table
+		IP_Geo_Block::update_option( $settings );
 
 		// return upgraded settings
 		return $settings;

@@ -27,6 +27,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	private static $instance = NULL;
+	private static $settings = NULL;
 	private static $auth_key = NULL;
 	private static $live_log = FALSE;
 	private static $wp_path = array();
@@ -170,10 +171,17 @@ class IP_Geo_Block {
 	}
 
 	/**
+	 * Get the instance of this class.
+	 *
+	 */
+	public static function get_instance() {
+		return self::$instance ? self::$instance : ( self::$instance = new self );
+	}
+
+	/**
 	 * Getter functions for the private values.
 	 *
 	 */
-	public static function get_instance() { return self::$instance ? self::$instance : ( self::$instance = new self ); }
 	public static function get_auth_key() { return self::$auth_key; }
 	public static function get_live_log() { return self::$live_log; }
 	public static function get_wp_path()  { return self::$wp_path;  }
@@ -187,9 +195,17 @@ class IP_Geo_Block {
 		return IP_Geo_Block_Opts::get_default();
 	}
 
-	// get optional values from wp options.
-	public static function get_option() {
-		return ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
+	public static function get_option( $cache = TRUE ) {
+		if ( $cache ) {
+			self::$settings or ( self::$settings = get_option( self::OPTION_NAME ) ) or ( self::$settings = self::get_default() );
+			return self::$settings;
+		} else {
+			return ( $settings = get_option( self::OPTION_NAME ) ? $settings : self::get_default() );
+		}
+	}
+
+	public static function update_option( $settings, $cache = TRUE ) {
+		return update_option( self::OPTION_NAME, $cache ? self::$settings = $settings : $settings );
 	}
 
 	/**
