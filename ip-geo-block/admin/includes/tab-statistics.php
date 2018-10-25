@@ -400,23 +400,26 @@ endif;
 	 * Function that fills the section with the desired content.
 	 *
 	 */
-	public static function warn_statistics() {
+	private static function dashboard_url() {
+		$options = IP_Geo_Block::get_option();
 		$context = IP_Geo_Block_Admin::get_instance();
-		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 3 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-3' );
+		return $context->dashboard_url( $context->is_network_admin() && $options['network_wide'] );
+	}
+
+	public static function warn_statistics() {
+		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 3 ), self::dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-3' );
 		echo '<p>', sprintf( __( '[ %sRecord &#8220;Statistics of validation&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '">', '</a>' ), '</p>', "\n";
 		echo '<p>', __( 'Please set the proper condition to record and analyze the validation statistics.', 'ip-geo-block' ), '</p>', "\n";
 	}
 
 	public static function warn_validation() {
-		$context = IP_Geo_Block_Admin::get_instance();
-		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 3 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-3' );
+		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 3 ), self::dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-3' );
 		echo '<p>', sprintf( __( '[ %sRecord &#8220;Validation logs&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '">', '</a>' ), '</p>', "\n";
 		echo '<p>', __( 'Please set the proper condition to record and analyze the validation logs.', 'ip-geo-block' ), '</p>', "\n";
 	}
 
 	public static function warn_ipadr_cache() {
-		$context = IP_Geo_Block_Admin::get_instance();
-		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 3 ), $context->dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-3' );
+		$url = esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => '0', 'sec' => 3 ), self::dashboard_url() ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-3' );
 		echo '<p style="padding:0 1em">', sprintf( __( '[ %sRecord &#8220;IP address cache&#8221;%s ] is disabled.', 'ip-geo-block' ), '<a href="' . $url . '">', '</a>' ), '</p>', "\n";
 		echo '<p style="padding:0 1em">', __( 'Please set the proper condition to record IP address in cache.', 'ip-geo-block' ), '</p>', "\n";
 	}
