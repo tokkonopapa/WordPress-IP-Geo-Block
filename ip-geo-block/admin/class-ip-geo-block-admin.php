@@ -421,8 +421,8 @@ class IP_Geo_Block_Admin {
 	 * Get the admin url that depends on network multisite.
 	 *
 	 */
-	public function dashboard_url( $network = NULL ) {
-		return ( is_null( $network ) ? $this->is_network_admin : $network ) ? network_admin_url( 'admin.php' /*'settings.php'*/ ) : admin_url( 'options-general.php' );
+	public function dashboard_url( $network_wide = FALSE ) {
+		return ( $network_wide ? $this->is_network_admin : $network_wide ) ? network_admin_url( 'admin.php' /*'settings.php'*/ ) : admin_url( 'options-general.php' );
 	}
 
 	/**
@@ -515,7 +515,7 @@ class IP_Geo_Block_Admin {
 	 */
 	private function diagnose_admin_screen( $settings ) {
 		$updating = get_transient( IP_Geo_Block::CRON_NAME );
-		$adminurl = $this->dashboard_url( $this->is_network_admin && $settings['network_wide'] );
+		$adminurl = $this->dashboard_url( $settings['network_wide'] );
 
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7.0' ) < 0 )

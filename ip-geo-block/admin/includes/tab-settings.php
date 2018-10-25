@@ -1107,39 +1107,6 @@ endif;
 			)
 		);
 
-		// Record Statistics of validation
-		add_settings_field(
-			$option_name.'_save_statistics',
-			__( '<dfn title="This option enables to record the number blocked countries and the number of blocked requests per day.">Record &#8220;Statistics of validation&#8221;</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => 'save_statistics',
-				'value' => $options['save_statistics'],
-			)
-		);
-
-if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		add_settings_field(
-			$option_name.'_validation_recdays',
-			'<div class="ip-geo-block-subitem">' . __( 'Maximum period for &#8220;Statistics&#8221; [days]', 'ip-geo-block' ) . '</div>',
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => 'validation',
-				'sub-field' => 'recdays',
-				'value' => $options['validation']['recdays'],
-				'class' => 'ip-geo-block-subitem-parent',
-			)
-		);
-endif;
-
 		// Record IP address cache
 		add_settings_field(
 			$option_name.'_cache_hold',
@@ -1313,6 +1280,39 @@ endif;
 				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>',
 			)
 		);
+
+		// Record Statistics of validation
+		add_settings_field(
+			$option_name.'_save_statistics',
+			__( '<dfn title="This option enables to record the number blocked countries and the number of blocked requests per day.">Record &#8220;Statistics of validation&#8221;</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => 'save_statistics',
+				'value' => $options['save_statistics'],
+			)
+		);
+
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		add_settings_field(
+			$option_name.'_validation_recdays',
+			'<div class="ip-geo-block-subitem">' . __( 'Maximum period for &#8220;Statistics&#8221; [days]', 'ip-geo-block' ) . '</div>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => 'validation',
+				'sub-field' => 'recdays',
+				'value' => $options['validation']['recdays'],
+				'class' => 'ip-geo-block-subitem-parent',
+			)
+		);
+endif;
 
 		// Remove all settings and records at uninstallation
 		add_settings_field(

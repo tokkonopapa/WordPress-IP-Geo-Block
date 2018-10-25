@@ -3,7 +3,6 @@ class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context, $tab ) {
 		$options = IP_Geo_Block::get_option();
-		$statistics = IP_Geo_Block_Logs::restore_stat( TRUE );
 		$plugin_slug = IP_Geo_Block::PLUGIN_NAME;
 
 		register_setting(
@@ -25,6 +24,7 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 if ( $options['save_statistics'] ) :
+		$statistics = IP_Geo_Block_Logs::restore_stat( TRUE );
 
 		// Number of blocked access
 		add_settings_field(
@@ -309,39 +309,32 @@ endif;
 			$key = $log['method'] . ' ' . $log['data'];
 
 			// <methodName>...</methodName>
-			if ( preg_match( '#<methodName>(.*?)</methodName>#', $key, $matches ) ) {
+			if ( preg_match( '#<methodName>(.*?)</methodName>#', $key, $matches ) )
 				$log['slug'] = '/xmlrpc.php ' . $matches[1];
-			}
 
 			// /wp-content/(plugins|themes)/...
-			elseif ( preg_match( '#(/wp-content/(?:plugins|themes)/.*?/)#', $key, $matches ) ) {
+			elseif ( preg_match( '#(/wp-content/(?:plugins|themes)/.*?/)#', $key, $matches ) )
 				$log['slug'] = $matches[1];
-			}
 
 			// /wp-admin/admin*.php?action=...
-			elseif ( preg_match( '#(/wp-admin/admin.*?\.php).*((?:page|action)=[-\w]+)#', $key, $matches ) ) {
+			elseif ( preg_match( '#(/wp-admin/admin.*?\.php).*((?:page|action)=[-\w]+)#', $key, $matches ) )
 				$log['slug'] = $matches[1] . ' ' . $matches[2];
-			}
 
 			// /wp-admin/*.php
-			elseif ( preg_match( '#(/wp-admin/(?!admin).*?\.php)#', $key, $matches ) ) {
+			elseif ( preg_match( '#(/wp-admin/(?!admin).*?\.php)#', $key, $matches ) )
 				$log['slug'] = $matches[1];
-			}
 
 			// file uploading *.(zip|tar|rar|gz|php|...)
-			elseif ( preg_match( '#(\[name\]\s*?=>\s*?[^\s]+)#', $key, $matches ) ) {
+			elseif ( preg_match( '#(\[name\]\s*?=>\s*?[^\s]+)#', $key, $matches ) )
 				$log['slug'] = $matches[1];
-			}
 
 			// other *.php file with or without query string
-			elseif ( preg_match( '#(/[^/]*\.php)[^/\w]#', $key, $matches ) && FALSE === strpos( $key, '/wp-admin/' ) ) {
+			elseif ( preg_match( '#(/[^/]*\.php)[^/\w]#', $key, $matches ) && FALSE === strpos( $key, '/wp-admin/' ) )
 				$log['slug'] = $matches[1];
-			}
 
 			foreach ( array_keys( $keys ) as $key ) {
-				if ( ! empty( $log[ $key ] ) ) {
+				if ( ! empty( $log[ $key ] ) )
 					$count[ $key ][] = $log[ $key ];
-				}
 			}
 		}
 
@@ -403,7 +396,7 @@ endif;
 	private static function dashboard_url() {
 		$options = IP_Geo_Block::get_option();
 		$context = IP_Geo_Block_Admin::get_instance();
-		return $context->dashboard_url( $context->is_network_admin() && $options['network_wide'] );
+		return $context->dashboard_url( $options['network_wide'] );
 	}
 
 	public static function warn_statistics() {

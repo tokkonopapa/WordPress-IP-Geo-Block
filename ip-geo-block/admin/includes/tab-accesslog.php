@@ -186,7 +186,7 @@ endif; // $options['validation']['reclogs']
 	private static function dashboard_url() {
 		$options = IP_Geo_Block::get_option();
 		$context = IP_Geo_Block_Admin::get_instance();
-		return $context->dashboard_url( $context->is_network_admin() && $options['network_wide'] );
+		return $context->dashboard_url( $options['network_wide'] );
 	}
 
 	public static function validation_logs() {
