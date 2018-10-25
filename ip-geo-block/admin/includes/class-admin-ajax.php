@@ -826,37 +826,40 @@ endif; // TEST_RESTORE_NETWORK
 		$dsp = @ini_set( 'display_errors', 0 );
 		$log = @ini_set( 'error_log', '/' . 'dev' . '/' . 'null' );
 		$err = @error_reporting( 0 );
-		global $wpdb;
-		$ver = $wpdb->get_var( 'SELECT @@GLOBAL.version' );
-		$bem = $wpdb->get_var( 'SELECT @@GLOBAL.block_encryption_mode' ); // `aes-128-ecb` @since MySQL 5.6.17
+		$ver = $GLOBALS['wpdb']->get_var( 'SELECT @@GLOBAL.version' );
+		$bem = $GLOBALS['wpdb']->get_var( 'SELECT @@GLOBAL.block_encryption_mode' ); // `aes-128-ecb` @since MySQL 5.6.17
 		@ini_set( 'output_buffering', $buf );
 		@ini_set( 'display_errors', $dsp );
 		@ini_set( 'error_log', $log );
 		@error_reporting( $err );
 
-		// Server, PHP, WordPress
-		$res = array(
-			'Server:'      => $_SERVER['SERVER_SOFTWARE'],
-			'MySQL:'       => $ver . ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG && $bem ? ' (' . $bem . ')' : '' ),
-			'PHP:'         => PHP_VERSION,
-			'PHP SAPI:'    => php_sapi_name(),
-			'WordPress:'   => $GLOBALS['wp_version'],
-			'Multisite:'   => is_multisite() ? 'yes' : 'no',
-			'File system:' => $fs->get_method(),
-			'Temp folder:' => get_temp_dir(),
-			'Umask:'       => sprintf( '%o', umask() ^ 511 /*0777*/ ),
-			'Zlib:'        => function_exists( 'gzopen' ) ? 'yes' : 'no',
-			'ZipArchive:'  => class_exists( 'ZipArchive', FALSE ) ? 'yes' : 'no',
-			'PECL phar:'   => class_exists( 'PharData',   FALSE ) ? 'yes' : 'no',
-			'BC Math:'     => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
-			'mb_strcut:'   => function_exists( 'mb_strcut' ) ? 'yes' : 'no', // @since PHP 4.0.6
-			'OpenSSL:'     => defined( 'OPENSSL_RAW_DATA'  ) ? 'yes' : 'no', // @since PHP 5.3.3
-			'SQLite(PDO):' => extension_loaded( 'pdo_sqlite' ) ? 'yes' : 'no',
-			'DNS lookup:'  => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),
-			'User agent:'  => $_SERVER['HTTP_USER_AGENT'],
-		);
+		// Proces owner
+		// http://php.net/manual/en/function.get-current-user.php#57624
+		$usr = posix_getpwuid( posix_geteuid() );
 
-		$res = array_map( 'esc_html', $res );
+		// Server, PHP, WordPress
+		$res = array_map( 'esc_html', array(
+			'Server:'        => $_SERVER['SERVER_SOFTWARE'],
+			'MySQL:'         => $ver . ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG && $bem ? ' (' . $bem . ')' : '' ),
+			'PHP:'           => PHP_VERSION,
+			'PHP SAPI:'      => php_sapi_name(),
+			'WordPress:'     => $GLOBALS['wp_version'],
+			'Multisite:'     => is_multisite() ? 'yes' : 'no',
+			'File system:'   => $fs->get_method(),
+			'Temp folder:'   => get_temp_dir(),
+			'Process owner:' => $usr['name'],
+			'File owner:'    => get_current_user(),
+			'Umask:'         => sprintf( '%o', umask() ^ 511 /* 0777 */ ),
+			'Zlib:'          => function_exists( 'gzopen' ) ? 'yes' : 'no',
+			'ZipArchive:'    => class_exists( 'ZipArchive', FALSE ) ? 'yes' : 'no',
+			'PECL phar:'     => class_exists( 'PharData',   FALSE ) ? 'yes' : 'no',
+			'BC Math:'       => (extension_loaded('gmp') ? 'gmp ' : '') . (function_exists('bcadd') ? 'yes' : 'no'),
+			'mb_strcut:'     => function_exists( 'mb_strcut' ) ? 'yes' : 'no', // @since PHP 4.0.6
+			'OpenSSL:'       => defined( 'OPENSSL_RAW_DATA'  ) ? 'yes' : 'no', // @since PHP 5.3.3
+			'SQLite(PDO):'   => extension_loaded( 'pdo_sqlite' ) ? 'yes' : 'no',
+			'DNS lookup:'    => ('8.8.8.8' !== $val ? 'available' : 'n/a') . sprintf( ' [%.1f msec]', $key * 1000.0 ),
+			'User agent:'    => $_SERVER['HTTP_USER_AGENT'],
+		) );
 
 		// Child and parent themes
 		$activated = wp_get_theme(); // @since 3.4.0
