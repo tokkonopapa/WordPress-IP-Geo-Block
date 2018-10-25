@@ -452,7 +452,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 	public static function update_cache( $hook, $validate, $settings ) {
 		$time  = $_SERVER['REQUEST_TIME'];
-		$cache = self::get_cache( $ip = $validate['ip'] );
+		$cache = self::get_cache( $ip = $validate['ip'], $settings['cache_hold'] );
 
 		if ( $cache ) {
 			$fail = $cache['fail'] + ( 'failed' === $validate['result'] ? 1 : 0 );
@@ -489,7 +489,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		);
 
 		// do not update cache while installing geolocation databases
-		if ( $settings['cache_hold'] && ( ! $validate['auth'] || 'ZZ' !== $validate['code'] ) )
+		if ( $settings['cache_hold'] && ! ( $validate['auth'] && 'ZZ' === $validate['code'] ) )
 			IP_Geo_Block_Logs::update_cache( $cache );
 
 		return self::$memcache[ $ip ] = $cache;
@@ -500,11 +500,11 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		self::$memcache = array();
 	}
 
-	public static function get_cache( $ip ) {
-		if ( ! empty( self::$memcache[ $ip ] ) )
+	public static function get_cache( $ip, $use_cache = TRUE ) {
+		if ( isset( self::$memcache[ $ip ] ) )
 			return self::$memcache[ $ip ];
 		else
-			return self::$memcache[ $ip ] = IP_Geo_Block_Logs::search_cache( $ip );
+			return $use_cache ? self::$memcache[ $ip ] = IP_Geo_Block_Logs::search_cache( $ip ) : NULL;
 	}
 
 	public function get_location( $ip, $args = array() ) {
@@ -630,7 +630,8 @@ class IP_Geo_Block_Provider {
 	 */
 	public static function get_valid_providers( $settings, $rand = TRUE, $cache = TRUE, $all = TRUE ) {
 		$list = array();
-		$providers = $settings['providers'];
+		$providers = $settings['providers' ];
+		$cache    &= $settings['cache_hold'];
 
 		foreach ( self::get_providers( 'key', $rand, $cache, empty( $settings['restrict_api'] ) && $all ) as $key => $val ) {
 			if ( ! empty( $providers[ $key ] ) || ( ! isset( $providers[ $key ] ) && NULL === $val ) )
