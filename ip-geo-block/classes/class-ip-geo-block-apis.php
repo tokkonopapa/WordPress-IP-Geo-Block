@@ -631,7 +631,7 @@ class IP_Geo_Block_Provider {
 	public static function get_valid_providers( $settings, $rand = TRUE, $cache = TRUE, $all = TRUE ) {
 		$list = array();
 		$providers = $settings['providers' ];
-		$cache    &= $settings['cache_hold'];
+		$cache    &= $settings['cache_hold']; // exclude `Cache` when `IP address cache` is disabled
 
 		foreach ( self::get_providers( 'key', $rand, $cache, empty( $settings['restrict_api'] ) && $all ) as $key => $val ) {
 			if ( ! empty( $providers[ $key ] ) || ( ! isset( $providers[ $key ] ) && NULL === $val ) )
