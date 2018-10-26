@@ -200,7 +200,7 @@ class IP_Geo_Block {
 			self::$settings or ( self::$settings = get_option( self::OPTION_NAME ) ) or ( self::$settings = self::get_default() );
 			return self::$settings;
 		} else {
-			return ( $settings = get_option( self::OPTION_NAME ) ? $settings : self::get_default() );
+			return ( $settings = get_option( self::OPTION_NAME ) ) ? $settings : self::get_default();
 		}
 	}
 
@@ -430,7 +430,7 @@ class IP_Geo_Block {
 
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
 				$hook = ( IP_Geo_Block_Util::is_user_logged_in() && 'admin' === $hook );
-				if ( ! $hook && $this->show_theme_template( $code, $settings ) )
+				if ( ! $hook && TRUE === $this->show_theme_template( $code, $settings ) )
 					return;
 
 				// prevent to make a cached page. `set_404()` should not be used for `wp_die()`.

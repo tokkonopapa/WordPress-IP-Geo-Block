@@ -276,11 +276,11 @@ class IP_Geo_Block_Logs {
 	 * Restore statistics data.
 	 *
 	 */
-	public static function restore_stat( $default = FALSE ) {
+	public static function restore_stat() {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_STAT;
 		$data  = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A ) or self::error( __LINE__ );
-		return empty( $data ) ? ( $default ? self::$default : FALSE ) : unserialize( $data[0]['data'] );
+		return empty( $data ) ? self::$default : unserialize( $data[0]['data'] ) + self::$default;
 	}
 
 	/**
@@ -970,36 +970,36 @@ endif;
 	 *
 	 */
 	public static function update_stat( $hook, $validate, $settings ) {
-		// Restore statistics.
-		if ( $stat = self::restore_stat() ) {
+		// Restore statistics
+		$stat = self::restore_stat();
 
-			$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'Cache'; // asign `Cache` if no provider is available
-			if ( empty( $stat['providers'][ $provider ] ) )
-				$stat['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
+		// Count provider
+		$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'Cache'; // asign `Cache` if no provider is available
+		if ( empty( $stat['providers'][ $provider ] ) )
+			$stat['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
 
-			$stat['providers'][ $provider ]['count']++; // undefined in auth_fail()
-			$stat['providers'][ $provider ]['time' ] += (float)( isset( $validate['time'] ) ? $validate['time'] : 0 );
+		$stat['providers'][ $provider ]['count']++; // undefined in auth_fail()
+		$stat['providers'][ $provider ]['time' ] += (float)( isset( $validate['time'] ) ? $validate['time'] : 0 );
 
-			if ( IP_Geo_Block::is_blocked( $validate['result'] ) ) {
-				// Blocked by type of IP address
-				if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
-					++$stat['IPv4'];
-				elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-					++$stat['IPv6'];
+		// Blocked by type of IP address
+		if ( IP_Geo_Block::is_blocked( $validate['result'] ) ) {
+			if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
+				++$stat['IPv4'];
+			elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
+				++$stat['IPv6'];
 
-				 ++$stat['blocked'  ];
-				@++$stat['countries'][ $validate['code'] ];
-				@++$stat['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ];
-			}
-
-			if ( count( $stat['daystats'] ) > max( 30, min( 365, (int)$settings['validation']['recdays'] ) ) ) {
-				reset( $stat['daystats'] ); // pointer to the top
-				unset( $stat['daystats'][ key( $stat['daystats'] ) ] ); // unset at the top
-			}
-
-			// Record statistics.
-			self::record_stat( $stat );
+			 ++$stat['blocked'  ];
+			@++$stat['countries'][ $validate['code'] ];
+			@++$stat['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ];
 		}
+
+		if ( count( $stat['daystats'] ) > max( 30, min( 365, (int)$settings['validation']['recdays'] ) ) ) {
+			reset( $stat['daystats'] ); // pointer to the top
+			unset( $stat['daystats'][ key( $stat['daystats'] ) ] ); // unset at the top
+		}
+
+		// Record statistics
+		self::record_stat( $stat );
 	}
 
 	/**

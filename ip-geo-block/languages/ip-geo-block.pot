@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-10-25 22:30+0900\n"
-"PO-Revision-Date: 2018-10-25 22:30+0900\n"
+"POT-Creation-Date: 2018-10-26 23:07+0900\n"
+"PO-Revision-Date: 2018-10-26 23:07+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -360,7 +360,7 @@ msgstr ""
 #: admin/includes/class-admin-rewrite.php:194
 #: classes/class-ip-geo-block-cron.php:218
 #: classes/class-ip-geo-block-cron.php:322
-#: classes/class-ip-geo-block-cron.php:396
+#: classes/class-ip-geo-block-cron.php:400
 #: classes/class-ip-geo-block-opts.php:469
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
@@ -389,7 +389,7 @@ msgstr ""
 
 #: admin/includes/class-admin-rewrite.php:168
 #: classes/class-ip-geo-block-cron.php:213
-#: classes/class-ip-geo-block-cron.php:391
+#: classes/class-ip-geo-block-cron.php:395
 #, php-format
 msgid "Unable to read <code>%s</code>. Please check the permission."
 msgstr ""
@@ -1311,7 +1311,7 @@ msgstr ""
 msgid "database"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1410 classes/class-ip-geo-block-cron.php:420
+#: admin/includes/tab-settings.php:1410 classes/class-ip-geo-block-cron.php:424
 #, php-format
 msgid "Last update: %s"
 msgstr ""
@@ -1554,7 +1554,7 @@ msgstr ""
 msgid "Your database file is up-to-date."
 msgstr ""
 
-#: classes/class-ip-geo-block-cron.php:401
+#: classes/class-ip-geo-block-cron.php:405
 msgid "gz or zip is not supported on your system."
 msgstr ""
 

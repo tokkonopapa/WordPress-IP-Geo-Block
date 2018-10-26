@@ -523,6 +523,7 @@ endif; // TEST_RESTORE_NETWORK
 			'[extra_ips][black_list]',
 			'[anonymize]',
 			'[restrict_api]',            // 3.0.13
+			'[simulate]',                // 3.0.14
 			'[signature]',
 			'[login_fails]',
 			'[response_code]',
@@ -572,7 +573,6 @@ endif; // TEST_RESTORE_NETWORK
 			'[public][target_cates][$]', // 3.0.0
 			'[public][target_tags][$]',  // 3.0.0
 			'[public][ua_list]',         // 3.0.0
-			'[public][simulate]',        // 3.0.0
 			'[public][dnslkup]',         // 3.0.3
 			'[public][response_code]',   // 3.0.3
 			'[public][response_msg]',    // 3.0.3
@@ -834,8 +834,9 @@ endif; // TEST_RESTORE_NETWORK
 		@error_reporting( $err );
 
 		// Proces owner
-		// http://php.net/manual/en/function.get-current-user.php#57624
-		$usr = posix_getpwuid( posix_geteuid() );
+		// https://secure.php.net/manual/function.get-current-user.php#57624
+		// https://secure.php.net/manual/function.posix-getpwuid.php#82387
+		$usr = function_exists( 'posix_getpwuid' ) ? posix_getpwuid( posix_geteuid() ) : array( 'name' => getenv( 'USERNAME' ) );
 
 		// Server, PHP, WordPress
 		$res = array_map( 'esc_html', array(
@@ -848,7 +849,7 @@ endif; // TEST_RESTORE_NETWORK
 			'File system:'   => $fs->get_method(),
 			'Temp folder:'   => get_temp_dir(),
 			'Process owner:' => $usr['name'],
-			'File owner:'    => get_current_user(),
+			'File owner:'    => get_current_user(), // Gets the name of the owner of the current PHP script
 			'Umask:'         => sprintf( '%o', umask() ^ 511 /* 0777 */ ),
 			'Zlib:'          => function_exists( 'gzopen' ) ? 'yes' : 'no',
 			'ZipArchive:'    => class_exists( 'ZipArchive', FALSE ) ? 'yes' : 'no',

@@ -326,7 +326,9 @@ class IP_Geo_Block_Cron {
 					else {
 						$src = get_temp_dir() . basename( $url ); // $src should be removed
 						$fs->put_contents( $src, $data );
-						TRUE === ( $ret = self::gzfile( $src, $filename ) ) or $err = $ret;
+						if ( TRUE !== ( $ret = self::gzfile( $src, $filename ) ) ) {
+							$err = $ret;
+						}
 					}
 				}
 
@@ -374,7 +376,9 @@ class IP_Geo_Block_Cron {
 
 				// unzip file
 				if ( 'gz' === $ext ) {
-					TRUE === ( $ret = self::gzfile( $src, $filename ) ) or $err = $ret;
+					if ( TRUE !== ( $ret = self::gzfile( $src, $filename ) ) ) {
+						$err = $ret;
+					}
 				}
 
 				elseif ( 'zip' === $ext && class_exists( 'ZipArchive', FALSE ) ) {

@@ -24,7 +24,7 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 if ( $options['save_statistics'] ) :
-		$statistics = IP_Geo_Block_Logs::restore_stat( TRUE );
+		$statistics = IP_Geo_Block_Logs::restore_stat();
 
 		// Number of blocked access
 		add_settings_field(

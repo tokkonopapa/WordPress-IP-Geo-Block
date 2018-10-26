@@ -889,13 +889,13 @@ class IP_Geo_Block_Admin {
 			foreach ( $args['list'] as $key => $val ) { ?>
 	<li>
 		<input type="checkbox" id="<?php echo $id, $sub_id, '_', $key; ?>" name="<?php echo $name, $sub_name, '[', $key, ']'; ?>" value="<?php echo $key; ?>"<?php
-			checked( is_array( $args['value'] ) ? ! empty( $args['value'][ $key ] ) : ( $key & $args['value'] ? TRUE : FALSE ) ); ?> />
-		<label for="<?php echo $id, $sub_id, '_', $key; ?>"><?php
+			checked( is_array( $args['value'] ) ? ! empty( $args['value'][ $key ] ) : ( $key & $args['value'] ? TRUE : FALSE ) ); ?> /><label for="<?php 
+			echo $id, $sub_id, '_', $key; ?>"><?php
 			if ( isset( $args['desc'][ $key ] ) )
 				echo '<dfn title="', $args['desc'][ $key ], '">', $val, '</dfn>';
 			else
-				echo $val; ?>
-		</label>
+				echo $val;
+		?></label>
 	</li>
 <?php
 			}
@@ -905,12 +905,12 @@ class IP_Geo_Block_Admin {
 		  case 'checkbox': ?>
 <input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="1"<?php
 	checked( esc_attr( $args['value'] ) );
-	disabled( ! empty( $args['disabled'] ), TRUE ); ?> />
-<label for="<?php echo $id, $sub_id; ?>"><?php
+	disabled( ! empty( $args['disabled'] ), TRUE ); ?> /><label for="<?php 
+	echo $id, $sub_id; ?>"><?php
 	if ( isset( $args['text'] ) ) echo esc_attr( $args['text'] );
 	else if ( isset( $args['html'] ) ) echo $args['html'];
-	else _e( 'Enable', 'ip-geo-block' ); ?>
-</label>
+	else _e( 'Enable', 'ip-geo-block' );
+?></label>
 <?php
 			break;
 
