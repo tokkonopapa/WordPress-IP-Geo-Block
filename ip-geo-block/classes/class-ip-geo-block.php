@@ -551,7 +551,7 @@ class IP_Geo_Block {
 				IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 
 			// send response code to refuse
-			if ( ! $settings['simulate'] && $block && $die )
+			if ( ! empty( $settings['simulate'] ) && $block && $die )
 				$this->send_response( $hook, $validate, $settings );
 		}
 
