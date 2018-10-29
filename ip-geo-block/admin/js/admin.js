@@ -37,10 +37,6 @@
 		}).replace(/&amp;(#\d{2,4}|\w{4,7});/g, "&$1;"); // revert html character entity
 	}
 
-	function is_blocked( result ) {
-		return -1 === result.indexOf('pass');
-	}
-
 	function stripTag(str) {
 		return str ? escapeHTML(str.toString().replace(/(<([^>]+)>)/ig, '')) : '';
 	}
@@ -265,6 +261,10 @@
 		}
 	}
 
+	function is_blocked(result) {
+		return -1 === result.indexOf('pass');
+	}
+
 	/**
 	 * jQuery deserialize plugin based on https://gist.github.com/nissuk/835256
 	 *
@@ -279,8 +279,8 @@
 			for (key in json) {
 				if(json.hasOwnProperty(key)) {
 					try {
-						name = decodeURIComponent(key); // URIError: malformed URI sequence
-						value = decodeURIComponent(json[key]);
+						name = stripTag(decodeURIComponent(key)); // URIError: malformed URI sequence
+						value = stripTag(decodeURIComponent(json[key]));
 
 						if (!data.hasOwnProperty(name)) { // !(name in data)
 							data[name] = [];
@@ -456,7 +456,7 @@
 		dataStacked: [],
 		viewStacked: [],
 		drawStacked: function (id) {
-			var i, w, data, range, $id = $('#' + id);
+			var i, w, data, range, $id = $('#' + stripTag(id));
 
 			if (chart.dataStacked[id] === undefined) {
 				data = $.parseJSON($id.attr('data-' + id));
@@ -1475,7 +1475,7 @@
 					confirm(ip_geo_block.msg[0], function () {
 						ajax_post('login-loading', {
 							cmd: 'delete-link'
-						}, function (data) {
+						}, function (/*data*/) {
 							$this.text(ip_geo_block.msg[2]);
 							$this.addClass(type).nextAll(ID('.', 'desc')).remove();
 						});

@@ -242,7 +242,7 @@ or following descriptions for your best setup.
 
 = Does the site using this plugin comply with GDPR? =
 
-Using this plugin itself should not be the problem, because from version 3.0.11 IP addresses in logs and cache of this plugin are encrypted by default in preparation for personal data breach. It also not only provides a way to manually erase them but also has the functionality to remove them when those are exceeded a certain amount/time. The option "Privacy friendly" helps you to restrict sending the ip address to the 3rd parties such as geolocation APIs and whois service equipped in this plugin. However, these functions are part of the requirements that GDPR requires and do not guarantee that the site is compliant with GDPR. Refer to [3.0.11 release note](https://www.ipgeoblock.com/changelog/release-3.0.11.html) for details.
+Since version 3.0.11, this plugin has been designed based on the principle "Privacy by design" in GDPR so that you can compliantly run it to GDPR. In preparation for personal data breach, IP addresses in this plugin are encrypted by default and also can be anonymized. It also provides some functions not only to manually erase them but also to automatically remove them when those are exceeded a certain amount/time. Refer to [3.0.11 release note](https://www.ipgeoblock.com/changelog/release-3.0.11.html) for more details.
 
 = Does this plugin support multisite? =
 
@@ -254,11 +254,11 @@ The short answer is **YES**, especially for the purpose of security e.g. blockin
 
 The long answer is as follows:
 
-For the back-end protection, both blocking malicious access and blocking by country works fine, if you disable caching on the back-end. As for the front-end, there are 2 scenarios.
+For the back-end protection, both blocking malicious access and blocking by country work fine, if you disable caching on the back-end. As for the front-end, there are 2 scenarios.
 
-The first one is the case that there's no cached page against a request to the specific page. In this scenario, this plugin responds a specific HTTP status code (including redirection) and defines the symbol `DONOTCACHEPAGE` when the request comes from blacklisted countries (or IPs). When the request comes from the whitelisted countries (or IPs), this plugin passes it to the caching plugin in order to generate a new cache.
+The first one is the case that there's no cached page against a request to the specific page. In this scenario, this plugin responds a specific HTTP status code (including redirection) when the request comes from blacklisted countries (or IPs) and exit telling the caching plugin not to make a cached page. When the request comes from the whitelisted countries (or IPs), this plugin passes it to the caching plugin in order to generate a new cache.
 
-The second scenario is the case that there's a cached page. In this case, the response depends on the caching method you are employing. Currently, the following plugins and configurations can be supported if you want to [restrict content by geo-blocking](https://en.wikipedia.org/wiki/Geo-blocking "Geo-blocking - Wikipedia"):
+The second scenario is the case that there's a cached page. In this case, the response depends on the caching method you are employing. Currently, the following plugins can be supported with specific configurations if you want to [restrict contents by geolocation](https://en.wikipedia.org/wiki/Geo-blocking "Geo-blocking - Wikipedia"):
 
 - [WP Super Cache](https://wordpress.org/plugins/wp-super-cache/ "WP Super Cache &mdash; WordPress Plugins")  
   Select "**Use PHP to serve cache files**" and enable "**Late init**".
@@ -268,6 +268,9 @@ The second scenario is the case that there's a cached page. In this case, the re
 
 - [Vendi Cache](https://wordpress.org/plugins/vendi-cache/ "Vendi Cache &mdash; WordPress Plugins")  
   This plugin was formerly built in Wordfence. Select "**basic caching**" for Vendi Cache and **"mu-plugin" (ip-geo-block-mu.php)** for IP Geo Block.
+
+- [Swift Performance Lite](https://wordpress.org/plugins/swift-performance-lite/ "Swift Performance Lite &#124; WordPress.org")  
+  Select "Disk Cashe with PHP" caching mode.
 
 Other plugins adopting `mod_rewrite` (e.g. WP Fastest Cache) or `advanced-cache.php` [drop-in](https://make.wordpress.org/core/2016/08/13/global-overloading-in-advanced-cache-php/ "Global overloading in advanced-cache.php &#8211; Make WordPress Core") (e.g. Comet Cache) or other caching method at server side might serve a normal page.
 
@@ -385,7 +388,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 = 3.0.16 =
 * **Fix issue:** Fix the issue that some functions did not work properly when "Validation timing" was set as `"mu-plugins" (ip-geo-block-mu.php)` under some conditions before WP 4.0.
 * **New feature:** Add "**Sites list**" page at Network admin page to look through the status of the sites if this plugin is network activated on multisite.
-* **Improvement:** Support Swift Peformance Lite cache plugin with "Disk Cashe with PHP" caching mode.
+* **Improvement:** Support [Swift Performance Lite](https://wordpress.org/plugins/swift-performance-lite/ "Swift Performance Lite &#124; WordPress.org") cache plugin with "Disk Cashe with PHP" caching mode.
 * **Improvement:** Apply simulation mode to not only the front-end but also to the back-end.
 * **Improvement:** Optimize SQL issuing to reduce some queries.
 
@@ -439,7 +442,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 = 3.0.11 =
 * **Improvement:** To comply with GDPR, IP address in logs/cache will be always encrypted. The option of "**Anonymize IP address**" was renamed to "**Privacy friendly**" in "**Privacy and record settings**". It will not only anonymize an IP address but also will restrict on sending to the 3rd parties such as geolocation APIs and whois service.
 * **Improvement:** Update geolocation APIs and add a new one.
-* **Improvement:** Change the JavaScript compressor from Google Closure Compiler to UglifyJS 2 to prevent "Uncaught TypeError: Cannot read property ‘toLowerCase’ of undefined" in a certain environment.
+* **Improvement:** Change the JavaScript compressor from Google Closure Compiler to UglifyJS 2 to prevent "Uncaught TypeError: Cannot read property 'toLowerCase' of undefined" in a certain environment.
 * **Fix:** Fix the issue that blocking occurred immediately instead of displaying the login page again when login failed, even the number of times did not exceed the limit.
 * See [3.0.11 release note](https://www.ipgeoblock.com/changelog/release-3.0.11.html) for some details.
 
@@ -455,9 +458,9 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 * **Fix:** Validation timing was not proper when redirection happened in admin context. (#36)
 
 = 3.0.10.1 =
-This release is intented to fix the issue reported at forum [here](https://wordpress.org/support/topic/error-on-updating-version-3-0-10/ "Error on updating Versión 3.0.10") and [here](https://wordpress.org/support/topic/error-report-on-latest-update/ "error report on latest update").
+This release is intented to fix the issue reported at forum [here](https://wordpress.org/support/topic/error-on-updating-version-3-0-10/ "Error on updating Version 3.0.10") and [here](https://wordpress.org/support/topic/error-report-on-latest-update/ "error report on latest update").
 
-If you still find the error "/plugins/ip-geo-block/classes/class-ip-geo-block-logs.php (837) Unknown column ‘last’ in ‘field list’", please deactivate plugin once and activate again. You will see the same error message again, but the things should be fixed.
+If you still find the error "/plugins/ip-geo-block/classes/class-ip-geo-block-logs.php (837) Unknown column 'last' in 'field list'", please deactivate plugin once and activate again. You will see the same error message again, but the things should be fixed.
 
 = 3.0.10 =
 * **New feature:** Add "Block badly-behaved bots and crawlers" in "Front-end target settings" section that validates the frequency of request.
@@ -713,7 +716,7 @@ This is a maintenance release addressing some issues.
 = 2.2.4.1 =
 Sorry for frequent updating.
 
-* **Bug fix:** Fixed the issue of `Warning: strpos(): Empty needle in...` that was reported in [@](https://wordpress.org/support/topic/version-224-produces-warning-message "WordPress &rsaquo; Support &raquo; Version 2.2.4 Produces Warning Message") and [@](https://wordpress.org/support/topic/error-after-update-to-newest-version "WordPress › Support » Error after Update to newest version").
+* **Bug fix:** Fixed the issue of `Warning: strpos(): Empty needle in...` that was reported in [@](https://wordpress.org/support/topic/version-224-produces-warning-message "WordPress &rsaquo; Support &raquo; Version 2.2.4 Produces Warning Message") and [@](https://wordpress.org/support/topic/error-after-update-to-newest-version "WordPress &rsaquo; Support &raquo; Error after Update to newest version").
 
 = 2.2.4 =
 * **Bug fix:** Fixed the issue that some links on network admin of multisite were blocked when WP-ZEP for `admin area` or `admin ajax/post` was enabled.

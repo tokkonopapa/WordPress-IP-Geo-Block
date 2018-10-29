@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-10-26 23:07+0900\n"
-"PO-Revision-Date: 2018-10-26 23:07+0900\n"
+"POT-Creation-Date: 2018-10-29 22:30+0900\n"
+"PO-Revision-Date: 2018-10-29 22:30+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -840,7 +840,7 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:426
 #, php-format
-msgid "<dfn title=\"Validate request to %s.\">%s</dfn>"
+msgid "<dfn title=\"It enables to validate requests to %s.\">%s</dfn>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:432

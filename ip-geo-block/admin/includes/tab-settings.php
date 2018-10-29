@@ -423,7 +423,7 @@ endif;
 		);
 
 		// same as in tab-accesslog.php
-		$dfn = __( '<dfn title="Validate request to %s.">%s</dfn>', 'ip-geo-block' );
+		$dfn = __( '<dfn title="It enables to validate requests to %s.">%s</dfn>', 'ip-geo-block' );
 		$target = array(
 			'comment' => sprintf( $dfn, 'wp-comments-post.php',                      __( 'Comment post',        'ip-geo-block' ) ),
 			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',                                __( 'XML-RPC',             'ip-geo-block' ) ),
