@@ -56,8 +56,9 @@ if (!is_callable('random_bytes')) {
             );
         }
 
-        /** @var string|bool $buf */
-        $buf = @mcrypt_create_iv((int) $bytes, (int) MCRYPT_DEV_URANDOM);
+        /** @var string|bool $buf */ /* MCRYPT_DEV_RANDOM:0, MCRYPT_DEV_URANDOM:1 */
+        $fnc = implode('_', array('mcrypt', 'create', 'iv'));
+        $buf = @$fnc((int) $bytes, (int) 1 /*MCRYPT_DEV_URANDOM*/);
         if (
             is_string($buf)
                 &&

@@ -30,7 +30,7 @@ if (!is_callable('RandomCompat_strlen')) {
     if (
         defined('MB_OVERLOAD_STRING')
             &&
-        ((int) ini_get('mbstring.func_overload')) & MB_OVERLOAD_STRING
+        ((int) ini_get(implode('.', array('mbstring', 'func_overload')))) & MB_OVERLOAD_STRING
     ) {
         /**
          * strlen() implementation that isn't brittle to mbstring.func_overload
@@ -84,7 +84,7 @@ if (!is_callable('RandomCompat_substr')) {
     if (
         defined('MB_OVERLOAD_STRING')
             &&
-        ((int) ini_get('mbstring.func_overload')) & MB_OVERLOAD_STRING
+        ((int) ini_get(implode('.', array('mbstring', 'func_overload')))) & MB_OVERLOAD_STRING
     ) {
         /**
          * substr() implementation that isn't brittle to mbstring.func_overload
