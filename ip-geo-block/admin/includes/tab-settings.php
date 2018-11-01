@@ -1512,7 +1512,7 @@ endif;
 		// Google Maps API key
 		add_settings_field(
 			$option_name.'_api_key',
-			__( '<dfn title="Valid key for Google Maps JavaScript API. Maps Embed API without key can be available in case of empty.">Google Maps API key</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="Valid key for Google Maps JavaScript API. Maps Embed API in iframe can be available without key in case it\'s empty.">Google Maps API key</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
