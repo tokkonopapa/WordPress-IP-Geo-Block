@@ -29,7 +29,7 @@
 if (!is_callable('RandomCompat_strlen')) {
     if (
         defined('MB_OVERLOAD_STRING')
-            &&
+            && // https://github.com/PHPCompatibility/PHPCompatibility/issues/119
         ((int) ini_get(implode('.', array('mbstring', 'func_overload')))) & MB_OVERLOAD_STRING
     ) {
         /**
@@ -83,7 +83,7 @@ if (!is_callable('RandomCompat_substr')) {
 
     if (
         defined('MB_OVERLOAD_STRING')
-            &&
+            && // https://github.com/PHPCompatibility/PHPCompatibility/issues/119
         ((int) ini_get(implode('.', array('mbstring', 'func_overload')))) & MB_OVERLOAD_STRING
     ) {
         /**

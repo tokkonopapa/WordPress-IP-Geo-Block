@@ -140,7 +140,7 @@ class IP_Geo_Block_Opts {
 		),
 		// since version 2.2.7
 		'api_key'         => array(   // API key
-			'GoogleMap'   => 'default',
+			'GoogleMap'    => NULL,   // 'default':revoked, NULL:iframe
 		),
 		// since version 2.2.8
 		'login_action' => array(      // Actions for wp-login.php
