@@ -107,6 +107,16 @@ action hook][Action-Hook]. But since it is after loading the theme and all
 the activated plugins, it takes unnecessary server load in case of blocking.
 In order to avoid such waste, you can select it as `muplugins_loaded`.
 
+### Simulation mode ###
+
+This option enables to simulate validation without deployment of blocking on 
+both back-end and front-end. The results can be found on "**Logs**" tag so that
+you can check in advance which pages would be blocked or passed.
+
+![Logs for public faicing pages]({{ '/img/2016-08/Logs-Public.png' | prepend: site.baseurl }}
+ "Logs for public faicing pages"
+)
+
 ### See also ###
 
 - [The best practice of target settings][BestPractice]

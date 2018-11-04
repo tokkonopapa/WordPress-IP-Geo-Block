@@ -107,16 +107,6 @@ In order to make use of `HOST` in "**qualification**", you should specify this
 option to get the host name corresponding the IP address. If it is disabled, 
 `HOST` and <code>HOST=&hellip;</code> shall always be deemed as TRUE.
 
-### Simulation mode ###
-
-This option enables to simulate validation without deployment of blocking on 
-front-end. The results can be found on "**Logs**" tag so that you can check in 
-advance which pages would be blocked or passed.
-
-![Logs for public faicing pages]({{ '/img/2016-08/Logs-Public.png' | prepend: site.baseurl }}
- "Logs for public faicing pages"
-)
-
 ### See also ###
 
 - [The best practice of target settings][BestPractice]

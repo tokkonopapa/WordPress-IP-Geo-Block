@@ -103,16 +103,6 @@ title: フロントエンドの設定
 オプションを有効にします。無効の場合、`HOST` 及び <code>HOST=&hellip;</code>は
 常に「真」に評価されます。
 
-### シミュレーション・モード ###
-
-このオプションを有効にした場合、検証を模擬するだけで、実際には遮断しないように
-振る舞わせることができます。検証結果は「**ログ**」上で確認することができるので、
-設定したルールが意図通りに働いているかどうかを事前にチェックすることができます。
-
-![Logs for public faicing pages]({{ '/img/2016-08/Logs-Public.png' | prepend: site.baseurl }}
- "Logs for public faicing pages"
-)
-
 ### 参考情報 ###
 
 - [The best practice of target settings][BestPractice]
