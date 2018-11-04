@@ -144,6 +144,13 @@ fieldset.ip-geo-block-field textarea.regular-text {
     font-size: 95%;
 }
 
+/* Checkbox / Radio */
+p.ip-geo-block-navi-link input[type="checkbox"],
+fieldset.ip-geo-block-field input[type="checkbox"],
+fieldset.ip-geo-block-field input[type="radio"] {
+    margin-right: 0.4em;
+}
+
 /* Plugins/Themes area, Geolocation API settings */
 input[id*="ip_geo_block_settings_rewrite_"] + label {
     margin-left: 0.25em;

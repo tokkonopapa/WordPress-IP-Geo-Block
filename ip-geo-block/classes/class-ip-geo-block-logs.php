@@ -232,17 +232,21 @@ class IP_Geo_Block_Logs {
 
 		foreach ( $tables as $table ) {
 			$table = $wpdb->prefix . $table;
-			if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table )
-				return sprintf( __( 'Creating a DB table %s had failed. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ), $table );
+			if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
+				self::error( __LINE__, sprintf( __( 'Creating a DB table %s had failed. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ), $table ) );
+				return FALSE;
+			}
 
 			$result = $wpdb->get_results( "SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$table'", ARRAY_A );
 			foreach ( empty( $result ) ? array() : $result as $col ) {
-				if ( in_array( $col['COLUMN_NAME'], array( 'ip', 'host' ), TRUE ) && 'varbinary' !== $col['DATA_TYPE'] )
-					return sprintf( __( 'Column type in %s unmatched. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ), $table );
+				if ( in_array( $col['COLUMN_NAME'], array( 'ip', 'host' ), TRUE ) && 'varbinary' !== $col['DATA_TYPE'] ) {
+					self::error( __LINE__, sprintf( __( 'Column type in %s unmatched. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ), $table ) );
+					return FALSE;
+				}
 			}
 		}
 
-		return NULL;
+		return TRUE;
 	}
 
 	/**
@@ -272,11 +276,11 @@ class IP_Geo_Block_Logs {
 	 * Restore statistics data.
 	 *
 	 */
-	public static function restore_stat( $default = FALSE ) {
+	public static function restore_stat() {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_STAT;
 		$data  = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A ) or self::error( __LINE__ );
-		return empty( $data ) ? ( $default ? self::$default : FALSE ) : unserialize( $data[0]['data'] );
+		return empty( $data ) ? self::$default : unserialize( $data[0]['data'] ) + self::$default;
 	}
 
 	/**
@@ -629,18 +633,30 @@ class IP_Geo_Block_Logs {
 			$validate['ip'] = IP_Geo_Block_Util::anonymize_ip( $validate['ip'] );
 
 		if ( $record ) {
-			// count the number of rows for each hook
 			global $wpdb;
 			$table = $wpdb->prefix . self::TABLE_LOGS;
-			$count = (int)$wpdb->get_var( "SELECT count(*) FROM `$table`" );
 
+			// limit the number of rows
+if (1):
 			// Can't start transaction on the assumption that the storage engine is innoDB.
 			// So there are some cases where logs are excessively deleted.
+			$count = (int)$wpdb->get_var( "SELECT count(*) FROM `$table`" );
 			$sql = $wpdb->prepare(
-				"DELETE FROM `$table` ORDER BY `time` ASC LIMIT %d",
+				"DELETE FROM `$table` ORDER BY `No` ASC LIMIT %d",
 				max( 0, $count - (int)$settings['validation']['maxlogs'] + 1 )
 			) and $wpdb->query( $sql ) or self::error( __LINE__ );
-
+else:
+			// This SQL slows down on MySQL 5.7.23 and keeps +2 extra rows on MySQL 5.0.67
+			// @see https://teratail.com/questions/14584
+			$sql = $wpdb->prepare(
+				"DELETE FROM `$table` WHERE NOT EXISTS(
+					SELECT * FROM (
+						SELECT * FROM `$table` t2 ORDER BY t2.time DESC LIMIT %d
+					) t3 WHERE t3.No = $table.No 
+				)",
+				$settings['validation']['maxlogs'] - 1
+			) and $wpdb->query( $sql ) or self::error( __LINE__ );
+endif;
 			// insert into DB
 			if ( 2 === self::cipher_mode_key() ) {
 				$sql = $wpdb->prepare(
@@ -686,7 +702,7 @@ class IP_Geo_Block_Logs {
 			}
 		}
 
-		if ( get_transient( IP_Geo_Block::PLUGIN_NAME . '-live-log' ) ) {
+		if ( IP_Geo_Block::get_live_log() ) {
 			// skip self command
 			global $pagenow;
 			if ( 'admin-ajax.php' === $pagenow && isset( $_POST['action'] ) && 'ip_geo_block' === $_POST['action'] && isset( $_POST['cmd'] ) && 0 === strpos( $_POST['cmd'], 'live-' ) )
@@ -954,36 +970,36 @@ class IP_Geo_Block_Logs {
 	 *
 	 */
 	public static function update_stat( $hook, $validate, $settings ) {
-		// Restore statistics.
-		if ( $stat = self::restore_stat() ) {
+		// Restore statistics
+		$stat = self::restore_stat();
 
-			$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'Cache'; // asign `Cache` if no provider is available
-			if ( empty( $stat['providers'][ $provider ] ) )
-				$stat['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
+		// Count provider
+		$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'Cache'; // asign `Cache` if no provider is available
+		if ( empty( $stat['providers'][ $provider ] ) )
+			$stat['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
 
-			$stat['providers'][ $provider ]['count']++; // undefined in auth_fail()
-			$stat['providers'][ $provider ]['time' ] += (float)( isset( $validate['time'] ) ? $validate['time'] : 0 );
+		$stat['providers'][ $provider ]['count']++; // undefined in auth_fail()
+		$stat['providers'][ $provider ]['time' ] += (float)( isset( $validate['time'] ) ? $validate['time'] : 0 );
 
-			if ( IP_Geo_Block::is_blocked( $validate['result'] ) ) {
-				// Blocked by type of IP address
-				if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
-					++$stat['IPv4'];
-				elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-					++$stat['IPv6'];
+		// Blocked by type of IP address
+		if ( IP_Geo_Block::is_blocked( $validate['result'] ) ) {
+			if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
+				++$stat['IPv4'];
+			elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
+				++$stat['IPv6'];
 
-				 ++$stat['blocked'  ];
-				@++$stat['countries'][ $validate['code'] ];
-				@++$stat['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ];
-			}
-
-			if ( count( $stat['daystats'] ) > max( 30, min( 365, (int)$settings['validation']['recdays'] ) ) ) {
-				reset( $stat['daystats'] ); // pointer to the top
-				unset( $stat['daystats'][ key( $stat['daystats'] ) ] ); // unset at the top
-			}
-
-			// Record statistics.
-			self::record_stat( $stat );
+			 ++$stat['blocked'  ];
+			@++$stat['countries'][ $validate['code'] ];
+			@++$stat['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ];
 		}
+
+		if ( count( $stat['daystats'] ) > max( 30, min( 365, (int)$settings['validation']['recdays'] ) ) ) {
+			reset( $stat['daystats'] ); // pointer to the top
+			unset( $stat['daystats'][ key( $stat['daystats'] ) ] ); // unset at the top
+		}
+
+		// Record statistics
+		self::record_stat( $stat );
 	}
 
 	/**

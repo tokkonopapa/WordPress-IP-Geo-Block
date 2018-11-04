@@ -23,7 +23,7 @@
  * @link      http://pear.php.net/package/Net_IPv6
  */
 
-if ( ! class_exists( 'IP_Geo_Block_Pear' ) ):
+if ( ! class_exists( 'IP_Geo_Block_Pear', FALSE ) ):
 	class IP_Geo_Block_Pear {
 		public static function raiseError( $msg ) {
 			return false;

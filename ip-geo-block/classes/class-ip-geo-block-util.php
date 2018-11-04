@@ -106,7 +106,7 @@ class IP_Geo_Block_Util {
 	public static function rebuild_nonce( $location, $retrieve = TRUE ) {
 		// check if the location is internal
 		$url = parse_url( $location );
-		$key = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
+		$key = IP_Geo_Block::get_auth_key();
 
 		if ( empty( $url['host'] ) || $url['host'] === parse_url( home_url(), PHP_URL_HOST ) ) {
 			if ( $retrieve ) {
@@ -187,15 +187,13 @@ class IP_Geo_Block_Util {
 
 		// Nonce generated 0-12 hours ago
 		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
-		if ( self::hash_equals( $expected, (string)$nonce ) ) {
+		if ( self::hash_equals( $expected, (string)$nonce ) )
 			return 1;
-		}
 
 		// Nonce generated 12-24 hours ago
 		$expected = substr( self::hash_nonce( ( $exp - 1 ) . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
-		if ( self::hash_equals( $expected, (string)$nonce ) ) {
+		if ( self::hash_equals( $expected, (string)$nonce ) )
 			return 2;
-		}
 
 		// Invalid nonce
 		return FALSE;
@@ -273,12 +271,21 @@ class IP_Geo_Block_Util {
 				return FALSE;
 
 			$cookie = $_COOKIE[ $cookie_name ];
+			$n = count( $cookie_elements = explode( '|', $cookie ) );
 
-			if ( count( $cookie_elements = explode( '|', $cookie ) ) !== 4 )
+			if ( 4 === $n ) { // @since 4.0.0
+				list( $username, $expiration, $token, $hmac ) = $cookie_elements;
+				$cache_cookie = compact( 'username', 'expiration', 'token', 'hmac', 'scheme' );
+			}
+
+			elseif ( 3 === $n ) { // @before 4.0.0
+				list( $username, $expiration, $hmac ) = $cookie_elements;
+				$cache_cookie = compact( 'username', 'expiration', 'hmac', 'scheme' );
+			}
+
+			else {
 				return FALSE;
-
-			list( $username, $expiration, $token, $hmac ) = $cookie_elements;
-			$cache_cookie = compact( 'username', 'expiration', 'token', 'hmac', 'scheme' );
+			}
 		}
 
 		return $cache_cookie;
@@ -321,7 +328,7 @@ class IP_Geo_Block_Util {
 			$scheme   = $cookie['scheme'];
 			$username = $cookie['username'];
 			$hmac     = $cookie['hmac'];
-			$token    = $cookie['token'];
+			$token    = isset( $cookie['token'] ) ? $cookie['token'] : NULL;
 			$expired  = $expiration = $cookie['expiration'];
 
 			// Allow a grace period for POST and Ajax requests
@@ -336,11 +343,18 @@ class IP_Geo_Block_Util {
 				return $cache_user = FALSE;
 
 			$pass_frag = substr( $cache_user->user_pass, 8, 4 );
-			$key = self::hash_nonce( $username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme );
 
-			// If ext/hash is not present, compat.php's hash_hmac() does not support sha256.
-			$algo = function_exists( 'hash' ) ? 'sha256' : 'sha1';
-			$hash = self::hash_hmac( $algo, $username . '|' . $expiration . '|' . $token, $key );
+			if ( is_null( $token ) ) { // @before 4.0.0
+				$key = self::hash_nonce( $username . $pass_frag . '|' . $expiration, $scheme );
+				$hash = hash_hmac( 'md5', $username . '|' . $expiration, $key );
+			}
+
+			else { // @since 4.0.0
+				// If ext/hash is not present, compat.php's hash_hmac() does not support sha256.
+				$key = self::hash_nonce( $username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme );
+				$algo = function_exists( 'hash' ) ? 'sha256' : 'sha1';
+				$hash = self::hash_hmac( $algo, $username . '|' . $expiration . '|' . $token, $key );
+			}
 
 			if ( ! self::hash_equals( $hash, $hmac ) )
 				return $cache_user = FALSE;
@@ -763,9 +777,10 @@ class IP_Geo_Block_Util {
 	 *
 	 */
 	public static function is_feed( $request_uri ) {
-		return isset( $_GET['feed'] ) ?
+		return /* function_exists( 'is_feed' ) ? is_feed() : */ ( isset( $_GET['feed'] ) ?
 			( preg_match( '!(?:comments-)?(?:feed|rss|rss2|rdf|atom)$!', $_GET['feed'] ) ? TRUE : FALSE ) :
-			( preg_match( '!(?:comments/)?(?:feed|rss|rss2|rdf|atom)/?$!', $request_uri ) ? TRUE : FALSE );
+			( preg_match( '!(?:comments/)?(?:feed|rss|rss2|rdf|atom)/?$!', $request_uri ) ? TRUE : FALSE )
+		);
 	}
 
 	/**
@@ -776,6 +791,7 @@ class IP_Geo_Block_Util {
 	private static function is_IIS() {
 		$_is_apache = ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Apache' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'LiteSpeed' ) !== FALSE );
 		$_is_IIS = ! $_is_apache && ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) !== FALSE || strpos( $_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer' ) !== FALSE );
+
 		return $_is_IIS ? substr( $_SERVER['SERVER_SOFTWARE'], strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS/' ) + 14 ) : FALSE;
 	}
 
@@ -919,7 +935,7 @@ class IP_Geo_Block_Util {
 	}
 
 	/**
-	 * Get the list of multisite
+	 * Get the list of multisite managed by the specific user
 	 *
 	 * This function should be called after 'init' hook is fired.
 	 */
@@ -949,56 +965,6 @@ class IP_Geo_Block_Util {
 				'$1***',
 				$subject
 			);
-	}
-
-	/**
-	 * Load and show theme template
-	 *
-	 */
-	private static $theme_template = array();
-
-	public static function show_theme_template( $code, $settings ) {
-		if ( file_exists( $file = get_stylesheet_directory() . '/' . $code . '.php' ) /* child  theme */ ||
-		     file_exists( $file = get_template_directory()   . '/' . $code . '.php' ) /* parent theme */ ) {
-			// keep the response code and the template file
-			self::$theme_template = array( 'code' => $code, 'file' => $file );
-
-			// case 1: validation timing is `init`
-			if ( $action = current_filter() ) { // `plugins_loaded`, `wp` or FALSE
-				add_action( // `wp` (on front-end target) is too late to apply `init`
-					'wp' === $action ? 'template_redirect' : 'init',
-					'IP_Geo_Block_Util::load_theme_template', $settings['priority']
-				);
-				return TRUE; // load template at the specified action
-			}
-
-			// case 2: validation timing is `mu-plugins`
-			elseif ( '<?php' !== file_get_contents( $file, FALSE, NULL, 0, 5 ) ) {
-				self::load_theme_template(); // load template and die immediately
-			}
-		}
-
-		// prevent to make a cached page. `set_404()` should not be used for `wp_dir()`.
-		global $wp_query; isset( $wp_query->is_404 ) and $wp_query->is_404 = TRUE;
-
-		return FALSE; // die with wp_die() immediately
-	}
-
-	public static function load_theme_template( $template = FALSE ) {
-		global $wp_query; isset( $wp_query ) and $wp_query->set_404(); // for stylesheet
-
-		status_header( self::$theme_template['code'] ); // @since 2.0.0
-		add_filter( 'document_title_parts', 'IP_Geo_Block_Util::change_title' ); // @since 4.4.0
-
-		// avoid loading template for HEAD requests because of performance bump. See #14348.
-		'HEAD' !== $_SERVER['REQUEST_METHOD'] and include self::$theme_template['file'];
-		exit;
-	}
-
-	public static function change_title( $title_parts ) {
-		// change title from `Not Found` to the correct one.
-		$title_parts['title'] = get_status_header_desc( self::$theme_template['code'] );
-		return $title_parts;
 	}
 
 	/**
@@ -1043,7 +1009,8 @@ class IP_Geo_Block_Util {
 		);
 	}
 
-	public static function generate_link() {
+	// used at `admin_ajax_callback()` in class-ip-geo-block-admin.php
+	public static function generate_link( $context ) {
 		$link = self::random_bytes();
 		$hash = bin2hex( self::hash_link( $link ) );
 
@@ -1058,21 +1025,32 @@ class IP_Geo_Block_Util {
 			'hash' => bin2hex( self::hash_link( $hash ) ),
 		);
 
-		update_option( IP_Geo_Block::OPTION_NAME, $settings );
+		if ( $context->is_network_admin() && $settings['network_wide'] )
+			$context->update_multisite_settings( $settings );
+		else
+			IP_Geo_Block::update_option( $settings );
+
 		return add_query_arg( IP_Geo_Block::PLUGIN_NAME . '-key', $link, wp_login_url() );
 	}
 
-	public static function delete_link() {
+	// used at `admin_ajax_callback()` in class-ip-geo-block-admin.php
+	public static function delete_link( $context ) {
 		$settings = IP_Geo_Block::get_option();
 		$settings['login_link'] = array( 'link' => NULL, 'hash' => NULL );
-		update_option( IP_Geo_Block::OPTION_NAME, $settings );
+
+		if ( $context->is_network_admin() && $settings['network_wide'] )
+			$context->update_multisite_settings( $settings );
+		else
+			IP_Geo_Block::update_option( $settings );
 	}
 
+	// used at `tab_setup()` in tab-settings.php
 	public static function get_link() {
 		$settings = IP_Geo_Block::get_option();
 		return $settings['login_link']['link'] ? $settings['login_link']['link'] : FALSE;
 	}
 
+	// used at `validate_login()` in class-ip-geo-block.php
 	public static function verify_link( $link, $hash = NULL ) {
 		return self::hash_equals( self::hash_link( $link ), pack( 'H*', $hash ? $hash : self::get_link() ) ); // hex2bin() for PHP 5.4+
 	}

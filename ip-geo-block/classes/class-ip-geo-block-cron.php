@@ -59,11 +59,15 @@ class IP_Geo_Block_Cron {
 	 *   B. Multiple time for each blog when this plugin is individually activated
 	 */
 	public static function exec_update_db( $immediate = FALSE ) {
-		// extract ip address from transient API to confirm the request source
-		$ip = IP_Geo_Block::get_ip_address( $settings = IP_Geo_Block::get_option() );
-		add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
+		$settings = IP_Geo_Block::get_option();
 
-		$context  = IP_Geo_Block::get_instance();
+		// extract ip address from transient API to confirm the request source
+		if ( $immediate ) {
+			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address( $settings ), MINUTE_IN_SECONDS );
+			add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
+		}
+
+		$context = IP_Geo_Block::get_instance();
 		$args = IP_Geo_Block::get_request_headers( $settings );
 
 		// download database files (higher priority order)
@@ -106,6 +110,9 @@ class IP_Geo_Block_Cron {
 
 					// finished to update matching rule
 					set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
+
+					// trigger update action
+					do_action( IP_Geo_Block::PLUGIN_NAME . '-db-updated', $settings, $validate['code'] );
 				}
 			}
 		}
@@ -125,20 +132,20 @@ class IP_Geo_Block_Cron {
 
 			foreach ( $blog_ids as $id ) {
 				switch_to_blog( $id );
-				$dst = IP_Geo_Block::get_option();
+				$dst = IP_Geo_Block::get_option( FALSE );
 
 				foreach ( $keys as $key ) {
 					$dst[ $key ] = $src[ $key ];
 				}
 
-				update_option( IP_Geo_Block::OPTION_NAME, $dst );
+				IP_Geo_Block::update_option( $dst, FALSE );
 				restore_current_blog();
 			}
 		}
 
 		// for single site
 		else {
-			update_option( IP_Geo_Block::OPTION_NAME, $src );
+			IP_Geo_Block::update_option( $src );
 		}
 	}
 
@@ -146,10 +153,10 @@ class IP_Geo_Block_Cron {
 	 * Extract ip address from transient API.
 	 *
 	 */
-	public static function extract_ip() {
+	public static function extract_ip( $ip ) {
 		return filter_var(
-			$ip_adrs = get_transient( IP_Geo_Block::CRON_NAME ), FILTER_VALIDATE_IP
-		) ? $ip_adrs : $_SERVER['REMOTE_ADDR'];
+			$ip_self = get_transient( IP_Geo_Block::CRON_NAME ), FILTER_VALIDATE_IP
+		) ? $ip_self : $ip;
 	}
 
 	/**
@@ -158,13 +165,8 @@ class IP_Geo_Block_Cron {
 	 */
 	public static function start_update_db( $settings, $immediate = TRUE ) {
 		// updating should be done by main site when this plugin is activated for network
-		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) && ! is_main_site() )
-			return;
-
-		if ( $immediate ) // update matching rule immediately in exec_update_db() / extract_ip()
-			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address( $settings ), MINUTE_IN_SECONDS );
-
-		self::schedule_cron_job( $settings['update'], NULL, $immediate );
+		if ( is_main_site() || ! is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) )
+			self::schedule_cron_job( $settings['update'], NULL, $immediate );
 	}
 
 	public static function stop_update_db() {
@@ -187,10 +189,10 @@ class IP_Geo_Block_Cron {
 	}
 
 	public static function start_cache_gc( $settings = FALSE ) {
-		$settings or $settings = IP_Geo_Block::get_option();
-
-		if ( ! wp_next_scheduled( IP_Geo_Block::CACHE_NAME ) )
+		if ( ! wp_next_scheduled( IP_Geo_Block::CACHE_NAME ) ) {
+			$settings or $settings = IP_Geo_Block::get_option();
 			wp_schedule_single_event( time() + max( $settings['cache_time_gc'], MINUTE_IN_SECONDS ), IP_Geo_Block::CACHE_NAME );
+		}
 	}
 
 	public static function stop_cache_gc() {
@@ -324,7 +326,9 @@ class IP_Geo_Block_Cron {
 					else {
 						$src = get_temp_dir() . basename( $url ); // $src should be removed
 						$fs->put_contents( $src, $data );
-						TRUE === ( $ret = self::gzfile( $src, $filename ) ) or $err = $ret;
+						if ( TRUE !== ( $ret = self::gzfile( $src, $filename ) ) ) {
+							$err = $ret;
+						}
 					}
 				}
 
@@ -372,7 +376,9 @@ class IP_Geo_Block_Cron {
 
 				// unzip file
 				if ( 'gz' === $ext ) {
-					TRUE === ( $ret = self::gzfile( $src, $filename ) ) or $err = $ret;
+					if ( TRUE !== ( $ret = self::gzfile( $src, $filename ) ) ) {
+						$err = $ret;
+					}
 				}
 
 				elseif ( 'zip' === $ext && class_exists( 'ZipArchive', FALSE ) ) {

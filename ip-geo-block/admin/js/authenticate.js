@@ -5,9 +5,10 @@
  * This software is released under the MIT License.
  */
 (function ($, window, document) {
+	// https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp#Description
 	var auth = IP_GEO_BLOCK_AUTH, wpzep = {
 		init: false,
-		name: 'ip-geo-block-auth-nonce'
+		regexp: new RegExp(auth.key + '(?:=|%3D)\\w+')
 	},
 
 	// regular expression to find target for is_admin()
@@ -15,14 +16,14 @@
 		'^(?:' + (auth.home || '') + auth.admin
 		+ '|'  + (auth.home || '') + auth.plugins
 		+ '|'  + (auth.home || '') + auth.themes
-		+ ')(?:.*\.php|.*\/)?$'
+		+ ')(?:.*\\.php|.*\\/)?$'
 	),
 
 	// `theme-install.php` eats the query and set it to `request[browse]` as a parameter
 	theme_featured = function (data) {
-		var i = data.length;
+		var i = data.length, q = 'request%5Bbrowse%5D=' + auth.key;
 		while (i-- > 0) {
-			if (data[i].indexOf('request%5Bbrowse%5D=ip-geo-block-auth') !== -1) {
+			if (data[i].indexOf(q) !== -1) {
 				data[i] = 'request%5Bbrowse%5D=featured'; // correct the parameter
 				break;
 			}
@@ -32,9 +33,9 @@
 
 	// `upload.php` eats the query and set it to `query[ip-geo-block-auth-nonce]` as a parameter
 	media_library = function (data) {
-		var i = data.length;
+		var i = data.length, q = 'query%5B' + auth.key + '%5D=';
 		while (i-- > 0) {
-			if (data[i].indexOf('query%5Bip-geo-block-auth-nonce%5D=') !== -1) {
+			if (data[i].indexOf(q) !== -1) {
 				delete data[i];
 				break;
 			}
@@ -62,7 +63,7 @@
 		html = elem.innerHTML.replace(/["']/g, function (match) {
 			return {
 				'"': '&quot;',
-				"'": '&#39;'
+				"'": '&#39;' //"
 			}[match];
 		});
 		elem = '';
@@ -201,17 +202,18 @@
 		}
 
 		var data = uri.query ? uri.query.split('&') : [],
-		    i = data.length;
+		    i = data.length,
+		    q = auth.key + '=';
 
 		// remove an old nonce
 		while (i-- > 0) {
-			if (data[i].indexOf(wpzep.name) === 0) {
+			if (data[i].indexOf(q) === 0) { // or `wpzep.regexp.test(data[i])`
 				data.splice(i, 1);
 				break;
 			}
 		}
 
-		data.push(wpzep.name + '=' + encodeURIComponent(nonce));//RFC3986
+		data.push(auth.key + '=' + encodeURIComponent(nonce)); //RFC3986
 		uri.query = data.join('&');
 
 		return compose_uri(uri);
@@ -261,7 +263,7 @@
 
 	// Check if current page is admin area and the target of wp-zep
 	function is_backend() {
-		return (is_admin(window.location.pathname) === 1 || window.location.search.indexOf(wpzep.name) >= 0);
+		return (is_admin(window.location.pathname) === 1 || wpzep.regexp(window.location.search));
 	}
 
 	// Check if url belongs to multisite
@@ -269,7 +271,7 @@
 		var i, j, n = auth.sites.length;
 
 		for (i = 0; i < n; ++i) {
-			j = url.indexOf(auth.sites[i] + '/')
+			j = url.indexOf(auth.sites[i] + '/');
 			if (0 <= j && j <= 6) { // from `//` to `https://`
 				return true;
 			}
@@ -314,7 +316,7 @@
 			// multipart/form-data (XMLHttpRequest Level 2)
 			// IE10+, Firefox 4+, Safari 5+, Android 3+
 			if (typeof window.FormData !== 'undefined' && settings.data instanceof FormData) {
-				settings.data.append(wpzep.name, auth.nonce);
+				settings.data.append(auth.key, auth.nonce);
 			}
 
 			// application/x-www-form-urlencoded
@@ -333,7 +335,7 @@
 					if (callback) {
 						data = callback(data);
 					}
-					data.push(wpzep.name + '=' + encodeURIComponent(auth.nonce));//RFC3986
+					data.push(auth.key + '=' + encodeURIComponent(auth.nonce)); //RFC3986
 					settings.data = data.join('&');
 				}
 			}
@@ -369,8 +371,7 @@
 
 	if (typeof $.fn.onFirst === 'undefined') {
 		$.fn.onFirst = function(types, selector) {
-			var type, $el = $(this),
-			    isDelegated = typeof selector === 'string';
+			var type, $el = $(this), isDelegated = (typeof selector === 'string');
 
 			$.fn.on.apply($el, arguments);
 
@@ -406,9 +407,9 @@
 			if (check_uri(uri)) {
 				admin = is_admin(href);
 			}
-/*
-			console.log('href:' + href, uri, 'admin:' + admin, 'is_backend:' + is_backend(), 'is_multisite:' + is_multisite(href));
-//*/
+
+//			console.log('href:' + href, uri, 'admin:' + admin, 'is_backend:' + is_backend(), 'is_multisite:' + is_multisite(href));
+
 			// if context menu then continue and should be checked in check_nonce()
 			if ('click' !== event.type) {
 				return;
@@ -455,15 +456,15 @@
 		});
 
 		elem.onFirst('submit', 'form', function (/*event*/) {
-			var $this = $(this),
-			    action = $this.attr('action'); // possibly 'undefined'
+			var $this = $(this), action = $this.attr('action'); // possibly 'undefined'
 
 			// if admin area then add the nonce
 			if (is_admin(action) === 1) {
 				if ('post' === ($this.attr('method') || '').toLowerCase()) {
 					$this.attr('action', add_query_nonce(action, auth.nonce));
 				} else {
-					$this.append('<input type="hidden" name="' + wpzep.name + '" value="' + auth.nonce + '">');
+					// https://www.w3.org/TR/1999/REC-html401-19991224/types.html#type-name
+					$this.append('<input type="hidden" name="' + auth.key + '" value="' + auth.nonce + '">');
 				}
 			}
 		});
@@ -487,11 +488,10 @@
 
 			// Restore post revisions (wp-admin/revisions.php @since 2.6.0)
 			if ('undefined' !== typeof window._wpRevisionsSettings) {
-				var i, data = window._wpRevisionsSettings.revisionData,
-				    n = data.length;
+				var i, data = window._wpRevisionsSettings.revisionData, n = data.length;
 
 				for (i = 0; i < n; ++i) {
-					if (-1 === data[i].restoreUrl.indexOf(wpzep.name)) {
+					if (!wpzep.regexp.test(data[i].restoreUrl)) {
 						window._wpRevisionsSettings.revisionData[i].restoreUrl = add_query_nonce(data[i].restoreUrl, auth.nonce);
 					}
 				}

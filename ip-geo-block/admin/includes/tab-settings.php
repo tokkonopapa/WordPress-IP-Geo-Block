@@ -47,11 +47,11 @@ class IP_Geo_Block_Admin_Tab {
 		 * @since 2.7.0
 		 */
 		/*----------------------------------------*
-		 * Validation rule settings
+		 * Validation rules and behavior
 		 *----------------------------------------*/
 		add_settings_section(
 			$section = $plugin_slug . '-validation-rule',
-			array( __( 'Validation rule settings', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/validation-rule-settings.html" title="Validation rule settings | IP Geo Block">' . $common[4] . '</a>' ),
+			array( __( 'Validation rules and behavior', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/validation-rule-settings.html" title="Validation rules and behavior | IP Geo Block">' . $common[4] . '</a>' ),
 			NULL,
 			$option_slug
 		);
@@ -192,6 +192,24 @@ endif;
 			)
 		);
 
+		// $_SERVER keys to retrieve extra IP addresses
+		add_settings_field(
+			$option_name.'_validation_proxy',
+			__( '<dfn title="If your server is placed behind the proxy server or the load balancing server, you need to put the appropriate key such as &#8220;HTTP_X_FORWARDED_FOR&#8221;, &#8220;HTTP_X_REAL_IP&#8221; or something like that to retrieve the client IP address.">$_SERVER keys to retrieve extra IP addresses</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => 'validation',
+				'sub-field' => 'proxy',
+				'value' => $options['validation']['proxy'],
+				'placeholder' => IP_Geo_Block_Util::get_proxy_var(),
+				'after' => $common[0],
+			)
+		);
+
 		// White list of extra IP addresses prior to country code (CIDR, ASN)
 		add_settings_field(
 			$option_name.'_extra_ips_white_list',
@@ -231,24 +249,6 @@ endif;
 				'value' => $options['extra_ips']['black_list'],
 				'placeholder' => '192.168.0.0/16,2001:db8::/96,AS1234',
 				'after' => $common[1],
-			)
-		);
-
-		// $_SERVER keys to retrieve extra IP addresses
-		add_settings_field(
-			$option_name.'_validation_proxy',
-			__( '<dfn title="If your server is placed behind the proxy server or the load balancing server, you need to put the appropriate key such as &#8220;HTTP_X_FORWARDED_FOR&#8221;, &#8220;HTTP_X_REAL_IP&#8221; or something like that to retrieve the client IP address.">$_SERVER keys to retrieve extra IP addresses</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => 'validation',
-				'sub-field' => 'proxy',
-				'value' => $options['validation']['proxy'],
-				'placeholder' => IP_Geo_Block_Util::get_proxy_var(),
-				'after' => $common[0],
 			)
 		);
 
@@ -397,6 +397,21 @@ endif;
 			)
 		);
 
+		// Simulation mode
+		add_settings_field(
+			$option_name.'_simulate',
+			'<dfn title="' . __( 'It enables to simulate the validation rules without actual blocking in order to check the behavior of this plugin. The results can be found on &#8220;Logs&#8221; tab.', 'ip-geo-block' ) . '">' . __( 'Simulation mode', 'ip-geo-block' ) . '</dfn>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => 'simulate',
+				'value' => isset( $options['simulate'] ) ? $options['simulate'] : FALSE,
+			)
+		);
+
 		/*----------------------------------------*
 		 * Back-end target settings
 		 *----------------------------------------*/
@@ -408,7 +423,7 @@ endif;
 		);
 
 		// same as in tab-accesslog.php
-		$dfn = __( '<dfn title="Validate request to %s.">%s</dfn>', 'ip-geo-block' );
+		$dfn = __( '<dfn title="It enables to validate requests to %s.">%s</dfn>', 'ip-geo-block' );
 		$target = array(
 			'comment' => sprintf( $dfn, 'wp-comments-post.php',                      __( 'Comment post',        'ip-geo-block' ) ),
 			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',                                __( 'XML-RPC',             'ip-geo-block' ) ),
@@ -797,7 +812,7 @@ endif;
 				'field' => 'public',
 				'sub-field' => 'matching_rule',
 				'value' => $options['public']['matching_rule'],
-				'list' => array( -1 => __( 'Follow &#8220;Validation rule settings&#8221;', 'ip-geo-block' ) ) + $rule,
+				'list' => array( -1 => __( 'Follow &#8220;Validation rules and behavior&#8221;', 'ip-geo-block' ) ) + $rule,
 			)
 		);
 
@@ -1052,22 +1067,6 @@ endif;
 			)
 		);
 
-		// Simulation mode
-		add_settings_field(
-			$option_name.'_public_simulate',
-			'<dfn title="' . __( 'It enables to simulate validation without deployment. The results can be found as &#8220;public&#8221; in Logs.', 'ip-geo-block' ) . '">' . __( 'Simulation mode', 'ip-geo-block' ) . '</dfn>',
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => 'public',
-				'sub-field' => 'simulate',
-				'value' => $options['public']['simulate'],
-			)
-		);
-
 		/*----------------------------------------*
 		 * Privacy and record settings
 		 *----------------------------------------*/
@@ -1107,39 +1106,6 @@ endif;
 				'value' => ! empty( $options['restrict_api'] ),
 			)
 		);
-
-		// Record Statistics of validation
-		add_settings_field(
-			$option_name.'_save_statistics',
-			__( '<dfn title="This option enables to record the number blocked countries and the number of blocked requests per day.">Record &#8220;Statistics of validation&#8221;</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => 'save_statistics',
-				'value' => $options['save_statistics'],
-			)
-		);
-
-if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		add_settings_field(
-			$option_name.'_validation_recdays',
-			'<div class="ip-geo-block-subitem">' . __( 'Maximum period for &#8220;Statistics&#8221; [days]', 'ip-geo-block' ) . '</div>',
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => 'validation',
-				'sub-field' => 'recdays',
-				'value' => $options['validation']['recdays'],
-				'class' => 'ip-geo-block-subitem-parent',
-			)
-		);
-endif;
 
 		// Record IP address cache
 		add_settings_field(
@@ -1302,7 +1268,7 @@ endif;
 		// Interval [sec] to cleanup expired entries of IP address
 		add_settings_field(
 			$option_name.'_cache_time_gc',
-			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries in &#8220;IP address cache&#8221; and &#8220;Logs&#8221;.">Interval [sec] to cleanup expired entries of IP address</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="This option enables to schedule the WP-Cron event to remove the expired entries from &#8220;IP address cache&#8221; and &#8220;Validation logs&#8221;.">Interval [sec] to cleanup expired entries of IP address</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1314,6 +1280,39 @@ endif;
 				'after' => '<p class="ip-geo-block-desc">' . sprintf( __( 'Next schedule: %s', 'ip-geo-block'), $tmp ) . '</p>',
 			)
 		);
+
+		// Record Statistics of validation
+		add_settings_field(
+			$option_name.'_save_statistics',
+			__( '<dfn title="This option enables to record the number blocked countries and the number of blocked requests per day.">Record &#8220;Statistics of validation&#8221;</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => 'save_statistics',
+				'value' => $options['save_statistics'],
+			)
+		);
+
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		add_settings_field(
+			$option_name.'_validation_recdays',
+			'<div class="ip-geo-block-subitem">' . __( 'Maximum period for &#8220;Statistics&#8221; [days]', 'ip-geo-block' ) . '</div>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => 'validation',
+				'sub-field' => 'recdays',
+				'value' => $options['validation']['recdays'],
+				'class' => 'ip-geo-block-subitem-parent',
+			)
+		);
+endif;
 
 		// Remove all settings and records at uninstallation
 		add_settings_field(
@@ -1347,8 +1346,9 @@ endif;
 		// Disable 3rd parties API
 		if ( ! empty( $options['restrict_api'] ) ) {
 			foreach ( array_keys( $provider ) as $key ) {
-				if ( ! in_array( $key, $providers, TRUE ) )
+				if ( ! in_array( $key, $providers, TRUE ) ) {
 					$provider[ $key ] = is_string( $provider[ $key ] ) ? '-1' : -1;
+				}
 			}
 		}
 
@@ -1470,9 +1470,9 @@ endif;
 			NULL,
 			$option_slug
 		);
-if ( IP_GEO_BLOCK_NETWORK ):
+if ( IP_GEO_BLOCK_NETWORK && FALSE ):
 		// @see https://vedovini.net/2015/10/using-the-wordpress-settings-api-with-network-admin-pages/
-		if ( is_main_site() && is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
+		if ( $context->is_network_admin() ) {
 			add_action( 'network_admin_edit_' . IP_Geo_Block::PLUGIN_NAME, array( $context, 'validate_network_settings' ) );
 
 			// Network wide configuration
@@ -1487,7 +1487,7 @@ if ( IP_GEO_BLOCK_NETWORK ):
 					'option' => $option_name,
 					'field' => 'network_wide',
 					'value' => $options['network_wide'],
-					'disabled' => ! current_user_can( 'manage_network_options' ),
+					'disabled' => ! is_main_site(),
 				)
 			);
 		}
@@ -1512,7 +1512,7 @@ endif;
 		// Google Maps API key
 		add_settings_field(
 			$option_name.'_api_key',
-			__( '<dfn title="Valid key for Google Maps JavaScript API. A free tier has limit even if it\'s &#8220;default&#8221;. Maps Embed API without key can be available in case of empty.">Google Maps API key</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="Valid key for Google Maps JavaScript API. Maps Embed API in iframe can be available without key in case it\'s empty.">Google Maps API key</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1560,16 +1560,16 @@ endif;
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		// DB tables for this plugin
 		add_settings_field(
-			$option_name.'_init_table',
-			__( 'DB tables for this plugin', 'ip-geo-block' ),
+			$option_name.'_diag_tables',
+			__( 'Diagnose all DB tables', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
 				'type' => 'button',
 				'option' => $option_name,
-				'field' => 'init_table',
-				'value' => __( 'Initialize now', 'ip-geo-block' ),
+				'field' => 'diag_tables',
+				'value' => __( 'Diagnose now', 'ip-geo-block' ),
 				'after' => '<div id="ip-geo-block-init-table"></div>',
 			)
 		);
@@ -1618,6 +1618,10 @@ endif;
 	}
 
 	public static function note_public() {
+		echo
+			'<ul class="ip-geo-block-note">', "\n",
+				'<li>', sprintf( __( 'Please refer to "%sLiving with cache plugin%s" for compatibility with cache plugins.', 'ip-geo-block' ), '<a href="https://www.ipgeoblock.com/codex/living-with-caching-plugin.html" title="Living with caching plugin | IP Geo Block">', '</a>' ), '</li>', "\n",
+			'</ul>', "\n";
 	}
 
 	public static function note_privacy() {

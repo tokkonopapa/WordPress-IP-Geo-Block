@@ -94,6 +94,7 @@
   content: "\e900";
 }
 
+/* Dashicons is the official icon font of the WordPress admin as of 3.8+. */
 #toplevel_page_ip-geo-block .dashicons-admin-generic:before {
     font-family: 'icomoon';
     content: "\e62f";
