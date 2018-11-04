@@ -391,6 +391,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 * **Improvement:** Support [Swift Performance Lite](https://wordpress.org/plugins/swift-performance-lite/ "Swift Performance Lite &#124; WordPress.org") cache plugin with "Disk Cashe with PHP" caching mode.
 * **Improvement:** Apply simulation mode to not only the front-end but also to the back-end.
 * **Improvement:** Optimize SQL issuing to reduce some queries.
+* See [3.0.16 release note](https://www.ipgeoblock.com/changelog/release-3.0.16.html) for some details.
 
 = 3.0.15 =
 * **Fix issue:** Fix the issue that "Can not find Geolocation API libraries" error would always appear when once Geolite2, Maxmind and IP2Location were unselected.
