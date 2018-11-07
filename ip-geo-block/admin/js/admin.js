@@ -461,7 +461,7 @@
 			if (chart.dataStacked[id] === undefined) {
 				data = $.parseJSON($id.attr('data-' + id));
 				if (data) {
-					data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', { role: 'link' } ]);
+					data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'public', { role: 'link' } ]);
 					chart.dataStacked[id] = window.google.visualization.arrayToDataTable(data);
 				}
 			}

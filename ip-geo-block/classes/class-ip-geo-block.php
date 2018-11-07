@@ -61,8 +61,8 @@ class IP_Geo_Block {
 		file_exists( $key = IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php' ) and include( $key );
 
 		// global settings after `drop-in.php`
-		self::$live_log = get_transient( self::PLUGIN_NAME . '-live-log' );
 		self::$auth_key = apply_filters( self::PLUGIN_NAME . '-auth-key', self::PLUGIN_NAME . '-auth-nonce' );
+		self::$live_log = ( $validate['reclogs'] ? get_transient( self::PLUGIN_NAME . '-live-log' ) : FALSE );
 
 		// normalize requested uri and page
 		$key = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );

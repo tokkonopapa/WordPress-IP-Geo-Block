@@ -20,7 +20,7 @@ After several days of installation, you'll be supprised to find many malicious o
 
 = Features =
 
-* **Privacy friendly:**  
+* **Privacy by design:**  
   IP address is always encrypted on recording in logs/cache. Moreover, it can be anonymized and restricted on sending to the 3rd parties such as geolocation APIs or whois service.
 
 * **Immigration control:**  
@@ -99,144 +99,10 @@ All contributions will always be welcome. Or visit my [development blog](https:/
 2. Search for 'IP Geo Block'
 3. Click 'Install Now'
 4. Activate the plugin on the Plugin dashboard
-5. Try 'Best for Back-end' button for easy setup at the bottom of this plugin's setting page.
+5. Stay cool for a while and go to 'Settings' &raquo; 'IP Geo Block'
+6. Try 'Best for Back-end' button for easy setup at the bottom of this plugin's setting page.
 
-Please refer to [the document](https://www.ipgeoblock.com/codex/ "Codex | IP Geo Block") 
-or following descriptions for your best setup.
-
-= Validation rules and behavior =
-
-* **Matching rule**  
-  Choose either `White list` (recommended) or `Black list` to specify the countries from which you want to pass or block.
-
-* **Whitelist/Blacklist of country code**  
-  Specify the country code with two letters (see [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements "ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia")). Each of them should be separated by comma.
-
-* **Use Autonomous System Number (ASN)**  
-  It enables you to use "AS number" in the whitelist and blacklist of extra IP addresses to specify a group of IP networks.
-
-* **Whitelist/Blacklist of extra IP addresses prior to country code**  
-  The list of extra IP addresses prior to the validation of country code. [CIDR notation](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing "Classless Inter-Domain Routing - Wikipedia, the free encyclopedia") and [AS number](https://en.wikipedia.org/wiki/Autonomous_system_(Internet) "Autonomous system (Internet) - Wikipedia") are also acceptable to specify the range.
-
-* **$_SERVER keys to retrieve extra IP addresses**  
-  Additional IP addresses will be validated if some of keys in `$_SERVER` variable are specified in this textfield. Typically `HTTP_X_FORWARDED_FOR`.
-
-* **Bad signatures in query**
-  It validates malicious signatures independently of **Block by country** and **Prevent Zero-day Exploit** for the target **Admin area**, **Admin ajax/post**, **Plugins area** and **Themes area**. Typically, `/wp-config.php` and `/passwd`.
-
-* **Prevent malicious file uploading**  
-  It restricts the file types on upload to block malware and backdoor via both back-end and front-end.
-
-* **Response code**  
-  Choose one of the [response code](https://tools.ietf.org/html/rfc2616#section-10 "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1") to be sent when it blocks a comment.
-  The 2xx code will lead to your top page, the 3xx code will redirect to [Black Hole Server](http://blackhole.webpagetest.org/), the 4xx code will lead to WordPress error page, and the 5xx will pretend an server error.
-
-* **Max number of failed login attempts per IP address**  
-  Set the maximum number of login attempts to accept the requests to the login process.
-
-* **Validation timing**  
-  Choose **"init" action hook** or **"mu-plugins" (ip-geo-block-mu.php)** to specify the timing of validation.
-
-= Back-end target settings =
-
-* **Comment post**  
-  Validate post to `wp-comment-post.php`. Comment post and trackback will be validated.
-
-* **XML-RPC**  
-  Validate access to `xmlrpc.php`. Pingback and other remote command with username and password will be validated.
-
-* **Login form**  
-  Validate access to `wp-login.php` and `wp-signup.php`.
-
-* **Admin area**  
-  Validate access to `wp-admin/*.php`.
-
-* **Admin ajax/post**  
-  Validate access to `wp-admin/admin-(ajax|post)*.php`.
-
-* **Plugins area**  
-  Validate direct access to plugins. Typically `wp-content/plugins/&hellip;/*.php`.
-
-* **Themes area**  
-  Validate direct access to themes. Typically `wp-content/themes/&hellip;/*.php`.
-
-= Front-end target settings =
-
-* **Block by country**  
-  Enables validation of country code on public facing pages.
-
-* **Matching rule**  
-  Same as **Validation target settings** but can be set independently.
-
-* **Validation target**  
-  Specify the single and archive page by post type, category and tag as blocking target.
-
-* **Block badly-behaved bots and crawlers**  
-  Specify the allowable request frequency over a period of time.
-
-* **UA string and qualification**  
-  Additional rules targeted at SEO which can specify acceptable requests based on user agent.
-
-* **DNS reverse lookup**  
-  It enables to verify the host by reverse DNS lookup which would spend some server resources.
-
-* **Simulation mode**  
-  You can simulate the 'blocking on front-end' functionality before deploying.
-
-= Geolocation API settings =
-
-* **API selection and key settings**  
-  If you wish to use `IPInfoDB`, you should register at [their site](https://ipinfodb.com/ "IPInfoDB | Free IP Address Geolocation Tools") to get a free API key and set it into the textfield. And `ip-api.com` and `Smart-IP.net` require non-commercial use.
-
-= Local database settings settings =
-
-* **Auto updating (once a month)**  
-  If `Enable`, geolocation databases will be downloaded automatically by WordPress cron job.
-
-* **Download database**  
-  Fetch all the databases from their server if those are updated.
-
-= Privacy and record settings =
-
-* **Privacy friendly**  
-  It makes an IP address anonymous on recording into the database (e.g. logs, IP address cache) and restricted on sending to the 3rd parties (e.g. geolocation APIs, whois).
-
-* **Record "Statistics"**  
-  If `Enable`, you can see `Statistics of validation` on Statistics tab.
-
-* **Record "Logs"**  
-  If you choose anything but `Disable`, you can see `Validation logs` on Logs tab.
-
-* **$_POST keys to be recorded with their values in "Logs"**  
-  Normally, you can see just keys at `$_POST data:` on Logs tab. If you put some of interested keys into this textfield, you can see the value of key like `key=value`.
-
-* **Record "IP address cache"**  
-  It enables to record the pare of IP address and country code into the cache on database to minimize the impact on site speed.
-
-* **Expiration time [sec] for IP address cache**  
-  Maximum time in sec to keep cache.
-
-* **Garbage collection period [sec] for IP address cache**  
-  Period of garbage collection to clean cache.
-
-= Submission settings =
-
-* **Text position on comment form**  
-  If you want to put some text message on your comment form, please choose `Top` or `Bottom` and put text with some tags into the **Text message on comment form** textfield.
-
-= Plugin settings =
-
-* **Network wide settings**  
-  Synchronize all settings over the network wide based on the settings of main blog.
-
-* **Remove all settings at uninstallation**  
-  If you checked this option, all settings will be removed when this plugin is uninstalled for clean uninstalling.
-
-* **Export / Import settings**  
-  All settings data can be saved as json file which enables to export/import to the dashboard.
-
-* **Import pre-defined settings**  
-  Reset all settings data as initial values, or set as recommended values for "Back-end target settings".
+Please refer to [the document](https://www.ipgeoblock.com/codex/ "Codex | IP Geo Block") for your best setup.
 
 == Frequently Asked Questions ==
 
@@ -384,6 +250,9 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 10. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.17 =
+* **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog on multisite.
 
 = 3.0.16 =
 * **Fix issue:** Fix the issue that some functions did not work properly when "Validation timing" was set as `"mu-plugins" (ip-geo-block-mu.php)` under some conditions before WP 4.0.
