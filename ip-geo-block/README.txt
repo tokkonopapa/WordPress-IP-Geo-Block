@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.9.8
-Stable tag: 3.0.16
+Tested up to: 5.0
+Stable tag: 3.0.17a
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -12,11 +12,17 @@ It blocks spam posts, login attempts and malicious access to the back-end reques
 
 == Description ==
 
-A considerable number of WordPress vulnerabilities in plugins and themes have been disclosed every month on a site like [WPScan Vulnerability Database](https://wpvulndb.com/ "WPScan Vulnerability Database") and [Exploits Database](https://www.exploit-db.com/ "Exploits Database by Offensive Security"). It means that we're always exposed to the threats of being exploited caused by them.
+What do you think is the most secure state for the WordPress sites?
 
-This plugin guards your site against threats of attack to the back-end of your site such as login form, XML-RPC (login attempt) and admin area. It also blocks undesired comment spam, trackback and pingback spam and any requests to public facing pages aka front-end from undesired countries.
+Even if you create a strong password that is hard to guess or crack, the more you install themes and plugins, the more likely the site will be vulnerable.
 
-After several days of installation, you'll be supprised to find many malicious or undesirable accesses are blocked especially if you enable Zero-day Expoit Prevention.
+While WordPress provides excellent methods to securely build themes and plugins, developers often produce vulnerable products.
+
+This plugin focuses on insights into human factors of developers such as lack of security awareness, misuse and disuse of those methods in WP core.
+
+The number of patterns made by such human factors is far fewer than that of actual attack vectors. So instead of updating attack vectors after they are disclosed, this plugin provides more smart way named as WP-ZEP (WP Zero-day Exploit Prevention) so that malicious accesses to the back-end can be effectively blocked.
+
+After several days of installation, you'll be supprised to find many malicious or undesirable accesses are blocked by combination of WP-ZEP and Geo-location based on IP address.
 
 = Features =
 
