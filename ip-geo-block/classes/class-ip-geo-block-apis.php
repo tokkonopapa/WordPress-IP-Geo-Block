@@ -659,7 +659,7 @@ if ( class_exists( 'IP_Geo_Block', FALSE ) ) {
 			);
 
 			// Scan API directory
-			$plugins = is_dir( $dir ) ? scandir( $dir, defined( 'SCANDIR_SORT_DESCENDING' ) ? SCANDIR_SORT_DESCENDING : 1 ) : FALSE;
+			$plugins = ( is_dir( $dir ) ? scandir( $dir, defined( 'SCANDIR_SORT_DESCENDING' ) ? SCANDIR_SORT_DESCENDING : 1 ) : FALSE );
 
 			// Load addons by heigher priority order
 			if ( FALSE !== $plugins ) {

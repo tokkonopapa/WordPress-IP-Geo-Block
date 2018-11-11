@@ -94,7 +94,13 @@
 		request.action = ip_geo_block.action;
 		request.nonce  = ip_geo_block.nonce;
 
-		$.post(ip_geo_block.url, request)
+//		$.post(ip_geo_block.url, request)
+		$.ajax({
+			type: 'POST',
+			url: ip_geo_block.url,
+			data: request,
+			dataType: 'json'
+		})
 
 		.done(function (data/*, textStatus, jqXHR*/) {
 			if (callback) {

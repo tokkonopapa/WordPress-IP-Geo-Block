@@ -14,15 +14,13 @@ It blocks spam posts, login attempts and malicious access to the back-end reques
 
 What do you think is the most secure state for the WordPress sites?
 
-Even if you create a strong password that is hard to guess or crack, the more you install themes and plugins, the more likely the site will be vulnerable.
+Even if [you securely harden your sites](https://codex.wordpress.org/Hardening_WordPress "Hardening WordPress &laquo; WordPress Codex"), the more you install themes and plugins, the more likely your sites will be vulnerable.
 
-While WordPress provides excellent methods to securely build themes and plugins, developers often produce vulnerable products.
+While WordPress provides excellent methods to securely build themes and plugins, developers often produce vulnerabilities due to their [human factors](https://www.google.com/search?q=human+factors+in+security "human factors in security - Google Search") such as lack of security awareness, misuse and disuse of those methods in WP core.
 
-This plugin focuses on insights into human factors of developers such as lack of security awareness, misuse and disuse of those methods in WP core.
+This plugin focuses on insights into such developers' human factors instead of updating attack vectors after they are disclosed. This brings a smart and powerful method named as WP-ZEP (WP Zero-day Exploit Prevention) so that malicious accesses to the back-end can be effectively blocked.
 
-The number of patterns made by such human factors is far fewer than that of actual attack vectors. So instead of updating attack vectors after they are disclosed, this plugin provides more smart way named as WP-ZEP (WP Zero-day Exploit Prevention) so that malicious accesses to the back-end can be effectively blocked.
-
-After several days of installation, you'll be supprised to find many malicious or undesirable accesses are blocked by combination of WP-ZEP and Geo-location based on IP address.
+After several days of installation, you'll be supprised to find a bunch of malicious or undesirable accesses are blocked by combination of WP-ZEP and IP addresss Geo-location.
 
 = Features =
 
