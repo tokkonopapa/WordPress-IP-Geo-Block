@@ -298,11 +298,26 @@ if (0) {
 	}
 
 	/**
+	 * Get details for files in a directory or a specific file.
+	 *
+	 * @since 2.5.0
 	 *
 	 * @param string $path
 	 * @param bool $include_hidden
 	 * @param bool $recursive
-	 * @return bool|array
+	 * @return array|bool {
+	 *     Array of files. False if unable to list directory contents.
+	 *     @type string 'name'        Name of the file/directory.
+	 *     @type string 'perms'       *nix representation of permissions.
+	 *     @type int    'permsn'      Octal representation of permissions.
+	 *     @type string 'owner'       Owner name or ID.
+	 *     @type int    'size'        Size of file in bytes.
+	 *     @type int    'lastmodunix' Last modified unix timestamp.
+	 *     @type mixed  'lastmod'     Last modified month (3 letter) and day (without leading 0).
+	 *     @type int    'time'        Last modified time.
+	 *     @type string 'type'        Type of resource. 'f' for file, 'd' for directory.
+	 *     @type mixed  'files'       If a directory and $recursive is true, contains another array of files.
+	 * }
 	 */
 	public function dirlist( $path, $include_hidden = FALSE, $recursive = FALSE ) {
 		global $wp_filesystem;
