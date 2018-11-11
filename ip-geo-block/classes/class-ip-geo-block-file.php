@@ -297,4 +297,19 @@ if (0) {
 		return unzip_file( $src, $this->absolute_path( $dst ) );
 	}
 
+	/**
+	 *
+	 * @param string $path
+	 * @param bool $include_hidden
+	 * @param bool $recursive
+	 * @return bool|array
+	 */
+	public function dirlist( $path, $include_hidden = FALSE, $recursive = FALSE ) {
+		global $wp_filesystem;
+		if ( empty( $wp_filesystem ) )
+			return FALSE;
+
+		return $wp_filesystem->dirlist( $path, $include_hidden, $recursive );
+	}
+
 }

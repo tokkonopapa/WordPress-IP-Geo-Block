@@ -583,8 +583,8 @@ class IP_Geo_Block_Logs {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'reset_sqlite_db' );
 
-		if ( FALSE !== ( $files = @scandir( $dir = get_temp_dir(), 1 ) ) ) {
-			foreach ( $files as $file ) {
+		if ( FALSE !== ( $files = $fs->dirlist( $dir = get_temp_dir() ) ) ) {
+			foreach ( $files as $file => $content ) {
 				if ( FALSE !== strpos( $file, IP_Geo_Block::PLUGIN_NAME ) ) {
 					$fs->delete( $dir . $file );
 				}
