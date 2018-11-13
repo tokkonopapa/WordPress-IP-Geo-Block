@@ -414,7 +414,7 @@ msgid ""
 "<span title=\"Show only passed entries whose country code are in Whitelist."
 "\">Passed in Whitelist</span>"
 msgstr ""
-"<span title=\"ホワイトリストに国コードがある、通過したエントリのみを表示します。\">ホワイトリストで通過"
+"<span title=\"ホワイトリストに国コードが有る、通過したエントリのみを表示します。\">ホワイトリスト通過"
 "</span>"
 
 #: admin/class-ip-geo-block-admin.php:1508
@@ -423,7 +423,7 @@ msgid ""
 "<span title=\"Show only passed entries whose country code are in Blacklist."
 "\">Passed in Blacklist</span>"
 msgstr ""
-"<span title=\"ブラックリストに国コードがある、通過したエントリのみを表示します。\">ブラックリストで通過"
+"<span title=\"ブラックリストに国コードが有る、通過したエントリのみを表示します。\">ブラックリスト通過"
 "</span>"
 
 #: admin/class-ip-geo-block-admin.php:1509
@@ -432,8 +432,8 @@ msgid ""
 "<span title=\"Show only passed entries whose country code are not in either "
 "list.\">Passed not in List</span>"
 msgstr ""
-"<span title=\"どちらのリストにも国コードがない、通過したエントリのみを表示します。\">リストになく通過</"
-"span>"
+"<span title=\"どちらのリストにも国コードが無い、通過したエントリのみを表示します。\">どちらにも無く通過"
+"</span>"
 
 #: admin/class-ip-geo-block-admin.php:1510
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:94
@@ -441,7 +441,7 @@ msgid ""
 "<span title=\"Show only blocked entries whose country code are in Whitelist."
 "\">Blocked in Whitelist</span>"
 msgstr ""
-"<span title=\"ホワイトリストに国コードがある、遮断したエントリのみを表示します。\">ホワイトリストで遮断"
+"<span title=\"ホワイトリストに国コードが有る、遮断したエントリのみを表示します。\">ホワイトリスト遮断"
 "</span>"
 
 #: admin/class-ip-geo-block-admin.php:1511
@@ -450,7 +450,7 @@ msgid ""
 "<span title=\"Show only blocked entries whose country code are in Blacklist."
 "\">Blocked in Blacklist</span>"
 msgstr ""
-"<span title=\"ブラックリストに国コードがある、遮断したエントリのみを表示します。\">ブラックリストで遮断"
+"<span title=\"ブラックリストに国コードが有る、遮断したエントリのみを表示します。\">ブラックリスト遮断"
 "</span>"
 
 #: admin/class-ip-geo-block-admin.php:1512
@@ -459,7 +459,7 @@ msgid ""
 "<span title=\"Show only blocked entries whose country code are not in either "
 "list.\">Blocked not in List</span>"
 msgstr ""
-"<span title=\"ホワイトリストに国コードがある、通過したエントリのみを表示します。\">ホワイトリストで通過"
+"<span title=\"どちらのリストにも国コードが無い、遮断したエントリのみを表示します。\">どちらにも無く遮断"
 "</span>"
 
 #: admin/includes/class-admin-ajax.php:72
