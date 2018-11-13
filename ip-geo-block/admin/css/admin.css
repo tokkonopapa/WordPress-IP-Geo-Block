@@ -232,10 +232,12 @@ input[id*="ip_geo_block_settings_providers"] + label {
 }
 ul#ip-geo-block-logs-preset {
     margin: 0.25em 0;
+	max-width: 600px;
 }
 ul#ip-geo-block-logs-preset li {
     float: left;
     margin-right: 1em;
+	min-width: 150px;
 }
 
 /* Loading image */

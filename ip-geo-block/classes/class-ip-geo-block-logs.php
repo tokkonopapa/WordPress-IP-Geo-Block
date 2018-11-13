@@ -584,7 +584,7 @@ class IP_Geo_Block_Logs {
 		$fs = IP_Geo_Block_FS::init( 'reset_sqlite_db' );
 
 		if ( FALSE !== ( $files = $fs->dirlist( $dir = get_temp_dir() ) ) ) {
-			foreach ( $files as $file => $content ) {
+			foreach ( array_keys( $files ) as $file ) {
 				if ( FALSE !== strpos( $file, IP_Geo_Block::PLUGIN_NAME ) ) {
 					$fs->delete( $dir . $file );
 				}

@@ -223,7 +223,7 @@ class IP_Geo_Block_Admin_Ajax {
 			return $ret;
 
 		if ( ! is_wp_error( $res = IP_Geo_Block_Logs::restore_live_log( $hook, $settings ) ) )
-			return array( 'data' => self::format_logs( $res ) ); // DataTables requires `data`
+			return array( 'data' => self::format_logs( apply_filters( IP_Geo_Block::PLUGIN_NAME . '-logs', $res ) ) );
 		else
 			return array( 'error' => $res->get_error_message() );
 	}

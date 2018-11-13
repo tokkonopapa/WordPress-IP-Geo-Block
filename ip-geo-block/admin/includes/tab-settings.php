@@ -1470,7 +1470,7 @@ endif;
 			NULL,
 			$option_slug
 		);
-if ( IP_GEO_BLOCK_NETWORK ):
+
 		// @see https://vedovini.net/2015/10/using-the-wordpress-settings-api-with-network-admin-pages/
 		if ( $context->is_network_admin() ) {
 			add_action( 'network_admin_edit_' . IP_Geo_Block::PLUGIN_NAME, array( $context, 'validate_network_settings' ) );
@@ -1491,7 +1491,7 @@ if ( IP_GEO_BLOCK_NETWORK ):
 				)
 			);
 		}
-endif;
+
 		// Emergency login link
 		$key = IP_Geo_Block_Util::get_link();
 		add_settings_field(

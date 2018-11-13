@@ -452,6 +452,8 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static function install_api( $settings ) {
+		IP_Geo_Block_Cron::stop_update_db();
+
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 		$fs = IP_Geo_Block_FS::init( 'install_api' );
 
@@ -469,9 +471,11 @@ class IP_Geo_Block_Opts {
 						sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), '<code>' . $dst . '</code>' )
 					);
 				}
-				return NULL;
+				$dst = NULL;
 			}
 		}
+
+		IP_Geo_Block_Cron::start_update_db( $settings );
 
 		return $dst;
 	}

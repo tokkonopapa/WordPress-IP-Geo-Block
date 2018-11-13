@@ -72,8 +72,10 @@ class IP_Geo_Block_Util {
 	 * @see wp-includes/kses.php
 	 */
 	public static function kses( $str, $allow_tags = TRUE ) {
+		is_array( $allow_tags ) or $allow_tags = ( $allow_tags ? $GLOBALS['allowedtags'] : array() );
+
 		// wp_kses() is unavailable on advanced-cache.php
-		return wp_kses( $str, $allow_tags ? $GLOBALS['allowedtags'] : array() );
+		return wp_kses( $str, $allow_tags );
 	}
 
 	/**

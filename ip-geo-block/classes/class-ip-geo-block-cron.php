@@ -171,6 +171,16 @@ class IP_Geo_Block_Cron {
 
 	public static function stop_update_db() {
 		wp_clear_scheduled_hook( IP_Geo_Block::CRON_NAME, array( FALSE ) ); // @since 2.1.0
+
+		// wait until updating has finished to avoid race condition with IP_Geo_Block_Opts::install_api()
+		$time = 0;
+		while ( ( $stat = get_transient( IP_Geo_Block::CRON_NAME ) ) && 'done' !== $stat ) {
+			sleep( 1 );
+
+			if ( ++$time > 5 * MINUTE_IN_SECONDS ) {
+				break;
+			}
+		}
 	}
 
 	/**
