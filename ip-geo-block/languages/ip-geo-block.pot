@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-11-13 22:52+0900\n"
-"PO-Revision-Date: 2018-11-13 22:52+0900\n"
+"POT-Creation-Date: 2018-11-14 00:13+0900\n"
+"PO-Revision-Date: 2018-11-14 00:13+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -373,43 +373,43 @@ msgstr ""
 #: admin/class-ip-geo-block-admin.php:1507
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:91
 msgid ""
-"<span title=\"Show only passed entries whose country code are in Whitelist."
+"<span title=\"Show only passed entries whose country codes are in Whitelist."
 "\">Passed in Whitelist</span>"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:1508
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:92
 msgid ""
-"<span title=\"Show only passed entries whose country code are in Blacklist."
+"<span title=\"Show only passed entries whose country codes are in Blacklist."
 "\">Passed in Blacklist</span>"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:1509
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:93
 msgid ""
-"<span title=\"Show only passed entries whose country code are not in either "
+"<span title=\"Show only passed entries whose country codes are not in either "
 "list.\">Passed not in List</span>"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:1510
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:94
 msgid ""
-"<span title=\"Show only blocked entries whose country code are in Whitelist."
+"<span title=\"Show only blocked entries whose country codes are in Whitelist."
 "\">Blocked in Whitelist</span>"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:1511
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:95
 msgid ""
-"<span title=\"Show only blocked entries whose country code are in Blacklist."
+"<span title=\"Show only blocked entries whose country codes are in Blacklist."
 "\">Blocked in Blacklist</span>"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:1512
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:96
 msgid ""
-"<span title=\"Show only blocked entries whose country code are not in either "
-"list.\">Blocked not in List</span>"
+"<span title=\"Show only blocked entries whose country codes are not in "
+"either list.\">Blocked not in List</span>"
 msgstr ""
 
 #: admin/includes/class-admin-ajax.php:72

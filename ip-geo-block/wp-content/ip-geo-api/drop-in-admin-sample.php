@@ -88,13 +88,13 @@ IP_Geo_Block::add_filter( 'ip-geo-block-logs', 'ip_geo_block_logs' );
  */
 function ip_geo_block_logs_preset( $filters = array() ) {
 	return array(
-		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-happy"    >&nbsp;</span>' . __( '<span title="Show only passed entries whose country code are in Whitelist.">Passed in Whitelist</span>',        'ip-geo-block' ), 'value' => '&sup1;&sup1;' ),
-		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-grin2"    >&nbsp;</span>' . __( '<span title="Show only passed entries whose country code are in Blacklist.">Passed in Blacklist</span>',        'ip-geo-block' ), 'value' => '&sup1;&sup2;' ),
-		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-cool"     >&nbsp;</span>' . __( '<span title="Show only passed entries whose country code are not in either list.">Passed not in List</span>',   'ip-geo-block' ), 'value' => '&sup1;&sup3;' ),
-		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-confused" >&nbsp;</span>' . __( '<span title="Show only blocked entries whose country code are in Whitelist.">Blocked in Whitelist</span>',      'ip-geo-block' ), 'value' => '&sup2;&sup1;' ),
-		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-confused2">&nbsp;</span>' . __( '<span title="Show only blocked entries whose country code are in Blacklist.">Blocked in Blacklist</span>',      'ip-geo-block' ), 'value' => '&sup2;&sup2;' ),
-		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-crying"   >&nbsp;</span>' . __( '<span title="Show only blocked entries whose country code are not in either list.">Blocked not in List</span>', 'ip-geo-block' ), 'value' => '&sup2;&sup3;' ),
+		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-happy"    >&nbsp;</span>' . __( '<span title="Show only passed entries whose country codes are in Whitelist.">Passed in Whitelist</span>',        'ip-geo-block' ), 'value' => '&sup1;&sup1;' ),
+		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-grin2"    >&nbsp;</span>' . __( '<span title="Show only passed entries whose country codes are in Blacklist.">Passed in Blacklist</span>',        'ip-geo-block' ), 'value' => '&sup1;&sup2;' ),
+		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-cool"     >&nbsp;</span>' . __( '<span title="Show only passed entries whose country codes are not in either list.">Passed not in List</span>',   'ip-geo-block' ), 'value' => '&sup1;&sup3;' ),
+		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-confused" >&nbsp;</span>' . __( '<span title="Show only blocked entries whose country codes are in Whitelist.">Blocked in Whitelist</span>',      'ip-geo-block' ), 'value' => '&sup2;&sup1;' ),
+		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-confused2">&nbsp;</span>' . __( '<span title="Show only blocked entries whose country codes are in Blacklist.">Blocked in Blacklist</span>',      'ip-geo-block' ), 'value' => '&sup2;&sup2;' ),
+		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-crying"   >&nbsp;</span>' . __( '<span title="Show only blocked entries whose country codes are not in either list.">Blocked not in List</span>', 'ip-geo-block' ), 'value' => '&sup2;&sup3;' ),
 	);
 }
 
-IP_Geo_Block::add_filter( 'ip-geo-block-logs-preset', 'ip_geo_block_logs_preset', 20 );
+IP_Geo_Block::add_filter( 'ip-geo-block-logs-preset', 'ip_geo_block_logs_preset' );
