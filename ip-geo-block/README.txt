@@ -258,7 +258,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 = 3.0.17 =
 * **Fixed issue:** Stop updating geolocation DBs to avoid the error of "Can not load Geolocation API libraries" by the race condition on upgrading this plugin.
 * **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog on multisite.
-* **New feature:** Add "**Preset filters**" using [`ip-geo-block-logs[-preset]`](https://www.ipgeoblock.com/codex/ip-geo-block-logs-preset.html "ip-geo-block-logs[-preset] | IP Geo Block") filter hook to make analyze easy on "**Logs**" tab.
+* **New feature:** Add "**Preset filters**" using [`ip-geo-block-logs[-preset]`](https://www.ipgeoblock.com/codex/ip-geo-block-logs-preset.html "ip-geo-block-logs[-preset] | IP Geo Block") filter hook to make analyze logs easy on "**Logs**" tab.
 * **Improvement:** Mask password in logs when login fails.
 
 = 3.0.16 =
