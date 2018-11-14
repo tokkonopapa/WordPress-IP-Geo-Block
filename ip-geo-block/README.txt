@@ -257,6 +257,8 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 
 = 3.0.17 =
 * **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog on multisite.
+* **New feature:** Add "**Preset filters**" using [`ip-geo-block-logs[-preset]`](https://www.ipgeoblock.com/codex/ip-geo-block-logs-preset.html "ip-geo-block-logs[-preset] | IP Geo Block") filter hook to make analyze easy on "**Logs**" tab.
+* **Improvement:** Mask password in logs when login fails.
 
 = 3.0.16 =
 * **Fix issue:** Fix the issue that some functions did not work properly when "Validation timing" was set as `"mu-plugins" (ip-geo-block-mu.php)` under some conditions before WP 4.0.
