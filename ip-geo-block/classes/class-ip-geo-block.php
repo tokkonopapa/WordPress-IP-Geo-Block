@@ -289,6 +289,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function is_passed ( $result )      { return 0 === strncmp( 'pass', $result, 4 );      }
+	public static function is_failed ( $result )      { return 0 === strncmp( 'fail', $result, 4 );      }
 	public static function is_blocked( $result )      { return 0 !== strncmp( 'pass', $result, 4 );      }
 	public static function is_listed ( $code, $list ) { return FALSE !== strpos( $list, (string)$code ); }
 
