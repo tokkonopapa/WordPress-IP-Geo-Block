@@ -475,17 +475,6 @@ class IP_Geo_Block_Admin {
 				//, 'dashicons-admin-site' // or 'data:image/svg+xml;base64...'
 			);
 
-			if ( $settings['network_wide'] ) {
-				add_submenu_page(
-					IP_Geo_Block::PLUGIN_NAME,
-					__( 'IP Geo Block', 'ip-geo-block' ),
-					__( 'Settings', 'ip-geo-block' ),
-					'manage_network_options',
-					IP_Geo_Block::PLUGIN_NAME,
-					array( $this, 'display_plugin_admin_page' )
-				);
-			}
-
 			add_submenu_page(
 				IP_Geo_Block::PLUGIN_NAME,
 				__( 'IP Geo Block', 'ip-geo-block' ),
@@ -494,6 +483,17 @@ class IP_Geo_Block_Admin {
 				IP_Geo_Block::PLUGIN_NAME . '&amp;tab=5',
 				array( $this, 'display_plugin_admin_page' )
 			);
+
+			if ( $settings['network_wide'] ) {
+				add_submenu_page(
+				IP_Geo_Block::PLUGIN_NAME,
+				__( 'IP Geo Block', 'ip-geo-block' ),
+				__( 'Settings', 'ip-geo-block' ),
+				'manage_network_options',
+				IP_Geo_Block::PLUGIN_NAME,
+				array( $this, 'display_plugin_admin_page' )
+				);
+			}
 
 			wp_enqueue_style( IP_Geo_Block::PLUGIN_NAME . '-admin-icons',
 				plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
@@ -728,12 +728,12 @@ class IP_Geo_Block_Admin {
 	public function display_plugin_admin_page() {
 		$tab = $this->admin_tab;
 		$tabs = array(
+			5 => __( 'Sites list',   'ip-geo-block' ),
 			0 => __( 'Settings',     'ip-geo-block' ),
 			1 => __( 'Statistics',   'ip-geo-block' ),
 			4 => __( 'Logs',         'ip-geo-block' ),
 			2 => __( 'Search',       'ip-geo-block' ),
 			3 => __( 'Attribution',  'ip-geo-block' ),
-			5 => __( 'Sites list',   'ip-geo-block' ),
 		);
 
 		$settings = IP_Geo_Block::get_option();
@@ -749,7 +749,7 @@ class IP_Geo_Block_Admin {
 					unset( $tabs[0] ); // Settings
 				}
 				$title .= ' <span class="ip-geo-block-menu-link">';
-				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Network', 'ip-geo-block' ) . '</a> ]';
+				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Network', 'ip-geo-block' ) . '</a> ]';
 				$title .= '</span>';
 			}
 		}
