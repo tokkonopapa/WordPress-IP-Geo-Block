@@ -112,7 +112,9 @@ Please refer to [the document](https://www.ipgeoblock.com/codex/ "Codex | IP Geo
 
 = Does the site using this plugin comply with GDPR? =
 
-Since version 3.0.11, this plugin has been designed based on the principle "Privacy by design" in GDPR so that you can compliantly run it to GDPR. In preparation for personal data breach, IP addresses in this plugin are encrypted by default and also can be anonymized. It also provides some functions not only to manually erase them but also to automatically remove them when those are exceeded a certain amount/time. Refer to [3.0.11 release note](https://www.ipgeoblock.com/changelog/release-3.0.11.html) for more details.
+This plugin is designed based on the principle of "Privacy by design" so that you can compliantly run it to GDPR. As guarding against personal data breach, IP addresses in this plugin are encrypted and also can be anonymized by default. It also provides some functions not only to manually erase them but also to automatically remove them when those are exceeded a certain amount/time.
+
+However, these are the part of GDPR requirements and do not guarantee that the site is compliant with GDPR. Refer to [3.0.11 release note](https://www.ipgeoblock.com/changelog/release-3.0.11.html) for details.
 
 = Does this plugin support multisite? =
 
