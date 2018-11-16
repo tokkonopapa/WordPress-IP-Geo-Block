@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-11-14 00:13+0900\n"
-"PO-Revision-Date: 2018-11-14 00:15+0900\n"
+"POT-Creation-Date: 2018-11-16 13:04+0900\n"
+"PO-Revision-Date: 2018-11-16 13:06+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -165,8 +165,8 @@ msgid "Contribute on GitHub"
 msgstr "開発に参加"
 
 #: admin/class-ip-geo-block-admin.php:365
-#: admin/class-ip-geo-block-admin.php:482
-#: admin/class-ip-geo-block-admin.php:731
+#: admin/class-ip-geo-block-admin.php:491
+#: admin/class-ip-geo-block-admin.php:732
 msgid "Settings"
 msgstr "設定"
 
@@ -174,13 +174,13 @@ msgstr "設定"
 #: admin/class-ip-geo-block-admin.php:460
 #: admin/class-ip-geo-block-admin.php:470
 #: admin/class-ip-geo-block-admin.php:471
-#: admin/class-ip-geo-block-admin.php:481
-#: admin/class-ip-geo-block-admin.php:491
+#: admin/class-ip-geo-block-admin.php:480
+#: admin/class-ip-geo-block-admin.php:490
 msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
-#: admin/class-ip-geo-block-admin.php:492
-#: admin/class-ip-geo-block-admin.php:736
+#: admin/class-ip-geo-block-admin.php:481
+#: admin/class-ip-geo-block-admin.php:731
 msgid "Sites list"
 msgstr "サイト一覧"
 
@@ -324,19 +324,19 @@ msgstr ""
 "<strong>IP Geo Allow</strong> と互換性がありません。「&#8220;init&#8221; アクション・フック」を選択し"
 "てください。"
 
-#: admin/class-ip-geo-block-admin.php:732
+#: admin/class-ip-geo-block-admin.php:733
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:733
+#: admin/class-ip-geo-block-admin.php:734
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:734
+#: admin/class-ip-geo-block-admin.php:735
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:735
+#: admin/class-ip-geo-block-admin.php:736
 msgid "Attribution"
 msgstr "リンク"
 
@@ -399,7 +399,7 @@ msgstr "このページにアクセスするための十分な権限がありま
 #: classes/class-ip-geo-block-cron.php:228
 #: classes/class-ip-geo-block-cron.php:332
 #: classes/class-ip-geo-block-cron.php:410
-#: classes/class-ip-geo-block-opts.php:471
+#: classes/class-ip-geo-block-opts.php:475
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr "<code>%s</code> に書き込めません。パーミッションをチェックして下さい。"
@@ -413,42 +413,54 @@ msgstr "設定を保存しました。"
 msgid ""
 "<span title=\"Show only passed entries whose country codes are in Whitelist."
 "\">Passed in Whitelist</span>"
-msgstr "<span title=\"ホワイトリストに国コードが有る、通過したエントリのみを表示します。\">ホワイトリスト通過</span>"
+msgstr ""
+"<span title=\"ホワイトリストに国コードが有る、通過したエントリのみを表示します。\">ホワイトリスト通過"
+"</span>"
 
 #: admin/class-ip-geo-block-admin.php:1508
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:92
 msgid ""
 "<span title=\"Show only passed entries whose country codes are in Blacklist."
 "\">Passed in Blacklist</span>"
-msgstr "<span title=\"ブラックリストに国コードが有る、通過したエントリのみを表示します。\">ブラックリスト通過</span>"
+msgstr ""
+"<span title=\"ブラックリストに国コードが有る、通過したエントリのみを表示します。\">ブラックリスト通過"
+"</span>"
 
 #: admin/class-ip-geo-block-admin.php:1509
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:93
 msgid ""
 "<span title=\"Show only passed entries whose country codes are not in either "
 "list.\">Passed not in List</span>"
-msgstr "<span title=\"どちらのリストにも国コードが無い、通過したエントリのみを表示します。\">どちらにも無く通過</span>"
+msgstr ""
+"<span title=\"どちらのリストにも国コードが無い、通過したエントリのみを表示します。\">どちらにも無く通"
+"過</span>"
 
 #: admin/class-ip-geo-block-admin.php:1510
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:94
 msgid ""
 "<span title=\"Show only blocked entries whose country codes are in Whitelist."
 "\">Blocked in Whitelist</span>"
-msgstr "<span title=\"ホワイトリストに国コードが有る、遮断したエントリのみを表示します。\">ホワイトリスト遮断</span>"
+msgstr ""
+"<span title=\"ホワイトリストに国コードが有る、遮断したエントリのみを表示します。\">ホワイトリスト遮断"
+"</span>"
 
 #: admin/class-ip-geo-block-admin.php:1511
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:95
 msgid ""
 "<span title=\"Show only blocked entries whose country codes are in Blacklist."
 "\">Blocked in Blacklist</span>"
-msgstr "<span title=\"ブラックリストに国コードが有る、遮断したエントリのみを表示します。\">ブラックリスト遮断</span>"
+msgstr ""
+"<span title=\"ブラックリストに国コードが有る、遮断したエントリのみを表示します。\">ブラックリスト遮断"
+"</span>"
 
 #: admin/class-ip-geo-block-admin.php:1512
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:96
 msgid ""
 "<span title=\"Show only blocked entries whose country codes are not in "
 "either list.\">Blocked not in List</span>"
-msgstr "<span title=\"どちらのリストにも国コードが無い、遮断したエントリのみを表示します。\">どちらにも無く遮断</span>"
+msgstr ""
+"<span title=\"どちらのリストにも国コードが無い、遮断したエントリのみを表示します。\">どちらにも無く遮"
+"断</span>"
 
 #: admin/includes/class-admin-ajax.php:72
 #: admin/includes/class-admin-ajax.php:75 admin/includes/tab-settings.php:84
@@ -1069,15 +1081,15 @@ msgstr "ゼロデイ攻撃を遮断"
 
 #: admin/includes/tab-settings.php:538
 msgid ""
-"It will block a request related to the services for both public facing pages "
-"and the dashboard."
-msgstr "一般公開ページとダッシュボード向けサービスに関連するリクエストを遮断します。"
+"It will block a request related to the services for both &#8220;non-logged "
+"in user&#8221; and &#8220;logged-in user&#8221;."
+msgstr "認証済ユーザーおよび未認証ユーザー用のサービスに関連するリクエストを遮断します。"
 
 #: admin/includes/tab-settings.php:539
 msgid ""
 "Regardless of the country code, it will block a malicious request related to "
-"the services only for the dashboard."
-msgstr "国コードに拘らず、ダッシュボード向けサービスだけに関連する悪意のあるリクエストを遮断します。"
+"the services only for &#8220;logged-in user&#8221;."
+msgstr "国コードにかかわらず、認証済ユーザー限定のサービスに関連する悪意のあるリクエストを遮断します。"
 
 #: admin/includes/tab-settings.php:545
 msgid ""
@@ -1135,7 +1147,7 @@ msgstr "候補 アクション／ページ"
 msgid ""
 "Regardless of the country code, it will block a malicious request to <code>"
 "%s&ctdot;/*.php</code>."
-msgstr "国コードに拘らず、<code>%s&ctdot;/*.php</code>への悪意のあるリクエストを遮断します。"
+msgstr "国コードにかかわらず、<code>%s&ctdot;/*.php</code>への悪意のあるリクエストを遮断します。"
 
 #: admin/includes/tab-settings.php:642
 msgid ""
@@ -1630,8 +1642,7 @@ msgstr ""
 msgid ""
 "Please refer to \"%sLiving with cache plugin%s\" for compatibility with "
 "cache plugins."
-msgstr ""
-"キャッシュ・プラグインとの互換性については、%sこのドキュメント%s を参照して下さい。"
+msgstr "キャッシュ・プラグインとの互換性については、%sこのドキュメント%s を参照して下さい。"
 
 #: admin/includes/tab-statistics.php:18
 msgid "Statistics of validation"

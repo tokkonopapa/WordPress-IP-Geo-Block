@@ -535,8 +535,8 @@ endif;
 		);
 
 		$desc = array(
-			1 => __( 'It will block a request related to the services for both public facing pages and the dashboard.', 'ip-geo-block' ),
-			2 => __( 'Regardless of the country code, it will block a malicious request related to the services only for the dashboard.', 'ip-geo-block' ),
+			1 => __( 'It will block a request related to the services for both &#8220;non-logged in user&#8221; and &#8220;logged-in user&#8221;.', 'ip-geo-block' ),
+			2 => __( 'Regardless of the country code, it will block a malicious request related to the services only for &#8220;logged-in user&#8221;.', 'ip-geo-block' ),
 		);
 
 		// Max failed login attempts per IP address

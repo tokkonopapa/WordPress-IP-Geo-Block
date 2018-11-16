@@ -195,6 +195,11 @@ class IP_Geo_Block_Opts {
 			'link'           => NULL,    // key of login link
 			'hash'           => NULL,    // hash of 'link'
 		),
+		// since version 3.0.17
+		'meta_data'       => array( 
+			'pre_update_option'      => array( 'users_can_register', 'default_role' ),
+			'pre_update_site_option' => array( 'registration' ),
+		),
 	);
 
 	/**
@@ -422,13 +427,12 @@ class IP_Geo_Block_Opts {
 			IP_Geo_Block_Logs::upgrade( $version );
 
 		if ( version_compare( $version, '3.0.16' ) < 0 ) {
-			if ( isset( $settings['public']['simulate'] ) ) {
-				$settings['simulate'] = $settings['public']['simulate'];
-				unset( $settings['public']['simulate'] );
-			} else {
-				$settings['simulate'] = $default['simulate'];
-			}
+			$settings['simulate'] = $settings['public']['simulate'];
+			unset( $settings['public']['simulate'] );
 		}
+
+		if ( version_compare( $version, '3.0.17' ) < 0 )
+			$settings['meta_data'] = $default['meta_data'];
 
 		// update package version number
 		$settings['version'] = IP_Geo_Block::VERSION;

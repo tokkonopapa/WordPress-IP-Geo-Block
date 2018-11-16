@@ -450,13 +450,13 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 	// memory cache
 	protected static $memcache = array();
 
-	public static function update_cache( $hook, $validate, $settings ) {
+	public static function update_cache( $hook, $validate, $settings, $countup = TRUE ) {
 		$time  = $_SERVER['REQUEST_TIME'];
 		$cache = self::get_cache( $ip = $validate['ip'], $settings['cache_hold'] );
 
 		if ( $cache ) {
-			$fail = $cache['fail'] + ( 'failed' === $validate['result'] ? 1 : 0 );
-			$call = $cache['reqs'] + ( 'failed' !== $validate['result'] ? 1 : 0 );
+			$fail = isset( $validate['fail'] ) ? $validate['fail'] : 0;
+			$call = $cache['reqs'] + (int)$countup; // prevent duplicate count up
 			$last = $cache['last'];
 			$view = $cache['view'];
 		} else { // if new cache then reset these values

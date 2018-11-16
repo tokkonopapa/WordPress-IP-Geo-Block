@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-11-14 00:13+0900\n"
-"PO-Revision-Date: 2018-11-14 00:15+0900\n"
+"POT-Creation-Date: 2018-11-16 13:04+0900\n"
+"PO-Revision-Date: 2018-11-16 13:06+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -163,8 +163,8 @@ msgid "Contribute on GitHub"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:365
-#: admin/class-ip-geo-block-admin.php:482
-#: admin/class-ip-geo-block-admin.php:731
+#: admin/class-ip-geo-block-admin.php:491
+#: admin/class-ip-geo-block-admin.php:732
 msgid "Settings"
 msgstr ""
 
@@ -172,13 +172,13 @@ msgstr ""
 #: admin/class-ip-geo-block-admin.php:460
 #: admin/class-ip-geo-block-admin.php:470
 #: admin/class-ip-geo-block-admin.php:471
-#: admin/class-ip-geo-block-admin.php:481
-#: admin/class-ip-geo-block-admin.php:491
+#: admin/class-ip-geo-block-admin.php:480
+#: admin/class-ip-geo-block-admin.php:490
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:492
-#: admin/class-ip-geo-block-admin.php:736
+#: admin/class-ip-geo-block-admin.php:481
+#: admin/class-ip-geo-block-admin.php:731
 msgid "Sites list"
 msgstr ""
 
@@ -290,19 +290,19 @@ msgid ""
 "select &#8220;init&#8221; action hook."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:732
+#: admin/class-ip-geo-block-admin.php:733
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:733
+#: admin/class-ip-geo-block-admin.php:734
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:734
+#: admin/class-ip-geo-block-admin.php:735
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:735
+#: admin/class-ip-geo-block-admin.php:736
 msgid "Attribution"
 msgstr ""
 
@@ -361,7 +361,7 @@ msgstr ""
 #: classes/class-ip-geo-block-cron.php:228
 #: classes/class-ip-geo-block-cron.php:332
 #: classes/class-ip-geo-block-cron.php:410
-#: classes/class-ip-geo-block-opts.php:471
+#: classes/class-ip-geo-block-opts.php:475
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr ""
@@ -977,14 +977,14 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:538
 msgid ""
-"It will block a request related to the services for both public facing pages "
-"and the dashboard."
+"It will block a request related to the services for both &#8220;non-logged "
+"in user&#8221; and &#8220;logged-in user&#8221;."
 msgstr ""
 
 #: admin/includes/tab-settings.php:539
 msgid ""
 "Regardless of the country code, it will block a malicious request related to "
-"the services only for the dashboard."
+"the services only for &#8220;logged-in user&#8221;."
 msgstr ""
 
 #: admin/includes/tab-settings.php:545

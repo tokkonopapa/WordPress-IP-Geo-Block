@@ -160,6 +160,9 @@ class IP_Geo_Block {
 		// force to redirect on logout to remove nonce, embed a nonce into pages
 		add_filter( 'wp_redirect',        array( $this, 'logout_redirect' ), 20,        2 ); // logout_redirect @4.2
 		add_filter( 'http_request_args',  array( $this,   'request_nonce' ), $priority, 2 ); // @since 2.7.0
+
+		// register validation of updating meta data
+		$this->validate_meta( $settings['meta_data'] );
 	}
 
 	/**
@@ -491,6 +494,24 @@ class IP_Geo_Block {
 	}
 
 	/**
+	 * The last process of validation
+	 *
+	 */
+	private function endof_validate( $hook, $validate, $settings, $block = TRUE, $die = TRUE, $countup = TRUE ) {
+		// update cache and record logs
+		IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings, $countup );
+		IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, self::is_blocked( $validate['result'] ) );
+
+		if ( $block ) {
+			if ( $settings['save_statistics'] && ! $validate['auth'] )
+				IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
+
+			if ( ! $settings['simulate'] && $die )
+				$this->send_response( $hook, $validate, $settings );
+		}
+	}
+
+	/**
 	 * Validate ip address.
 	 *
 	 * @param string  $hook       a name to identify action hook applied in this call.
@@ -542,19 +563,8 @@ class IP_Geo_Block {
 				break;
 		}
 
-		if ( $check_auth ) {
-			// record log and update cache
-			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, $block = self::is_blocked( $validate['result'] ) );
-			IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
-
-			// update statistics
-			if ( $settings['save_statistics'] && ! $validate['auth'] )
-				IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
-
-			// send response code to refuse
-			if ( empty( $settings['simulate'] ) && $block && $die )
-				$this->send_response( $hook, $validate, $settings );
-		}
+		if ( $check_auth ) // send response code to block if validation fails
+			$this->endof_validate( $hook, $validate, $settings, self::is_blocked( $validate['result'] ), $die );
 
 		return $validate;
 	}
@@ -756,13 +766,12 @@ class IP_Geo_Block {
 		$time = microtime( TRUE );
 		$settings = self::get_option();
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr, $settings['cache_hold'] ) ) {
+			$cache['fail']++;
 			$validate = self::make_validation( self::$remote_addr, array(
-				'result'   => 'failed', // count up $cache['fail'] in update_cache()
+				'result'   => 'failed',
 				'provider' => 'Cache',
 				'time'     => microtime( TRUE ) - $time,
 			) + $cache );
-
-			$cache = IP_Geo_Block_API_Cache::update_cache( $hook = defined( 'XMLRPC_REQUEST' ) ? 'xmlrpc' : 'login', $validate, $settings );
 
 			// the whitelist of IP address should be prior
 			if ( ! $this->check_ips( $validate, $settings['extra_ips']['white_list'] ) ) {
@@ -777,16 +786,8 @@ class IP_Geo_Block {
 			// apply filter hook for emergent functionality
 			$validate = apply_filters( self::PLUGIN_NAME . '-login', $validate, $settings );
 
-			// (1) blocked, (3) unauthenticated, (5) all
-			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings, self::is_blocked( $validate['result'] ) );
-
 			// send response code to refuse if login attempts is exceeded
-			if ( 'failed' !== $validate['result'] ) {
-				if ( $settings['save_statistics'] )
-					IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
-
-				$this->send_response( $hook, $validate, $settings );
-			}
+			$this->endof_validate( defined( 'XMLRPC_REQUEST' ) ? 'xmlrpc' : 'login', $validate, $settings, TRUE, 'failed' !== $validate['result'], FALSE );
 		}
 
 		return $something; // pass through
@@ -876,8 +877,9 @@ class IP_Geo_Block {
 				$j = explode( '/', $i, 2 );
 				$j[1] = isset( $j[1] ) ? min( 32, max( 0, (int)$j[1] ) ) : 32;
 				if ( ( ! empty( $validate['asn'] ) && $validate['asn'] === $j[0] ) ||
-				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && Net_IPv4::ipInNetwork( $ip, $j[0].'/'.$j[1] ) ) )
+				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && Net_IPv4::ipInNetwork( $ip, $j[0].'/'.$j[1] ) ) ) {
 					return TRUE;
+				}
 			}
 		}
 
@@ -888,8 +890,9 @@ class IP_Geo_Block {
 				$j = explode( '/', $i, 2 );
 				$j[1] = isset( $j[1] ) ? min( 128, max( 0, (int)$j[1] ) ) : 128;
 				if ( ( ! empty( $validate['asn'] ) && $validate['asn'] === $j[0] ) ||
-				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) && Net_IPv6::isInNetmask( $ip, $j[0].'/'.$j[1] ) ) )
+				     ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) && Net_IPv6::isInNetmask( $ip, $j[0].'/'.$j[1] ) ) ) {
 					return TRUE;
+				}
 			}
 		}
 
@@ -902,6 +905,38 @@ class IP_Geo_Block {
 
 	public function check_ips_black( $validate, $settings ) {
 		return self::check_ips( $validate, $settings['extra_ips']['black_list'] ) ? $validate + array( 'result' => 'extra'  ) : $validate;
+	}
+
+	/**
+	 * Validate updating meta data
+	 *
+	 */
+	private function validate_meta( $meta ) {
+		// apply_filters( "pre_update_option_{$option}", $value, $old_value, $option );
+		// apply_filters( "pre_update_site_option_{$option}", $value, $old_value, $option, $network_id );
+		foreach ( $meta as $key => $options ) {
+			foreach ( $options as $option ) {
+				add_filter( "{$key}_{$option}", array( $this, 'check_capability' ), 10, 3 );
+			}
+		}
+	}
+
+	public function check_capability( $value, $old_value, $option ) {
+		// check capability
+		if ( ! IP_Geo_Block_Util::current_user_can( 'manage_options' ) && ! IP_Geo_Block_Util::current_user_can( 'manage_network_options' ) ) {
+			$time = microtime( TRUE );
+			$settings = self::get_option();
+			$cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr, $settings['cache_hold'] );
+			$validate = self::make_validation( self::$remote_addr, array(
+				'result'   => 'privEsc',
+				'provider' => 'Cache',
+				'time'     => microtime( TRUE ) - $time,
+			) + $cache );
+
+			$this->endof_validate( $this->target_type, $validate, $settings, TRUE, TRUE, FALSE );
+		}
+
+		return $value;
 	}
 
 	/**
