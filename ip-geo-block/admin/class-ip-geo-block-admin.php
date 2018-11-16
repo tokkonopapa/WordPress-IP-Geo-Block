@@ -572,7 +572,7 @@ class IP_Geo_Block_Admin {
 		// Check self blocking (skip during updating)
 		if ( FALSE === $updating && 1 === (int)$settings['validation']['login'] ) {
 			$instance = IP_Geo_Block::get_instance();
-			$validate = $instance->validate_ip( 'login', $settings, TRUE, FALSE, FALSE ); // skip authentication check
+			$validate = $instance->validate_ip( 'login', $settings, TRUE, FALSE ); // skip authentication check
 
 			switch( $validate['result'] ) {
 			  case 'limited':

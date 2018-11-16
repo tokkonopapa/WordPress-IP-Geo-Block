@@ -103,7 +103,6 @@ abstract class IP_Geo_Block_API {
 		}
 
 		switch ( $tmp ) {
-
 		  // decode json
 		  case 'json':
 		  case 'html':  // ipinfo.io, Xhanch
@@ -198,12 +197,157 @@ abstract class IP_Geo_Block_API {
 }
 
 /**
+ * Class for IP-API.com
+ *
+ * URL         : http://ip-api.com/
+ * Term of use : http://ip-api.com/docs/#usage_limits
+ * Licence fee : free for non-commercial use
+ * Rate limit  : 240 requests per minute
+ * Sample URL  : http://ip-api.com/json/2a00:1210:fffe:200::1
+ * Sample URL  : http://ip-api.com/xml/yahoo.co.jp
+ * Input type  : IP address (IPv4, IPv6 with limited coverage) / domain name
+ * Output type : json, xml
+ */
+class IP_Geo_Block_API_IPAPIcom extends IP_Geo_Block_API {
+	protected $template = array(
+		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
+		'url' => 'http://ip-api.com/%API_FORMAT%/%API_IP%',
+		'api' => array(
+			'%API_FORMAT%' => 'json',
+		),
+		'transform' => array(
+			'errorMessage' => 'error',
+			'countryCode'  => 'countryCode',
+			'countryName'  => 'country',
+			'regionName'   => 'regionName',
+			'cityName'     => 'city',
+			'latitude'     => 'lat',
+			'longitude'    => 'lon',
+		)
+	);
+}
+
+/**
+ * Class for GeoIPLookup.net
+ *
+ * URL         : http://geoiplookup.net/
+ * Term of use : http://geoiplookup.net/terms-of-use.php
+ * Licence fee : free
+ * Rate limit  : none
+ * Sample URL  : http://api.geoiplookup.net/?query=2a00:1210:fffe:200::1
+ * Input type  : IP address (IPv4, IPv6)
+ * Output type : xml
+ */
+class IP_Geo_Block_API_GeoIPLookup extends IP_Geo_Block_API {
+	protected $template = array(
+		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
+		'url' => 'http://api.geoiplookup.net/?query=%API_IP%',
+		'api' => array(),
+		'transform' => array(
+			'countryCode' => 'countrycode',
+			'countryName' => 'countryname',
+			'regionName'  => 'countryname',
+			'cityName'    => 'city',
+			'latitude'    => 'latitude',
+			'longitude'   => 'longitude',
+		)
+	);
+}
+
+/**
+ * Class for ipinfo.io
+ *
+ * URL         : https://ipinfo.io/
+ * Term of use : https://ipinfo.io/developers#terms
+ * Licence fee : free
+ * Rate limit  : 1000 lookups daily
+ * Sample URL  : https://ipinfo.io/124.83.187.140/json
+ * Sample URL  : https://ipinfo.io/124.83.187.140/country
+ * Input type  : IP address (IPv4)
+ * Output type : json
+ */
+class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
+	protected $template = array(
+		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
+		'url' => 'https://ipinfo.io/%API_IP%/%API_FORMAT%%API_OPTION%',
+		'api' => array(
+			'%API_FORMAT%' => 'json',
+			'%API_OPTION%' => '',
+		),
+		'transform' => array(
+			'countryCode' => 'country',
+			'countryName' => 'country',
+			'regionName'  => 'region',
+			'cityName'    => 'city',
+			'latitude'    => 'loc',
+			'longitude'   => 'loc',
+		)
+	);
+
+	public function get_location( $ip, $args = array() ) {
+		$res = parent::get_location( $ip, $args );
+		if ( ! empty( $res ) && ! empty( $res['latitude'] ) ) {
+			$loc = explode( ',', $res['latitude'] );
+			$res['latitude' ] = $loc[0];
+			$res['longitude'] = $loc[1];
+		}
+		return $res;
+	}
+
+	public function get_country( $ip, $args = array() ) {
+		$this->template['api']['%API_FORMAT%'] = '';
+		$this->template['api']['%API_OPTION%'] = 'country';
+		return parent::get_country( $ip, $args );
+	}
+}
+
+/**
+ * Class for ipapi
+ *
+ * URL         : https://ipapi.com/
+ * Term of use : https://ipapi.com/terms
+ * Licence fee : free to use the API
+ * Rate limit  : 10000 reqests per month
+ * Sample URL  : http://api.ipapi.com/2a00:1210:fffe:200::1?access_key=...
+ * Input type  : IP address (IPv4, IPv6)
+ * Output type : json
+ */
+class IP_Geo_Block_API_ipapi extends IP_Geo_Block_API {
+	protected $template = array(
+		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
+		'url' => 'http://api.ipapi.com/%API_IP%?access_key=%API_KEY%',
+		'api' => array(),
+		'transform' => array(
+			'countryCode' => 'country_code',
+			'countryName' => 'country_name',
+			'cityName'    => 'city',
+			'latitude'    => 'latitude',
+			'longitude'   => 'longitude',
+			'error'       => 'error',
+		)
+	);
+
+	public function get_location( $ip, $args = array() ) {
+		$res = parent::get_location( $ip, $args );
+		if ( isset( $res['countryName'] ) ) {
+			$res['countryCode'] = esc_html( $res['countryCode'] );
+			$res['countryName'] = esc_html( $res['countryName'] );
+			$res['latitude'   ] = esc_html( $res['latitude'   ] );
+			$res['longitude'  ] = esc_html( $res['longitude'  ] );
+			return $res;
+		} else {
+			return array( 'errorMessage' => esc_html( $res['error']['info'] ) );
+		}
+	}
+}
+
+/**
  * Class for Ipdata.co
  *
  * URL         : https://ipdata.co/
  * Term of use : https://ipdata.co/terms.html
  * Licence fee : free
- * Rate limit  : 1500 requests free daily
+ * Rate limit  : 1500 lookups free daily
  * Sample URL  : https://api.ipdata.co/8.8.8.8?api-key=...
  * Input type  : IP address (IPv4, IPv6)
  * Output type : json
@@ -251,150 +395,6 @@ class IP_Geo_Block_API_ipstack extends IP_Geo_Block_API {
 			'cityName'    => 'city',
 			'latitude'    => 'latitude',
 			'longitude'   => 'longitude',
-		)
-	);
-}
-
-/**
- * Class for ipinfo.io
- *
- * URL         : https://ipinfo.io/
- * Term of use : https://ipinfo.io/developers#terms
- * Licence fee : free
- * Rate limit  :
- * Sample URL  : https://ipinfo.io/124.83.187.140/json
- * Sample URL  : https://ipinfo.io/124.83.187.140/country
- * Input type  : IP address (IPv4)
- * Output type : json
- */
-class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
-	protected $template = array(
-		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'https://ipinfo.io/%API_IP%/%API_FORMAT%%API_OPTION%',
-		'api' => array(
-			'%API_FORMAT%' => 'json',
-			'%API_OPTION%' => '',
-		),
-		'transform' => array(
-			'countryCode' => 'country',
-			'countryName' => 'country',
-			'regionName'  => 'region',
-			'cityName'    => 'city',
-			'latitude'    => 'loc',
-			'longitude'   => 'loc',
-		)
-	);
-
-	public function get_location( $ip, $args = array() ) {
-		$res = parent::get_location( $ip, $args );
-		if ( ! empty( $res ) && ! empty( $res['latitude'] ) ) {
-			$loc = explode( ',', $res['latitude'] );
-			$res['latitude' ] = $loc[0];
-			$res['longitude'] = $loc[1];
-		}
-		return $res;
-	}
-
-	public function get_country( $ip, $args = array() ) {
-		$this->template['api']['%API_FORMAT%'] = '';
-		$this->template['api']['%API_OPTION%'] = 'country';
-		return parent::get_country( $ip, $args );
-	}
-}
-
-/**
- * Class for Nekudo
- *
- * URL         : https://geoip.nekudo.com/
- * Term of use : https://nekudo.com/blog/new-project-shiny-geoip
- * Licence fee : free to use the API
- * Rate limit  : none
- * Sample URL  : http://geoip.nekudo.com/api/2a00:1210:fffe:200::1
- * Input type  : IP address (IPv4, IPv6)
- * Output type : json
- */
-class IP_Geo_Block_API_Nekudo extends IP_Geo_Block_API {
-	protected $template = array(
-		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'https://geoip.nekudo.com/api/%API_IP%',
-		'api' => array(),
-		'transform' => array(
-			'countryCode' => 'country',
-			'countryName' => 'country',
-			'cityName'    => 'city',
-			'latitude'    => 'location',
-			'longitude'   => 'location',
-		)
-	);
-
-	public function get_location( $ip, $args = array() ) {
-		$res = parent::get_location( $ip, $args );
-		if ( isset( $res['countryName'] ) && is_array( $res['countryName'] ) ) {
-			$res['countryCode'] = esc_html( $res['countryCode']['code'] );
-			$res['countryName'] = esc_html( $res['countryName']['name'] );
-			$res['latitude'   ] = esc_html( $res['latitude'   ]['latitude' ] );
-			$res['longitude'  ] = esc_html( $res['longitude'  ]['longitude'] );
-			return $res;
-		} else {
-			return array( 'errorMessage' => 'Not Found' ); // 404
-		}
-	}
-}
-
-/**
- * Class for GeoIPLookup.net
- *
- * URL         : http://geoiplookup.net/
- * Term of use : http://geoiplookup.net/terms-of-use.php
- * Licence fee : free
- * Rate limit  : none
- * Sample URL  : http://api.geoiplookup.net/?query=2a00:1210:fffe:200::1
- * Input type  : IP address (IPv4, IPv6)
- * Output type : xml
- */
-class IP_Geo_Block_API_GeoIPLookup extends IP_Geo_Block_API {
-	protected $template = array(
-		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'http://api.geoiplookup.net/?query=%API_IP%',
-		'api' => array(),
-		'transform' => array(
-			'countryCode' => 'countrycode',
-			'countryName' => 'countryname',
-			'regionName'  => 'countryname',
-			'cityName'    => 'city',
-			'latitude'    => 'latitude',
-			'longitude'   => 'longitude',
-		)
-	);
-}
-
-/**
- * Class for ip-api.com
- *
- * URL         : http://ip-api.com/
- * Term of use : http://ip-api.com/docs/#usage_limits
- * Licence fee : free for non-commercial use
- * Rate limit  : 240 requests per minute
- * Sample URL  : http://ip-api.com/json/2a00:1210:fffe:200::1
- * Sample URL  : http://ip-api.com/xml/yahoo.co.jp
- * Input type  : IP address (IPv4, IPv6 with limited coverage) / domain name
- * Output type : json, xml
- */
-class IP_Geo_Block_API_ipapicom extends IP_Geo_Block_API {
-	protected $template = array(
-		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'http://ip-api.com/%API_FORMAT%/%API_IP%',
-		'api' => array(
-			'%API_FORMAT%' => 'json',
-		),
-		'transform' => array(
-			'errorMessage' => 'error',
-			'countryCode'  => 'countryCode',
-			'countryName'  => 'country',
-			'regionName'   => 'regionName',
-			'cityName'     => 'city',
-			'latitude'     => 'lat',
-			'longitude'    => 'lon',
 		)
 	);
 }
@@ -526,16 +526,10 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 class IP_Geo_Block_Provider {
 
 	protected static $providers = array(
-		'ipinfo.io' => array(
-			'key'  => NULL,
-			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="https://ipinfo.io/" title="IP Address API and Data Solutions">https://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free up to 1000 requests daily)',
-		),
-
-		'Nekudo' => array(
-			'key'  => NULL,
-			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="https://geoip.nekudo.com/" title="geoip.nekudo.com | Free IP to geolocation API">https://geoip.nekudo.com/</a>&nbsp;(IPv4, IPv6 / free)',
+		'IP-API.com' => array(
+			'key'  => FALSE,
+			'type' => 'IPv4, IPv6 / free for non-commercial use',
+			'link' => '<a rel="noreferrer" href="http://ip-api.com/" title="IP-API.com - Free Geolocation API">http://ip-api.com/</a>&nbsp;(IPv4, IPv6 / free for non-commercial use)',
 		),
 
 		'GeoIPLookup' => array(
@@ -544,16 +538,22 @@ class IP_Geo_Block_Provider {
 			'link' => '<a rel="noreferrer" href="http://geoiplookup.net/" title="What Is My IP Address | GeoIP Lookup">GeoIPLookup.net</a>&nbsp;(IPv4, IPv6 / free)',
 		),
 
-		'ip-api.com' => array(
-			'key'  => FALSE,
-			'type' => 'IPv4, IPv6 / free for non-commercial use',
-			'link' => '<a rel="noreferrer" href="http://ip-api.com/" title="IP-API.com - Free Geolocation API">http://ip-api.com/</a>&nbsp;(IPv4, IPv6 / free for non-commercial use)',
+		'ipinfo.io' => array(
+			'key'  => NULL,
+			'type' => 'IPv4, IPv6 / free',
+			'link' => '<a rel="noreferrer" href="https://ipinfo.io/" title="IP Address API and Data Solutions">https://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free up to 1000 lookups daily)',
+		),
+
+		'ipapi' => array(
+			'key'  => '',
+			'type' => 'IPv4, IPv6 / free',
+			'link' => '<a rel="noreferrer" href="https://ipapi.com/" title="ipapi - IP Address Lookup and Geolocation API">https://ipapi.com/</a>&nbsp;(IPv4, IPv6 / free up to 10000 lookups monthly for registered user)',
 		),
 
 		'Ipdata.co' => array(
 			'key'  => '',
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="https://ipdata.co/" title="ipdata.co - IP Geolocation and Threat Data API">https://ipdata.co/</a>&nbsp;(IPv4, IPv6 / free up to 1500 requests daily for registered user)',
+			'link' => '<a rel="noreferrer" href="https://ipdata.co/" title="ipdata.co - IP Geolocation and Threat Data API">https://ipdata.co/</a>&nbsp;(IPv4, IPv6 / free up to 1500 lookups daily for registered user)',
 		),
 
 		'ipstack' => array(

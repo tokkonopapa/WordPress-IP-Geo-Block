@@ -94,7 +94,7 @@ class IP_Geo_Block {
 			'wp-signup.php'        => 'login',
 		);
 
-		// wp-admin, wp-includes, wp-content/(plugins|themes|language|uploads)
+		// register target: (wp-admin|wp-includes|wp-content/(plugins|themes|language|uploads))
 		if ( $this->target_type ) {
 			if ( 'admin' !== $this->target_type )
 				$loader->add_action( 'init', array( $this, 'validate_direct' ), $priority );
@@ -102,13 +102,13 @@ class IP_Geo_Block {
 				$loader->add_action( 'admin_init', array( $this, 'validate_admin' ), $priority );
 		}
 
-		// analize core validation target (comment|xmlrpc|login|public)
+		// register target: (comment|xmlrpc|login|public)
 		elseif ( isset( $list[ $this->pagenow ] ) ) {
 			if ( $validate[ $list[ $this->pagenow ] ] || self::$live_log )
 				$loader->add_action( 'init', array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority );
 		}
 
-		// alternative of trackback
+		// register target: alternative of trackback
 		elseif ( 'POST' === $_SERVER['REQUEST_METHOD'] && 'trackback' === basename( $this->request_uri ) ) {
 			if ( $validate['comment'] || self::$live_log )
 				$loader->add_action( 'init', array( $this, 'validate_comment' ), $priority );
@@ -269,7 +269,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Get current IP address
+	 * Get current IP address.
 	 *
 	 */
 	public static function get_ip_address( $settings = NULL ) {
@@ -450,7 +450,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Load and show theme template
+	 * Load and show theme template.
 	 *
 	 */
 	private function show_theme_template( $code, $settings ) {
@@ -494,7 +494,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * The last process of validation
+	 * The last process of validation.
 	 *
 	 */
 	private function endof_validate( $hook, $validate, $settings, $block = TRUE, $die = TRUE, $countup = TRUE ) {
@@ -518,9 +518,8 @@ class IP_Geo_Block {
 	 * @param array   $settings   option settings
 	 * @param boolean $block      block                      if validation fails (for simulate)
 	 * @param boolean $die        send http response and die if validation fails (for validate_front )
-	 * @param boolean $check_auth save log and block         if validation fails (for admin dashboard)
 	 */
-	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $check_auth = TRUE ) {
+	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE ) {
 		// register auxiliary validation functions
 		// priority high 3 close_xmlrpc, close_restapi
 		//               4 check_nonce (high), check_user (low)
@@ -532,7 +531,7 @@ class IP_Geo_Block {
 		// priority low 10 check_page (high), validate_country (low)
 		$var = self::PLUGIN_NAME . '-' . $hook;
 		$settings['validation' ]['mimetype'  ]  and add_filter( $var, array( $this, 'check_upload'    ), 5, 2 );
-		$check_auth                             and add_filter( $var, array( $this, 'check_auth'      ), 6, 2 );
+		$die                                    and add_filter( $var, array( $this, 'check_auth'      ), 6, 2 );
 		$settings['extra_ips'  ] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
 		$settings['extra_ips'  ]['black_list']  and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
 		$settings['extra_ips'  ]['white_list']  and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
@@ -563,7 +562,7 @@ class IP_Geo_Block {
 				break;
 		}
 
-		if ( $check_auth ) // send response code to block if validation fails
+		if ( $die ) // send response code to block if validation fails
 			$this->endof_validate( $hook, $validate, $settings, self::is_blocked( $validate['result'] ), $die );
 
 		return $validate;
@@ -645,7 +644,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Check exceptions
+	 * Check exceptions.
 	 *
 	 */
 	private function check_exceptions( $action, $page, $exceptions = array() ) {
@@ -758,7 +757,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Auxiliary validation functions
+	 * Auxiliary validation functions.
 	 *
 	 */
 	public function auth_fail( $something = NULL ) {
@@ -908,7 +907,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Validate updating meta data
+	 * Validate updating meta data.
 	 *
 	 */
 	private function validate_meta( $meta ) {
@@ -1084,7 +1083,7 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Handlers of cron job for database and garbage collection for cache
+	 * Handlers of cron job for database and garbage collection for cache.
 	 *
 	 */
 	public function exec_update_db( $immediate = FALSE ) {
