@@ -456,7 +456,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 		if ( $cache ) {
 			$fail = isset( $validate['fail'] ) ? $validate['fail'] : 0;
-			$call = $cache['reqs'] + (int)$countup; // prevent duplicate count up
+			$call = $cache['reqs'] + ( $countup ? 1 : 0 ); // prevent duplicate count up
 			$last = $cache['last'];
 			$view = $cache['view'];
 		} else { // if new cache then reset these values
