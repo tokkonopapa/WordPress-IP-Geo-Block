@@ -1416,7 +1416,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 * @note: This function triggers `validate_settings()` on register_setting() in wp-include/option.php.
 	 */
-	private function update_multisite_settings( $settings ) {
+	public function update_multisite_settings( $settings ) {
 		global $wpdb;
 		$blog_ids = $wpdb->get_col( "SELECT `blog_id` FROM `$wpdb->blogs`" );
 		$ret = TRUE;

@@ -785,7 +785,7 @@ class IP_Geo_Block {
 			// apply filter hook for emergent functionality
 			$validate = apply_filters( self::PLUGIN_NAME . '-login', $validate, $settings );
 
-			// send response code to refuse if login attempts is exceeded
+			// if the number of login attempts exceeds the limit, send response code and die
 			$this->endof_validate( defined( 'XMLRPC_REQUEST' ) ? 'xmlrpc' : 'login', $validate, $settings, TRUE, 'failed' !== $validate['result'], FALSE );
 		}
 
@@ -932,6 +932,7 @@ class IP_Geo_Block {
 				'time'     => microtime( TRUE ) - $time,
 			) + $cache );
 
+			// if the current user does not have the right capability, send response code and die
 			$this->endof_validate( $this->target_type, $validate, $settings, TRUE, TRUE, FALSE );
 		}
 
