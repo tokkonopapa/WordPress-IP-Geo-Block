@@ -42,7 +42,7 @@ define( 'NONCE_SALT', '3bvZ|xD``*.4_mVGnFZ:=^?Y]5WNf`LP/)XeTY^=Vh]B]p)HF]s1c;NC!
 
 /*
  * This code is copied from 
- * http://www.warpconduit.net/2013/04/14/highly-secure-data-encryption-decryption-made-easy-with-php-mcrypt-rijndael-256-and-cbc/
+ * https://www.warpconduit.net/2013/04/14/highly-secure-data-encryption-decryption-made-easy-with-php-mcrypt-rijndael-256-and-cbc/
  * to demonstrate an attack against it. Specifically, we simulate a timing leak
  * in the MAC comparison which, in a Mac-then-Encrypt (MtA) design, we show
  * breaks confidentiality.

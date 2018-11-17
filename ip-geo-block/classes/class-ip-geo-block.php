@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.17a';
+	const VERSION = '3.0.17b';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -562,8 +562,8 @@ class IP_Geo_Block {
 				break;
 		}
 
-		if ( $die ) // send response code to block if validation fails
-			$this->endof_validate( $hook, $validate, $settings, self::is_blocked( $validate['result'] ), $die );
+		if ( $die ) // send response code to die if validation fails
+			$this->endof_validate( $hook, $validate, $settings, self::is_blocked( $validate['result'] ) );
 
 		return $validate;
 	}
@@ -785,7 +785,7 @@ class IP_Geo_Block {
 			// apply filter hook for emergent functionality
 			$validate = apply_filters( self::PLUGIN_NAME . '-login', $validate, $settings );
 
-			// if the number of login attempts exceeds the limit, send response code and die
+			// send response code to die if the number of login attempts exceeds the limit
 			$this->endof_validate( defined( 'XMLRPC_REQUEST' ) ? 'xmlrpc' : 'login', $validate, $settings, TRUE, 'failed' !== $validate['result'], FALSE );
 		}
 
@@ -932,7 +932,7 @@ class IP_Geo_Block {
 				'time'     => microtime( TRUE ) - $time,
 			) + $cache );
 
-			// if the current user does not have the right capability, send response code and die
+			// send response code to die if the current user does not have the right capability
 			$this->endof_validate( $this->target_type, $validate, $settings, TRUE, TRUE, FALSE );
 		}
 

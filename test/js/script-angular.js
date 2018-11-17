@@ -41,7 +41,7 @@ app.factory('$exceptionHandler', ['$window', function ($window) {
  * Controller (too heavy!!)
  *
  * https://www.airpair.com/angularjs/posts/top-10-mistakes-angularjs-developers-make
- * http://stackoverflow.com/questions/23382109/how-to-avoid-a-large-number-of-dependencies-in-angularjs
+ * https://stackoverflow.com/questions/23382109/how-to-avoid-a-large-number-of-dependencies-in-angularjs
  */
 app.controller('WPAppCtrl', [
 	'$scope',
