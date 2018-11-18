@@ -161,8 +161,8 @@ class IP_Geo_Block {
 		add_filter( 'wp_redirect',        array( $this, 'logout_redirect' ), 20,        2 ); // logout_redirect @4.2
 		add_filter( 'http_request_args',  array( $this,   'request_nonce' ), $priority, 2 ); // @since 2.7.0
 
-		// register validation of updating meta data
-		$this->validate_meta( $settings['meta_data'] );
+		// register validation of updating metadata
+		$this->validate_metadata( $settings['metadata'] );
 	}
 
 	/**
@@ -907,13 +907,13 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Validate updating meta data.
+	 * Validate updating metadata.
 	 *
 	 */
-	private function validate_meta( $meta ) {
+	private function validate_metadata( $data ) {
 		// apply_filters( "pre_update_option_{$option}", $value, $old_value, $option );
 		// apply_filters( "pre_update_site_option_{$option}", $value, $old_value, $option, $network_id );
-		foreach ( $meta as $key => $options ) {
+		foreach ( $data as $key => $options ) {
 			foreach ( $options as $option ) {
 				add_filter( "{$key}_{$option}", array( $this, 'check_capability' ), 10, 3 );
 			}

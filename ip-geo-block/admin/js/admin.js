@@ -94,7 +94,6 @@
 		request.action = ip_geo_block.action;
 		request.nonce  = ip_geo_block.nonce;
 
-//		$.post(ip_geo_block.url, request)
 		$.ajax({
 			type: 'POST',
 			url: ip_geo_block.url,
@@ -427,6 +426,7 @@
 				i.addColumn('number', 'admin'  );
 				i.addColumn('number', 'public' );
 				data = $.parseJSON($('#' + id).attr('data-' + id));
+				data = data.slice(0, 6); // 0 - 5 (avoid error)
 				n = data.length;
 				for (i = 0; i < n; ++i) {
 					data[i][0] = new Date(data[i][0] * 1000); // [sec] to [msec]
@@ -488,8 +488,8 @@
 
 					for (i = 0; i < n; i++) {
 						info.push({
-							label: data.getValue(i, 0),
-							link:  data.getValue(i, 6)
+							label: /*escapeHTML(*/data.getValue(i, 0)/*)*/,
+							link:  /*escapeHTML(*/data.getValue(i, 6)/*)*/
 						});
 					}
 

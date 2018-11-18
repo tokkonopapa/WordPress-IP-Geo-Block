@@ -531,8 +531,8 @@ class IP_Geo_Block_Admin {
 			$providers = IP_Geo_Block_Provider::get_valid_providers( $settings, FALSE, FALSE, TRUE );
 			if ( empty( $providers ) ) {
 				$this->add_admin_notice( 'error', sprintf(
-				__( 'You should select at least one API at <a href="%s">Geolocation API settings</a>. Otherwise <strong>you\'ll be blocked</strong> after the cache expires.', 'ip-geo-block' ),
-				esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4'
+					__( 'You should select at least one API at <a href="%s">Geolocation API settings</a>. Otherwise <strong>you\'ll be blocked</strong> after the cache expires.', 'ip-geo-block' ),
+					esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4'
 				) );
 			}
 
@@ -540,7 +540,7 @@ class IP_Geo_Block_Admin {
 				$providers = IP_Geo_Block_Provider::get_addons( $settings['providers'] );
 				if ( empty( $providers ) ) {
 					$this->add_admin_notice( 'error', sprintf(
-					__( 'You should select at least one API for local database at <a href="%s">Geolocation API settings</a>. Otherwise access to the external API may slow down the site.', 'ip-geo-block' ),
+						__( 'You should select at least one API for local database at <a href="%s">Geolocation API settings</a>. Otherwise access to the external API may slow down the site.', 'ip-geo-block' ),
 						esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4'
 					) );
 				}
@@ -704,6 +704,8 @@ class IP_Geo_Block_Admin {
 				     ($stat ? ' ' . IP_Geo_Block::PLUGIN_NAME . '-border"' : '"'),
 				     ($stat || (4 === $tab && $index) ? '>' : ' style="display:none">'), "\n";
 
+				++$index;
+
 				if ( $section['callback'] )
 					call_user_func( $section['callback'], $section );
 
@@ -716,7 +718,6 @@ class IP_Geo_Block_Admin {
 				}
 
 				echo "</div>\n</fieldset>\n";
-				++$index;
 			}
 		}
 	}
@@ -1055,6 +1056,15 @@ class IP_Geo_Block_Admin {
 				}
 				if ( isset( $input[ $key ]['capability'] ) ) {
 					$output[ $key ]['capability'] = array_map( 'sanitize_key', explode( ',', trim( $input[ $key ]['capability'], ',' ) ) ); // @since 3.0.0
+				}
+				break;
+
+			  case 'metadata':
+				if ( is_string( $input[ $key ]['pre_update_option'] ) ) {
+					$output[ $key ]['pre_update_option'] = array_map( 'sanitize_key', explode( ',', trim( $input[ $key ]['pre_update_option'], ',' ) ) ); // @since 3.0.17
+				}
+				if ( is_string( $input[ $key ]['pre_update_site_option'] ) ) {
+					$output[ $key ]['pre_update_site_option'] = array_map( 'sanitize_key', explode( ',', trim( $input[ $key ]['pre_update_site_option'], ',' ) ) ); // @since 3.0.17
 				}
 				break;
 

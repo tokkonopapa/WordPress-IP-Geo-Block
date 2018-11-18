@@ -196,9 +196,9 @@ class IP_Geo_Block_Opts {
 			'hash'           => NULL,    // hash of 'link'
 		),
 		// since version 3.0.17
-		'meta_data'       => array( 
-			'pre_update_option'      => array( 'users_can_register', 'default_role' ),
-			'pre_update_site_option' => array( 'registration' ),
+		'metadata'        => array( 
+			'pre_update_option'      => array( 'users_can_register', 'default_role', 'admin_email' ),
+			'pre_update_site_option' => array( 'registration', 'admin_email' ),
 		),
 	);
 
@@ -432,7 +432,7 @@ class IP_Geo_Block_Opts {
 		}
 
 		if ( version_compare( $version, '3.0.17' ) < 0 )
-			$settings['meta_data'] = $default['meta_data'];
+			$settings['metadata'] = $default['metadata'];
 
 		// update package version number
 		$settings['version'] = IP_Geo_Block::VERSION;

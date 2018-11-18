@@ -260,7 +260,7 @@ class IP_Geo_Block_API_GeoIPLookup extends IP_Geo_Block_API {
  * URL         : https://ipinfo.io/
  * Term of use : https://ipinfo.io/developers#terms
  * Licence fee : free
- * Rate limit  : 1000 lookups daily
+ * Rate limit  : 1,000 lookups daily
  * Sample URL  : https://ipinfo.io/124.83.187.140/json
  * Sample URL  : https://ipinfo.io/124.83.187.140/country
  * Input type  : IP address (IPv4)
@@ -307,7 +307,7 @@ class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
  * URL         : https://ipapi.com/
  * Term of use : https://ipapi.com/terms
  * Licence fee : free to use the API
- * Rate limit  : 10000 reqests per month
+ * Rate limit  : 10,000 reqests per month
  * Sample URL  : http://api.ipapi.com/2a00:1210:fffe:200::1?access_key=...
  * Input type  : IP address (IPv4, IPv6)
  * Output type : json
@@ -347,7 +347,7 @@ class IP_Geo_Block_API_ipapi extends IP_Geo_Block_API {
  * URL         : https://ipdata.co/
  * Term of use : https://ipdata.co/terms.html
  * Licence fee : free
- * Rate limit  : 1500 lookups free daily
+ * Rate limit  : 1,500 lookups free daily
  * Sample URL  : https://api.ipdata.co/8.8.8.8?api-key=...
  * Input type  : IP address (IPv4, IPv6)
  * Output type : json
@@ -541,19 +541,19 @@ class IP_Geo_Block_Provider {
 		'ipinfo.io' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="https://ipinfo.io/" title="IP Address API and Data Solutions">https://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free up to 1000 lookups daily)',
+			'link' => '<a rel="noreferrer" href="https://ipinfo.io/" title="IP Address API and Data Solutions">https://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free up to 1,000 lookups daily)',
 		),
 
 		'ipapi' => array(
 			'key'  => '',
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="https://ipapi.com/" title="ipapi - IP Address Lookup and Geolocation API">https://ipapi.com/</a>&nbsp;(IPv4, IPv6 / free up to 10000 lookups monthly for registered user)',
+			'link' => '<a rel="noreferrer" href="https://ipapi.com/" title="ipapi - IP Address Lookup and Geolocation API">https://ipapi.com/</a>&nbsp;(IPv4, IPv6 / free up to 10,000 lookups monthly for registered user)',
 		),
 
 		'Ipdata.co' => array(
 			'key'  => '',
 			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a rel="noreferrer" href="https://ipdata.co/" title="ipdata.co - IP Geolocation and Threat Data API">https://ipdata.co/</a>&nbsp;(IPv4, IPv6 / free up to 1500 lookups daily for registered user)',
+			'link' => '<a rel="noreferrer" href="https://ipdata.co/" title="ipdata.co - IP Geolocation and Threat Data API">https://ipdata.co/</a>&nbsp;(IPv4, IPv6 / free up to 1,500 lookups daily for registered user)',
 		),
 
 		'ipstack' => array(
