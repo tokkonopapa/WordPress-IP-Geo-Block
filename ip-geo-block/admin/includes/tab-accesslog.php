@@ -97,8 +97,7 @@ endif; // extension_loaded( 'pdo_sqlite' )
 		);
 
 		// Preset filters
-		add_filter( $plugin_slug . '-logs-preset', array( $context, 'logs_preset' ), 20 );
-		$filters = apply_filters( $plugin_slug . '-logs-preset', array() );
+		$filters = has_filter( $plugin_slug . '-logs-preset' ) ? apply_filters( $plugin_slug . '-logs-preset', array() ) : $context->preset_filters();
 		if ( ! empty( $filters ) ) {
 			// allowed tags and attributes
 			$allow_tags = array(
@@ -107,6 +106,7 @@ endif; // extension_loaded( 'pdo_sqlite' )
 					'title' => 1,
 				)
 			);
+
 			$html = '<ul id="ip-geo-block-logs-preset">';
 			foreach ( $filters as $filter ) {
 				$html .= '<li><a href="#!" data-value="' . esc_attr( $filter['value'] ) . '">' . IP_Geo_Block_Util::kses( $filter['title'], $allow_tags ) . '</a></li>';

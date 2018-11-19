@@ -581,7 +581,7 @@ class IP_Geo_Block_Logs {
 
 	public static function reset_sqlite_db() {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'reset_sqlite_db' );
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
 		if ( FALSE !== ( $files = $fs->dirlist( $dir = get_temp_dir() ) ) ) {
 			foreach ( array_keys( $files ) as $file ) {

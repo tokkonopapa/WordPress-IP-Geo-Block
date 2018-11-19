@@ -268,7 +268,7 @@ class IP_Geo_Block_Cron {
 	 */
 	public static function download_zip( $url, $args, $files, $modified ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'download_zip' );
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
 		// get extension
 		$ext = strtolower( pathinfo( $url, PATHINFO_EXTENSION ) );

@@ -816,7 +816,7 @@ endif; // TEST_RESTORE_NETWORK
 	public static function get_wp_info() {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'get_wp_info' );
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
 		// DNS reverse lookup
 		$key = microtime( TRUE );

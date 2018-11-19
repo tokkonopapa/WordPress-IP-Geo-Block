@@ -911,8 +911,8 @@ class IP_Geo_Block {
 	 *
 	 */
 	private function validate_metadata( $data ) {
-		// apply_filters( "pre_update_option_{$option}", $value, $old_value, $option );
-		// apply_filters( "pre_update_site_option_{$option}", $value, $old_value, $option, $network_id );
+		// @since 2.6.0 apply_filters( "pre_update_option_{$option}", $value, $old_value, $option );
+		// @since 2.9.0 apply_filters( "pre_update_site_option_{$option}", $value, $old_value, $option, $network_id );
 		foreach ( $data as $key => $options ) {
 			foreach ( $options as $option ) {
 				add_filter( "{$key}_{$option}", array( $this, 'check_capability' ), 10, 3 );

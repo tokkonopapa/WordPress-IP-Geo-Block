@@ -312,9 +312,9 @@ endif;
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		// Prevent metadata alteration
 		$list  = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup" style="margin-top:0.4em">' . __( '<dfn title="Specify the table names to be verified for single site. This verification will be skipped if empty.">pre_update_option</dfn>', 'ip-geo-block' ) . "\n";
-		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_metadata_pre_update_option" name="ip_geo_block_settings[metadata][pre_update_option]" class="regular-text code" placeholder="users_can_register,default_role,admin_email" value="' . esc_attr( implode( ',', $options['metadata']['pre_update_option'] ) ) . '" />' . $common[0] . '</li></ul></li></ul>' . "\n";
+		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_metadata_pre_update_option" name="ip_geo_block_settings[metadata][pre_update_option]" class="regular-text code" value="' . esc_attr( implode( ',', $options['metadata']['pre_update_option'] ) ) . '" />' . $common[0] . '</li></ul></li></ul>' . "\n";
 		$list .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the table names to be verified for multisite. This verification will be skipped if empty.">pre_update_site_option</dfn>', 'ip-geo-block' ) . "\n";
-		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_metadata_pre_update_site_option" name="ip_geo_block_settings[metadata][pre_update_site_option]" class="regular-text code" placeholder="registration,admin_email" value="' . esc_attr( implode( ',', $options['metadata']['pre_update_site_option'] ) ) . '" />' . $common[0] . '</li></ul></li></ul>' . "\n";
+		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_metadata_pre_update_site_option" name="ip_geo_block_settings[metadata][pre_update_site_option]" class="regular-text code" value="' . esc_attr( implode( ',', $options['metadata']['pre_update_site_option'] ) ) . '" />' . $common[0] . '</li></ul></li></ul>' . "\n";
 
 		add_settings_field(
 			$option_name.'_metadata',

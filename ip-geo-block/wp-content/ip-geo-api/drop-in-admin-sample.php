@@ -16,7 +16,7 @@ class_exists( 'IP_Geo_Block', FALSE ) or die;
 /**
  * Analyze entries in "Validation logs"
  *
- * Each entry has an array:
+ * @param array $logs An array including each entry where:
  * Array (
  *     [0 DB row number] => 154
  *     [1 Target       ] => comment
@@ -39,7 +39,7 @@ class_exists( 'IP_Geo_Block', FALSE ) or die;
  *    ²²: Blocked in Blacklist
  *    ²³: Blocked not in Lists
  */
-function ip_geo_block_logs( $logs = array() ) {
+function ip_geo_block_logs( $logs ) {
 	// Get settings of IP Geo Block
 	$settings = IP_Geo_Block::get_option();
 
@@ -83,10 +83,10 @@ IP_Geo_Block::add_filter( 'ip-geo-block-logs', 'ip_geo_block_logs' );
 /**
  * Register UI "Preset filters" at "Search in logs"
  *
- * @param  array  An empty array by default.
- * @return array  The pare of 'title' and 'value'.
+ * @param  array $filters An empty array by default.
+ * @return array $filters The array of paired with 'title' and 'value'.
  */
-function ip_geo_block_logs_preset( $filters = array() ) {
+function ip_geo_block_logs_preset( $filters ) {
 	return array(
 		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-happy"    >&nbsp;</span>' . __( '<span title="Show only passed entries whose country codes are in Whitelist.">Passed in Whitelist</span>',        'ip-geo-block' ), 'value' => '&sup1;&sup1;' ),
 		array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-grin2"    >&nbsp;</span>' . __( '<span title="Show only passed entries whose country codes are in Blacklist.">Passed in Blacklist</span>',        'ip-geo-block' ), 'value' => '&sup1;&sup2;' ),

@@ -155,7 +155,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private function get_rewrite_rule( $which ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'get_rewrite_rule' );
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
 		// check the existence of configuration file
 		$file = $this->get_rewrite_file( $which );
@@ -185,7 +185,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	 */
 	private function put_rewrite_rule( $which, $content ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'put_rewrite_rule' );
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
 		$file = $this->get_rewrite_file( $which );
 
@@ -285,7 +285,7 @@ class IP_Geo_Block_Admin_Rewrite {
 			$additional = '';
 			if ( '.user.ini' === $type ) {
 				require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-				$fs = IP_Geo_Block_FS::init( 'append_rewrite_block' );
+				$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
 				$dir = dirname( IP_GEO_BLOCK_PATH ); // `/wp-content/plugins`
 				$ini = $this->config_file;

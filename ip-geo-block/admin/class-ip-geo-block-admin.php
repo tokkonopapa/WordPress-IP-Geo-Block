@@ -1243,7 +1243,7 @@ class IP_Geo_Block_Admin {
 		} else {
 			// reset path if file does not exist
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-			$fs = IP_Geo_Block_FS::init( 'postprocess_options' );
+			$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 			if ( ! $output['Maxmind']['use_asn'] && ! $fs->exists( $output['Maxmind']['asn4_path'] ) ) {
 				$output['Maxmind']['asn4_path'] = NULL;
 				$output['Maxmind']['asn6_path'] = NULL;
@@ -1445,7 +1445,7 @@ class IP_Geo_Block_Admin {
 	/**
 	 * Analyze entries in "Validation logs"
 	 *
-	 * Each entry has an array:
+	 * @param array $logs An array including each entry where:
 	 * Array (
 	 *     [0 DB row number] => 154
 	 *     [1 Target       ] => comment
@@ -1468,7 +1468,7 @@ class IP_Geo_Block_Admin {
 	 *    ²²: Blocked in Blacklist
 	 *    ²³: Blocked not in list
 	 */
-	public function logs_filter( $logs = array() ) {
+	public function filter_logs( $logs ) {
 		$settings = IP_Geo_Block::get_option();
 
 		// White/Black list for back-end
@@ -1509,18 +1509,18 @@ class IP_Geo_Block_Admin {
 	/**
 	 * Register UI "Preset filters" at "Search in logs"
 	 *
-	 * @param  array  An empty array by default.
-	 * @return array  The pare of 'title' and 'value'.
+	 * @param  array $filters An empty array by default.
+	 * @return array $filters The array of paired with 'title' and 'value'.
 	 */
-	public function logs_preset( $filters = array() ) {
-		return empty( $filters ) ? array(
+	public function preset_filters( $filters ) {
+		return array(
 			array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-happy"    >&nbsp;</span>' . __( '<span title="Show only passed entries whose country codes are in Whitelist.">Passed in Whitelist</span>',        'ip-geo-block' ), 'value' => '&sup1;&sup1;' ),
 			array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-grin2"    >&nbsp;</span>' . __( '<span title="Show only passed entries whose country codes are in Blacklist.">Passed in Blacklist</span>',        'ip-geo-block' ), 'value' => '&sup1;&sup2;' ),
 			array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-cool"     >&nbsp;</span>' . __( '<span title="Show only passed entries whose country codes are not in either list.">Passed not in List</span>',   'ip-geo-block' ), 'value' => '&sup1;&sup3;' ),
 			array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-confused" >&nbsp;</span>' . __( '<span title="Show only blocked entries whose country codes are in Whitelist.">Blocked in Whitelist</span>',      'ip-geo-block' ), 'value' => '&sup2;&sup1;' ),
 			array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-confused2">&nbsp;</span>' . __( '<span title="Show only blocked entries whose country codes are in Blacklist.">Blocked in Blacklist</span>',      'ip-geo-block' ), 'value' => '&sup2;&sup2;' ),
 			array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-crying"   >&nbsp;</span>' . __( '<span title="Show only blocked entries whose country codes are not in either list.">Blocked not in List</span>', 'ip-geo-block' ), 'value' => '&sup2;&sup3;' ),
-		) : $filters;
+		);
 	}
 
 	/**
@@ -1587,12 +1587,12 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'restore-logs': // Get logs from MySQL DB
-			has_filter( $cmd = IP_Geo_Block::PLUGIN_NAME . '-logs' ) or add_filter( $cmd, array( $this, 'logs_filter' ), 20 );
+			has_filter( $cmd = IP_Geo_Block::PLUGIN_NAME . '-logs' ) or add_filter( $cmd, array( $this, 'filter_logs' ), 20 );
 			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which );
 			break;
 
 		  case 'live-start': // Restore live log
-			has_filter( $cmd = IP_Geo_Block::PLUGIN_NAME . '-logs' ) or add_filter( $cmd, array( $this, 'logs_filter' ), 20 );
+			has_filter( $cmd = IP_Geo_Block::PLUGIN_NAME . '-logs' ) or add_filter( $cmd, array( $this, 'filter_logs' ), 20 );
 			if ( is_wp_error( $res = IP_Geo_Block_Admin_Ajax::restore_live_log( $which, $settings ) ) )
 				$res = array( 'error' => $res->get_error_message() );
 			break;
