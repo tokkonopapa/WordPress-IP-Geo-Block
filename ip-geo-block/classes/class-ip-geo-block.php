@@ -162,7 +162,7 @@ class IP_Geo_Block {
 		add_filter( 'http_request_args',  array( $this,   'request_nonce' ), $priority, 2 ); // @since 2.7.0
 
 		// register validation of updating metadata
-		$this->validate_metadata( $settings['metadata'] );
+		$this->validate_metadata( $settings['metadata'], $priority );
 	}
 
 	/**
@@ -910,12 +910,12 @@ class IP_Geo_Block {
 	 * Validate updating metadata.
 	 *
 	 */
-	private function validate_metadata( $data ) {
+	private function validate_metadata( $data, $priority = 10 ) {
 		// @since 2.6.0 apply_filters( "pre_update_option_{$option}", $value, $old_value, $option );
 		// @since 2.9.0 apply_filters( "pre_update_site_option_{$option}", $value, $old_value, $option, $network_id );
 		foreach ( $data as $key => $options ) {
 			foreach ( $options as $option ) {
-				add_filter( "{$key}_{$option}", array( $this, 'check_capability' ), 10, 3 );
+				add_filter( "{$key}_{$option}", array( $this, 'check_capability' ), $priority, 3 );
 			}
 		}
 	}

@@ -1587,12 +1587,12 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 'restore-logs': // Get logs from MySQL DB
-			has_filter( $cmd = IP_Geo_Block::PLUGIN_NAME . '-logs' ) or add_filter( $cmd, array( $this, 'filter_logs' ), 20 );
+			has_filter( $cmd = IP_Geo_Block::PLUGIN_NAME . '-logs' ) or add_filter( $cmd, array( $this, 'filter_logs' ) );
 			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which );
 			break;
 
 		  case 'live-start': // Restore live log
-			has_filter( $cmd = IP_Geo_Block::PLUGIN_NAME . '-logs' ) or add_filter( $cmd, array( $this, 'filter_logs' ), 20 );
+			has_filter( $cmd = IP_Geo_Block::PLUGIN_NAME . '-logs' ) or add_filter( $cmd, array( $this, 'filter_logs' ) );
 			if ( is_wp_error( $res = IP_Geo_Block_Admin_Ajax::restore_live_log( $which, $settings ) ) )
 				$res = array( 'error' => $res->get_error_message() );
 			break;
