@@ -52,12 +52,12 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 			get: function (data, type) {
 				switch (type) {
 					case 'name':
-						if (typeof data.query.count) {
+						if (typeof data.query.count !== 'undefined') {
 							return data.query.results.ip.results.result.countryname;
 						}
 						break;
 					case 'code':
-						if (typeof data.query.count) {
+						if (typeof data.query.count !== 'undefined') {
 							return data.query.results.ip.results.result.countrycode;
 						}
 						break;
