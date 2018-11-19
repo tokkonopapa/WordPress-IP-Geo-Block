@@ -1512,7 +1512,7 @@ class IP_Geo_Block_Admin {
 	 * @param  array $filters An empty array by default.
 	 * @return array $filters The array of paired with 'title' and 'value'.
 	 */
-	public function preset_filters( $filters ) {
+	public function preset_filters( $filters = array() ) {
 		return array(
 			array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-happy"    >&nbsp;</span>' . __( '<span title="Show only passed entries whose country codes are in Whitelist.">Passed in Whitelist</span>',        'ip-geo-block' ), 'value' => '&sup1;&sup1;' ),
 			array( 'title' => '<span class="ip-geo-block-icon ip-geo-block-icon-grin2"    >&nbsp;</span>' . __( '<span title="Show only passed entries whose country codes are in Blacklist.">Passed in Blacklist</span>',        'ip-geo-block' ), 'value' => '&sup1;&sup2;' ),
