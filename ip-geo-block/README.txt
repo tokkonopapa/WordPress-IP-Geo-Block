@@ -124,31 +124,7 @@ Yes. You can synchronize the settings with all the sites on the network when you
 
 The short answer is **YES**, especially for the purpose of security e.g. blocking malicious access both on the back-end and on the front-end.
 
-The long answer is as follows:
-
-For the back-end protection, both blocking malicious access and blocking by country work fine, if you disable caching on the back-end. As for the front-end, there are 2 scenarios.
-
-The first one is the case that there's no cached page against a request to the specific page. In this scenario, this plugin responds a specific HTTP status code (including redirection) when the request comes from blacklisted countries (or IPs) and exit telling the caching plugin not to make a cached page. When the request comes from the whitelisted countries (or IPs), this plugin passes it to the caching plugin in order to generate a new cache.
-
-The second scenario is the case that there's a cached page. In this case, the response depends on the caching method you are employing. Currently, the following plugins can be supported with specific configurations if you want to [restrict contents by geolocation](https://en.wikipedia.org/wiki/Geo-blocking "Geo-blocking - Wikipedia"):
-
-- [WP Super Cache](https://wordpress.org/plugins/wp-super-cache/ "WP Super Cache &mdash; WordPress Plugins")  
-  Select "**Use PHP to serve cache files**" and enable "**Late init**".
-
-- [W3 Total Cache](https://wordpress.org/plugins/w3-total-cache/ "W3 Total Cache &mdash; WordPress Plugins")  
-  Select "**Disk: Basic**" and enable "**Late initialization**" for page cache. "**Disk: Enhanced**" (where "**Late initialization**" is not available) in W3TC 0.9.5.1 seems to work good without any imcompatibility with this plugin.
-
-- [Vendi Cache](https://wordpress.org/plugins/vendi-cache/ "Vendi Cache &mdash; WordPress Plugins")  
-  This plugin was formerly built in Wordfence. Select "**basic caching**" for Vendi Cache and **"mu-plugin" (ip-geo-block-mu.php)** for IP Geo Block.
-
-- [Swift Performance Lite](https://wordpress.org/plugins/swift-performance-lite/ "Swift Performance Lite &#124; WordPress.org")  
-  Select "Disk Cashe with PHP" caching mode.
-
-Other plugins adopting `mod_rewrite` (e.g. WP Fastest Cache) or `advanced-cache.php` [drop-in](https://make.wordpress.org/core/2016/08/13/global-overloading-in-advanced-cache-php/ "Global overloading in advanced-cache.php &#8211; Make WordPress Core") (e.g. Comet Cache) or other caching method at server side might serve a normal page.
-
-Thus your site would have less risk against the exploiting via vulnerable plugins and themes.
-
-For more details, please refer to some documents at "[Blocking on front-end](https://www.ipgeoblock.com/codex/#blocking-on-front-end 'Codex | IP Geo Block')".
+You can find the long answer and the compatibility list of cache plugins at "[Compatibility with cache plugins](https://www.ipgeoblock.com/codex/living-with-caching-plugin.html 'Compatibility with cache plugins | IP Geo Block')".
 
 = I still have access from blacklisted country. Does it work correctly? =
 
@@ -258,12 +234,14 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 == Changelog ==
 
 = 3.0.17 =
-* **Fixed issue:** Avoid the error of "Can not load Geolocation API libraries" caused by the race condition on upgrading this plugin.
+* **Fix issue:** Avoid the error of "Can not load Geolocation API libraries" caused by the race condition on upgrading this plugin.
 * **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog on multisite.
 * **New feature:** Add "**Preset filters**" using [`ip-geo-block-logs[-preset]`](https://www.ipgeoblock.com/codex/ip-geo-block-logs-preset.html "ip-geo-block-logs[-preset] | IP Geo Block") filter hook to make analyze logs easy on "**Logs**" tab.
 * **Improvement:** Enhance protecting against certain types of attacks by privilege escalation.
-* **Improvement:** Update geolocation API service "geoip.nekudo.com" to "ipapi.com".
+* **Improvement:** Update the geolocation API service "geoip.nekudo.com" to "ipapi.com".
+* **Improvement:** Update the class for Maxmind GeoLite Legacy databases to prepare against the upcoming expiry of support.
 * **Improvement:** Mask password in logs also when login fails.
+* See [3.0.17 release note](https://www.ipgeoblock.com/changelog/release-3.0.17.html) for some details.
 
 = 3.0.16 =
 * **Fix issue:** Fix the issue that some functions did not work properly when "Validation timing" was set as `"mu-plugins" (ip-geo-block-mu.php)` under some conditions before WP 4.0.

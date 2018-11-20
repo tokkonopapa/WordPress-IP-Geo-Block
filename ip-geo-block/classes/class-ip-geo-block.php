@@ -97,27 +97,27 @@ class IP_Geo_Block {
 		// register target: (wp-admin|wp-includes|wp-content/(plugins|themes|language|uploads))
 		if ( $this->target_type ) {
 			if ( 'admin' !== $this->target_type )
-				$loader->add_action( 'init', array( $this, 'validate_direct' ), $priority );
+				$loader->add_action( 'init', array( $this, 'validate_direct' ), $priority[1] );
 			else // 'widget_init' for admin dashboard
-				$loader->add_action( 'admin_init', array( $this, 'validate_admin' ), $priority );
+				$loader->add_action( 'admin_init', array( $this, 'validate_admin' ), $priority[1] );
 		}
 
 		// register target: (comment|xmlrpc|login|public)
 		elseif ( isset( $list[ $this->pagenow ] ) ) {
 			if ( $validate[ $list[ $this->pagenow ] ] || self::$live_log )
-				$loader->add_action( 'init', array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority );
+				$loader->add_action( 'init', array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority[0] );
 		}
 
 		// register target: alternative of trackback
 		elseif ( 'POST' === $_SERVER['REQUEST_METHOD'] && 'trackback' === basename( $this->request_uri ) ) {
 			if ( $validate['comment'] || self::$live_log )
-				$loader->add_action( 'init', array( $this, 'validate_comment' ), $priority );
+				$loader->add_action( 'init', array( $this, 'validate_comment' ), $priority[0] );
 		}
 
 		else {
 			// public facing pages
 			if ( $validate['public'] || ( ! empty( $_FILES ) && $validate['mimetype'] ) || self::$live_log /* && 'index.php' === $this->pagenow */ )
-				defined( 'DOING_CRON' ) or $loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
+				defined( 'DOING_CRON' ) or $loader->add_action( 'init', array( $this, 'validate_public' ), $priority[0] );
 
 			// message text on comment form
 			if ( $settings['comment']['pos'] ) {
@@ -126,25 +126,25 @@ class IP_Geo_Block {
 			}
 
 			if ( $validate['comment'] || self::$live_log ) {
-				add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), $priority ); // wp-comments-post.php @since 2.8.0
-				add_action( 'pre_trackback_post',  array( $this, 'validate_comment' ), $priority ); // wp-trackback.php @since 4.7.0
-				add_filter( 'preprocess_comment',  array( $this, 'validate_comment' ), $priority ); // wp-includes/comment.php @since 1.5.0
+				add_action( 'pre_comment_on_post', array( $this, 'validate_comment' ), $priority[0] ); // wp-comments-post.php @since 2.8.0
+				add_action( 'pre_trackback_post',  array( $this, 'validate_comment' ), $priority[0] ); // wp-trackback.php @since 4.7.0
+				add_filter( 'preprocess_comment',  array( $this, 'validate_comment' ), $priority[0] ); // wp-includes/comment.php @since 1.5.0
 
 				// bbPress: prevent creating topic/relpy and rendering form
-				add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
-				add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
-				add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
-				add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
+				add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority[0] );
+				add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority[0] );
+				add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority[0] );
+				add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority[0] );
 			}
 
 			if ( $validate['login'] || self::$live_log ) {
 				// for hide/rename wp-login.php, BuddyPress: prevent registration and rendering form
-				add_action( 'login_init', array( $this, 'validate_login' ), $priority );
+				add_action( 'login_init', array( $this, 'validate_login' ), $priority[0] );
 
 				// only when block on front-end is disabled
 				if ( ! $validate['public'] || self::$live_log ) {
-					add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
-					add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
+					add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority[0] );
+					add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority[0] );
 				}
 			}
 
@@ -154,15 +154,15 @@ class IP_Geo_Block {
 
 			// garbage collection for IP address cache, enque script for authentication
 			add_action( self::CACHE_NAME,     array( $this,     'exec_cache_gc' ) );
-			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority ); // @since 2.8.0
+			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority[0] ); // @since 2.8.0
 		}
 
 		// force to redirect on logout to remove nonce, embed a nonce into pages
-		add_filter( 'wp_redirect',        array( $this, 'logout_redirect' ), 20,        2 ); // logout_redirect @4.2
-		add_filter( 'http_request_args',  array( $this,   'request_nonce' ), $priority, 2 ); // @since 2.7.0
+		add_filter( 'wp_redirect',        array( $this, 'logout_redirect' ), 20,           2 ); // logout_redirect @4.2
+		add_filter( 'http_request_args',  array( $this,   'request_nonce' ), $priority[1], 2 ); // @since 2.7.0
 
 		// register validation of updating metadata
-		$this->validate_metadata( $settings['metadata'], $priority );
+		$this->validate_metadata( $settings['metadata'], $priority[0] );
 	}
 
 	/**
@@ -463,7 +463,7 @@ class IP_Geo_Block {
 			if ( $action = current_filter() ) { // `plugins_loaded`, `wp` or FALSE
 				add_action( // `wp` (on front-end target) is too late to apply `init`
 					'wp' === $action ? 'template_redirect' : 'init',
-					array( $this, 'load_theme_template' ), $settings['priority']
+					array( $this, 'load_theme_template' ), $settings['priority'][1]
 				);
 				return TRUE; // load template at the specified action
 			}
@@ -596,7 +596,7 @@ class IP_Geo_Block {
 			add_filter( self::PLUGIN_NAME . '-xmlrpc', array( $this, 'close_xmlrpc' ), 3, 2 );
 
 		else // wp-includes/class-wp-xmlrpc-server.php @since 3.5.0
-			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ), $settings['priority'] );
+			add_filter( 'xmlrpc_login_error', array( $this, 'auth_fail' ), $settings['priority'][0] );
 
 		$this->validate_ip( 'xmlrpc', $settings );
 	}
@@ -626,7 +626,7 @@ class IP_Geo_Block {
 		! empty( $settings['login_action']['login'] ) and $settings['login_action']['logout'] = TRUE;
 
 		// avoid conflict with WP Limit Login Attempts (wp-includes/pluggable.php @since 2.5.0)
-		! empty( $_POST ) and add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
+		! empty( $_POST ) and add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'][0] );
 
 		// verify emergency login key
 		if ( 'login' === $action && ! empty( $_REQUEST[ self::PLUGIN_NAME . '-key' ] ) &&

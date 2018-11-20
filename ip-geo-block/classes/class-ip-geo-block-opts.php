@@ -73,8 +73,8 @@ class IP_Geo_Block_Opts {
 			'retry'       => 0,       // Number of retry to download
 			'cycle'       => 30,      // Updating cycle (days)
 		),
-		// since version 3.0.9
-		'priority' => PHP_INT_MAX,    // Action priority for WP-ZEP
+		// since version 3.0.9, 3.0.17
+		'priority'        => array( 0, PHP_INT_MAX ), // 0:high, 1:log for WP-ZEP
 		// since version 2.2.0
 		'anonymize'       => TRUE,    // Anonymize IP address to hide privacy
 		'signature'       => '../,/wp-config.php,/passwd', // malicious signature
@@ -196,7 +196,7 @@ class IP_Geo_Block_Opts {
 			'hash'           => NULL,    // hash of 'link'
 		),
 		// since version 3.0.17
-		'metadata'        => array( 
+		'metadata'        => array(
 			'pre_update_option'      => array( 'siteurl', 'admin_email', 'users_can_register', 'default_role' ),
 			'pre_update_site_option' => array( 'siteurl', 'admin_email', 'registration' ),
 		),
@@ -398,9 +398,6 @@ class IP_Geo_Block_Opts {
 			}
 		}
 
-		if ( version_compare( $version, '3.0.9' ) < 0 )
-			$settings['priority'] = $default['priority'];
-
 		if ( version_compare( $version, '3.0.10' ) < 0 ) {
 			$settings['behavior'] = $default['behavior'];
 			$settings['public'  ]['behavior'] = $default['public']['behavior'];
@@ -432,6 +429,7 @@ class IP_Geo_Block_Opts {
 		}
 
 		if ( version_compare( $version, '3.0.17' ) < 0 ) {
+			$settings['priority'] = $default['priority'];
 			$settings['metadata'] = $default['metadata'];
 			if ( self::get_validation_timing( NULL ) ) {
 				self::remove_mu_plugin( NULL );
@@ -442,9 +440,9 @@ class IP_Geo_Block_Opts {
 		// update package version number
 		$settings['version'] = IP_Geo_Block::VERSION;
 
-		// install addons for IP Geolocation database API ver. 1.1.13
+		// install addons for IP Geolocation database API ver. 1.1.14 at IP Geo Block 3.0.17
 		$providers = IP_Geo_Block_Provider::get_addons();
-		if ( empty( $providers ) || ! $settings['api_dir'] || ! file_exists( $settings['api_dir'] ) || version_compare( $version, '3.0.13' ) < 0 )
+		if ( empty( $providers ) || ! $settings['api_dir'] || ! file_exists( $settings['api_dir'] ) || version_compare( $version, '3.0.17' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
