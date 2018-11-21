@@ -10,10 +10,12 @@
  */
 class_exists( 'IP_Geo_Block_API', FALSE ) or die;
 
-if ( PHP_VERSION_ID >= 50400 ): // @since PHP 5.2.7 (WordPress 3.7 requires PHP 5.2.4)
+$dir = dirname( __FILE__ );
 
-require_once dirname( __FILE__ ) . '/class-maxmind-geolite2.php';
+// GeoLite2 requires PHP 5.4+ (WordPress 3.7 requires PHP 5.2.4)
+PHP_VERSION_ID >= 50400 and require_once "$dir/class-maxmind-geolite2.php";
 
-endif;
+// GeoLite Legacy
+file_exists( "$dir/class-maxmind-legacy.php" ) and require_once "$dir/class-maxmind-legacy.php";
 
-require_once dirname( __FILE__ ) . '/class-maxmind-legacy.php';
+unset( $dir );

@@ -846,6 +846,8 @@ endif; // TEST_RESTORE_NETWORK
 			'MySQL:'         => $ver . ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG && $bem ? ' (' . $bem . ')' : '' ),
 			'PHP:'           => PHP_VERSION,
 			'PHP SAPI:'      => php_sapi_name(),
+			'Memory limit:'  => ini_get( 'memory_limit' ),
+			'Peak usage:'    => @round( ( $m = memory_get_peak_usage() ) / pow( 1024, ( $i = floor( log( $m, 1024 ) ) ) ), 2 ) . array( 'B', 'K', 'M', 'G', 'T', 'P' )[ $i ],
 			'WordPress:'     => $GLOBALS['wp_version'],
 			'Multisite:'     => is_multisite() ? 'yes' : 'no',
 			'File system:'   => $fs->get_method(),
