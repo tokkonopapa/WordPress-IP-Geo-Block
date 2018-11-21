@@ -23,8 +23,8 @@ class IP_Geo_Block_Admin_Tab {
 		$list = array();
 		$providers = IP_Geo_Block_Provider::get_providers( 'key' );
 		foreach ( $providers as $provider => $key ) {
-			if ( ! is_string( $key ) ||
-				 ! empty( $options['providers'][ $provider ] ) ) {
+			if ( ! is_string( $key ) || // provider that does not need api key
+			     ! empty( $options['providers'][ $provider ] ) ) { // provider that has api key
 				$list += array( $provider => $provider );
 			}
 		}
