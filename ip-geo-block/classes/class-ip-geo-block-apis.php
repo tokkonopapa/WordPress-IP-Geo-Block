@@ -633,9 +633,9 @@ class IP_Geo_Block_Provider {
 		$providers = $settings['providers' ]; // list of not selected and selected with api key
 		$cache    &= $settings['cache_hold']; // exclude `Cache` when `IP address cache` is disabled
 
-		foreach ( self::get_providers( 'key', $rand, $cache, empty( $settings['restrict_api'] ) && $all ) as $key => $val ) {
-			//   if $key has api key           ||   if $key is selected and free to use
-			if ( ! empty( $providers[ $key ] ) || ( ! isset( $providers[ $key ] ) && NULL === $val ) ) {
+		foreach ( self::get_providers( 'key', $rand, $cache, empty( $settings['restrict_api'] ) && $all ) as $name => $key ) {
+			// ( if $name has api key )         || ( if $name that does not need api key is selected )
+			if ( ! empty( $providers[ $name ] ) || ( ! isset( $providers[ $name ] ) && NULL === $key ) ) {
 				$list[] = $key;
 			}
 		}
