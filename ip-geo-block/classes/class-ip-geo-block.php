@@ -337,7 +337,7 @@ class IP_Geo_Block {
 	 */
 	private static function _get_geolocation( $ip, $settings, $providers, $args = array(), $callback = 'get_country' ) {
 		// check loop back / private address
-		if ( IP_Geo_Block_Util::is_private_ip( $ip ) )
+		if ( IP_Geo_Block_Util::is_private_ip( $ip ) || empty( $providers ) )
 			return self::make_validation( $ip, array( 'time' => 0, 'provider' => 'Private', 'code' => 'XX' ) );
 
 		// set arguments for wp_remote_get()

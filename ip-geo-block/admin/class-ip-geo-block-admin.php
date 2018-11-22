@@ -749,6 +749,7 @@ class IP_Geo_Block_Admin {
 				$title .= ' <span class="ip-geo-block-menu-link"> [ ';
 				$title .= '<a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Sites list', 'ip-geo-block' ) . '</a>';
 				if ( $settings['network_wide'] ) {
+					unset( $tabs[0] ); // Settings
 					$title .= ' / <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Settings', 'ip-geo-block' ) . '</a>';
 				}
 				$title .= ' ]</span>';
@@ -766,6 +767,8 @@ class IP_Geo_Block_Admin {
 				$title .= __( 'Sites list', 'ip-geo-block' );
 				if ( $settings['network_wide'] ) {
 					$title .= ' / ' . __( 'Settings', 'ip-geo-block' );
+				} else {
+					unset( $tabs[0] ); // Settings
 				}
 				$title .= ' ]</span>';
 			}
@@ -1459,7 +1462,6 @@ class IP_Geo_Block_Admin {
 	 *     [9 HTTP headers ] => HTTP_ORIGIN=http://localhost,HTTP_X_FORWARDED_FOR=102.177.147.***
 	 *    [10 $_POST data  ] => comment=Hello.,author,email,url,comment_post_ID,comment_parent
 	 * )
-	 *
 	 * And put a mark at "Target"
 	 *    ¹¹: Passed  in Whitelist
 	 *    ¹²: Passed  in Blacklist
