@@ -426,7 +426,6 @@
 				i.addColumn('number', 'admin'  );
 				i.addColumn('number', 'public' );
 				data = $.parseJSON($('#' + id).attr('data-' + id));
-				data = data.slice(0, 6); // 0 - 5 (avoid error)
 				n = data.length;
 				for (i = 0; i < n; ++i) {
 					data[i][0] = new Date(data[i][0] * 1000); // [sec] to [msec]

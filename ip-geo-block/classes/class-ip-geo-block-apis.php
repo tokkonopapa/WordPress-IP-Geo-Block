@@ -628,15 +628,15 @@ class IP_Geo_Block_Provider {
 	 * Returns providers name list which are checked in settings
 	 *
 	 */
-	public static function get_valid_providers( $settings, $rand = TRUE, $cache = TRUE, $all = TRUE ) {
+	public static function get_valid_providers( $settings, $rand = TRUE, $cache = TRUE, $all = FALSE ) {
 		$list = array();
 		$providers = $settings['providers' ]; // list of not selected and selected with api key
 		$cache    &= $settings['cache_hold']; // exclude `Cache` when `IP address cache` is disabled
 
-		foreach ( self::get_providers( 'key', $rand, $cache, empty( $settings['restrict_api'] ) && $all ) as $name => $key ) {
+		foreach ( self::get_providers( 'key', $rand, $cache, empty( $settings['restrict_api'] ) || $all ) as $name => $key ) {
 			// ( if $name has api key )         || ( if $name that does not need api key is selected )
 			if ( ! empty( $providers[ $name ] ) || ( ! isset( $providers[ $name ] ) && NULL === $key ) ) {
-				$list[] = $key;
+				$list[] = $name;
 			}
 		}
 

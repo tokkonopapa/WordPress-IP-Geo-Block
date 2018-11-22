@@ -746,12 +746,12 @@ class IP_Geo_Block_Admin {
 			$action = 'options.php';
 			unset( $tabs[5] ); // Sites list
 			if ( $this->is_network_admin ) {
+				$title .= ' <span class="ip-geo-block-menu-link"> [ ';
+				$title .= '<a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Sites list', 'ip-geo-block' ) . '</a>';
 				if ( $settings['network_wide'] ) {
-					unset( $tabs[0] ); // Settings
+					$title .= ' / <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Settings', 'ip-geo-block' ) . '</a>';
 				}
-				$title .= ' <span class="ip-geo-block-menu-link">';
-				$title .= ' [ <a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 5 ), $this->dashboard_url( TRUE ) ) ) . '" target="_self">' . __( 'Network', 'ip-geo-block' ) . '</a> ]';
-				$title .= '</span>';
+				$title .= ' ]</span>';
 			}
 		}
 
@@ -761,13 +761,13 @@ class IP_Geo_Block_Admin {
 			// `edit.php` ==> do action `network_admin_edit_ip-geo-block` ==> `validate_network_settings()`
 			$action = 'edit.php?action=' . IP_Geo_Block::PLUGIN_NAME;
 			if ( $this->is_network_admin ) {
-				if ( ! $settings['network_wide'] ) {
-					unset( $tabs[0] ); // remove Settings
-				}
 				unset( $tabs[1], $tabs[4], $tabs[2], $tabs[3] ); // Statistics, Logs, Search, Attribution
-				$title .= ' <span class="ip-geo-block-menu-link">';
-				$title .= '[ ' . __( 'Network', 'ip-geo-block' ) . ' ]';
-				$title .= '</span>';
+				$title .= ' <span class="ip-geo-block-menu-link"> [ ';
+				$title .= __( 'Sites list', 'ip-geo-block' );
+				if ( $settings['network_wide'] ) {
+					$title .= ' / ' . __( 'Settings', 'ip-geo-block' );
+				}
+				$title .= ' ]</span>';
 			}
 		}
 

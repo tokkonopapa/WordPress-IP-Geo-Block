@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-11-19 23:30+0900\n"
-"PO-Revision-Date: 2018-11-19 23:33+0900\n"
+"POT-Creation-Date: 2018-11-22 22:44+0900\n"
+"PO-Revision-Date: 2018-11-22 22:46+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -167,6 +167,8 @@ msgstr "開発に参加"
 #: admin/class-ip-geo-block-admin.php:365
 #: admin/class-ip-geo-block-admin.php:491
 #: admin/class-ip-geo-block-admin.php:733
+#: admin/class-ip-geo-block-admin.php:752
+#: admin/class-ip-geo-block-admin.php:768
 msgid "Settings"
 msgstr "設定"
 
@@ -181,6 +183,8 @@ msgstr "IP Geo Block"
 
 #: admin/class-ip-geo-block-admin.php:481
 #: admin/class-ip-geo-block-admin.php:732
+#: admin/class-ip-geo-block-admin.php:750
+#: admin/class-ip-geo-block-admin.php:766
 msgid "Sites list"
 msgstr "サイト一覧"
 
@@ -340,11 +344,6 @@ msgstr "検索"
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:753
-#: admin/class-ip-geo-block-admin.php:769
-msgid "Network"
-msgstr "ネットワーク管理"
-
 #: admin/class-ip-geo-block-admin.php:782
 msgid "Toggle all"
 msgstr "全てを開閉"
@@ -399,7 +398,7 @@ msgstr "このページにアクセスするための十分な権限がありま
 #: classes/class-ip-geo-block-cron.php:228
 #: classes/class-ip-geo-block-cron.php:332
 #: classes/class-ip-geo-block-cron.php:410
-#: classes/class-ip-geo-block-opts.php:480
+#: classes/class-ip-geo-block-opts.php:478
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr "<code>%s</code> に書き込めません。パーミッションをチェックして下さい。"
@@ -1820,7 +1819,7 @@ msgstr "%s 用のカラム型が一致しません。一旦このプラグイン
 
 #: wp-content/ip-geo-api/ip2location/class-ip2location.php:151
 #: wp-content/ip-geo-api/maxmind/class-maxmind-geolite2.php:144
-#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:228
+#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:232
 msgid "Database file does not exist."
 msgstr "データベース・ファイルが見つかりません。"
 
