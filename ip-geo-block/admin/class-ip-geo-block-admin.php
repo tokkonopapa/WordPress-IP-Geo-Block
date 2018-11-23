@@ -443,7 +443,7 @@ class IP_Geo_Block_Admin {
 		}
 
 		if ( $admin_menu ) {
-			// `settings-updated` would be added just after settings updated.
+			// `options-general.php` ==> `options.php` ==> query `settings-updated` is added just after settings updated.
 			if ( ! empty( $_REQUEST['page'] ) && IP_Geo_Block::PLUGIN_NAME === $_REQUEST['page'] &&
 			     ! empty( $_REQUEST['settings-updated'] ) && $this->is_network_admin && $settings['network_wide'] ) {
 				$this->update_multisite_settings( $settings );
@@ -704,8 +704,6 @@ class IP_Geo_Block_Admin {
 				     ($stat ? ' ' . IP_Geo_Block::PLUGIN_NAME . '-border"' : '"'),
 				     ($stat || (4 === $tab && $index) ? '>' : ' style="display:none">'), "\n";
 
-				++$index;
-
 				if ( $section['callback'] )
 					call_user_func( $section['callback'], $section );
 
@@ -718,6 +716,7 @@ class IP_Geo_Block_Admin {
 				}
 
 				echo "</div>\n</fieldset>\n";
+				++$index;
 			}
 		}
 	}
@@ -891,7 +890,7 @@ class IP_Geo_Block_Admin {
 			foreach ( $args['list'] as $key => $val ) { ?>
 	<li>
 		<input type="checkbox" id="<?php echo $id, $sub_id, '_', $key; ?>" name="<?php echo $name, $sub_name, '[', $key, ']'; ?>" value="<?php echo $key; ?>"<?php
-			checked( is_array( $args['value'] ) ? ! empty( $args['value'][ $key ] ) : ( $key & $args['value'] ? TRUE : FALSE ) ); ?> /><label for="<?php 
+			checked( is_array( $args['value'] ) ? ! empty( $args['value'][ $key ] ) : ( $key & $args['value'] ? TRUE : FALSE ) ); ?> /><label for="<?php
 			echo $id, $sub_id, '_', $key; ?>"><?php
 			if ( isset( $args['desc'][ $key ] ) )
 				echo '<dfn title="', $args['desc'][ $key ], '">', $val, '</dfn>';
@@ -907,7 +906,7 @@ class IP_Geo_Block_Admin {
 		  case 'checkbox': ?>
 <input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="1"<?php
 	checked( esc_attr( $args['value'] ) );
-	disabled( ! empty( $args['disabled'] ), TRUE ); ?> /><label for="<?php 
+	disabled( ! empty( $args['disabled'] ), TRUE ); ?> /><label for="<?php
 	echo $id, $sub_id; ?>"><?php
 	if ( isset( $args['text'] ) ) echo esc_attr( $args['text'] );
 	else if ( isset( $args['html'] ) ) echo $args['html'];
@@ -1063,11 +1062,13 @@ class IP_Geo_Block_Admin {
 				break;
 
 			  case 'metadata':
-				if ( is_string( $input[ $key ]['pre_update_option'] ) ) {
-					$output[ $key ]['pre_update_option'] = array_map( 'sanitize_key', explode( ',', trim( $input[ $key ]['pre_update_option'], ',' ) ) ); // @since 3.0.17
-				}
-				if ( is_string( $input[ $key ]['pre_update_site_option'] ) ) {
-					$output[ $key ]['pre_update_site_option'] = array_map( 'sanitize_key', explode( ',', trim( $input[ $key ]['pre_update_site_option'], ',' ) ) ); // @since 3.0.17
+				if ( isset( $input[ $key ] ) ) {
+					if ( is_string( $input[ $key ]['pre_update_option'     ] ) ) {
+						$output[ $key ]['pre_update_option'     ] = array_map( 'sanitize_key', explode( ',', trim( $input[ $key ]['pre_update_option'     ], ',' ) ) ); // @since 3.0.17
+					}
+					if ( is_string( $input[ $key ]['pre_update_site_option'] ) ) {
+						$output[ $key ]['pre_update_site_option'] = array_map( 'sanitize_key', explode( ',', trim( $input[ $key ]['pre_update_site_option'], ',' ) ) ); // @since 3.0.17
+					}
 				}
 				break;
 
@@ -1238,15 +1239,20 @@ class IP_Geo_Block_Admin {
 		}
 
 		// 3.0.4 AS number, 3.0.8 Geolite2
-		$output['Geolite2']['use_asn'] = $output['Maxmind']['use_asn'];
+		if ( version_compare( PHP_VERSION, '5.4' ) >= 0 )
+			$output['Geolite2']['use_asn'] = $output['Maxmind']['use_asn'];
+
+		// force to update asn file not immediately but after `validate_settings()` and `validate_network_settings()`
 		if ( $output['Maxmind']['use_asn'] && ( ! $output['Maxmind']['asn4_path'] || ! $output['Geolite2']['asn_path'] ) ) {
-			// force to update in case of using asn
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
-			IP_Geo_Block_Cron::start_update_db( $output, TRUE );
-		} else {
-			// reset path if file does not exist
+			add_action( IP_Geo_Block::PLUGIN_NAME . '-settings-updated', array( 'IP_Geo_Block_Cron', 'start_update_db' ), 10, 2 );
+		}
+
+		// reset path if asn file does not exist
+		else {
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
 			$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
+
 			if ( ! $output['Maxmind']['use_asn'] && ! $fs->exists( $output['Maxmind']['asn4_path'] ) ) {
 				$output['Maxmind']['asn4_path'] = NULL;
 				$output['Maxmind']['asn6_path'] = NULL;
@@ -1388,6 +1394,9 @@ class IP_Geo_Block_Admin {
 		// Force to finish update matching rule
 		delete_transient( IP_Geo_Block::CRON_NAME );
 
+		// start to update databases immediately
+		do_action( IP_Geo_Block::PLUGIN_NAME . '-settings-updated', $options, TRUE );
+
 		return $options;
 	}
 
@@ -1406,8 +1415,9 @@ class IP_Geo_Block_Admin {
 
 		// Go through the posted data and save the targetted options.
 		foreach ( $options as $option ) {
-			if ( isset( $_POST[ $option ] ) )
+			if ( isset( $_POST[ $option ] ) ) {
 				$this->update_multisite_settings( $_POST[ $option ] );
+			}
 		}
 
 		// Register a settings error to be displayed to the user

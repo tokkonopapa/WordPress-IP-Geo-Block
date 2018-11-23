@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-11-22 22:44+0900\n"
-"PO-Revision-Date: 2018-11-22 22:46+0900\n"
+"POT-Creation-Date: 2018-11-24 00:00+0900\n"
+"PO-Revision-Date: 2018-11-24 00:02+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,7 +33,7 @@ msgid "Are you sure ?"
 msgstr "実行してもよいですか？"
 
 #: admin/class-ip-geo-block-admin.php:297
-#: admin/class-ip-geo-block-admin.php:789
+#: admin/class-ip-geo-block-admin.php:791
 msgid "Open a new window"
 msgstr "別窓で開く"
 
@@ -77,7 +77,7 @@ msgid "The selected row cannot be found in the table."
 msgstr "テーブル中に選択された行が見つかりません。"
 
 #: admin/class-ip-geo-block-admin.php:307
-#: admin/class-ip-geo-block-admin.php:1682
+#: admin/class-ip-geo-block-admin.php:1694
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr "Ajaxコマンド `%s` の実行中にエラーが発生しました。"
@@ -166,7 +166,7 @@ msgstr "開発に参加"
 
 #: admin/class-ip-geo-block-admin.php:365
 #: admin/class-ip-geo-block-admin.php:491
-#: admin/class-ip-geo-block-admin.php:733
+#: admin/class-ip-geo-block-admin.php:732
 #: admin/class-ip-geo-block-admin.php:752
 #: admin/class-ip-geo-block-admin.php:768
 msgid "Settings"
@@ -182,8 +182,8 @@ msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
 #: admin/class-ip-geo-block-admin.php:481
-#: admin/class-ip-geo-block-admin.php:732
-#: admin/class-ip-geo-block-admin.php:750
+#: admin/class-ip-geo-block-admin.php:731
+#: admin/class-ip-geo-block-admin.php:749
 #: admin/class-ip-geo-block-admin.php:766
 msgid "Sites list"
 msgstr "サイト一覧"
@@ -328,27 +328,27 @@ msgstr ""
 "<strong>IP Geo Allow</strong> と互換性がありません。「&#8220;init&#8221; アクション・フック」を選択し"
 "てください。"
 
-#: admin/class-ip-geo-block-admin.php:734
+#: admin/class-ip-geo-block-admin.php:733
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:735
+#: admin/class-ip-geo-block-admin.php:734
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:736
+#: admin/class-ip-geo-block-admin.php:735
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:737
+#: admin/class-ip-geo-block-admin.php:736
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:782
+#: admin/class-ip-geo-block-admin.php:784
 msgid "Toggle all"
 msgstr "全てを開閉"
 
-#: admin/class-ip-geo-block-admin.php:785
+#: admin/class-ip-geo-block-admin.php:787
 msgid ""
 "Independent of &#8220;Privacy and record settings&#8221;, you can see all "
 "the requests validated by this plugin in almost real time."
@@ -356,19 +356,19 @@ msgstr ""
 "［プライバシーと記録の設定］にかかわらず、このプラグインによる検証結果のすべてを、ほぼリアルタイムに"
 "表示します。"
 
-#: admin/class-ip-geo-block-admin.php:785 admin/includes/tab-accesslog.php:39
+#: admin/class-ip-geo-block-admin.php:787 admin/includes/tab-accesslog.php:39
 msgid "Live update"
 msgstr "ライブアップデート"
 
-#: admin/class-ip-geo-block-admin.php:789
+#: admin/class-ip-geo-block-admin.php:791
 msgid "Open a new window on clicking the link in the chart."
 msgstr "チャート内のリンクをクリックすると、新しいウィンドウが開きます。"
 
-#: admin/class-ip-geo-block-admin.php:813
+#: admin/class-ip-geo-block-admin.php:815
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:814
+#: admin/class-ip-geo-block-admin.php:816
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"https://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -377,23 +377,23 @@ msgstr ""
 "（ほとんどのブラウザでは、<a href=\"https://www.ipgeoblock.com/etc/referer.html\" title=\"Referer "
 "Checker\">参照元を残さずにリンク先にリダイレクトできます</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:819
+#: admin/class-ip-geo-block-admin.php:821
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: admin/class-ip-geo-block-admin.php:911
+#: admin/class-ip-geo-block-admin.php:913
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:926
+#: admin/class-ip-geo-block-admin.php:928
 msgid "Select one"
 msgstr "何れかを選択"
 
-#: admin/class-ip-geo-block-admin.php:1354
+#: admin/class-ip-geo-block-admin.php:1363
 msgid "You do not have sufficient permissions to access this page."
 msgstr "このページにアクセスするための十分な権限がありません。"
 
-#: admin/class-ip-geo-block-admin.php:1381
+#: admin/class-ip-geo-block-admin.php:1390
 #: admin/includes/class-admin-rewrite.php:194
 #: classes/class-ip-geo-block-cron.php:228
 #: classes/class-ip-geo-block-cron.php:332
@@ -403,11 +403,11 @@ msgstr "このページにアクセスするための十分な権限がありま
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr "<code>%s</code> に書き込めません。パーミッションをチェックして下さい。"
 
-#: admin/class-ip-geo-block-admin.php:1411
+#: admin/class-ip-geo-block-admin.php:1424
 msgid "Settings saved."
 msgstr "設定を保存しました。"
 
-#: admin/class-ip-geo-block-admin.php:1517
+#: admin/class-ip-geo-block-admin.php:1529
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:91
 msgid ""
 "<span title=\"Show only passed entries whose country codes are in Whitelist."
@@ -416,7 +416,7 @@ msgstr ""
 "<span title=\"ホワイトリストに国コードが有る、通過したエントリのみを表示します。\">ホワイトリスト通過"
 "</span>"
 
-#: admin/class-ip-geo-block-admin.php:1518
+#: admin/class-ip-geo-block-admin.php:1530
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:92
 msgid ""
 "<span title=\"Show only passed entries whose country codes are in Blacklist."
@@ -425,7 +425,7 @@ msgstr ""
 "<span title=\"ブラックリストに国コードが有る、通過したエントリのみを表示します。\">ブラックリスト通過"
 "</span>"
 
-#: admin/class-ip-geo-block-admin.php:1519
+#: admin/class-ip-geo-block-admin.php:1531
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:93
 msgid ""
 "<span title=\"Show only passed entries whose country codes are not in either "
@@ -434,7 +434,7 @@ msgstr ""
 "<span title=\"どちらのリストにも国コードが無い、通過したエントリのみを表示します。\">どちらにも無く通"
 "過</span>"
 
-#: admin/class-ip-geo-block-admin.php:1520
+#: admin/class-ip-geo-block-admin.php:1532
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:94
 msgid ""
 "<span title=\"Show only blocked entries whose country codes are in Whitelist."
@@ -443,7 +443,7 @@ msgstr ""
 "<span title=\"ホワイトリストに国コードが有る、遮断したエントリのみを表示します。\">ホワイトリスト遮断"
 "</span>"
 
-#: admin/class-ip-geo-block-admin.php:1521
+#: admin/class-ip-geo-block-admin.php:1533
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:95
 msgid ""
 "<span title=\"Show only blocked entries whose country codes are in Blacklist."
@@ -452,7 +452,7 @@ msgstr ""
 "<span title=\"ブラックリストに国コードが有る、遮断したエントリのみを表示します。\">ブラックリスト遮断"
 "</span>"
 
-#: admin/class-ip-geo-block-admin.php:1522
+#: admin/class-ip-geo-block-admin.php:1534
 #: wp-content/ip-geo-api/drop-in-admin-sample.php:96
 msgid ""
 "<span title=\"Show only blocked entries whose country codes are not in "

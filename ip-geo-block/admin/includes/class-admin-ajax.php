@@ -347,7 +347,7 @@ endif;
 			HOUR_IN_SECONDS,    // Latest 1 hour
 			DAY_IN_SECONDS,     // Latest 24 hours
 			WEEK_IN_SECONDS,    // Latest 1 week
-			30 * DAY_IN_SECONDS // Latest 1 month (MONTH_IN_SECONDS is since WP 4.4+)  
+			30 * DAY_IN_SECONDS // Latest 1 month (MONTH_IN_SECONDS is since WP 4.4+)
 		);
 
 		$i = 0;
@@ -835,9 +835,11 @@ endif; // TEST_RESTORE_NETWORK
 		@ini_set( 'error_log', $log );
 		@error_reporting( $err );
 
-		// Proces owner
+		// Human readable size, Proces owner
+		// https://gist.github.com/mehdichaouch/341a151dd5f469002a021c9396aa2615
 		// https://secure.php.net/manual/function.get-current-user.php#57624
 		// https://secure.php.net/manual/function.posix-getpwuid.php#82387
+		$siz = array( 'B', 'K', 'M', 'G', 'T', 'P' );
 		$usr = function_exists( 'posix_getpwuid' ) ? posix_getpwuid( posix_geteuid() ) : array( 'name' => getenv( 'USERNAME' ) );
 
 		// Server, PHP, WordPress
@@ -847,7 +849,7 @@ endif; // TEST_RESTORE_NETWORK
 			'PHP:'           => PHP_VERSION,
 			'PHP SAPI:'      => php_sapi_name(),
 			'Memory limit:'  => ini_get( 'memory_limit' ),
-			'Peak usage:'    => @round( ( $m = memory_get_peak_usage() ) / pow( 1024, ( $i = floor( log( $m, 1024 ) ) ) ), 2 ) . array( 'B', 'K', 'M', 'G', 'T', 'P' )[ $i ],
+			'Peak usage:'    => @round( ( $m = memory_get_peak_usage() ) / pow( 1024, ( $i = floor( log( $m, 1024 ) ) ) ), 2 ) . $siz[ $i ],
 			'WordPress:'     => $GLOBALS['wp_version'],
 			'Multisite:'     => is_multisite() ? 'yes' : 'no',
 			'File system:'   => $fs->get_method(),
@@ -883,9 +885,7 @@ endif; // TEST_RESTORE_NETWORK
 
 		foreach ( $installed as $key => $val ) {
 			if ( isset( $activated[ $key ] ) ) {
-				$res += array(
-					esc_html( $val['Name'] ) => esc_html( $val['Version'] )
-				);
+				$res += array( esc_html( $val['Name'] ) => esc_html( $val['Version'] ) );
 			}
 		}
 
