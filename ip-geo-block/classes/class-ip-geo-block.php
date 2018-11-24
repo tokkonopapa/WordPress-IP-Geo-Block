@@ -927,7 +927,7 @@ class IP_Geo_Block {
 			$settings = self::get_option();
 			$cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr, $settings['cache_hold'] );
 			$validate = self::make_validation( self::$remote_addr, array(
-				'result'   => 'privEsc',
+				'result'   => 'badcap',
 				'provider' => 'Cache',
 				'time'     => microtime( TRUE ) - $time,
 			) + $cache );
