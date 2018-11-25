@@ -44,13 +44,11 @@
 		}
 
 		// just kick off disqus
-		else {
-			var dsq = $('#disqus_thread');
-			if (dsq.length && location.hostname.indexOf('ipgeoblock') >= 0) {
-				dsq.empty();
-				addDisqus('embed.js');
-//				addDisqus('count.js');
-			}
+		var dsq = $('#disqus_thread');
+		if (dsq.length && location.hostname.indexOf('ipgeoblock') >= 0) {
+			dsq.empty();
+			addDisqus('embed.js');
+//			addDisqus('count.js');
 		}
 	}).trigger('change');
 
