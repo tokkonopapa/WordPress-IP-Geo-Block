@@ -139,16 +139,18 @@ So a visitor from forbidden countries sometimes gets cached contents and
 sometimes gets blocked. This means attack from forbedden countires would fail.
 As a consequence, blocking by country can still reduce the risk of infection.
 
-### How about Object Cache plugin? ###
+### How about Object Cache plugins? ###
 
 [WP_Object_Cache][ObjectCache] is a core class that implements an object cache.
-Although it stores all of the cache data to memory and makes them reusable 
-within a request, it abandons them after response to a user agent.
+It stores all of the cache data to memory and makes them reusable within a 
+request, but it does not make them reusable between different user agents even 
+for the same content.
 
-Unlike the previous full page cache plugins, object cache plugins such as
+Unlike the full page cache plugins mentioned above, object cache plugins like 
 [LiteSpeed Cache][LiteSpeed] on [OpenLiteSpeed Web Server][OpenLiteSpeed] and 
-[Redis Object Cache][RedisCache] using [Redis][Redis] make verious "object" 
-persistent.
+[Redis Object Cache][RedisCache] using [Redis][Redis] make the "object"
+__persistent__. So the mechanism of persistent object cache is suitable for 
+dynamic contents, and should be compatible with IP Geo Block.
 
 ### See also ###
 
