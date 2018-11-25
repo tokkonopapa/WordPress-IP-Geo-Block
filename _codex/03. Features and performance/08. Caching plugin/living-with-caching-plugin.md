@@ -50,6 +50,7 @@ Here's a list of supported requirements mentioned above.
 |:------------------------------------|-------------------|--------------------|
 | [WP Fastest Cache][FastestCache]    |     &#x02713;     |         N/A        |
 | [Comet Cache][CometCache]           |     &#x02713;     |         N/A        |
+| [WP Rocket][WP-Rocket]              |     &#x02713;     |         N/A        |
 | [WP Super Cache][WPSuperCache]      |     &#x02713;     |      &#x02713;     |
 | [W3 Total Cache][W3TotalCache]      |     &#x02713;     |      &#x02713;     |
 | [Swift Performance Lite][SwiftLite] |     &#x02713;     |      &#x02713;     |
@@ -151,6 +152,7 @@ As a consequence, blocking by country can still reduce the risk of infection.
 [ErrorPage]:    {{ '/codex/customizing-the-response.html#human-friendly-error-page'  | prepend: site.baseurl }} "Customizing the response | IP Geo Block"
 [FastestCache]: https://wordpress.org/plugins/wp-fastest-cache/ "WP Fastest Cache &#124; WordPress.org"
 [CometCache]:   https://wordpress.org/plugins/comet-cache/ "Comet Cache &#124; WordPress.org"
+[WP-Rocket]:    https://github.com/wp-media/wp-rocket "wp-media/wp-rocket: Performance optimization plugin for WordPress"
 [WPSuperCache]: https://wordpress.org/plugins/wp-super-cache/ "WP Super Cache &mdash; WordPress Plugins"
 [W3TotalCache]: https://wordpress.org/plugins/w3-total-cache/ "W3 Total Cache &mdash; WordPress Plugins"
 [SwiftLite]:    https://wordpress.org/plugins/swift-performance-lite/ "Swift Performance Lite &#124; WordPress.org"
