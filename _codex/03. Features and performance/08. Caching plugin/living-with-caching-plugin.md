@@ -48,13 +48,14 @@ Here's a list of supported requirements mentioned above.
 
 | Plugin Name                         | Do not cache page | Deferred execution |
 |:------------------------------------|-------------------|--------------------|
-| [WP Fastest Cache][FastestCache]    |     &#x02713;     |         N/A        |
-| [Comet Cache][CometCache]           |     &#x02713;     |         N/A        |
-| [WP Rocket][WP-Rocket]              |     &#x02713;     |         N/A        |
 | [WP Super Cache][WPSuperCache]      |     &#x02713;     |      &#x02713;     |
 | [W3 Total Cache][W3TotalCache]      |     &#x02713;     |      &#x02713;     |
 | [Swift Performance Lite][SwiftLite] |     &#x02713;     |      &#x02713;     |
 | [Vendi Cache][VendiCache]           |     &#x02713;     |      &#x02713;     |
+| [WP Fastest Cache][FastestCache]    |     &#x02713;     |         N/A        |
+| [Comet Cache][CometCache]           |     &#x02713;     |         N/A        |
+| [Hyper Cache][HyperCache]           |     &#x02713;     |         N/A        |
+| [WP Rocket][WP-Rocket]              |     &#x02713;     |         N/A        |
 
 This list shows that:
 
@@ -152,6 +153,7 @@ As a consequence, blocking by country can still reduce the risk of infection.
 [ErrorPage]:    {{ '/codex/customizing-the-response.html#human-friendly-error-page'  | prepend: site.baseurl }} "Customizing the response | IP Geo Block"
 [FastestCache]: https://wordpress.org/plugins/wp-fastest-cache/ "WP Fastest Cache &#124; WordPress.org"
 [CometCache]:   https://wordpress.org/plugins/comet-cache/ "Comet Cache &#124; WordPress.org"
+[HyperCache]:   https://wordpress.org/plugins/hyper-cache/ "Hyper Cache &#124; WordPress.org"
 [WP-Rocket]:    https://github.com/wp-media/wp-rocket "wp-media/wp-rocket: Performance optimization plugin for WordPress"
 [WPSuperCache]: https://wordpress.org/plugins/wp-super-cache/ "WP Super Cache &mdash; WordPress Plugins"
 [W3TotalCache]: https://wordpress.org/plugins/w3-total-cache/ "W3 Total Cache &mdash; WordPress Plugins"
