@@ -48,19 +48,20 @@ Here's a list of supported requirements mentioned above.
 
 | Plugin Name                         | Do not cache page | Deferred execution |
 |:------------------------------------|-------------------|--------------------|
-| [WP Super Cache][WPSuperCache]      |     &#x02713;     |      &#x02713;     |
-| [W3 Total Cache][W3TotalCache]      |     &#x02713;     |      &#x02713;     |
-| [Swift Performance Lite][SwiftLite] |     &#x02713;     |      &#x02713;     |
-| [Vendi Cache][VendiCache]           |     &#x02713;     |      &#x02713;     |
 | [WP Fastest Cache][FastestCache]    |     &#x02713;     |         N/A        |
 | [Comet Cache][CometCache]           |     &#x02713;     |         N/A        |
 | [Hyper Cache][HyperCache]           |     &#x02713;     |         N/A        |
 | [WP Rocket][WP-Rocket]              |     &#x02713;     |         N/A        |
+| [WP Super Cache][WPSuperCache]      |     &#x02713;     |      &#x02713;     |
+| [W3 Total Cache][W3TotalCache]      |     &#x02713;     |      &#x02713;     |
+| [Swift Performance Lite][SwiftLite] |     &#x02713;     |      &#x02713;     |
+| [Vendi Cache][VendiCache]           |     &#x02713;     |      &#x02713;     |
 
 This list shows that:
 
-- [WP Fastest Cache][FastestCache] and [Comet Cache][CometCache] can be used 
-  with IP Geo Block but do not have full compatibility.
+- [WP Fastest Cache][FastestCache], [Comet Cache][CometCache],
+  [Hyper Cache][HyperCache] and [WP Rocket][WP-Rocket] can be used with 
+  IP Geo Block but do not have full compatibility.
 - [WP Super Cache][WPSuperCache], [W3 Total Cache][W3TotalCache], [Swift 
   Performance Lite][SwiftLite] and [Vendi Cache][VendiCache] can be fully 
   compatible with IP Geo Block by their certain setting of options.
@@ -138,6 +139,17 @@ So a visitor from forbidden countries sometimes gets cached contents and
 sometimes gets blocked. This means attack from forbedden countires would fail.
 As a consequence, blocking by country can still reduce the risk of infection.
 
+### How about Object Cache plugin? ###
+
+[WP_Object_Cache][ObjectCache] is a core class that implements an object cache.
+Although it stores all of the cache data to memory and makes them reusable 
+within a request, it abandons them after response to a user agent.
+
+Unlike the previous full page cache plugins, object cache plugins such as
+[LiteSpeed Cache][LiteSpeed] on [OpenLiteSpeed Web Server][OpenLiteSpeed] and 
+[Redis Object Cache][RedisCache] using [Redis][Redis] make verious "object" 
+persistent.
+
 ### See also ###
 
 - [Validation timing][ValidTiming]
@@ -162,3 +174,8 @@ As a consequence, blocking by country can still reduce the risk of infection.
 [IS-404]:       https://codex.wordpress.org/Function_Reference/is_404 "Function Reference/is 404 &laquo; WordPress Codex"
 [Cache-404]:    https://wordpress.org/support/topic/caching-of-404-pages/ "Topic: Caching of 404 pages &#124; WordPress.org"
 [MU-Plugins]:   https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex"
+[ObjectCache]:  https://developer.wordpress.org/reference/classes/wp_object_cache/ "WP_Object_Cache | Class | WordPress Developer Resources"
+[LiteSpeed]:    https://wordpress.org/plugins/litespeed-cache/ "LiteSpeed Cache &#124; WordPress.org"
+[OpenLiteSpeed]:https://www.litespeedtech.com/open-source "Open Source - LiteSpeed Technologies"
+[RedisCache]:   https://wordpress.org/plugins/redis-cache/ "Redis Object Cache &#124; WordPress.org"
+[Redis]:        https://redis.io/ "Redis"
