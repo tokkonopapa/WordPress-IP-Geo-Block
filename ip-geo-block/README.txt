@@ -220,16 +220,17 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 
 == Screenshots ==
 
-1. **IP Geo Plugin** - Settings tab
-2. **IP Geo Plugin** - Validation rules and behavior
-3. **IP Geo Plugin** - Back-end target settings
-4. **IP Geo Plugin** - Front-end target settings
-5. **IP Geo Plugin** - Geolocation API settings
-6. **IP Geo Plugin** - IP address cache settings
-7. **IP Geo Plugin** - Statistics tab
-8. **IP Geo Plugin** - Logs tab
-9. **IP Geo Plugin** - Search tab
-10. **IP Geo Plugin** - Attribution tab
+1. **IP Geo Plugin** - Multisite list on network
+2. **IP Geo Plugin** - Settings tab
+3. **IP Geo Plugin** - Validation rules and behavior
+4. **IP Geo Plugin** - Back-end target settings
+5. **IP Geo Plugin** - Front-end target settings
+6. **IP Geo Plugin** - Geolocation API settings
+7. **IP Geo Plugin** - IP address cache settings
+8. **IP Geo Plugin** - Statistics tab
+9. **IP Geo Plugin** - Logs tab
+10. **IP Geo Plugin** - Search tab
+11. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
 
