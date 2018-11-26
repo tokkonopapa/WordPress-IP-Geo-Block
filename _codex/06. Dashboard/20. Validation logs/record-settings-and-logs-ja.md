@@ -59,10 +59,10 @@ POST メソッドによるリクエストが遮断されると、サーバー変
   このキーは WordPress では頻繁に指定されます。通常は実行される内容を示します。
 
 - `comment`  
-  `wp-comments-post.php` に送信されるコメントの内容です。
+  `wp-comments-post.php` に送信されたコメントの内容です。
 
 - `log`, `pwd`  
-  `wp-login.php` に送信されるログイン名とパスワードです。遮断の対象でない限り、
+  `wp-login.php` に送信されたログイン名とパスワードです。遮断の対象でない限り、
   `pwd` は `***` でマスクされます。  
   
   ![Log of Login form]({{ '/img/2016-01/LogLoginForm.png' | prepend: site.baseurl }}
