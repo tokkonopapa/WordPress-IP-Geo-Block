@@ -6,15 +6,25 @@ section: Dashboard
 title: Validation logs
 ---
 
-This plugin keeps validation logs when **Record “Logs”** in [**Privacy and 
-record settings**][Privacy] section on **Settings** tab is enabled.
+This plugin stores validation logs when **Record "Logs"** is enabled in 
+[**Privacy and record settings**][Privacy] section on **Settings** tab.
 
 <!--more-->
 
-### HTTP Method ###
+### Contents in log ###
 
-[RFC2616][RFC2616-SEC9] defines 8 method, i.e. GET, POST, PUT, DELETE, HEAD, 
-OPTIONS, TRACE, CONNECT. The definitions says:
+![Validation logs]({{ '/img/2018-12/ValidationLogs.png' | prepend: site.baseurl }}
+ "Validation logs"
+)
+
+The followings are some of items that are stores in logs.
+
+#### Request ####
+
+Following the HTTP method and the port, the requested path is recorded.
+[RFC2616][RFC2616-SEC9] (obsoleted by [RFC7231][RFC7231-SEC4]) defines 8 
+method, i.e. GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, CONNECT. The 
+definitions says:
 
 > In particular, the convention has been established that the GET and HEAD 
 > methods SHOULD NOT have the significance of taking an action other than 
@@ -32,12 +42,13 @@ takes an action other than retrieval.
 
 Anyway, we'd better take care about what's being done by a malicious request.
 
-### $_POST keys ###
+#### $_POST data ####
 
-If a request submitted by POST method is blocked, keys in `$_POST` environment 
-variable are recorded into the log. The corresponded keys in "**$_POST keys to 
-be recorded with their values in logs**" are deployed to their values in order 
-to take a look at them.
+When a request submitted by POST method is blocked, keys in `$_POST` 
+environment variable are recorded into the log. The corresponded keys in 
+"**$_POST keys to be recorded with their values in logs**" in [**Privacy and 
+record settings**][Privacy] section are deployed to their values in order to 
+take a look at them.
 
 ![Record settings]({{ '/img/2016-01/RecordSettings.png' | prepend: site.baseurl }}
  "Record settings"
@@ -55,27 +66,24 @@ The recommended keys are as follows:
 - `log`, `pwd`  
   The login name and password posted to `wp-login.php`. The `pwd` will be 
   masked with `***` when it comes from a logged in user.  
+  
   ![Log of Login form]({{ '/img/2016-01/LogLoginForm.png' | prepend: site.baseurl }}
    "Log of Login form"
   )
+{% comment %} *** {% endcomment %}
 
 - `FILES`  
   It shows the contents of HTTP File Upload variables `$_FILES` if 
   [POST method uploads][PHP-UPLOADS] was requested. (since 3.0.3)  
+  
   ![Malicious file upload]({{ '/img/2017-04/LogUploadFile.png' | prepend: site.baseurl }}
    "Malicious file upload"
   )
 
-### Description of "Result" ###
+#### Result ####
 
-The following picutre shows the reason of blocking at "**Result**" column on 
-"**Logs**" tab.
-
-![Validation Logs]({{ '/img/2015-11/validation-logs.png' | prepend: site.baseurl }}
- "Validation Logs"
-)
-
-Here are the descriptions:
+The column "**Result**" shows the validation result as the following table 
+describes:
 
 | Result        | Description                                      |
 |:--------------|:-------------------------------------------------|
@@ -93,14 +101,26 @@ Here are the descriptions:
 | upload        | blocked by forbidden MIME type                   |
 | ^             | found unexpected attached files                  |
 
+### Live update ###
+
+Independent of [**Privacy and record settings**][Privacy] section, you can 
+see all the requests validated by this plugin in almost real time.
+
+![Live update]({{ '/img/2018-12/LiveUpdate.png' | prepend: site.baseurl }}
+ "Live update"
+)
+
 ### See also ###
 
-- [ip-geo-block-backup-dir][BackupDir]
-- [ip-geo-block-xxxxx][Validation]
+- [ip-geo-block-record-logs][RecordLogs]
+- [ip-geo-block-logs[-preset]][LogsPreset]
+- [ip-geo-block-live-log][LiveLogs]
 
-[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"
-[RFC2616-SEC9]: https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html "HTTP/1.1: Method Definitions"
-[BackupDir]:    {{ '/codex/ip-geo-block-backup-dir.html'     | prepend: site.baseurl }} 'ip-geo-block-backup-dir | IP Geo Block'
-[Validation]:   {{ '/codex/ip-geo-block-xxxxx.html'          | prepend: site.baseurl }} 'ip-geo-block-xxxxx | IP Geo Block'
+[IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "IP Geo Block &#124; WordPress.org"
+[RFC2616-SEC9]: https://tools.ietf.org/html/rfc2616#section-9 "Hypertext Transfer Protocol -- HTTP/1.1: 9 Method Definitions"
+[RFC7231-SEC4]: https://tools.ietf.org/html/rfc7231#section-4 "Hypertext Transfer Protocol (HTTP/1.1): 4. Request Methods"
 [Privacy]:      {{ '/codex/privacy-and-record-settings.html' | prepend: site.baseurl }} 'Privacy and record settings | IP Geo Block'
 [PHP-UPLOADS]:  https://php.net/manual/features.file-upload.post-method.php 'PHP: POST method uploads - Manual'
+[RecordLogs]:   {{ '/codex/ip-geo-block-record-logs.html'    | prepend: site.baseurl }} 'ip-geo-block-record-logs | IP Geo Block'
+[LogsPreset]:   {{ '/codex/ip-geo-block-logs-preset.html'    | prepend: site.baseurl }} 'ip-geo-block-logs[-preset] | IP Geo Block'
+[LiveLogs]:     {{ '/codex/ip-geo-block-live-log.html'       | prepend: site.baseurl }} 'ip-geo-block-live-log | IP Geo Block'
