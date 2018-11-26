@@ -56,7 +56,7 @@ POST メソッドによるリクエストが遮断されると、サーバー変
 以下は、興味の対象となるであろうキーのリストです。
 
 - `action`  
-  このキーは WordPress ではとてもよく使用されます。通常、実行内容を示します。
+  このキーは WordPress では頻繁に指定されます。通常は実行される内容を示します。
 
 - `comment`  
   `wp-comments-post.php` に送信されるコメントの内容です。
@@ -71,8 +71,8 @@ POST メソッドによるリクエストが遮断されると、サーバー変
 {% comment %} *** {% endcomment %}
 
 - `FILES`  
-  POST メソッドによるアップロードされ、サーバー変数 `$_FILES` に格納された内容
-  です。（バージョン 3.0.3 以降）  
+  POST メソッドによりアップロードされ、サーバー変数 `$_FILES` に格納された
+  ファイルの情報です。（バージョン 3.0.3 以降）  
   
   ![Malicious file upload]({{ '/img/2017-04/LogUploadFile.png' | prepend: site.baseurl }}
    "Malicious file upload"
