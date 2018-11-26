@@ -53,9 +53,9 @@ IP Geo API は、位置情報データベースと共に、次のいずれかの
 
 ### CloudFlare と CloudFront 専用の API ライブラリ ###
 
-もしあなたが [CloudFlare][CloudFlare] か [CloudFront][CloudFront] が提供する
-プロキシーやロード・バランサーのサービスを利用している場合、特別な環境変数を
-通してアクセス元の国コードを取得することができます。
+[CloudFlare][CloudFlare] か [CloudFront][CloudFront] が提供するプロキシーや
+ロード・バランサーのサービスを利用している場合、特別な環境変数を通して
+アクセス元の国コードを取得することができます。
 
 これを利用する場合は、専用ライブラリのインストールが必要になります。詳細は、
 [CloudFlare & CloudFront API class library][APILibrary] を参照してください。

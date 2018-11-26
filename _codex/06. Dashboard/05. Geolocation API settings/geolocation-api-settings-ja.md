@@ -39,10 +39,10 @@ __IP2Location__ と表記します。
 呼び出し回数に制限があるものや、事前登録による API キーの取得が必要なものがあり
 ますので、各サービスの利用規約を確認してください。
 
-- [ipinfo.io][IpinfoIO]
-- [Nekudo][Nekudo]
+- [IP-API.com][IP-API]
 - [GeoIPLookup][GeoIPLookup]
-- [ip-api.com][ip-api]
+- [ipinfo.io][IpinfoIO]
+- [ipapi.com][ipapicom]
 - [Ipdata.co][Ipdata]
 - [ipstack][ipstack]
 - [IPInfoDB][IPInfoDB]
@@ -68,10 +68,10 @@ __IP2Location__ と表記します。
 [GeoLegacy]:    https://dev.maxmind.com/geoip/legacy/geolite/ "GeoLite Legacy Downloadable Databases &laquo; MaxMind Developer Site"
 [IP2Location]:  https://www.ip2location.com/ "IP Address to Identify Geolocation Information"
 [IP2Lite]:      https://lite.ip2location.com/ "Free IP Geolocation Database | IP2Location LITE"
-[IpinfoIO]:     https://ipinfo.io/ "IP Address API and Data Solutions - geolocation, company, carrier info, type and more - ipinfo.io"
-[Nekudo]:       https://geoip.nekudo.com/ "Free IP GeoLocation/GeoIp API - geoip.nekudo.com"
+[IP-API]:       http://ip-api.com/ "IP-API.com - Free Geolocation API"
 [GeoIPLookup]:  http://geoiplookup.net/ "What Is My IP Address | Geo IP Lookup"
-[ip-api]:       http://ip-api.com/ "IP-API.com - Free Geolocation API"
+[IpinfoIO]:     https://ipinfo.io/ "IP Address API and Data Solutions - geolocation, company, carrier info, type and more - ipinfo.io"
+[ipapicom]:     https://ipapi.com/ "ipapi - IP Address Lookup and Geolocation API"
 [Ipdata]:       https://ipdata.co/ "ipdata - Free IP Geolocation API"
 [ipstack]:      https://ipstack.com/ "ipstack - Free IP Geolocation API"
 [IPInfoDB]:     https://ipinfodb.com/ "Free IP Geolocation Tools and API| IPInfoDB"
