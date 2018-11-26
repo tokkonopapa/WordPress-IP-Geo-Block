@@ -1727,9 +1727,9 @@
 					timer_pause = null;
 				}
 			},
-			live_start = function () {
+			live_start = function (cmd) {
 				clear_timer();
-				ajax_post('live-loading', {
+				ajax_post(cmd === undefined ? 'live-loading' : null, {
 					cmd: 'live-start'
 				}, function (res) {
 					if (res.error) {
@@ -1742,11 +1742,14 @@
 						}
 						table.draw(false); // the current page will still be shown.
 					}
-					timer_start = window.setTimeout(live_start, ip_geo_block.interval * 1000);
+					if (cmd === undefined) {
+						// keep updating
+						timer_start = window.setTimeout(live_start, ip_geo_block.interval * 1000);
+					}
 				});
 			},
 			live_stop = function (cmd, callback) {
-				clear_timer();
+				live_start(false); // once read out the buffer
 				ajax_post(null, {
 					cmd: cmd || 'live-stop',
 					callback: callback
@@ -1756,8 +1759,8 @@
 				live_stop('live-pause', function () {
 					$timer_pause.addClass(ID('live-timer'));
 					timer_pause = window.setTimeout(function () {
-						$(ID('#', 'live-log-start')).prop('checked', true);
-						live_start();
+						$(ID('#', 'live-log-stop')).prop('checked', true);
+						live_stop();
 					}, ip_geo_block.timeout * 1000);
 				});
 			},
