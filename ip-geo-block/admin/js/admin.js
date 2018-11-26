@@ -1756,8 +1756,8 @@
 				live_stop('live-pause', function () {
 					$timer_pause.addClass(ID('live-timer'));
 					timer_pause = window.setTimeout(function () {
-						clear_timer();
-						$(ID('#', 'live-log-stop')).prop('checked', true);
+						$(ID('#', 'live-log-start')).prop('checked', true);
+						live_start();
 					}, ip_geo_block.timeout * 1000);
 				});
 			},
