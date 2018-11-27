@@ -911,16 +911,16 @@ class IP_Geo_Block {
 	 *
 	 */
 	private function validate_metadata( $data, $priority = 10 ) {
-		// @since 2.6.0 apply_filters( "pre_update_option_{$option}", $value, $old_value, $option );
+		// @since 2.6.0 apply_filters( "pre_update_option_{$option}", $value, $old_value, $option ); @since 4.4.0 `$option` was added.
 		// @since 2.9.0 apply_filters( "pre_update_site_option_{$option}", $value, $old_value, $option, $network_id );
-		foreach ( $data as $key => $options ) {
-			foreach ( $options as $option ) {
+		foreach ( array( 'pre_update_option', 'pre_update_site_option' ) as $key ) {
+			foreach ( $data[ $key ] as $option ) {
 				add_filter( "{$key}_{$option}", array( $this, 'check_capability' ), $priority, 3 );
 			}
 		}
 	}
 
-	public function check_capability( $value, $old_value, $option ) {
+	public function check_capability( $value, $old_value, $option = NULL ) {
 		// check capability
 		if ( ! IP_Geo_Block_Util::current_user_can( 'manage_options' ) && ! IP_Geo_Block_Util::current_user_can( 'manage_network_options' ) ) {
 			$time = microtime( TRUE );
