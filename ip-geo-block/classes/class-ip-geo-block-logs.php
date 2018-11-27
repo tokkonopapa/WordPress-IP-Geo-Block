@@ -624,8 +624,8 @@ class IP_Geo_Block_Logs {
 		$posts = self::get_post_data( $hook, $validate, $settings );
 		$method = $_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . $_SERVER['REQUEST_URI'];
 
-		// mark if malicious upload exists
-		if ( isset( $validate['upload'] ) )
+		// mark if any uploaded files exist
+		if ( ! empty( $_FILES ) )
 			$validate['result'] .= '^';
 
 		// anonymize ip address
