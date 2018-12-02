@@ -196,6 +196,9 @@ class IP_Geo_Block_Opts {
 			'hash'           => NULL,    // hash of 'link'
 		),
 		// since version 3.0.17
+		'monitor'         => array(
+			'metadata'       => TRUE,
+		),
 		'metadata'        => array(
 			'pre_update_option'      => array( 'siteurl', 'admin_email', 'users_can_register', 'default_role' ),
 			'pre_update_site_option' => array( 'siteurl', 'admin_email', 'registration' ),
@@ -391,11 +394,9 @@ class IP_Geo_Block_Opts {
 			$settings['live_update'] = $default['live_update'];
 
 		if ( version_compare( $version, '3.0.8' ) < 0 ) {
-			$settings['timeout' ] = $default['timeout'];
+			$settings['timeout' ] = $default['timeout' ];
+			$settings['Geolite2'] = $default['Geolite2'];
 			$settings['Geolite2']['use_asn'] = $settings['Maxmind']['use_asn'];
-			foreach ( array( 'ip_path', 'ip_last', 'asn_path', 'asn_last' ) as $tmp ) {
-				$settings['Geolite2'][ $tmp ] = $default['Geolite2'][ $tmp ];
-			}
 		}
 
 		if ( version_compare( $version, '3.0.10' ) < 0 ) {
@@ -430,7 +431,10 @@ class IP_Geo_Block_Opts {
 
 		if ( version_compare( $version, '3.0.17' ) < 0 ) {
 			$settings['priority'] = $default['priority'];
+			$settings['monitor' ] = $default['monitor' ];
 			$settings['metadata'] = $default['metadata'];
+
+			// re-install mu-plugins to re-order the priority
 			if ( self::get_validation_timing( NULL ) ) {
 				self::remove_mu_plugin( NULL );
 				self::setup_validation_timing( $settings );

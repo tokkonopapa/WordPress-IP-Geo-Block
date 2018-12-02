@@ -12,15 +12,13 @@ It blocks spam posts, login attempts and malicious access to the back-end reques
 
 == Description ==
 
-What do you think is the most secure state for the WordPress sites?
+The more you install themes and plugins, the more likely your sites will be vulnerable, even if you [securely harden your sites](https://codex.wordpress.org/Hardening_WordPress "Hardening WordPress &laquo; WordPress Codex").
 
-Even if [you securely harden your sites](https://codex.wordpress.org/Hardening_WordPress "Hardening WordPress &laquo; WordPress Codex"), the more you install themes and plugins, the more likely your sites will be vulnerable.
+While WordPress.org [provides](https://wordpress.org/about/security/ "Security | WordPress.org") [excellent](https://developer.wordpress.org/themes/theme-security/ "Theme Security | Theme Developer Handbook | WordPress Developer Resources") [resources](https://developer.wordpress.org/plugins/security/ "Plugin Security | Plugin Developer Handbook | WordPress Developer Resources"), themes and plugins may often get vulnerable due to developers' [human factors](https://www.google.com/search?q=human+factors+in+security "human factors in security - Google Search") such as lack of security awareness, misuse and disuse of the best practices in those resources.
 
-While WordPress provides excellent methods to securely build themes and plugins, developers often produce vulnerabilities due to their [human factors](https://www.google.com/search?q=human+factors+in+security "human factors in security - Google Search") such as lack of security awareness, misuse and disuse of those methods in WP core.
+This plugin focuses on insights into such developers' human factors instead of detecting the specific attack vectors after they were disclosed. This brings a smart and powerful methods named as "**WP Zero-day Exploit Prevention**" and "**WP Metadata Exploit Protection**".
 
-This plugin focuses on insights into such developers' human factors instead of updating attack vectors after they are disclosed. This brings a smart and powerful method named as WP-ZEP (WP Zero-day Exploit Prevention) so that malicious accesses to the back-end can be effectively blocked.
-
-After several days of installation, you'll be supprised to find a bunch of malicious or undesirable accesses are blocked by combination of WP-ZEP and IP addresss Geo-location.
+Combined with those methods and IP address geolocation, you'll be supprised to find a bunch of malicious or undesirable access blocked in the logs of this plugin after several days of installation.
 
 = Features =
 
@@ -236,12 +234,13 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 
 = 3.0.17 =
 * **Fix issue:** Avoid the error of "Can not load Geolocation API libraries" caused by the race condition on upgrading this plugin.
+* **New feature:** Enhance protecting against certain types of attacks by privilege escalation.
 * **New feature:** Add a new option of "**Network wide settings**" in "**Plugin settings**" section to synchronize all the settings with the main blog on multisite.
 * **New feature:** Add "**Preset filters**" using [`ip-geo-block-logs[-preset]`](https://www.ipgeoblock.com/codex/ip-geo-block-logs-preset.html "ip-geo-block-logs[-preset] | IP Geo Block") filter hook to make analyze logs easy on "**Logs**" tab.
-* **Improvement:** Enhance protecting against certain types of attacks by privilege escalation.
+* **Improvement:** When `pwd` is set at "**$_POST key to record with value**" in "**Privacy and record settings**" section, mask the password in logs unless the login attempt is blocked.
+* **Improvement:** Flush out the buffer of "**Live update**" on "**Logs**" tab when stop button is activated to avoid data remains.
 * **Improvement:** Update the geolocation API service "geoip.nekudo.com" to "ipapi.com".
 * **Improvement:** Update the class for Maxmind GeoLite Legacy databases to prepare against the upcoming expiry of support.
-* **Improvement:** Mask password in logs also when login fails.
 * See [3.0.17 release note](https://www.ipgeoblock.com/changelog/release-3.0.17.html) for some details.
 
 = 3.0.16 =

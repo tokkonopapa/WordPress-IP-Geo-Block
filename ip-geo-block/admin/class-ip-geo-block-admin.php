@@ -443,7 +443,7 @@ class IP_Geo_Block_Admin {
 		}
 
 		if ( $admin_menu ) {
-			// `options-general.php` ==> `options.php` ==> query `settings-updated` is added just after settings updated.
+			// `options-general.php` ==> `options.php` ==> `settings-updated` is added as query just after settings updated.
 			if ( ! empty( $_REQUEST['page'] ) && IP_Geo_Block::PLUGIN_NAME === $_REQUEST['page'] &&
 			     ! empty( $_REQUEST['settings-updated'] ) && $this->is_network_admin && $settings['network_wide'] ) {
 				$this->update_multisite_settings( $settings );

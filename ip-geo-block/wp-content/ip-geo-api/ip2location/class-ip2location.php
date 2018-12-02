@@ -146,6 +146,9 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	}
 
 	public function add_settings_field( $field, $section, $option_slug, $option_name, $options, $callback, $str_path, $str_last ) {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( __FILE__ . '(' . __FUNCTION__ . ')' );
+
 		$db  = $options[ $field ];
 		$dir = $this->get_db_dir();
 		$msg = __( 'Database file does not exist.', 'ip-geo-block' );
@@ -156,7 +159,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 		else
 			$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-ip2location-path', $dir . IP_GEO_BLOCK_IP2LOC_IPV4_DAT );
 
-		if ( @file_exists( $path ) )
+		if ( $fs->exists( $path ) )
 			$date = sprintf( $str_last, IP_Geo_Block_Util::localdate( $db['ipv4_last'] ) );
 		else
 			$date = $msg;
@@ -184,7 +187,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 		else
 			$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-ip2location-path', $dir . IP_GEO_BLOCK_IP2LOC_IPV6_DAT );
 
-		if ( @file_exists( $path ) )
+		if ( $fs->exists( $path ) )
 			$date = sprintf( $str_last, IP_Geo_Block_Util::localdate( $db['ipv6_last'] ) );
 		else
 			$date = $msg;

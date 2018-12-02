@@ -19,6 +19,7 @@ class IP_Geo_Block {
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
+	const OPTION_META = 'ip_geo_block_metadata';
 	const CACHE_NAME  = 'ip_geo_block_cache';
 	const CRON_NAME   = 'ip_geo_block_cron';
 
@@ -162,7 +163,7 @@ class IP_Geo_Block {
 		add_filter( 'http_request_args',  array( $this,   'request_nonce' ), $priority[1], 2 ); // @since 2.7.0
 
 		// register validation of updating metadata
-		$this->validate_metadata( $settings['metadata'], $priority[0] );
+		$this->validate_metadata( $settings, $priority[0] );
 	}
 
 	/**
@@ -209,6 +210,14 @@ class IP_Geo_Block {
 
 	public static function update_option( $settings, $cache = TRUE ) {
 		return update_option( self::OPTION_NAME, $cache ? self::$settings = $settings : $settings );
+	}
+
+	public static function get_metadata( $cache = TRUE ) {
+		return ( $metadata = get_option( self::OPTION_META ) ) ? $metadata : array();
+	}
+
+	public static function update_metadata( $metadata, $cache = TRUE ) {
+		return update_option( self::OPTION_META, $metadata );
 	}
 
 	/**
@@ -910,13 +919,40 @@ class IP_Geo_Block {
 	 * Validate updating metadata.
 	 *
 	 */
-	private function validate_metadata( $data, $priority = 10 ) {
+	private function validate_metadata( $settings, $priority = 10 ) {
 		// @since 2.6.0 apply_filters( "pre_update_option_{$option}", $value, $old_value, $option ); @since 4.4.0 `$option` was added.
 		// @since 2.9.0 apply_filters( "pre_update_site_option_{$option}", $value, $old_value, $option, $network_id );
 		foreach ( array( 'pre_update_option', 'pre_update_site_option' ) as $key ) {
-			foreach ( $data[ $key ] as $option ) {
+			foreach ( $settings['metadata'][ $key ] as $option ) {
 				add_filter( "{$key}_{$option}", array( $this, 'check_capability' ), $priority, 3 );
 			}
+		}
+
+		/**
+		 * @since 2.9.0
+		 *   do_action( 'updated_option', $option, $old_value, $value );
+		 * @since 3.0.0, @since 4.7.0 The `$network_id` parameter was added.
+		 *   do_action( 'update_site_option', $option, $value, $old_value, $network_id );
+		*/
+		if ( ! empty( $settings['monitor']['metadata'] ) ) {
+			add_action( 'updated_option',     array( $this, 'update_meta_stats' ), $priority, 1 );
+			add_action( 'update_site_option', array( $this, 'update_meta_stats' ), $priority, 1 );
+		}
+	}
+
+	public function update_meta_stats( $option ) {
+		if ( FALSE === strpos( $option, 'transient' ) && self::OPTION_META !== $option ) {
+			$which = IP_Geo_Block_Util::current_user_can( 'manage_options'         ) ||
+			         IP_Geo_Block_Util::current_user_can( 'manage_network_options' ) ? 0 : 1;
+
+			$metadata = self::get_metadata();
+			$action = current_filter(); // @since 2.5.0
+
+			if ( ! isset( $metadata[ $action ][ $option ] ) )
+				$metadata[ $action ][ $option ] = array( 0, 0 );
+
+			$metadata[ $action ][ $option ][ $which ]++;
+			self::update_metadata( $metadata );
 		}
 	}
 

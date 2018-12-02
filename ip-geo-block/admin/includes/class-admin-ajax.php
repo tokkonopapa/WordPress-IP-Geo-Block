@@ -600,6 +600,7 @@ endif; // TEST_RESTORE_NETWORK
 			'[mimetype][capability][$]', // 3.0.4
 			'[Maxmind][use_asn]',        // 3.0.4
 			'[live_update][in_memory]',  // 3.0.5
+			'[monitor][metadata]',       // 3.0.17
 			'[metadata][pre_update_option][$]',      // 3.0.17
 			'[metadata][pre_update_site_option][$]', // 3.0.17
 		);
@@ -900,8 +901,7 @@ endif; // TEST_RESTORE_NETWORK
 				// add post data
 				$query = array();
 				foreach ( explode( ',', $val['data'] ) as $str ) {
-					if ( FALSE !== strpos( $str, '=' ) )
-						$query[] = $str;
+					FALSE !== strpos( $str, '=' ) and $query[] = $str;
 				}
 
 				if ( ! empty( $query ) )
