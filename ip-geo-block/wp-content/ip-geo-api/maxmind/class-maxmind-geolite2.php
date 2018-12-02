@@ -161,7 +161,7 @@ endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] )
 
 		// IPv4 & IPv6
 		if ( $dir !== dirname( $db['ip_path'] ) . '/' )
-			$db['ip_path'] = $dir . IP_GEO_BLOCK_GEOLITE2_DB_ASN;
+			$db['ip_path'] = $dir . IP_GEO_BLOCK_GEOLITE2_DB_IP;
 
 		// filter database file
 		$db['ip_path'] = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-geolite2-path', $db['ip_path'] );
