@@ -3,7 +3,7 @@ layout: page
 category: codex
 section: Filter Hooks
 title: ip-geo-block-ip2location-path
-file: [class-ip2location.php]
+file: [ip-geo-api/ip2location/class-ip2location.php]
 ---
 
 The absolute path to IP2location database file for IPv4.
@@ -22,7 +22,7 @@ to [IP2Location][IP2Location] database file for IPv4.
 
 ### Use case ###
 
-If you'd like to share the database file with the WordPress plugin 
+If you'd like to share the database file with other WordPress plugins like 
 [IP2Location Tags][IP2Tag] (or [other free plugins][IP2Free]), the following 
 code snippet in your theme's `functions.php` may help you.
 

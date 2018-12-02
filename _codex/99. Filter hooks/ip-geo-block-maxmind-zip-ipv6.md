@@ -3,7 +3,7 @@ layout: page
 category: codex
 section: Filter Hooks
 title: ip-geo-block-maxmind-zip-ipv6
-file: [class-maxmind.php]
+file: [ip-geo-api/maxmind/class-maxmind-legacy.php]
 ---
 
 The URI to MaxMind GeoLite Legacy database for IPv6.

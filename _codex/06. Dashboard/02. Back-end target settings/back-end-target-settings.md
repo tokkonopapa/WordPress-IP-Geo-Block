@@ -16,6 +16,13 @@ requests for particularly important endpoints among them.
 
 It validates requests to `wp-comments-post.php`.
 
+<div class="alert alert-info">
+	<strong>Note:</strong> The request to 
+	<a href="https://codex.bbpress.org/features/subscriptions/"
+	title="Subscriptions &middot; bbPress Codex">
+	subscribing to bbPress forum</a> can also be blocked by this option.
+</div>
+
 - **Message on comment form**  
 You can put the specified message at the point where template action hook 
 [`comment_form`][HookComment] or [`comment_form_top`][HookCommTop] is fired.
@@ -42,6 +49,13 @@ It validates requests to `wp-login.php`.
 - **Target actions**  
 In addition to login, you can enable actions such as user registration, 
 [password protected page][PassProtect] and so on.
+
+<div class="alert alert-info">
+	<strong>Note:</strong> The request to the
+	<a href="https://codex.buddypress.org/getting-started/register-and-activation-pages/"
+	title="Register and Activation Pages &middot; BuddyPress Codex">
+	registration page of BuddyPress</a> can also be blocked by this option.
+</div>
 
 - **Max number of failed login attempts per IP address**  
 Select the maximum number of possible login attempts. "[**Record “IP address

@@ -3,7 +3,7 @@ layout: page
 category: codex
 section: Filter Hooks
 title: ip-geo-block-ip2location-dir
-file: [class-ip2location.php]
+file: [ip-geo-api/ip2location/class-ip2location.php]
 ---
 
 The absolute path to the directory where IP2location database is installed.

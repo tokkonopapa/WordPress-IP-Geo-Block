@@ -3,7 +3,7 @@ layout: page
 category: codex
 section: Filter Hooks
 title: ip-geo-block-maxmind-dir
-file: [class-maxmind.php]
+file: [ip-geo-api/maxmind/class-maxmind-legacy.php]
 ---
 
 The absolute path to the directory where MaxMind database is installed.

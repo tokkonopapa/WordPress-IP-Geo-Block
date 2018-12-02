@@ -16,6 +16,13 @@ WordPress には、サイトに何らかの影響を及ぼす重要なバック�
 
 `wp-comments-post.php` へのリクエストを検証します。
 
+<div class="alert alert-info">
+	<strong>参考：</strong> このオプションで
+	<a href="https://codex.bbpress.org/features/subscriptions/"
+	title="Subscriptions &middot; bbPress Codex">
+	bbPress フォーラム</a> への投稿を遮断することができます。
+</div>
+
 - **投稿フォーム上のメッセージ**  
 テンプレートのアクション・フック [`comment_form`][HookComment] または
 [`comment_form_top`][HookCommTop] をトリガーに、投稿フォーム上に出力する
@@ -43,6 +50,13 @@ WordPress には、サイトに何らかの影響を及ぼす重要なバック�
 - **対象アクション**  
 ユーザー登録や[パスワードで保護されたページ][PassProtect]へのアクセスなど、
 ログイン・フォームに関連するアクション毎に設定することができます。
+
+<div class="alert alert-info">
+	<strong>参考：</strong> このオプションで
+	<a href="https://codex.buddypress.org/getting-started/register-and-activation-pages/"
+	title="Register and Activation Pages &middot; BuddyPress Codex">
+	BuddyPress ユーザー登録ページ</a> へのリクエストを遮断することができます。
+</div>
 
 - **IPアドレス当たりのログイン試行可能回数**  
 ログイン試行可能な最大回数を設定します。「[**プライバシーと記録の設定**]

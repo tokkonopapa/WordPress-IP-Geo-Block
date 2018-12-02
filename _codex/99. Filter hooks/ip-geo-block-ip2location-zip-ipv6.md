@@ -3,7 +3,7 @@ layout: page
 category: codex
 section: Filter Hooks
 title: ip-geo-block-ip2location-zip-ipv6
-file: [class-ip2location.php]
+file: [ip-geo-api/ip2location/class-ip2location.php]
 ---
 
 The URI to IP2Location LITE database for IPv6.
