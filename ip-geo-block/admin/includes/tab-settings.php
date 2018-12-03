@@ -309,6 +309,28 @@ endif;
 			)
 		);
 
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		// Prevent metadata alteration
+		$list  = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup" style="margin-top:0.4em">' . __( '<dfn title="Specify the table names to be verified for single site. This verification will be skipped if empty.">pre_update_option</dfn>', 'ip-geo-block' ) . "\n";
+		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_metadata_pre_update_option" name="ip_geo_block_settings[metadata][pre_update_option]" class="regular-text code" value="' . esc_attr( implode( ',', $options['metadata']['pre_update_option'] ) ) . '" />' . $common[0] . '</li></ul></li></ul>' . "\n";
+		$list .= '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup">' . __( '<dfn title="Specify the table names to be verified for multisite. This verification will be skipped if empty.">pre_update_site_option</dfn>', 'ip-geo-block' ) . "\n";
+		$list .= '<li class="ip-geo-block-hide"><ul><li><input type="text" id="ip_geo_block_settings_metadata_pre_update_site_option" name="ip_geo_block_settings[metadata][pre_update_site_option]" class="regular-text code" value="' . esc_attr( implode( ',', $options['metadata']['pre_update_site_option'] ) ) . '" />' . $common[0] . '</li></ul></li></ul>' . "\n";
+
+		add_settings_field(
+			$option_name.'_metadata',
+			__( '<dfn title="It prevents to manipulate metadata in database without admin privilege.">Prevent metadata alteration</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'html',
+				'option' => $option_name,
+				'field' => 'metadata',
+				'value' => $list,
+			)
+		);
+endif;
+
 		// Response code (RFC 2616)
 		add_settings_field(
 			$option_name.'_response_code',
@@ -535,8 +557,8 @@ endif;
 		);
 
 		$desc = array(
-			1 => __( 'It will block a request related to the services for both public facing pages and the dashboard.', 'ip-geo-block' ),
-			2 => __( 'Regardless of the country code, it will block a malicious request related to the services only for the dashboard.', 'ip-geo-block' ),
+			1 => __( 'It will block a request related to the services for both &#8220;non-logged in user&#8221; and &#8220;logged-in user&#8221;.', 'ip-geo-block' ),
+			2 => __( 'Regardless of the country code, it will block a malicious request related to the services only for &#8220;logged-in user&#8221;.', 'ip-geo-block' ),
 		);
 
 		// Max failed login attempts per IP address
@@ -1470,7 +1492,7 @@ endif;
 			NULL,
 			$option_slug
 		);
-if ( IP_GEO_BLOCK_NETWORK && FALSE ):
+
 		// @see https://vedovini.net/2015/10/using-the-wordpress-settings-api-with-network-admin-pages/
 		if ( $context->is_network_admin() ) {
 			add_action( 'network_admin_edit_' . IP_Geo_Block::PLUGIN_NAME, array( $context, 'validate_network_settings' ) );
@@ -1491,7 +1513,7 @@ if ( IP_GEO_BLOCK_NETWORK && FALSE ):
 				)
 			);
 		}
-endif;
+
 		// Emergency login link
 		$key = IP_Geo_Block_Util::get_link();
 		add_settings_field(

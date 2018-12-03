@@ -94,7 +94,12 @@
 		request.action = ip_geo_block.action;
 		request.nonce  = ip_geo_block.nonce;
 
-		$.post(ip_geo_block.url, request)
+		$.ajax({
+			type: 'POST',
+			url: ip_geo_block.url,
+			data: request,
+			dataType: 'json'
+		})
 
 		.done(function (data/*, textStatus, jqXHR*/) {
 			if (callback) {
@@ -461,7 +466,7 @@
 			if (chart.dataStacked[id] === undefined) {
 				data = $.parseJSON($id.attr('data-' + id));
 				if (data) {
-					data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'poblic', { role: 'link' } ]);
+					data.unshift(['site', 'comment', 'xmlrpc', 'login', 'admin', 'public', { role: 'link' } ]);
 					chart.dataStacked[id] = window.google.visualization.arrayToDataTable(data);
 				}
 			}
@@ -482,8 +487,8 @@
 
 					for (i = 0; i < n; i++) {
 						info.push({
-							label: data.getValue(i, 0),
-							link:  data.getValue(i, 6)
+							label: /*escapeHTML(*/data.getValue(i, 0)/*)*/,
+							link:  /*escapeHTML(*/data.getValue(i, 6)/*)*/
 						});
 					}
 
@@ -1722,9 +1727,9 @@
 					timer_pause = null;
 				}
 			},
-			live_start = function () {
+			live_start = function (cmd) {
 				clear_timer();
-				ajax_post('live-loading', {
+				ajax_post(cmd === undefined ? 'live-loading' : null, {
 					cmd: 'live-start'
 				}, function (res) {
 					if (res.error) {
@@ -1737,11 +1742,14 @@
 						}
 						table.draw(false); // the current page will still be shown.
 					}
-					timer_start = window.setTimeout(live_start, ip_geo_block.interval * 1000);
+					if (cmd === undefined) {
+						// keep updating
+						timer_start = window.setTimeout(live_start, ip_geo_block.interval * 1000);
+					}
 				});
 			},
 			live_stop = function (cmd, callback) {
-				clear_timer();
+				live_start(false); // once read out the buffer
 				ajax_post(null, {
 					cmd: cmd || 'live-stop',
 					callback: callback
@@ -1751,8 +1759,8 @@
 				live_stop('live-pause', function () {
 					$timer_pause.addClass(ID('live-timer'));
 					timer_pause = window.setTimeout(function () {
-						clear_timer();
 						$(ID('#', 'live-log-stop')).prop('checked', true);
+						live_stop();
 					}, ip_geo_block.timeout * 1000);
 				});
 			},

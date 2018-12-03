@@ -46,7 +46,7 @@ function strip_tags(html) {
 			var text, i;
 			for (i = 0; i < match.length; i++) {
 				// remove tags
-				// http://qiita.com/miiitaka/items/793555b4ccb0259a4cb8
+				// https://qiita.com/miiitaka/items/793555b4ccb0259a4cb8
 				if (text = match[i].replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')) {
 					html = text;
 					break;

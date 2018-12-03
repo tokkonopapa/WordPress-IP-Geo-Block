@@ -2,7 +2,7 @@
 /**
  * IP Geo Block API class library for Maxmind
  *
- * @version   1.1.13
+ * @version   1.1.14
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      https://www.ipgeoblock.com/
@@ -41,10 +41,11 @@ class IP_Geo_Block_API_Geolite2 extends IP_Geo_Block_API {
 
 	private function location_city( $record ) {
 		return array(
-			'countryCode' => $record->isoCode,
-			'cityName'    => $record->city,
-			'latitude'    => $record->latitude,
-			'longitude'   => $record->longitude,
+			'countryCode' => $record->country->isoCode,
+			'countryName' => $record->country->names['en'],
+			'cityName'    => $record->city->names['en'],
+			'latitude'    => $record->location->latitude,
+			'longitude'   => $record->location->longitude,
 		);
 	}
 
@@ -62,17 +63,26 @@ class IP_Geo_Block_API_Geolite2 extends IP_Geo_Block_API {
 		$settings = IP_Geo_Block::get_option();
 
 		if ( empty( $args['ASN'] ) ) {
-			$file = ! empty( $settings['Maxmind']['ip_path'] ) ? $settings['Maxmind']['ip_path'] : $this->get_db_dir() . IP_GEO_BLOCK_GEOLITE2_DB_IP;
+			$file = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-geolite2-path',
+				( ! empty( $settings['Geolite2']['ip_path'] ) ?
+					$settings['Geolite2']['ip_path'] :
+					$this->get_db_dir() . IP_GEO_BLOCK_GEOLITE2_DB_IP
+				)
+			);
+
 			try {
 				$reader = new GeoIp2\Database\Reader( $file );
-				$res = $this->location_country( $reader->country( $ip ) );
+				if ( 'GeoLite2-Country' === $reader->metadata()->databaseType )
+					$res = $this->location_country( $reader->country( $ip ) );
+				else
+					$res = $this->location_city( $reader->city( $ip ) );
 			} catch ( Exception $e ) {
 				$res = array( 'countryCode' => NULL );
 			}
 		}
 
 		else {
-			$file = ! empty( $settings['Maxmind']['asn_path'] ) ? $settings['Maxmind']['asn_path'] : $this->get_db_dir() . IP_GEO_BLOCK_GEOLITE2_DB_ASN;
+			$file = ! empty( $settings['Geolite2']['asn_path'] ) ? $settings['Geolite2']['asn_path'] : $this->get_db_dir() . IP_GEO_BLOCK_GEOLITE2_DB_ASN;
 			try {
 				$reader = new GeoIp2\Database\Reader( $file );
 				$res = $this->location_asnumber( $reader->asn( $ip ) );
@@ -86,7 +96,7 @@ class IP_Geo_Block_API_Geolite2 extends IP_Geo_Block_API {
 
 	private function get_db_dir() {
 		return IP_Geo_Block_Util::slashit( apply_filters(
-			IP_Geo_Block::PLUGIN_NAME . '-maxmind-dir', dirname( __FILE__ ) . '/GeoLite2'
+			IP_Geo_Block::PLUGIN_NAME . '-geolite2-dir', dirname( __FILE__ ) . '/GeoLite2'
 		) );
 	}
 
@@ -97,9 +107,12 @@ class IP_Geo_Block_API_Geolite2 extends IP_Geo_Block_API {
 		if ( $dir !== dirname( $db['ip_path'] ) . '/' )
 			$db['ip_path'] = $dir . IP_GEO_BLOCK_GEOLITE2_DB_IP;
 
+		// filter database file
+		$db['ip_path'] = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-geolite2-path', $db['ip_path'] );
+
 		$res['ip'] = IP_Geo_Block_Util::download_zip(
 			apply_filters(
-				IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-ip',
+				IP_Geo_Block::PLUGIN_NAME . '-geolite2-zip-ip',
 				IP_GEO_BLOCK_GEOLITE2_ZIP_IP
 			),
 			$args + array( 'method' => 'GET' ),
@@ -118,7 +131,7 @@ if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] ) ) :
 
 		$res['asn'] = IP_Geo_Block_Util::download_zip(
 			apply_filters(
-				IP_Geo_Block::PLUGIN_NAME . '-maxmind-zip-asn',
+				IP_Geo_Block::PLUGIN_NAME . '-geolite2-zip-asn',
 				IP_GEO_BLOCK_GEOLITE2_ZIP_ASN
 			),
 			$args + array( 'method' => 'GET' ),
@@ -139,17 +152,21 @@ endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] )
 	}
 
 	public function add_settings_field( $field, $section, $option_slug, $option_name, $options, $callback, $str_path, $str_last ) {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( __FILE__ . '(' . __FUNCTION__ . ')' );
+
 		$db  = $options[ $field ];
 		$dir = $this->get_db_dir();
 		$msg = __( 'Database file does not exist.', 'ip-geo-block' );
 
-		// IPv4 and IPv6
-		if ( $db['ip_path'] )
-			$path = $db['ip_path'];
-		else
-			$path = $dir . IP_GEO_BLOCK_GEOLITE2_DB_IP;
+		// IPv4 & IPv6
+		if ( $dir !== dirname( $db['ip_path'] ) . '/' )
+			$db['ip_path'] = $dir . IP_GEO_BLOCK_GEOLITE2_DB_IP;
 
-		if ( @file_exists( $path ) )
+		// filter database file
+		$db['ip_path'] = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-geolite2-path', $db['ip_path'] );
+
+		if ( $fs->exists( $db['ip_path'] ) )
 			$date = sprintf( $str_last, IP_Geo_Block_Util::localdate( $db['ip_last'] ) );
 		else
 			$date = $msg;
@@ -165,7 +182,7 @@ endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] )
 				'option' => $option_name,
 				'field' => $field,
 				'sub-field' => 'ip_path',
-				'value' => $path,
+				'value' => $db['ip_path'],
 				'disabled' => TRUE,
 				'after' => '<br /><p id="ip-geo-block-' . $field . '-ip" style="margin-left: 0.2em">' . $date . '</p>',
 			)
@@ -174,12 +191,10 @@ endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] )
 if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] ) ) :
 
 		// ASN for IPv4 and IPv6
-		if ( $db['asn_path'] )
-			$path = $db['asn_path'];
-		else
-			$path = $dir . IP_GEO_BLOCK_GEOLITE2_DB_ASN;
+		if ( $dir !== dirname( $db['asn_path'] ) . '/' )
+			$db['asn_path'] = $dir . IP_GEO_BLOCK_GEOLITE2_DB_ASN;
 
-		if ( @file_exists( $path ) )
+		if ( $fs->exists( $db['asn_path'] ) )
 			$date = sprintf( $str_last, IP_Geo_Block_Util::localdate( $db['asn_last'] ) );
 		else
 			$date = $msg;
@@ -195,7 +210,7 @@ if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn_path'] ) ) :
 				'option' => $option_name,
 				'field' => $field,
 				'sub-field' => 'asn_path',
-				'value' => $path,
+				'value' => $db['asn_path'],
 				'disabled' => TRUE,
 				'after' => '<br /><p id="ip-geo-block-' . $field . '-asn" style="margin-left: 0.2em">' . $date . '</p>',
 			)

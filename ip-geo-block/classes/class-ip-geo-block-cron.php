@@ -171,6 +171,16 @@ class IP_Geo_Block_Cron {
 
 	public static function stop_update_db() {
 		wp_clear_scheduled_hook( IP_Geo_Block::CRON_NAME, array( FALSE ) ); // @since 2.1.0
+
+		// wait until updating has finished to avoid race condition with IP_Geo_Block_Opts::install_api()
+		$time = 0;
+		while ( ( $stat = get_transient( IP_Geo_Block::CRON_NAME ) ) && 'done' !== $stat ) {
+			sleep( 1 );
+
+			if ( ++$time > 5 * MINUTE_IN_SECONDS ) {
+				break;
+			}
+		}
 	}
 
 	/**
@@ -258,7 +268,7 @@ class IP_Geo_Block_Cron {
 	 */
 	public static function download_zip( $url, $args, $files, $modified ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'download_zip' );
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
 		// get extension
 		$ext = strtolower( pathinfo( $url, PATHINFO_EXTENSION ) );

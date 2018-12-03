@@ -1,10 +1,10 @@
 #! /bin/sh
-# http://httpd.apache.org/docs/current/programs/ab.html
+# https://httpd.apache.org/docs/current/programs/ab.html
 # Note: Set an appropriate WPHOME and IP address as an attacker.
 # Note: Add "HTTP_X_FORWARDED_FOR" into "$_SERVER keys for extra IPs"
 #       in order to simulate the requests from outside your country.
 
-WPHOME="http://localhost/wordpress/"
+WPHOME="http://localhost/"
 HEADER="X-Forwarded-For: 129.223.152.47"
 
 COOKIE="wordpress_test_cookie=WP+Cookie+check"

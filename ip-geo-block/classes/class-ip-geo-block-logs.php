@@ -442,7 +442,7 @@ class IP_Geo_Block_Logs {
 
 	private static function get_post_data( $hook, $validate, $settings ) {
 		// condition of masking password
-		$mask_pwd = IP_Geo_Block::is_passed( $validate['result'] );
+		$mask_pwd = ( IP_Geo_Block::is_passed( $validate['result'] ) || IP_Geo_Block::is_failed( $validate['result'] ) );
 
 		// XML-RPC
 		if ( 'xmlrpc' === $hook ) {
@@ -581,10 +581,10 @@ class IP_Geo_Block_Logs {
 
 	public static function reset_sqlite_db() {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'reset_sqlite_db' );
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
-		if ( FALSE !== ( $files = scandir( $dir = get_temp_dir(), 1 ) ) ) {
-			foreach ( $files as $file ) {
+		if ( FALSE !== ( $files = $fs->dirlist( $dir = get_temp_dir() ) ) ) {
+			foreach ( array_keys( $files ) as $file ) {
 				if ( FALSE !== strpos( $file, IP_Geo_Block::PLUGIN_NAME ) ) {
 					$fs->delete( $dir . $file );
 				}
@@ -624,8 +624,8 @@ class IP_Geo_Block_Logs {
 		$posts = self::get_post_data( $hook, $validate, $settings );
 		$method = $_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . $_SERVER['REQUEST_URI'];
 
-		// mark if malicious upload exists
-		if ( isset( $validate['upload'] ) )
+		// mark if any uploaded files exist
+		if ( ! empty( $_FILES ) )
 			$validate['result'] .= '^';
 
 		// anonymize ip address

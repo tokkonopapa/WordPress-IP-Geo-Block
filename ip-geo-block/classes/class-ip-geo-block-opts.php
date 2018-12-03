@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.16',// Version of this table (not package)
+		'version'         => '3.0.17',// Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -73,8 +73,8 @@ class IP_Geo_Block_Opts {
 			'retry'       => 0,       // Number of retry to download
 			'cycle'       => 30,      // Updating cycle (days)
 		),
-		// since version 3.0.9
-		'priority' => PHP_INT_MAX,    // Action priority for WP-ZEP
+		// since version 3.0.9, 3.0.17
+		'priority'        => array( 0, PHP_INT_MAX ), // 0:high, 1:log for WP-ZEP
 		// since version 2.2.0
 		'anonymize'       => TRUE,    // Anonymize IP address to hide privacy
 		'signature'       => '../,/wp-config.php,/passwd', // malicious signature
@@ -194,6 +194,14 @@ class IP_Geo_Block_Opts {
 		'login_link'      => array(
 			'link'           => NULL,    // key of login link
 			'hash'           => NULL,    // hash of 'link'
+		),
+		// since version 3.0.17
+		'monitor'         => array(
+			'metadata'       => TRUE,
+		),
+		'metadata'        => array(
+			'pre_update_option'      => array( 'siteurl', 'admin_email', 'users_can_register', 'default_role' ),
+			'pre_update_site_option' => array( 'siteurl', 'admin_email', 'registration' ),
 		),
 	);
 
@@ -386,15 +394,10 @@ class IP_Geo_Block_Opts {
 			$settings['live_update'] = $default['live_update'];
 
 		if ( version_compare( $version, '3.0.8' ) < 0 ) {
-			$settings['timeout' ] = $default['timeout'];
+			$settings['timeout' ] = $default['timeout' ];
+			$settings['Geolite2'] = $default['Geolite2'];
 			$settings['Geolite2']['use_asn'] = $settings['Maxmind']['use_asn'];
-			foreach ( array( 'ip_path', 'ip_last', 'asn_path', 'asn_last' ) as $tmp ) {
-				$settings['Geolite2'][ $tmp ] = $default['Geolite2'][ $tmp ];
-			}
 		}
-
-		if ( version_compare( $version, '3.0.9' ) < 0 )
-			$settings['priority'] = $default['priority'];
 
 		if ( version_compare( $version, '3.0.10' ) < 0 ) {
 			$settings['behavior'] = $default['behavior'];
@@ -422,20 +425,28 @@ class IP_Geo_Block_Opts {
 			IP_Geo_Block_Logs::upgrade( $version );
 
 		if ( version_compare( $version, '3.0.16' ) < 0 ) {
-			if ( isset( $settings['public']['simulate'] ) ) {
-				$settings['simulate'] = $settings['public']['simulate'];
-				unset( $settings['public']['simulate'] );
-			} else {
-				$settings['simulate'] = $default['simulate'];
+			$settings['simulate'] = $settings['public']['simulate'];
+			unset( $settings['public']['simulate'] );
+		}
+
+		if ( version_compare( $version, '3.0.17' ) < 0 ) {
+			$settings['priority'] = $default['priority'];
+			$settings['monitor' ] = $default['monitor' ];
+			$settings['metadata'] = $default['metadata'];
+
+			// re-install mu-plugins to re-order the priority
+			if ( self::get_validation_timing( NULL ) ) {
+				self::remove_mu_plugin( NULL );
+				self::setup_validation_timing( $settings );
 			}
 		}
 
 		// update package version number
 		$settings['version'] = IP_Geo_Block::VERSION;
 
-		// install addons for IP Geolocation database API ver. 1.1.13
+		// install addons for IP Geolocation database API ver. 1.1.14 at IP Geo Block 3.0.17
 		$providers = IP_Geo_Block_Provider::get_addons();
-		if ( empty( $providers ) || ! $settings['api_dir'] || ! file_exists( $settings['api_dir'] ) || version_compare( $version, '3.0.14' ) < 0 )
+		if ( empty( $providers ) || ! $settings['api_dir'] || ! file_exists( $settings['api_dir'] ) || version_compare( $version, '3.0.17' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
@@ -452,8 +463,10 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static function install_api( $settings ) {
+		IP_Geo_Block_Cron::stop_update_db();
+
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'install_api' );
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
 		$src = IP_Geo_Block_Util::slashit( IP_GEO_BLOCK_PATH . 'wp-content/' . IP_Geo_Block::GEOAPI_NAME );
 		$dst = IP_Geo_Block_Util::slashit( self::get_api_dir( $settings ) );
@@ -469,32 +482,36 @@ class IP_Geo_Block_Opts {
 						sprintf( __( 'Unable to write <code>%s</code>. Please check the permission.', 'ip-geo-block' ), '<code>' . $dst . '</code>' )
 					);
 				}
-				return NULL;
+				$dst = NULL;
 			}
 		}
+
+		IP_Geo_Block_Cron::start_update_db( $settings );
 
 		return $dst;
 	}
 
 	public static function uninstall_api( $settings ) {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'uninstall_api' );
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
 		return $fs->delete( self::get_api_dir( $settings ), TRUE ); // $recursive = true
 	}
 
 	private static function get_api_dir( $settings ) {
-		// wp-content
-		$dir = ( empty( $settings['api_dir'] ) || ! file_exists( $settings['api_dir'] ) ) ? WP_CONTENT_DIR : dirname( $settings['api_dir'] );
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
-		if ( ! @is_writable( $dir ) ) {
+		// wp-content
+		$dir = ( empty( $settings['api_dir'] ) || ! $fs->exists( $settings['api_dir'] ) ) ? WP_CONTENT_DIR : dirname( $settings['api_dir'] );
+
+		if ( ! $fs->is_writable( $dir ) ) {
 			// wp-content/uploads
 			$dir = wp_upload_dir();
 			$dir = $dir['basedir'];
 
-			if ( ! @is_writable( $dir ) ) { // wp-content/plugins/ip-geo-block
-				$dir = @is_writable( IP_GEO_BLOCK_PATH ) ? IP_GEO_BLOCK_PATH : NULL;
-			}
+			if ( ! $fs->is_writable( $dir ) ) // wp-content/plugins/ip-geo-block
+				$dir = $fs->is_writable( IP_GEO_BLOCK_PATH ) ? IP_GEO_BLOCK_PATH : NULL;
 		}
 
 		return IP_Geo_Block_Util::slashit(
@@ -506,21 +523,24 @@ class IP_Geo_Block_Opts {
 	 * Activate / Deactivate Must-use plugin / Advanced cache
 	 *
 	 */
-	private static function remove_mu_plugin() {
-		if ( file_exists( $src = WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) ) {
-			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-			$fs = IP_Geo_Block_FS::init( 'remove_mu_plugin' );
+	private static function remove_mu_plugin( $prefix = '!' ) {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
+
+		if ( $fs->exists( $src = WPMU_PLUGIN_DIR . '/' . $prefix . 'ip-geo-block-mu.php' ) )
 			return $fs->delete( $src ) ? TRUE : $src;
-		}
 
 		return TRUE;
 	}
 
-	public static function get_validation_timing() {
-		return file_exists( WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) ? 1 : 0;
+	public static function get_validation_timing( $prefix = '!' ) {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
+
+		return $fs->exists( WPMU_PLUGIN_DIR . '/' . $prefix . 'ip-geo-block-mu.php' ) ? 1 : 0;
 	}
 
-	public static function setup_validation_timing( $settings = NULL ) {
+	public static function setup_validation_timing( $settings = NULL, $prefix = '!' ) {
 		switch ( $settings ? (int)$settings['validation']['timing'] : 0 ) {
 		  case 0: // init
 			if ( TRUE !== ( $src = self::remove_mu_plugin() ) )
@@ -529,10 +549,10 @@ class IP_Geo_Block_Opts {
 
 		  case 1: // mu-plugins
 			$src = IP_GEO_BLOCK_PATH . 'wp-content/mu-plugins/ip-geo-block-mu.php';
-			$dst = WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php';
+			$dst = WPMU_PLUGIN_DIR . '/' . $prefix . 'ip-geo-block-mu.php';
 
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-			$fs = IP_Geo_Block_FS::init( 'setup_validation_timing' );
+			$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
 			if ( ! $fs->is_file( $dst ) ) {
 				if ( ! $fs->is_dir( WPMU_PLUGIN_DIR ) && ! $fs->mkdir( WPMU_PLUGIN_DIR ) )

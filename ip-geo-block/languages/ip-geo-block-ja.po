@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IP Geo Block package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IP Geo Block 3.0.16\n"
+"Project-Id-Version: IP Geo Block 3.0.17\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-11-01 22:01+0900\n"
-"PO-Revision-Date: 2018-11-01 22:03+0900\n"
+"POT-Creation-Date: 2018-12-03 23:01+0900\n"
+"PO-Revision-Date: 2018-12-03 23:04+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,167 +28,171 @@ msgstr ""
 "自国以外から投稿されるスパム、ログインフォーム、さらにゼロデイ攻撃を含む管理領域への悪意あるアクセス"
 "からサイトを守ります。"
 
-#: admin/class-ip-geo-block-admin.php:297
+#: admin/class-ip-geo-block-admin.php:296
 msgid "Are you sure ?"
 msgstr "実行してもよいですか？"
 
-#: admin/class-ip-geo-block-admin.php:298
-#: admin/class-ip-geo-block-admin.php:790
+#: admin/class-ip-geo-block-admin.php:297
+#: admin/class-ip-geo-block-admin.php:791
 msgid "Open a new window"
 msgstr "別窓で開く"
 
-#: admin/class-ip-geo-block-admin.php:299 admin/includes/tab-settings.php:1506
+#: admin/class-ip-geo-block-admin.php:298 admin/includes/tab-settings.php:1528
 msgid "Generate new link"
 msgstr "新しいリンクを生成"
 
-#: admin/class-ip-geo-block-admin.php:300 admin/includes/tab-settings.php:1507
+#: admin/class-ip-geo-block-admin.php:299 admin/includes/tab-settings.php:1529
 msgid "Delete current link"
 msgstr "生成したリンクを削除"
 
-#: admin/class-ip-geo-block-admin.php:301
+#: admin/class-ip-geo-block-admin.php:300
 msgid ""
 "Please add the following link to favorites / bookmarks in your browser : "
 msgstr "次のリンクをブラウザのお気に入り／ブックマークに追加して下さい : "
 
-#: admin/class-ip-geo-block-admin.php:302
+#: admin/class-ip-geo-block-admin.php:301
 msgid "ajax for logged-in user"
 msgstr "認証済ユーザー用 ajax"
 
-#: admin/class-ip-geo-block-admin.php:303
+#: admin/class-ip-geo-block-admin.php:302
 msgid "ajax for non logged-in user"
 msgstr "未認証ユーザー用 ajax"
 
-#: admin/class-ip-geo-block-admin.php:304
+#: admin/class-ip-geo-block-admin.php:303
 #, php-format
 msgid "[Found: %d]"
 msgstr "［見つかった数：%d］"
 
-#: admin/class-ip-geo-block-admin.php:305
+#: admin/class-ip-geo-block-admin.php:304
 #, php-format
 msgid "Find and verify `%s` on &#8220;Logs&#8221; tab."
 msgstr "ログから `%s` を検索し、検証して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:306
+#: admin/class-ip-geo-block-admin.php:305
 msgid "This feature is available with HTML5 compliant browsers."
 msgstr "HTML5準拠のブラウザでのみ機能します。"
 
-#: admin/class-ip-geo-block-admin.php:307
+#: admin/class-ip-geo-block-admin.php:306
 msgid "The selected row cannot be found in the table."
 msgstr "テーブル中に選択された行が見つかりません。"
 
-#: admin/class-ip-geo-block-admin.php:308
-#: admin/class-ip-geo-block-admin.php:1568
+#: admin/class-ip-geo-block-admin.php:307
+#: admin/class-ip-geo-block-admin.php:1694
 #, php-format
 msgid "An error occurred while executing the ajax command `%s`."
 msgstr "Ajaxコマンド `%s` の実行中にエラーが発生しました。"
 
-#: admin/class-ip-geo-block-admin.php:312
+#: admin/class-ip-geo-block-admin.php:311
 msgid "No data available in table"
 msgstr "テーブルにデータがありません"
 
-#: admin/class-ip-geo-block-admin.php:313
+#: admin/class-ip-geo-block-admin.php:312
 msgid "No matching records found"
 msgstr "一致するレコードがありません"
 
-#: admin/class-ip-geo-block-admin.php:314
+#: admin/class-ip-geo-block-admin.php:313
 #: admin/includes/class-admin-ajax.php:107
 #: admin/includes/class-admin-ajax.php:240
 #: admin/includes/tab-geolocation.php:74
 msgid "IP address"
 msgstr "IPアドレス"
 
-#: admin/class-ip-geo-block-admin.php:315
+#: admin/class-ip-geo-block-admin.php:314
 #: admin/includes/class-admin-ajax.php:108
 #: admin/includes/class-admin-ajax.php:241
 msgid "Code"
 msgstr "国"
 
-#: admin/class-ip-geo-block-admin.php:316
+#: admin/class-ip-geo-block-admin.php:315
 #: admin/includes/class-admin-ajax.php:109
 #: admin/includes/class-admin-ajax.php:242
 msgid "ASN"
 msgstr "AS番号"
 
-#: admin/class-ip-geo-block-admin.php:317
+#: admin/class-ip-geo-block-admin.php:316
 #: admin/includes/class-admin-ajax.php:243
 msgid "Host name"
 msgstr "ホスト名"
 
-#: admin/class-ip-geo-block-admin.php:318
+#: admin/class-ip-geo-block-admin.php:317
 #: admin/includes/class-admin-ajax.php:110
 #: admin/includes/class-admin-ajax.php:244
 msgid "Target"
 msgstr "検証対象"
 
-#: admin/class-ip-geo-block-admin.php:319
+#: admin/class-ip-geo-block-admin.php:318
 #: admin/includes/class-admin-ajax.php:245
 msgid "Failure / Total"
 msgstr "ログイン失敗／総計"
 
-#: admin/class-ip-geo-block-admin.php:320
+#: admin/class-ip-geo-block-admin.php:319
 #: admin/includes/class-admin-ajax.php:246
 msgid "Elapsed[sec]"
 msgstr "経過 [秒]"
 
-#: admin/class-ip-geo-block-admin.php:321
+#: admin/class-ip-geo-block-admin.php:320
 #: admin/includes/class-admin-ajax.php:106
 msgid "Time"
 msgstr "日時"
 
-#: admin/class-ip-geo-block-admin.php:322
+#: admin/class-ip-geo-block-admin.php:321
 #: admin/includes/class-admin-ajax.php:111
 msgid "Result"
 msgstr "検証結果"
 
-#: admin/class-ip-geo-block-admin.php:323
+#: admin/class-ip-geo-block-admin.php:322
 #: admin/includes/class-admin-ajax.php:112
 msgid "Request"
 msgstr "リクエスト"
 
-#: admin/class-ip-geo-block-admin.php:324
+#: admin/class-ip-geo-block-admin.php:323
 #: admin/includes/class-admin-ajax.php:113
 msgid "User agent"
 msgstr "ユーザー・エージェント"
 
-#: admin/class-ip-geo-block-admin.php:325
+#: admin/class-ip-geo-block-admin.php:324
 #: admin/includes/class-admin-ajax.php:114
 msgid "HTTP headers"
 msgstr "HTTP ヘッダー"
 
-#: admin/class-ip-geo-block-admin.php:326
+#: admin/class-ip-geo-block-admin.php:325
 #: admin/includes/class-admin-ajax.php:115
 msgid "$_POST data"
 msgstr "$_POST データ"
 
-#: admin/class-ip-geo-block-admin.php:352
+#: admin/class-ip-geo-block-admin.php:351
 msgid "Contribute on GitHub"
 msgstr "開発に参加"
 
-#: admin/class-ip-geo-block-admin.php:366
-#: admin/class-ip-geo-block-admin.php:483
-#: admin/class-ip-geo-block-admin.php:733
+#: admin/class-ip-geo-block-admin.php:365
+#: admin/class-ip-geo-block-admin.php:491
+#: admin/class-ip-geo-block-admin.php:732
+#: admin/class-ip-geo-block-admin.php:752
+#: admin/class-ip-geo-block-admin.php:768
 msgid "Settings"
 msgstr "設定"
 
+#: admin/class-ip-geo-block-admin.php:459
 #: admin/class-ip-geo-block-admin.php:460
-#: admin/class-ip-geo-block-admin.php:461
+#: admin/class-ip-geo-block-admin.php:470
 #: admin/class-ip-geo-block-admin.php:471
-#: admin/class-ip-geo-block-admin.php:472
-#: admin/class-ip-geo-block-admin.php:482
-#: admin/class-ip-geo-block-admin.php:492
+#: admin/class-ip-geo-block-admin.php:480
+#: admin/class-ip-geo-block-admin.php:490
 msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
-#: admin/class-ip-geo-block-admin.php:493
-#: admin/class-ip-geo-block-admin.php:738
+#: admin/class-ip-geo-block-admin.php:481
+#: admin/class-ip-geo-block-admin.php:731
+#: admin/class-ip-geo-block-admin.php:749
+#: admin/class-ip-geo-block-admin.php:766
 msgid "Sites list"
 msgstr "サイト一覧"
 
-#: admin/class-ip-geo-block-admin.php:522
+#: admin/class-ip-geo-block-admin.php:521
 msgid "You need WordPress 3.7+."
 msgstr "WordPress 3.7 以上が必要です。"
 
-#: admin/class-ip-geo-block-admin.php:526
+#: admin/class-ip-geo-block-admin.php:525
 #, php-format
 msgid ""
 "Can not load Geolocation API libraries from <code>%s</code>. It seems to "
@@ -197,21 +201,22 @@ msgid ""
 "contents of tokkonopapa/WordPress-IP-Geo-API as a zip file\">ZIP file</a> "
 "from <a rel=\"noreferrer\" href=\"https://github.com/tokkonopapa/WordPress-"
 "IP-Geo-API\" title=\"tokkonopapa/WordPress-IP-Geo-API - GitHub\">WordPress-"
-"IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission "
-"according to <a rel=\"noreferrer\" href=\"https://www.ipgeoblock.com/codex/"
-"how-to-fix-permission-troubles.html\" title=\"How can I fix permission "
-"troubles? | IP Geo Block\">this instruction</a>."
+"IP-Geo-API</a>. Try to deactivate IP Geo Block once and activate it again, "
+"or install <code>ip-geo-api</code> with write permission according to <a rel="
+"\"noreferrer\" href=\"https://www.ipgeoblock.com/codex/how-to-fix-permission-"
+"troubles.html\" title=\"How can I fix permission troubles? | IP Geo Block"
+"\">this instruction</a>."
 msgstr ""
 "<code>%s</code> に位置情報APIライブラリが見つかりません。<a rel=\"noreferrer\" href=\"https://github."
 "com/tokkonopapa/WordPress-IP-Geo-API\" title=\"tokkonopapa/WordPress-IP-Geo-API - GitHub\">WordPress-"
 "IP-Geo-API</a> から <a rel=\"noreferrer\" href=\"https://github.com/tokkonopapa/WordPress-IP-Geo-API/"
 "archive/master.zip\" title=\"Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file"
-"\">ZIP file</a> のダウンロードに失敗したようです。<a rel=\"noreferrer\" href=\"https://www."
-"ipgeoblock.com/codex/how-to-fix-permission-troubles.html\" title=\"How can I fix permission "
-"troubles? | IP Geo Block\">FAQ</a> を参照し、適切な書き込み権限と共に <code>ip-geo-api</code> をイン"
-"ストールしてください。"
+"\">ZIP file</a> のダウンロードに失敗したようです。一旦プラグインを無効化した後に再び有効化するか、<a "
+"rel=\"noreferrer\" href=\"https://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html\" "
+"title=\"How can I fix permission troubles? | IP Geo Block\">FAQ</a> を参照し、適切な書き込み権限と共"
+"に <code>ip-geo-api</code> をインストールしてください。"
 
-#: admin/class-ip-geo-block-admin.php:535
+#: admin/class-ip-geo-block-admin.php:534
 #, php-format
 msgid ""
 "You should select at least one API at <a href=\"%s\">Geolocation API "
@@ -221,7 +226,7 @@ msgstr ""
 "<a href=\"%s\">位置情報APIの設定</a>で、少なくとも1つ以上のAPIを選択して下さい。未選択の場合、キャッ"
 "シュの有効期限切れと共にロックアウトされます。"
 
-#: admin/class-ip-geo-block-admin.php:544
+#: admin/class-ip-geo-block-admin.php:543
 #, php-format
 msgid ""
 "You should select at least one API for local database at <a href=\"%s"
@@ -231,7 +236,7 @@ msgstr ""
 "<a href=\"%s\">位置情報APIの設定</a>で、ローカルデータベース用のAPIを少なくとも1つ以上選択して下さ"
 "い。未選択の場合、外部APIへのアクセスにより、サイトの応答性が悪くなります。"
 
-#: admin/class-ip-geo-block-admin.php:555
+#: admin/class-ip-geo-block-admin.php:554
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -242,7 +247,7 @@ msgstr ""
 "と［<strong>マッチング規則</strong>］を［<a href=\"%s\">検証ルールと振る舞いの設定</a>］で確認して下"
 "さい。"
 
-#: admin/class-ip-geo-block-admin.php:561
+#: admin/class-ip-geo-block-admin.php:560
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
@@ -251,11 +256,11 @@ msgstr ""
 "［<strong>マッチング規則</strong>］が正しく設定されていません。［<a href=\"%s\">検証ルールと振る舞い"
 "の設定</a>］を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:570
+#: admin/class-ip-geo-block-admin.php:569
 msgid "Local database and matching rule have been updated."
 msgstr "ローカル・データベースとマッチング規則を更新しました。"
 
-#: admin/class-ip-geo-block-admin.php:581
+#: admin/class-ip-geo-block-admin.php:580
 msgid ""
 "Once you logout, you will be unable to login again because the number of "
 "login attempts reaches the limit."
@@ -263,7 +268,7 @@ msgstr ""
 "あなたのIPアドレスのログイン試行可能回数がリミットに達したため、ログアウトすると再びログインする事が"
 "出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:583
+#: admin/class-ip-geo-block-admin.php:582
 #, php-format
 msgid ""
 "Please remove your IP address in &#8220;%1$sStatistics in IP address cache"
@@ -273,7 +278,7 @@ msgstr ""
 "［%3$s統計%4$s］タブの［%1$sIPアドレスのキャッシュ%2$s］から自身のIPアドレスを削除し、ロックアウトを"
 "回避してください。"
 
-#: admin/class-ip-geo-block-admin.php:594
+#: admin/class-ip-geo-block-admin.php:593
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is in the blacklist."
@@ -281,7 +286,7 @@ msgstr ""
 "あなたの国コードまたはIPアドレスがブラックリストに含まれているため、ログアウトすると再びログインする"
 "事が出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:595
+#: admin/class-ip-geo-block-admin.php:594
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is not in the whitelist."
@@ -289,12 +294,12 @@ msgstr ""
 "あなたの国コードまたはIPアドレスがホワイトリストに含まれていないため、ログアウトすると再びログインす"
 "る事が出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:599
+#: admin/class-ip-geo-block-admin.php:598
 #, php-format
 msgid "Please check your &#8220;%sValidation rules and behavior%s&#8221;."
 msgstr "［%s検証ルールと振る舞いの設定%s］を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:603
+#: admin/class-ip-geo-block-admin.php:602
 #, php-format
 msgid ""
 "Please confirm your local geolocation database files exist at &#8220;%sLocal "
@@ -304,7 +309,7 @@ msgstr ""
 "［%sローカル・データベースの設定%s］で位置情報データベース・ファイルの有無を確認して下さい。あるいは"
 "［%sキャッシュの統計%s］でキャッシュされているあなたのIPアドレスを削除して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:617
+#: admin/class-ip-geo-block-admin.php:616
 #, php-format
 msgid ""
 "Emergency login link is outdated. Please delete it once and generate again "
@@ -314,7 +319,7 @@ msgstr ""
 "緊急ログイン・リンクが古くなっています。［%sプラグインの設定%s］で一度削除してから再度生成してくださ"
 "い。 またブラウザのお気に入り/ブックマークも忘れずに更新して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:626
+#: admin/class-ip-geo-block-admin.php:625
 msgid ""
 "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php) at &#8220;Validation "
 "timing&#8221; is imcompatible with <strong>IP Geo Allow</strong>. Please "
@@ -324,32 +329,27 @@ msgstr ""
 "<strong>IP Geo Allow</strong> と互換性がありません。「&#8220;init&#8221; アクション・フック」を選択し"
 "てください。"
 
-#: admin/class-ip-geo-block-admin.php:734
+#: admin/class-ip-geo-block-admin.php:733
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:735
+#: admin/class-ip-geo-block-admin.php:734
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:736
+#: admin/class-ip-geo-block-admin.php:735
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:737
+#: admin/class-ip-geo-block-admin.php:736
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:754
-#: admin/class-ip-geo-block-admin.php:770
-msgid "Network"
-msgstr "ネットワーク管理"
-
-#: admin/class-ip-geo-block-admin.php:783
+#: admin/class-ip-geo-block-admin.php:784
 msgid "Toggle all"
 msgstr "全てを開閉"
 
-#: admin/class-ip-geo-block-admin.php:786
+#: admin/class-ip-geo-block-admin.php:787
 msgid ""
 "Independent of &#8220;Privacy and record settings&#8221;, you can see all "
 "the requests validated by this plugin in almost real time."
@@ -357,19 +357,19 @@ msgstr ""
 "［プライバシーと記録の設定］にかかわらず、このプラグインによる検証結果のすべてを、ほぼリアルタイムに"
 "表示します。"
 
-#: admin/class-ip-geo-block-admin.php:786 admin/includes/tab-accesslog.php:39
+#: admin/class-ip-geo-block-admin.php:787 admin/includes/tab-accesslog.php:39
 msgid "Live update"
 msgstr "ライブアップデート"
 
-#: admin/class-ip-geo-block-admin.php:790
+#: admin/class-ip-geo-block-admin.php:791
 msgid "Open a new window on clicking the link in the chart."
 msgstr "チャート内のリンクをクリックすると、新しいウィンドウが開きます。"
 
-#: admin/class-ip-geo-block-admin.php:814
+#: admin/class-ip-geo-block-admin.php:815
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:815
+#: admin/class-ip-geo-block-admin.php:816
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"https://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -378,35 +378,89 @@ msgstr ""
 "（ほとんどのブラウザでは、<a href=\"https://www.ipgeoblock.com/etc/referer.html\" title=\"Referer "
 "Checker\">参照元を残さずにリンク先にリダイレクトできます</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:820
+#: admin/class-ip-geo-block-admin.php:821
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: admin/class-ip-geo-block-admin.php:912
+#: admin/class-ip-geo-block-admin.php:913
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:927
+#: admin/class-ip-geo-block-admin.php:928
 msgid "Select one"
 msgstr "何れかを選択"
 
-#: admin/class-ip-geo-block-admin.php:1346
+#: admin/class-ip-geo-block-admin.php:1363
 msgid "You do not have sufficient permissions to access this page."
 msgstr "このページにアクセスするための十分な権限がありません。"
 
-#: admin/class-ip-geo-block-admin.php:1373
+#: admin/class-ip-geo-block-admin.php:1390
 #: admin/includes/class-admin-rewrite.php:194
-#: classes/class-ip-geo-block-cron.php:218
-#: classes/class-ip-geo-block-cron.php:322
-#: classes/class-ip-geo-block-cron.php:400
-#: classes/class-ip-geo-block-opts.php:469
+#: classes/class-ip-geo-block-cron.php:228
+#: classes/class-ip-geo-block-cron.php:332
+#: classes/class-ip-geo-block-cron.php:410
+#: classes/class-ip-geo-block-opts.php:482
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr "<code>%s</code> に書き込めません。パーミッションをチェックして下さい。"
 
-#: admin/class-ip-geo-block-admin.php:1403
+#: admin/class-ip-geo-block-admin.php:1424
 msgid "Settings saved."
 msgstr "設定を保存しました。"
+
+#: admin/class-ip-geo-block-admin.php:1529
+#: wp-content/ip-geo-api/drop-in-admin-sample.php:91
+msgid ""
+"<span title=\"Show only passed entries whose country codes are in Whitelist."
+"\">Passed in Whitelist</span>"
+msgstr ""
+"<span title=\"ホワイトリストに国コードが有る、通過したエントリのみを表示します。\">ホワイトリスト通過"
+"</span>"
+
+#: admin/class-ip-geo-block-admin.php:1530
+#: wp-content/ip-geo-api/drop-in-admin-sample.php:92
+msgid ""
+"<span title=\"Show only passed entries whose country codes are in Blacklist."
+"\">Passed in Blacklist</span>"
+msgstr ""
+"<span title=\"ブラックリストに国コードが有る、通過したエントリのみを表示します。\">ブラックリスト通過"
+"</span>"
+
+#: admin/class-ip-geo-block-admin.php:1531
+#: wp-content/ip-geo-api/drop-in-admin-sample.php:93
+msgid ""
+"<span title=\"Show only passed entries whose country codes are not in either "
+"list.\">Passed not in List</span>"
+msgstr ""
+"<span title=\"どちらのリストにも国コードが無い、通過したエントリのみを表示します。\">どちらにも無く通"
+"過</span>"
+
+#: admin/class-ip-geo-block-admin.php:1532
+#: wp-content/ip-geo-api/drop-in-admin-sample.php:94
+msgid ""
+"<span title=\"Show only blocked entries whose country codes are in Whitelist."
+"\">Blocked in Whitelist</span>"
+msgstr ""
+"<span title=\"ホワイトリストに国コードが有る、遮断したエントリのみを表示します。\">ホワイトリスト遮断"
+"</span>"
+
+#: admin/class-ip-geo-block-admin.php:1533
+#: wp-content/ip-geo-api/drop-in-admin-sample.php:95
+msgid ""
+"<span title=\"Show only blocked entries whose country codes are in Blacklist."
+"\">Blocked in Blacklist</span>"
+msgstr ""
+"<span title=\"ブラックリストに国コードが有る、遮断したエントリのみを表示します。\">ブラックリスト遮断"
+"</span>"
+
+#: admin/class-ip-geo-block-admin.php:1534
+#: wp-content/ip-geo-api/drop-in-admin-sample.php:96
+msgid ""
+"<span title=\"Show only blocked entries whose country codes are not in "
+"either list.\">Blocked not in List</span>"
+msgstr ""
+"<span title=\"どちらのリストにも国コードが無い、遮断したエントリのみを表示します。\">どちらにも無く遮"
+"断</span>"
 
 #: admin/includes/class-admin-ajax.php:72
 #: admin/includes/class-admin-ajax.php:75 admin/includes/tab-settings.php:84
@@ -426,8 +480,8 @@ msgid ""
 msgstr "%sは誤ったフォーマットです。該当行を削除し、再実行してください。"
 
 #: admin/includes/class-admin-rewrite.php:168
-#: classes/class-ip-geo-block-cron.php:213
-#: classes/class-ip-geo-block-cron.php:395
+#: classes/class-ip-geo-block-cron.php:223
+#: classes/class-ip-geo-block-cron.php:405
 #, php-format
 msgid "Unable to read <code>%s</code>. Please check the permission."
 msgstr "<code>%s</code> が読めません。パーミッションをチェックして下さい。"
@@ -451,23 +505,23 @@ msgstr "検証のログ"
 msgid "Help"
 msgstr "ヘルプ"
 
-#: admin/includes/tab-accesslog.php:55 admin/includes/tab-settings.php:428
+#: admin/includes/tab-accesslog.php:55 admin/includes/tab-settings.php:450
 msgid "Comment post"
 msgstr "コメント投稿"
 
-#: admin/includes/tab-accesslog.php:56 admin/includes/tab-settings.php:429
+#: admin/includes/tab-accesslog.php:56 admin/includes/tab-settings.php:451
 msgid "XML-RPC"
 msgstr "XML-RPC"
 
-#: admin/includes/tab-accesslog.php:57 admin/includes/tab-settings.php:430
+#: admin/includes/tab-accesslog.php:57 admin/includes/tab-settings.php:452
 msgid "Login form"
 msgstr "ログイン・フォーム"
 
-#: admin/includes/tab-accesslog.php:58 admin/includes/tab-settings.php:431
+#: admin/includes/tab-accesslog.php:58 admin/includes/tab-settings.php:453
 msgid "Admin area"
 msgstr "管理領域"
 
-#: admin/includes/tab-accesslog.php:59 admin/includes/tab-settings.php:433
+#: admin/includes/tab-accesslog.php:59 admin/includes/tab-settings.php:455
 msgid "Public facing pages"
 msgstr "一般公開ページ"
 
@@ -487,68 +541,68 @@ msgstr "ログを検索"
 msgid "Reset"
 msgstr "リセット"
 
-#: admin/includes/tab-accesslog.php:109
+#: admin/includes/tab-accesslog.php:117
 msgid "Preset filters"
 msgstr "プリセット・フィルタ"
 
-#: admin/includes/tab-accesslog.php:125 admin/includes/tab-statistics.php:238
+#: admin/includes/tab-accesslog.php:133 admin/includes/tab-statistics.php:238
 msgid "Bulk action"
 msgstr "選択して実行"
 
-#: admin/includes/tab-accesslog.php:136 admin/includes/tab-statistics.php:249
+#: admin/includes/tab-accesslog.php:144 admin/includes/tab-statistics.php:249
 msgid "Remove entries by IP address"
 msgstr "指定のIPアドレスでエントリを削除"
 
-#: admin/includes/tab-accesslog.php:137 admin/includes/tab-statistics.php:250
+#: admin/includes/tab-accesslog.php:145 admin/includes/tab-statistics.php:250
 msgid "Add IP address to &#8220;Whitelist&#8221;"
 msgstr "IPアドレスをホワイトリストへ追加"
 
-#: admin/includes/tab-accesslog.php:138 admin/includes/tab-statistics.php:251
+#: admin/includes/tab-accesslog.php:146 admin/includes/tab-statistics.php:251
 msgid "Add IP address to &#8220;Blacklist&#8221;"
 msgstr "IPアドレスをブラックリストへ追加"
 
-#: admin/includes/tab-accesslog.php:139 admin/includes/tab-statistics.php:252
+#: admin/includes/tab-accesslog.php:147 admin/includes/tab-statistics.php:252
 msgid "Add AS number to &#8220;Whitelist&#8221;"
 msgstr "AS番号をホワイトリストへ追加"
 
-#: admin/includes/tab-accesslog.php:140 admin/includes/tab-statistics.php:253
+#: admin/includes/tab-accesslog.php:148 admin/includes/tab-statistics.php:253
 msgid "Add AS number to &#8220;Blacklist&#8221;"
 msgstr "AS番号をブラックリストへ追加"
 
-#: admin/includes/tab-accesslog.php:142 admin/includes/tab-network.php:56
+#: admin/includes/tab-accesslog.php:150 admin/includes/tab-network.php:56
 #: admin/includes/tab-statistics.php:255
 msgid "Apply"
 msgstr "実行する"
 
-#: admin/includes/tab-accesslog.php:149 admin/includes/tab-statistics.php:191
+#: admin/includes/tab-accesslog.php:157 admin/includes/tab-statistics.php:191
 msgid "Clear logs"
 msgstr "ログをクリア"
 
-#: admin/includes/tab-accesslog.php:157 admin/includes/tab-statistics.php:167
+#: admin/includes/tab-accesslog.php:165 admin/includes/tab-statistics.php:167
 #: admin/includes/tab-statistics.php:199 admin/includes/tab-statistics.php:269
 msgid "Clear all"
 msgstr "全てをクリア"
 
-#: admin/includes/tab-accesslog.php:166
+#: admin/includes/tab-accesslog.php:174
 msgid "Export logs"
 msgstr "ログをエクスポート"
 
-#: admin/includes/tab-accesslog.php:172 admin/includes/tab-settings.php:1538
+#: admin/includes/tab-accesslog.php:180 admin/includes/tab-settings.php:1560
 #: admin/includes/tab-statistics.php:283
 msgid "Export to the local file"
 msgstr "ローカル・ファイルへエクスポートする"
 
-#: admin/includes/tab-accesslog.php:172 admin/includes/tab-statistics.php:283
+#: admin/includes/tab-accesslog.php:180 admin/includes/tab-statistics.php:283
 msgid "Export csv"
 msgstr "CSVへエクスポート"
 
-#: admin/includes/tab-accesslog.php:198 admin/includes/tab-network.php:112
+#: admin/includes/tab-accesslog.php:206 admin/includes/tab-network.php:112
 #: admin/includes/tab-statistics.php:410
 #, php-format
 msgid "[ %sRecord &#8220;Validation logs&#8221;%s ] is disabled."
 msgstr "［%s検証のログを記録%s］が無効です。"
 
-#: admin/includes/tab-accesslog.php:199 admin/includes/tab-network.php:113
+#: admin/includes/tab-accesslog.php:207 admin/includes/tab-network.php:113
 #: admin/includes/tab-statistics.php:411
 msgid ""
 "Please set the proper condition to record and analyze the validation logs."
@@ -566,7 +620,7 @@ msgstr "IPアドレスの位置情報を検索"
 msgid "Geolocation API"
 msgstr "位置情報API"
 
-#: admin/includes/tab-geolocation.php:89 admin/includes/tab-settings.php:1083
+#: admin/includes/tab-geolocation.php:89 admin/includes/tab-settings.php:1105
 msgid ""
 "<dfn title=\"IP address is always encrypted on recording in Cache and Logs. "
 "Moreover, this option replaces the end of IP address with &#8220;***&#8221; "
@@ -717,7 +771,7 @@ msgstr ""
 "の国にもマッチさせないことが必要な場合には、「YY」を指定してください。\">国コードのブラックリスト</"
 "dfn>"
 
-#: admin/includes/tab-settings.php:125 admin/includes/tab-settings.php:805
+#: admin/includes/tab-settings.php:125 admin/includes/tab-settings.php:827
 msgid "Matching rule"
 msgstr "マッチング規則"
 
@@ -839,8 +893,8 @@ msgstr ""
 "ング］を「&#8220;mu-plugins&#8221; (ip-geo-block-mu.php)」に設定することを検討してください。\">悪意の"
 "あるアップロード防止</dfn>"
 
-#: admin/includes/tab-settings.php:304 admin/includes/tab-settings.php:494
-#: admin/includes/tab-settings.php:639 admin/includes/tab-settings.php:1155
+#: admin/includes/tab-settings.php:304 admin/includes/tab-settings.php:516
+#: admin/includes/tab-settings.php:661 admin/includes/tab-settings.php:1177
 msgid "Disable"
 msgstr "無効"
 
@@ -852,7 +906,29 @@ msgstr "拡張子と MIME タイプを検証"
 msgid "Verify file extension only"
 msgstr "ファイル拡張子のみを検証"
 
-#: admin/includes/tab-settings.php:315
+#: admin/includes/tab-settings.php:314
+msgid ""
+"<dfn title=\"Specify the table names to be verified for single site. This "
+"verification will be skipped if empty.\">pre_update_option</dfn>"
+msgstr ""
+"<dfn title=\"データベース中のシングルサイト用テーブル名を指定します。空欄の場合、この検証はスキップさ"
+"れます。\">pre_update_option</dfn>"
+
+#: admin/includes/tab-settings.php:316
+msgid ""
+"<dfn title=\"Specify the table names to be verified for multisite. This "
+"verification will be skipped if empty.\">pre_update_site_option</dfn>"
+msgstr ""
+"<dfn title=\"データベース中のマルチサイト用テーブル名を指定します。空欄の場合、この検証はスキップされ"
+"ます。\">pre_update_site_option</dfn>"
+
+#: admin/includes/tab-settings.php:321
+msgid ""
+"<dfn title=\"It prevents to manipulate metadata in database without admin "
+"privilege.\">Prevent metadata alteration</dfn>"
+msgstr "<dfn title=\"管理者権限なくメタデータが改変される事を防止します。\">メタデータの改竄防止</dfn>"
+
+#: admin/includes/tab-settings.php:337
 #, php-format
 msgid ""
 "<dfn title=\"You can put your original 403.php and so on into your theme "
@@ -861,7 +937,7 @@ msgstr ""
 "<dfn title=\"テーマ・ディレクトリには 403.php など、独自のファイルを設置する事が出来ます。\">レスポン"
 "ス・コード</dfn> %s"
 
-#: admin/includes/tab-settings.php:344 admin/includes/tab-settings.php:888
+#: admin/includes/tab-settings.php:366 admin/includes/tab-settings.php:910
 msgid ""
 "<dfn title=\"Specify the URL for response code 2xx and 3xx. If it is pointed "
 "to a public facing page, visitors would not be blocked on the page to "
@@ -873,36 +949,36 @@ msgstr ""
 "避けるため、自サイト内の URL は［フロントエンドの設定］に関わらず遮断の対象外となります。空欄の場合、"
 "サイトのホームが使用されます。\">リダイレクト先 URL</dfn>"
 
-#: admin/includes/tab-settings.php:361 admin/includes/tab-settings.php:906
+#: admin/includes/tab-settings.php:383 admin/includes/tab-settings.php:928
 msgid ""
 "<dfn title=\"Specify the message for response code 4xx and 5xx.\">Response "
 "message</dfn>"
 msgstr ""
 "<dfn title=\"レスポンス・コード 4xx、5xx 用のメッセージを指定します。\">レスポンス・メッセージ</dfn>"
 
-#: admin/includes/tab-settings.php:379
+#: admin/includes/tab-settings.php:401
 msgid "Select when to run the validation."
 msgstr "検証を実行するタイミングを選択します。"
 
-#: admin/includes/tab-settings.php:379
+#: admin/includes/tab-settings.php:401
 msgid "Validation timing"
 msgstr "検証のタイミング"
 
-#: admin/includes/tab-settings.php:390
+#: admin/includes/tab-settings.php:412
 msgid "&#8220;init&#8221; action hook"
 msgstr "&#8220;init&#8221; アクション・フック"
 
-#: admin/includes/tab-settings.php:391
+#: admin/includes/tab-settings.php:413
 msgid "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php)"
 msgstr "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php)"
 
-#: admin/includes/tab-settings.php:394
+#: admin/includes/tab-settings.php:416
 msgid ""
 "Validate at &#8220;init&#8221; action hook in the same manner as typical "
 "plugins."
 msgstr "標準的な他のプラグインと同様、init アクション・フックのタイミングで検証を実行します。"
 
-#: admin/includes/tab-settings.php:395
+#: admin/includes/tab-settings.php:417
 msgid ""
 "Validate at an earlier phase than other typical plugins. It can reduce load "
 "on server but has <a rel='noreferrer' href='https://www.ipgeoblock.com/codex/"
@@ -913,7 +989,7 @@ msgstr ""
 "が、<a rel=‘noreferrer’ href=‘https://www.ipgeoblock.com/codex/validation-timing.html' "
 "title=‘Validation timing | IP Geo Block’>幾つかの制限事項</a> が生じます。"
 
-#: admin/includes/tab-settings.php:403
+#: admin/includes/tab-settings.php:425
 msgid ""
 "It enables to simulate the validation rules without actual blocking in order "
 "to check the behavior of this plugin. The results can be found on &#8220;"
@@ -922,122 +998,122 @@ msgstr ""
 "このプラグインの動作を確認するために、実際に遮断させることなく検証ルールをシミュレートします。結果は"
 "ログで確認する事が出来ます。"
 
-#: admin/includes/tab-settings.php:403
+#: admin/includes/tab-settings.php:425
 msgid "Simulation mode"
 msgstr "シミュレーション・モード"
 
-#: admin/includes/tab-settings.php:420
+#: admin/includes/tab-settings.php:442
 msgid "Back-end target settings"
 msgstr "バックエンドの設定"
 
-#: admin/includes/tab-settings.php:426
+#: admin/includes/tab-settings.php:448
 #, php-format
 msgid "<dfn title=\"It enables to validate requests to %s.\">%s</dfn>"
 msgstr "<dfn title=\"%s へのリクエストを検証します。\">%s</dfn>"
 
-#: admin/includes/tab-settings.php:432
+#: admin/includes/tab-settings.php:454
 msgid "Other areas"
 msgstr "その他の領域"
 
-#: admin/includes/tab-settings.php:433
+#: admin/includes/tab-settings.php:455
 msgid "public facing pages"
 msgstr "一般公開ページ"
 
-#: admin/includes/tab-settings.php:449 admin/includes/tab-settings.php:495
-#: admin/includes/tab-settings.php:527 admin/includes/tab-settings.php:533
-#: admin/includes/tab-settings.php:798
+#: admin/includes/tab-settings.php:471 admin/includes/tab-settings.php:517
+#: admin/includes/tab-settings.php:549 admin/includes/tab-settings.php:555
+#: admin/includes/tab-settings.php:820
 msgid "Block by country"
 msgstr "国コードで遮断"
 
-#: admin/includes/tab-settings.php:459
+#: admin/includes/tab-settings.php:481
 msgid "The whole will be wrapped by &lt;p&gt; tag. Allowed tags: "
 msgstr "全体を &lt;p&gt; タグで囲みます。使用可能タグ："
 
-#: admin/includes/tab-settings.php:459
+#: admin/includes/tab-settings.php:481
 msgid "Message on comment form"
 msgstr "投稿フォーム上のメッセージ"
 
-#: admin/includes/tab-settings.php:472
+#: admin/includes/tab-settings.php:494
 msgid "None"
 msgstr "なし"
 
-#: admin/includes/tab-settings.php:473
+#: admin/includes/tab-settings.php:495
 msgid "Top"
 msgstr "上部"
 
-#: admin/includes/tab-settings.php:474
+#: admin/includes/tab-settings.php:496
 msgid "Bottom"
 msgstr "下部"
 
-#: admin/includes/tab-settings.php:496
+#: admin/includes/tab-settings.php:518
 msgid "Completely close"
 msgstr "完全に閉鎖"
 
-#: admin/includes/tab-settings.php:502
+#: admin/includes/tab-settings.php:524
 msgid "Action to login as a registered user."
 msgstr "登録済みユーザーとしてログインするアクション。"
 
-#: admin/includes/tab-settings.php:502
+#: admin/includes/tab-settings.php:524
 msgid "Log in"
 msgstr "ログイン"
 
-#: admin/includes/tab-settings.php:503
+#: admin/includes/tab-settings.php:525
 msgid "Action to register new users."
 msgstr "新規ユーザーを登録するアクション。"
 
-#: admin/includes/tab-settings.php:503
+#: admin/includes/tab-settings.php:525
 msgid "Register"
 msgstr "登録"
 
-#: admin/includes/tab-settings.php:504
+#: admin/includes/tab-settings.php:526
 msgid "Action to reset a password to create a new one."
 msgstr "パスワードをリセットし、新しいパスワードに更新するアクション。"
 
-#: admin/includes/tab-settings.php:504
+#: admin/includes/tab-settings.php:526
 msgid "Password Reset"
 msgstr "パスワードのリセット"
 
-#: admin/includes/tab-settings.php:505
+#: admin/includes/tab-settings.php:527
 msgid "Action to email a password to a registered user."
 msgstr "登録済みユーザーにパスワードを送付するアクション。"
 
-#: admin/includes/tab-settings.php:505
+#: admin/includes/tab-settings.php:527
 msgid "Lost Password"
 msgstr "パスワード紛失"
 
-#: admin/includes/tab-settings.php:506
+#: admin/includes/tab-settings.php:528
 msgid ""
 "Action to show prompt to enter a password on password protected post and "
 "page."
 msgstr "パスワードで保護された投稿とページにパスワードを入力するプロンプトを表示するアクション。"
 
-#: admin/includes/tab-settings.php:506
+#: admin/includes/tab-settings.php:528
 msgid "Password protected"
 msgstr "パスワード保護"
 
-#: admin/includes/tab-settings.php:528
+#: admin/includes/tab-settings.php:550
 msgid ""
 "<dfn title=\"Specify the individual action as a blocking target.\">Target "
 "actions</dfn>"
 msgstr "<dfn title=\"遮断対象とするアクションを指定します。\">対象アクション</dfn>"
 
-#: admin/includes/tab-settings.php:534
+#: admin/includes/tab-settings.php:556
 msgid "Prevent Zero-day Exploit"
 msgstr "ゼロデイ攻撃を遮断"
 
-#: admin/includes/tab-settings.php:538
+#: admin/includes/tab-settings.php:560
 msgid ""
-"It will block a request related to the services for both public facing pages "
-"and the dashboard."
-msgstr "一般公開ページとダッシュボード向けサービスに関連するリクエストを遮断します。"
+"It will block a request related to the services for both &#8220;non-logged "
+"in user&#8221; and &#8220;logged-in user&#8221;."
+msgstr "認証済ユーザーおよび未認証ユーザー用のサービスに関連するリクエストを遮断します。"
 
-#: admin/includes/tab-settings.php:539
+#: admin/includes/tab-settings.php:561
 msgid ""
 "Regardless of the country code, it will block a malicious request related to "
-"the services only for the dashboard."
-msgstr "国コードに拘らず、ダッシュボード向けサービスだけに関連する悪意のあるリクエストを遮断します。"
+"the services only for &#8220;logged-in user&#8221;."
+msgstr "国コードにかかわらず、認証済ユーザー限定のサービスに関連する悪意のあるリクエストを遮断します。"
 
-#: admin/includes/tab-settings.php:545
+#: admin/includes/tab-settings.php:567
 msgid ""
 "This is applied to &#8220;XML-RPC&#8221; and &#8220;Login form&#8221; when "
 "&#8220;IP address cache&#8221; in &#8220;Privacy and record settings&#8221; "
@@ -1047,23 +1123,23 @@ msgstr ""
 "［プライバシーと記録の設定］&raquo;［IPアドレスのキャッシュを記録］が有効の時、［XML-RPC］と［ログイ"
 "ン・フォーム］に適用されます。ロックアウト時間は［有効時間］で定義します。"
 
-#: admin/includes/tab-settings.php:545
+#: admin/includes/tab-settings.php:567
 msgid "Max failed login attempts per IP address"
 msgstr "IPアドレス当たりのログイン試行可能回数"
 
-#: admin/includes/tab-settings.php:586
+#: admin/includes/tab-settings.php:608
 msgid "admin post for logged-in user"
 msgstr "認証済ユーザー用 admin post"
 
-#: admin/includes/tab-settings.php:587
+#: admin/includes/tab-settings.php:609
 msgid "admin post for non logged-in user"
 msgstr "未認証ユーザー用 admin post"
 
-#: admin/includes/tab-settings.php:609
+#: admin/includes/tab-settings.php:631
 msgid "Admin ajax/post"
 msgstr "管理領域 ajax/post"
 
-#: admin/includes/tab-settings.php:623
+#: admin/includes/tab-settings.php:645
 msgid ""
 "Specify the action name (&#8220;action=&hellip;&#8221;) or the page name "
 "(&#8220;page=&hellip;&#8221;) to prevent unintended blocking caused by "
@@ -1075,27 +1151,27 @@ msgstr ""
 "&#8221; 部分）、またはページ名（&#8220;page=&hellip;&#8221; の &#8220;&hellip;&#8221; 部分）を指定"
 "し、検証対象から除外します。"
 
-#: admin/includes/tab-settings.php:623 admin/includes/tab-settings.php:701
-#: admin/includes/tab-settings.php:761
+#: admin/includes/tab-settings.php:645 admin/includes/tab-settings.php:723
+#: admin/includes/tab-settings.php:783
 msgid "Exceptions"
 msgstr "例外"
 
-#: admin/includes/tab-settings.php:624
+#: admin/includes/tab-settings.php:646
 msgid "Toggle with non logged-in user"
 msgstr "未認証ユーザー用を含む項目に限定して表示する"
 
-#: admin/includes/tab-settings.php:627
+#: admin/includes/tab-settings.php:649
 msgid "Candidate actions/pages"
 msgstr "候補 アクション／ページ"
 
-#: admin/includes/tab-settings.php:641
+#: admin/includes/tab-settings.php:663
 #, php-format
 msgid ""
 "Regardless of the country code, it will block a malicious request to <code>"
 "%s&ctdot;/*.php</code>."
-msgstr "国コードに拘らず、<code>%s&ctdot;/*.php</code>への悪意のあるリクエストを遮断します。"
+msgstr "国コードにかかわらず、<code>%s&ctdot;/*.php</code>への悪意のあるリクエストを遮断します。"
 
-#: admin/includes/tab-settings.php:642
+#: admin/includes/tab-settings.php:664
 msgid ""
 "Select the item which causes unintended blocking in order to exclude from "
 "the validation target. Grayed item indicates &#8220;INACTIVE&#8221;."
@@ -1103,7 +1179,7 @@ msgstr ""
 "意図しない遮断の原因となる項目を選択し、検証対象から除外します。灰色で表示された項目は、「非アクティ"
 "ブ」であることを示しています。"
 
-#: admin/includes/tab-settings.php:643
+#: admin/includes/tab-settings.php:665
 #, php-format
 msgid ""
 "It configures &#8220;%s&#8221; to validate a direct request to the PHP file "
@@ -1113,37 +1189,37 @@ msgstr ""
 "WordPressコアを読み込まないPHPファイルへのリクエストを検証対象とするために、%s を設定します。ドットで"
 "始まる隠しファイルへのアクセス拒否がサーバー側で設定されていることを確認して下さい。"
 
-#: admin/includes/tab-settings.php:644
+#: admin/includes/tab-settings.php:666
 msgid "Sorry, but your server type is not supported."
 msgstr "このサーバーではサポートされません。"
 
-#: admin/includes/tab-settings.php:645
+#: admin/includes/tab-settings.php:667
 msgid ""
 "You need to click &#8220;Save Changes&#8221; button for imported settings to "
 "take effect."
 msgstr "インポートされた設定を有効にするには、［変更を保存］ボタンをクリックする必要があります。"
 
-#: admin/includes/tab-settings.php:680 admin/includes/tab-settings.php:740
+#: admin/includes/tab-settings.php:702 admin/includes/tab-settings.php:762
 msgid "Force to load WP core"
 msgstr "WPコアの読み込みを強制"
 
-#: admin/includes/tab-settings.php:685
+#: admin/includes/tab-settings.php:707
 msgid "Plugins area"
 msgstr "プラグイン領域"
 
-#: admin/includes/tab-settings.php:745
+#: admin/includes/tab-settings.php:767
 msgid "Themes area"
 msgstr "テーマ領域"
 
-#: admin/includes/tab-settings.php:780
+#: admin/includes/tab-settings.php:802
 msgid "Front-end target settings"
 msgstr "フロントエンドの設定"
 
-#: admin/includes/tab-settings.php:815
+#: admin/includes/tab-settings.php:837
 msgid "Follow &#8220;Validation rules and behavior&#8221;"
 msgstr "［検証ルールと振る舞いの設定］に従う"
 
-#: admin/includes/tab-settings.php:857
+#: admin/includes/tab-settings.php:879
 #, php-format
 msgid ""
 "<dfn title=\"You can configure a different response code from the Back-end. "
@@ -1153,18 +1229,18 @@ msgstr ""
 "<dfn title=\"バックエンドと異なるレスポンス・コードを設定できます。これは、アフィリエイト・プログラム"
 "に対する違反を防止するのに役立つでしょう。\">レスポンス・コード</dfn> %s"
 
-#: admin/includes/tab-settings.php:921
+#: admin/includes/tab-settings.php:943
 msgid ""
 "<dfn title=\"Specify the individual page as a blocking target.\">Page</dfn>"
 msgstr "<dfn title=\"特定のページを遮断対象に指定します。\">ページ</dfn>"
 
-#: admin/includes/tab-settings.php:933
+#: admin/includes/tab-settings.php:955
 msgid ""
 "<dfn title=\"Specify the individual post type on a single page as a blocking "
 "target.\">Post type</dfn>"
 msgstr "<dfn title=\"特定の投稿タイプのシングルページを遮断対象に指定します。\">投稿タイプ</dfn>"
 
-#: admin/includes/tab-settings.php:945
+#: admin/includes/tab-settings.php:967
 msgid ""
 "<dfn title=\"Specify the individual category on a single page or archive "
 "page as a blocking target.\">Category</dfn>"
@@ -1172,30 +1248,30 @@ msgstr ""
 "<dfn title=\"特定のカテゴリを含むシングルページかアーカイブページを遮断対象に指定します。\">カテゴリ"
 "</dfn>"
 
-#: admin/includes/tab-settings.php:957
+#: admin/includes/tab-settings.php:979
 msgid ""
 "<dfn title=\"Specify the individual tag on a single page or archive page as "
 "a blocking target.\">Tag</dfn>"
 msgstr ""
 "<dfn title=\"特定のタグを含むシングルページかアーカイブページを遮断対象に指定します。\">タグ</dfn>"
 
-#: admin/includes/tab-settings.php:971
+#: admin/includes/tab-settings.php:993
 msgid "Specify the validation target on front-end."
 msgstr "フロントエンドの検証対象を設定します。"
 
-#: admin/includes/tab-settings.php:971
+#: admin/includes/tab-settings.php:993
 msgid "Validation target"
 msgstr "検証対象"
 
-#: admin/includes/tab-settings.php:982
+#: admin/includes/tab-settings.php:1004
 msgid "All requests"
 msgstr "全てのリクエスト"
 
-#: admin/includes/tab-settings.php:983
+#: admin/includes/tab-settings.php:1005
 msgid "Specify the targets"
 msgstr "ターゲットを指定"
 
-#: admin/includes/tab-settings.php:986
+#: admin/includes/tab-settings.php:1008
 msgid ""
 "Notice that &#8220;Validation timing&#8221; is deferred till &#8220;"
 "wp&#8221; action hook. It means that this feature would not be compatible "
@@ -1204,32 +1280,32 @@ msgstr ""
 "［検証のタイミング］が &#8220;wp&#8221; アクション・フックまで遅延されます。これにより、ページ・"
 "キャッシュとの互換性がなくなることに注意してください。"
 
-#: admin/includes/tab-settings.php:996
+#: admin/includes/tab-settings.php:1018
 msgid "Specify the name of actions as exception that is invariably blocked."
 msgstr "常に遮断されるアクション名を例外として指定します。"
 
-#: admin/includes/tab-settings.php:996
+#: admin/includes/tab-settings.php:1018
 msgid "Excluded actions"
 msgstr "除外するアクション"
 
-#: admin/includes/tab-settings.php:1012
+#: admin/includes/tab-settings.php:1034
 msgid ""
 "<dfn title=\"Specify the frequency of request for certain period of time."
 "\">Blocking condition</dfn>"
 msgstr "<dfn title=\"特定期間のリクエスト頻度を設定します。\">遮断条件</dfn>"
 
-#: admin/includes/tab-settings.php:1014
+#: admin/includes/tab-settings.php:1036
 #, php-format
 msgid "More than %1$s page view (PV) in %2$s seconds"
 msgstr "%2$s 秒間で %1$s を超えるページビュー (PV)"
 
-#: admin/includes/tab-settings.php:1022
+#: admin/includes/tab-settings.php:1044
 msgid ""
 "<dfn title=\"It will validate the frequency of request.\">Block badly-"
 "behaved bots and crawlers</dfn>"
 msgstr "<dfn title=\"リクエスト頻度を検証します。\">行儀の悪いボットやクローラーを遮断</dfn>"
 
-#: admin/includes/tab-settings.php:1039
+#: admin/includes/tab-settings.php:1061
 msgid ""
 "A part of user agent string and a qualification connected with a separator "
 "that indicates an applicable rule and can be &#8220;:&#8221; (pass) or "
@@ -1242,11 +1318,11 @@ msgstr ""
 "「条件」のペアです。「条件」には「DNS」、「FEED」、国コード、または&nbsp;IPアドレス（CIDR記法）が使え"
 "ます。また否定を表す記号「!」を「条件」の直前に配置する事が出来ます。"
 
-#: admin/includes/tab-settings.php:1039
+#: admin/includes/tab-settings.php:1061
 msgid "UA string and qualification"
 msgstr "ユーザーエージェント文字列と条件"
 
-#: admin/includes/tab-settings.php:1056
+#: admin/includes/tab-settings.php:1078
 msgid ""
 "It enables to verify the host by reverse DNS lookup which would spend some "
 "server resources. If it is disabled, &#8220;HOST&#8221; and &#8220;"
@@ -1256,15 +1332,15 @@ msgstr ""
 "DNS 逆引きによりホストを検証します（幾らかのサーバー・リソースを消費します）。無効にした場合、［ユー"
 "ザーエージェント文字列と条件］中の「HOST」および「HOST=&hellip;」は常に真となります。"
 
-#: admin/includes/tab-settings.php:1056
+#: admin/includes/tab-settings.php:1078
 msgid "Reverse DNS lookup"
 msgstr "DNS 逆引き"
 
-#: admin/includes/tab-settings.php:1075
+#: admin/includes/tab-settings.php:1097
 msgid "Privacy and record settings"
 msgstr "プライバシーと記録の設定"
 
-#: admin/includes/tab-settings.php:1098
+#: admin/includes/tab-settings.php:1120
 msgid ""
 "<dfn title=\"This option restricts not to send IP address to the external "
 "Geolocation APIs.\">Do not send IP address to external APIs</dfn>"
@@ -1272,7 +1348,7 @@ msgstr ""
 "<dfn title=\"このオプションは、IPアドレスを外部の位置情報APIへ送信することを制限します。\">外部APIへ"
 "の送信を制限する</dfn>"
 
-#: admin/includes/tab-settings.php:1113
+#: admin/includes/tab-settings.php:1135
 msgid ""
 "<dfn title=\"This option enables to record the IP address, country code and "
 "failure counter of login attempts into the cache on database to minimize the "
@@ -1281,7 +1357,7 @@ msgstr ""
 "<dfn title=\"このオプションは、IPアドレス、国コード、ログイン失敗回数等のキャッシュへの記録を有効に"
 "し、サイト速度への影響を最小化します。\">IPアドレスをキャッシュに記録</dfn>"
 
-#: admin/includes/tab-settings.php:1128
+#: admin/includes/tab-settings.php:1150
 msgid ""
 "<dfn title=\"If user authentication fails consecutively beyond &#8220;Max "
 "number of failed login attempts per IP address&#8221;, subsequent login will "
@@ -1291,7 +1367,7 @@ msgstr ""
 "<dfn title=\"ユーザ認証が連続%d回失敗した場合も、以降のログインがこの期間だけ（ガベージコレクション周"
 "期を含む）禁止されます。\">各エントリーの有効期間 ［秒］</dfn>"
 
-#: admin/includes/tab-settings.php:1144
+#: admin/includes/tab-settings.php:1166
 msgid ""
 "<dfn title=\"This option enables to record the validation logs including IP "
 "addresses.\">Record &#8220;Validation logs&#8221;</dfn>"
@@ -1299,48 +1375,48 @@ msgstr ""
 "<dfn title=\"このオプションは、IPアドレスを含む検証ログの記録を有効にします。\">検証のログを記録</"
 "dfn>"
 
-#: admin/includes/tab-settings.php:1156
+#: admin/includes/tab-settings.php:1178
 msgid "When blocked"
 msgstr "遮断時に記録"
 
-#: admin/includes/tab-settings.php:1157
+#: admin/includes/tab-settings.php:1179
 msgid "When passed"
 msgstr "通過時に記録"
 
-#: admin/includes/tab-settings.php:1158
+#: admin/includes/tab-settings.php:1180
 msgid "When &#8220;blocked&#8221; or &#8220;passed (not in whitelist)&#8221;"
 msgstr "遮断時または遮断対象国の通過時に記録"
 
-#: admin/includes/tab-settings.php:1159
+#: admin/includes/tab-settings.php:1181
 msgid "Unauthenticated visitor"
 msgstr "未認証の訪問者を記録"
 
-#: admin/includes/tab-settings.php:1160
+#: admin/includes/tab-settings.php:1182
 msgid "Authenticated user"
 msgstr "認証済のユーザーを記録"
 
-#: admin/includes/tab-settings.php:1161
+#: admin/includes/tab-settings.php:1183
 msgid "All the validation"
 msgstr "すべての検証を記録"
 
-#: admin/includes/tab-settings.php:1169
+#: admin/includes/tab-settings.php:1191
 #, php-format
 msgid ""
 "<dfn title=\"The maximum number of entries in the logs is also limited to %d."
 "\">Expiration time [days] for each entry</dfn>"
 msgstr "<dfn title=\"ログの最大エントリー数は %d に制限されます。\">各エントリーの有効期間［日］</dfn>"
 
-#: admin/includes/tab-settings.php:1186
+#: admin/includes/tab-settings.php:1208
 msgid ""
 "<dfn title=\"e.g. action, comment, log, pwd, FILES\">$_POST key to record "
 "with value</dfn>"
 msgstr "<dfn title=\"例）action, comment, log, pwd, FILES\">内容を展開する$_POSTのキー</dfn>"
 
-#: admin/includes/tab-settings.php:1205
+#: admin/includes/tab-settings.php:1227
 msgid "Maximum entries in &#8220;Logs&#8221;"
 msgstr "記録するログの最大エントリ数"
 
-#: admin/includes/tab-settings.php:1222
+#: admin/includes/tab-settings.php:1244
 msgid ""
 "<dfn title=\"Select SQLite database source.\">Database source of SQLite for "
 "&#8220;Live update&#8221;</dfn>"
@@ -1348,47 +1424,47 @@ msgstr ""
 "<dfn title=\"SQLiteデータベース・ソースを選択します。\">ライブアップデート用SQLiteデータベース・ソー"
 "スの選択</dfn>"
 
-#: admin/includes/tab-settings.php:1235
+#: admin/includes/tab-settings.php:1257
 msgid "Ordinary file"
 msgstr "ファイル"
 
-#: admin/includes/tab-settings.php:1236
+#: admin/includes/tab-settings.php:1258
 msgid "In-Memory"
 msgstr "イン・メモリ"
 
-#: admin/includes/tab-settings.php:1239
+#: admin/includes/tab-settings.php:1261
 msgid "PDO_SQLITE driver not available"
 msgstr "PDO_SQLITEドライバが利用出来ません"
 
-#: admin/includes/tab-settings.php:1240
+#: admin/includes/tab-settings.php:1262
 msgid ""
 "It takes a few tens of milliseconds as overhead. It can be safely used "
 "without conflict with other plugins."
 msgstr "数十ミリ秒のオーバーヘッドが生じますが、他のプラグインと競合することなく、安全に使用できます。"
 
-#: admin/includes/tab-settings.php:1241
+#: admin/includes/tab-settings.php:1263
 msgid ""
 "It takes a few milliseconds as overhead. There is a possibility of conflict "
 "with other plugins using this method."
 msgstr ""
 "数ミリ秒のオーバーヘッドが生じます。同手法を用いている他のプラグインと競合する可能性があります。"
 
-#: admin/includes/tab-settings.php:1249
+#: admin/includes/tab-settings.php:1271
 msgid "Reset database source of &#8220;Live update&#8221;"
 msgstr "ライブアップデートのデータソースをリセットする"
 
-#: admin/includes/tab-settings.php:1257
+#: admin/includes/tab-settings.php:1279
 msgid "Reset now"
 msgstr "今すぐリセット"
 
-#: admin/includes/tab-settings.php:1266 admin/includes/tab-settings.php:1427
+#: admin/includes/tab-settings.php:1288 admin/includes/tab-settings.php:1449
 msgid ""
 "Task could not be found in WP-Cron. Please try to deactivate this plugin "
 "once and activate again."
 msgstr ""
 "WP-Cronのタスクが見つかりません。 一旦このプラグインを停止させた後、再度、有効化してみてください。"
 
-#: admin/includes/tab-settings.php:1271
+#: admin/includes/tab-settings.php:1293
 msgid ""
 "<dfn title=\"This option enables to schedule the WP-Cron event to remove the "
 "expired entries from &#8220;IP address cache&#8221; and &#8220;Validation "
@@ -1397,12 +1473,12 @@ msgstr ""
 "<dfn title=\"キャッシュとログから有効期限の切れたIPアドレスのエントリーを削除する WP-Cron イベントの"
 "起動周期を設定します。\">ガベージコレクション周期［秒］</dfn>"
 
-#: admin/includes/tab-settings.php:1280 admin/includes/tab-settings.php:1443
+#: admin/includes/tab-settings.php:1302 admin/includes/tab-settings.php:1465
 #, php-format
 msgid "Next schedule: %s"
 msgstr "次回日時：%s"
 
-#: admin/includes/tab-settings.php:1287
+#: admin/includes/tab-settings.php:1309
 msgid ""
 "<dfn title=\"This option enables to record the number blocked countries and "
 "the number of blocked requests per day.\">Record &#8220;Statistics of "
@@ -1411,19 +1487,19 @@ msgstr ""
 "<dfn title=\"このオプションは、国別遮断数や1日あたりの遮断数など、統計の記録を有効にします。\">検証の"
 "統計を記録</dfn>"
 
-#: admin/includes/tab-settings.php:1302
+#: admin/includes/tab-settings.php:1324
 msgid "Maximum period for &#8220;Statistics&#8221; [days]"
 msgstr "記録する統計の最大期間［日］"
 
-#: admin/includes/tab-settings.php:1320
+#: admin/includes/tab-settings.php:1342
 msgid "Remove all settings and records at uninstallation"
 msgstr "アンインストール時に設定と記録を全て削除"
 
-#: admin/includes/tab-settings.php:1337
+#: admin/includes/tab-settings.php:1359
 msgid "Geolocation API settings"
 msgstr "位置情報APIの設定"
 
-#: admin/includes/tab-settings.php:1358
+#: admin/includes/tab-settings.php:1380
 msgid ""
 "<dfn title=\"IP address cache and local databases are scanned at the top "
 "priority.\">API selection and key settings</dfn>"
@@ -1431,46 +1507,46 @@ msgstr ""
 "<dfn title=\"IPアドレスのキャッシュとローカルのデータベースが最優先で検索されます。\">APIの選択とキー"
 "の設定</dfn>"
 
-#: admin/includes/tab-settings.php:1377
+#: admin/includes/tab-settings.php:1399
 msgid "Timeout for network API [sec]"
 msgstr "ネットワークAPIのタイムアウト［秒］"
 
-#: admin/includes/tab-settings.php:1395
+#: admin/includes/tab-settings.php:1417
 msgid "Local database settings"
 msgstr "ローカル・データベースの設定"
 
-#: admin/includes/tab-settings.php:1409
+#: admin/includes/tab-settings.php:1431
 msgid "database"
 msgstr "ファイル"
 
-#: admin/includes/tab-settings.php:1410 classes/class-ip-geo-block-cron.php:424
+#: admin/includes/tab-settings.php:1432 classes/class-ip-geo-block-cron.php:434
 #, php-format
 msgid "Last update: %s"
 msgstr "最終更新：%s"
 
-#: admin/includes/tab-settings.php:1432
+#: admin/includes/tab-settings.php:1454
 msgid "Auto updating (once a month)"
 msgstr "自動更新（月1回）"
 
-#: admin/includes/tab-settings.php:1450
+#: admin/includes/tab-settings.php:1472
 msgid "Download database"
 msgstr "データベースのダウンロード"
 
-#: admin/includes/tab-settings.php:1458
+#: admin/includes/tab-settings.php:1480
 msgid "Download now"
 msgstr "今すぐダウンロード"
 
-#: admin/includes/tab-settings.php:1469
+#: admin/includes/tab-settings.php:1491
 msgid "Plugin settings"
 msgstr "プラグインの設定"
 
-#: admin/includes/tab-settings.php:1481
+#: admin/includes/tab-settings.php:1503
 msgid ""
 "<dfn title=\"Synchronize all settings over the network wide.\">Network wide "
 "settings</dfn>"
 msgstr "<dfn title=\"全ての設定をネットワーク全体で同期させます。\">ネットワーク内で設定を同期</dfn>"
 
-#: admin/includes/tab-settings.php:1499
+#: admin/includes/tab-settings.php:1521
 msgid ""
 "<dfn title=\"You can access to the login form with a specific key at "
 "emergency. Please add the generated link to favorites / bookmarks in your "
@@ -1480,7 +1556,7 @@ msgstr ""
 "<dfn title=\"緊急時にもログイン可能なリンクを生成します。キー自体は保存されないので、生成したリンクを"
 "ブラウザのお気に入り／ブックマークに追加してください。\">緊急時用ログイン・リンク</dfn>"
 
-#: admin/includes/tab-settings.php:1515
+#: admin/includes/tab-settings.php:1537
 msgid ""
 "<dfn title=\"Valid key for Google Maps JavaScript API. Maps Embed API in "
 "iframe can be available without key in case it's empty.\">Google Maps API "
@@ -1489,55 +1565,55 @@ msgstr ""
 "<dfn title=\"Google Maps JavaScript API の有効なキー。空欄にするとキーなしの Maps Embed API が使用可"
 "能です。\">Google Maps API キー</dfn>"
 
-#: admin/includes/tab-settings.php:1531
+#: admin/includes/tab-settings.php:1553
 msgid "Export / Import settings"
 msgstr "設定のエクスポート、インポート"
 
-#: admin/includes/tab-settings.php:1538
+#: admin/includes/tab-settings.php:1560
 msgid "Export settings"
 msgstr "エクスポート"
 
-#: admin/includes/tab-settings.php:1539
+#: admin/includes/tab-settings.php:1561
 msgid "Import from the local file"
 msgstr "ローカル・ファイルからインポートします"
 
-#: admin/includes/tab-settings.php:1539
+#: admin/includes/tab-settings.php:1561
 msgid "Import settings"
 msgstr "インポート"
 
-#: admin/includes/tab-settings.php:1547
+#: admin/includes/tab-settings.php:1569
 msgid "Import pre-defined settings"
 msgstr "プリセットのインポート"
 
-#: admin/includes/tab-settings.php:1554
+#: admin/includes/tab-settings.php:1576
 msgid ""
 "Import the default settings to revert to the &#8220;Right after "
 "installing&#8221; state"
 msgstr "インストール直後の状態に戻すための設定値をインポートします"
 
-#: admin/includes/tab-settings.php:1554
+#: admin/includes/tab-settings.php:1576
 msgid "Default settings"
 msgstr "初期設定"
 
-#: admin/includes/tab-settings.php:1555
+#: admin/includes/tab-settings.php:1577
 msgid ""
 "Import the preferred settings mainly by enabling Zero-day Exploit Prevention "
 "for the &#8220;Back-end target settings&#8221;"
 msgstr "「ゼロデイ攻撃の遮断」など、主に［バックエンドの設定］の推奨設定をインポートします"
 
-#: admin/includes/tab-settings.php:1555
+#: admin/includes/tab-settings.php:1577
 msgid "Best for Back-end"
 msgstr "バックエンドの推奨設定"
 
-#: admin/includes/tab-settings.php:1564
+#: admin/includes/tab-settings.php:1586
 msgid "Diagnose all DB tables"
 msgstr "全データベース・テーブルの検査"
 
-#: admin/includes/tab-settings.php:1572
+#: admin/includes/tab-settings.php:1594
 msgid "Diagnose now"
 msgstr "今すぐ検査"
 
-#: admin/includes/tab-settings.php:1581
+#: admin/includes/tab-settings.php:1603
 msgid ""
 "<dfn title=\"When you have some unexpected blocking experiences, please "
 "press the button to find the blocked requests at the end of dumped "
@@ -1551,15 +1627,15 @@ msgstr ""
 "org/support/plugin/ip-geo-block\" title=\"[IP Geo Block] Support | WordPress.org\">サポート・フォーラ"
 "ム</a> ]"
 
-#: admin/includes/tab-settings.php:1588
+#: admin/includes/tab-settings.php:1610
 msgid "Please copy &amp; paste when submitting your issue to support forum"
 msgstr "フォーラムに問題を投稿する際、コピーして張り付けてください"
 
-#: admin/includes/tab-settings.php:1588
+#: admin/includes/tab-settings.php:1610
 msgid "Show information"
 msgstr "情報を表示"
 
-#: admin/includes/tab-settings.php:1605
+#: admin/includes/tab-settings.php:1627
 msgid ""
 "While Geolite2 / Maxmind and IP2Location will fetch the local databases, "
 "others will pass an IP address to the 3rd parties' API via HTTP."
@@ -1567,14 +1643,14 @@ msgstr ""
 "MaxmindとIP2Locationはローカルのデータベースを検索しますが、他はHTTPを介して外部のAPIにIPアドレスを渡"
 "します。"
 
-#: admin/includes/tab-settings.php:1606
+#: admin/includes/tab-settings.php:1628
 msgid ""
 "Please select the appropriate APIs to fit the privacy law / regulation in "
 "your country / region."
 msgstr ""
 "あなたの国／地域におけるプライバシー保護の法規・条例に適合するよう、適切なAPIを選択して下さい。"
 
-#: admin/includes/tab-settings.php:1615
+#: admin/includes/tab-settings.php:1637
 #, php-format
 msgid ""
 "Maxmind GeoLite2 databases and APIs need PHP version 5.4.0+ and %sPECL phar "
@@ -1583,13 +1659,12 @@ msgstr ""
 "Maxmind GeoLite2 データベースと API には、PHP バージョン 5.4.0 以上と %sPECL phar 2.0.0 以上%sが必要"
 "です。"
 
-#: admin/includes/tab-settings.php:1623
+#: admin/includes/tab-settings.php:1645
 #, php-format
 msgid ""
 "Please refer to \"%sLiving with cache plugin%s\" for compatibility with "
 "cache plugins."
-msgstr ""
-"キャッシュ・プラグインとの互換性については、%sこのドキュメント%s を参照して下さい。"
+msgstr "キャッシュ・プラグインとの互換性については、%sこのドキュメント%s を参照して下さい。"
 
 #: admin/includes/tab-statistics.php:18
 msgid "Statistics of validation"
@@ -1691,16 +1766,16 @@ msgstr "［%sIPアドレスをキャッシュに記録%s］が無効です。"
 msgid "Please set the proper condition to record IP address in cache."
 msgstr "キャッシュを利用しサイトの応答性を上げるためには、適切な条件を設定して下さい。"
 
-#: classes/class-ip-geo-block-cron.php:223
+#: classes/class-ip-geo-block-cron.php:233
 #, php-format
 msgid "Can't lock <code>%s</code>. Please try again after a while."
 msgstr "<code>%s</code> をロック出来ません。パーミッションをチェックして下さい。"
 
-#: classes/class-ip-geo-block-cron.php:302
+#: classes/class-ip-geo-block-cron.php:312
 msgid "Your database file is up-to-date."
 msgstr "データベース・ファイルは最新です。"
 
-#: classes/class-ip-geo-block-cron.php:405
+#: classes/class-ip-geo-block-cron.php:415
 msgid "gz or zip is not supported on your system."
 msgstr "gz または zip がサポートされていません。"
 
@@ -1743,11 +1818,18 @@ msgid ""
 "again."
 msgstr "%s 用のカラム型が一致しません。一旦このプラグインを無効化し、再度有効化して下さい。"
 
-#: wp-content/ip-geo-api/ip2location/class-ip2location.php:151
-#: wp-content/ip-geo-api/maxmind/class-maxmind-geolite2.php:144
-#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:228
+#: wp-content/ip-geo-api/ip2location/class-ip2location.php:154
+#: wp-content/ip-geo-api/maxmind/class-maxmind-geolite2.php:160
+#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:252
 msgid "Database file does not exist."
 msgstr "データベース・ファイルが見つかりません。"
+
+#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:158
+#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:179
+#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:207
+#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:228
+msgid "Update service has already stopped."
+msgstr "データベースの更新サービスは終了しました。"
 
 #: wp-content/mu-plugins/ip-geo-block-mu.php:72
 #, php-format

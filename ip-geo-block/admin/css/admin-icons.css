@@ -6,11 +6,11 @@
  */
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?119jp3');
-  src:  url('fonts/icomoon.eot?119jp3#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?119jp3') format('truetype'),
-    url('fonts/icomoon.woff?119jp3') format('woff'),
-    url('fonts/icomoon.svg?119jp3#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?jihakz');
+  src:  url('fonts/icomoon.eot?jihakz#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?jihakz') format('truetype'),
+    url('fonts/icomoon.woff?jihakz') format('woff'),
+    url('fonts/icomoon.svg?jihakz#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -39,42 +39,6 @@
 .ip-geo-block-icon-vpn_lock:before {
   content: "\e62f";
 }
-.ip-geo-block-icon-search:before {
-  content: "\e986";
-}
-.ip-geo-block-icon-key:before {
-  content: "\e98d";
-}
-.ip-geo-block-icon-lock:before {
-  content: "\e98f";
-}
-.ip-geo-block-icon-unlocked:before {
-  content: "\e990";
-}
-.ip-geo-block-icon-cogs:before {
-  content: "\e995";
-}
-.ip-geo-block-icon-pie-chart:before {
-  content: "\e99a";
-}
-.ip-geo-block-icon-stats-dots:before {
-  content: "\e99b";
-}
-.ip-geo-block-icon-stats-bars:before {
-  content: "\e99c";
-}
-.ip-geo-block-icon-stats-bars2:before {
-  content: "\e99d";
-}
-.ip-geo-block-icon-switch:before {
-  content: "\e9b6";
-}
-.ip-geo-block-icon-sphere:before {
-  content: "\e9c9";
-}
-.ip-geo-block-icon-earth:before {
-  content: "\e9ca";
-}
 .ip-geo-block-icon-play:before {
   content: "\ea1c";
 }
@@ -84,14 +48,26 @@
 .ip-geo-block-icon-stop:before {
   content: "\ea1e";
 }
-.ip-geo-block-icon-eject:before {
-  content: "\ea25";
-}
-.ip-geo-block-icon-new-tab:before {
-  content: "\ea7e";
-}
 .ip-geo-block-icon-warning:before {
   content: "\e900";
+}
+.ip-geo-block-icon-happy:before {
+  content: "\e9df";
+}
+.ip-geo-block-icon-grin2:before {
+  content: "\e9ea";
+}
+.ip-geo-block-icon-cool:before {
+  content: "\e9eb";
+}
+.ip-geo-block-icon-confused:before {
+  content: "\e9f5";
+}
+.ip-geo-block-icon-confused2:before {
+  content: "\e9f6";
+}
+.ip-geo-block-icon-crying:before {
+  content: "\ea01";
 }
 
 /* Dashicons is the official icon font of the WordPress admin as of 3.8+. */
@@ -101,11 +77,3 @@
     font-size: 18px;
     margin-left: 2px;
 }
-/*
-#toplevel_page_ip-geo-block .dashicons-admin-generic:before {
-    font-family: 'icomoon';
-    content: "\e9c9";
-    font-size: 18px;
-    margin-left: 2px;
-}
-*/

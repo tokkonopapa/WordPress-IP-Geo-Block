@@ -18,11 +18,11 @@ where `[1-5]` should be specified as a target PHP file as follows:
 
 or edit the following lines in `attack.sh`.
 
-    WPHOME="http://localhost:8888/wordpress/"
+    WPHOME="http://localhost:8888/"
     HEADER="X-Forwarded-For: 129.223.152.47"
 
 Make sure to put `HTTP_X_FOWARDED_FOR` to `$_SERVER keys for extra IPs` at 
-`Validation rule settings` on `Settings` tab like following so that the 
+`Validation rules and behavior` on `Settings` tab like following so that the 
 malicious burst accesses can be blocked by IP Geo Block.
 
 ![HTTP_X_FOWARDED_FOR][X-Forwarded]
@@ -47,6 +47,6 @@ The following files are used to request by POST method.
 
 Do not abuse.
 
-[ApacheBench]:  http://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool"
-[X-Forwarded]:  http://www.ipgeoblock.com/img/2015-09/X-Forwarded-For.png "$_SERVER keys for extra IPs"
+[ApacheBench]:  https://httpd.apache.org/docs/current/programs/ab.html "ab - Apache HTTP server benchmarking tool"
+[X-Forwarded]:  https://www.ipgeoblock.com/img/2015-09/X-Forwarded-For.png "$_SERVER keys for extra IPs"
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "WordPress › IP Geo Block « WordPress Plugins"

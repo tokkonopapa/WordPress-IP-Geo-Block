@@ -41,7 +41,7 @@ app.factory('$exceptionHandler', ['$window', function ($window) {
  * Controller (too heavy!!)
  *
  * https://www.airpair.com/angularjs/posts/top-10-mistakes-angularjs-developers-make
- * http://stackoverflow.com/questions/23382109/how-to-avoid-a-large-number-of-dependencies-in-angularjs
+ * https://stackoverflow.com/questions/23382109/how-to-avoid-a-large-number-of-dependencies-in-angularjs
  */
 app.controller('WPAppCtrl', [
 	'$scope',
@@ -96,8 +96,8 @@ app.controller('WPAppCtrl', [
 			cookie: 'wordpress_test_cookie=WP+Cookie+check'
 		},
 		ajax: {
-			key: ['_wpnonce',   'action',   'file'            ],
-			val: ['12345abcde', 'download', '../wp-config.php']
+			key: ['action', 'data', 'file'],
+			val: ['wpgdprc_process_action', '{"type":"save_setting","append":false,"option":"users_can_register","value":"1″}', '../wp-config.php']
 		},
 		wp_content: {
 			path:   'wp-content/plugins/ip-geo-block/samples.php',

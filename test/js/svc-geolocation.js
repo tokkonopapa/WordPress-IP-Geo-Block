@@ -13,22 +13,22 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 	 */
 	this.apis = [
 		{
-			api: 'freegeoip.net',
-			url: 'http://freegeoip.net/%API_FMT%/%API_IP%',
+			api: 'IP-API.com',
+			url: 'http://ip-api.com/%API_FMT%/%API_IP%',
 			fmt: 'json',
 			type: 'IPv4, IPv6',
 			get: function (data, type) {
 				switch (type) {
-					case 'name':  return data.country_name || null;
-					case 'code':  return data.country_code || null;
-					case 'error': return 'not found';
+					case 'name':  return data.country || null;
+					case 'code':  return data.countryCode || null;
+					case 'error': return data.message || null;
 				}
 				return null;
 			}
 		},
 		{
 			api: 'ipinfo.io',
-			url: 'http://ipinfo.io/%API_IP%/%API_FMT%',
+			url: 'https://ipinfo.io/%API_IP%/%API_FMT%',
 			fmt: 'json',
 			type: 'IPv4, IPv6',
 			get: function (data, type) {
@@ -40,18 +40,30 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				return null;
 			}
 		},
+		/**
+		 * https://developer.yahoo.com/support/yql/
+		 * https://developer.yahoo.com/yql/guide/select.html
+		 */
 		{
-			api: 'ip-api',
-			url: 'http://ip-api.com/%API_FMT%/%API_IP%',
+			api: 'GeoIPLookup',
+			url: 'https://query.yahooapis.com/v1/public/yql?q=select * from xml where url="http://api.geoiplookup.net/?query=%API_IP%"&format=%API_FMT%&jsonCompat=new',
 			fmt: 'json',
 			type: 'IPv4, IPv6',
 			get: function (data, type) {
 				switch (type) {
-					case 'name':  return data.country || null;
-					case 'code':  return data.countryCode || null;
-					case 'error': return data.message || null;
+					case 'name':
+						if (typeof data.query.count !== 'undefined') {
+							return data.query.results.ip.results.result.countryname;
+						}
+						break;
+					case 'code':
+						if (typeof data.query.count !== 'undefined') {
+							return data.query.results.ip.results.result.countrycode;
+						}
+						break;
+					case 'error': return 'not found';
 				}
-				return null;
+				return 'not found (GeoIPLookup)';
 			}
 		},
 		/**
@@ -107,10 +119,10 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				}
 				return null;
 			}
-		},*/
+		},
 		{
 			api: 'Nekudo',
-			url: 'https://query.yahooapis.com/v1/public/yql?q=select * from %API_FMT% where url="http://geoip.nekudo.com/api/%API_IP%"&format=%API_FMT%&jsonCompat=new',
+			url: 'https://query.yahooapis.com/v1/public/yql?q=select * from %API_FMT% where url="https://geoip.nekudo.com/api/%API_IP%"&format=%API_FMT%&jsonCompat=new',
 			fmt: 'json',
 			type: 'IPv4, IPv6',
 			get: function (data, type) {
@@ -136,7 +148,7 @@ angular.module('geolocation').service('GeolocationSvc', ['$http', function ($htt
 				}
 				return null;
 			}
-		}
+		}*/
 	];
 
 	this.get_geolocation = function (ip, callback) {

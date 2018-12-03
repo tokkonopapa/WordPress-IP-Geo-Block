@@ -223,7 +223,7 @@ class IP_Geo_Block_Admin_Ajax {
 			return $ret;
 
 		if ( ! is_wp_error( $res = IP_Geo_Block_Logs::restore_live_log( $hook, $settings ) ) )
-			return array( 'data' => self::format_logs( $res ) ); // DataTables requires `data`
+			return array( 'data' => self::format_logs( apply_filters( IP_Geo_Block::PLUGIN_NAME . '-logs', $res ) ) );
 		else
 			return array( 'error' => $res->get_error_message() );
 	}
@@ -347,7 +347,7 @@ endif;
 			HOUR_IN_SECONDS,    // Latest 1 hour
 			DAY_IN_SECONDS,     // Latest 24 hours
 			WEEK_IN_SECONDS,    // Latest 1 week
-			30 * DAY_IN_SECONDS // Latest 1 month (MONTH_IN_SECONDS is since WP 4.4+)  
+			30 * DAY_IN_SECONDS // Latest 1 month (MONTH_IN_SECONDS is since WP 4.4+)
 		);
 
 		$i = 0;
@@ -600,6 +600,9 @@ endif; // TEST_RESTORE_NETWORK
 			'[mimetype][capability][$]', // 3.0.4
 			'[Maxmind][use_asn]',        // 3.0.4
 			'[live_update][in_memory]',  // 3.0.5
+			'[monitor][metadata]',       // 3.0.17
+			'[metadata][pre_update_option][$]',      // 3.0.17
+			'[metadata][pre_update_site_option][$]', // 3.0.17
 		);
 		$json = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;
@@ -814,7 +817,7 @@ endif; // TEST_RESTORE_NETWORK
 	public static function get_wp_info() {
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php';
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
-		$fs = IP_Geo_Block_FS::init( 'get_wp_info' );
+		$fs = IP_Geo_Block_FS::init( __FUNCTION__ );
 
 		// DNS reverse lookup
 		$key = microtime( TRUE );
@@ -833,9 +836,11 @@ endif; // TEST_RESTORE_NETWORK
 		@ini_set( 'error_log', $log );
 		@error_reporting( $err );
 
-		// Proces owner
+		// Human readable size, Proces owner
+		// https://gist.github.com/mehdichaouch/341a151dd5f469002a021c9396aa2615
 		// https://secure.php.net/manual/function.get-current-user.php#57624
 		// https://secure.php.net/manual/function.posix-getpwuid.php#82387
+		$siz = array( 'B', 'K', 'M', 'G', 'T', 'P' );
 		$usr = function_exists( 'posix_getpwuid' ) ? posix_getpwuid( posix_geteuid() ) : array( 'name' => getenv( 'USERNAME' ) );
 
 		// Server, PHP, WordPress
@@ -844,6 +849,8 @@ endif; // TEST_RESTORE_NETWORK
 			'MySQL:'         => $ver . ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG && $bem ? ' (' . $bem . ')' : '' ),
 			'PHP:'           => PHP_VERSION,
 			'PHP SAPI:'      => php_sapi_name(),
+			'Memory limit:'  => ini_get( 'memory_limit' ),
+			'Peak usage:'    => @round( ( $m = memory_get_peak_usage() ) / pow( 1024, ( $i = floor( log( $m, 1024 ) ) ) ), 2 ) . $siz[ $i ],
 			'WordPress:'     => $GLOBALS['wp_version'],
 			'Multisite:'     => is_multisite() ? 'yes' : 'no',
 			'File system:'   => $fs->get_method(),
@@ -879,9 +886,7 @@ endif; // TEST_RESTORE_NETWORK
 
 		foreach ( $installed as $key => $val ) {
 			if ( isset( $activated[ $key ] ) ) {
-				$res += array(
-					esc_html( $val['Name'] ) => esc_html( $val['Version'] )
-				);
+				$res += array( esc_html( $val['Name'] ) => esc_html( $val['Version'] ) );
 			}
 		}
 
@@ -896,8 +901,7 @@ endif; // TEST_RESTORE_NETWORK
 				// add post data
 				$query = array();
 				foreach ( explode( ',', $val['data'] ) as $str ) {
-					if ( FALSE !== strpos( $str, '=' ) )
-						$query[] = $str;
+					FALSE !== strpos( $str, '=' ) and $query[] = $str;
 				}
 
 				if ( ! empty( $query ) )

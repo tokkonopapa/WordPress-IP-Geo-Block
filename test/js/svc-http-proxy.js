@@ -123,7 +123,7 @@ angular.module('http-proxy').service('HttpProxySvc', ['$http', function ($http) 
 		xhr.send(request);
 	};
 
-	// http://qiita.com/zaburo/items/f03433caa710902d599f
+	// https://qiita.com/zaburo/items/f03433caa710902d599f
 	this.post_upload2 = function (url, proxy, file, filename) {
 		// formdata
 		var fd = new FormData();

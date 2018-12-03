@@ -2,7 +2,7 @@
 /**
  * IP Geo Block API class library for IP2Location
  *
- * @version   1.1.13
+ * @version   1.1.14
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      https://www.ipgeoblock.com/
@@ -54,7 +54,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 			$type = IP_GEO_BLOCK_API_TYPE_IPV4;
 			$file = apply_filters(
 				IP_Geo_Block::PLUGIN_NAME . '-ip2location-path',
-				empty( $settings['IP2Location']['ipv4_path'] ) ? 
+				empty( $settings['IP2Location']['ipv4_path'] ) ?
 					$this->get_db_dir() . IP_GEO_BLOCK_IP2LOC_IPV4_DAT :
 					$settings['IP2Location']['ipv4_path']
 			);
@@ -62,7 +62,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			$type = IP_GEO_BLOCK_API_TYPE_IPV6;
-			$file = empty( $settings['IP2Location']['ipv6_path'] ) ? 
+			$file = empty( $settings['IP2Location']['ipv6_path'] ) ?
 				$this->get_db_dir() . IP_GEO_BLOCK_IP2LOC_IPV6_DAT :
 				$settings['IP2Location']['ipv6_path'];
 		}
@@ -146,17 +146,21 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	}
 
 	public function add_settings_field( $field, $section, $option_slug, $option_name, $options, $callback, $str_path, $str_last ) {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-file.php';
+		$fs = IP_Geo_Block_FS::init( __FILE__ . '(' . __FUNCTION__ . ')' );
+
 		$db  = $options[ $field ];
 		$dir = $this->get_db_dir();
 		$msg = __( 'Database file does not exist.', 'ip-geo-block' );
 
 		// IPv4
-		if ( $db['ipv4_path'] )
-			$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-ip2location-path', $db['ipv4_path'] );
-		else
-			$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-ip2location-path', $dir . IP_GEO_BLOCK_IP2LOC_IPV4_DAT );
+		if ( $dir !== dirname( $db['ipv4_path'] ) . '/' )
+			$db['ipv4_path'] = $dir . IP_GEO_BLOCK_IP2LOC_IPV4_DAT;
 
-		if ( @file_exists( $path ) )
+		// filter database file
+		$db['ipv4_path'] = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-ip2location-path', $db['ipv4_path'] );
+
+		if ( $fs->exists( $db['ipv4_path'] ) )
 			$date = sprintf( $str_last, IP_Geo_Block_Util::localdate( $db['ipv4_last'] ) );
 		else
 			$date = $msg;
@@ -172,19 +176,20 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 				'option' => $option_name,
 				'field' => $field,
 				'sub-field' => 'ipv4_path',
-				'value' => $path,
+				'value' => $db['ipv4_path'],
 				'disabled' => TRUE,
 				'after' => '<br /><p id="ip-geo-block-' . $field . '-ipv4" style="margin-left: 0.2em">' . $date . '</p>',
 			)
 		);
 
 		// IPv6
-		if ( $db['ipv6_path'] )
-			$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-ip2location-path', $db['ipv6_path'] );
-		else
-			$path = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-ip2location-path', $dir . IP_GEO_BLOCK_IP2LOC_IPV6_DAT );
+		if ( $dir !== dirname( $db['ipv6_path'] ) . '/' )
+			$db['ipv6_path'] = $dir . IP_GEO_BLOCK_IP2LOC_IPV6_DAT;
 
-		if ( @file_exists( $path ) )
+		// filter database file
+		$db['ipv6_path'] = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-ip2location-path-ipv6', $db['ipv6_path'] );
+
+		if ( $fs->exists( $db['ipv6_path'] ) )
 			$date = sprintf( $str_last, IP_Geo_Block_Util::localdate( $db['ipv6_last'] ) );
 		else
 			$date = $msg;
@@ -200,7 +205,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 				'option' => $option_name,
 				'field' => $field,
 				'sub-field' => 'ipv6_path',
-				'value' => $path,
+				'value' => $db['ipv6_path'],
 				'disabled' => TRUE,
 				'after' => '<br /><p id="ip-geo-block-' . $field . '-ipv6" style="margin-left: 0.2em">' . $date . '</p>',
 			)
