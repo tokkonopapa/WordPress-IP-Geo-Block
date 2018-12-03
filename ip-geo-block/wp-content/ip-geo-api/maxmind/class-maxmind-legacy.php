@@ -152,6 +152,11 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 				$db['ipv4_path'],
 				$db['ipv4_last']
 			);
+		} else {
+			$res['ipv4'] = array(
+				'code' => 503,
+				'message' => __( 'Update service has already stopped.', 'ip-geo-block' )
+			);
 		}
 
 		// IPv6
@@ -167,6 +172,11 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 				$args + array( 'method' => 'GET' ),
 				$db['ipv6_path'],
 				$db['ipv6_last']
+			);
+		} else {
+			$res['ipv6'] = array(
+				'code' => 503,
+				'message' => __( 'Update service has already stopped.', 'ip-geo-block' )
 			);
 		}
 
@@ -191,6 +201,11 @@ if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] ) ) :
 				$db['asn4_path'],
 				$db['asn4_last']
 			);
+		} else {
+			$res['asn4'] = array(
+				'code' => 503,
+				'message' => __( 'Update service has already stopped.', 'ip-geo-block' )
+			);
 		}
 
 		// ASN for IPv6
@@ -206,6 +221,11 @@ if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] ) ) :
 				$args + array( 'method' => 'GET' ),
 				$db['asn6_path'],
 				$db['asn6_last']
+			);
+		} else {
+			$res['asn6'] = array(
+				'code' => 503,
+				'message' => __( 'Update service has already stopped.', 'ip-geo-block' )
 			);
 		}
 
@@ -232,12 +252,10 @@ endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] )
 		$msg = __( 'Database file does not exist.', 'ip-geo-block' );
 
 		// IPv4
-		if ( $db['ipv4_path'] )
-			$path = $db['ipv4_path'];
-		else
-			$path = $dir . IP_GEO_BLOCK_MAXMIND_IPV4_DAT;
+		if ( $dir !== dirname( $db['ipv4_path'] ) . '/' )
+			$db['ipv4_path'] = $dir . IP_GEO_BLOCK_MAXMIND_IPV4_DAT;
 
-		if ( $exists = $fs->exists( $path ) )
+		if ( $exists = $fs->exists( $db['ipv4_path'] ) )
 			$date = sprintf( $str_last, IP_Geo_Block_Util::localdate( $db['ipv4_last'] ) );
 		else
 			$date = $msg;
@@ -254,7 +272,7 @@ endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] )
 					'option' => $option_name,
 					'field' => $field,
 					'sub-field' => 'ipv4_path',
-					'value' => $path,
+					'value' => $db['ipv4_path'],
 					'disabled' => TRUE,
 					'after' => '<br /><p id="ip-geo-block-' . $field . '-ipv4" style="margin-left: 0.2em">' . $date . '</p>',
 				)
@@ -262,12 +280,10 @@ endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] )
 		}
 
 		// IPv6
-		if ( $db['ipv6_path'] )
-			$path = $db['ipv6_path'];
-		else
-			$path = $dir . IP_GEO_BLOCK_MAXMIND_IPV6_DAT;
+		if ( $dir !== dirname( $db['ipv6_path'] ) . '/' )
+			$db['ipv6_path'] = $dir . IP_GEO_BLOCK_MAXMIND_IPV6_DAT;
 
-		if ( $exists = $fs->exists( $path ) )
+		if ( $exists = $fs->exists( $db['ipv6_path'] ) )
 			$date = sprintf( $str_last, IP_Geo_Block_Util::localdate( $db['ipv6_last'] ) );
 		else
 			$date = $msg;
@@ -284,7 +300,7 @@ endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] )
 					'option' => $option_name,
 					'field' => $field,
 					'sub-field' => 'ipv6_path',
-					'value' => $path,
+					'value' => $db['ipv6_path'],
 					'disabled' => TRUE,
 					'after' => '<br /><p id="ip-geo-block-' . $field . '-ipv6" style="margin-left: 0.2em">' . $date . '</p>',
 				)
@@ -294,12 +310,10 @@ endif; // ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] )
 if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] ) ) :
 
 		// ASN for IPv4
-		if ( $db['asn4_path'] )
-			$path = $db['asn4_path'];
-		else
-			$path = $dir . IP_GEO_BLOCK_MAXMIND_ASN4_DAT;
+		if ( $dir !== dirname( $db['asn4_path'] ) . '/' )
+			$db['asn4_path'] = $dir . IP_GEO_BLOCK_MAXMIND_ASN4_DAT;
 
-		if ( $exists = $fs->exists( $path ) )
+		if ( $exists = $fs->exists( $db['asn4_path'] ) )
 			$date = sprintf( $str_last, IP_Geo_Block_Util::localdate( $db['asn4_last'] ) );
 		else
 			$date = $msg;
@@ -316,7 +330,7 @@ if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] ) ) :
 					'option' => $option_name,
 					'field' => $field,
 					'sub-field' => 'asn4_path',
-					'value' => $path,
+					'value' => $db['asn4_path'],
 					'disabled' => TRUE,
 					'after' => '<br /><p id="ip-geo-block-' . $field . '-asn4" style="margin-left: 0.2em">' . $date . '</p>',
 				)
@@ -324,12 +338,10 @@ if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] ) ) :
 		}
 
 		// ASN for IPv6
-		if ( $db['asn6_path'] )
-			$path = $db['asn6_path'];
-		else
-			$path = $dir . IP_GEO_BLOCK_MAXMIND_ASN6_DAT;
+		if ( $dir !== dirname( $db['asn6_path'] ) . '/' )
+			$db['asn6_path'] = $dir . IP_GEO_BLOCK_MAXMIND_ASN6_DAT;
 
-		if ( $exists = $fs->exists( $path ) )
+		if ( $exists = $fs->exists( $db['asn6_path'] ) )
 			$date = sprintf( $str_last, IP_Geo_Block_Util::localdate( $db['asn6_last'] ) );
 		else
 			$date = $msg;
@@ -346,7 +358,7 @@ if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] ) ) :
 					'option' => $option_name,
 					'field' => $field,
 					'sub-field' => 'asn6_path',
-					'value' => $path,
+					'value' => $db['asn6_path'],
 					'disabled' => TRUE,
 					'after' => '<br /><p id="ip-geo-block-' . $field . '-asn6" style="margin-left: 0.2em">' . $date . '</p>',
 				)

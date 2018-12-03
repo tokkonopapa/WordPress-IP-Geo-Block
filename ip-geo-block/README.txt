@@ -18,7 +18,7 @@ While WordPress.org [provides](https://wordpress.org/about/security/ "Security |
 
 This plugin focuses on insights into such developers' human factors instead of detecting the specific attack vectors after they were disclosed. This brings a smart and powerful methods named as "**WP Zero-day Exploit Prevention**" and "**WP Metadata Exploit Protection**".
 
-Combined with those methods and IP address geolocation, you'll be supprised to find a bunch of malicious or undesirable access blocked in the logs of this plugin after several days of installation.
+Combined with those methods and IP address geolocation, you'll be surprised to find a bunch of malicious or undesirable access blocked in the logs of this plugin after several days of installation.
 
 = Features =
 

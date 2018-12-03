@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-12-02 23:27+0900\n"
-"PO-Revision-Date: 2018-12-02 23:29+0900\n"
+"POT-Creation-Date: 2018-12-03 23:01+0900\n"
+"PO-Revision-Date: 2018-12-03 23:04+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -201,19 +201,20 @@ msgid ""
 "contents of tokkonopapa/WordPress-IP-Geo-API as a zip file\">ZIP file</a> "
 "from <a rel=\"noreferrer\" href=\"https://github.com/tokkonopapa/WordPress-"
 "IP-Geo-API\" title=\"tokkonopapa/WordPress-IP-Geo-API - GitHub\">WordPress-"
-"IP-Geo-API</a>. Please install <code>ip-geo-api</code> with write permission "
-"according to <a rel=\"noreferrer\" href=\"https://www.ipgeoblock.com/codex/"
-"how-to-fix-permission-troubles.html\" title=\"How can I fix permission "
-"troubles? | IP Geo Block\">this instruction</a>."
+"IP-Geo-API</a>. Try to deactivate IP Geo Block once and activate it again, "
+"or install <code>ip-geo-api</code> with write permission according to <a rel="
+"\"noreferrer\" href=\"https://www.ipgeoblock.com/codex/how-to-fix-permission-"
+"troubles.html\" title=\"How can I fix permission troubles? | IP Geo Block"
+"\">this instruction</a>."
 msgstr ""
 "<code>%s</code> に位置情報APIライブラリが見つかりません。<a rel=\"noreferrer\" href=\"https://github."
 "com/tokkonopapa/WordPress-IP-Geo-API\" title=\"tokkonopapa/WordPress-IP-Geo-API - GitHub\">WordPress-"
 "IP-Geo-API</a> から <a rel=\"noreferrer\" href=\"https://github.com/tokkonopapa/WordPress-IP-Geo-API/"
 "archive/master.zip\" title=\"Download the contents of tokkonopapa/WordPress-IP-Geo-API as a zip file"
-"\">ZIP file</a> のダウンロードに失敗したようです。<a rel=\"noreferrer\" href=\"https://www."
-"ipgeoblock.com/codex/how-to-fix-permission-troubles.html\" title=\"How can I fix permission "
-"troubles? | IP Geo Block\">FAQ</a> を参照し、適切な書き込み権限と共に <code>ip-geo-api</code> をイン"
-"ストールしてください。"
+"\">ZIP file</a> のダウンロードに失敗したようです。一旦プラグインを無効化した後に再び有効化するか、<a "
+"rel=\"noreferrer\" href=\"https://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html\" "
+"title=\"How can I fix permission troubles? | IP Geo Block\">FAQ</a> を参照し、適切な書き込み権限と共"
+"に <code>ip-geo-api</code> をインストールしてください。"
 
 #: admin/class-ip-geo-block-admin.php:534
 #, php-format
@@ -1819,9 +1820,16 @@ msgstr "%s 用のカラム型が一致しません。一旦このプラグイン
 
 #: wp-content/ip-geo-api/ip2location/class-ip2location.php:154
 #: wp-content/ip-geo-api/maxmind/class-maxmind-geolite2.php:160
-#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:232
+#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:252
 msgid "Database file does not exist."
 msgstr "データベース・ファイルが見つかりません。"
+
+#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:158
+#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:179
+#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:207
+#: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:228
+msgid "Update service has already stopped."
+msgstr "データベースの更新サービスは終了しました。"
 
 #: wp-content/mu-plugins/ip-geo-block-mu.php:72
 #, php-format
