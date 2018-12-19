@@ -50,6 +50,10 @@ It validates requests to `wp-login.php`.
 In addition to login, you can enable actions such as user registration, 
 [password protected page][PassProtect] and so on.
 
+![Login form target actions]({{ '/img/2018-12/LoginFormTargetActions.png' | prepend: site.baseurl }}
+ "Login form target actions"
+)
+
 <div class="alert alert-info">
 	<strong>Note:</strong> The request to the
 	<a href="https://codex.buddypress.org/getting-started/register-and-activation-pages/"

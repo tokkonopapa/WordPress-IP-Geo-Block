@@ -51,6 +51,10 @@ WordPress には、サイトに何らかの影響を及ぼす重要なバック�
 ユーザー登録や[パスワードで保護されたページ][PassProtect]へのアクセスなど、
 ログイン・フォームに関連するアクション毎に設定することができます。
 
+![Login form target actions]({{ '/img/2018-12/LoginFormTargetActions.png' | prepend: site.baseurl }}
+ "Login form target actions"
+)
+
 <div class="alert alert-info">
 	<strong>参考：</strong> このオプションで
 	<a href="https://codex.buddypress.org/getting-started/register-and-activation-pages/"
