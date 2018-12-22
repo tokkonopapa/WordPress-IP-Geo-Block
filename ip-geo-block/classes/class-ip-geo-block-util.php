@@ -19,7 +19,7 @@ class IP_Geo_Block_Util {
 		static $offset = NULL;
 		static $format = NULL;
 
-		NULL === $offset and $offset = wp_timezone_override_offset() * HOUR_IN_SECONDS;
+		NULL === $offset and $offset = wp_timezone_override_offset() * HOUR_IN_SECONDS; // @since 2.8.0
 		NULL === $format and $format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
 		return date_i18n( $fmt ? $fmt : $format, $timestamp ? (int)$timestamp + $offset : FALSE );
@@ -299,7 +299,7 @@ class IP_Geo_Block_Util {
 	 * Retrieve user info by a given field
 	 * @source wp-includes/pluggable.php @since 2.8.0
 	 */
-	private static function get_user_by( $field, $value ) {
+	public static function get_user_by( $field, $value ) {
 		if ( function_exists( 'get_user_by' ) )
 			return get_user_by( $field, $value );
 
@@ -641,6 +641,23 @@ class IP_Geo_Block_Util {
 			return current_user_can( $capability ); // @since 2.0.0
 
 		return ( $user = self::validate_auth_cookie() ) ? $user->has_cap( $capability ) : FALSE; // @since 2.0.0
+	}
+
+	/**
+	 * Check if the current user has the capabilities.
+	 *
+	 */
+	public static function current_user_has_caps( $caps ) {
+		$user = self::get_user_by( 'id', self::get_current_user_id() );
+		if ( is_object( $user ) ) {
+			foreach ( $caps as $cap ) {
+				if ( $user->has_cap( $cap ) ) {
+					return TRUE;
+				}
+			}
+		}
+
+		return FALSE;
 	}
 
 	/**
@@ -1058,3 +1075,18 @@ class IP_Geo_Block_Util {
 	}
 
 }
+
+// Some plugins need this when this plugin is installed as mu-plugins
+if ( ! function_exists( 'get_userdata' ) ) :
+/**
+ * Retrieve user info by user ID.
+ *
+ * @since 0.71
+ *
+ * @param int $user_id User ID
+ * @return WP_User|false WP_User object on success, false on failure.
+ */
+function get_userdata( $user_id ) {
+	return IP_Geo_Block_Util::get_user_by( 'id', $user_id );
+}
+endif;

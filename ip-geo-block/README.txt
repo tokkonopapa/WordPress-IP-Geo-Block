@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
-Tested up to: 4.9.8
-Stable tag: 3.0.17
+Tested up to: 5.0.2
+Stable tag: 3.0.17.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -231,6 +231,11 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 11. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.17.1 =
+* **Fix issue:** Verification of IPv4 was insufficient in some cases.
+* **Fix issue:** `wp-signup.php` was not blocked when only "Register" was enabled as "Target actions" at "Login form" in "Back-end target settings" section.
+* **Improvement:** Improve compatibility with Advanced Access Manager.
 
 = 3.0.17 =
 * **Fix issue:** Avoid the error of "Can not load Geolocation API libraries" caused by the race condition on upgrading this plugin.

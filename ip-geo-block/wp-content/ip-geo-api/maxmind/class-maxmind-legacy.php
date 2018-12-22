@@ -2,7 +2,7 @@
 /**
  * IP Geo Block API class library for Maxmind
  *
- * @version   1.1.14
+ * @version   1.1.15
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      https://www.ipgeoblock.com/
@@ -155,7 +155,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 		} else {
 			$res['ipv4'] = array(
 				'code' => 503,
-				'message' => __( 'Update service has already stopped.', 'ip-geo-block' )
+				'message' => __( 'The database file update service had already terminated.', 'ip-geo-block' )
 			);
 		}
 
@@ -176,7 +176,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 		} else {
 			$res['ipv6'] = array(
 				'code' => 503,
-				'message' => __( 'Update service has already stopped.', 'ip-geo-block' )
+				'message' => __( 'The database file update service had already terminated.', 'ip-geo-block' )
 			);
 		}
 
@@ -204,7 +204,7 @@ if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] ) ) :
 		} else {
 			$res['asn4'] = array(
 				'code' => 503,
-				'message' => __( 'Update service has already stopped.', 'ip-geo-block' )
+				'message' => __( 'The database file update service had already terminated.', 'ip-geo-block' )
 			);
 		}
 
@@ -225,7 +225,7 @@ if ( ! empty( $db['use_asn'] ) || ! empty( $db['asn4_path'] ) ) :
 		} else {
 			$res['asn6'] = array(
 				'code' => 503,
-				'message' => __( 'Update service has already stopped.', 'ip-geo-block' )
+				'message' => __( 'The database file update service had already terminated.', 'ip-geo-block' )
 			);
 		}
 

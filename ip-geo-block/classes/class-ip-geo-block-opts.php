@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '3.0.17',// Version of this table (not package)
+		'version'         => '3.0.18',// Version of this table (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -195,13 +195,14 @@ class IP_Geo_Block_Opts {
 			'link'           => NULL,    // key of login link
 			'hash'           => NULL,    // hash of 'link'
 		),
-		// since version 3.0.17
+		// since version 3.0.18
 		'monitor'         => array(
-			'metadata'       => TRUE,
+			'updated_option'         => TRUE,
+			'update_site_option'     => TRUE,
 		),
 		'metadata'        => array(
-			'pre_update_option'      => array( 'siteurl', 'admin_email', 'users_can_register', 'default_role' ),
-			'pre_update_site_option' => array( 'siteurl', 'admin_email', 'registration' ),
+			'pre_update_option'      => array( 'siteurl', 'admin_email', 'users_can_register', 'default_role', 'wp_user_roles' ), // @since 2.0.0 `manage_options`
+			'pre_update_site_option' => array( 'siteurl', 'admin_email', 'registration' ), // @since 3.0.0 `manage_network_options`
 		),
 	);
 
@@ -431,8 +432,6 @@ class IP_Geo_Block_Opts {
 
 		if ( version_compare( $version, '3.0.17' ) < 0 ) {
 			$settings['priority'] = $default['priority'];
-			$settings['monitor' ] = $default['monitor' ];
-			$settings['metadata'] = $default['metadata'];
 
 			// re-install mu-plugins to re-order the priority
 			if ( self::get_validation_timing( NULL ) ) {
@@ -441,12 +440,18 @@ class IP_Geo_Block_Opts {
 			}
 		}
 
+		if ( version_compare( $version, '3.0.18' ) < 0 ) {
+			$settings['monitor' ] = $default['monitor' ];
+			$settings['metadata'] = $default['metadata'];
+			IP_Geo_Block::update_metadata( NULL );
+		}
+
 		// update package version number
 		$settings['version'] = IP_Geo_Block::VERSION;
 
-		// install addons for IP Geolocation database API ver. 1.1.14 at IP Geo Block 3.0.17
+		// install addons for IP Geolocation database API ver. 1.1.15 at IP Geo Block 3.0.18
 		$providers = IP_Geo_Block_Provider::get_addons();
-		if ( empty( $providers ) || ! $settings['api_dir'] || ! file_exists( $settings['api_dir'] ) || version_compare( $version, '3.0.17' ) < 0 )
+		if ( empty( $providers ) || ! $settings['api_dir'] || ! file_exists( $settings['api_dir'] ) || version_compare( $version, '3.0.18' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		$settings['request_ua'] = trim( str_replace( array( 'InfiniteWP' ), '', @$_SERVER['HTTP_USER_AGENT'] ) );
