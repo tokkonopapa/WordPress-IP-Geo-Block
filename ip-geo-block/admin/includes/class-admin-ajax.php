@@ -522,14 +522,14 @@ endif; // TEST_RESTORE_NETWORK
 			'[extra_ips][white_list]',
 			'[extra_ips][black_list]',
 			'[anonymize]',
-			'[restrict_api]',            // 3.0.13
-			'[simulate]',                // 3.0.14
+			'[restrict_api]',  // 3.0.13
+			'[simulate]',      // 3.0.14
 			'[signature]',
 			'[login_fails]',
 			'[response_code]',
-			'[response_msg]',            // 3.0.0
-			'[redirect_uri]',            // 3.0.0
-			'[validation][timing]',      // 2.2.9
+			'[response_msg]',       // 3.0.0
+			'[redirect_uri]',       // 3.0.0
+			'[validation][timing]', // 2.2.9
 			'[validation][proxy]',
 			'[validation][comment]',
 			'[validation][xmlrpc]',
@@ -600,7 +600,8 @@ endif; // TEST_RESTORE_NETWORK
 			'[mimetype][capability][$]', // 3.0.4
 			'[Maxmind][use_asn]',        // 3.0.4
 			'[live_update][in_memory]',  // 3.0.5
-			'[monitor][metadata]',       // 3.0.17
+			'[monitor][updated_option]',             // 3.0.18
+			'[monitor][update_site_option]',         // 3.0.18
 			'[metadata][pre_update_option][$]',      // 3.0.17
 			'[metadata][pre_update_site_option][$]', // 3.0.17
 		);

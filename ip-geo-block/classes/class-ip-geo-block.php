@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.17';
+	const VERSION = '3.0.17.1';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -627,9 +627,13 @@ class IP_Geo_Block {
 
 	public function validate_login() {
 		// parse action
-		$action = isset( $_GET['key'] ) ? 'resetpass' : ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'login' );
-		$action = 'retrievepassword' === $action ? 'lostpassword' : ( 'rp' === $action ? 'resetpass' : $action );
 		$settings = self::get_option();
+		if ( 'wp-signup.php' === $this->pagenow && $settings['login_action']['register'] ) {
+			$action = 'register';
+		} else {
+			$action = isset( $_GET['key'] ) ? 'resetpass' : ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'login' );
+			$action = 'retrievepassword' === $action ? 'lostpassword' : ( 'rp' === $action ? 'resetpass' : $action );
+		}
 
 		// the same rule should be applied to login and logout
 		! empty( $settings['login_action']['login'] ) and $settings['login_action']['logout'] = TRUE;
@@ -697,7 +701,9 @@ class IP_Geo_Block {
 			// in wp-admin js/widget.js, includes/template.php, async-upload.php, plugins.php, PHP Compatibility Checker, bbPress
 			'heartbeat', 'save-widget', 'wp-compression-test', 'upload-attachment', 'deactivate', 'imgedit-preview', 'wpephpcompat_start_test', 'bp_avatar_upload',
 			// Anti-Malware Security and Brute-Force Firewall, Jetpack page & action, Email Subscribers & Newsletters by Icegram, Swift Performance
-			'GOTMLS_logintime', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', 'es_sendemail', 'swift_performance_setup'
+			'GOTMLS_logintime', 'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', 'es_sendemail', 'swift_performance_setup',
+			// Advanced Access Manager
+			'aam', 'aamc',
 		) );
 
 		// skip validation of country code and WP-ZEP if exceptions matches action or page
@@ -916,49 +922,41 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Validate updating metadata.
+	 * Validate capability on updating metadata.
 	 *
 	 */
 	private function validate_metadata( $settings, $priority = 10 ) {
 		// @since 2.6.0 apply_filters( "pre_update_option_{$option}", $value, $old_value, $option ); @since 4.4.0 `$option` was added.
 		// @since 2.9.0 apply_filters( "pre_update_site_option_{$option}", $value, $old_value, $option, $network_id );
-		foreach ( array( 'pre_update_option', 'pre_update_site_option' ) as $key ) {
-			foreach ( $settings['metadata'][ $key ] as $option ) {
+		foreach ( $settings['metadata'] as $key => $options ) {
+			foreach ( $options as $option ) {
 				add_filter( "{$key}_{$option}", array( $this, 'check_capability' ), $priority, 3 );
 			}
 		}
 
-		/**
-		 * @since 2.9.0
-		 *   do_action( 'updated_option', $option, $old_value, $value );
-		 * @since 3.0.0, @since 4.7.0 The `$network_id` parameter was added.
-		 *   do_action( 'update_site_option', $option, $value, $old_value, $network_id );
-		*/
-		if ( ! empty( $settings['monitor']['metadata'] ) ) {
-			add_action( 'updated_option',     array( $this, 'update_meta_stats' ), $priority, 1 );
-			add_action( 'update_site_option', array( $this, 'update_meta_stats' ), $priority, 1 );
+		// @since 2.9.0 do_action( "updated_option", $option, $old_value, $value );
+		// @since 3.0.0 do_action( "update_site_option", $option, $value, $old_value, $network_id ); @since 4.7.0 `$network_id` was added.
+		foreach ( $settings['monitor'] as $key => $options ) {
+			$options and add_action( $key, array( $this, 'update_meta_stats' ), $priority );
 		}
 	}
 
 	public function update_meta_stats( $option ) {
 		if ( FALSE === strpos( $option, 'transient' ) && self::OPTION_META !== $option ) {
-			$which = IP_Geo_Block_Util::current_user_can( 'manage_options'         ) ||
-			         IP_Geo_Block_Util::current_user_can( 'manage_network_options' ) ? 0 : 1;
-
 			$metadata = self::get_metadata();
 			$action = current_filter(); // @since 2.5.0
 
 			if ( ! isset( $metadata[ $action ][ $option ] ) )
 				$metadata[ $action ][ $option ] = array( 0, 0 );
 
+			$which =IP_Geo_Block_Util::current_user_has_caps( array( 'manage_options', 'manage_network_options' ) ) ? 1 : 0;
 			$metadata[ $action ][ $option ][ $which ]++;
 			self::update_metadata( $metadata );
 		}
 	}
 
 	public function check_capability( $value, $old_value, $option = NULL ) {
-		// check capability
-		if ( ! IP_Geo_Block_Util::current_user_can( 'manage_options' ) && ! IP_Geo_Block_Util::current_user_can( 'manage_network_options' ) ) {
+		if ( ! IP_Geo_Block_Util::current_user_has_caps( array( 'manage_options', 'manage_network_options' ) ) ) {
 			$time = microtime( TRUE );
 			$settings = self::get_option();
 			$cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr, $settings['cache_hold'] );
@@ -969,7 +967,7 @@ class IP_Geo_Block {
 			) + $cache );
 
 			// send response code to die if the current user does not have the right capability
-			$this->endof_validate( $this->target_type, $validate, $settings, TRUE, TRUE, FALSE );
+			$this->endof_validate( 'admin', $validate, $settings, TRUE, TRUE, FALSE );
 		}
 
 		return $value;
