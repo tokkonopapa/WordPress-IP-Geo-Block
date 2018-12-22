@@ -44,7 +44,7 @@ or the AS number [AS2635][AS2635] of [Automattic, Inc][Automattic] into
 
 #### Login form ####
 
-It validates requests to `wp-login.php`.
+It validates requests to `wp-login.php` and `wp-signup.php`.
 
 - **Target actions**  
 In addition to login, you can enable actions such as user registration, 
