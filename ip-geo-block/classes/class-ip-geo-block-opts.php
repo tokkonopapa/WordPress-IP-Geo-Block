@@ -74,7 +74,7 @@ class IP_Geo_Block_Opts {
 			'cycle'       => 30,      // Updating cycle (days)
 		),
 		// since version 3.0.9, 3.0.17
-		'priority'        => array( 0, PHP_INT_MAX ), // 0:high, 1:log for WP-ZEP
+		'priority'        => array( 0, PHP_INT_MAX ), // 0:high, 1:low
 		// since version 2.2.0
 		'anonymize'       => TRUE,    // Anonymize IP address to hide privacy
 		'signature'       => '../,/wp-config.php,/passwd', // malicious signature
@@ -197,8 +197,8 @@ class IP_Geo_Block_Opts {
 		),
 		// since version 3.0.18
 		'monitor'         => array(
-			'updated_option'         => TRUE,
-			'update_site_option'     => TRUE,
+			'updated_option'         => FALSE,
+			'update_site_option'     => FALSE,
 		),
 		'metadata'        => array(
 			'pre_update_option'      => array( 'siteurl', 'admin_email', 'users_can_register', 'default_role', 'wp_user_roles' ), // @since 2.0.0 `manage_options`
