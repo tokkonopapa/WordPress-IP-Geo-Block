@@ -238,7 +238,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 * **Fix issue:** Verification of IPv4 was insufficient in some cases.
 * **Fix issue:** `wp-signup.php` was not blocked when only "Register" was enabled as "Target actions" at "Login form" in "Back-end target settings" section.
 * **Improvement:** Improve compatibility with Advanced Access Manager.
-* **Improvement:** Use `call_user_func()` instead of direct call of deprecated function to avoid false positive by some scanning tool like PHP Compatibility Checker.
+* **Improvement:** Use comment syntax `@codingStandardsIgnoreLine` for deprecated function on PHP7+ to avoid false positive by some scanning tool like PHP Compatibility Checker.
 
 = 3.0.17 =
 * **Fix issue:** Avoid the error of "Can not load Geolocation API libraries" caused by the race condition on upgrading this plugin.
