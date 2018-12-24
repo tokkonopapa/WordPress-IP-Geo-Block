@@ -146,7 +146,9 @@ See more details at "[How to test prevention of attacks](https://www.ipgeoblock.
 
 = I'm locked out! What shall I do? =
 
-You can find the "**Emergent Functionality**" code section near the bottom of `ip-geo-block.php`. This code block can be activated by replacing `/*` (opening multi-line comment) at the top of the line to `//` (single line comment), or `*` at the end of the line to `*/` (closing multi-line comment).
+Please find the solution in [Quick recovery from blocking on your login page](https://www.ipgeoblock.com/codex/quick-recovery-from-blockig-on-login-page.html "Quick recovery from blocking on your login page | IP Geo Block") at first.
+
+You can also find another solution by editing "**Emergent Functionality**" code section near the bottom of `ip-geo-block.php`. This code block can be activated by replacing `/*` (opening multi-line comment) at the top of the line to `//` (single line comment), or `*` at the end of the line to `*/` (closing multi-line comment).
 
 `/**
  * Invalidate blocking behavior in case yourself is locked out.
@@ -236,6 +238,7 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 * **Fix issue:** Verification of IPv4 was insufficient in some cases.
 * **Fix issue:** `wp-signup.php` was not blocked when only "Register" was enabled as "Target actions" at "Login form" in "Back-end target settings" section.
 * **Improvement:** Improve compatibility with Advanced Access Manager.
+* **Improvement:** Use `call_user_func()` instead of direct call of deprecated function to avoid false positive by some scanning tool like PHP Compatibility Checker.
 
 = 3.0.17 =
 * **Fix issue:** Avoid the error of "Can not load Geolocation API libraries" caused by the race condition on upgrading this plugin.
