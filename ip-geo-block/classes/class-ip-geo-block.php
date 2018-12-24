@@ -956,6 +956,7 @@ class IP_Geo_Block {
 	}
 
 	public function check_capability( $value, $old_value, $option = NULL ) {
+		// allow only admin and super admin
 		if ( ! IP_Geo_Block_Util::current_user_has_caps( array( 'manage_options', 'manage_network_options' ) ) ) {
 			$time = microtime( TRUE );
 			$settings = self::get_option();
