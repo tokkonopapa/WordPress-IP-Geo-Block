@@ -817,9 +817,10 @@ class IP_Geo_Block_Util {
 	/**
 	 * Check proxy variable
 	 *
+	 * @see https://developer.wordpress.org/reference/classes/wp_community_events/get_unsafe_client_ip/
 	 */
 	public static function get_proxy_var() {
-		foreach ( array( 'HTTP_X_FORWARDED_FOR', 'HTTP_CF_CONNECTING_IP', 'HTTP_X_REAL_IP', 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED' ) as $var ) {
+		foreach ( array( 'HTTP_X_FORWARDED_FOR', 'HTTP_CF_CONNECTING_IP', 'HTTP_X_REAL_IP', 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED' ) as $var ) {
 			if ( isset( $_SERVER[ $var ] ) ) {
 				return $var;
 			}
@@ -959,10 +960,12 @@ class IP_Geo_Block_Util {
 	 * This function should be called after 'init' hook is fired.
 	 */
 	public static function get_sites_of_user() {
-		$sites = array();
+		$sites = array( preg_replace( '/^https?:/', '', home_url() ) );
 
 		foreach ( get_blogs_of_user( get_current_user_id(), current_user_can( 'manage_network_options' ) ) as $site ) { // @since 3.0.0
-			$sites[] = preg_replace( '/^https?:/', '', $site->siteurl );
+			if ( ! in_array( $url = preg_replace( '/^https?:/', '', $site->siteurl ), $sites, TRUE ) ) {
+				$sites[] = $url;
+			}
 		}
 
 		return $sites;

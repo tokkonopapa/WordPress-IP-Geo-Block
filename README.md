@@ -12,7 +12,7 @@ posted from the specific countries, and also prevents zero-day exploit.
 
 ### Dependency:
 
-[IP Geo API 1.1.14][IPGeoAPI]
+[IP Geo API 1.1.15][IPGeoAPI]
 
 ### Requirement:
 

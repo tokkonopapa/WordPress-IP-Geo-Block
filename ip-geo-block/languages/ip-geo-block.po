@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.18\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2018-12-04 22:18+0900\n"
-"PO-Revision-Date: 2018-12-04 22:20+0900\n"
+"POT-Creation-Date: 2018-12-29 09:26+0900\n"
+"PO-Revision-Date: 2018-12-29 12:04+0900\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -361,7 +361,7 @@ msgstr ""
 #: classes/class-ip-geo-block-cron.php:228
 #: classes/class-ip-geo-block-cron.php:332
 #: classes/class-ip-geo-block-cron.php:410
-#: classes/class-ip-geo-block-opts.php:482
+#: classes/class-ip-geo-block-opts.php:487
 #, php-format
 msgid "Unable to write <code>%s</code>. Please check the permission."
 msgstr ""
@@ -1660,7 +1660,7 @@ msgstr ""
 #: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:179
 #: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:207
 #: wp-content/ip-geo-api/maxmind/class-maxmind-legacy.php:228
-msgid "The database file update service had already terminated."
+msgid "The download service of this database file had terminated."
 msgstr ""
 
 #: wp-content/mu-plugins/ip-geo-block-mu.php:72

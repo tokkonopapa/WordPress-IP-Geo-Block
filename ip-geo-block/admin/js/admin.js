@@ -649,7 +649,9 @@
 		// setHash( name, value, expires, path, domain, secure )
 		if (wpCookies !== undefined) {
 			wpCookies.setHash(
-				'ip-geo-block', c, new Date(Date.now() + 2592000000), ip_geo_block_auth.home + ip_geo_block_auth.admin
+				'ip-geo-block', c, new Date(Date.now() + 2592000000),
+				// `/wp-admin/`, `/wp-admin/network/` or `/wp/wp-admin/` 
+				window.location.pathname.replace(/\\/g, '/').match(/.*\//) || ip_geo_block_auth.home + ip_geo_block_auth.admin
 			);
 		}
 	}
@@ -1244,7 +1246,7 @@
 								id  = ID('!', 'exception_' + target + '_' + val);
 
 								// make an anchor tab with search query
-								s = 'admin' === target ? (key + '=' + val) : ('/' + key + '/' + val + '/');
+								s = 'admin' === target ? (key + ' ' + val) : ('/' + key + '/' + val + '/');
 								s = '<a class="ip-geo-block-icon ip-geo-block-icon-alert" href="' + ip_geo_block_auth.sites[0] + ip_geo_block_auth.admin + 'options-general.php' + // only main site
 								    '?page=ip-geo-block&tab=4&s=' + encodeURIComponent(s) + '" title="' + title.replace('%s', s) + '" target="_blank"><span></span></a>';
 

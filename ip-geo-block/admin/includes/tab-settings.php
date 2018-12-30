@@ -450,7 +450,7 @@ endif;
 			'comment' => sprintf( $dfn, 'wp-comments-post.php',                      __( 'Comment post',        'ip-geo-block' ) ),
 			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',                                __( 'XML-RPC',             'ip-geo-block' ) ),
 			'login'   => sprintf( $dfn, 'wp-login.php, wp-signup.php',               __( 'Login form',          'ip-geo-block' ) ),
-			'admin'   => sprintf( $dfn, 'wp-admin/*.php',                            __( 'Admin area',          'ip-geo-block' ) ),
+			'admin'   => sprintf( $dfn, '/wp-admin/*.php',                           __( 'Admin area',          'ip-geo-block' ) ),
 			'others'  => sprintf( $dfn, 'executable files',                          __( 'Other areas',         'ip-geo-block' ) ),
 			'public'  => sprintf( $dfn, __( 'public facing pages', 'ip-geo-block' ), __( 'Public facing pages', 'ip-geo-block' ) ),
 		);
@@ -625,7 +625,7 @@ endif;
 
 		// Admin ajax/post
 		$path = IP_Geo_Block::get_wp_path();
-		$val  = esc_html( substr( $path['admin'], 1 ) );
+		$val  = esc_html( $path['admin'] );
 		add_settings_field(
 			$option_name.'_validation_ajax',
 			sprintf( $dfn, $val.'admin-(ajax|post).php', __( 'Admin ajax/post', 'ip-geo-block' ) ),
@@ -698,7 +698,7 @@ endif;
 			. ' value="1"' . checked( $options['rewrite']['plugins'], TRUE, FALSE )
 			. disabled( $options['rewrite']['plugins'], -1, FALSE ) . ' />'
 			. '<label for="ip_geo_block_settings_rewrite_plugins"><dfn title="'
-			. ( $config ? sprintf( $desc[2], $val . $config ) : $desc[3] )
+			. ( $config ? sprintf( $desc[2], esc_html( $path['home'] . $path['plugins'] ) . $config ) : $desc[3] )
 			. '">' . __( 'Force to load WP core', 'ip-geo-block' )
 			. '</dfn></label><br />';
 
@@ -758,7 +758,7 @@ endif;
 			. ' value="1"' . checked( $options['rewrite']['themes'], TRUE, FALSE )
 			. disabled( $options['rewrite']['themes'], -1, FALSE ) . ' />'
 			. '<label for="ip_geo_block_settings_rewrite_themes"><dfn title="'
-			. ( $config ? sprintf( $desc[2], $val . $config ) : $desc[3] )
+			. ( $config ? sprintf( $desc[2], esc_html( $path['home'] . $path['themes'] ) . $config ) : $desc[3] )
 			. '">' . __( 'Force to load WP core', 'ip-geo-block' )
 			. '</dfn></label><br />';
 
