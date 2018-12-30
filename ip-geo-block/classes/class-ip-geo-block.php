@@ -252,7 +252,6 @@ class IP_Geo_Block {
 			$validate = $settings['validation'];
 
 			$args['sites'  ] = IP_Geo_Block_Util::get_sites_of_user();
-			$args['network'] = parse_url( network_admin_url(), PHP_URL_PATH );
 			$args['nonce'  ] = IP_Geo_Block_Util::create_nonce( self::$auth_key );
 			$args['key'    ] = $validate['admin'] & 2 || $validate['ajax'] & 2 || $validate['plugins'] & 2 || $validate['themes'] & 2 ? self::$auth_key : FALSE;
 
