@@ -430,20 +430,17 @@ class IP_Geo_Block_Opts {
 			unset( $settings['public']['simulate'] );
 		}
 
-		if ( version_compare( $version, '3.0.17' ) < 0 ) {
+		if ( version_compare( $version, '3.0.17' ) < 0 )
 			$settings['priority'] = $default['priority'];
-
-			// re-install mu-plugins to re-order the priority
-			if ( self::get_validation_timing( NULL ) ) {
-				self::remove_mu_plugin( NULL );
-				self::setup_validation_timing( $settings );
-			}
-		}
 
 		if ( version_compare( $version, '3.0.18' ) < 0 ) {
 			$settings['monitor' ] = $default['monitor' ];
 			$settings['metadata'] = $default['metadata'];
 			IP_Geo_Block::update_metadata( NULL );
+
+			self::remove_mu_plugin(  ); // remove new file
+			self::remove_mu_plugin(''); // remove old file
+			self::setup_validation_timing( $settings );
 		}
 
 		// update package version number
