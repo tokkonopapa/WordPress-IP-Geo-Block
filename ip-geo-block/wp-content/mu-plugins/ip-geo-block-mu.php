@@ -26,30 +26,30 @@ defined( 'WPINC' ) or die;
 
 if ( ! class_exists( 'IP_Geo_Block', FALSE ) ):
 
-/*----------------------------------------------------------------------------*
- * Detect plugin. For use on Front End only.
- *----------------------------------------------------------------------------*/
+// Avoud redirection loop
+if ( 'wp-login.php' === basename( $_SERVER['SCRIPT_NAME'] ) && site_url() !== home_url() )
+	return;
+
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-$plugin = 'ip-geo-block/ip-geo-block.php';
+$ipgeoblock = 'ip-geo-block/ip-geo-block.php';
 
-if ( is_plugin_active( $plugin ) || is_plugin_active_for_network( $plugin ) ) {
+if ( is_plugin_active( $ipgeoblock ) || is_plugin_active_for_network( $ipgeoblock ) ) {
 
 	// Load plugin class
-	if ( file_exists( WP_PLUGIN_DIR . '/' . $plugin ) ) {
-		require WP_PLUGIN_DIR . '/' . $plugin;
+	if ( file_exists( WP_PLUGIN_DIR . '/' . $ipgeoblock ) ) {
+		require WP_PLUGIN_DIR . '/' . $ipgeoblock;
 
-		$plugin = IP_Geo_Block::get_option();
+		$ipgeoblock = IP_Geo_Block::get_option();
 
 		// check setup had already done
-		if ( version_compare( $plugin['version'], IP_Geo_Block::VERSION ) >= 0 && $plugin['matching_rule'] >= 0 ) {
+		if ( version_compare( $ipgeoblock['version'], IP_Geo_Block::VERSION ) >= 0 && $ipgeoblock['matching_rule'] >= 0 ) {
 
 			// Remove instanciation
 			remove_action( 'plugins_loaded', 'ip_geo_block_update' );
 			remove_action( 'plugins_loaded', array( 'IP_Geo_Block', 'get_instance' ) );
 
 			// Upgrade then instanciate immediately
-			ip_geo_block_update();
 			IP_Geo_Block::get_instance();
 		}
 	}
@@ -60,7 +60,7 @@ if ( is_plugin_active( $plugin ) || is_plugin_active_for_network( $plugin ) ) {
 
 }
 
-unset( $plugin );
+unset( $ipgeoblock );
 
 /**
  * Show global notice.

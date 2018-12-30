@@ -140,7 +140,7 @@ class IP_Geo_Block_Loader {
 		 * This part will be executed at the very beginning of WordPress core.
 		 * Execute callbacks that are specified by the component with 'init'.
 		 */
-		else if ( defined( 'WP_ADMIN' ) && WP_ADMIN ) {
+		elseif ( defined( 'WP_ADMIN' ) && WP_ADMIN ) {
 			// admin ajax/post needs to be deferred
 			foreach ( $this->actions as $index => $hook ) {
 				add_action( $hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args'] );

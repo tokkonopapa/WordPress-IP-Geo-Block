@@ -247,7 +247,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function enqueue_nonce( $hook ) {
-		if ( is_user_logged_in() ) {
+		if ( IP_Geo_Block_Util::is_user_logged_in() ) {
 			$settings = self::get_option();
 			$validate = $settings['validation'];
 
