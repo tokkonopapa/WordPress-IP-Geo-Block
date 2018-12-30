@@ -10,7 +10,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	private $doc_root = NULL;    // document root
 	private $base_uri = NULL;    // plugins base uri
 	private $config_file = NULL; // `.htaccess` or `.user.ini`
-	private $wp_dirs = array();  // path to `plugins` and `themes`
+	private $wp_dirs = array();  // path to `plugins` and `themes` from document root
 
 	// template of rewrite rule in wp-content/(plugins|themes)/
 	private $rewrite_rule = array(
@@ -71,8 +71,8 @@ class IP_Geo_Block_Admin_Rewrite {
 		$this->doc_root = str_replace( DIRECTORY_SEPARATOR, '/', str_replace( $_SERVER['SCRIPT_NAME'], '',  $_SERVER['SCRIPT_FILENAME'] ) );
 		$this->base_uri = str_replace( $this->doc_root,     '',  str_replace( DIRECTORY_SEPARATOR,     '/', IP_GEO_BLOCK_PATH           ) );
 
-		// target directories
-		$path = str_replace( $this->doc_root, '', str_replace( '\\', '/', WP_CONTENT_DIR ) );
+		// target directories (WP_CONTENT_DIR can be defined in wp-config.php as an aliased or symbolic linked path)
+		$path = str_replace( $this->doc_root, '', str_replace( DIRECTORY_SEPARATOR, '/', realpath( WP_CONTENT_DIR ) ) );
 		$this->wp_dirs = array(
 			'plugins'   => $path . '/plugins/',
 			'themes'    => $path . '/themes/',

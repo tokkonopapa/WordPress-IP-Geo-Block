@@ -251,9 +251,10 @@ class IP_Geo_Block {
 			$settings = self::get_option();
 			$validate = $settings['validation'];
 
-			$args['sites'] = IP_Geo_Block_Util::get_sites_of_user();
-			$args['nonce'] = IP_Geo_Block_Util::create_nonce( self::$auth_key );
-			$args['key'  ] = $validate['admin'] & 2 || $validate['ajax'] & 2 || $validate['plugins'] & 2 || $validate['themes'] & 2 ? self::$auth_key : FALSE;
+			$args['sites'  ] = IP_Geo_Block_Util::get_sites_of_user();
+			$args['network'] = parse_url( network_admin_url(), PHP_URL_PATH );
+			$args['nonce'  ] = IP_Geo_Block_Util::create_nonce( self::$auth_key );
+			$args['key'    ] = $validate['admin'] & 2 || $validate['ajax'] & 2 || $validate['plugins'] & 2 || $validate['themes'] & 2 ? self::$auth_key : FALSE;
 
 			$script = plugins_url(
 				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?

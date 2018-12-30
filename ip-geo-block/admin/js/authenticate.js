@@ -16,6 +16,7 @@
 		'^(?:' + (auth.home || '') + auth.admin
 		+ '|'  + (auth.home || '') + auth.plugins
 		+ '|'  + (auth.home || '') + auth.themes
+		+ '|'  + (auth.network   ) // same as home + admin on single site
 		+ ')(?:.*\\.php|.*\\/)?$'
 	),
 
@@ -233,6 +234,7 @@
 		} catch (e) {
 			url = '';
 		}
+
 		var uri = parse_uri(url.toLowerCase());
 
 		// possibly scheme is `javascript` and path is `void(0);`

@@ -748,8 +748,7 @@ endif; // TEST_RESTORE_NETWORK
 		switch ( $which ) {
 		  case 'page':
 		  case 'action':
-			$dir = admin_url();
-			$dir = preg_replace( '!https?://.+?/!', '/', IP_Geo_Block_Util::slashit( $dir ) );
+			$dir = IP_Geo_Block_Util::slashit( str_replace( site_url(), '', admin_url() ) ); /* `/wp-admin/` */
 
 			foreach ( IP_Geo_Block_Logs::search_blocked_logs( 'method', $dir ) as $log ) {
 				foreach ( array( 'method', 'data' ) as $key ) {
@@ -774,8 +773,8 @@ endif; // TEST_RESTORE_NETWORK
 			}
 
 			$dir = 'plugins' === $which ? plugins_url() : get_theme_root_uri();
-			$dir = preg_replace( '!https?://.+?/!', '/', IP_Geo_Block_Util::slashit( $dir ) );
-			$pat = preg_quote( $dir, '!' ); // `/wp-content/[plugins|themes]/`
+			$dir = IP_Geo_Block_Util::slashit( str_replace( site_url(), '', $dir ) );
+			$pat = preg_quote( $dir, '!' ); /* `/wp-content/(plugins|themes)/` */
 
 			foreach ( IP_Geo_Block_Logs::search_blocked_logs( 'method', $dir ) as $log ) {
 				if ( preg_match( '!' . $pat . '(.+?)/!', $log['method'], $matches ) && in_array( $matches[1], $key, TRUE ) ) {

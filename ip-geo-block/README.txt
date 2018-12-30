@@ -235,10 +235,13 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 == Changelog ==
 
 = 3.0.17.1 =
-* **Fix issue:** Verification of IPv4 was insufficient in some cases.
+* **Fix issue:** Inadequate verification of IPv4 with some CIDR notation.
+* **Fix issue:** Insufficient path parsing for document root and content directory when real path and symbolic link were mixtured on virtual host.
+* **Fix issue:** Unexpected blocking on admin dashboard when home url is different from site url.
 * **Fix issue:** `wp-signup.php` was not blocked when only "Register" was enabled as "Target actions" at "Login form" in "Back-end target settings" section.
 * **Improvement:** Improve compatibility with Advanced Access Manager.
 * **Improvement:** Use comment syntax `@codingStandardsIgnoreLine` for deprecated function on PHP7+ to avoid false positive by some scanning tool like PHP Compatibility Checker.
+Hava a happy new year!
 
 = 3.0.17 =
 * **Fix issue:** Avoid the error of "Can not load Geolocation API libraries" caused by the race condition on upgrading this plugin.
