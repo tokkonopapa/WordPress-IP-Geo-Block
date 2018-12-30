@@ -16,7 +16,7 @@
 		'^(?:' + (auth.home || '') + auth.admin
 		+ '|'  + (auth.home || '') + auth.plugins
 		+ '|'  + (auth.home || '') + auth.themes
-		+ '|'  + (auth.network   ) // same as home + admin on single site
+		+ '|'  + (auth.admin     ) // when site url is different from home url
 		+ ')(?:.*\\.php|.*\\/)?$'
 	),
 
