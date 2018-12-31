@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.17.1';
+	const VERSION = '3.0.17.2';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -251,9 +251,9 @@ class IP_Geo_Block {
 			$settings = self::get_option();
 			$validate = $settings['validation'];
 
-			$args['sites'  ] = IP_Geo_Block_Util::get_sites_of_user();
-			$args['nonce'  ] = IP_Geo_Block_Util::create_nonce( self::$auth_key );
-			$args['key'    ] = $validate['admin'] & 2 || $validate['ajax'] & 2 || $validate['plugins'] & 2 || $validate['themes'] & 2 ? self::$auth_key : FALSE;
+			$args['sites'] = IP_Geo_Block_Util::get_sites_of_user();
+			$args['nonce'] = IP_Geo_Block_Util::create_nonce( self::$auth_key );
+			$args['key'  ] = $validate['admin'] & 2 || $validate['ajax'] & 2 || $validate['plugins'] & 2 || $validate['themes'] & 2 ? self::$auth_key : FALSE;
 
 			$script = plugins_url(
 				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
@@ -959,13 +959,13 @@ class IP_Geo_Block {
 		// allow only admin and super admin
 		if ( ! IP_Geo_Block_Util::current_user_has_caps( array( 'manage_options', 'manage_network_options' ) ) ) {
 			$time = microtime( TRUE );
-			$settings = self::get_option();
-			$cache = IP_Geo_Block_API_Cache::get_cache( self::$remote_addr, $settings['cache_hold'] );
-			$validate = self::make_validation( self::$remote_addr, array(
+			$ip = self::get_ip_address( $settings = self::get_option() );
+			$cache = IP_Geo_Block_API_Cache::get_cache( $ip, $settings['cache_hold'] );
+			$validate = self::make_validation( $ip, array(
 				'result'   => 'badcap',
 				'provider' => 'Cache',
 				'time'     => microtime( TRUE ) - $time,
-			) + $cache );
+			) + ( $cache ? $cache : array() ) );
 
 			// send response code to die if the current user does not have the right capability
 			$this->endof_validate( 'admin', $validate, $settings, TRUE, TRUE, FALSE );

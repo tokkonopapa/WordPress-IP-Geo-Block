@@ -4,7 +4,7 @@ Donate link:
 Tags: security, firewall, brute force, vulnerability, login, wp-admin, admin, ajax, xmlrpc, comment, pingback, trackback, spam, IP address, geo, geolocation, buddypress, bbPress
 Requires at least: 3.7
 Tested up to: 5.0.2
-Stable tag: 3.0.17.1
+Stable tag: 3.0.17.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -233,6 +233,9 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 11. **IP Geo Plugin** - Attribution tab
 
 == Changelog ==
+
+= 3.0.17.2 =
+* **Fix issue:** Fixed the fatal error under certain condition.
 
 = 3.0.17.1 =
 * **Fix issue:** Inadequate verification of IPv4 with some CIDR notation.
