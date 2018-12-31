@@ -201,7 +201,7 @@ class IP_Geo_Block_Opts {
 			'update_site_option'     => FALSE,
 		),
 		'metadata'        => array(
-			'pre_update_option'      => array( 'siteurl', 'admin_email', 'users_can_register', 'default_role', 'wp_user_roles' ), // @since 2.0.0 `manage_options`
+			'pre_update_option'      => array( 'siteurl', 'admin_email', 'users_can_register', 'default_role' ), // @since 2.0.0 `manage_options`
 			'pre_update_site_option' => array( 'siteurl', 'admin_email', 'registration' ), // @since 3.0.0 `manage_network_options`
 		),
 	);
