@@ -51,7 +51,7 @@ on your login page like the picture bellow, please follow the steps:
   ![Configure your settings]({{ '/img/2018-12/ConsistencyCountryCode.png' | prepend: site.baseurl }}
    "Configure your settings"
   )
-  Or in case your IP address is blacklisted:
+  Or check whether your IP address is blacklisted:
   ![Your IP address is blacklisted]({{ '/img/2018-12/BlacklistedIP.png' | prepend: site.baseurl }}
    "Your IP address is blacklisted"
   )
