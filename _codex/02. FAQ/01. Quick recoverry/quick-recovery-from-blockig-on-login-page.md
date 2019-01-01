@@ -37,39 +37,41 @@ on your login page like the picture bellow, please follow the steps:
 
 4. Refresh your plugins page, then activate **IP Geo Block** again.
 
-5. Resolve the cause of blocking according to the error message.  
-  
-    - ###### Validation rules and behavior ######  
-      When you find the following message:
-      ![Once you logout...Validation rules and behavior]({{ '/img/2018-12/WarningBlocking.png' | prepend: site.baseurl }}
-       "Once you logout...Validation rules and behavior"
-      )
-      then check your country code and configure properly on **Settings** tab:
-      ![Configure your settings]({{ '/img/2018-12/ConsistencyCountryCode.png' | prepend: site.baseurl }}
-       "Configure your settings"
-      )
-      Or in case your IP address is blacklisted:
-      ![Your IP address is blacklisted]({{ '/img/2018-12/BlacklistedIP.png' | prepend: site.baseurl }}
-       "Your IP address is blacklisted"
-      )
-  
-    - ###### Statistics in IP address cache ######  
-      When you find the following message:
-      ![Once you logout...Statistics in IP address cache]({{ '/img/2018-12/WarningLoginAttempts.png' | prepend: site.baseurl }}
-       "Once you logout...Statistics in IP address cache"
-      )
-      then remove your IP address from the cache on **Statistics** tab:
-      ![Login attempts exceeds the limit]({{ '/img/2018-12/StatisticsIPAddress.png' | prepend: site.baseurl }}
-       "Login attempts exceeds the limit"
-      )
-  
-    - ###### Geolocation API libraries ######  
-      When you find the following message:
-      ![Can not load Geolocation API libraries]({{ '/img/2018-12/WarningGeoLibraries.png' | prepend: site.baseurl }}
-       "Can not load Geolocation API libraries"
-      )
-      then please try to deactivate **IP Geo Block** once and re-activate again
-      to re-install Geolocation API libraries on **Plugins** page.
+5. Resolve the cause of blocking according to the error message as follows.
+
+### Error message ###
+
+- ##### Validation rules and behavior #####  
+  When you find the following message:
+  ![Once you logout...Validation rules and behavior]({{ '/img/2018-12/WarningBlocking.png' | prepend: site.baseurl }}
+   "Once you logout...Validation rules and behavior"
+  )
+  then check your country code and configure properly on **Settings** tab:
+  ![Configure your settings]({{ '/img/2018-12/ConsistencyCountryCode.png' | prepend: site.baseurl }}
+   "Configure your settings"
+  )
+  Or in case your IP address is blacklisted:
+  ![Your IP address is blacklisted]({{ '/img/2018-12/BlacklistedIP.png' | prepend: site.baseurl }}
+   "Your IP address is blacklisted"
+  )
+
+- ##### Statistics in IP address cache #####  
+  When you find the following message:
+  ![Once you logout...Statistics in IP address cache]({{ '/img/2018-12/WarningLoginAttempts.png' | prepend: site.baseurl }}
+   "Once you logout...Statistics in IP address cache"
+  )
+  then remove your IP address from the cache on **Statistics** tab:
+  ![Login attempts exceeds the limit]({{ '/img/2018-12/StatisticsIPAddress.png' | prepend: site.baseurl }}
+   "Login attempts exceeds the limit"
+  )
+
+- ##### Geolocation API libraries #####  
+  When you find the following message:
+  ![Can not load Geolocation API libraries]({{ '/img/2018-12/WarningGeoLibraries.png' | prepend: site.baseurl }}
+   "Can not load Geolocation API libraries"
+  )
+  then please try to deactivate **IP Geo Block** once and re-activate again
+  to re-install Geolocation API libraries on **Plugins** page.
 
 [IP-Geo-Block]: https://wordpress.org/plugins/ip-geo-block/ "IP Geo Block &#124; WordPress.org"
 [SupportForum]: https://wordpress.org/support/plugin/ip-geo-block/ "View: Plugin Support &laquo; WordPress.org Forums"
