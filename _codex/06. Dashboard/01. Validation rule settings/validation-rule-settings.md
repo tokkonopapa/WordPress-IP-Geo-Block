@@ -3,7 +3,7 @@ layout: page
 language: en
 category: codex
 section: Dashboard
-title: Validation rule settings
+title: Validation rules and behavior
 ---
 
 In addition to blocking based on IP address geolocation information, this 

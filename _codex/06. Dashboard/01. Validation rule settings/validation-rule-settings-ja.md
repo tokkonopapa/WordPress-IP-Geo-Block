@@ -3,7 +3,7 @@ layout: page
 language: ja
 category: codex
 section: Dashboard
-title: 検証ルールの設定
+title: 検証ルールと振る舞いの設定
 ---
 
 このプラグインは、悪意のあるリクエストを遮断するために、IPアドレスの位置情報を
