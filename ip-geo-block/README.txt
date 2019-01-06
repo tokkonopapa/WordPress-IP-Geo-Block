@@ -234,6 +234,12 @@ Please refer to "[How can I fix permission troubles?](https://www.ipgeoblock.com
 
 == Changelog ==
 
+= 3.0.17.4 =
+* **Fix issue:** Fix the issue that direct request to PHP files under plugins/themes directory was "404 Not found" when WP-ZEP enabled.
+* **Fix issue:** Fix the incorrect link to the corresponding option page on error message in multisite environment.
+* **Improvement:** Update the url to the google map api to prevent 301 redirection.
+* **Improvement:** Use [RIPE stat Data API](https://stat.ripe.net/docs/data_api "RIPEstat &#8212; Internet Measurements and Analysis") to get whois information instead of using YQL (Yahoo! Query Language) which was retired on Jan. 3, 2019.
+
 = 3.0.17.3 =
 Sorry for the frequent update.
 * **Fix issue:** Remove `wp_user_roles` from "Metadata Exploit Protection" which was equipped in 3.0.17 because some plugins/themes would add their own role and capability without admin authority.

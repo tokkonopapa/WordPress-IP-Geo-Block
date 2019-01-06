@@ -1,29 +1,19 @@
 /*jslint white: true */
 /*!
- * Project: whois.js - get whois infomation
+ * Project: whois.js - get whois infomation from RIPE Network Coordination Center
  * Description: A jQuery plugin to get whois infomation from RIPE NCC database.
- * Version: 0.1
- * Copyright (c) 2016 tokkonopapa (tokkonopapa@yahoo.com)
+ * Version: 0.2
+ * Copyright (c) 2019 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  *
  * RIPE NCC
- * @link https://apps.db.ripe.net/search/query.html
- * @link https://labs.ripe.net/ripe-database/database-api/api-documentation
- * @link https://www.ripe.net/manage-ips-and-asns/db/support/documentation/ripe-database-documentation
- * @link https://www.ripe.net/manage-ips-and-asns/db/support/documentation/ripe-database-documentation/how-to-query-the-ripe-database/14-3-restful-api-queries/14-3-2-api-search
- * @link https://github.com/RIPE-NCC/whois/wiki/WHOIS-REST-API-search
+ * @link https://stat.ripe.net/docs/data_api#Whois
  */
 (function ($) {
 	$.extend({
 		whois: function (query, callback) {
-			/**
-			 * APIs that doesn't support CORS.
-			 * It is accessed through https://developer.yahoo.com/yql/
-			 */
 			var results = [],
-				yql = 'https://query.yahooapis.com/v1/public/yql?q=select * from xml where url="%URL%"&format=json&jsonCompat=new',
-				url = 'https://rest.db.ripe.net/search%3fflags=no-filtering%26flags=resource%26query-string=';
-//				app = 'https://apps.db.ripe.net/search/lookup.html?source=%SRC%&key=%KEY%&type=%TYPE%';
+				url = 'https://stat.ripe.net/data/whois/data.json?resource=';
 
 			function escapeHTML(str) {
 				return str ? str.toString().replace(/[&<>"']/g, function (match) { //'"
@@ -38,85 +28,38 @@
 			}
 
 			return $.ajax({
-				url: yql.replace(/%URL%/, url + query),
+				url: url + query,
 				method: 'GET',
 				dataType: 'json'
 			})
 
 			.done(function (data, textStatus, jqXHR) {
 				// https://stackoverflow.com/questions/722668/traverse-all-the-nodes-of-a-json-object-tree-with-javascript#answer-722676
-				function traverse(key, value) {
+				function process(key, value) {
 					if (value && typeof value === 'object') {
-						if (value.errormessage) {
-							var err = value.errormessage,
-								msg = err.text.split(/\n+/);
-
-							results.push({
-								name : escapeHTML(err.severity),
-								value: escapeHTML(msg[1].replace(/%s/, err.args.value))
-							});
-						}
-
-						else if (value.href) {
-							value.href = escapeHTML(value.href);
-							results.push({
-								name : escapeHTML(key),
-								value: '<a href="' + value.href + '.json" target=_blank>' + value.href + '</a>'
-							});
-						}
-
-						else if (value.name && value.value) {
-							/*if (value.link) {
-								var src = value.link.href.match(/\w+-grs/);
-								value.value = '<a href="' +
-									app.replace('%SRC%', src[0])
-									   .replace('%KEY%', encodeURI(value['value']))
-									   .replace('%TYPE%', value['referenced-type']) +
-									'" target=_blank>' + value.value + '</a>';
-							}*/
-
-							if (value.link) {
-								if ((value['referenced-type'] || false) && 'aut-num' === value['referenced-type']) {
-									value.value += ' [ <a href="https://ipinfo.io/' + escapeHTML(value.value) + '" target=_blank>Search at ipinfo.io</a> ]';
-								} else {
-									value.value = '<a href="' + escapeHTML(value.link.href) + '.json" target=_blank>' + escapeHTML(value.value) + '</a>';
-								}
+						if (value.key) {
+							value.key   = escapeHTML(value.key);
+							value.value = escapeHTML(value.value);
+							if (value.details_link) {
+								value.value = '<a href="' + escapeHTML(value.details_link) + '">' + value.value + '</a>';
 							}
-
-							else if (value.value.match(/^AS\d+$/)) {
-								value.value += ' [ <a href="https://ipinfo.io/' + escapeHTML(value.value) + '" target=_blank>Search at ipinfo.io</a> ]';
-							}
-
-							else if ('remarks' === value.name) {
-								value.value = escapeHTML(value.value);
-								value.value = value.value.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1" target=_blank>$1</a>');
-							}
-
 							results.push({
-								name : escapeHTML(value.name),
+								name : value.key,
 								value: value.value
 							});
 						}
+					}
+				}
 
-						else if ('primary-key' !== key) {
-							$.each(value, function(k, v) {
-								// k is either an array index or object key
-								traverse(k, v);
-							});
+				function traverse(obj, func) {
+					for (var i in obj) {
+						func.apply(this, [i, obj[i]]);
+						if (obj[i] !== null && typeof(obj[i]) === 'object') {
+							traverse(obj[i], func); //going one step down in the object tree!!
 						}
 					}
 				}
-
-				var i, attr = data.query.results, objs = [];
-
-				for (i in attr) {
-					if (attr.hasOwnProperty(i)) {
-						objs = attr[i]; // whois-resouces
-						break;
-					}
-				}
-
-				traverse(null, objs);
+				traverse(data.data, process);
 			})
 
 			.fail(function (jqXHR, textStatus, errorThrown) {
@@ -127,11 +70,6 @@
 			})
 
 			.always(function () {
-				results.push({
-					name : 'copyright',
-					value: '<a href="https://apps.db.ripe.net/search/query.html" title="Database Query - RIPE Network Coordination Centre">RIPE NCC</a>'
-				});
-
 				if (callback) {
 					callback(results);
 				}

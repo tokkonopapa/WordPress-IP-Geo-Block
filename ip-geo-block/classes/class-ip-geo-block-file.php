@@ -7,7 +7,7 @@
  * @license   GPL-3.0
  * @link      https://www.ipgeoblock.com/
  * @link      https://codex.wordpress.org/Filesystem_API
- * @copyright 2013-2018 tokkonopapa
+ * @copyright 2013-2019 tokkonopapa
  */
 
 class IP_Geo_Block_FS {
