@@ -622,9 +622,10 @@ table.ip-geo-block-dataTable > tbody > tr > td span {
     margin-right: 0.5em;
 }
 table.ip-geo-block-dataTable input[type="checkbox"] {
+    margin: 0;
     max-height: 16px;
     max-width: 16px;
-    margin: 0;
+    vertical-align: middle;
 }
 table.ip-geo-block-dataTable > thead > tr > th:first-child,
 table.ip-geo-block-dataTable > tbody > tr > td:first-child {

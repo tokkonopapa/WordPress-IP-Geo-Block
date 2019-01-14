@@ -163,7 +163,8 @@ class IP_Geo_Block {
 		add_filter( 'http_request_args',  array( $this,   'request_nonce' ), $priority[1], 2 ); // @since 2.7.0
 
 		// register validation of updating metadata
-		$this->validate_metadata( $settings, $priority[0] );
+		if ( $validate['metadata'] )
+			$this->validate_metadata( $settings, $priority[0] );
 	}
 
 	/**
