@@ -1244,7 +1244,9 @@ class IP_Geo_Block_Admin {
 			$output['Geolite2']['use_asn'] = $output['Maxmind']['use_asn'];
 
 		// force to update asn file not immediately but after `validate_settings()` and `validate_network_settings()`
-		if ( $output['Maxmind']['use_asn'] && ( ! $output['Maxmind']['asn4_path'] || ! $output['Geolite2']['asn_path'] ) ) {
+		if ( $output['Maxmind']['use_asn'] && (
+		     ( ! $output['Maxmind']['asn4_path'] && class_exists( 'IP_Geo_Block_API_Maxmind',  FALSE ) ) ||
+		     ( ! $output['Geolite2']['asn_path'] && class_exists( 'IP_Geo_Block_API_Geolite2', FALSE ) ) ) ) {
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
 			add_action( IP_Geo_Block::PLUGIN_NAME . '-settings-updated', array( 'IP_Geo_Block_Cron', 'start_update_db' ), 10, 2 );
 		}

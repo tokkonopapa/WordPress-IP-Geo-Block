@@ -321,12 +321,14 @@ table.ip-geo-block-statistics-table tr:nth-child(odd) {
 }
 table.ip-geo-block-table {
     margin: 1em 0;
+    width: 100%;
     white-space: normal;
     word-wrap: break-word;
     word-break: break-all;
 }
 table.ip-geo-block-table td:first-child {
     min-width: 4.3em;
+    max-width: 5.0em;
 }
 
 /* Whois */
