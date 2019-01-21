@@ -1,6 +1,6 @@
 /*!
  * Project: WordPress IP Geo Block
- * Copyright (c) 2013-2018 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2013-2019 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
 dfn {
@@ -321,12 +321,14 @@ table.ip-geo-block-statistics-table tr:nth-child(odd) {
 }
 table.ip-geo-block-table {
     margin: 1em 0;
+    width: 100%;
     white-space: normal;
     word-wrap: break-word;
     word-break: break-all;
 }
 table.ip-geo-block-table td:first-child {
     min-width: 4.3em;
+    max-width: 5.0em;
 }
 
 /* Whois */
@@ -622,9 +624,10 @@ table.ip-geo-block-dataTable > tbody > tr > td span {
     margin-right: 0.5em;
 }
 table.ip-geo-block-dataTable input[type="checkbox"] {
+    margin: 0;
     max-height: 16px;
     max-width: 16px;
-    margin: 0;
+    vertical-align: middle;
 }
 table.ip-geo-block-dataTable > thead > tr > th:first-child,
 table.ip-geo-block-dataTable > tbody > tr > td:first-child {

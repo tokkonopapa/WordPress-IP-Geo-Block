@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      https://www.ipgeoblock.com/
- * @copyright 2013-2018 tokkonopapa
+ * @copyright 2013-2019 tokkonopapa
  */
 
 class IP_Geo_Block_Opts {
@@ -67,6 +67,8 @@ class IP_Geo_Block_Opts {
 			// since version 3.0.3
 			'restapi'     => 3,       // for get_rest_url()
 			'mimetype'    => 0,       // 0:disable, 1:white_list, 2:black_list
+			// since version 3.0.18
+			'metadata'    => FALSE,
 		),
 		'update'          => array(   // Updating IP address DB
 			'auto'        => TRUE,    // Auto updating of DB files
@@ -434,8 +436,9 @@ class IP_Geo_Block_Opts {
 			$settings['priority'] = $default['priority'];
 
 		if ( version_compare( $version, '3.0.18' ) < 0 ) {
-			$settings['monitor' ] = $default['monitor' ];
-			$settings['metadata'] = $default['metadata'];
+			$settings['validation']['metadata'] = $default['validation']['metadata'];
+			$settings['monitor'   ] = $default['monitor' ];
+			$settings['metadata'  ] = $default['metadata'];
 			IP_Geo_Block::update_metadata( NULL );
 
 			self::remove_mu_plugin(  ); // remove new file

@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      https://www.ipgeoblock.com/
- * @copyright 2016-2018 tokkonopapa
+ * @copyright 2016-2019 tokkonopapa
  */
 
 class IP_Geo_Block_Lkup {

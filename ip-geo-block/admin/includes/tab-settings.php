@@ -309,6 +309,22 @@ endif;
 			)
 		);
 
+		// Metadata Exploit Protection
+		add_settings_field(
+			$option_name.'_validation_metadata',
+			__( '<dfn title="It prevents important information in the database from being defaced and exploited.">Metadata Exploit Protection</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => 'validation',
+				'sub-field' => 'metadata',
+				'value' => $options['validation']['metadata'],
+			)
+		);
+
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		// Prevent metadata alteration
 		$list  = '<ul class="ip-geo-block-settings-folding ip-geo-block-dropup" style="margin-top:0.4em">' . __( '<dfn title="Specify the table names to be verified for single site. This verification will be skipped if empty.">pre_update_option</dfn>', 'ip-geo-block' ) . "\n";

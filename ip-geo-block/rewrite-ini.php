@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      https://www.ipgeoblock.com/
- * @copyright 2013-2018 tokkonopapa
+ * @copyright 2013-2019 tokkonopapa
  *
  * THIS IS FOR THE ADVANCED USERS:
  * This file is for WP-ZEP. If some php files in the plugins/themes directory

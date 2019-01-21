@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      https://www.ipgeoblock.com/
- * @copyright 2013-2018 tokkonopapa
+ * @copyright 2013-2019 tokkonopapa
  */
 
 class IP_Geo_Block_Util {
@@ -149,15 +149,15 @@ class IP_Geo_Block_Util {
 	 * @source https://php.net/manual/en/function.parse-url.php#106731
 	 */
 	private static function unparse_url( $url ) {
-		$scheme   = isset( $url['scheme'  ] ) ?       $url['scheme'  ] . '://' : '';
-		$host     = isset( $url['host'    ] ) ?       $url['host'    ] : '';
-		$port     = isset( $url['port'    ] ) ? ':' . $url['port'    ] : '';
-		$user     = isset( $url['user'    ] ) ?       $url['user'    ] : '';
-		$pass     = isset( $url['pass'    ] ) ? ':' . $url['pass'    ] : '';
-		$pass     =      ( $user || $pass   ) ?       "$pass@"         : '';
-		$path     = isset( $url['path'    ] ) ?       $url['path'    ] : '';
-		$query    = isset( $url['query'   ] ) ? '?' . $url['query'   ] : '';
-		$fragment = isset( $url['fragment'] ) ? '#' . $url['fragment'] : '';
+		$scheme   = ! empty( $url['scheme'  ] ) ?       $url['scheme'  ] . '://' : '';
+		$host     = ! empty( $url['host'    ] ) ?       $url['host'    ] : '';
+		$port     = ! empty( $url['port'    ] ) ? ':' . $url['port'    ] : '';
+		$user     = ! empty( $url['user'    ] ) ?       $url['user'    ] : '';
+		$pass     = ! empty( $url['pass'    ] ) ? ':' . $url['pass'    ] : '';
+		$pass     =        ( $user  ||  $pass ) ?       $pass . '@'      : '';
+		$path     = ! empty( $url['path'    ] ) ?       $url['path'    ] : '';
+		$query    = ! empty( $url['query'   ] ) ? '?' . $url['query'   ] : '';
+		$fragment = ! empty( $url['fragment'] ) ? '#' . $url['fragment'] : '';
 
 		return "$scheme$user$pass$host$port$path$query$fragment";
 	}

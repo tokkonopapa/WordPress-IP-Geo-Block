@@ -1,7 +1,7 @@
 /*jslint white: true */
 /*!
  * Project: WP-ZEP - Zero-day exploit Prevention for wp-admin
- * Copyright (c) 2013-2018 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2013-2019 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
 (function ($, window, document) {

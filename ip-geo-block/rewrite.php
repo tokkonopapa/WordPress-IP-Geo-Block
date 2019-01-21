@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      https://www.ipgeoblock.com/
- * @copyright 2013-2018 tokkonopapa
+ * @copyright 2013-2019 tokkonopapa
  *
  * THIS IS FOR THE ADVANCED USERS:
  * This file is for WP-ZEP. If some php files in the plugins/themes directory
@@ -34,44 +34,6 @@
 if ( ! class_exists( 'IP_Geo_Block_Rewrite', FALSE ) ):
 
 class IP_Geo_Block_Rewrite {
-
-	/**
-	 * Get document root
-	 *
-	 * Note: It assumes that the super global can not be infected because `register_globals` is off by default.
-	 * @see network_step2() in wp-admin/includes/network.php, get_home_path() in wp-admin/includes/file.php
-	 * @link https://php.net/manual/en/security.globals.php
-	 * @link https://php.net/manual/en/reserved.variables.php#63831
-	 * @link https://stackoverflow.com/questions/4577853/document-root-variable-on-php-iis
-	 * @link https://stackoverflow.com/questions/11893832/is-it-a-good-idea-to-use-serverdocument-root-in-includes
-	 * @link https://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
-	 * @link https://www.securityfocus.com/archive/1/476274/100/0/threaded
-	 * @link https://www.securityfocus.com/archive/1/476437/100/0/threaded
-	 */
-	private static function get_docroot() {
-		// $_SERVER['DOCUMENT_ROOT'] can be aliased or symbolic linked on virtual host while $_SERVER['SCRIPT_FILENAME'] and $_SERVER['SCRIPT_NAME'] are real path.
-		// $_SERVER['SCRIPT_FILENAME'] is the absolute pathname of the currently executing script while $_SERVER['SCRIPT_NAME'] is the path from document root.
-//		$root = isset( $_SERVER['DOCUMENT_ROOT'] ) ? $_SERVER['DOCUMENT_ROOT'] : substr( $_SERVER['SCRIPT_FILENAME'], 0, -strlen( $_SERVER['SCRIPT_NAME'] ) );
-		$root = isset( $_SERVER['DOCUMENT_ROOT'] ) ? $_SERVER['DOCUMENT_ROOT'] : str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
-		return self::realpath( str_replace( DIRECTORY_SEPARATOR, '/', $root ) );
-	}
-
-	/**
-	 * Virtual requested uri to real path for multisite
-	 *
-	 */
-	private static function realpath( $path ) {
-
-		if ( is_multisite() ) {
-			$site = str_replace(
-				parse_url( network_site_url(), PHP_URL_PATH ), '',
-				parse_url( site_url(),         PHP_URL_PATH )
-			);
-			$path = str_replace( $site, '', $path );
-		}
-
-		return self::normalize_path( realpath( $path ) );
-	}
 
 	/**
 	 * WP alternative function for advanced-cache.php
@@ -121,28 +83,26 @@ class IP_Geo_Block_Rewrite {
 	 * Note: This function doesn't care about malicious query string.
 	 */
 	public static function exec( $context, $validate, $settings ) {
-
-		// get absolute path of requested uri
-		// @link https://davidwalsh.name/iis-php-server-request_uri
-		$root = self::get_docroot();
-		$path = self::realpath( $root . parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) );
+		// transform requested uri to wordpress installed path
+		// various type of installations such as sub directory or subdomain should be handled
+		$site = parse_url( site_url(),              PHP_URL_PATH ); // WordPress installation
+		$path = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
+		$path = substr( $path, strlen( "$site/" ) );
+		$path = ABSPATH . $path; // restrict the path under WordPress installation
 
 		// while malicios URI may be intercepted by the server,
 		// null byte attack should be invalidated just in case.
 		// Note: is_file(), is_readable(), file_exists() need a valid path.
 		// @link https://php.net/releases/5_3_4.php, https://bugs.php.net/bug.php?id=39863
 		// @example $path = "/etc/passwd\0.php"; is_file( $path ) === true (5.2.14), false (5.4.4)
-		$path = str_replace( "\0", '', $path );
+		$path = self::normalize_path( $path );
+		$path = realpath( str_replace( "\0", '', $path ) );
+		if ( FALSE === $path )
+			self::abort( $context, $validate, $settings, FALSE );
 
 		// check default index
 		if ( FALSE === strripos( strtolower( $path ), '.php', -4 ) )
 			$path .= '/index.php';
-
-		// check path if under the document root
-		// This may be meaningless because the HTTP request is always inside the document root.
-		// The only possibility is a symbolic link pointed to outside of the document root.
-		if ( 0 !== strpos( $path, "$root/" ) )
-			self::abort( $context, $validate, $settings, file_exists( $path ) );
 
 		// check file extention
 		// if it fails, rewrite rule may be misconfigured

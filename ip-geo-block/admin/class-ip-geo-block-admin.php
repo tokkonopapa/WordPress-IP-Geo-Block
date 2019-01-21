@@ -6,7 +6,7 @@
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-3.0
  * @link      https://www.ipgeoblock.com/
- * @copyright 2013-2018 tokkonopapa
+ * @copyright 2013-2019 tokkonopapa
  */
 
 class IP_Geo_Block_Admin {
@@ -326,7 +326,7 @@ class IP_Geo_Block_Admin {
 				),
 				'interval' => self::INTERVAL_LIVE_UPDATE, // interval for live update [sec]
 				'timeout'  => self::TIMEOUT_LIVE_UPDATE,  // timeout of pausing live update [sec]
-				'altgmap'  => apply_filters( 'google-maps-nokey', '//maps.google.com/maps' ),
+				'altgmap'  => apply_filters( 'google-maps-nokey', 'https://www.google.com/maps/embed' ),
 			)
 		);
 		wp_enqueue_script( $handle );
@@ -514,7 +514,8 @@ class IP_Geo_Block_Admin {
 	 */
 	private function diagnose_admin_screen( $settings ) {
 		$updating = get_transient( IP_Geo_Block::CRON_NAME );
-		$adminurl = $this->dashboard_url( $settings['network_wide'] );
+		$adminurl = $this->dashboard_url( FALSE );
+		$network  = $this->dashboard_url( $settings['network_wide'] );
 
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7.0' ) < 0 )
@@ -532,7 +533,7 @@ class IP_Geo_Block_Admin {
 			if ( empty( $providers ) ) {
 				$this->add_admin_notice( 'error', sprintf(
 					__( 'You should select at least one API at <a href="%s">Geolocation API settings</a>. Otherwise <strong>you\'ll be blocked</strong> after the cache expires.', 'ip-geo-block' ),
-					esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4'
+					esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $network ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4'
 				) );
 			}
 
@@ -541,7 +542,7 @@ class IP_Geo_Block_Admin {
 				if ( empty( $providers ) ) {
 					$this->add_admin_notice( 'error', sprintf(
 						__( 'You should select at least one API for local database at <a href="%s">Geolocation API settings</a>. Otherwise access to the external API may slow down the site.', 'ip-geo-block' ),
-						esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $adminurl ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4'
+						esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 4 ), $network ) ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-4'
 					) );
 				}
 			}
@@ -552,13 +553,13 @@ class IP_Geo_Block_Admin {
 			if ( FALSE !== $updating ) {
 				self::add_admin_notice( 'notice-warning', sprintf(
 					__( 'Now downloading geolocation databases in background. After a little while, please check your country code and &#8220;<strong>Matching rule</strong>&#8221; at <a href="%s">Validation rules and behavior</a>.', 'ip-geo-block' ),
-					esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $adminurl ) )
+					esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $network ) )
 				) );
 			}
 			else {
 				self::add_admin_notice( 'error', sprintf(
 					__( 'The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please confirm it at <a href="%s">Validation rules and behavior</a>.', 'ip-geo-block' ),
-					esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $adminurl ) )
+					esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME ), $network ) )
 				) );
 			}
 		}
@@ -596,11 +597,11 @@ class IP_Geo_Block_Admin {
 					( 'ZZ' !== $validate['code'] ?
 						sprintf(
 							__( 'Please check your &#8220;%sValidation rules and behavior%s&#8221;.', 'ip-geo-block' ),
-							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 0 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-0' ) . '">', '</a></strong>'
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 0 ), $network  ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-0' ) . '">', '</a></strong>'
 						) :
 						sprintf(
 							__( 'Please confirm your local geolocation database files exist at &#8220;%sLocal database settings%s&#8221; section, or remove your IP address in cache at &#8220;%sStatistics in cache%s&#8221; section.', 'ip-geo-block' ),
-							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 5 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-5' ) . '">', '</a></strong>',
+							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 5 ), $network  ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-5' ) . '">', '</a></strong>',
 							'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 1, 'sec' => 2 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-2' ) . '">', '</a></strong>'
 						)
 					)
@@ -614,7 +615,7 @@ class IP_Geo_Block_Admin {
 			self::add_admin_notice( 'error',
 				sprintf(
 					__( 'Emergency login link is outdated. Please delete it once and generate again at &#8220;%sPlugin settings%s&#8221; section. Also do not forget to update favorites / bookmarks in your browser.', 'ip-geo-block' ),
-					'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 7 ), $adminurl ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-7' ) . '">', '</a></strong>'
+					'<strong><a href="' . esc_url( add_query_arg( array( 'page' => IP_Geo_Block::PLUGIN_NAME, 'tab' => 0, 'sec' => 7 ), $network ) . '#' . IP_Geo_Block::PLUGIN_NAME . '-section-7' ) . '">', '</a></strong>'
 				)
 			);
 		}
@@ -1243,7 +1244,9 @@ class IP_Geo_Block_Admin {
 			$output['Geolite2']['use_asn'] = $output['Maxmind']['use_asn'];
 
 		// force to update asn file not immediately but after `validate_settings()` and `validate_network_settings()`
-		if ( $output['Maxmind']['use_asn'] && ( ! $output['Maxmind']['asn4_path'] || ! $output['Geolite2']['asn_path'] ) ) {
+		if ( $output['Maxmind']['use_asn'] && (
+		     ( ! $output['Maxmind']['asn4_path'] && class_exists( 'IP_Geo_Block_API_Maxmind',  FALSE ) ) ||
+		     ( ! $output['Geolite2']['asn_path'] && class_exists( 'IP_Geo_Block_API_Geolite2', FALSE ) ) ) ) {
 			require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php';
 			add_action( IP_Geo_Block::PLUGIN_NAME . '-settings-updated', array( 'IP_Geo_Block_Cron', 'start_update_db' ), 10, 2 );
 		}
@@ -1288,8 +1291,7 @@ class IP_Geo_Block_Admin {
 	 */
 	public function array_replace_recursive() {
 		if ( function_exists( 'array_replace_recursive' ) ) {
-			$args = func_get_args();
-			return call_user_func_array( 'array_replace_recursive', $args );
+			return call_user_func_array( 'array_replace_recursive', func_get_args() );
 		}
 
 		else {

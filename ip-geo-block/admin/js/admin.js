@@ -2,7 +2,7 @@
 /*eslint no-mixed-spaces-and-tabs: ["error", "smart-tabs"]*/
 /*!
  * Project: WordPress IP Geo Block
- * Copyright (c) 2013-2018 tokkonopapa (tokkonopapa@yahoo.com)
+ * Copyright (c) 2013-2019 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
 (function ($, window, document, undefined) {
@@ -1981,12 +1981,12 @@
 						).fadeIn('slow')
 
 						// change APIs tab
-						.on('click', 'a', function () {
+						.on('click', 'a.nav-tab', function () {
 							var $this = $(this),
 							    key, json = $(this).data('api'), info = '',
-							    latitude  = stripTag(json.latitude  || '0'),
-							    longitude = stripTag(json.longitude || '0'),
-							    zoom = (json.latitude || json.longitude) ? 7 : 2;
+							    latitude  = json ? stripTag(json.latitude ) : '0',
+							    longitude = json ? stripTag(json.longitude) : '0',
+							    zoom = json && (json.latitude || json.longitude) ? 7 : 2;
 
 							$this.parent().children('a').removeClass('nav-tab-active');
 							$this.addClass('nav-tab-active');
@@ -1997,11 +1997,15 @@
 
 							for (key in json) {
 								if (json.hasOwnProperty(key)) {
-									key = stripTag(key);
+									key       = stripTag(key);
+									json[key] = stripTag(json[key]);
+									if ('AS number' === key && 0 === json[key].indexOf('AS')) {
+										json[key] = json[key].replace(/^(AS\d+)/, '<a href="https://ipinfo.io/$1" title="search on ipinfo.io">$1</a>');
+									}
 									info +=
 										'<li>' +
-											'<span class="' + ID('title' ) + '">' + key + ' : </span>' +
-											'<span class="' + ID('result') + '">' + stripTag(json[key]) + '</span>' +
+											'<span class="' + ID('title' ) + '">' + key +    ' : </span>' +
+											'<span class="' + ID('result') + '">' + json[key] + '</span>' +
 										'</li>';
 								}
 							}
