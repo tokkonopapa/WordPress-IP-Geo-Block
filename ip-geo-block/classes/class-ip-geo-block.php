@@ -347,8 +347,11 @@ class IP_Geo_Block {
 	 */
 	private static function _get_geolocation( $ip, $settings, $providers, $args = array(), $callback = 'get_country' ) {
 		// check loop back / private address / empty provider
-		if ( IP_Geo_Block_Util::is_private_ip( $ip ) || count( $providers ) <= 1 )
+		if ( IP_Geo_Block_Util::is_private_ip( $ip ) )
 			return self::make_validation( $ip, array( 'time' => 0, 'provider' => 'Private', 'code' => 'XX' ) );
+
+		if ( count( $providers ) <= 1 ) // Why is this not comapred with zero?
+			return self::make_validation( $ip, array( 'time' => 0, 'provider' => 'None', 'code' => 'ZZ' ) );
 
 		// set arguments for wp_remote_get()
 		$args += self::get_request_headers( $settings );
