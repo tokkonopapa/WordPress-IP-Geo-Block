@@ -907,7 +907,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function is_private_ip( $ip ) {
 		// https://php.net/manual/en/filter.filters.flags.php
-		return ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE );
+		return filter_var( $ip, FILTER_VALIDATE_IP ) && ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE );
 	}
 
 	/**
