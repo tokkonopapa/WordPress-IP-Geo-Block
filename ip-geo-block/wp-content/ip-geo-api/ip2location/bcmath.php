@@ -67,7 +67,7 @@ function bcadd($Num1='0',$Num2='0',$Scale=null) {
 
   // process each digit, keep the ones, carry the tens (remainders)
   for($i=0;$i<$MLen;$i++) {
-    $Sum=((int)$Num1{$i}+(int)$Num2{$i});
+    $Sum=((int)$Num1[$i]+(int)$Num2[$i]);
     if(isset($Output[$i])) $Sum+=$Output[$i];
     $Output[$i]=$Sum%10;
     if($Sum>9) $Output[$i+1]=1;
@@ -123,7 +123,7 @@ function bcsub($Num1='0',$Num2='0',$Scale=null) {
 
   // process each digit, keep the ones, carry the tens (remainders)
   for($i=0;$i<$MLen;$i++) {
-    $Sum=((int)$Num1{$i}-(int)$Num2{$i});
+    $Sum=((int)$Num1[$i]-(int)$Num2[$i]);
     if(isset($Output[$i])) $Sum+=$Output[$i];
     $Output[$i]=$Sum%10;
     if($Sum>9) $Output[$i+1]=1;
@@ -153,8 +153,8 @@ function bcmul($Num1='0',$Num2='0') {
   if(!preg_match("/^\d+$/",$Num1)||!preg_match("/^\d+$/",$Num2)) return(0);
 
   // remove zeroes from beginning of numbers
-  for($i=0;$i<strlen($Num1);$i++) {if(@$Num1{$i}!='0') {$Num1=substr($Num1,$i);break;}}
-  for($i=0;$i<strlen($Num2);$i++) {if(@$Num2{$i}!='0') {$Num2=substr($Num2,$i);break;}}
+  for($i=0;$i<strlen($Num1);$i++) {if(@$Num1[$i]!='0') {$Num1=substr($Num1,$i);break;}}
+  for($i=0;$i<strlen($Num2);$i++) {if(@$Num2[$i]!='0') {$Num2=substr($Num2,$i);break;}}
 
   // get both number lengths
   $Len1=strlen($Num1);
@@ -168,13 +168,13 @@ function bcmul($Num1='0',$Num2='0') {
     for($x=0;$x<$Len2;$x++)
       // we use the classic lattice method for calculating the multiplication..
       // this will multiply each number in $Num1 with each number in $Num2 and store it accordingly
-      @$Rema[$i++%$Len2].=sprintf('%02d',(int)$Num1{$y}*(int)$Num2{$x});
+      @$Rema[$i++%$Len2].=sprintf('%02d',(int)$Num1[$y]*(int)$Num2[$x]);
 
   // cycle through each stored number
   for($y=0;$y<$Len2;$y++)
     for($x=0;$x<$Len1*2;$x++)
       // add up the numbers in the diagonal fashion the lattice method uses
-      @$Rema2[Floor(($x-1)/2)+1+$y]+=(int)$Rema[$y]{$x};
+      @$Rema2[Floor(($x-1)/2)+1+$y]+=(int)$Rema[$y][$x];
 
   // reverse the results around
   $Rema2=array_reverse($Rema2);
@@ -191,7 +191,7 @@ function bcmul($Num1='0',$Num2='0') {
   $Rema2=strrev(implode($Rema2));
 
   // just to make sure, we delete the zeros from the beginning of the result and return
-  while(strlen($Rema2)>1&&$Rema2{0}=='0') $Rema2=substr($Rema2,1);
+  while(strlen($Rema2)>1&&$Rema2[0]=='0') $Rema2=substr($Rema2,1);
 
   return($Rema2);
 }

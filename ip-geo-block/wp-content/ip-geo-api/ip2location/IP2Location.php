@@ -379,10 +379,10 @@ class IP2Location {
         if ($repeater == 0) {
           $repeater = 1;
         }
-        if ($f_value{1} == '*') {
+        if ($f_value[1] == '*') {
           $repeater = count($ar) - $i;
         }
-        if ($f_value{0} != 'd') {
+        if ($f_value[0] != 'd') {
           $i += $repeater;
           continue;
         }

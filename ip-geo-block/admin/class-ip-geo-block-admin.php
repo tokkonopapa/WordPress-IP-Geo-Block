@@ -855,23 +855,23 @@ class IP_Geo_Block_Admin {
 		// field
 		$id = $name = '';
 		if ( ! empty( $args['field'] ) ) {
-			$id   = "${args['option']}_${args['field']}";
-			$name = "${args['option']}[${args['field']}]";
+			$id   = "{$args['option']}_{$args['field']}";
+			$name = "{$args['option']}[{$args['field']}]";
 		}
 
 		// sub field
 		$sub_id = $sub_name = '';
 		if ( ! empty( $args['sub-field'] ) ) {
-			$sub_id   = "_${args['sub-field']}";
-			$sub_name = "[${args['sub-field']}]";
+			$sub_id   = "_{$args['sub-field']}";
+			$sub_name = "[{$args['sub-field']}]";
 		}
 
 		switch ( $args['type'] ) {
 		  case 'check-provider':
 			echo "\n<ul class=\"ip-geo-block-list\">\n";
 			foreach ( $args['providers'] as $key => $val ) {
-				$id   = "${args['option']}_providers_{$key}";
-				$name = "${args['option']}[providers][$key]";
+				$id   = "{$args['option']}_providers_{$key}";
+				$name = "{$args['option']}[providers][$key]";
 				$stat = ( NULL   === $val   && ! isset( $args['value'][ $key ] ) ) ||
 				        ( FALSE  === $val   && ! empty( $args['value'][ $key ] ) ) ||
 				        ( is_string( $val ) && ! empty( $args['value'][ $key ] ) ); ?>
@@ -919,7 +919,7 @@ class IP_Geo_Block_Admin {
 		  case 'select':
 		  case 'select-text':
 			$desc = '';
-			echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\" ", (isset( $args['attr'] ) ? esc_attr( $args['attr'] ) : ''), ">\n";
+			echo "\n<select id=\"{$id}{$sub_id}\" name=\"{$name}{$sub_name}\" ", (isset( $args['attr'] ) ? esc_attr( $args['attr'] ) : ''), ">\n";
 			foreach ( $args['list'] as $key => $val ) {
 				echo "\t<option value=\"$key\"", NULL === $val ? ' selected disabled' : ( is_array( $args['value'] ) ? selected( in_array( $key, $args['value'] ), TRUE, FALSE ) : selected( $args['value'], $key, FALSE ) );
 				if ( isset( $args['desc'][ $key ] ) ) {
