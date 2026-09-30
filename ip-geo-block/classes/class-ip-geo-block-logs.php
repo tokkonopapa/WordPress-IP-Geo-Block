@@ -537,7 +537,7 @@ class IP_Geo_Block_Logs {
 
 		// Set data source name
 		$id = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-live-log',
-			( $dsn ? ':memory:' : get_temp_dir() . IP_Geo_Block::PLUGIN_NAME . "-${id}.sqlite" )
+			( $dsn ? ':memory:' : get_temp_dir() . IP_Geo_Block::PLUGIN_NAME . "-{$id}.sqlite" )
 		);
 
 		try {
@@ -759,9 +759,9 @@ endif;
 
 		try {
 			self::$pdo->beginTransaction(); // possibly throw an PDOException
-			if ( self::$stm = self::$pdo->query( "SELECT No, hook, time, ip, code, result, asn, method, user_agent, headers, data FROM " . self::TABLE_LOGS . " WHERE blog_id = ${id};" ) ) {
+			if ( self::$stm = self::$pdo->query( "SELECT No, hook, time, ip, code, result, asn, method, user_agent, headers, data FROM " . self::TABLE_LOGS . " WHERE blog_id = {$id};" ) ) {
 				$result = self::$stm->fetchAll( PDO::FETCH_NUM ); // array or FALSE
-				self::$pdo->exec( "DELETE FROM " . self::TABLE_LOGS . " WHERE blog_id = ${id};" ); // int or FALSE
+				self::$pdo->exec( "DELETE FROM " . self::TABLE_LOGS . " WHERE blog_id = {$id};" ); // int or FALSE
 			}
 			self::$pdo->commit();      // possibly throw an PDOException
 			self::$stm->closeCursor(); // TRUE or FALSE
